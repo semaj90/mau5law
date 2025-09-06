@@ -1,0 +1,2090 @@
+{
+  "generated": "2025-09-06T08:45:04.244Z",
+  "totalGroups": 1600,
+  "top": [
+    {
+      "code": "2769",
+      "message": "No overload matches this call.",
+      "count": 128,
+      "files": [
+        {
+          "file": "src/routes/api/test-cases/+server.ts",
+          "count": 17
+        },
+        {
+          "file": "src/routes/api/v1/cases/[id]/+server.ts",
+          "count": 12
+        },
+        {
+          "file": "src/routes/api/v1/evidence/[id]/+server.ts",
+          "count": 12
+        },
+        {
+          "file": "src/routes/api/v1/cache/ranking/+server.ts",
+          "count": 8
+        },
+        {
+          "file": "src/routes/api/v1/evidence/+server.ts",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'table' implicitly has an 'any' type.",
+      "count": 82,
+      "files": [
+        {
+          "file": "src/lib/server/schema.ts",
+          "count": 10
+        },
+        {
+          "file": "src/lib/server/db/schema-production-pipeline.ts",
+          "count": 9
+        },
+        {
+          "file": "src/lib/server/db/schema-unified.ts",
+          "count": 9
+        },
+        {
+          "file": "src/lib/database/enhanced-schema.ts",
+          "count": 8
+        },
+        {
+          "file": "src/lib/db/schema/vectors.ts",
+          "count": 7
+        }
+      ]
+    },
+    {
+      "code": "2722",
+      "message": "Cannot invoke an object which is possibly 'undefined'.",
+      "count": 72,
+      "files": [
+        {
+          "file": "src/lib/server/cache/redis-service.ts",
+          "count": 17
+        },
+        {
+          "file": "src/lib/optimization/context7-mcp-integration.ts",
+          "count": 12
+        },
+        {
+          "file": "src/lib/cache/loki-redis-integration.ts",
+          "count": 7
+        },
+        {
+          "file": "src/lib/server/wsBroker.ts",
+          "count": 5
+        },
+        {
+          "file": "src/lib/server/vector/vectorService.ts",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "code": "18049",
+      "message": "'event' is possibly 'null' or 'undefined'.",
+      "count": 65,
+      "files": [
+        {
+          "file": "src/lib/machines/ssr-qlora-chat-machine.ts",
+          "count": 45
+        },
+        {
+          "file": "src/lib/machines/idle-detection-rabbitmq-machine.ts",
+          "count": 15
+        },
+        {
+          "file": "src/lib/services/production-pipeline-integration.ts",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'context' does not exist on type 'T'.",
+      "count": 57,
+      "files": [
+        {
+          "file": "src/lib/state/evidence-processing-machine.test.ts",
+          "count": 29
+        },
+        {
+          "file": "src/lib/tests/integration/xstate-machine-simple.test.ts",
+          "count": 13
+        },
+        {
+          "file": "src/lib/tests/integration/xstate-machine.test.ts",
+          "count": 9
+        },
+        {
+          "file": "src/routes/api/evidence/process/stream/+server.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/stores/legal-case.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "7017",
+      "message": "Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature.",
+      "count": 42,
+      "files": [
+        {
+          "file": "src/routes/api/admin/cluster/restart/+server.ts",
+          "count": 17
+        },
+        {
+          "file": "src/routes/api/admin/cluster/events/+server.ts",
+          "count": 11
+        },
+        {
+          "file": "src/lib/routing/route-guards.ts",
+          "count": 10
+        },
+        {
+          "file": "src/routes/api/admin/cluster/scale/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/index.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'messages' does not exist on type 'AssignArgs<ChatContext, ChatEvent, ChatEvent, ProvidedActor>'.",
+      "count": 36,
+      "files": [
+        {
+          "file": "src/lib/machines/ssr-qlora-chat-machine.ts",
+          "count": 36
+        }
+      ]
+    },
+    {
+      "code": "2531",
+      "message": "Object is possibly 'null'.",
+      "count": 34,
+      "files": [
+        {
+          "file": "src/lib/services/rabbitmq-service.ts",
+          "count": 14
+        },
+        {
+          "file": "src/lib/services/comprehensive-caching-architecture.ts",
+          "count": 7
+        },
+        {
+          "file": "src/lib/services/enhanced-rag-service.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/services/inlineSuggestionService.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/services/unified-health-orchestrator.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'role' does not exist on type '{ id: string; email?: string | undefined; }'.",
+      "count": 31,
+      "files": [
+        {
+          "file": "src/routes/api/users/[userId]/+server.ts",
+          "count": 10
+        },
+        {
+          "file": "src/routes/api/qdrant/+server.ts",
+          "count": 5
+        },
+        {
+          "file": "src/routes/api/test-cases/+server.ts",
+          "count": 5
+        },
+        {
+          "file": "src/routes/api/qdrant/optimized/+server.ts",
+          "count": 4
+        },
+        {
+          "file": "src/routes/api/users/+server.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'type' does not exist on type '{}'.",
+      "count": 30,
+      "files": [
+        {
+          "file": "src/lib/machines/ssr-qlora-chat-machine.ts",
+          "count": 23
+        },
+        {
+          "file": "src/lib/machines/idle-detection-rabbitmq-machine.ts",
+          "count": 7
+        }
+      ]
+    },
+    {
+      "code": "2345",
+      "message": "Argument of type 'SvelteComponentTyped<Record<string, any>, Record<string, any>, Record<string, any>>' is not assignable to parameter of type 'new (...args: any[]) => SvelteComponentTyped<Record<string, any>, Record<string, any>, Record<string, any>>'.",
+      "count": 30,
+      "files": [
+        {
+          "file": "src/lib/tests/integration/interval-revalidation.test.ts",
+          "count": 15
+        },
+        {
+          "file": "src/lib/tests/integration/ui-hydration.test.ts",
+          "count": 15
+        }
+      ]
+    },
+    {
+      "code": "2532",
+      "message": "Object is possibly 'undefined'.",
+      "count": 26,
+      "files": [
+        {
+          "file": "src/lib/optimization/context7-mcp-integration.ts",
+          "count": 19
+        },
+        {
+          "file": "src/lib/server/cache/redis-service.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/wasm/gpu-wasm-init.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/ai/moogle-graph-synthesizer.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/ai/streaming-service.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'c' implicitly has an 'any' type.",
+      "count": 25,
+      "files": [
+        {
+          "file": "src/lib/server/vector/vectorService.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/services/ai-summarization-service.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/server/db/qdrant-integration.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/optimized-qdrant-service.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/postgresql-qdrant-sync.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'mock' does not exist on type '{ fn: (impl?: ((...args: any[]) => any) | undefined) => any; }'.",
+      "count": 24,
+      "files": [
+        {
+          "file": "src/lib/tests/setup/integration-setup.ts",
+          "count": 11
+        },
+        {
+          "file": "src/lib/tests/integration/ssr-session-integrity.test.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/tests/integration/route-health.test.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/tests/integration/ui-hydration.test.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/tests/integration/xstate-machine.test.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2554",
+      "message": "Expected 1 arguments, but got 2.",
+      "count": 23,
+      "files": [
+        {
+          "file": "src/lib/services/production-pipeline-integration.ts",
+          "count": 8
+        },
+        {
+          "file": "src/lib/ai/sora-graph-traversal.ts",
+          "count": 4
+        },
+        {
+          "file": "src/routes/api/v2/vector-pipeline/+server.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/ai/moogle-graph-synthesizer.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/ollama-cuda-service.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'advanceTimersByTime' does not exist on type '{ fn: (impl?: ((...args: any[]) => any) | undefined) => any; }'.",
+      "count": 21,
+      "files": [
+        {
+          "file": "src/lib/tests/integration/interval-revalidation.test.ts",
+          "count": 21
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'result' implicitly has an 'any' type.",
+      "count": 20,
+      "files": [
+        {
+          "file": "src/lib/server/search/vector-search.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/services/qdrant-service.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/webgpu/graph-texture-layout.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/rag/search/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/semantic-search/+server.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "18048",
+      "message": "'event' is possibly 'undefined'.",
+      "count": 20,
+      "files": [
+        {
+          "file": "src/lib/stores/evidence-workflow.ts",
+          "count": 10
+        },
+        {
+          "file": "src/lib/machines/idle-detection-rabbitmq-machine.ts",
+          "count": 7
+        },
+        {
+          "file": "src/lib/services/user-chat-recommendation-engine.ts",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "code": "2345",
+      "message": "Argument of type 'string | undefined' is not assignable to parameter of type 'string'.",
+      "count": 19,
+      "files": [
+        {
+          "file": "src/lib/gpu/nes-gpu-integration.ts",
+          "count": 4
+        },
+        {
+          "file": "src/routes/api/ai/document-drafting/+server.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/services/ollama-integration-layer.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/utils/environment-service.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/ai/webasm-llamacpp.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7031",
+      "message": "Binding element 'one' implicitly has an 'any' type.",
+      "count": 19,
+      "files": [
+        {
+          "file": "src/lib/db/schema.ts",
+          "count": 8
+        },
+        {
+          "file": "src/lib/server/db/schema/gpu-cache-schema.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/server/schema/documents.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/server/db/auth-schema.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/db/enhanced-embedding-schema.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'value' does not exist on type 'T'.",
+      "count": 19,
+      "files": [
+        {
+          "file": "src/lib/state/evidence-processing-machine.test.ts",
+          "count": 12
+        },
+        {
+          "file": "src/lib/tests/integration/xstate-machine.test.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/tests/integration/xstate-machine-simple.test.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/stores/enhancedStateMachines.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/evidence/process/stream/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7053",
+      "message": "Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.",
+      "count": 18,
+      "files": [
+        {
+          "file": "src/routes/api/system-integration-test/+server.ts",
+          "count": 6
+        },
+        {
+          "file": "src/lib/services/comprehensive-database-orchestrator.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/context7-autosolve-integration.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/enhanced-ai-pipeline.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/image-generation/+server.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'error' does not exist on type 'LibraryDocsResponse | { error: any; }'.",
+      "count": 18,
+      "files": [
+        {
+          "file": "src/routes/api/test-context7/+server.ts",
+          "count": 18
+        }
+      ]
+    },
+    {
+      "code": "2554",
+      "message": "Expected 0 arguments, but got 1.",
+      "count": 17,
+      "files": [
+        {
+          "file": "src/lib/services/ollamaChatStream.ts",
+          "count": 10
+        },
+        {
+          "file": "src/lib/services/context7-phase13-integration.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/utils/copilot-self-prompt.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/gpu/physics-aware-legal-gpu-orchestrator.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/qlora-rl-langextract-integration.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2454",
+      "message": "Variable 'handle' is used before being assigned.",
+      "count": 16,
+      "files": [
+        {
+          "file": "src/lib/memory/nes-memory-architecture.ts",
+          "count": 16
+        }
+      ]
+    },
+    {
+      "code": "7031",
+      "message": "Binding element 'request' implicitly has an 'any' type.",
+      "count": 15,
+      "files": [
+        {
+          "file": "src/routes/api/storage/evidence-metadata/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/ssr/enhanced-load.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/ai/context/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/ai/test-ollama/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/ai/vector-search/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2709",
+      "message": "Cannot use namespace 'LegalBERTAnalysis' as a type.",
+      "count": 14,
+      "files": [
+        {
+          "file": "src/lib/middleware/tfjs-synthesizer.ts",
+          "count": 14
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'connect' does not exist on type 'Redis'.",
+      "count": 14,
+      "files": [
+        {
+          "file": "src/lib/services/cache-layer-manager.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/postgresql-first/test/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/enhanced-ai-pipeline.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/multi-library-startup.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/utils/copilot-self-prompt.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2300",
+      "message": "Duplicate identifier 'RequestHandler'.",
+      "count": 14,
+      "files": [
+        {
+          "file": "src/routes/api/ai/vector-search/stream/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/enhanced-rag/query/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/enhanced-rag/status/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/enhanced-rag/stream/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/gpu/devices/+server.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2349",
+      "message": "This expression is not callable.",
+      "count": 13,
+      "files": [
+        {
+          "file": "src/lib/ai/webasm-llamacpp.ts",
+          "count": 6
+        },
+        {
+          "file": "src/lib/services/context7-phase13-integration.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/actors/xstate-actor-wrapper.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/__tests__/db-migration-verification.test.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/stores/barrel-store-manager.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2709",
+      "message": "Cannot use namespace 'QdrantClient' as a type.",
+      "count": 13,
+      "files": [
+        {
+          "file": "src/lib/ai/enhanced-ingestion-pipeline.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/db/qdrant-integration.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/services/qdrant-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/services/QdrantService.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/vector/qdrant-api-wrapper.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'metadata' does not exist on type 'SoraGraphNode'.",
+      "count": 13,
+      "files": [
+        {
+          "file": "src/lib/ai/moogle-graph-synthesizer.ts",
+          "count": 13
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'sum' implicitly has an 'any' type.",
+      "count": 13,
+      "files": [
+        {
+          "file": "src/lib/services/ai-summarization-service.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/enhanced-ai-pipeline.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/multiLayerCache.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/engines/neural-sprite-engine.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/machines/ssr-qlora-chat-machine.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2698",
+      "message": "Spread types may only be created from object types.",
+      "count": 13,
+      "files": [
+        {
+          "file": "src/routes/api/ai/tag/+server.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/machines/legalCaseMachine.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/ollamaChatStream.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/stores/machines/aiProcessingMachine.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/comprehensive-caching-service.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'performanceMetrics' does not exist on type 'AssignArgs<ChatContext, ChatEvent, ChatEvent, ProvidedActor>'.",
+      "count": 13,
+      "files": [
+        {
+          "file": "src/lib/machines/ssr-qlora-chat-machine.ts",
+          "count": 13
+        }
+      ]
+    },
+    {
+      "code": "7031",
+      "message": "Binding element 'context' implicitly has an 'any' type.",
+      "count": 13,
+      "files": [
+        {
+          "file": "src/lib/server/ai/enhanced-ai-synthesis-orchestrator.ts",
+          "count": 6
+        },
+        {
+          "file": "src/lib/machines/vector-pipeline-machine.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/stores/ai.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/collaboration-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/suggestion-engine.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'on' does not exist on type 'Redis'.",
+      "count": 13,
+      "files": [
+        {
+          "file": "src/lib/server/redis.ts",
+          "count": 5
+        },
+        {
+          "file": "src/lib/utils/redis-helper.ts",
+          "count": 5
+        },
+        {
+          "file": "src/lib/server/redisRateLimit.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/ws/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2345",
+      "message": "Argument of type 'string' is not assignable to parameter of type 'never'.",
+      "count": 12,
+      "files": [
+        {
+          "file": "src/lib/server/ai/rag-pipeline.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/services/native-windows-service-manager.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/integrations/full-system-orchestrator.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/schemas/evidence-upload.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/api/service-registry.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2709",
+      "message": "Cannot use namespace 'AdvancedExtractionResult' as a type.",
+      "count": 12,
+      "files": [
+        {
+          "file": "src/lib/middleware/tfjs-synthesizer.ts",
+          "count": 12
+        }
+      ]
+    },
+    {
+      "code": "2347",
+      "message": "Untyped function calls may not accept type arguments.",
+      "count": 12,
+      "files": [
+        {
+          "file": "src/lib/server/db/enhanced-embedding-schema.ts",
+          "count": 10
+        },
+        {
+          "file": "src/lib/server/schema/documents.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'clearAllMocks' does not exist on type '{ fn: (impl?: ((...args: any[]) => any) | undefined) => any; }'.",
+      "count": 12,
+      "files": [
+        {
+          "file": "src/lib/tests/integration/route-health.test.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/tests/integration/ssr-session-integrity.test.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/tests/integration/ui-hydration.test.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/tests/setup/integration-setup.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/state/evidence-processing-machine.test.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7031",
+      "message": "Binding element 'many' implicitly has an 'any' type.",
+      "count": 11,
+      "files": [
+        {
+          "file": "src/lib/db/schema.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/server/schema/documents.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/server/db/enhanced-embedding-schema.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/db/auth-schema.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/db/schema/gpu-cache-schema.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7031",
+      "message": "Binding element 'event' implicitly has an 'any' type.",
+      "count": 11,
+      "files": [
+        {
+          "file": "src/lib/stores/ai.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/machines/legalAIMachine.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/machines/legalAIMachine.v5.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/concurrency-orchestrator.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/tests/integration/ssr-session-integrity.test.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'm' implicitly has an 'any' type.",
+      "count": 11,
+      "files": [
+        {
+          "file": "src/lib/services/local-llm-manager.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/server/ai/enhanced-orchestrator.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/stores/chat-store.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/ocrService.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/ai/tag/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'r' implicitly has an 'any' type.",
+      "count": 11,
+      "files": [
+        {
+          "file": "src/lib/server/ai/rag-pipeline.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/feedback-loop-service.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/ai/tag/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/search/evidence/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/db/qdrant-integration.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "18046",
+      "message": "'error' is of type 'unknown'.",
+      "count": 11,
+      "files": [
+        {
+          "file": "src/lib/services/production-pipeline-integration.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/server/api/service-registry.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/png-embed-extractor.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/recommendation-orchestrator.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/evidence/process/stream/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'a' implicitly has an 'any' type.",
+      "count": 11,
+      "files": [
+        {
+          "file": "src/lib/server/gpu-thread-coordinator.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/utils/copilot-self-prompt.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/cases/[caseId]/analysis/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/loki-cache-vscode-integration.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/multiLayerCache.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2304",
+      "message": "Cannot find name 'Evidence'.",
+      "count": 11,
+      "files": [
+        {
+          "file": "src/lib/stores/lokiStore.ts",
+          "count": 5
+        },
+        {
+          "file": "src/lib/stores/enhancedStateMachines.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/stores/canvas.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/stores/machines/documentMachine.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2571",
+      "message": "Object is of type 'unknown'.",
+      "count": 10,
+      "files": [
+        {
+          "file": "src/lib/services/redis-service.ts",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "code": "2576",
+      "message": "Property 'embedMetadata' does not exist on type 'PNGEmbedExtractor'. Did you mean to access the static member 'PNGEmbedExtractor.embedMetadata' instead?",
+      "count": 10,
+      "files": [
+        {
+          "file": "tests/evidence-workflow-integration.test.ts",
+          "count": 9
+        },
+        {
+          "file": "src/lib/stores/evidence-workflow.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2683",
+      "message": "'this' implicitly has type 'any' because it does not have a type annotation.",
+      "count": 9,
+      "files": [
+        {
+          "file": "src/lib/utils/index.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/api/production-client.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/ai/config.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/caching-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/context7-multicore.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'doc' implicitly has an 'any' type.",
+      "count": 9,
+      "files": [
+        {
+          "file": "src/lib/server/db/qdrant-integration.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/ai-summarization-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/enhanced-ai-pipeline.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/ai/upload-auto-tag/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/legal/chat/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'b' implicitly has an 'any' type.",
+      "count": 9,
+      "files": [
+        {
+          "file": "src/lib/server/gpu-thread-coordinator.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/utils/copilot-self-prompt.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/storage/minio-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/loki-cache-vscode-integration.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/multiLayerCache.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'remaining' does not exist on type '{ allowed: boolean; count: number; retryAfter: number; }'.",
+      "count": 9,
+      "files": [
+        {
+          "file": "src/routes/api/qdrant/+server.ts",
+          "count": 5
+        },
+        {
+          "file": "src/routes/api/qdrant/optimized/+server.ts",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'resetTime' does not exist on type '{ allowed: boolean; count: number; retryAfter: number; }'.",
+      "count": 9,
+      "files": [
+        {
+          "file": "src/routes/api/qdrant/+server.ts",
+          "count": 5
+        },
+        {
+          "file": "src/routes/api/qdrant/optimized/+server.ts",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'error' implicitly has an 'any' type.",
+      "count": 8,
+      "files": [
+        {
+          "file": "src/lib/actors/xstate-actor-wrapper.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/middleware/tfjs-synthesizer.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/redis.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/production-service-client.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/redis-vector-service.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'msg' implicitly has an 'any' type.",
+      "count": 8,
+      "files": [
+        {
+          "file": "src/lib/machines/ssr-qlora-chat-machine.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/wsBroker.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/workers/specialized-worker-system.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/messaging/rabbitmq-xstate-integration.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/messaging/rabbitmq-service.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "18048",
+      "message": "'provided' is possibly 'undefined'.",
+      "count": 8,
+      "files": [
+        {
+          "file": "src/lib/server/services/CaseScoringService.ts",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'ping' does not exist on type 'Redis'.",
+      "count": 8,
+      "files": [
+        {
+          "file": "src/lib/services/concurrency-orchestrator.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/multi-library-startup.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/unified-vector-orchestrator.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/utils/redis-helper.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/health-check/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'item' implicitly has an 'any' type.",
+      "count": 8,
+      "files": [
+        {
+          "file": "src/lib/services/enhanced-ai-pipeline.ts",
+          "count": 3
+        },
+        {
+          "file": "src/routes/api/evidence/hash/bulk/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/loki-cache-vscode-integration.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/gallery/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/gallery/search/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'state' implicitly has an 'any' type.",
+      "count": 8,
+      "files": [
+        {
+          "file": "src/lib/services/enhanced-ingest-integration.ts",
+          "count": 6
+        },
+        {
+          "file": "src/lib/state/xstate-store.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2345",
+      "message": "Argument of type 'unknown' is not assignable to parameter of type 'Record<string, any> | undefined'.",
+      "count": 8,
+      "files": [
+        {
+          "file": "src/lib/utils/database-sync.ts",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "code": "2345",
+      "message": "Argument of type 'any' is not assignable to parameter of type 'never'.",
+      "count": 8,
+      "files": [
+        {
+          "file": "src/routes/api/ai-synthesizer/test/+server.ts",
+          "count": 7
+        },
+        {
+          "file": "src/routes/api/v1/gpu-cache/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2345",
+      "message": "Argument of type 'number' is not assignable to parameter of type 'never'.",
+      "count": 7,
+      "files": [
+        {
+          "file": "src/lib/server/ai/monitoring-service.ts",
+          "count": 5
+        },
+        {
+          "file": "src/lib/components/three/yorha-ui/components/YoRHaQuantumEffects3D.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'tx' implicitly has an 'any' type.",
+      "count": 7,
+      "files": [
+        {
+          "file": "src/lib/server/db/user-operations.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/tests/integration.test.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/ai/rag-pipeline-enhanced.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/concurrency/transaction-manager.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2306",
+      "message": "File 'C:/Users/james/Videos/deeds-web-app/sveltekit-frontend/src/lib/server/db/connection.ts' is not a module.",
+      "count": 7,
+      "files": [
+        {
+          "file": "src/lib/server/index.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/workers/rabbitmq-embedding-worker.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/documents/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/search/fulltext/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/search/index/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'quit' does not exist on type 'Redis'.",
+      "count": 7,
+      "files": [
+        {
+          "file": "src/lib/services/cache-layer-manager.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/redis.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/enhanced-ai-pipeline.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/queue-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/utils/redis-helper.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2551",
+      "message": "Property 'setex' does not exist on type 'Redis'. Did you mean 'set'?",
+      "count": 7,
+      "files": [
+        {
+          "file": "src/lib/workers/rabbitmq-embedding-worker.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/job-queue.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/unified-vector-orchestrator.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/documents/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/vector-search/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2341",
+      "message": "Property 'addRecommendation' is private and only accessible within class 'RecommendationOrchestrator'.",
+      "count": 7,
+      "files": [
+        {
+          "file": "src/lib/services/qlora-training-service.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/services/minio-upload-service.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/user-analytics-rl-integration.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'rows' does not exist on type 'RowList<Record<string, unknown>[]>'.",
+      "count": 7,
+      "files": [
+        {
+          "file": "src/lib/services/unified-legal-simd-pgvector.ts",
+          "count": 5
+        },
+        {
+          "file": "src/routes/api/rag/corpus-summary/+server.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'context' implicitly has an 'any' type.",
+      "count": 7,
+      "files": [
+        {
+          "file": "src/lib/stores/evidence-workflow.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/services/user-chat-recommendation-engine.ts",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'execute' does not exist on type 'ProductionServiceClient'.",
+      "count": 7,
+      "files": [
+        {
+          "file": "src/lib/stores/recommendations.ts",
+          "count": 6
+        },
+        {
+          "file": "src/lib/services/xstate-integration.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'message' implicitly has an 'any' type.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/services/enhanced-caching-optimizer.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/messaging/rabbitmq-xstate-integration.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/websocket/socket-server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/ws/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'index' implicitly has an 'any' type.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/routes/api/vector/recommendations/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/middleware/tfjs-synthesizer.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/ai-summarization-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/gpu-typescript-error-processor.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/mmr-summary-generator.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2306",
+      "message": "File 'C:/Users/james/Videos/deeds-web-app/sveltekit-frontend/src/lib/server/db/client.ts' is not a module.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/server/db/embedding-cache-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/workers/embedding-backfill-worker.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/glyph-diffusion-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/evidence-embeddings/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/evidence-files/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'metadata' does not exist on type 'never'.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/server/services/vector-service.ts",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "code": "7031",
+      "message": "Binding element 'url' implicitly has an 'any' type.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/server/ssr/enhanced-load.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/all-routes/+page.server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/ai/context/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/debug/db/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/v1/upload/presigned/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'hit' implicitly has an 'any' type.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/services/postgresql-qdrant-sync.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/cases/[caseId]/deep-analysis/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/vector/qdrant-optimized.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/cases/[caseId]/analysis/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "18048",
+      "message": "'filters' is possibly 'undefined'.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/services/concurrent-indexeddb-search.ts",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'update' does not exist on type '{ subscribe: { (this: void, run: Subscriber<AIAgentState>, invalidate?: (() => void) | undefined): Unsubscriber; (fn: (value: AIAgentState) => void): () => void; }; ... 16 more ...; startHeartbeat(): Timeout; }'.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/services/enhanced-ingest-integration.ts",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "code": "2304",
+      "message": "Cannot find name 'LlamaCppOllamaService'.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/services/enhanced-rag-self-organizing.ts",
+          "count": 3
+        },
+        {
+          "file": "src/lib/services/unsloth-finetuning.ts",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'uploadBuffer' does not exist on type 'MinIOService'.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/services/glyph-diffusion-service.ts",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "code": "2709",
+      "message": "Cannot use namespace 'PointStruct' as a type.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/services/qdrantService.ts",
+          "count": 5
+        },
+        {
+          "file": "src/lib/services/optimized-qdrant-service.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'event' implicitly has an 'any' type.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/services/user-chat-recommendation-engine.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/services/qlora-rl-langextract-integration.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/stores/analyticsStore.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2304",
+      "message": "Cannot find name 'aiWorkerManager'.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/services/vector-intelligence-service.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/utils/copilot-self-prompt.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "2304",
+      "message": "Cannot find name 'ChatMessage'.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/lib/stores/chatMachine.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/stores/chat.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 't' implicitly has an 'any' type.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/routes/api/ai-synthesizer/test/+server.ts",
+          "count": 4
+        },
+        {
+          "file": "src/routes/api/ai/tag/+server.ts",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "code": "18046",
+      "message": "'qualityMetrics' is of type 'unknown'.",
+      "count": 6,
+      "files": [
+        {
+          "file": "src/routes/api/clustering/som-kmeans/+server.ts",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "code": "2564",
+      "message": "Property 'embeddings' has no initializer and is not definitely assigned in the constructor.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/lib/ai/langchain-ollama-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/ai/enhanced-orchestrator.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/enhanced-ai-pipeline.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/nomic-embedding-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/ollama-cuda-service.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'imageData' does not exist on type '{ readonly caseId?: string | undefined; readonly jurisdiction?: string | undefined; readonly documentClass?: string | undefined; readonly aiGenerated?: boolean | undefined; readonly vectorEmbedding?: Float32Array<...> | undefined; }'.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/lib/caching/multi-dimensional-image-cache.ts",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'response' does not exist on type '{}'.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/lib/machines/ssr-qlora-chat-machine.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/machines/idle-detection-rabbitmq-machine.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'i' implicitly has an 'any' type.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/lib/middleware/tfjs-synthesizer.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/server/ai/enhanced-orchestrator.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/nlp-metrics.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/workers/embedding-worker.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/v1/pipeline/recent-samples.csv/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'source' implicitly has an 'any' type.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/routes/api/legal/chat/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/routes/api/vector/recommendations/+server.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/server/ai/enhanced-orchestrator.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "7006",
+      "message": "Parameter 'e' implicitly has an 'any' type.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/lib/services/unified-legal-simd-pgvector.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/ai-summarization-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/tests/integration.test.ts",
+          "count": 1
+        },
+        {
+          "file": "tests/evidence-workflow-integration.test.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2322",
+      "message": "Type 'Timeout' is not assignable to type 'number'.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/lib/utils/bits-ui-ssr.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/services/gpuMetricsBatcher.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/qlora-training-service.ts",
+          "count": 1
+        },
+        {
+          "file": "src/lib/services/recommendation-orchestrator.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2558",
+      "message": "Expected 0 type arguments, but got 1.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/routes/api/v1/mcp/call/+server.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/services/nes-cache-orchestrator.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2339",
+      "message": "Property 'config' does not exist on type 'UnderlyingDefaultSource<string>'.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/lib/services/rag-pipeline-integrator.ts",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "code": "18048",
+      "message": "'aiResponse.metadata' is possibly 'undefined'.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/lib/stores/ai-store.ts",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "code": "2322",
+      "message": "Type 'string | null' is not assignable to type 'string | undefined'.",
+      "count": 5,
+      "files": [
+        {
+          "file": "src/lib/stores/enhanced-auth.svelte.ts",
+          "count": 2
+        },
+        {
+          "file": "src/lib/utils/timing-metrics.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/legal/chat/+server.ts",
+          "count": 1
+        },
+        {
+          "file": "src/routes/api/qdrant/tag/+server.ts",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "code": "2576",
+      "message": "Property 'extractMetadata' does not exist on type 'PNGEmbedExtractor'. Did you mean to access the static member 'PNGEmbedExtractor.extractMetadata' instead?",
+      "count": 5,
+      "files": [
+        {
+          "file": "tests/evidence-workflow-integration.test.ts",
+          "count": 4
+        },
+        {
+          "file": "src/lib/stores/evidence-workflow.ts",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}

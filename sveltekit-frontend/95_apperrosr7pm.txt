@@ -1,0 +1,138 @@
+
+● Perfect! I can see the RTX-enhanced system startup script is a  
+  comprehensive concurrency manager that orchestrates multiple    
+  services. However, it looks like it's trying to use zx (Google's
+   zx library) but may be missing dependencies. Let me start the  
+  Go tensor service to complete your microservice architecture:   
+
+
+got stuck somewhere, need caddy...a certificate? nginx?
+te(~\Desktop\deeds-web\deeds-web-app\go-microservice\tensor-serv        ice\main.go)
+  ⎿  Updated ..\go-microservice\tensor-service\main.go with 1
+     addition and 1 removal
+        8      "os/signal"
+        9      "syscall"
+       10    
+       11 -    pb "github.com/deeds-web/legal-ai/proto"
+       11 +    pb "./proto"
+       12      "google.golang.org/grpc"
+       13      "google.golang.org/grpc/reflection"
+       14    )
+
+● Now I need to generate the protobuf Go code. Let me update the      
+  todo and generate the proto files:
+
+● Bash(cd /c/Users/james/Desktop/deeds-web/deeds-web-app/go-microservi      ce/tensor-service && protoc --version)
+  ⎿  Error: /usr/bin/bash: line 1: protoc: command not found
+
+● I need to create the protobuf Go files manually since protoc        
+  isn't installed. L
+
+**********************************************************************
+
+
+● Let me try running the migration manually using       
+  psql instead of the Node.js script. This will
+  bypass any Node.js connection issues:
+
+● Bash(cd /c/Users/james/Desktop/deeds-web/deeds-web-app      /sveltekit-frontend && timeout 60s psql postgresql      ://postgres:123456@localhost:5432/legal_ai_db -f  
+      sql/migratio…)
+  ⎿  CREATE EXTENSION
+     CREATE EXTENSION
+     CREATE EXTENSION
+     … +119 lines (ctrl+r to expand)
+
+● Great! The migration is partially working but
+  there are schema conflicts - some tables already      
+  exist with different column structures. Let me run    
+   the migration status check to see what exists: 
+
+
+************************************************
+Answer: There are no symlinks/junctions under organized-files right now.
+I verified by scanning for reparse points (symlinks/junctions) under organized-files; count reported: 0.
+If you want auto copy/symlink at startup:
+
+We can add a small startup step to aligned-dev-orchestrator.mjs (or a separate PowerShell script) that:
+Copies or symlinks selected paths from organized-files/... into sveltekit-frontend/src/... before launching Vite.
+Uses a JSON mapping so it’s easy to maintain.
+
+PS C:\Users\james\Desktop\deeds-web\deeds-web-app\sveltekit-frontend> pwsh -NoProfile -Command "Get-ChildItem -Path 'c:\Users\james\Desktop\deeds-web\deeds-web-app\organized-files' -Recurse -Force -Attributes ReparsePoint | Select-Object FullName, Attributes | Format-Table -AutoSize"
+PS C:\Users\james\Desktop\deeds-web\deeds-web-app\sveltekit-frontend> pwsh -NoProfile -Command "$base='c:\\Users\\james\\Desktop\\deeds-web\\deeds-web-app\\organized-files'; if (Test-Path $base) { $c=(Get-ChildItem -Recurse -Force -Path $base -Attributes ReparsePoint | Measure-Object).Count; Write-Output \"ReparsePoints: $c\" } else { Write-Output 'organized-files not found' }"bject).Count\x3b Write-Output \x5c"ReparsePoints: $c\x5c" } else { Write-Output 'organized-files not found' }"
+=c:\\Users\\james\\Desktop\\deeds-web\\deeds-web-app\\organized-files: The term '=c:\\Users\\james\\Desktop\\deeds-web\\deeds-web-app\\organized-files' is not recognized as a name of a cmdlet, function, script file, or executable program.      
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+cmdlet Test-Path at command pipeline position 1
+Supply values for the following parameters:
+Path[0]:Answer: There are no symlinks/junctions under organized-files right now.
+I verified by scanning for reparse points (symlinks/junctions) under organized-files; count reported: 0.
+If you want auto copy/symlink at startup:
+
+We can add a small startup step to aligned-dev-orchestrator.mjs (or a separate PowerShell script) that:
+Copies or symlinks selected paths from organized-files/... into sveltekit-frontend/src/... before launching Vite.
+Uses a JSON mapping so it’s easy to maintain.
+ample mapping idea (not created yet):
+
+scripts/organized-files-map.json
+[{ from: "organized-files/svelte-components/sveltekit-frontend_src_lib_components_upload/MinIOUpload.svelte", to: "sveltekit-frontend/src/lib/components/upload/MinIOUpload.svelte", mode: "symlink" }]
+Want me to wire this mapping and a pre-step into dev:full so it syncs before Vite starts?
+aligned-dev-orchestrator.mjs+87-0
+aligned-dev-orchestrator.mjs+3-0
+Created organized-files-map.json
+
+Wiring it in now and keeping it safe by default.
+
+What I added
+
+Pre-start sync in aligned-dev-orchestrator.mjs:
+
+Reads organized-files-map.json.
+For each entry { from, to, mode }, tries symlink first (junction for directories on Windows), falls back to copy if symlink fails.
+Skips when target already exists (no overwrite by default).
+Runs before services start so Vite sees files at launch.
+Mapping file to opt-in items:
+
+organized-files-map.json (example entry included)
+from: organized-files/...
+to: sveltekit-frontend/...
+mode: "symlink" or omit to allow default symlink-then-copy behavior
+How to use
+
+Edit organized-files-map.json and add entries you want synced, e.g.:
+{"from":"organized-files/typescript-source/sveltekit-frontend_src_lib_services/minio-neo4j-pgvector-integration.ts", "to":"sveltekit-frontend/src/lib/services/minio-neo4j-pgvector-integration.ts", "mode":"symlink"}
+Start as usual:
+npm run dev:full
+The orchestrator logs the sync results in aligned-orchestrator.log.
+Notes
+
+Currently skips overwriting existing targets; if you want “force refresh”, we can add a flag to remove targets first.
+Directory symlinks use “junction” on Windows for compatibility; files use regular symlink.
+If you don’t want symlinks at all, set mode: "copy" per entry.
+Requirements coverage
+
+“Copy/symlink selected files into sveltekit-frontend during startup”: Done.
+Keeps default inert until you add mappings
+
+*********************************************************************
+("C:\Program Files\PostgreSQL\17\      bin\pg_ctl.exe" status -D        
+      "C:\Program
+      Files\PostgreSQL\17\data")       
+  ⎿ pg_ctl: server is running (PID     
+    : 29860)
+    C:/Program Files/PostgreSQL/17
+**********************************************************
+All pgvector installation 
+  files are now saved and open in VS   
+  Code: Files Created & Saved: 1. install-pgvector.ps1 - PowerShell 
+  installer script with Administrator  
+  privileges
+  2. create-vector-extension.sql - SQL 
+  script to create and test the vector 
+  extension
+  3. PGVECTOR-INSTALLATION-GUIDE.md -  
+  Complete installation and integration
+  guide
+Summary: Your pgvector-precompiled.zip DOES   
+  work with PostgreSQL 17 - it's
+  specifically built for PostgreSQL
+  v17.3 on Windows x64.

@@ -1,0 +1,81 @@
+Admin UI: community dashboards or build a tiny status endpoint; no built-in full console.
+Ollama:
+
+Install Windows build.
+Optionally wrap ollama serve via NSSM.
+4. Registering Node/TypeScript workers as Windows Services
+Option A: NSSM (simple, no code changes)
+Build: tsc --project tsconfig.workers.json
+Install service: nssm install LegalAI-EmbeddingWorker "C:\Program Files\nodejs\node.exe" "C:\repo\dist\workers\embedding-worker.js"
+In NSSM GUI or via commands set:
+AppDirectory: C:\repo
+Stdout / Stderr: C:\repo\logs\embedding-worker.log
+Start: Automatic
+Environment (either):
+Use a .env file + dotenv in code
+Or nssm set LegalAI-EmbeddingWorker AppEnvironmentExtra "NODE_ENV=production|RABBITMQ_URL=amqp://guest:guest@localhost:5672"
+Repeat for:
+
+LegalAI-VectorIngestionWorker
+LegalAI-RerankWorker
+LegalAI-QueueMonitor
+Option B: node-windows module
+Create install script (install-service.js): const { Service } = require('node-windows'); const svc = new Service({ name: 'LegalAI Embedding Worker', description: 'Processes embedding jobs for LegalAI', script: 'C:\repo\dist\workers\embedding-worker.js', env: [{ name: 'NODE_ENV', value: 'production' }] }); svc.on('install', () => svc.start()); svc.install();
+
+Run: node install-service.js (elevated)
+
+Uninstall: adapt script with svc.uninstall().
+
+Option C: sc.exe (wrapper .cmd)
+Create wrapper embedding-worker.cmd: @echo off set NODE_ENV=production "C:\Program Files\nodejs\node.exe" "C:\repo\dist\workers\embedding-worker.js" >> "C:\repo\logs\embedding-worker.log" 2>&1 Install: sc create LegalAIEmbeddingWorker binPath= "C:\repo\embedding-worker.cmd" start= auto sc description LegalAIEmbeddingWorker "Legal AI Embedding Worker"
+
+5. Log management
+Use a daily rotate via a tiny PowerShell scheduled task or integrate winston + winston-daily-rotate-file in worker code.
+Ensure logs directory exists before service start.
+6. Health & monitoring
+Expose /health endpoint in each long-running Node service (HTTP server on an internal port).
+Create a simple PowerShell script health-all.ps1 that loops through services and outputs status + HTTP health.
+Optional: Install Prometheus windows_exporter and hit custom metrics endpoints from workers (prom-client).
+7. Environment & secrets
+Store secrets in a .env not committed; workers load dotenv at startup.
+For Windows Service isolation: use system environment variables (setx) only for non-secret; keep secrets in an encrypted file or Windows Credential Manager if needed.
+8. Deployment/update cycle
+Stop service: nssm stop LegalAI-EmbeddingWorker
+Pull changes / modify code.
+tsc build
+Start service: nssm start LegalAI-EmbeddingWorker (Automate with a PowerShell function update-worker.ps1.)
+9. Multiple worker scaling
+Install multiple instances using suffix names (LegalAI-EmbeddingWorker-1, -2) each with different QUEUE_PREFETCH or RABBITMQ_CONSUMER_TAG environment variable.
+Use RabbitMQ QoS (prefetch) to balance load.
+10. Admin UI summary
+PostgreSQL: pgAdmin / DBeaver
+RabbitMQ: http://localhost:15672
+Redis: RedisInsight
+MinIO: http://localhost:9001
+Services: services.msc or NSSM GUI
+(Optional) PM2 Web: if you choose PM2, run pm2 plus dashboard; less “native” though.
+11. Security hardening basics
+Bind RabbitMQ/Redis/Postgres to localhost only for dev.
+Use strong passwords; set RABBITMQ_DEFAULT_USER / PASS (or create user).
+Disable guest remote permissions.
+Store secrets in a .env not committed; workers load dotenv at startup.
+For Windows Service isolation: use system environment variables (setx) only for non-secret; keep secrets in an encrypted file or Windows Credential Manager if needed.
+8. Deployment/update cycle
+Stop service: nssm stop LegalAI-EmbeddingWorker
+Pull changes / modify code.
+tsc build
+Start service: nssm start LegalAI-EmbeddingWorker (Automate with a PowerShell function update-worker.ps1.)
+9. Multiple worker scaling
+Install multiple instances using suffix names (LegalAI-EmbeddingWorker-1, -2) each with different QUEUE_PREFETCH or RABBITMQ_CONSUMER_TAG environment variable.
+Use RabbitMQ QoS (prefetch) to balance load.
+10. Admin UI summary
+PostgreSQL: pgAdmin / DBeaver
+RabbitMQ: http://localhost:15672
+Redis: RedisInsight
+MinIO: http://localhost:9001
+Services: services.msc or NSSM GUI
+(Optional) PM2 Web: if you choose PM2, run pm2 plus dashboard; less “native” though.
+11. Security hardening basics
+Bind RabbitMQ/Redis/Postgres to localhost only for dev.
+Use strong passwords; set RABBITMQ_DEFAULT_USER / PASS (or create user).
+Disable guest remote permissions.
