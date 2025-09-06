@@ -1,0 +1,29 @@
+#!/bin/sh
+# Block large files (>10MB) and common binaries from being committed.
+MAX=10485760
+ERRORS=0
+
+STAGED=$(git diff --cached --name-only --diff-filter=AM)
+[ -z "$STAGED" ] && exit 0
+
+for f in $STAGED; do
+  [ -f "$f" ] || continue
+  case "$f" in
+    *.exe|*.dll|*.so|*.dylib|*.lib|*.a|*.o|*.obj|*.pdb|*.ptx|*.cubin|*.bin|*.gguf|*.ggml|*.safetensors|*.pt|*.pth)
+      echo "❌ Blocked binary artifact: $f" >&2
+      ERRORS=1
+      ;;
+  esac
+  SIZE=$(wc -c <"$f" 2>/dev/null)
+  if [ -n "$SIZE" ] && [ "$SIZE" -gt "$MAX" ]; then
+    MB=$(awk "BEGIN {printf \"%.2f\", $SIZE/1048576}")
+    echo "❌ File too large ($MB MB): $f" >&2
+    ERRORS=1
+  fi
+done
+
+if [ "$ERRORS" -ne 0 ]; then
+  echo "🚫 Commit rejected by pre-commit hook. Add to .gitignore or move artifacts out of the repo." >&2
+  exit 1
+fi
+exit 0
