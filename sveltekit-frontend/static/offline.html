@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YoRHa Legal AI - Offline</title>
+    <style>
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #0a0a0a;
+            color: #d4af37;
+            text-align: center;
+            padding: 2rem;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+            border: 2px solid #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .status {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        button {
+            background: #d4af37;
+            color: #0a0a0a;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        button:hover {
+            background: #b8941f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 Connection Lost</h1>
+        <p class="status">Network Unavailable</p>
+        <p>YoRHa Legal AI Platform is currently offline. Please check your internet connection and try again.</p>
+        <p>Your work is saved locally and will sync when connection is restored.</p>
+        <button onclick="window.location.reload()">Retry Connection</button>
+    </div>
+</body>
+</html>

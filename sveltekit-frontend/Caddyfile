@@ -1,0 +1,24 @@
+# Minimal Caddy HTTP/3 QUIC Configuration
+# Caddy v2.8.4
+
+# Development SvelteKit server with QUIC support
+:5176 {
+    # Enable HTTP/3 with Alt-Svc header
+    header Alt-Svc "h3=\":5176\"; ma=86400"
+    
+    # Reverse proxy to Vite dev server
+    reverse_proxy localhost:5175
+    
+    # Enable compression  
+    encode gzip
+}
+
+# Simple health check
+:8080 {
+    header Alt-Svc "h3=\":8080\"; ma=86400"
+    
+    respond /health 200 {
+        body "QUIC/HTTP3 Ready"
+        close  
+    }
+}

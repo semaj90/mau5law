@@ -1,0 +1,1 @@
+git add -f sveltekit-frontend/src/routes/api/cache/metrics/+server.ts sveltekit-frontend/src/routes/api/cuda/metrics/enhanced/+server.ts sveltekit-frontend/src/routes/api/gpu/+server.ts

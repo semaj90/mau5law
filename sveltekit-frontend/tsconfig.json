@@ -1,0 +1,48 @@
+{
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["svelte", "vite/client", "vitest/globals", "@sveltejs/kit"],
+    "strict": true,
+    "skipLibCheck": true,
+    "allowJs": false,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": false,
+    "noEmit": true,
+    "isolatedModules": true,
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
+    "downlevelIteration": true,
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ]
+  },
+  "include": [
+    "ambient.d.ts",
+    "src/**/*.ts",
+    "src/**/*.svelte",
+    "src/types/**/*.d.ts",
+    "src/lib/types/**/*.d.ts",
+    "tests/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules/**",
+    "build/**",
+    "dist/**",
+    ".svelte-kit/**",
+    "logs/**",
+    "tmp/**",
+    "*.log",
+    "coverage/**",
+    ".vscode/**",
+    "storybook-static/**"
+  ]
+}

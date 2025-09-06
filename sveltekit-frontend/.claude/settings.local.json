@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(copy:*)",
+      "Bash(code install-pgvector.ps1:*)",
+      "Bash(code:*)",
+      "Read(//c/c/Users/james/Desktop/deeds-web/deeds-web-app/**)",
+      "Read(//c/Users/james/Desktop/deeds-web/deeds-web-app/**)",
+      "Bash(find:*)",
+      "Bash(git lfs:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Relax strict flags for a fast, non-invasive check pass.
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "allowJs": true
+  },
+  "include": [
+    "ambient.d.ts",
+    "src/**/*.ts",
+    "src/**/*.svelte",
+    "src/types/**/*.d.ts",
+    "src/lib/types/**/*.d.ts"
+  ],
+  "exclude": [
+    "tests/**",
+    "src/lib/tests/**",
+  "src/routes/**",
+  "src/lib/webgpu/**",
+  "src/lib/wasm/**",
+  "src/lib/workers/**",
+  "src/lib/utils/observability-*.ts",
+    "src/**/__tests__/**",
+    "src/**/__mocks__/**",
+    "node_modules/**",
+    ".svelte-kit/**",
+    "dist/**",
+    "build/**"
+  ]
+}

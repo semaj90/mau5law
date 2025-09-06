@@ -1,0 +1,55 @@
+> look at @organized-files\ aattempt to move files where they need to    
+  in our directories @deeds-web-app\ @sveltekit-frontend\ read the       
+  filesystem then create a memory to remind you of file structure,       
+  create aa summary, run npm run dev:full then we'll use your 
+  filesystem.txt you created as a reference to navigate this app back    
+  to 100% production local native windows
+
+
+filesystem - directory_tree (MCP)(path: "organized-files")
+  ⎿  Error: MCP tool "directory_tree" response (655690 tokens) exceeds   
+     maximum allowed tokens (25000). Please use pagination, filtering, or 
+     limit parameters to reduce the response size.
+
+● filesystem - directory_tree (MCP)(path: "sveltekit-frontend")
+  ⎿  ⚠ Large MCP response (~4.5m tokens), this can fill up context       
+  ⎿  [
+       {
+         "name": ".claude",
+     … +527182 lines (ctrl+r to expand)
+
+
+what is minimal files we need...???
+
+
+postgresql
+
+
+omplete Post-Check Script (scripts/post-check.cjs)
+   with:
+    - MCP best practices analysis
+    - Copilot self-prompt integration
+    - Auto:solve system integration
+    - Route health validation
+    - Comprehensive error handling
+  2. New npm Commands Added:
+  npm run check:post          # TypeScript + post-check     
+  analysis
+  npm run check:post:verbose  # With detailed logging       
+  npm run check:post:force    # Force auto:solve 
+  execution
+  npm run post:check          # Just post-check analysis    
+  3. Validated Integration:
+    - ✅ 8ms execution time (ultra-fast)
+    - ✅ 2/2 critical API routes found
+    - ✅ Streaming workflow route accessible
+    - ✅ CLAUDE.md guidance loaded
+    - ✅ Auto:solve integration working
+  The post-check system is now fully integrated with        
+  your existing xState + Neural Sprite implementation       
+  and provides intelligent automation that only runs        
+  when issues are detected, seamlessly connecting with      
+  your established npm run auto:solve workflow
+  Usage Example:
+  npm run check:post:verbose  # Run comprehensive check     
+  with detailed output npm run dev auto:solve sys

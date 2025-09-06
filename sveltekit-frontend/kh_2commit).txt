@@ -1,0 +1,325 @@
+   kh_4Dsept13
+
+ .claude/settings.local.json                        |    9 +-
+ .vscode/MISSING_TASK_LABELS.txt                    |    4 +
+ .vscode/tasks.json                                 |   58 +-
+ FEATURE_DID_YOU_MEAN_SELF_PROMPTING.md             |   41 +
+ GPU_ORCHESTRATOR_README.md                         |   30 +
+ LOGGING_PROFILING_OBSERVABILITY_2025-09-01.md      |  192 +++
+ ROADMAP_LEGAL_DOCUMENT_PIPELINE_2025-09-01.md      |  382 ++++++
+ go-microservice/EMBEDDING_SERVICE_README.md        |   49 +
+ go-microservice/cmd/cuda-ai-service/main.go        |  217 ++--
+ go-microservice/cmd/cuda-service/cupti_profiler.go |  156 +++
+ .../cmd/cuda-service/gpu_metrics_unix.go           |    6 +
+ go-microservice/cmd/cuda-service/main.go           |  824 ++++++++++++-
+ go-microservice/cmd/cuda-service/main_windows.go   |    0
+ go-microservice/cmd/perf-monitor/main.go           |  279 +++++
+ .../002_passages_and_embeddings.down.sql           |    6 +
+ .../migrations/002_passages_and_embeddings.up.sql  |   99 ++
+ .../db/migrations/003_search_and_feedback.down.sql |    6 +
+ .../db/migrations/003_search_and_feedback.up.sql   |   89 ++
+ go-microservice/embedding-service.go               |  201 ++++
+ go.mod                                             |   10 +-
+ go.sum                                             |   20 +-
+ gpu_orchestrator_ucb_test.go                       |   31 +
+ package.json                                       |    2 +
+ proto/embed.proto                                  |    3 +-
+ proto/events.pb.go                                 |    2 +-
+ proto/events.proto                                 |    6 +-
+ proto/gpu_service.pb.go                            |    2 +-
+ proto/gpu_service.proto                            |    6 +-
+ proto/gpu_service_grpc.pb.go                       |    3 +-
+ proto/ingest.pb.go                                 |    2 +-
+ proto/ingest.proto                                 |    5 +-
+ proto/ingest_grpc.pb.go                            |    3 +-
+ proto/tensor.pb.go                                 |    7 +-
+ proto/tensor.proto                                 |    5 +-
+ proto/tensor_grpc.pb.go                            |    3 +-
+ src/routes/api/ocr/langextract/+server.ts          |  291 +++--
+ sveltekit-frontend/.claude/settings.local.json     |    7 +-
+ sveltekit-frontend/.tsbuildinfo                    |    2 +-
+ sveltekit-frontend/DATABASE_CONFIG.md              |   37 +
+ .../FULL_STACK_AUTH_IMPLEMENTATION.md              |  310 +++++
+ sveltekit-frontend/JSONB_WORKING_GUIDE.md          |  224 ++++
+ .../advanced-use-enhance-patterns.txt              |  259 ++++
+ sveltekit-frontend/api-automation-results.json     |   14 +
+ sveltekit-frontend/api-test-automation.js          |  166 +++
+ sveltekit-frontend/api-test-results-screenshot.png |  Bin 0 -> 24211 bytes
+ sveltekit-frontend/canvas91.txt                    |  319 +++++
+ sveltekit-frontend/jsonextension.txt               |   69 ++
+ sveltekit-frontend/package-lock.json               | 1005 +++++++++++++++-
+ sveltekit-frontend/package.json                    |    8 +-
+ sveltekit-frontend/simple-route-test.js            |   78 ++
+ sveltekit-frontend/simple-test.js                  |   42 +
+ sveltekit-frontend/src/hooks.server.ts             |   46 +-
+ .../src/lib/adapters/webasm-ai-adapter.ts          |  326 +++++
+ .../src/lib/ai/graph-pattern-autoencoder.ts        |  952 +++++++++++++++
+ .../src/lib/ai/som-neural-network.ts               |  710 +++++++++++
+ .../lib/caching/multi-dimensional-image-cache.ts   |  817 +++++++++++++
+ .../src/lib/components/PerfChart.svelte            |   24 +
+ .../src/lib/components/ai/AiAssistant.svelte       |  339 +++++-
+ .../ai/EnhancedLegalAIChatWithSynthesis.svelte     |  983 ++++++++++++++-
+ .../src/lib/components/ai/Gemma3LegalChat.svelte   |   10 +-
+ .../components/ai/SoraGraphVisualization.svelte    |   39 +-
+ .../src/lib/components/auth/LoginForm.svelte       |    6 +-
+ .../src/lib/components/auth/RegisterForm.svelte    |  148 ++-
+ .../lib/components/detective/DetectiveBoard.svelte |  119 +-
+ .../lib/components/editor/RichTextEditor.svelte    |  386 +++++-
+ .../lib/components/evidence/EvidenceManager.svelte |   11 +-
+ .../lib/components/forms/EnhancedFileUpload.svelte |   41 +-
+ .../components/onboarding/OnboardingOverlay.svelte |   35 +-
+ .../components/search/UniversalSearchBar.svelte    |  167 ++-
+ .../tests/WebAssemblyLangChainTest.svelte          |  325 +++++
+ .../src/lib/components/ui/DragDropZone.svelte      |    4 +-
+ .../visualization/GraphVisualizationGallery.svelte |  696 +++++++++++
+ .../src/lib/config/multi-protocol-routes.ts        |   22 +-
+ .../src/lib/memory/nes-memory-architecture.ts      |  180 ++-
+ .../src/lib/middleware/tfjs-synthesizer.ts         | 1098 +++++++++++++++++
+ .../src/lib/server/db/ai-enrichment-schema.ts      |  286 ++---
+ .../src/lib/server/db/schema-unified-postgres.ts   |  748 +++++++-----
+ .../src/lib/services/webasm-inference-rag.ts       | 1258 ++++++++++----------
+ .../src/lib/stores/aiAssistant.svelte.ts           |  303 ++++-
+ .../src/lib/stores/autoTaggingMachine.ts           |    2 +-
+ sveltekit-frontend/src/routes/+page.svelte         |    9 +
+ .../src/routes/all-routes/+page.svelte             |    3 +-
+ .../src/routes/api/ai/sveltekit-api-routes.ts      |  559 ---------
+ .../src/routes/api/cache/metrics/+server.ts        |   71 ++
+ .../routes/api/cuda/metrics/enhanced/+server.ts    |   60 +
+ sveltekit-frontend/src/routes/api/gpu/+server.ts   |   27 +
+ .../src/routes/api/graph/plan/+server.ts           |   32 +
+ .../src/routes/api/node/metrics/+server.ts         |   56 +
+ sveltekit-frontend/src/routes/api/perf/+server.ts  |   18 +
+ .../src/routes/api/rabbitmq/health/+server.ts      |   92 ++
+ .../src/routes/api/rabbitmq/publish/+server.ts     |  130 ++
+ .../routes/api/rabbitmq/queues/stats/+server.ts    |  203 ++++
+ .../src/routes/api/rag/self_prompt/+server.ts      |   90 ++
+ .../src/routes/api/suggest/did-you-mean/+server.ts |  117 ++
+ .../src/routes/api/v1/cluster/health/+server.ts    |    1 +
+ .../src/routes/api/v1/cluster/metrics/+server.ts   |    1 +
+ .../src/routes/api/wasm/metrics/+server.ts         |   48 +
+ sveltekit-frontend/src/routes/perf/+page.svelte    | 1163 ++++++++++++++++++
+ sveltekit-frontend/src/routes/proxy/+layout.ts     |    2 +-
+ .../src/routes/test/webasm-langchain/+page.svelte  |   10 +
+ sveltekit-frontend/test-all-routes.js              |   95 ++
+ sveltekit-frontend/test-jsonb.js                   |  140 +++
+ sveltekit-frontend/test-routes-playwright.js       |  422 +++++++
+ sveltekit-frontend/tinymce91.txt                   |  326 +++++
+ sveltekit-frontend/use-enhance-guidelines.txt      |   96 ++
+ windows-service/legal-ai-service.js                |  282 +++--
+ windows-service/perf-monitor-readme.md             |   69 ++
+ 107 files changed, 17583 insertions(+), 2209 deletions(-)
+PS C:\Users\james\Desktop\deeds-web\deeds-web-app> git show --name-only f3da0f1 | wc -l
+
+
+&*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+Executing task in folder deeds-web-app: node C:\Users\james\Desktop\deeds-web\deeds-web-app/mcp-servers/context7-multicore.js
+I can see you've started the MCP Context7 Multi-Core server. Let me check if there are any missing files from the orchestrator integration by examining what files might be referenced but not extracted yet.
+
+
+U Cache Library (VRAM-resident tensors)
+
+A small library (C++/CUDA, or even wrapped in Go/Node FFI) could manage tensor residency in VRAM:
+
+Keep recent tensors in GPU memory (embeddings, similarity matrices, convolution outputs).
+
+Use LRU (least-recently-used) eviction to spill old tensors back to host RAM or Redis.
+
+Expose an API like:
+
+// gpu_cache.h
+Tensor* get_or_compute(std::string key, std::function<Tensor*()> compute);
+void    evict(std::string key);
+void    sync_to_host(std::string key, HostTensor& out);
+
+
+This way, shaders/kernels can check the cache before recomputing.
+
+🔹 2. GPU–CPU Cache Synchronization
+
+You need a multi-layer design:
+
+L1: GPU cache (VRAM, managed by your library)
+
+L2: Redis/Dragonfly for fast key-value (GPU → CPU sync)
+
+L3: Postgres + pgvector for persistent embeddings and metadata queries
+
+Think of it like a write-back cache:
+Compute → GPU cache → Redis (TTL-based) → Postgres (long-term persistence).
+
+🔹 3. Datastore for Shaders
+
+Shaders don’t store state, but you can design a shader-aware datastore:
+
+Store compiled kernels and weights (shader binaries, ONNX/CUDA kernels) in MinIO (S3-compatible).
+
+Store execution metadata (kernel size, precision, tensor shape, memory footprint) in Postgres.
+
+Store embedding vectors (for similarity/retrieval) in pgvector.
+
+So you can later replay shader executions or reuse precomputed kernels.
+
+🔹 4. Metadata Encoding & Generative Layers
+
+On top of embeddings, add metadata pipelines:
+
+LangChain / LangExtract: Extract metadata from documents/images.
+
+nomic-embed-text: Store semantic embeddings in pgvector.
+
+Generative images (VAE/Stable Diffusion): Use embeddings + metadata as conditioning input.
+
+Image DB (Postgres JSONB + MinIO): Store both structured metadata and binary assets.
+
+Example metadata record:
+
+{
+  "id": "doc123",
+  "embedding": [0.012, -0.233, ...],
+  "metadata": {
+    "type": "legal_contract",
+    "entities": ["John Doe", "Company X"],
+    "date": "2025-09-04",
+    "hash": "sha256:..."
+  },
+  "assets": {
+    "original_pdf": "s3://minio/contracts/doc123.pdf",
+    "preview_image": "s3://minio/previews/doc123.png"
+  }
+}
+
+🔹 5. Enhancing Multidimensional Tensor Computations
+
+Besides caching, you can boost tensor performance with:
+
+Tensor Core batching: Always align tensor ops to 8/16 FP16 dimensions.
+
+Fused kernels: Merge multiple shader passes (e.g. normalize + similarity) into one kernel.
+
+Quantization (FP8 / INT8): Reduce memory footprint so more tensors fit in VRAM cache.
+
+Lazy evaluation: Only compute when a tensor is actually needed, cache the result.
+
+Prefetching: Predict which tensors will be needed next (via reinforcement learning from access patterns) and pre-load them into GPU cache.
+
+✅ In short:
+Yes, you can build a GPU cache library that retains tensors in VRAM, syncs to Redis/Postgres, and integrates with LangChain + pgvector + MinIO as the persistent datastore. This becomes a shader-aware data pipeline where embeddings, kernels, and metadata all live in different cache layers.
+
+Do you want me to sketch out an actual repo structure (like gpu-cache/, datastore/, langchain-pipeline/) so you can see how this would look in your deeds-web-app.
+
+● Perfect! Here are my self-prompting recommendations to enhance your    
+  detective mode:
+
+  🎯 INTELLIGENT SELF-PROMPTING STRATEGIES
+
+  1. Context-Aware Detective Prompting
+
+  // Automatic detective mode prompts based on user activity:
+
+  IDLE DETECTION → SELF-PROMPT:
+  "Based on the evidence uploaded in the last 2 hours, I notice potential
+  connections between Document A and Document B. Should I run an automated     
+  cross-reference analysis?"
+
+  EVIDENCE STALL → SELF-PROMPT:
+  "This case has been in 'Processing' for 45 minutes. Would you like me to     
+  suggest alternative analysis approaches or flag potential issues?"
+
+  PATTERN RECOGNITION → SELF-PROMPT:
+  "I've detected a recurring pattern in timestamps across 3 documents that     
+  might indicate coordinated activity. Should I create a timeline
+  analysis?"
+
+  2. NES-RL Powered Detective Suggestions
+
+  Your NES-RL agent can learn detective patterns and self-prompt:
+
+  // Based on your NES-RL agent's learning:
+  LEARNED PATTERN → SELF-PROMPT:
+  "In similar fraud cases, the next step is usually financial record
+  analysis.
+  I can pre-fetch relevant banking documents from the evidence pool."
+
+  OPTIMIZATION → SELF-PROMPT:
+  "Your investigation efficiency increased 34% when you analyzed phone
+  records
+  before witness statements. Should I reorder the current case workflow?"      
+
+  PREDICTION → SELF-PROMPT:
+  "Based on evidence patterns, there's an 89% probability that Document X      
+  contains the missing link. Should I prioritize its analysis?"
+
+  3. RabbitMQ-Triggered Detective Actions
+
+  Your RabbitMQ system can trigger intelligent suggestions:
+
+  // Message queue triggers detective prompts:
+  NEW_EVIDENCE_UPLOAD → SELF-PROMPT:
+  "New evidence suggests this case might be related to Case #2847.
+  Should I merge their investigation timelines?"
+
+  PROCESSING_COMPLETE → SELF-PROMPT:
+  "OCR processing found 3 suspicious discrepancies in the contract dates.      
+  Would you like me to generate a forensic timeline?"
+
+  SIMILARITY_DETECTED → SELF-PROMPT:
+  "Vector analysis shows this document is 94% similar to a known
+  fraudulent template. Should I flag this for priority review?"
+
+  4. Proactive Detective Intelligence
+
+  // Autonomous detective reasoning:
+  TIME_PATTERN_ANALYSIS:
+  "I notice all suspicious transactions occurred during lunch hours
+  (12-1pm).
+  This might indicate an inside job. Should I analyze employee schedules?"     
+
+  RELATIONSHIP_MAPPING:
+  "Phone records show Person A called Person B exactly 5 minutes before        
+  each
+  incident. Should I create a communication timeline?"
+
+  EVIDENCE_GAP_DETECTION:
+  "There's a 3-hour gap in the surveillance footage during the critical        
+  period.
+  Should I check for backup cameras or witness statements?"
+
+  5. Context7 MCP Enhanced Prompting
+
+  Your Context7 integration enables sophisticated legal prompting:
+
+  // Legal expertise prompting:
+  CASE_LAW_SUGGESTION:
+  "Similar fraud cases cite United States v. Smith (2019). Should I pull       
+  relevant precedents and highlight applicable sections?"
+
+  LEGAL_STRATEGY:
+  "Based on current evidence strength, I recommend focusing on the paper       
+  trail rather than witness testimony. Should I reorder the analysis
+  priority?"
+
+  REGULATORY_COMPLIANCE:
+  "This evidence collection method needs chain of custody documentation        
+  for court admissibility. Should I generate the required forms?"
+
+  6. Real-Time Detective Coaching
+
+  // Active investigation guidance:
+  METHODOLOGY_SUGGESTION:
+  "Professional investigators typically analyze financial records before       
+  interviewing suspects. Should I queue up the banking analysis?"
+
+  BLIND_SPOT_WARNING:
+  "You haven't checked the defendant's social media activity yet. This
+  often
+  contains crucial evidence. Should I add it to the investigation
+  checklist?"
+  make sure this is all fleshed out, evidence canvas html5, fabric.js, fuse.js, loki.js, user.analytics for reinforcement learning.
+  user.analytics has user.tracking, back-end service_worker analysis depending on user state.
+  x state
+  rabbitmq
+  redis, go-microservices 
+
+
+
+
