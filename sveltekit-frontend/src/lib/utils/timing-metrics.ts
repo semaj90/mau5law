@@ -17,7 +17,7 @@ export interface TimingMetrics {
 
   // Custom timing marks
   customMarks: Record<string, number>;
-  
+
   // Request metadata
   requestId?: string;
   timestamp: number;
@@ -44,7 +44,7 @@ class TimingMetricsCollector {
 
     // Observe Core Web Vitals
     this.observeWebVitals();
-    
+
     // Mark initialization
     this.mark('timing-collector-init');
   }
@@ -54,18 +54,18 @@ class TimingMetricsCollector {
    */
   extractServerTiming(response: Response): Record<string, number> {
     const serverTiming: Record<string, number> = {};
-    
+
     const timingHeader = response.headers.get('Server-Timing');
     if (!timingHeader) return serverTiming;
 
     // Parse Server-Timing header format: "name;dur=123, name2;dur=456"
-    const timings = timingHeader.split(',').map(t => t.trim());
-    
+    const timings = timingHeader.split(',').map((t) => t.trim());
+
     for (const timing of timings) {
       const parts = timing.split(';');
       const name = parts[0]?.trim();
-      const durPart = parts.find(p => p.startsWith('dur='));
-      
+      const durPart = parts.find((p) => p.startsWith('dur='));
+
       if (name && durPart) {
         const duration = parseFloat(durPart.replace('dur=', ''));
         if (!isNaN(duration)) {
@@ -81,9 +81,11 @@ class TimingMetricsCollector {
    * Extract request ID from response headers
    */
   extractRequestId(response: Response): string | undefined {
-    return response.headers.get('X-Request-ID') || 
-           response.headers.get('Request-ID') ||
-           response.headers.get('x-request-id');
+    return (
+      response.headers.get('X-Request-ID') ||
+      response.headers.get('Request-ID') ||
+      response.headers.get('x-request-id')
+    );
   }
 
   /**
@@ -92,16 +94,18 @@ class TimingMetricsCollector {
   getMetrics(): TimingMetrics {
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
     const paint = performance.getEntriesByType('paint');
-    
-    const firstContentfulPaint = paint.find(p => p.name === 'first-contentful-paint')?.startTime;
+
+    const firstContentfulPaint = paint.find((p) => p.name === 'first-contentful-paint')?.startTime;
     const largestContentfulPaint = this.getLCP();
     const firstInputDelay = this.getFID();
     const cumulativeLayoutShift = this.getCLS();
 
     return {
       // Navigation timing
-      pageLoad: navigation ? navigation.loadEventEnd - navigation.navigationStart : 0,
-      domContentLoaded: navigation ? navigation.domContentLoadedEventEnd - navigation.navigationStart : 0,
+      pageLoad: navigation ? navigation.loadEventEnd - performance.timeOrigin : 0,
+      domContentLoaded: navigation
+        ? navigation.domContentLoadedEventEnd - performance.timeOrigin
+        : 0,
       firstContentfulPaint,
       largestContentfulPaint,
       firstInputDelay,
@@ -116,7 +120,7 @@ class TimingMetricsCollector {
       // Metadata
       timestamp: Date.now(),
       url: window.location.href,
-      userAgent: navigator.userAgent
+      userAgent: navigator.userAgent,
     };
   }
 
@@ -153,24 +157,24 @@ class TimingMetricsCollector {
   async instrumentedFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
     const startTime = performance.now();
     const requestId = crypto.randomUUID();
-    
+
     // Add request ID to headers
     const headers = new Headers(init?.headers);
     headers.set('X-Client-Request-ID', requestId);
-    
+
     try {
       const response = await fetch(input, {
         ...init,
-        headers
+        headers,
       });
-      
+
       const endTime = performance.now();
       const clientDuration = endTime - startTime;
-      
+
       // Extract server timing
       const serverTiming = this.extractServerTiming(response);
       const serverRequestId = this.extractRequestId(response);
-      
+
       // Log metrics for observability
       this.logRequestMetrics({
         url: typeof input === 'string' ? input : input.toString(),
@@ -179,15 +183,14 @@ class TimingMetricsCollector {
         serverTiming,
         requestId: serverRequestId || requestId,
         status: response.status,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
-      
+
       return response;
-      
     } catch (error) {
       const endTime = performance.now();
       const clientDuration = endTime - startTime;
-      
+
       // Log failed request
       this.logRequestMetrics({
         url: typeof input === 'string' ? input : input.toString(),
@@ -197,9 +200,9 @@ class TimingMetricsCollector {
         requestId,
         status: 0,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
-      
+
       throw error;
     }
   }
@@ -209,14 +212,14 @@ class TimingMetricsCollector {
    */
   async sendMetrics(endpoint: string = '/api/v1/metrics/timing'): Promise<void> {
     const metrics = this.getMetrics();
-    
+
     try {
       await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(metrics)
+        body: JSON.stringify(metrics),
       });
     } catch (error) {
       console.warn('Failed to send timing metrics:', error);
@@ -309,7 +312,7 @@ class TimingMetricsCollector {
         clientMs: Math.round(metrics.clientDuration * 100) / 100,
         serverTiming: metrics.serverTiming,
         requestId: metrics.requestId.slice(0, 8),
-        status: metrics.status
+        status: metrics.status,
       });
     }
 
@@ -318,7 +321,7 @@ class TimingMetricsCollector {
       const stored = sessionStorage.getItem('timing-metrics') || '[]';
       const history = JSON.parse(stored);
       history.push(metrics);
-      
+
       // Keep only last 50 requests
       const trimmed = history.slice(-50);
       sessionStorage.setItem('timing-metrics', JSON.stringify(trimmed));
@@ -331,7 +334,7 @@ class TimingMetricsCollector {
    * Cleanup observers
    */
   destroy(): void {
-    this.observers.forEach(observer => {
+    this.observers.forEach((observer) => {
       try {
         observer.disconnect();
       } catch (e) {
@@ -352,14 +355,14 @@ if (typeof window !== 'undefined') {
 }
 
 // Convenience exports
-export const { 
-  mark, 
-  measure, 
-  getMetrics, 
+export const {
+  mark,
+  measure,
+  getMetrics,
   instrumentedFetch,
   extractServerTiming,
   extractRequestId,
-  sendMetrics 
+  sendMetrics,
 } = timingMetrics;
 
 // SvelteKit integration helper

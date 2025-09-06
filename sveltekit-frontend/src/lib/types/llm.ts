@@ -58,182 +58,186 @@ export interface PerformanceMetrics {
 // Status and Capability Types
 export type LLMStatus = 'online' | 'offline' | 'busy' | 'loading' | 'error' | 'maintenance';
 
-export type LLMCapability = 
-	| 'text-generation' 
-	| 'embeddings' 
-	| 'chat' 
-	| 'completion'
-	| 'streaming'
-	| 'function-calling'
-	| 'multi-agent'
-	| 'code-execution'
-	| 'high-throughput'
-	| 'batch-processing'
-	| 'role-based'
-	| 'collaborative'
-	| 'workflow'
-	| 'reasoning'
-	| 'legal-analysis'
-	| 'document-processing';
+export type LLMCapability =
+  | 'text-generation'
+  | 'embeddings'
+  | 'chat'
+  | 'completion'
+  | 'streaming'
+  | 'function-calling'
+  | 'multi-agent'
+  | 'code-execution'
+  | 'high-throughput'
+  | 'batch-processing'
+  | 'role-based'
+  | 'collaborative'
+  | 'workflow'
+  | 'reasoning'
+  | 'legal-analysis'
+  | 'document-processing';
 
-export type ModelSpecialization = 
-	| 'general' 
-	| 'legal' 
-	| 'code' 
-	| 'reasoning'
-	| 'chat'
-	| 'embedding'
-	| 'analysis'
-	| 'medical'
-	| 'financial'
-	| 'technical';
+export type ModelSpecialization =
+  | 'general'
+  | 'legal'
+  | 'code'
+  | 'reasoning'
+  | 'chat'
+  | 'embedding'
+  | 'analysis'
+  | 'medical'
+  | 'financial'
+  | 'technical';
 
 // Model Parameters
 export interface ModelParameters {
-	temperature?: number;
-	topP?: number;
-	topK?: number;
-	maxTokens?: number;
-	presencePenalty?: number;
-	frequencyPenalty?: number;
-	stopSequences?: string[];
+  temperature?: number;
+  topP?: number;
+  topK?: number;
+  maxTokens?: number;
+  presencePenalty?: number;
+  frequencyPenalty?: number;
+  stopSequences?: string[];
 }
 
 // Multi-Agent System Types
 export interface AgentDefinition {
-	id: string;
-	name: string;
-	role: string;
-	description: string;
-	llmProvider: string;
-	systemPrompt: string;
-	tools: AgentTool[];
-	collaborators: string[];
-	capabilities: AgentCapability[];
-	config: AgentConfig;
+  id: string;
+  name: string;
+  role: string;
+  description: string;
+  llmProvider: string;
+  systemPrompt: string;
+  tools: AgentTool[];
+  collaborators: string[];
+  capabilities: AgentCapability[];
+  config: AgentConfig;
+}
+// Temporary AgentConfig type to satisfy references
+export interface AgentConfig extends LLMAgentConfig {
+  [key: string]: any;
 }
 
 export interface AgentTool {
-	id: string;
-	name: string;
-	description: string;
-	parameters: ToolParameter[];
-	required: boolean;
+  id: string;
+  name: string;
+  description: string;
+  parameters: ToolParameter[];
+  required: boolean;
 }
 
 export interface ToolParameter {
-	name: string;
-	type: 'string' | 'number' | 'boolean' | 'array' | 'object';
-	description: string;
-	required: boolean;
-	default?: unknown;
+  name: string;
+  type: 'string' | 'number' | 'boolean' | 'array' | 'object';
+  description: string;
+  required: boolean;
+  default?: unknown;
 }
 
 export interface LLMAgentConfig {
-	maxIterations?: number;
-	timeout?: number;
-	memorySize?: number;
-	collaborationMode?: 'sequential' | 'parallel' | 'hierarchical';
-	debugMode?: boolean;
+  maxIterations?: number;
+  timeout?: number;
+  memorySize?: number;
+  collaborationMode?: 'sequential' | 'parallel' | 'hierarchical';
+  debugMode?: boolean;
 }
 
-export type AgentCapability = 
-	| 'research'
-	| 'analysis'
-	| 'writing'
-	| 'coding'
-	| 'review'
-	| 'planning'
-	| 'execution'
-	| 'monitoring'
-	| 'legal-research'
-	| 'document-analysis'
-	| 'case-preparation';
+export type AgentCapability =
+  | 'research'
+  | 'analysis'
+  | 'writing'
+  | 'coding'
+  | 'review'
+  | 'planning'
+  | 'execution'
+  | 'monitoring'
+  | 'legal-research'
+  | 'document-analysis'
+  | 'case-preparation';
 
 // Agent Team and Workflow Types
 export interface AgentTeam {
-	id: string;
-	name: string;
-	description: string;
-	purpose: string;
-	agents: AgentDefinition[];
-	workflow: WorkflowStep[];
-	coordinator: string;
-	status: TeamStatus;
-	metrics?: TeamMetrics;
+  id: string;
+  name: string;
+  description: string;
+  purpose: string;
+  agents: AgentDefinition[];
+  workflow: WorkflowStep[];
+  coordinator: string;
+  status: TeamStatus;
+  metrics?: TeamMetrics;
 }
 
 export interface WorkflowStep {
-	id: string;
-	name: string;
-	description: string;
-	agent: string;
-	dependencies: string[];
-	inputs: WorkflowInput[];
-	outputs: WorkflowOutput[];
-	condition?: WorkflowCondition;
-	retry?: RetryConfig;
+  id: string;
+  name: string;
+  description: string;
+  agent: string;
+  dependencies: string[];
+  inputs: WorkflowInput[];
+  outputs: WorkflowOutput[];
+  condition?: WorkflowCondition;
+  retry?: RetryConfig;
 }
 
 export interface WorkflowInput {
-	name: string;
-	type: string;
-	source: 'user' | 'previous_step' | 'external';
-	required: boolean;
+  name: string;
+  type: string;
+  source: 'user' | 'previous_step' | 'external';
+  required: boolean;
 }
 
 export interface WorkflowOutput {
-	name: string;
-	type: string;
-	destination: 'next_step' | 'user' | 'storage';
+  name: string;
+  type: string;
+  destination: 'next_step' | 'user' | 'storage';
 }
 
 export interface WorkflowCondition {
-	type: 'if' | 'unless' | 'switch';
-	expression: string;
-	branches: WorkflowBranch[];
+  type: 'if' | 'unless' | 'switch';
+  expression: string;
+  branches: WorkflowBranch[];
 }
 
 export interface WorkflowBranch {
-	condition: string;
-	nextStep: string;
+  condition: string;
+  nextStep: string;
 }
 
 export interface RetryConfig {
-	maxAttempts: number;
-	backoffStrategy: 'linear' | 'exponential';
-	backoffBase: number;
+  maxAttempts: number;
+  backoffStrategy: 'linear' | 'exponential';
+  backoffBase: number;
 }
 
 export type TeamStatus = 'idle' | 'active' | 'paused' | 'completed' | 'error';
 
 export interface TeamMetrics {
-	tasksCompleted: number;
-	averageTaskTime: number;
-	successRate: number;
-	collaborationEfficiency: number;
+  tasksCompleted: number;
+  averageTaskTime: number;
+  successRate: number;
+  collaborationEfficiency: number;
 }
 
 // Task and Execution Types
 export interface AITaskRequest {
-	type: AITaskType;
-	priority: TaskPriority;
-	provider: string;
-	payload: any;
-	metadata?: TaskMetadata;
-	requirements?: TaskRequirements;
+  type: AITaskType;
+  priority: TaskPriority;
+  provider: string;
+  payload: any;
+  metadata?: TaskMetadata;
+  requirements?: TaskRequirements;
 }
 
-export type AITaskType = 
-	| 'embedding'
-	| 'generation'
-	| 'analysis'
-	| 'synthesis'
-	| 'vector-search'
-	| 'agent-workflow'
-	| 'multi-agent-collaboration'
-	| 'document-processing'
-	| 'legal-research';
+export type AITaskType =
+  | 'embedding'
+  | 'generation'
+  | 'analysis'
+  | 'synthesis'
+  | 'vector-search'
+  | 'agent-workflow'
+  | 'multi-agent-collaboration'
+  | 'document-processing'
+  | 'legal-research';
 
 export type TaskPriority = 'low' | 'medium' | 'high' | 'critical';
 

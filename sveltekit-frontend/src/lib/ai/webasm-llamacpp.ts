@@ -55,7 +55,7 @@ class WebAssemblyLlamaService {
   // Enhanced caching system
   private rankingCache: WebASMRankingCache | null = null;
   private serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
-  private cacheMetrics: RankingCacheMetrics = {
+  private cacheMetrics: CacheMetrics = {
     hitRatio: 0,
     avgLatency: 0,
     totalRequests: 0,

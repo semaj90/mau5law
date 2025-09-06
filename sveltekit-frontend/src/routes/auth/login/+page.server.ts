@@ -1,59 +1,43 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { fail, redirect } from '@sveltejs/kit';
-import { EnhancedAuthService } from '$lib/services/enhanced-auth-service.js';
+import { lucia, authService } from '$lib/server/auth';
 
 export const load: PageServerLoad = async () => {
   return {};
 };
 
 export const actions: Actions = {
-  login: async ({ request, cookies, getClientAddress }) => {
+  login: async ({ request, cookies }) => {
     const data = await request.formData();
     const email = data.get('email') as string;
     const password = data.get('password') as string;
-    const rememberMe = data.get('rememberMe') === 'on';
 
     // Basic validation
     if (!email || !password) {
       return fail(400, { error: 'Email and password are required' });
     }
 
-    const clientIP = getClientAddress();
-    const userAgent = request.headers.get('user-agent') || '';
-
     try {
-      console.log('🔄 Attempting login with existing auth service...');
+      console.log('🔄 Attempting login with Lucia v3...');
 
-      // Use the enhanced auth service that works with our database
-      const authService = new EnhancedAuthService();
-      const result = await authService.login({
-        email: email.toLowerCase(),
-        password: password,
-        rememberMe: rememberMe,
-        ipAddress: clientIP,
-        userAgent: userAgent
+      // Use the new Lucia v3 auth service
+      const user = await authService.login(email.toLowerCase(), password);
+      
+      // Create session
+      const session = await lucia.createSession(user.id, {});
+      const sessionCookie = lucia.createSessionCookie(session.id);
+
+      // Set session cookie
+      cookies.set(sessionCookie.name, sessionCookie.value, {
+        path: "/",
+        ...sessionCookie.attributes
       });
 
-      if (!result.success) {
-        return fail(400, { error: result.error || 'Invalid email or password' });
-      }
-
-      if (result.session) {
-        // Set session cookie
-        cookies.set('session_id', result.session.id, {
-          path: '/',
-          httpOnly: true,
-          secure: import.meta.env.NODE_ENV === 'production',
-          sameSite: 'strict',
-          maxAge: rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24 // 30 days or 1 day
-        });
-
-        console.log('✅ Login successful for:', result.user?.email);
-      }
+      console.log('✅ Login successful for:', user.email);
 
     } catch (error: any) {
-      console.error('Login error:', error);
-      return fail(500, { error: 'An error occurred during login. Please try again.' });
+      console.error('Login error:', error.message);
+      return fail(400, { error: error.message || 'Invalid email or password' });
     }
 
     // Redirect to dashboard

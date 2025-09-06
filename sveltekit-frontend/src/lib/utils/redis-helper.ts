@@ -12,7 +12,7 @@ let redisClient: Redis | null = null;
  */
 export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
   const config = getRedisConfig();
-  
+
   // Merge with custom options if provided
   const finalConfig: RedisOptions = {
     ...config,
@@ -26,13 +26,13 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
     console.log('✅ Redis connected successfully', {
       host: finalConfig.host,
       port: finalConfig.port,
-      db: finalConfig.db
+      db: finalConfig.db,
     });
   });
 
   client.on('error', (error) => {
     console.error('❌ Redis connection error:', error.message);
-    
+
     // Provide helpful error messages
     if (error.message.includes('ECONNREFUSED')) {
       console.error('💡 Tip: Start Redis server with: npm run redis:start');
@@ -76,16 +76,16 @@ export async function checkRedisHealth(): Promise<boolean> {
   try {
     const client = getRedisClient();
     const start = Date.now();
-    
+
     const result = await Promise.race([
       client.ping(),
-      new Promise((_, reject) => 
+      new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Health check timeout')), HEALTH_CHECK_CONFIG.timeout)
-      )
+      ),
     ]);
-    
+
     const responseTime = Date.now() - start;
-    
+
     if (result === 'PONG') {
       console.log(`✅ Redis health check passed in ${responseTime}ms`);
       return true;
@@ -110,22 +110,21 @@ export async function getRedisInfo(): Promise<{
 }> {
   try {
     const client = getRedisClient();
-    
-    if (client.status !== 'ready') {
-      return { connected: false };
-    }
-    
+    // Best-effort readiness check (types may not expose status)
+    const isReady = (client as any)?.status ? (client as any).status === 'ready' : true;
+    if (!isReady) return { connected: false };
+
     const [info, memory, stats] = await Promise.all([
-      client.info(),
-      client.info('memory'),
-      client.info('stats')
+      (client as any).info?.() ?? '',
+      (client as any).info?.('memory') ?? '',
+      (client as any).info?.('stats') ?? '',
     ]);
-    
+
     return {
       connected: true,
       info: parseRedisInfo(info),
       memory: parseRedisInfo(memory),
-      stats: parseRedisInfo(stats)
+      stats: parseRedisInfo(stats),
     };
   } catch (error) {
     console.error('❌ Failed to get Redis info:', error);
@@ -138,8 +137,8 @@ export async function getRedisInfo(): Promise<{
  */
 function parseRedisInfo(infoString: string): Record<string, string> {
   const info: Record<string, string> = {};
-  
-  infoString.split('\r\n').forEach(line => {
+
+  infoString.split('\r\n').forEach((line) => {
     if (line && !line.startsWith('#')) {
       const [key, value] = line.split(':');
       if (key && value !== undefined) {
@@ -147,7 +146,7 @@ function parseRedisInfo(infoString: string): Record<string, string> {
       }
     }
   });
-  
+
   return info;
 }
 
@@ -176,7 +175,7 @@ export async function closeRedisConnection(): Promise<void> {
 export async function setupRedisFromConfig(): Promise<boolean> {
   try {
     console.log('🔧 Setting up Redis connection...');
-    
+
     // Check if config file exists (development only)
     const configPath = process.env.REDIS_CONFIG_PATH;
     if (configPath) {
@@ -184,13 +183,13 @@ export async function setupRedisFromConfig(): Promise<boolean> {
     } else {
       console.log('💡 Tip: Set REDIS_CONFIG_PATH for custom Redis configuration');
     }
-    
+
     // Test the connection
     const isHealthy = await checkRedisHealth();
-    
+
     if (isHealthy) {
       console.log('✅ Redis setup completed successfully');
-      
+
       // Log connection details
       const info = await getRedisInfo();
       if (info.connected && info.info) {
@@ -201,7 +200,7 @@ export async function setupRedisFromConfig(): Promise<boolean> {
       console.error('❌ Redis setup failed - connection unhealthy');
       console.error('💡 Try running: npm run redis:start');
     }
-    
+
     return isHealthy;
   } catch (error) {
     console.error('❌ Redis setup error:', error);

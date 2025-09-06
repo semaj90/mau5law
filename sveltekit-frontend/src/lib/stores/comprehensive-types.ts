@@ -1,6 +1,4 @@
-import type { LayoutLoad } from './$types';
-import type { PageLoad } from './$types';
-import type { RequestHandler } from '@sveltejs/kit';
+// Local standalone types; avoid importing SvelteKit types to prevent conflicts
 /**
  * 🎯 COMPREHENSIVE TYPE DEFINITIONS
  *
@@ -584,8 +582,8 @@ export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? DeepPartial<U>[]
     : T[P] extends Record<string, any>
-    ? DeepPartial<T[P]>
-    : T[P];
+      ? DeepPartial<T[P]>
+      : T[P];
 };
 
 export type RequiredBy<T, K extends keyof T> = T & Required<Pick<T, K>>;
@@ -640,12 +638,7 @@ declare global {
   }
 
   // WebGPU interface enhancements
-  interface GPUDevice {
-    destroy?(): void;
-    addEventListener?(type: string, listener: (event: any) => void): void;
-    removeEventListener?(type: string, listener: (event: any) => void): void;
-    dispatchEvent?(event: Event): boolean;
-  }
+  // Avoid augmenting GPUDevice to prevent overload conflicts
 
   // WebAssembly enhancements are built-in
 }

@@ -370,14 +370,8 @@ export const comprehensivePackageBarrelStore = {
 
 declare global {
   interface Window {
-    comprehensivePackageBarrelStore?: typeof comprehensivePackageBarrelStore;
+    comprehensivePackageBarrelStore?: any;
   }
-  var $state: typeof svelte5RunesStore.runes.state;
-  var $derived: typeof svelte5RunesStore.runes.derived;
-  var $effect: typeof svelte5RunesStore.runes.effect;
-  var $props: typeof svelte5RunesStore.runes.props;
-  var $bindable: typeof svelte5RunesStore.runes.bindable;
-  var $inspect: typeof svelte5RunesStore.runes.inspect;
 }
 
 if (typeof globalThis !== 'undefined') {

@@ -3,7 +3,8 @@ import { randomUUID } from "crypto";
 // Loki.js based local memory and sync service for enhanced performance
 // Browser environment check
 const browser = typeof window !== "undefined";
-import Loki, { type Collection } from "lokijs";
+import Loki from 'lokijs';
+import type { Collection } from '$lib/stores/comprehensive-types';
 import type { Evidence } from '$lib/stores/evidenceStore.js';
 
 export interface LokiEvidence extends Evidence {
