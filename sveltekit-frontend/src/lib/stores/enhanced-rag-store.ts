@@ -93,25 +93,25 @@ export interface RAGStoreState {
 // Mock classes for missing dependencies
 class SOMRAGSystem {
   constructor(config: any) {}
-  
+
   async semanticSearch(query: string, embedding: number[], limit: number) {
     return [];
   }
-  
+
   async trainIncremental(embeddings: number[], document: RAGDocument) {}
-  
+
   async removeDocument(documentId: string) {}
-  
+
   async optimizeClusters() {}
-  
+
   getClusters() {
     return [];
   }
-  
+
   async generateQuerySuggestions(query: string) {
     return [];
   }
-  
+
   async generateRecommendations(query: string, results: SearchResult[]) {
     return [];
   }
@@ -119,26 +119,26 @@ class SOMRAGSystem {
 
 class NeuralMemoryManager {
   constructor(size: number) {}
-  
+
   getCurrentMemoryUsage() {
     return { current: 0, peak: 0, limit: 512 };
   }
-  
+
   async predictMemoryUsage(minutes: number) {
     return {
       recommendations: ['compress'],
       suggestedQueries: [],
-      confidence: 0.8
+      confidence: 0.8,
     };
   }
-  
+
   optimizeMemoryAllocation() {}
-  
+
   async generatePerformanceReport() {
     return {
       memoryEfficiency: 0.8,
       predictions: { confidence: 0.8 },
-      clusterCount: 5
+      clusterCount: 5,
     };
   }
 }
@@ -147,7 +147,7 @@ class NeuralMemoryManager {
 function createActor(machine: any, options: any) {
   return {
     start: () => {},
-    send: (event: any) => {}
+    send: (event: any) => {},
   };
 }
 
@@ -169,7 +169,7 @@ export function createEnhancedRAGStore() {
 
   // Initialize XState machine
   const ragActor = createActor(ragStateMachine, {
-    input: { query: '', documents: [] }
+    input: { query: '', documents: [] },
   });
   ragActor.start();
 
@@ -178,15 +178,15 @@ export function createEnhancedRAGStore() {
     documents: [],
     searchResults: [],
     embeddings: {},
-    currentQuery: "",
+    currentQuery: '',
     selectedDocuments: [],
     status: {
       isOnline: false,
       modelsLoaded: false,
       vectorDBConnected: false,
       lastSync: null,
-      version: "2.0.0",
-      health: "healthy" as const,
+      version: '2.0.0',
+      health: 'healthy' as const,
       activeConnections: 0,
       memoryUsage: { current: 0, peak: 0, limit: 512 },
       isInitialized: false,
@@ -246,33 +246,36 @@ export function createEnhancedRAGStore() {
   };
 
   // Core actions
-  async function search(query: string, options: any = {}): Promise<{ results: any[]; recommendations: any[] }> {
-    state.update(s => ({ ...s, isLoading: true, currentQuery: query, error: null }));
+  async function search(
+    query: string,
+    options: any = {}
+  ): Promise<{ results: any[]; recommendations: any[] }> {
+    state.update((s) => ({ ...s, isLoading: true, currentQuery: query, error: null }));
 
     try {
-      ragActor.send({ type: "SEARCH_START", query });
+      ragActor.send({ type: 'SEARCH_START', query });
 
       // Check multi-layer cache first
       const cachedResult = await checkMultiLayerCache(query);
       if (cachedResult && !options.bypassCache) {
-        state.update(s => ({
+        state.update((s) => ({
           ...s,
           searchResults: cachedResult.results,
-          recommendations: cachedResult.recommendations
+          recommendations: cachedResult.recommendations,
         }));
-        
-        performanceMetrics.update(p => ({ ...p, cacheHits: p.cacheHits + 1 }));
+
+        performanceMetrics.update((p) => ({ ...p, cacheHits: p.cacheHits + 1 }));
         updateCacheMetrics();
-        
+
         return {
           results: cachedResult.results,
-          recommendations: cachedResult.recommendations
+          recommendations: cachedResult.recommendations,
         };
       }
 
       // Generate "did you mean" suggestions
       const didYouMean = await generateDidYouMean(query);
-      
+
       // Generate query embedding first
       const queryEmbedding = await generateEmbeddings(query);
 
@@ -286,6 +289,7 @@ export function createEnhancedRAGStore() {
           id: docEmbedding.id,
           title: `Document ${docEmbedding.id}`,
           content: docEmbedding.content,
+          type: (docEmbedding.metadata?.type as any) || 'document',
           metadata: {
             source: '',
             type: docEmbedding.metadata?.evidence_type || 'memo',
@@ -295,9 +299,9 @@ export function createEnhancedRAGStore() {
             lastModified: new Date(docEmbedding.metadata?.timestamp || Date.now()),
             fileSize: docEmbedding.content?.length || 0,
             language: 'en',
-            tags: []
+            tags: [],
           },
-          version: '1.0'
+          version: '1.0',
         },
         score: 0.8,
         relevantChunks: [],
@@ -309,11 +313,11 @@ export function createEnhancedRAGStore() {
           procedural: 0.6,
           precedential: 0.8,
           jurisdictional: 0.9,
-          confidence: docEmbedding.metadata?.confidence || 0.8
+          confidence: docEmbedding.metadata?.confidence || 0.8,
         },
         relevanceScore: 0.8,
         rank: index + 1,
-        snippet: docEmbedding.content?.substring(0, 200) || ''
+        snippet: docEmbedding.content?.substring(0, 200) || '',
       }));
 
       // Update state
@@ -321,13 +325,13 @@ export function createEnhancedRAGStore() {
       const memoryPrediction = await neuralMemory.predictMemoryUsage(10);
       const recommendations = await generateRecommendations(query, optimizedResults);
 
-      state.update(s => ({
+      state.update((s) => ({
         ...s,
         searchResults: optimizedResults,
         somClusters: clusters,
         neuralPredictions: [memoryPrediction],
         recommendations,
-        didYouMean
+        didYouMean,
       }));
 
       // Cache results in multiple layers
@@ -339,26 +343,26 @@ export function createEnhancedRAGStore() {
       });
 
       // Update performance metrics
-      performanceMetrics.update(p => ({ ...p, totalQueries: p.totalQueries + 1 }));
+      performanceMetrics.update((p) => ({ ...p, totalQueries: p.totalQueries + 1 }));
       updatePerformanceMetrics();
 
-      ragActor.send({ type: "SEARCH_SUCCESS", results: optimizedResults });
-      
+      ragActor.send({ type: 'SEARCH_SUCCESS', results: optimizedResults });
+
       return {
         results: optimizedResults,
-        recommendations
+        recommendations,
       };
     } catch (error: any) {
-      const errorMessage = error instanceof Error ? error.message : "Search failed";
-      state.update(s => ({ ...s, error: errorMessage }));
-      ragActor.send({ type: "SEARCH_ERROR", error: errorMessage });
-      
+      const errorMessage = error instanceof Error ? error.message : 'Search failed';
+      state.update((s) => ({ ...s, error: errorMessage }));
+      ragActor.send({ type: 'SEARCH_ERROR', error: errorMessage });
+
       return {
         results: [],
-        recommendations: []
+        recommendations: [],
       };
     } finally {
-      state.update(s => ({ ...s, isLoading: false }));
+      state.update((s) => ({ ...s, isLoading: false }));
     }
   }
 
@@ -366,7 +370,7 @@ export function createEnhancedRAGStore() {
     try {
       // Generate embeddings
       const embeddings = await generateEmbeddings(document.content);
-      
+
       // Train SOM with new document
       await somRAG.trainIncremental(embeddings, document);
 
@@ -374,27 +378,27 @@ export function createEnhancedRAGStore() {
       neuralMemory.getCurrentMemoryUsage();
 
       // Add to documents
-      state.update(s => ({
+      state.update((s) => ({
         ...s,
         documents: [...s.documents, document],
-        embeddings: { ...s.embeddings, [document.id]: embeddings }
+        embeddings: { ...s.embeddings, [document.id]: embeddings },
       }));
 
       // Update caching layers
       await updateCachingLayers(document, embeddings);
     } catch (error: any) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to add document";
-      state.update(s => ({ ...s, error: errorMessage }));
+      const errorMessage = error instanceof Error ? error.message : 'Failed to add document';
+      state.update((s) => ({ ...s, error: errorMessage }));
     }
   }
 
   async function removeDocument(documentId: string): Promise<any> {
-    state.update(s => ({
+    state.update((s) => ({
       ...s,
       documents: s.documents.filter((doc) => doc.id !== documentId),
       embeddings: Object.fromEntries(
         Object.entries(s.embeddings).filter(([id]) => id !== documentId)
-      )
+      ),
     }));
 
     // Clear from all cache layers
@@ -417,8 +421,8 @@ export function createEnhancedRAGStore() {
       // Rebalance cache layers based on ML predictions
       await rebalanceCacheLayers();
 
-      performanceMetrics.subscribe(p => {
-        state.update(s => ({
+      performanceMetrics.subscribe((p) => {
+        state.update((s) => ({
           ...s,
           cacheMetrics: {
             ...s.cacheMetrics,
@@ -430,21 +434,21 @@ export function createEnhancedRAGStore() {
             ),
             clusterCount: optimization.clusterCount,
             averageSearchTime: p.averageResponseTime,
-          }
+          },
         }));
       });
     } catch (error: any) {
-      console.error("Cache optimization failed:", error);
+      console.error('Cache optimization failed:', error);
     }
   }
 
   async function exportSystemState(): Promise<any> {
-    const currentState = await new Promise(resolve => {
-      state.subscribe(s => resolve(s))();
+    const currentState = await new Promise((resolve) => {
+      state.subscribe((s) => resolve(s))();
     });
-    
-    const currentMetrics = await new Promise(resolve => {
-      performanceMetrics.subscribe(p => resolve(p))();
+
+    const currentMetrics = await new Promise((resolve) => {
+      performanceMetrics.subscribe((p) => resolve(p))();
     });
 
     return {
@@ -477,10 +481,13 @@ export function createEnhancedRAGStore() {
     cachingLayers.L1.set(query, data);
 
     // Cache in predicted optimal layer based on recommendations
-    const optimalLayer = prediction.recommendations.includes('compress') ? 'L2' : 
-                        prediction.recommendations.includes('cluster') ? 'L3' : 'L1';
-    
-    if (optimalLayer !== "L1") {
+    const optimalLayer = prediction.recommendations.includes('compress')
+      ? 'L2'
+      : prediction.recommendations.includes('cluster')
+        ? 'L3'
+        : 'L1';
+
+    if (optimalLayer !== 'L1') {
       const targetLayer = cachingLayers[optimalLayer as keyof typeof cachingLayers];
       targetLayer.set(query, data);
     }
@@ -502,11 +509,11 @@ export function createEnhancedRAGStore() {
   }
 
   function updateCacheMetrics() {
-    performanceMetrics.subscribe(p => {
+    performanceMetrics.subscribe((p) => {
       const hitRate = p.totalQueries > 0 ? p.cacheHits / p.totalQueries : 0;
-      state.update(s => ({
+      state.update((s) => ({
         ...s,
-        cacheMetrics: { ...s.cacheMetrics, hitRate }
+        cacheMetrics: { ...s.cacheMetrics, hitRate },
       }));
     });
   }
@@ -514,13 +521,13 @@ export function createEnhancedRAGStore() {
   function updatePerformanceMetrics() {
     // Update throughput and efficiency metrics
     const now = Date.now();
-    state.subscribe(s => {
+    state.subscribe((s) => {
       const lastSync = typeof s.status.lastSync === 'number' ? s.status.lastSync : now;
       const timeDiff = (now - lastSync) / 1000;
-      
-      performanceMetrics.update(p => ({
+
+      performanceMetrics.update((p) => ({
         ...p,
-        throughputQPS: p.totalQueries / timeDiff
+        throughputQPS: p.totalQueries / timeDiff,
       }));
     });
   }

@@ -6,7 +6,30 @@ import crypto from "crypto";
  */
 
 import { setup, assign, fromPromise } from "xstate";
-// Orphaned content: import type { ChatMessage, Conversation, ChatSettings
+// Local chat types to satisfy references
+export interface ChatMessage {
+  id: string;
+  content: string;
+  role: "user" | "assistant" | "system";
+  timestamp: Date;
+  conversationId?: string;
+}
+
+export interface Conversation {
+  id: string;
+  title: string;
+  createdAt: Date;
+}
+
+export interface ChatSettings {
+  model: string;
+  temperature: number;
+  maxTokens: number;
+  streaming: boolean;
+  contextWindow: number;
+  proactiveMode?: boolean;
+  emotionalMode?: boolean;
+}
 
 export interface ChatContext {
   messages: ChatMessage[];

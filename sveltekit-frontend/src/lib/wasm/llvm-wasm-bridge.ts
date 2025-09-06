@@ -1,6 +1,6 @@
 /**
  * LLVM to WebAssembly Bridge Service
- * 
+ *
  * Production-ready LLVM integration for compiling C++ legal processing modules
  * to WebAssembly at runtime with SvelteKit 2 compatibility
  */
@@ -49,7 +49,7 @@ export class LLVMWASMBridge {
   private modules = new Map<string, LLVMModule>();
   private wasmRuntime: any = null;
   private isInitialized = false;
-  
+
   // Legal-specific C++ modules
   private legalModules = {
     textProcessor: {
@@ -77,7 +77,7 @@ export class LLVMWASMBridge {
   async initialize(): Promise<boolean> {
     try {
       console.log('🔄 Initializing LLVM-WASM Bridge...');
-      
+
       // Check WebAssembly support
       if (typeof WebAssembly === 'undefined') {
         throw new Error('WebAssembly not supported in this environment');
@@ -85,16 +85,16 @@ export class LLVMWASMBridge {
 
       // Initialize WASM runtime with LLVM-compiled modules
       await this.initializeWASMRuntime();
-      
+
       // Precompile critical legal processing modules
       await this.precompileLegalModules();
-      
+
       // Setup performance monitoring
       this.setupPerformanceMonitoring();
-      
+
       this.isInitialized = true;
       console.log('✅ LLVM-WASM Bridge initialized successfully');
-      
+
       return true;
     } catch (error: any) {
       console.error('❌ LLVM-WASM Bridge initialization failed:', error);
@@ -105,14 +105,14 @@ export class LLVMWASMBridge {
   private async initializeWASMRuntime(): Promise<void> {
     // In a real implementation, this would load the LLVM WebAssembly runtime
     // For now, we create a mock runtime that demonstrates the interface
-    
+
     this.wasmRuntime = {
       compile: this.mockLLVMCompile.bind(this),
       instantiate: this.mockWASMInstantiate.bind(this),
-      memory: new WebAssembly.Memory({ 
+      memory: new WebAssembly.Memory({
         initial: 256, // 16MB initial
         maximum: 1024, // 64MB maximum
-        shared: false 
+        shared: false
       }),
       exports: new Map()
     };
@@ -120,12 +120,12 @@ export class LLVMWASMBridge {
 
   private async precompileLegalModules(): Promise<void> {
     console.log('📦 Precompiling legal processing modules...');
-    
+
     for (const [name, config] of Object.entries(this.legalModules)) {
       try {
         const moduleId = `legal_${name}`;
         const module = await this.compileLegalModule(moduleId, name, config);
-        
+
         if (module) {
           this.modules.set(moduleId, module);
           console.log(`✅ Compiled module: ${name}`);
@@ -142,7 +142,7 @@ export class LLVMWASMBridge {
     config: any
   ): Promise<LLVMModule | null> {
     const startTime = performance.now();
-    
+
     try {
       // Mock C++ source files for legal processing
       const cppSources = config.sources.map((filename: string) => ({
@@ -154,7 +154,7 @@ export class LLVMWASMBridge {
       const compilationResult = await this.compileToWASM(cppSources, {
         moduleId,
         optimizationLevel: LLVM_CONFIG.optimizationLevel,
-        features: LLVM_CONFIG.features,
+  features: Array.from(LLVM_CONFIG.features as readonly string[]),
         memorySize: config.memoryRequired
       });
 
@@ -181,7 +181,7 @@ export class LLVMWASMBridge {
 
       // Load and instantiate the WASM module
       await this.loadModule(module);
-      
+
       return module;
     } catch (error: any) {
       console.error(`❌ Failed to compile module ${moduleId}:`, error);
@@ -192,7 +192,7 @@ export class LLVMWASMBridge {
   private generateMockCppSource(filename: string, moduleName: string): string {
     // Generate mock C++ source code based on the filename and module
     const baseName = filename.replace('.cpp', '');
-    
+
     return `
 // Mock C++ source for ${filename}
 // Legal AI Module: ${moduleName}
@@ -206,7 +206,7 @@ export class LLVMWASMBridge {
 #include <cmath>
 
 extern "C" {
-  
+
 // Legal text processing functions
 ${this.generateFunctionForModule(baseName, moduleName)}
 
@@ -234,18 +234,18 @@ double get_processing_time() {
 int32_t processLegalText(const char* text, int32_t length, char* result, int32_t max_result_length) {
   // Mock legal text processing
   if (!text || !result || length <= 0) return -1;
-  
+
   // Simulate processing legal text with pattern recognition
   const char* processed = "PROCESSED: Legal text analysis complete. Found 3 citations, 2 statutes, 1 precedent.";
   int32_t processed_length = strlen(processed);
-  
+
   if (processed_length >= max_result_length) {
     processed_length = max_result_length - 1;
   }
-  
+
   strncpy(result, processed, processed_length);
   result[processed_length] = '\\0';
-  
+
   return processed_length;
 }
 
@@ -253,24 +253,24 @@ int32_t extractCitations(const char* text, int32_t length, char* citations, int3
   // Mock citation extraction
   const char* found_citations = "Brown v. Board, 347 U.S. 483 (1954);Miranda v. Arizona, 384 U.S. 436 (1966)";
   int32_t citations_length = strlen(found_citations);
-  
+
   if (citations_length >= max_citations_length) {
     citations_length = max_citations_length - 1;
   }
-  
+
   strncpy(citations, found_citations, citations_length);
   citations[citations_length] = '\\0';
-  
+
   return citations_length;
 }`;
     }
-    
+
     if (baseName === 'vector_engine') {
       return `
 int32_t computeEmbedding(const float* input, int32_t input_size, float* output, int32_t output_size) {
   // Mock vector embedding computation
   if (!input || !output || input_size <= 0 || output_size <= 0) return -1;
-  
+
   // Simple mock embedding: normalized weighted sum
   for (int32_t i = 0; i < output_size && i < input_size; i++) {
     float sum = 0.0f;
@@ -280,45 +280,45 @@ int32_t computeEmbedding(const float* input, int32_t input_size, float* output, 
     }
     output[i] = tanhf(sum * 0.1f) * sqrtf((float)output_size);
   }
-  
+
   return output_size;
 }
 
 float calculateSimilarity(const float* vec1, const float* vec2, int32_t size) {
   // Mock cosine similarity calculation
   if (!vec1 || !vec2 || size <= 0) return 0.0f;
-  
+
   float dot_product = 0.0f;
   float norm1 = 0.0f;
   float norm2 = 0.0f;
-  
+
   for (int32_t i = 0; i < size; i++) {
     dot_product += vec1[i] * vec2[i];
     norm1 += vec1[i] * vec1[i];
     norm2 += vec2[i] * vec2[i];
   }
-  
+
   float magnitude = sqrtf(norm1) * sqrtf(norm2);
   return magnitude > 0.0f ? dot_product / magnitude : 0.0f;
 }`;
     }
-    
+
     // Default function generation
     return `
 int32_t ${baseName}_process(const char* input, int32_t input_length, char* output, int32_t output_length) {
   // Mock processing function for ${baseName}
   if (!input || !output || input_length <= 0) return -1;
-  
+
   const char* result = "Mock result from ${baseName}";
   int32_t result_length = strlen(result);
-  
+
   if (result_length >= output_length) {
     result_length = output_length - 1;
   }
-  
+
   strncpy(output, result, result_length);
   output[result_length] = '\\0';
-  
+
   return result_length;
 }`;
   }
@@ -329,21 +329,21 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
   ): Promise<CompilationResult> {
     // Mock LLVM compilation process
     // In a real implementation, this would invoke clang/LLVM to compile C++ to WASM
-    
+
     const startTime = performance.now();
-    
+
     try {
       console.log(`🔨 Compiling ${sources.length} source files to WebAssembly...`);
       console.log(`📋 Options:`, options);
-      
+
       // Simulate compilation delay
       await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
-      
+
       // Generate a minimal but functional WASM binary
       const wasmBinary = this.generateMockWASMBinary(sources, options);
-      
+
       const compileTime = performance.now() - startTime;
-      
+
       return {
         success: true,
         wasmBinary,
@@ -374,28 +374,28 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
   ): ArrayBuffer {
     // Generate a minimal WASM binary that can be instantiated
     // This is a mock implementation - real WASM would be much more complex
-    
+
     const wasmModule = new Uint8Array([
       // WASM magic number
       0x00, 0x61, 0x73, 0x6d,
       // WASM version
       0x01, 0x00, 0x00, 0x00,
-      
+
       // Type section
       0x01, 0x07, 0x01,
       0x60, 0x02, 0x7f, 0x7f, 0x01, 0x7f, // (i32, i32) -> i32
-      
-      // Function section  
+
+      // Function section
       0x03, 0x02, 0x01, 0x00,
-      
+
       // Memory section
       0x05, 0x03, 0x01, 0x00, 0x01, // min 1 page (64KB)
-      
+
       // Export section
       0x07, 0x0a, 0x01,
       0x06, 0x70, 0x72, 0x6f, 0x63, 0x65, 0x73, // "process"
       0x00, 0x00, // export function 0
-      
+
       // Code section
       0x0a, 0x09, 0x01,
       0x07, 0x00, // function 0, no locals
@@ -404,18 +404,18 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       0x6a,       // i32.add
       0x0b        // end
     ]);
-    
+
     return wasmModule.buffer;
   }
 
   private extractExportsFromSources(sources: Array<{ name: string; content: string }>): string[] {
     const exports: string[] = [];
-    
+
     for (const source of sources) {
       // Extract function names from extern "C" blocks
       const externCRegex = /extern\s+"C"\s*\{([^}]+)\}/gs;
       const functionRegex = /(\w+)\s*\([^)]*\)\s*\{/g;
-      
+
       let match;
       while ((match = externCRegex.exec(source.content)) !== null) {
         const externBlock = match[1];
@@ -425,7 +425,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         }
       }
     }
-    
+
     return exports;
   }
 
@@ -435,13 +435,13 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
     }
 
     const startTime = performance.now();
-    
+
     try {
       // Create memory for the module
       const memoryPages = Math.ceil(this.legalModules[module.name.replace('legal_', '')]?.memoryRequired || (1024 * 1024) / (64 * 1024));
-      module.memory = new WebAssembly.Memory({ 
+      module.memory = new WebAssembly.Memory({
         initial: memoryPages,
-        maximum: memoryPages * 2 
+        maximum: memoryPages * 2
       });
 
       // Instantiate the WASM module
@@ -473,7 +473,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       module.exports = wasmModule.instance.exports;
       module.isLoaded = true;
       module.performance.loadTimeMs = performance.now() - startTime;
-      
+
       console.log(`✅ Module ${module.name} loaded successfully`);
     } catch (error: any) {
       console.error(`❌ Failed to load module ${module.name}:`, error);
@@ -494,7 +494,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
     processingTime: number;
   }> {
     const startTime = performance.now();
-    
+
     try {
       const textProcessorModule = this.modules.get('legal_textProcessor');
       if (!textProcessorModule?.isLoaded) {
@@ -574,7 +574,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
     processingTime: number;
   }> {
     const startTime = performance.now();
-    
+
     try {
       const vectorModule = this.modules.get('legal_vectorEngine');
       if (!vectorModule?.isLoaded) {
@@ -664,7 +664,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
 
   getModuleStats(): Record<string, any> {
     const stats: Record<string, any> = {};
-    
+
     for (const [id, module] of this.modules.entries()) {
       stats[id] = {
         name: module.name,
@@ -674,7 +674,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         performance: module.performance
       };
     }
-    
+
     return stats;
   }
 
@@ -688,11 +688,11 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       module.exports = {};
       module.isLoaded = false;
     }
-    
+
     this.modules.clear();
     this.wasmRuntime = null;
     this.isInitialized = false;
-    
+
     console.log('🧹 LLVM-WASM Bridge disposed');
   }
 }
@@ -705,10 +705,10 @@ export async function initializeLLVMIntegration(): Promise<void> {
   try {
     // Initialize LLVM-WASM bridge
     await llvmWasmBridge.initialize();
-    
+
     // Initialize GPU service integration
     await gpuServiceIntegration.initialize();
-    
+
     console.log('✅ Complete LLVM/WASM integration initialized');
   } catch (error: any) {
     console.error('❌ LLVM integration initialization failed:', error);

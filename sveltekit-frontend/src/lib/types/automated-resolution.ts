@@ -240,7 +240,7 @@ export interface DependencyAnalysis {
 }
 
 // Export all types for barrel store
-export type {
+export {
   MissingImportAnalysis,
   BarrelStoreGeneration,
   WebFetchResolution,
@@ -248,5 +248,5 @@ export type {
   TypeScriptErrorPattern,
   ErrorResolutionStrategy,
   AutomatedResolutionResult,
-  EnhancedErrorAnalysis
+  EnhancedErrorAnalysis,
 };

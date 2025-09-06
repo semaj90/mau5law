@@ -88,6 +88,30 @@ const ROUTING_CONFIG = {
 };
 
 class CognitiveSmartRouter {
+  // Map engine names to valid processing paths
+  private mapEngineToPath(engine: string): 'wasm' | 'worker' | 'cache' | 'fallback' | 'ollama' | 'webasm-cache' | 'nes-orchestrator' | 'llamacpp-cuda' | 'ollama-fallback' {
+    switch (engine) {
+      case 'ollama':
+      case 'llamacpp':
+      case 'gemma3':
+        return 'ollama';
+      case 'wasm':
+      case 'webasm':
+      case 'webasm-cache':
+        return 'webasm-cache';
+      case 'cache':
+        return 'cache';
+      case 'worker':
+      case 'nes-orchestrator':
+      case 'neural-sprite':
+        return 'nes-orchestrator';
+      case 'llamacpp-cuda':
+        return 'llamacpp-cuda';
+      default:
+        return 'fallback';
+    }
+  }
+
   private metrics: CognitiveMetrics;
   private engineHealthCache: Map<string, { healthy: boolean; lastCheck: number }>;
   private isWebGPUAvailable: boolean = false;
@@ -128,7 +152,7 @@ class CognitiveSmartRouter {
       // 4. Enhance response with routing metadata
       return {
         ...response,
-        processingPath: decision.engine,
+        processingPath: this.mapEngineToPath(decision.engine),
         routingDecision: decision,
         actualLatency: latency
       } as WebLlamaResponse;
@@ -143,7 +167,7 @@ class CognitiveSmartRouter {
       
       return {
         ...fallbackResponse,
-        processingPath: 'ollama-fallback',
+        processingPath: 'fallback',
         routingDecision: {
           engine: 'ollama',
           reasoning: 'Fallback due to routing failure',
@@ -262,7 +286,7 @@ class CognitiveSmartRouter {
       fromCache: false,
       cacheHit: false,
       vectorSimilarity: 0,
-      processingPath: 'nes-orchestrator',
+      processingPath: 'worker',
       metrics: {
         embeddingTime: 5,
         inferenceTime: 45,

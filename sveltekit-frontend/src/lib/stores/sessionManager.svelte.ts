@@ -49,10 +49,7 @@ const sessionState = $state<SessionState>({
 });
 
 // Create XState actor for session management
-const sessionActor = createActor(sessionMachine, {
-  services: sessionServices,
-  actions: sessionActions
-});
+const sessionActor = createActor(sessionMachine);
 
 export class SessionManager {
   private actor = sessionActor;
