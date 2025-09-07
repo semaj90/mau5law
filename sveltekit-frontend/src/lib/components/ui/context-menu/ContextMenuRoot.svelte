@@ -1,16 +1,13 @@
 <script lang="ts">
-
-  import { createContextMenu } from 'melt';
+  import { ContextMenu } from 'bits-ui';
+  
   interface Props {
-    children?: import('svelte').Snippet<[any]>;
+    children?: import('svelte').Snippet;
   }
 
   let { children }: Props = $props();
-  
-  const { elements, states } = createContextMenu();
-  const { menu, trigger } = elements;
-  
-  export { menu, trigger, states };
 </script>
 
-{@render children?.({ menu, trigger, states, })}
+<ContextMenu.Root>
+  {@render children?.()}
+</ContextMenu.Root>

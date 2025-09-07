@@ -4,7 +4,7 @@ import { Client } from 'minio';
 import { db } from '$lib/db/client';
 import { documents, cases } from '$lib/db/schema/rag-integration';
 import { eq } from 'drizzle-orm';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 

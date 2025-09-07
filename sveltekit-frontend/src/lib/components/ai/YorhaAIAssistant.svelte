@@ -203,9 +203,9 @@
 	);
 
 	let canSendMessage = $derived(
-		isConnected && 
-		currentState === 'idle' && 
-		currentMessage.trim() !== '' && 
+		isConnected &&
+		currentState === 'idle' &&
+		currentMessage.trim() !== '' &&
 		!streamingResponse
 	);
 
@@ -236,18 +236,18 @@
 			// Start XState service
 			chatService = interpret(chatMachine);
 			chatService.start();
-			
+
 			// Connect to chat service
 			await connectToChatService();
-			
+
 			// Connect to activity tracking
 			if (enableMCPIntegration) {
 				await connectToActivityService();
 			}
-			
+
 			// Load existing session if available
 			await loadChatSession();
-			
+
 			isConnected = true;
 			chatService?.send('CONNECTED');
 		} catch (error) {
@@ -259,14 +259,14 @@
 	// Connect to go-llama chat service
 	async function connectToChatService() {
 		const wsUrl = `ws://localhost:8099/ws/chat?user_id=${userID}&session_id=${chatSession.id}`;
-		
+
 		chatSocket = new WebSocket(wsUrl);
-		
+
 		chatSocket.on:open=() => {
 			console.log('= Connected to YorhaAI chat service');
 			isConnected = true;
 		};
-		
+
 		chatSocket.onmessage = (event) => {
 			try {
 				const data = JSON.parse(event.data);
@@ -275,13 +275,13 @@
 				console.error('Chat message parse error:', error);
 			}
 		};
-		
+
 		chatSocket.on:close=() => {
 			console.log('L Chat service disconnected');
 			isConnected = false;
 			chatService?.send('DISCONNECT');
 		};
-		
+
 		chatSocket.onerror = (error) => {
 			console.error('Chat service error:', error);
 			chatService?.send('ERROR', { error });
@@ -291,13 +291,13 @@
 	// Connect to user activity service
 	async function connectToActivityService() {
 		const wsUrl = `ws://localhost:8099/ws/activity?user_id=${userID}`;
-		
+
 		activitySocket = new WebSocket(wsUrl);
-		
+
 		activitySocket.on:open=() => {
 			console.log('=� Connected to activity service');
 		};
-		
+
 		activitySocket.onmessage = (event) => {
 			try {
 				const data = JSON.parse(event.data);
@@ -311,10 +311,10 @@
 	// Send message to AI
 	async function sendMessage() {
 		if (!canSendMessage) return;
-		
+
 		const message = currentMessage.trim();
 		const timestamp = new Date();
-		
+
 		// Add user message to chat
 		const userMessage: ChatMessage = {
 			id: 'msg_' + Date.now(),
@@ -326,17 +326,17 @@
 				caseID: chatSession.context.caseID
 			}
 		};
-		
+
 		chatSession.messages = [...chatSession.messages, userMessage];
 		currentMessage = '';
-		
+
 		// Update activity
 		updateUserActivity({ action: 'send_message', content_length: message.length });
-		
+
 		// Send to chat service
 		try {
 			chatService?.send('SEND_MESSAGE');
-			
+
 			const chatRequest = {
 				message,
 				user_id: userID,
@@ -347,10 +347,10 @@
 				temperature: 0.7,
 				max_tokens: 2000
 			};
-			
+
 			chatSocket?.send(JSON.stringify(chatRequest));
 			metrics.totalMessages++;
-			
+
 			chatService?.send('MESSAGE_SENT');
 		} catch (error) {
 			console.error('Send message error:', error);
@@ -372,7 +372,7 @@
 		if (data.token && !data.done) {
 			// Update streaming message
 			let streamingMessage = chatSession.messages.find(m => m.streaming);
-			
+
 			if (!streamingMessage) {
 				streamingMessage = {
 					id: 'streaming_' + Date.now(),
@@ -391,13 +391,13 @@
 				// Trigger reactivity
 				chatSession.messages = [...chatSession.messages];
 			}
-			
+
 			streamingResponse = true;
 			chatService?.send('STREAM_TOKEN');
-			
+
 			// Auto-scroll to bottom
 			tick().then(() => scrollToBottom());
-			
+
 		} else if (data.done) {
 			// Finalize streaming message
 			const streamingMessage = chatSession.messages.find(m => m.streaming);
@@ -411,10 +411,10 @@
 				};
 				chatSession.messages = [...chatSession.messages];
 			}
-			
+
 			streamingResponse = false;
 			chatService?.send('STREAM_COMPLETE');
-			
+
 			// Update context and metrics
 			updateChatContext(data);
 			updateMetrics(data);
@@ -437,13 +437,13 @@
 				gpu_accelerated: enableGPUAcceleration
 			}
 		};
-		
+
 		chatSession.messages = [...chatSession.messages, assistantMessage];
 		chatService?.send('RESPONSE_RECEIVED');
-		
+
 		updateChatContext(data);
 		updateMetrics(data);
-		
+
 		tick().then(() => scrollToBottom());
 	}
 
@@ -452,7 +452,7 @@
 		if (data.attention_level) {
 			userActivity.attentionLevel = data.attention_level;
 		}
-		
+
 		if (data.suggestions) {
 			// Handle AI-suggested actions based on user activity
 			console.log('AI Activity Suggestions:', data.suggestions);
@@ -462,7 +462,7 @@
 	// Update user activity
 	function updateUserActivity(activity: Record<string, any>) {
 		userActivity.lastActivity = Date.now();
-		
+
 		if (activity.action === 'typing') {
 			userActivity.isTyping = true;
 			isTyping = true;
@@ -470,7 +470,7 @@
 			userActivity.isTyping = false;
 			isTyping = false;
 		}
-		
+
 		// Send to activity service
 		activitySocket?.send(JSON.stringify({
 			...activity,
@@ -485,17 +485,17 @@
 		if (data.context) {
 			chatSession.context = { ...chatSession.context, ...data.context };
 		}
-		
+
 		if (data.user_intent) {
 			chatSession.context.userIntent = data.user_intent;
 		}
-		
+
 		if (data.confidence !== undefined) {
 			chatSession.context.confidence = data.confidence;
 		}
-		
+
 		chatSession.updatedAt = new Date();
-		
+
 		// Persist session
 		saveChatSession();
 	}
@@ -504,14 +504,14 @@
 	function updateMetrics(data: any) {
 		if (data.processing_time_ms) {
 			const responseTime = data.processing_time_ms;
-			metrics.averageResponseTime = 
+			metrics.averageResponseTime =
 				(metrics.averageResponseTime * (metrics.totalMessages - 1) + responseTime) / metrics.totalMessages;
 		}
-		
+
 		if (data.gpu_used !== undefined) {
 			metrics.gpuUtilization = data.gpu_used ? 85 : 20; // Mock values
 		}
-		
+
 		if (data.cache_hit !== undefined) {
 			metrics.cacheHitRate = data.cache_hit ? 0.8 : 0.6; // Mock values
 		}
@@ -520,13 +520,13 @@
 	// Analyze user intent
 	function analyzeUserIntent(message: string): string {
 		const lowerMsg = message.toLowerCase();
-		
+
 		if (lowerMsg.includes('search') || lowerMsg.includes('find')) return 'search';
 		if (lowerMsg.includes('summarize') || lowerMsg.includes('summary')) return 'summarize';
 		if (lowerMsg.includes('analyze') || lowerMsg.includes('analysis')) return 'analyze';
 		if (lowerMsg.includes('draft') || lowerMsg.includes('write')) return 'draft';
 		if (lowerMsg.includes('help') || lowerMsg.includes('explain')) return 'help';
-		
+
 		return 'general';
 	}
 
@@ -538,7 +538,7 @@
 		} else if (event.key === 'Escape') {
 			closeDialog();
 		}
-		
+
 		// Update typing activity
 		updateUserActivity({ action: 'typing', key: event.key });
 	}
@@ -547,7 +547,7 @@
 	function openDialog() {
 		open.set(true);
 		isOpen = true;
-		
+
 		tick().then(() => {
 			const input = document.querySelector('[data-yorha-input]') as HTMLElement;
 			input?.focus();
@@ -616,11 +616,11 @@
 	function setupActivityTracking() {
 		// Track typing in message input
 let typingTimeout = $state<number;
-		
+
 		const updateTyping >(() => {
 			clearTimeout(typingTimeout));
 			updateUserActivity({ action: 'typing' });
-			
+
 			typingTimeout = setTimeout(() => {
 				updateUserActivity({ action: 'stopped_typing' });
 			}, 1000) as any;
@@ -629,15 +629,15 @@ let typingTimeout = $state<number;
 		// Global activity tracking
 		if (browser) {
 			document.addEventListener('keydown', updateTyping);
-			document.addEventListener('click', () => 
+			document.addEventListener('click', () =>
 				updateUserActivity({ action: 'click', page: window.location.pathname })
 			);
-			
+
 			// Page visibility tracking
 			document.addEventListener('visibilitychange', () => {
-				updateUserActivity({ 
-					action: 'visibility_change', 
-					visible: !document.hidden 
+				updateUserActivity({
+					action: 'visibility_change',
+					visible: !document.hidden
 				});
 			});
 		}
@@ -669,7 +669,7 @@ let typingTimeout = $state<number;
 	<!-- Trigger Button -->
 	<Button.Root
 		{...$trigger}
-		on:on:click={openDialog}
+		on:click={openDialog}
 		variant="default"
 		size="lg"
 		class={cn(
@@ -684,7 +684,7 @@ let typingTimeout = $state<number;
 		)}
 	>
 		<span class="text-2xl">></span>
-		
+
 		<!-- Status indicator -->
 		<div class={cn(
 			"absolute -top-1 -right-1 w-4 h-4 rounded-full",
@@ -697,8 +697,8 @@ let typingTimeout = $state<number;
 
 	<!-- Chat Dialog -->
 	{#if $open}
-		<div 
-			{...overlay} 
+		<div
+			{...overlay}
 			use:overlay
 			class="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
 		>
@@ -727,25 +727,25 @@ let typingTimeout = $state<number;
 								YorhaAI Assistant
 							</h3>
 							<p class="text-xs text-muted-foreground">
-								{connectionStatus === 'connected' ? 'Ready to assist' : 
+								{connectionStatus === 'connected' ? 'Ready to assist' :
 								 connectionStatus === 'connecting' ? 'Connecting...' :
 								 connectionStatus === 'streaming' ? 'Thinking...' : 'Disconnected'}
 							</p>
 						</div>
 					</div>
-					
+
 					<div class="flex items-center gap-2">
 						<!-- Metrics badge -->
 						<Badge variant="secondary" class="text-xs">
 							{metrics.totalMessages} msgs
 						</Badge>
-						
+
 						<!-- Close button -->
 						<Button.Root
 							{...$close}
 							variant="ghost"
 							size="sm"
-							on:on:click={closeDialog}
+							on:click={closeDialog}
 							class="h-6 w-6 p-0"
 						>
 							<span class="sr-only">Close</span>
@@ -765,7 +765,7 @@ let typingTimeout = $state<number;
 								Hello! I'm your YorhaAI assistant.<br/>
 								How can I help with your legal case today?
 							</p>
-							
+
 							{#if caseID}
 								<Badge variant="outline" class="mt-2">
 									Case: {caseID}
@@ -784,34 +784,34 @@ let typingTimeout = $state<number;
 											<span class="text-white text-xs">AI</span>
 										</div>
 									{/if}
-									
+
 									<div class={cn(
 										"max-w-[80%] p-3 rounded-lg text-sm",
-										message.role === 'user' 
-											? "bg-primary text-primary-foreground ml-auto" 
+										message.role === 'user'
+											? "bg-primary text-primary-foreground ml-auto"
 											: "bg-muted",
 										message.streaming && "animate-pulse"
 									)}>
 										<div class="whitespace-pre-wrap">
 											{message.content}
 										</div>
-										
+
 										{#if message.metadata}
 											<div class="mt-2 flex items-center gap-2 text-xs opacity-70">
 												<span>{formatTimestamp(message.timestamp)}</span>
-												
+
 												{#if message.metadata.token_count}
 													<Badge variant="secondary" class="text-xs">
 														{message.metadata.token_count} tokens
 													</Badge>
 												{/if}
-												
+
 												{#if message.metadata.processing_time}
 													<Badge variant="secondary" class="text-xs">
 														{Math.round(message.metadata.processing_time)}ms
 													</Badge>
 												{/if}
-												
+
 												{#if message.metadata.gpu_accelerated}
 													<Badge variant="secondary" class="text-xs bg-green-500/20 text-green-400">
 														GPU
@@ -819,14 +819,14 @@ let typingTimeout = $state<number;
 												{/if}
 											</div>
 										{/if}
-										
+
 										<!-- AI Suggestions -->
 										{#if message.metadata?.suggestions?.length > 0}
 											<div class="mt-2 space-y-1">
 												{#each message.metadata.suggestions as suggestion}
 													<button
 														class="text-xs text-blue-400 hover:text-blue-300 underline block"
-														on:onclick={() => {
+														on:click={() => {
 															currentMessage = suggestion;
 															sendMessage();
 														}}
@@ -837,7 +837,7 @@ let typingTimeout = $state<number;
 											</div>
 										{/if}
 									</div>
-									
+
 									{#if message.role === 'user'}
 										<div class="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center flex-shrink-0">
 											<span class="text-white text-xs">U</span>
@@ -862,13 +862,13 @@ let typingTimeout = $state<number;
 									Intent: {chatSession.context.userIntent}
 								</Badge>
 							{/if}
-							
+
 							{#if caseID}
 								<Badge variant="outline" class="text-xs">
 									Case: {caseID}
 								</Badge>
 							{/if}
-							
+
 							<Badge variant="outline" class="text-xs">
 								Confidence: {Math.round(chatSession.context.confidence * 100)}%
 							</Badge>
@@ -885,9 +885,9 @@ let typingTimeout = $state<number;
 							data-yorha-input
 							class="flex-1"
 						/>
-						
+
 						<Button.Root
-							on:on:click={sendMessage}
+							on:click={sendMessage}
 							disabled={!canSendMessage}
 							variant="default"
 							size="sm"
@@ -912,13 +912,13 @@ let typingTimeout = $state<number;
 							<Button.Root
 								variant="ghost"
 								size="sm"
-								on:on:click={clearChat}
+								on:click={clearChat}
 								disabled={!hasMessages}
 								class="text-xs h-6 px-2"
 							>
 								Clear
 							</Button.Root>
-							
+
 							{#if enableMCPIntegration}
 								<Button.Root
 									variant="ghost"
@@ -928,10 +928,10 @@ let typingTimeout = $state<number;
 									MCP
 								</Button.Root>
 							{/if}
-							
+
 							{#if enableGPUAcceleration}
-								<Badge 
-									variant="secondary" 
+								<Badge
+									variant="secondary"
 									class={cn(
 										"text-xs h-6",
 										metrics.gpuUtilization > 50 && "bg-green-500/20 text-green-400"
@@ -941,7 +941,7 @@ let typingTimeout = $state<number;
 								</Badge>
 							{/if}
 						</div>
-						
+
 						<div class="text-xs text-muted-foreground">
 							{userActivity.attentionLevel} attention
 						</div>
@@ -962,7 +962,7 @@ let typingTimeout = $state<number;
 		--yorha-surface: #2a2a2a;
 		--yorha-text: #f4e4bc;
 		--yorha-border: rgba(212, 175, 55, 0.3);
-		
+
 		/* Animations */
 		--animation-glow: 0 0 20px currentColor;
 		--animation-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;

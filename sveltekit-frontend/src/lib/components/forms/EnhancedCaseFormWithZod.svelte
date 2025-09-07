@@ -15,11 +15,11 @@
   import { Checkbox } from '$lib/components/ui/checkbox';
   import * as Card from '$lib/components/ui/card';
   import * as Select from '$lib/components/ui/select';
-  import { 
-    AlertCircle, 
-    Loader2, 
-    Save, 
-    CheckCircle, 
+  import {
+    AlertCircle,
+    Loader2,
+    Save,
+    CheckCircle,
     Upload,
     FileText,
     Calendar,
@@ -101,9 +101,9 @@
   $: {
     if (enableRealTimeValidation && $form) {
       validationStatus = 'validating';
-      
+
       const validationResult = caseFormSchema.safeParse($form);
-      
+
       setTimeout(() => {
         validationStatus = validationResult.success ? 'valid' : 'invalid';
       }, 300);
@@ -156,7 +156,7 @@
         if (result.type === 'success') {
           // Handle success
           if (onsuccess) onsuccess({ case: result.data });
-          
+
           // Reset form if not in edit mode
           if (!editMode) {
             uploadedFiles = [];
@@ -191,12 +191,12 @@
           </Card.Description>
         </div>
       </div>
-      
+
       <!-- Progress indicator -->
       {#if $progress > 0}
         <div class="flex items-center space-x-2">
           <div class="w-20 bg-gray-200 rounded-full h-2">
-            <div 
+            <div
               class="bg-primary h-2 rounded-full transition-all duration-300"
               style="width: {$progress}%"
             ></div>
@@ -220,7 +220,7 @@
             <span class="text-sm">Last saved: {lastSaved.toLocaleTimeString()}</span>
           {/if}
         </div>
-        
+
         <!-- Real-time validation status -->
         {#if enableRealTimeValidation}
           <div class="flex items-center space-x-2">
@@ -239,8 +239,8 @@
       </div>
     {/if}
 
-    <form 
-      method="POST" 
+    <form
+      method="POST"
       action={submitAction}
       use:createEnhancedSubmit()
       enctype="multipart/form-data"
@@ -335,7 +335,7 @@
         <Button
           type="button"
           variant="ghost"
-          on:on:on:click={() => showAdvanced = !showAdvanced}
+          on:click={() => showAdvanced = !showAdvanced}
           class="mb-4"
         >
           {showAdvanced ? 'Hide' : 'Show'} Advanced Options
@@ -473,7 +473,7 @@
                       type="button"
                       variant="ghost"
                       size="sm"
-                      on:on:on:click={() => removeFile(index)}
+                      on:click={() => removeFile(index)}
                     >
                       Remove
                     </Button>
@@ -489,7 +489,7 @@
       <div class="flex items-center justify-between pt-6 border-t">
         <div class="flex items-center space-x-4">
           {#if enableAutoSave && !editMode}
-            <Button type="button" variant="outline" on:on:on:click={() => { if (ondraft) ondraft({ data: $form }); }}>
+            <Button type="button" variant="outline" on:click={() => { if (ondraft) ondraft({ data: $form }); }}>
               Save as Draft
             </Button>
           {/if}
@@ -499,9 +499,9 @@
           <Button type="button" variant="outline">
             Cancel
           </Button>
-          
-          <Button 
-            type="submit" 
+
+          <Button
+            type="submit"
             disabled={$submitting || !$isValid}
             class="min-w-[120px]"
           >
@@ -524,8 +524,8 @@
     <h2 class="text-lg font-semibold text-red-800 mb-2">Form Error</h2>
     <p class="text-red-700 mb-4">The case form encountered an error:</p>
     <p class="text-red-600 font-mono text-sm mb-4 bg-red-100 p-2 rounded">{componentError.message}</p>
-    <Button 
-      on:on:on:click={() => { componentError = null; }}
+    <Button
+  on:click={() => { componentError = null; }}
       variant="outline"
       class="border-red-300 text-red-700 hover:bg-red-50"
     >
@@ -539,11 +539,11 @@
   .form-field-error {
     @apply border-destructive focus:ring-destructive;
   }
-  
+
   .form-field-valid {
     @apply border-green-500 focus:ring-green-500;
   }
-  
+
   .upload-zone:hover {
     @apply border-primary/50 bg-primary/5;
   }

@@ -1,30 +1,23 @@
 <script lang="ts">
+  import { Select } from 'bits-ui';
 
-  import { melt } from 'melt';
   interface Props {
-    trigger: any;
-    selectedLabel: any;
+    children?: import('svelte').Snippet;
+    class?: string;
+    [attr: string]: unknown;
   }
-  let {
-    trigger,
-    selectedLabel
-  }: Props = $props();
+
+  let { children, class: className = '', ...rest }: Props = $props();
 </script>
 
-<button <!-- use:melt={trigger} class="space-y-4">
-  <slot {selectedLabel} />
-</button>
+<Select.Trigger class="space-y-4 {className}" {...rest}>
+  {@render children?.()}
+  {/* No <slot> usage to avoid slot/snippet conflict */}
+  {#if false}
+    <slot />
+  {/if}
+</Select.Trigger>
 
 <style>
   /* @unocss-include */
-  .select-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    background: white;
-    min-width: 8rem;
-  }
 </style>

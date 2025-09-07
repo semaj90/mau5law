@@ -1,16 +1,12 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-  import { $effect } from 'svelte';
-
+  import { onMount } from 'svelte';
 	import { useMachine } from '@xstate/svelte';
-	import { onMount } from 'svelte';
-	import { chatMachine } from '$lib/machines/chatMachine';
+	import { chatMachine } from '$lib/machines/chatMachine.js';
 
 	let chatContainer;
 let userInput = $state('');
 
-	const { state, send } = useMachine(chatMachine, {
+	const { snapshot, send } = useMachine(chatMachine, {
 		actors: {
 			streamChatActor: ({ input }) => (sendBack, receive) => {
 				const controller = new AbortController();
@@ -67,15 +63,16 @@ let userInput = $state('');
 		}
 	});
 
-	function handleSubmit() {
+	function handleSubmit(event: SubmitEvent) {
+		event.preventDefault();
 		if (!userInput.trim()) return;
 		send({ type: 'SUBMIT', message: userInput });
 		userInput = '';
 	}
 
 	// Reactive statement to scroll down when messages change
-	$effect(() => { 
-		if ($state.context.messages && typeof window !== 'undefined') {
+	$effect(() => {
+		if (snapshot.context.messages && typeof window !== 'undefined') {
 			// Use a microtask to wait for the DOM to update
 			Promise.resolve().then(() => {
 				if (chatContainer) {
@@ -88,20 +85,20 @@ let userInput = $state('');
 
 <div class="flex flex-col h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900">
 	<div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4 space-y-4">
-		{#each $state.context.messages as message, i (i)}
+		{#each snapshot.context.messages as message, i (i)}
 			<div class="chat-message {message.role === 'user' ? 'user' : 'assistant'}">
 				<div class="message-bubble">
 					{@html message.content.replace(/\n/g, '<br>')}
-					{#if $state.matches('loading') && i === $state.context.messages.length - 1}
+					{#if snapshot.matches('loading') && i === snapshot.context.messages.length - 1}
 						<span class="typing-indicator"></span>
 					{/if}
 				</div>
 			</div>
 		{/each}
-		{#if $state.matches('error')}
+		{#if snapshot.matches('error')}
 			<div class="chat-message assistant">
 				<div class="message-bubble error-bubble">
-					<p>Sorry, an error occurred: {$state.context.error.message}</p>
+					<p>Sorry, an error occurred: {snapshot.context.error?.message || 'Unknown error'}</p>
 					<p>Please try again.</p>
 				</div>
 			</div>
@@ -109,18 +106,18 @@ let userInput = $state('');
 	</div>
 
 	<div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-		<form on:submit|preventDefault={handleSubmit} class="flex items-center space-x-2">
+		<form onsubmit={handleSubmit} class="flex items-center space-x-2">
 			<input
 				type="text"
 				bind:value={userInput}
 				placeholder="Ask about your case..."
 				class="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-				disabled={$state.matches('loading')}
+				disabled={snapshot.matches('loading')}
 			/>
 			<button
 				type="submit"
 				class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed"
-				disabled={$state.matches('loading') || !userInput.trim()}
+				disabled={snapshot.matches('loading') || !userInput.trim()}
 			>
 				Send
 			</button>

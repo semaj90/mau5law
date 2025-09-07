@@ -4,14 +4,16 @@ import { db } from '../db/index';
 import { legal_documents, documentChunks } from '../db/schema-postgres';
 import { sql } from 'drizzle-orm';
 import { splitText } from './text-splitter';
-import { getEmbedding } from '$lib/server/services/embedding-service';
+// Use the higher-level embedder which includes Redis/L1 caching and provider fallbacks
+import { embedText } from '../ai/embedder';
 import type { EmbeddingRepository, IngestionJobRequest, SimilarityQueryOptions, SimilarityResult, IngestionJobStatus } from './embedding-repository';
 import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue';
 
 const DEFAULT_MODEL = 'nomic-embed-text';
 
 async function embedContent(text: string, model: string): Promise<number[]> {
-  const emb = await getEmbedding(text);
+  // embedText handles cache lookups (memory/Redis) and caches results
+  const emb = await embedText(text, model);
   return Array.isArray(emb) ? emb : (emb && typeof emb === 'object' && 'embedding' in emb ? (emb as any).embedding as number[] : []);
 }
 

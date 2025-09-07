@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
  * Backends: Qdrant (6333), pgvector via Enhanced RAG (8094)
  */
 import { json, error } from '@sveltejs/kit';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 
 import { ensureError } from '$lib/utils/ensure-error';
 import { vectorOperations, type VectorSearchQuery } from '$lib/server/db/vector-operations.js';

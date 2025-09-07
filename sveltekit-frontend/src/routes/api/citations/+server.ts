@@ -1,10 +1,17 @@
 
-import { citationPoints } from "$lib/server/db/unified-schema";
-import type { RequestEvent } from "@sveltejs/kit";
-import { json } from "@sveltejs/kit";
-import { db } from "$lib/server/db/index";
+/**
+ * Citations API with Rich Text Editor Integration
+ * 
+ * Provides comprehensive citation management for legal cases
+ * Integrates with detective mode and case management system
+ */
+
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
-import { URL } from "url";
+import { db } from '$lib/server/db/index.js';
+import { eq, and, or, ilike, count, desc } from 'drizzle-orm';
+import { citations } from '$lib/server/db/schemas/cases-schema.js';
+import { caseManagementService } from '$lib/services/case-management-service.js';
 
 
 // Sample citations for when database is not available or for demo data
@@ -58,257 +65,254 @@ function isValidUUID(uuid: string): boolean {
 function isDemoCase(caseId: string): boolean {
   return caseId === "demo-case-123" || caseId.startsWith("demo-");
 }
-export async function GET({ url }: RequestEvent): Promise<any> {
-  const caseId = url.searchParams.get("caseId");
-  const reportId = url.searchParams.get("reportId");
-  const type = url.searchParams.get("type");
-  const search = url.searchParams.get("search");
-  const bookmarked = url.searchParams.get("bookmarked");
-  const recent = url.searchParams.get("recent");
-  const limit = parseInt(url.searchParams.get("limit") || "10");
-  const offset = parseInt(url.searchParams.get("offset") || "0");
-
+export const GET: RequestHandler = async ({ url }) => {
   try {
-    // Handle demo cases or when database is not available
-    if (!db || (caseId && isDemoCase(caseId))) {
-      let filteredCitations = sampleCitations;
+    const caseId = url.searchParams.get('caseId');
+    const citationType = url.searchParams.get('type');
+    const search = url.searchParams.get('search');
+    const verified = url.searchParams.get('verified');
+    const limit = parseInt(url.searchParams.get('limit') || '20');
+    const offset = parseInt(url.searchParams.get('offset') || '0');
 
-      // Apply filters to sample data
-      if (search) {
-        const query = search.toLowerCase();
-        filteredCitations = sampleCitations.filter(
-          (citation) =>
-            citation.title.toLowerCase().includes(query) ||
-            citation.content.toLowerCase().includes(query) ||
-            citation.author?.toLowerCase().includes(query) ||
-            citation.source?.toLowerCase().includes(query) ||
-            citation.tags?.some((tag) => tag.toLowerCase().includes(query)),
-        );
-      }
-      if (type) {
-        filteredCitations = filteredCitations.filter(
-          (citation) => citation.type === type,
-        );
-      }
-      if (recent === "true") {
-        filteredCitations = filteredCitations.slice(0, 5);
-      }
+    if (!caseId) {
       return json({
-        citations: filteredCitations.slice(offset, offset + limit),
-        recentCitations: sampleCitations.slice(0, 5),
-        total: filteredCitations.length,
-      });
+        success: false,
+        error: 'caseId parameter is required'
+      }, { status: 400 });
     }
-    // Validate UUID for database queries
-    if (caseId && !isValidUUID(caseId)) {
-      return json(
-        {
-          error: "Invalid case ID format. Expected UUID format.",
-          citations: [],
-          total: 0,
-        },
-        { status: 400 },
-      );
-    }
-    if (reportId && !isValidUUID(reportId)) {
-      return json(
-        {
-          error: "Invalid report ID format. Expected UUID format.",
-          citations: [],
-          total: 0,
-        },
-        { status: 400 },
-      );
-    }
-    let query = db.select().from(citationPoints);
-    const conditions: any[] = [];
 
-    if (caseId) {
-      conditions.push(eq(citationPoints.caseId, caseId));
+    // Build where conditions
+    const whereConditions: any[] = [
+      eq(citations.caseId, caseId)
+    ];
+
+    if (citationType) {
+      whereConditions.push(eq(citations.citationType, citationType));
     }
-    if (reportId) {
-      conditions.push(eq(citationPoints.reportId, reportId));
+
+    if (verified !== null && verified !== undefined) {
+      whereConditions.push(eq(citations.verified, verified === 'true'));
     }
-    if (type) {
-      conditions.push(eq(citationPoints.type, type));
-    }
+
     if (search) {
-      conditions.push(like(citationPoints.text, `%${search}%`));
+      whereConditions.push(
+        or(
+          ilike(citations.title, `%${search}%`),
+          ilike(citations.author, `%${search}%`),
+          ilike(citations.source, `%${search}%`),
+          ilike(citations.citation, `%${search}%`),
+          ilike(citations.abstract, `%${search}%`)
+        )
+      );
     }
-    if (bookmarked === "true") {
-      conditions.push(eq(citationPoints.isBookmarked, true));
-    }
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions)) as any;
-    }
-    const results = await query
-      .orderBy(
-        desc(citationPoints.relevanceScore),
-        desc(citationPoints.createdAt),
-      )
+
+    // Get citations with pagination
+    const citationsQuery = db
+      .select()
+      .from(citations)
+      .where(and(...whereConditions))
+      .orderBy(desc(citations.relevanceScore), desc(citations.dateCreated))
       .limit(limit)
       .offset(offset);
 
-    return json({
-      citations: results,
-      total: results.length,
-    });
-  } catch (error: any) {
-    console.error("Error fetching citation points:", error);
+    const citationResults = await citationsQuery;
 
-    // Return sample data as fallback
+    // Get total count for pagination
+    const totalQuery = db
+      .select({ count: count() })
+      .from(citations)
+      .where(and(...whereConditions));
+
+    const [{ count: totalCount }] = await totalQuery;
+
     return json({
-      citations: sampleCitations.slice(offset, offset + limit),
-      total: sampleCitations.length,
-      error: "Database error, showing sample data",
+      success: true,
+      citations: citationResults,
+      pagination: {
+        limit,
+        offset,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / limit)
+      },
+      filters: { caseId, citationType, search, verified }
     });
+
+  } catch (error: any) {
+    console.error('Citations fetch error:', error);
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      citations: []
+    }, { status: 500 });
   }
-}
-export async function POST({ request }: RequestEvent): Promise<any> {
+};
+export const POST: RequestHandler = async ({ request }) => {
   try {
-    if (!db) {
-      return json({ error: "Database not available" }, { status: 500 });
-    }
-    const data = await request.json();
+    const citationData = await request.json();
 
     // Validate required fields
-    if (!data.text || !data.source) {
-      return json({ error: "Text and source are required" }, { status: 400 });
+    const { caseId, title, citationType } = citationData;
+    if (!caseId || !title || !citationType) {
+      return json({
+        success: false,
+        error: 'caseId, title, and citationType are required'
+      }, { status: 400 });
     }
-    // Validate UUIDs if provided
-    if (data.caseId && !isDemoCase(data.caseId) && !isValidUUID(data.caseId)) {
-      return json({ error: "Invalid case ID format" }, { status: 400 });
-    }
-    if (data.reportId && !isValidUUID(data.reportId)) {
-      return json({ error: "Invalid report ID format" }, { status: 400 });
-    }
-    if (data.evidenceId && !isValidUUID(data.evidenceId)) {
-      return json({ error: "Invalid evidence ID format" }, { status: 400 });
-    }
-    if (data.statuteId && !isValidUUID(data.statuteId)) {
-      return json({ error: "Invalid statute ID format" }, { status: 400 });
-    }
-    const citationData = {
-      text: data.text,
-      source: data.source,
-      page: data.page || null,
-      context: data.context || "",
-      type: data.type || "statute",
-      jurisdiction: data.jurisdiction || "",
-      tags: data.tags || [],
-      caseId: data.caseId && !isDemoCase(data.caseId) ? data.caseId : null,
-      reportId: data.reportId || null,
-      evidenceId: data.evidenceId || null,
-      statuteId: data.statuteId || null,
-      aiSummary: data.aiSummary || null,
-      relevanceScore: data.relevanceScore || "0.0",
-      metadata: data.metadata || {},
-      isBookmarked: data.isBookmarked || false,
-      usageCount: 0,
-      createdBy: "1", // Default user ID for now
-    };
 
+    // Verify case exists
+    const caseDetails = await caseManagementService.getCaseById(caseId);
+    if (!caseDetails) {
+      return json({
+        success: false,
+        error: 'Case not found'
+      }, { status: 404 });
+    }
+
+    // Create citation record
     const [newCitation] = await db
-      .insert(citationPoints)
-      .values(citationData)
+      .insert(citations)
+      .values({
+        caseId,
+        citationType,
+        title,
+        author: citationData.author || null,
+        source: citationData.source || null,
+        citation: citationData.citation || null,
+        url: citationData.url || null,
+        doi: citationData.doi || null,
+        abstract: citationData.abstract || null,
+        relevantQuote: citationData.relevantQuote || null,
+        contextNotes: citationData.contextNotes || null,
+        relevanceScore: citationData.relevanceScore || 5,
+        citationPurpose: citationData.citationPurpose || 'support',
+        publicationDate: citationData.publicationDate ? new Date(citationData.publicationDate) : null,
+        jurisdiction: citationData.jurisdiction || null,
+        court: citationData.court || null,
+        verified: citationData.verified || false,
+        metadata: citationData.metadata || {},
+        tags: citationData.tags || [],
+        createdBy: citationData.createdBy || null
+      })
       .returning();
 
-    return json(newCitation, { status: 201 });
-  } catch (error: any) {
-    console.error("Error creating citation point:", error);
-    return json({ error: "Failed to create citation point" }, { status: 500 });
-  }
-}
-export async function PUT({ request }: RequestEvent): Promise<any> {
-  try {
-    if (!db) {
-      return json({ error: "Database not available" }, { status: 500 });
+    // Add to case timeline if detective mode is enabled
+    if (caseDetails.detectiveMode) {
+      await caseManagementService.addTimelineEvent(caseId, {
+        eventType: 'citation_added',
+        title: `Citation added: ${title}`,
+        description: `New ${citationType} citation added to case`,
+        relatedEntityId: newCitation.id,
+        relatedEntityType: 'citation',
+        eventData: {
+          citationType,
+          relevanceScore: newCitation.relevanceScore,
+          purpose: newCitation.citationPurpose
+        },
+        importance: 'medium',
+        eventDate: new Date()
+      });
     }
-    const data = await request.json();
 
-    if (!data.id) {
-      return json({ error: "Citation ID is required" }, { status: 400 });
+    return json({
+      success: true,
+      citation: newCitation
+    }, { status: 201 });
+
+  } catch (error: any) {
+    console.error('Citation creation error:', error);
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
+  }
+};
+export const PUT: RequestHandler = async ({ request }) => {
+  try {
+    const { id, ...updateData } = await request.json();
+
+    if (!id) {
+      return json({
+        success: false,
+        error: 'Citation ID is required'
+      }, { status: 400 });
     }
-    if (!isValidUUID(data.id)) {
-      return json({ error: "Invalid citation ID format" }, { status: 400 });
-    }
+
     // Check if citation exists
     const existingCitation = await db
       .select()
-      .from(citationPoints)
-      .where(eq(citationPoints.id, data.id))
+      .from(citations)
+      .where(eq(citations.id, id))
       .limit(1);
 
     if (!existingCitation.length) {
-      return json({ error: "Citation not found" }, { status: 404 });
+      return json({
+        success: false,
+        error: 'Citation not found'
+      }, { status: 404 });
     }
-    const updateData: Record<string, any> = {
-      text: data.text,
-      source: data.source,
-      page: data.page,
-      context: data.context,
-      type: data.type,
-      jurisdiction: data.jurisdiction,
-      tags: data.tags,
-      caseId: data.caseId,
-      reportId: data.reportId,
-      evidenceId: data.evidenceId,
-      statuteId: data.statuteId,
-      aiSummary: data.aiSummary,
-      relevanceScore: data.relevanceScore,
-      metadata: data.metadata,
-      isBookmarked: data.isBookmarked,
-      usageCount: data.usageCount,
-      updatedAt: new Date().toISOString(),
-    };
 
-    // Remove undefined values
-    Object.keys(updateData).forEach((key) => {
-      if (updateData[key] === undefined) {
-        delete updateData[key];
-      }
+    // Update citation
+    const [updatedCitation] = await db
+      .update(citations)
+      .set({
+        ...updateData,
+        dateModified: new Date()
+      })
+      .where(eq(citations.id, id))
+      .returning();
+
+    return json({
+      success: true,
+      citation: updatedCitation
     });
 
-    const [updatedCitation] = await db
-      .update(citationPoints)
-      .set(updateData)
-      .where(eq(citationPoints.id, data.id))
-      .returning();
-
-    return json(updatedCitation);
   } catch (error: any) {
-    console.error("Error updating citation point:", error);
-    return json({ error: "Failed to update citation point" }, { status: 500 });
+    console.error('Citation update error:', error);
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
-}
-export async function DELETE({ url }: RequestEvent): Promise<any> {
+};
+
+export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    if (!db) {
-      return json({ error: "Database not available" }, { status: 500 });
+    const { id } = await request.json();
+
+    if (!id) {
+      return json({
+        success: false,
+        error: 'Citation ID is required'
+      }, { status: 400 });
     }
-    const citationId = url.searchParams.get("id");
-    if (!citationId) {
-      return json({ error: "Citation ID is required" }, { status: 400 });
-    }
-    if (!isValidUUID(citationId)) {
-      return json({ error: "Invalid citation ID format" }, { status: 400 });
-    }
+
     // Check if citation exists
     const existingCitation = await db
       .select()
-      .from(citationPoints)
-      .where(eq(citationPoints.id, citationId))
+      .from(citations)
+      .where(eq(citations.id, id))
       .limit(1);
 
     if (!existingCitation.length) {
-      return json({ error: "Citation not found" }, { status: 404 });
+      return json({
+        success: false,
+        error: 'Citation not found'
+      }, { status: 404 });
     }
-    // Delete the citation
-    await db.delete(citationPoints).where(eq(citationPoints.id, citationId));
 
-    return json({ success: true });
+    // Delete the citation
+    await db.delete(citations).where(eq(citations.id, id));
+
+    return json({
+      success: true,
+      message: 'Citation deleted successfully'
+    });
+
   } catch (error: any) {
-    console.error("Error deleting citation point:", error);
-    return json({ error: "Failed to delete citation point" }, { status: 500 });
+    console.error('Citation deletion error:', error);
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
-}
+};

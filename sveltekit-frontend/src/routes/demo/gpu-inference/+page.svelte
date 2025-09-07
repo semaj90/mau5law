@@ -436,7 +436,7 @@
                   class="flex-1 p-3 border rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows="2"
                   disabled={isProcessing}
-                />
+                ></textarea>
                 <Button
                   on:click={sendMessage}
                   disabled={!currentInput.trim() || isProcessing}

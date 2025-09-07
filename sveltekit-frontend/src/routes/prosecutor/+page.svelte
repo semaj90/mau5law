@@ -11,11 +11,11 @@ Features: Case management, evidence upload, AI chat, vector search
   import EvidenceUploadComponent from '$lib/components/prosecutor/EvidenceUploadComponent.svelte';
   import EnhancedAIChatAssistant from '$lib/components/prosecutor/EnhancedAIChatAssistant.svelte';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
-  import { 
-    Scale, 
-    Users, 
-    FileText, 
-    Upload, 
+  import {
+    Scale,
+    Users,
+    FileText,
+    Upload,
     Search,
     Brain,
     Zap,
@@ -41,12 +41,12 @@ Features: Case management, evidence upload, AI chat, vector search
   onMount(async () => {
     // Check WebGPU availability
     webGPUEnabled = await webGPUProcessor.initialize();
-    
+
     // Load prosecutor data
     await loadCases();
     await loadPersonsOfInterest();
     await loadRecentEvidence();
-    
+
     ragSystemStatus = 'ready';
   });
 
@@ -64,7 +64,7 @@ let response = $state<Response;
         }
       const result = await response.json();
       cases = result.data || [];
-      
+
       if (cases.length > 0 && !selectedCaseId) {
         selectedCaseId = cases[0].id;
       }
@@ -114,7 +114,7 @@ let response = $state<Response;
   // Enhanced vector search with WebGPU
   const performVectorSearch = async () => {
     if (!searchQuery.trim()) return;
-    
+
     try {
       if (webGPUEnabled) {
         searchResults = await webGPUProcessor.searchSimilarEvidence(
@@ -169,14 +169,14 @@ let response = $state<Response;
         <div class="flex items-center space-x-4">
           <Scale class="w-8 h-8 text-blue-600" />
           <h1 class="text-2xl font-bold text-gray-900">Prosecutor Dashboard</h1>
-          
+
           {#if webGPUEnabled}
             <Badge variant="secondary" class="hidden sm:flex">
               <Zap class="w-3 h-3 mr-1" />
               GPU Accelerated
             </Badge>
           {/if}
-          
+
           <Badge variant="outline" class="hidden sm:flex">
             <Brain class="w-3 h-3 mr-1" />
             Gemma3Legal Active
@@ -204,7 +204,7 @@ let response = $state<Response;
             <Button
               variant={selectedCaseId === caseItem.id ? 'default' : 'outline'}
               size="sm"
-              on:on:click={() => selectCase(caseItem.id)}
+              on:click={() => selectCase(caseItem.id)}
             >
               {caseItem.caseNumber} - {caseItem.title}
               <Badge variant="secondary" class="ml-2">
@@ -212,7 +212,7 @@ let response = $state<Response;
               </Badge>
             </Button>
           {/each}
-          
+
           <Button variant="outline" size="sm">
             <Plus class="w-4 h-4 mr-1" />
             New Case
@@ -243,7 +243,7 @@ let response = $state<Response;
                 placeholder="Search evidence, cases, precedents..."
                 class="flex-1"
               />
-              <Button on:on:click={performVectorSearch} disabled={!searchQuery.trim()}>
+              <Button on:click={performVectorSearch} disabled={!searchQuery.trim()}>
                 <Search class="w-4 h-4" />
               </Button>
             </div>
@@ -279,7 +279,7 @@ let response = $state<Response;
         </Card>
 
         <!-- Evidence Upload -->
-        <EvidenceUploadComponent 
+        <EvidenceUploadComponent
           caseId={selectedCaseId}
           enableWebGPU={webGPUEnabled}
           uploadcomplete={handleEvidenceUploaded}
@@ -314,10 +314,10 @@ let response = $state<Response;
                         {/if}
                       </div>
                     </div>
-                    
+
                     <div class="flex items-center space-x-2">
                       {#if evidence.aiAnalysis?.prosecutionRelevance}
-                        <Badge 
+                        <Badge
                           variant={evidence.aiAnalysis.prosecutionRelevance === 'high' ? 'destructive' : 'secondary'}
                           class="text-xs"
                         >
@@ -365,7 +365,7 @@ let response = $state<Response;
                           </div>
                         {/if}
                       </div>
-                      <Badge 
+                      <Badge
                         variant={poi.priority === 'high' ? 'destructive' : 'secondary'}
                         class="text-xs"
                       >
@@ -376,7 +376,7 @@ let response = $state<Response;
                 {/each}
               </div>
             {/if}
-            
+
             <Button variant="outline" size="sm" class="w-full mt-3">
               <Plus class="w-4 h-4 mr-1" />
               Add Person of Interest
@@ -386,7 +386,7 @@ let response = $state<Response;
 
         <!-- AI Chat Assistant -->
         <div class="h-96">
-          <EnhancedAIChatAssistant 
+          <EnhancedAIChatAssistant
             caseId={selectedCaseId}
             enableSelfPrompting={true}
             enableElementalAwareness={true}
@@ -433,17 +433,17 @@ let response = $state<Response;
   :global(.prosecutor-dashboard) {
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   }
-  
+
   /* Enhanced hover effects for elemental awareness */
   :global(*:hover) {
     transition: all 0.1s ease;
   }
-  
+
   /* WebGPU acceleration indicators */
   :global(.gpu-accelerated) {
     position: relative;
   }
-  
+
   :global(.gpu-accelerated::after) {
     content: '⚡';
     position: absolute;

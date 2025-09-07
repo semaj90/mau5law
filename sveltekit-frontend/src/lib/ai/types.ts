@@ -348,7 +348,8 @@ ${orchestratorResult.selfPrompt}`;
             area: area || "general"
           },
           fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
-          recommendations: ["Error in auto-fix - manual review required"]
+          recommendations: ["Error in auto-fix - manual review required"],
+          configImprovements: ["Manual review required"]
         };
       }
 
@@ -372,7 +373,7 @@ Recommendations:
 ${result.recommendations.join("\n")}
 
 Config Improvements:
-${result.configImprovements.join("\n")}`;
+${result.configImprovements?.join("\n") || "None"}`;
     } catch (error: any) {
       return `Auto-Fix Failed for ${todoId}: ${error}`;
     }

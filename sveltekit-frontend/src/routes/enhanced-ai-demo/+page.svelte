@@ -6,15 +6,26 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Card from '$lib/components/ui/Card.svelte';
+  import CardContent from '$lib/components/ui/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/CardTitle.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import Input from '$lib/components/ui/Input.svelte';
 
+  type AnalysisEntity = { text: string; type: string; confidence: number };
+  type AnalysisResult = {
+    confidence: number;
+    entities: AnalysisEntity[];
+    recommendations: string[];
+    processingTime: string;
+    model: string;
+  };
   let systemInitialized = $state(false);
   let testQuery = $state('');
   let selectedModel = $state('claude-3-5-sonnet');
   let processingStatus = $state('idle');
-  let analysisResults = $state(null);
+  let analysisResults = $state<AnalysisResult | null>(null);
 
   const modelOptions = [
     { value: 'claude-3-5-sonnet', label: 'Claude 3.5 Sonnet' },
@@ -156,7 +167,7 @@
           <!-- Action Buttons -->
           <div class="flex gap-4">
             <Button
-              on:on:click={handleAnalyze}
+              on:click={handleAnalyze}
               disabled={!testQuery.trim() ||
                 processingStatus === 'processing' ||
                 !systemInitialized}
@@ -166,7 +177,7 @@
 
             <Button
               variant="outline"
-              on:on:click={handleClear}
+              on:click={handleClear}
               disabled={processingStatus === 'processing'}>
               Clear
             </Button>

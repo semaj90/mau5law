@@ -161,7 +161,7 @@ let caseId = $state('');
                 class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Ask about legal documents, contracts, evidence, precedents..."
                 disabled={loading}
-              />
+              ></textarea>
             </div>
 
             <!-- Case ID Input (optional) -->

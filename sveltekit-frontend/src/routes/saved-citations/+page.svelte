@@ -1,8 +1,10 @@
 <script lang="ts">
   import { run } from 'svelte/legacy';
   import Badge from '$lib/components/ui/Badge.svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card as CardRoot, CardContent, CardHeader } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/Button.svelte';
+  import CardRoot from '$lib/components/ui/Card.svelte';
+  import CardContent from '$lib/components/ui/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import DialogContent from '$lib/components/ui/dialog/DialogContent.svelte';
   import DialogDescription from '$lib/components/ui/dialog/DialogDescription.svelte';
   import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
@@ -219,7 +221,7 @@
     </div>
 
     <div class="space-y-4">
-      <Button on:on:click={() => (showAddDialog = true)}>
+  <Button on:click={() => (showAddDialog = true)}>
         <Plus class="space-y-4" />
         Add Citation
       </Button>
@@ -242,21 +244,21 @@
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent {menu}>
-                  <DropdownMenuItem on:on:click={() => toggleFavorite(citation)}>
+                  <DropdownMenuItem on:click={() => toggleFavorite(citation)}>
                     <Star class="w-4 h-4 mr-2" />
                     {citation.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                   </DropdownMenuItem>
-                  <DropdownMenuItem on:on:click={() => copyCitation(citation)}>
+                  <DropdownMenuItem on:click={() => copyCitation(citation)}>
                     <Copy class="w-4 h-4 mr-2" />
                     Copy citation
                   </DropdownMenuItem>
-                  <DropdownMenuItem on:on:click={() => editCitation(citation)}>
+                  <DropdownMenuItem on:click={() => editCitation(citation)}>
                     <Edit class="w-4 h-4 mr-2" />
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    on:on:click={() => deleteCitation(citation.id)}
+                    on:click={() => deleteCitation(citation.id)}
                     class="text-destructive">
                     <Trash2 class="w-4 h-4 mr-2" />
                     Delete
@@ -323,7 +325,7 @@
             <p class="space-y-4">No citations match your current search criteria.</p>
             <Button
               variant="secondary"
-              on:on:click={() => {
+              on:click={() => {
                 searchQuery = '';
                 selectedCategory = 'all';
               }}>
@@ -335,7 +337,7 @@
               You haven't saved any citations yet. Start by adding citations from reports or create
               new ones.
             </p>
-            <Button on:on:click={() => (showAddDialog = true)}>
+            <Button on:click={() => (showAddDialog = true)}>
               <Plus class="space-y-4" />
               Add your first citation
             </Button>
@@ -401,8 +403,8 @@
     </div>
 
     <DialogFooter>
-      <Button variant="secondary" on:on:click={() => (showAddDialog = false)}>Cancel</Button>
-      <Button on:on:click={() => saveCitation()} disabled={!newCitation.title || !newCitation.content}>
+  <Button variant="secondary" on:click={() => (showAddDialog = false)}>Cancel</Button>
+  <Button on:click={() => saveCitation()} disabled={!newCitation.title || !newCitation.content}>
         Save Citation
       </Button>
     </DialogFooter>
@@ -456,8 +458,8 @@
       </div>
 
       <DialogFooter>
-        <Button variant="secondary" on:on:click={() => (editingCitation = null)}>Cancel</Button>
-        <Button on:on:click={() => updateCitation()}>Update Citation</Button>
+  <Button variant="secondary" on:click={() => (editingCitation = null)}>Cancel</Button>
+  <Button on:click={() => updateCitation()}>Update Citation</Button>
       </DialogFooter>
     </DialogContent>
   </DialogRoot>
@@ -465,10 +467,4 @@
 
 <style>
   /* @unocss-include */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
 </style>

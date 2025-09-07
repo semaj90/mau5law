@@ -1,66 +1,66 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { $derived } from 'svelte';
-  import { 
-    shortcuts, 
-    shortcutCategories, 
-    remoteCommands, 
+  import {
+    shortcuts,
+    shortcutCategories,
+    remoteCommands,
     isRemoteConnected,
     formatShortcut,
     keyboardShortcutsService,
     setKeyboardContext,
-    type KeyboardShortcut 
+    type KeyboardShortcut
   } from '$lib/services/keyboard-shortcuts-service';
   import { Button } from '$lib/components/ui/button';
   import { Card } from "$lib/components/ui/card";
   import { Badge } from '$lib/components/ui/badge';
   import { Switch } from '$lib/components/ui/switch';
-  
+
   let { visible = $bindable() } = $props(); // false;
   let { context = $bindable() } = $props(); // string[] = ['global'];
 let searchQuery = $state('');
 let selectedCategory = $state('all');
 let showRemoteOnly = $state(false);
-  
+
   let filteredShortcuts = $derived($shortcuts.filter(shortcut => {
-    const matchesSearch = !searchQuery || 
+    const matchesSearch = !searchQuery ||
       shortcut.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       shortcut.key.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     const matchesCategory = selectedCategory === 'all' || shortcut.category === selectedCategory;
-    
+
     const matchesRemote = !showRemoteOnly || shortcut.remote;
-    
+
     return matchesSearch && matchesCategory && matchesRemote;
   });
-  
+
   let categories = $derived($shortcutCategories);
   let recentCommands = $derived($remoteCommands.slice(-10).reverse());
 let helpModalVisible = $state(false);
 let remoteStatusVisible = $state(false);
-  
+
   onMount(() => {
     // Set context for shortcuts service
     setKeyboardContext(context);
-    
+
     // Listen for custom events
     const handleToggleHelp = () => {
       helpModalVisible = !helpModalVisible;
     };
-    
+
     const handleShowRemoteStatus = () => {
       remoteStatusVisible = !remoteStatusVisible;
     };
-    
+
     document.addEventListener('show-keyboard-help', handleToggleHelp);
     document.addEventListener('show-remote-status', handleShowRemoteStatus);
-    
+
     return () => {
       document.removeEventListener('show-keyboard-help', handleToggleHelp);
       document.removeEventListener('show-remote-status', handleShowRemoteStatus);
     };
   });
-  
+
   function toggleShortcut(shortcut: KeyboardShortcut) {
     if (shortcut.enabled) {
       keyboardShortcutsService.disableShortcut(shortcut.id);
@@ -68,7 +68,7 @@ let remoteStatusVisible = $state(false);
       keyboardShortcutsService.enableShortcut(shortcut.id);
     }
   }
-  
+
   function executeShortcut(shortcut: KeyboardShortcut) {
     keyboardShortcutsService.executeRemoteCommand({
       id: crypto.randomUUID(),
@@ -78,7 +78,7 @@ let remoteStatusVisible = $state(false);
       timestamp: Date.now()
     });
   }
-  
+
   function getCategoryIcon(category: string): string {
     const icons = {
       navigation: '🧭',
@@ -90,7 +90,7 @@ let remoteStatusVisible = $state(false);
     };
     return icons[category] || '📌';
   }
-  
+
   function getSourceIcon(source: string): string {
     const icons = {
       keyboard: '⌨️',
@@ -109,11 +109,11 @@ let remoteStatusVisible = $state(false);
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-bold text-green-400">⌨️ Keyboard Shortcuts</h2>
-          <Button variant="ghost" on:on:click={() => helpModalVisible = false}>
+          <Button variant="ghost" on:click={() => helpModalVisible = false}>
             ✕
           </Button>
         </div>
-        
+
         <!-- Search and filters -->
         <div class="flex gap-4 mb-4">
           <input
@@ -122,8 +122,8 @@ let remoteStatusVisible = $state(false);
             bind:value={searchQuery}
             class="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400"
           />
-          
-          <select 
+
+          <select
             bind:value={selectedCategory}
             class="px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white"
           >
@@ -132,13 +132,13 @@ let remoteStatusVisible = $state(false);
               <option value={category.id}>{category.name}</option>
             {/each}
           </select>
-          
+
           <label class="flex items-center gap-2">
             <Switch bind:checked={showRemoteOnly} />
             <span class="text-sm">Remote Only</span>
           </label>
         </div>
-        
+
         <!-- Shortcuts list -->
         <div class="overflow-y-auto max-h-96">
           {#each categories as category}
@@ -147,7 +147,7 @@ let remoteStatusVisible = $state(false);
                 <h3 class="text-lg font-semibold text-yellow-400 mb-3 flex items-center gap-2">
                   {getCategoryIcon(category.id)} {category.name}
                 </h3>
-                
+
                 <div class="space-y-2">
                   {#each category.shortcuts.filter(s => filteredShortcuts.includes(s)) as shortcut}
                     <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg border border-gray-700">
@@ -167,16 +167,16 @@ let remoteStatusVisible = $state(false);
                           {formatShortcut(shortcut)}
                         </div>
                       </div>
-                      
+
                       <div class="flex items-center gap-2">
-                        <Switch 
+                        <Switch
                           checked={shortcut.enabled}
                           change={() => toggleShortcut(shortcut)}
                         />
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
-                          on:on:click={() => executeShortcut(shortcut)}
+                          on:click={() => executeShortcut(shortcut)}
                           disabled={!shortcut.enabled}
                         >
                           Test
@@ -189,13 +189,13 @@ let remoteStatusVisible = $state(false);
             {/if}
           {/each}
         </div>
-        
+
         <!-- Remote connection status -->
         {#if $isRemoteConnected}
           <div class="mt-4 p-3 bg-green-900 border border-green-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-green-400">🔗 Connected to remote control</span>
-              <Button size="sm" variant="outline" on:on:click={() => remoteStatusVisible = true}>
+              <Button size="sm" variant="outline" on:click={() => remoteStatusVisible = true}>
                 View Status
               </Button>
             </div>
@@ -204,7 +204,7 @@ let remoteStatusVisible = $state(false);
           <div class="mt-4 p-3 bg-yellow-900 border border-yellow-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-yellow-400">⚠️ Remote control disconnected</span>
-              <Button size="sm" variant="outline" on:on:click={() => keyboardShortcutsService.connectRemote()}>
+              <Button size="sm" variant="outline" on:click={() => keyboardShortcutsService.connectRemote()}>
                 Connect
               </Button>
             </div>
@@ -222,11 +222,11 @@ let remoteStatusVisible = $state(false);
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold text-green-400">📡 Remote Control Status</h2>
-          <Button variant="ghost" on:on:click={() => remoteStatusVisible = false}>
+          <Button variant="ghost" on:click={() => remoteStatusVisible = false}>
             ✕
           </Button>
         </div>
-        
+
         <!-- Connection status -->
         <div class="mb-6">
           <div class="flex items-center gap-3 mb-2">
@@ -239,11 +239,11 @@ let remoteStatusVisible = $state(false);
             Endpoint: ws://localhost:8085/keyboard-remote
           </div>
         </div>
-        
+
         <!-- Recent commands -->
         <div class="mb-4">
           <h3 class="text-lg font-semibold text-yellow-400 mb-3">Recent Commands</h3>
-          
+
           {#if recentCommands.length > 0}
             <div class="space-y-2 overflow-y-auto max-h-64">
               {#each recentCommands as command}
@@ -267,20 +267,20 @@ let remoteStatusVisible = $state(false);
             </div>
           {/if}
         </div>
-        
+
         <!-- Controls -->
         <div class="flex gap-2">
           {#if $isRemoteConnected}
-            <Button variant="outline" on:on:click={() => keyboardShortcutsService.disconnectRemote()}>
+            <Button variant="outline" on:click={() => keyboardShortcutsService.disconnectRemote()}>
               Disconnect
             </Button>
           {:else}
-            <Button on:on:click={() => keyboardShortcutsService.connectRemote()}>
+            <Button on:click={() => keyboardShortcutsService.connectRemote()}>
               Reconnect
             </Button>
           {/if}
-          
-          <Button variant="outline" on:on:click={() => $remoteCommands.length && remoteCommands.set([])}>
+
+          <Button variant="outline" on:click={() => $remoteCommands.length && remoteCommands.set([])}>
             Clear History
           </Button>
         </div>

@@ -1,6 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Card from '$lib/components/ui/Card.svelte';
+  import CardContent from '$lib/components/ui/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/CardTitle.svelte';
   import Button from '$lib/components/ui/Button.svelte';
 
   // Svelte 5 runes for state management
@@ -33,12 +36,12 @@
   async function testGETOperations() {
     isLoading = true;
     addResult('🔍 Testing GET operations...');
-    
+
     try {
       // Test 1: Get all cases
       const listResponse = await fetch('/api/test-cases?limit=5');
       const listData = await listResponse.json();
-      
+
       if (listResponse.ok && listData.success) {
         addResult(`✅ GET /api/test-cases - Success (${listData.data?.length || 0} cases)`);
         cases = listData.data || [];
@@ -51,7 +54,7 @@
         const testCaseId = cases[0].id;
         const singleResponse = await fetch(`/api/test-cases?id=${testCaseId}`);
         const singleData = await singleResponse.json();
-        
+
         if (singleResponse.ok && singleData.success) {
           addResult(`✅ GET /api/test-cases?id=${testCaseId} - Success`);
           selectedCase = singleData.data;
@@ -65,14 +68,14 @@
     } catch (error) {
       addResult(`❌ GET operations - Network error: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
-    
+
     isLoading = false;
   }
 
   async function testPOSTOperation() {
     isLoading = true;
     addResult('📝 Testing POST operation...');
-    
+
     try {
       const response = await fetch('/api/test-cases', {
         method: 'POST',
@@ -82,9 +85,9 @@
           caseNumber: `TEST-${Date.now()}` // Unique case number
         })
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
         addResult(`✅ POST /api/test-cases - Success (ID: ${data.data?.id})`);
         // Refresh the cases list
@@ -99,7 +102,7 @@
     } catch (error) {
       addResult(`❌ POST operation - Network error: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
-    
+
     isLoading = false;
     return null;
   }
@@ -109,11 +112,11 @@
       addResult('❌ PUT operation - No cases available to update');
       return;
     }
-    
+
     isLoading = true;
     const targetId = caseId || cases[0].id;
     addResult(`📝 Testing PUT operation on case ${targetId}...`);
-    
+
     try {
       const updateData = {
         title: 'Updated Test Case Title',
@@ -128,9 +131,9 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData)
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
         addResult(`✅ PUT /api/test-cases?id=${targetId} - Success`);
         // Refresh the cases list
@@ -141,7 +144,7 @@
     } catch (error) {
       addResult(`❌ PUT operation - Network error: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
-    
+
     isLoading = false;
   }
 
@@ -150,18 +153,18 @@
       addResult('❌ DELETE operation - No cases available to delete');
       return;
     }
-    
+
     isLoading = true;
     const targetId = caseId || cases[cases.length - 1].id; // Delete the last case
     addResult(`🗑️ Testing DELETE operation on case ${targetId}...`);
-    
+
     try {
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
         method: 'DELETE'
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
         addResult(`✅ DELETE /api/test-cases?id=${targetId} - Success`);
         // Refresh the cases list
@@ -172,30 +175,30 @@
     } catch (error) {
       addResult(`❌ DELETE operation - Network error: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
-    
+
     isLoading = false;
   }
 
   async function runFullCRUDTest() {
     testResults = [];
     addResult('🚀 Starting full CRUD test suite...');
-    
+
     // Test 1: GET operations
     await testGETOperations();
-    
+
     // Test 2: POST operation
     const newCaseId = await testPOSTOperation();
-    
+
     // Test 3: PUT operation (use newly created case)
     if (newCaseId) {
       await testPUTOperation(newCaseId);
     }
-    
+
     // Test 4: DELETE operation (clean up)
     if (newCaseId) {
       await testDELETEOperation(newCaseId);
     }
-    
+
     addResult('✅ Full CRUD test suite completed');
   }
 
@@ -223,22 +226,22 @@
     </CardHeader>
     <CardContent>
       <div class="flex flex-wrap gap-3">
-        <Button on:on:on:click={runFullCRUDTest} disabled={isLoading} variant="default">
+  <Button on:click={runFullCRUDTest} disabled={isLoading} variant="default">
           {isLoading ? '⏳ Testing...' : '🚀 Run Full CRUD Test'}
         </Button>
-        <Button on:on:on:click={testGETOperations} disabled={isLoading} variant="secondary">
+  <Button on:click={testGETOperations} disabled={isLoading} variant="secondary">
           🔍 Test GET
         </Button>
-        <Button on:on:on:click={testPOSTOperation} disabled={isLoading} variant="secondary">
+  <Button on:click={testPOSTOperation} disabled={isLoading} variant="secondary">
           📝 Test POST
         </Button>
-        <Button on:on:on:click={() => testPUTOperation()} disabled={isLoading} variant="secondary">
+  <Button on:click={() => testPUTOperation()} disabled={isLoading} variant="secondary">
           ✏️ Test PUT
         </Button>
-        <Button on:on:on:click={() => testDELETEOperation()} disabled={isLoading} variant="secondary">
+  <Button on:click={() => testDELETEOperation()} disabled={isLoading} variant="secondary">
           🗑️ Test DELETE
         </Button>
-        <Button on:on:on:click={clearResults} variant="ghost">
+  <Button on:click={clearResults} variant="ghost">
           🧹 Clear Results
         </Button>
       </div>

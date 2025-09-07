@@ -10,8 +10,31 @@ type NESMemoryArchitecture = { allocateCHR_ROM?: (size: number) => any; writeCHR
 type SemanticAnalysisPipeline = { processDocument: (content: string) => Promise<any>; extractEntities: (content: string) => Promise<string[]>; generateEmbedding?: (text: string) => Promise<Float32Array> };
 type DimensionalTensorStore = { storeTensorSlice?: (slice: any) => Promise<void>; getStats?: () => any };
 type LegalAIReranker = { rerank: (results: any[], context: any) => Promise<any[]> };
-type TensorSlice = { data: Float32Array; dimensions: number[] };
-type UserContext = { userId: string; preferences: any };
+type TensorSlice = { 
+  data: Float32Array; 
+  dimensions: number[]; 
+  axis?: number;
+  index?: number;
+  lodLevel?: number;
+  metadata?: {
+    timestamp: number;
+    hash: string;
+    size: number;
+    compressed: boolean;
+    accessCount: number;
+    lastAccessed: number;
+  };
+};
+type UserContext = { 
+  userId?: string; 
+  preferences?: any; 
+  intent?: string; 
+  timeOfDay?: string;
+  userRole?: string;
+  workflowState?: string;
+  recentActions?: any[];
+  currentCase?: any;
+};
 type RerankResult = { id: string; score: number; metadata: any };
 type GraphNode = { id: string; properties: any };
 type GraphEdge = { id: string; source: string; target: string; weight: number };
@@ -512,7 +535,7 @@ export class SoraGraphTraversal {
       if (allEmbeddings.length > 0) {
         // Use GPU for batch similarity computation
         const similarities = this.gpuIntegration?.computeBatchSimilarities ? 
-          await this.gpuIntegration.computeBatchSimilarities(allEmbeddings, queryEmbedding) : 
+          await this.gpuIntegration.computeBatchSimilarities(allEmbeddings) : 
           allEmbeddings.map(() => 0.5); // Fallback similarity scores
 
         // Update node scores with GPU-computed similarities
@@ -831,6 +854,7 @@ export class SoraGraphTraversal {
       // Convert paths to rerank results
       const rerankInputs: RerankResult[] = paths.map((path, index) => ({
         id: `path_${index}`,
+        score: path.totalScore,
         content: path.nodes.map(n => n.properties?.title || n.properties?.content || n.id).join(' → '),
         metadata: {
           pathLength: path.pathLength,
@@ -854,7 +878,7 @@ export class SoraGraphTraversal {
       };
 
       // Apply reranking
-      const rerankedResults = await this.reranker.rerank(rerankInputs, userContext);
+      const rerankedResults = await this.reranker?.rerank(rerankInputs, userContext) || [];
 
       // Reorder paths based on reranking scores
       const pathScoreMap = new Map<number, number>();
@@ -914,6 +938,7 @@ export class SoraGraphTraversal {
             index: i,
             lodLevel: 0,
             data: pathEmbedding,
+            dimensions: [pathEmbedding.length],
             metadata: {
               timestamp: Date.now(),
               hash: this.generatePathHash(path),
@@ -925,7 +950,7 @@ export class SoraGraphTraversal {
           };
 
           if (this.tensorStore?.storeTensorSlice) {
-            await this.tensorStore.storeTensorSlice(`sora_path_${i}`, tensorSlice);
+            await this.tensorStore.storeTensorSlice(tensorSlice);
           }
         }
       }
@@ -937,6 +962,7 @@ export class SoraGraphTraversal {
           index: 0,
           lodLevel: 0,
           data: queryEmbedding,
+          dimensions: [queryEmbedding.length],
           metadata: {
             timestamp: Date.now(),
             hash: this.hashFloat32Array(queryEmbedding),
@@ -948,7 +974,7 @@ export class SoraGraphTraversal {
         };
 
         if (this.tensorStore?.storeTensorSlice) {
-          await this.tensorStore.storeTensorSlice(`sora_query_${Date.now()}`, querySlice);
+          await this.tensorStore.storeTensorSlice(querySlice);
         }
       }
 
@@ -1051,7 +1077,7 @@ export class SoraGraphTraversal {
   ): Promise<number[]> {
     try {
       return this.gpuIntegration?.computeBatchSimilarities ? 
-        await this.gpuIntegration.computeBatchSimilarities(pathEmbeddings, queryEmbedding) : [];
+        await this.gpuIntegration.computeBatchSimilarities(pathEmbeddings) : [];
     } catch (error) {
       console.warn('GPU batch similarity computation failed, falling back to CPU:', error);
       

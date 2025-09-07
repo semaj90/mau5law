@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { Tooltip } from "$lib/components/ui";
+  import { UiTooltip as Tooltip } from "$lib/components/ui";
   import { Button } from "$lib/components/ui/button";
   import { notifications } from "$lib/stores/notification";
   import {
@@ -33,14 +33,11 @@
     };
     error?: string;
   } | null = $state(null);
-  let filePreview: {
-    name: string;
-    size: number;
-    type: string;
-    content?: string;
-    data?: unknown;
-    raw?: string;
-  } | null = $state(null);
+  type CsvPreview = { type: 'csv'; data: string[] };
+  type JsonPreview = { type: 'json'; data: unknown };
+  type XmlPreview = { type: 'xml'; data: string };
+  type BasePreview = { name: string; size: number; type: string; content?: string; raw?: string };
+  let filePreview: (BasePreview & (CsvPreview | JsonPreview | XmlPreview)) | null = $state(null);
   let dragActive = $state(false);
 
   // File input reference
@@ -320,7 +317,7 @@
                   <Button
                     variant="outline"
                     size="sm"
-                    on:on:click={() => clearImport()}
+                    onclick={() => clearImport()}
                   >
                     <X class="space-y-4" />
                     Remove
@@ -337,7 +334,7 @@
                 </p>
                 <p class="space-y-4">or click to browse</p>
               </div>
-              <Button variant="outline" on:on:click={() => fileInput?.click()}>
+              <Button variant="outline" on:click={() => fileInput?.click()}>
                 Select File
               </Button>
             </div>
@@ -350,7 +347,7 @@
           bind:this={fileInput}
           type="file"
           accept=".json,.csv,.xml"
-          change={handleFileInput}
+          onchange={handleFileInput}
           class="space-y-4"
           aria-label="Select import file"
         />
@@ -415,11 +412,11 @@
                   ? "\n..."
                   : ""}</pre>
             </div>
-          {:else if filePreview.type === "csv"}
+    {:else if filePreview.type === "csv"}
             <div class="space-y-4">
               <table class="space-y-4">
                 <tbody>
-                  {#each filePreview.data as row, i}
+      {#each (filePreview.data as unknown as string[]) as row, i}
                     <tr class:bg-white={i % 2 === 0}>
                       {#each row.split(",") as cell}
                         <td class="space-y-4"
@@ -434,7 +431,7 @@
           {:else}
             <div class="space-y-4">
               <pre
-                class="space-y-4">{filePreview.raw}</pre>
+                class="space-y-4">{filePreview.raw ?? ''}</pre>
             </div>
           {/if}
         </div>
@@ -452,7 +449,6 @@
             Import Results
           </h3>
 
-          {#if importResults.success}
           {#if importResults.success}
             <div class="space-y-4">
               <div class="space-y-4">
@@ -497,7 +493,7 @@
         <div class="space-y-4">
           <div class="space-y-4">
             <Button
-              on:on:click={() => performImport()}
+              onclick={() => performImport()}
               disabled={isImporting}
               class="space-y-4"
             >
@@ -512,7 +508,7 @@
               {/if}
             </Button>
             <Tooltip content="Clear current import and start over">
-              <Button variant="outline" on:on:click={() => clearImport()}>
+              <Button variant="outline" on:click={() => clearImport()}>
                 <X class="space-y-4" />
                 Cancel
               </Button>
@@ -539,7 +535,7 @@
                 <Button
                   variant="outline"
                   size="sm"
-                  on:on:click={() => downloadExampleTemplate("cases", "json")}
+                  onclick={() => downloadExampleTemplate("cases", "json")}
                 >
                   JSON
                 </Button>
@@ -548,7 +544,7 @@
                 <Button
                   variant="outline"
                   size="sm"
-                  on:on:click={() => downloadExampleTemplate("cases", "csv")}
+                  onclick={() => downloadExampleTemplate("cases", "csv")}
                 >
                   CSV
                 </Button>
@@ -563,7 +559,7 @@
                 <Button
                   variant="outline"
                   size="sm"
-                  on:on:click={() => downloadExampleTemplate("evidence", "json")}
+                  onclick={() => downloadExampleTemplate("evidence", "json")}
                 >
                   JSON
                 </Button>
@@ -572,7 +568,7 @@
                 <Button
                   variant="outline"
                   size="sm"
-                  on:on:click={() => downloadExampleTemplate("evidence", "csv")}
+                  onclick={() => downloadExampleTemplate("evidence", "csv")}
                 >
                   CSV
                 </Button>
@@ -628,7 +624,4 @@
 <style>
   /* @unocss-include */
   /* Custom drag and drop styles */
-  .container {
-    min-height: calc(100vh - 200px);
-}
 </style>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { 
-    Search, Users, Plus, Eye, Edit, Filter, Grid, List, 
+  import {
+    Search, Users, Plus, Eye, Edit, Filter, Grid, List,
     MapPin, Calendar, AlertTriangle, Shield, UserCheck,
     Star, Trash2, Download, Upload, RefreshCw, Settings
   } from 'lucide-svelte';
@@ -136,7 +136,7 @@
   // Computed properties
   let filteredPersons = $derived(() => {
     let filtered = persons;
-    
+
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -259,15 +259,15 @@
 
         <!-- Action Buttons -->
         <div class="flex flex-wrap gap-3">
-          <button 
+          <button
             class="nes-legal-priority-medium yorha-3d-button"
-            on:click={() => showFilters = !showFilters}
+            onclick={() => showFilters = !showFilters}
           >
             <Filter class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">FILTERS</span>
           </button>
 
-          <select 
+          <select
             bind:value={viewMode}
             class="nes-legal-priority-medium yorha-3d-button bg-transparent"
           >
@@ -276,17 +276,17 @@
             <option value="list">List</option>
           </select>
 
-          <button 
+          <button
             class="nes-legal-priority-medium yorha-3d-button"
-            on:click={exportData}
+            onclick={exportData}
           >
             <Download class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">EXPORT</span>
           </button>
 
-          <button 
+          <button
             class="nes-legal-priority-high yorha-3d-button"
-            on:click={() => showAddModal = true}
+            onclick={() => showAddModal = true}
           >
             <Plus class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">ADD PERSON</span>
@@ -319,7 +319,7 @@
           <!-- Threat Level Filter -->
           <div>
             <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Threat Level</label>
-            <select 
+            <select
               bind:value={selectedThreatLevel}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >
@@ -334,7 +334,7 @@
           <!-- Status Filter -->
           <div>
             <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Status</label>
-            <select 
+            <select
               bind:value={selectedStatus}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >
@@ -348,7 +348,7 @@
           <!-- Relationship Filter -->
           <div>
             <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Relationship</label>
-            <select 
+            <select
               bind:value={selectedRelationship}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >
@@ -364,7 +364,7 @@
           <div>
             <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Sort By</label>
             <div class="flex gap-2">
-              <select 
+              <select
                 bind:value={sortBy}
                 class="flex-1 p-3 bg-gray-800 border border-yellow-600 rounded text-white text-sm"
               >
@@ -375,7 +375,7 @@
               </select>
               <button
                 class="px-3 py-1 bg-gray-700 border border-yellow-600 rounded text-yellow-400 hover:bg-gray-600"
-                on:click={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
+                onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
               >
                 {sortOrder === 'asc' ? '↑' : '↓'}
               </button>
@@ -388,9 +388,9 @@
           <span class="text-gray-400 text-sm">
             Showing {filteredPersons.length} of {persons.length} persons
           </span>
-          <button 
+          <button
             class="nes-legal-priority-medium yorha-3d-button text-sm"
-            on:click={clearFilters}
+            onclick={clearFilters}
           >
             Clear All Filters
           </button>
@@ -410,9 +410,9 @@
         {searchQuery ? 'Try adjusting your search criteria or filters' : 'Begin by adding your first person of interest'}
       </p>
       {#if !searchQuery}
-        <button 
+        <button
           class="nes-legal-priority-high yorha-3d-button"
-          on:click={() => showAddModal = true}
+          onclick={() => showAddModal = true}
         >
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
@@ -437,7 +437,7 @@
                     </div>
                   {/if}
                 </div>
-                
+
                 <div class="flex-1 min-w-0">
                   <h3 class="text-lg font-bold text-yellow-400 truncate">{person.name}</h3>
                   {#if person.aliases.length > 0}
@@ -468,7 +468,7 @@
                     {person.profileData.occupation}
                   </div>
                 {/if}
-                
+
                 {#if person.profileData.lastKnownLocation}
                   <div class="flex items-center gap-2 text-gray-300">
                     <MapPin class="w-4 h-4 text-yellow-400" />
@@ -537,7 +537,7 @@
                       </div>
                     {/if}
                   </div>
-                  
+
                   <div class="flex-1">
                     <div class="flex items-center gap-3 mb-1">
                       <h3 class="text-lg font-bold text-yellow-400">{person.name}</h3>
@@ -548,7 +548,7 @@
                         {person.threatLevel}
                       </span>
                     </div>
-                    
+
                     <div class="flex items-center gap-4 text-sm text-gray-400">
                       <span class={cn(
                         "px-2 py-1 rounded uppercase font-medium",
@@ -556,11 +556,11 @@
                       )}>
                         {person.relationship.replace('_', ' ')}
                       </span>
-                      
+
                       {#if person.profileData.occupation}
                         <span>{person.profileData.occupation}</span>
                       {/if}
-                      
+
                       <span>Updated {new Date(person.updatedAt).toLocaleDateString()}</span>
                     </div>
                   </div>

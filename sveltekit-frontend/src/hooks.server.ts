@@ -34,7 +34,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	// Attach user and session to locals for use in load functions and routes
-	event.locals.user = user;
+	event.locals.user = user ? {
+		id: user.id,
+		email: user.email,
+		role: (user as any).role || 'user' as const
+	} : null;
 	event.locals.session = session;
 	
 	return resolve(event);

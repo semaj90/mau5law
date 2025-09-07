@@ -7,16 +7,15 @@
   import { authStore } from '$lib/stores/auth-store';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
   import { getSvelte5Docs, getBitsUIv2Docs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';
-  import LoginForm from '$lib/components/auth/LoginForm.svelte';
-  import RegisterForm from '$lib/components/auth/RegisterForm.svelte';
+  import LoginModal from '$lib/components/auth/LoginModal.svelte';
   import * as Card from '$lib/components/ui/card';
   import * as Alert from '$lib/components/ui/alert';
   import * as Tabs from '$lib/components/ui/tabs';
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
-  import { 
-    Shield, Zap, Cpu, Database, Brain, 
+  import {
+    Shield, Zap, Cpu, Database, Brain,
     CheckCircle, AlertCircle, Clock, Users,
     Activity, Server, Eye, Code
   } from 'lucide-svelte';
@@ -25,11 +24,11 @@
   let testResults = $state<Record<string, any>>({});
   let testRunning = $state(false);
   let currentTab = $state('auth');
-  
+
   // GPU cluster status
   let clusterStatus = $state<any>(null);
   let context7Docs = $state<any>(null);
-  
+
   // Mock data for testing
   const testCredentials = {
     login: {
@@ -59,7 +58,7 @@
   async function runInitialTests() {
     testRunning = true;
     testResults = {};
-    
+
     try {
       // Test 1: GPU Cluster Status
       console.log('🧪 Testing GPU cluster status...');
@@ -70,7 +69,7 @@
         timestamp: new Date().toISOString()
       };
       clusterStatus = clusterTest;
-      
+
       // Test 2: Context7 Documentation
       console.log('🧪 Testing Context7 documentation retrieval...');
       const docsTest = await Promise.allSettled([
@@ -78,14 +77,14 @@
         getBitsUIv2Docs('forms|components'),
         getXStateDocs('machines|actors')
       ]);
-      
+
       testResults.context7 = {
         success: docsTest.every(result => result.status === 'fulfilled'),
         data: docsTest.map(result => result.status === 'fulfilled' ? result.value : null),
         timestamp: new Date().toISOString()
       };
       context7Docs = testResults.context7.data;
-      
+
       // Test 3: Security Analysis
       console.log('🧪 Testing GPU security analysis...');
       const securityTest = await mcpGPUOrchestrator.dispatchGPUTask({
@@ -108,13 +107,13 @@
           protocol: 'auto'
         }
       });
-      
+
       testResults.security = {
         success: securityTest.success,
         data: securityTest,
         timestamp: new Date().toISOString()
       };
-      
+
       // Test 4: Legal Professional Validation
       console.log('🧪 Testing legal professional validation...');
       const validationTest = await mcpGPUOrchestrator.dispatchGPUTask({
@@ -140,13 +139,13 @@
           protocol: 'auto'
         }
       });
-      
+
       testResults.validation = {
         success: validationTest.success,
         data: validationTest,
         timestamp: new Date().toISOString()
       };
-      
+
     } catch (error) {
       console.error('Test failed:', error);
       testResults.error = {
@@ -174,9 +173,9 @@
   // Mock form data for components
   const mockFormData = {
     login: { email: '', password: '' },
-    register: { 
-      email: '', firstName: '', lastName: '', password: '', 
-      confirmPassword: '', role: 'prosecutor', department: '', 
+    register: {
+      email: '', firstName: '', lastName: '', password: '',
+      confirmPassword: '', role: 'prosecutor', department: '',
       jurisdiction: '', badgeNumber: '', enableTwoFactor: false,
       agreeToTerms: false, agreeToPrivacy: false
     }
@@ -187,7 +186,7 @@
       // Fill login form with test data
       const emailInput = document.getElementById('email') as HTMLInputElement;
       const passwordInput = document.getElementById('password') as HTMLInputElement;
-      
+
       if (emailInput) emailInput.value = testCredentials.login.email;
       if (passwordInput) passwordInput.value = testCredentials.login.password;
     } else {
@@ -217,7 +216,7 @@
       <h1 class="text-3xl font-bold">Legal AI Authentication Test Suite</h1>
     </div>
     <p class="text-muted-foreground max-w-2xl mx-auto">
-      Comprehensive testing of GPU-accelerated authentication, XState integration, 
+      Comprehensive testing of GPU-accelerated authentication, XState integration,
       Context7 documentation, and production service clients for the Legal AI Platform.
     </p>
   </div>
@@ -281,8 +280,8 @@
       </div>
 
       <div class="flex gap-2">
-        <Button 
-          on:on:click={runInitialTests} 
+        <Button
+          on:click={runInitialTests}
           disabled={testRunning}
           variant="outline"
         >
@@ -322,15 +321,15 @@
             </Card.Description>
           </Card.Header>
           <Card.Content class="space-y-4">
-            <Button 
-              on:on:click={() => populateTestData('login')}
+            <Button
+              on:click={() => populateTestData('login')}
               variant="outline"
               size="sm"
             >
               Fill Test Data
             </Button>
-            
-            <LoginForm 
+
+            <LoginForm
               data={mockFormData.login}
               enableGPUAuth={true}
               showRegistration={false}
@@ -350,15 +349,15 @@
             </Card.Description>
           </Card.Header>
           <Card.Content class="space-y-4">
-            <Button 
-              on:on:click={() => populateTestData('register')}
+            <Button
+              on:click={() => populateTestData('register')}
               variant="outline"
               size="sm"
             >
               Fill Test Data
             </Button>
-            
-            <RegisterForm 
+
+            <RegisterForm
               data={mockFormData.register}
               enableGPUValidation={true}
               showLogin={false}
@@ -429,7 +428,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="space-y-4">
                 <h4 class="font-medium">Ollama Status</h4>
                 <div class="space-y-2 text-sm">

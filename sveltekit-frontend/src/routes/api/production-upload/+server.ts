@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types';
 // Integrates PostgreSQL, Qdrant, OCR, Gemma3, XState, RabbitMQ, Neo4j
 import { db } from '$lib/server/db/index';
 import { enhancedEvidence } from '$lib/server/db/enhanced-legal-schema';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import path from 'path';
 import { qdrantService } from '$lib/services/qdrantService';
 // Placeholder services to avoid compile errors if originals missing

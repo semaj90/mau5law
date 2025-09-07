@@ -1,106 +1,114 @@
-/**
- * Service Worker for Legal AI Platform
- * Handles caching, offline functionality, and background sync
- */
+// Lightweight Service Worker for YoRHa Legal AI
+// - Keeps a small offline shell
+// - Provides a message channel for simple health pings
+// - Pass-through fetch by default (no aggressive caching to avoid dev confusion)
 
-const CACHE_NAME = 'legal-ai-v1';
-const STATIC_ASSETS = ['/', '/offline.html'];
+const SHELL_CACHE = 'yorha-shell-v1';
+const STATIC_CACHE = 'legal-ai-v1';
+const SHELL = ['/', '/evidence', '/cases', '/evidenceboard', '/chat'];
 
-// Install event - cache static assets
-self.addEventListener('install', function (event) {
-  console.log('Service Worker: Installing...');
-
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then(function (cache) {
-        console.log('Service Worker: Caching static assets');
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .catch(function (error) {
-        console.error('Service Worker: Failed to cache static assets', error);
-      })
+    Promise.all([
+      caches
+        .open(SHELL_CACHE)
+        .then((cache) => cache.addAll(SHELL))
+        .catch(() => void 0),
+      caches
+        .open(STATIC_CACHE)
+        .then((cache) => cache.addAll(['/', '/offline.html']).catch(() => void 0)),
+    ])
   );
-
   self.skipWaiting();
 });
 
-// Activate event - clean up old caches
-self.addEventListener('activate', function (event) {
-  console.log('Service Worker: Activating...');
-
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(function (cacheNames) {
-      return Promise.all(
-        cacheNames.map(function (cacheName) {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker: Deleting old cache', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys.filter((k) => k !== SHELL_CACHE && k !== STATIC_CACHE).map((k) => caches.delete(k))
+        )
+      )
   );
-
   self.clients.claim();
 });
 
-// Fetch event - serve from cache with network fallback
-self.addEventListener('fetch', function (event) {
-  // Skip cross-origin requests
-  if (!event.request.url.startsWith(self.location.origin)) {
-    return;
+self.addEventListener('message', (event) => {
+  if (!event.data) return;
+  const { type } = event.data;
+  if (type === 'ping') {
+    event.source?.postMessage?.({ type: 'pong', ts: Date.now() });
+  } else if (type === 'chat-health') {
+    // Query /api/ai/chat health and post result back
+    (async () => {
+      try {
+        const res = await fetch('/api/ai/chat');
+        const data = await res.json().catch(() => ({}));
+        const payload = { type: 'chat-health', ok: res.ok, data };
+        if (event.source?.postMessage) {
+          event.source.postMessage(payload);
+        } else {
+          const clientsList = await self.clients.matchAll({
+            type: 'window',
+            includeUncontrolled: true,
+          });
+          clientsList.forEach((c) => c.postMessage(payload));
+        }
+      } catch (err) {
+        const payload = { type: 'chat-health', ok: false, error: String(err) };
+        if (event.source?.postMessage) {
+          event.source.postMessage(payload);
+        }
+      }
+    })();
   }
+});
 
-  // Handle API requests differently
-  if (event.request.url.includes('/api/')) {
+// Default: pass-through fetch with graceful fallback to cache
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  // Skip cross-origin
+  if (!req.url.startsWith(self.location.origin)) return;
+
+  // API: network-first
+  if (req.url.includes('/api/')) {
     event.respondWith(
-      fetch(event.request).catch(function () {
-        return new Response(JSON.stringify({ error: 'Network unavailable', offline: true }), {
-          status: 503,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      })
+      fetch(req).catch(
+        () =>
+          new Response(JSON.stringify({ error: 'Network unavailable', offline: true }), {
+            status: 503,
+            headers: { 'Content-Type': 'application/json' },
+          })
+      )
     );
     return;
   }
 
-  // Cache-first strategy for static assets
+  // Static + shell: cache-first, then network
   event.respondWith(
-    caches
-      .match(event.request)
-      .then(function (response) {
-        if (response) {
-          return response;
-        }
-
-        return fetch(event.request).then(function (response) {
-          // Don't cache non-successful responses
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
+    caches.match(req).then((hit) => {
+      if (hit) return hit;
+      return fetch(req)
+        .then((res) => {
+          if (!res || res.status !== 200 || req.method !== 'GET') return res;
+          const copy = res.clone();
+          caches.open(STATIC_CACHE).then((cache) => cache.put(req, copy));
+          return res;
+        })
+        .catch(async () => {
+          // Offline fallback
+          if (req.mode === 'navigate') {
+            const shell = await caches.open(SHELL_CACHE);
+            return (
+              (await shell.match('/', { ignoreSearch: true })) ||
+              new Response('Offline', { status: 504 })
+            );
           }
-
-          // Don't cache POST requests or form submissions
-          if (event.request.method !== 'GET') {
-            return response;
-          }
-
-          // Clone the response for caching
-          const responseToCache = response.clone();
-
-          caches.open(CACHE_NAME).then(function (cache) {
-            cache.put(event.request, responseToCache);
-          });
-
-          return response;
+          return new Response('Offline', { status: 504 });
         });
-      })
-      .catch(function () {
-        // Return offline page for navigation requests
-        if (event.request.mode === 'navigate') {
-          return caches.match('/offline.html');
-        }
-      })
+    })
   );
 });
 

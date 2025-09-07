@@ -358,7 +358,7 @@ let eventSource = $state<EventSource | null>(null);
 
           <div class="flex gap-2">
             <Button
-              on:on:click={() => scaleCluster(targetWorkers)}
+              on:click={() => scaleCluster(targetWorkers)}
               disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}
               class="flex-1">
               {#if isScaling}
@@ -371,7 +371,7 @@ let eventSource = $state<EventSource | null>(null);
             </Button>
 
             <Button
-              on:on:click={() => scaleCluster(clusterHealth.totalWorkers + 1)}
+              on:click={() => scaleCluster(clusterHealth.totalWorkers + 1)}
               disabled={isScaling}
               variant="outline"
               class="px-3">
@@ -379,7 +379,7 @@ let eventSource = $state<EventSource | null>(null);
             </Button>
 
             <Button
-              on:on:click={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
+              on:click={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               disabled={isScaling || clusterHealth.totalWorkers <= 1}
               variant="outline"
               class="px-3">
@@ -398,7 +398,7 @@ let eventSource = $state<EventSource | null>(null);
 
         <div class="space-y-3">
           <Button
-            on:on:click={rollingRestart}
+            on:click={rollingRestart}
             disabled={isRestarting}
             class="w-full bg-orange-600 hover:bg-orange-700">
             {#if isRestarting}
@@ -410,7 +410,7 @@ let eventSource = $state<EventSource | null>(null);
             {/if}
           </Button>
 
-          <Button on:on:click={fetchClusterStatus} variant="outline" class="w-full">
+          <Button on:click={fetchClusterStatus} variant="outline" class="w-full">
             <RefreshCw class="h-4 w-4 mr-2" />
             Refresh Status
           </Button>

@@ -6,22 +6,22 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  
+
   // Real-time search components
   import RealTimeLegalSearch from '$lib/components/search/RealTimeLegalSearch.svelte';
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
-  
+
   // UI Components
   import { Button } from '$lib/components/ui/button/index.js';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs/index.js';
-  
+
   // Icons
-  import { 
-    Zap, 
-    Wifi, 
-    TrendingUp, 
+  import {
+    Zap,
+    Wifi,
+    TrendingUp,
     Activity,
     Search,
     Database,
@@ -44,7 +44,7 @@
     'Federal court precedents',
     'Search warrant requirements'
   ]);
-  
+
   let demoMetrics = $state({
     totalSearches: 0,
     avgResponseTime: 0,
@@ -56,7 +56,7 @@
   function handleSearchSelect(event: CustomEvent) {
     selectedResult = event.detail.result;
     console.log('🔍 Selected result:', selectedResult);
-    
+
     demoMetrics.totalSearches++;
   }
 
@@ -97,7 +97,7 @@
       </span>
     </h1>
     <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-      Experience the next generation of legal research with real-time WebSocket streaming, 
+      Experience the next generation of legal research with real-time WebSocket streaming,
       vector similarity search, and AI-powered result enhancement.
     </p>
   </div>
@@ -143,7 +143,7 @@
         </CardHeader>
         <CardContent>
           <!-- Real-Time Search Component -->
-          <RealTimeLegalSearch 
+          <RealTimeLegalSearch
             placeholder="Search cases, precedents, evidence, statutes..."
             categories={['cases', 'evidence', 'precedents', 'statutes', 'documents']}
             enableRealTime={true}
@@ -251,11 +251,11 @@
         <CardContent>
           <div class="space-y-2">
             {#each testQueries as query}
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 class="w-full justify-start text-left h-auto p-2"
-                on:on:click={() => testSearch(query)}
+                on:click={() => testSearch(query)}
               >
                 <div class="text-xs truncate">{query}</div>
               </Button>
@@ -280,7 +280,7 @@
                 {$state.connectionStatus}
               </Badge>
             </div>
-            
+
             <div class="flex justify-between">
               <span>Search Status:</span>
               <Badge variant="outline">
@@ -298,7 +298,7 @@
                 <span>Total Queries:</span>
                 <span class="font-medium">{$state.searchMetrics.totalQueries}</span>
               </div>
-              
+
               <div class="flex justify-between">
                 <span>Avg Response Time:</span>
                 <span class="font-medium">{$state.searchMetrics.averageResponseTime}ms</span>
@@ -322,17 +322,17 @@
               <span>Real-time Streaming</span>
               <div class="w-2 h-2 rounded-full bg-green-400"></div>
             </div>
-            
+
             <div class="flex items-center justify-between">
               <span>Vector Similarity</span>
               <div class="w-2 h-2 rounded-full bg-blue-400"></div>
             </div>
-            
+
             <div class="flex items-center justify-between">
               <span>AI Enhancement</span>
               <div class="w-2 h-2 rounded-full bg-purple-400"></div>
             </div>
-            
+
             <div class="flex items-center justify-between">
               <span>WebSocket Connection</span>
               <div class="w-2 h-2 rounded-full {$state.connectionStatus === 'connected' ? 'bg-green-400' : 'bg-gray-400'}"></div>
@@ -357,14 +357,14 @@
                 Active
               </Badge>
             </div>
-            
+
             <div class="flex justify-between items-center">
               <span>Upload Service (8093)</span>
               <Badge variant="outline" class="text-green-600">
                 Active
               </Badge>
             </div>
-            
+
             <div class="flex justify-between items-center">
               <span>WebSocket Stream</span>
               <Badge variant="outline" class="{$state.connectionStatus === 'connected' ? 'text-green-600' : 'text-gray-500'}">
@@ -386,7 +386,7 @@
         <TabsTrigger value="features">Features</TabsTrigger>
         <TabsTrigger value="performance">Performance</TabsTrigger>
       </TabsList>
-      
+
       <TabsContent value="overview" class="mt-6">
         <Card>
           <CardHeader>
@@ -410,7 +410,7 @@
           </CardContent>
         </Card>
       </TabsContent>
-      
+
       <TabsContent value="architecture" class="mt-6">
         <Card>
           <CardHeader>
@@ -424,7 +424,7 @@
               <li><strong>WebSocket Streaming:</strong> Real-time result delivery</li>
               <li><strong>NATS Messaging:</strong> Distributed event system (planned)</li>
             </ul>
-            
+
             <h3>Data Flow</h3>
             <ol>
               <li>User types query in search interface</li>
@@ -437,7 +437,7 @@
           </CardContent>
         </Card>
       </TabsContent>
-      
+
       <TabsContent value="features" class="mt-6">
         <Card>
           <CardHeader>
@@ -466,7 +466,7 @@
                   </li>
                 </ul>
               </div>
-              
+
               <div>
                 <h4 class="font-semibold mb-3">AI Enhancement</h4>
                 <ul class="space-y-2 text-sm">
@@ -492,7 +492,7 @@
           </CardContent>
         </Card>
       </TabsContent>
-      
+
       <TabsContent value="performance" class="mt-6">
         <Card>
           <CardHeader>
@@ -506,21 +506,21 @@
                 </div>
                 <div class="text-sm text-gray-600">Total Queries</div>
               </div>
-              
+
               <div class="text-center p-4 bg-gray-50 rounded-lg">
                 <div class="text-2xl font-bold text-green-600">
                   {$state.searchMetrics.averageResponseTime || 0}ms
                 </div>
                 <div class="text-sm text-gray-600">Avg Response</div>
               </div>
-              
+
               <div class="text-center p-4 bg-gray-50 rounded-lg">
                 <div class="text-2xl font-bold text-purple-600">
                   {$state.results.length}
                 </div>
                 <div class="text-sm text-gray-600">Live Results</div>
               </div>
-              
+
               <div class="text-center p-4 bg-gray-50 rounded-lg">
                 <div class="text-2xl font-bold text-orange-600">
                   {$state.connectionStatus === 'connected' ? '100%' : '0%'}
@@ -539,7 +539,7 @@
   :global(.prose ul li) {
     @apply mb-1;
   }
-  
+
   :global(.prose ol li) {
     @apply mb-1;
   }

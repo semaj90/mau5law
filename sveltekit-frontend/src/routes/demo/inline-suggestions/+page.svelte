@@ -63,17 +63,17 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
   });
 
   // Monitor service status
-let statusInterval = $state<NodeJS.Timeout;
-  
-  onMount(() >(> {
+  let statusInterval = $state<NodeJS.Timeout | null>(null);
+
+  onMount(() => {
     // Check service status periodically
     statusInterval = setInterval(() => {
-      serviceStatus.initialized = inlineSuggestionService.isReady());
+      serviceStatus.initialized = inlineSuggestionService.isReady();
       // Additional status checks would go here
-    }, 2000);
+    }, 2000) as unknown as NodeJS.Timeout;
 
     return () => {
-      if (statusInterval) clearInterval(statusInterval);
+      if (statusInterval) clearInterval(statusInterval as unknown as number);
     };
   });
 
@@ -92,7 +92,7 @@ let statusInterval = $state<NodeJS.Timeout;
 The legal precedent established in Williams v. Davis (2019) provides guidance on calculating damages in commercial disputes. The court emphasized the importance of proving causation between the breach and the claimed losses.
 
 Furthermore, the doctrine of mitigation requires that the injured party take reasonable steps to minimize their damages. This principle was clearly articulated in`;
-    
+
     // Reset stats
     stats = {
       totalSuggestions: 0,
@@ -141,14 +141,14 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
   <div class="max-w-7xl mx-auto space-y-6">
-    
+
     <!-- Header -->
     <div class="text-center space-y-4">
       <h1 class="text-4xl font-bold text-slate-900">Enhanced Claude Inline Suggestions</h1>
       <p class="text-xl text-slate-600 max-w-3xl mx-auto">
         Experience real-time AI-powered editing with intelligent suggestions for legal documents
       </p>
-      
+
       <!-- Service Status Indicators -->
       <div class="flex justify-center gap-4 text-sm">
         <div class="flex items-center gap-2">
@@ -167,10 +167,10 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
+
       <!-- Main Editor -->
       <div class="lg:col-span-2 space-y-6">
-        
+
         <!-- Demo Scenarios -->
         <Card>
           <CardHeader>
@@ -183,7 +183,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                 <Button
                   variant="outline"
                   size="sm"
-                  on:on:click={() => loadScenario(scenario)}
+                  on:click={() => loadScenario(scenario)}
                   class="justify-start text-left"
                 >
                   {scenario.title}
@@ -201,7 +201,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                 <CardTitle>AI-Enhanced Legal Editor</CardTitle>
                 <CardDescription>Start typing to see intelligent suggestions appear</CardDescription>
               </div>
-              <Button on:on:click={resetDemo} variant="outline" size="sm">
+              <Button on:click={resetDemo} variant="outline" size="sm">
                 Reset Demo
               </Button>
             </div>
@@ -222,7 +222,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
             />
           </CardContent>
         </Card>
-        
+
         <!-- Live Stats -->
         <Card>
           <CardHeader>
@@ -250,7 +250,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                 <div class="text-sm text-slate-600">Avg Confidence</div>
               </div>
             </div>
-            
+
             <!-- Suggestion Types Breakdown -->
             <div class="mt-6">
               <h4 class="font-semibold mb-3">Suggestion Types</h4>
@@ -268,7 +268,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
 
       <!-- Configuration Panel -->
       <div class="space-y-6">
-        
+
         <!-- AI Configuration -->
         <Card>
           <CardHeader>
@@ -276,11 +276,11 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
             <CardDescription>Customize the suggestion engine</CardDescription>
           </CardHeader>
           <CardContent class="space-y-6">
-            
+
             <!-- AI Model Selection -->
             <div>
               <label class="text-sm font-medium mb-2 block">AI Model</label>
-              <select 
+              <select
                 bind:value={serviceOptions.aiModel}
                 class="w-full p-2 border rounded-md bg-white"
               >
@@ -294,27 +294,27 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
             <!-- Suggestion Types -->
             <div class="space-y-3">
               <label class="text-sm font-medium">Suggestion Types</label>
-              
+
               <div class="flex items-center justify-between">
                 <span class="text-sm">Auto-completion</span>
                 <Switch bind:checked={serviceOptions.enableAutoComplete} />
               </div>
-              
+
               <div class="flex items-center justify-between">
                 <span class="text-sm">Grammar Check</span>
                 <Switch bind:checked={serviceOptions.enableGrammarCheck} />
               </div>
-              
+
               <div class="flex items-center justify-between">
                 <span class="text-sm">Legal Terms</span>
                 <Switch bind:checked={serviceOptions.enableLegalTerms} />
               </div>
-              
+
               <div class="flex items-center justify-between">
                 <span class="text-sm">Case References</span>
                 <Switch bind:checked={serviceOptions.enableCaseReferences} />
               </div>
-              
+
               <div class="flex items-center justify-between">
                 <span class="text-sm">Citations</span>
                 <Switch bind:checked={serviceOptions.enableCitations} />
@@ -335,7 +335,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                   class="w-full"
                 />
               </div>
-              
+
               <div>
                 <label class="text-sm font-medium mb-2 block">
                   Max Suggestions ({serviceOptions.maxSuggestions})
@@ -348,7 +348,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                   class="w-full"
                 />
               </div>
-              
+
               <div>
                 <label class="text-sm font-medium mb-2 block">
                   Delay (ms) ({serviceOptions.suggestionDelay})
@@ -379,7 +379,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                   <div class="text-slate-600">Continuous analysis as you type</div>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
                 <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
                 <div>
@@ -387,7 +387,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                   <div class="text-slate-600">Context-aware legal vocabulary</div>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
                 <div class="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
                 <div>
@@ -395,7 +395,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                   <div class="text-slate-600">Find relevant precedents</div>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
                 <div class="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
                 <div>
@@ -403,7 +403,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                   <div class="text-slate-600">Proper legal citation format</div>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
                 <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
                 <div>
@@ -456,20 +456,20 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
     scrollbar-width: thin;
     scrollbar-color: rgb(203 213 225) transparent;
   }
-  
+
   :global(.enhanced-inline-editor .editor-content::-webkit-scrollbar) {
     width: 8px;
   }
-  
+
   :global(.enhanced-inline-editor .editor-content::-webkit-scrollbar-track) {
     background: transparent;
   }
-  
+
   :global(.enhanced-inline-editor .editor-content::-webkit-scrollbar-thumb) {
     background: rgb(203 213 225);
     border-radius: 4px;
   }
-  
+
   :global(.enhanced-inline-editor .editor-content::-webkit-scrollbar-thumb:hover) {
     background: rgb(148 163 184);
   }

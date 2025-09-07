@@ -54,7 +54,7 @@ export interface DocumentEmbedding {
 }
 
 export class SelfOrganizingMapRAG {
-  private som: SOMNode[][];
+  private som!: SOMNode[][];
   private config: SOMConfig;
   private clusters: Map<number, BooleanCluster> = new Map();
   private documentEmbeddings: Map<string, DocumentEmbedding> = new Map();

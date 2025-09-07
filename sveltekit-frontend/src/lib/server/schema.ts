@@ -25,7 +25,7 @@ export const evidenceProcessTable = pgTable('evidence_process', {
   finished_at: timestamp('finished_at'),
   updated_at: timestamp('updated_at').defaultNow(),
   error: text('error')
-}, (table) => ({
+}, (table: any) => ({
   evidenceIdIdx: index('evidence_process_evidence_id_idx').on(table.evidence_id),
   statusIdx: index('evidence_process_status_idx').on(table.status),
   requestedByIdx: index('evidence_process_requested_by_idx').on(table.requested_by),
@@ -40,7 +40,7 @@ export const evidenceOcrTable = pgTable('evidence_ocr', {
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   metadata: jsonb('metadata'), // OCR method, page count, etc.
   created_at: timestamp('created_at').notNull().defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   evidenceIdIdx: index('evidence_ocr_evidence_id_idx').on(table.evidence_id),
   createdAtIdx: index('evidence_ocr_created_at_idx').on(table.created_at)
 }));
@@ -53,7 +53,7 @@ export const evidenceEmbeddingsTable = pgTable('evidence_embeddings', {
   dim: integer('dim').notNull(),
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').notNull().defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   evidenceIdIdx: index('evidence_embeddings_evidence_id_idx').on(table.evidence_id),
   modelIdx: index('evidence_embeddings_model_idx').on(table.model)
 }));
@@ -69,7 +69,7 @@ export const evidenceVectorsTable = pgTable('evidence_vectors', {
   metadata: jsonb('metadata').default({}).notNull(),
   created_at: timestamp('created_at').notNull().defaultNow(),
   updated_at: timestamp('updated_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   evidenceIdModelIdx: index('evidence_vectors_evidence_id_model_idx').on(table.evidence_id, table.model),
   // IVFFlat index with L2 distance operator class for fast similarity search
   vectorIdx: index('evidence_vectors_vector_idx')
@@ -88,7 +88,7 @@ export const evidenceAnalysisTable = pgTable('evidence_analysis', {
   entities: jsonb('entities'), // Extracted entities
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').notNull().defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   evidenceIdIdx: index('evidence_analysis_evidence_id_idx').on(table.evidence_id),
   createdAtIdx: index('evidence_analysis_created_at_idx').on(table.created_at)
 }));
@@ -110,7 +110,7 @@ export const evidenceTable = pgTable('evidence', {
   // Always present tags array for auto-tagging worker
   tags: jsonb('tags').default(sql`'[]'::jsonb`).notNull(),
   is_active: boolean('is_active').default(true)
-}, (table) => ({
+}, (table: any) => ({
   caseIdIdx: index('evidence_case_id_idx').on(table.case_id),
   uploadedByIdx: index('evidence_uploaded_by_idx').on(table.uploaded_by),
   hashIdx: index('evidence_hash_idx').on(table.hash),
@@ -131,7 +131,7 @@ export const casesTable = pgTable('cases', {
   updated_at: timestamp('updated_at').defaultNow(),
   closed_at: timestamp('closed_at'),
   metadata: jsonb('metadata')
-}, (table) => ({
+}, (table: any) => ({
   caseNumberIdx: index('cases_case_number_idx').on(table.case_number),
   statusIdx: index('cases_status_idx').on(table.status),
   createdByIdx: index('cases_created_by_idx').on(table.created_by),
@@ -151,7 +151,7 @@ export const reportsTable = pgTable('reports', {
   created_at: timestamp('created_at').notNull().defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
   metadata: jsonb('metadata').default({}).notNull()
-}, (table) => ({
+}, (table: any) => ({
   caseIdIdx: index('reports_case_id_idx').on(table.case_id),
   evidenceIdIdx: index('reports_evidence_id_idx').on(table.evidence_id),
   createdByIdx: index('reports_created_by_idx').on(table.created_by),
@@ -166,7 +166,7 @@ export const systemHealthTable = pgTable('system_health', {
   metrics: jsonb('metrics'), // Performance metrics
   last_check: timestamp('last_check').notNull().defaultNow(),
   created_at: timestamp('created_at').notNull().defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   serviceIdx: index('system_health_service_idx').on(table.service),
   lastCheckIdx: index('system_health_last_check_idx').on(table.last_check)
 }));
@@ -180,9 +180,30 @@ export const queueStatsTable = pgTable('queue_stats', {
   messages_completed: integer('messages_completed').default(0),
   messages_failed: integer('messages_failed').default(0),
   last_updated: timestamp('last_updated').notNull().defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   queueNameIdx: index('queue_stats_queue_name_idx').on(table.queue_name),
   lastUpdatedIdx: index('queue_stats_last_updated_idx').on(table.last_updated)
+}));
+
+// Chat embeddings for AI assistant semantic search
+export const chatEmbeddings = pgTable('chat_embeddings', {
+  id: uuid('id').primaryKey(),
+  messageId: text('message_id').notNull().unique(),
+  sessionId: text('session_id').notNull(),
+  content: text('content').notNull(),
+  role: text('role').notNull(), // 'user' | 'assistant' | 'system'
+  embedding: vector('embedding', { dimensions: 768 }),
+  timestamp: timestamp('timestamp').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+  metadata: jsonb('metadata'), // Additional metadata from the chat message
+  legalDomain: text('legal_domain') // Legal context category
+}, (table: any) => ({
+  messageIdIdx: index('chat_embeddings_message_id_idx').on(table.messageId),
+  sessionIdIdx: index('chat_embeddings_session_id_idx').on(table.sessionId),
+  timestampIdx: index('chat_embeddings_timestamp_idx').on(table.timestamp),
+  legalDomainIdx: index('chat_embeddings_legal_domain_idx').on(table.legalDomain),
+  // Vector similarity search index (HNSW) will be created manually in migration
+  embeddingIdx: index('chat_embeddings_embedding_idx').on(table.embedding)
 }));
 
 // Export all table types
@@ -215,6 +236,9 @@ export type NewSystemHealth = typeof systemHealthTable.$inferInsert;
 
 export type QueueStats = typeof queueStatsTable.$inferSelect;
 export type NewQueueStats = typeof queueStatsTable.$inferInsert;
+
+export type ChatEmbedding = typeof chatEmbeddings.$inferSelect;
+export type NewChatEmbedding = typeof chatEmbeddings.$inferInsert;
 
 // Aliases for compatibility with API routes
 export const legalDocuments = evidenceTable;

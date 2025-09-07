@@ -418,7 +418,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
     <Button
       variant={activeTab === 'search' ? 'default' : 'ghost'}
       size="sm"
-      on:on:click={() => activeTab = 'search'}
+  on:click={() => activeTab = 'search'}
       class="flex items-center gap-2"
     >
       <Search class="h-4 w-4" />
@@ -427,7 +427,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
     <Button
       variant={activeTab === 'recommendations' ? 'default' : 'ghost'}
       size="sm"
-      on:on:click={() => activeTab = 'recommendations'}
+  on:click={() => activeTab = 'recommendations'}
       class="flex items-center gap-2"
     >
       <Lightbulb class="h-4 w-4" />
@@ -436,7 +436,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
     <Button
       variant={activeTab === 'analysis' ? 'default' : 'ghost'}
       size="sm"
-      on:on:click={() => activeTab = 'analysis'}
+  on:click={() => activeTab = 'analysis'}
       class="flex items-center gap-2"
     >
       <BarChart3 class="h-4 w-4" />
@@ -445,7 +445,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
     <Button
       variant={activeTab === 'health' ? 'default' : 'ghost'}
       size="sm"
-      on:on:click={() => activeTab = 'health'}
+  on:click={() => activeTab = 'health'}
       class="flex items-center gap-2"
     >
       <Activity class="h-4 w-4" />
@@ -507,7 +507,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
           <div class="flex items-center gap-2">
             <Button
-              on:on:click={performSearch}
+              on:click={performSearch}
               disabled={isProcessing || !searchQuery.trim()}
               class="bits-btn-default"
             >
@@ -522,7 +522,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             <Button
               variant="outline"
               size="sm"
-              on:on:click={() => showAdvancedOptions = !showAdvancedOptions}
+              on:click={() => showAdvancedOptions = !showAdvancedOptions}
             >
               <Settings class="h-4 w-4" />
             </Button>
@@ -640,7 +640,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
           </div>
 
           <Button
-            on:on:click={generateRecommendations}
+            on:click={generateRecommendations}
             disabled={isProcessing || !recommendationContext.trim()}
             class="bits-btn-default"
           >
@@ -745,7 +745,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
           </div>
 
           <Button
-            on:on:click={performSemanticAnalysis}
+            on:click={performSemanticAnalysis}
             disabled={isProcessing || !analysisContent.trim()}
             class="bits-btn-default"
           >
@@ -923,7 +923,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
               <Activity class="h-5 w-5" />
               Vector Intelligence System Health
             </span>
-            <Button variant="outline" size="sm" on:on:click={loadSystemHealth}>
+            <Button variant="outline" size="sm" on:click={loadSystemHealth}>
               <RefreshCw class="h-4 w-4" />
             </Button>
           </CardTitle>

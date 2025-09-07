@@ -291,6 +291,8 @@ export default defineConfig(async ({ mode }) => {
         $database: resolve('./src/lib/database'),
         $agents: resolve('./src/lib/agents'),
         $legal: resolve('./src/lib/legal'),
+        // Force lokijs imports to a safe compat shim to avoid UMD/ESM default export issues
+        lokijs: resolve('./src/lib/compat/lokijs.ts'),
 
         // Replace Melt UI with a local shim to avoid build-time breakage during migration
         '@melt-ui/svelte': resolve('./src/lib/shims/melt-ui-shim.ts'),
@@ -320,7 +322,6 @@ export default defineConfig(async ({ mode }) => {
             }
           : undefined,
     },
-
 
     // Worker configuration for Node.js clustering support
     worker: {

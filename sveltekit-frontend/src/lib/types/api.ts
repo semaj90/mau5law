@@ -1032,3 +1032,28 @@ export interface MultiProtocolRequestOptions extends Omit<RequestInit, 'cache' |
   cache?: boolean;
   priority?: 'low' | 'medium' | 'high' | 'critical';
 }
+
+// Dialog and Command types for UI components
+export interface DialogDataProvider {
+  endpoint?: string;
+  data?: any;
+}
+
+export interface CommandSearchRequest {
+  query: string;
+  type?: string;
+}
+
+export interface CommandSearchResponse {
+  results: any[];
+}
+
+export interface LegalDocument {
+  id: string;
+  title: string;
+  content?: string;
+  type: string;
+}
+
+// Export User type for components
+export { User } from './user';

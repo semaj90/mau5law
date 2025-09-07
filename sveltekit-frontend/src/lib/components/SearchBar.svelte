@@ -1,8 +1,16 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import SearchInput from './SearchInput.svelte';
-	
 	import { Filter, ArrowUpDown } from 'lucide-svelte';
+
+	interface Props {
+		placeholder?: string;
+		value?: string;
+		showFilters?: boolean;
+		sortOptions?: Array<{ id: string; label: string; }>;
+		onsearch?: (event: CustomEvent) => void;
+		onsortChanged?: (event: CustomEvent) => void;
+		onfiltersChanged?: (event: CustomEvent) => void;
+	}
 
 	// Props using Svelte 5 syntax
 	let {
@@ -14,15 +22,11 @@
 			{ id: 'date', label: 'Date' },
 			{ id: 'name', label: 'Name' },
 			{ id: 'type', label: 'Type' }
-		]
-	}: {
-		placeholder?: string;
-		value?: string;
-		showFilters?: boolean;
-		sortOptions?: Array<{ id: string; label: string; }>;
-	} = $props();
-
-	const dispatch = createEventDispatcher();
+		],
+		onsearch,
+		onsortChanged,
+		onfiltersChanged
+	}: Props = $props();
 
 	// State using Svelte 5 syntax
 	let selectedSort = $state('relevance');
@@ -36,12 +40,12 @@
 	});
 
 	function handleSearch(event: CustomEvent) {
-		dispatch('search', event.detail);
-}
+		onsearch?.(event);
+	}
 	function handleSortChange(sortId: string) {
 		selectedSort = sortId;
-		dispatch('sortChanged', { sort: sortId });
-}
+		onsortChanged?.(new CustomEvent('sortChanged', { detail: { sort: sortId } }));
+	}
 	function toggleFilters() {
 		filtersOpen = !filtersOpen;
 		if (filtersOpen) {
@@ -63,30 +67,32 @@
 		dispatchFilters();
 }
 	function dispatchFilters() {
-		dispatch('filtersChanged', {
-			fileTypes: selectedFileTypes,
-			dateRange: dateRange
-		});
-}
+		onfiltersChanged?.(new CustomEvent('filtersChanged', { 
+			detail: {
+				fileTypes: selectedFileTypes,
+				dateRange: dateRange
+			}
+		}));
+	}
 </script>
 
-<div class="container mx-auto px-4">
+<div class="search-bar-container">
 	<!-- Main Search Input -->
 	<SearchInput 
 		{placeholder}
 		{value}
-		search={handleSearch}
+		onsearch={handleSearch}
 	/>
 
 	<!-- Controls -->
 	{#if showFilters}
-		<div class="container mx-auto px-4">
+		<div class="search-controls">
 			<!-- Sort Dropdown -->
-			<div class="container mx-auto px-4">
+			<div class="sort-container">
 				<select
 					bind:value={selectedSort}
-					change={() => handleSortChange(selectedSort)}
-					class="container mx-auto px-4"
+					onchange={() => handleSortChange(selectedSort)}
+					class="sort-select"
 					aria-label="Sort by"
 				>
 					{#each sortOptions as option}
@@ -98,9 +104,9 @@
 
 			<!-- Filter Button -->
 			<button
-				class="container mx-auto px-4"
-			 class:active={filtersOpen}
-				on:onclick={() => toggleFilters()}
+				class="filter-button"
+				class:active={filtersOpen}
+				onclick={() => toggleFilters()}
 				aria-label="Toggle filters"
 				title="Filters"
 			>
@@ -112,75 +118,75 @@
 
 <!-- Advanced Filters -->
 {#if filtersOpen}
-	<div class="container mx-auto px-4">
-		<div class="container mx-auto px-4">
-			<span class="container mx-auto px-4">File Type:</span>
-			<div class="container mx-auto px-4">
-				<label class="container mx-auto px-4">
+	<div class="filters-panel">
+		<div class="filter-group">
+			<span class="filter-label">File Type:</span>
+			<div class="filter-options">
+				<label class="filter-checkbox">
 					<input 
 						type="checkbox" 
 						value="image" 
 						checked={selectedFileTypes.includes('image')}
-						change={handleFileTypeChange}
+						onchange={handleFileTypeChange}
 					/>
 					Images
 				</label>
-				<label class="container mx-auto px-4">
+				<label class="filter-checkbox">
 					<input 
 						type="checkbox" 
 						value="document" 
 						checked={selectedFileTypes.includes('document')}
-						change={handleFileTypeChange}
+						onchange={handleFileTypeChange}
 					/>
 					Documents
 				</label>
-				<label class="container mx-auto px-4">
+				<label class="filter-checkbox">
 					<input 
 						type="checkbox" 
 						value="video" 
 						checked={selectedFileTypes.includes('video')}
-						change={handleFileTypeChange}
+						onchange={handleFileTypeChange}
 					/>
 					Videos
 				</label>
-				<label class="container mx-auto px-4">
+				<label class="filter-checkbox">
 					<input 
 						type="checkbox" 
 						value="audio" 
 						checked={selectedFileTypes.includes('audio')}
-						change={handleFileTypeChange}
+						onchange={handleFileTypeChange}
 					/>
 					Audio
 				</label>
 			</div>
 		</div>
 
-		<div class="container mx-auto px-4">
-			<span class="container mx-auto px-4">Date Range:</span>
-			<div class="container mx-auto px-4">
+		<div class="filter-group">
+			<span class="filter-label">Date Range:</span>
+			<div class="date-range">
 				<input 
 					type="date" 
-					class="container mx-auto px-4" 
+					class="date-input" 
 					aria-label="From date"
 					bind:value={dateRange.from}
-					change={handleDateChange}
+					onchange={handleDateChange}
 				/>
 				<span>to</span>
 				<input 
 					type="date" 
-					class="container mx-auto px-4" 
+					class="date-input" 
 					aria-label="To date"
 					bind:value={dateRange.to}
-					change={handleDateChange}
+					onchange={handleDateChange}
 				/>
 			</div>
 		</div>
 
-		<div class="container mx-auto px-4">
+		<div class="filter-actions">
 			<button 
 				type="button" 
-				class="container mx-auto px-4"
-				on:onclick={() => {
+				class="clear-filters-btn"
+				onclick={() => {
 					selectedFileTypes = [];
 					dateRange = { from: '', to: '' };
 					dispatchFilters();
@@ -339,4 +345,3 @@
 }}
 </style>
 
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

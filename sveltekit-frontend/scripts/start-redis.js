@@ -37,7 +37,6 @@ function startRedis() {
   const redis = spawn(redisPath, [
     '--port', '4005',
     '--bind', '127.0.0.1',
-    '--protected-mode', 'no',
     '--save', '60', '1000', // Save every 60s if at least 1000 keys changed
     '--loglevel', 'notice'
   ], {

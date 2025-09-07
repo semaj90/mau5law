@@ -344,14 +344,14 @@ let endpoint = $state('');
 
       <div class="flex gap-4">
         <Button
-          on:on:click={runSystemHealthCheck}
+          on:click={runSystemHealthCheck}
           class="bg-blue-600 text-white hover:bg-blue-700 font-bold px-4 py-2"
         >
           🔄 REFRESH HEALTH CHECK
         </Button>
 
         <Button
-          on:on:click={runIntegrationTests}
+          on:click={runIntegrationTests}
           disabled={isRunningTests}
           class="bg-green-600 text-white hover:bg-green-700 font-bold px-4 py-2 disabled:opacity-50"
         >

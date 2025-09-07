@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { lucia } from '$lib/server/auth';
+import { getTypedLocals } from '$lib/types/locals-unify';
 import type { RequestEvent } from '@sveltejs/kit';
 
 /*
@@ -9,8 +10,11 @@ import type { RequestEvent } from '@sveltejs/kit';
  */
 
 export const POST = async ({ cookies, locals }: RequestEvent) => {
+  // Use typed locals for consistent session/user access
+  const typedLocals = getTypedLocals(locals);
+  
   // Check if user has an active session
-  if (!locals.session) {
+  if (!typedLocals.session) {
     return json({ 
       success: false, 
       message: 'No active session to logout' 
@@ -19,7 +23,7 @@ export const POST = async ({ cookies, locals }: RequestEvent) => {
 
   try {
     // Invalidate the session in PostgreSQL database via Lucia
-    await lucia.invalidateSession(locals.session.id);
+    await lucia.invalidateSession(typedLocals.session.id);
     
     // Create and set blank session cookie
     const sessionCookie = lucia.createBlankSessionCookie();
@@ -30,8 +34,8 @@ export const POST = async ({ cookies, locals }: RequestEvent) => {
 
     // Log successful logout
     console.log('User logged out successfully:', {
-      sessionId: locals.session.id,
-      userId: locals.user?.id,
+      sessionId: typedLocals.session.id,
+      userId: typedLocals.user?.id,
       timestamp: new Date().toISOString()
     });
 

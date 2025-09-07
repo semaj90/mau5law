@@ -203,7 +203,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             <Badge
               variant={selectedModel === model ? "default" : "outline"}
               class="cursor-pointer"
-              on:on:click={() => (selectedModel = model)}
+              on:click={() => (selectedModel = model)}
             >
               {model}
             </Badge>
@@ -211,10 +211,10 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </div>
 
         <div class="mt-4 flex gap-2">
-          <Button on:on:click={testGeneration} variant="outline">
+          <Button on:click={testGeneration} variant="outline">
             Test Generation
           </Button>
-          <Button on:on:click={checkOllamaHealth} variant="outline">
+          <Button on:click={checkOllamaHealth} variant="outline">
             Refresh Status
           </Button>
         </div>

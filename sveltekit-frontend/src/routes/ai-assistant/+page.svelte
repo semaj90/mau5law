@@ -57,7 +57,7 @@
     try {
       // Use proper Server-Sent Events (SSE) endpoint
       const eventSource = new EventSource('/api/ai/chat-sse');
-      
+
       // Send message data via POST first to initiate the stream
       const initResponse = await fetch('/api/ai/chat-sse', {
         method: 'POST',
@@ -103,31 +103,31 @@
               if (line.startsWith('data: ')) {
                 try {
                   const eventData = JSON.parse(line.slice(6));
-                  
+
                   switch (eventData.type) {
                     case 'connection':
                       if (eventData.conversationId) {
                         conversationId = eventData.conversationId;
                       }
                       break;
-                      
+
                     case 'token':
                       aiMessage.content = eventData.fullResponse || aiMessage.content + eventData.content;
                       // Trigger Svelte 5 reactivity
                       messages = [...messages];
                       break;
-                      
+
                     case 'complete':
                       aiMessage.content = eventData.fullResponse;
                       messages = [...messages];
                       isStreaming = false;
                       break;
-                      
+
                     case 'error':
                       error = eventData.error;
                       isStreaming = false;
                       break;
-                      
+
                     case 'close':
                       isStreaming = false;
                       break;
@@ -170,10 +170,10 @@
 
   onMount(() => {
     checkSystemStatus();
-    
+
     // Check system status every 30 seconds
     const interval = setInterval(checkSystemStatus, 30000);
-    
+
     return () => clearInterval(interval);
   });
 </script>
@@ -270,7 +270,7 @@
                 <Badge variant={isStreaming ? "default" : "secondary"}>
                   {#snippet children()}{isStreaming ? 'Streaming...' : 'Ready'}{/snippet}
                 </Badge>
-                <Button variant="outline" size="sm" onclick={clearChat} disabled={isStreaming}>
+                <Button variant="outline" size="sm" on:click={clearChat} disabled={isStreaming}>
                   {#snippet children()}Clear{/snippet}
                 </Button>
               </div>
@@ -294,8 +294,8 @@
                   )}>
                     <div class={cn(
                       "max-w-[80%] px-4 py-2 rounded-lg",
-                      message.role === 'user' 
-                        ? "bg-blue-600 text-white" 
+                      message.role === 'user'
+                        ? "bg-blue-600 text-white"
                         : "bg-gray-100 border"
                     )}>
                       <div class="whitespace-pre-wrap text-sm">
@@ -447,17 +447,17 @@
   :global(.overflow-y-auto::-webkit-scrollbar) {
     width: 6px;
   }
-  
+
   :global(.overflow-y-auto::-webkit-scrollbar-track) {
     background: #f1f1f1;
     border-radius: 3px;
   }
-  
+
   :global(.overflow-y-auto::-webkit-scrollbar-thumb) {
     background: #c1c1c1;
     border-radius: 3px;
   }
-  
+
   :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
     background: #a8a8a8;
   }

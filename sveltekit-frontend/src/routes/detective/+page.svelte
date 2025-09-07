@@ -1,14 +1,15 @@
 <script lang="ts">
+  // Minimal hub that links to evidence board, evidence canvas, cases, and chat
   import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
   import CaseForm from '$lib/components/forms/CaseForm.svelte';
   import { getAuthContext } from "$lib/stores/auth";
   import { onMount } from 'svelte';
-  
+
   const auth = getAuthContext();
-  
+
   let currentView = $state('board'); // 'board' | 'create-case' | 'auth-demo'
   let mounted = $state(false);
-  
+
   // Sample evidence data for the detective board
 let sampleEvidence = $state([
     {
@@ -28,7 +29,7 @@ let sampleEvidence = $state([
       aiSummary: 'Video shows suspect entering building at 10:23 PM wearing dark clothing'
     },
     {
-      id: 'evidence-2', 
+      id: 'evidence-2',
       title: 'Witness Statement - John Doe',
       fileName: 'witness_statement_001.pdf',
       evidenceType: 'document',
@@ -44,7 +45,7 @@ let sampleEvidence = $state([
     {
       id: 'evidence-3',
       title: 'Crime Scene Photos',
-      fileName: 'scene_photos_batch1.zip', 
+      fileName: 'scene_photos_batch1.zip',
       evidenceType: 'image',
       status: 'approved',
       fileSize: 23456789,
@@ -99,11 +100,11 @@ let sampleEvidence = $state([
       aiSummary: 'DNA evidence confirms 99.7% match with suspect sample collected at scene'
 }
   ]);
-  
+
   onMount(() => {
     mounted = true;
   });
-  
+
   function handleCaseFormSuccess(event: CustomEvent) {
     console.log('Case created/updated:', event.detail);
     currentView = 'board';
@@ -114,33 +115,33 @@ let sampleEvidence = $state([
   // Demo collaboration simulation
   function simulateCollaboration() {
     if (!mounted) return;
-    
+
     // Simulate other users joining
     const mockUsers = [
       { id: 'user-1', name: 'Sarah Chen', email: 'sarah.chen@prosecutor.office' },
       { id: 'user-2', name: 'Mike Rodriguez', email: 'mike.rodriguez@prosecutor.office' },
       { id: 'user-3', name: 'Dr. Lisa Kim', email: 'lisa.kim@forensics.office' }
     ];
-    
+
     // Add one random user as if they joined
     const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
-    
+
     // Show notification
     if (typeof window !== 'undefined') {
       // Create a temporary notification
       const notification = document.createElement('div');
-      notification.class = 'fixed top-20 right-4 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
+      notification.className = 'fixed top-20 right-4 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
       notification.innerHTML = `
-        <div class="space-y-4">
-          <div class="space-y-4">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
             ${randomUser.name.charAt(0)}
           </div>
-          <span class="space-y-4">${randomUser.name} joined the case</span>
+          <span>${randomUser.name} joined the case</span>
         </div>
       `;
-      
+
       document.body.appendChild(notification);
-      
+
       // Remove after 3 seconds
       setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
@@ -153,6 +154,17 @@ let sampleEvidence = $state([
 }
 </script>
 
+<div class="p-6 max-w-4xl mx-auto space-y-4">
+  <h1 class="text-2xl font-bold">Detective Mode</h1>
+  <p class="text-sm opacity-80">Jump into the core investigative tools.</p>
+  <div class="grid sm:grid-cols-2 gap-3">
+    <a class="border rounded p-4 hover:bg-white/5" href="/evidenceboard">🧩 Evidence Board</a>
+    <a class="border rounded p-4 hover:bg-white/5" href="/evidence-canvas">🖼️ Evidence Canvas</a>
+    <a class="border rounded p-4 hover:bg-white/5" href="/cases">📂 Cases</a>
+    <a class="border rounded p-4 hover:bg-white/5" href="/chat">💬 AI Chat</a>
+  </div>
+</div>
+
 <svelte:head>
   <title>Detective Mode - Google Slides for Prosecutors</title>
   <meta name="description" content="Advanced evidence management and case visualization tool for legal professionals" />
@@ -161,166 +173,113 @@ let sampleEvidence = $state([
 {#if mounted}
   <!-- Navigation Bar -->
   <nav class="space-y-4">
-    <div class="space-y-4">
-      <div class="space-y-4">
-        <div class="space-y-4">
-          <div class="space-y-4">
-            <div class="space-y-4">
-              <i class="space-y-4"></i>
-            </div>
-            <h1 class="space-y-4">Detective Mode</h1>
-          </div>
-          
-          <div class="space-y-4">
-            <button 
-              onclick={() => currentView = 'board'}
-              class="space-y-4"
-            >
-              <i class="space-y-4"></i>
-              Evidence Board
-            </button>
-            
-            <button 
-              onclick={() => currentView = 'create-case'}
-              class="space-y-4"
-            >
-              <i class="space-y-4"></i>
-              Create Case
-            </button>
-            
-            <button 
-              onclick={() => currentView = 'auth-demo'}
-              class="space-y-4"
-            >
-              <i class="space-y-4"></i>
-              Auth Demo
-            </button>
-            
-            <button 
-              onclick={() => simulateCollaboration()}
-              class="space-y-4"
-            >
-              <i class="space-y-4"></i>
-              Demo Collab
-            </button>
-          </div>
-        </div>
-        
+    <div class="space-y-2">
+      <h1 class="text-xl font-bold">Detective Mode</h1>
+      <div class="flex gap-2 flex-wrap">
+        <button onclick={() => currentView = 'board'} class="border rounded px-3 py-1 hover:bg-white/5">
+          Evidence Board
+        </button>
+        <button onclick={() => currentView = 'create-case'} class="border rounded px-3 py-1 hover:bg-white/5">
+          Create Case
+        </button>
+        <button onclick={() => currentView = 'auth-demo'} class="border rounded px-3 py-1 hover:bg-white/5">
+          Auth Demo
+        </button>
+        <button onclick={simulateCollaboration} class="border rounded px-3 py-1 hover:bg-white/5">
+          Demo Collab
+        </button>
+      </div>
         <div class="space-y-4">
           <!-- Demo Status Badge -->
-          <div class="space-y-4">
-            <div class="space-y-4"></div>
-            <span class="space-y-4">Live Demo</span>
+          <div class="flex items-center gap-2">
+            <span class="inline-block h-2 w-2 rounded-full bg-green-500"></span>
+            <span>Live Demo</span>
           </div>
-          
+
           {#if $auth.isAuthenticated}
-            <div class="space-y-4">
-              <span class="space-y-4">Welcome, {$auth.user?.name || $auth.user?.email}</span>
-              <button 
-                onclick={() => auth.logout()}
-                class="space-y-4"
-              >
-                Logout
-              </button>
+            <div class="flex items-center gap-3">
+              <span>Welcome, {$auth.user?.name || $auth.user?.email}</span>
+              <button onclick={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5">Logout</button>
             </div>
           {:else}
-            <div class="space-y-4">
-              <i class="space-y-4"></i>
-              <span class="space-y-4">Not authenticated</span>
-            </div>
+            <div class="text-sm opacity-80">Not authenticated</div>
           {/if}
         </div>
-      </div>
     </div>
   </nav>
 
   <!-- Main Content -->
   <main class="space-y-4">
     {#if currentView === 'board'}
-      <DetectiveBoard 
-        caseId="demo-case-001" 
-        evidence={sampleEvidence} 
+      <DetectiveBoard
+        caseId="demo-case-001"
+        evidence={sampleEvidence}
       />
     {:else if currentView === 'create-case'}
       <div class="space-y-4">
-        <CaseForm 
-          success={handleCaseFormSuccess}
-          cancel={handleCaseFormCancel}
-        />
+        <CaseForm on:success={handleCaseFormSuccess} on:cancel={handleCaseFormCancel} />
       </div>
     {:else if currentView === 'auth-demo'}
       <div class="space-y-4">
-        <div class="space-y-4">
-          <div class="space-y-4">
-            <h2 class="space-y-4">Authentication Demo</h2>
-            <p class="space-y-4">
+        <div class="space-y-6">
+          <div>
+            <h2 class="text-xl font-semibold mb-3">Authentication Demo</h2>
+            <p class="text-gray-300">
               This demonstrates the Svelte Context API alternative to $lib for authentication.
             </p>
-            
+
             <div class="space-y-4">
-              <div class="space-y-4">
-                <h3 class="space-y-4">Auth State</h3>
-                <pre class="space-y-4">{JSON.stringify($auth, null, 2)}</pre>
+              <div>
+                <h3 class="text-lg font-semibold mb-2">Auth State</h3>
+                <pre class="bg-black/30 p-2 rounded border border-white/10 overflow-x-auto text-sm">{JSON.stringify($auth, null, 2)}</pre>
               </div>
-              
-              <div class="space-y-4">
-                <button 
-                  onclick={() => auth.login('test@example.com', 'password123')}
-                  class="space-y-4"
-                  disabled={$auth.isLoading}
-                >
-                  Mock Login
-                </button>
-                
-                <button 
-                  onclick={() => auth.logout()}
-                  class="space-y-4"
-                  disabled={!$auth.isAuthenticated}
-                >
-                  Logout
-                </button>
-                
-                <button 
-                  onclick={() => auth.checkAuth()}
-                  class="space-y-4"
-                  disabled={$auth.isLoading}
-                >
-                  Check Auth
-                </button>
+
+              <div>
+                <div class="flex gap-2 flex-wrap">
+                  <button onclick={() => auth.login('test@example.com', 'password123')} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
+                    Mock Login
+                  </button>
+                  <button onclick={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5" disabled={!$auth.isAuthenticated}>
+                    Logout
+                  </button>
+                  <button onclick={() => auth.checkAuth()} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
+                    Check Auth
+                  </button>
+                </div>
               </div>
             </div>
-            
+
             <div class="space-y-4">
-              <h3 class="space-y-4">Features Demonstrated</h3>
-              <div class="space-y-4">
-                <div class="space-y-4">
-                  <h4 class="space-y-4">✅ UnoCSS Only</h4>
-                  <p class="space-y-4">PicoCSS removed, using UnoCSS utility classes throughout</p>
+              <h3 class="text-lg font-semibold mb-3">Features Demonstrated</h3>
+              <div class="space-y-3">
+                <div>
+                  <h4 class="font-medium text-green-400">✅ UnoCSS Only</h4>
+                  <p class="text-sm text-gray-300">PicoCSS removed, using UnoCSS utility classes throughout</p>
                 </div>
-                
-                <div class="space-y-4">
-                  <h4 class="space-y-4">✅ Drag & Drop</h4>
-                  <p class="space-y-4">Evidence cards with svelte-dnd-action in 3-column layout</p>
+
+                <div>
+                  <h4 class="font-medium text-green-400">✅ Drag & Drop</h4>
+                  <p class="text-sm text-gray-300">Evidence cards with svelte-dnd-action in 3-column layout</p>
                 </div>
-                
-                <div class="space-y-4">
-                  <h4 class="space-y-4">✅ Context Menus</h4>
-                  <p class="space-y-4">Right-click menus using Melt UI primitives</p>
+
+                <div>
+                  <h4 class="font-medium text-green-400">✅ Context Menus</h4>
+                  <p class="text-sm text-gray-300">Right-click menus using Melt UI primitives</p>
                 </div>
-                
-                <div class="space-y-4">
-                  <h4 class="space-y-4">✅ Superforms + Zod</h4>
-                  <p class="space-y-4">Type-safe forms with validation and error handling</p>
+
+                <div>
+                  <h4 class="font-medium text-green-400">✅ Superforms + Zod</h4>
+                  <p class="text-sm text-gray-300">Type-safe forms with validation and error handling</p>
                 </div>
-                
-                <div class="space-y-4">
-                  <h4 class="space-y-4">✅ Auth Context</h4>
-                  <p class="space-y-4">Svelte Context API alternative to $lib for global state</p>
+
+                <div>
+                  <h4 class="font-medium text-green-400">✅ Auth Context</h4>
+                  <p class="text-sm text-gray-300">Svelte Context API alternative to $lib for global state</p>
                 </div>
-                
-                <div class="space-y-4">
-                  <h4 class="space-y-4">✅ File Upload</h4>
-                  <p class="space-y-4">Progress bar with drag/drop support</p>
+
+                <div>
+                  <h4 class="font-medium text-green-400">✅ File Upload</h4>
+                  <p class="text-sm text-gray-300">Progress bar with drag/drop support</p>
                 </div>
               </div>
             </div>
@@ -332,11 +291,11 @@ let sampleEvidence = $state([
 
 {:else}
   <!-- Loading Screen -->
-  <div class="space-y-4">
-    <div class="space-y-4">
-      <div class="space-y-4"></div>
-      <p class="space-y-4">Loading Detective Mode...</p>
-      <p class="space-y-4">Initializing Google Slides-like interface</p>
+  <div class="flex items-center justify-center min-h-64">
+    <div class="text-center space-y-3">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+      <p>Loading Detective Mode...</p>
+      <p class="text-sm text-gray-400">Initializing Google Slides-like interface</p>
     </div>
   </div>
 {/if}

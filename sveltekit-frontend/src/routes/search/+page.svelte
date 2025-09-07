@@ -252,7 +252,7 @@ let popularSearches = $state([
               <Button
                 variant="outline"
                 type="button"
-                on:on:click={() => (showAdvancedFilters = !showAdvancedFilters)}
+                onclick={() => (showAdvancedFilters = !showAdvancedFilters)}
               >
                 <Filter class="space-y-4" />
                 Filters
@@ -264,7 +264,7 @@ let popularSearches = $state([
                 <Button
                   variant="outline"
                   type="button"
-                  on:on:click={() => clearFilters()}
+                  onclick={() => clearFilters()}
                 >
                   Clear Filters
                 </Button>

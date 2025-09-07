@@ -1,6 +1,6 @@
 <!--
   Comprehensive Ollama Integration Demo
-  
+
   Demonstrates fully integrated and wired Ollama ecosystem:
   - Comprehensive Ollama Summarizer
   - LangChain + RAG integration
@@ -12,11 +12,11 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { 
-    ollamaIntegrationLayer, 
+  import {
+    ollamaIntegrationLayer,
     type IntegratedChatRequest,
     type IntegratedChatResponse,
-    type OllamaServiceStatus 
+    type OllamaServiceStatus
   } from '$lib/services/ollama-integration-layer';
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
@@ -24,13 +24,13 @@
   import { Textarea } from '$lib/components/ui/textarea';
   import { Input } from '$lib/components/ui/input';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
-  import { 
-    Activity, 
-    Brain, 
-    CheckCircle, 
-    AlertCircle, 
-    Loader2, 
-    Send, 
+  import {
+    Activity,
+    Brain,
+    CheckCircle,
+    AlertCircle,
+    Loader2,
+    Send,
     FileText,
     Zap,
     Database,
@@ -70,28 +70,28 @@ let stats = $state<any >(null);
   onMount(async () => {
     try {
       console.log('🚀 Initializing Ollama Integration Demo...');
-      
+
       // Initialize the integration layer
       await ollamaIntegrationLayer.initialize();
-      
+
       // Subscribe to reactive stores
       ollamaIntegrationLayer.isInitialized.subscribe(val => {
         isInitialized = val;
       });
-      
+
       ollamaIntegrationLayer.activeRequests.subscribe(val => {
         activeRequests = val;
       });
-      
+
       ollamaIntegrationLayer.stats.subscribe(val => {
         stats = val;
       });
 
       // Get initial service status
       serviceStatus = await ollamaIntegrationLayer.getServiceHealth();
-      
+
       console.log('✅ Demo initialized successfully');
-      
+
     } catch (error) {
       console.error('❌ Demo initialization failed:', error);
     }
@@ -103,10 +103,10 @@ let stats = $state<any >(null);
 
   async function testBasicChat() {
     if (!isInitialized) return;
-    
+
     isLoading = true;
     const startTime = Date.now();
-    
+
     try {
       const request: IntegratedChatRequest = {
         message: testMessage,
@@ -117,7 +117,7 @@ let stats = $state<any >(null);
       };
 
       const response = await ollamaIntegrationLayer.processChat(request);
-      
+
       responses = [{
         type: 'Basic Chat',
         request,
@@ -135,10 +135,10 @@ let stats = $state<any >(null);
 
   async function testDocumentSummary() {
     if (!isInitialized) return;
-    
+
     isLoading = true;
     const startTime = Date.now();
-    
+
     try {
       const request: IntegratedChatRequest = {
         message: 'Please provide a comprehensive analysis of this document.',
@@ -162,7 +162,7 @@ let stats = $state<any >(null);
       };
 
       const response = await ollamaIntegrationLayer.processChat(request);
-      
+
       responses = [{
         type: 'Document Summary',
         request,
@@ -180,10 +180,10 @@ let stats = $state<any >(null);
 
   async function testRAGQuery() {
     if (!isInitialized) return;
-    
+
     isLoading = true;
     const startTime = Date.now();
-    
+
     try {
       const request: IntegratedChatRequest = {
         message: 'What are the standard terms for confidentiality agreements?',
@@ -196,7 +196,7 @@ let stats = $state<any >(null);
       };
 
       const response = await ollamaIntegrationLayer.processChat(request);
-      
+
       responses = [{
         type: 'RAG Query',
         request,
@@ -214,10 +214,10 @@ let stats = $state<any >(null);
 
   async function testStreamingResponse() {
     if (!isInitialized) return;
-    
+
     isStreaming = true;
     streamingResponse = '';
-    
+
     try {
       const request: IntegratedChatRequest = {
         message: 'Provide a detailed legal analysis of the NDA document.',
@@ -238,7 +238,7 @@ let stats = $state<any >(null);
       };
 
       const streamGenerator = ollamaIntegrationLayer.processStreamingChatForUI(request);
-      
+
       for await (const partialResponse of streamGenerator) {
         streamingResponse = partialResponse.response || streamingResponse;
       }
@@ -254,7 +254,7 @@ let stats = $state<any >(null);
   async function testDirectAPI() {
     isLoading = true;
     const startTime = Date.now();
-    
+
     try {
       const response = await fetch('/api/ollama/comprehensive-summary', {
         method: 'POST',
@@ -272,7 +272,7 @@ let stats = $state<any >(null);
       });
 
       const result = await response.json();
-      
+
       responses = [{
         type: 'Direct API',
         request: { content: testDocument, type: 'contract' },
@@ -334,12 +334,12 @@ let stats = $state<any >(null);
         Complete integration testing for all Ollama services and APIs
       </p>
     </div>
-    
+
     <div class="flex items-center gap-2">
       <Badge variant={isInitialized ? 'default' : 'secondary'}>
         {isInitialized ? 'Ready' : 'Initializing'}
       </Badge>
-      <Button variant="outline" size="sm" on:on:click={refreshServiceStatus}>
+  <Button variant="outline" size="sm" on:click={refreshServiceStatus}>
         <Settings class="w-4 h-4" />
       </Button>
     </div>
@@ -375,7 +375,7 @@ let stats = $state<any >(null);
             </div>
           {/each}
         </div>
-        
+
         {#if stats}
           <div class="mt-4 pt-4 border-t">
             <div class="grid grid-cols-4 gap-4 text-center">
@@ -417,7 +417,7 @@ let stats = $state<any >(null);
           <label class="text-sm font-medium">Test Message:</label>
           <Input bind:value={testMessage} placeholder="Enter test message..." />
         </div>
-        
+
         <!-- Test Document -->
         <div>
           <label class="text-sm font-medium">Test Document:</label>
@@ -426,8 +426,8 @@ let stats = $state<any >(null);
 
         <!-- Test Actions -->
         <div class="grid grid-cols-2 gap-2">
-          <Button 
-            on:on:click={testBasicChat} 
+          <Button
+            on:click={testBasicChat}
             disabled={!isInitialized || isLoading}
             class="flex items-center gap-2"
           >
@@ -438,9 +438,9 @@ let stats = $state<any >(null);
             {/if}
             Basic Chat
           </Button>
-          
-          <Button 
-            on:on:click={testDocumentSummary} 
+
+          <Button
+            on:click={testDocumentSummary}
             disabled={!isInitialized || isLoading}
             variant="secondary"
             class="flex items-center gap-2"
@@ -448,9 +448,9 @@ let stats = $state<any >(null);
             <FileText class="w-4 h-4" />
             Document Summary
           </Button>
-          
-          <Button 
-            on:on:click={testRAGQuery} 
+
+          <Button
+            on:click={testRAGQuery}
             disabled={!isInitialized || isLoading}
             variant="outline"
             class="flex items-center gap-2"
@@ -458,9 +458,9 @@ let stats = $state<any >(null);
             <Database class="w-4 h-4" />
             RAG Query
           </Button>
-          
-          <Button 
-            on:on:click={testDirectAPI} 
+
+          <Button
+            on:click={testDirectAPI}
             disabled={!isInitialized || isLoading}
             variant="outline"
             class="flex items-center gap-2"
@@ -472,8 +472,8 @@ let stats = $state<any >(null);
 
         <!-- Streaming Test -->
         <div class="border-t pt-4">
-          <Button 
-            on:on:click={testStreamingResponse} 
+          <Button
+            on:click={testStreamingResponse}
             disabled={!isInitialized || isStreaming}
             variant="secondary"
             class="w-full flex items-center gap-2"
@@ -486,7 +486,7 @@ let stats = $state<any >(null);
               Test Streaming
             {/if}
           </Button>
-          
+
           {#if streamingResponse}
             <div class="mt-4 p-3 bg-muted rounded-lg">
               <p class="text-sm font-medium">Streaming Response:</p>
@@ -499,8 +499,8 @@ let stats = $state<any >(null);
 
         <!-- System Actions -->
         <div class="border-t pt-4 space-y-2">
-          <Button 
-            on:on:click={warmupServices} 
+          <Button
+            on:click={warmupServices}
             disabled={isLoading}
             variant="outline"
             class="w-full flex items-center gap-2"
@@ -521,10 +521,10 @@ let stats = $state<any >(null);
             Test Results ({responses.length})
           </span>
           {#if responses.length > 0}
-            <Button 
-              variant="outline" 
-              size="sm" 
-              on:on:click={() => responses = []}
+            <Button
+              variant="outline"
+              size="sm"
+              on:click={() => responses = []}
             >
               Clear
             </Button>

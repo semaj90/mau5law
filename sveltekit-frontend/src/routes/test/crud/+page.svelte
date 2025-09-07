@@ -4,15 +4,15 @@
   import { page } from '$app/stores';
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
-  
+
   // Gaming UI Components
   import { ProgressiveGamingProvider, NES8BitButton, SNES16BitButton, N643DButton } from '$lib/components/ui/gaming';
-  
+
   // Standard UI Components
   import Button from '$lib/components/ui/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
-  
+
   // Form components
   import { Input } from '$lib/components/ui/input';
   import { Textarea } from '$lib/components/ui/textarea';
@@ -23,7 +23,7 @@
 let isCreating = $state(false);
 let editingCase = $state(null);
 let isDeleting = $state(false);
-  
+
   // Form state
 let formData = $state({
     title: '',
@@ -36,13 +36,13 @@ let formData = $state({
   // UI state
 let gamingEra = $state('nes'); // nes, snes, n64
 let showSystemHealth = $state(false);
-  
+
   // Reset form
   const resetForm = () => {
     formData = {
       title: '',
       description: '',
-      priority: 'medium', 
+      priority: 'medium',
       status: 'open',
       category: 'investigation'
     };
@@ -77,7 +77,7 @@ let showSystemHealth = $state(false);
       const response = await fetch(`/test/crud?action=delete&id=${caseId}`, {
         method: 'DELETE'
       });
-      
+
       if (response.ok) {
         await invalidateAll();
       } else {
@@ -140,25 +140,25 @@ let showSystemHealth = $state(false);
 
 <ProgressiveGamingProvider enableAutoEvolution={false} integrateWithYorha={true}>
   <div class="container mx-auto p-6 space-y-8">
-    
+
     <!-- Header with System Status -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
         <h1 class="text-3xl font-bold tracking-tight">CRUD Test Dashboard</h1>
         <p class="text-muted-foreground">Testing SSR, UI Components & Database Operations</p>
       </div>
-      
+
       <div class="flex flex-wrap gap-2">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
-          on:on:on:click={() => showSystemHealth = !showSystemHealth}
+          onclick={() => showSystemHealth = !showSystemHealth}
         >
           {showSystemHealth ? 'Hide' : 'Show'} System Health
         </Button>
-        
+
         <!-- Gaming Era Selector -->
-        <select 
+        <select
           bind:value={gamingEra}
           class="px-3 py-1 border rounded text-sm"
         >
@@ -186,20 +186,20 @@ let showSystemHealth = $state(false);
                 <p class="text-sm text-muted-foreground">Response: {data.health.database.responseTime}ms</p>
               {/if}
             </div>
-            
+
             <div class="space-y-2">
               <h4 class="font-medium">Server</h4>
               <Badge variant="default">SSR Active</Badge>
               <p class="text-sm text-muted-foreground">Cases: {data.cases?.length || 0}</p>
             </div>
-            
+
             <div class="space-y-2">
               <h4 class="font-medium">UI Framework</h4>
               <Badge variant="default">SvelteKit + bits-ui</Badge>
               <p class="text-sm text-muted-foreground">Gaming Era: {gamingEra.toUpperCase()}</p>
             </div>
           </div>
-          
+
           {#if data.health.database?.error}
             <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded">
               <p class="text-sm text-red-700">Database Error: {data.health.database.error}</p>
@@ -224,7 +224,7 @@ let showSystemHealth = $state(false);
           {:else}
             <input type="hidden" name="_action" value="create" />
           {/if}
-          
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Title Input -->
             <div class="space-y-2">
@@ -241,7 +241,7 @@ let showSystemHealth = $state(false);
             <!-- Category Select -->
             <div class="space-y-2">
               <label for="category" class="text-sm font-medium">Category</label>
-              <select 
+              <select
                 id="category"
                 name="category"
                 bind:value={formData.category}
@@ -259,7 +259,7 @@ let showSystemHealth = $state(false);
             <!-- Priority Select -->
             <div class="space-y-2">
               <label for="priority" class="text-sm font-medium">Priority</label>
-              <select 
+              <select
                 id="priority"
                 name="priority"
                 bind:value={formData.priority}
@@ -275,7 +275,7 @@ let showSystemHealth = $state(false);
             <!-- Status Select -->
             <div class="space-y-2">
               <label for="status" class="text-sm font-medium">Status</label>
-              <select 
+              <select
                 id="status"
                 name="status"
                 bind:value={formData.status}
@@ -308,9 +308,9 @@ let showSystemHealth = $state(false);
               <NES8BitButton type="submit" disabled={isCreating}>
                 {editingCase ? '💾 Update Case' : '➕ Create Case'}
               </NES8BitButton>
-              
+
               {#if isCreating}
-                <NES8BitButton type="button" on:on:on:click={resetForm}>
+                <NES8BitButton type="button" onclick={resetForm}>
                   ❌ Cancel
                 </NES8BitButton>
               {/if}
@@ -318,26 +318,26 @@ let showSystemHealth = $state(false);
               <SNES16BitButton type="submit" disabled={isCreating} enableMode7={true}>
                 {editingCase ? '💾 Update Case' : '➕ Create Case'}
               </SNES16BitButton>
-              
+
               {#if isCreating}
-                <SNES16BitButton type="button" on:on:on:click={resetForm} plasmaEffect={true}>
+                <SNES16BitButton type="button" onclick={resetForm} plasmaEffect={true}>
                   ❌ Cancel
                 </SNES16BitButton>
               {/if}
             {:else}
-              <N643DButton 
-                type="submit" 
+              <N643DButton
+                type="submit"
                 disabled={isCreating}
                 materialType="pbr"
                 enableParticles={true}
               >
                 {editingCase ? '💾 Update Case' : '➕ Create Case'}
               </N643DButton>
-              
+
               {#if isCreating}
-                <N643DButton 
-                  type="button" 
-                  on:on:on:click={resetForm}
+                <N643DButton
+                  type="button"
+                  onclick={resetForm}
                   variant="secondary"
                   materialType="metal"
                 >
@@ -376,11 +376,11 @@ let showSystemHealth = $state(false);
                         </Badge>
                       </div>
                     </div>
-                    
+
                     {#if caseItem.description}
                       <p class="text-sm text-muted-foreground">{caseItem.description}</p>
                     {/if}
-                    
+
                     <div class="flex flex-wrap gap-2 text-xs text-muted-foreground">
                       {#if caseItem.category}
                         <span>📂 {caseItem.category}</span>
@@ -399,16 +399,16 @@ let showSystemHealth = $state(false);
                     <Button
                       variant="outline"
                       size="sm"
-                      on:on:on:click={() => startEdit(caseItem)}
+                      onclick={() => startEdit(caseItem)}
                       disabled={isDeleting}
                     >
                       ✏️ Edit
                     </Button>
-                    
+
                     <Button
                       variant="destructive"
                       size="sm"
-                      on:on:on:click={() => confirmDelete(caseItem)}
+                      onclick={() => confirmDelete(caseItem)}
                       disabled={isDeleting}
                     >
                       🗑️ Delete
@@ -442,7 +442,7 @@ let showSystemHealth = $state(false);
               <li>• Form actions: {typeof enhance !== 'undefined' ? '✅' : '❌'}</li>
             </ul>
           </div>
-          
+
           <div>
             <h4 class="font-medium mb-2">🎮 Component Status</h4>
             <ul class="text-sm space-y-1 text-muted-foreground">
@@ -453,7 +453,7 @@ let showSystemHealth = $state(false);
             </ul>
           </div>
         </div>
-        
+
         <div class="mt-4 p-3 bg-muted rounded-lg">
           <h5 class="font-medium mb-2">Debug Info:</h5>
           <pre class="text-xs overflow-auto">{JSON.stringify({
@@ -476,17 +476,17 @@ let showSystemHealth = $state(false);
     opacity: 1;
     animation: fadeIn 0.3s ease-in;
   }
-  
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  
+
   /* Gaming era specific styling */
   :global(.progressive-gaming-provider) {
     --gaming-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   /* Mobile responsiveness */
   @media (max-width: 768px) {
     .container {

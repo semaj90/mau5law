@@ -120,5 +120,5 @@ let editorElement = $state<HTMLElement;
 
 <style>
   /* @unocss-include */
-  @import '../styles/nier-design-system.css';
+  /* @import '../styles/nier-design-system.css'; */
 </style>

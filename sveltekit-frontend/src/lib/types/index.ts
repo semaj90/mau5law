@@ -1,5 +1,4 @@
-// Temporary triage: disable TS checks in this file to reduce noise (remove when types are fixed)
-// @ts-nocheck
+// Centralized type definitions for the Legal AI platform
 // ---
 // SINGLE SOURCE OF TRUTH FOR TYPES
 //

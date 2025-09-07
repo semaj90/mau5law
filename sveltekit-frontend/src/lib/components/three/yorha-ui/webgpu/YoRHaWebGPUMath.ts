@@ -4,7 +4,7 @@
  */
 
 // Import WebGPU types
-/// <reference path="../../../../types/webgpu.d.ts" />
+/// <reference types="@webgpu/types" />
 
 export interface WebGPUMathConfig {
   preferWebGPU: boolean;

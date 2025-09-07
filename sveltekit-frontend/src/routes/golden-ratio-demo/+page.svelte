@@ -43,7 +43,7 @@
             <Button
               variant={currentVariant === variant ? 'primary' : 'outline'}
               size="sm"
-              on:on:click={() => currentVariant = variant}
+              onclick={() => currentVariant = variant}
               class="capitalize"
             >
               {variant.replace('-', ' ')}
@@ -59,7 +59,7 @@
             <Button
               variant={currentDirection === direction ? 'primary' : 'outline'}
               size="sm"
-              on:on:click={() => currentDirection = direction}
+              onclick={() => currentDirection = direction}
               class="capitalize"
             >
               {direction}
@@ -72,7 +72,7 @@
     <div class="flex gap-phi-md mb-phi-lg">
       <Button
         variant="outline"
-        on:on:click={toggleDebugGrid}
+  onclick={toggleDebugGrid}
         class="text-phi-sm"
       >
         {showDebugGrid ? 'Hide' : 'Show'} Debug Grid
@@ -82,7 +82,7 @@
 
   <!-- Golden Ratio Grid Demo -->
   <div class="border-2 border-nier-golden-accent rounded-phi-md overflow-hidden" style="height: 600px;">
-    <GoldenRatioGrid 
+    <GoldenRatioGrid
       variant={currentVariant}
       direction={currentDirection}
       size="full"
@@ -132,7 +132,7 @@
           <h3 class="text-phi-xl font-bold text-nier-golden-primary mb-phi-lg">
             Main Content Area (φ proportion)
           </h3>
-          
+
           <div class="grid gap-phi-md mb-phi-lg">
             <div class="ai-panel-phi ai-confidence-phi-high">
               <h4 class="text-phi-lg font-semibold text-green-800">High Confidence AI Analysis</h4>
@@ -188,7 +188,7 @@
           </div>
 
           <p class="text-phi-sm text-gray-600 leading-phi">
-            This main content area uses the golden ratio (φ ≈ 1.618) for proportional spacing, typography, and layout. 
+            This main content area uses the golden ratio (φ ≈ 1.618) for proportional spacing, typography, and layout.
             All margins, padding, and font sizes are mathematically related to create visual harmony and optimal readability for legal professionals.
           </p>
         </div>
@@ -199,7 +199,7 @@
           <h3 class="text-phi-lg font-semibold text-nier-golden-primary mb-phi-md">
             Secondary Panel (1 proportion)
           </h3>
-          
+
           <div class="space-y-phi-md">
             <div class="nier-golden-panel">
               <h4 class="text-phi-md font-semibold mb-phi-sm">Quick Actions</h4>
@@ -250,12 +250,12 @@
       <h2 class="text-phi-2xl font-bold text-nier-golden-primary mb-phi-lg">
         Golden Ratio in Legal AI Design
       </h2>
-      
+
       <div class="golden-section gap-phi-xl">
         <div>
           <h3 class="text-phi-lg font-semibold mb-phi-md">Mathematical Foundation</h3>
           <p class="text-phi-md leading-phi mb-phi-md">
-            The golden ratio (φ ≈ 1.618) is a mathematical constant found throughout nature and art. 
+            The golden ratio (φ ≈ 1.618) is a mathematical constant found throughout nature and art.
             When applied to user interface design, it creates visually pleasing and harmonious proportions.
           </p>
           <ul class="space-y-phi-sm text-phi-sm">
@@ -316,20 +316,20 @@
   .border-phi {
     border-width: calc(1px * var(--golden-ratio));
   }
-  
+
   .rounded-phi-sm {
     border-radius: var(--space-phi-sm);
   }
-  
+
   .rounded-phi-md {
     border-radius: var(--space-phi-md);
   }
-  
+
   /* Demo-specific styling */
   :global(.debug-golden-grid) {
     position: relative;
   }
-  
+
   :global(.debug-golden-grid::before) {
     content: '';
     position: fixed;
@@ -337,7 +337,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: 
+    background-image:
       linear-gradient(to right, rgba(255, 0, 0, 0.1) 0, rgba(255, 0, 0, 0.1) 61.8%, transparent 61.8%),
       linear-gradient(to bottom, rgba(0, 255, 0, 0.1) 0, rgba(0, 255, 0, 0.1) 61.8%, transparent 61.8%);
     pointer-events: none;

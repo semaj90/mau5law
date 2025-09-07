@@ -23,10 +23,10 @@ let errorMessage = $state('');
   // Handle form submission success
   function handleFormSuccess(event: CustomEvent<{ case: any }>) {
     const { case: newCase } = event.detail;
-    
+
     showSuccess = true;
     toast.success(`Case ${newCase.caseNumber} created successfully!`);
-    
+
     // Redirect to case view after 2 seconds
     setTimeout(() => {
       goto(`/cases/${newCase.id}`);
@@ -55,7 +55,7 @@ let errorMessage = $state('');
     if ($page.form?.message?.type === 'success') {
       showSuccess = true;
       toast.success($page.form.message.text);
-      
+
       // Redirect if we have a redirect URL
       if ($page.form.message.data?.redirectUrl) {
         setTimeout(() => {
@@ -70,10 +70,10 @@ let errorMessage = $state('');
 
   // Auto-save functionality
 let autoSaveTimeout = $state<NodeJS.Timeout;
-  
+
   function scheduleAutoSave(formData: CaseForm) {
     clearTimeout(autoSaveTimeout);
-    
+
     autoSaveTimeout = setTimeout(async () => {
       try {
         const response = await fetch('?/saveDraft', {
@@ -83,7 +83,7 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
           },
           body: JSON.stringify(formData)
         });
-        
+
         if (response.ok) {
           console.log('Auto-save successful');
         }
@@ -104,25 +104,25 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
   <div class="mb-8">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           size="sm"
-          on:on:click={() => goto('/cases')}
+          on:click={() => goto('/cases')}
           class="flex items-center space-x-2"
         >
           <ArrowLeft class="h-4 w-4" />
           <span>Back to Cases</span>
         </Button>
-        
+
         <div class="h-6 border-l border-muted-foreground/20"></div>
-        
+
         <div>
           <h1 class="text-3xl font-bold tracking-tight">
             {data.editMode ? 'Edit Case' : 'Create New Case'}
           </h1>
           <p class="text-muted-foreground mt-1">
-            {data.editMode 
-              ? 'Update case information and manage evidence' 
+            {data.editMode
+              ? 'Update case information and manage evidence'
               : 'Enter case details, upload evidence, and enable AI analysis'
             }
           </p>
@@ -132,9 +132,9 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
       <!-- Quick Actions -->
       <div class="flex items-center space-x-3">
         {#if !data.editMode}
-          <Button 
-            variant="outline" 
-            on:on:click={() => goto('/cases/templates')}
+          <Button
+            variant="outline"
+            on:click={() => goto('/cases/templates')}
             class="flex items-center space-x-2"
           >
             <Save class="h-4 w-4" />
@@ -151,7 +151,7 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
       <CheckCircle class="h-4 w-4 text-green-600" />
       <Alert.Title class="text-green-800">Success!</Alert.Title>
       <Alert.Description class="text-green-700">
-        Case has been {data.editMode ? 'updated' : 'created'} successfully. 
+        Case has been {data.editMode ? 'updated' : 'created'} successfully.
         {#if !data.editMode}
           Redirecting to case view...
         {/if}
@@ -187,7 +187,7 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
       <AlertCircle class="h-5 w-5 text-primary" />
       <span>Form Enhancement Features</span>
     </h3>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
       <div>
         <h4 class="font-medium text-foreground mb-2">SuperForms Integration</h4>
@@ -198,7 +198,7 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
           <li>• Type-safe form handling</li>
         </ul>
       </div>
-      
+
       <div>
         <h4 class="font-medium text-foreground mb-2">Enhanced Actions</h4>
         <ul class="space-y-1">
@@ -208,7 +208,7 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
           <li>• Success state management</li>
         </ul>
       </div>
-      
+
       <div>
         <h4 class="font-medium text-foreground mb-2">XState Integration</h4>
         <ul class="space-y-1">
@@ -218,7 +218,7 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
           <li>• Event-driven updates</li>
         </ul>
       </div>
-      
+
       <div>
         <h4 class="font-medium text-foreground mb-2">Production Features</h4>
         <ul class="space-y-1">
@@ -237,12 +237,12 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
   .container {
     @apply transition-all duration-200 ease-in-out;
   }
-  
+
   /* Form success animation */
   :global(.form-success) {
     animation: slideInFromTop 0.3s ease-out;
   }
-  
+
   @keyframes slideInFromTop {
     from {
       opacity: 0;

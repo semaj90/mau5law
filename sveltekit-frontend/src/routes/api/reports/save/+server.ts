@@ -1,7 +1,7 @@
 import { aiReports } from '$lib/server/db/schema-postgres';
 import { db } from '$lib/server/db/index';
 import { and, eq } from 'drizzle-orm';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 

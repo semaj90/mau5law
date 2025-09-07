@@ -415,7 +415,7 @@ export class GraphPatternAutoEncoder {
     const startTime = performance.now();
 
     // Decode features
-    const encodedTensor = tf.tensor2d([encodedPattern.encodedFeatures]);
+    const encodedTensor = tf.tensor2d([Array.from(encodedPattern.encodedFeatures)]);
     const decoded = this.decoder.predict(encodedTensor) as tf.Tensor;
     const decodedData = await decoded.data();
     const decodedFeatures = Array.from(decodedData);

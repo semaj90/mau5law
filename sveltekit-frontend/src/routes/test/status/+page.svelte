@@ -9,7 +9,7 @@ let routeTests = $state([
     { name: 'Route Status', path: '/test/status', status: 'pending', responseTime: null }
   ]);
 let isTestingRoutes = $state(false);
-  
+
   const testRoute = async (test) => {
     const startTime = Date.now();
     try {
@@ -17,10 +17,10 @@ let isTestingRoutes = $state(false);
         method: test.method || 'GET',
         headers: test.headers || {}
       };
-      
+
       const response = await fetch(test.path, options);
       const endTime = Date.now();
-      
+
       return {
         ...test,
         status: response.ok ? 'success' : `error-${response.status}`,
@@ -37,25 +37,25 @@ let isTestingRoutes = $state(false);
       };
     }
   };
-  
+
   const runAllRouteTests = async () => {
     if (isTestingRoutes) return;
-    
+
     isTestingRoutes = true;
-    
+
     // Reset all to pending
     routeTests = routeTests.map(test => ({ ...test, status: 'pending', responseTime: null }));
-    
+
     // Test each route
     for (let i = 0; i < routeTests.length; i++) {
       const result = await testRoute(routeTests[i]);
       routeTests[i] = result;
       routeTests = [...routeTests]; // trigger reactivity
     }
-    
+
     isTestingRoutes = false;
   };
-  
+
   const getStatusColor = (status) => {
     if (status === 'success') return 'text-green-600';
     if (status === 'pending') return 'text-yellow-600';
@@ -63,7 +63,7 @@ let isTestingRoutes = $state(false);
     if (status === 'failed') return 'text-red-600';
     return 'text-gray-600';
   };
-  
+
   const getStatusIcon = (status) => {
     if (status === 'success') return '✅';
     if (status === 'pending') return '⏳';
@@ -71,7 +71,7 @@ let isTestingRoutes = $state(false);
     if (status === 'failed') return '❌';
     return '❓';
   };
-  
+
   onMount(() => {
     // Auto-run tests on page load
     runAllRouteTests();
@@ -87,18 +87,18 @@ let isTestingRoutes = $state(false);
     <h1 class="text-3xl font-bold">🛣️ Route Status Check</h1>
     <p class="text-gray-600 mt-2">Verifying all test routes are accessible and working</p>
   </div>
-  
+
   <div class="flex justify-center gap-4">
-    <Button 
-      on:on:on:click={runAllRouteTests}
+    <Button
+      on:click={runAllRouteTests}
       disabled={isTestingRoutes}
       variant="default"
     >
       {isTestingRoutes ? '🔄 Testing...' : '🚀 Test All Routes'}
     </Button>
-    
-    <Button 
-      on:on:on:click={() => window.location.href = '/test'}
+
+    <Button
+      on:click={() => window.location.href = '/test'}
       variant="outline"
     >
       ← Back to Test Hub
@@ -125,10 +125,10 @@ let isTestingRoutes = $state(false);
               {/if}
             </div>
           </div>
-          
+
           <div class="text-right">
             <div class="font-semibold {getStatusColor(test.status)}">
-              {test.status === 'success' ? 'OK' : 
+              {test.status === 'success' ? 'OK' :
                test.status === 'pending' ? 'Testing...' :
                test.status.startsWith('error-') ? `HTTP ${test.statusCode}` :
                'Failed'}

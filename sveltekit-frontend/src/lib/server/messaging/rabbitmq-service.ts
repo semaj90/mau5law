@@ -63,8 +63,17 @@ export class RabbitMQService {
   private async setupQueues(): Promise<void> {
     if (!this.channel) return;
 
+    // Queue options that match existing configurations to prevent conflicts
+    const queueOptions = {
+      durable: true,
+      arguments: {
+        'x-message-ttl': 3600000, // 1 hour TTL to match existing queues
+        'x-max-length': 10000     // Max 10k messages
+      }
+    };
+
     for (const queue of Object.values(QUEUES)) {
-      await this.channel.assertQueue(queue, { durable: true });
+      await this.channel.assertQueue(queue, queueOptions);
     }
   }
 

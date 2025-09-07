@@ -11,9 +11,9 @@ import { json, error } from '@sveltejs/kit';
 import { ensureError } from '$lib/utils/ensure-error';
 import { db } from '$lib/server/db';
 import {
-  users, userProfiles, cases, criminals, evidence, legalDocuments,
+  users, cases, criminals, evidence, legalDocuments,
   reports, personsOfInterest, ragMessages, ragSessions
-} from '$lib/server/db/schema';
+} from '$lib/server/db/schema-postgres';
 import { sql, eq, and, or, like } from 'drizzle-orm';
 import { apiOrchestrator } from '$lib/services/api-orchestrator';
 
@@ -71,7 +71,6 @@ function buildSearchClause(entity: string, query: string, table: any) {
 // Internal map (not exported to SvelteKit routing system)
 const entityMap = {
   users,
-  userProfiles,
   cases,
   criminals,
   evidence,
@@ -144,11 +143,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
       case 'read':
         if (!id) return error(400, ensureError({ message: 'ID required for read operation' }));
 
-        result = await db.select().from(table).where(eq(table.id, id)).limit(1);
+        result = await db.select().from(table).where(eq((table as any).id, id)).limit(1);
         if (result.length === 0) {
           return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));
         }
-        result = await db.select().from(table).where(eq((table as any).id, id)).limit(1);
         return json({
           success: true,
           data: result[0],
@@ -168,20 +166,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
         const query = db.select().from(table).orderBy(orderBy).limit(limit).offset(offset);
 
         // Add search if provided
-        if (searchQuery && entity === 'cases') {
-          query.where(
-            or(
-              like(cases.title, `%${searchQuery}%`),
-              like(cases.description, `%${searchQuery}%`)
-            )
-          );
-        } else if (searchQuery && entity === 'evidence') {
-          query.where(
-            or(
-              like(evidence.title, `%${searchQuery}%`),
-              like(evidence.description, `%${searchQuery}%`)
-            )
-          );
+        if (searchQuery) {
+          const searchClauses = buildSearchClause(entity, searchQuery, table);
+          if (searchClauses.length > 0) {
+            query.where(and(...searchClauses));
+          }
         }
 
         result = await query;
@@ -373,7 +362,7 @@ export const POST: RequestHandler = async ({ request }) => {
           updatedAt: new Date()
         };
 
-        result = await db.update(table).set(updateData).where(eq(table.id, id)).returning();
+        result = await db.update(table).set(updateData).where(eq((table as any).id, id)).returning();
 
         if (result.length === 0) {
           return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));

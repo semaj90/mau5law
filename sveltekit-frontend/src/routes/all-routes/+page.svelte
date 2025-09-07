@@ -7,7 +7,7 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
-  
+
   // Comprehensive bits-ui v2 components integration
   import { Button } from 'bits-ui';
   import { Menubar } from 'bits-ui';
@@ -26,20 +26,20 @@
   import { Progress } from 'bits-ui';
   import { Input } from 'bits-ui';
   import { DropdownMenu } from 'bits-ui';
-  
+
   // Gaming UI Components
   import N643DButton from '$lib/components/ui/gaming/n64/N643DButton.svelte';
   // import N64TextureFilteringCache from '$lib/components/ui/gaming/n64/N64TextureFilteringCache.svelte';
   import NES8BitButton from '$lib/components/ui/gaming/8bit/NES8BitButton.svelte';
   import NES8BitContainer from '$lib/components/ui/gaming/8bit/NES8BitContainer.svelte';
-  
+
   // Standard UI Components
   import Card from '$lib/components/ui/Card.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
 
   // Import route configuration
   import { allRoutes, routeCategories } from '$lib/data/routes-config';
-  
+
   // Get data from server loader
   let { data }: { data: PageData } = $props();
   // Discover all route modules
@@ -52,7 +52,7 @@
   let viewMode = $state<'grid' | 'list' | 'terminal'>('grid');
   let gamingMode = $state(true);
   let testingMode = $state(false);
-  
+
   // bits-ui v2 component states
   let showApiDialog = $state(false);
   let selectedRoutes = $state<string[]>([]);
@@ -63,7 +63,7 @@
   let testTimeout = $state(5000);
   let enableParallelTesting = $state(true);
   let apiEndpointTest = $state<any>(null);
-  
+
   // Enhanced route testing state with comprehensive API integration
   let testResults = $state<Record<string, 'pending' | 'success' | 'error' | 'timeout'>>({});
   let testingProgress = $state(0);
@@ -72,7 +72,7 @@
   let systemHealth = $state<any>(null);
   let apiOperationResults = $state<Record<string, any>>({});
   let recentOperations = $state<any[]>([]);
-  
+
   // Authentication state management - initialize from server data
   let showAuthDialog = $state(false);
   let authMode = $state<'login' | 'register'>('login');
@@ -80,7 +80,7 @@
   let authError = $state<string | null>(null);
   let currentUser = $state<any>(data.userSession.user);
   let isAuthenticated = $state(data.userSession.isAuthenticated);
-  
+
   // Auth form state
   let authForm = $state({
     email: '',
@@ -235,19 +235,19 @@
       const iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       iframe.src = route;
-      
+
       iframe.onload = () => {
         clearTimeout(timeout);
         document.body.removeChild(iframe);
         resolve('success');
       };
-      
+
       iframe.onerror = () => {
         clearTimeout(timeout);
         document.body.removeChild(iframe);
         resolve('error');
       };
-      
+
       document.body.appendChild(iframe);
     });
   }
@@ -256,7 +256,7 @@
     testingMode = true;
     testResults = {};
     testingProgress = 0;
-    
+
     const routesToTest = allAvailableRoutes.filter(r => r.available);
     totalTests = routesToTest.length;
 
@@ -264,15 +264,15 @@
       const route = routesToTest[i];
       currentlyTesting = route.route;
       testResults[route.route] = 'pending';
-      
+
       const result = await testRoute(route.route);
       testResults[route.route] = result;
       testingProgress = i + 1;
-      
+
       // Small delay to show progress
       await new Promise(resolve => setTimeout(resolve, 100));
     }
-    
+
     currentlyTesting = null;
     testingMode = false;
   }
@@ -283,7 +283,7 @@
         // Add gaming transition effect
         document.body.style.transition = 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         document.body.style.transform = 'scale(0.95) rotateX(2deg)';
-        
+
         setTimeout(async () => {
           await goto(route);
           document.body.style.transform = '';
@@ -309,13 +309,13 @@
       <div class="n64-dialog-content">
         <div class="n64-dialog-header">⚠️ NAVIGATION ERROR</div>
         <div class="n64-dialog-body">${message}</div>
-        <button class="n64-dialog-button" on:onclick="this.parentElement.parentElement.remove()">
+         <button class="n64-dialog-button" onclick="this.parentElement.parentElement.remove()">
           ACKNOWLEDGE
         </button>
       </div>
     `;
     document.body.appendChild(dialog);
-    
+
     setTimeout(() => {
       if (dialog.parentElement) {
         dialog.remove();
@@ -341,7 +341,7 @@
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
-      
+
       if (response.ok) {
         systemHealth = await response.json();
       }
@@ -349,7 +349,7 @@
       console.error('System health fetch error:', error);
     }
   }
-  
+
   async function performApiOperation(operation: string, data?: any) {
     try {
       const response = await fetch('/api/comprehensive-integration', {
@@ -357,7 +357,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ operation, data })
       });
-      
+
       if (response.ok) {
         const result = await response.json();
         apiOperationResults[operation] = result;
@@ -369,14 +369,14 @@
       throw error;
     }
   }
-  
+
   async function testApiEndpoint(endpoint: string) {
     try {
       const response = await fetch(endpoint, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
-      
+
       const result = {
         endpoint,
         status: response.status,
@@ -384,7 +384,7 @@
         data: response.ok ? await response.json() : await response.text(),
         timestamp: Date.now()
       };
-      
+
       apiEndpointTest = result;
       return result;
     } catch (error) {
@@ -399,7 +399,7 @@
       return result;
     }
   }
-  
+
   function toggleRouteSelection(route: string) {
     if (selectedRoutes.includes(route)) {
       selectedRoutes = selectedRoutes.filter(r => r !== route);
@@ -407,7 +407,7 @@
       selectedRoutes = [...selectedRoutes, route];
     }
   }
-  
+
   function toggleFavorite(route: string) {
     if (favoriteRoutes.includes(route)) {
       favoriteRoutes = favoriteRoutes.filter(r => r !== route);
@@ -415,41 +415,41 @@
       favoriteRoutes = [...favoriteRoutes, route];
     }
   }
-  
+
   async function bulkTestRoutes() {
     if (selectedRoutes.length === 0) return;
-    
+
     testingMode = true;
     bulkOperationProgress = 0;
-    
-    const routesToTest = selectedRoutes.filter(r => 
+
+    const routesToTest = selectedRoutes.filter(r =>
       allAvailableRoutes.find(route => route.route === r)?.available
     );
-    
+
     for (let i = 0; i < routesToTest.length; i++) {
       const route = routesToTest[i];
       currentlyTesting = route;
       testResults[route] = 'pending';
-      
+
       const result = await testRoute(route);
       testResults[route] = result;
       bulkOperationProgress = ((i + 1) / routesToTest.length) * 100;
-      
+
       if (enableParallelTesting && i < routesToTest.length - 1) {
         await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
-    
+
     currentlyTesting = null;
     testingMode = false;
     selectedRoutes = [];
   }
-  
+
   // Authentication functions
   async function handleLogin() {
     authLoading = true;
     authError = null;
-    
+
     try {
       // Multi-protocol login with intelligent protocol selection
       const loginPayload = {
@@ -465,18 +465,18 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginPayload)
       });
-      
+
       const result = await response.json();
-      
+
       if (result.success) {
         currentUser = result.data.user;
         isAuthenticated = true;
         showAuthDialog = false;
-        
+
         // Show protocol and performance info
-        const protocolInfo = result.protocol ? 
+        const protocolInfo = result.protocol ?
           ` via ${result.protocol.used.toUpperCase()} (${result.protocol.processingTime})` : '';
-        
+
         // Reset form
         authForm = {
           email: '',
@@ -486,19 +486,19 @@
           role: 'user',
           rememberMe: false
         };
-        
+
         // Add to recent operations with protocol info
         recentOperations = [
-          { 
-            operation: `User Login${protocolInfo}`, 
-            timestamp: new Date().toISOString(), 
+          {
+            operation: `User Login${protocolInfo}`,
+            timestamp: new Date().toISOString(),
             status: 'success',
             protocol: result.protocol?.used || 'rest',
             autoTagging: result.protocol?.autoTagging || false
           },
           ...recentOperations.slice(0, 4)
         ];
-        
+
         console.log('🚀 Login successful:', {
           user: currentUser,
           protocol: result.protocol,
@@ -514,11 +514,11 @@
       authLoading = false;
     }
   }
-  
+
   async function handleRegister() {
     authLoading = true;
     authError = null;
-    
+
     try {
       // Multi-protocol registration with comprehensive profile data
       const registrationPayload = {
@@ -553,19 +553,19 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(registrationPayload)
       });
-      
+
       const result = await response.json();
-      
+
       if (result.success) {
         // Show protocol and performance info
-        const protocolInfo = result.protocol ? 
+        const protocolInfo = result.protocol ?
           ` via ${result.protocol.used.toUpperCase()} (${result.protocol.processingTime})` : '';
-        
+
         // Add registration to recent operations
         recentOperations = [
-          { 
-            operation: `User Registration${protocolInfo}`, 
-            timestamp: new Date().toISOString(), 
+          {
+            operation: `User Registration${protocolInfo}`,
+            timestamp: new Date().toISOString(),
             status: 'success',
             protocol: result.protocol?.used || 'rest',
             autoTagging: result.protocol?.autoTagging || false
@@ -593,42 +593,42 @@
       authLoading = false;
     }
   }
-  
+
   async function handleLogout() {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch (error) {
       console.error('Logout error:', error);
     }
-    
+
     currentUser = null;
     isAuthenticated = false;
-    
+
     // Add to recent operations
     recentOperations = [
       { operation: 'User Logout', timestamp: new Date().toISOString(), status: 'success' },
       ...recentOperations.slice(0, 4)
     ];
   }
-  
+
   function openAuthDialog(mode: 'login' | 'register') {
     authMode = mode;
     authError = null;
     showAuthDialog = true;
   }
-  
+
   // Initialize system on mount - use server data as initial state
   onMount(async () => {
     // Initialize with server-loaded data
     systemHealth = data.systemHealth;
     recentOperations = data.recentOperations;
-    
+
     // Only fetch if server data is missing
     if (!systemHealth) {
       await fetchSystemHealth();
     }
   });
-  
+
   // Log derived values when they change
   $effect(() => {
     console.log('Discovered routes:', discoveredRoutes);
@@ -645,7 +645,7 @@
     <!-- Enhanced Header with bits-ui v2 Toolbar Integration -->
     <div class="text-center border-b border-amber-500/30 pb-6 relative">
       <!-- <N64TextureFilteringCache /> -->
-      
+
       <div class="relative z-10">
         <h1 class="text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600">
           🎮 BITS-UI V2 ROUTES CENTER
@@ -656,7 +656,7 @@
         <p class="text-amber-300/70">
           {allAvailableRoutes.length} total routes • {filteredRoutes.length} displayed • {selectedRoutes.length} selected
         </p>
-        
+
         <!-- bits-ui v2 Toolbar -->
         <Toolbar.Root class="flex justify-center items-center gap-2 mt-4 p-2 bg-black/20 rounded-lg border border-amber-500/30">
           <!-- Gaming Mode Toggle -->
@@ -667,9 +667,9 @@
           >
             {gamingMode ? '🎮 Gaming ON' : '📱 Classic'}
           </Toggle.Root>
-          
+
           <Separator.Root orientation="vertical" class="h-6 w-px bg-amber-500/40" />
-          
+
           <!-- View Mode Select -->
           <Select.Root bind:selected={viewMode}>
             <Select.Trigger class="px-4 py-2 bg-blue-600/20 border border-blue-500/40 text-blue-200 rounded hover:bg-blue-600/30">
@@ -681,28 +681,28 @@
               <Select.Item value="terminal" class="p-2 text-white hover:bg-amber-600/20">💻 Terminal View</Select.Item>
             </Select.Content>
           </Select.Root>
-          
+
           <Separator.Root orientation="vertical" class="h-6 w-px bg-amber-500/40" />
-          
+
           <!-- Test Operations -->
           <Button.Root
-            on:on:on:click={testAllRoutes}
+            on:click={testAllRoutes}
             disabled={testingMode}
             class="px-4 py-2 bg-green-600/20 border border-green-500/40 text-green-200 rounded hover:bg-green-600/30 disabled:opacity-50"
           >
             {testingMode ? '⏳ Testing...' : '🧪 Test All'}
           </Button.Root>
-          
+
           <Button.Root
-            on:on:on:click={bulkTestRoutes}
+            on:click={bulkTestRoutes}
             disabled={testingMode || selectedRoutes.length === 0}
             class="px-4 py-2 bg-orange-600/20 border border-orange-500/40 text-orange-200 rounded hover:bg-orange-600/30 disabled:opacity-50"
           >
             🎯 Test Selected ({selectedRoutes.length})
           </Button.Root>
-          
+
           <Separator.Root orientation="vertical" class="h-6 w-px bg-amber-500/40" />
-          
+
           <!-- Authentication Section -->
           {#if isAuthenticated && currentUser}
             <!-- User Avatar Dropdown -->
@@ -721,14 +721,14 @@
                 </Button.Root>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content class="w-56 bg-gray-900/95 border border-amber-500/50 rounded p-2 z-50">
-                <DropdownMenu.Item class="w-full p-3 text-left rounded hover:bg-amber-600/20 text-white" on:on:on:click={() => goto('/profile')}>
+                <DropdownMenu.Item class="w-full p-3 text-left rounded hover:bg-amber-600/20 text-white" on:click={() => goto('/profile')}>
                   👤 Profile
                 </DropdownMenu.Item>
-                <DropdownMenu.Item class="w-full p-3 text-left rounded hover:bg-amber-600/20 text-white" on:on:on:click={() => goto('/settings')}>
+                <DropdownMenu.Item class="w-full p-3 text-left rounded hover:bg-amber-600/20 text-white" on:click={() => goto('/settings')}>
                   ⚙️ Settings
                 </DropdownMenu.Item>
                 <DropdownMenu.Separator class="my-1 h-px bg-amber-500/30" />
-                <DropdownMenu.Item class="w-full p-3 text-left rounded hover:bg-red-600/20 text-red-300" on:on:on:click={handleLogout}>
+                <DropdownMenu.Item class="w-full p-3 text-left rounded hover:bg-red-600/20 text-red-300" on:click={handleLogout}>
                   🚪 Logout
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
@@ -736,26 +736,26 @@
           {:else}
             <!-- Login/Register Buttons -->
             <Button.Root
-              on:on:on:click={() => openAuthDialog('login')}
+              on:click={() => openAuthDialog('login')}
               class="px-4 py-2 bg-blue-600/20 border border-blue-500/40 text-blue-200 rounded hover:bg-blue-600/30"
             >
               🔑 Login
             </Button.Root>
-            
+
             <Button.Root
-              on:on:on:click={() => openAuthDialog('register')}
+              on:click={() => openAuthDialog('register')}
               class="px-4 py-2 bg-green-600/20 border border-green-500/40 text-green-200 rounded hover:bg-green-600/30"
             >
               📝 Register
             </Button.Root>
           {/if}
-          
+
           <Separator.Root orientation="vertical" class="h-6 w-px bg-amber-500/40" />
-          
+
           <!-- API Operations Dialog -->
           <Dialog.Root bind:open={showApiDialog}>
             <Button.Root
-              on:on:on:click={() => showApiDialog = true}
+              on:click={() => showApiDialog = true}
               class="px-4 py-2 bg-cyan-600/20 border border-cyan-500/40 text-cyan-200 rounded hover:bg-cyan-600/30"
             >
               🔗 API Ops
@@ -768,7 +768,7 @@
                     <Dialog.Title class="text-xl font-bold text-amber-300 mb-4">
                       🚀 API Operations Center
                     </Dialog.Title>
-                    
+
                     <div class="space-y-4">
                       <!-- System Health -->
                       {#if systemHealth}
@@ -782,38 +782,38 @@
                         </Progress.Root>
                       </div>
                       {/if}
-                      
+
                       <!-- API Operations -->
                       <div class="grid grid-cols-2 gap-2">
                         <Button.Root
-                          on:on:on:click={() => performApiOperation('system_optimization')}
+                          on:click={() => performApiOperation('system_optimization')}
                           class="p-3 bg-blue-600/20 border border-blue-500/40 text-blue-200 rounded hover:bg-blue-600/30"
                         >
                           🔧 System Optimization
                         </Button.Root>
-                        
+
                         <Button.Root
-                          on:on:on:click={() => performApiOperation('context7_integration')}
+                          on:click={() => performApiOperation('context7_integration')}
                           class="p-3 bg-purple-600/20 border border-purple-500/40 text-purple-200 rounded hover:bg-purple-600/30"
                         >
                           🧠 Context7 Integration
                         </Button.Root>
-                        
+
                         <Button.Root
-                          on:on:on:click={() => performApiOperation('real_time_analysis')}
+                          on:click={() => performApiOperation('real_time_analysis')}
                           class="p-3 bg-yellow-600/20 border border-yellow-500/40 text-yellow-200 rounded hover:bg-yellow-600/30"
                         >
                           ⚡ Real-time Analysis
                         </Button.Root>
-                        
+
                         <Button.Root
-                          on:on:on:click={() => performApiOperation('legal_research')}
+                          on:click={() => performApiOperation('legal_research')}
                           class="p-3 bg-red-600/20 border border-red-500/40 text-red-200 rounded hover:bg-red-600/30"
                         >
                           ⚖️ Legal Research
                         </Button.Root>
                       </div>
-                      
+
                       <!-- Recent Operations -->
                       {#if recentOperations.length > 0}
                       <div class="p-4 bg-black/40 rounded border border-gray-500/30">
@@ -834,7 +834,7 @@
                     <ScrollArea.Thumb />
                   </ScrollArea.Scrollbar>
                 </ScrollArea.Root>
-                
+
                 <Button.Root
                   on:on:on:click={() => showApiDialog = false}
                   class="absolute top-2 right-2 p-2 text-gray-400 hover:text-white"
@@ -844,7 +844,7 @@
               </Dialog.Content>
             </Dialog.Portal>
           </Dialog.Root>
-          
+
           <!-- Authentication Dialog -->
           <Dialog.Root bind:open={showAuthDialog}>
             <Dialog.Portal>
@@ -853,7 +853,7 @@
                 <Dialog.Title class="text-xl font-bold text-amber-300 mb-4">
                   {authMode === 'login' ? '🔑 Login' : '📝 Register'}
                 </Dialog.Title>
-                
+
                 <form onsubmit={e => { e.preventDefault(); authMode === 'login' ? handleLogin() : handleRegister(); }} class="space-y-4">
                   {#if authMode === 'register'}
                     <div class="grid grid-cols-2 gap-2">
@@ -877,7 +877,7 @@
                       </div>
                     </div>
                   {/if}
-                  
+
                   <div>
                     <Label.Root class="block text-sm font-medium text-gray-300 mb-1">Email</Label.Root>
                     <Input.Root
@@ -888,7 +888,7 @@
                       class="w-full px-3 py-2 bg-black/40 border border-gray-600 rounded text-white placeholder-gray-400 focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                     />
                   </div>
-                  
+
                   <div>
                     <Label.Root class="block text-sm font-medium text-gray-300 mb-1">Password</Label.Root>
                     <Input.Root
@@ -900,13 +900,13 @@
                       class="w-full px-3 py-2 bg-black/40 border border-gray-600 rounded text-white placeholder-gray-400 focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                     />
                   </div>
-                  
+
                   {#if authMode === 'register'}
                     <div>
                       <Label.Root class="block text-sm font-medium text-gray-300 mb-1">Role</Label.Root>
                       <Select.Root bind:selected={authForm.role}>
                         <Select.Trigger class="w-full px-3 py-2 bg-black/40 border border-gray-600 rounded text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500">
-                          {authForm.role === 'attorney' ? '⚖️ Attorney' : 
+                          {authForm.role === 'attorney' ? '⚖️ Attorney' :
                            authForm.role === 'paralegal' ? '📋 Paralegal' :
                            authForm.role === 'investigator' ? '🔍 Investigator' : '👤 User'}
                         </Select.Trigger>
@@ -919,7 +919,7 @@
                       </Select.Root>
                     </div>
                   {/if}
-                  
+
                   {#if authMode === 'login'}
                     <div class="flex items-center">
                       <input
@@ -930,13 +930,13 @@
                       <Label.Root class="text-sm text-gray-300">Remember me</Label.Root>
                     </div>
                   {/if}
-                  
+
                   {#if authError}
                     <div class="p-3 bg-red-900/30 border border-red-500/50 rounded text-red-300 text-sm">
                       {authError}
                     </div>
                   {/if}
-                  
+
                   <div class="flex gap-2">
                     <Button.Root
                       type="submit"
@@ -945,7 +945,7 @@
                     >
                       {authLoading ? '⏳ Processing...' : authMode === 'login' ? '🔑 Login' : '📝 Register'}
                     </Button.Root>
-                    
+
                     <Button.Root
                       type="button"
                       on:on:on:click={() => {
@@ -958,7 +958,7 @@
                     </Button.Root>
                   </div>
                 </form>
-                
+
                 <Button.Root
                   on:on:on:click={() => showAuthDialog = false}
                   class="absolute top-2 right-2 p-2 text-gray-400 hover:text-white"
@@ -968,7 +968,7 @@
               </Dialog.Content>
             </Dialog.Portal>
           </Dialog.Root>
-          
+
           <!-- Settings Popover -->
           <Popover.Root bind:open={showSettings}>
             <Button.Root
@@ -979,7 +979,7 @@
             </Button.Root>
             <Popover.Content class="p-4 bg-gray-900 border border-amber-500/50 rounded-lg min-w-[300px]">
               <h3 class="font-semibold text-amber-300 mb-3">Testing Configuration</h3>
-              
+
               <div class="space-y-4">
                 <div>
                   <Label.Root class="text-sm text-gray-300">Batch Size</Label.Root>
@@ -991,7 +991,7 @@
                   </Slider.Root>
                   <div class="text-xs text-gray-400 mt-1">Current: {batchSize}</div>
                 </div>
-                
+
                 <div>
                   <Label.Root class="text-sm text-gray-300">Test Timeout (ms)</Label.Root>
                   <Slider.Root bind:value={testTimeout} min={1000} max={30000} step={1000} class="mt-1">
@@ -1002,7 +1002,7 @@
                   </Slider.Root>
                   <div class="text-xs text-gray-400 mt-1">Current: {testTimeout}ms</div>
                 </div>
-                
+
                 <div class="flex items-center space-x-2">
                   <Toggle.Root bind:pressed={enableParallelTesting} class="text-sm text-gray-300 data-[state=on]:text-green-300">
                     Parallel Testing
@@ -1014,7 +1014,7 @@
         </Toolbar.Root>
       </div>
     </div>
-    
+
     <!-- Enhanced Testing Progress with bits-ui Progress -->
     {#if testingMode || bulkOperationProgress > 0}
       <Card class="p-6 bg-gradient-to-r from-blue-900/50 to-purple-900/50 border-2 border-cyan-500/30">
@@ -1022,20 +1022,20 @@
           <h3 class="text-xl font-bold text-cyan-300 mb-4">
             {testingMode ? '🔄 ROUTE TESTING IN PROGRESS' : '🎯 BULK OPERATION PROGRESS'}
           </h3>
-          
+
           <div class="mb-4">
-            <Progress.Root 
+            <Progress.Root
               value={testingMode ? (testingProgress / totalTests) * 100 : bulkOperationProgress}
               max={100}
               class="h-4 bg-gray-800 rounded-full overflow-hidden"
             >
-              <Progress.Indicator 
-                class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-300" 
+              <Progress.Indicator
+                class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-300"
                 style="transform: translateX(-{100 - (testingMode ? (testingProgress / totalTests) * 100 : bulkOperationProgress)}%)"
               />
             </Progress.Root>
           </div>
-          
+
           <div class="space-y-2">
             <p class="text-cyan-200">
               {#if testingMode}
@@ -1044,7 +1044,7 @@
                 Bulk operation: {Math.round(bulkOperationProgress)}% complete
               {/if}
             </p>
-            
+
             {#if testingMode}
               <div class="flex justify-center gap-4 text-sm">
                 <span class="text-green-300">✅ {Object.values(testResults).filter(r => r === 'success').length}</span>
@@ -1092,7 +1092,7 @@
           </Label.Root>
           <Select.Root bind:selected={categoryValue}>
             <Select.Trigger class="min-w-[150px] bg-yorha-bg-secondary border border-yorha-text-muted p-3 rounded text-yorha-text-primary focus:border-yorha-secondary focus:ring-2 focus:ring-yorha-secondary/20">
-              {categoryValue === 'all' ? 'All Categories' : 
+              {categoryValue === 'all' ? 'All Categories' :
                categoryValue === 'available' ? 'Available Only' :
                categoryValue === 'configured' ? 'Configured' :
                categoryValue === 'discovered' ? 'Discovered' :
@@ -1123,8 +1123,8 @@
             <NavigationMenu.List class="flex">
               <NavigationMenu.Item>
                 <NavigationMenu.Trigger class="px-4 py-2 bg-yorha-bg-secondary border border-yorha-text-muted rounded text-yorha-text-primary hover:bg-yorha-bg-tertiary focus:border-yorha-secondary">
-                  {sortValue === 'name' ? '🔤 Name' : 
-                   sortValue === 'category' ? '📁 Category' : 
+                  {sortValue === 'name' ? '🔤 Name' :
+                   sortValue === 'category' ? '📁 Category' :
                    sortValue === 'status' ? '📈 Status' : 'Sort By'} ▼
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content class="absolute top-full left-0 mt-2 bg-gray-900 border border-amber-500/50 rounded-lg shadow-xl min-w-[120px]">
@@ -1171,20 +1171,20 @@
     </div>
 
     <!-- Enhanced Routes Grid with N64 3D Gaming Components -->
-    <div class={viewMode === 'grid' 
-      ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" 
+    <div class={viewMode === 'grid'
+      ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
       : "space-y-3"
     }>
       {#each filteredRoutes as route}
         {@const testResult = testResults[route.route]}
-        
-        <Card class="p-4 relative overflow-hidden transition-all duration-300 hover:scale-[1.02] 
-                   {gamingMode ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-amber-500/20' 
+
+        <Card class="p-4 relative overflow-hidden transition-all duration-300 hover:scale-[1.02]
+                   {gamingMode ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-amber-500/20'
                                 : 'bg-white dark:bg-gray-800'}
-                   {testResult === 'success' ? 'border-green-500/50 bg-green-900/10' 
+                   {testResult === 'success' ? 'border-green-500/50 bg-green-900/10'
                    : testResult === 'error' ? 'border-red-500/50 bg-red-900/10'
                    : testResult === 'timeout' ? 'border-yellow-500/50 bg-yellow-900/10' : ''}">
-          
+
           <!-- N64-style scanline effect -->
           {#if gamingMode}
             <div class="absolute inset-0 pointer-events-none opacity-10"
@@ -1197,7 +1197,7 @@
                  )">
             </div>
           {/if}
-          
+
           <div class="relative z-10">
             <div class="flex items-start justify-between mb-3">
               <div class="flex items-center gap-2">
@@ -1218,7 +1218,7 @@
                     {testResult.toUpperCase()}
                   </Badge>
                 {/if}
-                
+
                 {#if route.available}
                   <Badge variant="outline" class="text-xs {getRouteStatusColor(route.status)}">
                     {route.status}
@@ -1243,7 +1243,7 @@
             </h3>
 
             <code class="block text-xs p-2 rounded mb-3 font-mono
-                       {gamingMode ? 'text-cyan-300 bg-black/30 border border-cyan-500/20' 
+                       {gamingMode ? 'text-cyan-300 bg-black/30 border border-cyan-500/20'
                                   : 'text-blue-600 bg-gray-100 dark:bg-gray-700 dark:text-blue-400'}">
               {route.route}
             </code>
@@ -1257,7 +1257,7 @@
               <div class="flex flex-wrap gap-1 mb-4">
                 {#each route.tags.slice(0, 3) as tag}
                   <span class="text-xs px-2 py-1 rounded
-                             {gamingMode ? 'bg-purple-900/50 text-purple-200 border border-purple-500/30' 
+                             {gamingMode ? 'bg-purple-900/50 text-purple-200 border border-purple-500/30'
                                         : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}">
                     {tag}
                   </span>
@@ -1287,7 +1287,7 @@
                   {selectedRoutes.includes(route.route) ? 'Remove from selection' : 'Add to selection'}
                 </Tooltip.Content>
               </Tooltip.Root>
-              
+
               <!-- Favorite Toggle -->
               <Tooltip.Root>
                 <Tooltip.Trigger asChild let:builder>
@@ -1303,7 +1303,7 @@
                   {favoriteRoutes.includes(route.route) ? 'Remove from favorites' : 'Add to favorites'}
                 </Tooltip.Content>
               </Tooltip.Root>
-              
+
               {#if gamingMode}
                 <N643DButton
                   on:on:on:click={() => navigateToRoute(route.route)}
@@ -1317,7 +1317,7 @@
                 >
                   {route.available ? '🚀 NAVIGATE' : '❌ UNAVAILABLE'}
                 </N643DButton>
-                
+
                 {#if route.available}
                   <NES8BitButton
                     on:on:on:click={() => testRoute(route.route).then(result => testResults[route.route] = result)}
@@ -1341,7 +1341,7 @@
                 >
                   {route.available ? '🚀 Navigate' : '❌ Unavailable'}
                 </Button.Root>
-                
+
                 {#if route.available}
                   <Button.Root
                     on:on:on:click={async () => {
@@ -1355,7 +1355,7 @@
                     🧪 Test
                   </Button.Root>
                 {/if}
-                
+
                 {#if route.route.includes('/api/')}
                   <Button.Root
                     on:on:on:click={() => testApiEndpoint(route.route)}
@@ -1440,7 +1440,7 @@
               >
                 🛣️ Routing Test
               </Button.Root>
-              
+
               <Button.Root
                 on:on:on:click={() => fetchSystemHealth()}
                 class="w-full px-4 py-2 bg-purple-600/80 text-white rounded hover:bg-purple-700 transition-colors border border-purple-500"
@@ -1448,7 +1448,7 @@
                 🔄 Refresh System Health
               </Button.Root>
             {/if}
-            
+
             <!-- Recent API Test Result -->
             {#if apiEndpointTest}
               <div class="mt-4 p-3 bg-black/40 rounded border border-gray-600">
@@ -1484,12 +1484,12 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
+
   /* N64 Gaming Enhancement Styles */
   .drop-shadow-glow {
     filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 8px currentColor);
   }
-  
+
   /* N64 Error Dialog Styles */
   :global(.n64-error-dialog) {
     position: fixed;
@@ -1504,7 +1504,7 @@
     z-index: 10000;
     animation: fadeIn 0.3s ease-in-out;
   }
-  
+
   :global(.n64-dialog-content) {
     background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
     border: 2px solid #ff6b6b;
@@ -1512,12 +1512,12 @@
     padding: 2rem;
     max-width: 400px;
     text-align: center;
-    box-shadow: 
+    box-shadow:
       0 10px 30px rgba(0, 0, 0, 0.5),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
     animation: slideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
-  
+
   :global(.n64-dialog-header) {
     font-size: 1.2rem;
     font-weight: bold;
@@ -1526,13 +1526,13 @@
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-  
+
   :global(.n64-dialog-body) {
     color: #ffffff;
     margin-bottom: 1.5rem;
     line-height: 1.5;
   }
-  
+
   :global(.n64-dialog-button) {
     background: linear-gradient(145deg, #ff6b6b, #ff5252);
     border: none;
@@ -1545,101 +1545,101 @@
     transition: all 0.2s ease;
     box-shadow: 0 4px 0 #cc4444;
   }
-  
+
   :global(.n64-dialog-button:hover) {
     background: linear-gradient(145deg, #ff5252, #ff3333);
     transform: translateY(1px);
     box-shadow: 0 3px 0 #cc4444;
   }
-  
+
   :global(.n64-dialog-button:active) {
     transform: translateY(2px);
     box-shadow: 0 2px 0 #cc4444;
   }
-  
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  
+
   @keyframes slideIn {
-    from { 
-      transform: scale(0.8) translateY(-20px); 
-      opacity: 0; 
+    from {
+      transform: scale(0.8) translateY(-20px);
+      opacity: 0;
     }
-    to { 
-      transform: scale(1) translateY(0); 
-      opacity: 1; 
+    to {
+      transform: scale(1) translateY(0);
+      opacity: 1;
     }
   }
-  
+
   /* Enhanced scanlines effect */
   @keyframes scanlines {
     0% { transform: translateY(-100%); }
     100% { transform: translateY(100vh); }
   }
-  
+
   /* Retro CRT glow effect */
   :global(.crt-glow) {
-    text-shadow: 
+    text-shadow:
       0 0 5px currentColor,
       0 0 10px currentColor,
       0 0 15px currentColor;
   }
-  
+
   /* Terminal-style cursor animation */
   @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   }
-  
+
   .terminal-cursor::after {
     content: '_';
     animation: blink 1s infinite;
   }
-  
+
   /* N64 texture filtering simulation */
   :global(.n64-texture-filter) {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: pixelated;
     filter: contrast(1.1) saturate(1.2);
   }
-  
+
   /* Responsive design for mobile gaming */
   @media (max-width: 768px) {
     :global(.n64-dialog-content) {
       margin: 1rem;
       padding: 1.5rem;
     }
-    
+
     .drop-shadow-glow {
       filter: drop-shadow(0 0 2px currentColor);
     }
   }
-  
+
   /* High contrast mode support */
   @media (prefers-contrast: high) {
     :global(.n64-error-dialog) {
       background: rgba(0, 0, 0, 0.95);
     }
-    
+
     :global(.n64-dialog-content) {
       border-width: 3px;
       box-shadow: none;
     }
   }
-  
+
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     :global(.n64-dialog-content),
     :global(.n64-error-dialog) {
       animation: none;
     }
-    
+
     .drop-shadow-glow {
       filter: none;
     }
-    
+
     .terminal-cursor::after {
       animation: none;
     }

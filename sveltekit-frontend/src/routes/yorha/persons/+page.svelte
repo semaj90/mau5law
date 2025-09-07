@@ -23,7 +23,7 @@
       photo: null
     },
     {
-      id: 'POI-002', 
+      id: 'POI-002',
       name: 'Sarah Williams',
       alias: 'Red Phoenix',
       threat_level: 'medium',
@@ -55,19 +55,19 @@
   // Filter persons based on search and threat level
   let filteredPersons = $derived(() => {
     let filtered = persons;
-    
+
     if (searchQuery.trim()) {
-      filtered = filtered.filter(person => 
+      filtered = filtered.filter(person =>
         person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         person.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
         person.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    
+
     if (selectedThreatLevel !== 'all') {
       filtered = filtered.filter(person => person.threat_level === selectedThreatLevel);
     }
-    
+
     return filtered;
   });
 
@@ -84,7 +84,7 @@
   function getStatusColor(status: string) {
     switch (status) {
       case 'wanted': return 'bg-red-600 text-white';
-      case 'surveillance': return 'bg-blue-600 text-white'; 
+      case 'surveillance': return 'bg-blue-600 text-white';
       case 'active': return 'bg-orange-600 text-white';
       case 'cleared': return 'bg-green-600 text-white';
       default: return 'bg-gray-600 text-white';
@@ -112,38 +112,38 @@
           <span class="nav-icon">⌂</span>
           COMMAND CENTER
         </a>
-        
+
         <a href="/yorha/cases" class="nav-item">
           <span class="nav-text">ACTIVE CASES</span>
           <span class="nav-count">3</span>
         </a>
-        
+
         <a href="/evidenceboard" class="nav-item">
           <span class="nav-icon">📁</span>
           EVIDENCE
         </a>
-        
+
         <button class="nav-item persons-active">
           <span class="nav-icon">👤</span>
           PERSONS OF INTEREST
         </button>
-        
+
         <a href="/yorha/analysis" class="nav-item">
           <span class="nav-icon">📊</span>
           ANALYSIS
         </a>
-        
+
         <a href="/yorha/search" class="nav-item">
           <span class="nav-icon">🔍</span>
           GLOBAL SEARCH
         </a>
-        
+
         <a href="/yorha/terminal" class="nav-item">
           <span class="nav-icon">></span>
           TERMINAL
         </a>
       </div>
-      
+
       <div class="nav-section">
         <a href="/yorha/config" class="nav-item">
           <span class="nav-icon">⚙</span>
@@ -168,9 +168,9 @@
         <h1 class="persons-title">PERSONS OF INTEREST</h1>
         <div class="persons-subtitle">Surveillance and Investigation Targets</div>
       </div>
-      
+
       <div class="header-right">
-        <Button class="header-btn" on:on:click={() => showNewPersonModal = true}>
+  <Button class="header-btn" on:click={() => showNewPersonModal = true}>
           <Plus class="w-4 h-4" />
           ADD PERSON
         </Button>
@@ -182,14 +182,14 @@
       <div class="search-section">
         <div class="search-input-wrapper">
           <Search class="search-icon w-4 h-4" />
-          <Input 
-            type="text" 
+          <Input
+            type="text"
             placeholder="Search persons, aliases, descriptions..."
             bind:value={searchQuery}
             class="search-input"
           />
         </div>
-        
+
         <select bind:value={selectedThreatLevel} class="threat-filter">
           <option value="all">All Threat Levels</option>
           <option value="critical">Critical</option>
@@ -198,7 +198,7 @@
           <option value="low">Low</option>
         </select>
       </div>
-      
+
       <div class="stats-section">
         <div class="stat-item">
           <span class="stat-number">{persons.length}</span>
@@ -229,13 +229,13 @@
                 </div>
               {/if}
             </div>
-            
+
             <div class="person-basic-info">
               <div class="person-name">{person.name}</div>
               <div class="person-alias">"{person.alias}"</div>
               <div class="person-id">{person.id}</div>
             </div>
-            
+
             <div class="person-badges">
               <Badge class={getThreatLevelColor(person.threat_level)}>
                 {person.threat_level.toUpperCase()}
@@ -245,7 +245,7 @@
               </Badge>
             </div>
           </Card.Header>
-          
+
           <Card.Content class="person-content">
             <div class="person-details">
               <div class="detail-row">
@@ -261,11 +261,11 @@
                 <span class="detail-value">{person.cases.length} active</span>
               </div>
             </div>
-            
+
             <div class="person-description">
               {person.description}
             </div>
-            
+
             <div class="person-cases">
               {#each person.cases as caseId}
                 <Badge variant="outline" class="case-badge">
@@ -274,7 +274,7 @@
               {/each}
             </div>
           </Card.Content>
-          
+
           <Card.Footer class="person-actions">
             <Button size="sm" variant="outline">
               <Eye class="w-4 h-4" />
@@ -311,19 +311,19 @@
     <Dialog.Header>
       <Dialog.Title>ADD PERSON OF INTEREST</Dialog.Title>
     </Dialog.Header>
-    
+
     <div class="modal-form">
       <div class="form-grid">
         <div class="form-field">
           <label class="form-label">FULL NAME</label>
           <Input placeholder="Enter full name" class="yorha-input" />
         </div>
-        
+
         <div class="form-field">
           <label class="form-label">ALIAS / CODENAME</label>
           <Input placeholder="Known alias or codename" class="yorha-input" />
         </div>
-        
+
         <div class="form-field">
           <label class="form-label">THREAT LEVEL</label>
           <select class="yorha-select">
@@ -333,7 +333,7 @@
             <option value="critical">Critical</option>
           </select>
         </div>
-        
+
         <div class="form-field">
           <label class="form-label">STATUS</label>
           <select class="yorha-select">
@@ -342,10 +342,10 @@
             <option value="active">Active Investigation</option>
           </select>
         </div>
-        
+
         <div class="form-field form-field-full">
           <label class="form-label">DESCRIPTION</label>
-          <textarea 
+          <textarea
             placeholder="Physical description, known activities, etc."
             rows="4"
             class="yorha-textarea"
@@ -353,12 +353,12 @@
         </div>
       </div>
     </div>
-    
+
     <Dialog.Footer>
-      <Button variant="outline" on:on:click={() => showNewPersonModal = false}>
+  <Button variant="outline" on:click={() => showNewPersonModal = false}>
         CANCEL
       </Button>
-      <Button on:on:click={() => showNewPersonModal = false}>
+  <Button on:click={() => showNewPersonModal = false}>
         ADD PERSON
       </Button>
     </Dialog.Footer>

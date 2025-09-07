@@ -4,6 +4,8 @@
  * Features: Multi-level generation, NVIDIA RTX optimization, memory streaming
  */
 
+/// <reference types="@webgpu/types" />
+
 import { yorhaWebGPU } from './YoRHaWebGPUMath';
 
 export interface MipmapConfig {

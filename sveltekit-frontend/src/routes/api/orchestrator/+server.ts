@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 // Placeholder orchestrator route (repaired). Full multi-agent logic will be reinstated later.
 export interface WorkflowStatus { id: string; state: string; createdAt: string }

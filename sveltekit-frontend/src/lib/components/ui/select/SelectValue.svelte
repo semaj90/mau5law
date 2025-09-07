@@ -6,6 +6,8 @@
 
   interface Props {
     class?: string;
+    placeholder?: any;
+    children?: any;
   }
   let { children, placeholder,
     class: class_ = ""
@@ -34,9 +36,4 @@
 
 <style>
   /* @unocss-include */
-  .select-value {
-    flex: 1;
-    display: flex;
-    align-items: center;
-}
 </style>

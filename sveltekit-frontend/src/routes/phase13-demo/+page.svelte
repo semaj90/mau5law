@@ -398,7 +398,7 @@ let context7Integration = $state<any >(null);
           class="border border-slate-600 rounded bg-black"></canvas>
         <div class="flex flex-col gap-2">
           <Button
-            on:on:click={startWebGLDemo}
+            on:click={startWebGLDemo}
             disabled={!systemInitialized}
             variant="outline"
             class="text-white border-slate-600 hover:bg-slate-700">
@@ -424,13 +424,13 @@ let context7Integration = $state<any >(null);
             class="w-full p-3 rounded border border-slate-600 bg-slate-700 text-white placeholder-gray-400" />
           <div class="flex gap-2">
             <Button
-              on:on:click={performEnhancedRAGSearch}
+              on:click={performEnhancedRAGSearch}
               disabled={!systemInitialized || ragActive}
               class="bg-blue-600 hover:bg-blue-700">
               {ragActive ? 'Searching...' : 'Search'}
             </Button>
             <Button
-              on:on:click={getContext7Recommendations}
+              on:click={getContext7Recommendations}
               disabled={!systemInitialized}
               variant="outline"
               class="text-white border-slate-600 hover:bg-slate-700">
@@ -448,13 +448,13 @@ let context7Integration = $state<any >(null);
         <h3 class="text-lg font-semibold text-white mb-4">System Controls</h3>
         <div class="space-y-4">
           <Button
-            on:on:click={startAPICoordination}
+            on:click={startAPICoordination}
             disabled={!systemInitialized || apiActive}
             class="w-full bg-green-600 hover:bg-green-700">
             {apiActive ? 'API Active' : 'Start API Coordination'}
           </Button>
           <Button
-            on:on:click={runFullDemo}
+            on:click={runFullDemo}
             disabled={!systemInitialized}
             class="w-full bg-purple-600 hover:bg-purple-700">
             Run Full Demo
@@ -490,7 +490,7 @@ let context7Integration = $state<any >(null);
                 </span>
                 <Button
                   size="sm"
-                  on:on:click={() => submitPositiveFeedback(index)}
+                  on:click={() => submitPositiveFeedback(index)}
                   class="text-xs bg-green-600 hover:bg-green-700">
                   👍 Relevant
                 </Button>

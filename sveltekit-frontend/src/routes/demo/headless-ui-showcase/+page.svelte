@@ -3,31 +3,31 @@
   import { fade, fly } from 'svelte/transition';
   import Button from '$lib/components/ui/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  
+
   // Dialog state
   let isDialogOpen = $state(false);
-  
+
   // Bits UI components (imported from your existing library)
   let selectedValue = $state('option1');
   let inputValue = $state('');
   let isLoading = $state(false);
   let progress = $state(0);
   let notifications = $state<Array<{id: number, message: string, type: 'success' | 'warning' | 'error'}>>([]);
-  
+
   function addNotification(type: 'success' | 'warning' | 'error', message: string) {
     const id = Date.now();
     notifications = [...notifications, { id, message, type }];
-    
+
     // Auto remove after 3 seconds
     setTimeout(() => {
       notifications = notifications.filter(n => n.id !== id);
     }, 3000);
   }
-  
+
   function simulateAsyncOperation() {
     isLoading = true;
     progress = 0;
-    
+
     const interval = setInterval(() => {
       progress += Math.random() * 15;
       if (progress >= 100) {
@@ -55,10 +55,10 @@
       Headless UI Showcase
     </h1>
     <p class="text-nier-text-secondary mb-4">
-      Combining <strong>Bits UI v2</strong>, <strong>Melt UI</strong>, <strong>NES.css</strong>, and <strong>UnoCSS</strong> 
+      Combining <strong>Bits UI v2</strong>, <strong>Melt UI</strong>, <strong>NES.css</strong>, and <strong>UnoCSS</strong>
       for the ultimate flexible component system.
     </p>
-    
+
     <div class="flex flex-wrap gap-2">
       <span class="bits-badge-default">Bits UI v2</span>
       <span class="bits-badge-secondary">Melt UI</span>
@@ -68,10 +68,10 @@
   </div>
 
   <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-    
+
     <!-- Column 1: Melt UI Components -->
     <div class="space-y-6">
-      
+
       <!-- Melt UI Dialog with NES.css styling -->
       <Card class="nes-container with-title">
         <CardHeader>
@@ -81,8 +81,8 @@
           <p class="text-sm text-nier-text-secondary">
             Melt UI provides the behavior, NES.css provides the retro styling.
           </p>
-          
-          <button 
+
+          <button
             on:onclick={() => isDialogOpen = true}
             class="nes-btn is-primary w-full"
           >
@@ -94,20 +94,20 @@
       <!-- Hybrid Form Example -->
       <div class="nes-container with-title is-rounded">
         <p class="title">📝 Hybrid Form Components</p>
-        
+
         <div class="space-y-4">
           <!-- NES Input with UnoCSS layout -->
           <div class="nes-field">
             <label for="hybrid-input" class="text-nier-text-primary">Command Input</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="hybrid-input"
               class="nes-input bg-nier-bg-secondary border-nier-border-primary text-nier-text-primary"
               placeholder="Enter command..."
               bind:value={inputValue}
             >
           </div>
-          
+
           <!-- NES Select with custom styling -->
           <div class="nes-field">
             <label class="text-nier-text-primary">System Mode</label>
@@ -120,16 +120,16 @@
               </select>
             </div>
           </div>
-          
+
           <!-- Action buttons -->
           <div class="flex gap-2 mt-4">
-            <button 
+            <button
               class="nes-btn is-success flex-1"
               onclick={() => addNotification('success', `Command executed: ${inputValue || 'default'}`)}
             >
               Execute
             </button>
-            <button 
+            <button
               class="nes-btn is-warning flex-1"
               onclick={simulateAsyncOperation}
               disabled={isLoading}
@@ -137,7 +137,7 @@
               {isLoading ? 'Processing...' : 'Async Process'}
             </button>
           </div>
-          
+
           <!-- Progress indicator -->
           {#if isLoading}
             <div class="mt-4">
@@ -151,7 +151,7 @@
 
     <!-- Column 2: Bits UI Components -->
     <div class="space-y-6">
-      
+
       <!-- Bits UI Components with NES styling -->
       <Card class="nes-container with-title">
         <CardHeader>
@@ -161,26 +161,26 @@
           <p class="text-sm text-nier-text-secondary">
             Using your existing Bits UI components with NES.css and YoRHa styling.
           </p>
-          
+
           <!-- Your existing Button component with mixed styling -->
           <div class="flex flex-wrap gap-2">
-            <Button 
-              variant="default" 
+            <Button
+              variant="default"
               class="nes-btn is-primary"
-              on:on:click={() => addNotification('success', 'Bits UI Button clicked! 🎮')}
+              on:click={() => addNotification('success', 'Bits UI Button clicked! 🎮')}
             >
               Hybrid Button
             </Button>
-            
-            <Button 
-              variant="outline" 
+
+            <Button
+              variant="outline"
               class="nes-btn"
-              on:on:click={() => addNotification('warning', 'Warning: Retro mode activated!')}
+              on:click={() => addNotification('warning', 'Warning: Retro mode activated!')}
             >
               Outline + NES
             </Button>
           </div>
-          
+
           <!-- Status indicators -->
           <div class="space-y-2">
             <div class="flex items-center gap-2">
@@ -198,7 +198,7 @@
       <!-- Interactive Gaming Panel -->
       <div class="nes-container is-dark with-title">
         <p class="title">🎮 Gaming Interface</p>
-        
+
         <div class="space-y-4">
           <!-- NES Icons -->
           <div class="flex justify-center gap-4 text-2xl">
@@ -207,7 +207,7 @@
             <i class="nes-icon heart"></i>
             <i class="nes-icon star"></i>
           </div>
-          
+
           <!-- Game-style controls -->
           <div class="grid grid-cols-2 gap-2">
             <button class="nes-btn is-success text-xs">▲ UP</button>
@@ -215,7 +215,7 @@
             <button class="nes-btn is-warning text-xs">▼ DOWN</button>
             <button class="nes-btn is-primary text-xs">■ MENU</button>
           </div>
-          
+
           <!-- Health/Status bar -->
           <div class="space-y-2">
             <div class="flex justify-between text-xs">
@@ -230,14 +230,14 @@
 
     <!-- Column 3: Advanced Examples -->
     <div class="space-y-6">
-      
+
       <!-- Notification System -->
       <div class="nes-container with-title is-rounded">
         <p class="title">📢 Live Notifications</p>
-        
+
         <div class="space-y-2 max-h-40 overflow-y-auto">
           {#each notifications as notification (notification.id)}
-            <div 
+            <div
               class="nes-container is-rounded text-xs p-2"
               class:is-success={notification.type === 'success'}
               class:is-warning={notification.type === 'warning'}
@@ -247,7 +247,7 @@
               {notification.message}
             </div>
           {/each}
-          
+
           {#if notifications.length === 0}
             <p class="nes-text text-center text-xs text-nier-text-muted">
               No notifications
@@ -259,7 +259,7 @@
       <!-- Data Table with mixed styling -->
       <div class="nes-container with-title">
         <p class="title">📊 Component Matrix</p>
-        
+
         <div class="nes-table-responsive">
           <table class="nes-table is-bordered is-centered text-xs">
             <thead>
@@ -299,12 +299,12 @@
           <p class="text-xs text-nier-text-secondary">
             This card uses Bits UI structure + YoRHa colors + UnoCSS utilities.
           </p>
-          
+
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full bg-ai-status-online animate-pulse"></div>
             <span class="text-xs">Multi-library integration active</span>
           </div>
-          
+
           <div class="flex justify-between text-xs">
             <span>Compatibility:</span>
             <span class="text-nier-accent-warm font-bold">100%</span>
@@ -318,12 +318,12 @@
 <!-- Bits UI Dialog Implementation -->
 <Dialog.Root bind:open={isDialogOpen}>
   <Dialog.Portal>
-    <Dialog.Overlay 
+    <Dialog.Overlay
       class="fixed inset-0 z-50 bg-black/70"
       transition={fade}
       transitionConfig={{ duration: 150 }}
     />
-    
+
     <Dialog.Content
       class="nes-dialog fixed left-1/2 top-1/2 z-50 w-full max-w-md transform -translate-x-1/2 -translate-y-1/2"
       transition={fly}
@@ -335,21 +335,21 @@
         >
           ✕
         </Dialog.Close>
-        
+
         <Dialog.Title class="title text-nier-accent-warm">🎮 System Dialog</Dialog.Title>
-        
+
         <Dialog.Description class="space-y-4">
           <p class="nes-text text-sm">
-            This dialog demonstrates Bits UI's headless behavior combined with NES.css retro styling 
+            This dialog demonstrates Bits UI's headless behavior combined with NES.css retro styling
             and YoRHa color theming.
           </p>
-          
+
           <div class="nes-balloon from-left">
             <p class="text-xs">The behavior is from Bits UI, the styling is from NES.css!</p>
           </div>
-          
+
           <div class="flex gap-2">
-            <button 
+            <button
               class="nes-btn is-success flex-1"
               on:onclick={() => {
                 addNotification('success', 'Dialog action confirmed! 🎯');
@@ -410,11 +410,11 @@
     .headless-ui-showcase {
       padding: 1rem;
     }
-    
+
     .grid-cols-1.xl\\:grid-cols-3 {
       gap: 1rem;
     }
-    
+
     .nes-dialog {
       max-width: 90vw;
     }

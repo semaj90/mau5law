@@ -35,11 +35,11 @@ export {
 	users,
 	cases,
 	evidence,
-	legal_documents,
+	legalDocuments,
 } from './db/schema-postgres';
 
-// Provide camelCase alias for legacy imports
-export { legal_documents as legalDocuments } from './db/schema-postgres';
+// Provide snake_case alias for legacy imports  
+export { legalDocuments as legal_documents } from './db/schema-postgres';
 
 // Compatibility aliases: some code refers to legalDocuments from alternate schema
 // Also expose legacy domain legalDocuments if needed

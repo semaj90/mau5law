@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Dialog, Button, Badge, Card, Checkbox } from 'bits-ui';
   import 'nes.css/css/nes.min.css';
-  
+
   let dialogOpen = $state(false);
   let health = $state(3);
   let score = $state(1250);
@@ -24,7 +24,7 @@
 
 <div class="nes-container with-title console-container">
   <p class="title">🎮 8-BIT GAMING ERA (1983-1995)</p>
-  
+
   <!-- Analysis of 8-bit characteristics -->
   <section class="analysis-section">
     <div class="nes-container is-dark">
@@ -42,7 +42,7 @@
           </div>
           <p>Limited 6-color palette typical of NES hardware constraints</p>
         </div>
-        
+
         <div class="characteristic">
           <h3 class="nes-text is-warning">📐 Pixel Perfect</h3>
           <div class="pixel-demo">
@@ -50,7 +50,7 @@
           </div>
           <p>Hard edges, no anti-aliasing, pixelated borders</p>
         </div>
-        
+
         <div class="characteristic">
           <h3 class="nes-text is-error">🔤 Typography</h3>
           <div class="font-demo">
@@ -65,7 +65,7 @@
   <!-- Game UI Recreation -->
   <section class="game-ui-section">
     <h2 class="nes-text is-primary">Classic Game UI</h2>
-    
+
     <div class="game-hud">
       <!-- Player Stats -->
       <div class="nes-container stats-panel">
@@ -74,7 +74,7 @@
           <p>SCORE: {score.toLocaleString()}</p>
           <p>LEVEL: {level}-1</p>
         </div>
-        
+
         <div class="health-display">
           <p>HEALTH:</p>
           <div class="hearts">
@@ -92,13 +92,13 @@
         <div class="nes-container">
           <p class="nes-text is-primary">GAME CONTROLS</p>
           <div class="button-grid">
-            <Button.Root class="nes-btn action-btn" on:on:on:click={increaseScore}>
+            <Button.Root class="nes-btn action-btn" on:click={increaseScore}>
               A BUTTON
             </Button.Root>
-            <Button.Root class="nes-btn action-btn" on:on:on:click={decreaseHealth}>
+            <Button.Root class="nes-btn action-btn" on:click={decreaseHealth}>
               B BUTTON
             </Button.Root>
-            <Button.Root class="nes-btn start-btn" on:on:on:click={() => dialogOpen = true}>
+            <Button.Root class="nes-btn start-btn" on:click={() => dialogOpen = true}>
               START
             </Button.Root>
             <Button.Root class="nes-btn select-btn">
@@ -137,21 +137,21 @@
           </Badge.Root>
           <p>6502 @ 1.79MHz</p>
         </div>
-        
+
         <div class="spec-item">
           <Badge.Root class="nes-badge spec-badge">
             <span class="is-success">COLORS</span>
           </Badge.Root>
           <p>25 on screen / 64 total</p>
         </div>
-        
+
         <div class="spec-item">
           <Badge.Root class="nes-badge spec-badge">
             <span class="is-warning">RESOLUTION</span>
           </Badge.Root>
           <p>256 × 240 pixels</p>
         </div>
-        
+
         <div class="spec-item">
           <Badge.Root class="nes-badge spec-badge">
             <span class="is-error">MEMORY</span>
@@ -240,7 +240,7 @@
             <li>No color blending</li>
           </ul>
         </div>
-        
+
         <div class="color-theory-item">
           <h3 class="nes-text is-success">Design Principles</h3>
           <ul class="nes-list is-disc">
@@ -316,8 +316,8 @@
   .pixel-art-sprite {
     width: 64px;
     height: 64px;
-    background: 
-      conic-gradient(from 0deg, 
+    background:
+      conic-gradient(from 0deg,
         #92cc41 0deg 90deg,
         #f7d51d 90deg 180deg,
         #e76e55 180deg 270deg,
@@ -559,16 +559,16 @@
     .game-hud {
       grid-template-columns: 1fr;
     }
-    
+
     .characteristics-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .game-preview {
       flex-direction: column;
       text-align: center;
     }
-    
+
     .dpad-middle {
       flex-direction: column;
     }

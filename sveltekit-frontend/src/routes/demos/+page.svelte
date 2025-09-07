@@ -369,7 +369,7 @@ let scrollElement = $state<HTMLElement;
       <div class="yorha-nav-bar">
         <Button.Root
           class="yorha-nav-btn"
-          on:on:click={goHome}
+          on:click={goHome}
         >
           <Home size={16} />
           HOME
@@ -494,7 +494,7 @@ let scrollElement = $state<HTMLElement;
                   <div class="yorha-demo-actions">
                     <Button.Root
                       class="yorha-demo-btn"
-                      on:on:click={(e) => {
+                      on:click={(e) => {
                         e.stopPropagation();
                         handleDemoNavigation(demo.path);
                       }}
@@ -541,7 +541,7 @@ let scrollElement = $state<HTMLElement;
           <div class="yorha-footer-actions">
             <Button.Root
               class="yorha-btn yorha-btn-primary"
-              on:on:click={goHome}
+              on:click={goHome}
             >
               <ArrowLeft size={16} />
               RETURN TO HOMEPAGE

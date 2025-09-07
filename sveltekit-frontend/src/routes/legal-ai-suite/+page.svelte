@@ -376,7 +376,7 @@ let loggingInterval = $state<number | null >(null);
           <div class="flex space-x-2">
             <button
               type="button"
-              on:onclick={processLegalDocuments}
+              onclick={processLegalDocuments}
               disabled={!canProcess}
               class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
               {#if isProcessing}
@@ -438,7 +438,7 @@ let loggingInterval = $state<number | null >(null);
             <div class="flex space-x-2 mt-3">
               <button
                 type="button"
-                on:onclick={executeRAGQuery}
+                onclick={executeRAGQuery}
                 disabled={!canQuery}
                 class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50">
                 <Brain class="h-4 w-4 mr-2" />
@@ -565,7 +565,7 @@ let loggingInterval = $state<number | null >(null);
         </CardTitle>
         <button
           type="button"
-          on:onclick={clearLogs}
+          onclick={clearLogs}
           class="px-3 py-1 border border-gray-300 text-sm rounded-md hover:bg-gray-50">
           Clear Logs
         </button>

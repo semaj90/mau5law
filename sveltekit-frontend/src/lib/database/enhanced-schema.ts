@@ -79,7 +79,7 @@ export const documents = pgTable('documents', {
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   // Optimized indexes for vector operations
   embeddingIdx: index('documents_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   caseIdx: index('documents_case_idx').on(table.caseId),
@@ -99,7 +99,7 @@ export const documentChunks = pgTable('document_chunks', {
   tokenCount: integer('token_count'),
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   // Optimized vector search index
   embeddingIdx: index('document_chunks_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   documentIdx: index('document_chunks_document_idx').on(table.documentId),
@@ -126,7 +126,7 @@ export const evidence = pgTable('evidence', {
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   embeddingIdx: index('evidence_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   caseIdx: index('evidence_case_idx').on(table.caseId)
 }));
@@ -142,7 +142,7 @@ export const searchIndex = pgTable('search_index', {
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   // High-performance vector index for similarity search
   embeddingIdx: index('search_index_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   entityIdx: index('search_index_entity_idx').on(table.entityType, table.entityId),
@@ -166,7 +166,7 @@ export const aiInteractions = pgTable('ai_interactions', {
   feedback: json('feedback'),
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   contextEmbeddingIdx: index('ai_interactions_context_embedding_idx').using('ivfflat', table.contextEmbedding.op('vector_cosine_ops')),
   sessionIdx: index('ai_interactions_session_idx').on(table.sessionId),
   userIdx: index('ai_interactions_user_idx').on(table.userId)
@@ -182,7 +182,7 @@ export const vectorSimilarityCache = pgTable('vector_similarity_cache', {
   lastAccessed: timestamp('last_accessed').defaultNow(),
   expiresAt: timestamp('expires_at'),
   createdAt: timestamp('created_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   queryHashIdx: index('vector_similarity_cache_hash_idx').on(table.queryHash),
   expiresIdx: index('vector_similarity_cache_expires_idx').on(table.expiresAt)
 }));
@@ -206,7 +206,7 @@ export const legalKnowledgeBase = pgTable('legal_knowledge_base', {
   verifiedAt: timestamp('verified_at'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   embeddingIdx: index('legal_knowledge_base_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   categoryIdx: index('legal_knowledge_base_category_idx').on(table.category, table.subcategory),
   jurisdictionIdx: index('legal_knowledge_base_jurisdiction_idx').on(table.jurisdiction)
@@ -229,7 +229,7 @@ export const embeddingJobs = pgTable('embedding_jobs', {
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   statusIdx: index('embedding_jobs_status_idx').on(table.status),
   entityIdx: index('embedding_jobs_entity_idx').on(table.entityType, table.entityId),
   priorityIdx: index('embedding_jobs_priority_idx').on(table.priority, table.createdAt)

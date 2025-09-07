@@ -265,8 +265,6 @@ This will verify:
 - Drag-and-drop evidence management
 - Advanced search with faceted filters
 - Export functionality for cases
-- Mobile app support
-- Offline capabilities with service workers
 
 ## 📚 Dependencies
 
@@ -275,7 +273,12 @@ This will verify:
 - **Lucia**: Authentication
 - **Bits UI**: UI components
 - **UnoCSS**: Styling
-- **date-fns**: Date formatting
+- **date-fns**: Date formatting ? date-timestamp from evidence, cases "created on"
 - **TypeScript**: Type safety
+
+- Offline capabilities with service workers
+- Mobile app support
+
+
 
 This implementation provides a solid foundation for a modern legal case management system with excellent user experience and developer experience.

@@ -10,13 +10,13 @@
 	import { avatarStore } from "../stores/avatarStore";
 	import Avatar from './Avatar.svelte';
 let dropdownOpen = $state(false);
-let dropdownElement = $state<HTMLElement;
+let dropdownElement = $state<HTMLElement>();
 	
-	onMount(() >(> {
+	onMount(() => {
 		// Close dropdown when clicking outside
 		function handleClickOutside(event: MouseEvent) {
 			if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-				dropdownOpen = false);
+				dropdownOpen = false;
 }}
 		document.addEventListener('click', handleClickOutside);
 		return () => document.removeEventListener('click', handleClickOutside);
@@ -36,20 +36,20 @@ let dropdownElement = $state<HTMLElement;
 }
 </script>
 
-<div class="space-y-4" bind:this={dropdownElement}>
+<div class="user-dropdown" bind:this={dropdownElement}>
 	<button 
-		class="space-y-4"
-		on:onclick={() => toggleDropdown()}
+		class="user-trigger"
+		onclick={() => toggleDropdown()}
 		aria-expanded={dropdownOpen}
 		aria-haspopup="true"
 	>
 		<Avatar size="small" />
-		<span class="space-y-4">
+		<span class="user-name">
 			{user?.name || user?.email || 'User'}
 		</span>
 		<svg 
-			class="space-y-4" 
-		 class:rotated={dropdownOpen}
+			class="dropdown-arrow" 
+			class:rotated={dropdownOpen}
 			width="16" 
 			height="16" 
 			viewBox="0 0 16 16" 
@@ -66,48 +66,46 @@ let dropdownElement = $state<HTMLElement;
 	</button>
 	
 	{#if dropdownOpen}
-		<div class="space-y-4">
-			<div class="space-y-4">
+		<div class="dropdown-menu">
+			<div class="dropdown-header">
 				<Avatar size="large" clickable={true} />
-				<div class="space-y-4">
-					<div class="space-y-4">{user?.name || 'User'}</div>
-					<div class="space-y-4">{user?.email || ''}</div>
-					<div class="space-y-4">{user?.role || ''}</div>
+				<div class="user-info">
+					<div class="user-name-large">{user?.name || 'User'}</div>
+					<div class="user-email">{user?.email || ''}</div>
+					<div class="user-role">{user?.role || ''}</div>
 				</div>
 			</div>
 			
-			<div class="space-y-4"></div>
-			
-			<div class="space-y-4">
+			<div class="dropdown-section">
 				<h4>Avatar Options</h4>
 				<Avatar size="medium" showUploadButton={true} />
 			</div>
 			
-			<div class="space-y-4"></div>
+			<div class="dropdown-divider"></div>
 			
-			<div class="space-y-4">
-				<a href="/profile" class="space-y-4">
+			<div class="dropdown-actions">
+				<a href="/profile" class="dropdown-item">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM8 9a6 6 0 0 0-6 6h12a6 6 0 0 0-6-6Z" fill="currentColor"/>
 					</svg>
 					Profile Settings
 				</a>
 				
-				<a href="/dashboard" class="space-y-4">
+				<a href="/dashboard" class="dropdown-item">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M1 3h14v2H1V3ZM1 7h14v2H1V7ZM1 11h14v2H1v-2Z" fill="currentColor"/>
 					</svg>
 					Dashboard
 				</a>
 				
-				<a href="/cases" class="space-y-4">
+				<a href="/cases" class="dropdown-item">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M3 2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6.414a1 1 0 0 0-.293-.707l-3.414-3.414A1 1 0 0 0 9.586 2H3Z" fill="currentColor"/>
 					</svg>
 					My Cases
 				</a>
 				
-				<button type="button" class="space-y-4" on:onclick={() => handleLogout()}>
+				<button type="button" class="dropdown-item logout" onclick={() => handleLogout()}>
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M6 15H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3M13 11l3-3-3-3M8 8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 					</svg>

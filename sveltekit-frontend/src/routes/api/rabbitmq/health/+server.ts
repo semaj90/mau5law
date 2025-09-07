@@ -9,14 +9,24 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async () => {
 	try {
-		// In a real implementation, this would check actual RabbitMQ connection
-		// For development, we'll simulate health status
+		// Import the actual RabbitMQ service
+		const { rabbitmqService } = await import('$lib/server/messaging/rabbitmq-service.js');
+		const { healthCheck } = await import('$lib/server/rabbitmq.js');
 		
+		// Try to get actual health status
+		const [serviceHealth, connectionHealth] = await Promise.allSettled([
+			rabbitmqService.healthCheck(),
+			healthCheck()
+		]);
+
+		const isServiceHealthy = serviceHealth.status === 'fulfilled' && serviceHealth.value.status === 'healthy';
+		const isConnectionHealthy = connectionHealth.status === 'fulfilled' && connectionHealth.value === true;
+
 		const healthStatus = {
-			status: 'healthy',
+			status: isServiceHealthy && isConnectionHealthy ? 'healthy' : 'unhealthy',
 			timestamp: new Date().toISOString(),
 			connection: {
-				status: 'connected',
+				status: isConnectionHealthy ? 'connected' : 'disconnected',
 				host: 'localhost',
 				port: 5672,
 				vhost: '/',
@@ -24,51 +34,56 @@ export const GET: RequestHandler = async () => {
 			},
 			queues: {
 				'legal.docs.process': {
-					status: 'ready',
+					status: isServiceHealthy ? 'ready' : 'unknown',
 					messages: 0,
 					consumers: 0
 				},
 				'legal.chunks.embed': {
-					status: 'ready', 
+					status: isServiceHealthy ? 'ready' : 'unknown', 
 					messages: 0,
 					consumers: 0
 				},
 				'legal.chunks.store': {
-					status: 'ready',
+					status: isServiceHealthy ? 'ready' : 'unknown',
 					messages: 0,
 					consumers: 0
 				},
 				'legal.dlq': {
-					status: 'ready',
+					status: isServiceHealthy ? 'ready' : 'unknown',
 					messages: 0,
 					consumers: 0
 				}
 			},
 			exchanges: {
 				'legal.main': {
-					status: 'ready',
+					status: isServiceHealthy ? 'ready' : 'unknown',
 					type: 'direct',
 					durable: true
 				},
 				'legal.dlx': {
-					status: 'ready',
+					status: isServiceHealthy ? 'ready' : 'unknown',
 					type: 'direct', 
 					durable: true
 				}
 			},
+			serviceDetails: serviceHealth.status === 'fulfilled' ? serviceHealth.value.details : null,
 			version: '3.8.9',
 			uptime: '2d 14h 32m',
 			memory: {
 				used: '124MB',
 				limit: '512MB',
 				percentage: 24
+			},
+			worker: {
+				available: true,
+				endpoint: '/api/workers/rabbitmq'
 			}
 		};
 
 		return json(healthStatus, {
 			headers: {
 				'Cache-Control': 'no-cache',
-				'X-RabbitMQ-Health': 'ok'
+				'X-RabbitMQ-Health': healthStatus.status === 'healthy' ? 'ok' : 'error'
 			}
 		});
 
@@ -81,6 +96,10 @@ export const GET: RequestHandler = async () => {
 			error: error instanceof Error ? error.message : 'Unknown error',
 			connection: {
 				status: 'disconnected'
+			},
+			worker: {
+				available: false,
+				error: 'Service unavailable'
 			}
 		}, { 
 			status: 503,

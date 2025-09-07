@@ -7,7 +7,7 @@
 let searchQuery = $state('');
 let viewMode = $state<'grid' | 'list' >('grid');
 let showFilters = $state(false);
-  
+
   // Mock persons data - replace with real API call
 let persons = $state([
     {
@@ -21,7 +21,7 @@ let persons = $state([
       lastUpdated: new Date().toISOString()
     },
     {
-      id: '2', 
+      id: '2',
       name: 'Jane Doe',
       alias: 'JD',
       dateOfBirth: '1975-12-08',
@@ -32,7 +32,7 @@ let persons = $state([
     }
   ]);
 
-  let filteredPersons = $derived(persons.filter(person => 
+  let filteredPersons = $derived(persons.filter(person =>
     person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     person.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
     person.status.toLowerCase().includes(searchQuery.toLowerCase())
@@ -63,20 +63,20 @@ let persons = $state([
     </div>
 
     <div class="flex flex-wrap gap-2 items-center">
-      <Button
+    <Button
         variant="outline"
         size="sm"
-        on:on:click={() => (showFilters = !showFilters)}
+  on:click={() => (showFilters = !showFilters)}
         class={showFilters ? 'bg-blue-50 border-blue-300' : ''}
       >
         <Filter class="w-4 h-4 mr-2" />
         Filters
       </Button>
 
-      <Button
+    <Button
         variant="outline"
         size="sm"
-        on:on:click={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
+  on:click={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
       >
         {#if viewMode === 'grid'}
           <List class="w-4 h-4" />
@@ -119,7 +119,7 @@ let persons = $state([
             <option value="victim">Victim</option>
           </select>
         </div>
-        
+
         <div>
           <label for="case-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Case</label>
           <select id="case-filter" class="w-full p-2 border border-gray-300 rounded-lg">
@@ -226,7 +226,7 @@ let persons = $state([
                 </p>
               </div>
             </div>
-            
+
             <div class="flex gap-2">
               <Button size="sm">
                 <Eye class="w-3 h-3 mr-1" />

@@ -1,6 +1,6 @@
 <!--
   Phase 14 Complete Demo System - Performance Monitoring
-  
+
   Comprehensive demonstration of all Phase 14 components:
   - Unified UI Kit with bits-ui v2 + Melt Svelte 5
   - WebGPU texture streaming with NES memory constraints
@@ -20,7 +20,7 @@
   import { nesMemory, type MemoryStats } from '$lib/memory/nes-memory-architecture.js';
   import { lokiRedisCache, type CacheStats } from '$lib/cache/loki-redis-integration.js';
   import { legalBERTAnalyzer, type SemanticAnalysis } from '$lib/ai/legal-bert-semantic-analyzer.js';
-  
+
   // Component state
   let isInitialized = $state(false);
   let currentDemo = $state('overview');
@@ -37,20 +37,20 @@
     ai: null,
     gpu: null
   });
-  
+
   // Demo content state
   let sampleDocument = $state('');
   let analysisResult = $state<SemanticAnalysis | null>(null);
   let showDialog = $state(false);
   let animationIntensity = $state(0.5);
   let memoryPressure = $state(false);
-  
+
   // Performance monitoring
   let metricsInterval: NodeJS.Timeout;
   let frameCount = $state(0);
   let fps = $state(0);
 let lastFrameTime = $state(0);
-  
+
   // Demo scenarios
   const demoScenarios = [
     {
@@ -94,7 +94,7 @@ let lastFrameTime = $state(0);
       description: 'Comprehensive system performance monitoring'
     }
   ];
-  
+
   // Sample legal documents for testing
   const sampleDocuments = [
     {
@@ -114,7 +114,7 @@ let lastFrameTime = $state(0);
   onMount(async () => {
     try {
       console.log('🚀 Initializing Phase 14 Demo System...');
-      
+
       // Initialize all systems
       await Promise.all([
         textureStreamer.initialize(),
@@ -122,16 +122,16 @@ let lastFrameTime = $state(0);
         lokiRedisCache.initialize(),
         legalBERTAnalyzer.initialize()
       ]);
-      
+
       // Start performance monitoring
       startPerformanceMonitoring();
-      
+
       // Load sample document
       sampleDocument = sampleDocuments[0].content;
-      
+
       isInitialized = true;
       console.log('✅ Phase 14 Demo System initialized successfully');
-      
+
     } catch (error) {
       console.error('❌ Demo system initialization failed:', error);
     }
@@ -155,7 +155,7 @@ let lastFrameTime = $state(0);
           ai: legalBERTAnalyzer.getStats(),
           gpu: gpuAnimations.getPerformanceStats()
         };
-        
+
         // Update FPS
         const currentTime = Date.now();
         if (lastFrameTime > 0) {
@@ -164,13 +164,13 @@ let lastFrameTime = $state(0);
         }
         lastFrameTime = currentTime;
         frameCount++;
-        
+
         // Check memory pressure
         if (performanceMetrics.memory) {
           const ramUtilization = performanceMetrics.memory.usedRAM / performanceMetrics.memory.totalRAM;
           memoryPressure = ramUtilization > 0.85;
         }
-        
+
       } catch (error) {
         console.warn('Performance metrics update failed:', error);
       }
@@ -179,7 +179,7 @@ let lastFrameTime = $state(0);
 
   async function runAIAnalysis() {
     if (!sampleDocument.trim()) return;
-    
+
     try {
       console.log('🧠 Running Legal-BERT analysis...');
       analysisResult = await legalBERTAnalyzer.analyzeDocument(
@@ -192,7 +192,7 @@ let lastFrameTime = $state(0);
           includePrecedents: true
         }
       );
-      
+
       console.log('✅ Analysis complete:', analysisResult);
     } catch (error) {
       console.error('❌ AI analysis failed:', error);
@@ -202,7 +202,7 @@ let lastFrameTime = $state(0);
   async function testMemoryOperations() {
     try {
       console.log('💾 Testing NES memory operations...');
-      
+
       // Allocate test documents in different memory regions
       const testData = new ArrayBuffer(1024);
       const testDocs = [
@@ -217,7 +217,7 @@ let lastFrameTime = $state(0);
           metadata: { caseId: 'demo_case_1' }
         },
         {
-          id: 'test_evidence_1', 
+          id: 'test_evidence_1',
           type: 'evidence' as const,
           priority: 180,
           size: 1024,
@@ -227,14 +227,14 @@ let lastFrameTime = $state(0);
           metadata: { caseId: 'demo_case_1' }
         }
       ];
-      
+
       for (const doc of testDocs) {
         await nesMemory.allocateDocument(doc, testData, {
           compress: true,
           preferredBank: doc.type === 'contract' ? 'CHR_ROM' : 'PRG_ROM'
         });
       }
-      
+
       console.log('✅ Memory operations test complete');
     } catch (error) {
       console.error('❌ Memory operations test failed:', error);
@@ -244,7 +244,7 @@ let lastFrameTime = $state(0);
   async function testCacheOperations() {
     try {
       console.log('💽 Testing cache operations...');
-      
+
       // Store test documents in cache
       const testDoc = {
         id: 'cache_test_1',
@@ -260,20 +260,20 @@ let lastFrameTime = $state(0);
           jurisdiction: 'federal'
         }
       };
-      
+
       await lokiRedisCache.storeDocument(testDoc);
-      
+
       // Retrieve document
       const retrieved = await lokiRedisCache.getDocument('cache_test_1');
       console.log('Retrieved from cache:', retrieved);
-      
+
       // Test search
       const searchResults = await lokiRedisCache.searchDocuments('demo', {
         type: ['brief'],
         confidenceMin: 0.7
       });
       console.log('Search results:', searchResults);
-      
+
       console.log('✅ Cache operations test complete');
     } catch (error) {
       console.error('❌ Cache operations test failed:', error);
@@ -283,7 +283,7 @@ let lastFrameTime = $state(0);
   async function testGPUAnimations() {
     try {
       console.log('🎨 Testing GPU animations...');
-      
+
       await gpuAnimations.createAnimation('demo_glow', {
         type: 'legal_confidence_glow',
         duration: 2000,
@@ -293,13 +293,13 @@ let lastFrameTime = $state(0);
         },
         priority: 5
       });
-      
+
       await gpuAnimations.startAnimation('demo_glow');
-      
+
       setTimeout(async () => {
         await gpuAnimations.stopAnimation('demo_glow');
       }, 3000);
-      
+
       console.log('✅ GPU animations test complete');
     } catch (error) {
       console.error('❌ GPU animations test failed:', error);
@@ -326,7 +326,7 @@ let lastFrameTime = $state(0);
       gpuEffects: true,
       glowIntensity: 0.6
     };
-    
+
     switch (demoId) {
       case 'ai_analysis':
         return {
@@ -369,7 +369,7 @@ let lastFrameTime = $state(0);
       <p class=\"text-lg text-gray-600 mb-4\">
         Unified UI Kit • WebGPU Streaming • GPU Animations • NES Memory • Loki+Redis Cache • Legal-BERT AI
       </p>
-      
+
       <!-- System Status -->
       {#if isInitialized}
         <div class=\"flex items-center justify-center gap-4 text-sm\">
@@ -401,7 +401,7 @@ let lastFrameTime = $state(0);
           <UnifiedButton
             {...getDemoButtonProps(scenario.id)}
             variant={currentDemo === scenario.id ? 'primary' : 'secondary'}
-            on:on:click={() => currentDemo = scenario.id}
+            on:click={() => currentDemo = scenario.id}
           >
             {scenario.title}
           </UnifiedButton>
@@ -448,27 +448,27 @@ let lastFrameTime = $state(0);
                   </div>
                 </div>
               </div>
-              
+
               <div class=\"flex flex-wrap gap-3\">
-                <UnifiedButton on:on:click={testMemoryOperations} variant=\"evidence\">
+                <UnifiedButton on:click={testMemoryOperations} variant=\"evidence\">
                   Test Memory Operations
                 </UnifiedButton>
-                <UnifiedButton on:on:click={testCacheOperations} variant=\"case\">
+                <UnifiedButton on:click={testCacheOperations} variant=\"case\">
                   Test Cache Operations
                 </UnifiedButton>
-                <UnifiedButton on:on:click={testGPUAnimations} variant=\"legal\">
+                <UnifiedButton on:click={testGPUAnimations} variant=\"legal\">
                   Test GPU Animations
                 </UnifiedButton>
               </div>
             </div>
-          
+
           {:else if currentDemo === 'ui_components'}
             <div in:fade={{ duration: 300 }}>
               <h2 class=\"text-2xl font-bold mb-4\">Unified UI Components</h2>
               <p class=\"text-gray-600 mb-6\">
                 Integration of bits-ui v2 + Melt Svelte 5 + UnoCSS with legal AI context awareness
               </p>
-              
+
               <div class=\"space-y-6\">
                 <!-- Button Variants -->
                 <div>
@@ -491,7 +491,7 @@ let lastFrameTime = $state(0);
                     <UnifiedButton variant=\"ghost\" loading>Loading...</UnifiedButton>
                   </div>
                 </div>
-                
+
                 <!-- Size Variants -->
                 <div>
                   <h3 class=\"text-lg font-semibold mb-3\">Size Variants</h3>
@@ -502,29 +502,29 @@ let lastFrameTime = $state(0);
                     <UnifiedButton size=\"xl\" variant=\"legal\">Extra Large</UnifiedButton>
                   </div>
                 </div>
-                
+
                 <!-- Dialog Demo -->
                 <div>
                   <h3 class=\"text-lg font-semibold mb-3\">Modal Dialog</h3>
-                  <UnifiedButton on:on:click={() => showDialog = true} variant=\"case\">
+                  <UnifiedButton on:click={() => showDialog = true} variant=\"case\">
                     Open Legal Analysis Dialog
                   </UnifiedButton>
                 </div>
               </div>
             </div>
-          
+
           {:else if currentDemo === 'ai_analysis'}
             <div in:fade={{ duration: 300 }}>
               <h2 class=\"text-2xl font-bold mb-4\">Legal-BERT Semantic Analysis</h2>
               <p class=\"text-gray-600 mb-6\">
                 Real-time legal document analysis using transformer-based models
               </p>
-              
+
               <!-- Document Input -->
               <div class=\"mb-6\">
                 <label class=\"block text-sm font-medium mb-2\">Legal Document</label>
                 <div class=\"mb-3\">
-                  <select 
+                  <select
                     class=\"block w-full px-3 py-2 border border-gray-300 rounded-md\"
                     change={(e) => sampleDocument = sampleDocuments[parseInt(e.currentTarget.value)]?.content || ''}
                   >
@@ -540,10 +540,10 @@ let lastFrameTime = $state(0);
                   placeholder=\"Enter legal document text for analysis...\"
                 ></textarea>
               </div>
-              
+
               <div class=\"mb-6\">
-                <UnifiedButton 
-                  on:on:click={runAIAnalysis} 
+                <UnifiedButton
+                  on:click={runAIAnalysis}
                   variant=\"legal\"
                   disabled={!sampleDocument.trim()}
                   legalContext={{
@@ -556,7 +556,7 @@ let lastFrameTime = $state(0);
                   Analyze with Legal-BERT
                 </UnifiedButton>
               </div>
-              
+
               <!-- Analysis Results -->
               {#if analysisResult}
                 <div class=\"space-y-4\" in:fly={{ y: 20, duration: 500 }}>
@@ -572,7 +572,7 @@ let lastFrameTime = $state(0);
                       </span>
                     </div>
                   </div>
-                  
+
                   <!-- Risk Assessment -->
                   <div class=\"p-4 bg-red-50 rounded-lg\">
                     <h4 class=\"font-semibold text-red-900 mb-2\">Risk Assessment</h4>
@@ -590,7 +590,7 @@ let lastFrameTime = $state(0);
                         <ul class=\"text-sm space-y-1\">
                           {#each analysisResult.riskAssessment.riskFactors.slice(0, 3) as factor}
                             <li class=\"text-red-600\">
-                              • {factor.factor.replace(/_/g, ' ')} 
+                              • {factor.factor.replace(/_/g, ' ')}
                               <span class=\"text-red-500\">({factor.severity})</span>
                             </li>
                           {/each}
@@ -598,7 +598,7 @@ let lastFrameTime = $state(0);
                       </div>
                     {/if}
                   </div>
-                  
+
                   <!-- Entities -->
                   {#if analysisResult.entities.length > 0}
                     <div class=\"p-4 bg-green-50 rounded-lg\">
@@ -615,14 +615,14 @@ let lastFrameTime = $state(0);
                 </div>
               {/if}
             </div>
-          
+
           {:else if currentDemo === 'performance'}
             <div in:fade={{ duration: 300 }}>
               <h2 class=\"text-2xl font-bold mb-4\">Performance Dashboard</h2>
               <p class=\"text-gray-600 mb-6\">
                 Real-time system performance monitoring and metrics
               </p>
-              
+
               <!-- Performance Grid -->
               <div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\">
                 <!-- Memory Stats -->
@@ -653,7 +653,7 @@ let lastFrameTime = $state(0);
                     </div>
                   </div>
                 {/if}
-                
+
                 <!-- Cache Stats -->
                 {#if performanceMetrics.cache}
                   <div class=\"p-4 bg-cyan-50 rounded-lg\">
@@ -684,7 +684,7 @@ let lastFrameTime = $state(0);
                     </div>
                   </div>
                 {/if}
-                
+
                 <!-- AI Stats -->
                 {#if performanceMetrics.ai}
                   <div class=\"p-4 bg-amber-50 rounded-lg\">
@@ -713,7 +713,7 @@ let lastFrameTime = $state(0);
                     </div>
                   </div>
                 {/if}
-                
+
                 <!-- GPU Stats -->
                 {#if performanceMetrics.gpu}
                   <div class=\"p-4 bg-indigo-50 rounded-lg\">
@@ -740,7 +740,7 @@ let lastFrameTime = $state(0);
                 {/if}
               </div>
             </div>
-          
+
           {:else}
             <div in:fade={{ duration: 300 }}>
               <h2 class=\"text-2xl font-bold mb-4\">
@@ -788,24 +788,24 @@ let lastFrameTime = $state(0);
         <div class=\"bg-white rounded-xl shadow-lg p-4\">
           <h3 class=\"font-semibold text-gray-900 mb-3\">Quick Actions</h3>
           <div class=\"space-y-2\">
-            <UnifiedButton 
-              on:on:click={runAIAnalysis} 
-              variant=\"legal\" 
+            <UnifiedButton
+              on:click={runAIAnalysis}
+              variant=\"legal\"
               size=\"sm\"
               disabled={!sampleDocument.trim()}
             >
               Run AI Analysis
             </UnifiedButton>
-            <UnifiedButton 
-              on:on:click={testMemoryOperations} 
-              variant=\"evidence\" 
+            <UnifiedButton
+              on:click={testMemoryOperations}
+              variant=\"evidence\"
               size=\"sm\"
             >
               Test Memory
             </UnifiedButton>
-            <UnifiedButton 
-              on:on:click={testGPUAnimations} 
-              variant=\"case\" 
+            <UnifiedButton
+              on:click={testGPUAnimations}
+              variant=\"case\"
               size=\"sm\"
             >
               Test GPU
@@ -854,7 +854,7 @@ let lastFrameTime = $state(0);
   {#snippet title()}
     Legal Document Analysis Results
   {/snippet}
-  
+
   {#snippet content()}
     <div class=\"space-y-4\">
       {#if analysisResult}
@@ -870,7 +870,7 @@ let lastFrameTime = $state(0);
             <p class=\"text-xs text-gray-500\">Score: {Math.round(analysisResult.riskAssessment.riskScore)}/100</p>
           </div>
         </div>
-        
+
         <div>
           <h4 class=\"font-semibold mb-2\">Key Metrics</h4>
           <ul class=\"text-sm space-y-1\">
@@ -887,10 +887,10 @@ let lastFrameTime = $state(0);
       {/if}
     </div>
   {/snippet}
-  
+
   {#snippet footer()}
-    <UnifiedButton 
-      on:on:click={() => showDialog = false} 
+    <UnifiedButton
+      on:click={() => showDialog = false}
       variant=\"secondary\"
     >
       Close
@@ -904,16 +904,16 @@ let lastFrameTime = $state(0);
     0%, 100% { opacity: 0.8; }
     50% { opacity: 1; }
   }
-  
+
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
   }
-  
+
   /* Performance optimizations */
   * {
     will-change: auto;
   }
-  
+
   .gpu-accelerated {
     transform: translateZ(0);
     backface-visibility: hidden;

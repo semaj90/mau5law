@@ -67,11 +67,8 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
   };
 
   try {
-    // Temporarily disable API calls that might be causing server hang
-    console.log('⚠️  API calls temporarily disabled for development');
-
-    // Mock health data
-    const health: SystemHealth = {
+    // Mock health data for development (replaced disabled API calls)
+    const systemHealth: SystemHealth = {
       overall: {
         status: 'healthy',
         healthScore: 100,
@@ -136,7 +133,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       activeCases: 42,
       evidenceItems: 1337,
       aiAnalyses: 89,
-      systemUptime: health?.performance.systemUptime || 0,
+      systemUptime: systemHealth?.performance.systemUptime || 0,
       cognitive: cognitiveMetrics
     };
 
@@ -170,7 +167,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       ...sessionInfo,
 
       // API data
-      health,
+      health: systemHealth,
       systemInfo,
       dashboardStats,
       recentActivities,

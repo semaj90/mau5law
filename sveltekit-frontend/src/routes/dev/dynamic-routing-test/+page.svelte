@@ -10,7 +10,7 @@
   import Button from '$lib/components/ui/button/Button.svelte';
   import Card from '$lib/components/ui/Card.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
-  
+
   // Import route configuration
   import { allRoutes, getRoutesByCategory, searchRoutes } from '$lib/data/routes-config';
 
@@ -88,7 +88,7 @@ let currentPath = $state('');
     page.subscribe(($page) => {
       currentPath = $page.url.pathname;
     });
-    
+
     // Calculate route statistics
     calculateRouteStats();
   });
@@ -99,23 +99,23 @@ let currentPath = $state('');
       total: allRoutes.length,
       categories: {}
     };
-    
+
     categories.forEach(category => {
       stats.categories[category] = getRoutesByCategory(category).length;
     });
-    
+
     // Count by status
     stats.active = allRoutes.filter(r => r.status === 'active').length;
     stats.experimental = allRoutes.filter(r => r.status === 'experimental').length;
     stats.beta = allRoutes.filter(r => r.status === 'beta').length;
-    
+
     routeStats.set(stats);
   }
 
   async function runAllTests() {
     isLoading = true;
     testResults.set([]);
-    
+
     try {
       for (const testCase of testCases) {
         try {
@@ -170,18 +170,18 @@ let currentPath = $state('');
     <!-- Test Controls -->
     <Card class="p-6">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Controls</h2>
-      
+
       <div class="flex gap-4 mb-6">
-        <Button 
-          on:on:click={runAllTests} 
+        <Button
+          on:click={runAllTests}
           disabled={isLoading}
           class="bg-yorha-secondary text-yorha-bg-primary hover:bg-yorha-secondary-dark"
         >
           {isLoading ? 'Running Tests...' : 'Run All Tests'}
         </Button>
-        
-        <Button 
-          on:on:click={calculateRouteStats}
+
+        <Button
+          on:click={calculateRouteStats}
           variant="outline"
           class="border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
         >
@@ -193,7 +193,7 @@ let currentPath = $state('');
     <!-- Test Results -->
     <Card class="p-6">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Results</h2>
-      
+
       {#if $testResults.length > 0}
         <div class="bg-yorha-bg-secondary p-4 rounded font-mono text-sm space-y-2 max-h-64 overflow-y-auto">
           {#each $testResults as result}
@@ -209,24 +209,24 @@ let currentPath = $state('');
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card class="p-6">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Route Statistics</h3>
-        
+
         {#if $routeStats.total}
           <div class="space-y-3">
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Total Routes:</span>
               <Badge variant="secondary">{$routeStats.total}</Badge>
             </div>
-            
+
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Active:</span>
               <Badge variant="default">{$routeStats.active}</Badge>
             </div>
-            
+
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Experimental:</span>
               <Badge variant="outline">{$routeStats.experimental}</Badge>
             </div>
-            
+
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Beta:</span>
               <Badge variant="destructive">{$routeStats.beta}</Badge>
@@ -239,7 +239,7 @@ let currentPath = $state('');
 
       <Card class="p-6">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Categories</h3>
-        
+
         {#if $routeStats.categories}
           <div class="space-y-2">
             {#each Object.entries($routeStats.categories) as [category, count]}
@@ -254,39 +254,39 @@ let currentPath = $state('');
 
       <Card class="p-6">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Quick Navigation</h3>
-        
+
         <div class="space-y-2">
           <Button
             size="sm"
             variant="ghost"
-            on:on:click={() => navigateToRoute('/')}
+            on:click={() => navigateToRoute('/')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🏠 Home
           </Button>
-          
+
           <Button
             size="sm"
             variant="ghost"
-            on:on:click={() => navigateToRoute('/demo')}
+            on:click={() => navigateToRoute('/demo')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🎯 Demo Overview
           </Button>
-          
+
           <Button
             size="sm"
             variant="ghost"
-            on:on:click={() => navigateToRoute('/dev/mcp-tools')}
+            on:click={() => navigateToRoute('/dev/mcp-tools')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🔧 MCP Tools
           </Button>
-          
+
           <Button
             size="sm"
             variant="ghost"
-            on:on:click={() => navigateToRoute('/cases')}
+            on:click={() => navigateToRoute('/cases')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             📁 Case Management
@@ -298,7 +298,7 @@ let currentPath = $state('');
     <!-- Route Categories List -->
     <Card class="p-6">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Route Categories</h2>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each ['main', 'demo', 'ai', 'legal', 'dev', 'admin'] as category}
           {@const categoryRoutes = getRoutesByCategory(category)}
@@ -307,7 +307,7 @@ let currentPath = $state('');
               <h3 class="text-lg font-semibold mb-3 text-yorha-text-accent capitalize">
                 {category} ({categoryRoutes.length})
               </h3>
-              
+
               <div class="space-y-1 max-h-32 overflow-y-auto">
                 {#each categoryRoutes.slice(0, 5) as route}
                   <button
@@ -332,12 +332,12 @@ let currentPath = $state('');
     <!-- Debug Information -->
     <Card class="p-6">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Debug Information</h2>
-      
+
       <details class="cursor-pointer">
         <summary class="text-yorha-secondary hover:text-yorha-accent mb-4">
           View All Routes Configuration
         </summary>
-        
+
         <div class="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
           {#each allRoutes as route}
             <div class="bg-yorha-bg-secondary p-2 rounded text-xs">
@@ -357,7 +357,7 @@ let currentPath = $state('');
 
 <style>
   :global(.yorha-terminal-grid) {
-    background-image: 
+    background-image:
       linear-gradient(rgba(255, 215, 0, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 215, 0, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;

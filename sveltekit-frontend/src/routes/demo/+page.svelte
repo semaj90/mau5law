@@ -8,9 +8,9 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Badge } from '$lib/components/ui/badge';
-  import { 
-    Search, Filter, Grid, List, 
-    Zap, Bot, Shield, Database, 
+  import {
+    Search, Filter, Grid, List,
+    Zap, Bot, Shield, Database,
     Cpu, FileText, Users, Settings,
     Palette, Code, TestTube, Monitor,
     Brain, Eye, Layers, Workflow,
@@ -342,12 +342,12 @@
     }
   });
 
-  const totalDemos = $derived.by(() => 
+  const totalDemos = $derived.by(() =>
     demoCategories.reduce((total, category) => total + category.demos.length, 0)
   );
 
   const productionDemos = $derived.by(() =>
-    demoCategories.reduce((total, category) => 
+    demoCategories.reduce((total, category) =>
       total + category.demos.filter(demo => demo.status === 'production').length, 0)
   );
 
@@ -397,7 +397,7 @@
           <Badge variant="outline" class="text-sm">
             {productionDemos} Production Ready
           </Badge>
-          <Button on:on:click={() => goto('/')} variant="outline">
+          <Button on:click={() => goto('/')} variant="outline">
             <ChevronRight class="h-4 w-4 mr-2 rotate-180" />
             Back to Home
           </Button>
@@ -415,10 +415,10 @@
             class="pl-10"
           />
         </div>
-        
+
         <div class="flex items-center gap-2">
           <Filter class="h-4 w-4 text-muted-foreground" />
-          <select 
+          <select
             bind:value={selectedCategory}
             class="px-3 py-2 border border-input rounded-md text-sm bg-background"
           >
@@ -433,14 +433,14 @@
           <Button
             variant={viewMode === 'grid' ? 'default' : 'ghost'}
             size="sm"
-            on:on:click={() => viewMode = 'grid'}
+            on:click={() => viewMode = 'grid'}
           >
             <Grid class="h-4 w-4" />
           </Button>
           <Button
             variant={viewMode === 'list' ? 'default' : 'ghost'}
             size="sm"
-            on:on:click={() => viewMode = 'list'}
+            on:click={() => viewMode = 'list'}
           >
             <List class="h-4 w-4" />
           </Button>
@@ -467,7 +467,8 @@
             <div class="flex items-center gap-4 mb-6">
               <div class="flex items-center gap-3">
                 <div class="p-2 rounded-lg bg-primary/10 text-primary">
-                  <svelte:component this={category.icon} class="h-6 w-6" />
+                  {@const IconComponent = category.icon}
+                  <IconComponent class="h-6 w-6" />
                 </div>
                 <div>
                   <h2 class="text-2xl font-semibold">{category.title}</h2>
@@ -499,12 +500,12 @@
                         <ExternalLink class="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                       </div>
                     </Card.Header>
-                    
+
                     <Card.Content class="pt-0">
                       <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
                         {demo.description}
                       </p>
-                      
+
                       <div class="flex flex-wrap gap-1 mb-4">
                         {#each demo.features.slice(0, 3) as feature}
                           <Badge variant="outline" class="text-xs">
@@ -517,9 +518,9 @@
                           </Badge>
                         {/if}
                       </div>
-                      
-                      <Button 
-                        on:on:click={() => navigateToDemo(demo.path)}
+
+                      <Button
+                        on:click={() => navigateToDemo(demo.path)}
                         class="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
                         variant="outline"
                       >
@@ -559,8 +560,8 @@
                                 </div>
                               </div>
                             </div>
-                            <Button 
-                              on:on:click={() => navigateToDemo(demo.path)}
+                            <Button
+                              on:click={() => navigateToDemo(demo.path)}
                               variant="outline"
                               size="sm"
                             >

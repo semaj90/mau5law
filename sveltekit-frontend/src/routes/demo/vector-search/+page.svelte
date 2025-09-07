@@ -26,7 +26,7 @@
     TooltipTrigger,
   } from '$lib/components/ui/tooltip';
   import { Brain, Briefcase, FileText, Info, Scale, Search, Sparkles } from 'lucide-svelte';
-  
+
   // Feedback Integration
   import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
 
@@ -91,7 +91,7 @@ let vectorSearchFeedback = $state<any>(null);
 
       const data = await response.json();
       results = data.results || [];
-      
+
       // Track successful search for feedback
       if (searchInteractionId && vectorSearchFeedback) {
         vectorSearchFeedback.markCompleted({
@@ -103,7 +103,7 @@ let vectorSearchFeedback = $state<any>(null);
       }
     } catch (err) {
       error = err instanceof Error ? err.message : 'Search failed';
-      
+
       // Track failed search for feedback
       if (searchInteractionId && vectorSearchFeedback) {
         vectorSearchFeedback.markFailed({
@@ -156,7 +156,7 @@ let vectorSearchFeedback = $state<any>(null);
             placeholder="Enter your legal search query..."
             class="flex-1"
             keydown={(e) => e.key === 'Enter' && performSearch()} />
-          <Button on:on:click={performSearch} disabled={searching || !query.trim()}>
+          <Button on:click={performSearch} disabled={searching || !query.trim()}>
             {#if searching}
               <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               Searching...
@@ -381,7 +381,7 @@ let vectorSearchFeedback = $state<any>(null);
   interactionType="vector_search_demo"
   ratingType="search_relevance"
   priority="medium"
-  context={{ 
+  context={{
     page: 'vector_search_demo',
     documentType,
     threshold: threshold[0],

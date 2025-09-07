@@ -18,7 +18,7 @@ import {
   type Case,
   type VectorOperation,
   type VectorMetadata
-} from './enhanced-unified-schema';
+} from './schema-postgres';
 
 // ============================================================================
 // CONFIGURATION

@@ -274,7 +274,7 @@ export class SIMDGPUTilingEngine {
     
     // Step 2: GPU-accelerated tiling
     const gpuStart = performance.now();
-    const tiles = await this.performGPUTiling(imageData, width, height, tileSize, evidenceType);
+    const tiles = await this.performGPUTiling(imageData, width, height, tileSize, evidenceType, simdTime);
     const gpuTime = performance.now() - gpuStart;
     
     // Step 3: Generate embeddings for each tile (if requested)
@@ -320,11 +320,12 @@ export class SIMDGPUTilingEngine {
     width: number,
     height: number,
     tileSize: number,
-    evidenceType: string
+    evidenceType: string,
+    simdTime: number
   ): Promise<TiledEvidenceChunk[]> {
     if (!this.device || !this.computePipeline) {
       // Fallback to CPU tiling
-      return this.performCPUTiling(imageData, width, height, tileSize, evidenceType);
+      return this.performCPUTiling(imageData, width, height, tileSize, evidenceType, simdTime);
     }
     
     const tilesX = Math.ceil(width / tileSize);
@@ -370,6 +371,9 @@ export class SIMDGPUTilingEngine {
       0.8 * 0xFFFFFFFF // tensor_compression (as uint32)
     ]);
     this.device.queue.writeBuffer(configBuffer, 0, configData);
+    
+    // GPU performance timing
+    const gpuStart = performance.now();
     
     // Create bind group
     const bindGroup = this.device.createBindGroup({
@@ -449,7 +453,7 @@ export class SIMDGPUTilingEngine {
           evidenceType: evidenceType as any,
           confidence,
           processed: true,
-          simdProcessTime: 0, // Will be updated later
+          simdProcessTime: simdTime,
           gpuProcessTime: performance.now() - gpuStart
         },
         memoryRegion
@@ -474,7 +478,8 @@ export class SIMDGPUTilingEngine {
     width: number,
     height: number,
     tileSize: number,
-    evidenceType: string
+    evidenceType: string,
+    simdTime: number
   ): Promise<TiledEvidenceChunk[]> {
     console.log('🔄 Falling back to CPU SIMD tiling...');
     
@@ -530,7 +535,7 @@ export class SIMDGPUTilingEngine {
             evidenceType: evidenceType as any,
             confidence,
             processed: true,
-            simdProcessTime: 0,
+            simdProcessTime: simdTime,
             gpuProcessTime: 0
           },
           memoryRegion

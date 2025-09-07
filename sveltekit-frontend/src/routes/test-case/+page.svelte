@@ -7,10 +7,10 @@
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import * as Card from '$lib/components/ui/card';
-  import { 
-    AlertCircle, 
-    Loader2, 
-    Save, 
+  import {
+    AlertCircle,
+    Loader2,
+    Save,
     CheckCircle,
     FileText,
     Scale
@@ -39,7 +39,7 @@ let formData = $state({
       });
 
       const result = await response.json();
-      
+
       if (response.ok) {
         submitResult = `✅ Success: Case created with ID ${result.id || 'unknown'}`;
         // Reset form
@@ -142,7 +142,7 @@ let formData = $state({
         <!-- Priority -->
         <div class="space-y-2">
           <Label for="priority">Priority Level</Label>
-          <select 
+          <select
             id="priority"
             bind:value={formData.priority}
             class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
@@ -155,10 +155,10 @@ let formData = $state({
 
         <!-- Submit Button (bits-ui Button) -->
         <div class="flex justify-end space-x-3 pt-6 border-t">
-          <Button 
-            type="button" 
+          <Button
+            type="button"
             variant="outline"
-            on:on:click={() => {
+            on:click={() => {
               formData = {
                 caseNumber: '',
                 title: '',
@@ -170,9 +170,9 @@ let formData = $state({
           >
             Clear Form
           </Button>
-          
-          <Button 
-            type="submit" 
+
+          <Button
+            type="submit"
             disabled={isSubmitting || !formData.caseNumber || !formData.title}
             class="min-w-[120px]"
           >
@@ -195,7 +195,7 @@ let formData = $state({
       <AlertCircle class="h-5 w-5 text-primary" />
       <span>Integration Test Features</span>
     </h3>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
       <div>
         <h4 class="font-medium text-foreground mb-2">bits-ui Button Integration</h4>
@@ -206,7 +206,7 @@ let formData = $state({
           <li>• Icon integration with Lucide</li>
         </ul>
       </div>
-      
+
       <div>
         <h4 class="font-medium text-foreground mb-2">Database & API Testing</h4>
         <ul class="space-y-1">

@@ -69,7 +69,7 @@ export class SessionManager {
       await this.redisClient.connect();
 
       // Setup error handling
-      this.redisClient.on('error', (err) => {
+      this.redisClient.on('error', (err: any) => {
         console.error('Redis session store error:', err);
       });
 

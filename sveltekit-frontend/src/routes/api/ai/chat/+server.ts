@@ -1,271 +1,112 @@
+// Minimal, conflict-free AI chat proxy (vLLM first, Ollama fallback)
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 
+type Msg = { role: 'user' | 'assistant' | 'system'; content: string };
 
-import { ensureError } from '$lib/utils/ensure-error';
-import type { RequestHandler } from './$types.js';
-import type { ChatRequest, ChatResponse } from '$lib/types/api.js';
-import { apiSuccess, apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
+const VLLM = ((import.meta as any).env?.VLLM_ENDPOINT as string) ?? 'http://localhost:8000/v1';
+const OLLAMA = ((import.meta as any).env?.OLLAMA_ENDPOINT as string) ?? 'http://localhost:11434';
 
-// Simplified Ollama API route for Legal AI Chat
-// SvelteKit 2.0 + Svelte 5 + Direct Ollama integration
+export const POST: RequestHandler = async ({ request }) => {
+  try {
+    const body = await request.json();
+    const messages: Msg[] = Array.isArray(body?.messages) ? body.messages : [];
+    const model: string = body?.model || 'gemma3-legal';
+    const temperature: number = typeof body?.temperature === 'number' ? body.temperature : 0.2;
 
-import { json, error } from "@sveltejs/kit";
-import { ollamaService } from '../../../../lib/server/services/OllamaService.js';
-import { logger } from '../../../../lib/server/production-logger.js';
-import { conversationService } from '$lib/server/services/conversation-service';
-const dev = import.meta.env.NODE_ENV === 'development';
+    // Prepend a legal-focused system prompt for better outputs
+    const systemPrompt: Msg = {
+      role: 'system',
+      content:
+        'You are a concise, accurate legal AI assistant specializing in deeds, contracts, citations, and risk analysis. ' +
+        'Cite assumptions, flag ambiguities, and avoid giving definitive legal advice. Prefer bullet points and short paragraphs.',
+    };
+    const chatMessages =
+      messages.length > 0 && messages[0]?.role !== 'system'
+        ? [systemPrompt, ...messages]
+        : messages.length > 0
+          ? messages
+          : [systemPrompt];
 
-export const POST: RequestHandler = withErrorHandling(async (event) => {
-  const requestId = getRequestId(event);
-  const startTime = Date.now();
-
-  const {
-    message,
-    model = "gemma3-legal:latest",
-    temperature = 0.7,
-    stream = false,
-    conversationId,
-    userId = 'mock-user-id', // TODO: Get from auth session
-    caseId
-  } = await event.request.json();
-
-  // Validate input
-  if (!message?.trim()) {
-    return apiError("Message is required", 400, 'INVALID_INPUT', undefined, requestId);
-  }
-
-  // Check Ollama health
-  const isHealthy = await ollamaService.isHealthy();
-  if (!isHealthy) {
-    logger.error("Ollama service is not healthy");
-    return apiError("AI service is currently unavailable", 503, 'SERVICE_UNAVAILABLE', undefined, requestId);
-  }
-
-  // Handle conversation creation/retrieval
-  let currentConversationId = conversationId;
-  
-  if (!currentConversationId) {
-    // Create new conversation
-    const conversationTitle = conversationService.generateConversationTitle(message);
-    const newConversation = await conversationService.createConversation({
-      userId,
-      title: conversationTitle,
-      caseId,
-      context: { model, temperature }
-    });
-    currentConversationId = newConversation.id;
-  }
-
-  // Save user message to conversation
-  await conversationService.addMessage({
-    conversationId: currentConversationId,
-    role: 'user',
-    content: message,
-    metadata: { requestId }
-  });
-
-  // Add legal AI system prompt
-  const systemPrompt = `You are a legal AI assistant. User question: ${message}`;
-
-  // Handle streaming vs non-streaming responses
-  if (stream) {
-    return handleStreamingResponse(model, systemPrompt, temperature, currentConversationId, requestId);
-  } else {
-    return handleNonStreamingResponse(
-      model,
-      systemPrompt,
-      temperature,
-      startTime,
-      requestId,
-      currentConversationId
-    );
-  }
-});
-
-async function handleStreamingResponse(
-  model: string,
-  prompt: string,
-  temperature: number,
-  conversationId: string,
-  requestId: string
-): Promise<Response> {
-  const encoder = new TextEncoder();
-
-  const stream = new ReadableStream({
-    async start(controller) {
-      try {
-        const response = await fetch("http://localhost:11434/api/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model,
-            prompt,
-            stream: true,
-            options: { temperature },
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Ollama API error: ${response.status}`);
-        }
-
-        const reader = response.body?.getReader();
-        if (!reader) {
-          throw new Error("No response body");
-        }
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = new TextDecoder().decode(value);
-          const lines = chunk.split("\n").filter(Boolean);
-
-          for (const line of lines) {
-            try {
-              const data = JSON.parse(line);
-              if (data.response) {
-                controller.enqueue(encoder.encode(data.response));
-              }
-              if (data.done) {
-                controller.close();
-                return;
-              }
-            } catch (parseError) {
-              // Skip invalid JSON lines
-            }
-          }
-        }
-      } catch (error: any) {
-        logger.error("Streaming error", error);
-        controller.error(error);
-      }
-    },
-  });
-
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/plain",
-      "Transfer-Encoding": "chunked",
-    },
-  });
-}
-
-async function handleNonStreamingResponse(
-  model: string,
-  prompt: string,
-  temperature: number,
-  startTime: number,
-  requestId: string,
-  conversationId: string
-): Promise<Response> {
-  const response = await ollamaService.generate(model, prompt, { temperature });
-  const endTime = Date.now();
-  const duration = endTime - startTime;
-
-  // Generate intelligent suggestions (simplified, no external API calls)
-  const suggestions = generateSimpleSuggestions(prompt, response);
-
-  // Enhanced token counting
-  const promptTokens = estimateTokens(prompt);
-  const responseTokens = estimateTokens(response);
-  const totalTokens = promptTokens + responseTokens;
-
-  // Save assistant message to conversation
-  await conversationService.addMessage({
-    conversationId,
-    role: 'assistant',
-    content: response,
-    model,
-    tokenCount: totalTokens,
-    processingTime: duration,
-    metadata: { 
-      requestId,
-      promptTokens,
-      responseTokens,
-      tokensPerSecond: duration > 0 ? totalTokens / (duration / 1000) : 0
+    if (messages.length === 0) {
+      return json({ error: 'messages required' }, { status: 400 });
     }
-  });
 
-  const chatResponse: ChatResponse = {
-    response,
-    model,
-    timestamp: new Date().toISOString(),
-    performance: {
-      duration,
-      tokens: totalTokens,
-      promptTokens,
-      responseTokens,
-      tokensPerSecond: duration > 0 ? totalTokens / (duration / 1000) : 0,
-    },
-    suggestions,
-    relatedCases: [], // Simplified - no external case lookup
-    conversationId, // Include conversation ID in response
-  };
+    // Prefer Ollama gemma3-legal first
+    try {
+      const ollamaRes = await fetch(`${OLLAMA}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model,
+          messages: chatMessages,
+          stream: false,
+          options: {
+            temperature,
+            num_ctx: (import.meta as any).env?.OLLAMA_NUM_CTX
+              ? Number((import.meta as any).env.OLLAMA_NUM_CTX)
+              : 8192,
+          },
+        }),
+      });
+      if (ollamaRes.ok) {
+        const data = await ollamaRes.json();
+        const text = data?.message?.content ?? data?.response ?? '';
+        return json({ backend: 'ollama', model, text, raw: data });
+      }
+    } catch {}
 
-  return apiSuccess(chatResponse, 'Chat message processed successfully', requestId);
-}
+    // Fallback: vLLM (OpenAI-compatible /chat/completions)
+    try {
+      const vllmRes = await fetch(`${VLLM}/chat/completions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: body?.openaiModel || 'mistralai/Mistral-7B-Instruct-v0.3',
+          temperature,
+          messages: chatMessages,
+          stream: false,
+        }),
+      });
+      if (vllmRes.ok) {
+        const data = await vllmRes.json();
+        const text = data?.choices?.[0]?.message?.content ?? '';
+        return json({ backend: 'vllm', model: data?.model, text, raw: data });
+      }
+    } catch {}
 
-// Enhanced token estimation function
-function estimateTokens(text: string): number {
-  // More accurate token estimation
-  // Roughly 1 token per 4 characters for English text
-  // This is a simplified approximation - production would use tiktoken or similar
-  return Math.ceil(text.length / 4);
-}
-
-function generateSimpleSuggestions(
-  prompt: string,
-  response: string
-): string[] {
-  // Simple rule-based suggestions based on keywords in the prompt
-  const suggestions: string[] = [];
-  const lowerPrompt = prompt.toLowerCase();
-
-  if (lowerPrompt.includes('evidence') || lowerPrompt.includes('proof')) {
-    suggestions.push("What makes evidence admissible in court?");
-    suggestions.push("How do I establish chain of custody?");
-    suggestions.push("What are the different types of evidence?");
-  } else if (lowerPrompt.includes('contract') || lowerPrompt.includes('agreement')) {
-    suggestions.push("What elements make a contract valid?");
-    suggestions.push("How can a contract be breached?");
-    suggestions.push("What are the remedies for contract violations?");
-  } else if (lowerPrompt.includes('criminal') || lowerPrompt.includes('crime')) {
-    suggestions.push("What are the elements of this crime?");
-    suggestions.push("What defenses might the defendant raise?");
-    suggestions.push("What evidence do I need to prove intent?");
-  } else {
-    // Default legal suggestions
-    suggestions.push("What legal precedents apply to this situation?");
-    suggestions.push("What additional evidence should I gather?");
-    suggestions.push("Are there any constitutional issues to consider?");
+    return json({ error: 'No AI backend reachable' }, { status: 503 });
+  } catch (e: any) {
+    return json({ error: e?.message || String(e) }, { status: 500 });
   }
+};
 
-  return suggestions.slice(0, 3);
-}
-
-// Health check endpoint
-export const GET: RequestHandler = withErrorHandling(async (event) => {
-  const requestId = getRequestId(event);
-
-  const isHealthy = await ollamaService.isHealthy();
-  const models = await ollamaService.listModels();
-
-  const healthData = {
-    status: isHealthy ? "healthy" : "unhealthy",
-    models: models.map((m) => ({
-      name: m.name,
-      size: m.size,
-      family: m.details?.family || 'unknown',
-    })),
-    endpoints: [
-      "POST /api/ai/chat - Send chat message",
-      "GET /api/ai/chat - Health check",
-    ],
-  };
-
-  return apiSuccess(
-    healthData, 
-    isHealthy ? 'Chat service is healthy' : 'Chat service has issues', 
-    requestId
-  );
-});
+export const GET: RequestHandler = async () => {
+  const result: any = { ok: true, backends: {} };
+  try {
+    const [ver, tags] = await Promise.all([
+      fetch(`${OLLAMA}/api/version`)
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
+      fetch(`${OLLAMA}/api/tags`)
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
+    ]);
+    result.backends.ollama = {
+      version: ver?.version || null,
+      has_gemma3_legal: Array.isArray(tags?.models)
+        ? tags.models.some((m: any) => (m?.name || '').startsWith('gemma3-legal'))
+        : false,
+    };
+  } catch {}
+  try {
+    const vModels = await fetch(`${VLLM}/models`)
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+    result.backends.vllm = {
+      reachable: Boolean(vModels),
+      models: Array.isArray(vModels?.data) ? vModels.data.map((m: any) => m.id) : [],
+    };
+  } catch {}
+  return json(result);
+};

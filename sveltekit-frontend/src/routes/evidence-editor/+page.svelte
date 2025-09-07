@@ -3,16 +3,16 @@
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
   import { UiButton as Button } from '$lib/components/ui';
   import { onMount } from 'svelte';
-  
+
   let caseId: string | null = $state(null);
   let readOnly = $state(false);
-  
+
   onMount(() => {
     // Get case ID from URL params if provided
     caseId = $page.url.searchParams.get('caseId');
     readOnly = $page.url.searchParams.get('readOnly') === 'true';
   });
-  
+
   function toggleReadOnly() {
     readOnly = !readOnly;
 }
@@ -33,16 +33,16 @@
           Drag and drop evidence files for AI-powered analysis and tagging
         </p>
       </div>
-      
+
       <div class="space-y-4">
-        <Button 
-          on:on:click={toggleReadOnly}
+    <Button
+      on:click={toggleReadOnly}
           variant={readOnly ? "default" : "outline"}
           size="sm"
         >
           {readOnly ? 'Enable Editing' : 'Read Only'}
         </Button>
-        
+
         <div class="space-y-4">
           {#if caseId}
             Case: {caseId}
@@ -53,7 +53,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Main Editor -->
   <div class="space-y-4">
     <VisualEvidenceEditor {caseId} {readOnly} />
@@ -70,10 +70,10 @@
     <li>• Use the AI assistant for search and insights</li>
     <li>• Edit metadata and tags in the inspector panel</li>
   </ul>
-  <Button 
-    size="sm" 
+  <Button
+    size="sm"
     class="space-y-4"
-    on:on:click={() => {
+            on:click={() => {
       const helpOverlay = document.getElementById('help-overlay');
       if (helpOverlay) {
         helpOverlay.style.display = 'none';

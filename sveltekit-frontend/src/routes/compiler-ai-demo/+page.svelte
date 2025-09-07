@@ -269,18 +269,18 @@ let feedbackLoop = $state<any >(null);
     <!-- Controls -->
     <div class="flex gap-4 mb-8 justify-center">
       <Button
-        on:on:click={startMonitoring}
+        on:click={startMonitoring}
         disabled={!systemInitialized || isMonitoring}
         class="bg-green-600 hover:bg-green-700">
         Start Monitoring
       </Button>
 
-      <Button on:on:click={stopMonitoring} disabled={!isMonitoring} class="bg-red-600 hover:bg-red-700">
+  <Button on:click={stopMonitoring} disabled={!isMonitoring} class="bg-red-600 hover:bg-red-700">
         Stop Monitoring
       </Button>
 
       <Button
-        on:on:click={addTestError}
+        on:click={addTestError}
         disabled={!systemInitialized}
         class="bg-orange-600 hover:bg-orange-700">
         Add Test Error

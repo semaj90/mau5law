@@ -5,10 +5,10 @@
 <script lang="ts">
   import N643DButton from '$lib/components/ui/gaming/n64/N643DButton.svelte';
   import { onMount } from 'svelte';
-  
+
   let testResults = $state([]);
   let isTestingComplete = $state(false);
-  
+
   // Test different button configurations
   const buttonTests = [
     {
@@ -17,14 +17,14 @@
     },
     {
       name: 'Primary Variant',
-      props: { 
+      props: {
         variant: 'primary',
         children: 'Primary Button'
       }
     },
     {
       name: 'Large Size',
-      props: { 
+      props: {
         size: 'large',
         children: 'Large Button'
       }
@@ -70,28 +70,28 @@
       }
     }
   ];
-  
+
   let buttonClickCount = $state(0);
-  
+
   const handleButtonClick = (testName: string) => {
     buttonClickCount++;
     console.log(`Button clicked: ${testName} (Total clicks: ${buttonClickCount})`);
-    
+
     // Add to test results
     testResults.push({
       test: testName,
       result: 'Click handler executed successfully',
       timestamp: new Date().toLocaleTimeString()
     });
-    
+
     // Force reactivity update
     testResults = [...testResults];
   };
-  
+
   onMount(() => {
     // Run component existence tests
     console.log('Testing N64 3D Button Component...');
-    
+
     // Check if component loaded
     const componentExists = typeof N643DButton !== 'undefined';
     testResults.push({
@@ -99,7 +99,7 @@
       result: componentExists ? 'SUCCESS' : 'FAILED',
       timestamp: new Date().toLocaleTimeString()
     });
-    
+
     // Test DOM rendering after a short delay
     setTimeout(() => {
       const buttons = document.querySelectorAll('.n64-3d-button');
@@ -108,9 +108,9 @@
         result: buttons.length > 0 ? `SUCCESS (${buttons.length} buttons rendered)` : 'FAILED',
         timestamp: new Date().toLocaleTimeString()
       });
-      
+
       // Test CSS classes
-      const hasCorrectClasses = Array.from(buttons).some(btn => 
+      const hasCorrectClasses = Array.from(buttons).some(btn =>
         btn.classList.contains('n64-3d-button')
       );
       testResults.push({
@@ -118,7 +118,7 @@
         result: hasCorrectClasses ? 'SUCCESS' : 'FAILED',
         timestamp: new Date().toLocaleTimeString()
       });
-      
+
       isTestingComplete = true;
       testResults = [...testResults];
     }, 500);
@@ -149,9 +149,9 @@
         {#each buttonTests as test}
           <div class="button-test-item">
             <h3>{test.name}</h3>
-            <N643DButton 
+            <N643DButton
               {...test.props}
-              on:on:on:click={() => handleButtonClick(test.name)}
+              onclick={() => handleButtonClick(test.name)}
             >
               {test.props.children || 'Test Button'}
             </N643DButton>
@@ -184,21 +184,21 @@
     <section class="performance-test">
       <h2>Performance Test</h2>
       <div class="performance-buttons">
-        <N643DButton 
+        <N643DButton
           variant="primary"
-          on:on:on:click={() => handleButtonClick('Performance Test')}
+          onclick={() => handleButtonClick('Performance Test')}
         >
           Click Test ({buttonClickCount} clicks)
         </N643DButton>
-        
-        <N643DButton 
+
+        <N643DButton
           variant="success"
           meshComplexity="high"
           materialType="pbr"
           enableParticles={true}
           enableLighting={true}
           enableReflections={true}
-          on:on:on:click={() => handleButtonClick('High-Performance Test')}
+          onclick={() => handleButtonClick('High-Performance Test')}
         >
           High-Performance Test
         </N643DButton>
@@ -209,16 +209,16 @@
     <section class="route-test">
       <h2>Gallery Route Test</h2>
       <div class="route-buttons">
-        <N643DButton 
+        <N643DButton
           variant="info"
-          on:on:on:click={() => window.location.href = '/gallery'}
+          onclick={() => window.location.href = '/gallery'}
         >
           Test Gallery Route
         </N643DButton>
-        
-        <N643DButton 
+
+        <N643DButton
           variant="secondary"
-          on:on:on:click={() => window.open('/gallery', '_blank')}
+          onclick={() => window.open('/gallery', '_blank')}
         >
           Open Gallery in New Tab
         </N643DButton>
@@ -378,17 +378,17 @@
     .test-page {
       padding: 1rem;
     }
-    
+
     .button-grid {
       grid-template-columns: 1fr;
       gap: 1rem;
     }
-    
+
     .result-item {
       grid-template-columns: 1fr;
       text-align: center;
     }
-    
+
     .performance-buttons,
     .route-buttons {
       flex-direction: column;
@@ -402,7 +402,7 @@
       background: #000;
       color: #fff;
     }
-    
+
     .button-test-item,
     .results-container {
       border: 2px solid #fff;

@@ -26,13 +26,13 @@ const vector = customType<{
   notNull: boolean;
   default: boolean;
 }>({
-  dataType(config: { dimensions?: number } = {}) {
+  dataType(config: unknown = {}) {
     return `vector(${config?.dimensions || 384})`;
   },
   toDriver(value: number[]): string {
     return `[${value.join(',')}]`;
   },
-  fromDriver(value: string): number[] {
+  fromDriver(value: unknown): number[] {
     // Parse vector string format "[1,2,3]" to number array
     return value.slice(1, -1).split(',').map(Number);
   }
@@ -81,7 +81,7 @@ export const cases = pgTable('cases', {
   
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   // Vector similarity indexes
   titleEmbeddingIdx: index('cases_title_embedding_idx')
     .on(table.titleEmbedding)
@@ -118,7 +118,7 @@ export const documents = pgTable('documents', {
   
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   contentEmbeddingIdx: index('documents_content_embedding_idx')
     .on(table.contentEmbedding)
     .using('ivfflat'),
@@ -150,7 +150,7 @@ export const evidence = pgTable('evidence', {
   
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   titleEmbeddingIdx: index('evidence_title_embedding_idx')
     .on(table.titleEmbedding)
     .using('ivfflat'),
@@ -173,7 +173,7 @@ export const vectorSearchLogs = pgTable('vector_search_logs', {
   similarityThreshold: integer('similarity_threshold'), // Store as integer (0-100)
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   queryEmbeddingIdx: index('vector_search_logs_query_embedding_idx')
     .on(table.queryEmbedding)
     .using('ivfflat'),

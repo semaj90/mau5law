@@ -4,8 +4,10 @@
  * Features: Smart caching, NES-style memory banks, RTX acceleration, texture streaming
  */
 
+/// <reference types="@webgpu/types" />
+
 import { yorhaMipmapShaders, type MipmapChainResult, type MipmapConfig } from './YoRHaMipmapShaders';
-import type { LegalDocument, MemoryBank } from '../../../memory/nes-memory-architecture';
+import type { LegalDocument, MemoryBank } from '../../../../memory/nes-memory-architecture';
 
 export interface TextureBankConfig {
   bankType: 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';
@@ -480,7 +482,7 @@ export class YoRHaOptimizedTextureManager {
     let foundBank: string | null = null;
     let textureEntry: TextureEntry | null = null;
 
-    for (const [bankName, bank] of this.textureBanks) {
+    for (const [bankName, bank] of Array.from(this.textureBanks)) {
       if (bank.textures.has(textureId)) {
         foundBank = bankName;
         textureEntry = bank.textures.get(textureId)!;
@@ -517,7 +519,7 @@ export class YoRHaOptimizedTextureManager {
   } {
     const bankStats: { [key: string]: any } = {};
 
-    for (const [bankName, bank] of this.textureBanks) {
+    for (const [bankName, bank] of Array.from(this.textureBanks)) {
       const memoryUsedMB = bank.memoryUsed / 1024 / 1024;
       const memoryLimitMB = bank.config.maxMemoryMB;
       
@@ -619,14 +621,14 @@ export class YoRHaOptimizedTextureManager {
    */
   dispose(): void {
     // Release all textures
-    for (const [bankName, bank] of this.textureBanks) {
-      for (const textureId of bank.textures.keys()) {
+    for (const [bankName, bank] of Array.from(this.textureBanks)) {
+      for (const textureId of Array.from(bank.textures.keys())) {
         this.releaseTexture(textureId);
       }
     }
 
     // Cleanup streaming sessions
-    for (const session of this.streamingSessions.values()) {
+    for (const session of Array.from(this.streamingSessions.values())) {
       session.streamedChunks.forEach(texture => texture.destroy());
     }
     this.streamingSessions.clear();

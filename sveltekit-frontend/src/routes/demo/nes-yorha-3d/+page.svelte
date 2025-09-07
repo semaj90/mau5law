@@ -12,7 +12,7 @@
   let camera: THREE.PerspectiveCamera;
   let renderer: THREE.WebGLRenderer;
   let animationId: number;
-  
+
   // UI State
   let isLoading = $state(false);
   let progress = $state(0);
@@ -36,7 +36,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     createDemoComponents();
     startAnimationLoop();
     setupCacheMonitoring();
-    
+
     return () => {
       cleanup();
     };
@@ -52,10 +52,10 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     camera.position.z = 5;
 
     // Renderer
-    renderer = new THREE.WebGLRenderer({ 
-      canvas: canvasElement, 
+    renderer = new THREE.WebGLRenderer({
+      canvas: canvasElement,
       antialias: false, // Disable antialiasing for pixelated look
-      alpha: true 
+      alpha: true
     });
     renderer.setSize(800, 600);
     renderer.setPixelRatio(1); // Force 1:1 pixel ratio for retro effect
@@ -73,22 +73,22 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
 
   async function createDemoComponents(): Promise<void> {
     isLoading = true;
-    
+
     try {
       // Initialize NES Cache Orchestrator
       await nesCacheOrchestrator.start();
 
       // Create NES-styled 3D buttons
       await createNESButtons();
-      
+
       // Create NES containers
       await createNESContainers();
-      
+
       // Create progress bars
       await createNESProgressBars();
 
       console.log('✅ All hybrid components created and cached');
-      
+
     } catch (error) {
       console.error('❌ Error creating demo components:', error);
     } finally {
@@ -113,7 +113,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
       });
 
       button.position.set(config.position[0], config.position[1], config.position[2]);
-      
+
       // Add click handler
       button.addEventListener('click', () => {
         console.log(`🎮 NES Button clicked: ${config.text}`);
@@ -175,7 +175,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
 
       // Update all hybrid components
       const deltaTime = 0.016; // ~60fps
-      
+
       nesButtons.forEach(button => button.update(deltaTime));
       nesContainers.forEach(container => container.update(deltaTime));
       nesProgressBars.forEach(bar => bar.update(deltaTime));
@@ -201,7 +201,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
   function handleButtonClick(buttonText: string): void {
     // Simulate progress update
     progress = Math.min(100, progress + 20);
-    
+
     // Switch demo based on button
     switch (buttonText) {
       case 'Primary':
@@ -234,9 +234,9 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
   async function toggleCRTEffect(): Promise<void> {
     for (const button of nesButtons) {
       const currentStyle = button.getStyle();
-      button.setStyle({ 
+      button.setStyle({
         crtEffect: !currentStyle.crtEffect,
-        scanlines: !currentStyle.crtEffect 
+        scanlines: !currentStyle.crtEffect
       });
     }
     console.log('📺 Toggled CRT effect');
@@ -250,7 +250,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
   function resetDemo(): void {
     progress = 0;
     currentDemo = 'buttons';
-    
+
     // Reset all components to default state
     nesButtons.forEach(button => {
       button.switchToNESState(`hybrid_default_${Date.now()}`);
@@ -313,15 +313,15 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
   </div>
 
   <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
-    
+
     <!-- 3D Canvas -->
     <div class="xl:col-span-3">
       <div class="nes-container with-title">
         <p class="title">🎯 3D Hybrid Interface</p>
-        
+
         <div class="canvas-container">
           <canvas bind:this={canvasElement} class="nes-3d-canvas"></canvas>
-          
+
           <!-- DOM Overlay Elements (synchronized with 3D) -->
           <div class="dom-overlay">
             <div class="nes-container is-rounded overlay-info">
@@ -334,41 +334,41 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
         <!-- Controls -->
         <div class="controls mt-4">
           <div class="flex flex-wrap gap-2 mb-2">
-            <button 
-              class="nes-btn is-primary" 
+            <button
+              class="nes-btn is-primary"
               onclick={() => switchRenderMode('hybrid-sync')}
             >
               Hybrid Sync
             </button>
-            <button 
-              class="nes-btn" 
+            <button
+              class="nes-btn"
               onclick={() => switchRenderMode('2d-overlay')}
             >
               2D Overlay
             </button>
-            <button 
-              class="nes-btn" 
+            <button
+              class="nes-btn"
               onclick={() => switchRenderMode('3d-embedded')}
             >
               3D Embedded
             </button>
           </div>
-          
+
           <div class="flex flex-wrap gap-2">
-            <button 
-              class="nes-btn is-warning" 
+            <button
+              class="nes-btn is-warning"
               onclick={toggleCRTEffect}
             >
               📺 Toggle CRT
             </button>
-            <button 
-              class="nes-btn is-error" 
+            <button
+              class="nes-btn is-error"
               onclick={clearCache}
             >
               🗑️ Clear Cache
             </button>
-            <button 
-              class="nes-btn is-success" 
+            <button
+              class="nes-btn is-success"
               onclick={resetDemo}
             >
               🔄 Reset
@@ -382,7 +382,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
               <FinalFantasyButton
                 variant="magic"
                 size="small"
-                on:on:click={() => showYoRHaModal = true}
+                on:click={() => showYoRHaModal = true}
                 icon="🤖"
               >
                 {#snippet children()}YoRHa 3D{/snippet}
@@ -390,8 +390,8 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
 
               <FinalFantasyButton
                 variant="item"
-                size="small" 
-                on:on:click={() => showNESModal = true}
+                size="small"
+                on:click={() => showNESModal = true}
                 icon="🎮"
               >
                 {#snippet children()}NES Cache{/snippet}
@@ -400,7 +400,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
               <FinalFantasyButton
                 variant="success"
                 size="small"
-                on:on:click={() => showWebGLModal = true}
+                on:click={() => showWebGLModal = true}
                 icon="🌟"
               >
                 {#snippet children()}WebGL GPU{/snippet}
@@ -409,7 +409,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
               <FinalFantasyButton
                 variant="primary"
                 size="small"
-                on:on:click={() => showHybridModal = true}
+                on:click={() => showHybridModal = true}
                 icon="⚡"
               >
                 {#snippet children()}Hybrid Sync{/snippet}
@@ -422,23 +422,23 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
 
     <!-- Control Panel -->
     <div class="xl:col-span-1 space-y-6">
-      
+
       <!-- Cache Stats -->
       <div class="nes-container with-title is-rounded">
         <p class="title">💾 NES Memory Stats</p>
-        
+
         {#if cacheStats}
           <div class="space-y-2 text-xs">
             <div>
               <strong>Total Usage:</strong>
-              <progress 
-                class="nes-progress is-pattern" 
-                value={cacheStats.utilization * 100} 
+              <progress
+                class="nes-progress is-pattern"
+                value={cacheStats.utilization * 100}
                 max="100"
               ></progress>
               <span>{Math.round(cacheStats.utilization * 100)}%</span>
             </div>
-            
+
             <div class="mt-3">
               <strong>Memory Regions:</strong>
               <ul class="nes-list">
@@ -467,25 +467,25 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
       <!-- Demo Controls -->
       <div class="nes-container with-title is-rounded">
         <p class="title">🎮 Demo Controls</p>
-        
+
         <div class="space-y-2">
-          <button 
+          <button
             class="nes-btn w-full"
             class:is-primary={currentDemo === 'buttons'}
             onclick={() => currentDemo = 'buttons'}
           >
             🔘 NES Buttons
           </button>
-          
-          <button 
+
+          <button
             class="nes-btn w-full"
             class:is-primary={currentDemo === 'containers'}
             onclick={() => currentDemo = 'containers'}
           >
             📦 Containers
           </button>
-          
-          <button 
+
+          <button
             class="nes-btn w-full"
             class:is-primary={currentDemo === 'progress'}
             onclick={() => currentDemo = 'progress'}
@@ -505,7 +505,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
       <!-- Feature List -->
       <div class="nes-container with-title is-dark">
         <p class="title">⚡ Hybrid Features</p>
-        
+
         <div class="nes-list text-xs">
           <ul>
             <li>✅ NES.css DOM Styling</li>
@@ -535,7 +535,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
   </div>
 
   <!-- Final Fantasy Style Modals -->
-  
+
   <!-- YoRHa 3D Components Modal -->
   <FinalFantasyModal
     bind:isOpen={showYoRHaModal}
@@ -573,12 +573,12 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
                 </ul>
               </div>
             </div>
-            
+
             <div class="mt-4 p-4 bg-black/30 rounded border border-yellow-500/30">
               <h4 class="text-cyan-300 font-bold mb-2">🎮 Integration Points:</h4>
               <p class="text-white text-sm">
-                YoRHa 3D components seamlessly integrate with DOM elements through synchronized transforms, 
-                shared state management, and unified event handling. This creates a hybrid interface where 
+                YoRHa 3D components seamlessly integrate with DOM elements through synchronized transforms,
+                shared state management, and unified event handling. This creates a hybrid interface where
                 3D objects can interact with traditional web UI elements.
               </p>
             </div>
@@ -588,7 +588,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     {/snippet}
 
     {#snippet actions()}
-      <FinalFantasyButton variant="secondary" on:on:click={() => showYoRHaModal = false}>
+  <FinalFantasyButton variant="secondary" on:click={() => showYoRHaModal = false}>
         {#snippet children()}Close{/snippet}
       </FinalFantasyButton>
     {/snippet}
@@ -651,7 +651,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     {/snippet}
 
     {#snippet actions()}
-      <FinalFantasyButton variant="secondary" on:on:click={() => showNESModal = false}>
+  <FinalFantasyButton variant="secondary" on:click={() => showNESModal = false}>
         {#snippet children()}Close{/snippet}
       </FinalFantasyButton>
     {/snippet}
@@ -716,8 +716,8 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
         <div class="p-4 bg-purple-900/20 rounded border border-purple-500/30">
           <h4 class="text-purple-300 font-bold mb-2">🎨 Rendering Pipeline:</h4>
           <p class="text-white text-sm">
-            The WebGL rendering pipeline processes 3D geometry through vertex and fragment shaders, 
-            applies materials and lighting, and outputs to frame buffers. Advanced features include 
+            The WebGL rendering pipeline processes 3D geometry through vertex and fragment shaders,
+            applies materials and lighting, and outputs to frame buffers. Advanced features include
             shadow mapping, post-processing effects, and multi-pass rendering for complex visual effects.
           </p>
         </div>
@@ -725,7 +725,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     </FinalFantasyContainer>
 
     <svelte:fragment slot="actions">
-      <FinalFantasyButton variant="secondary" on:on:click={() => showWebGLModal = false}>
+  <FinalFantasyButton variant="secondary" on:click={() => showWebGLModal = false}>
         Close
       </FinalFantasyButton>
     </svelte:fragment>
@@ -781,8 +781,8 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
         <div class="p-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 rounded border border-yellow-500/30">
           <h4 class="text-yellow-300 font-bold mb-2">🎯 Revolutionary Achievement:</h4>
           <p class="text-white text-sm">
-            This hybrid system bridges the gap between traditional DOM manipulation and modern 3D graphics, 
-            enabling developers to leverage the best of both worlds while maintaining optimal performance 
+            This hybrid system bridges the gap between traditional DOM manipulation and modern 3D graphics,
+            enabling developers to leverage the best of both worlds while maintaining optimal performance
             and visual fidelity.
           </p>
         </div>
@@ -790,7 +790,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     </FinalFantasyContainer>
 
     <svelte:fragment slot="actions">
-      <FinalFantasyButton variant="secondary" on:on:click={() => showHybridModal = false}>
+  <FinalFantasyButton variant="secondary" on:click={() => showHybridModal = false}>
         Close
       </FinalFantasyButton>
     </svelte:fragment>
@@ -869,7 +869,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     .nes-yorha-3d-demo {
       padding: 1rem;
     }
-    
+
     .nes-3d-canvas {
       height: 400px;
     }
@@ -879,7 +879,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     .grid-cols-1.xl\\:grid-cols-4 {
       gap: 1rem;
     }
-    
+
     .nes-3d-canvas {
       height: 300px;
     }

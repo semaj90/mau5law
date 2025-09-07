@@ -19,7 +19,7 @@
 
   onMount(async () => {
     await loadEngineData();
-    
+
     // Refresh data periodically
     const interval = setInterval(loadEngineData, 3000);
     return () => clearInterval(interval);
@@ -33,16 +33,16 @@
 
   async function executeQuery() {
     if (!queryInput.trim() || isExecuting) return;
-    
+
     isExecuting = true;
     const startTime = Date.now();
-    
+
     try {
       const result = await wasmGraphEngine.executeQuery(queryInput);
       const executionTime = Date.now() - startTime;
-      
+
       queryResult = result;
-      
+
       // Add to history
       queryHistory.unshift({
         query: queryInput,
@@ -50,12 +50,12 @@
         timestamp: new Date(),
         executionTime
       });
-      
+
       // Keep only last 5 queries in history
       if (queryHistory.length > 5) {
         queryHistory = queryHistory.slice(0, 5);
       }
-      
+
       await loadEngineData();
     } catch (error) {
       queryResult = {
@@ -80,7 +80,7 @@
     if (queryResult?.nodes?.length > 0) {
       const firstNode = queryResult.nodes[0];
       const recommendations = await wasmGraphEngine.getRecommendations(firstNode.id, firstNode.type);
-      
+
       queryResult = {
         ...queryResult,
         recommendations
@@ -91,7 +91,7 @@
   async function hydrateCache() {
     const hydrated = await wasmGraphEngine.hydrateFromCache();
     await loadEngineData();
-    
+
     // Show notification
     console.log(`✅ Cache hydrated with ${hydrated} queries`);
   }
@@ -206,14 +206,14 @@
       <h3 class="font-bold text-nier-accent-warm mb-3">Actions</h3>
       <div class="space-y-2">
         <ModernButton
-          on:on:on:click={hydrateCache}
+          onclick={hydrateCache}
           size="sm"
           class="w-full bg-blue-600 hover:bg-blue-700"
         >
           💧 Hydrate Cache
         </ModernButton>
         <ModernButton
-          on:on:on:click={loadEngineData}
+          onclick={loadEngineData}
           size="sm"
           variant="outline"
           class="w-full border-green-500 text-green-400"
@@ -221,7 +221,7 @@
           🔄 Refresh Stats
         </ModernButton>
         <ModernButton
-          on:on:on:click={() => unifiedServiceRegistry.clearCaches()}
+          onclick={() => unifiedServiceRegistry.clearCaches()}
           size="sm"
           variant="outline"
           class="w-full border-red-500 text-red-400"
@@ -235,7 +235,7 @@
   <!-- Query Interface -->
   <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-6">
     <h3 class="font-bold text-nier-accent-warm mb-4">Graph Query Interface</h3>
-    
+
     <div class="space-y-4">
       <!-- Query Input -->
       <div>
@@ -253,16 +253,16 @@
       <!-- Action Buttons -->
       <div class="flex gap-4">
         <ModernButton
-          on:on:on:click={executeQuery}
+          onclick={executeQuery}
           disabled={isExecuting || !queryInput.trim()}
           class="bg-green-600 hover:bg-green-700"
         >
           {isExecuting ? '⚡ Executing...' : '▶️ Execute Query'}
         </ModernButton>
-        
+
         {#if queryResult?.nodes?.length > 0}
           <ModernButton
-            on:on:on:click={getRecommendations}
+            onclick={getRecommendations}
             variant="outline"
             class="border-blue-500 text-blue-400"
           >
@@ -279,7 +279,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           {#each commonQueries as query}
             <button
-              on:onclick={() => { queryInput = query; }}
+              onclick={() => { queryInput = query; }}
               class="text-left text-xs font-mono p-2 border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
             >
               {query}
@@ -296,10 +296,10 @@
       <div class="flex justify-between items-center mb-4">
         <h3 class="font-bold text-nier-accent-warm">Query Results</h3>
         <div class="flex gap-4 text-sm text-nier-text-secondary">
-          <span>Source: 
+          <span>Source:
             <span class="font-mono px-2 py-1 rounded text-xs
-              {queryResult.metadata.source === 'wasm' ? 'bg-blue-500/20 text-blue-400' : 
-                queryResult.metadata.source === 'cache' ? 'bg-green-500/20 text-green-400' : 
+              {queryResult.metadata.source === 'wasm' ? 'bg-blue-500/20 text-blue-400' :
+                queryResult.metadata.source === 'cache' ? 'bg-green-500/20 text-green-400' :
                 queryResult.metadata.source === 'remote' ? 'bg-yellow-500/20 text-yellow-400' :
                 'bg-red-500/20 text-red-400'}">
               {queryResult.metadata.source.toUpperCase()}
@@ -402,7 +402,7 @@
               </div>
             </div>
             <div class="text-xs text-nier-text-secondary">
-              Results: {historyItem.result.metadata.resultCount} • 
+              Results: {historyItem.result.metadata.resultCount} •
               Source: {historyItem.result.metadata.source}
             </div>
           </div>
@@ -417,16 +417,16 @@
   .overflow-y-auto::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .overflow-y-auto::-webkit-scrollbar-track {
     background: var(--nier-bg-tertiary);
   }
-  
+
   .overflow-y-auto::-webkit-scrollbar-thumb {
     background: var(--nier-accent-warm);
     border-radius: 3px;
   }
-  
+
   .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: var(--nier-accent-cool);
   }

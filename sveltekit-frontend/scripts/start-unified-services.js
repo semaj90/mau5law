@@ -8,6 +8,14 @@ console.log('══════════════════════�
 
 const services = [
   {
+    name: 'RabbitMQ',
+    command: 'sc',
+    args: ['start', 'RabbitMQ'],
+    description: 'Starting RabbitMQ message broker on ports 5672/15672',
+    required: false,
+    windows_service: true
+  },
+  {
     name: 'Redis Cache',
     command: 'node',
     args: ['scripts/start-redis.js'],
@@ -48,7 +56,7 @@ const services = [
     args: ['run', 'dev'],
     description: 'Legal AI frontend with unified services',
     required: true,
-    delay: 3000
+    delay: 5000
   }
 ];
 

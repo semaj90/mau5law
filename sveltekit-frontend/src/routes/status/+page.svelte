@@ -20,7 +20,7 @@
   onMount(async () => {
     if (!browser) return;
     await loadSystemStatus();
-    
+
     // Auto-refresh every 30 seconds
     const interval = setInterval(loadSystemStatus, 30000);
     return () => clearInterval(interval);
@@ -66,8 +66,8 @@
         '--nes-prg-rom-color',
         '--gpu-cache-state-idle'
       ];
-      
-      const loadedVars = gpuVars.filter(varName => 
+
+      const loadedVars = gpuVars.filter(varName =>
         computedStyle.getPropertyValue(varName).trim() !== ''
       );
 
@@ -96,7 +96,7 @@
     try {
       // Test gaming constants availability
       const { NES_COLOR_PALETTE, N64_TEXTURE_PRESETS } = await import('$lib/components/ui/gaming/constants/gaming-constants.js');
-      
+
       if (NES_COLOR_PALETTE && N64_TEXTURE_PRESETS) {
         integrationTests['gaming'] = {
           status: 'success',
@@ -126,7 +126,7 @@
       if (response.ok) {
         const data = await response.json();
         const pgStatus = data.services?.databases?.postgres?.status;
-        
+
         if (pgStatus === 'healthy') {
           integrationTests['postgresql'] = {
             status: 'success',
@@ -227,7 +227,7 @@ let successCount = $state(0);
       <div class="flex items-center gap-4">
         <span class="text-gray-400">Last updated: {lastUpdated}</span>
         <Button.Root
-          on:on:on:click={loadSystemStatus}
+          onclick={loadSystemStatus}
           disabled={isLoading}
           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
         >
@@ -235,7 +235,7 @@ let successCount = $state(0);
         </Button.Root>
       </div>
     </div>
-    
+
     {#if systemHealth?.overall}
       <div class="overall-status p-6 bg-gray-800 rounded-lg border border-gray-700 mb-6">
         <div class="flex items-center justify-between">
@@ -292,7 +292,7 @@ let successCount = $state(0);
   {#if systemHealth?.services}
     <section class="mb-12">
       <h2 class="text-2xl font-bold text-white mb-6">System Services</h2>
-      
+
       <!-- Databases -->
       <Card class="mb-6 bg-gray-800 border-gray-700">
         <CardHeader>
@@ -415,7 +415,7 @@ let successCount = $state(0);
     <h2 class="text-2xl font-bold text-white mb-6">GPU Cache Integration Demo</h2>
     <Card class="bg-gray-800 border-gray-700">
       <CardContent class="p-6">
-        <GPUCacheIntegrationDemo 
+        <GPUCacheIntegrationDemo
           showProgressionDemo={true}
           enableRealTimeMetrics={true}
           debugMode={false}

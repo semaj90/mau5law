@@ -492,7 +492,7 @@ let screenReaderMode = $state(false);
           <Button
             variant="ghost"
             size="sm"
-            on:on:click={() => (showPanel = false)}
+            on:click={() => (showPanel = false)}
             aria-label="Close accessibility panel"
           >
             ✕
@@ -562,7 +562,7 @@ let screenReaderMode = $state(false);
             <h3 class="mx-auto px-4 max-w-7xl">Accessibility Audit</h3>
             <Button
               size="sm"
-              on:on:click={() => runAccessibilityAudit()}
+              on:click={() => runAccessibilityAudit()}
               disabled={isAuditing}
               class="mx-auto px-4 max-w-7xl"
             >
@@ -617,7 +617,7 @@ let screenReaderMode = $state(false);
                 variant="outline"
                 size="sm"
                 class="mx-auto px-4 max-w-7xl"
-                on:on:click={() => exportAuditResults()}
+                on:click={() => exportAuditResults()}
               >
                 <Download class="mx-auto px-4 max-w-7xl" />
                 Export Report

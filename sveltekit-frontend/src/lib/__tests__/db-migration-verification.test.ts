@@ -12,12 +12,12 @@ beforeAll(async () => {
   }
 });
 
-function maybe(name: string, fn: Parameters<typeof it>[1], timeout = 15_000) {
+function maybe(name: string, fn: () => Promise<void>, timeout = 15_000) {
   it(name, async (ctx) => {
     if (!dbAvailable) {
       ctx.skip();
     }
-    await fn?.(ctx as any);
+    await fn?.();
   }, timeout);
 }
 

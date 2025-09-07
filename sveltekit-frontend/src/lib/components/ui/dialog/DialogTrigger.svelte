@@ -1,6 +1,6 @@
 <script lang="ts">
 
-  import { melt } from 'melt';
+  import { Dialog } from 'bits-ui';
   // Props are defined as $props() rune, no import needed
 
   interface Props {

@@ -76,7 +76,7 @@ export interface QdrantServiceConfig {
 }
 
 export class QdrantService {
-  private client: QdrantClient;
+  private client: InstanceType<typeof QdrantClient>;
   private collectionName: string;
   private vectorSize: number;
 
@@ -134,7 +134,7 @@ export class QdrantService {
       score_threshold: 0.5,
     });
 
-    return searchResult.map((result) => ({
+    return searchResult.map((result: any) => ({
       id: result.id as string,
       score: result.score,
       payload: result.payload as LegalDocumentMetadata,

@@ -1,9 +1,13 @@
 <script lang="ts">
   import Fuse from 'fuse.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input/index.js';
-  import { Button } from '$lib/components/ui/button/index.js';
-  import { Badge } from '$lib/components/ui/badge/index.js';
+  // Use direct component imports to avoid broken barrels
+  import Card from '$lib/components/ui/Card.svelte';
+  import CardContent from '$lib/components/ui/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/CardTitle.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
+  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
   import { Search, ExternalLink, Sparkles, FileText, Scale } from 'lucide-svelte';
   import { legalDocuments, type LegalDocument } from '$lib/data/legal-documents';
 
@@ -17,7 +21,15 @@
 
   // State
   let searchQuery = $state('');
-  let searchResults = $state<Fuse.FuseResult<LegalDocument>[]>([]);
+  type MatchFragment = { key?: string; indices: [number, number][] };
+  type SearchResult = {
+    item: LegalDocument;
+    score?: number;
+    refIndex?: number;
+    matches?: ReadonlyArray<MatchFragment>;
+  };
+
+  let searchResults = $state<SearchResult[]>([]);
   let isSearching = $state(false);
 
   // Fuse.js configuration for legal document search
@@ -48,8 +60,9 @@
 
     isSearching = true;
     try {
-      const results = fuse.search(searchQuery, { limit: maxResults });
-      searchResults = results;
+  // Fuse v6/v7 signatures vary; call with a single argument and slice
+  const results = fuse.search(searchQuery) as unknown as SearchResult[];
+  searchResults = results.slice(0, maxResults);
     } catch (error) {
       console.error('Fuse search error:', error);
       searchResults = [];
@@ -59,7 +72,7 @@
   }
 
   // Real-time search as user types (debounced)
-let debounceTimer = $state<NodeJS.Timeout | null >(null);
+  let debounceTimer = $state<ReturnType<typeof setTimeout> | null>(null);
   $effect(() => {
     if (searchQuery.trim()) {
       if (debounceTimer) clearTimeout(debounceTimer);
@@ -79,7 +92,7 @@ let debounceTimer = $state<NodeJS.Timeout | null >(null);
     }
   }
 
-  function highlightMatches(text: string, matches?: readonly Fuse.FuseResultMatch[]): string {
+  function highlightMatches(text: string, matches?: ReadonlyArray<MatchFragment>): string {
     if (!matches) return text;
 
     let highlightedText = text;
@@ -100,7 +113,7 @@ let debounceTimer = $state<NodeJS.Timeout | null >(null);
   }
 
   function getCategoryColor(category: string): string {
-    const colors = {
+    const colors: Record<string, string> = {
       criminal: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
       civil: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
       contract: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -114,7 +127,7 @@ let debounceTimer = $state<NodeJS.Timeout | null >(null);
   }
 
   function getJurisdictionColor(jurisdiction: string): string {
-    const colors = {
+    const colors: Record<string, string> = {
       california: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
       federal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
       state: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -146,9 +159,17 @@ let debounceTimer = $state<NodeJS.Timeout | null >(null);
         <div class="relative flex-1">
           <Search
             class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input {placeholder} bind:value={searchQuery} keydown={handleKeydown} class="pl-10" />
+          <!-- Use a visually hidden native input to capture Enter key presses for a11y -->
+          <input
+            aria-hidden="true"
+            tabindex="-1"
+            class="sr-only"
+            value={searchQuery}
+            onkeydown={handleKeydown}
+            oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} />
+          <Input {placeholder} bind:value={searchQuery} class="pl-10" />
         </div>
-        <Button on:on:click={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
+  <Button on:click={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
           {#if isSearching}
             Searching...
           {:else}
@@ -176,7 +197,7 @@ let debounceTimer = $state<NodeJS.Timeout | null >(null);
                 <CardTitle class="text-base leading-tight">
                   {@html highlightMatches(
                     result.item.title,
-                    result.matches?.filter((m) => m.key === 'title')
+                    result.matches?.filter((m: MatchFragment) => m.key === 'title')
                   )}
                 </CardTitle>
 
@@ -207,7 +228,7 @@ let debounceTimer = $state<NodeJS.Timeout | null >(null);
             <p class="text-sm text-muted-foreground mb-3">
               {@html highlightMatches(
                 result.item.description,
-                result.matches?.filter((m) => m.key === 'description')
+                result.matches?.filter((m: MatchFragment) => m.key === 'description')
               )}
             </p>
 
@@ -217,7 +238,7 @@ let debounceTimer = $state<NodeJS.Timeout | null >(null);
                 <div class="text-muted-foreground">
                   {@html highlightMatches(
                     result.item.content.substring(0, 200) + '...',
-                    result.matches?.filter((m) => m.key === 'content')
+                    result.matches?.filter((m: MatchFragment) => m.key === 'content')
                   )}
                 </div>
               </div>
@@ -290,10 +311,10 @@ let debounceTimer = $state<NodeJS.Timeout | null >(null);
       <CardContent>
         <div class="flex flex-wrap gap-2">
           {#each ['murder', 'contract liability', 'evidence rules', 'robbery', 'constitutional rights', 'family law'] as suggestion}
-            <Button
+              <Button
               variant="outline"
               size="sm"
-              on:on:click={() => {
+                on:click={() => {
                 searchQuery = suggestion;
                 performSearch();
               }}>

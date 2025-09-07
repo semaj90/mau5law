@@ -57,7 +57,7 @@ let chatContainer = $state<HTMLElement;
         {/if}
       </p>
     </div>
-    <Button variant="outline" size="sm" on:on:click={handleClear}>
+  <Button variant="outline" size="sm" on:click={handleClear}>
       Clear Chat
     </Button>
   </div>

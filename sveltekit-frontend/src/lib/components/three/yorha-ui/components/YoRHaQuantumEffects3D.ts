@@ -187,9 +187,10 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
 
       // Set entanglement partners
       if (particle.entangled && i > 0) {
-        particle.entanglementPartner = Math.floor(Math.random() * i);
-        if (this.quantumParticles[particle.entanglementPartner]) {
-          this.quantumParticles[particle.entanglementPartner].entanglementPartner = i;
+        const partnerIndex = Math.floor(Math.random() * i);
+        particle.entanglementPartner = partnerIndex;
+        if (this.quantumParticles[partnerIndex]) {
+          this.quantumParticles[partnerIndex].entanglementPartner = i;
         }
       }
 

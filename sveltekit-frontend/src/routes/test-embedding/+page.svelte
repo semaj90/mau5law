@@ -3,7 +3,7 @@
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 
-  let evidenceText = $state(`This is a test contract regarding intellectual property rights and licensing agreements. 
+  let evidenceText = $state(`This is a test contract regarding intellectual property rights and licensing agreements.
 The contract includes provisions for patent licensing, trademark usage, and trade secret protection.
 Key terms include exclusive licensing rights, royalty payments of 5% of net sales, and territorial restrictions.
 The agreement is valid for 5 years with automatic renewal options.`);
@@ -30,7 +30,7 @@ The agreement is valid for 5 years with automatic renewal options.`);
   async function testEmbeddingAPI() {
     try {
       apiTestResult = { status: 'loading...', timestamp: new Date().toISOString() };
-      
+
       const response = await fetch('/api/ai/embed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -42,7 +42,7 @@ The agreement is valid for 5 years with automatic renewal options.`);
       });
 
       const result = await response.json();
-      
+
       apiTestResult = {
         status: response.ok ? 'success' : 'error',
         statusCode: response.status,
@@ -61,16 +61,16 @@ The agreement is valid for 5 years with automatic renewal options.`);
   async function testEmbeddingService() {
     try {
       apiTestResult = { status: 'testing service...', timestamp: new Date().toISOString() };
-      
+
       // Import embedding service dynamically
       const { embeddingService } = await import('$lib/services/embedding-service');
-      
+
       const result = await embeddingService.embed(evidenceText, {
         model: 'mock',
         dimensions: 256,
         cache: true
       });
-      
+
       apiTestResult = {
         status: 'success',
         source: 'embedding-service',
@@ -90,7 +90,7 @@ The agreement is valid for 5 years with automatic renewal options.`);
 
 <div class="container mx-auto p-6">
   <h1 class="text-3xl font-bold mb-6">Embedding Workflow Test</h1>
-  
+
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Input Configuration -->
     <Card>
@@ -101,22 +101,22 @@ The agreement is valid for 5 years with automatic renewal options.`);
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-2">Case ID:</label>
-            <input 
+            <input
               bind:value={caseId}
               class="w-full p-2 border rounded"
               placeholder="Enter case ID"
             />
           </div>
-          
+
           <div>
             <label class="block text-sm font-medium mb-2">Evidence Text:</label>
-            <textarea 
+            <textarea
               bind:value={evidenceText}
               class="w-full p-2 border rounded h-32"
               placeholder="Enter evidence text for embedding generation"
             ></textarea>
           </div>
-          
+
           <div>
             <p class="text-sm text-gray-600">
               Current text length: {evidenceText.length} characters
@@ -132,7 +132,7 @@ The agreement is valid for 5 years with automatic renewal options.`);
         <CardTitle>AI Assistant with Embedding Integration</CardTitle>
       </CardHeader>
       <CardContent>
-        <AiAssistant 
+        <AiAssistant
           {caseId}
           {contextItems}
           {evidenceText}
@@ -148,20 +148,20 @@ The agreement is valid for 5 years with automatic renewal options.`);
     </CardHeader>
     <CardContent>
       <div class="space-y-4">
-        <Button 
-          onclick={testEmbeddingAPI}
+        <Button
+          on:click={testEmbeddingAPI}
           class="mr-2"
         >
           Test Embedding API
         </Button>
-        
-        <Button 
-          onclick={testEmbeddingService}
+
+        <Button
+          on:click={testEmbeddingService}
           variant="outline"
         >
           Test Embedding Service
         </Button>
-        
+
         {#if apiTestResult}
           <div class="mt-4 p-4 bg-gray-50 rounded">
             <h3 class="font-semibold mb-2">API Test Result:</h3>
