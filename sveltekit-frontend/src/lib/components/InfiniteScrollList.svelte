@@ -1,6 +1,6 @@
 <script lang="ts">
 
-  import { createEventDispatcher, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade, slide } from "svelte/transition";
 
@@ -13,16 +13,28 @@
     Video,
   } from "lucide-svelte";
 
-  let { items = $bindable() } = $props(); // any[] = [];
-  let { itemType = $bindable() } = $props(); // "evidence" | "notes" | "canvas" = "evidence";
-  let { loadMoreThreshold = $bindable() } = $props(); // 100; // pixels from bottom
-  let { pageSize = $bindable() } = $props(); // 20;
-  let { isLoading = $bindable() } = $props(); // false;
-  let { selectedIndex = $bindable() } = $props(); // number = -1; // Index of selected item
+  interface Props {
+    items?: any[];
+    itemType?: "evidence" | "notes" | "canvas";
+    loadMoreThreshold?: number;
+    pageSize?: number;
+    isLoading?: boolean;
+    selectedIndex?: number;
+    onloadMore?: () => void;
+    onitemClick?: (event: { item: any; type: string }) => void;
+  }
 
-  const dispatch = createEventDispatcher();
-let scrollContainer = $state<HTMLElement;
-  let displayedItems: any[] >([]);
+  let {
+    items = $bindable([]),
+    itemType = $bindable("evidence"),
+    loadMoreThreshold = $bindable(100),
+    pageSize = $bindable(20),
+    isLoading = $bindable(false),
+    selectedIndex = $bindable(-1),
+    onitemClick
+  }: Props = $props();
+let scrollContainer = $state<HTMLElement>();
+  let displayedItems: any[] = $state([]);
 let currentPage = $state(0);
 let hasMore = $state(true);
 
@@ -55,23 +67,27 @@ let hasMore = $state(true);
     hasMore = endIndex < items.length;
 
     // Emit event for loading more data from API
-    if (!hasMore && items.length >= currentPage * pageSize) {
-      dispatch("loadMore");
-}}
-  function handleScroll() {
-    if (!scrollContainer) return;
-
-    const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
-    const scrolledToBottom =
-      scrollHeight - scrollTop - clientHeight < loadMoreThreshold;
-
-    if (scrolledToBottom) {
-      loadMore();
-}}
-  function handleItemClick(item: any) {
-    dispatch("itemClick", { item, type: itemType });
+  // Emit event for loading more data from API
+  if (onloadMore && endIndex >= items.length) {
+    onloadMore();
+  }
 }
-  function getItemIcon(item: any) {
+
+function handleItemClick(item: any) {
+  onitemClick?.({ item, type: itemType });
+}
+
+function handleScroll() {
+  if (!scrollContainer) return;
+
+  const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+  const scrolledToBottom =
+    scrollHeight - scrollTop - clientHeight < loadMoreThreshold;
+
+  if (scrolledToBottom) {
+    loadMore();
+  }
+}
     if (itemType === "notes") {
       return FileEdit;
     } else if (itemType === "canvas") {
@@ -101,39 +117,39 @@ let hasMore = $state(true);
 </script>
 
 <div
-  class="mx-auto px-4 max-w-7xl"
+  class="infinite-scroll-container"
   bind:this={scrollContainer}
-  scroll={handleScroll}
+  onscroll={handleScroll}
   role="listbox"
   aria-label="{itemType} list"
 >
   {#if displayedItems.length === 0 && !isLoading}
-    <div class="mx-auto px-4 max-w-7xl" transitifade={{ duration: 200 ">
-      <div class="mx-auto px-4 max-w-7xl">
+    <div class="empty-state" transition:fade={{ duration: 200 }}>
+      <div class="empty-icon">
         <svelte:component this={getItemIcon({})} size={48} />
       </div>
-      <p class="mx-auto px-4 max-w-7xl">No {itemType} found</p>
+      <p class="empty-text">No {itemType} found</p>
     </div>
   {:else}
-    <div class="mx-auto px-4 max-w-7xl">
+    <div class="items-list">
       {#each displayedItems as item, index (item.id || index)}
         <div
-          class="mx-auto px-4 max-w-7xl"
-          transitislide={{ duration: 300, easing: quintOut "
-          on:onclick={() => handleItemClick(item)}
-          keydown={(e) => e.key === "Enter" && handleItemClick(item)}
+          class="list-item"
+          transition:slide={{ duration: 300, easing: quintOut }}
+          onclick={() => handleItemClick(item)}
+          onkeydown={(e) => e.key === "Enter" && handleItemClick(item)}
           role="option"
           tabindex={0}
           aria-label="{itemType} item"
           aria-selected={index === selectedIndex}
         >
-          <div class="mx-auto px-4 max-w-7xl">
+          <div class="item-icon">
             <svelte:component this={getItemIcon(item)} size={20} />
           </div>
 
-          <div class="mx-auto px-4 max-w-7xl">
-            <div class="mx-auto px-4 max-w-7xl">
-              <h4 class="mx-auto px-4 max-w-7xl">
+          <div class="item-content">
+            <div class="item-header">
+              <h4 class="item-title">
                 {#if itemType === "evidence"}
                   {item.fileName || item.title || "Untitled Evidence"}
                 {:else if itemType === "notes"}
@@ -142,14 +158,14 @@ let hasMore = $state(true);
                   {item.name || `Canvas ${formatDate(item.lastModified)}`}
                 {/if}
               </h4>
-              <span class="mx-auto px-4 max-w-7xl">
+              <span class="item-date">
                 {formatDate(
                   item.createdAt || item.lastModified || item.updatedAt
                 )}
               </span>
             </div>
 
-            <p class="mx-auto px-4 max-w-7xl">
+            <p class="item-description">
               {#if itemType === "evidence"}
                 {truncateText(item.description)}
               {:else if itemType === "notes"}
@@ -160,12 +176,12 @@ let hasMore = $state(true);
             </p>
 
             {#if item.tags && item.tags.length > 0}
-              <div class="mx-auto px-4 max-w-7xl">
+              <div class="item-tags">
                 {#each item.tags.slice(0, 3) as tag}
-                  <span class="mx-auto px-4 max-w-7xl">{tag}</span>
+                  <span class="tag">{tag}</span>
                 {/each}
                 {#if item.tags.length > 3}
-                  <span class="mx-auto px-4 max-w-7xl">+{item.tags.length - 3}</span>
+                  <span class="tag-more">+{item.tags.length - 3}</span>
                 {/if}
               </div>
             {/if}
@@ -176,14 +192,14 @@ let hasMore = $state(true);
   {/if}
 
   {#if isLoading}
-    <div class="mx-auto px-4 max-w-7xl" transitifade={{ duration: 200 ">
-      <div class="mx-auto px-4 max-w-7xl"></div>
+    <div class="loading-indicator" transition:fade={{ duration: 200 }}>
+      <div class="spinner"></div>
       <p>Loading more {itemType}...</p>
     </div>
   {/if}
 
   {#if !hasMore && displayedItems.length > 0}
-    <div class="mx-auto px-4 max-w-7xl" transitifade={{ duration: 200 ">
+    <div class="end-indicator" transition:fade={{ duration: 200 }}>
       <p>No more {itemType} to load</p>
     </div>
   {/if}
@@ -320,6 +336,15 @@ let hasMore = $state(true);
     color: var(--pico-muted-color);
     gap: 0.5rem;
 }
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--pico-muted-border-color);
+    border-top: 2px solid var(--pico-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
 .end-indicator {
     text-align: center;
     padding: 1rem;

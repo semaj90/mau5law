@@ -35,13 +35,13 @@
 <div class="container mx-auto p-8 space-y-8">
   <div class="max-w-2xl mx-auto">
     <h1 class="text-3xl font-bold mb-6">Svelte 5 + bits-ui v2.9.4 + melt v0.39.0 Test</h1>
-    
+
     <!-- Test modern Button component with Svelte 5 patterns -->
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">Modern Button (Svelte 5)</h2>
-      <Button 
+      <Button
         variant="default"
-        on:on:click={handleButtonClick}
+  onclick={handleButtonClick}
       >
         Test Button (onclick)
       </Button>
@@ -51,12 +51,12 @@
     <!-- Test bits-ui Dialog component -->
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">bits-ui v2 Dialog Test</h2>
-      
+
       <Dialog.Root bind:open={dialogOpen}>
         <Dialog.Trigger class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
           Open bits-ui Dialog
         </Dialog.Trigger>
-        
+
         <Dialog.Portal>
           <Dialog.Overlay class="fixed inset-0 bg-black/50" />
           <Dialog.Content class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
@@ -79,16 +79,16 @@
     <!-- Test melt builder -->
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">melt v0.39.0 Builder Test</h2>
-      <button 
+      <button
         use:trigger
         class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
       >
         Open melt Dialog
       </button>
-      
+
       {#if $meltDialog.states.open}
         <div use:overlay class="fixed inset-0 bg-black/50"></div>
-        <div 
+        <div
           use:content
           class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg max-w-md w-full"
         >
@@ -96,7 +96,7 @@
           <p class="text-gray-600 mb-4">
             This tests melt v0.39.0 builders with Svelte 5 compatibility.
           </p>
-          <button 
+          <button
             onclick={() => meltDialog.states.open.set(false)}
             class="px-4 py-2 border rounded hover:bg-gray-50"
           >

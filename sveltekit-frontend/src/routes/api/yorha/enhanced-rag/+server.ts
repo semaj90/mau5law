@@ -2,6 +2,8 @@
 import { json } from "@sveltejs/kit";
 import { enhancedSearchWithNeo4j } from "$lib/ai/custom-reranker";
 import { legalDocuments, cases, evidence } from "$lib/server/db/schema-postgres";
+import { db, sql } from '$lib/server/db';
+import { or, like } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 
 
@@ -31,15 +33,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const rerankedResults = await enhancedSearchWithNeo4j(
       query,
       context || `Analyzing ${dataType} for legal insights`,
-      null, // neo4jContext can be null for basic search
+      undefined, // neo4jContext omitted for basic search
       limit * 2 // Get more results for better reranking
     );
 
     // Database search for relevant legal data
     let dbResults: any[] = [];
-    
+
     switch (dataType) {
-      case "documents":
+      case 'documents':
         dbResults = await db
           .select()
           .from(legalDocuments)
@@ -54,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .limit(limit);
         break;
 
-      case "cases":
+      case 'cases':
         dbResults = await db
           .select()
           .from(cases)
@@ -68,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .limit(limit);
         break;
 
-      case "evidence":
+      case 'evidence':
         dbResults = await db
           .select()
           .from(evidence)
@@ -94,11 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate recommendations if requested
     let recommendations: any[] = [];
     if (includeRecommendations) {
-      recommendations = await generateYoRHaRecommendations(
-        query,
-        analysisResults,
-        dataType
-      );
+      recommendations = await generateYoRHaRecommendations(query, analysisResults, dataType);
     }
 
     // Format response for YoRHa interface
@@ -108,45 +106,47 @@ export const POST: RequestHandler = async ({ request }) => {
       dataType,
       analysisType,
       timestamp: new Date().toISOString(),
-      
+
       // Core results
       results: analysisResults.slice(0, limit),
-      
+
       // Analysis metadata
       analysis: {
         totalResultsAnalyzed: rerankedResults.length + dbResults.length,
         confidenceScore: calculateOverallConfidence(analysisResults),
         processingTime: Date.now(), // This would be calculated properly
-        aiModelUsed: "enhanced-rag-yorha",
+        aiModelUsed: 'enhanced-rag-yorha',
         legalComplexity: assessLegalComplexity(analysisResults),
-        riskLevel: assessRiskLevel(analysisResults)
+        riskLevel: assessRiskLevel(analysisResults),
       },
 
       // Enhanced features
       recommendations: includeRecommendations ? recommendations : [],
-      
+
       // Legal-specific insights
       legalInsights: {
         jurisdiction: extractJurisdiction(analysisResults),
         legalAreas: extractLegalAreas(analysisResults),
         precedents: findRelevantPrecedents(analysisResults),
         keyTerms: extractKeyTerms(analysisResults),
-        citations: extractCitations(analysisResults)
+        citations: extractCitations(analysisResults),
       },
 
       // YoRHa-specific formatting
-      yorhaMetadata: includeMetadata ? {
-        systemStatus: "OPERATIONAL",
-        securityLevel: "AUTHORIZED",
-        analysisMode: "ENHANCED",
-        dataIntegrity: "VERIFIED",
-        processingNode: "YORHA-LEGAL-AI-001",
-        classification: "CONFIDENTIAL"
-      } : null,
+      yorhaMetadata: includeMetadata
+        ? {
+            systemStatus: 'OPERATIONAL',
+            securityLevel: 'AUTHORIZED',
+            analysisMode: 'ENHANCED',
+            dataIntegrity: 'VERIFIED',
+            processingNode: 'YORHA-LEGAL-AI-001',
+            classification: 'CONFIDENTIAL',
+          }
+        : null,
 
       // Service information
-      service: "yorha-enhanced-rag-api",
-      version: "4.0.0"
+      service: 'yorha-enhanced-rag-api',
+      version: '4.0.0',
     };
 
     return json(yorhaResponse);
@@ -156,15 +156,16 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error.message || "Enhanced RAG analysis failed",
-        query: request.body?.query || "",
+        error: error.message || 'Enhanced RAG analysis failed',
+        // Avoid accessing request.body in SvelteKit; body is a stream
+        query: '',
         timestamp: new Date().toISOString(),
-        service: "yorha-enhanced-rag-api",
+        service: 'yorha-enhanced-rag-api',
         yorhaMetadata: {
-          systemStatus: "ERROR",
-          errorCode: "ERR_ANALYSIS_FAILED",
-          processingNode: "YORHA-LEGAL-AI-001"
-        }
+          systemStatus: 'ERROR',
+          errorCode: 'ERR_ANALYSIS_FAILED',
+          processingNode: 'YORHA-LEGAL-AI-001',
+        },
       },
       { status: 500 }
     );
@@ -178,38 +179,39 @@ async function performYoRHaAnalysis(
   dbResults: any[],
   analysisType: string
 ): Promise<any[]> {
-  
   // Combine all results
   const allResults = [
-    ...rerankedResults.map(r => ({
+    ...rerankedResults.map((r) => ({
       ...r,
-      source: "enhanced-rag",
-      yorha_type: "AI_ANALYSIS",
-      yorha_confidence: r.rerankScore || r.score || 0.5
+      source: 'enhanced-rag',
+      yorha_type: 'AI_ANALYSIS',
+      yorha_confidence: r.rerankScore || r.score || 0.5,
     })),
-    ...dbResults.map(r => ({
+    ...dbResults.map((r) => ({
       ...r,
-      source: "database",
-      yorha_type: "DATABASE_RECORD",
+      source: 'database',
+      yorha_type: 'DATABASE_RECORD',
       yorha_confidence: r.confidenceScore || 0.7,
-      content: r.content || r.description || r.title
-    }))
+      content: r.content || r.description || r.title,
+    })),
   ];
 
   // Apply YoRHa-specific scoring and analysis
-  return allResults.map(result => ({
-    ...result,
-    yorha_id: `ANALYSIS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    yorha_processed: true,
-    yorha_timestamp: new Date(),
-    yorha_analysis: {
-      relevanceScore: calculateRelevance(query, result.content || ""),
-      legalWeight: calculateLegalWeight(result),
-      riskFactor: calculateRiskFactor(result),
-      actionRequired: determineActionRequired(result),
-      classification: classifyResult(result)
-    }
-  })).sort((a, b) => b.yorha_confidence - a.yorha_confidence);
+  return allResults
+    .map((result) => ({
+      ...result,
+      yorha_id: `ANALYSIS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      yorha_processed: true,
+      yorha_timestamp: new Date(),
+      yorha_analysis: {
+        relevanceScore: calculateRelevance(query, result.content || ''),
+        legalWeight: calculateLegalWeight(result),
+        riskFactor: calculateRiskFactor(result),
+        actionRequired: determineActionRequired(result),
+        classification: classifyResult(result),
+      },
+    }))
+    .sort((a, b) => b.yorha_confidence - a.yorha_confidence);
 }
 
 // Generate AI-powered recommendations
@@ -218,37 +220,32 @@ async function generateYoRHaRecommendations(
   analysisResults: any[],
   dataType: string
 ): Promise<any[]> {
-  
   // Basic recommendation logic (would be enhanced with actual AI)
   const recommendations = [
     {
       id: `REC-${Date.now()}-1`,
-      type: "INVESTIGATE",
-      priority: "HIGH",
+      type: 'INVESTIGATE',
+      priority: 'HIGH',
       title: `Further investigation recommended for: ${query}`,
       description: `Based on analysis of ${analysisResults.length} results, additional research is recommended`,
       actionItems: [
-        "Review similar cases in jurisdiction",
-        "Examine legal precedents",
-        "Consult relevant statutes"
+        'Review similar cases in jurisdiction',
+        'Examine legal precedents',
+        'Consult relevant statutes',
       ],
-      estimatedTime: "2-4 hours",
-      yorha_confidence: 0.85
+      estimatedTime: '2-4 hours',
+      yorha_confidence: 0.85,
     },
     {
       id: `REC-${Date.now()}-2`,
-      type: "ANALYSIS",
-      priority: "MEDIUM",
-      title: "Document analysis required",
-      description: "Several documents require detailed legal analysis",
-      actionItems: [
-        "Perform contract review",
-        "Identify key clauses",
-        "Assess legal risks"
-      ],
-      estimatedTime: "1-2 hours",
-      yorha_confidence: 0.75
-    }
+      type: 'ANALYSIS',
+      priority: 'MEDIUM',
+      title: 'Document analysis required',
+      description: 'Several documents require detailed legal analysis',
+      actionItems: ['Perform contract review', 'Identify key clauses', 'Assess legal risks'],
+      estimatedTime: '1-2 hours',
+      yorha_confidence: 0.75,
+    },
   ];
 
   return recommendations;

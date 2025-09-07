@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { ensureEvidenceTable, query } from '$lib/server/db/client.js';
 import { minioService } from '$lib/server/storage/minio-service.js';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 function sha256(buf: Buffer) { return crypto.createHash('sha256').update(buf).digest('hex'); }
 

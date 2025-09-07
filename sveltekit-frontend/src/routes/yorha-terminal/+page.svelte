@@ -1,69 +1,81 @@
 <!-- YoRHa Terminal Interface with AI Commands -->
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { state, effect } from "svelte/reactivity";
 	import { Button } from "$lib/components/ui/button";
 	import { aiGlobalStore, aiGlobalActions } from "$lib/stores/ai";
+	import type { Writable } from "svelte/store";
 
-	// Terminal state
-	let terminalInput = state("");
-	let terminalHistory = state<string[]>([
+	// Terminal state (component-local)
+	let terminalInput: string = "";
+	let terminalHistory: string[] = [
 		"> YoRHa Legal AI Terminal v5.0.0 (Multi-Core Enabled)",
 		"> Copyright (c) 2025 YoRHa Command Division",
 		"> Legal Analysis Module Loaded. Type 'help' for commands.",
 		"",
-	]);
-	let commandHistory = state<string[]>([]);
-	let historyIndex = state(-1);
-	let cursor = state(true);
+	];
+	let commandHistory: string[] = [];
+	let historyIndex: number = -1;
+	let cursor: boolean = true;
 
 	// AI and Context7 integration state from global store
-	const currentSnapshot = state($aiGlobalStore);
-	effect(() => {
-		currentSnapshot.value = $aiGlobalStore;
-	});
+	// Access the global store value reactively via $aiGlobalStore
+	// currentSnapshot will update whenever the store changes
+	let currentSnapshot: any = null;
+	$: currentSnapshot = $aiGlobalStore;
 
-	const isProcessing = state(false); // Local processing state for terminal input
-	const aiStatus = derived(currentSnapshot, ($snapshot) => {
-		if ($snapshot.matches("summarizing")) return "PROCESSING";
-		if ($snapshot.matches("failure")) return "ERROR";
+	// Simple derived status
+	$: aiStatus = (() => {
+		try {
+			if (currentSnapshot && typeof currentSnapshot.matches === "function") {
+				if (currentSnapshot.matches("summarizing")) return "PROCESSING";
+				if (currentSnapshot.matches("failure")) return "ERROR";
+			}
+		} catch {
+			// ignore
+		}
 		return "READY";
-	});
-	const context7Status = state("CONNECTED"); // Assuming connected for now
-	let lastAnalysis = state<any>(null);
+	})();
 
-	// Terminal DOM reference
-let terminalElement = $state<HTMLDivElement;
-let inputElement = $state<HTMLInputElement;
+	let context7Status: string = "CONNECTED"; // Assuming connected for now
+	let lastAnalysis: any = null;
 
-	onMount(() >(> {
-		inputElement?.focus());
-		const cursorInterval >(setInterval(() => {
-			cursor.value = !cursor.value);
+	// Terminal DOM references
+	let terminalElement: HTMLDivElement | null = null;
+	let inputElement: HTMLInputElement | null = null;
+	let cursorInterval: ReturnType<typeof setInterval> | null = null;
+
+	onMount(() => {
+		inputElement?.focus();
+		cursorInterval = setInterval(() => {
+			cursor = !cursor;
 		}, 500);
-		terminalElement?.addEventListener("click", () => {
-			inputElement?.focus();
-		});
-		return () => clearInterval(cursorInterval);
+		const clickHandler = () => inputElement?.focus();
+		terminalElement?.addEventListener("click", clickHandler);
+		return () => {
+			if (cursorInterval) clearInterval(cursorInterval);
+			terminalElement?.removeEventListener("click", clickHandler);
+		};
 	});
 
 	function addToHistory(text: string) {
-		terminalHistory.value = [...terminalHistory.value, text];
+		terminalHistory = [...terminalHistory, text];
 		scrollToBottom();
 	}
 
 	function scrollToBottom() {
 		setTimeout(() => {
-			terminalElement?.scrollTo({
-				top: terminalElement.scrollHeight,
-				behavior: "smooth",
-			});
+			if (terminalElement) {
+				terminalElement.scrollTo({
+					top: terminalElement.scrollHeight,
+					behavior: "smooth",
+				});
+			}
 		}, 50);
 	}
 
 	function handleKeyDown(event: KeyboardEvent) {
 		if (event.key === "Enter") {
-			executeCommand();
+			void executeCommand();
 		} else if (event.key === "ArrowUp") {
 			event.preventDefault();
 			navigateHistory("up");
@@ -77,16 +89,16 @@ let inputElement = $state<HTMLInputElement;
 	}
 
 	function navigateHistory(direction: "up" | "down") {
-		if (commandHistory.value.length === 0) return;
+		if (commandHistory.length === 0) return;
 		if (direction === "up") {
-			historyIndex.value = Math.min(historyIndex.value + 1, commandHistory.value.length - 1);
+			historyIndex = Math.min(historyIndex + 1, commandHistory.length - 1);
 		} else {
-			historyIndex.value = Math.max(historyIndex.value - 1, -1);
+			historyIndex = Math.max(historyIndex - 1, -1);
 		}
-		if (historyIndex.value >= 0) {
-			terminalInput.value = commandHistory.value[commandHistory.value.length - 1 - historyIndex.value];
+		if (historyIndex >= 0) {
+			terminalInput = commandHistory[commandHistory.length - 1 - historyIndex];
 		} else {
-			terminalInput.value = "";
+			terminalInput = "";
 		}
 	}
 
@@ -96,32 +108,34 @@ let inputElement = $state<HTMLInputElement;
 			"rag", "mcp", "cases", "evidence", "documents", "ai", "exit", "concurrency"
 		];
 		const matches = availableCommands.filter((cmd) =>
-			cmd.startsWith(terminalInput.value.toLowerCase())
+			cmd.startsWith(terminalInput.toLowerCase())
 		);
 		if (matches.length === 1) {
-			terminalInput.value = matches[0];
+			terminalInput = matches[0];
 		} else if (matches.length > 1) {
-			addToHistory(`> ${terminalInput.value}`);
+			addToHistory(`> ${terminalInput}`);
 			addToHistory(`Available commands: ${matches.join(", ")}`);
 			addToHistory("");
 		}
 	}
 
+	let isProcessing = false;
+
 	async function executeCommand() {
-		if (!terminalInput.value.trim()) return;
-		const cmd = terminalInput.value.trim();
-		commandHistory.value = [cmd, ...commandHistory.value.slice(0, 49)];
-		historyIndex.value = -1;
+		if (!terminalInput.trim()) return;
+		const cmd = terminalInput.trim();
+		commandHistory = [cmd, ...commandHistory.slice(0, 49)];
+		historyIndex = -1;
 		addToHistory(`> ${cmd}`);
-		isProcessing.value = true;
+		isProcessing = true;
 
 		try {
 			await processCommand(cmd);
 		} catch (error) {
 			addToHistory(`ERROR: ${error instanceof Error ? error.message : "Unknown error"}`);
 		} finally {
-			isProcessing.value = false;
-			terminalInput.value = "";
+			isProcessing = false;
+			terminalInput = "";
 		}
 	}
 
@@ -146,7 +160,7 @@ let inputElement = $state<HTMLInputElement;
 				addToHistory("  exit           - Close terminal");
 				break;
 			case "clear":
-				terminalHistory.value = [
+				terminalHistory = [
 					"> YoRHa Legal AI Terminal v5.0.0",
 					"> Terminal cleared",
 					"",
@@ -154,8 +168,8 @@ let inputElement = $state<HTMLInputElement;
 				break;
 			case "status":
 				addToHistory("YoRHa Legal AI System Status:");
-				addToHistory(`  AI Status:       ${$aiStatus}`);
-				addToHistory(`  Context7:        ${context7Status.value}`);
+				addToHistory(`  AI Status:       ${aiStatus}`);
+				addToHistory(`  Context7:        ${context7Status}`);
 				addToHistory("  CPU Usage:       23%");
 				addToHistory("  Memory:          4.2GB / 16GB");
 				addToHistory("  Active Cases:    15");
@@ -167,12 +181,13 @@ let inputElement = $state<HTMLInputElement;
 					addToHistory("Usage: analyze <text>");
 					break;
 				}
-				const query = args.join(" ");
-				addToHistory(`Analyzing: "${query}"...`);
-				// Using the global AI store for analysis
-				aiGlobalActions.summarize("terminal-case", [{ type: "text", content: query }], "user-terminal", "gemma3:legal-latest");
-				// The UI will react to store changes. We can show a message here.
-				addToHistory("AI analysis initiated. Monitor AI status.");
+				{
+					const query = args.join(" ");
+					addToHistory(`Analyzing: "${query}"...`);
+					// Using the global AI store for analysis
+					aiGlobalActions.summarize("terminal-case", [{ type: "text", content: query }], "user-terminal", "gemma3:legal-latest");
+					addToHistory("AI analysis initiated. Monitor AI status.");
+				}
 				break;
 
 			case "concurrency":
@@ -208,18 +223,17 @@ let inputElement = $state<HTMLInputElement;
 			case "context7":
 				addToHistory("Testing Context7 MCP integration...");
 				try {
-					// The Context7 MCP integration was successfully tested earlier
 					addToHistory("Context7 MCP Server: CONNECTED");
 					addToHistory("Available tools:");
 					addToHistory("  - resolve-library-id: ✓ Working");
 					addToHistory("  - get-library-docs: ✓ Working");
 					addToHistory("Test: Retrieved Svelte/SvelteKit docs successfully");
 					addToHistory("Context7 integration: FULLY OPERATIONAL");
-					context7Status.value = "CONNECTED";
+					context7Status = "CONNECTED";
 				} catch (error) {
 					addToHistory("Context7 integration: ERROR");
 					addToHistory(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
-					context7Status.value = "ERROR";
+					context7Status = "ERROR";
 				}
 				break;
 			case "rag":
@@ -299,9 +313,9 @@ let inputElement = $state<HTMLInputElement;
 	}
 
 	// Role-based functionality
-	let currentRole = state("detective"); // detective, prosecutor, admin
+	let currentRole = "detective"; // detective, prosecutor, admin
 	function switchRole(role: string) {
-		currentRole.value = role;
+		currentRole = role;
 		addToHistory(`Role switched to: ${role.toUpperCase()}`);
 		addToHistory(`Access level: ${getRoleAccess(role)}`);
 		addToHistory("");
@@ -314,6 +328,8 @@ let inputElement = $state<HTMLInputElement;
 				return "CASE_MANAGEMENT, LEGAL_REVIEW";
 			case "admin":
 				return "FULL_SYSTEM_ACCESS";
+			default:
+				return "UNKNOWN";
 		}
 	}
 </script>
@@ -328,36 +344,27 @@ let inputElement = $state<HTMLInputElement;
 		<div class="header-left">
 			<h1>YoRHa Legal AI Terminal</h1>
 			<div class="status-indicators">
-				<span class="status-item ai-status status-{$aiStatus.toLowerCase()}">
-					AI: {$aiStatus}
+				<span class={"status-item ai-status status-" + aiStatus.toLowerCase()}>
+					AI: {aiStatus}
 				</span>
-				<span class="status-item context7-status status-{context7Status.value.toLowerCase()}">
-					Context7: {context7Status.value}
+				<span class={"status-item context7-status status-" + context7Status.toLowerCase()}>
+					Context7: {context7Status}
 				</span>
 				<span class="status-item role-status">
-					Role: {currentRole.value.toUpperCase()}
+					Role: {currentRole.toUpperCase()}
 				</span>
 			</div>
 		</div>
 
 		<div class="header-right">
 			<div class="role-switcher">
-				<Button
-					class="role-btn {currentRole.value === 'detective' ? 'active' : ''}"
-					on:on:click={() => switchRole("detective")}
-				>
+				<Button class={"role-btn " + (currentRole === 'detective' ? 'active' : '')} on:click={() => switchRole("detective")}>
 					Detective
 				</Button>
-				<Button
-					class="role-btn {currentRole.value === 'prosecutor' ? 'active' : ''}"
-					on:on:click={() => switchRole("prosecutor")}
-				>
+				<Button class={"role-btn " + (currentRole === 'prosecutor' ? 'active' : '')} on:click={() => switchRole("prosecutor")}>
 					Prosecutor
 				</Button>
-				<Button
-					class="role-btn {currentRole.value === 'admin' ? 'active' : ''}"
-					on:on:click={() => switchRole("admin")}
-				>
+				<Button class={"role-btn " + (currentRole === 'admin' ? 'active' : '')} on:click={() => switchRole("admin")}>
 					Admin
 				</Button>
 			</div>
@@ -368,29 +375,29 @@ let inputElement = $state<HTMLInputElement;
 	<div class="terminal-container" bind:this={terminalElement}>
 		<div class="terminal-content">
 			<!-- History -->
-			{#each terminalHistory.value as line}
+			{#each terminalHistory as line}
 				<div class="terminal-line" class:command={line.startsWith(">")}>
 					<pre>{line}</pre>
 				</div>
 			{/each}
 
 			<!-- Current Input Line -->
-			<div class="terminal-input-line" class:processing={isProcessing.value}>
-				<span class="prompt">YoRHa:{currentRole.value}></span>
+			<div class="terminal-input-line" class:processing={isProcessing}>
+				<span class="prompt">YoRHa:{currentRole}></span>
 				<input
 					bind:this={inputElement}
-					bind:value={terminalInput.value}
+					bind:value={terminalInput}
 					class="terminal-input"
-					disabled={isProcessing.value}
-					keydown={handleKeyDown}
+					disabled={isProcessing}
+					on:keydown={handleKeyDown}
 					placeholder=""
 					spellcheck="false"
 					autocomplete="off"
 				/>
-				{#if isProcessing.value}
+				{#if isProcessing}
 					<span class="processing-indicator">Processing...</span>
 				{:else}
-					<span class="cursor" class:blink={cursor.value}>▋</span>
+					<span class="cursor" class:blink={cursor}>▋</span>
 				{/if}
 			</div>
 		</div>
@@ -398,11 +405,11 @@ let inputElement = $state<HTMLInputElement;
 
 	<!-- Quick Commands -->
 	<div class="quick-commands">
-		<Button on:on:click={() => { terminalInput.value = "help"; executeCommand(); }}>Help</Button>
-		<Button on:on:click={() => { terminalInput.value = "status"; executeCommand(); }}>Status</Button>
-		<Button on:on:click={() => { terminalInput.value = "context7"; executeCommand(); }}>Test Context7</Button>
-		<Button on:on:click={() => { terminalInput.value = "analyze contract dispute"; executeCommand(); }}>Sample Analysis</Button>
-		<Button on:on:click={() => { terminalInput.value = "clear"; executeCommand(); }}>Clear</Button>
+		<Button on:click={() => { terminalInput = "help"; void executeCommand(); }}>Help</Button>
+		<Button on:click={() => { terminalInput = "status"; void executeCommand(); }}>Status</Button>
+		<Button on:click={() => { terminalInput = "context7"; void executeCommand(); }}>Test Context7</Button>
+		<Button on:click={() => { terminalInput = "analyze contract dispute"; void executeCommand(); }}>Sample Analysis</Button>
+		<Button on:click={() => { terminalInput = "clear"; void executeCommand(); }}>Clear</Button>
 	</div>
 </div>
 
@@ -558,23 +565,15 @@ let inputElement = $state<HTMLInputElement;
 		flex-wrap: wrap;
 	}
 
-	.quick-commands button {
+	:global(.quick-commands button) {
 		background: #333;
-		border: 1px solid #ffbf00;
-		color: #ffbf00;
-		padding: 8px 16px;
-		font-family: inherit;
-		font-size: 12px;
-		font-weight: 600;
-		text-transform: uppercase;
-		cursor: pointer;
-		transition: all 0.2s ease;
 	}
 
-	.quick-commands button:hover {
+	:global(.quick-commands button:hover) {
 		background: #ffbf00;
 		color: #000;
 	}
+
 
 	@keyframes blink {
 		0%, 50% { opacity: 1; }

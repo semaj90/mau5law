@@ -245,8 +245,8 @@ let currentDemo = $state(0);
           </h3>
           
           <div class="space-y-4">
-            <div>
-              <label class="text-sm font-medium text-gray-700">Search Categories</label>
+            <fieldset>
+              <legend class="text-sm font-medium text-gray-700">Search Categories</legend>
               <div class="mt-2 space-y-2">
                 {#each ['cases', 'evidence', 'precedents', 'statutes', 'criminals', 'documents'] as category}
                   <label class="flex items-center">
@@ -266,11 +266,12 @@ let currentDemo = $state(0);
                   </label>
                 {/each}
               </div>
-            </div>
+            </fieldset>
             
             <div>
-              <label class="text-sm font-medium text-gray-700">Max Results</label>
+              <label for="max-results" class="text-sm font-medium text-gray-700">Max Results</label>
               <input
+                id="max-results"
                 type="range"
                 min="5"
                 max="50"
@@ -282,8 +283,9 @@ let currentDemo = $state(0);
             </div>
             
             <div>
-              <label class="text-sm font-medium text-gray-700">Similarity Threshold</label>
+              <label for="similarity-threshold" class="text-sm font-medium text-gray-700">Similarity Threshold</label>
               <input
+                id="similarity-threshold"
                 type="range"
                 min="0.5"
                 max="1.0"

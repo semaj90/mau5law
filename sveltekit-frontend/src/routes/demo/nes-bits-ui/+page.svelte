@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Dialog, Button, Badge, Card, Checkbox, Select, Tabs, Toast, Popover, Tooltip } from 'bits-ui';
   import 'nes.css/css/nes.min.css';
-  
+
   let dialogOpen = $state(false);
   let toastOpen = $state(false);
   let popoverOpen = $state(false);
@@ -33,7 +33,7 @@
 
 <div class="nes-container with-title is-centered">
   <p class="title">🎮 NES.css + bits-ui Showcase</p>
-  
+
   <div class="showcase-grid">
     <!-- Hero Section -->
     <section class="hero-section">
@@ -51,39 +51,39 @@
     <!-- Button Components -->
     <section class="component-section">
       <h2 class="nes-text is-primary">🎯 Buttons</h2>
-      
+
       <div class="button-showcase">
-        <Button.Root 
+        <Button.Root
           class="nes-btn is-primary"
-          on:on:on:click={incrementCounter}
+          on:click={incrementCounter}
         >
           Primary Button
         </Button.Root>
 
-        <Button.Root 
+        <Button.Root
           class="nes-btn is-success"
-          on:on:on:click={showToast}
+          on:click={showToast}
         >
           Success Button
         </Button.Root>
 
-        <Button.Root 
+        <Button.Root
           class="nes-btn is-warning"
-          on:on:on:click={resetCounter}
+          on:click={resetCounter}
         >
           Warning Button
         </Button.Root>
 
-        <Button.Root 
+        <Button.Root
           class="nes-btn is-error"
           disabled
         >
           Error Button
         </Button.Root>
 
-        <Button.Root 
+        <Button.Root
           class="nes-btn"
-          on:on:on:click={() => dialogOpen = true}
+          on:click={() => dialogOpen = true}
         >
           Open Dialog
         </Button.Root>
@@ -129,7 +129,7 @@
     <!-- Badge Components -->
     <section class="component-section">
       <h2 class="nes-text is-success">🏷️ Badges</h2>
-      
+
       <div class="badge-showcase">
         <Badge.Root class="nes-badge">
           <span class="is-dark">Default</span>
@@ -156,7 +156,7 @@
     <!-- Card Components -->
     <section class="component-section">
       <h2 class="nes-text is-warning">🎴 Cards</h2>
-      
+
       <div class="card-grid">
         <Card.Root class="nes-container">
           <Card.Header>
@@ -199,7 +199,7 @@
     <!-- Form Components -->
     <section class="component-section">
       <h2 class="nes-text is-error">📝 Forms</h2>
-      
+
       <div class="form-showcase">
         <div class="nes-field">
           <label for="name_field" class="nes-text is-primary">Player Name</label>
@@ -211,7 +211,7 @@
           <textarea id="textarea_field" class="nes-textarea" placeholder="Describe your adventure..."></textarea>
         </div>
 
-        <Checkbox.Root 
+        <Checkbox.Root
           bind:checked={checkboxChecked}
           class="checkbox-wrapper"
         >
@@ -243,7 +243,7 @@
     <!-- Tabs Component -->
     <section class="component-section">
       <h2 class="nes-text is-success">📂 Tabs</h2>
-      
+
       <Tabs.Root bind:value={activeTab} class="tabs-wrapper">
         <Tabs.List class="tab-list">
           <Tabs.Trigger value="tab1" class="nes-btn {activeTab === 'tab1' ? 'is-primary' : ''}">
@@ -256,7 +256,7 @@
             👤 Profile
           </Tabs.Trigger>
         </Tabs.List>
-        
+
         <Tabs.Content value="tab1" class="nes-container">
           <h3 class="nes-text is-primary">Game Library</h3>
           <div class="game-list">
@@ -271,7 +271,7 @@
             </div>
           </div>
         </Tabs.Content>
-        
+
         <Tabs.Content value="tab2" class="nes-container">
           <h3 class="nes-text is-primary">Game Settings</h3>
           <div class="settings-grid">
@@ -285,7 +285,7 @@
             </label>
           </div>
         </Tabs.Content>
-        
+
         <Tabs.Content value="tab3" class="nes-container">
           <h3 class="nes-text is-primary">Player Profile</h3>
           <div class="profile-info">
@@ -309,7 +309,7 @@
     <!-- Interactive Elements -->
     <section class="component-section">
       <h2 class="nes-text is-primary">🎲 Interactive Elements</h2>
-      
+
       <div class="interactive-grid">
         <!-- Tooltip -->
         <Tooltip.Root bind:open={tooltipOpen}>
@@ -363,7 +363,7 @@
 
 <style>
   @import 'nes.css/css/nes.min.css';
-  
+
   /* Global styling */
   :global(body) {
     font-family: "Press Start 2P", cursive;
@@ -566,23 +566,23 @@
     .showcase-grid {
       padding: 0 1rem;
     }
-    
+
     .button-showcase {
       flex-direction: column;
     }
-    
+
     .card-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .tab-list {
       flex-direction: column;
     }
-    
+
     .interactive-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .dialog-content {
       width: 95vw;
       max-height: 90vh;

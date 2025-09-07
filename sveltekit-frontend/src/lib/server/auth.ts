@@ -19,7 +19,6 @@ export const lucia = new Lucia(adapter, {
 		expires: false, // session cookies have very long lifespan (2 years)
 		attributes: {
 			secure: !dev, // set `Secure` flag in HTTPS
-			httpOnly: true,
 			sameSite: "lax"
 		}
 	},

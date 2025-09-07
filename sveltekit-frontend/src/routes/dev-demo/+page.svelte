@@ -112,7 +112,7 @@
       });
 
       const result = await response.json();
-      
+
       if (result.success) {
         console.log('Case created successfully:', result.data);
         await loadCases(); // Refresh case list
@@ -384,9 +384,9 @@
                     <p class="text-gray-500 text-center">Start a conversation with the Legal AI...</p>
                   {:else}
                     {#each chatMessages as message}
-                      <div class={cn("mb-3 p-2 rounded", 
-                        message.role === 'user' ? 'bg-blue-100 ml-8' : 
-                        message.role === 'assistant' ? 'bg-green-100 mr-8' : 
+                      <div class={cn("mb-3 p-2 rounded",
+                        message.role === 'user' ? 'bg-blue-100 ml-8' :
+                        message.role === 'assistant' ? 'bg-green-100 mr-8' :
                         'bg-red-100 mr-8'
                       )}>
                         <div class="flex items-start gap-2">
@@ -417,7 +417,7 @@
                     disabled={isStreaming}
                     class="flex-1"
                   />
-                  <Button onclick={sendChatMessage} disabled={isStreaming || !currentMessage.trim()}>
+                  <Button on:click={sendChatMessage} disabled={isStreaming || !currentMessage.trim()}>
                     {#snippet children()}
                       {isStreaming ? 'Sending...' : 'Send'}
                     {/snippet}

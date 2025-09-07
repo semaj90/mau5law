@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import { 
-    Brain, Activity, Zap, Shield, Search, Users, BarChart3, 
+  import {
+    Brain, Activity, Zap, Shield, Search, Users, BarChart3,
     Database, Folder, Eye, TrendingUp, Clock, AlertCircle,
     CheckCircle, FileText, MapPin, Calendar
   } from 'lucide-svelte';
@@ -101,7 +101,7 @@
   onMount(async () => {
     if (!browser) return;
     isLoading = true;
-    
+
     try {
       // Simulate loading dashboard data
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -139,6 +139,7 @@
 <ProductionLayout title="Command Center" subtitle="Central Operations Hub">
   <div class="space-y-8">
     <!-- Hero Statistics -->
+    <section aria-label="System statistics overview">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <div class="yorha-3d-panel p-6">
         <div class="flex items-center justify-between mb-2">
@@ -184,20 +185,23 @@
         <div class="text-sm text-gray-400">Evidence Items</div>
       </div>
     </div>
+    </section>
 
     <!-- Quick Actions -->
+    <section aria-label="Quick action shortcuts">
     <div class="yorha-3d-panel">
       <div class="p-6">
         <div class="flex items-center gap-3 mb-6">
           <Zap class="w-6 h-6 text-yellow-400" />
           <h2 class="text-xl font-bold text-yellow-400 uppercase tracking-wide">Quick Actions</h2>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {#each quickActions as action}
             <a
               href={action.href}
               class="group relative overflow-hidden rounded-lg bg-gradient-to-br {action.gradient} p-6 text-white hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+              aria-label="{action.title}: {action.description}"
             >
               <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
@@ -207,7 +211,7 @@
                 <h3 class="font-bold text-lg mb-2">{action.title}</h3>
                 <p class="text-sm opacity-90">{action.description}</p>
               </div>
-              
+
               <!-- Hover effect overlay -->
               <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </a>
@@ -229,7 +233,7 @@
               View All →
             </a>
           </div>
-          
+
           <div class="space-y-4">
             {#each recentActivity as activity}
               <div class="flex items-start gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-600 hover:border-yellow-600/50 transition-colors">
@@ -266,7 +270,7 @@
               <span class="text-sm font-medium">All Systems Operational</span>
             </div>
           </div>
-          
+
           <div class="space-y-4">
             {#each systemStatus as system}
               <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-600">
@@ -319,20 +323,20 @@
             <span class="text-sm">Analysis Active</span>
           </div>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="text-center p-4 bg-gray-800/30 rounded-lg border border-purple-600/30">
             <div class="text-3xl font-bold text-purple-400 mb-2">{systemMetrics.aiAnalyses}</div>
             <div class="text-sm text-gray-400">AI Analyses Completed</div>
             <div class="text-xs text-purple-300 mt-1">+23% this week</div>
           </div>
-          
+
           <div class="text-center p-4 bg-gray-800/30 rounded-lg border border-blue-600/30">
             <div class="text-3xl font-bold text-blue-400 mb-2">{systemMetrics.searchQueries}</div>
             <div class="text-sm text-gray-400">Search Queries Processed</div>
             <div class="text-xs text-blue-300 mt-1">+15% this week</div>
           </div>
-          
+
           <div class="text-center p-4 bg-gray-800/30 rounded-lg border border-green-600/30">
             <div class="text-3xl font-bold text-green-400 mb-2">94.2%</div>
             <div class="text-sm text-gray-400">Pattern Recognition Accuracy</div>
@@ -346,16 +350,22 @@
 
 <style>
   .yorha-3d-panel {
-    @apply bg-gray-800/50 border border-gray-600 rounded-lg backdrop-blur-sm;
+    /* Replaced Tailwind @apply with equivalent plain CSS to avoid unknown at-rule errors */
+    background-color: rgba(31, 41, 55, 0.5);
+    border: 1px solid rgba(75, 85, 99, 1);
+    border-radius: 0.5rem;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+
     background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(40, 40, 40, 0.8) 100%);
-    box-shadow: 
+    box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06),
       inset 0 1px 0 rgba(255, 215, 0, 0.05);
   }
 
   .yorha-3d-panel:hover {
-    box-shadow: 
+    box-shadow:
       0 8px 25px -5px rgba(0, 0, 0, 0.1),
       0 4px 10px -2px rgba(0, 0, 0, 0.05),
       inset 0 1px 0 rgba(255, 215, 0, 0.1),

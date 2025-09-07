@@ -283,7 +283,7 @@ export class NESGPUIntegration {
    */
   private selectOptimalNESBank(document: LegalDocument): string {
     // Critical legal documents → Fast RAM (2KB)
-    if (document.riskLevel === 'critical' || document.priority > 200) {
+    if (document.riskLevel === 'critical' || (document.priority && document.priority > 200)) {
       return 'INTERNAL_RAM';
     }
 
@@ -324,11 +324,11 @@ export class NESGPUIntegration {
 
     // Pack fixed fields (ultra-fast)
     view.setUint32(offset, this.stringToId(document.id), true); offset += 4;
-    view.setUint8(offset, this.documentTypeToEnum(document.type)); offset += 1;
-    view.setUint8(offset, document.priority); offset += 1;
-    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel)); offset += 1;
-    view.setUint32(offset, document.size, true); offset += 4;
-    view.setFloat64(offset, document.lastAccessed, true); offset += 8;
+    view.setUint8(offset, this.documentTypeToEnum(document.type || 'unknown')); offset += 1;
+    view.setUint8(offset, document.priority || 0); offset += 1;
+    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel || 'low')); offset += 1;
+    view.setUint32(offset, document.size || 0, true); offset += 4;
+    view.setFloat64(offset, document.lastAccessed || Date.now(), true); offset += 8;
     view.setUint32(offset, Number(document.bankId) || 0, true); offset += 4;
 
     // Pack embedding if available (SIMD-optimized)
@@ -363,8 +363,8 @@ export class NESGPUIntegration {
     const matrix = new Float32Array(16);
 
     // Legal importance weights
-    const riskWeight = this.riskLevelToWeight(document.riskLevel);
-    const typeWeight = this.documentTypeToWeight(document.type);
+    const riskWeight = this.riskLevelToWeight(document.riskLevel || 'low');
+    const typeWeight = this.documentTypeToWeight(document.type || 'unknown');
     const priorityWeight = document.priority / 255.0;
     const confidenceWeight = document.confidenceLevel;
 

@@ -639,7 +639,7 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
         <!-- Visualization Controls -->
         <div class="grid grid-cols-2 gap-2">
           <Button
-            on:on:on:click={() => startVisualization('attentionHeatmap')}
+            on:click={() => startVisualization('attentionHeatmap')}
             disabled={!isInitialized}
             variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}
             class="text-sm">
@@ -647,7 +647,7 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
           </Button>
 
           <Button
-            on:on:on:click={() => startVisualization('documentNetwork')}
+            on:click={() => startVisualization('documentNetwork')}
             disabled={!isInitialized}
             variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}
             class="text-sm">
@@ -655,7 +655,7 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
           </Button>
 
             <Button
-              on:on:on:click={() => startVisualization('evidenceTimeline')}
+              on:click={() => startVisualization('evidenceTimeline')}
               disabled={!isInitialized}
               variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}
               class="text-sm">
@@ -663,7 +663,7 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
             </Button>
 
           <Button
-            on:on:on:click={() => startVisualization('textFlow')}
+            on:click={() => startVisualization('textFlow')}
             disabled={!isInitialized}
             variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}
             class="text-sm">
@@ -674,13 +674,13 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
         <!-- Render Controls -->
         <div class="flex gap-2">
           {#if isRendering}
-            <Button on:on:on:click={stopVisualization} class="bg-red-600 hover:bg-red-700">
+            <Button on:click={stopVisualization} class="bg-red-600 hover:bg-red-700">
               Stop Rendering
             </Button>
           {/if}
 
           <Button
-            on:on:on:click={executeGPUWorkload}
+            on:click={executeGPUWorkload}
             disabled={!isInitialized}
             variant="outline"
             class="text-white border-slate-600 hover:bg-slate-700">

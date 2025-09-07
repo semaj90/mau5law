@@ -165,7 +165,7 @@ let refreshTimer = $state<number | null >(null);
   });
 
   // Subscribe to reactive data changes
-let unsubscribe = $state<(() >(> void) | null = null);
+let unsubscribe = $state<(() => void) | null>(null);
   
   $effect(() => {
     if (entityType && entityId) {
@@ -226,7 +226,7 @@ let unsubscribe = $state<(() >(> void) | null = null);
           <!-- Refresh button -->
           {#if entityType && entityId}
             <button
-              on:onclick={refresh}
+              onclick={refresh}
               disabled={isLoading}
               class="p-1 rounded-sm opacity-70 hover:opacity-100 transition-opacity disabled:opacity-50 mr-2"
               title="Refresh data"
@@ -270,7 +270,7 @@ let unsubscribe = $state<(() >(> void) | null = null);
                   <p class="font-mono text-xs text-muted-foreground mt-1">{errorMessage}</p>
                 </div>
                 <button
-                  on:onclick={refresh}
+                  onclick={refresh}
                   class="px-3 py-1 text-xs bg-muted hover:bg-muted/80 rounded-md font-mono transition-colors"
                 >
                   Try Again

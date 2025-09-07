@@ -8,10 +8,10 @@ Showcases the service worker-based AI orchestration system
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
-  import { 
-    Cpu, 
-    Brain, 
-    Zap, 
+  import {
+    Cpu,
+    Brain,
+    Zap,
     Database,
     Play,
     Pause,
@@ -21,7 +21,7 @@ Showcases the service worker-based AI orchestration system
     Users,
     Workflow
   } from 'lucide-svelte';
-  
+
   import MultiLLMOrchestrator from '$lib/components/ai/MultiLLMOrchestrator.svelte';
   import LLMSelector from '$lib/components/ai/LLMSelector.svelte';
   import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
@@ -32,7 +32,7 @@ Showcases the service worker-based AI orchestration system
   let userPrompt = $state('Analyze the following legal document for key terms, potential issues, and recommendations...');
   let isProcessing = $state(false);
   let demoResults = $state<Array<{ task: AITask; response?: unknown; error?: string }>>([]);
-  
+
   // Demo scenarios
   const demoScenarios = [
     {
@@ -97,7 +97,7 @@ Showcases the service worker-based AI orchestration system
 
     try {
       // Create tasks for the scenario
-      const tasks = scenario.tasks.map((taskConfig: any) => 
+      const tasks = scenario.tasks.map((taskConfig: any) =>
         createAnalysisTask(
           `${scenario.prompt}\n\nFocus: ${taskConfig.focus}`,
           taskConfig.focus,
@@ -115,16 +115,16 @@ Showcases the service worker-based AI orchestration system
       const taskPromises = tasks.map(async (task) => {
         try {
           demoResults = [...demoResults, { task }];
-          
+
           const taskId = await aiWorkerManager.submitTask(task);
           const result = await aiWorkerManager.waitForTask(taskId);
-          
+
           // Update result
           const index = demoResults.findIndex(r => r.task.taskId === task.taskId);
           if (index >= 0) {
             demoResults[index] = { task, response: result };
           }
-          
+
           return result;
         } catch (error) {
           console.error('Task failed:', error);
@@ -162,10 +162,10 @@ Showcases the service worker-based AI orchestration system
       );
 
       demoResults = [{ task }];
-      
+
       const taskId = await aiWorkerManager.submitTask(task);
       const result = await aiWorkerManager.waitForTask(taskId);
-      
+
       demoResults = [{ task, response: result }];
       console.log('Custom task completed:', result);
     } catch (error) {
@@ -202,7 +202,7 @@ Showcases the service worker-based AI orchestration system
 </svelte:head>
 
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-  
+
   <!-- Header Section -->
   <div class="bg-white dark:bg-gray-800 shadow-sm border-b">
     <div class="max-w-7xl mx-auto px-6 py-8">
@@ -233,7 +233,7 @@ Showcases the service worker-based AI orchestration system
             </Badge>
           </div>
         </div>
-        
+
         <div class="text-right">
           <p class="text-sm text-gray-500 dark:text-gray-400">Phase 2 Implementation</p>
           <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">Service Worker Multi-threading</p>
@@ -243,7 +243,7 @@ Showcases the service worker-based AI orchestration system
   </div>
 
   <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-    
+
     <!-- Quick Demo Section -->
     <Card>
       <CardHeader>
@@ -264,8 +264,8 @@ Showcases the service worker-based AI orchestration system
                 {#each scenario.tasks as task}
                   {@const SvelteComponent = getProviderIcon(task.provider)}
                   <div class="flex items-center gap-2 text-xs">
-                    <SvelteComponent 
-                      class="h-3 w-3 text-blue-500" 
+                    <SvelteComponent
+                      class="h-3 w-3 text-blue-500"
                     />
                     <span class="text-gray-600 dark:text-gray-400">{task.focus}</span>
                   </div>
@@ -275,7 +275,7 @@ Showcases the service worker-based AI orchestration system
                 variant="outline"
                 size="sm"
                 class="w-full"
-                on:on:click={() => runDemoScenario(scenario)}
+                on:click={() => runDemoScenario(scenario)}
                 disabled={isProcessing}
               >
                 {#if isProcessing}
@@ -304,13 +304,13 @@ Showcases the service worker-based AI orchestration system
         <CardContent class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-2">Select AI Model</label>
-            <LLMSelector 
+            <LLMSelector
               bind:selectedModel={selectedModel}
               showMetrics={true}
               filterBy="all"
             />
           </div>
-          
+
           <div>
             <label class="block text-sm font-medium mb-2">Task Prompt</label>
             <Textarea
@@ -320,10 +320,10 @@ Showcases the service worker-based AI orchestration system
               class="w-full"
             />
           </div>
-          
+
           <div class="flex gap-2">
             <Button
-              on:on:click={submitCustomTask}
+              on:click={submitCustomTask}
               disabled={isProcessing || !selectedModel}
               class="flex-1"
             >
@@ -335,8 +335,8 @@ Showcases the service worker-based AI orchestration system
                 Submit Task
               {/if}
             </Button>
-            
-            <Button variant="outline" on:on:click={clearResults}>
+
+            <Button variant="outline" on:click={clearResults}>
               <RotateCcw class="h-4 w-4" />
             </Button>
           </div>
@@ -352,7 +352,7 @@ Showcases the service worker-based AI orchestration system
               Task Results ({demoResults.length})
             </span>
             {#if demoResults.length > 0}
-              <Button variant="ghost" size="sm" on:on:click={clearResults}>
+              <Button variant="ghost" size="sm" on:click={clearResults}>
                 Clear
               </Button>
             {/if}
@@ -371,8 +371,8 @@ Showcases the service worker-based AI orchestration system
                 <div class="border rounded-lg p-3 {result.error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : result.response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20'}">
                   <div class="flex items-start justify-between mb-2">
                     <div class="flex items-center gap-2">
-                      <SvelteComponent_1 
-                        class="h-4 w-4 text-blue-500" 
+                      <SvelteComponent_1
+                        class="h-4 w-4 text-blue-500"
                       />
                       <span class="font-medium text-sm">
                         {result.task.providerId} - {result.task.model}
@@ -381,7 +381,7 @@ Showcases the service worker-based AI orchestration system
                         {result.task.type}
                       </Badge>
                     </div>
-                    
+
                     {#if result.response}
                       <Badge class="bg-green-100 text-green-800 text-xs">
                         Completed
@@ -396,11 +396,11 @@ Showcases the service worker-based AI orchestration system
                       </Badge>
                     {/if}
                   </div>
-                  
+
                   <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
                     {result.task.prompt.substring(0, 100)}...
                   </p>
-                  
+
                   {#if result.response}
                     <div class="mt-2 p-2 bg-white dark:bg-gray-800 rounded text-xs">
                       <p class="font-medium mb-1">Response:</p>
@@ -434,7 +434,7 @@ Showcases the service worker-based AI orchestration system
     </div>
 
     <!-- Main Orchestrator Component -->
-    <MultiLLMOrchestrator 
+    <MultiLLMOrchestrator
       autoStart={true}
       showMetrics={true}
       maxConcurrenttasks={3}
@@ -472,7 +472,7 @@ Showcases the service worker-based AI orchestration system
               </li>
             </ul>
           </div>
-          
+
           <div>
             <h3 class="font-semibold mb-3">Supported Providers</h3>
             <ul class="space-y-2 text-sm">
@@ -491,10 +491,10 @@ Showcases the service worker-based AI orchestration system
             </ul>
           </div>
         </div>
-        
+
         <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
           <p class="text-sm text-blue-800 dark:text-blue-300">
-            <strong>Phase 2 Complete:</strong> Service worker infrastructure enables true multi-threading for AI tasks, 
+            <strong>Phase 2 Complete:</strong> Service worker infrastructure enables true multi-threading for AI tasks,
             allowing parallel processing across different LLM providers while maintaining responsive UI interactions.
             Next phase will implement AutoGen and CrewAI agent coordination.
           </p>

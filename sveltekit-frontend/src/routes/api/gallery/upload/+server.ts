@@ -11,7 +11,7 @@ import path from 'path';
 import { db } from '$lib/server/database';
 import { evidence, cases } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { URL } from "url";
 
 const UPLOAD_DIR = 'uploads';

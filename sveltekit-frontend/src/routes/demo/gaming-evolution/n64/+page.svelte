@@ -19,16 +19,16 @@
   let activeTab = $state('graphics');
   let z64Rotation = $state(0);
   let polygonCount = $state(0);
-  
+
   // N64 texture filtering simulation
   let filteringStrength = $state([0.75]);
   let mipmapLevel = $state([2]);
   let anisotropicLevel = $state([4]);
-  
+
   // 3D transformation matrices
   let cameraAngle = $state(0);
   let perspectiveDepth = $state(800);
-  
+
   onMount(() => {
     // Animate 3D elements
     const interval = setInterval(() => {
@@ -36,7 +36,7 @@
       cameraAngle += 0.8;
       polygonCount = Math.floor(Math.random() * 2000) + 1000;
     }, 60); // ~16fps like N64
-    
+
     return () => clearInterval(interval);
   });
 
@@ -60,7 +60,7 @@
 </svelte:head>
 
 <div class="n64-container">
-  
+
   <!-- N64 Header with 3D branding -->
   <header class="n64-header">
     <div class="n64-logo">
@@ -85,7 +85,7 @@
 
   <!-- Main 3D Layout -->
   <main class="n64-main">
-    
+
     <!-- Technical Analysis with 3D elements -->
     <section class="tech-panel">
       <Card.Root class="n64-card">
@@ -98,12 +98,12 @@
           </Card.Description>
         </Card.Header>
         <Card.Content class="n64-content">
-          
+
           <!-- 3D Cube Demo -->
           <div class="cube-demo">
             <div class="scene-3d">
-              <div 
-                class="n64-cube" 
+              <div
+                class="n64-cube"
                 style="transform: perspective({perspectiveDepth}px) rotateX({z64Rotation * 0.5}deg) rotateY({z64Rotation}deg) rotateZ({z64Rotation * 0.3}deg);"
               >
                 <div class="cube-face cube-front">64</div>
@@ -161,7 +161,7 @@
             <!-- Texture Filtering Controls -->
             <div class="filtering-controls">
               <h4>Real-time Filtering Adjustment</h4>
-              
+
               <div class="control-group">
                 <label>Texture Filtering:</label>
                 <Select.Root bind:value={textureFiltering}>
@@ -232,7 +232,7 @@
           <div class="controller-section">
             <h4 class="section-title">N64 Controller</h4>
             <div class="n64-controller-layout">
-              
+
               <!-- Left section -->
               <div class="controller-left">
                 <div class="analog-stick">
@@ -252,7 +252,7 @@
                   </div>
                   <Button.Root class="dpad-btn-3d dpad-down-3d">▼</Button.Root>
                 </div>
-                
+
                 <Button.Root class="start-button-3d">START</Button.Root>
               </div>
 
@@ -266,12 +266,12 @@
                   </div>
                   <Button.Root class="c-btn c-down">C↓</Button.Root>
                 </div>
-                
+
                 <div class="face-buttons-3d">
                   <Button.Root class="n64-btn-3d n64-btn-a">A</Button.Root>
                   <Button.Root class="n64-btn-3d n64-btn-b">B</Button.Root>
                 </div>
-                
+
                 <div class="shoulder-buttons-3d">
                   <Button.Root class="n64-btn-3d n64-btn-z">Z</Button.Root>
                   <Button.Root class="n64-btn-3d n64-btn-r">R</Button.Root>
@@ -331,10 +331,10 @@
               <Tabs.Trigger class="n64-tab-3d" value="audio">Audio</Tabs.Trigger>
               <Tabs.Trigger class="n64-tab-3d" value="controller">Controller</Tabs.Trigger>
             </Tabs.List>
-            
+
             <Tabs.Content class="n64-tab-content" value="graphics">
               <div class="graphics-settings">
-                
+
                 <!-- Texture filtering demo -->
                 <div class="texture-demo">
                   <h5>Texture Filtering Comparison</h5>
@@ -372,7 +372,7 @@
 
               </div>
             </Tabs.Content>
-            
+
             <Tabs.Content class="n64-tab-content" value="audio">
               <div class="audio-3d">
                 <div class="audio-visualizer-3d">
@@ -390,7 +390,7 @@
                 </div>
               </div>
             </Tabs.Content>
-            
+
             <Tabs.Content class="n64-tab-content" value="controller">
               <div class="controller-config">
                 <div class="control-mapping">
@@ -413,13 +413,13 @@
 
           <!-- 3D Dialog Demo -->
           <div class="dialog-section-3d">
-            <Button.Root 
-              class="n64-btn-primary" 
-              on:on:on:click={() => dialogOpen = true}
+            <Button.Root
+              class="n64-btn-primary"
+              on:click={() => dialogOpen = true}
             >
               🌟 Show N64 Dialog
             </Button.Root>
-            
+
             <Dialog.Root bind:open={dialogOpen}>
               <Dialog.Portal>
                 <Dialog.Overlay class="n64-dialog-overlay" />
@@ -429,14 +429,14 @@
                       System Message
                     </Dialog.Title>
                     <Dialog.Description class="dialog-text-3d">
-                      Welcome to the N64 era of 3D gaming! Experience hardware-accelerated 
-                      texture filtering, anti-aliasing, and true 3D graphics rendering. 
+                      Welcome to the N64 era of 3D gaming! Experience hardware-accelerated
+                      texture filtering, anti-aliasing, and true 3D graphics rendering.
                       The Reality Co-Processor delivers unprecedented visual quality.
                     </Dialog.Description>
                     <div class="dialog-actions-3d">
-                      <Button.Root 
-                        class="n64-btn-dialog" 
-                        on:on:on:click={() => dialogOpen = false}
+                      <Button.Root
+                        class="n64-btn-dialog"
+                        on:click={() => dialogOpen = false}
                       >
                         ✓ Acknowledge
                       </Button.Root>
@@ -484,12 +484,12 @@
     --n64-yellow: #FFCC00;
     --n64-purple: #9933CC;
     --n64-gray: #666666;
-    
+
     /* 3D gradients */
     --n64-bg: radial-gradient(ellipse at center, #001122 0%, #000811 50%, #000408 100%);
     --n64-surface: linear-gradient(145deg, #E8E8E8 0%, #D0D0D0 50%, #B8B8B8 100%);
     --n64-metal: linear-gradient(145deg, #C0C0C0 0%, #A0A0A0 25%, #808080 50%, #606060 75%, #404040 100%);
-    
+
     /* 3D lighting */
     --n64-highlight: rgba(255, 255, 255, 0.9);
     --n64-shadow: rgba(0, 0, 0, 0.6);
@@ -497,7 +497,7 @@
     --n64-depth-2: 0 4px 8px rgba(0, 0, 0, 0.3);
     --n64-depth-3: 0 8px 16px rgba(0, 0, 0, 0.4);
     --n64-depth-4: 0 16px 32px rgba(0, 0, 0, 0.5);
-    
+
     /* Texture filtering effects */
     --point-filter: pixelated;
     --bilinear-filter: auto;
@@ -524,7 +524,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
+    background:
       radial-gradient(circle at 30% 40%, rgba(0, 102, 204, 0.1) 0%, transparent 50%),
       radial-gradient(circle at 70% 80%, rgba(255, 204, 0, 0.1) 0%, transparent 50%);
     pointer-events: none;
@@ -541,7 +541,7 @@
     padding: 1.5rem 2rem;
     border-radius: 16px;
     border: 4px solid var(--n64-blue);
-    box-shadow: 
+    box-shadow:
       var(--n64-depth-3),
       inset 0 4px 8px var(--n64-highlight);
     transform: perspective(800px) rotateX(5deg);
@@ -564,7 +564,7 @@
     font-size: 2.5rem;
     font-weight: 900;
     color: var(--n64-blue);
-    text-shadow: 
+    text-shadow:
       2px 2px 0 var(--n64-shadow),
       4px 4px 8px rgba(0, 0, 0, 0.3);
     transform-style: preserve-3d;
@@ -623,7 +623,7 @@
     background: var(--n64-surface);
     border: 4px solid var(--n64-blue);
     border-radius: 20px;
-    box-shadow: 
+    box-shadow:
       var(--n64-depth-3),
       inset 0 4px 8px var(--n64-highlight);
     overflow: hidden;
@@ -634,7 +634,7 @@
 
   .n64-card:hover {
     transform: perspective(800px) rotateX(5deg) rotateY(5deg) translateZ(20px);
-    box-shadow: 
+    box-shadow:
       var(--n64-depth-4),
       0 0 30px rgba(0, 102, 204, 0.4),
       inset 0 4px 8px var(--n64-highlight);
@@ -1346,8 +1346,8 @@
     height: 80px;
     margin: 0 auto;
     border: 2px solid #CCC;
-    background: 
-      repeating-conic-gradient(#0066CC 0deg 45deg, #FFCC00 45deg 90deg) 
+    background:
+      repeating-conic-gradient(#0066CC 0deg 45deg, #FFCC00 45deg 90deg)
       0 0 / 10px 10px;
     border-radius: 8px;
   }
@@ -1661,16 +1661,16 @@
     .n64-main {
       grid-template-columns: 1fr;
     }
-    
+
     .n64-controller-layout {
       flex-direction: column;
       gap: 1rem;
     }
-    
+
     .cartridge-rack {
       justify-content: center;
     }
-    
+
     .texture-samples {
       grid-template-columns: 1fr;
     }
@@ -1683,24 +1683,24 @@
       text-align: center;
       transform: none;
     }
-    
+
     .logo-text {
       font-size: 2rem;
     }
-    
+
     .spec-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .settings-3d {
       grid-template-columns: 1fr;
     }
-    
+
     .control-group {
       flex-direction: column;
       align-items: stretch;
     }
-    
+
     .control-group label {
       min-width: auto;
       text-align: center;
@@ -1711,13 +1711,13 @@
   .n64-container * {
     will-change: transform;
   }
-  
+
   .n64-cube,
   .cartridge-3d,
   .audio-bar-3d {
     backface-visibility: hidden;
   }
-  
+
   /* Hardware acceleration hints */
   .n64-card,
   .n64-btn-3d,

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { $derived } from 'svelte';
 
 
 	import { page } from '$app/stores';
@@ -36,7 +35,7 @@
 		{ href: '/terminal', label: 'TERMINAL', icon: Terminal }
 	];
 
-	let currentPath = $derived(browser && $page.url ? $page.url.pathname : '/');
+		let currentPath = browser && $page?.url ? $page.url.pathname : '/';
 
 	// Authentication state using the auth store
 	const auth = useAuth();
@@ -66,14 +65,14 @@
 		goto(href, { replaceState: false, noScroll: false, keepFocus: false, invalidateAll: false });
 	}
 
-	function handleSearchSelect(event: CustomEvent) {
+		function handleSearchSelect(event: CustomEvent<any>) {
 		const { result } = event.detail;
 		// Navigate to the search result
 		if (result.metadata?.url) {
 			handleNavigation(result.metadata.url);
 		} else {
 			// Generate URL based on result type
-			const typeRoutes = {
+			const typeRoutes: Record<string, string> = {
 				case: '/cases',
 				evidence: '/evidence',
 				criminal: '/persons',
@@ -103,6 +102,10 @@
 				break;
 		}
 	}
+
+		// Svelte 5: allow parent to bind sidebarOpen
+		// This enables: <Navigation bind:sidebarOpen={sidebarOpen} />
+		let { sidebarOpen = $bindable() } = $props();
 </script>
 
 <nav class="nes-legal-header yorha-3d-panel">
@@ -118,9 +121,9 @@
 
 			<nav class="nes-nav-section">
 				{#each navItems as item}
-					<a
-						href={item.href}
-						on:onclick={(e) => handleNavigation(item.href, e)}
+											<a
+												href={item.href}
+												onclick={(e: MouseEvent) => handleNavigation(item.href, e)}
 						class={cn(
 							"nes-legal-priority-medium yorha-3d-button",
 							currentPath === item.href && "nes-legal-priority-high"
@@ -142,7 +145,7 @@
 						theme="yorha"
 						showFilters={false}
 						maxResults={15}
-						select={handleSearchSelect}
+						onselect={handleSearchSelect}
 					/>
 				</div>
 			{/if}
@@ -157,7 +160,7 @@
 						<!-- AI Search Button -->
 						<button
 							class="nes-legal-priority-high yorha-3d-button neural-sprite-active search-btn"
-							on:onclick={toggleSearchModal}
+							onclick={toggleSearchModal}
 							title="Advanced Search (Ctrl+K)"
 						>
 							<Search class="w-4 h-4" />
@@ -166,17 +169,17 @@
 
 						<!-- User Avatar & Profile -->
 						<div class="user-profile-section">
-							<button
+													<button
 								class="user-avatar-btn yorha-3d-button"
-								on:onclick={() => goto('/profile')}
+														onclick={() => goto('/profile')}
 								title={`${auth.user?.firstName} ${auth.user?.lastName}`}
 							>
 								{#if userAvatarUrl}
-									<img
+																			<img
 										src={userAvatarUrl}
 										alt="User Avatar"
 										class="user-avatar"
-										error={() => {
+																				onerror={() => {
 											// Fallback to initials if image fails to load
 											userAvatarUrl = null;
 										}}
@@ -197,9 +200,9 @@
 						</div>
 
 						<!-- Logout Button -->
-						<button
+												<button
 							class="nes-legal-priority-medium yorha-3d-button logout-btn"
-							on:onclick={() => handleAuth('logout')}
+													onclick={() => handleAuth('logout')}
 							title="Logout"
 						>
 							<LogOut class="w-4 h-4" />
@@ -210,9 +213,9 @@
 					<!-- Unauthenticated User Section -->
 					<div class="guest-section">
 						<!-- Quick Search (limited) -->
-						<button
+												<button
 							class="nes-legal-priority-medium yorha-3d-button search-btn"
-							on:onclick={toggleSearchModal}
+													onclick={toggleSearchModal}
 							title="Public Search"
 						>
 							<Search class="w-4 h-4" />
@@ -220,18 +223,18 @@
 						</button>
 
 						<!-- Login Button -->
-						<button
+												<button
 							class="nes-legal-priority-high yorha-3d-button login-btn"
-							on:onclick={() => handleAuth('login')}
+													onclick={() => handleAuth('login')}
 						>
 							<LogIn class="w-4 h-4" />
 							<span class="hidden md:inline ml-2">LOGIN</span>
 						</button>
 
 						<!-- Register Button -->
-						<button
+												<button
 							class="nes-legal-priority-critical yorha-3d-button register-btn"
-							on:onclick={() => handleAuth('register')}
+													onclick={() => handleAuth('register')}
 						>
 							<UserPlus class="w-4 h-4" />
 							<span class="hidden md:inline ml-2">REGISTER</span>
@@ -258,15 +261,23 @@
 
 <!-- Advanced Search Modal -->
 {#if showSearchModal}
-	<div class="search-modal-overlay" on:onclick={(e) => e.target === e.currentTarget && (showSearchModal = false)}>
+	<div
+		class="search-modal-overlay"
+		role="button"
+		tabindex="0"
+		onclick={(e: MouseEvent) => e.target === e.currentTarget && (showSearchModal = false)}
+		onkeydown={(e: KeyboardEvent) => {
+			if (e.key === 'Escape' || e.key === 'Enter') showSearchModal = false;
+		}}
+	>
 		<div class="search-modal yorha-3d-panel">
 			<div class="search-modal-header">
 				<h3 class="text-lg font-bold text-yellow-400">
 					{auth.isAuthenticated ? 'Advanced Legal Search' : 'Public Search'}
 				</h3>
-				<button
+								<button
 					class="close-btn"
-					on:onclick={() => showSearchModal = false}
+									onclick={() => showSearchModal = false}
 					aria-label="Close search"
 				>
 					×
@@ -274,7 +285,7 @@
 			</div>
 
 			<div class="search-modal-content">
-				<UniversalSearchBar
+								<UniversalSearchBar
 					placeholder={auth.isAuthenticated ?
 						"Search cases, evidence, documents, precedents..." :
 						"Search public documents and information..."
@@ -282,7 +293,7 @@
 					theme="yorha"
 					showFilters={auth.isAuthenticated}
 					maxResults={auth.isAuthenticated ? 50 : 10}
-					select={handleSearchSelect}
+									onselect={handleSearchSelect}
 				/>
 
 				{#if !auth.isAuthenticated}
@@ -291,9 +302,9 @@
 							Sign in for full access to cases, evidence, and advanced legal search features.
 						</p>
 						<div class="auth-buttons mt-3">
-							<button
+													<button
 								class="nes-legal-priority-high yorha-3d-button"
-								on:onclick={() => { handleAuth('login'); showSearchModal = false; }}
+														onclick={() => { handleAuth('login'); showSearchModal = false; }}
 							>
 								Login for Full Access
 							</button>

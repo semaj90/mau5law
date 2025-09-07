@@ -18,7 +18,7 @@
   let selectedValue = $state('super-mario-world');
   let checked = $state(false);
   let activeTab = $state('graphics');
-  
+
   // SNES color palette showcase
   const snesColors = [
     '#000000', '#800000', '#008000', '#808000', '#000080', '#800080', '#008080', '#C0C0C0',
@@ -29,14 +29,14 @@
   // Mode 7 transformation matrix simulation
   let mode7Rotation = $state(0);
   let mode7Scale = $state(1);
-  
+
   onMount(() => {
     // Animate mode 7 demo
     const interval = setInterval(() => {
       mode7Rotation += 1;
       mode7Scale = 1 + Math.sin(mode7Rotation * 0.1) * 0.2;
     }, 50);
-    
+
     return () => clearInterval(interval);
   });
 
@@ -68,7 +68,7 @@
 
   <!-- Main Content Grid -->
   <main class="snes-main">
-    
+
     <!-- Technical Analysis Panel -->
     <section class="analysis-panel">
       <Card.Root class="snes-card">
@@ -81,7 +81,7 @@
           </Card.Description>
         </Card.Header>
         <Card.Content class="technical-specs">
-          
+
           <div class="spec-grid">
             <div class="spec-item">
               <strong>PPU Capabilities:</strong>
@@ -106,7 +106,7 @@
             <h4 class="snes-subtitle">Enhanced Color Palette</h4>
             <div class="palette-grid">
               {#each snesColors as color}
-                <div class="color-swatch" style="background-color: {color};" 
+                <div class="color-swatch" style="background-color: {color};"
                      title="{color}"></div>
               {/each}
             </div>
@@ -115,7 +115,7 @@
           <!-- Mode 7 Demo -->
           <div class="mode7-demo">
             <h4 class="snes-subtitle">Mode 7 Transformation</h4>
-            <div class="mode7-plane" 
+            <div class="mode7-plane"
                  style="transform: perspective(200px) rotateX(45deg) rotateZ({mode7Rotation}deg) scale({mode7Scale});">
               <div class="checkerboard"></div>
             </div>
@@ -219,7 +219,7 @@
               <Tabs.Trigger class="snes-tab" value="audio">Audio</Tabs.Trigger>
               <Tabs.Trigger class="snes-tab" value="controls">Controls</Tabs.Trigger>
             </Tabs.List>
-            
+
             <Tabs.Content class="snes-tab-content" value="graphics">
               <div class="settings-grid">
                 <div class="setting-item">
@@ -241,7 +241,7 @@
                 </div>
               </div>
             </Tabs.Content>
-            
+
             <Tabs.Content class="snes-tab-content" value="audio">
               <div class="audio-visualizer">
                 <div class="channel" style="height: 60%;">Ch1</div>
@@ -254,7 +254,7 @@
                 <div class="channel" style="height: 45%;">Ch8</div>
               </div>
             </Tabs.Content>
-            
+
             <Tabs.Content class="snes-tab-content" value="controls">
               <div class="control-layout">
                 <div class="controller-diagram">
@@ -270,13 +270,13 @@
 
           <!-- Interactive Dialog -->
           <div class="dialog-section">
-            <Button.Root 
-              class="snes-btn snes-btn-primary" 
-              on:on:on:click={() => dialogOpen = true}
+            <Button.Root
+              class="snes-btn snes-btn-primary"
+              on:click={() => dialogOpen = true}
             >
               🗨️ Open Message Box
             </Button.Root>
-            
+
             <Dialog.Root bind:open={dialogOpen}>
               <Dialog.Portal>
                 <Dialog.Overlay class="snes-dialog-overlay" />
@@ -286,13 +286,13 @@
                       System Message
                     </Dialog.Title>
                     <Dialog.Description class="dialog-text">
-                      The princess is in another castle! But first, let me tell you about 
+                      The princess is in another castle! But first, let me tell you about
                       the incredible 16-bit capabilities of the Super Nintendo Entertainment System...
                     </Dialog.Description>
                     <div class="dialog-actions">
-                      <Button.Root 
-                        class="snes-btn snes-btn-confirm" 
-                        on:on:on:click={() => dialogOpen = false}
+                      <Button.Root
+                        class="snes-btn snes-btn-confirm"
+                        on:click={() => dialogOpen = false}
                       >
                         ✓ OK
                       </Button.Root>
@@ -339,12 +339,12 @@
     --snes-orange: #FF8C00;
     --snes-red: #DC143C;
     --snes-pink: #FF69B4;
-    
+
     /* Gradients for depth */
     --snes-bg: linear-gradient(135deg, #2C1810 0%, #4A2C17 50%, #2C1810 100%);
     --snes-panel: linear-gradient(145deg, #E6E6FA 0%, #D8BFD8 50%, #DDA0DD 100%);
     --snes-button: linear-gradient(145deg, #C0C0C0 0%, #A9A9A9 50%, #808080 100%);
-    
+
     /* Shadows and highlights */
     --snes-shadow: rgba(0, 0, 0, 0.4);
     --snes-highlight: rgba(255, 255, 255, 0.8);
@@ -359,7 +359,7 @@
     font-weight: bold;
     color: #FFFFFF;
     padding: 1rem;
-    
+
     /* Enhanced visual effects */
     background-attachment: fixed;
     position: relative;
@@ -372,7 +372,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
+    background:
       radial-gradient(circle at 20% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
     pointer-events: none;
@@ -388,7 +388,7 @@
     padding: 1rem 2rem;
     border-radius: 12px;
     border: 3px solid #8A2BE2;
-    box-shadow: 
+    box-shadow:
       0 8px 16px var(--snes-shadow),
       inset 0 2px 4px var(--snes-highlight);
     color: #4B0082;
@@ -471,7 +471,7 @@
     background: var(--snes-panel);
     border: 4px solid #8A2BE2;
     border-radius: 16px;
-    box-shadow: 
+    box-shadow:
       0 12px 24px var(--snes-shadow),
       inset 0 4px 8px var(--snes-highlight);
     overflow: hidden;
@@ -481,7 +481,7 @@
 
   .snes-card:hover {
     transform: translateY(-4px);
-    box-shadow: 
+    box-shadow:
       0 16px 32px var(--snes-shadow),
       0 0 20px var(--snes-glow),
       inset 0 4px 8px var(--snes-highlight);
@@ -577,8 +577,8 @@
   .checkerboard {
     width: 100%;
     height: 100%;
-    background: 
-      repeating-conic-gradient(#8A2BE2 0deg 90deg, #DDA0DD 90deg 180deg) 
+    background:
+      repeating-conic-gradient(#8A2BE2 0deg 90deg, #DDA0DD 90deg 180deg)
       0 0 / 20px 20px;
     border: 3px solid #4B0082;
     border-radius: 8px;
@@ -619,7 +619,7 @@
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 
+    box-shadow:
       0 4px 8px rgba(0, 0, 0, 0.3),
       inset 0 2px 4px rgba(255, 255, 255, 0.8);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -629,7 +629,7 @@
 
   .snes-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow:
       0 6px 12px rgba(0, 0, 0, 0.4),
       0 0 12px rgba(255, 255, 255, 0.6),
       inset 0 2px 4px rgba(255, 255, 255, 0.9);
@@ -637,7 +637,7 @@
 
   .snes-btn:active {
     transform: translateY(0);
-    box-shadow: 
+    box-shadow:
       0 2px 4px rgba(0, 0, 0, 0.3),
       inset 0 2px 8px rgba(0, 0, 0, 0.2);
   }
@@ -646,7 +646,7 @@
   .snes-btn-b { background: linear-gradient(145deg, #FFFF44, #CCCC00); }
   .snes-btn-x { background: linear-gradient(145deg, #4444FF, #0000CC); }
   .snes-btn-y { background: linear-gradient(145deg, #44FF44, #00CC00); }
-  .snes-btn-l, .snes-btn-r { 
+  .snes-btn-l, .snes-btn-r {
     background: linear-gradient(145deg, #AAAAAA, #666666);
     border-radius: 8px;
     width: 60px;
@@ -1069,21 +1069,21 @@
     .snes-main {
       grid-template-columns: 1fr;
     }
-    
+
     .components-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .spec-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .snes-header {
       flex-direction: column;
       gap: 1rem;
       text-align: center;
     }
-    
+
     .logo-text {
       font-size: 1.5rem;
     }
@@ -1093,7 +1093,7 @@
   .snes-container * {
     will-change: transform;
   }
-  
+
   .mode7-plane {
     backface-visibility: hidden;
   }

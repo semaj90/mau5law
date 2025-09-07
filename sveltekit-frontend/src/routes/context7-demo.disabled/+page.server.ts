@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types.js';
 import { copilotSelfPrompt } from '$lib/utils/copilot-self-prompt';
 
 import { resolveLibraryId, getLibraryDocs } from '$lib/services/context7-lib-resolver';
-import fs from 'fs/promises';
+import { readFile } from 'fs/promises';
 import { URL } from "url";
 
 // Load Copilot architecture context for enhanced prompting
@@ -18,7 +18,7 @@ async function loadCopilotContext(): Promise<Record<string, string | null>> {
   for (const file of contextFiles) {
     try {
       const fullPath = path.join(process.cwd(), "..", file);
-      const content = await fs.readFile(fullPath, "utf-8");
+      const content = await readFile(fullPath, "utf-8");
       const key = path.basename(file, ".md");
       context[key] = content;
     } catch (err: any) {

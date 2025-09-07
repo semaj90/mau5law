@@ -1,5 +1,5 @@
 <script lang="ts">
-  import BitsUnoDemo from "$lib/components/ui/BitsUnoDemo.svelte";
+  import BitsUIDemo from "$lib/components/ui/BitsUIDemo.svelte";
   import { goto } from '$app/navigation';
 </script>
 
@@ -27,7 +27,7 @@
 </div>
 
 <!-- Demo Component -->
-<BitsUnoDemo />
+<BitsUIDemo />
 
 <!-- Additional Information -->
 <div class="space-y-4">

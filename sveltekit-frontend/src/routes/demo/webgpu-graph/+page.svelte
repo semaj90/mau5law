@@ -1,6 +1,6 @@
 <!--
   WebGPU Legal Document Graph Demo
-  
+
   Complete demonstration of the "tricubic tensor" legal document system:
   - WebGPU-accelerated 3D graph visualization
   - Dimensional tensor stores for GPU memory management
@@ -42,7 +42,7 @@
   // Derived stores
   const canProceed = derived(
     [demoState, webgpuSupported],
-    ([$demoState, $webgpuSupported]) => 
+    ([$demoState, $webgpuSupported]) =>
       $webgpuSupported && !$demoState.isGeneratingData
   );
 
@@ -95,7 +95,7 @@
   onMount(async () => {
     await checkWebGPUSupport();
     await updateDatabaseStats();
-    
+
     // Update stats periodically
     setInterval(updateDatabaseStats, 10000);
   });
@@ -105,7 +105,7 @@
       if (!navigator.gpu) {
         throw new Error('WebGPU not available');
       }
-      
+
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) {
         throw new Error('No WebGPU adapter found');
@@ -169,7 +169,7 @@
           metadata: {
             aiSummary: 'Major data breach class action with significant privacy implications',
             keyTerms: ['data breach', 'privacy', 'class action', 'damages'],
-            legalEntities: { 
+            legalEntities: {
               parties: ['John Smith', 'TechCorp Inc.'],
               court: 'US District Court Northern District California'
             },
@@ -322,7 +322,7 @@
       await legalDB.graphVisualizationData.put(graphData);
 
       await updateDatabaseStats();
-      
+
       demoState.update(state => ({
         ...state,
         dataGenerated: true,
@@ -410,10 +410,10 @@
   <header class="demo-header">
     <h1>WebGPU Legal Document Graph Demonstration</h1>
     <p class="subtitle">
-      Complete "Tricubic Tensor" implementation with dimensional tensor stores, 
+      Complete "Tricubic Tensor" implementation with dimensional tensor stores,
       WebGPU visualization, and client-server synchronization
     </p>
-    
+
     <!-- Progress Bar -->
     <div class="progress-container">
       <div class="progress-bar" style="width: {$stepProgress}%"></div>
@@ -440,12 +440,12 @@
     <!-- Step Navigation -->
     <nav class="step-navigation">
       {#each steps as step, index}
-        <button 
+        <button
           class="step-button"
           class:active={$demoState.currentStep === index + 1}
           class:completed={$demoState.currentStep > index + 1}
           disabled={!$canProceed}
-          on:on:click={() => demoState.update(s => ({ ...s, currentStep: index + 1 }))}
+          on:click={() => demoState.update(s => ({ ...s, currentStep: index + 1 }))}
         >
           <span class="step-number">{index + 1}</span>
           <span class="step-title">{step.title}</span>
@@ -460,7 +460,7 @@
         <div class="step-panel">
           <h2>System Initialization</h2>
           <p>Check system capabilities and initialize core services.</p>
-          
+
           <div class="capability-grid">
             <div class="capability-item">
               <span class="capability-label">WebGPU Support:</span>
@@ -468,19 +468,19 @@
                 {$webgpuSupported ? '✅ Available' : '❌ Not Available'}
               </span>
             </div>
-            
+
             <div class="capability-item">
               <span class="capability-label">IndexedDB:</span>
               <span class="capability-status supported">✅ Available</span>
             </div>
-            
+
             <div class="capability-item">
               <span class="capability-label">Online Status:</span>
               <span class="capability-status" class:supported={$syncStatus.isOnline}>
                 {$syncStatus.isOnline ? '✅ Online' : '❌ Offline'}
               </span>
             </div>
-            
+
             <div class="capability-item">
               <span class="capability-label">Graph Visualization:</span>
               <span class="capability-status" class:supported={$offlineCapabilities.graphVisualizationAvailable}>
@@ -499,7 +499,7 @@
         <div class="step-panel">
           <h2>Generate Sample Legal Data</h2>
           <p>Create sample legal documents, cases, and precedents with relationships.</p>
-          
+
           <div class="data-preview">
             <h3>Sample Data Includes:</h3>
             <ul>
@@ -512,15 +512,15 @@
           </div>
 
           <div class="action-buttons">
-            <button 
-              onclick={generateSampleData} 
+            <button
+              onclick={generateSampleData}
               disabled={$demoState.isGeneratingData || $demoState.dataGenerated}
               class="primary-button"
             >
-              {$demoState.isGeneratingData ? 'Generating...' : 
+              {$demoState.isGeneratingData ? 'Generating...' :
                $demoState.dataGenerated ? 'Data Generated ✅' : 'Generate Sample Data'}
             </button>
-            
+
             {#if $demoState.dataGenerated}
               <button onclick={nextStep} class="secondary-button">
                 Continue to Storage
@@ -534,7 +534,7 @@
         <div class="step-panel">
           <h2>Client-Side Persistence</h2>
           <p>Data stored in IndexedDB using Dexie.js with intelligent caching.</p>
-          
+
           <div class="storage-stats">
             <h3>Database Statistics</h3>
             <div class="stats-grid">
@@ -547,7 +547,7 @@
                 <span class="stat-value">{$demoState.databaseStats.storageUsed}</span>
               </div>
             </div>
-            
+
             <div class="table-breakdown">
               <h4>Table Breakdown:</h4>
               {#each $demoState.databaseStats.tables as table}
@@ -563,7 +563,7 @@
             <button onclick={async () => { await updateDatabaseStats(); }} class="secondary-button">
               Refresh Stats
             </button>
-            
+
             <button onclick={nextStep} class="primary-button">
               Launch Visualization
             </button>
@@ -575,7 +575,7 @@
         <div class="step-panel">
           <h2>WebGPU 3D Graph Visualization</h2>
           <p>Interactive exploration of the legal document network using dimensional tensor stores.</p>
-          
+
           <div class="visualization-container">
             {#if $webgpuSupported && $demoState.dataGenerated}
               <LegalDocumentGraphViewer
@@ -599,11 +599,11 @@
             <button onclick={() => $graphViewer?.resetCamera()} class="control-button">
               🎯 Reset Camera
             </button>
-            
+
             <button onclick={() => $graphViewer?.togglePhysics()} class="control-button">
               ⚡ Toggle Physics
             </button>
-            
+
             <button onclick={() => $graphViewer?.focusOnNode('case-001')} class="control-button">
               🔍 Focus on Case
             </button>
@@ -619,7 +619,7 @@
         <div class="step-panel">
           <h2>Hybrid Vector Search</h2>
           <p>Combine client-side cache with server-side vector search using PostgreSQL pgvector.</p>
-          
+
           <div class="search-interface">
             <div class="search-input-group">
               <input
@@ -633,7 +633,7 @@
                 🔍 Search
               </button>
             </div>
-            
+
             <div class="search-options">
               <label class="option-label">
                 <input type="checkbox" checked /> Use client cache
@@ -680,7 +680,7 @@
         <div class="step-panel">
           <h2>Server Synchronization</h2>
           <p>Synchronize client data with PostgreSQL backend using conflict resolution.</p>
-          
+
           <div class="sync-status">
             <h3>Sync Status</h3>
             <div class="status-grid">
@@ -690,19 +690,19 @@
                   {$syncStatus.isOnline ? 'Online' : 'Offline'}
                 </span>
               </div>
-              
+
               <div class="status-item">
                 <span class="status-label">Pending Operations:</span>
                 <span class="status-value">{$syncStatus.pendingOperations}</span>
               </div>
-              
+
               <div class="status-item">
                 <span class="status-label">Last Sync:</span>
                 <span class="status-value">
                   {$syncStatus.lastSync ? $syncStatus.lastSync.toLocaleTimeString() : 'Never'}
                 </span>
               </div>
-              
+
               <div class="status-item">
                 <span class="status-label">Conflicts:</span>
                 <span class="status-value">{$syncStatus.conflictCount}</span>
@@ -719,14 +719,14 @@
           </div>
 
           <div class="action-buttons">
-            <button 
+            <button
               onclick={syncToServer}
               disabled={!$syncStatus.isOnline}
               class="primary-button"
             >
               Sync to Server
             </button>
-            
+
             <button onclick={async () => { await syncService.clearCache(); }} class="secondary-button">
               Clear Cache
             </button>
@@ -745,19 +745,19 @@
 
     <!-- Navigation Controls -->
     <footer class="demo-navigation">
-      <button 
-        onclick={prevStep} 
+      <button
+        onclick={prevStep}
         disabled={$demoState.currentStep === 1}
         class="nav-button prev"
       >
         ← Previous
       </button>
-      
+
       <span class="step-indicator">
         {$demoState.currentStep} / {$demoState.maxSteps}
       </span>
-      
-      <button 
+
+      <button
         onclick={nextStep}
         disabled={$demoState.currentStep === $demoState.maxSteps}
         class="nav-button next"
@@ -1246,12 +1246,12 @@
     .demo-content {
       grid-template-columns: 1fr;
     }
-    
+
     .step-navigation {
       flex-direction: row;
       overflow-x: auto;
     }
-    
+
     .step-button {
       min-width: 150px;
     }
@@ -1261,21 +1261,21 @@
     .demo-page {
       padding: 1rem;
     }
-    
+
     .demo-header h1 {
       font-size: 2rem;
     }
-    
+
     .capability-grid,
     .stats-grid,
     .status-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .action-buttons {
       flex-direction: column;
     }
-    
+
     .search-input-group {
       flex-direction: column;
     }

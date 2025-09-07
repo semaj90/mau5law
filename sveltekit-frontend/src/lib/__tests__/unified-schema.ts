@@ -352,7 +352,7 @@ export const savedCitations = pgTable(
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
   },
-  (table) => ({
+  (table: any) => ({
     // Indexes for efficient queries
     userIdIdx: index("saved_citations_user_id_idx").on(table.userId),
     categoryIdx: index("saved_citations_category_idx").on(table.category),

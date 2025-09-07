@@ -45,8 +45,8 @@
     showHeader = true,
     columns = 3
   }: Props = $props();
-let searchInput = $state<HTMLInputElement;
-  let selectedItem: Evidence | null >(null);
+let searchInput = $state<HTMLInputElement>();
+  let selectedItem: Evidence | null = $state(null);
 
   // In Svelte 5, access store values directly
   let gridData = $state<EvidenceGridState | undefined>(undefined);
@@ -221,7 +221,7 @@ let searchInput = $state<HTMLInputElement;
             type="text"
             placeholder="Search evidence..."
             value={searchQuery}
-            input={handleSearch}
+            oninput={handleSearch}
             class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
@@ -231,7 +231,7 @@ let searchInput = $state<HTMLInputElement;
         <!-- Sort dropdown -->
         <select
           value={sortBy}
-          change={(e) => {
+          onchange={(e) => {
             const value = (e.target as HTMLSelectElement)?.value;
             if (value === 'title' || value === 'evidenceType' || value === 'fileSize' || value === 'uploadedAt') {
               toggleSort(value);
@@ -249,7 +249,7 @@ let searchInput = $state<HTMLInputElement;
         <Button
           variant="secondary"
           size="sm"
-          on:on:click={() => toggleSort(sortBy)}
+          onclick={() => toggleSort(sortBy)}
           class="flex items-center gap-2"
         >
           {#if sortOrder === "asc"}
@@ -263,7 +263,7 @@ let searchInput = $state<HTMLInputElement;
         <Button
           variant="secondary"
           size="sm"
-          on:on:click={() => toggleViewMode()}
+          onclick={() => toggleViewMode()}
           class="flex items-center gap-2"
         >
           {#if viewMode === "grid"}
@@ -285,7 +285,7 @@ let searchInput = $state<HTMLInputElement;
           <Button
             variant="secondary"
             size="sm"
-            on:on:click={() => clearSelection()}
+            onclick={() => clearSelection()}
           >
             Clear
           </Button>
@@ -316,7 +316,7 @@ let searchInput = $state<HTMLInputElement;
       <Button
         variant="secondary"
         size="sm"
-        on:on:click={() => evidenceActions.loadEvidence(caseId)}
+        onclick={() => evidenceActions.loadEvidence(caseId)}
       >
         Try Again
       </Button>
@@ -344,8 +344,8 @@ let searchInput = $state<HTMLInputElement;
           {#each filteredData as item (item.id)}
             <div
               class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer {selectedItems.has(item.id) ? 'ring-2 ring-blue-500' : ''}"
-              on:onclick={() => toggleSelection(item)}
-              contextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
+              onclick={() => toggleSelection(item)}
+              oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
             >
               <!-- Preview/Thumbnail -->
               <div
@@ -370,7 +370,7 @@ let searchInput = $state<HTMLInputElement;
                   <input
                     type="checkbox"
                     checked={selectedItems.has(item.id)}
-                    change={() => toggleSelection(item)}
+                    onchange={() => toggleSelection(item)}
                     class="space-y-4"
                   />
                 </div>
@@ -436,8 +436,8 @@ let searchInput = $state<HTMLInputElement;
             {@const SvelteComponent_1 = getFileIcon(item.evidenceType, item.mimeType)}
             <div
               class="space-y-4"
-              on:onclick={() => toggleSelection(item)}
-              contextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
+              onclick={() => toggleSelection(item)}
+              oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
             >
               <!-- Selection checkbox -->
               <input

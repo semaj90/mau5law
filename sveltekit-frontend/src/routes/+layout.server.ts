@@ -1,11 +1,9 @@
-import loki from 'lokijs';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { ServerLoad } from '@sveltejs/kit';
 import { loadWithSSR } from '$lib/server/api-ssr-helpers';
-import type { SystemHealth, DashboardStats, HomePageData } from '$lib/types/api-schemas';
 
 /**
  * +layout.server.ts
- * 
+ *
  * Enhanced for Bits UI SSR compatibility
  * Lightweight server-side caching using LokiJS (recommended for dev / single-process).
  * Caches "startupStatus" from $lib/services/multi-library-startup for a short TTL.
@@ -13,70 +11,62 @@ import type { SystemHealth, DashboardStats, HomePageData } from '$lib/types/api-
  * Replace with a Redis-backed implementation for production (shared cache).
  */
 
-
-type CacheDoc = {
-  key: string;
-  value: any;
-  expiresAt?: number;
-};
-
-// Create a single DB instance for the server process lifetime
-const db = new loki('server-cache.db');
-const collectionName = 'layoutCache';
-let layoutCache = db.getCollection<CacheDoc>(collectionName);
-if (!layoutCache) {
-  layoutCache = db.addCollection<CacheDoc>(collectionName, {
-    unique: ['key'],
-    autoupdate: true
-  });
-}
+// Simple in-memory cache (SSR-safe). Replace with Redis for multi-process.
+const cache = new Map<string, { value: any; expiresAt?: number }>();
 
 const getFromCache = (key: string): any | null => {
-  const doc = layoutCache.findOne({ key }) as CacheDoc | null;
-  if (!doc) return null;
-  if (doc.expiresAt && Date.now() > doc.expiresAt) {
-    // expired — remove and treat as miss
-    layoutCache.remove(doc);
+  const entry = cache.get(key);
+  if (!entry) return null;
+  if (entry.expiresAt && Date.now() > entry.expiresAt) {
+    cache.delete(key);
     return null;
   }
-  return doc.value;
+  return entry.value;
 };
 
 const setCache = (key: string, value: any, ttlSeconds?: number) => {
   const expiresAt = ttlSeconds ? Date.now() + ttlSeconds * 1000 : undefined;
-  const existing = layoutCache.findOne({ key }) as CacheDoc | null;
-  if (existing) {
-    existing.value = value;
-    existing.expiresAt = expiresAt;
-    layoutCache.update(existing);
-  } else {
-    layoutCache.insert({ key, value, expiresAt });
-  }
+  cache.set(key, { value, expiresAt });
 };
 
 // TTL for startup status cache (adjust for your needs)
 const STARTUP_TTL_SECONDS = 60 * 5; // 5 minutes
 
-export const load = async (event: RequestEvent): Promise<any> => {
+type LayoutData = {
+  startupStatus: {
+    initialized: boolean;
+    services: Record<string, boolean>;
+    errors: { message: string }[];
+    startTime: number;
+    initTime: number;
+    bitsUICompatible: boolean;
+  } | null;
+  _cacheHit?: boolean;
+  _mocked?: boolean;
+  user: unknown;
+  session: unknown;
+  isAuthenticated?: boolean;
+  error?: string;
+};
+
+export const load: ServerLoad = async (event): Promise<LayoutData> => {
+  const localsTyped = event.locals as App.Locals;
   const cacheKey = 'layout:startupStatus';
 
-  // 1. Try to return cached startup status  
+  // 1. Try to return cached startup status
   const cached = getFromCache(cacheKey);
   if (cached) {
     return {
       startupStatus: cached,
-      _cacheHit: true,
-      user: event.locals.user,
-      session: event.locals.session
+      user: localsTyped.user,
+      session: localsTyped.session,
     };
   }
 
   // 2. Cache miss — use SSR-optimized loading
-  return loadWithSSR(
+  const data = await loadWithSSR<import('$lib/server/api-ssr-helpers').BitsUICompatibleData>(
     async () => {
-      console.log('⚠️  Multi-library startup temporarily disabled for development');
-      
-      // Return SSR-optimized startup status for Bits UI
+      // Return SSR-optimized startup status for Bits UI (development mode)
       const startupStatus = {
         initialized: true,
         services: {
@@ -84,28 +74,27 @@ export const load = async (event: RequestEvent): Promise<any> => {
           fuse: true,
           fabric: true,
           xstate: true,
-          redis: false,  // These might be causing the hang
+          redis: false, // These might be causing the hang
           rabbitmq: false,
           orchestrator: false,
-          ollama: false
+          ollama: false,
         },
-        errors: [],
+        errors: [] as { message: string }[],
         startTime: Date.now(),
         initTime: 0,
-        bitsUICompatible: true
+        bitsUICompatible: true,
       };
 
       // Store the result in cache
       setCache(cacheKey, startupStatus, STARTUP_TTL_SECONDS);
 
-      return {
+      const result: LayoutData = {
         startupStatus,
-        _cacheHit: false,
-        _mocked: true,
-        user: event.locals.user,
-        session: event.locals.session,
-        isAuthenticated: !!event.locals.user
+        user: localsTyped.user,
+        session: localsTyped.session,
+        isAuthenticated: !!localsTyped.user,
       };
+      return result as unknown as import('$lib/server/api-ssr-helpers').BitsUICompatibleData;
     },
     // Fallback data for SSR errors
     {
@@ -113,7 +102,8 @@ export const load = async (event: RequestEvent): Promise<any> => {
       error: 'Failed to initialize startup services',
       user: null,
       session: null,
-      isAuthenticated: false
-    }
+      isAuthenticated: false,
+    } as unknown as import('$lib/server/api-ssr-helpers').BitsUICompatibleData
   );
+  return data as unknown as LayoutData;
 };

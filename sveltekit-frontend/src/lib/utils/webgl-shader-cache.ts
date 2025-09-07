@@ -422,8 +422,8 @@ export class WebGLShaderCache {
         const uniforms = this.extractUniforms(program);
         const attributes = this.extractAttributes(program);
 
-        // Get shader metadata for enhanced search capabilities
-        const shaderDef = this.getShaderDefinition(id);
+        // Get shader metadata for enhanced search capabilities  
+        const shaderDefinition = this.getShaderDefinition(id);
         const metadata = this.getShaderMetadata(id);
 
         const shaderProgram: ShaderProgram = {
@@ -435,8 +435,8 @@ export class WebGLShaderCache {
           compilationTime,
           lastUsed: Date.now(),
           useCount: 1,
-          vertexSource: shaderDef?.vertex,
-          fragmentSource: shaderDef?.fragment,
+          vertexSource: shaderDefinition?.vertex,
+          fragmentSource: shaderDefinition?.fragment,
           shaderType: 'webgl',
           operation: metadata.operation,
           description: metadata.description,

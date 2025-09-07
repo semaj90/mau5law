@@ -7,7 +7,6 @@
   import MeltDialog from '$lib/components/ui/MeltDialog.svelte';
   import MeltSelect from '$lib/components/ui/MeltSelect.svelte';
   import { fade } from 'svelte/transition';
-  import { createToaster, melt } from 'melt';
   import { flip } from 'svelte/animate';
   import { fly } from 'svelte/transition';
 
@@ -37,13 +36,22 @@
 let dialogOpen = $state(false);
 let alertOpen = $state(false);
 
-  // Melt-UI Toast/Notification setup
-  const {
-    elements: { content, title, description, close },
-    helpers: { addToast },
-    states: { toasts },
-    actions: { portal }
-  } = createToaster<ToastData>();
+  // Simple native toast system
+  let toasts = $state<Array<{ id: string; data: ToastData }>>([]);
+  
+  function addToast(toast: { data: ToastData }) {
+    const id = Date.now().toString();
+    toasts = [...toasts, { id, data: toast.data }];
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+      toasts = toasts.filter(t => t.id !== id);
+    }, 5000);
+  }
+  
+  function removeToast(id: string) {
+    toasts = toasts.filter(t => t.id !== id);
+  }
 
   // Notification functions with actual API calls
   async function showSuccessNotification() {
@@ -297,29 +305,32 @@ let alertOpen = $state(false);
   </div>
 </div>
 
-<!-- Melt-UI Toast/Notification Container -->
-<div class="mx-auto px-4 max-w-7xl" use:portal>
-  {#each $toasts as { id, data } (id)}
+<!-- Toast Container -->
+<div class="toast-container">
+  {#each toasts as { id, data } (id)}
     <div
-      class="mx-auto px-4 max-w-7xl"
+      class="toast toast-{data.color}"
       animate:flip={{ duration: 500 }}
       in:fly={{ duration: 150, x: '100%' }}
-      out:fly={{ duration: 150, x: '100%'  }}
-      <!-- use:melt={$content(id)} -->
+      out:fly={{ duration: 150, x: '100%' }}
     >
-      <div class="mx-auto px-4 max-w-7xl">
-        {#if (data as ToastData).title}
-          <div class="mx-auto px-4 max-w-7xl" <!-- use:melt={$title(id)} -->
-            {(data as ToastData).title}
+      <div class="toast-header">
+        {#if data.title}
+          <div class="toast-title">
+            {data.title}
           </div>
         {/if}
-        <button class="mx-auto px-4 max-w-7xl" <!-- use:melt={$close(id)} --> aria-label="Close notification">
+        <button 
+          class="toast-close" 
+          onclick={() => removeToast(id)} 
+          aria-label="Close notification"
+        >
           ✕
         </button>
       </div>
-      {#if (data as ToastData).description}
-        <div class="mx-auto px-4 max-w-7xl" <!-- use:melt={$description(id)} -->
-          {(data as ToastData).description}
+      {#if data.description}
+        <div class="toast-description">
+          {data.description}
         </div>
       {/if}
     </div>

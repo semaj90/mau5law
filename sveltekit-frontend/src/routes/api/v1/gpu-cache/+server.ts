@@ -301,8 +301,8 @@ export const PATCH: RequestHandler = async ({ request }) => {
 
 // === Database Synchronization Endpoints ===
 
-// POST /api/v1/gpu-cache/sync
-export const POST: RequestHandler = async ({ request }) => {
+// POST /api/v1/gpu-cache/sync  
+export const SYNC: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize();
     

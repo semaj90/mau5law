@@ -15,13 +15,13 @@
   import ModernButton from '$lib/components/ui/button/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  
+
   // Test state
   let testResults = $state<Record<string, { status: 'pending' | 'passed' | 'failed'; message: string; details?: any }>>({});
   let isRunningTests = $state(false);
   let postgresStatus = $state<'connecting' | 'connected' | 'error'>('connecting');
   let apiEndpoints = $state<Record<string, { status: 'pending' | 'online' | 'offline'; latency?: number }>>({});
-  
+
   // API test endpoints to check
   const testEndpoints = [
     { name: 'Health Check', url: '/api/health', protocol: 'REST' },
@@ -43,46 +43,46 @@
 
     // Test 1: GPU Cache Integration
     await testGPUCache();
-    
+
     // Test 2: Gaming Components
     await testGamingComponents();
-    
+
     // Test 3: PostgreSQL + pgvector
     await testPostgreSQLIntegration();
-    
+
     // Test 4: API Endpoints
     await testAPIEndpoints();
-    
+
     // Test 5: Bits-UI Integration
     await testBitsUIIntegration();
-    
+
     // Test 6: Svelte 5 Runes
     await testSvelte5Runes();
-    
+
     isRunningTests = false;
   }
 
   async function testGPUCache() {
     try {
       testResults['gpu-cache'] = { status: 'pending', message: 'Testing GPU cache system...' };
-      
+
       // Test CSS custom properties
       const computedStyle = getComputedStyle(document.documentElement);
       const gpuCacheBg = computedStyle.getPropertyValue('--gpu-cache-bg-primary');
-      
+
       if (!gpuCacheBg) {
         throw new Error('GPU cache CSS custom properties not loaded');
       }
-      
-      testResults['gpu-cache'] = { 
-        status: 'passed', 
+
+      testResults['gpu-cache'] = {
+        status: 'passed',
         message: 'GPU cache CSS integration working',
         details: { cssVars: gpuCacheBg }
       };
     } catch (error) {
-      testResults['gpu-cache'] = { 
-        status: 'failed', 
-        message: `GPU cache test failed: ${error}` 
+      testResults['gpu-cache'] = {
+        status: 'failed',
+        message: `GPU cache test failed: ${error}`
       };
     }
   }
@@ -90,23 +90,23 @@
   async function testGamingComponents() {
     try {
       testResults['gaming'] = { status: 'pending', message: 'Testing gaming components...' };
-      
+
       // Test gaming constants
       const { NES_COLOR_PALETTE } = await import('$lib/components/ui/gaming/constants/gaming-constants.js');
-      
+
       if (!NES_COLOR_PALETTE || !NES_COLOR_PALETTE.blue) {
         throw new Error('Gaming constants not accessible');
       }
-      
-      testResults['gaming'] = { 
-        status: 'passed', 
+
+      testResults['gaming'] = {
+        status: 'passed',
         message: 'Gaming components and constants loaded',
         details: { nesColors: Object.keys(NES_COLOR_PALETTE).length }
       };
     } catch (error) {
-      testResults['gaming'] = { 
-        status: 'failed', 
-        message: `Gaming components test failed: ${error}` 
+      testResults['gaming'] = {
+        status: 'failed',
+        message: `Gaming components test failed: ${error}`
       };
     }
   }
@@ -115,17 +115,17 @@
     try {
       testResults['postgresql'] = { status: 'pending', message: 'Testing PostgreSQL connection...' };
       postgresStatus = 'connecting';
-      
+
       const response = await fetch('/api/v1/db/status', {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         postgresStatus = 'connected';
-        testResults['postgresql'] = { 
-          status: 'passed', 
+        testResults['postgresql'] = {
+          status: 'passed',
           message: 'PostgreSQL + pgvector connected',
           details: data
         };
@@ -134,9 +134,9 @@
       }
     } catch (error) {
       postgresStatus = 'error';
-      testResults['postgresql'] = { 
-        status: 'failed', 
-        message: `PostgreSQL test failed: ${error}` 
+      testResults['postgresql'] = {
+        status: 'failed',
+        message: `PostgreSQL test failed: ${error}`
       };
     }
   }
@@ -146,19 +146,19 @@
       try {
         apiEndpoints[endpoint.name] = { status: 'pending' };
         const startTime = performance.now();
-        
+
         const response = await fetch(endpoint.url, {
           method: 'GET',
           headers: { 'Accept': 'application/json' }
         });
-        
+
         const endTime = performance.now();
         const latency = Math.round(endTime - startTime);
-        
+
         if (response.ok || response.status === 404) { // 404 is OK for endpoints that don't exist yet
-          apiEndpoints[endpoint.name] = { 
-            status: 'online', 
-            latency 
+          apiEndpoints[endpoint.name] = {
+            status: 'online',
+            latency
           };
         } else {
           apiEndpoints[endpoint.name] = { status: 'offline', latency };
@@ -172,19 +172,19 @@
   async function testBitsUIIntegration() {
     try {
       testResults['bits-ui'] = { status: 'pending', message: 'Testing Bits-UI integration...' };
-      
+
       // Test if bits-ui components are working
       const buttonElement = document.querySelector('[data-button-root]');
-      
-      testResults['bits-ui'] = { 
-        status: 'passed', 
+
+      testResults['bits-ui'] = {
+        status: 'passed',
         message: 'Bits-UI components integrated successfully',
         details: { elementsFound: buttonElement ? 1 : 0 }
       };
     } catch (error) {
-      testResults['bits-ui'] = { 
-        status: 'failed', 
-        message: `Bits-UI test failed: ${error}` 
+      testResults['bits-ui'] = {
+        status: 'failed',
+        message: `Bits-UI test failed: ${error}`
       };
     }
   }
@@ -192,26 +192,26 @@
   async function testSvelte5Runes() {
     try {
       testResults['svelte5'] = { status: 'pending', message: 'Testing Svelte 5 runes...' };
-      
+
       // Test $state, $derived, and $effect functionality
       let testState = $state(0);
       let testDerived = $derived(testState * 2);
-      
+
       // Test state reactivity
       testState = 5;
       if (testDerived !== 10) {
         throw new Error('Svelte 5 reactivity not working correctly');
       }
-      
-      testResults['svelte5'] = { 
-        status: 'passed', 
+
+      testResults['svelte5'] = {
+        status: 'passed',
         message: 'Svelte 5 runes working correctly',
         details: { stateValue: testState, derivedValue: testDerived }
       };
     } catch (error) {
-      testResults['svelte5'] = { 
-        status: 'failed', 
-        message: `Svelte 5 runes test failed: ${error}` 
+      testResults['svelte5'] = {
+        status: 'failed',
+        message: `Svelte 5 runes test failed: ${error}`
       };
     }
   }
@@ -249,16 +249,16 @@
     <p class="text-gray-300 text-lg mb-4">
       Comprehensive testing of SvelteKit 2 + Svelte 5 + PostgreSQL + GPU Cache + Gaming Components
     </p>
-    
+
     <div class="flex gap-4 mb-6">
       <Button.Root
-        on:on:on:click={runIntegrationTests}
+  onclick={runIntegrationTests}
         disabled={isRunningTests}
         class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold"
       >
         {isRunningTests ? '🔄 Running Tests...' : '🚀 Run All Tests'}
       </Button.Root>
-      
+
       <div class="flex items-center gap-2">
         <span class="text-gray-400">PostgreSQL:</span>
         <span class="status-indicator status-{postgresStatus}">
@@ -317,7 +317,7 @@
           <div class="component-section">
             <h3 class="text-xl font-semibold text-white mb-4">8-Bit NES Era</h3>
             <div class="flex gap-4 flex-wrap">
-              <NES8BitButton variant="primary" on:on:on:click={() => console.log('NES Button Clicked!')}>
+              <NES8BitButton variant="primary" onclick={() => console.log('NES Button Clicked!')}>
                 NES Primary
               </NES8BitButton>
               <NES8BitButton variant="success" enableSound={true}>
@@ -418,7 +418,7 @@
                 <span class="ml-2 font-semibold text-white capitalize">{postgresStatus}</span>
               </div>
             </div>
-            
+
             <div class="space-y-4">
               <div class="info-card p-4 bg-gray-800 rounded-lg">
                 <h4 class="font-semibold text-white mb-2">Database Features</h4>
@@ -443,7 +443,7 @@
           <CardTitle>GPU Cache Integration Demo</CardTitle>
         </CardHeader>
         <CardContent>
-          <GPUCacheIntegrationDemo 
+          <GPUCacheIntegrationDemo
             showProgressionDemo={true}
             enableRealTimeMetrics={true}
             debugMode={false}

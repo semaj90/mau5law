@@ -48,7 +48,7 @@
       const result = await wasmGraphEngine.executeQuery(
         'MATCH (case:Case)-[:HAS_EVIDENCE]->(evidence:Evidence) RETURN case, evidence LIMIT 5'
       );
-      
+
       cacheDemo.results = result;
       cacheDemo.queryTime = Date.now() - startTime;
     } catch (error) {
@@ -104,14 +104,14 @@
               <div class="flex justify-between">
                 <span>{name}:</span>
                 <span class="font-mono {status.online ? 'text-green-400' : 'text-red-400'}">
-                  {status.online ? '✅' : '❌'} 
+                  {status.online ? '✅' : '❌'}
                   {status.responseTime ? `${status.responseTime}ms` : ''}
                 </span>
               </div>
             {/each}
           </div>
           <div class="text-xs text-nier-text-muted mt-2">
-            {serviceStatus.cached ? '📋 Cached' : '🔄 Fresh'} • 
+            {serviceStatus.cached ? '📋 Cached' : '🔄 Fresh'} •
             Updated: {serviceStatus.lastUpdate.toLocaleTimeString()}
           </div>
         </div>
@@ -188,34 +188,34 @@
   <!-- Cache Demo Section -->
   <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-6">
     <h3 class="font-bold text-nier-accent-warm mb-4">Graph Query Cache Demo</h3>
-    
+
     <div class="flex gap-4 mb-4">
       <ModernButton
-        on:on:on:click={runCacheDemo}
+  on:click={runCacheDemo}
         disabled={cacheDemo.loading}
         class="bg-blue-600 hover:bg-blue-700"
       >
         {cacheDemo.loading ? '⚡ Running...' : '🔍 Run Graph Query'}
       </ModernButton>
-      
+
       <ModernButton
-        on:on:on:click={triggerIdle}
+  on:click={triggerIdle}
         variant="outline"
         class="border-yellow-500 text-yellow-400 hover:bg-yellow-500/10"
       >
         💤 Trigger Idle
       </ModernButton>
-      
+
       <ModernButton
-        on:on:on:click={triggerActivity}
+  on:click={triggerActivity}
         variant="outline"
         class="border-green-500 text-green-400 hover:bg-green-500/10"
       >
         🏃 Trigger Activity
       </ModernButton>
-      
+
       <ModernButton
-        on:on:on:click={clearAllCaches}
+  on:click={clearAllCaches}
         variant="outline"
         class="border-red-500 text-red-400 hover:bg-red-500/10"
       >
@@ -231,7 +231,7 @@
             Executed in {cacheDemo.queryTime}ms
           </span>
         </div>
-        
+
         {#if cacheDemo.results.error}
           <div class="text-red-400 font-mono text-sm">
             Error: {cacheDemo.results.error}
@@ -241,13 +241,13 @@
             <div class="flex justify-between text-sm">
               <span>Source:</span>
               <span class="font-mono px-2 py-1 rounded text-xs
-                {cacheDemo.results.metadata.source === 'wasm' ? 'bg-blue-500/20 text-blue-400' : 
-                  cacheDemo.results.metadata.source === 'cache' ? 'bg-green-500/20 text-green-400' : 
+                {cacheDemo.results.metadata.source === 'wasm' ? 'bg-blue-500/20 text-blue-400' :
+                  cacheDemo.results.metadata.source === 'cache' ? 'bg-green-500/20 text-green-400' :
                   'bg-yellow-500/20 text-yellow-400'}">
                 {cacheDemo.results.metadata.source.toUpperCase()}
               </span>
             </div>
-            
+
             <div class="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <div class="text-nier-text-secondary mb-1">Nodes: {cacheDemo.results.nodes.length}</div>
@@ -264,7 +264,7 @@
                   {/if}
                 </div>
               </div>
-              
+
               <div>
                 <div class="text-nier-text-secondary mb-1">Edges: {cacheDemo.results.edges.length}</div>
                 <div class="text-xs space-y-1">
@@ -290,7 +290,7 @@
   <!-- Integration Architecture -->
   <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-6">
     <h3 class="font-bold text-nier-accent-warm mb-4">Integration Architecture</h3>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
         <h4 class="font-semibold text-nier-text-primary mb-2">Cache Hierarchy</h4>
@@ -301,7 +301,7 @@
           <div>4. 🌐 Remote Neo4j (100ms+)</div>
         </div>
       </div>
-      
+
       <div>
         <h4 class="font-semibold text-nier-text-primary mb-2">Background Processing</h4>
         <div class="text-sm space-y-1 text-nier-text-secondary">
@@ -320,13 +320,13 @@
   :global(.font-mono) {
     font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
   }
-  
+
   /* Animations for loading states */
   @keyframes pulse-blue {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-  
+
   :global(.animate-pulse-blue) {
     animation: pulse-blue 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }

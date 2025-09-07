@@ -135,7 +135,7 @@ class FrontendRAGPipeline {
         new Float32Array(chunk.embedding)
       );
       
-      const contextBoost = contextWeights.boost[chunk.metadata.semanticGroup] || 1.0;
+      const contextBoost = (contextWeights.boost as any)[chunk.metadata.semanticGroup] || 1.0;
       const finalScore = similarity * contextBoost * chunk.metadata.relevance;
 
       return { ...chunk, score: finalScore };

@@ -422,7 +422,7 @@ export class LegalDocumentBinarySerializer {
       [DocumentType.CITATION]: 'citation',
       [DocumentType.PRECEDENT]: 'precedent'
     };
-    return map[enumValue] || 'evidence';
+    return map[enumValue as DocumentType] || 'evidence';
   }
   
   private static riskLevelToEnum(risk: string): RiskLevel {
@@ -442,7 +442,7 @@ export class LegalDocumentBinarySerializer {
       [RiskLevel.HIGH]: 'high',
       [RiskLevel.CRITICAL]: 'critical'
     };
-    return map[enumValue] || 'medium';
+    return map[enumValue as RiskLevel] || 'medium';
   }
   
   private static riskLevelToWeight(risk: string): number {

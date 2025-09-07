@@ -20,7 +20,7 @@ export class YoRHaUIExample {
   private mouse: THREE.Vector2;
   private animationId?: number;
   
-  private mainLayout: YoRHaLayout3D;
+  private mainLayout!: YoRHaLayout3D;
   private modal?: YoRHaModal3D;
   private hoveredObject?: THREE.Object3D;
   private clickedObject?: THREE.Object3D;

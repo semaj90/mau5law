@@ -28,7 +28,7 @@
       description: 'Go microservice health check'
     },
     {
-      name: 'Upload Service Health', 
+      name: 'Upload Service Health',
       endpoint: 'http://localhost:8093/health',
       description: 'File upload service health'
     },
@@ -59,7 +59,7 @@
 
       const response = await fetch(test.endpoint, options);
       let data;
-      
+
       try {
         data = await response.json();
       } catch {
@@ -111,11 +111,11 @@
     try {
       const response = await fetch('/api/dev-auth?seed=true');
       const result = await response.json();
-      
+
       if (result.success) {
         await checkAuthStatus();
       }
-      
+
       return result;
     } catch (error) {
       console.error('Dev session creation failed:', error);
@@ -126,11 +126,11 @@
     try {
       const response = await fetch('/api/dev-auth', { method: 'POST' });
       const result = await response.json();
-      
+
       if (result.success) {
         await checkAuthStatus();
       }
-      
+
       return result;
     } catch (error) {
       console.error('Session clear failed:', error);
@@ -165,21 +165,21 @@
         <CardContent>
           {#snippet children()}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Button onclick={runAllTests} disabled={isRunning} variant="default">
+              <Button on:click={runAllTests} disabled={isRunning} variant="default">
                 {#snippet children()}
                   {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
                 {/snippet}
               </Button>
-              
-              <Button onclick={createDevSession} variant="outline">
+
+              <Button on:click={createDevSession} variant="outline">
                 {#snippet children()}🔑 Create Dev Session{/snippet}
               </Button>
-              
-              <Button onclick={checkAuthStatus} variant="outline">
+
+              <Button on:click={checkAuthStatus} variant="outline">
                 {#snippet children()}👤 Check Auth Status{/snippet}
               </Button>
-              
-              <Button onclick={clearSession} variant="destructive">
+
+              <Button on:click={clearSession} variant="destructive">
                 {#snippet children()}🚪 Clear Session{/snippet}
               </Button>
             </div>
@@ -213,12 +213,12 @@
                       </span>
                     {/if}
                   </div>
-                  
+
                   <p class="text-sm bg-blue-50 p-3 rounded-lg">
                     💡 {authStatus.hint}
                   </p>
                 </div>
-                
+
                 <div class="bg-gray-50 p-4 rounded-lg">
                   <h4 class="font-semibold mb-2">Request Info</h4>
                   <p class="text-sm text-gray-600">Request ID: {authStatus.requestId}</p>
@@ -259,7 +259,7 @@
                 </div>
               {/snippet}
             </CardHeader>
-            
+
             <CardContent>
               {#snippet children()}
                 {#if result}

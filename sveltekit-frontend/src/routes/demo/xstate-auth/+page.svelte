@@ -9,8 +9,8 @@
   import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
-  import { 
-    Shield, CheckCircle, AlertTriangle, Code2, 
+  import {
+    Shield, CheckCircle, AlertTriangle, Code2,
     Cpu, Zap, Brain, FileText, Users
   } from 'lucide-svelte';
 
@@ -108,8 +108,8 @@
       }];
 
       // Update to running
-      testResults = testResults.map(result => 
-        result.name === name 
+      testResults = testResults.map(result =>
+        result.name === name
           ? { ...result, status: 'running', message: 'Running test...' }
           : result
       );
@@ -118,20 +118,20 @@
         const startTime = Date.now();
         const message = await test();
         const duration = Date.now() - startTime;
-        
+
         // Update to success
-        testResults = testResults.map(result => 
-          result.name === name 
+        testResults = testResults.map(result =>
+          result.name === name
             ? { ...result, status: 'success', message, duration }
             : result
         );
       } catch (error) {
         // Update to error
-        testResults = testResults.map(result => 
-          result.name === name 
-            ? { 
-                ...result, 
-                status: 'error', 
+        testResults = testResults.map(result =>
+          result.name === name
+            ? {
+                ...result,
+                status: 'error',
                 message: error instanceof Error ? error.message : 'Test failed'
               }
             : result
@@ -185,7 +185,7 @@
 
 <div class="min-h-screen bg-background p-6">
   <div class="max-w-6xl mx-auto space-y-8">
-    
+
     <!-- Header -->
     <div class="text-center space-y-4">
       <div class="flex items-center justify-center gap-3">
@@ -193,7 +193,7 @@
         <h1 class="text-4xl font-bold">XState Authentication Flow Demo</h1>
       </div>
       <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
-        Complete demonstration and testing of authentication flow with GPU accelerated legal AI features, 
+        Complete demonstration and testing of authentication flow with GPU accelerated legal AI features,
         XState management, Bits UI v2 components, and Context7 documentation integration.
       </p>
     </div>
@@ -217,8 +217,8 @@
                 {successfulTests}/{totalTests} Tests Passed
               </Badge>
             {/if}
-            <Button 
-              on:on:click={runTests} 
+            <Button
+              on:click={runTests}
               disabled={isRunningTests}
               variant={allTestsPassed ? 'outline' : 'default'}
             >
@@ -236,7 +236,7 @@
           </div>
         </div>
       </Card.Header>
-      
+
       <Card.Content>
         {#if testResults.length === 0}
           <div class="text-center py-8 text-muted-foreground">
@@ -360,7 +360,7 @@
               <li>• <code>agentShellMachine</code> - Multi-agent orchestration</li>
             </ul>
           </div>
-          
+
           <div>
             <h4 class="font-semibold mb-3">Services Integration</h4>
             <ul class="space-y-2 text-sm">
@@ -371,7 +371,7 @@
             </ul>
           </div>
         </div>
-        
+
         <div class="bg-slate-100 p-4 rounded-lg">
           <h4 class="font-semibold mb-2">Current Route</h4>
           <code class="text-sm">{$page.url.pathname}</code>

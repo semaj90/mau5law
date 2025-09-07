@@ -146,9 +146,9 @@ export interface YoRHaTransform {
 // Base YoRHa 3D UI Component
 export abstract class YoRHa3DComponent extends THREE.Group {
   protected style: YoRHaStyle;
-  protected geometry: THREE.BufferGeometry;
-  protected material: THREE.Material;
-  protected mesh: THREE.Mesh;
+  protected geometry!: THREE.BufferGeometry;
+  protected material!: THREE.Material;
+  protected mesh!: THREE.Mesh;
   protected animationMixer?: THREE.AnimationMixer;
   protected boundingBox: THREE.Box3;
   protected isHovered: boolean = false;

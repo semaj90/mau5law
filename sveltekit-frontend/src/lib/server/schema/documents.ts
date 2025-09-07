@@ -4,7 +4,7 @@
  */
 
 import { pgTable, serial, text, varchar, timestamp, integer, boolean, jsonb, uuid } from 'drizzle-orm/pg-core';
-import { vector } from 'drizzle-orm-pgvector';
+import { vector } from '@useverk/drizzle-pgvector';
 import { relations } from 'drizzle-orm';
 
 // Main documents table with vector embeddings

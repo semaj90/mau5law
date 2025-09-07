@@ -15,7 +15,7 @@ import {
   cacheVectorResults,
   getCachedVectorResults
 } from '$lib/services/cuda-vector-integration';
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 import { dev } from '$app/environment';
 
 // Request validation schema

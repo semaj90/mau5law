@@ -238,7 +238,7 @@ export class EnhancedIngestionPipeline {
     try {
       const collections = await this.qdrantClient.getCollections();
       const exists = collections.collections.some(
-        (c) => c.name === collectionName
+        (c: any) => c.name === collectionName
       );
 
       if (!exists) {
@@ -633,7 +633,7 @@ export class EnhancedIngestionPipeline {
         with_payload: true,
       });
 
-      const documents = searchResults.map((result) => ({
+      const documents = searchResults.map((result: any) => ({
         id: result.id,
         content: result.payload?.content || "",
         score: result.score,

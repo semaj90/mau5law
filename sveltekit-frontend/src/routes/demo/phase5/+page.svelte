@@ -4,11 +4,11 @@
   import Badge from '$lib/components/ui/Badge.svelte';
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  import { 
-    Zap, Brain, Database, Canvas, Search, Settings, 
+  import {
+    Zap, Brain, Database, Canvas, Search, Settings,
     CheckCircle, ArrowRight, Sparkles, Cpu, Server
   } from 'lucide-svelte';
-  
+
   // Import Phase 5 components
   import VectorIntelligenceDemo from '$lib/components/demo/VectorIntelligenceDemo.svelte';
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
@@ -98,7 +98,7 @@
 
   onMount(async () => {
     systemStatus = 'ready';
-    
+
     // Initialize Context7 service
     await context7Service.initialize();
     context7Stats = context7Service.getCacheStats();
@@ -223,8 +223,8 @@
             {#each phase5Features as feature}
               <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                 <div class="flex items-start gap-3">
-                  <feature.icon 
-                    class="h-8 w-8 {getStatusIcon(feature.status)} flex-shrink-0 mt-1" 
+                  <feature.icon
+                    class="h-8 w-8 {getStatusIcon(feature.status)} flex-shrink-0 mt-1"
                   />
                   <div class="flex-1">
                     <div class="flex items-center gap-2 mb-2">
@@ -291,9 +291,9 @@
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button 
-              class="w-full" 
-              on:on:click={() => activeTab = 'vector-demo'}
+            <Button
+              class="w-full"
+              on:click={() => activeTab = 'vector-demo'}
             >
               <Search class="h-4 w-4 mr-2" />
               Launch Vector Demo
@@ -310,10 +310,10 @@
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               class="w-full"
-              on:on:click={() => activeTab = 'fabric-canvas'}
+              on:click={() => activeTab = 'fabric-canvas'}
             >
               <Canvas class="h-4 w-4 mr-2" />
               Open Canvas
@@ -339,9 +339,9 @@
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <FabricCanvas 
-            width={800} 
-            height={600} 
+          <FabricCanvas
+            width={800}
+            height={600}
             caseId="demo-case-001"
             save={(e) => console.log('Canvas saved:', e.detail)}
             delete={(e) => console.log('Object deleted:', e.detail)}
@@ -389,7 +389,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div>
                 <h3 class="font-semibold mb-3">System Resources</h3>
                 <div class="space-y-2">

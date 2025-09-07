@@ -1,8 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { caseActivities } from "$lib/server/db/schema-postgres";
 import { db } from "$lib/server/db/index";
-import { eq, sql, desc } from "drizzle-orm";
-import { or as orExpr, like } from "drizzle-orm/expressions";
+import { eq, sql, desc, or as orExpr, like } from "drizzle-orm";
 import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 

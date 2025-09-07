@@ -250,6 +250,9 @@
     <!-- File Upload Section -->
     {#if !selectedFile && !isProcessing && !isCompleted}
       <div 
+        role="button"
+        tabindex="0"
+        aria-label="Drop files here to upload or click to select files"
         class="border-2 border-dashed rounded-lg p-8 text-center transition-colors {dragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}"
         ondrop={handleFileDrop}
         ondragover={handleDragOver}

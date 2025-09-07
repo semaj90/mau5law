@@ -2,7 +2,7 @@
 <script lang="ts">
   import { cn } from '$lib/utils';
   import { ChevronDown, ChevronUp, Search, Filter, Download } from 'lucide-svelte';
-  
+
   import BitsInput from '../input/BitsInput.svelte';
   import Button from '../button/Button.svelte';
 
@@ -70,7 +70,7 @@
       filtered.sort((a, b) => {
         const aVal = a[sortColumn] ?? '';
         const bVal = b[sortColumn] ?? '';
-        
+
         const comparison = aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
         return sortDirection === 'asc' ? comparison : -comparison;
       });
@@ -124,7 +124,7 @@
   }
 </script>
 
-<div className={cn('legal-data-table w-full space-y-4', className)}>
+<div class={cn('legal-data-table w-full space-y-4', className)}>
   <!-- Header -->
   <div class="flex items-center justify-between">
     {#if title}
@@ -132,7 +132,7 @@
         {title}
       </h3>
     {/if}
-    
+
     <div class="flex items-center gap-2">
       {#if searchable}
         <div class="w-64">
@@ -145,15 +145,15 @@
           />
         </div>
       {/if}
-      
+
       {#if filterable}
         <Button variant="outline" size="sm">
           <Filter class="w-4 h-4" />
         </Button>
       {/if}
-      
+
       {#if exportable}
-        <Button variant="outline" size="sm" on:on:click={handleExport}>
+        <Button variant="outline" size="sm" on:click={handleExport}>
           <Download class="w-4 h-4 mr-2" />
           Export
         </Button>
@@ -172,20 +172,20 @@
                 <input
                   type="checkbox"
                   checked={selectedRows.size === paginatedData.length && paginatedData.length > 0}
-                  change={toggleSelectAll}
+                  onchange={toggleSelectAll}
                   class="rounded border-yorha-border"
                 />
               </th>
             {/if}
             {#each columns as column}
-              <th 
-                className={cn(
+              <th
+                class={cn(
                   'px-3 py-3 text-left text-xs font-medium text-yorha-text-secondary uppercase tracking-wider font-mono',
                   column.sortable && 'cursor-pointer hover:text-yorha-text-primary',
-                  column.className
+                  column.class
                 )}
                 style={column.width ? `width: ${column.width}` : undefined}
-                on:onclick={() => handleSort(column)}
+                onclick={() => handleSort(column)}
               >
                 <div class="flex items-center gap-1">
                   {column.label}
@@ -207,29 +207,29 @@
         </thead>
         <tbody class="divide-y divide-yorha-border">
           {#each paginatedData as row, index (row.id || index)}
-            <tr 
+            <tr
               class={cn(
                 'hover:bg-yorha-bg-tertiary transition-colors',
                 onRowClick && 'cursor-pointer',
                 selectedRows.has(index) && 'bg-yorha-primary/5'
               )}
-              on:onclick={() => onRowClick?.(row)}
+              onclick={() => onRowClick?.(row)}
             >
               {#if selectable}
                 <td class="p-3">
                   <input
                     type="checkbox"
                     checked={selectedRows.has(index)}
-                    change={() => toggleRowSelection(index)}
-                    on:on:click={(e) => e.stopPropagation()}
+                    onchange={() => toggleRowSelection(index)}
+                    onclick={(e) => e.stopPropagation()}
                     class="rounded border-yorha-border"
                   />
                 </td>
               {/if}
               {#each columns as column}
-                <td className={cn(
+                <td class={cn(
                   'px-3 py-3 text-sm text-yorha-text-primary font-mono whitespace-nowrap',
-                  column.className
+                  column.class
                 )}>
                   {#if column.render}
                     {@html column.render(row[column.key], row)}
@@ -253,27 +253,27 @@
         ({selectedRows.size} selected)
       {/if}
     </div>
-    
+
     {#if totalPages > 1}
       <div class="flex items-center gap-2">
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           disabled={currentPage === 0}
-          on:on:click={() => currentPage = Math.max(0, currentPage - 1)}
+          on:click={() => currentPage = Math.max(0, currentPage - 1)}
         >
           Previous
         </Button>
-        
+
         <span class="px-3 py-1 text-yorha-text-primary">
           Page {currentPage + 1} of {totalPages}
         </span>
-        
-        <Button 
-          variant="outline" 
-          size="sm" 
+
+        <Button
+          variant="outline"
+          size="sm"
           disabled={currentPage >= totalPages - 1}
-          on:on:click={() => currentPage = Math.min(totalPages - 1, currentPage + 1)}
+          on:click={() => currentPage = Math.min(totalPages - 1, currentPage + 1)}
         >
           Next
         </Button>

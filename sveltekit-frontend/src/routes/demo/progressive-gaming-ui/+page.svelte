@@ -1,7 +1,7 @@
 <!--
   Progressive Gaming UI Demo
   Showcases 8-bit → 16-bit → N64 evolution with infrastructure fixes
-  
+
   Features:
   - All gaming era components
   - Performance monitoring
@@ -35,7 +35,7 @@
   const checkDatabaseConnection = async () => {
     try {
       loading = true;
-      
+
       // Test database health
       const dbResponse = await fetch('/api/admin/health');
       if (dbResponse.ok) {
@@ -128,10 +128,10 @@
   onMount(() => {
     // Initial infrastructure check
     checkDatabaseConnection();
-    
+
     // Periodic health checks
     const healthCheckInterval = setInterval(checkDatabaseConnection, 30000);
-    
+
     return () => {
       clearInterval(healthCheckInterval);
     };
@@ -143,7 +143,7 @@
   <meta name="description" content="Progressive gaming UI evolution from 8-bit to N64 with full infrastructure integration" />
 </svelte:head>
 
-<ProgressiveGamingProvider 
+<ProgressiveGamingProvider
   initialEra="auto"
   enableAutoEvolution={true}
   integrateWithYorha={true}
@@ -161,7 +161,7 @@
           {databaseStatus?.status || 'Unknown'}
         </span>
       </div>
-      
+
       <div class="status-item" class:healthy={systemHealth?.admin} class:error={!systemHealth?.admin}>
         <span class="status-icon">{systemHealth?.admin ? '✅' : '❌'}</span>
         <span>Admin APIs</span>
@@ -169,7 +169,7 @@
           {adminMetrics ? 'Connected' : 'Disconnected'}
         </span>
       </div>
-      
+
       <div class="status-item" class:healthy={systemHealth?.memory} class:error={!systemHealth?.memory}>
         <span class="status-icon">{memoryStats?.status !== 'unavailable' ? '✅' : '⚠️'}</span>
         <span>Memory Monitor</span>
@@ -178,7 +178,7 @@
         </span>
       </div>
     </div>
-    
+
     {#if loading}
       <div class="loading-indicator">Checking infrastructure...</div>
     {/if}
@@ -193,24 +193,24 @@
     <div class="era-controls">
       <h3>Select Gaming Era:</h3>
       <div class="era-buttons">
-        <NES8BitButton 
-          on:on:on:click={() => selectedEra = '8bit'}
+        <NES8BitButton
+          on:click={() => selectedEra = '8bit'}
           variant={selectedEra === '8bit' ? 'success' : 'primary'}
           enableSound={true}
         >
           8-BIT NES
         </NES8BitButton>
-        
-        <SNES16BitButton 
-          on:on:on:click={() => selectedEra = '16bit'}
+
+        <SNES16BitButton
+          on:click={() => selectedEra = '16bit'}
           variant={selectedEra === '16bit' ? 'success' : 'primary'}
           enableEnhancedSound={true}
         >
           16-BIT SNES
         </SNES16BitButton>
-        
-        <N643DButton 
-          on:on:on:click={() => selectedEra = 'n64'}
+
+        <N643DButton
+          on:click={() => selectedEra = 'n64'}
           variant={selectedEra === 'n64' ? 'success' : 'primary'}
           enableParticles={true}
         >
@@ -231,9 +231,9 @@
             <li>Square wave audio</li>
             <li>Sharp, blocky borders</li>
           </ul>
-          
+
           <div class="button-demo">
-            <NES8BitButton nesVariant="is-primary" on:on:on:click={() => demoCounter++}>
+            <NES8BitButton nesVariant="is-primary" on:click={() => demoCounter++}>
               Action ({demoCounter})
             </NES8BitButton>
             <NES8BitButton nesVariant="is-success" enableSound={true}>
@@ -255,9 +255,9 @@
             <li>8-channel audio</li>
             <li>Mode 7 perspective effects</li>
           </ul>
-          
+
           <div class="button-demo">
-            <SNES16BitButton on:on:on:click={() => demoCounter++} enableLayerEffects={true}>
+            <SNES16BitButton on:click={() => demoCounter++} enableLayerEffects={true}>
               Layer Effects ({demoCounter})
             </SNES16BitButton>
             <SNES16BitButton enableMode7={true} plasmaEffect={enableEffects}>
@@ -280,27 +280,27 @@
             <li>Fog effects and Z-buffering</li>
             <li>64-channel spatial audio</li>
           </ul>
-          
+
           <div class="button-demo-3d">
-            <N643DButton 
-              on:on:on:click={() => demoCounter++}
+            <N643DButton
+              on:click={() => demoCounter++}
               meshComplexity="high"
               enableLighting={true}
               enableReflections={true}
             >
               High-Quality 3D ({demoCounter})
             </N643DButton>
-            
-            <N643DButton 
+
+            <N643DButton
               materialType="pbr"
               enableParticles={true}
               enableFog={true}
-              on:on:on:click={testDataOperations}
+              on:click={testDataOperations}
             >
               PBR + Particles + DB Test
             </N643DButton>
-            
-            <N643DButton 
+
+            <N643DButton
               enableMode7={true}
               glowIntensity={1.0}
               rotationY={5}
@@ -328,19 +328,19 @@
               {/if}
             </div>
           {/if}
-          
+
           {#if memoryStats && memoryStats.status !== 'unavailable'}
             <div class="metric-item">
               <strong>Memory Usage:</strong>
               <span>{memoryStats.memory || 'N/A'}%</span>
             </div>
           {/if}
-          
+
           <div class="metric-item">
             <strong>Demo Interactions:</strong>
             <span>{demoCounter}</span>
           </div>
-          
+
           <div class="metric-item">
             <strong>Current Era:</strong>
             <span class="era-indicator">{selectedEra.toUpperCase()}</span>
@@ -354,30 +354,30 @@
       <h3>🛠️ Development Tools</h3>
       <div class="control-group">
         <label>
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             bind:checked={showDebugInfo}
-            class="nes-checkbox" 
+            class="nes-checkbox"
           />
           <span>Show Debug Info</span>
         </label>
-        
+
         <label>
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             bind:checked={enableEffects}
-            class="nes-checkbox" 
+            class="nes-checkbox"
           />
           <span>Enable Visual Effects</span>
         </label>
       </div>
-      
+
       <div class="action-buttons">
-        <NES8BitButton on:on:on:click={checkDatabaseConnection} loading={loading}>
+  <NES8BitButton on:click={checkDatabaseConnection} loading={loading}>
           Refresh Status
         </NES8BitButton>
-        
-        <SNES16BitButton on:on:on:click={testDataOperations}>
+
+  <SNES16BitButton on:click={testDataOperations}>
           Test Database Ops
         </SNES16BitButton>
       </div>
@@ -396,7 +396,7 @@
           <li>Connected admin APIs for health monitoring</li>
           <li>Implemented performance-based era adaptation</li>
         </ul>
-        
+
         <h4>🔄 Active Integrations:</h4>
         <ul>
           <li>Database connection: {systemHealth?.database ? '✅ Active' : '❌ Offline'}</li>
@@ -405,7 +405,7 @@
           <li>YoRHa 3D System: ✅ Integrated</li>
           <li>Gaming Evolution: ✅ Operational</li>
         </ul>
-        
+
         <h4>📈 Performance Notes:</h4>
         <ul>
           <li>Automatic era downgrading based on device capabilities</li>
@@ -691,26 +691,26 @@
     .demo-container {
       padding: 1rem;
     }
-    
+
     .status-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .era-buttons {
       flex-direction: column;
       align-items: center;
     }
-    
+
     .button-demo,
     .button-demo-3d {
       flex-direction: column;
       align-items: center;
     }
-    
+
     .metrics-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .control-group {
       flex-direction: column;
       gap: 1rem;
@@ -723,7 +723,7 @@
       perspective: none;
       transform-style: flat;
     }
-    
+
     .loading-indicator {
       animation: none;
     }
@@ -736,11 +736,11 @@
     .integration-report {
       border-width: 2px;
     }
-    
+
     .status-item.healthy {
       background: rgba(0, 255, 65, 0.2);
     }
-    
+
     .status-item.error {
       background: rgba(255, 0, 65, 0.2);
     }

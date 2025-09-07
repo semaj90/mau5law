@@ -101,7 +101,7 @@ export class OCRTensorProcessor {
         { scope: '/api/tensor/' }
       );
       
-      this.worker = registration.active || registration.installing || registration.waiting;
+      this.worker = (registration.active || registration.installing || registration.waiting) as any;
       console.log('✅ SIMD Service Worker initialized');
     } catch (error) {
       console.warn('Service Worker initialization failed:', error);
@@ -250,7 +250,7 @@ export class OCRTensorProcessor {
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
-      this.webgpuDevice.queue.writeBuffer(inputBuffer, 0, embeddings);
+      this.webgpuDevice.queue.writeBuffer(inputBuffer, 0, embeddings.buffer);
 
       // Execute SIMD processing
       const outputBuffer = await shaderCacheManager.executeTensorOperation(

@@ -3,9 +3,10 @@ Enhanced File Upload Component with localStorage Fallback
 Automatically handles server upload with localStorage fallback
 -->
 <script lang="ts">
-  import { enhancedFileUpload, type UploadResponse } from '$lib/services/enhanced-file-upload.js';
-  import { localStorageFiles } from '$lib/services/localStorage-file-fallback.js';
-  import { createEventDispatcher } from 'svelte';
+  import { onMount } from 'svelte';
+  import enhancedFileUpload from '$lib/services/enhanced-file-upload.js';
+  import type { UploadResponse } from '$lib/services/enhanced-file-upload.js';
+  import localStorageFiles from '$lib/services/localStorage-file-fallback.js';
 
   // Props
   interface Props {
@@ -16,8 +17,11 @@ Automatically handles server upload with localStorage fallback
     accept?: string;
     maxSize?: number; // MB
     forceLocalStorage?: boolean;
+    onupload?: (event: { results: UploadResponse[] }) => void;
+    onerror?: (event: { error: string }) => void;
+    onprogress?: (event: { completed: number; total: number; file: string }) => void;
   }
-  
+
   let {
     caseId,
     description,
@@ -25,7 +29,10 @@ Automatically handles server upload with localStorage fallback
     multiple = false,
     accept = '*/*',
     maxSize = 10,
-    forceLocalStorage = false
+    forceLocalStorage = false,
+    onupload,
+    onerror,
+    onprogress
   }: Props = $props();
 
   // State
@@ -39,27 +46,21 @@ Automatically handles server upload with localStorage fallback
   // Storage stats
   let storageStats = $state(localStorageFiles.getStorageUsage());
 
-  // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    upload: { results: UploadResponse[] };
-    error: { error: string };
-    progress: { completed: number; total: number; file: string };
-  }>();
-
   // File input reference
-let fileInput = $state<HTMLInputElement;
+  let fileInput: HTMLInputElement;
 
   /**
    * Handle file selection
    */
   async function handleFileSelect(files: FileList) {
-    if (files.length >(== 0) return);
+    if (files.length === 0) return;
 
     // Validate files
     const validFiles: File[] = [];
     for (const file of Array.from(files)) {
       if (file.size > maxSize * 1024 * 1024) {
         error = `File ${file.name} is too large (max ${maxSize}MB)`;
+        onerror?.({ error: error! });
         return;
       }
       validFiles.push(file);
@@ -85,7 +86,7 @@ let fileInput = $state<HTMLInputElement;
         (completed, total, file) => {
           uploadProgress = (completed / total) * 100;
           currentFile = file;
-          dispatch('progress', { completed, total, file });
+          onprogress?.({ completed, total, file });
         }
       );
 
@@ -97,14 +98,14 @@ let fileInput = $state<HTMLInputElement;
 
       if (errorCount > 0) {
         error = `${errorCount} file(s) failed to upload`;
-        dispatch('error', { error: error! });
+        onerror?.({ error: error! });
       }
 
-      dispatch('upload', { results });
+      onupload?.({ results });
 
     } catch (err: any) {
       error = err.message || 'Upload failed';
-      dispatch('error', { error: error! });
+      onerror?.({ error: error! });
     } finally {
       isUploading = false;
       uploadProgress = 0;
@@ -148,6 +149,15 @@ let fileInput = $state<HTMLInputElement;
     uploadResults = [];
     error = null;
   }
+
+  // Update storage stats periodically
+  onMount(() => {
+    const interval = setInterval(() => {
+      storageStats = localStorageFiles.getStorageUsage();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  });
 </script>
 
 <div class="file-upload-container">
@@ -155,8 +165,8 @@ let fileInput = $state<HTMLInputElement;
   {#if forceLocalStorage || storageStats.percentage > 0}
     <div class="storage-indicator">
       <div class="storage-bar">
-        <div 
-          class="storage-fill" 
+        <div
+          class="storage-fill"
           style="width: {storageStats.percentage}%"
           class:warning={storageStats.percentage > 75}
           class:critical={storageStats.percentage > 90}
@@ -169,7 +179,7 @@ let fileInput = $state<HTMLInputElement;
   {/if}
 
   <!-- Drop Zone -->
-  <div 
+  <div
     class="drop-zone"
     class:drag-over={isDragOver}
     class:uploading={isUploading}
@@ -178,8 +188,8 @@ let fileInput = $state<HTMLInputElement;
     ondragleave={handleDragLeave}
     role="button"
     tabindex="0"
-    on:on:onclick={openFileSelector}
-    keydown={(e) => e.key === 'Enter' && openFileSelector()}
+    onclick={openFileSelector}
+    onkeydown={(e) => e.key === 'Enter' && openFileSelector()}
   >
     <div class="drop-zone-content">
       {#if isUploading}
@@ -215,7 +225,10 @@ let fileInput = $state<HTMLInputElement;
     {accept}
     {multiple}
     style="display: none"
-    onchange={(e) => e.target?.files && handleFileSelect(e.target.files)}
+    onchange={(e) => {
+      const target = e.target as HTMLInputElement;
+      if (target?.files) handleFileSelect(target.files);
+    }}
   />
 
   <!-- Error Display -->
@@ -230,9 +243,9 @@ let fileInput = $state<HTMLInputElement;
     <div class="results-container">
       <div class="results-header">
         <h4>Upload Results</h4>
-        <button class="clear-btn" on:on:onclick={clearResults}>Clear</button>
+        <button class="clear-btn" onclick={clearResults}>Clear</button>
       </div>
-      
+
       <div class="results-list">
         {#each uploadResults as result}
           <div class="result-item" class:success={result.success} class:error={!result.success}>

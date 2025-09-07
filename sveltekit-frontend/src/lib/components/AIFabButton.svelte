@@ -4,7 +4,7 @@
   import { $derived } from 'svelte';
 	import { aiStore } from "../stores/canvas";
 	import Dialog from './Dialog.svelte';
-	
+
 	import { Sparkles, Bot } from 'lucide-svelte';
 
 	const dispatch = createEventDispatcher();
@@ -27,9 +27,9 @@
 
 <!-- Floating Action Button -->
 <button
-	class="mx-auto px-4 max-w-7xl"
+	 class="mx-auto px-4 max-w-7xl"
  class:generating={isGenerating}
-	on:onclick={() => toggleDialog()}
+	 onclick={() => toggleDialog()}
 	aria-label="Open AI Assistant"
 	title="AI Assistant"
 >
@@ -40,7 +40,7 @@
 			<Sparkles size={24} />
 		{/if}
 	</div>
-	
+
 	<div class="mx-auto px-4 max-w-7xl"></div>
 </button>
 

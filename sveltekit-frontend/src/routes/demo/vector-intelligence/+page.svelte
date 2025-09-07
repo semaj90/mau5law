@@ -7,7 +7,7 @@ Comprehensive showcase of Phase 4 capabilities
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
-  import { 
+  import {
     ArrowLeft,
     ExternalLink,
     BookOpen,
@@ -23,13 +23,13 @@ Comprehensive showcase of Phase 4 capabilities
 </svelte:head>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-  
+
   <!-- Navigation Header -->
   <div class="bg-white dark:bg-gray-800 shadow-sm border-b">
     <div class="max-w-7xl mx-auto px-6 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <Button variant="ghost" size="sm" on:on:click="history.back()">
+          <Button variant="ghost" size="sm" on:click="history.back()">
             <ArrowLeft class="h-4 w-4 mr-2" />
             Back
           </Button>
@@ -39,7 +39,7 @@ Comprehensive showcase of Phase 4 capabilities
             <p class="text-sm text-muted-foreground">Phase 4 AI System Showcase</p>
           </div>
         </div>
-        
+
         <div class="flex items-center space-x-2">
           <Badge class="bits-badge-default flex items-center gap-1">
             <Zap class="h-3 w-3" />
@@ -60,21 +60,21 @@ Comprehensive showcase of Phase 4 capabilities
 
   <!-- Main Content -->
   <div class="max-w-7xl mx-auto px-6 py-8">
-    
+
     <!-- Introduction Section -->
     <div class="mb-8 text-center space-y-4">
       <div class="inline-flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium">
         <Code class="h-4 w-4" />
         <span>Interactive Demo Environment</span>
       </div>
-      
+
       <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
         Vector Intelligence System
       </h1>
-      
+
       <p class="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-        Experience the cutting-edge capabilities of our Phase 4 Vector Intelligence system. 
-        Featuring advanced semantic search, AI-powered recommendations, comprehensive document 
+        Experience the cutting-edge capabilities of our Phase 4 Vector Intelligence system.
+        Featuring advanced semantic search, AI-powered recommendations, comprehensive document
         analysis, and real-time system monitoring - all optimized for legal professionals.
       </p>
     </div>

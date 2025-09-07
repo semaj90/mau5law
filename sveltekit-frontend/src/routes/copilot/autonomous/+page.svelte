@@ -7,9 +7,9 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
-  import { 
-    Bot, 
-    Brain, 
+  import {
+    Bot,
+    Brain,
     Search,
     Memory,
     Users,
@@ -23,7 +23,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     FileText,
     Workflow
   } from 'lucide-svelte';
-  
+
   import AutonomousEngineeringDemo from '$lib/components/copilot/AutonomousEngineeringDemo.svelte';
 
   // System status state
@@ -190,7 +190,7 @@ export function activate(context: vscode.ExtensionContext) {
 </svelte:head>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-  
+
   <!-- Header Section -->
   <div class="bg-white dark:bg-gray-800 shadow-sm border-b">
     <div class="max-w-7xl mx-auto px-6 py-8">
@@ -221,7 +221,7 @@ export function activate(context: vscode.ExtensionContext) {
             </Badge>
           </div>
         </div>
-        
+
         <div class="text-right">
           <p class="text-sm text-gray-500 dark:text-gray-400">Phase 4+ Implementation</p>
           <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">Comprehensive AI Orchestration</p>
@@ -231,15 +231,15 @@ export function activate(context: vscode.ExtensionContext) {
   </div>
 
   <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-    
+
     <!-- System Status Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
       {#each architectureFeatures as feature}
         <Card>
           <CardContent class="p-4">
             <div class="flex items-center justify-between mb-2">
-              <feature.icon 
-                class="h-6 w-6 {getStatusColor(feature.status)}" 
+              <feature.icon
+                class="h-6 w-6 {getStatusColor(feature.status)}"
               />
               <div class="w-2 h-2 rounded-full {feature.status ? 'bg-green-500' : 'bg-red-500'}"></div>
             </div>
@@ -253,7 +253,7 @@ export function activate(context: vscode.ExtensionContext) {
     </div>
 
     <!-- Main Demo Component -->
-    <AutonomousEngineeringDemo 
+    <AutonomousEngineeringDemo
       showAdvancedOptions={true}
       autoExecuteExamples={false}
     />
@@ -266,7 +266,7 @@ export function activate(context: vscode.ExtensionContext) {
             <Settings class="h-5 w-5" />
             System Architecture
           </span>
-          <Button variant="ghost" size="sm" on:on:click={() => showArchitecture = !showArchitecture}>
+          <Button variant="ghost" size="sm" on:click={() => showArchitecture = !showArchitecture}>
             {showArchitecture ? 'Hide' : 'Show'} Details
           </Button>
         </CardTitle>
@@ -314,7 +314,7 @@ export function activate(context: vscode.ExtensionContext) {
             <Code class="h-5 w-5" />
             VS Code Extension Integration
           </span>
-          <Button variant="ghost" size="sm" on:on:click={() => showIntegration = !showIntegration}>
+          <Button variant="ghost" size="sm" on:click={() => showIntegration = !showIntegration}>
             {showIntegration ? 'Hide' : 'Show'} Examples
           </Button>
         </CardTitle>
@@ -334,7 +334,7 @@ export function activate(context: vscode.ExtensionContext) {
               </div>
             {/each}
           </div>
-          
+
           <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <h3 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">API Endpoint</h3>
             <p class="text-sm text-blue-700 dark:text-blue-400 mb-2">
@@ -400,11 +400,11 @@ export function activate(context: vscode.ExtensionContext) {
             <span class="text-sm font-medium">Comprehensive AI Orchestration</span>
             <span class="text-sm text-green-600">Complete</span>
           </div>
-          
+
           <div class="w-full bg-gray-200 rounded-full h-2">
             <div class="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full" style="width: 100%"></div>
           </div>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div class="flex items-center gap-2">
               <CheckCircle class="h-4 w-4 text-green-500" />
@@ -423,12 +423,12 @@ export function activate(context: vscode.ExtensionContext) {
               <span>Copilot Integration</span>
             </div>
           </div>
-          
+
           <div class="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
             <p class="text-sm text-green-800 dark:text-green-300">
-              <strong>System Complete:</strong> Comprehensive AI orchestration system is fully operational 
-              with Copilot self-prompting, multi-agent coordination, autonomous engineering, and VS Code 
-              extension integration. The system can now autonomously analyze problems, coordinate multiple 
+              <strong>System Complete:</strong> Comprehensive AI orchestration system is fully operational
+              with Copilot self-prompting, multi-agent coordination, autonomous engineering, and VS Code
+              extension integration. The system can now autonomously analyze problems, coordinate multiple
               AI agents, and provide comprehensive solutions across webapp, desktop, and mobile platforms.
             </p>
           </div>

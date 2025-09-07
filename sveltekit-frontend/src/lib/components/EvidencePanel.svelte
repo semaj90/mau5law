@@ -1,50 +1,59 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  import type { Evidence } from "$lib/data/types";
+  import { onMount } from "svelte";
+
   interface Props {
     caseId: string;
-    onEvidenceDrop: (evidence: Evidence) => void;
+    onEvidenceDrop?: (evidence: Evidence) => void;
   }
+
   let {
     caseId,
     onEvidenceDrop = () => {}
   }: Props = $props();
 
-  import type { Evidence } from "$lib/data/types";
-  import { createEventDispatcher, onMount } from "svelte";
-  import { writable } from "svelte/store";
-
-  const evidenceList = writable<Evidence[]>([]);
-  const isUploading = writable(false);
-  const dispatcher = createEventDispatcher();
+  // State using Svelte 5 runes
+  let evidenceList = $state<Evidence[]>([]);
+  let isUploading = $state(false);
 
   async function fetchEvidence() {
-    const res = await fetch(`/api/evidence?caseId=${caseId}`);
-    if (res.ok) {
-      evidenceList.set(await res.json());
+    try {
+      const res = await fetch(`/api/evidence?caseId=${caseId}`);
+      if (res.ok) {
+        evidenceList = await res.json();
+      } else {
+        console.error('Failed to fetch evidence:', res.status);
+      }
+    } catch (error) {
+      console.error('Error fetching evidence:', error);
     }
   }
   async function handleUpload(e: Event) {
     const input = e.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
-    isUploading.set(true);
+    
+    isUploading = true;
     const file = input.files[0];
     const formData = new FormData();
     formData.append("file", file);
     formData.append("caseId", caseId);
+    
     try {
       const res = await fetch("/api/evidence/upload", {
         method: "POST",
         body: formData,
       });
+      
       if (res.ok) {
         console.log("Evidence uploaded!");
         await fetchEvidence();
       } else {
-        console.error("Upload failed");
+        console.error("Upload failed:", res.status);
       }
+    } catch (error) {
+      console.error("Upload error:", error);
     } finally {
-      isUploading.set(false);
+      isUploading = false;
       input.value = "";
     }
   }
@@ -55,42 +64,53 @@ https://svelte.dev/e/js_parse_error -->
   onMount(fetchEvidence);
 </script>
 
-<section class="space-y-4">
-  <h2 class="space-y-4">Evidence</h2>
-  <div class="space-y-4">
-    <label class="space-y-4">
+<section class="evidence-panel">
+  <h2 class="evidence-title">Evidence</h2>
+  
+  <div class="evidence-upload">
+    <label class="evidence-upload-btn">
       <input
         type="file"
-        accept="*"
-        change={handleUpload}
+        accept="*/*"
+        onchange={handleUpload}
         style="display:none"
       />
-      Upload Evidence
+      📁 Upload Evidence
     </label>
-    {#if $isUploading}
-      <span class="space-y-4">Uploading...</span>
+    {#if isUploading}
+      <span class="uploading">Uploading...</span>
     {/if}
   </div>
-  <div class="space-y-4">
-    {#each $evidenceList as evd (evd.id)}
+  
+  <div class="evidence-list">
+    {#each evidenceList as evd (evd.id)}
       <div
-        class="space-y-4"
+        class="evidence-card"
         draggable={true}
         ondragstart={(e) => handleDragStart(e, evd)}
         role="button"
         tabindex={0}
-        aria-label="Drag evidence item"
+        aria-label="Drag evidence item: {evd.title}"
       >
-        <div class="space-y-4">
-          <span class="space-y-4">{evd.fileType}</span>
-          <span class="space-y-4"
-            >{Array.isArray(evd.tags) ? evd.tags.join(", ") : ""}</span
-          >
+        <div class="evidence-meta">
+          <span class="file-type">{evd.fileType}</span>
+          {#if Array.isArray(evd.tags) && evd.tags.length > 0}
+            <span class="evidence-tags">{evd.tags.join(", ")}</span>
+          {/if}
         </div>
-        <div class="space-y-4">{evd.title}</div>
-        <div class="space-y-4">{evd.description}</div>
+        <div class="evidence-item-title">{evd.title}</div>
+        {#if evd.description}
+          <div class="evidence-desc">{evd.description}</div>
+        {/if}
       </div>
     {/each}
+    
+    {#if evidenceList.length === 0 && !isUploading}
+      <div class="empty-state">
+        <p>No evidence uploaded yet.</p>
+        <p class="empty-hint">Click "Upload Evidence" to add files to this case.</p>
+      </div>
+    {/if}
   </div>
 </section>
 
@@ -106,6 +126,8 @@ https://svelte.dev/e/js_parse_error -->
   .evidence-title {
     font-size: 1.3rem;
     margin-bottom: 1rem;
+    font-weight: 600;
+    color: #374151;
   }
   .evidence-upload {
     display: flex;
@@ -114,8 +136,19 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 1rem;
   }
   .evidence-upload-btn {
-    --uno: bg-primary text-white rounded px-4 py-2 shadow hover: bg-primary-600
-      transition;
+    display: inline-block;
+    background: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+  }
+  .evidence-upload-btn:hover {
+    background: #2563eb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   .uploading {
     color: var(--pico-primary, #007bff);
@@ -126,11 +159,20 @@ https://svelte.dev/e/js_parse_error -->
     gap: 1rem;
   }
   .evidence-card {
-    --uno: bg-gray-50 border border-gray-200 rounded p-3 shadow hover: shadow-lg
-      cursor-grab transition;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: grab;
+    transition: all 0.2s ease;
     min-width: 180px;
     max-width: 220px;
     user-select: none;
+  }
+  .evidence-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
   }
   .evidence-card:active {
     cursor: grabbing;
@@ -143,11 +185,42 @@ https://svelte.dev/e/js_parse_error -->
     gap: 0.5em;
   }
   .evidence-tags {
-    --uno: text-xs bg-primary bg-opacity-10 px-2 py-0.5 rounded;
+    font-size: 0.75rem;
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+  .file-type {
+    font-size: 0.75rem;
+    background: #e5e7eb;
+    color: #4b5563;
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .evidence-item-title {
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.95em;
+    margin: 0.5em 0;
   }
   .evidence-desc {
-    color: #444;
-    font-size: 0.95em;
+    color: #6b7280;
+    font-size: 0.85em;
     margin-top: 0.5em;
+    line-height: 1.4;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+  }
+  .empty-hint {
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    opacity: 0.8;
   }
 </style>

@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const body = await request.json();
     const targetPath = url.searchParams.get('path') || '/';
-    const useHttp3 = url.searchParams.get('http3') !== 'false';
+    let useHttp3 = url.searchParams.get('http3') !== 'false';
 
     // Determine target URL
     const targetUrl = useHttp3 

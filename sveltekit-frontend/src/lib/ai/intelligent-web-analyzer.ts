@@ -143,7 +143,7 @@ export class IntelligentWebAnalyzer {
         { scope: '/' }
       );
       
-      this.worker = registration.active || registration.installing || registration.waiting;
+      this.worker = (registration.active || registration.installing || registration.waiting) as any;
       console.log('🧠 Intelligent Web Worker initialized');
     } catch (error) {
       console.warn('Service Worker initialization failed:', error);

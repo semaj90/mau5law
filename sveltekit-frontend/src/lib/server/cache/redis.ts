@@ -25,6 +25,11 @@ class CacheService {
     return this.redisClient;
   }
 
+  // Back-compat helper for callers expecting a function
+  getClient() {
+    return this.redisClient;
+  }
+
   private async initializeRedis() {
     const url =
       process.env.REDIS_URL ||

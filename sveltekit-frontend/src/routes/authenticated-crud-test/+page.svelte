@@ -22,11 +22,11 @@
     status: 'draft' as 'draft' | 'open' | 'in_progress' | 'review' | 'closed',
     category: 'testing',
     tags: ['test', 'authenticated', 'crud'],
-    metadata: { 
-      test: true, 
+    metadata: {
+      test: true,
       pgvector: true,
       authenticated: true,
-      timestamp: Date.now() 
+      timestamp: Date.now()
     }
   });
 
@@ -36,12 +36,12 @@
     const passed = testResults.filter(r => r.includes('✅')).length;
     const failed = testResults.filter(r => r.includes('❌')).length;
     const warnings = testResults.filter(r => r.includes('⚠️')).length;
-    return { 
-      total, 
-      passed, 
-      failed, 
-      warnings, 
-      successRate: total > 0 ? (passed / total * 100).toFixed(1) : '0' 
+    return {
+      total,
+      passed,
+      failed,
+      warnings,
+      successRate: total > 0 ? (passed / total * 100).toFixed(1) : '0'
     };
   });
 
@@ -56,14 +56,14 @@
     try {
       const response = await fetch('/api/test-cases?limit=1');
       const data = await response.json();
-      
+
       if (response.status === 401) {
         isAuthenticated = false;
         authError = 'Authentication required - please log in';
         addResult('Authentication check failed - user not logged in', 'error');
         return false;
       }
-      
+
       if (response.ok && data.user) {
         isAuthenticated = true;
         currentUser = data.user;
@@ -71,7 +71,7 @@
         addResult(`Authentication verified - logged in as ${data.user.email}`, 'success');
         return true;
       }
-      
+
       return false;
     } catch (error) {
       authError = 'Failed to check authentication';
@@ -89,27 +89,27 @@
 
     isLoading = true;
     addResult('🔍 Testing authenticated GET operations...');
-    
+
     try {
       // Test 1: Get user's cases
       const listResponse = await fetch('/api/test-cases?limit=10');
       const listData = await listResponse.json();
-      
+
       if (listResponse.status === 401) {
         addResult('GET operation failed - session expired', 'error');
         isAuthenticated = false;
         return;
       }
-      
+
       if (listResponse.ok && listData.success) {
         addResult(`GET /api/test-cases - Success (${listData.data?.length || 0} user cases)`, 'success');
         addResult(`User context: ${listData.user?.email} (role: ${listData.user?.role})`, 'info');
         cases = listData.data || [];
-        
+
         // Test with search
         const searchResponse = await fetch('/api/test-cases?search=test&limit=5');
         const searchData = await searchResponse.json();
-        
+
         if (searchResponse.ok && searchData.success) {
           addResult(`GET with search - Found ${searchData.data?.length || 0} matching cases`, 'success');
         }
@@ -122,7 +122,7 @@
         const testCaseId = cases[0].id;
         const singleResponse = await fetch(`/api/test-cases?id=${testCaseId}`);
         const singleData = await singleResponse.json();
-        
+
         if (singleResponse.ok && singleData.success) {
           addResult(`GET specific case - Success with ${singleData.data.documents?.length || 0} docs, ${singleData.data.activities?.length || 0} activities`, 'success');
         } else {
@@ -133,7 +133,7 @@
     } catch (error) {
       addResult(`GET operations error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    
+
     isLoading = false;
   }
 
@@ -146,7 +146,7 @@
 
     isLoading = true;
     addResult('📝 Testing authenticated POST operation with pgvector embeddings...');
-    
+
     try {
       const response = await fetch('/api/test-cases', {
         method: 'POST',
@@ -156,20 +156,20 @@
           caseNumber: `AUTH-${Date.now()}` // Unique case number
         })
       });
-      
+
       const data = await response.json();
-      
+
       if (response.status === 401) {
         addResult('POST operation failed - session expired', 'error');
         isAuthenticated = false;
         return null;
       }
-      
+
       if (response.ok && data.success) {
         addResult(`POST /api/test-cases - Success (ID: ${data.data?.id})`, 'success');
         addResult(`Embedding generated: ${data.data?.hasEmbedding ? 'Yes' : 'No'}`, 'info');
         addResult(`Created by: ${data.data?.createdBy?.name || data.data?.createdBy?.email}`, 'info');
-        
+
         // Refresh cases list
         await testAuthenticatedGET();
         return data.data.id;
@@ -182,7 +182,7 @@
     } catch (error) {
       addResult(`POST operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    
+
     isLoading = false;
     return null;
   }
@@ -198,11 +198,11 @@
       addResult('PUT operation skipped - no cases available to update', 'warning');
       return;
     }
-    
+
     isLoading = true;
     const targetId = caseId || cases[0].id;
     addResult(`📝 Testing authenticated PUT operation on case ${targetId}...`);
-    
+
     try {
       const updateData = {
         title: 'Updated Authenticated Test Case',
@@ -210,10 +210,10 @@
         status: 'in_progress',
         priority: 'high',
         tags: ['updated', 'authenticated', 'pgvector'],
-        metadata: { 
-          updated: true, 
+        metadata: {
+          updated: true,
           timestamp: Date.now(),
-          updatedViaTest: true 
+          updatedViaTest: true
         }
       };
 
@@ -222,26 +222,26 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData)
       });
-      
+
       const data = await response.json();
-      
+
       if (response.status === 401) {
         addResult('PUT operation failed - session expired', 'error');
         isAuthenticated = false;
         return;
       }
-      
+
       if (response.status === 403) {
         addResult('PUT operation failed - access denied (not case owner)', 'error');
         return;
       }
-      
+
       if (response.ok && data.success) {
         addResult(`PUT /api/test-cases - Success`, 'success');
         addResult(`New embedding generated: ${data.data?.hasNewEmbedding ? 'Yes' : 'No'}`, 'info');
         addResult(`Updated by: ${data.data?.updatedBy?.name || data.data?.updatedBy?.email}`, 'info');
         addResult(`Changed fields: ${data.data?.changedFields?.join(', ')}`, 'info');
-        
+
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
@@ -250,7 +250,7 @@
     } catch (error) {
       addResult(`PUT operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    
+
     isLoading = false;
   }
 
@@ -265,34 +265,34 @@
       addResult('DELETE operation skipped - no cases available to delete', 'warning');
       return;
     }
-    
+
     isLoading = true;
     const targetId = caseId || cases[cases.length - 1].id; // Delete the last case
     addResult(`🗑️ Testing authenticated DELETE operation on case ${targetId}...`);
-    
+
     try {
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
         method: 'DELETE'
       });
-      
+
       const data = await response.json();
-      
+
       if (response.status === 401) {
         addResult('DELETE operation failed - session expired', 'error');
         isAuthenticated = false;
         return;
       }
-      
+
       if (response.status === 403) {
         addResult('DELETE operation failed - access denied (not case owner or admin)', 'error');
         return;
       }
-      
+
       if (response.ok && data.success) {
         addResult(`DELETE /api/test-cases - Success`, 'success');
         addResult(`Deleted by: ${data.data?.deletedBy?.name || data.data?.deletedBy?.email}`, 'info');
         addResult(`Related data cleaned: timeline(${data.data?.relatedDataDeleted?.timeline}), activities(${data.data?.relatedDataDeleted?.activities}), docs(${data.data?.relatedDataDeleted?.documents})`, 'info');
-        
+
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
@@ -301,7 +301,7 @@
     } catch (error) {
       addResult(`DELETE operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    
+
     isLoading = false;
   }
 
@@ -309,32 +309,32 @@
   async function runAuthenticatedCRUDTest() {
     testResults = [];
     addResult('🚀 Starting authenticated CRUD test suite with PostgreSQL + pgvector...');
-    
+
     // Check authentication first
     const authOk = await checkAuth();
     if (!authOk) {
       addResult('Cannot proceed - authentication required', 'error');
       return;
     }
-    
+
     // Test 1: GET operations
     await testAuthenticatedGET();
-    
+
     // Test 2: POST operation
     const newCaseId = await testAuthenticatedPOST();
-    
+
     // Test 3: PUT operation (use newly created case if available)
     if (newCaseId) {
       await testAuthenticatedPUT(newCaseId);
     } else if (cases.length > 0) {
       await testAuthenticatedPUT();
     }
-    
+
     // Test 4: DELETE operation (clean up)
     if (newCaseId) {
       await testAuthenticatedDELETE(newCaseId);
     }
-    
+
     addResult('✅ Authenticated CRUD test suite completed', 'success');
     addResult(`Final summary: ${testSummary.passed}/${testSummary.total} tests passed`, 'info');
   }
@@ -385,7 +385,7 @@
       {:else if authError}
         <div class="text-red-600 space-y-2">
           <p><strong>Error:</strong> {authError}</p>
-          <Button on:on:on:click={goToLogin} variant="default">Go to Login</Button>
+          <Button on:click={goToLogin} variant="default">Go to Login</Button>
         </div>
       {:else}
         <p class="text-gray-500">Checking authentication...</p>
@@ -400,29 +400,29 @@
     </CardHeader>
     <CardContent>
       <div class="flex flex-wrap gap-3">
-        <Button on:on:on:click={runAuthenticatedCRUDTest} disabled={isLoading || !isAuthenticated} variant="default">
+  <Button on:click={runAuthenticatedCRUDTest} disabled={isLoading || !isAuthenticated} variant="default">
           {isLoading ? '⏳ Testing...' : '🚀 Run Authenticated CRUD Test'}
         </Button>
-        <Button on:on:on:click={() => checkAuth()} disabled={isLoading} variant="secondary">
+  <Button on:click={() => checkAuth()} disabled={isLoading} variant="secondary">
           🔍 Check Auth
         </Button>
-        <Button on:on:on:click={testAuthenticatedGET} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button on:click={testAuthenticatedGET} disabled={isLoading || !isAuthenticated} variant="secondary">
           📋 Test GET
         </Button>
-        <Button on:on:on:click={testAuthenticatedPOST} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button on:click={testAuthenticatedPOST} disabled={isLoading || !isAuthenticated} variant="secondary">
           📝 Test POST
         </Button>
-        <Button on:on:on:click={() => testAuthenticatedPUT()} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button on:click={() => testAuthenticatedPUT()} disabled={isLoading || !isAuthenticated} variant="secondary">
           ✏️ Test PUT
         </Button>
-        <Button on:on:on:click={() => testAuthenticatedDELETE()} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button on:click={() => testAuthenticatedDELETE()} disabled={isLoading || !isAuthenticated} variant="secondary">
           🗑️ Test DELETE
         </Button>
-        <Button on:on:on:click={clearResults} variant="ghost">
+  <Button on:click={clearResults} variant="ghost">
           🧹 Clear Results
         </Button>
       </div>
-      
+
       {#if !isAuthenticated}
         <p class="text-sm text-gray-500 mt-2">
           ⚠️ Authentication required to run tests. Please log in first.
@@ -515,9 +515,9 @@
         <div class="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm max-h-96 overflow-y-auto space-y-1">
           {#each testResults as result}
             <div class={
-              result.includes('❌') ? 'text-red-400' : 
-              result.includes('⚠️') ? 'text-yellow-400' : 
-              result.includes('✅') ? 'text-green-400' : 
+              result.includes('❌') ? 'text-red-400' :
+              result.includes('⚠️') ? 'text-yellow-400' :
+              result.includes('✅') ? 'text-green-400' :
               'text-gray-300'
             }>
               {result}

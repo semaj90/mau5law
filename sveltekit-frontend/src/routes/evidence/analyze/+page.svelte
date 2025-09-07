@@ -343,9 +343,9 @@
         {/if}
       </div>
 
-      <div class="flex gap-2">
-        <Button variant="outline" on:on:click={resetForm} disabled={analyzing}>Reset</Button>
-        <Button on:on:click={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+    <div class="flex gap-2">
+  <Button variant="outline" on:click={resetForm} disabled={analyzing}>Reset</Button>
+  <Button on:click={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
         </Button>
       </div>
@@ -481,7 +481,7 @@
                   variant="outline"
                   size="sm"
                   class="mt-2"
-                  on:on:click={() => viewDetailedResults(data)}>
+                  on:click={() => viewDetailedResults(data)}>
                   View Details →
                 </Button>
               </CardContent>
@@ -490,8 +490,8 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" on:on:click={() => (showResults = false)}>Close</Button>
-          <Button on:on:click={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
+          <Button variant="outline" on:click={() => (showResults = false)}>Close</Button>
+          <Button on:click={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

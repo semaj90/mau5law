@@ -7,13 +7,13 @@ Displays all media: evidence, generated images, documents, uploads
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
   import { imageGenerationStore } from '$lib/services/local-image-generation-service.js';
-  
+
   // Gallery state
   let mediaItems = $state<any[]>([]);
   let filteredItems = $state<any[]>([]);
   let isLoading = $state(false);
   let error = $state<string | null>(null);
-  
+
   // Filter and view options
   let searchQuery = $state('');
   let selectedCategory = $state<'all' | 'evidence' | 'images' | 'documents' | 'ai-generated'>('all');
@@ -21,12 +21,12 @@ Displays all media: evidence, generated images, documents, uploads
   let viewMode = $state<'grid' | 'list' | 'masonry'>('grid');
   let sortBy = $state<'date' | 'name' | 'type' | 'case'>('date');
   let sortOrder = $state<'asc' | 'desc'>('desc');
-  
+
   // UI state
   let selectedItem = $state<any | null>(null);
   let showUploadModal = $state(false);
   let availableCases = $state<any[]>([]);
-  
+
   // Gallery stats
   let galleryStats = $derived(() => {
     const stats = {
@@ -42,7 +42,7 @@ Displays all media: evidence, generated images, documents, uploads
   // Filtered and sorted items
   let processedItems = $derived(() => {
     let items = [...mediaItems];
-    
+
     // Filter by category
     if (selectedCategory !== 'all') {
       if (selectedCategory === 'ai-generated') {
@@ -51,27 +51,27 @@ Displays all media: evidence, generated images, documents, uploads
         items = items.filter(item => item.category === selectedCategory);
       }
     }
-    
+
     // Filter by case
     if (selectedCaseId !== 'all') {
       items = items.filter(item => item.caseId === selectedCaseId);
     }
-    
+
     // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      items = items.filter(item => 
+      items = items.filter(item =>
         item.title?.toLowerCase().includes(query) ||
         item.description?.toLowerCase().includes(query) ||
         item.tags?.some((tag: string) => tag.toLowerCase().includes(query)) ||
         item.caseTitle?.toLowerCase().includes(query)
       );
     }
-    
+
     // Sort items
     items.sort((a, b) => {
 let comparison = $state(0);
-      
+
       switch (sortBy) {
         case 'date':
           comparison = new Date(a.createdAt || a.timestamp).getTime() - new Date(b.createdAt || b.timestamp).getTime();
@@ -86,10 +86,10 @@ let comparison = $state(0);
           comparison = (a.caseTitle || '').localeCompare(b.caseTitle || '');
           break;
       }
-      
+
       return sortOrder === 'desc' ? -comparison : comparison;
     });
-    
+
     return items;
   });
 
@@ -101,7 +101,7 @@ let comparison = $state(0);
   onMount(() => {
     loadGalleryData();
     loadCases();
-    
+
     // Check URL parameters
     const urlParams = new URLSearchParams($page.url.search);
     if (urlParams.get('category')) {
@@ -115,16 +115,16 @@ let comparison = $state(0);
   async function loadGalleryData() {
     isLoading = true;
     error = null;
-    
+
     try {
       const response = await fetch('/api/gallery');
       if (!response.ok) {
         throw new Error(`Failed to load gallery: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
       mediaItems = data.items || [];
-      
+
     } catch (err) {
       console.error('Failed to load gallery data:', err);
       error = err instanceof Error ? err.message : 'Failed to load gallery';
@@ -148,7 +148,7 @@ let comparison = $state(0);
 
   function getItemIcon(item: any): string {
     if (item.metadata?.aiGenerated) return '🎨';
-    
+
     switch (item.category) {
       case 'evidence':
         switch (item.type) {
@@ -195,12 +195,12 @@ let comparison = $state(0);
     if (!confirm(`Delete "${item.title}"? This action cannot be undone.`)) {
       return;
     }
-    
+
     try {
       const response = await fetch(`/api/gallery/${item.id}`, {
         method: 'DELETE'
       });
-      
+
       if (response.ok) {
         mediaItems = mediaItems.filter(i => i.id !== item.id);
         selectedItem = null;
@@ -219,7 +219,7 @@ let comparison = $state(0);
       text: item.description || '',
       url: window.location.href
     };
-    
+
     if (navigator.share) {
       navigator.share(shareData);
     } else {
@@ -233,11 +233,11 @@ let comparison = $state(0);
   async function handleFileUpload(event: any) {
     const files = event.target.files;
     if (!files || files.length === 0) return;
-    
+
     for (const file of files) {
       await uploadFile(file);
     }
-    
+
     // Reload gallery
     await loadGalleryData();
   }
@@ -247,17 +247,17 @@ let comparison = $state(0);
     formData.append('file', file);
     formData.append('category', 'documents'); // Default category
     formData.append('caseId', selectedCaseId !== 'all' ? selectedCaseId : '');
-    
+
     try {
       const response = await fetch('/api/gallery/upload', {
         method: 'POST',
         body: formData
       });
-      
+
       if (!response.ok) {
         throw new Error('Upload failed');
       }
-      
+
     } catch (err) {
       console.error('Failed to upload file:', err);
       alert(`Failed to upload ${file.name}`);
@@ -294,17 +294,17 @@ let comparison = $state(0);
           <span class="stat-item nes-badge is-error">AI Generated: {galleryStats.aiGenerated}</span>
         </div>
       </div>
-      
+
       <div class="header-actions">
-        <button 
+        <button
           class="nes-btn is-success"
-          on:onclick={() => showUploadModal = true}
+          onclick={() => showUploadModal = true}
         >
           📤 Upload Files
         </button>
-        <button 
+        <button
           class="nes-btn is-normal"
-          on:onclick={() => loadGalleryData()}
+          onclick={() => loadGalleryData()}
           disabled={isLoading}
         >
           {isLoading ? '🔄' : '↻'} Refresh
@@ -319,9 +319,9 @@ let comparison = $state(0);
       <!-- Search -->
       <div class="control-group">
         <label class="nes-text">Search:</label>
-        <input 
-          type="text" 
-          class="nes-input" 
+        <input
+          type="text"
+          class="nes-input"
           placeholder="Search titles, descriptions, tags..."
           bind:value={searchQuery}
         >
@@ -369,9 +369,9 @@ let comparison = $state(0);
 
       <!-- Sort Order -->
       <div class="control-group">
-        <button 
+        <button
           class="nes-btn {sortOrder === 'desc' ? 'is-primary' : 'is-normal'}"
-          on:onclick={() => sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'}
+          onclick={() => sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'}
         >
           {sortOrder === 'desc' ? '↓' : '↑'}
         </button>
@@ -379,21 +379,21 @@ let comparison = $state(0);
 
       <!-- View Mode -->
       <div class="control-group view-modes">
-        <button 
+        <button
           class="nes-btn {viewMode === 'grid' ? 'is-primary' : 'is-normal'}"
-          on:onclick={() => viewMode = 'grid'}
+          onclick={() => viewMode = 'grid'}
         >
           ⊞
         </button>
-        <button 
+        <button
           class="nes-btn {viewMode === 'list' ? 'is-primary' : 'is-normal'}"
-          on:onclick={() => viewMode = 'list'}
+          onclick={() => viewMode = 'list'}
         >
           ☰
         </button>
-        <button 
+        <button
           class="nes-btn {viewMode === 'masonry' ? 'is-primary' : 'is-normal'}"
-          on:onclick={() => viewMode = 'masonry'}
+          onclick={() => viewMode = 'masonry'}
         >
           ⊡
         </button>
@@ -401,9 +401,9 @@ let comparison = $state(0);
 
       <!-- Clear Filters -->
       <div class="control-group">
-        <button 
+        <button
           class="nes-btn is-error"
-          on:onclick={clearFilters}
+          onclick={clearFilters}
         >
           🗑️ Clear
         </button>
@@ -425,7 +425,7 @@ let comparison = $state(0);
   {#if error}
     <div class="error-state nes-container is-error">
       <p>❌ {error}</p>
-      <button class="nes-btn is-normal" on:onclick={() => loadGalleryData()}>
+  <button class="nes-btn is-normal" onclick={() => loadGalleryData()}>
         Retry
       </button>
     </div>
@@ -437,21 +437,21 @@ let comparison = $state(0);
       <div class="empty-state nes-container is-rounded">
         <h3>No Items Found</h3>
         <p>
-          {searchQuery || selectedCategory !== 'all' || selectedCaseId !== 'all' 
-            ? 'No items match your current filters.' 
+          {searchQuery || selectedCategory !== 'all' || selectedCaseId !== 'all'
+            ? 'No items match your current filters.'
             : 'No media items in the gallery yet.'}
         </p>
         <div class="empty-actions">
-          <button 
+          <button
             class="nes-btn is-success"
-            on:onclick={() => showUploadModal = true}
+            onclick={() => showUploadModal = true}
           >
             📤 Upload Files
           </button>
           {#if searchQuery || selectedCategory !== 'all' || selectedCaseId !== 'all'}
-            <button 
+            <button
               class="nes-btn is-normal"
-              on:onclick={clearFilters}
+              onclick={clearFilters}
             >
               Clear Filters
             </button>
@@ -462,16 +462,16 @@ let comparison = $state(0);
       <div class="gallery-grid gallery-{viewMode}">
         {#each filteredItems as item}
           <div class="gallery-item nes-container is-rounded">
-            <div class="item-preview" on:onclick={() => openItem(item)}>
+            <div class="item-preview" onclick={() => openItem(item)}>
               {#if item.type === 'image' || item.category === 'images'}
-                <img 
-                  src={getItemPreview(item)} 
+                <img
+                  src={getItemPreview(item)}
                   alt={item.title || 'Gallery item'}
                   class="preview-image"
                   loading="lazy"
                 >
               {:else if item.type === 'video'}
-                <video 
+                <video
                   src={getItemPreview(item)}
                   class="preview-video"
                   controls={false}
@@ -484,7 +484,7 @@ let comparison = $state(0);
                   <div class="file-type">{item.type || 'file'}</div>
                 </div>
               {/if}
-              
+
               <!-- Overlay Info -->
               <div class="item-overlay">
                 <div class="overlay-info">
@@ -494,16 +494,16 @@ let comparison = $state(0);
                   {/if}
                 </div>
                 <div class="overlay-actions">
-                  <button class="nes-btn is-small" on:onclick={(e) => { e.stopPropagation(); downloadItem(item); }}>
+                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); downloadItem(item); }}>
                     ⬇️
                   </button>
-                  <button class="nes-btn is-small" on:onclick={(e) => { e.stopPropagation(); shareItem(item); }}>
+                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); shareItem(item); }}>
                     📤
                   </button>
                 </div>
               </div>
             </div>
-            
+
             <!-- Item Info -->
             <div class="item-info">
               <div class="item-meta">
@@ -514,7 +514,7 @@ let comparison = $state(0);
                   <span class="ai-badge nes-badge is-error">AI</span>
                 {/if}
               </div>
-              
+
               {#if item.tags && item.tags.length > 0}
                 <div class="item-tags">
                   {#each item.tags.slice(0, 3) as tag}
@@ -525,7 +525,7 @@ let comparison = $state(0);
                   {/if}
                 </div>
               {/if}
-              
+
               <div class="item-timestamp">
                 {new Date(item.createdAt || item.timestamp).toLocaleDateString()}
               </div>
@@ -538,18 +538,18 @@ let comparison = $state(0);
 
   <!-- Upload Modal -->
   {#if showUploadModal}
-    <div class="modal-overlay" on:onclick={() => showUploadModal = false}>
-      <div class="modal-content nes-container is-rounded" on:onclick={(e) => e.stopPropagation()}>
+  <div class="modal-overlay" onclick={() => showUploadModal = false}>
+  <div class="modal-content nes-container is-rounded" onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h3>Upload Files</h3>
-          <button class="nes-btn is-error" on:onclick={() => showUploadModal = false}>×</button>
+          <button class="nes-btn is-error" onclick={() => showUploadModal = false}>×</button>
         </div>
         <div class="modal-body">
           <div class="upload-area nes-container is-dark">
-            <input 
-              type="file" 
-              id="file-upload" 
-              multiple 
+            <input
+              type="file"
+              id="file-upload"
+              multiple
               accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
               onchange={handleFileUpload}
               style="display: none;"
@@ -562,7 +562,7 @@ let comparison = $state(0);
               </div>
             </label>
           </div>
-          
+
           <div class="upload-options">
             <div class="option-group">
               <label class="nes-text">Assign to Case:</label>
@@ -583,29 +583,29 @@ let comparison = $state(0);
 
   <!-- Item Detail Modal -->
   {#if selectedItem}
-    <div class="modal-overlay" on:onclick={closeModal}>
-      <div class="modal-content detail-modal nes-container is-rounded" on:onclick={(e) => e.stopPropagation()}>
+  <div class="modal-overlay" onclick={closeModal}>
+  <div class="modal-content detail-modal nes-container is-rounded" onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h3>{selectedItem.title || 'Gallery Item'}</h3>
-          <button class="nes-btn is-error" on:onclick={closeModal}>×</button>
+          <button class="nes-btn is-error" onclick={closeModal}>×</button>
         </div>
         <div class="modal-body">
           <div class="detail-content">
             {#if selectedItem.type === 'image' || selectedItem.category === 'images'}
-              <img 
-                src={getItemPreview(selectedItem)} 
+              <img
+                src={getItemPreview(selectedItem)}
                 alt={selectedItem.title}
                 class="detail-image"
               >
             {:else if selectedItem.type === 'video'}
-              <video 
+              <video
                 src={getItemPreview(selectedItem)}
                 class="detail-video"
                 controls
               >
               </video>
             {:else if selectedItem.type === 'audio'}
-              <audio 
+              <audio
                 src={getItemPreview(selectedItem)}
                 class="detail-audio"
                 controls
@@ -618,7 +618,7 @@ let comparison = $state(0);
               </div>
             {/if}
           </div>
-          
+
           <div class="detail-info">
             <div class="info-row">
               <strong>Category:</strong> {selectedItem.category}
@@ -626,29 +626,29 @@ let comparison = $state(0);
                 <span class="ai-badge nes-badge is-error">AI Generated</span>
               {/if}
             </div>
-            
+
             {#if selectedItem.description}
               <div class="info-row">
                 <strong>Description:</strong> {selectedItem.description}
               </div>
             {/if}
-            
+
             {#if selectedItem.caseTitle}
               <div class="info-row">
                 <strong>Case:</strong> {selectedItem.caseTitle}
               </div>
             {/if}
-            
+
             <div class="info-row">
               <strong>Created:</strong> {new Date(selectedItem.createdAt || selectedItem.timestamp).toLocaleString()}
             </div>
-            
+
             {#if selectedItem.fileSize}
               <div class="info-row">
                 <strong>Size:</strong> {(selectedItem.fileSize / 1024).toFixed(1)} KB
               </div>
             {/if}
-            
+
             {#if selectedItem.tags && selectedItem.tags.length > 0}
               <div class="info-row">
                 <strong>Tags:</strong>
@@ -659,19 +659,19 @@ let comparison = $state(0);
                 </div>
               </div>
             {/if}
-            
+
             {#if selectedItem.metadata?.aiGenerated && selectedItem.metadata.prompt}
               <div class="info-row">
                 <strong>AI Prompt:</strong> {selectedItem.metadata.prompt}
               </div>
             {/if}
           </div>
-          
+
           <div class="detail-actions">
-            <button class="nes-btn is-success" on:onclick={() => downloadItem(selectedItem)}>
+            <button class="nes-btn is-success" onclick={() => downloadItem(selectedItem)}>
               ⬇️ Download
             </button>
-            <button class="nes-btn is-primary" on:onclick={() => shareItem(selectedItem)}>
+            <button class="nes-btn is-primary" onclick={() => shareItem(selectedItem)}>
               📤 Share
             </button>
             {#if selectedItem.caseId}
@@ -679,7 +679,7 @@ let comparison = $state(0);
                 🔗 View Case
               </a>
             {/if}
-            <button class="nes-btn is-error" on:onclick={() => deleteItem(selectedItem)}>
+            <button class="nes-btn is-error" onclick={() => deleteItem(selectedItem)}>
               🗑️ Delete
             </button>
           </div>
@@ -1054,12 +1054,12 @@ let comparison = $state(0);
       grid-template-columns: 1fr;
       gap: 1rem;
     }
-    
+
     .control-group {
       flex-direction: row;
       align-items: center;
     }
-    
+
     .view-modes {
       justify-content: center;
     }
@@ -1070,20 +1070,20 @@ let comparison = $state(0);
       flex-direction: column;
       align-items: flex-start;
     }
-    
+
     .gallery-stats {
       justify-content: flex-start;
     }
-    
+
     .gallery-grid.gallery-grid {
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
-    
+
     .modal-content {
       margin: 0.5rem;
       max-width: calc(100vw - 1rem);
     }
-    
+
     .detail-actions {
       flex-direction: column;
     }

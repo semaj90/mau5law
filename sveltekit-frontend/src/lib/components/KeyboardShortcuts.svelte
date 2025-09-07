@@ -229,7 +229,7 @@ let isFullscreen = $state(false);
       variant="outline"
       size="sm"
       class="mx-auto px-4 max-w-7xl"
-      on:on:click={() => (showAccessibilityPanel = !showAccessibilityPanel)}
+      on:click={() => (showAccessibilityPanel = !showAccessibilityPanel)}
       aria-label="Toggle accessibility panel"
     >
       <Accessibility class="mx-auto px-4 max-w-7xl" />
@@ -242,7 +242,7 @@ let isFullscreen = $state(false);
       variant="outline"
       size="sm"
       class="mx-auto px-4 max-w-7xl"
-      on:on:click={() => (showShortcuts = !showShortcuts)}
+      on:click={() => (showShortcuts = !showShortcuts)}
       aria-label="Show keyboard shortcuts"
     >
       <Keyboard class="mx-auto px-4 max-w-7xl" />
@@ -258,7 +258,7 @@ let isFullscreen = $state(false);
       variant="outline"
       size="sm"
       class="mx-auto px-4 max-w-7xl"
-      on:on:click={() => toggleFullscreen()}
+      on:click={() => toggleFullscreen()}
       aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
     >
       {#if isFullscreen}

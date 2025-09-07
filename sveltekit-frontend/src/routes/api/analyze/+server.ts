@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types';
 // Note: Re-enable DB interactions once your drizzle schema and table symbols are available.
 
 import { json } from '@sveltejs/kit';
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 
 type AnalysisRequest = {
   text?: string;

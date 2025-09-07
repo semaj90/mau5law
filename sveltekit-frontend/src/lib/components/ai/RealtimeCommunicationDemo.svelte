@@ -298,11 +298,11 @@ let metricsInterval = $state<number;
       <CardTitle class="flex items-center justify-between">
         <span>Connection Status</span>
         {#if !isInitialized}
-          <Button on:on:click={initializeConnection} disabled={isInitializing} class="px-4 py-2">
+          <Button on:click={initializeConnection} disabled={isInitializing} class="px-4 py-2">
             {isInitializing ? 'Initializing...' : 'Connect'}
           </Button>
         {:else}
-          <Button on:on:click={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700">
+          <Button on:click={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700">
             Disconnect
           </Button>
         {/if}
@@ -413,7 +413,7 @@ let metricsInterval = $state<number;
               </div>
             </div>
 
-            <Button on:on:click={sendTestMessage} class="w-full">Send Message</Button>
+            <Button on:click={sendTestMessage} class="w-full">Send Message</Button>
           </div>
         </CardContent>
       </Card>
@@ -448,7 +448,7 @@ let metricsInterval = $state<number;
               </select>
             </div>
 
-            <Button on:on:click={startStreamingRequest} class="w-full">Start Stream</Button>
+            <Button on:click={startStreamingRequest} class="w-full">Start Stream</Button>
           </div>
         </CardContent>
       </Card>
@@ -459,7 +459,7 @@ let metricsInterval = $state<number;
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           <span>Performance Metrics</span>
-          <Button on:on:click={testPerformance} class="text-sm px-3 py-1">Run Performance Test</Button>
+          <Button on:click={testPerformance} class="text-sm px-3 py-1">Run Performance Test</Button>
         </CardTitle>
       </CardHeader>
       <CardContent>

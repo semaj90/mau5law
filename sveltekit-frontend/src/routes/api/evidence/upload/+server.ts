@@ -18,7 +18,7 @@ import { mkdir } from 'fs/promises';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { eq } from 'drizzle-orm';
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 import { createWriteStream } from 'fs';
 import { Readable } from 'stream';
 import Busboy from 'busboy';

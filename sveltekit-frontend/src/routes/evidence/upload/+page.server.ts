@@ -9,7 +9,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import { evidenceUploadSchema, getFileTypeFromMime, validateFileSize, validateFileType } from '$lib/schemas/evidence-upload.js';
 import { db, cases, evidence, helpers } from '$lib/server/db';
 import type { PageServerLoad, Actions } from './$types';

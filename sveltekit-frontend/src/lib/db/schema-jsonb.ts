@@ -205,7 +205,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
         setweight(to_tsvector('english', coalesce(original_text, '')), 'D') ||
         setweight(to_tsvector('english', coalesce(summary->>'executive_summary', '')), 'B')`
   )
-}, (table) => ({
+}, (table: any) => ({
   statusIdx: index('idx_documents_status').on(table.status),
   typeIdx: index('idx_documents_type').on(table.documentType),
   createdAtIdx: index('idx_documents_created_at').on(table.createdAt),
@@ -227,7 +227,7 @@ export const documentEmbeddings = pgTable('document_embeddings', {
   metadata: jsonb('metadata').default(sql`'{}'::jsonb`).notNull(),
   modelName: varchar('model_name', { length: 100 }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   documentIdx: index('idx_embeddings_document').on(table.documentId),
   uniqueChunk: uniqueIndex('unique_document_chunk').on(table.documentId, table.chunkIndex),
   // Note: IVFFlat index for vector similarity search would be added via migration
@@ -264,7 +264,7 @@ export const summarizationJobs = pgTable('summarization_jobs', {
   
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
-}, (table) => ({
+}, (table: any) => ({
   statusPriorityIdx: index('idx_jobs_status_priority').on(table.status, table.priority, table.scheduledAt),
   documentIdx: index('idx_jobs_document').on(table.documentId),
   lockedIdx: index('idx_jobs_locked').on(table.lockedBy, table.lockedAt)

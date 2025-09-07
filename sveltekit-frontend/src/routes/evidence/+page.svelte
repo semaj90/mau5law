@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { $derived } from 'svelte';
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
   import EvidenceUploadModal from "$lib/components/modals/EvidenceUploadModal.svelte";
@@ -88,12 +87,12 @@ let bulkAnalysisMode = $state(false);
   let analysisInProgress = new Set<string>();
 
   // Feedback integration references
-let evidencePageFeedback = $state<any;
+let evidencePageFeedback = $state<any>(null);
   let evidenceSearchFeedback: any;
   let evidenceUploadFeedback: any;
 
   // Filtering and selection
-  let selectedEvidence >(new Set<string>());
+  let selectedEvidence = $state<Set<string>>(new Set());
 let selectedType = $state("");
 let selectedStatus = $state("");
 let selectedCollector = $state("");
@@ -517,7 +516,7 @@ let display = $state("");
   // Handle unified search results from multi-source search
   function handleUnifiedSearch(searchResults: any[]) {
     console.log('🔍 Unified search results received:', searchResults.length, 'items');
-    
+
     // Convert search results to evidence format for display
     const convertedEvidence = searchResults.map(result => ({
       id: result.id,
@@ -543,7 +542,7 @@ let display = $state("");
     if (convertedEvidence.length > 0) {
       evidenceActions.setSearchResults(convertedEvidence);
       notifications.add({
-        type: "success", 
+        type: "success",
         title: "Multi-Source Search Complete",
         message: `Found ${searchResults.length} results across PostgreSQL, Qdrant, MinIO, and Loki`,
         duration: 3000
@@ -551,7 +550,7 @@ let display = $state("");
     } else {
       notifications.add({
         type: "info",
-        title: "No Results Found", 
+        title: "No Results Found",
         message: "Try adjusting your search terms or filters",
         duration: 3000
       });
@@ -662,7 +661,7 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            on:on:on:click={() => refreshEvidence()}
+            on:click={() => refreshEvidence()}
             disabled={loading}
             aria-label="Refresh evidence"
           >
@@ -676,7 +675,7 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            on:on:on:click={() => (showFilters = !showFilters)}
+            on:click={() => (showFilters = !showFilters)}
             class={showFilters ? 'nes-legal-priority-high' : ''}
             aria-label="Toggle filters"
             aria-expanded={showFilters}
@@ -690,7 +689,7 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            on:on:on:click={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
+            on:click={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
             aria-label="Toggle view mode"
             class="yorha-3d-button"
           >
@@ -706,7 +705,7 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            on:on:on:click={() => handleAdvancedUpload()}
+            on:click={() => handleAdvancedUpload()}
             class="neural-sprite-cached"
           >
             <Upload class="w-4 h-4 mr-2" />
@@ -717,7 +716,7 @@ let display = $state("");
         <Tooltip content="Standard evidence upload">
           <Button
             variant="evidence"
-            on:on:on:click={() => openUploadModal()}
+            on:click={() => openUploadModal()}
           >
             <Plus class="w-4 h-4 mr-2" />
             Upload Evidence
@@ -729,13 +728,13 @@ let display = $state("");
 
   <!-- Enhanced Unified Search with Multi-Source Integration -->
   <div class="container-nes-panel mb-6">
-    <UnifiedSearchBar 
+    <UnifiedSearchBar
       placeholder="Search evidence across all sources: PostgreSQL, Qdrant, MinIO, Loki..."
       showFilters={true}
       onSearch={handleUnifiedSearch}
       className="w-full"
     />
-    
+
     <!-- Advanced Sorting Controls -->
     <div class="flex items-center justify-between mt-4">
       <div class="flex items-center gap-4">
@@ -756,7 +755,7 @@ let display = $state("");
         <Button
           variant="outline"
           size="sm"
-          onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
+          on:click={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
           aria-label="Toggle sort order"
           class="yorha-3d-button"
         >
@@ -794,7 +793,7 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            on:on:on:click={() => bulkOperation("analyze")}
+            on:click={() => bulkOperation("analyze")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -810,7 +809,7 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            on:on:on:click={() => bulkOperation("verify")}
+            on:click={() => bulkOperation("verify")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -821,7 +820,7 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            on:on:on:click={() => bulkOperation("archive")}
+            on:click={() => bulkOperation("archive")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -832,7 +831,7 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            on:on:on:click={() => bulkOperation("export")}
+            on:click={() => bulkOperation("export")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -843,7 +842,7 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            on:on:on:click={() => bulkOperation("delete")}
+            on:click={() => bulkOperation("delete")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -854,11 +853,11 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            on:on:on:click={() => {
+            on:click={() => {
               selectedEvidence.clear();
               selectedEvidence = selectedEvidence;
               showBulkActions = false;
-            "
+            }}
             disabled={bulkOperationLoading}
           >
             Cancel
@@ -881,7 +880,7 @@ let display = $state("");
         <h3 class="mx-auto px-4 max-w-7xl">Error Loading Evidence</h3>
         <div class="mx-auto px-4 max-w-7xl">{error}</div>
       </div>
-      <Button variant="outline" size="sm" on:on:on:click={() => refreshEvidence()}>
+  <Button variant="outline" size="sm" on:click={() => refreshEvidence()}>
         <RefreshCw class="mx-auto px-4 max-w-7xl" />
         Retry
       </Button>
@@ -911,13 +910,13 @@ let display = $state("");
       </p>
       {#if !searchQuery && !selectedType && !selectedStatus && !selectedCollector && !dateFrom && !dateTo}
         <div class="mx-auto px-4 max-w-7xl">
-          <Button on:on:on:click={() => openUploadModal()} class="mx-auto px-4 max-w-7xl">
+          <Button on:click={() => openUploadModal()} class="mx-auto px-4 max-w-7xl">
             <Plus class="mx-auto px-4 max-w-7xl" />
             Upload Evidence
           </Button>
           <Button
             variant="outline"
-            on:on:on:click={() => handleAdvancedUpload()}
+            on:click={() => handleAdvancedUpload()}
             class="mx-auto px-4 max-w-7xl"
           >
             <Upload class="mx-auto px-4 max-w-7xl" />
@@ -941,7 +940,7 @@ let display = $state("");
           <Button
             variant="ghost"
             size="sm"
-            on:on:on:click={() => selectAllEvidence()}
+            on:click={() => selectAllEvidence()}
             class="mx-auto px-4 max-w-7xl"
             aria-label="Select all visible evidence"
           >
@@ -974,7 +973,7 @@ let display = $state("");
                   type="checkbox"
                   class="input-nes-primary w-4 h-4"
                   checked={selectedEvidence.has(evidence.id)}
-                  change={() => toggleEvidenceSelection(evidence.id)}
+                  onchange={() => toggleEvidenceSelection(evidence.id)}
                   aria-label="Select evidence {evidence.title || 'Untitled Evidence'}"
                 />
 
@@ -1061,7 +1060,7 @@ let display = $state("");
                 <Button
                   size="sm"
                   variant={thinkingStyleEnabled ? "neural" : "yorha"}
-                  on:on:on:click={() => analyzeEvidence(evidence)}
+                  on:click={() => analyzeEvidence(evidence)}
                   disabled={analysisInProgress.has(evidence.id)}
                   class="flex-1"
                 >
@@ -1097,9 +1096,9 @@ let display = $state("");
               <div class="mx-auto px-4 max-w-7xl">
                 <input
                   type="checkbox"
-                  class="mx-auto px-4 max-w-7xl"
+                  class="w-4 h-4 rounded border-gray-300 focus:ring-2 focus:ring-yellow-400"
                   checked={selectedEvidence.has(evidence.id)}
-                  change={() => toggleEvidenceSelection(evidence.id)}
+                  onchange={() => toggleEvidenceSelection(evidence.id)}
                   aria-label="Select evidence {evidence.title ||
                     'Untitled Evidence'}"
                 />
@@ -1172,7 +1171,7 @@ let display = $state("");
                   <Button
                     size="sm"
                     variant="outline"
-                    on:on:on:click={() => analyzeEvidence(evidence)}
+                    on:click={() => analyzeEvidence(evidence)}
                     disabled={analysisInProgress.has(evidence.id)}
                     class="mx-auto px-4 max-w-7xl"
                   >
@@ -1250,7 +1249,7 @@ let display = $state("");
             size="sm"
             class="mx-auto px-4 max-w-7xl"
             disabled={currentPage === 1}
-            on:on:on:click={() => (currentPage = Math.max(1, currentPage - 1))}
+            on:click={() => (currentPage = Math.max(1, currentPage - 1))}
             aria-label="Previous page"
           >
             Previous
@@ -1264,7 +1263,7 @@ let display = $state("");
               variant={page === currentPage ? "default" : "outline"}
               size="sm"
               class="mx-auto px-4 max-w-7xl"
-              on:on:on:click={() => (currentPage = page)}
+              on:click={() => (currentPage = page)}
               aria-label="Go to page {page}"
               aria-current={page === currentPage ? "page" : undefined}
             >
@@ -1277,7 +1276,7 @@ let display = $state("");
             size="sm"
             class="mx-auto px-4 max-w-7xl"
             disabled={currentPage === totalPages}
-            on:on:on:click={() =>
+            on:click={() =>
               (currentPage = Math.min(totalPages, currentPage + 1))}
             aria-label="Next page"
           >
@@ -1314,7 +1313,7 @@ let display = $state("");
           {/if}
           - {analysisModal.evidence.title}
         </h3>
-        <Button variant="ghost" size="sm" on:on:on:click={closeAnalysisModal}>
+  <Button variant="ghost" size="sm" on:click={closeAnalysisModal}>
           ✕
         </Button>
       </div>
@@ -1337,14 +1336,14 @@ let display = $state("");
       </div>
 
       <div class="mx-auto px-4 max-w-7xl">
-        <Button variant="outline" on:on:on:click={closeAnalysisModal}>Close</Button>
-        <Button on:on:on:click={() => {
+  <Button variant="outline" on:click={closeAnalysisModal}>Close</Button>
+  <Button on:click={() => {
           // Save analysis or perform other actions
           closeAnalysisModal();
-        ">Save Analysis</Button>
+        }}>Save Analysis</Button>
       </div>
     </div>
-    <div class="mx-auto px-4 max-w-7xl" onclick={closeAnalysisModal}></div>
+  <div class="mx-auto px-4 max-w-7xl" role="button" tabindex="0" onclick={closeAnalysisModal} onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && closeAnalysisModal()}></div>
   </div>
 {/if}
 

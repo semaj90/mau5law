@@ -4,11 +4,11 @@
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  
+
   let apiTests = $state([]);
   let isTestingInProgress = $state(false);
   let testResults = $state({});
-  
+
   interface ApiTest {
     name: string;
     endpoint: string;
@@ -17,7 +17,7 @@
     payload?: any;
     expectedStatus?: number;
   }
-  
+
   const galleryApiTests: ApiTest[] = [
     {
       name: 'Gallery Main API - GET',
@@ -75,10 +75,10 @@
       expectedStatus: 200
     }
   ];
-  
+
   async function runApiTest(test: ApiTest): Promise<any> {
     const startTime = Date.now();
-    
+
     try {
       const options: RequestInit = {
         method: test.method,
@@ -86,17 +86,17 @@
           'Content-Type': 'application/json'
         }
       };
-      
+
       if (test.payload && (test.method === 'POST' || test.method === 'PUT')) {
         options.body = JSON.stringify(test.payload);
       }
-      
+
       const response = await fetch(test.endpoint, options);
       const endTime = Date.now();
       const responseTime = endTime - startTime;
 let responseData = $state(null);
       const contentType = response.headers.get('content-type');
-      
+
       if (contentType && contentType.includes('application/json')) {
         try {
           responseData = await response.json();
@@ -106,7 +106,7 @@ let responseData = $state(null);
       } else {
         responseData = { text: await response.text() };
       }
-      
+
       return {
         success: true,
         status: response.status,
@@ -117,11 +117,11 @@ let responseData = $state(null);
         expectedStatus: test.expectedStatus,
         statusMatch: test.expectedStatus ? response.status === test.expectedStatus : true
       };
-      
+
     } catch (error) {
       const endTime = Date.now();
       const responseTime = endTime - startTime;
-      
+
       return {
         success: false,
         error: error.message,
@@ -131,29 +131,29 @@ let responseData = $state(null);
       };
     }
   }
-  
+
   async function runAllTests() {
     isTestingInProgress = true;
     testResults = {};
-    
+
     console.log('Starting Gallery API Tests...');
-    
+
     for (const test of galleryApiTests) {
       console.log(`Running test: ${test.name}`);
-      
+
       try {
         const result = await runApiTest(test);
         testResults[test.name] = {
           ...result,
           test: test
         };
-        
+
         // Force reactivity update
         testResults = { ...testResults };
-        
+
         // Brief delay between tests
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
       } catch (error) {
         testResults[test.name] = {
           success: false,
@@ -163,22 +163,22 @@ let responseData = $state(null);
         testResults = { ...testResults };
       }
     }
-    
+
     isTestingInProgress = false;
     console.log('All tests completed');
   }
-  
+
   function getStatusColor(result: any): string {
     if (!result.success) return 'error';
     if (result.statusMatch) return 'success';
     if (result.status >= 200 && result.status < 300) return 'warning';
     return 'error';
   }
-  
+
   function formatJson(obj: any): string {
     return JSON.stringify(obj, null, 2);
   }
-  
+
   onMount(() => {
     // Auto-run tests after component mounts
     setTimeout(() => {
@@ -196,9 +196,9 @@ let responseData = $state(null);
     <h1>🧪 Gallery API Test Suite</h1>
     <p>Comprehensive testing of all gallery endpoints and functionality</p>
     <div class="test-actions">
-      <button 
-        class="test-button primary" 
-        on:onclick={runAllTests}
+      <button
+        class="test-button primary"
+  onclick={runAllTests}
         disabled={isTestingInProgress}
       >
         {isTestingInProgress ? '🔄 Testing...' : '🚀 Run All Tests'}
@@ -222,7 +222,7 @@ let responseData = $state(null);
         <div class="overview-item">
           <span class="overview-label">Success Rate</span>
           <span class="overview-value">
-            {Object.keys(testResults).length > 0 
+            {Object.keys(testResults).length > 0
               ? Math.round((Object.values(testResults).filter(r => r.success).length / Object.keys(testResults).length) * 100)
               : 0}%
           </span>
@@ -233,7 +233,7 @@ let responseData = $state(null);
     <!-- Test Results -->
     <section class="test-results">
       <h2>Test Results</h2>
-      
+
       {#if Object.keys(testResults).length === 0 && !isTestingInProgress}
         <div class="no-results">
           <p>No test results yet. Click "Run All Tests" to start testing.</p>
@@ -255,14 +255,14 @@ let responseData = $state(null);
                   <span class="status-badge pending">⏳</span>
                 {/if}
               </div>
-              
+
               <div class="result-details">
                 <p class="test-description">{test.description}</p>
                 <div class="endpoint-info">
                   <span class="method {test.method.toLowerCase()}">{test.method}</span>
                   <span class="endpoint">{test.endpoint}</span>
                 </div>
-                
+
                 {#if result}
                   <div class="result-metrics">
                     <div class="metric">
@@ -282,13 +282,13 @@ let responseData = $state(null);
                       </div>
                     {/if}
                   </div>
-                  
+
                   {#if result.error}
                     <div class="error-details">
                       <strong>Error:</strong> {result.error}
                     </div>
                   {/if}
-                  
+
                   {#if result.data}
                     <details class="response-details">
                       <summary>Response Data</summary>
@@ -313,9 +313,9 @@ let responseData = $state(null);
         <a href="/test/n64-button" class="test-button info">
           🎮 Test N64 Button
         </a>
-        <button 
+        <button
           class="test-button warning"
-          on:onclick={() => window.open('/gallery?debug=true', '_blank')}
+          onclick={() => window.open('/gallery?debug=true', '_blank')}
         >
           🐛 Open Gallery with Debug
         </button>
@@ -652,15 +652,15 @@ let responseData = $state(null);
     .api-test-page {
       padding: 1rem;
     }
-    
+
     .results-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .overview-grid {
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
-    
+
     .route-buttons {
       flex-direction: column;
       align-items: center;

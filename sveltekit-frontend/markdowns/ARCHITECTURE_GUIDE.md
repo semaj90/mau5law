@@ -30,8 +30,8 @@
 │  AI/Vector Operations               │
 │  ├── Auto-tagging → pgvector        │
 │  ├── Semantic Search → pgvector     │
-│  ├── Document Embeddings → Qdrant   │
-│  └── AI Analysis →OpenAI/Local     │
+│  ├── Document Embeddings → nomic-embed-text -> Qdrant   │
+│  └── AI Analysis →Local llm gemma3     │
 ├─────────────────────────────────────┤
 │         Database Layer              │
 │  ├── PostgreSQL (CRUD)              │

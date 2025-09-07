@@ -34,11 +34,13 @@ onMount(() => {
 
 <div class="app-layout golden-grid-holy-grail yorha-bg-primary">
   <header class="app-header" style="grid-area: header;">
-    <Navigation {sidebarOpen} />
+    <Navigation bind:sidebarOpen={sidebarOpen} />
   </header>
 
+
   <aside
-    class="app-sidebar transition-transform duration-300 {!sidebarOpen ? 'sidebar-hidden' : ''}"
+    class="app-sidebar transition-transform duration-300"
+    class:sidebar-hidden={!sidebarOpen}
     style="grid-area: sidebar;"
   >
     <!-- Sidebar content will go here -->
@@ -54,7 +56,7 @@ onMount(() => {
 
   <main class="app-main" style="grid-area: main;">
     <div class="container p-golden-xl">
-  {@/* TODO: manual review – previously {@render children?.()} */}
+  {@render children?.()}
     </div>
   </main>
 

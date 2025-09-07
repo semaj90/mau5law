@@ -1,7 +1,7 @@
 <!--
   YoRHa Anti-Aliasing Shader Cache Component
   Advanced shader compilation and caching system for YoRHa 3D components
-  
+
   Features:
   - Real-time shader compilation and caching (FXAA, TAA, SMAA, MSAA)
   - GPU pipeline optimization with WebGPU integration
@@ -13,10 +13,10 @@
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import type { 
-    AntiAliasingConfig, 
+  import type {
+    AntiAliasingConfig,
     YoRHaAAStyle,
-    ShaderEnhancements 
+    ShaderEnhancements
   } from './YoRHaAntiAliasing3D.js';
   import { AntiAliasingUtils } from './YoRHaAntiAliasing3D.js';
   import { enhancedGPUCache } from '../../../services/enhanced-gpu-cache-service.js';
@@ -28,25 +28,25 @@
     aaConfig?: AntiAliasingConfig;
     shaderEnhancements?: ShaderEnhancements;
     style?: YoRHaAAStyle;
-    
+
     // Performance settings
     targetFPS?: number;
     adaptiveQuality?: boolean;
     enablePrecompilation?: boolean;
     enableHotReload?: boolean;
-    
+
     // Cache settings
     enableCache?: boolean;
     cacheKey?: string;
     preloadShaders?: boolean;
     maxCacheSize?: number;
-    
+
     // Visual settings
     renderToCanvas?: boolean;
     canvasSize?: { width: number; height: number };
     enableDebugMode?: boolean;
     showShaderMetrics?: boolean;
-    
+
     // Event handlers
     onShaderCompiled?: (cache: CompiledShaderCache) => void;
     onShaderError?: (error: string) => void;
@@ -85,14 +85,14 @@ let gpuContext = $state<GPUCanvasContext | null >(null);
   let isCompiling = $state(false);
   let hasError = $state(false);
   let errorMessage = $state('');
-  
+
   // Shader cache state
   let shaderCache: CompiledShaderCache | null = $state(null);
   let compilationTime = $state(0);
   let lastCompileTime = $state(0);
   let cacheHitRate = $state(0);
   let shaderHotReloadCount = $state(0);
-  
+
   // Performance metrics
   let performanceMetrics = $state({
     fps: 0,
@@ -104,19 +104,19 @@ let gpuContext = $state<GPUCanvasContext | null >(null);
     cacheEfficiency: 0,
     adaptiveAdjustments: 0
   });
-  
+
   // Anti-aliasing state
   let currentAAType = $state<string>(aaConfig.type);
   let currentAAQuality = $state<string>(aaConfig.quality || 'medium');
   let aaConfigHistory: AntiAliasingConfig[] = $state([]);
   let qualityAdjustmentCount = $state(0);
-  
+
   // Animation and monitoring
 let animationId = $state<number | null >(null);
 let performanceMonitorId = $state<number | null >(null);
 let lastFrameTime = $state(0);
 let frameCount = $state(0);
-  
+
   // Shader source templates for YoRHa style
   const yorhaShaderTemplates = {
     vertex: `
@@ -125,18 +125,18 @@ let frameCount = $state(0);
         return vec4<f32>(position, 0.0, 1.0);
       }
     `,
-    
+
     fxaa_fragment: `
       @group(0) @binding(0) var texSampler: sampler;
       @group(0) @binding(1) var inputTexture: texture_2d<f32>;
       @group(0) @binding(2) var<uniform> resolution: vec2<f32>;
       @group(0) @binding(3) var<uniform> fxaaParams: vec4<f32>; // subpixel, edgeThreshold, edgeThresholdMin, _unused
-      
+
       // YoRHa-enhanced FXAA with geometric pattern awareness
       fn yorhaLuma(rgb: vec3<f32>) -> f32 {
         return dot(rgb, vec3<f32>(0.299, 0.587, 0.114));
       }
-      
+
       fn detectYoRHaPattern(uv: vec2<f32>) -> f32 {
         // Detect hexagonal YoRHa UI patterns for selective AA
         let hexUv = uv * 32.0;
@@ -145,61 +145,61 @@ let frameCount = $state(0);
         let hexDist = length(hexLocal);
         return smoothstep(0.4, 0.6, hexDist);
       }
-      
+
       @fragment
       fn fs_main(@location(0) uv: vec2<f32>) -> @location(0) vec4<f32> {
 let texelSize = $state(1.0 / resolution);
-        
+
         // Sample neighborhood
         let rgbNW = textureSample(inputTexture, texSampler, uv + vec2(-1.0, -1.0) * texelSize).rgb;
         let rgbNE = textureSample(inputTexture, texSampler, uv + vec2(1.0, -1.0) * texelSize).rgb;
         let rgbSW = textureSample(inputTexture, texSampler, uv + vec2(-1.0, 1.0) * texelSize).rgb;
         let rgbSE = textureSample(inputTexture, texSampler, uv + vec2(1.0, 1.0) * texelSize).rgb;
         let rgbM = textureSample(inputTexture, texSampler, uv).rgb;
-        
+
         // Calculate luminance
         let lumaNW = yorhaLuma(rgbNW);
         let lumaNE = yorhaLuma(rgbNE);
         let lumaSW = yorhaLuma(rgbSW);
         let lumaSE = yorhaLuma(rgbSE);
         let lumaM = yorhaLuma(rgbM);
-        
+
         let lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));
         let lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));
         let lumaRange = lumaMax - lumaMin;
-        
+
         // YoRHa pattern-aware early exit
         let patternWeight = detectYoRHaPattern(uv);
         let adaptiveThreshold = mix(fxaaParams.y, fxaaParams.y * 0.5, patternWeight);
-        
+
         if (lumaRange < max(fxaaParams.z, lumaMax * adaptiveThreshold)) {
           return vec4<f32>(rgbM, 1.0);
         }
-        
+
         // Enhanced edge detection for YoRHa geometric elements
         let dir = vec2<f32>(
           -((lumaNW + lumaNE) - (lumaSW + lumaSE)),
           ((lumaNW + lumaSW) - (lumaNE + lumaSE))
         );
-        
+
         let dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) * 0.03125, 0.0078125);
 let rcpDirMin = $state(1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce));
-        
+
         let finalDir = clamp(dir * rcpDirMin, vec2(-8.0), vec2(8.0)) * texelSize * patternWeight;
-        
+
         // YoRHa-enhanced sampling with geometric consideration
 let rgbA = $state(0.5 * (
           textureSample(inputTexture, texSampler, uv + finalDir * (1.0/3.0 - 0.5)).rgb +
           textureSample(inputTexture, texSampler, uv + finalDir * (2.0/3.0 - 0.5)).rgb
         ));
-        
+
         let rgbB = rgbA * 0.5 + 0.25 * (
           textureSample(inputTexture, texSampler, uv + finalDir * (-0.5)).rgb +
           textureSample(inputTexture, texSampler, uv + finalDir * (0.5)).rgb
         );
-        
+
         let lumaB = yorhaLuma(rgbB);
-        
+
         if (lumaB < lumaMin || lumaB > lumaMax) {
           return vec4<f32>(rgbA, 1.0);
         } else {
@@ -207,7 +207,7 @@ let rgbA = $state(0.5 * (
         }
       }
     `,
-    
+
     taa_fragment: `
       @group(0) @binding(0) var currentSampler: sampler;
       @group(0) @binding(1) var currentTexture: texture_2d<f32>;
@@ -218,76 +218,76 @@ let rgbA = $state(0.5 * (
       @group(0) @binding(6) var<uniform> taaParams: vec4<f32>; // alpha, velocityScale, feedbackMin, feedbackMax
       @group(0) @binding(7) var<uniform> jitterOffset: vec2<f32>;
       @group(0) @binding(8) var<uniform> yorhaParams: vec4<f32>; // patternWeight, geometryBias, temporalWeight, _unused
-      
+
       fn clipAABB(aabbMin: vec3<f32>, aabbMax: vec3<f32>, p: vec3<f32>, q: vec3<f32>) -> vec3<f32> {
         let r = q - p;
         let rmax = aabbMax - p;
         let rmin = aabbMin - p;
-        
+
         var result = r;
         if (result.x > rmax.x + 0.000001) { result *= (rmax.x / result.x); }
         if (result.y > rmax.y + 0.000001) { result *= (rmax.y / result.y); }
         if (result.z > rmax.z + 0.000001) { result *= (rmax.z / result.z); }
-        
+
         if (result.x < rmin.x - 0.000001) { result *= (rmin.x / result.x); }
         if (result.y < rmin.y - 0.000001) { result *= (rmin.y / result.y); }
         if (result.z < rmin.z - 0.000001) { result *= (rmin.z / result.z); }
-        
+
         return p + result;
       }
-      
+
       fn detectYoRHaGeometry(uv: vec2<f32>) -> f32 {
         // Detect YoRHa UI geometric patterns for enhanced TAA
         let depth = textureSample(depthTexture, currentSampler, uv);
         let ddx = dpdx(uv * textureSize(currentTexture, 0));
         let ddy = dpdy(uv * textureSize(currentTexture, 0));
         let gradient = length(vec2(ddx.x, ddy.y));
-        
+
         // Higher gradient = likely geometric edge requiring more temporal stability
         return smoothstep(0.1, 0.3, gradient);
       }
-      
+
       @fragment
       fn fs_main(@location(0) uv: vec2<f32>) -> @location(0) vec4<f32> {
 let texelSize = $state(1.0 / vec2<f32>(textureDimensions(currentTexture)));
         let current = textureSample(currentTexture, currentSampler, uv);
-        
+
         // Enhanced velocity calculation for YoRHa UI elements
         let velocity = textureSample(velocityTexture, currentSampler, uv).xy;
         let prevUV = uv - velocity * taaParams.y;
-        
+
         let history = textureSample(historyTexture, historySampler, prevUV);
-        
+
         // YoRHa geometry-aware neighborhood sampling
         let n0 = textureSample(currentTexture, currentSampler, uv + vec2(texelSize.x, 0.0));
         let n1 = textureSample(currentTexture, currentSampler, uv + vec2(-texelSize.x, 0.0));
         let n2 = textureSample(currentTexture, currentSampler, uv + vec2(0.0, texelSize.y));
         let n3 = textureSample(currentTexture, currentSampler, uv + vec2(0.0, -texelSize.y));
-        
+
         let boxMin = min(current, min(n0, min(n1, min(n2, n3))));
         let boxMax = max(current, max(n0, max(n1, max(n2, n3))));
-        
+
         // Expand bounding box for YoRHa geometric elements
         let geometryFactor = detectYoRHaGeometry(uv);
         let boxCenter = (boxMax + boxMin) * 0.5;
         let expansion = mix(1.25, 1.5, geometryFactor);
-        
+
         let expandedMin = mix(boxCenter, boxMin, expansion);
         let expandedMax = mix(boxCenter, boxMax, expansion);
-        
+
         // Clip history to expanded neighborhood
         let clampedHistory = clipAABB(expandedMin.rgb, expandedMax.rgb, clamp(history.rgb, expandedMin.rgb, expandedMax.rgb), history.rgb);
-        
+
         // Adaptive feedback based on velocity and YoRHa geometry
         let velocityLength = length(velocity * textureSize(currentTexture, 0));
         let baseFeedback = mix(taaParams.w, taaParams.z, saturate(velocityLength));
         let geometricFeedback = mix(baseFeedback, baseFeedback * 0.8, geometryFactor);
-        
+
         let result = mix(current.rgb, clampedHistory, geometricFeedback);
         return vec4<f32>(result, current.a);
       }
     `,
-    
+
     smaa_fragment: `
       @group(0) @binding(0) var texSampler: sampler;
       @group(0) @binding(1) var baseTexture: texture_2d<f32>;
@@ -296,11 +296,11 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(currentTexture)));
       @group(0) @binding(4) var searchTexture: texture_2d<f32>;
       @group(0) @binding(5) var<uniform> smaaParams: vec4<f32>; // threshold, maxSearchSteps, maxSearchStepsDiag, cornerRounding
       @group(0) @binding(6) var<uniform> yorhaGeometry: vec4<f32>; // hexPattern, linePattern, nodePattern, _unused
-      
+
       fn detectYoRHaEdges(uv: vec2<f32>) -> vec2<f32> {
         // Enhanced edge detection for YoRHa UI patterns
 let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
-        
+
         // Sample in YoRHa hexagonal pattern
         let center = textureSample(baseTexture, texSampler, uv).rgb;
         let samples = array<vec3<f32>, 6>(
@@ -311,10 +311,10 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
           textureSample(baseTexture, texSampler, uv + vec2(-0.5, -0.866) * texelSize).rgb,
           textureSample(baseTexture, texSampler, uv + vec2(0.5, -0.866) * texelSize).rgb
         );
-        
+
         var edgeH = 0.0;
         var edgeV = 0.0;
-        
+
         // Calculate YoRHa pattern-aware edge strength
         for (var i = 0; i < 6; i++) {
           let diff = length(samples[i] - center);
@@ -322,19 +322,19 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
           edgeH += diff * abs(cos(angle));
           edgeV += diff * abs(sin(angle));
         }
-        
+
         let threshold = smaaParams.x * yorhaGeometry.x;
         return vec2<f32>(
           step(threshold, edgeH),
           step(threshold, edgeV)
         );
       }
-      
+
       @fragment
       fn fs_main(@location(0) uv: vec2<f32>) -> @location(0) vec4<f32> {
         let edges = detectYoRHaEdges(uv);
         var weights = vec4<f32>(0.0);
-        
+
         if (edges.y > 0.0) { // Horizontal edge
           let searchResult = textureSample(searchTexture, texSampler, vec2(edges.x, 0.0)).rg;
           let d = abs(round(vec2<f32>(textureDimensions(baseTexture)) * uv - searchResult));
@@ -342,7 +342,7 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
           let e1 = textureSample(baseTexture, texSampler, uv + vec2(0.0, 1.0 / f32(textureDimensions(baseTexture).y))).r;
           weights.rg = textureSample(areaTexture, texSampler, vec2(sqrt_d.x, e1)).rg * yorhaGeometry.y;
         }
-        
+
         if (edges.x > 0.0) { // Vertical edge
           let searchResult = textureSample(searchTexture, texSampler, vec2(edges.y, 0.5)).rg;
           let d = abs(round(vec2<f32>(textureDimensions(baseTexture)) * uv - searchResult));
@@ -350,7 +350,7 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
           let e1 = textureSample(baseTexture, texSampler, uv + vec2(1.0 / f32(textureDimensions(baseTexture).x), 0.0)).g;
           weights.ba = textureSample(areaTexture, texSampler, vec2(sqrt_d.x, e1)).rg * yorhaGeometry.z;
         }
-        
+
         return weights;
       }
     `
@@ -363,21 +363,21 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
     try {
       isCompiling = true;
       hasError = false;
-      
+
       if (!navigator.gpu) {
         throw new Error('WebGPU not supported');
       }
-      
+
       // Initialize GPU device
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) {
         throw new Error('WebGPU adapter not available');
       }
-      
+
       gpuDevice = await adapter.requestDevice({
         requiredFeatures: [] as GPUFeatureName[]
       });
-      
+
       // Initialize canvas context if rendering is enabled
       if (renderToCanvas && canvasElement) {
         gpuContext = canvasElement.getContext('webgpu');
@@ -389,11 +389,11 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
           });
         }
       }
-      
+
       // Check cache for existing shader
       if (enableCache) {
         shaderCache = enhancedGPUCache.getCachedShader(cacheKey, aaConfig);
-        
+
         if (shaderCache) {
           console.log(`🎯 Shader cache hit for "${shaderId}"`);
           currentAAType = shaderCache.antiAliasingType;
@@ -407,17 +407,17 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
       } else {
         await compileShader();
       }
-      
+
       // Start performance monitoring
       startPerformanceMonitoring();
-      
+
       // Precompile additional AA variants if enabled
       if (enablePrecompilation) {
         precompileAAVariants();
       }
-      
+
       isInitialized = true;
-      
+
     } catch (error: any) {
       hasError = true;
       errorMessage = error.message || 'Failed to initialize shader cache';
@@ -433,7 +433,7 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
    */
   async function compileAndCacheShader(): Promise<void> {
     const startTime = performance.now();
-    
+
     try {
       // Cache shader with enhanced GPU service
       shaderCache = await enhancedGPUCache.cacheYoRHaAAShader(
@@ -441,22 +441,22 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
         'fragment',
         aaConfig
       );
-      
+
       if (!shaderCache) {
         throw new Error('Failed to cache shader');
       }
-      
+
       compilationTime = performance.now() - startTime;
       lastCompileTime = Date.now();
-      
+
       currentAAType = shaderCache.antiAliasingType;
       currentAAQuality = aaConfig.quality || 'medium';
-      
+
       // Notify shader compiled
       onShaderCompiled?.(shaderCache);
-      
+
       console.log(`⚡ YoRHa ${aaConfig.type.toUpperCase()} shader compiled and cached in ${compilationTime.toFixed(2)}ms`);
-      
+
     } catch (error: any) {
       throw new Error(`Failed to compile and cache shader: ${error.message}`);
     }
@@ -467,20 +467,20 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
    */
   async function compileShader(): Promise<void> {
     if (!gpuDevice) return;
-    
+
     const startTime = performance.now();
-    
+
     try {
       const shaderSource = getShaderSource(aaConfig.type);
-      
+
       const shaderModule = gpuDevice.createShaderModule({
         code: shaderSource,
         label: `${shaderId}_${aaConfig.type}_shader`
       });
-      
+
       compilationTime = performance.now() - startTime;
       lastCompileTime = Date.now();
-      
+
       // Create basic cache entry for tracking
       shaderCache = {
         id: shaderId,
@@ -495,9 +495,9 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
         lastCompiled: Date.now(),
         useCount: 1
       };
-      
+
       currentAAType = aaConfig.type;
-      
+
     } catch (error: any) {
       throw new Error(`Failed to compile shader: ${error.message}`);
     }
@@ -512,10 +512,10 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
       AntiAliasingUtils.createAAPreset('balanced'),
       AntiAliasingUtils.createAAPreset('quality')
     ];
-    
+
     for (const variant of variants) {
       const variantKey = `${cacheKey}_${variant.type}_${variant.quality}`;
-      
+
       // Check if already cached
       const existing = enhancedGPUCache.getCachedShader(variantKey, variant);
       if (!existing) {
@@ -534,11 +534,11 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
    */
   function adjustQualityAdaptively(): void {
     if (!adaptiveQuality || !performanceMetrics.fps) return;
-    
+
     const fpsRatio = performanceMetrics.fps / targetFPS;
 let newConfig = $state({ ...aaConfig });
 let qualityChanged = $state(false);
-    
+
     if (fpsRatio < 0.7) {
       // Performance is poor, reduce quality
       if (aaConfig.quality === 'ultra') {
@@ -566,17 +566,17 @@ let qualityChanged = $state(false);
         qualityChanged = true;
       }
     }
-    
+
     if (qualityChanged) {
       console.log(`🔧 Adaptive quality: ${aaConfig.quality} -> ${newConfig.quality} (FPS: ${performanceMetrics.fps.toFixed(1)})`);
-      
+
       aaConfig = newConfig;
       aaConfigHistory = [...aaConfigHistory, newConfig].slice(-10); // Keep last 10 changes
       qualityAdjustmentCount++;
-      
+
       // Recompile with new configuration
       compileAndCacheShader().catch(console.error);
-      
+
       onQualityChanged?.(newConfig);
     }
   }
@@ -587,53 +587,53 @@ let qualityChanged = $state(false);
   function startPerformanceMonitoring(): void {
 let frameCount = $state(0);
     let lastTime = performance.now();
-    
+
     const updateMetrics = () => {
       const now = performance.now();
       const deltaTime = now - lastTime;
-      
+
       frameCount++;
-      
+
       if (deltaTime >= 1000) {
         // Update FPS
         performanceMetrics.fps = (frameCount * 1000) / deltaTime;
         performanceMetrics.frameTime = deltaTime / frameCount;
-        
+
         // Update shader metrics
         performanceMetrics.shaderCompileTime = compilationTime;
-        
+
         // Update cache metrics
         const analytics = enhancedGPUCache.getCacheAnalytics();
         performanceMetrics.cacheEfficiency = analytics.shaderHitRate;
-        
+
         // Calculate AA quality score
         performanceMetrics.aaQuality = calculateAAQualityScore();
-        
+
         // Estimate GPU utilization
         performanceMetrics.gpuUtilization = Math.min(performanceMetrics.frameTime / 16.67, 1.0);
-        
+
         // Pixel throughput estimation
         if (renderToCanvas) {
           const pixels = canvasSize.width * canvasSize.height;
           performanceMetrics.pixelThroughput = (pixels * performanceMetrics.fps) / 1000000; // Megapixels/sec
         }
-        
+
         performanceMetrics.adaptiveAdjustments = qualityAdjustmentCount;
-        
+
         // Apply adaptive quality adjustment
         adjustQualityAdaptively();
-        
+
         // Notify performance update
         onPerformanceUpdate?.(performanceMetrics);
-        
+
         // Reset counters
         frameCount = 0;
         lastTime = now;
       }
-      
+
       animationId = requestAnimationFrame(updateMetrics);
     };
-    
+
     animationId = requestAnimationFrame(updateMetrics);
   }
 
@@ -642,16 +642,16 @@ let frameCount = $state(0);
    */
   async function hotReloadShader(): Promise<void> {
     if (!enableHotReload) return;
-    
+
     try {
       isCompiling = true;
       shaderHotReloadCount++;
-      
+
       // Force recompile
       await compileAndCacheShader();
-      
+
       console.log(`🔥 Shader hot reloaded (${shaderHotReloadCount} times)`);
-      
+
     } catch (error: any) {
       console.error('Hot reload failed:', error);
       onShaderError?.(error.message);
@@ -666,7 +666,7 @@ let frameCount = $state(0);
   function getShaderSource(aaType: string): string {
     const vertexShader = yorhaShaderTemplates.vertex;
 let fragmentShader = $state('');
-    
+
     switch (aaType) {
       case 'fxaa':
         fragmentShader = yorhaShaderTemplates.fxaa_fragment;
@@ -680,7 +680,7 @@ let fragmentShader = $state('');
       default:
         fragmentShader = yorhaShaderTemplates.fxaa_fragment;
     }
-    
+
     return vertexShader + '\n\n' + fragmentShader;
   }
 
@@ -696,20 +696,20 @@ let hash = $state(0);
 
   function calculateAAQualityScore(): number {
 let score = $state(0.3);
-    
+
     switch (aaConfig.type) {
       case 'taa': score += 0.4; break;
       case 'smaa': score += 0.3; break;
       case 'msaa': score += 0.2; break;
       case 'fxaa': score += 0.1; break;
     }
-    
+
     switch (aaConfig.quality) {
       case 'ultra': score += 0.3; break;
       case 'high': score += 0.2; break;
       case 'medium': score += 0.1; break;
     }
-    
+
     return Math.min(score, 1.0);
   }
 
@@ -752,7 +752,7 @@ let score = $state(0.3);
 
 <!-- YoRHa Anti-Aliasing Shader Cache Component -->
 <div class="yorha-aa-cache-container {aaQualityClass}" class:debug-mode={enableDebugMode}>
-  
+
   <!-- Rendering Canvas (if enabled) -->
   {#if renderToCanvas}
     <canvas
@@ -764,7 +764,7 @@ let score = $state(0.3);
       height={canvasSize.height}
     />
   {/if}
-  
+
   <!-- AA Type Indicator -->
   <div class="aa-type-indicator" style="--aa-color: {aaTypeColor}">
     <div class="aa-icon">
@@ -776,27 +776,27 @@ let score = $state(0.3);
     <div class="aa-label">{currentAAType.toUpperCase()}</div>
     <div class="aa-quality">{currentAAQuality.toUpperCase()}</div>
   </div>
-  
+
   <!-- Shader Metrics Overlay -->
   {#if showShaderMetrics && isInitialized}
     <div class="shader-metrics-overlay">
       <div class="metrics-title">SHADER METRICS</div>
       <div class="metrics-content">
-        
+
         <div class="metric-row">
           <span class="metric-label">Compile Time</span>
           <span class="metric-value">{compilationTime.toFixed(2)}ms</span>
         </div>
-        
+
         <div class="metric-row">
           <span class="metric-label">Cache Hit Rate</span>
-          <span class="metric-value" class:good={cacheHitRate > 0.8} 
+          <span class="metric-value" class:good={cacheHitRate > 0.8}
                 class:warning={cacheHitRate > 0.5 && cacheHitRate <= 0.8}
                 class:poor={cacheHitRate <= 0.5}>
             {(cacheHitRate * 100).toFixed(1)}%
           </span>
         </div>
-        
+
         <div class="metric-row">
           <span class="metric-label">FPS</span>
           <span class="metric-value" class:good={performanceMetrics.fps >= targetFPS * 0.9}
@@ -805,24 +805,24 @@ let score = $state(0.3);
             {performanceMetrics.fps.toFixed(1)}
           </span>
         </div>
-        
+
         <div class="metric-row">
           <span class="metric-label">AA Quality</span>
           <span class="metric-value aa-quality">{(performanceMetrics.aaQuality * 100).toFixed(0)}%</span>
         </div>
-        
+
         <div class="metric-row">
           <span class="metric-label">GPU Util</span>
           <span class="metric-value">{(performanceMetrics.gpuUtilization * 100).toFixed(1)}%</span>
         </div>
-        
+
         {#if renderToCanvas}
           <div class="metric-row">
             <span class="metric-label">Pixel/sec</span>
             <span class="metric-value">{performanceMetrics.pixelThroughput.toFixed(1)}MP</span>
           </div>
         {/if}
-        
+
         {#if adaptiveQuality && qualityAdjustmentCount > 0}
           <div class="metric-row">
             <span class="metric-label">Adaptive</span>
@@ -832,7 +832,7 @@ let score = $state(0.3);
       </div>
     </div>
   {/if}
-  
+
   <!-- Compilation Status -->
   {#if isCompiling}
     <div class="compilation-overlay">
@@ -847,7 +847,7 @@ let score = $state(0.3);
       </div>
     </div>
   {/if}
-  
+
   <!-- Error State -->
   {#if hasError}
     <div class="error-overlay">
@@ -855,18 +855,18 @@ let score = $state(0.3);
       <div class="error-title">SHADER ERROR</div>
       <div class="error-message">{errorMessage}</div>
       <div class="error-actions">
-        <button class="retry-button" on:on:onclick={() => initializeShaderCache()}>
+        <button class="retry-button" on:click={() => initializeShaderCache()}>
           RETRY COMPILATION
         </button>
         {#if enableHotReload}
-          <button class="hotreload-button" on:on:onclick={hotReloadShader}>
+          <button class="hotreload-button" on:click={hotReloadShader}>
             HOT RELOAD
           </button>
         {/if}
       </div>
     </div>
   {/if}
-  
+
   <!-- Debug Panel -->
   {#if enableDebugMode && shaderCache}
     <div class="debug-panel">
@@ -888,11 +888,11 @@ let score = $state(0.3);
       </div>
     </div>
   {/if}
-  
+
   <!-- Hot Reload Controls -->
   {#if enableHotReload && enableDebugMode}
     <div class="hotreload-controls">
-      <button class="hotreload-trigger" on:on:onclick={hotReloadShader}>
+      <button class="hotreload-trigger" on:click={hotReloadShader}>
         🔥 HOT RELOAD
       </button>
       <div class="hotreload-count">{shaderHotReloadCount}</div>
@@ -909,40 +909,40 @@ let score = $state(0.3);
     border-radius: 0;
     background: rgba(0, 0, 0, 0.05);
   }
-  
+
   .yorha-aa-canvas {
     display: block;
     border: 1px solid rgba(186, 175, 137, 0.5);
     image-rendering: pixelated;
     transition: all 0.3s ease;
   }
-  
+
   /* AA Quality Classes */
   .standard-aa {
     border-color: rgba(255, 255, 255, 0.3);
   }
-  
+
   .high-aa {
     border-color: rgba(74, 144, 226, 0.5);
     box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
   }
-  
+
   .ultra-aa {
     border-color: rgba(0, 255, 0, 0.7);
     box-shadow: 0 0 12px rgba(0, 255, 0, 0.3);
   }
-  
+
   /* Canvas States */
   .yorha-aa-canvas.compiling {
     opacity: 0.7;
     filter: blur(1px);
   }
-  
+
   .yorha-aa-canvas.error {
     border-color: rgba(255, 0, 0, 0.8);
     box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
   }
-  
+
   /* AA Type Indicator */
   .aa-type-indicator {
     position: absolute;
@@ -959,21 +959,21 @@ let score = $state(0.3);
     font-weight: bold;
     z-index: 10;
   }
-  
+
   .aa-icon {
     font-size: 11px;
     color: var(--aa-color, #ffffff);
   }
-  
+
   .aa-label {
     color: var(--aa-color, #ffffff);
   }
-  
+
   .aa-quality {
     color: rgba(255, 255, 255, 0.7);
     font-size: 8px;
   }
-  
+
   /* Shader Metrics Overlay */
   .shader-metrics-overlay {
     position: absolute;
@@ -987,7 +987,7 @@ let score = $state(0.3);
     min-width: 120px;
     z-index: 10;
   }
-  
+
   .metrics-title {
     font-weight: bold;
     margin-bottom: 4px;
@@ -997,50 +997,50 @@ let score = $state(0.3);
     border-bottom: 1px solid rgba(186, 175, 137, 0.3);
     padding-bottom: 2px;
   }
-  
+
   .metrics-content {
     display: flex;
     flex-direction: column;
     gap: 1px;
   }
-  
+
   .metric-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .metric-label {
     color: rgba(186, 175, 137, 0.8);
     font-size: 7px;
   }
-  
+
   .metric-value {
     color: #ffffff;
     font-weight: bold;
   }
-  
+
   .metric-value.good {
     color: #00ff00;
   }
-  
+
   .metric-value.warning {
     color: #ffff00;
   }
-  
+
   .metric-value.poor {
     color: #ff6600;
     animation: pulse 2s infinite;
   }
-  
+
   .metric-value.aa-quality {
     color: #ff00ff;
   }
-  
+
   .metric-value.adaptive {
     color: #00ffff;
   }
-  
+
   /* Compilation Overlay */
   .compilation-overlay {
     position: absolute;
@@ -1051,7 +1051,7 @@ let score = $state(0.3);
     background: rgba(0, 0, 0, 0.9);
     z-index: 20;
   }
-  
+
   .compilation-spinner {
     display: flex;
     flex-direction: column;
@@ -1059,27 +1059,27 @@ let score = $state(0.3);
     gap: 8px;
     color: #baa989;
   }
-  
+
   .spinner-rings {
     position: relative;
     width: 50px;
     height: 50px;
   }
-  
+
   .spinner-rings div {
     position: absolute;
     border: 2px solid transparent;
     border-radius: 50%;
     animation: spin 2s linear infinite;
   }
-  
+
   .ring-1 {
     width: 50px;
     height: 50px;
     border-top: 2px solid #baa989;
     animation-duration: 2s;
   }
-  
+
   .ring-2 {
     width: 35px;
     height: 35px;
@@ -1089,7 +1089,7 @@ let score = $state(0.3);
     animation-duration: 1.5s;
     animation-direction: reverse;
   }
-  
+
   .ring-3 {
     width: 20px;
     height: 20px;
@@ -1098,19 +1098,19 @@ let score = $state(0.3);
     border-bottom: 2px solid #ff6b9d;
     animation-duration: 1s;
   }
-  
+
   .compilation-text {
     font-size: 10px;
     font-weight: bold;
     letter-spacing: 1px;
     animation: pulse 2s ease-in-out infinite;
   }
-  
+
   .compilation-details {
     font-size: 8px;
     opacity: 0.7;
   }
-  
+
   /* Error Overlay */
   .error-overlay {
     position: absolute;
@@ -1125,32 +1125,32 @@ let score = $state(0.3);
     text-align: center;
     z-index: 20;
   }
-  
+
   .error-icon {
     font-size: 24px;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
   }
-  
+
   .error-title {
     font-size: 11px;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-  
+
   .error-message {
     font-size: 9px;
     max-width: 200px;
     line-height: 1.3;
     opacity: 0.9;
   }
-  
+
   .error-actions {
     display: flex;
     gap: 6px;
     margin-top: 4px;
   }
-  
+
   .retry-button,
   .hotreload-button {
     background: rgba(255, 255, 255, 0.1);
@@ -1162,18 +1162,18 @@ let score = $state(0.3);
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  
+
   .retry-button:hover,
   .hotreload-button:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
   }
-  
+
   .hotreload-button {
     border-color: rgba(255, 100, 0, 0.5);
     color: #ff6400;
   }
-  
+
   /* Debug Panel */
   .debug-panel {
     position: absolute;
@@ -1188,7 +1188,7 @@ let score = $state(0.3);
     font-family: 'Courier New', monospace;
     z-index: 15;
   }
-  
+
   .debug-title {
     font-weight: bold;
     margin-bottom: 4px;
@@ -1198,23 +1198,23 @@ let score = $state(0.3);
     border-bottom: 1px solid #00ff00;
     padding-bottom: 2px;
   }
-  
+
   .debug-content {
     display: flex;
     flex-direction: column;
     gap: 1px;
   }
-  
+
   .debug-content div {
     display: flex;
     justify-content: space-between;
   }
-  
+
   .debug-content strong {
     color: #ffff00;
     margin-right: 8px;
   }
-  
+
   /* Hot Reload Controls */
   .hotreload-controls {
     position: absolute;
@@ -1225,7 +1225,7 @@ let score = $state(0.3);
     gap: 4px;
     z-index: 10;
   }
-  
+
   .hotreload-trigger {
     background: rgba(255, 100, 0, 0.9);
     border: 1px solid #ff6400;
@@ -1236,12 +1236,12 @@ let score = $state(0.3);
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  
+
   .hotreload-trigger:hover {
     background: #ff6400;
     transform: scale(1.05);
   }
-  
+
   .hotreload-count {
     background: rgba(0, 0, 0, 0.8);
     color: #ff6400;
@@ -1250,33 +1250,33 @@ let score = $state(0.3);
     font-weight: bold;
     border: 1px solid rgba(255, 100, 0, 0.3);
   }
-  
+
   /* Debug Mode Styling */
   .debug-mode {
     border: 2px dashed #00ff00;
   }
-  
+
   .debug-mode .yorha-aa-canvas {
     border-color: #00ff00;
   }
-  
+
   /* Animations */
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  
+
   @keyframes pulse {
-    0%, 100% { 
-      opacity: 1; 
+    0%, 100% {
+      opacity: 1;
       transform: scale(1);
     }
-    50% { 
-      opacity: 0.7; 
+    50% {
+      opacity: 0.7;
       transform: scale(1.02);
     }
   }
-  
+
   /* Responsive Design */
   @media (max-width: 768px) {
     .shader-metrics-overlay {
@@ -1284,32 +1284,32 @@ let score = $state(0.3);
       margin-top: 4px;
       width: 100%;
     }
-    
+
     .metrics-content {
       flex-direction: row;
       flex-wrap: wrap;
       gap: 4px;
     }
-    
+
     .metric-row {
       flex-direction: column;
       align-items: flex-start;
       min-width: 50px;
     }
-    
+
     .debug-panel {
       position: static;
       margin-top: 4px;
     }
   }
-  
+
   /* High Contrast Mode */
   @media (prefers-contrast: high) {
     .yorha-aa-cache-container {
       border: 2px solid white;
       background: black;
     }
-    
+
     .aa-type-indicator,
     .shader-metrics-overlay,
     .debug-panel {
@@ -1317,18 +1317,18 @@ let score = $state(0.3);
       border-color: white;
     }
   }
-  
+
   /* Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
     .spinner-rings div {
       animation: none;
       border: 2px solid currentColor;
     }
-    
+
     .compilation-text {
       animation: none;
     }
-    
+
     .metric-value.poor {
       animation: none;
       color: #ff0000;

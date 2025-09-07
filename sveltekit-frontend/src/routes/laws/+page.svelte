@@ -99,7 +99,7 @@ let isSearching = $state<boolean >(false);
       maxResults={10}
       bind:results={searchResults}
       class="mb-4"
-      on:select={(e: CustomEvent) => {
+      onselect={(e: CustomEvent) => {
         const selected = e.detail;
         if (selected?.title) {
           searchQuery = selected.title;
@@ -117,10 +117,10 @@ let isSearching = $state<boolean >(false);
     </CardHeader>
     <CardContent class="space-y-4">
       <div class="flex gap-2">
-        <Input
+          <Input
           placeholder="Search laws, codes, regulations..."
           bind:value={searchQuery}
-          on:keydown={handleKeydown}
+          onkeydown={handleKeydown}
           class="flex-1" />
         <button onclick={performSearch} disabled={isSearching || !searchQuery.trim()} class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition disabled:opacity-50">
           {#if isSearching}

@@ -6,10 +6,13 @@ Manages AutoGen and CrewAI multi-agent workflows
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Card from '$lib/components/ui/Card.svelte';
+  import CardContent from '$lib/components/ui/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/CardTitle.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
-  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
+  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select/index.ts';
   import {
     Users,
     Brain,
@@ -68,7 +71,7 @@ Manages AutoGen and CrewAI multi-agent workflows
   let executionResults = $state<CrewTaskResult[]>([]);
 
   // Monitoring
-let statusCheckInterval = $state<number | null >(null);
+let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
   let executionProgress = $state(0);
   let lastUpdate = $state<string>('');
 
@@ -430,7 +433,7 @@ let statusCheckInterval = $state<number | null >(null);
       <Button
         variant="outline"
         size="sm"
-        on:on:click={checkServiceStatus}
+  on:click={checkServiceStatus}
       >
         <RefreshCw class="h-4 w-4" />
       </Button>
@@ -448,10 +451,10 @@ let statusCheckInterval = $state<number | null >(null);
     <CardContent class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium mb-2">Workflow Type</label>
-          <Select bind:value={selectedWorkflow}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select workflow..." />
+          <span id="label-workflow" class="block text-sm font-medium mb-2">Workflow Type</span>
+          <Select aria-labelledby="label-workflow" bind:value={selectedWorkflow}>
+            <SelectTrigger id="workflow-select" aria-labelledby="label-workflow">
+                <SelectValue placeholder="Select workflow..." />
             </SelectTrigger>
             <SelectContent>
               {#each workflows as workflow}
@@ -467,10 +470,10 @@ let statusCheckInterval = $state<number | null >(null);
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-2">AI Provider</label>
-          <Select bind:value={selectedProvider}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select provider..." />
+          <span id="label-provider" class="block text-sm font-medium mb-2">AI Provider</span>
+          <Select aria-labelledby="label-provider" bind:value={selectedProvider}>
+            <SelectTrigger id="provider-select" aria-labelledby="label-provider">
+                <SelectValue placeholder="Select provider..." />
             </SelectTrigger>
             <SelectContent>
               {#each workflows.find(w => w.id === selectedWorkflow)?.providers || [] as provider}
@@ -509,8 +512,9 @@ let statusCheckInterval = $state<number | null >(null);
       {/if}
 
       <div>
-        <label class="block text-sm font-medium mb-2">Input</label>
+        <label for="orchestrator-input" class="block text-sm font-medium mb-2">Input</label>
         <Textarea
+          id="orchestrator-input"
           bind:value={inputText}
           placeholder="Enter your legal case description, evidence details, or contract text..."
           rows={4}
@@ -520,7 +524,7 @@ let statusCheckInterval = $state<number | null >(null);
 
       <div class="flex gap-2">
         <Button
-          on:on:click={executeWorkflow}
+          on:click={executeWorkflow}
           disabled={isProcessing || !inputText.trim() || (!serviceStatus.autogen && selectedProvider === 'autogen') || (!serviceStatus.crewai && selectedProvider === 'crewai')}
           class="flex-1"
         >
@@ -534,16 +538,16 @@ let statusCheckInterval = $state<number | null >(null);
         </Button>
 
         {#if isProcessing}
-          <Button variant="outline" on:on:click={cancelExecution}>
+          <Button variant="outline" on:click={cancelExecution}>
             <Square class="h-4 w-4" />
           </Button>
         {/if}
 
         {#if conversationMessages.length > 0 || executionResults.length > 0}
-          <Button variant="outline" on:on:click={clearResults}>
+          <Button variant="outline" on:click={clearResults}>
             Clear
           </Button>
-          <Button variant="outline" on:on:click={downloadResults}>
+          <Button variant="outline" on:click={downloadResults}>
             <Download class="h-4 w-4" />
           </Button>
         {/if}
@@ -683,7 +687,7 @@ let statusCheckInterval = $state<number | null >(null);
           <Button
             variant="outline"
             class="h-auto p-4 justify-start"
-            on:on:click={() => {
+            on:click={() => {
               selectedWorkflow = 'case_analysis';
               selectedProvider = 'autogen';
               inputText = 'John Smith was accused of embezzling $50,000 from his employer over a 6-month period. Evidence includes suspicious bank transfers, altered financial records, and witness testimony from colleagues who noticed unusual behavior.';
@@ -698,7 +702,7 @@ let statusCheckInterval = $state<number | null >(null);
           <Button
             variant="outline"
             class="h-auto p-4 justify-start"
-            on:on:click={() => {
+            on:click={() => {
               selectedWorkflow = 'contract_analysis';
               selectedProvider = 'crewai';
               inputText = 'Software licensing agreement between TechCorp and ClientCorp for enterprise SaaS platform. Contract includes liability limitations, data processing clauses, and termination provisions. Review for compliance and negotiation opportunities.';
@@ -713,7 +717,7 @@ let statusCheckInterval = $state<number | null >(null);
           <Button
             variant="outline"
             class="h-auto p-4 justify-start"
-            on:on:click={() => {
+            on:click={() => {
               selectedWorkflow = 'evidence_review';
               selectedProvider = 'autogen';
               inputText = 'Digital evidence package includes: smartphone data extraction, email communications, cloud storage files, and network logs. Chain of custody maintained by certified technician. Need admissibility assessment for federal court.';
@@ -728,7 +732,7 @@ let statusCheckInterval = $state<number | null >(null);
           <Button
             variant="outline"
             class="h-auto p-4 justify-start"
-            on:on:click={() => {
+            on:click={() => {
               selectedWorkflow = 'legal_research';
               selectedProvider = 'autogen';
               inputText = 'Research precedents for cryptocurrency fraud cases involving privacy coins. Focus on 4th Amendment protections, blockchain analysis admissibility, and international cooperation in digital asset recovery.';

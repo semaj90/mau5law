@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   // $state runtime rune is provided globally
   import { aiAgentStore, systemHealth, currentConversation } from '$lib/stores/ai-agent';
-  
+
   // Create local derived state for AI connection status
   let isAIConnected = $derived(aiAgentStore.connected || false);
   import type { User } from '$lib/types';
@@ -150,26 +150,26 @@
   <div class="mb-8 p-6 border rounded-lg bg-blue-50">
     <h2 class="text-2xl font-semibold mb-4">🛣️ Test Routes</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <a 
-        href="/test/crud" 
+      <a
+        href="/test/crud"
         class="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 transition-colors bg-white"
       >
         <div class="font-semibold text-blue-800">CRUD Test Interface</div>
         <div class="text-sm text-gray-600">Full database operations with gaming UI</div>
         <div class="text-xs text-gray-500 mt-1">/test/crud</div>
       </a>
-      
-      <button 
-        on:onclick={() => runCRUDTests()}
+
+      <button
+  onclick={() => runCRUDTests()}
         class="p-4 border-2 border-green-200 rounded-lg hover:border-green-400 transition-colors bg-white text-left"
       >
         <div class="font-semibold text-green-800">CRUD API Tests</div>
         <div class="text-sm text-gray-600">Test all CRUD endpoints</div>
         <div class="text-xs text-gray-500 mt-1">API validation</div>
       </button>
-      
-      <button 
-        on:onclick={() => runSystemTests()}
+
+      <button
+  onclick={() => runSystemTests()}
         class="p-4 border-2 border-purple-200 rounded-lg hover:border-purple-400 transition-colors bg-white text-left"
       >
         <div class="font-semibold text-purple-800">System Health Check</div>

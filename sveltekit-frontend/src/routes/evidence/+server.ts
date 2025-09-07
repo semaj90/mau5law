@@ -1,6 +1,5 @@
 import { json } from "@sveltejs/kit";
-
-import { randomUUID } from 'crypto';
+import { randomUUID } from "node:crypto";
 import type { RequestHandler } from './$types';
 
 

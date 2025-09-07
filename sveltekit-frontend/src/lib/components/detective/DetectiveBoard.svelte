@@ -12,7 +12,6 @@
 
 	// SVELTE 5: External, app-wide stores are still valid.
 	// Access page data directly
-	import { page as $page } from '$app/stores';
 	import { evidenceStore } from '$lib/stores/evidence-unified';
 	import { callContext7Tool, getContextAwareSuggestions } from '$lib/ai/mcp-helpers';
 	import EvidenceNode from '../canvas/EvidenceNode.svelte';

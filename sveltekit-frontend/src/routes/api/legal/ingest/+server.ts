@@ -9,7 +9,7 @@ import type { RequestHandler } from './$types';
 
 import { json, error } from '@sveltejs/kit';
 import pdf from 'pdf-parse';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import { v4 as uuidv4 } from 'uuid';
 
 // Enhanced RAG processing pipeline

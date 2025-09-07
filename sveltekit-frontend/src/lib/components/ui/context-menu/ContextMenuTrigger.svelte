@@ -1,14 +1,13 @@
 <script lang="ts">
-
-  import { melt } from 'melt';
+  import { ContextMenu } from 'bits-ui';
+  
   interface Props {
-    trigger: any;
+    children?: import('svelte').Snippet;
   }
-  let { children,
-    trigger
-  }: Props = $props();
+  
+  let { children }: Props = $props();
 </script>
 
-<div <!-- use:melt={trigger}>
+<ContextMenu.Trigger>
   {@render children?.()}
-</div>
+</ContextMenu.Trigger>

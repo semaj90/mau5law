@@ -226,20 +226,20 @@ let filtered = $state([...securityEvents]);
       <Button
         variant="outline"
         size="sm"
-        on:on:click={() => loadSecurityEvents()}
+        on:click={() => loadSecurityEvents()}
         disabled={loading}
       >
         <RefreshCw class={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         Refresh
       </Button>
-      <Button variant="outline" size="sm" on:on:click={() => exportEvents()}>
+      <Button variant="outline" size="sm" on:click={() => exportEvents()}>
         <Download class="container mx-auto px-4" />
         Export
       </Button>
       <Button
         variant="outline"
         size="sm"
-        on:on:click={() => clearAllEvents()}
+        on:click={() => clearAllEvents()}
         class="container mx-auto px-4"
       >
         <Trash2 class="container mx-auto px-4" />
@@ -449,7 +449,7 @@ let filtered = $state([...securityEvents]);
                 <Button
                   variant="ghost"
                   size="sm"
-                  on:on:click={() => toggleEventDetails(index)}
+                  on:click={() => toggleEventDetails(index)}
                   class="container mx-auto px-4"
                 >
                   <Eye class="container mx-auto px-4" />

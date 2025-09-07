@@ -221,7 +221,7 @@ class CognitiveSmartRouter {
         return {
           engine: engine as RouteDecision['engine'],
           reasoning: `Best available engine for ${requestType}`,
-          expectedLatency: ROUTING_CONFIG.engineCapabilities[engine]?.maxLatency || 200,
+          expectedLatency: ROUTING_CONFIG.engineCapabilities[engine as keyof typeof ROUTING_CONFIG.engineCapabilities]?.maxLatency || 200,
           fallbackChain: preferredEngines.slice(1),
           confidence: 0.8
         };

@@ -41,6 +41,58 @@
 			],
 			"isBackground": false,
 			"group": "build"
+		},
+		{
+			"label": "Frontend: quick typecheck (no emit)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "Frontend: svelte-check (ultra-fast)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"check:ultra-fast"
+			],
+			"group": "test"
+		},
+		{
+			"label": "Quick TS/Svelte check (frontend)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "✅ TypeScript Check - Quick",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
 		}
 	]
 }

@@ -9,6 +9,7 @@ import type { RequestHandler } from './$types';
 
 import { json } from '@sveltejs/kit';
 import { createSSRResponse, createSSRErrorResponse, withSSRHandler } from '$lib/server/api-ssr-helpers';
+import { getTypedLocals } from '$lib/types/locals-unify';
 import { db } from '$lib/server/db';
 import { users, cases, evidence } from '$lib/server/db/schema-postgres';
 import { eq, sql, count } from 'drizzle-orm';
@@ -16,9 +17,10 @@ import { cognitiveCache } from '$lib/services/cognitive-cache-integration';
 import { dev } from '$app/environment';
 
 export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) => {
-  // Development fallback when session system isn't fully configured
-  const session = locals.session;
-  const user = locals.user;
+  // Use typed locals for consistent session/user access
+  const typedLocals = getTypedLocals(locals);
+  const session = typedLocals.session;
+  const user = typedLocals.user;
   
   // For development, create a mock user if no session exists
   if (!session || !user) {

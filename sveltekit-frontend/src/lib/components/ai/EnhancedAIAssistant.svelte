@@ -1,168 +1,267 @@
+<!--
+  Enhanced AI Assistant - Multi-backend AI chat with intelligent routing
+  Integrates with the global AI assistant store and pgvector semantic search
+-->
+
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { aiAssistant } from '$lib/stores/ai-assistant.svelte';
+  import { pgVectorSearch } from '$lib/services/pgvector-semantic-search';
+  import type { ChatMessage, Backend } from '$lib/types/ai-assistant';
+  import { Bot, Download, Loader2, MessageSquare, Quote, Search, Settings, User as UserIcon, Mic, MicOff } from "lucide-svelte";
+  
+  // Component props
   interface Props {
     caseId?: string;
     placeholder?: string;
     maxHeight?: string;
     showReferences?: boolean;
+    legalContext?: string;
+    evidenceId?: string;
     onresponse?: (event?: any) => void;
     oncitation?: (event?: any) => void;
   }
-  let {
+  
+  let { 
     caseId = undefined,
-    placeholder = "Ask AI about this case...",
-    maxHeight = "400px",
+    placeholder = "Ask AI about legal matters...",
+    maxHeight = "600px",
     showReferences = true,
+    legalContext,
+    evidenceId,
     onresponse,
     oncitation
-  } = $props();
-
-
-
-  import { Bot, Download, Loader2, MessageSquare, Quote, Search, Settings, User as UserIcon } from "lucide-svelte";
+  }: Props = $props();
   
-    export const evidenceIds: string[] = [];
-      
-  
-  // State
-  let query = $state("");
-  let isLoading = $state(false);
-  let messages = $state<any[]>([]);
+  // Local reactive state
+  let messageInput = $state('');
   let showSettings = $state(false);
+  let showSearchResults = $state(false);
+  let searchResults = $state<any[]>([]);
+  let messagesContainer: HTMLDivElement;
   let showCitationDialog = $state(false);
   let selectedCitation = $state("");
+  
+  // Derived state from store
+  const messages = $derived(aiAssistant.messages);
+  const isProcessing = $derived(aiAssistant.isProcessing);
+  const currentBackend = $derived(aiAssistant.currentBackend);
+  const backendLatency = $derived(aiAssistant.backendLatency);
+  const config = $derived(aiAssistant.config);
 
-  // Settings
-  let selectedModel = $state("gpt-4");
-  let temperature = $state(0.7);
-  let searchThreshold = $state(0.7);
-  let maxResults = $state(5);
+  // Voice input support
+  let isListening = $state(false);
+  let recognition: SpeechRecognition | null = null;
 
-  async function handleSubmit() {
-    if (!query.trim() || isLoading) return;
-
-    const userMessage = {
-      id: Date.now().toString(),
-      role: "user",
-      content: query,
-      timestamp: new Date(),
-    };
-
-    messages = [...messages, userMessage];
-    const currentQuery = query;
-    query = "";
-    isLoading = true;
-
-    try {
-      const response = await fetch("/api/ai/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: currentQuery,
-          caseId,
-          evidenceIds,
-          model: selectedModel,
-          temperature,
-          searchThreshold,
-          maxResults,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to get AI response");
-}
-      const data = await response.json();
-
-      const assistantMessage = {
-        id: Date.now().toString(),
-        role: "assistant",
-        content: data.answer,
-        references: data.references || [],
-        timestamp: new Date(),
+  onMount(() => {
+    // Initialize speech recognition if available
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        messageInput = transcript;
+        isListening = false;
       };
+      
+      recognition.onerror = () => {
+        isListening = false;
+      };
+      
+      recognition.onend = () => {
+        isListening = false;
+      };
+    }
 
-      messages = [...messages, assistantMessage];
+    // Auto-scroll to bottom when new messages arrive
+    return $effect(() => {
+      if (messagesContainer && messages.length > 0) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    });
+  });
+
+  // Send message function
+  async function sendMessage() {
+    if (!messageInput.trim() || isProcessing) return;
+    
+    const message = messageInput;
+    messageInput = '';
+    
+    try {
+      const assistantMessage = await aiAssistant.sendMessage(message, {
+        legalContext,
+        includeHistory: true
+      });
+      
+      // Store embeddings for semantic search
+      await pgVectorSearch.storeChatEmbedding(assistantMessage);
+      
+      // Store user message embedding too
+      const userMessage = messages[messages.length - 2]; // Assistant message is last, user is second-to-last
+      if (userMessage) {
+        await pgVectorSearch.storeChatEmbedding(userMessage);
+      }
 
       // Dispatch event for parent components
       onresponse?.();
+      
     } catch (error) {
-      console.error("AI chat error:", error);
-      const errorMessage = {
-        id: Date.now().toString(),
-        role: "assistant",
-        content: "Sorry, I encountered an error. Please try again.",
-        timestamp: new Date(),
-      };
-      messages = [...messages, errorMessage];
-    } finally {
-      isLoading = false;
-}}
+      console.error('Failed to send message:', error);
+      // Add error message to chat
+      aiAssistant.messages.push({
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: `❌ Sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: Date.now(),
+        sessionId: aiAssistant.sessionId,
+        metadata: { error: true }
+      });
+    }
+  }
+
+  // Handle Enter key
   function handleKeyDown(event: KeyboardEvent) {
-    if (event.key === "Enter" && !event.shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
-      handleSubmit();
-}}
+      sendMessage();
+    }
+  }
+
+  // Voice input toggle
+  function toggleVoiceInput() {
+    if (!recognition) return;
+    
+    if (isListening) {
+      recognition.stop();
+    } else {
+      isListening = true;
+      recognition.start();
+    }
+  }
+
+  // Search conversation history
+  async function searchHistory() {
+    if (!messageInput.trim()) return;
+    
+    try {
+      const results = await pgVectorSearch.searchChatHistory({
+        query: messageInput,
+        limit: 10,
+        threshold: 0.7,
+        filters: { legalDomain: legalContext }
+      });
+      
+      searchResults = results;
+      showSearchResults = true;
+    } catch (error) {
+      console.error('Search failed:', error);
+    }
+  }
+
+  // Insert search result
+  function insertSearchResult(result: any) {
+    messageInput = result.content;
+    showSearchResults = false;
+  }
+
+  // Backend selection
+  function selectBackend(backend: Backend) {
+    aiAssistant.currentBackend = backend;
+  }
+
+  // Export conversation
+  function exportConversation(format: 'json' | 'markdown' | 'pdf' = 'markdown') {
+    const exported = aiAssistant.exportConversation(format);
+    
+    const blob = new Blob([exported], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `legal-ai-conversation-${Date.now()}.${format === 'json' ? 'json' : 'md'}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Clear conversation
+  function clearConversation() {
+    if (confirm('Are you sure you want to clear this conversation?')) {
+      aiAssistant.clearHistory();
+    }
+  }
+
+  // Get backend status color
+  function getBackendStatusColor(backend: Backend): string {
+    const latency = backendLatency[backend];
+    if (latency === 0) return 'text-gray-500';
+    if (latency < 1000) return 'text-green-500';
+    if (latency < 3000) return 'text-yellow-500';
+    return 'text-red-500';
+  }
+
+  // Format timestamp
+  function formatTime(timestamp: number): string {
+    return new Date(timestamp).toLocaleTimeString();
+  }
+
+  // Show citation
   function showCitation(citation: string) {
     selectedCitation = citation;
     showCitationDialog = true;
-}
+  }
+
+  // Insert citation
   function insertCitation() {
     oncitation?.();
     showCitationDialog = false;
-}
-  function clearChat() {
-    messages = [];
-}
-  function downloadChat() {
-    const chatData = {
-      caseId,
-      timestamp: new Date().toISOString(),
-      messages,
-    };
-
-    const blob = new Blob([JSON.stringify(chatData, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `ai-chat-${caseId || "session"}-${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-}
+  }
 </script>
 
-<div class="ai-assistant-container">
-  <!-- Header -->
+<!-- Main AI Assistant Interface -->
+<div class="enhanced-ai-assistant">
+  <!-- Header with Controls -->
   <div class="ai-header">
     <div class="ai-title">
       <Bot size={20} />
-      <span>AI Assistant</span>
+      <span>Legal AI Assistant</span>
       {#if caseId}
         <span class="case-id">Case: {caseId}</span>
       {/if}
+      <div class="backend-status">
+        <span class="current-backend {getBackendStatusColor(currentBackend)}">
+          {currentBackend} ({Math.round(backendLatency[currentBackend])}ms)
+        </span>
+      </div>
     </div>
+    
     <div class="ai-actions">
       <button
         class="action-btn"
-        onclick={() => (showSettings = !showSettings)}
+        onclick={() => showSettings = !showSettings}
         title="Settings"
       >
         <Settings size={16} />
       </button>
+      
       <button
         class="action-btn"
-        onclick={() => downloadChat()}
-        title="Download chat"
+        onclick={() => exportConversation('markdown')}
+        title="Export Conversation"
         disabled={messages.length === 0}
       >
         <Download size={16} />
       </button>
+      
       <button
         class="action-btn"
-        onclick={() => clearChat()}
-        title="Clear chat"
+        onclick={clearConversation}
+        title="Clear Conversation"
         disabled={messages.length === 0}
       >
         <MessageSquare size={16} />
@@ -173,71 +272,113 @@
   <!-- Settings Panel -->
   {#if showSettings}
     <div class="settings-panel">
-      <div class="settings-row">
-        <label for="model-select">Model:</label>
-        <select id="model-select" bind:value={selectedModel}>
-          <option value="gpt-4">GPT-4</option>
-          <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-          <option value="claude-3-sonnet">Claude 3 Sonnet</option>
-        </select>
+      <h4>AI Assistant Settings</h4>
+      
+      <div class="setting-group">
+        <label>Backend Selection:</label>
+        <div class="backend-grid">
+          {#each aiAssistant.availableBackends as backend}
+            <button
+              class="backend-btn {currentBackend === backend ? 'active' : ''}"
+              class:unavailable={backendLatency[backend] === 0}
+              onclick={() => selectBackend(backend)}
+            >
+              {backend}
+              <span class="latency {getBackendStatusColor(backend)}">
+                {backendLatency[backend]}ms
+              </span>
+            </button>
+          {/each}
+        </div>
       </div>
-
-      <div class="settings-row">
-        <label for="temperature-slider">Temperature:</label>
+      
+      <div class="setting-group">
+        <label>Temperature: {config.temperature}</label>
         <input
-          id="temperature-slider"
           type="range"
           min="0"
           max="1"
           step="0.1"
-          bind:value={temperature}
+          bind:value={config.temperature}
+          class="temperature-slider"
         />
-        <span>{temperature}</span>
       </div>
-
-      <div class="settings-row">
-        <label for="threshold-slider">Search Threshold:</label>
-        <input
-          id="threshold-slider"
-          type="range"
-          min="0"
-          max="1"
-          step="0.1"
-          bind:value={searchThreshold}
-        />
-        <span>{searchThreshold}</span>
+      
+      <div class="setting-group">
+        <label>
+          <input
+            type="checkbox"
+            bind:checked={config.autoSwitchBackend}
+          />
+          Auto-switch backend based on query complexity
+        </label>
       </div>
-
-      <div class="settings-row">
-        <label for="max-results-input">Max Results:</label>
-        <input
-          id="max-results-input"
-          type="number"
-          min="1"
-          max="20"
-          bind:value={maxResults}
-        />
+      
+      <div class="setting-group">
+        <label>
+          <input
+            type="checkbox"
+            bind:checked={config.persistHistory}
+          />
+          Persist conversation history
+        </label>
       </div>
     </div>
   {/if}
 
-  <!-- Chat Messages -->
-  <div class="chat-messages" style="max-height: {maxHeight}">
-    {#each messages as message}
-      <div class="message {message.role}">
-        <div class="message-header">
-          {#if message.role === "user"}
-            <UserIcon size={16} />
-          {:else}
-            <Bot size={16} />
-          {/if}
-          <span>
-            {message.timestamp.toLocaleTimeString()}
-          </span>
+  <!-- Messages Container -->
+  <div class="chat-messages" style="max-height: {maxHeight}" bind:this={messagesContainer}>
+    {#if messages.length === 0}
+      <div class="welcome-message">
+        <Bot size={48} />
+        <h4>👋 Welcome to the Legal AI Assistant</h4>
+        <p>I specialize in legal document analysis, contract review, and case research.</p>
+        <div class="capabilities">
+          <div class="capability">📄 Document analysis</div>
+          <div class="capability">⚖️ Legal precedent research</div>
+          <div class="capability">📋 Contract interpretation</div>
+          <div class="capability">🔍 Evidence evaluation</div>
         </div>
+      </div>
+    {/if}
+    
+    {#each messages as message}
+      <div class="message {message.role}" data-message-id={message.id}>
+        <div class="message-header">
+          <span class="role-indicator">
+            {#if message.role === 'user'}
+              <UserIcon size={16} />
+            {:else if message.role === 'assistant'}
+              <Bot size={16} />
+            {:else}
+              🔧
+            {/if}
+            {message.role}
+          </span>
+          <span class="timestamp">{formatTime(message.timestamp)}</span>
+          {#if message.metadata?.backend}
+            <span class="backend-tag {getBackendStatusColor(message.metadata.backend)}">
+              {message.metadata.backend}
+            </span>
+          {/if}
+          {#if message.metadata?.processingTime}
+            <span class="processing-time">
+              {Math.round(message.metadata.processingTime)}ms
+            </span>
+          {/if}
+        </div>
+        
         <div class="message-content">
           {message.content}
         </div>
+        
+        {#if message.metadata?.confidence}
+          <div class="confidence-indicator">
+            Confidence: {Math.round(message.metadata.confidence * 100)}%
+          </div>
+        {/if}
+
+        <!-- References from existing implementation -->
         {#if message.references && message.references.length > 0 && showReferences}
           <div class="message-references">
             <h4>References:</h4>
@@ -257,35 +398,96 @@
         {/if}
       </div>
     {/each}
-    {#if isLoading}
-      <div class="message assistant loading">
+    
+    {#if isProcessing}
+      <div class="message assistant typing">
         <div class="message-header">
-          <Bot size={16} />
-          <span>Thinking...</span>
+          <span class="role-indicator">
+            <Bot size={16} />
+            assistant
+          </span>
+          <span class="backend-tag {getBackendStatusColor(currentBackend)}">
+            {currentBackend}
+          </span>
         </div>
-        <div class="message-content">
+        <div class="typing-indicator">
           <Loader2 size={16} />
+          <span>Thinking...</span>
         </div>
       </div>
     {/if}
   </div>
 
+  <!-- Search Results Panel -->
+  {#if showSearchResults}
+    <div class="search-results-panel">
+      <div class="search-header">
+        <h4>🔍 Related Conversations</h4>
+        <button onclick={() => showSearchResults = false}>✕</button>
+      </div>
+      
+      <div class="search-results">
+        {#each searchResults as result}
+          <div 
+            class="search-result"
+            onclick={() => insertSearchResult(result)}
+          >
+            <div class="result-content">{result.content}</div>
+            <div class="result-meta">
+              Similarity: {Math.round(result.similarity * 100)}% | 
+              {formatTime(result.timestamp)}
+            </div>
+          </div>
+        {/each}
+        
+        {#if searchResults.length === 0}
+          <div class="no-results">No related conversations found.</div>
+        {/if}
+      </div>
+    </div>
+  {/if}
+
   <!-- Input Area -->
   <div class="chat-input">
+    <div class="input-controls">
+      <button
+        class="voice-btn {isListening ? 'listening' : ''}"
+        onclick={toggleVoiceInput}
+        disabled={!recognition}
+        title={recognition ? 'Voice input' : 'Voice input not supported'}
+      >
+        {#if isListening}
+          <MicOff size={16} />
+        {:else}
+          <Mic size={16} />
+        {/if}
+      </button>
+      
+      <button
+        class="search-btn"
+        onclick={searchHistory}
+        disabled={!messageInput.trim()}
+        title="Search conversation history"
+      >
+        <Search size={16} />
+      </button>
+    </div>
+    
     <div class="input-wrapper">
       <textarea
-        bind:value={query}
+        bind:value={messageInput}
         onkeydown={handleKeyDown}
         {placeholder}
-        rows="4"
-        disabled={isLoading}
+        rows="3"
+        disabled={isProcessing}
       ></textarea>
       <button
         class="submit-btn"
-        onclick={() => handleSubmit()}
-        disabled={!query.trim() || isLoading}
+        onclick={sendMessage}
+        disabled={!messageInput.trim() || isProcessing}
+        title="Send message (Enter)"
       >
-        {#if isLoading}
+        {#if isProcessing}
           <Loader2 size={16} />
         {:else}
           <Search size={16} />
@@ -299,9 +501,8 @@
     <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = false; }}>
       <div class="modal" role="document">
         <div class="modal-header">
-          <h2 id="citation-modal-title" class="visually-hidden">Legal Citation</h2>
-          <Quote aria-hidden="true" />
-          <span class="sr-only">Legal Citation</span>
+          <Quote size={20} />
+          <h2 id="citation-modal-title">Legal Citation</h2>
         </div>
         <div class="modal-body">
           <div class="citation-box">
@@ -327,286 +528,549 @@
 </div>
 
 <style>
-  /* @unocss-include */
-  .ai-assistant-container {
-    display: flex
-    flex-direction: column
-    background: white
+  .enhanced-ai-assistant {
+    display: flex;
+    flex-direction: column;
+    background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    overflow: hidden
-}
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+
   .ai-header {
-    display: flex
+    display: flex;
     justify-content: space-between;
-    align-items: center
+    align-items: center;
     padding: 1rem;
     background: #f9fafb;
     border-bottom: 1px solid #e5e7eb;
-}
+  }
+
   .ai-title {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
     font-weight: 600;
-}
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ai-title > span:first-of-type {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
   .case-id {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: #6b7280;
     background: #e5e7eb;
     padding: 0.125rem 0.5rem;
     border-radius: 4px;
-}
+    margin-top: 0.25rem;
+  }
+
+  .backend-status {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .current-backend {
+    font-weight: 500;
+  }
+
   .ai-actions {
-    display: flex
+    display: flex;
     gap: 0.5rem;
-}
+  }
+
   .action-btn {
     padding: 0.5rem;
-    border: none
-    background: transparent
-    border-radius: 4px;
-    cursor: pointer
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
     transition: background-color 0.2s;
-}
-  .action-btn:hover {
-    background: #e5e7eb;
-}
+    border: 1px solid #d1d5db;
+  }
+
+  .action-btn:hover:not(:disabled) {
+    background: #f3f4f6;
+  }
+
   .action-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
+  }
+
   .settings-panel {
     padding: 1rem;
     background: #f9fafb;
     border-bottom: 1px solid #e5e7eb;
-}
-  .settings-row {
-    display: flex
-    align-items: center
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-  .settings-row label {
-    min-width: 120px;
+  }
+
+  .setting-group {
+    margin-bottom: 1rem;
+  }
+
+  .setting-group label {
+    display: block;
     font-size: 0.875rem;
     font-weight: 500;
-}
-  .settings-row select,
-  .settings-row input {
-    flex: 1;
-    padding: 0.25rem 0.5rem;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+
+  .backend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .backend-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
     border: 1px solid #d1d5db;
-    border-radius: 4px;
-    font-size: 0.875rem;
-}
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: all 0.2s;
+  }
+
+  .backend-btn:hover {
+    background: #f3f4f6;
+  }
+
+  .backend-btn.active {
+    border-color: #3b82f6;
+    background: #eff6ff;
+  }
+
+  .backend-btn.unavailable {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .latency {
+    font-size: 0.625rem;
+    margin-top: 0.25rem;
+  }
+
+  .temperature-slider {
+    width: 100%;
+  }
+
   .chat-messages {
     flex: 1;
-    overflow-y: auto
+    overflow-y: auto;
     padding: 1rem;
-    display: flex
-    flex-direction: column
+    background: white;
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
-}
-  .message {
-    display: flex
-    flex-direction: column
-    gap: 0.5rem;
-}
-  .message.user {
-    align-items: flex-end;
-}
-  .message.assistant {
-    align-items: flex-start;
-}
-  .message-header {
-    display: flex
-    align-items: center
-    gap: 0.5rem;
-    font-size: 0.875rem;
+  }
+
+  .welcome-message {
+    text-align: center;
+    padding: 2rem;
     color: #6b7280;
-}
-  .message-content {
-    max-width: 80%;
-    padding: 0.75rem;
-    border-radius: 8px;
+  }
+
+  .welcome-message h4 {
+    color: #111827;
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  .capabilities {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .capability {
+    padding: 0.5rem;
+    background: #f3f4f6;
+    border-radius: 6px;
     font-size: 0.875rem;
+    text-align: center;
+  }
+
+  .message {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 85%;
+  }
+
+  .message.user {
+    align-self: flex-end;
+  }
+
+  .message.assistant {
+    align-self: flex-start;
+  }
+
+  .message-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .role-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 500;
+  }
+
+  .backend-tag, .processing-time {
+    padding: 0.125rem 0.375rem;
+    background: #f3f4f6;
+    border-radius: 4px;
+    font-size: 0.625rem;
+  }
+
+  .message-content {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
     line-height: 1.5;
-}
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+  }
+
   .message.user .message-content {
     background: #3b82f6;
-    color: white
-}
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+
   .message.assistant .message-content {
     background: #f3f4f6;
-    color: #1f2937;
-}
-  .message.loading .message-content {
-    display: flex
-    align-items: center
+    color: #111827;
+    border-bottom-left-radius: 4px;
+  }
+
+  .confidence-indicator {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+
+  .typing-indicator {
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
-}
+    padding: 0.75rem 1rem;
+    background: #f3f4f6;
+    border-radius: 12px;
+    border-bottom-left-radius: 4px;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
   .message-references {
-    max-width: 80%;
     margin-top: 0.5rem;
-}
+  }
+
   .message-references h4 {
     font-size: 0.875rem;
     font-weight: 600;
     margin-bottom: 0.25rem;
-}
+    color: #374151;
+  }
+
   .message-references ul {
-    list-style: none
+    list-style: none;
     padding: 0;
     margin: 0;
-}
+  }
+
   .message-references li {
     margin-bottom: 0.25rem;
-}
+  }
+
   .reference-link {
     color: #3b82f6;
-    text-decoration: underline
-    background: none
-    border: none
-    cursor: pointer
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
     font-size: 0.875rem;
-}
+  }
+
   .reference-link:hover {
     color: #2563eb;
-}
+  }
+
+  .search-results-panel {
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .search-header h4 {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .search-result {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .search-result:hover {
+    background: #f3f4f6;
+  }
+
+  .result-content {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .result-meta {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .no-results {
+    padding: 1rem;
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+  }
+
   .chat-input {
     padding: 1rem;
     border-top: 1px solid #e5e7eb;
-}
-  .input-wrapper {
-    display: flex
+    background: #f9fafb;
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem;
-}
+  }
+
+  .input-controls {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .voice-btn, .search-btn {
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .voice-btn:hover, .search-btn:hover {
+    background: #f3f4f6;
+  }
+
+  .voice-btn.listening {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+  }
+
   .input-wrapper textarea {
     flex: 1;
     padding: 0.75rem;
     border: 1px solid #d1d5db;
-    border-radius: 6px;
-    resize: vertical
+    border-radius: 8px;
+    resize: vertical;
     min-height: 2.5rem;
-    font-family: inherit
+    font-family: inherit;
     font-size: 0.875rem;
-}
+    line-height: 1.5;
+  }
+
   .input-wrapper textarea:focus {
-    outline: none
+    outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
+  }
+
   .submit-btn {
-    padding: 0.75rem;
+    padding: 0.75rem 1rem;
     background: #3b82f6;
-    color: white
-    border: none
-    border-radius: 6px;
-    cursor: pointer
-    transition: background-color 0.2s;
-}
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
   .submit-btn:hover:not(:disabled) {
     background: #2563eb;
-}
+  }
+
   .submit-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
+  }
+
+  /* Modal styles */
   .modal-overlay {
-    position: fixed
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    display: flex
-    align-items: center
-    justify-content: center
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 1000;
-}
+  }
+
   .modal {
-    background: white
-    border-radius: 8px;
+    background: white;
+    border-radius: 12px;
     max-width: 500px;
     width: 90%;
     max-height: 80vh;
-    overflow-y: auto
+    overflow-y: auto;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
+  }
+
   .modal-header {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
     padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
     font-weight: 600;
-}
+  }
+
   .modal-body {
     padding: 1rem;
-}
+  }
+
   .citation-box {
     background: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 6px;
     padding: 1rem;
     margin-bottom: 1rem;
-}
+  }
+
   .citation-box p {
     margin: 0;
-    font-family: monospace
+    font-family: monospace;
     font-size: 0.875rem;
     line-height: 1.5;
-}
+  }
+
   .modal-actions {
-    display: flex
+    display: flex;
     gap: 0.5rem;
     margin-bottom: 1rem;
-}
+  }
+
   .btn-primary {
     padding: 0.5rem 1rem;
     background: #3b82f6;
-    color: white
-    border: none
+    color: white;
+    border: none;
     border-radius: 6px;
-    cursor: pointer
+    cursor: pointer;
     font-size: 0.875rem;
     transition: background-color 0.2s;
-}
+  }
+
   .btn-primary:hover {
     background: #2563eb;
-}
+  }
+
   .btn-secondary {
     padding: 0.5rem 1rem;
     background: #f3f4f6;
     color: #374151;
     border: 1px solid #d1d5db;
     border-radius: 6px;
-    cursor: pointer
+    cursor: pointer;
     font-size: 0.875rem;
     transition: background-color 0.2s;
-}
+  }
+
   .btn-secondary:hover {
     background: #e5e7eb;
-}
+  }
+
   .modal-footer {
-    display: flex
+    display: flex;
     justify-content: flex-end;
     padding: 1rem;
     border-top: 1px solid #e5e7eb;
-}
+  }
+
   .btn-close {
     padding: 0.5rem 1rem;
     background: #f3f4f6;
     color: #374151;
     border: 1px solid #d1d5db;
     border-radius: 6px;
-    cursor: pointer
+    cursor: pointer;
     font-size: 0.875rem;
     transition: background-color 0.2s;
-}
+  }
+
   .btn-close:hover {
     background: #e5e7eb;
-}
+  }
+
+  /* Color utilities */
+  .text-gray-500 { color: #6b7280; }
+  .text-green-500 { color: #10b981; }
+  .text-yellow-500 { color: #f59e0b; }
+  .text-red-500 { color: #ef4444; }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .enhanced-ai-assistant {
+      border-radius: 0;
+    }
+    
+    .backend-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .message {
+      max-width: 95%;
+    }
+
+    .capabilities {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
-</div>

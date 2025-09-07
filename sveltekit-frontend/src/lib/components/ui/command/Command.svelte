@@ -6,10 +6,12 @@
   import { createEventDispatcher } from 'svelte';
 
   // Exported props (use Svelte-style exports instead of $props/$bindable)
-  let { open = $bindable() } = $props(); // boolean = false;
-  let { onOpenChange = $bindable() } = $props(); // ((open: boolean) => void) | undefined;
-  let { placeholder = $bindable() } = $props(); // string = 'Search cases, evidence, documents...';
-  let { class = $bindable() } = $props(); // string = '';
+  let {
+    open = $bindable(),
+    onOpenChange = $bindable(),
+    placeholder = $bindable(),
+    class: className = $bindable()
+  } = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -70,7 +72,7 @@
   class={cn(
     'legal-command-palette',
     'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
-    class
+    className
   )}
 >
   <div class="flex items-center border-b px-3 legal-command-header">

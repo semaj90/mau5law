@@ -30,8 +30,11 @@
   let showFeedback = $state(false);
   let session = $state<any>(null);
 
-  // Create store only in browser (inside onMount) to avoid hydration issues
-  let store = $state<ReturnType<typeof createFeedbackStore> | null>(null);
+  // Create feedback store and set context immediately (must be synchronous)
+  const feedbackStore = createFeedbackStore();
+  setFeedbackStore(feedbackStore);
+  
+  let store = $state<ReturnType<typeof createFeedbackStore>>(feedbackStore);
 
   onMount(() => {
     if (!browser) return;
@@ -48,10 +51,6 @@
           console.warn('Service worker registration failed:', e);
         }
       }
-
-      // create and set feedback store in browser
-      store = createFeedbackStore();
-      setFeedbackStore(store);
 
       console.log('🚀 Initializing YoRHa Legal AI Platform...');
 
@@ -242,6 +241,30 @@
           >
         🎮 GPU Inference
           </ModernButton>
+          <ModernButton
+        to="/detective"
+        variant="ghost"
+        size="sm"
+        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
+          >
+        Detective
+          </ModernButton>
+          <ModernButton
+        to="/citations"
+        variant="ghost"
+        size="sm"
+        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
+          >
+        Citations
+          </ModernButton>
+          <ModernButton
+        to="/chat"
+        variant="ghost"
+        size="sm"
+        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
+          >
+        Chat
+          </ModernButton>
         </nav>
 
         <!-- Auth Buttons -->
@@ -275,8 +298,13 @@
     </div>
   </header>
 
+  <!-- Skip Navigation Link for Screen Readers -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-yellow-400 text-black px-4 py-2 rounded">
+    Skip to main content
+  </a>
+
   <!-- Main Content with Golden Ratio Spacing -->
-  <main class="container mx-auto px-golden-lg py-golden-xl min-h-[calc(100vh-theme(spacing.16))]">
+  <main id="main-content" class="container mx-auto px-golden-lg py-golden-xl min-h-[calc(100vh-theme(spacing.16))]" role="main" aria-label="Main content">
   {@render children()}
   </main>
 </div>
@@ -350,6 +378,34 @@
   :global(.container) {
     max-width: 90rem;
     margin: 0 auto;
+  }
+
+  /* CSS Stretch-to-Fit Utilities */
+  :global(.stretch-fit) {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  :global(.stretch-fit-content) {
+    flex: 1;
+    width: 100%;
+    min-height: 0; /* Allow flex child to shrink */
+  }
+  
+  :global(.full-viewport) {
+    min-height: 100vh;
+    min-width: 100vw;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  :global(.flex-stretch) {
+    display: flex;
+    flex: 1;
+    align-items: stretch;
   }
 
   /* Smooth transitions for YoRHa theme */

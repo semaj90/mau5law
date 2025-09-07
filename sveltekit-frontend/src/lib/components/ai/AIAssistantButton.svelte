@@ -4,6 +4,7 @@
   import { Brain, MessageSquare, Sparkles, Mic, MicOff, Settings } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import { Badge } from '$lib/components/ui/badge/index.js';
+  // Tooltip wrapper removed for now to avoid incomplete module issues
 
   interface Props {
     variant?: 'floating' | 'inline' | 'compact' | 'full';
@@ -125,7 +126,8 @@ let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
 {#if variant === 'floating'}
   <button
     class={buttonClasses}
-    on:onclick={handleClick}
+  data-status={aiStatus}
+  onclick={handleClick}
     {disabled}
     aria-label="Open AI Assistant"
   >
@@ -153,7 +155,8 @@ let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
 {:else if variant === 'inline'}
   <button
     class={buttonClasses}
-    on:onclick={handleClick}
+  data-status={aiStatus}
+  onclick={handleClick}
     {disabled}
   >
     <div class="flex items-center gap-3 px-4 py-3">
@@ -177,9 +180,12 @@ let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
       </div>
 
       {#if voiceEnabled}
-        <button
-          class="ml-auto p-1 hover:bg-yorha-bg-hover rounded"
-          on:click|stopPropagation={toggleVoiceInput}
+        <span
+          class="ml-auto p-1 hover:bg-yorha-bg-hover rounded inline-flex items-center justify-center cursor-pointer"
+          role="button"
+          tabindex="0"
+          onclick={(e) => { e.stopPropagation(); toggleVoiceInput(); }}
+          onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); } }}
           aria-label={isListening ? 'Stop listening' : 'Start voice input'}
         >
           {#if isListening}
@@ -187,7 +193,7 @@ let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
           {:else}
             <Mic class="w-4 h-4" />
           {/if}
-        </button>
+        </span>
       {/if}
 
       {#if showBadge && unreadCount > 0}
@@ -198,15 +204,15 @@ let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
     </div>
   </button>
 
-<!-- Compact Variant with Tooltip -->
-{:else if variant === 'compact'}
-  {#if false} <!-- tooltipBuilder disabled -->
+  <!-- Compact Variant with Tooltip -->
+  {:else if variant === 'compact'}
     <button
-      <!-- <!-- use:melt={trigger} -->
       class={buttonClasses}
-      on:on:click={handleClick}
+      data-status={aiStatus}
+      onclick={handleClick}
       {disabled}
       aria-label="AI Assistant"
+      title={`AI Assistant — Status: ${aiStatus}${unreadCount > 0 ? ` — ${unreadCount} new` : ''}`}
     >
       <div class="relative p-2">
         <Brain class="w-5 h-5" />
@@ -218,30 +224,13 @@ let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
         {/if}
       </div>
     </button>
-  {:else}
-    <button
-      class={buttonClasses}
-      on:onclick={handleClick}
-      {disabled}
-      aria-label="AI Assistant"
-    >
-      <div class="relative p-2">
-        <Brain class="w-5 h-5" />
-        {#if showStatus}
-          <div
-            class="absolute -top-0.5 -right-0.5 {StatusIndicator().class}"
-            title={StatusIndicator().title}
-          ></div>
-        {/if}
-      </div>
-    </button>
-  {/if}
 
 <!-- Full Variant -->
 {:else if variant === 'full'}
   <button
     class={buttonClasses}
-    on:onclick={handleClick}
+  data-status={aiStatus}
+  onclick={handleClick}
     {disabled}
   >
     <div class="flex items-center justify-between w-full">
@@ -278,9 +267,12 @@ let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
 
       <div class="flex items-center gap-3">
         {#if voiceEnabled}
-          <button
-            class="p-2 hover:bg-yorha-bg-hover rounded-lg"
-            on:click|stopPropagation={toggleVoiceInput}
+          <span
+            class="p-2 hover:bg-yorha-bg-hover rounded-lg inline-flex items-center justify-center cursor-pointer"
+            role="button"
+            tabindex="0"
+            onclick={(e) => { e.stopPropagation(); toggleVoiceInput(); }}
+            onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); } }}
             aria-label={isListening ? 'Stop listening' : 'Start voice input'}
           >
             {#if isListening}
@@ -288,7 +280,7 @@ let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
             {:else}
               <Mic class="w-5 h-5" />
             {/if}
-          </button>
+          </span>
         {/if}
 
         <div class="flex flex-col items-end">
@@ -306,23 +298,7 @@ let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
   </button>
 {/if}
 
-<!-- Tooltip for compact variant -->
-{#if false} <!-- variant === 'compact' && tooltipBuilder && open disabled -->
-  <div
-    <!-- <!-- use:melt={tooltipContent} -->
-    class="z-50 rounded-lg bg-yorha-bg-primary border border-yorha-border-primary px-3 py-2 shadow-lg"
-  >
-    <div class="text-sm font-mono">
-      <div class="font-semibold text-yorha-text-primary">AI Assistant</div>
-      <div class="text-xs text-yorha-text-secondary mt-1">
-        Status: {aiStatus}
-        {#if unreadCount > 0}
-          <br />{unreadCount} new suggestions
-        {/if}
-      </div>
-    </div>
-  </div>
-{/if}
+<!-- Remove the disabled tooltip section as it's now handled in the compact variant above -->
 
 <style>
   .ai-assistant-btn {

@@ -77,14 +77,13 @@ export class SOMNeuralNetwork {
 
   constructor(config: SOMConfig) {
     this.config = {
-      gridSize: { width: 10, height: 10 },
-      learningRate: 0.1,
-      neighborhoodRadius: 2.0,
-      epochs: 100,
-      enableGPU: true,
-      decayRate: 0.99,
-      inputDimension: 384,
-      ...config
+      gridSize: config.gridSize || { width: 10, height: 10 },
+      learningRate: config.learningRate || 0.1,
+      neighborhoodRadius: config.neighborhoodRadius || 2.0,
+      epochs: config.epochs || 100,
+      enableGPU: config.enableGPU !== undefined ? config.enableGPU : true,
+      decayRate: config.decayRate || 0.99,
+      inputDimension: config.inputDimension || 384
     };
 
     this.somGrid = [];
@@ -267,7 +266,7 @@ export class SOMNeuralNetwork {
 
     // Cache the result
     if (this.cache) {
-      await this.cache.set('som_training', cacheKey, result, 3600);
+      await this.cache.set(cacheKey, result, { type: "document", ttl: 3600 });
     }
 
     console.log(`SOM training completed in ${processingTime.toFixed(2)}ms`);
@@ -697,7 +696,7 @@ export class SOMNeuralNetwork {
   cleanup(): void {
     this.inputTensor?.dispose();
     this.weightTensor?.dispose();
-    this.cache?.cleanup();
+    this.cache?.clear();
     console.log('SOM Neural Network cleaned up');
   }
 }

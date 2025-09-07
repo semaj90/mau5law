@@ -507,12 +507,12 @@ export class WebGPUSOMCache {
   }
 
   private getSeverityWeight(severity: string): number {
-    const weights = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 };
-    return weights[severity] || 0.2;
+  const weights: Record<string, number> = { critical: 1.0, high: 0.8, medium: 0.5, low: 0.2 };
+  return weights[severity] ?? 0.2;
   }
 
   private generateSuggestedFixes(category: string): string[] {
-    const fixes = {
+  const fixes: Record<string, string[]> = {
       typescript: [
         'Add missing type declarations',
         'Fix import statements',
@@ -524,7 +524,7 @@ export class WebGPUSOMCache {
       build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
       general: ['Review error messages', 'Check documentation', 'Apply standard fixes'],
     };
-    return fixes[category] || fixes.general;
+  return fixes[category] ?? fixes.general;
   }
 
   private async refineRankingWithWebGPU(todos: IntelligentTodo[]): Promise<IntelligentTodo[]> {
@@ -717,13 +717,15 @@ export class WebGPUSOMCache {
   }
 
   async getTodosByPriority(minPriority = 0): Promise<IntelligentTodo[]> {
-    return this.todosCollection
-      .find({ priority: { $gte: minPriority } })
-      .sort((todo) => -todo.priority);
+    return (this.todosCollection
+      .find({ priority: { $gte: minPriority } }) as IntelligentTodo[])
+      .sort((todo: IntelligentTodo) => -todo.priority);
   }
 
   async getTodosByCategory(category: string): Promise<IntelligentTodo[]> {
-    return this.todosCollection.find({ category }).sort((todo) => -todo.priority);
+    return (this.todosCollection.find({ category }) as IntelligentTodo[]).sort(
+      (todo: IntelligentTodo) => -todo.priority
+    );
   }
 
   async clearCache(): Promise<void> {

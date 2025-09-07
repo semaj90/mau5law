@@ -115,7 +115,7 @@ export const aiHistory = pgTable("ai_history", {
 });
 
 // Relations for better query experience
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many }: any) => ({
   documents: many(documents),
   cases: many(cases),
   evidence: many(evidence),
@@ -123,7 +123,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   aiHistory: many(aiHistory)
 }));
 
-export const documentsRelations = relations(documents, ({ one, many }) => ({
+export const documentsRelations = relations(documents, ({ one, many }: any) => ({
   user: one(users, {
     fields: [documents.user_id],
     references: [users.id]
@@ -132,7 +132,7 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
   citations: many(citations)
 }));
 
-export const casesRelations = relations(cases, ({ one, many }) => ({
+export const casesRelations = relations(cases, ({ one, many }: any) => ({
   user: one(users, {
     fields: [cases.user_id],
     references: [users.id]
@@ -141,7 +141,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   citations: many(citations)
 }));
 
-export const evidenceRelations = relations(evidence, ({ one, many }) => ({
+export const evidenceRelations = relations(evidence, ({ one, many }: any) => ({
   case: one(cases, {
     fields: [evidence.case_id],
     references: [cases.id]
@@ -153,7 +153,7 @@ export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   chunks: many(document_chunks)
 }));
 
-export const documentChunksRelations = relations(document_chunks, ({ one }) => ({
+export const documentChunksRelations = relations(document_chunks, ({ one }: any) => ({
   document: one(documents, {
     fields: [document_chunks.document_id],
     references: [documents.id]
@@ -164,7 +164,7 @@ export const documentChunksRelations = relations(document_chunks, ({ one }) => (
   })
 }));
 
-export const citationsRelations = relations(citations, ({ one }) => ({
+export const citationsRelations = relations(citations, ({ one }: any) => ({
   case: one(cases, {
     fields: [citations.case_id],
     references: [cases.id]
@@ -175,14 +175,14 @@ export const citationsRelations = relations(citations, ({ one }) => ({
   })
 }));
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
+export const sessionsRelations = relations(sessions, ({ one }: any) => ({
   user: one(users, {
     fields: [sessions.user_id],
     references: [users.id]
   })
 }));
 
-export const aiHistoryRelations = relations(aiHistory, ({ one }) => ({
+export const aiHistoryRelations = relations(aiHistory, ({ one }: any) => ({
   user: one(users, {
     fields: [aiHistory.user_id],
     references: [users.id]
@@ -248,8 +248,8 @@ export const casesUpdateSchema = createUpdateSchema(cases);
 export const casesInsertSchema = createInsertSchema(cases);
 ;
 // Helper function to extract Zod schema from drizzle-zod BuildSchema for SuperForms compatibility
-export function extractZodSchema<T extends { _def: { schema: any } }>(drizzleZodSchema: T) {
-  return drizzleZodSchema._def.schema;
+export function extractZodSchema<T extends any>(drizzleZodSchema: T) {
+  return drizzleZodSchema;
 }
 
 // Pre-extracted schemas for common use with SuperForms

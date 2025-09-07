@@ -1,19 +1,25 @@
 <script lang="ts">
   /**
    * Document Ingest Assistant Demo
-   * Showcases the complete ingest integration with Go microservice, 
+   * Showcases the complete ingest integration with Go microservice,
    * PostgreSQL + pgvector, and AI assistant functionality
    */
-  
+
   // Import IngestAIAssistant from '$lib/components/ai/IngestAIAssistant.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  // Use direct component imports (barrel was unreliable)
+  import Card from '$lib/components/ui/Card.svelte';
+  import CardContent from '$lib/components/ui/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/CardTitle.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { onMount } from 'svelte';
-let serviceStatus = $state('checking...');
-let serviceHealth = $state(null);
-let recentIngests = $state([]);
-  
+type ServiceHealth = { upstream?: { port?: number; config?: { embed_model?: string; batch_size?: number } } };
+type IngestItem = { id: string; title: string; type: string; status: string; timestamp: string; processingTime: number };
+let serviceStatus = $state<'checking...' | 'healthy' | 'unhealthy' | 'error'>('checking...');
+let serviceHealth = $state<ServiceHealth | null>(null);
+let recentIngests = $state<IngestItem[]>([]);
+
   async function checkServiceHealth() {
     try {
       const response = await fetch('/api/v1/ingest');
@@ -28,7 +34,7 @@ let recentIngests = $state([]);
       serviceStatus = 'error';
     }
   }
-  
+
   async function loadRecentIngests() {
     try {
       // This would typically call a "recent ingests" API endpoint
@@ -47,7 +53,7 @@ let recentIngests = $state([]);
       console.error('Failed to load recent ingests:', error);
     }
   }
-  
+
   onMount(() => {
     checkServiceHealth();
     loadRecentIngests();
@@ -64,17 +70,17 @@ let recentIngests = $state([]);
   <div class="text-center space-y-4">
     <h1 class="text-4xl font-bold">Document Ingest Assistant</h1>
     <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
-      AI-powered document ingestion with Go microservices, PostgreSQL + pgvector, 
+      AI-powered document ingestion with Go microservices, PostgreSQL + pgvector,
       and intelligent semantic processing
     </p>
   </div>
-  
+
   <!-- Service Status -->
   <Card>
     <CardHeader>
       <CardTitle class="flex items-center justify-between">
         Service Status
-        <Badge variant={serviceStatus === 'healthy' ? 'success' : serviceStatus === 'checking...' ? 'secondary' : 'destructive'}>
+  <Badge variant={serviceStatus === 'healthy' ? 'default' : serviceStatus === 'checking...' ? 'secondary' : 'destructive'}>
           {serviceStatus}
         </Badge>
       </CardTitle>
@@ -110,7 +116,7 @@ let recentIngests = $state([]);
       {/if}
     </CardContent>
   </Card>
-  
+
   <!-- Architecture Overview -->
   <Card>
     <CardHeader>
@@ -148,7 +154,7 @@ let recentIngests = $state([]);
       </div>
     </CardContent>
   </Card>
-  
+
   <!-- Recent Ingests -->
   {#if recentIngests.length > 0}
     <Card>
@@ -165,14 +171,14 @@ let recentIngests = $state([]);
                   Type: {ingest.type} • Processing: {ingest.processingTime.toFixed(1)}ms
                 </div>
               </div>
-              <Badge variant="success">✓ {ingest.status}</Badge>
+              <Badge variant="default">✓ {ingest.status}</Badge>
             </div>
           {/each}
         </div>
       </CardContent>
     </Card>
   {/if}
-  
+
   <!-- Main Ingest Assistant (temporarily disabled for demo) -->
   <Card>
     <CardHeader>
@@ -183,18 +189,18 @@ let recentIngests = $state([]);
         <div class="text-6xl">🤖</div>
         <h3 class="text-xl font-semibold">Ingest AI Assistant</h3>
         <p class="text-muted-foreground max-w-md mx-auto">
-          Full IngestAIAssistant component with Bits UI + Melt UI integration 
+          Full IngestAIAssistant component with Bits UI + Melt UI integration
           is available at <code>$lib/components/ai/IngestAIAssistant.svelte</code>
         </p>
         <div class="space-y-2">
-          <Button on:on:click={() => window.open('/api/v1/ingest', '_blank')}>
+          <Button on:click={() => window.open('/api/v1/ingest', '_blank')}>
             Test API Directly
           </Button>
         </div>
       </div>
     </CardContent>
   </Card>
-  
+
   <!-- Performance Stats -->
   <Card>
     <CardHeader>
@@ -221,7 +227,7 @@ let recentIngests = $state([]);
       </div>
     </CardContent>
   </Card>
-  
+
   <!-- Integration Features -->
   <Card>
     <CardHeader>
@@ -258,7 +264,7 @@ let recentIngests = $state([]);
       </div>
     </CardContent>
   </Card>
-  
+
   <!-- API Endpoints -->
   <Card>
     <CardHeader>
@@ -287,18 +293,18 @@ let recentIngests = $state([]);
       </div>
     </CardContent>
   </Card>
-  
+
   <!-- Footer -->
   <div class="text-center text-sm text-muted-foreground space-y-2">
     <p>
-      🎯 <strong>Production Ready:</strong> Enterprise-grade document ingest system with 
+      🎯 <strong>Production Ready:</strong> Enterprise-grade document ingest system with
       AI-powered processing and vector semantic search
     </p>
     <div class="flex justify-center space-x-4">
-      <Button variant="outline" size="sm" on:on:click={checkServiceHealth}>
+  <Button variant="outline" size="sm" on:click={checkServiceHealth}>
         🔄 Refresh Status
       </Button>
-      <Button variant="outline" size="sm" on:on:click={loadRecentIngests}>
+  <Button variant="outline" size="sm" on:click={loadRecentIngests}>
         📊 Load Recent
       </Button>
     </div>

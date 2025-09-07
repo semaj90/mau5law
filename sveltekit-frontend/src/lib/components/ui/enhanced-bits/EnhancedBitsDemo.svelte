@@ -123,7 +123,7 @@
       {#each demoSections as section (section.id)}
         <button
           class={tabClasses(section.id)}
-          on:onclick={() => currentTab = section.id}
+          onclick={() => currentTab = section.id}
         >
           <div class="flex items-center gap-2">
             <section.icon class="w-4 h-4" />
@@ -143,7 +143,7 @@
         <p class="text-nier-text-secondary mb-6">
           Buttons with legal AI context, confidence indicators, and NieR theming.
         </p>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Standard Variants -->
           <div class="yorha-card p-4">
@@ -219,7 +219,7 @@
                 label="Evidence Search"
                 helpText="AI-powered semantic search across case database"
               />
-              
+
               <Input
                 variant="legal"
                 placeholder="Case number (e.g., CV-2024-001)"
@@ -229,7 +229,7 @@
                 pattern="^[A-Z]{2}-\d{4}-\d{3}$"
                 errorMessage="Invalid case number format"
               />
-              
+
               <Input
                 variant="evidence"
                 placeholder="Document title or description..."
@@ -256,7 +256,7 @@
                 icon={CheckCircle}
                 iconPosition="right"
               />
-              
+
               <Input
                 variant="default"
                 placeholder="Error state input..."
@@ -266,7 +266,7 @@
                 icon={AlertTriangle}
                 iconPosition="right"
               />
-              
+
               <Input
                 variant="password"
                 placeholder="Secure access..."
@@ -288,15 +288,15 @@
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Button variant="yorha" legal on:on:click={() => dialogOpen = true}>
+          <Button variant="yorha" legal on:click={() => dialogOpen = true}>
             Case Management
           </Button>
-          
-          <Button variant="primary" legal on:on:click={() => evidenceDialogOpen = true}>
+
+          <Button variant="primary" legal on:click={() => evidenceDialogOpen = true}>
             Evidence Upload
           </Button>
-          
-          <Button variant="outline" legal on:on:click={runAIAnalysis} loading={aiAnalysisLoading}>
+
+          <Button variant="outline" legal on:click={runAIAnalysis} loading={aiAnalysisLoading}>
             {#if aiAnalysisLoading}
               Running AI Analysis...
             {:else}
@@ -320,7 +320,7 @@
                   Comprehensive case tracking and evidence management for legal professionals.
                 </p>
               </div>
-              
+
               <div class="yorha-panel-content space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Select
@@ -331,7 +331,7 @@
                     caseType
                     label="Case Category"
                   />
-                  
+
                   <Input
                     variant="legal"
                     placeholder="Enter case title..."
@@ -340,7 +340,7 @@
                     legal
                   />
                 </div>
-                
+
                 <div class="agent-card p-4">
                   <h3 class="font-semibold text-nier-text-primary mb-2">AI Assistant Recommendations</h3>
                   <ul class="space-y-2 text-sm text-nier-text-secondary">
@@ -359,9 +359,9 @@
                   </ul>
                 </div>
               </div>
-              
+
               <div class="bits-dialog-footer">
-                <Button variant="outline" on:on:click={() => dialogOpen = false}>
+                <Button variant="outline" on:click={() => dialogOpen = false}>
                   Cancel
                 </Button>
                 <Button variant="primary" legal>
@@ -387,7 +387,7 @@
                   Upload and categorize evidence with AI-powered analysis.
                 </p>
               </div>
-              
+
               <div class="yorha-panel-content space-y-4">
                 <Select
                   options={evidenceCategories}
@@ -396,11 +396,11 @@
                   evidenceCategory
                   label="Evidence Type"
                 />
-                
+
                 {#if evidenceUploadProgress > 0}
                   <div class="processing-bar">
-                    <div 
-                      class="processing-indicator" 
+                    <div
+                      class="processing-indicator"
                       style="width: {evidenceUploadProgress}%"
                     ></div>
                   </div>
@@ -416,12 +416,12 @@
                   </div>
                 {/if}
               </div>
-              
+
               <div class="bits-dialog-footer">
-                <Button variant="outline" on:on:click={() => evidenceDialogOpen = false}>
+                <Button variant="outline" on:click={() => evidenceDialogOpen = false}>
                   Cancel
                 </Button>
-                <Button variant="primary" legal on:on:click={uploadEvidence} disabled={evidenceUploadProgress > 0}>
+                <Button variant="primary" legal on:click={uploadEvidence} disabled={evidenceUploadProgress > 0}>
                   Upload Evidence
                 </Button>
               </div>
@@ -449,7 +449,7 @@
               priority={item.priority}
               confidence={item.confidence}
               selected={selectedEvidenceCard === item.id}
-              on:on:click={() => selectEvidenceCard(item.id)}
+              on:click={() => selectEvidenceCard(item.id)}
             >
               <div class="space-y-3">
                 <div class="flex items-start justify-between">
@@ -460,11 +460,11 @@
                     {item.confidence.toUpperCase()}
                   </div>
                 </div>
-                
+
                 <p class="text-xs text-nier-text-secondary">
                   {item.description}
                 </p>
-                
+
                 <div class="flex items-center justify-between text-xs">
                   <span class="yorha-priority-{item.priority} px-2 py-1 rounded text-white">
                     {item.priority.toUpperCase()}
@@ -508,15 +508,15 @@
                   <p class="text-sm text-nier-text-secondary">Generated with 94% confidence</p>
                 </div>
               </div>
-              
+
               <div class="prose prose-sm max-w-none text-nier-text-secondary">
                 <p>
-                  Based on the uploaded evidence and case parameters, the AI analysis suggests a strong likelihood 
-                  of success for this contract dispute. Key factors include clear breach documentation and 
+                  Based on the uploaded evidence and case parameters, the AI analysis suggests a strong likelihood
+                  of success for this contract dispute. Key factors include clear breach documentation and
                   favorable precedent cases.
                 </p>
               </div>
-              
+
               <div class="flex gap-2">
                 <Button size="sm" variant="primary">
                   Accept Analysis

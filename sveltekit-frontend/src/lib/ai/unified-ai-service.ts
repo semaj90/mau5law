@@ -204,7 +204,11 @@ export class UnifiedAIService {
       const cached = this.cache.get(cacheKey)!;
       return {
         ...cached,
-        metadata: { ...cached.metadata, cacheHit: true }
+        metadata: { 
+          model: cached.metadata?.model || 'cached',
+          ...cached.metadata, 
+          cacheHit: true 
+        }
       };
     }
     

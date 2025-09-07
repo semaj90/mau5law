@@ -255,14 +255,14 @@
                 <Button
                   variant="outline"
                   size="sm"
-                  on:on:click={() => selectAllCases()}
+                  onclick={() => selectAllCases()}
                 >
                   Select All
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  on:on:click={() => clearCaseSelection()}
+                  onclick={() => clearCaseSelection()}
                 >
                   Clear
                 </Button>
@@ -335,7 +335,7 @@
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                on:on:click={() => exportData()}
+                onclick={() => exportData()}
                 disabled={exportLoading || (!includeCases && !includeEvidence)}
                 class="space-y-4"
               >

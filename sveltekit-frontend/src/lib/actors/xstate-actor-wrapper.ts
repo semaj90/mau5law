@@ -272,13 +272,17 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
           
           actor.start();
           const result = await new Promise((resolve, reject) => {
-            actor.subscribe({
-              complete: () => {
-                resolve(actor.getSnapshot().output);
+            const subscription = actor.subscribe({
+              next: (snapshot: any) => {
+                if (snapshot.status === 'done') {
+                  resolve(snapshot.output);
+                  subscription.unsubscribe();
+                } else if (snapshot.status === 'error') {
+                  reject(snapshot.error);
+                  subscription.unsubscribe();
+                }
               },
-              error: (error) => {
-                reject(error);
-              }
+              error: reject
             });
           });
           
@@ -317,13 +321,17 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
           
           actor.start();
           const result = await new Promise((resolve, reject) => {
-            actor.subscribe({
-              complete: () => {
-                resolve(actor.getSnapshot().output);
+            const subscription = actor.subscribe({
+              next: (snapshot: any) => {
+                if (snapshot.status === 'done') {
+                  resolve(snapshot.output);
+                  subscription.unsubscribe();
+                } else if (snapshot.status === 'error') {
+                  reject(snapshot.error);
+                  subscription.unsubscribe();
+                }
               },
-              error: (error) => {
-                reject(error);
-              }
+              error: reject
             });
           });
           

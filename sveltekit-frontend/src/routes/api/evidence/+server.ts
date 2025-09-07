@@ -4,14 +4,13 @@ import type { RequestHandler } from './$types.js';
 // Enhanced Evidence API with pgvector Integration
 // Production-ready evidence management with AI analysis
 
-import { z } from 'zod';
-import { withApiHandler, parseRequestBody, CommonErrors, createPagination } from '../../../lib/server/api/response.js';
-import { db } from '../../../lib/server/db/index.js';
-import { sql, eq, and, or, ilike, count, desc, asc } from '$lib/server/db/index';
-import { evidence, cases } from '../../../lib/server/db/schema-postgres.js';
-import type { Evidence } from '../../../lib/server/db/schema-types.js';
-import { randomUUID } from 'crypto';
-import { URL } from "url";
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index.js';
+import { sql, eq, and, or, ilike, count, desc, asc } from 'drizzle-orm';
+import { evidence, cases } from '$lib/server/db/schemas/cases-schema.js';
+import { caseManagementService } from '$lib/services/case-management-service.js';
+import { enhancedEmbeddingWorker } from '$lib/workers/embedding-worker-enhanced.js';
+import { randomUUID } from 'node:crypto';
 
 // Enhanced AI analysis service
 
@@ -270,236 +269,135 @@ const evidenceAI = EvidenceAIService.getInstance();
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const caseId = url.searchParams.get('caseId');
-    const type = url.searchParams.get('type');
+    const evidenceType = url.searchParams.get('type');
+    const analyzed = url.searchParams.get('analyzed');
     const search = url.searchParams.get('search');
-    const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '20');
-    const offset = (page - 1) * limit;
+    const limit = parseInt(url.searchParams.get('limit') || '50');
+    const offset = parseInt(url.searchParams.get('offset') || '0');
 
-    // Build where conditions
-    const whereConditions: any[] = [];
-
-    if (caseId) {
-      whereConditions.push(eq(evidence.caseId, caseId));
+    if (!caseId) {
+      return json({
+        success: false,
+        error: 'caseId parameter is required'
+      }, { status: 400 });
     }
 
-    if (type) {
-      whereConditions.push(eq(evidence.evidenceType, type));
-    }
+    // Use the case management service for fetching evidence
+    const filters: any = { caseId };
+    if (evidenceType) filters.evidenceType = evidenceType;
+    if (analyzed !== null) filters.analyzed = analyzed === 'true';
+    if (search) filters.search = search;
 
-    if (search) {
-      whereConditions.push(
-        or(
-          ilike(evidence.title, `%${search}%`),
-          ilike(evidence.description, `%${search}%`),
-          ilike(evidence.summary, `%${search}%`)
-        )
-      );
-    }
-
-    // Get evidence with pagination - simplified query to avoid schema issues
-    const evidenceQuery = db
-      .select()
-      .from(evidence)
-      .orderBy(desc(evidence.created_at))
-      .limit(limit)
-      .offset(offset);
-
-    // Add where conditions if any
-    let finalEvidenceQuery = evidenceQuery;
-    if (whereConditions.length > 0) {
-      finalEvidenceQuery = evidenceQuery.where(and(...whereConditions));
-    }
-
-    const evidenceResults = await finalEvidenceQuery;
-
-    // Get total count for pagination
-    let totalQuery = db
-      .select({ count: count() })
-      .from(evidence);
-
-    if (whereConditions.length > 0) {
-      totalQuery = totalQuery.where(and(...whereConditions));
-    }
-
-    const [{ count: totalCount }] = await totalQuery;
+    const evidenceResults = await caseManagementService.getEvidence(caseId, {
+      ...filters,
+      limit,
+      offset
+    });
 
     return json({
+      success: true,
       evidence: evidenceResults,
-      total: totalCount,
-      page,
-      limit,
-      totalPages: Math.ceil(totalCount / limit),
-      filters: { caseId, type, search }
+      pagination: {
+        limit,
+        offset,
+        total: evidenceResults.length,
+        hasMore: evidenceResults.length === limit
+      },
+      filters: { caseId, evidenceType, analyzed, search }
     });
+
   } catch (error: any) {
-    console.error('Error fetching evidence:', error);
-    return json(
-      { error: 'Failed to fetch evidence' },
-      { status: 500 }
-    );
+    console.error('Evidence fetch error:', error);
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const data = await request.json();
-    const {
-      caseId,
-      userId,
-      title,
-      description,
-      evidenceType,
-      subType,
-      fileName,
-      fileSize,
-      mimeType,
-      hash,
-      tags = [],
-      chainOfCustody = [],
-      collectedAt,
-      collectedBy,
-      location,
-      aiAnalysis = {},
-      aiTags = [],
-      aiSummary,
-      summary,
-      summaryType,
-      isAdmissible = true,
-      confidentialityLevel = 'internal',
-      boardPosition = {}
-    } = data;
-
+    const evidenceData = await request.json();
+    
+    // Validate required fields
+    const { caseId, title, evidenceType } = evidenceData;
     if (!caseId || !title || !evidenceType) {
-      return json(
-        { error: 'Case ID, title, and evidence type are required' },
-        { status: 400 }
-      );
+      return json({
+        success: false,
+        error: 'caseId, title, and evidenceType are required'
+      }, { status: 400 });
     }
 
-    // Verify case exists
-    const caseExists = await db
-      .select({ id: cases.id })
-      .from(cases)
-      .where(eq(cases.id, caseId))
-      .limit(1);
+    // Create evidence record using case management service
+    const newEvidence = await caseManagementService.addEvidence(caseId, evidenceData);
 
-    if (caseExists.length === 0) {
-      return json(
-        { error: 'Case not found' },
-        { status: 404 }
-      );
-    }
+    // Check if case has detective mode enabled for auto-analysis
+    const caseDetails = await caseManagementService.getCaseById(caseId);
 
-    // Insert new evidence
-    const [newEvidence] = await db
-      .insert(evidence)
-      .values({
-        caseId,
-        userId,
-        title,
-        description,
-        evidenceType,
-        subType,
-        fileName,
-        fileSize,
-        mimeType,
-        hash,
-        tags,
-        chainOfCustody,
-        collectedAt: collectedAt ? new Date(collectedAt) : null,
-        collectedBy,
-        location,
-        aiAnalysis,
-        aiTags,
-        aiSummary,
-        summary,
-        summaryType,
-        isAdmissible,
-        confidentialityLevel,
-        boardPosition
-      })
-      .returning();
-
-    // Enhanced AI analysis and embedding generation
-    let ingestionJobId: string | undefined;
+    // Auto-trigger analysis if detective mode is enabled and evidence has content
+    let embeddingJobId: string | undefined;
     let aiAnalysisResult: AIAnalysis | null = null;
 
-    if (description || title) {
+    if (caseDetails?.detectiveMode && (evidenceData.ocrText || evidenceData.description || title)) {
+      const textToAnalyze = evidenceData.ocrText || evidenceData.description || title;
+      
       try {
-        // Generate AI analysis using Ollama/CUDA
+        // Enqueue embedding job for analysis
+        embeddingJobId = await enhancedEmbeddingWorker.enqueueJob({
+          text: textToAnalyze,
+          model: 'nomic-embed-text',
+          meta: {
+            type: 'evidence_analysis',
+            evidenceId: newEvidence.id,
+            caseId: caseId,
+            evidenceType: evidenceType
+          },
+          priority: caseDetails.priority === 'urgent' ? 3 : 1
+        });
+
+        // Generate AI analysis using enhanced service
         const analysisOptions: ProcessingOptions = {
           useGPUAcceleration: true,
-          priority: 'normal',
+          priority: caseDetails.priority === 'urgent' ? 'high' : 'normal',
           notify: false,
           saveIntermediateResults: true,
           overrideExisting: false
         };
 
-        // Cast DB record to any to avoid strict mismatch of optional tag types in the DB row.
         aiAnalysisResult = await evidenceAI.analyzeEvidence(newEvidence as any, analysisOptions);
 
-        // Generate and store embedding (single declaration)
-        const textToEmbed = `${title} ${description || ''} ${(Array.isArray(tags) ? tags : []).join(' ')}`;
-        const embedding = await evidenceAI.generateEmbedding(textToEmbed);
+        // Trigger detective analysis in the background
+        setTimeout(async () => {
+          try {
+            await caseManagementService.analyzeEvidence(newEvidence.id);
+          } catch (error) {
+            console.error('Auto-analysis failed:', error);
+          }
+        }, 100);
 
-        // Update evidence with AI analysis (only update columns that exist in schema)
-        if (aiAnalysisResult) {
-          await db
-            .update(evidence)
-            .set({
-              aiAnalysis: aiAnalysisResult,
-              aiSummary: aiAnalysisResult.summary,
-              aiTags: aiAnalysisResult.keywords
-            })
-            .where(eq(evidence.id, newEvidence.id));
-        }
-
-        // Also queue for repository ingestion (include embedding in metadata if available)
-        try {
-          const repo = getEmbeddingRepository();
-          const jobStatus = await repo.enqueueIngestion({
-            evidenceId: newEvidence.id,
-            caseId: newEvidence.caseId,
-            filename: newEvidence.fileName,
-            mimeType: newEvidence.mimeType,
-            textContent: textToEmbed,
-            metadata: {
-              evidenceType: newEvidence.evidenceType,
-              aiAnalysis: aiAnalysisResult,
-              embedding: Array.isArray(embedding) ? embedding.slice(0, 10) : []
-            }
-          });
-          ingestionJobId = jobStatus?.jobId;
-        } catch (ingestErr) {
-          console.error('Embedding ingestion failed:', ingestErr);
-        }
-
-        // Fallback ingestion with minimal metadata
-        try {
-          const repo = getEmbeddingRepository();
-          const jobStatus = await repo.enqueueIngestion({
-            evidenceId: newEvidence.id,
-            caseId: newEvidence.caseId,
-            filename: newEvidence.fileName,
-            mimeType: newEvidence.mimeType,
-            textContent: description || title,
-            metadata: { evidenceType: newEvidence.evidenceType }
-          });
-          ingestionJobId = ingestionJobId ?? jobStatus?.jobId;
-        } catch (fallbackError) {
-          console.error('Fallback embedding ingestion also failed:', fallbackError);
-        }
-      } catch (aiErr) {
-        console.error('AI analysis/embedding failed for new evidence:', aiErr);
+      } catch (error) {
+        console.error('Detective mode analysis failed:', error);
       }
+
+      return json({
+        success: true,
+        evidence: newEvidence,
+        analysis: {
+          embeddingJobId,
+          analysisTriggered: true,
+          detectiveMode: true,
+          aiAnalysis: aiAnalysisResult
+        }
+      }, { status: 201 });
     }
 
     return json({
-      ...newEvidence,
-      ingestionJobId,
-      aiAnalysis: aiAnalysisResult,
-      processingStatus: 'completed'
+      success: true,
+      evidence: newEvidence,
+      analysis: {
+        analysisTriggered: false,
+        detectiveMode: false
+      }
     }, { status: 201 });
   } catch (error: any) {
     console.error('Error creating evidence:', error);
@@ -513,76 +411,149 @@ export const POST: RequestHandler = async ({ request }) => {
 // Enhanced evidence processing endpoint
 export const PATCH: RequestHandler = async ({ request }) => {
   try {
-    const { action, evidenceId, options } = await request.json();
+    const { action, evidenceId, options = {} } = await request.json();
 
     if (!evidenceId) {
-      return json({ error: 'Evidence ID is required' }, { status: 400 });
+      return json({ 
+        success: false,
+        error: 'Evidence ID is required' 
+      }, { status: 400 });
     }
-
-    // Get evidence record
-    const evidenceRecord = await db
-      .select()
-      .from(evidence)
-      .where(eq(evidence.id, evidenceId))
-      .limit(1);
-
-    if (evidenceRecord.length === 0) {
-      return json({ error: 'Evidence not found' }, { status: 404 });
-    }
-
-    const evidenceData = evidenceRecord[0];
 
     switch (action) {
       case 'analyze': {
         try {
-          // Cast DB record to any to satisfy EvidenceData shape expected by analyzeEvidence
-          const analysisResult = await evidenceAI.analyzeEvidence(evidenceData as any, options);
+          // Use case management service for analysis
+          const analysisResult = await caseManagementService.analyzeEvidence(evidenceId);
 
-          // Update database with analysis (only fields expected to exist)
-          await db
-            .update(evidence)
-            .set({
-              aiAnalysis: analysisResult,
-              aiSummary: analysisResult.summary,
-              aiTags: analysisResult.keywords,
-              updatedAt: new Date()
-            })
-            .where(eq(evidence.id, evidenceId));
-
-          // Generate embedding and enqueue ingestion (repository stores vectors)
-          const textToEmbed = `${(evidenceData as any).title || ''} ${((evidenceData as any).description) || ''} ${Array.isArray((evidenceData as any).tags) ? (evidenceData as any).tags.join(' ') : ''}`;
-          const embedding = await evidenceAI.generateEmbedding(textToEmbed);
-
-          if (Array.isArray(embedding) && embedding.length > 0) {
-            try {
-              const repo = getEmbeddingRepository();
-              await repo.enqueueIngestion({
-                evidenceId,
-                caseId: (evidenceData as any).caseId,
-                filename: (evidenceData as any).fileName,
-                mimeType: (evidenceData as any).mimeType,
-                textContent: textToEmbed,
-                metadata: { evidenceType: (evidenceData as any).evidenceType, embedding: embedding.slice(0, 10) }
+          // Generate embedding for enhanced search
+          const evidenceDetails = await caseManagementService.getEvidenceById(evidenceId);
+          if (evidenceDetails) {
+            const textToEmbed = `${evidenceDetails.title} ${evidenceDetails.description || ''} ${evidenceDetails.ocrText || ''}`;
+            
+            if (textToEmbed.trim()) {
+              await enhancedEmbeddingWorker.enqueueJob({
+                text: textToEmbed,
+                model: 'nomic-embed-text',
+                meta: {
+                  type: 'evidence_analysis',
+                  evidenceId: evidenceId,
+                  caseId: evidenceDetails.caseId,
+                  evidenceType: evidenceDetails.evidenceType
+                },
+                priority: 2
               });
-            } catch (enqueueErr) {
-              console.warn('Failed to enqueue embedding ingestion:', enqueueErr);
             }
           }
 
-          return json({ analysis: analysisResult, embedding: Array.isArray(embedding) ? embedding.slice(0, 10) : [], status: 'completed' });
+          return json({ 
+            success: true,
+            analysis: analysisResult, 
+            status: 'completed' 
+          });
+
         } catch (err: any) {
           console.error('Analysis action failed:', err);
-          return json({ error: 'Analysis failed' }, { status: 500 });
+          return json({ 
+            success: false,
+            error: 'Analysis failed' 
+          }, { status: 500 });
+        }
+      }
+
+      case 'update': {
+        try {
+          const { updateData } = options;
+          if (!updateData) {
+            return json({
+              success: false,
+              error: 'Update data is required'
+            }, { status: 400 });
+          }
+
+          const updatedEvidence = await caseManagementService.updateEvidence(evidenceId, updateData);
+
+          return json({
+            success: true,
+            evidence: updatedEvidence
+          });
+
+        } catch (err: any) {
+          console.error('Update action failed:', err);
+          return json({
+            success: false,
+            error: 'Update failed'
+          }, { status: 500 });
         }
       }
 
       default:
-        return json({ error: 'Unknown action' }, { status: 400 });
+        return json({ 
+          success: false,
+          error: `Unknown action: ${action}` 
+        }, { status: 400 });
     }
   } catch (error: any) {
     console.error('Evidence processing error:', error);
-    return json({ error: 'Processing failed' }, { status: 500 });
+    return json({ 
+      success: false,
+      error: 'Processing failed' 
+    }, { status: 500 });
   }
 };
 
-// Note: PUT and DELETE handlers should be in /api/evidence/[id]/+server.ts
+// Add PUT and DELETE handlers for individual evidence items
+export const PUT: RequestHandler = async ({ request }) => {
+  try {
+    const { id, ...updateData } = await request.json();
+    
+    if (!id) {
+      return json({
+        success: false,
+        error: 'Evidence ID is required'
+      }, { status: 400 });
+    }
+
+    const evidence = await caseManagementService.updateEvidence(id, updateData);
+
+    return json({
+      success: true,
+      evidence
+    });
+
+  } catch (error: any) {
+    console.error('Evidence update error:', error);
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
+  }
+};
+
+export const DELETE: RequestHandler = async ({ request }) => {
+  try {
+    const { id } = await request.json();
+    
+    if (!id) {
+      return json({
+        success: false,
+        error: 'Evidence ID is required'
+      }, { status: 400 });
+    }
+
+    await caseManagementService.deleteEvidence(id);
+
+    return json({
+      success: true,
+      message: 'Evidence deleted successfully'
+    });
+
+  } catch (error: any) {
+    console.error('Evidence deletion error:', error);
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
+  }
+};
+

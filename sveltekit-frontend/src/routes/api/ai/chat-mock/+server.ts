@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { apiSuccess, apiError, validateRequest, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';

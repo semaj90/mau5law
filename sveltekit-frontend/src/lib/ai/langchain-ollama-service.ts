@@ -73,9 +73,9 @@ const DEFAULT_CONFIG: LangChainConfig = {
 
 export class LangChainOllamaService {
   private config: LangChainConfig;
-  private chatModel: ChatOllama;
-  private embeddings: OllamaEmbeddings;
-  private textSplitter: RecursiveCharacterTextSplitter;
+  private chatModel!: ChatOllama;
+  private embeddings!: OllamaEmbeddings;
+  private textSplitter!: RecursiveCharacterTextSplitter;
   private vectorStore: MemoryVectorStore | null = null;
   private isInitialized: boolean = false;
 

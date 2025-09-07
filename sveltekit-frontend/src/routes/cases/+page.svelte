@@ -20,7 +20,7 @@
   import { Plus, Search, Filter, Edit2, Trash2, FileText, Eye, AlertCircle } from 'lucide-svelte';
   import { cn } from '$lib/utils.js';
   import type { PageData, ActionData } from './$types.js';
-  
+
   // Feedback Integration
   import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
 
@@ -55,7 +55,7 @@
         toast.success('Case created successfully');
         createCaseDialogOpen = false;
         invalidateAll();
-        
+
         // Track successful case creation for feedback
         if (caseCreationFeedback) {
           caseCreationFeedback.markCompleted({
@@ -69,7 +69,7 @@
     },
     onError: ({ result }) => {
       toast.error(result.error.message || 'Failed to create case');
-      
+
       // Track failed case creation for feedback
       if (caseCreationFeedback) {
         caseCreationFeedback.markFailed({
@@ -79,7 +79,7 @@
       }
     }
   });
-  
+
   const addEvidenceForm = superForm(data.addEvidenceForm, {
     validators: zodClient(addEvidenceSchema),
     onUpdated: ({ form }) => {
@@ -123,25 +123,25 @@
   // Filtered and sorted cases
   let filteredCases = $derived(() => {
     let filtered = data.userCases || [];
-    
+
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(c => 
+      filtered = filtered.filter(c =>
         c.title?.toLowerCase().includes(query) ||
         c.description?.toLowerCase().includes(query) ||
         c.location?.toLowerCase().includes(query) ||
         c.jurisdiction?.toLowerCase().includes(query)
       );
     }
-    
+
     if (statusFilter !== 'all') {
       filtered = filtered.filter(c => c.status === statusFilter);
     }
-    
+
     if (priorityFilter !== 'all') {
       filtered = filtered.filter(c => c.priority === priorityFilter);
     }
-    
+
     // Sort cases
     filtered.sort((a, b) => {
       const aVal = a[sortBy as keyof typeof a];
@@ -149,7 +149,7 @@
       const comparison = aVal > bVal ? 1 : -1;
       return sortOrder === 'desc' ? -comparison : comparison;
     });
-    
+
     return filtered;
   });
 
@@ -173,7 +173,7 @@
   // Vector search function
   async function performVectorSearch() {
     if (!searchQuery.trim()) return;
-    
+
     // Track search interaction for feedback
     const searchInteractionId = searchFeedback?.triggerFeedback({
       query: searchQuery,
@@ -181,10 +181,10 @@
       legalDomain: 'case_management',
       searchStartTime: Date.now()
     });
-    
+
     isSearching = true;
     const searchStartTime = Date.now();
-    
+
     try {
       const response = await fetch('/api/cases/search', {
         method: 'POST',
@@ -196,12 +196,12 @@
           threshold: 0.7
         })
       });
-      
+
       if (response.ok) {
         const results = await response.json();
         vectorSearchResults = results.data || [];
         toast.success(`Found ${vectorSearchResults.length} similar cases using AI search`);
-        
+
         // Track successful search for feedback
         if (searchInteractionId && searchFeedback) {
           searchFeedback.markCompleted({
@@ -216,7 +216,7 @@
       }
     } catch (error) {
       toast.error('Vector search failed');
-      
+
       // Track failed search for feedback
       if (searchInteractionId && searchFeedback) {
         searchFeedback.markFailed({
@@ -243,7 +243,7 @@
 
   async function deleteEvidence() {
     if (!evidenceToDelete) return;
-    
+
     const formData = new FormData();
     formData.append('evidenceId', evidenceToDelete.id);
 
@@ -285,7 +285,7 @@
           Manage cases with AI-powered search and PostgreSQL vector storage
         </p>
       </div>
-      <Button on:on:click={() => createCaseDialogOpen = true} class="gap-2">
+  <Button on:click={() => createCaseDialogOpen = true} class="gap-2">
         <Plus class="h-4 w-4" />
         New Case
       </Button>
@@ -344,12 +344,12 @@
             class="pl-8 w-full md:w-[400px]"
           />
         </div>
-        
+
         <div class="flex gap-2 items-center">
           <Button
             variant="outline"
             size="sm"
-            on:on:click={performVectorSearch}
+            on:click={performVectorSearch}
             disabled={!searchQuery.trim() || isSearching}
             class="gap-2"
           >
@@ -360,7 +360,7 @@
             {/if}
             AI Search
           </Button>
-          
+
           <SelectRoot bind:selected={statusFilter}>
             <SelectTrigger class="w-[140px]">
               <SelectValue placeholder="Status" />
@@ -396,11 +396,11 @@
       <!-- Case Detail View -->
       <div class="space-y-6">
         <div class="flex items-center justify-between">
-          <Button variant="outline" on:on:click={() => goto('/cases')}>
+          <Button variant="outline" on:click={() => goto('/cases')}>
             ← Back to Cases
           </Button>
           <div class="flex gap-2">
-            <Button variant="outline" size="sm" on:on:click={() => addEvidenceDialogOpen = true}>
+            <Button variant="outline" size="sm" on:click={() => addEvidenceDialogOpen = true}>
               <Plus class="h-4 w-4 mr-2" />
               Add Evidence
             </Button>
@@ -442,13 +442,13 @@
         <!-- Evidence Section -->
         <div class="space-y-4">
           <h2 class="text-xl font-semibold">Evidence ({data.caseEvidence.length})</h2>
-          
+
           {#if data.caseEvidence.length === 0}
             <Card.Root>
               <Card.Content class="flex flex-col items-center justify-center py-12">
                 <FileText class="h-12 w-12 text-muted-foreground mb-4" />
                 <p class="text-muted-foreground mb-4">No evidence has been added to this case yet.</p>
-                <Button on:on:click={() => addEvidenceDialogOpen = true}>
+                <Button on:click={() => addEvidenceDialogOpen = true}>
                   <Plus class="h-4 w-4 mr-2" />
                   Add First Evidence
                 </Button>
@@ -466,10 +466,10 @@
                         <Button variant="ghost" size="sm">
                           <Edit2 class="h-4 w-4" />
                         </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          on:on:click={() => confirmDeleteEvidence(evidence)}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          on:click={() => confirmDeleteEvidence(evidence)}
                         >
                           <Trash2 class="h-4 w-4" />
                         </Button>
@@ -501,11 +501,11 @@
           </Tabs.Trigger>
           <Tabs.Trigger value="analytics">Analytics</Tabs.Trigger>
         </Tabs.List>
-        
+
         <Tabs.Content value="all-cases" class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {#each filteredCases as caseItem}
-              <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" on:on:click={() => viewCase(caseItem)}>
+              <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" on:click={() => viewCase(caseItem)}>
                 <Card.Header>
                   <div class="flex items-start justify-between">
                     <Card.Title class="text-lg line-clamp-2">{caseItem.title}</Card.Title>
@@ -547,7 +547,7 @@
                     <p class="text-muted-foreground mb-4">
                       {searchQuery.trim() ? 'No cases found matching your search.' : 'No cases found.'}
                     </p>
-                    <Button on:on:click={() => createCaseDialogOpen = true}>
+                    <Button on:click={() => createCaseDialogOpen = true}>
                       <Plus class="h-4 w-4 mr-2" />
                       Create Your First Case
                     </Button>
@@ -557,12 +557,12 @@
             {/each}
           </div>
         </Tabs.Content>
-        
+
         <Tabs.Content value="vector-search" class="space-y-4">
           {#if vectorSearchResults.length > 0}
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {#each vectorSearchResults as result}
-                <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" on:on:click={() => viewCase(result)}>
+                <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" on:click={() => viewCase(result)}>
                   <Card.Header>
                     <div class="flex items-start justify-between">
                       <Card.Title class="text-lg line-clamp-2">{result.title}</Card.Title>
@@ -594,7 +594,7 @@
             </Card.Root>
           {/if}
         </Tabs.Content>
-        
+
         <Tabs.Content value="analytics" class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2">
             <Card.Root>
@@ -624,7 +624,7 @@
                 </div>
               </Card.Content>
             </Card.Root>
-            
+
             <Card.Root>
               <Card.Header>
                 <Card.Title>Priority Breakdown</Card.Title>
@@ -752,7 +752,7 @@
         </div>
       </div>
       <Dialog.Footer>
-        <Button variant="outline" type="button" on:on:click={() => createCaseDialogOpen = false}>
+  <Button variant="outline" type="button" on:click={() => createCaseDialogOpen = false}>
           Cancel
         </Button>
         <Button type="submit" disabled={!$createFormData.title?.trim()}>
@@ -824,7 +824,7 @@
         </div>
       </div>
       <Dialog.Footer>
-        <Button variant="outline" type="button" on:on:click={() => addEvidenceDialogOpen = false}>
+  <Button variant="outline" type="button" on:click={() => addEvidenceDialogOpen = false}>
           Cancel
         </Button>
         <Button type="submit" disabled={!$evidenceFormData.title?.trim()}>
@@ -846,10 +846,10 @@
       </AlertDialog.Description>
     </AlertDialog.Header>
     <AlertDialog.Footer>
-      <Button variant="outline" on:on:click={() => deleteEvidenceDialogOpen = false}>
+  <Button variant="outline" on:click={() => deleteEvidenceDialogOpen = false}>
         Cancel
       </Button>
-      <Button variant="destructive" on:on:click={deleteEvidence}>
+  <Button variant="destructive" on:click={deleteEvidence}>
         Delete Evidence
       </Button>
     </AlertDialog.Footer>
@@ -862,7 +862,7 @@
   interactionType="page_visit"
   ratingType="ui_experience"
   priority="low"
-  context={{ 
+  context={{
     page: 'cases',
     totalCases: filteredCases.length,
     hasActiveFilters: searchQuery.trim() || statusFilter !== 'all' || priorityFilter !== 'all'
