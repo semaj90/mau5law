@@ -871,6 +871,98 @@
 				"panel": "shared"
 			},
 			"detail": "Gracefully stop all Legal AI Platform services"
+		},
+		{
+			"label": "🔍 Test Unified API Health",
+			"type": "shell",
+			"command": "curl",
+			"args": ["-s", "http://localhost:5173/api/unified/health"],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"detail": "Check health status of all unified services (PostgreSQL, Redis, MinIO, Qdrant, Neo4j)"
+		},
+		{
+			"label": "📤 Test Unified Upload API",
+			"type": "shell",
+			"command": "curl",
+			"args": [
+				"-X", "POST",
+				"-F", "files=@README.md",
+				"-F", "caseId=test-case-unified-001",
+				"-F", "documentType=evidence",
+				"http://localhost:5173/api/unified/upload"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"detail": "Test document upload through unified API (MinIO + Qdrant + PostgreSQL + Redis)"
+		},
+		{
+			"label": "🔍 Test Unified Search API",
+			"type": "shell",
+			"command": "curl",
+			"args": [
+				"-X", "POST",
+				"-H", "Content-Type: application/json",
+				"-d", "{\"query\": \"legal documents\", \"limit\": 5, \"useRecommendations\": true}",
+				"http://localhost:5173/api/unified/search"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"detail": "Test unified search across all document types with Neo4j recommendations"
+		},
+		{
+			"label": "🚀 Start Unified Legal AI System",
+			"type": "shell",
+			"command": "npm",
+			"args": ["run", "dev:unified"],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false,
+				"group": "unified-system"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"runOptions": {
+				"runOn": "default"
+			},
+			"detail": "Start complete unified system: Redis + PostgreSQL + MinIO + Qdrant + Neo4j + SvelteKit"
 		}
 	]
 }

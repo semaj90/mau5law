@@ -1,12 +1,12 @@
 /**
  * Legal Case Management State Machine
- * Comprehensive XState machine for managing legal case workflows
+ * Comprehensive XState v5 machine for managing legal case workflows
  */
-import { createMachine, assign } from 'xstate';
+import { setup, assign, createActor, fromPromise } from 'xstate';
 import type { Case, Evidence, NewCase, NewEvidence } from '../server/db/schema-types';
 import { aiSummarizationService } from '../services/ai-summarization-service';
 import { vectorSearchService } from '../services/vector-search-service';
-import { embeddingService } from '../services/embedding-service';
+import { embedText } from '../server/ai/embedder';
 
 // Context types
 export interface LegalCaseContext {
@@ -171,35 +171,31 @@ const generateEmbeddingService = async (_context: LegalCaseContext, event: any):
   const text = event?.text;
   if (!text) throw new Error('Missing text for embedding generation');
   
-  const result = await embeddingService.embed(text, {
-    model: 'openai', // Use OpenAI for consistency with evidence search
-    cache: true
-  });
+  // Use the real embedder (local Gemma3 or Nomic fallback)
+  const embedding = await embedText(text);
   
   return {
-    embedding: result.embedding,
+    embedding,
     text,
-    model: result.model,
-    dimensions: result.dimensions
+    model: process.env.EMBEDDING_MODEL || 'nomic-embed-text-v1.5',
+    dimensions: embedding.length
   };
 };
 
 const searchRelatedEvidenceService = async (context: LegalCaseContext, event: any): Promise<any> => {
-  const embedding = event?.embedding || context.lastEmbedding;
+  const text = event?.text || context.case?.description || 'Related evidence search';
   
-  if (!embedding || !Array.isArray(embedding)) {
-    throw new Error('Missing embedding for related evidence search');
-  }
-  
-  const response = await fetch('/api/ai/evidence-search', {
+  const response = await fetch('/api/unified/search', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      embedding,
+      query: text,
+      type: 'evidence',
       limit: 5,
-      caseId: context.caseId // Optional: exclude evidence from current case
+      caseId: context.caseId,
+      useRecommendations: true
     })
   });
   
@@ -481,8 +477,9 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
               const formData = new FormData();
               (context.uploadQueue || []).forEach((file: any) => formData.append('files', file));
               formData.append('caseId', context.caseId ?? '');
+              formData.append('documentType', 'evidence');
 
-              const response = await fetch('/api/evidence/upload', {
+              const response = await fetch('/api/unified/upload', {
                 method: 'POST',
                 body: formData
               });

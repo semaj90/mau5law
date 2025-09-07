@@ -26,34 +26,30 @@ class CacheService {
   }
 
   private async initializeRedis() {
-    // Prefer explicit host/port; fall back to REDIS_URL parsing; default project port 4005
-    let host = process.env.REDIS_HOST || 'localhost';
-    let port = Number.parseInt(process.env.REDIS_PORT || '4005', 10);
-    const url = process.env.REDIS_URL || process.env.PUBLIC_REDIS_URL;
-    if (url) {
-      try {
-        const u = new URL(url);
-        if (u.hostname) host = u.hostname;
-        if (u.port) port = Number.parseInt(u.port, 10) || port;
-      } catch {}
-    }
+    const url =
+      process.env.REDIS_URL ||
+      (process.env.REDIS_HOST
+        ? `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || '4005'}`
+        : 'redis://127.0.0.1:4005');
 
     try {
       // Dynamic import so builds don’t fail if ioredis is missing in some environments
       const { default: Redis } = await import('ioredis');
-      this.redisClient = new Redis({
-        host,
-        port,
-        connectTimeout: 5000,
-        retryStrategy: (times: number) => Math.min(times * 50, 500),
-        lazyConnect: true,
-      });
+      // prefer connecting via URL so user can provide redis://user:pass@host:port
+      // Pass URL string to support multiple ioredis versions; additional options handled by the client defaults
+      this.redisClient = new Redis(url);
       this.redisClient.on('error', (err: any) => {
         console.warn('Redis connection error, falling back to memory cache:', err?.message || err);
         this.useRedis = false;
       });
       try {
-        await this.redisClient.connect?.();
+        // ioredis v4 uses .connect() when lazyConnect=true; call if present
+        if (typeof this.redisClient.connect === 'function') {
+          await this.redisClient.connect();
+        } else if (typeof this.redisClient.ping === 'function') {
+          // older/alternative clients may expose ping
+          await this.redisClient.ping();
+        }
       } catch (e) {
         console.warn('Redis connect failed, using memory cache:', (e as Error).message || e);
         this.useRedis = false;
@@ -183,18 +179,6 @@ class CacheService {
       }
     } catch (e) {
       console.warn('Redis blpop error:', (e as Error).message || e);
-    }
-    return null;
-  }
-
-  async lpop(listKey: string): Promise<string | null> {
-    try {
-      if (this.useRedis && this.redisClient && typeof this.redisClient.lpop === 'function') {
-        const res = await this.redisClient.lpop(listKey);
-        return res ?? null;
-      }
-    } catch (e) {
-      console.warn('Redis lpop error:', (e as Error).message || e);
     }
     return null;
   }
