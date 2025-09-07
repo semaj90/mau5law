@@ -3,7 +3,7 @@
 import type { OllamaConfig, ModelConfig } from './types.js';
 /**
  * Ollama Configuration for High-Performance AI Assistant
- * Using local gemma3:legal-latest model with legal-bert fallback
+ * Using local gemma3-legal:latest model with legal-bert fallback
  */
 
 

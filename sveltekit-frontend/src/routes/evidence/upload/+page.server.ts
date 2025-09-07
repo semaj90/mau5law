@@ -253,7 +253,7 @@ export const actions: Actions = {
         .insert(evidence)
         .values({
           case_id: form.data.case_id || null,
-          uploader_id: locals.user?.id, // Assuming user session is available
+          uploader_id: locals.user?.id || 'anonymous', // Assuming user session is available
           title: form.data.title,
           description: form.data.description || null,
           evidence_type: evidenceType as any,

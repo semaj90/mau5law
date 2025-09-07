@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const documentMetadata: any = {}; // placeholder for callers that provide metadata
     const contextualInfo = ''; // no case context resolved in this simplified handler
 
-    const modelName = body.useThinkingStyle ? 'legal-gemma3-thinking' : 'gemma3:7b';
+    const modelName = body.useThinkingStyle ? 'gemma3-legal:latest' : 'gemma3-legal:latest';
     const prompt = buildEnhancedAnalysisPrompt(
       documentText,
       body.analysisType ?? 'classification',

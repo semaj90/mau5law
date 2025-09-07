@@ -13,7 +13,7 @@ const profileSchema = profileUpdateZodSchema;
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
-    throw redirect(302, "/login");
+    throw redirect(302, '/login');
   }
 
   try {
@@ -22,11 +22,11 @@ export const load: PageServerLoad = async ({ locals }) => {
     const profileData = {
       id: u.id,
       firstName: u.firstName || '',
-      lastName: u.lastName || ''
+      lastName: u.lastName || '',
     };
 
     // Initialize the SuperForm with drizzle-zod schema
-    const profileForm = await superValidate(profileData, zod(profileSchema));
+    const profileForm = await superValidate(profileData, zod(profileSchema as any));
 
     // Get user account statistics
     const [
@@ -47,13 +47,13 @@ export const load: PageServerLoad = async ({ locals }) => {
       db
         .select({ count: helpers.count() as any })
         .from(cases)
-        .where(helpers.eq(cases.status, "open") as any),
+        .where(helpers.eq(cases.status, 'open') as any),
 
       // Closed cases
       db
         .select({ count: helpers.count() as any })
         .from(cases)
-        .where(helpers.eq(cases.status, "closed") as any),
+        .where(helpers.eq(cases.status, 'closed') as any),
 
       // Total crimes (placeholder - table doesn't exist yet)
       Promise.resolve([{ count: 0 }]),
@@ -93,7 +93,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       profileForm, // Add the SuperForm
     };
   } catch (error: any) {
-    console.error("Error loading user stats:", error);
+    console.error('Error loading user stats:', error);
 
     // Return basic data if stats fail
     return {
@@ -118,10 +118,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   updateProfile: async ({ request, locals }) => {
     if (!locals.user) {
-      throw redirect(302, "/login");
+      throw redirect(302, '/login');
     }
 
-    const form = await superValidate(request, zod(profileSchema));
+    const form = await superValidate(request, zod(profileSchema as any));
 
     if (!form.valid) {
       return { form };
@@ -143,5 +143,5 @@ export const actions: Actions = {
       console.error('Profile update failed:', err);
       throw error(500, 'Failed to update profile');
     }
-  }
+  },
 };

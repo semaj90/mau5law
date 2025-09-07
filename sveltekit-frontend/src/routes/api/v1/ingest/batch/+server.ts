@@ -168,10 +168,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         }
       });
 
-    } catch (fetchError) {
+    } catch (fetchError: any) {
       clearTimeout(timeoutId);
 
-      if (fetchError.name === 'AbortError') {
+      if ((fetchError as any)?.name === 'AbortError') {
         return json(
           {
             error: 'Batch processing timeout',

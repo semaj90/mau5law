@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types';
 // Legal AI Session Creation API
 // Creates and manages legal AI sessions with YoRHa interface integration
 
+import { json } from '@sveltejs/kit';
 import type { LegalAISession, LegalContext, SessionStatus } from '$lib/types/yorha-interface';
 
 // Session storage (in production, use database)
@@ -41,12 +42,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		console.log(`[Legal AI] Session created: ${session_id} for user: ${user_id}`);
 
-		return json({
-			success: true,
-			session_id,
-			...session,
-			message: 'Legal AI session created successfully'
-		});
+			return json({
+        success: true,
+        session,
+        message: 'Legal AI session created successfully',
+      });
 
 	} catch (error: any) {
 		console.error('[Legal AI] Session creation error:', error);
@@ -101,24 +101,25 @@ function validateAndEnhanceContext(context: any): LegalContext {
 	if (!context) return defaultContext;
 
 	return {
-		jurisdiction: context.jurisdiction || defaultContext.jurisdiction,
-		practice_area: Array.isArray(context.practice_area) 
-			? context.practice_area 
-			: defaultContext.practice_area,
-		case_type: context.case_type || defaultContext.case_type,
-		priority_level: typeof context.priority_level === 'number' 
-			? Math.max(1, Math.min(10, context.priority_level))
-			: defaultContext.priority_level,
-		security_classification: isValidSecurityLevel(context.security_classification)
-			? context.security_classification
-			: defaultContext.security_classification,
-		related_cases: Array.isArray(context.related_cases)
-			? context.related_cases
-			: defaultContext.related_cases,
-		key_entities: Array.isArray(context.key_entities)
-			? context.key_entities
-			: defaultContext.key_entities
-	};
+    jurisdiction: context.jurisdiction || defaultContext.jurisdiction,
+    practice_area: Array.isArray(context.practice_area)
+      ? context.practice_area
+      : defaultContext.practice_area,
+    case_type: context.case_type || defaultContext.case_type,
+    priority_level:
+      typeof context.priority_level === 'number'
+        ? Math.max(1, Math.min(10, context.priority_level))
+        : defaultContext.priority_level,
+    security_classification: isValidSecurityLevel(context.security_classification)
+      ? context.security_classification
+      : defaultContext.security_classification,
+    related_cases: Array.isArray(context.related_cases)
+      ? context.related_cases
+      : defaultContext.related_cases,
+    key_entities: Array.isArray(context.key_entities)
+      ? context.key_entities
+      : defaultContext.key_entities,
+  };
 }
 
 function isValidSecurityLevel(level: any): boolean {

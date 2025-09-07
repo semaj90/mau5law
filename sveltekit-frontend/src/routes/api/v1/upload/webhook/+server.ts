@@ -43,25 +43,32 @@ export interface IngestionJob {
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     console.log('📥 POST /api/v1/upload/webhook - Processing upload completion');
-    
+
     const webhookEvent: WebhookEvent = await request.json();
-    
+
     // Validate webhook event
     if (!webhookEvent.bucket || !webhookEvent.objectName) {
-      return json({
-        success: false,
-        error: 'Invalid webhook payload'
-      }, { status: 400 });
+      return json(
+        {
+          success: false,
+          error: 'Invalid webhook payload',
+        },
+        { status: 400 }
+      );
     }
 
-    console.log(`📋 Webhook received: ${webhookEvent.eventName} - ${webhookEvent.bucket}/${webhookEvent.objectName}`);
+    console.log(
+      `📋 Webhook received: ${webhookEvent.eventName} - ${webhookEvent.bucket}/${webhookEvent.objectName}`
+    );
 
     // Only process object creation events
-    if (webhookEvent.eventName !== 's3:ObjectCreated:Put' && 
-        webhookEvent.eventName !== 's3:ObjectCreated:Post') {
+    if (
+      webhookEvent.eventName !== 's3:ObjectCreated:Put' &&
+      webhookEvent.eventName !== 's3:ObjectCreated:Post'
+    ) {
       return json({
         success: true,
-        message: 'Event ignored - not an object creation event'
+        message: 'Event ignored - not an object creation event',
       });
     }
 
@@ -103,7 +110,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         contentLength: webhookEvent.objectSize || 0,
         bucket: webhookEvent.bucket,
         objectName: webhookEvent.objectName,
-        status: 'processing'
+        status: 'processing',
       };
     }
 
@@ -124,8 +131,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       metadata: {
         ...uploadMetadata.metadata,
         clientAddress: getClientAddress(),
-        webhookEvent: webhookEvent.eventName
-      }
+        webhookEvent: webhookEvent.eventName,
+      },
     };
 
     // Store job in Redis for tracking
@@ -163,15 +170,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
               bucket: webhookEvent.bucket,
               objectName: webhookEvent.objectName,
               ingestionJobId: jobId,
-              uploadId: uploadId
-            }
+              uploadId: uploadId,
+            },
           })
           .returning();
 
         // Update job with evidence ID
         ingestionJob.metadata = {
           ...ingestionJob.metadata,
-          evidenceId: evidenceEntry.id
+          evidenceId: evidenceEntry.id,
         };
         await redis.setex(jobKey, 86400, JSON.stringify(ingestionJob));
 
@@ -182,23 +189,29 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     }
 
     // Publish events
-    await redis.publish('upload:completed', JSON.stringify({
-      uploadId,
-      jobId,
-      bucket: webhookEvent.bucket,
-      objectName: webhookEvent.objectName,
-      fileName: uploadMetadata.fileName,
-      caseId: uploadMetadata.caseId,
-      timestamp: Date.now()
-    }));
+    await redis.publish(
+      'upload:completed',
+      JSON.stringify({
+        uploadId,
+        jobId,
+        bucket: webhookEvent.bucket,
+        objectName: webhookEvent.objectName,
+        fileName: uploadMetadata.fileName,
+        caseId: uploadMetadata.caseId,
+        timestamp: Date.now(),
+      })
+    );
 
-    await redis.publish('ingestion:job_created', JSON.stringify({
-      jobId,
-      fileName: uploadMetadata.fileName,
-      contentType: uploadMetadata.contentType,
-      caseId: uploadMetadata.caseId,
-      timestamp: Date.now()
-    }));
+    await redis.publish(
+      'ingestion:job_created',
+      JSON.stringify({
+        jobId,
+        fileName: uploadMetadata.fileName,
+        contentType: uploadMetadata.contentType,
+        caseId: uploadMetadata.caseId,
+        timestamp: Date.now(),
+      })
+    );
 
     const response = {
       success: true,
@@ -208,24 +221,26 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         status: 'queued',
         fileName: uploadMetadata.fileName,
         bucket: webhookEvent.bucket,
-        objectName: webhookEvent.objectName
+        objectName: webhookEvent.objectName,
       },
       metadata: {
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        webhookEvent: webhookEvent.eventName
-      }
+        webhookEvent: webhookEvent.eventName,
+      },
     };
 
     console.log(`✅ Ingestion job created: ${jobId} for ${uploadMetadata.fileName}`);
     return json(response);
-
   } catch (error: any) {
     console.error('❌ POST /api/v1/upload/webhook error:', error);
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to process webhook'
-    }, { status: 500 });
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to process webhook',
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -233,7 +248,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   try {
     console.log('📋 GET /api/v1/upload/webhook/jobs - Listing ingestion jobs');
-    
+
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100);
     const status = url.searchParams.get('status');
     const caseId = url.searchParams.get('caseId');
@@ -241,9 +256,9 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     // Get jobs from queue and completed jobs
     const queuedJobs = await redis.lrange('ingestion:queue', 0, limit - 1);
     const allJobKeys = await redis.keys('ingestion:*');
-    
+
     const jobs = [];
-    
+
     // Add queued jobs
     for (const jobData of queuedJobs) {
       try {
@@ -257,16 +272,16 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     }
 
     // Add stored jobs (completed, failed, etc.)
-    for (const jobKey of allJobKeys.filter(k => k.startsWith('ingestion:job_'))) {
+    for (const jobKey of allJobKeys.filter((k: string) => k.startsWith('ingestion:job_'))) {
       if (jobs.length >= limit) break;
-      
+
       try {
         const jobData = await redis.get(jobKey);
         if (jobData) {
           const job = JSON.parse(jobData);
           if ((!status || job.status === status) && (!caseId || job.caseId === caseId)) {
             // Don't duplicate queued jobs
-            if (!jobs.find(j => j.id === job.id)) {
+            if (!jobs.find((j) => j.id === job.id)) {
               jobs.push(job);
             }
           }
@@ -284,22 +299,24 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       data: {
         jobs: jobs.slice(0, limit),
         count: jobs.length,
-        filters: { status, caseId, limit }
+        filters: { status, caseId, limit },
       },
       metadata: {
         timestamp: Date.now(),
-        clientAddress: getClientAddress()
-      }
+        clientAddress: getClientAddress(),
+      },
     };
 
     console.log(`✅ Retrieved ${jobs.length} ingestion jobs`);
     return json(response);
-
   } catch (error: any) {
     console.error('❌ GET /api/v1/upload/webhook/jobs error:', error);
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to retrieve jobs'
-    }, { status: 500 });
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to retrieve jobs',
+      },
+      { status: 500 }
+    );
   }
 };

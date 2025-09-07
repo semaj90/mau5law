@@ -111,7 +111,7 @@ export class PredictivePrefetcher {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "llama3.2:1b", // Lightweight model for fast inference
+          model: "gemma3-legal:latest", // Lightweight model for fast inference
           prompt: "Initialize legal workflow intent prediction model",
           stream: false,
         }),
@@ -121,7 +121,7 @@ export class PredictivePrefetcher {
         this.intentModel = {
           initialized: true,
           endpoint: "http://localhost:11434/api/generate",
-          model: "llama3.2:1b",
+          model: "gemma3-legal:latest",
         };
         console.log("🧠 Local LLM initialized for intent prediction");
       } else {

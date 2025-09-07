@@ -242,7 +242,7 @@ Respond in JSON format:
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "llama3.2",
+        model: "gemma3-legal:latest",
         prompt,
         stream: false,
         options: {

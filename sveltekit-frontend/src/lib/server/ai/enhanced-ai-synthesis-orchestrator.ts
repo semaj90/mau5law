@@ -102,7 +102,7 @@ const serviceConfig: ServiceConfig = {
   },
   ollama: {
     baseUrl: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
-    model: 'gemma3:legal-latest',
+    model: 'gemma3-legal:latest',
   },
   mcp: {
     context7: import.meta.env.CONTEXT7_URL || 'http://localhost:4000',
@@ -419,7 +419,7 @@ export class EnhancedAISynthesisOrchestrator {
     // Setup XState service with all the implementations
     this.setupStateMachine();
 
-    // Ensure gemma3:legal-latest model exists
+    // Ensure gemma3-legal:latest model exists
     await this.ensureGemma3LegalModel();
 
     // Test service connections
@@ -488,7 +488,7 @@ export class EnhancedAISynthesisOrchestrator {
                 query: context.query,
                 limit: 10,
                 useGPU: true,
-                model: 'gemma3:legal-latest',
+                model: 'gemma3-legal:latest',
               }),
             });
 
@@ -603,10 +603,10 @@ export class EnhancedAISynthesisOrchestrator {
       const response = await fetch(`${serviceConfig.ollama.baseUrl}/api/tags`);
       const { models } = await response.json();
 
-      const hasGemma3Legal = models?.some((m: any) => m.name === 'gemma3:legal-latest');
+      const hasGemma3Legal = models?.some((m: any) => m.name === 'gemma3-legal:latest');
 
       if (!hasGemma3Legal) {
-        logger.info('[Orchestrator] Creating gemma3:legal-latest model...');
+        logger.info('[Orchestrator] Creating gemma3-legal:latest model...');
 
         // Create the model with legal-specific configuration
         const modelfile = `
@@ -637,15 +637,15 @@ TEMPLATE """{{ if .System }}<|system|>
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: 'gemma3:legal-latest',
+            name: 'gemma3-legal:latest',
             modelfile,
             stream: false,
           }),
         });
 
-        logger.info('[Orchestrator] ✅ gemma3:legal-latest model created successfully');
+        logger.info('[Orchestrator] ✅ gemma3-legal:latest model created successfully');
       } else {
-        logger.info('[Orchestrator] ✅ gemma3:legal-latest model already exists');
+        logger.info('[Orchestrator] ✅ gemma3-legal:latest model already exists');
       }
 
       // Ensure nomic-embed-text is also available
@@ -697,7 +697,7 @@ TEMPLATE """{{ if .System }}<|system|>
   }
 
   private buildEnhancedPrompt(context: any): string {
-    let prompt = `You are an expert legal AI assistant using the gemma3:legal-latest model with access to comprehensive legal knowledge.
+    let prompt = `You are an expert legal AI assistant using the gemma3-legal:latest model with access to comprehensive legal knowledge.
 
 QUERY: ${context.query}
 

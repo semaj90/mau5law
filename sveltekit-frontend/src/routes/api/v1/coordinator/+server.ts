@@ -16,30 +16,32 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status';
     const serviceId = url.searchParams.get('service');
+    // Snapshot system status once to avoid unassigned usage
+    const systemStatus = masterServiceCoordinator.getSystemStatus();
 
     switch (action) {
       case 'status':
         return json({
           success: true,
-          data: masterServiceCoordinator.getSystemStatus(),
-          timestamp: new Date().toISOString()
+          data: systemStatus,
+          timestamp: new Date().toISOString(),
         });
 
       case 'health':
-        const systemStatus = masterServiceCoordinator.getSystemStatus();
         return json({
           success: true,
           data: {
             systemHealth: systemStatus.systemHealth,
-            healthyServices: Array.from(systemStatus.services.values())
-              .filter(s => s.status === 'healthy').length,
+            healthyServices: Array.from(systemStatus.services.values()).filter(
+              (s) => s.status === 'healthy'
+            ).length,
             totalServices: systemStatus.services.size,
-            criticalErrors: systemStatus.activeErrors
-              .filter(e => e.priority === 'critical').length,
+            criticalErrors: systemStatus.activeErrors.filter((e) => e.priority === 'critical')
+              .length,
             performance: systemStatus.performance,
-            uptime: Date.now() // Simplified uptime
+            uptime: Date.now(), // Simplified uptime
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'services':
@@ -50,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
               {
                 success: false,
                 error: `Service '${serviceId}' not found`,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
               },
               { status: 404 }
             );
@@ -58,31 +60,31 @@ export const GET: RequestHandler = async ({ url }) => {
           return json({
             success: true,
             data: serviceStatus,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
         }
-        
+
         return json({
           success: true,
-          data: Array.from(systemStatus.services.entries()).map(([id, status]) => ({
-            id,
-            ...status
-          })),
-          timestamp: new Date().toISOString()
+          data: Array.from(systemStatus.services.entries()).map(([id, status]) => {
+            const { id: _ignoredId, ...rest } = status as any;
+            return { id, ...rest };
+          }),
+          timestamp: new Date().toISOString(),
         });
 
       case 'metrics':
         return json({
           success: true,
           data: systemStatus.performance,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'errors':
         return json({
           success: true,
           data: systemStatus.activeErrors,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       default:
@@ -91,12 +93,11 @@ export const GET: RequestHandler = async ({ url }) => {
             success: false,
             error: `Unknown action: ${action}`,
             availableActions: ['status', 'health', 'services', 'metrics', 'errors'],
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
           { status: 400 }
         );
     }
-
   } catch (error: any) {
     console.error('Coordinator API error:', error);
     return json(

@@ -876,7 +876,10 @@
 			"label": "🔍 Test Unified API Health",
 			"type": "shell",
 			"command": "curl",
-			"args": ["-s", "http://localhost:5173/api/unified/health"],
+			"args": [
+				"-s",
+				"http://localhost:5173/api/unified/health"
+			],
 			"group": "test",
 			"presentation": {
 				"echo": true,
@@ -895,10 +898,14 @@
 			"type": "shell",
 			"command": "curl",
 			"args": [
-				"-X", "POST",
-				"-F", "files=@README.md",
-				"-F", "caseId=test-case-unified-001",
-				"-F", "documentType=evidence",
+				"-X",
+				"POST",
+				"-F",
+				"files=@README.md",
+				"-F",
+				"caseId=test-case-unified-001",
+				"-F",
+				"documentType=evidence",
 				"http://localhost:5173/api/unified/upload"
 			],
 			"group": "test",
@@ -919,9 +926,12 @@
 			"type": "shell",
 			"command": "curl",
 			"args": [
-				"-X", "POST",
-				"-H", "Content-Type: application/json",
-				"-d", "{\"query\": \"legal documents\", \"limit\": 5, \"useRecommendations\": true}",
+				"-X",
+				"POST",
+				"-H",
+				"Content-Type: application/json",
+				"-d",
+				"{\"query\": \"legal documents\", \"limit\": 5, \"useRecommendations\": true}",
 				"http://localhost:5173/api/unified/search"
 			],
 			"group": "test",
@@ -941,7 +951,10 @@
 			"label": "🚀 Start Unified Legal AI System",
 			"type": "shell",
 			"command": "npm",
-			"args": ["run", "dev:unified"],
+			"args": [
+				"run",
+				"dev:unified"
+			],
 			"group": {
 				"kind": "build",
 				"isDefault": false
@@ -963,6 +976,21 @@
 				"runOn": "default"
 			},
 			"detail": "Start complete unified system: Redis + PostgreSQL + MinIO + Qdrant + Neo4j + SvelteKit"
+		},
+		{
+			"label": "sveltekit-frontend: tsc --noEmit",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc - stylish"
+			],
+			"group": "test"
 		}
 	]
 }

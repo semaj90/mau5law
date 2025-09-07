@@ -259,7 +259,7 @@ function simpleHash(str: string): number {
 /**
  * Check Ollama health
  */
-async function checkOllamaHealth(): Promise<{ healthy: boolean; models?: string[]; error?: string }> {
+async function checkOllamaHealth(): Promise<{ healthy: boolean; models?: string[]; error?: string; hasEmbeddingModel?: boolean }> {
   try {
     const response = await fetch(`${OLLAMA_ENDPOINT}/api/tags`, {
       signal: AbortSignal.timeout(5000)

@@ -358,7 +358,7 @@ async function testCoreServices(): Promise<any> {
   for (const service of coreServices) {
     try {
       const config = apiOrchestrator.getServiceConfig(service as any);
-      const health = await apiOrchestrator.routeRequest(service as any, '/health', { method: 'GET' });
+      const health = await apiOrchestrator.routeRequest(service as any, '/health');
       
       results.push({
         service,

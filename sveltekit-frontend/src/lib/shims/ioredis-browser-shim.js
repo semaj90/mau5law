@@ -9,14 +9,14 @@ export default class RedisShim {
   constructor(config = {}) {
     this.config = {
       host: 'localhost',
-      port: 6379,
+      port: 4005,
       db: 0,
       keyPrefix: '',
       enableOfflineMode: true,
       useServiceWorker: typeof navigator !== 'undefined' && 'serviceWorker' in navigator,
       ...config
     };
-    
+
     this.connected = false;
     this.offlineMode = false;
     this.stats = {
@@ -25,10 +25,10 @@ export default class RedisShim {
       misses: 0,
       errors: 0
     };
-    
+
     // Initialize offline storage
     this.initializeOfflineStorage();
-    
+
     console.log('🔧 Redis Browser Shim initialized for Legal AI Platform:', {
       config: this.config,
       offlineMode: this.offlineMode,
@@ -47,9 +47,9 @@ export default class RedisShim {
       // Test localStorage availability
       localStorage.setItem('redis-test', 'test');
       localStorage.removeItem('redis-test');
-      
+
       this.offlineMode = true;
-      
+
       // Initialize service worker for advanced caching
       if (this.config.useServiceWorker && 'serviceWorker' in navigator) {
         try {
@@ -82,27 +82,27 @@ export default class RedisShim {
   // Enhanced Redis operations for Legal AI Platform
   async get(key) {
     this.stats.operations++;
-    
+
     try {
       const fullKey = this.config.keyPrefix ? `${this.config.keyPrefix}${key}` : key;
       const storageKey = `redis:${this.config.db}:${fullKey}`;
-      
+
       const value = localStorage.getItem(storageKey);
-      
+
       if (value) {
         this.stats.hits++;
         const parsed = JSON.parse(value);
-        
+
         // Check TTL if set
         if (parsed._ttl && Date.now() > parsed._ttl) {
           localStorage.removeItem(storageKey);
           this.stats.misses++;
           return null;
         }
-        
+
         return parsed._value !== undefined ? parsed._value : parsed;
       }
-      
+
       this.stats.misses++;
       return null;
     } catch (error) {
@@ -114,13 +114,13 @@ export default class RedisShim {
 
   async set(key, value, ...args) {
     this.stats.operations++;
-    
+
     try {
       const fullKey = this.config.keyPrefix ? `${this.config.keyPrefix}${key}` : key;
       const storageKey = `redis:${this.config.db}:${fullKey}`;
-      
+
       let dataToStore = { _value: value };
-      
+
       // Handle TTL arguments (EX, PX, EXAT, PXAT)
       for (let i = 0; i < args.length; i++) {
         if (args[i] === 'EX' && args[i + 1]) {
@@ -131,7 +131,7 @@ export default class RedisShim {
           i++;
         }
       }
-      
+
       localStorage.setItem(storageKey, JSON.stringify(dataToStore));
       return 'OK';
     } catch (error) {
@@ -147,11 +147,11 @@ export default class RedisShim {
 
   async del(key) {
     this.stats.operations++;
-    
+
     try {
       const fullKey = this.config.keyPrefix ? `${this.config.keyPrefix}${key}` : key;
       const storageKey = `redis:${this.config.db}:${fullKey}`;
-      
+
       const existed = localStorage.getItem(storageKey) !== null;
       localStorage.removeItem(storageKey);
       return existed ? 1 : 0;
@@ -164,11 +164,11 @@ export default class RedisShim {
 
   async exists(key) {
     this.stats.operations++;
-    
+
     try {
       const fullKey = this.config.keyPrefix ? `${this.config.keyPrefix}${key}` : key;
       const storageKey = `redis:${this.config.db}:${fullKey}`;
-      
+
       const value = localStorage.getItem(storageKey);
       if (value) {
         const parsed = JSON.parse(value);
@@ -269,7 +269,7 @@ export default class RedisShim {
   async expire(key, seconds) {
     const fullKey = this.config.keyPrefix ? `${this.config.keyPrefix}${key}` : key;
     const storageKey = `redis:${this.config.db}:${fullKey}`;
-    
+
     const value = localStorage.getItem(storageKey);
     if (value) {
       const parsed = JSON.parse(value);
@@ -283,7 +283,7 @@ export default class RedisShim {
   // Enhanced pub/sub simulation for browser
   async publish(channel, message) {
     this.stats.operations++;
-    
+
     // Use BroadcastChannel for cross-tab communication
     try {
       if (typeof BroadcastChannel !== 'undefined') {
@@ -296,7 +296,7 @@ export default class RedisShim {
         bc.close();
         return 1;
       }
-      
+
       // Fallback to custom event
       window.dispatchEvent(new CustomEvent(`redis:${channel}`, {
         detail: {
@@ -305,7 +305,7 @@ export default class RedisShim {
           timestamp: Date.now()
         }
       }));
-      
+
       return 1;
     } catch (error) {
       this.stats.errors++;
@@ -325,14 +325,14 @@ export default class RedisShim {
           }
           this.emit('message', event.data.channel, event.data.message);
         };
-        
+
         // Store reference for cleanup
         if (!this.subscribers) this.subscribers = new Map();
         this.subscribers.set(channel, bc);
-        
+
         return 'OK';
       }
-      
+
       // Fallback to custom event listener
       const listener = (event) => {
         if (callback) {
@@ -340,12 +340,12 @@ export default class RedisShim {
         }
         this.emit('message', event.detail.channel, event.detail.message);
       };
-      
+
       window.addEventListener(`redis:${channel}`, listener);
-      
+
       if (!this.eventListeners) this.eventListeners = new Map();
       this.eventListeners.set(channel, listener);
-      
+
       return 'OK';
     } catch (error) {
       console.error('🔧 Redis Browser Shim SUBSCRIBE error:', error);
@@ -361,14 +361,14 @@ export default class RedisShim {
         bc.close();
         this.subscribers.delete(channel);
       }
-      
+
       // Clean up event listener
       if (this.eventListeners && this.eventListeners.has(channel)) {
         const listener = this.eventListeners.get(channel);
         window.removeEventListener(`redis:${channel}`, listener);
         this.eventListeners.delete(channel);
       }
-      
+
       return 'OK';
     } catch (error) {
       console.error('🔧 Redis Browser Shim UNSUBSCRIBE error:', error);
@@ -390,7 +390,7 @@ export default class RedisShim {
     try {
       let totalKeys = 0;
       let totalSize = 0;
-      
+
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key && key.startsWith(`redis:${this.config.db}:`)) {
@@ -398,7 +398,7 @@ export default class RedisShim {
           totalSize += localStorage.getItem(key)?.length || 0;
         }
       }
-      
+
       return {
         keys: totalKeys,
         sizeBytes: totalSize,
@@ -419,7 +419,7 @@ export default class RedisShim {
         }
         this.subscribers.clear();
       }
-      
+
       // Remove all event listeners
       if (this.eventListeners) {
         for (const [channel, listener] of this.eventListeners.entries()) {
@@ -427,7 +427,7 @@ export default class RedisShim {
         }
         this.eventListeners.clear();
       }
-      
+
       console.log('🔧 Redis Browser Shim cleaned up');
     } catch (error) {
       console.error('🔧 Redis Browser Shim cleanup error:', error);
@@ -458,21 +458,21 @@ export default class RedisShim {
       hit_rate: `${stats.hitRate.toFixed(2)}%`,
       error_rate: `${stats.errorRate.toFixed(2)}%`
     };
-    
+
     if (section === 'memory') {
       return Object.entries(info)
         .filter(([key]) => key.includes('memory') || key.includes('used'))
         .map(([key, value]) => `${key}:${value}`)
         .join('\r\n');
     }
-    
+
     if (section === 'stats') {
       return Object.entries(info)
         .filter(([key]) => key.includes('hits') || key.includes('operations') || key.includes('rate'))
         .map(([key, value]) => `${key}:${value}`)
         .join('\r\n');
     }
-    
+
     return Object.entries(info)
       .map(([key, value]) => `${key}:${value}`)
       .join('\r\n');

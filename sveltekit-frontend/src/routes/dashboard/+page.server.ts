@@ -7,10 +7,10 @@ import { db } from '$lib/server/db/index';
 export const load: ServerLoad = async ({ locals }) => {
   // Session information for dashboard display
   const sessionInfo = {
-    userId: locals.session?.user?.id ?? null,
+    userId: locals.user?.id ?? null,
     sessionId: locals.session?.id ?? null,
-    email: locals.session?.user?.email ?? null,
-    isAuthenticated: !!locals.session?.user
+    email: locals.user?.email ?? null,
+    isAuthenticated: !!locals.user
   };
   
   // Return mock data for now (keeping existing for backward compatibility)

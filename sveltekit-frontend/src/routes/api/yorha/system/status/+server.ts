@@ -29,7 +29,7 @@ function collectStatus(): YoRHaSystemStatus {
   const mem = process.memoryUsage();
   const rssMB = Math.round(mem.rss / 1024 / 1024);
   const cpuApprox = 5 + Math.random() * 20; // placeholder approximation
-  
+
   // Try to get Context7 multicore service status
   let multicoreStatus = null;
   try {
@@ -37,50 +37,50 @@ function collectStatus(): YoRHaSystemStatus {
       workerCount: 4,
       enableLegalBert: true,
       enableGoLlama: true,
-      maxConcurrentTasks: 20
+      maxConcurrentTasks: 20,
     });
     const systemStatus = multicoreService.getSystemStatus();
-    
+
     multicoreStatus = {
       totalWorkers: systemStatus.workers.length,
-      healthyWorkers: systemStatus.workers.filter(w => w.status === 'healthy').length,
-      busyWorkers: systemStatus.workers.filter(w => w.status === 'busy').length,
+      healthyWorkers: systemStatus.workers.filter((w) => w.status === 'healthy').length,
+      busyWorkers: systemStatus.workers.filter((w) => w.status === 'busy').length,
       queueSize: systemStatus.queue.size,
       activeTasks: systemStatus.queue.activeTasks,
       totalTasks: systemStatus.metrics.totalTasks,
       completedTasks: systemStatus.metrics.completedTasks,
-      failedTasks: systemStatus.metrics.failedTasks
+      failedTasks: systemStatus.metrics.failedTasks,
     };
   } catch (error: any) {
     // Multicore service not available
     console.warn('Context7 multicore service not available:', error.message);
   }
-  
+
   return {
     database: {
       connected: true,
       latency: Math.floor(Math.random() * 50) + 10,
       activeConnections: Math.floor(Math.random() * 20) + 5,
-      queryCount: Math.floor(Math.random() * 1000) + 500
+      queryCount: Math.floor(Math.random() * 1000) + 500,
     },
     backend: {
       healthy: true,
       uptime: Math.floor((Date.now() - startTime) / 1000),
       activeServices: multicoreStatus?.healthyWorkers || 5,
       cpuUsage: Number(cpuApprox.toFixed(2)),
-      memoryUsage: rssMB
+      memoryUsage: rssMB,
     },
     frontend: {
       renderFPS: Math.floor(Math.random() * 10) + 55,
       componentCount: 778,
       activeComponents: Math.floor(Math.random() * 50) + 150,
-      webGPUEnabled: true
+      webGPUEnabled: true,
     },
-    multicore: multicoreStatus,
+    ...(multicoreStatus ? { multicore: multicoreStatus } : {}),
     timestamp: new Date().toISOString(),
     systemLoad: Math.floor(Math.random() * 30) + 45,
     gpuUtilization: Math.floor(Math.random() * 20) + 78,
-    networkLatency: Math.floor(Math.random() * 30) + 23
+    networkLatency: Math.floor(Math.random() * 30) + 23,
   };
 }
 

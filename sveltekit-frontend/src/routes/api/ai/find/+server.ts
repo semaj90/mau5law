@@ -326,7 +326,7 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'llama3.2',
+        model: 'gemma3-legal:latest',
         prompt: aiPrompt,
         stream: false,
         options: {
@@ -721,7 +721,7 @@ export const POST: RequestHandler = async ({ request }) => {
         aiAnalysis: !!aiAnalysis,
         mcpAnalysis: !!mcpContext,
         fromCache,
-        model: 'llama3.2',
+        model: 'gemma3-legal:latest',
         confidence: avgConfidence
       },
       suggestions: aiAnalysis?.relatedQueries || [],
@@ -880,7 +880,7 @@ async function generateAISuggestions(query: string): Promise<string[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'llama3.2',
+        model: 'gemma3-legal:latest',
         prompt: `Generate 3 related legal search terms for: "${query}". Return only the terms, one per line, no explanations.`,
         stream: false,
         options: {

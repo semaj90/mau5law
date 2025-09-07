@@ -218,8 +218,10 @@ export const POST: RequestHandler = async ({ request }) => {
         `);
 
         results.results.cleanup = {
-          deletedRows: cleanupResult.rowCount || 0,
-          status: "completed"
+          deletedRows:
+            (cleanupResult as any)?.rowCount ??
+            (Array.isArray(cleanupResult) ? cleanupResult.length : 0),
+          status: 'completed',
         };
         break;
 

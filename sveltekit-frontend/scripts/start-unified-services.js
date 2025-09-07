@@ -56,7 +56,11 @@ const services = [
     args: ['run', 'dev'],
     description: 'Legal AI frontend with unified services',
     required: true,
-    delay: 5000
+    delay: 5000,
+    env: {
+      ...globalThis.process.env,
+      DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
+    }
   }
 ];
 
@@ -68,12 +72,14 @@ async function startService(service) {
     await setTimeout(service.delay);
   }
 
-  const process = spawn(service.command, service.args, {
+  const serviceEnv = service.env || globalThis.process.env;
+  const childProcess = spawn(service.command, service.args, {
     stdio: service.name === 'SvelteKit Frontend' ? 'inherit' : 'pipe',
-    shell: true
+    shell: true,
+    env: serviceEnv
   });
 
-  process.on('error', (error) => {
+  childProcess.on('error', (error) => {
     if (service.required) {
       console.error(`❌ Required service ${service.name} failed:`, error.message);
     } else {
@@ -81,13 +87,13 @@ async function startService(service) {
     }
   });
 
-  process.on('close', (code) => {
+  childProcess.on('close', (code) => {
     if (code !== 0 && service.required) {
       console.error(`❌ Required service ${service.name} exited with code ${code}`);
     }
   });
 
-  return process;
+  return childProcess;
 }
 
 async function startAllServices() {

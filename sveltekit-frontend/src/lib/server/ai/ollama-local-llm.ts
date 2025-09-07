@@ -49,7 +49,7 @@ export interface OllamaResponse {
 
 class OllamaLocalLLM {
   private baseUrl: string;
-  private defaultModel: string = 'gemma3:legal-latest';
+  private defaultModel: string = 'gemma3-legal:latest';
   private availableModels: Map<string, OllamaModel> = new Map();
   private modelCache: Map<string, { loaded: boolean; lastUsed: number }> = new Map();
   
@@ -120,7 +120,7 @@ class OllamaLocalLLM {
    */
   async ensureLegalModels(): Promise<void> {
     const legalModels = [
-      'gemma3:legal-latest',
+      'gemma3-legal:latest',
       'llama2:legal-7b',
       'mistral:legal-instruct'
     ];
@@ -438,7 +438,7 @@ Document:\n${document}`;
     
     // Try legal-specific models first
     const legalModels = [
-      'gemma3:legal-latest',
+      'gemma3-legal:latest',
       'llama2:legal-7b',
       'mistral:legal-instruct'
     ];

@@ -98,7 +98,7 @@ Content: ${content.slice(0, 2000)}`;
       "llama3:legal",
       "gemma3",
       "llama3.1",
-      "llama3.2",
+      "gemma3-legal:latest",
     ];
     let result: any = null;
     let modelUsed = "";

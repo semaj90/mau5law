@@ -1,4 +1,9 @@
 import { getSustainedP99Info } from "$lib/services/alert-center";
+import {
+  loadObservabilityState,
+  saveObservabilityState,
+} from '$lib/services/observability-persistence';
+import { getBudgetCounters } from '$lib/services/pipeline-metrics';
 import fs from 'fs';
 import path from 'path';
 import type { RequestHandler } from './$types';

@@ -67,12 +67,15 @@ export const GET: RequestHandler = async ({ url }) => {
         .orderBy(aiHistory.createdAt)
         .limit(50);
 
-      return json(sessions.map(s => ({
-        id: s.id,
-        sessionName: s.prompt.replace('SESSION_START: ', ''),
-        userId: s.userId,
-        createdAt: s.createdAt
-      })));
+  return json(
+    sessions.map((s: any) => ({
+      id: s.id,
+      sessionName:
+        s.prompt === 'SESSION_START' ? 'New Session' : s.prompt.replace('SESSION_START: ', ''),
+      userId: s.userId,
+      createdAt: s.createdAt,
+    }))
+  );
     }
 
   } catch (error) {

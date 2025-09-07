@@ -163,14 +163,22 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
       if (enhancedRequest.useEnhancedReranking && rerankedRecommendations.length > 0) {
         try {
+          const recentActivity = await getRecentUserActivity(enhancedRequest.userProfile?.id);
+          const caseRelationships = enhancedRequest.currentCase?.id
+            ? await getCaseRelationships(enhancedRequest.currentCase.id)
+            : [];
+
           const neo4jContext = {
-            userId: enhancedRequest.userProfile?.id,
-            caseId: enhancedRequest.currentCase?.id,
-            userRole: enhancedRequest.userProfile?.role,
-            recentActivity: await getRecentUserActivity(enhancedRequest.userProfile?.id),
-            caseRelationships: enhancedRequest.currentCase?.id
-              ? await getCaseRelationships(enhancedRequest.currentCase.id)
-              : []
+            userPath: recentActivity.map((a: any) => a.type).slice(0, 5),
+            relatedCases: caseRelationships
+              .map((r: any) => r.relatedCaseId || r.caseId || '')
+              .filter(Boolean),
+            frequentActions: recentActivity
+              .map((a: any) => a.action || a.type)
+              .filter(Boolean)
+              .slice(0, 10),
+            collaborators: [],
+            timeSpentByNode: {},
           };
 
           const rerankedResults = await enhancedSearchWithNeo4j(
@@ -339,27 +347,26 @@ export const POST: RequestHandler = async ({ request, url }) => {
     });
 
   } catch (err: any) {
-    console.error("❌ Enhanced Recommendations API error:", err);
+    console.error('❌ Enhanced Recommendations API error:', err);
 
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     const statusCode =
-      err && typeof err === "object" && "status" in err
-        ? (err as any).status
-        : 500;
+      err && typeof err === 'object' && 'status' in err ? (err as any).status : 500;
 
-    // Return error with performance context
-    const errorResponse = {
-      success: false,
-      error: errorMessage,
-      metadata: {
-        processingTime: Date.now() - startTime,
-        cacheStatus,
-        gpuUtilized,
-        rlOptimizationApplied
-      }
-    };
-
-    throw error(statusCode, errorResponse);
+    // Return structured error JSON
+    return json(
+      {
+        success: false,
+        error: errorMessage,
+        metadata: {
+          processingTime: Date.now() - startTime,
+          cacheStatus,
+          gpuUtilized,
+          rlOptimizationApplied,
+        },
+      },
+      { status: statusCode }
+    );
   }
 };
 
@@ -432,27 +439,32 @@ export const GET: RequestHandler = async ({ url }) => {
     // Build enhanced recommendation request from query parameters
     const enhancedRequest = {
       context,
-      userProfile: role ? {
-        id: `user_${role}_${Date.now()}`,
-        role,
-        experience: "senior", // Default to senior for GET requests
-        specialization: [],
-      } : undefined,
-      currentCase: caseId ? {
-        id: caseId,
-        type: "general",
-        priority: "medium",
-        status: "active",
-      } : undefined,
-      preferences: {},
+      userProfile: role
+        ? {
+            id: `user_${role}_${Date.now()}`,
+            role,
+            experience: 'senior' as const, // literal type
+            specialization: [],
+          }
+        : undefined,
+      currentCase: caseId
+        ? {
+            id: caseId,
+            type: 'general',
+            priority: 'medium',
+            status: 'active',
+          }
+        : undefined,
+      preferences: { preferredActions: [] as string[], workflowStyle: 'systematic' as const },
       // Enhanced options for GET endpoint
       enableGPUOptimization: enableGPU,
       enableCaching: enableCache,
       enableRLOptimization: enableGPU, // Enable RL with GPU
       maxRecommendations: 5, // Fewer for quick GET requests
       scoreThreshold: 0.6,
-      includeContext7Docs: context.toLowerCase().includes('svelte') || context.toLowerCase().includes('component'),
-      useEnhancedReranking: true
+      includeContext7Docs:
+        context.toLowerCase().includes('svelte') || context.toLowerCase().includes('component'),
+      useEnhancedReranking: true,
     };
 
     // Use the same enhanced logic as POST endpoint

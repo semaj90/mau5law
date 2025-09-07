@@ -18,26 +18,27 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     const body: CommandSearchRequest = await request.json();
-    const {
-      query,
-      types = ['cases', 'evidence', 'documents', 'people'],
-      limit = 10,
-      userId
-    } = body;
+    const query = body.query;
+    const types = body.types ?? ['cases', 'evidence', 'documents', 'people'];
+    const limit = body.limit ?? 10;
+    const userId = body.userId;
 
     if (!query || query.trim().length < 2) {
-      return json({
-        success: false,
-        error: 'Query must be at least 2 characters long'
-      }, { status: 400 });
+      return json(
+        {
+          success: false,
+          error: 'Query must be at least 2 characters long',
+        },
+        { status: 400 }
+      );
     }
 
     const searchQuery = query.trim();
-    const results: CommandSearchResponse['results'] = {
-      cases: [],
-      evidence: [],
-      documents: [],
-      people: []
+    const results = {
+      cases: [] as any[],
+      evidence: [] as any[],
+      documents: [] as any[],
+      people: [] as any[],
     };
 
     let totalResults = 0;
@@ -62,9 +63,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(helpers.desc?.(cases.updatedAt) as any)
           .limit(limit);
 
-        results.cases = caseResults.map(case_ => ({
+        results.cases = caseResults.map((case_) => ({
           ...case_,
-          similarity: calculateSimilarity(searchQuery, case_.title + ' ' + (case_.description || ''))
+          similarity: calculateSimilarity(
+            searchQuery,
+            case_.title + ' ' + (case_.description || '')
+          ),
         }));
 
         totalResults += caseResults.length;
@@ -79,10 +83,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const evidenceResults = await db
           .select({
             ...evidence,
-            caseTitle: cases.title
+            caseTitle: cases.title,
           })
           .from(evidence)
-          .leftJoin(cases, (helpers.eq?.(evidence.caseId, cases.id) as any))
+          .leftJoin(cases, helpers.eq?.(evidence.caseId, cases.id) as any)
           .where(
             helpers.and?.(
               helpers.eq?.(cases.userId, userId || user.id),
@@ -96,10 +100,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(helpers.desc?.(evidence.updatedAt) as any)
           .limit(limit);
 
-        results.evidence = evidenceResults.map(item => ({
-          ...item,
-          similarity: calculateSimilarity(searchQuery, item.title + ' ' + (item.description || ''))
-        }));
+        results.evidence = evidenceResults.map(
+          (item: any & { title?: string; description?: string | null }) => ({
+            ...item,
+            similarity: calculateSimilarity(
+              searchQuery,
+              item.title + ' ' + (item.description || '')
+            ),
+          })
+        );
 
         totalResults += evidenceResults.length;
       } catch (error: any) {
@@ -123,9 +132,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(helpers.desc?.(legalDocuments.updatedAt) as any)
           .limit(limit);
 
-        results.documents = documentResults.map(doc => ({
+        results.documents = documentResults.map((doc) => ({
           ...doc,
-          similarity: calculateSimilarity(searchQuery, doc.title + ' ' + (doc.content || '').substring(0, 500))
+          similarity: calculateSimilarity(
+            searchQuery,
+            doc.title + ' ' + (doc.content || '').substring(0, 500)
+          ),
         }));
 
         totalResults += documentResults.length;
@@ -152,9 +164,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(helpers.desc?.(users.updatedAt) as any)
           .limit(limit);
 
-        results.people = userResults.map(person => ({
+        results.people = userResults.map((person) => ({
           ...person,
-          similarity: calculateSimilarity(searchQuery, person.name + ' ' + person.email + ' ' + (person.department || ''))
+          similarity: calculateSimilarity(
+            searchQuery,
+            person.name + ' ' + person.email + ' ' + (person.department || '')
+          ),
         }));
 
         totalResults += userResults.length;
@@ -169,7 +184,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const vectorResults = await vectorOps.performRAGSearch({
           query: searchQuery,
           userId: userId || user.id,
-          limit: 5
+          limit: 5,
         });
 
         // Merge vector results with existing results
@@ -177,7 +192,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           const type = result.metadata?.type;
           if (type && results[type as keyof typeof results]) {
             const existing = results[type as keyof typeof results] as any[];
-            const existingIds = existing.map(item => item.id);
+            const existingIds = existing.map((item) => item.id);
 
             if (!existingIds.includes(result.id)) {
               // Add vector result with high similarity score
@@ -185,7 +200,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 id: result.id,
                 ...result.metadata,
                 content: result.content,
-                similarity: result.similarity
+                similarity: result.similarity,
               });
             }
           }
@@ -196,21 +211,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     // Sort all results by similarity
-    Object.keys(results).forEach(key => {
+    Object.keys(results).forEach((key) => {
       const resultArray = results[key as keyof typeof results] as any[];
       resultArray.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
     });
 
     const response: CommandSearchResponse = {
       success: true,
-      data: {
-        results,
-        totalResults
+      results,
+      meta: {
+        totalResults,
+        timestamp: new Date().toISOString(),
       },
-      timestamp: new Date().toISOString()
     };
 
-    return json(response);
+    return json(response as any);
 
   } catch (error: any) {
     console.error('Command search error:', error);

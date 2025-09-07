@@ -468,7 +468,7 @@ How can I assist you with your legal needs today?`);
 							<label class="block text-xs text-yorha-text-secondary mb-1">Model</label>
 							<select bind:value={settings.model} class="w-full bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-xs p-2 focus:border-yorha-primary">
 								<option value="gemma3-legal:latest">Gemma3 Legal (11.8B)</option>
-								<option value="llama3.2:1b">Llama3.2 (1B)</option>
+								<option value="gemma3-legal:7b">Gemma3 Legal (7B)</option>
 							</select>
 						</div>
 

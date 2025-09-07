@@ -137,12 +137,8 @@ declare module 'stream' {
   }
 }
 
-// Vitest types
-declare module 'vitest' {
-  export const vi: {
-    fn: (impl?: (...args: any[]) => any) => any;
-  };
-}
+// Vitest types are provided by 'vitest/globals' in tsconfig types.
+// Do not override here to avoid missing methods like clearAllMocks.
 
 // PGVector types
 declare module '@langchain/community/vectorstores/pgvector' {

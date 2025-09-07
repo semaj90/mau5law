@@ -93,6 +93,99 @@
 				"$tsc"
 			],
 			"group": "test"
+		},
+		{
+			"label": "tsc: sveltekit-frontend noEmit",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc - stylish"
+			],
+			"group": "test"
+		},
+		{
+			"label": "tsc: sveltekit-frontend --noEmit",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"sveltekit-frontend"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc - stylish"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TS Check (frontend)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TS quick check (frontend)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: sveltekit-frontend - noEmit check",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: sveltekit-frontend - narrow check",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"sveltekit-frontend"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
 		}
 	]
 }

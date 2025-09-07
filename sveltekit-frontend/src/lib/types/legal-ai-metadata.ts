@@ -41,6 +41,18 @@ export interface LegalAIMetadata {
   semanticHash?: string; // legacy
   embeddings?: { semantic_hash?: string; text_embedding?: number[] };
   additionalData?: Record<string, any>;
+
+  // Compatibility aliases for PNG extractor expectations
+  evidence_id?: string; // mapped from processingId or provided directly
+  analysis_results?: {
+    confidence: number;
+    classifications: string[] | LegalAIClassifications[keyof LegalAIClassifications][];
+    entities:
+      | Array<{ type: string; value?: string; name?: string; confidence: number }>
+      | LegalAIMetadataEntity[];
+    risk_assessment: 'low' | 'medium' | 'high' | 'critical' | string;
+    summary: string;
+  };
 }
 
 export type { LegalAIMetadata as DefaultLegalAIMetadata };

@@ -241,12 +241,12 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       throw new Error('No models available in Ollama');
     }
     
-    const hasLlama = models.some((m: any) => m.name.includes('llama'));
-    if (!hasLlama) {
-      return `${models.length} models available but no Llama model found`;
+    const hasGemma = models.some((m: any) => m.name.includes('gemma'));
+    if (!hasGemma) {
+      return `${models.length} models available but no Gemma model found`;
     }
     
-    return `${models.length} models available including Llama variants`;
+    return `${models.length} models available including Gemma variants`;
   });
 
   // Test 3: Simple AI Generation
@@ -255,7 +255,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'llama3.2',
+        model: 'gemma3-legal:latest',
         prompt: 'Test prompt: What is 2+2?',
         stream: false,
         options: {
@@ -295,7 +295,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'llama3.2',
+        model: 'gemma3-legal:latest',
         prompt,
         stream: false,
         options: {

@@ -23,6 +23,7 @@ export interface LogEntry {
   sessionId?: string;
   userAgent?: string;
   url?: string;
+  clientAddress?: string;
 }
 
 export interface LogBatch {
@@ -43,13 +44,13 @@ function processLogEntry(entry: LogEntry): LogEntry {
   return {
     ...entry,
     timestamp: entry.timestamp || new Date().toISOString(),
-    requestId: entry.requestId || crypto.randomUUID?.() || Date.now().toString()
+    requestId: entry.requestId || crypto.randomUUID?.() || Date.now().toString(),
   };
 }
 
 function storeLogEntry(entry: LogEntry): void {
   logStore.push(entry);
-  
+
   // Keep only recent entries
   if (logStore.length > MAX_LOG_ENTRIES) {
     logStore.splice(0, logStore.length - MAX_LOG_ENTRIES);
@@ -73,7 +74,7 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
   // - Datadog
   // - CloudWatch
   // - Custom logging infrastructure
-  
+
   try {
     // Example: Forward to Sentry or similar service
     if (import.meta.env.SENTRY_DSN && entry.level === 'error') {
@@ -125,12 +126,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     // Handle batch log entries
     if (body.logs && Array.isArray(body.logs)) {
       const batch: LogBatch = body;
-      const processedEntries = batch.logs.map(log => 
+      const processedEntries = batch.logs.map((log) =>
         processLogEntry({
           ...log,
           userAgent: batch.clientInfo?.userAgent || userAgent,
           url: batch.clientInfo?.url || url.pathname,
-          clientAddress
+          clientAddress,
         })
       );
 
@@ -157,8 +158,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
   // Only allow in development or with proper authorization
   if (import.meta.env.NODE_ENV === 'production') {
     const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ') || 
-        authHeader.split(' ')[1] !== import.meta.env.ADMIN_API_KEY) {
+    if (
+      !authHeader ||
+      !authHeader.startsWith('Bearer ') ||
+      authHeader.split(' ')[1] !== import.meta.env.ADMIN_API_KEY
+    ) {
       throw error(401, 'Unauthorized');
     }
   }

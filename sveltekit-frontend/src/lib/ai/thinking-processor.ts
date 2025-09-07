@@ -11,6 +11,14 @@ export interface ThinkingAnalysis {
   };
 }
 
+// Enhanced analysis with GRPO integration flag
+export interface EnhancedThinkingOptions extends AnalysisOptions {
+  useGRPO?: boolean;
+  enableRecommendations?: boolean;
+  userId?: string;
+  userRole?: string;
+}
+
 export interface AnalysisOptions {
   evidenceId?: string;
   caseId?: string;
@@ -26,13 +34,23 @@ export class ThinkingProcessor {
    * Analyzes a document using the enhanced API endpoint
    */
   static async analyzeDocument(text: string, options: AnalysisOptions = {}): Promise<ThinkingAnalysis> {
-    const response = await fetch('/api/analyze', {
+    // Check if enhanced GRPO should be used
+    const enhancedOptions = options as EnhancedThinkingOptions;
+    const useGRPO = enhancedOptions.useGRPO || false;
+    
+    const endpoint = useGRPO ? '/api/ai/enhanced-grpo' : '/api/analyze';
+    
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         text,
+        query: text,
+        userId: enhancedOptions.userId,
+        userRole: enhancedOptions.userRole,
+        enableRecommendations: enhancedOptions.enableRecommendations || false,
         ...options
       }),
     });
@@ -47,6 +65,24 @@ export class ThinkingProcessor {
       throw new Error(result.error || 'Analysis failed');
     }
 
+    // Return enhanced analysis if GRPO was used
+    if (useGRPO && result.analysis.structured_reasoning) {
+      return {
+        thinking: result.analysis.thinking || '',
+        analysis: result.analysis.response || result.analysis.analysis || result.analysis,
+        confidence: result.analysis.confidence,
+        reasoning_steps: result.analysis.reasoning_steps || [],
+        metadata: {
+          ...result.metadata,
+          grpo_enhanced: true,
+          recommendations_count: result.analysis.recommendations?.length || 0,
+          temporal_score: result.analysis.temporal_score,
+          structured_reasoning: result.analysis.structured_reasoning
+        }
+      };
+    }
+
+    // Standard analysis response
     return {
       thinking: result.analysis.thinking || '',
       analysis: result.analysis.analysis || result.analysis,
@@ -164,7 +200,7 @@ export class ThinkingProcessor {
    * Gets the appropriate model name based on thinking style
    */
   static getModelName(useThinking: boolean): string {
-    return useThinking ? 'legal-gemma3-thinking' : 'gemma3:7b';
+    return useThinking ? 'legal-gemma3-thinking' : 'gemma3-legal:latest';
   }
 
   /**

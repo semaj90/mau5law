@@ -37,6 +37,18 @@ export const similarCasesRequestSchema = z.object({
   limit: z.number().int().positive().max(25).default(5)
 });
 
+// Minimal response schema to satisfy imports and provide type safety
+export const similarCasesResponseSchema = z.object({
+  cases: z.array(z.object({
+    id: z.string().optional(),
+    caseNumber: z.string().optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    score: z.number().optional(),
+    metadata: z.record(z.any()).optional()
+  })).default([])
+});
+
 export const healthResponseSchema = z.object({
   status: z.enum(['healthy','degraded','unhealthy']).default('healthy')
 });
@@ -46,3 +58,4 @@ export type VectorSearchResponse = z.infer<typeof vectorSearchResponseSchema>;
 export type RAGRequest = z.infer<typeof ragRequestSchema>;
 export type RAGResponse = z.infer<typeof ragResponseSchema>;
 export type SimilarCasesRequest = z.infer<typeof similarCasesRequestSchema>;
+export type SimilarCasesResponse = z.infer<typeof similarCasesResponseSchema>;

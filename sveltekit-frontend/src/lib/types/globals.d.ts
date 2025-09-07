@@ -27,16 +27,6 @@ declare global {
   interface Window {
     lokiDB?: LokiDB;
   }
-
-  // Provide a top-level Locals type for files that reference `Locals` directly
-  interface Locals {
-    user?: { id: string; email?: string; name?: string } | null;
-    session?: { id: string; user?: { id: string; email?: string } } | null;
-    db?: any;
-    services?: Partial<Record<string, any>>;
-    requestId?: string;
-    [key: string]: any;
-  }
 }
 
 // Common model descriptor returned by Ollama / model registries

@@ -73,7 +73,7 @@ async function processWithGPU(content: string): Promise<any> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gemma3:legal-latest',
+        model: 'gemma3-legal:latest',
         prompt: content,
         options: {
           num_gpu: 35, // GPU layers for RTX 3060
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       response: response.response || response.content || '',
       metadata: {
-        model: response.model || 'gemma3:legal-latest',
+        model: response.model || 'gemma3-legal:latest',
         processingTime: response.processingTime,
         gpuUsed: true,
         tensorRT: GPU_CONFIG.tensorRT.enabled

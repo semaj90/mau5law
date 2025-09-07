@@ -25,22 +25,7 @@ declare module 'node-fetch' {
   export default fetch;
 }
 
-// Generic augmentations to App.Locals (complements locals-allow-any)
-declare namespace App {
-  interface Locals {
-    db?: any;
-    user?: any;
-    orchestrator?: any;
-    minio?: any;
-    embed?: any;
-    llama?: any;
-    llamaWasm?: any;
-    pgClient?: any;
-    pgVectorClient?: any;
-    pg?: any;
-    [key: string]: any;
-  }
-}
+// Removed broad App.Locals augmentation. Use locals-unify.d.ts instead.
 
 // Allow unknown modules used in the codebase to be imported without type errors
 declare module '*-service' { const x: any; export default x; }

@@ -90,7 +90,7 @@ const services = {
   ollama: {
     baseUrl: 'http://localhost:11434',
     models: {
-      legal: 'gemma3:legal-latest',
+      legal: 'gemma3-legal:latest',
       embedding: 'nomic-embed-text:latest',
     },
   },
@@ -203,7 +203,7 @@ function calculateSimilarity(doc1: any, doc2: any): number {
 }
 
 function buildEnhancedPrompt(input: any): string {
-  let prompt = `You are an expert legal AI assistant using gemma3:legal-latest with access to comprehensive legal knowledge.
+  let prompt = `You are an expert legal AI assistant using gemma3-legal:latest with access to comprehensive legal knowledge.
 
 QUERY: ${input.query}
 
@@ -485,7 +485,7 @@ export class EnhancedAISynthesisOrchestrator {
     try {
       logger.info('[Orchestrator] Initializing Enhanced AI Synthesis Orchestrator...');
 
-      // Initialize Ollama with gemma3:legal-latest
+      // Initialize Ollama with gemma3-legal:latest
       this.ollama = new ChatOllama({
         baseUrl: services.ollama.baseUrl,
         model: services.ollama.models.legal,
@@ -709,7 +709,7 @@ export class EnhancedAISynthesisOrchestrator {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                model: 'gemma3:legal-latest',
+                model: 'gemma3-legal:latest',
                 prompt: input.query,
                 context: input.legalBertAnalysis,
                 temperature: 0.3,
@@ -801,7 +801,7 @@ export class EnhancedAISynthesisOrchestrator {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  model: 'gemma3:legal-latest',
+                  model: 'gemma3-legal:latest',
                   prompt,
                   useGPU: true,
                   workers: 32,
@@ -833,7 +833,7 @@ export class EnhancedAISynthesisOrchestrator {
 
           if (ollamaResponse.ok) {
             const result = await ollamaResponse.json();
-            logger.info('[Ollama] Generated response with gemma3:legal-latest');
+            logger.info('[Ollama] Generated response with gemma3-legal:latest');
             return result.response;
           }
 
@@ -991,7 +991,7 @@ export class EnhancedAISynthesisOrchestrator {
 
   private async ensureModels() {
     try {
-      // Check and create gemma3:legal-latest
+      // Check and create gemma3-legal:latest
       await this.ensureGemma3LegalModel();
 
       // Check and pull nomic-embed-text
@@ -1010,11 +1010,11 @@ export class EnhancedAISynthesisOrchestrator {
 
       const hasGemma3Legal = models?.some(
         (m) =>
-          m.name === 'gemma3:legal-latest' || (m.name.includes('gemma') && m.name.includes('legal'))
+          m.name === 'gemma3-legal:latest' || (m.name.includes('gemma') && m.name.includes('legal'))
       );
 
       if (!hasGemma3Legal) {
-        logger.info('[Models] Creating gemma3:legal-latest...');
+        logger.info('[Models] Creating gemma3-legal:latest...');
 
         const modelfile = `
 FROM gemma2:2b
@@ -1060,16 +1060,16 @@ TEMPLATE """{{ if .System }}<|system|>
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: 'gemma3:legal-latest',
+            name: 'gemma3-legal:latest',
             modelfile,
             stream: false,
           }),
         });
 
-        logger.info('[Models] gemma3:legal-latest created successfully');
+        logger.info('[Models] gemma3-legal:latest created successfully');
       }
     } catch (error: any) {
-      logger.error('[Models] Failed to ensure gemma3:legal-latest:', error);
+      logger.error('[Models] Failed to ensure gemma3-legal:latest:', error);
     }
   }
 

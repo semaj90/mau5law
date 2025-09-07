@@ -212,6 +212,7 @@ interface TextureRegion {
 // SvelteKit component interfaces
 declare module '$lib/services/cognitive-cache-integration' {
   export const cognitiveCache: any;
+  export const cognitiveCacheManager: any;
   export default cognitiveCache;
 }
 

@@ -5,26 +5,35 @@
 
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { didYouMeanService, type DidYouMeanQuery } from '$lib/services/did-you-mean-quic-graph.js';
+import didYouMeanModule from '$lib/services/did-you-mean-quic-graph.js';
+type DidYouMeanQuery = any;
+const didYouMeanService: any = (didYouMeanModule as any)?.didYouMeanService ?? didYouMeanModule;
 import { z } from 'zod';
 
 // Validation schema for suggestion requests
 const suggestionRequestSchema = z.object({
   query: z.string().min(1, 'Query cannot be empty').max(500, 'Query too long'),
-  userIntent: z.enum(['search', 'legal_research', 'case_lookup', 'document_analysis']).optional().default('search'),
-  context: z.object({
-    caseId: z.string().optional(),
-    jurisdiction: z.string().optional(),
-    practiceArea: z.string().optional(),
-    documentType: z.string().optional()
-  }).optional(),
-  options: z.object({
-    maxSuggestions: z.number().min(1).max(20).optional().default(5),
-    similarityThreshold: z.number().min(0).max(1).optional().default(0.3),
-    includeTypos: z.boolean().optional().default(true),
-    includeSemanticSuggestions: z.boolean().optional().default(true),
-    graphDepth: z.number().min(1).max(5).optional().default(3)
-  }).optional()
+  userIntent: z
+    .enum(['search', 'legal_research', 'case_lookup', 'document_analysis'])
+    .optional()
+    .default('search'),
+  context: z
+    .object({
+      caseId: z.string().optional(),
+      jurisdiction: z.string().optional(),
+      practiceArea: z.string().optional(),
+      documentType: z.string().optional(),
+    })
+    .optional(),
+  options: z
+    .object({
+      maxSuggestions: z.number().min(1).max(20).optional().default(5),
+      similarityThreshold: z.number().min(0).max(1).optional().default(0.3),
+      includeTypos: z.boolean().optional().default(true),
+      includeSemanticSuggestions: z.boolean().optional().default(true),
+      graphDepth: z.number().min(1).max(5).optional().default(3),
+    })
+    .optional(),
 });
 
 // GET /api/v1/suggestions?q=contract+law&intent=legal_research&maxSuggestions=10
@@ -42,26 +51,29 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const practiceArea = url.searchParams.get('practiceArea');
 
     if (!query) {
-      throw error(400, {
-        message: 'Query parameter is required',
-        code: 'MISSING_QUERY'
-      });
+      return json(
+        { message: 'Query parameter is required', code: 'MISSING_QUERY' },
+        { status: 400 }
+      );
     }
 
     // Build suggestion query
     const suggestionQuery: DidYouMeanQuery = {
       originalQuery: query,
       userIntent: intent as any,
-      context: caseId || practiceArea ? {
-        caseId: caseId || undefined,
-        practiceArea: practiceArea || undefined
-      } : undefined,
+      context:
+        caseId || practiceArea
+          ? {
+              caseId: caseId || undefined,
+              practiceArea: practiceArea || undefined,
+            }
+          : undefined,
       options: {
         maxSuggestions,
         similarityThreshold: threshold,
         includeTypos,
-        includeSemanticSuggestions: true
-      }
+        includeSemanticSuggestions: true,
+      },
     };
 
     // Generate suggestions
@@ -75,8 +87,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
         requestTime: new Date().toISOString(),
         processingTimeMs: processingTime,
         streamStats: didYouMeanService.getStreamStats(),
-        version: '1.0'
-      }
+        version: '1.0',
+      },
     };
 
     return json(response, {
@@ -86,10 +98,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'X-Suggestions-Count': result.suggestions.length.toString(),
         'X-QUIC-Streams': result.cacheInfo.quicStreamsUsed.toString(),
         'Cache-Control': 'public, max-age=300', // 5 minutes cache
-        'Vary': 'Accept-Encoding'
-      }
+        Vary: 'Accept-Encoding',
+      },
     });
-
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
 
@@ -98,11 +109,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
 
     console.error('Suggestion generation failed:', err);
-    throw error(500, {
-      message: 'Failed to generate suggestions',
-      code: 'SUGGESTION_ERROR',
-      processingTimeMs: processingTime
-    });
+    return json(
+      {
+        message: 'Failed to generate suggestions',
+        code: 'SUGGESTION_ERROR',
+        processingTimeMs: processingTime,
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -112,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   try {
     const body = await request.json();
-    
+
     // Validate request body
     const validatedData = suggestionRequestSchema.parse(body);
 
@@ -140,10 +154,11 @@ export const POST: RequestHandler = async ({ request }) => {
         optimizations: {
           quicEnabled: result.cacheInfo.quicStreamsUsed > 0,
           graphTraversalUsed: (result.cacheInfo.graphTraversalTime || 0) > 0,
-          cacheHitRatio: result.cacheInfo.cacheHits / 
-                        (result.cacheInfo.cacheHits + result.cacheInfo.cacheMisses)
-        }
-      }
+          cacheHitRatio:
+            result.cacheInfo.cacheHits /
+            (result.cacheInfo.cacheHits + result.cacheInfo.cacheMisses),
+        },
+      },
     };
 
     return json(response, {
@@ -162,24 +177,30 @@ export const POST: RequestHandler = async ({ request }) => {
     const processingTime = performance.now() - startTime;
 
     if (err.name === 'ZodError') {
-      throw error(400, {
-        message: 'Invalid request format',
-        code: 'VALIDATION_ERROR',
-        errors: err.errors,
-        processingTimeMs: processingTime
-      });
+      return json(
+        {
+          message: 'Invalid request format',
+          code: 'VALIDATION_ERROR',
+          errors: err.errors,
+          processingTimeMs: processingTime,
+        },
+        { status: 400 }
+      );
     }
 
-    if (err && typeof err === 'object' && 'status' in err) {
-      throw err;
-    }
+  if (err && typeof err === 'object' && 'status' in err) {
+    throw err;
+  }
 
-    console.error('Advanced suggestion generation failed:', err);
-    throw error(500, {
+  console.error('Advanced suggestion generation failed:', err);
+  return json(
+    {
       message: 'Failed to generate suggestions',
       code: 'SUGGESTION_ERROR',
-      processingTimeMs: processingTime
-    });
+      processingTimeMs: processingTime,
+    },
+    { status: 500 }
+  );
   }
 };
 
@@ -202,10 +223,13 @@ export const DELETE: RequestHandler = async ({ request }) => {
     const processingTime = performance.now() - startTime;
 
     console.error('Cache clear failed:', err);
-    throw error(500, {
-      message: 'Failed to clear cache',
-      code: 'CACHE_CLEAR_ERROR',
-      processingTimeMs: processingTime
-    });
+    return json(
+      {
+        message: 'Failed to clear cache',
+        code: 'CACHE_CLEAR_ERROR',
+        processingTimeMs: processingTime,
+      },
+      { status: 500 }
+    );
   }
 };

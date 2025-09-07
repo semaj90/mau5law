@@ -185,7 +185,7 @@
 					const query = args.join(" ");
 					addToHistory(`Analyzing: "${query}"...`);
 					// Using the global AI store for analysis
-					aiGlobalActions.summarize("terminal-case", [{ type: "text", content: query }], "user-terminal", "gemma3:legal-latest");
+					aiGlobalActions.summarize("terminal-case", [{ type: "text", content: query }], "user-terminal", "gemma3-legal:latest");
 					addToHistory("AI analysis initiated. Monitor AI status.");
 				}
 				break;
