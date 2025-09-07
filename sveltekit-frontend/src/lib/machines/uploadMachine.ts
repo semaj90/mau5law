@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 // src/lib/machines/uploadMachine.ts
 import type { ProgressMsg } from "$lib/types/progress";
 import {
-  assign, createMachine, fromCallback
+  setup, assign, createActor, fromCallback
 } from "xstate";
 
 export interface UploadContext {
@@ -33,13 +33,112 @@ type UploadEvent =
   | { type: 'CANCEL'; fileId?: string }
   | { type: 'RESET' };
 
-export const uploadMachine = createMachine({
+export const uploadMachine = setup({
+  types: {} as {
+    context: UploadContext;
+    events: UploadEvent;
+  },
+  actions: {
+    resetContext: assign({
+      files: () => ({}),
+      wsConnected: () => false,
+      retryCount: () => 0,
+      lastError: () => undefined
+    }),
+    setSessionId: assign({
+      sessionId: ({ event }) => (event as any).sessionId
+    }),
+    setFileStatus: assign({
+      files: ({ context, event }) => {
+        const fileId = (event as any).fileId;
+        if (!fileId) return context.files;
+        return {
+          ...context.files,
+          [fileId]: {
+            ...context.files[fileId],
+            status: (event as any).status || ((event as any).type === 'START_PROCESS' ? 'uploading' : context.files[fileId]?.status),
+            uploadProgress: (event as any).type === 'START_PROCESS' ? 0 : context.files[fileId]?.uploadProgress
+          }
+        };
+      },
+      retryCount: ({ event }) => (event as any).type === 'START_PROCESS' ? 0 : undefined,
+      lastError: ({ event }) => (event as any).type === 'START_PROCESS' ? undefined : undefined
+    }),
+    updateFileProgress: assign({
+      files: ({ context, event }) => {
+        const fileId = (event as any).fileId;
+        const progress = (event as any).progress;
+        if (!fileId) return context.files;
+        return {
+          ...context.files,
+          [fileId]: {
+            ...context.files[fileId],
+            uploadProgress: progress,
+            status: progress >= 100 ? 'processing' : 'uploading'
+          }
+        };
+      }
+    }),
+    updateProcessingStep: assign({
+      files: ({ context, event }) => {
+        const fileId = (event as any).fileId;
+        const step = (event as any).step;
+        const stepProgress = (event as any).progress;
+        const fragment = (event as any).fragment;
+        if (!fileId) return context.files;
+        return {
+          ...context.files,
+          [fileId]: {
+            ...context.files[fileId],
+            step,
+            stepProgress,
+            fragment,
+            status: 'processing'
+          }
+        };
+      }
+    }),
+    setProcessingComplete: assign({
+      files: ({ context, event }) => {
+        const fileId = (event as any).fileId;
+        const result = (event as any).result;
+        if (!fileId) return context.files;
+        return {
+          ...context.files,
+          [fileId]: {
+            ...context.files[fileId],
+            result,
+            status: 'done'
+          }
+        };
+      }
+    }),
+    setError: assign({
+      files: ({ context, event }) => {
+        const fileId = (event as any).fileId;
+        const error = (event as any).error;
+        if (!fileId) return context.files;
+        return {
+          ...context.files,
+          [fileId]: {
+            ...context.files[fileId],
+            error: error?.message || error,
+            status: 'error'
+          }
+        };
+      },
+      lastError: ({ event }) => (event as any).error?.message || (event as any).error
+    }),
+    setWsConnected: assign({
+      wsConnected: ({ event }) => (event as any).connected ?? true
+    }),
+    incrementRetry: assign({
+      retryCount: ({ context }) => context.retryCount + 1
+    })
+  }
+}).createMachine({
   id: 'upload',
   initial: 'idle',
-  types: {
-    context: {} as UploadContext,
-    events: {} as UploadEvent
-  },
   context: {
     files: {},
     wsConnected: false,
@@ -50,19 +149,7 @@ export const uploadMachine = createMachine({
       on: {
         START_PROCESS: {
           target: 'connecting',
-          actions: assign({
-            sessionId: ({ event }) => event.sessionId,
-            files: ({ context, event }) => ({
-              ...context.files,
-              [event.fileId]: {
-                ...context.files[event.fileId],
-                status: 'uploading' as const,
-                uploadProgress: 0
-              }
-            }),
-            retryCount: 0,
-            lastError: undefined
-          })
+          actions: ['setSessionId', 'setFileStatus']
         }
       }
     },
@@ -181,16 +268,11 @@ export const uploadMachine = createMachine({
       on: {
         WS_OPENED: {
           target: 'processing',
-          actions: assign({
-            wsConnected: true
-          })
+          actions: 'setWsConnected'
         },
         ERROR: {
           target: 'connection_failed',
-          actions: assign({
-            lastError: ({ event }) => event.error?.message || 'Connection failed',
-            retryCount: ({ context }) => context.retryCount + 1
-          })
+          actions: ['setError', 'incrementRetry']
         }
       }
     },
@@ -297,15 +379,11 @@ export const uploadMachine = createMachine({
       on: {
         WS_OPENED: {
           target: 'processing',
-          actions: assign({
-            wsConnected: true
-          })
+          actions: 'setWsConnected'
         },
         ERROR: {
           target: 'failed',
-          actions: assign({
-            lastError: ({ event }) => event.error?.message || 'All connection methods failed'
-          })
+          actions: 'setError'
         }
       }
     },
@@ -313,63 +391,19 @@ export const uploadMachine = createMachine({
     processing: {
       on: {
         UPLOAD_PROGRESS: {
-          actions: assign({
-            files: ({ context, event }) => ({
-              ...context.files,
-              [event.fileId]: {
-                ...context.files[event.fileId],
-                uploadProgress: event.progress,
-                status: event.progress >= 100 ? ('processing' as const) : ('uploading' as const)
-              }
-            })
-          })
+          actions: 'updateFileProgress'
         },
 
         PROCESSING_STEP: {
-          actions: assign({
-            files: ({ context, event }) => ({
-              ...context.files,
-              [event.fileId]: {
-                ...context.files[event.fileId],
-                step: event.step,
-                stepProgress: event.progress,
-                fragment: event.fragment,
-                status: 'processing' as const
-              }
-            })
-          })
+          actions: 'updateProcessingStep'
         },
 
         PROCESSING_COMPLETE: {
-          actions: assign({
-            files: ({ context, event }) => ({
-              ...context.files,
-              [event.fileId]: {
-                ...context.files[event.fileId],
-                result: event.result,
-                status: 'done' as const
-              }
-            })
-          })
+          actions: 'setProcessingComplete'
         },
 
         ERROR: {
-          actions: assign({
-            files: ({ context, event }) => {
-              if (event.fileId) {
-                return {
-                  ...context.files,
-                  [event.fileId]: {
-                    ...context.files[event.fileId],
-                    status: 'error' as const,
-                    error: event.error?.message || 'Processing failed'
-                  }
-                };
-              }
-              return context.files;
-            },
-            lastError: ({ event }) => event.error?.message || 'Processing error'
-          })
+          actions: 'setError'
         },
 
         WS_CLOSED: {
@@ -379,13 +413,7 @@ export const uploadMachine = createMachine({
         CANCEL: 'cancelling',
         RESET: {
           target: 'idle',
-          actions: assign({
-            files: {},
-            sessionId: undefined,
-            wsConnected: false,
-            retryCount: 0,
-            lastError: undefined
-          })
+          actions: 'resetContext'
         }
       }
     },
@@ -416,19 +444,11 @@ export const uploadMachine = createMachine({
         input: ({ context }) => ({ sessionId: context.sessionId }),
         onDone: {
           target: 'idle',
-          actions: assign({
-            files: {},
-            sessionId: undefined,
-            wsConnected: false,
-            retryCount: 0,
-            lastError: undefined
-          })
+          actions: 'resetContext'
         },
         onError: {
           target: 'processing',
-          actions: assign({
-            lastError: 'Failed to cancel processing'
-          })
+          actions: 'setError'
         }
       }
     },
@@ -438,18 +458,15 @@ export const uploadMachine = createMachine({
         RETRY: 'connecting',
         RESET: {
           target: 'idle',
-          actions: assign({
-            files: {},
-            sessionId: undefined,
-            wsConnected: false,
-            retryCount: 0,
-            lastError: undefined
-          })
+          actions: 'resetContext'
         }
       }
     }
   }
 });
+
+// Export actor for use in components
+export const uploadActor = createActor(uploadMachine);
 
 // Helper functions for the machine
 export function getFileProgress(context: UploadContext, fileId: string): {

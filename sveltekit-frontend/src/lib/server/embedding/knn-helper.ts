@@ -1,39 +1,72 @@
-import { db } from '../db/index';
-import { sql } from 'drizzle-orm';
+// k-NN helper utilities for embeddings
 
-export interface KNNQueryOptions {
-  table?: 'document_chunks' | 'embeddings';
-  column?: 'embedding';
-  limit?: number;
-  threshold?: number; // similarity >= threshold (0..1)
+export type Vector = number[];
+
+/**
+ * Compute dot product of two vectors.
+ */
+export function dot(a: Vector, b: Vector): number {
+  if (a.length !== b.length) throw new Error('dot: vectors must have same length');
+  let sum = 0;
+  for (let i = 0; i < a.length; i++) sum += a[i] * b[i];
+  return sum;
 }
 
-export async function knnSearch(embedding: number[], opts: KNNQueryOptions = {}) {
-  const table = opts.table || 'document_chunks';
-  const column = opts.column || 'embedding';
-  const limit = opts.limit ?? 8;
-  const threshold = opts.threshold ?? 0;
-
-  const distanceExpr = sql`${sql.raw(column)} <=> ${embedding}`;
-  const simExpr = sql`1 - (${distanceExpr})`;
-
-  const where = threshold > 0 ? sql`WHERE 1 - (${distanceExpr}) >= ${threshold}` : sql``;
-
-  const rows = await db.execute(sql`
-    SELECT id, ${sql.raw(column)} AS embedding, ${simExpr} AS similarity
-    FROM ${sql.raw(table)}
-    ${where}
-    ORDER BY ${distanceExpr}
-    LIMIT ${limit}
-  `);
-
-  return rows.map((r: any) => ({ id: String(r.id), similarity: Number(r.similarity) }));
+/**
+ * Compute L2 norm (magnitude) of a vector.
+ */
+export function norm(a: Vector): number {
+  let sum = 0;
+  for (let i = 0; i < a.length; i++) sum += a[i] * a[i];
+  return Math.sqrt(sum);
 }
 
-export async function ivfflatIndexExists(table: string, column: string, metric: 'cosine'|'l2'|'ip' = 'cosine') {
-  const indexName = `idx_${table.toLowerCase()}_${column.toLowerCase()}_ivfflat_${metric}`;
-  const rows = await db.execute(sql`
-    SELECT 1 FROM pg_indexes WHERE indexname = ${indexName} LIMIT 1
-  `);
-  return rows.length > 0;
+/**
+ * Cosine similarity in range [-1, 1]. Returns 0 for zero-length vectors.
+ */
+export function cosineSimilarity(a: Vector, b: Vector): number {
+  if (a.length !== b.length) throw new Error('cosineSimilarity: vectors must have same length');
+  const na = norm(a);
+  const nb = norm(b);
+  if (na === 0 || nb === 0) return 0;
+  return dot(a, b) / (na * nb);
 }
+
+/**
+ * Euclidean distance between two vectors.
+ */
+export function euclideanDistance(a: Vector, b: Vector): number {
+  if (a.length !== b.length) throw new Error('euclideanDistance: vectors must have same length');
+  let sum = 0;
+  for (let i = 0; i < a.length; i++) {
+	const d = a[i] - b[i];
+	sum += d * d;
+  }
+  return Math.sqrt(sum);
+}
+
+/**
+ * Find top-K nearest items by cosine similarity.
+ * Returns array sorted by descending score (best first).
+ */
+export function topKNearest<T extends string | number | symbol = string>(
+  query: Vector,
+  items: { id: T; embedding: Vector }[],
+  k = 5
+): { id: T; score: number }[] {
+  if (!Array.isArray(query)) return [];
+  const results = items.map(item => {
+	const score = cosineSimilarity(query, item.embedding);
+	return { id: item.id, score };
+  });
+  results.sort((a, b) => b.score - a.score);
+  return results.slice(0, Math.max(0, Math.min(k, results.length)));
+}
+
+export default {
+  dot,
+  norm,
+  cosineSimilarity,
+  euclideanDistance,
+  topKNearest
+};

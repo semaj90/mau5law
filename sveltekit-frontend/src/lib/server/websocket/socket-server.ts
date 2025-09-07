@@ -2,7 +2,7 @@ import type { WebSocket } from "ws";
 
 // WebSocket server for real-time updates
 import { WebSocketServer } from "ws";
-import { createClient } from 'redis';
+import { createClient } from '$lib/shims/redis-shim';
 
 export interface ClientConnection {
   ws: WebSocket;
@@ -24,12 +24,11 @@ class RealTimeServer {
   private async initializeRedis() {
     try {
       // Create Redis clients
-      this.redisClient = createClient({
-        url: import.meta.env.REDIS_URL || "redis://localhost:6379",
+      this.redisClient = await createClient({
+        url: import.meta.env.REDIS_URL || 'redis://localhost:4005',
       });
-
-      this.redisSub = createClient({
-        url: import.meta.env.REDIS_URL || "redis://localhost:6379",
+      this.redisSub = await createClient({
+        url: import.meta.env.REDIS_URL || 'redis://localhost:4005',
       });
 
       // Connect Redis clients
@@ -40,21 +39,21 @@ class RealTimeServer {
       await this.setupRedisSubscriptions();
 
       this.isInitialized = true;
-      console.log("✅ Redis connected and WebSocket server initialized");
+      console.log('✅ Redis connected and WebSocket server initialized');
     } catch (error: any) {
-      console.error("❌ Redis connection failed:", error);
+      console.error('❌ Redis connection failed:', error);
       // Continue without Redis - fallback to polling
     }
   }
   private async setupRedisSubscriptions() {
     const channels = [
-      "evidence_update",
-      "case_update",
-      "poi_update",
-      "report_update",
-      "citation_update",
-      "canvas_update",
-      "user_activity",
+      'evidence_update',
+      'case_update',
+      'poi_update',
+      'report_update',
+      'citation_update',
+      'canvas_update',
+      'user_activity',
     ];
 
     for (const channel of channels) {
@@ -64,7 +63,7 @@ class RealTimeServer {
     }
   }
   private setupWebSocketServer() {
-    this.wss.on("connection", (ws: WebSocket, request) => {
+    this.wss.on('connection', (ws: WebSocket, request) => {
       const clientId = this.generateClientId();
       const client: ClientConnection = {
         ws,
@@ -75,17 +74,17 @@ class RealTimeServer {
       console.log(`📡 Client connected: ${clientId}`);
 
       // Handle client messages
-      ws.on("message", (data: Buffer) => {
+      ws.on('message', (data: Buffer) => {
         try {
           const message = JSON.parse(data.toString());
           this.handleClientMessage(clientId, message);
         } catch (error: any) {
-          console.error("Invalid message format:", error);
+          console.error('Invalid message format:', error);
         }
       });
 
       // Handle client disconnect
-      ws.on("close", () => {
+      ws.on('close', () => {
         this.clients.delete(clientId);
         console.log(`📡 Client disconnected: ${clientId}`);
       });
@@ -93,10 +92,10 @@ class RealTimeServer {
       // Send welcome message
       ws.send(
         JSON.stringify({
-          type: "connection",
+          type: 'connection',
           clientId,
           timestamp: new Date().toISOString(),
-        }),
+        })
       );
     });
   }
@@ -105,27 +104,25 @@ class RealTimeServer {
     if (!client) return;
 
     switch (message.type) {
-      case "auth":
+      case 'auth':
         client.userId = message.userId;
         break;
 
-      case "subscribe":
+      case 'subscribe':
         const { channels } = message;
         if (Array.isArray(channels)) {
           channels.forEach((channel) => client.subscriptions.add(channel));
         }
         break;
 
-      case "unsubscribe":
+      case 'unsubscribe':
         const { channels: unsubChannels } = message;
         if (Array.isArray(unsubChannels)) {
-          unsubChannels.forEach((channel) =>
-            client.subscriptions.delete(channel),
-          );
+          unsubChannels.forEach((channel) => client.subscriptions.delete(channel));
         }
         break;
 
-      case "publish":
+      case 'publish':
         // Allow clients to publish updates
         this.publishUpdate(message.channel, message.data, message.userId);
         break;
@@ -139,17 +136,14 @@ class RealTimeServer {
       parsedMessage = { data: message };
     }
     const payload = JSON.stringify({
-      type: "update",
+      type: 'update',
       channel,
       data: parsedMessage,
       timestamp: new Date().toISOString(),
     });
 
     this.clients.forEach((client, clientId) => {
-      if (
-        client.subscriptions.has(channel) &&
-        client.ws.readyState === client.ws.OPEN
-      ) {
+      if (client.subscriptions.has(channel) && client.ws.readyState === client.ws.OPEN) {
         try {
           client.ws.send(payload);
         } catch (error: any) {
@@ -171,7 +165,7 @@ class RealTimeServer {
     try {
       await this.redisClient.publish(channel, message);
     } catch (error: any) {
-      console.error("Failed to publish to Redis:", error);
+      console.error('Failed to publish to Redis:', error);
     }
   }
   // Utility methods for specific updates
@@ -179,48 +173,38 @@ class RealTimeServer {
     evidenceId: string,
     action: string,
     data: any,
-    userId?: string,
+    userId?: string
   ) {
     await this.publishUpdate(
-      "evidence_update",
+      'evidence_update',
       {
         evidenceId,
         action, // 'created', 'updated', 'deleted'
         data,
       },
-      userId,
+      userId
     );
   }
-  public async publishCaseUpdate(
-    caseId: string,
-    action: string,
-    data: any,
-    userId?: string,
-  ) {
+  public async publishCaseUpdate(caseId: string, action: string, data: any, userId?: string) {
     await this.publishUpdate(
-      "case_update",
+      'case_update',
       {
         caseId,
         action,
         data,
       },
-      userId,
+      userId
     );
   }
-  public async publishCanvasUpdate(
-    caseId: string,
-    action: string,
-    data: any,
-    userId?: string,
-  ) {
+  public async publishCanvasUpdate(caseId: string, action: string, data: any, userId?: string) {
     await this.publishUpdate(
-      "canvas_update",
+      'canvas_update',
       {
         caseId,
         action,
         data,
       },
-      userId,
+      userId
     );
   }
   private generateClientId(): string {
@@ -255,9 +239,9 @@ class RealTimeServer {
       // Close WebSocket server
       this.wss.close();
 
-      console.log("✅ WebSocket server shut down gracefully");
+      console.log('✅ WebSocket server shut down gracefully');
     } catch (error: any) {
-      console.error("❌ Error during shutdown:", error);
+      console.error('❌ Error during shutdown:', error);
     }
   }
 }

@@ -12,7 +12,15 @@
       "Bash(sed:*)",
       "Bash(git add:*)",
       "Bash(redis-server:*)",
-      "Bash(choco install:*)"
+      "Bash(choco install:*)",
+      "Bash(rabbitmq-server:*)",
+      "Bash(npm run dev:full:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm install:*)",
+      "Bash(redis-cli:*)",
+      "Bash(node:*)",
+      "Read(//c/Users/james/Videos/**)",
+      "Bash(npm run dev:unified:*)"
     ],
     "deny": [],
     "ask": []

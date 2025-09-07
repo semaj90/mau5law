@@ -25,10 +25,18 @@ const services = [
     description: 'Database connection test'
   },
   {
+    name: 'Redis Server',
+    command: 'node',
+    args: ['scripts/start-redis.js'],
+    description: 'Starting Redis cache on port 4005',
+    background: true
+  },
+  {
     name: 'Redis Check',
     command: '../redis-latest/redis-cli.exe',
     args: ['-p', '4005', 'ping'],
-    description: 'Redis cache connection test'
+    description: 'Redis cache connection test',
+    delay: 3000
   },
   {
     name: 'SvelteKit Frontend',
@@ -42,6 +50,11 @@ const services = [
 async function startServices() {
   for (const service of services) {
     console.log(`\n🔄 ${service.name}: ${service.description}`);
+    
+    if (service.delay) {
+      console.log(`⏳ Waiting ${service.delay}ms for service to be ready...`);
+      await new Promise(resolve => setTimeout(resolve, service.delay));
+    }
     
     try {
       await runCommand(service);
@@ -61,33 +74,36 @@ async function startServices() {
 
 function runCommand(service) {
   return new Promise((resolve, reject) => {
-    const process = spawn(service.command, service.args, {
+    const childProcess = spawn(service.command, service.args, {
       shell: true,
       env: { ...process.env, ...service.env },
-      stdio: service.name === 'SvelteKit Frontend' ? 'inherit' : 'pipe'
+      stdio: service.name === 'SvelteKit Frontend' || service.background ? 'inherit' : 'pipe'
     });
     
     if (service.name === 'SvelteKit Frontend') {
       // Keep frontend running
-      process.on('exit', (code) => {
+      childProcess.on('exit', (code) => {
         if (code !== 0) {
           reject(new Error(`Process exited with code ${code}`));
         }
       });
       resolve();
+    } else if (service.background) {
+      // Background service - resolve immediately
+      setTimeout(() => resolve(), 1000);
     } else {
       // For checks, wait for completion
       let output = '';
       
-      process.stdout?.on('data', (data) => {
+      childProcess.stdout?.on('data', (data) => {
         output += data.toString();
       });
       
-      process.stderr?.on('data', (data) => {
+      childProcess.stderr?.on('data', (data) => {
         output += data.toString();
       });
       
-      process.on('exit', (code) => {
+      childProcess.on('exit', (code) => {
         if (code === 0) {
           resolve(output);
         } else {
@@ -96,7 +112,7 @@ function runCommand(service) {
       });
       
       setTimeout(() => {
-        process.kill();
+        childProcess.kill();
         reject(new Error('Timeout'));
       }, 5000);
     }

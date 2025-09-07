@@ -31,9 +31,30 @@ echo.
 
 echo [4/4] Starting Development Services...
 echo.
+REM Ensure Redis env defaults to port 4005 for the platform
+set REDIS_URL=redis://127.0.0.1:4005
+echo Using REDIS_URL=%REDIS_URL%
+
+REM Try starting RabbitMQ Windows service if installed (safe no-op otherwise)
+sc query RabbitMQ >nul 2>&1
+if %ERRORLEVEL%==0 (
+    echo Attempting to start RabbitMQ service...
+    net start RabbitMQ >nul 2>&1 || echo RabbitMQ may already be running or needs installation
+) else (
+    echo RabbitMQ service not found; ensure RabbitMQ is running on ports 5672/15672
+)
+
+REM If redis-server binary exists in ../redis-latest, attempt to start it
+if exist "..\redis-latest\redis-server.exe" (
+    echo Starting local redis-server from ../redis-latest on port 4005
+    start "Redis" "..\redis-latest\redis-server.exe" --port 4005
+) else (
+    echo Warning: redis-server.exe not found in ../redis-latest. Set REDIS_URL to a reachable Redis instance if you do not run Redis locally.
+)
+
 echo Choose startup mode:
 echo [A] Frontend Only     - npm run dev
-echo [B] Full Stack        - npm run dev:full  
+echo [B] Full Stack        - npm run dev:full
 echo [C] VS Code Debug     - code . then F5
 echo [Q] Quit
 echo.
@@ -65,6 +86,6 @@ echo.
 echo =======================================================
 echo   LEGAL AI PLATFORM STARTUP COMPLETE
 echo   Visit: http://localhost:5177
-echo   Auth endpoints: /api/auth/login /api/auth/register  
+echo   Auth endpoints: /api/auth/login /api/auth/register
 echo =======================================================
 pause

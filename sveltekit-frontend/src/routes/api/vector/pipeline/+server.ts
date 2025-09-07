@@ -4,8 +4,7 @@ import { cache } from '$lib/server/cache/redis';
 import { embedText } from '$lib/server/embedding-gateway';
 import { hashString32 } from '$lib/utils/chunk';
 
-export const POST: RequestHandler = async (event: any) => {
-  const { request, fetch } = event;
+export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const payload = await request.json();
     // expected payload: { id, seq?, payload: { text, meta } }
@@ -14,12 +13,16 @@ export const POST: RequestHandler = async (event: any) => {
     const hash = hashString32(text);
     const cacheKey = `pipeline:chunk:${id}`;
 
-  // Save chunk compressed to redis (hot cache)
+    // Save chunk compressed to redis (hot cache)
     await cache.setCompressed(cacheKey, payload, 60 * 60); // 1h TTL
 
     // Optionally compute embedding synchronously for small chunks (and also enqueue)
     try {
-      const model = payload.model || process.env.EMBED_MODEL || process.env.PUBLIC_EMBED_MODEL || 'nomic-embed-text';
+      const model =
+        payload.model ||
+        process.env.EMBED_MODEL ||
+        process.env.PUBLIC_EMBED_MODEL ||
+        'nomic-embed-text';
       const { embeddings } = await embedText(fetch, [text], model);
       const embed = embeddings[0];
       await cache.set(`embedding:${model}:${hash}`, embed, 24 * 60 * 60 * 1000);
@@ -28,22 +31,23 @@ export const POST: RequestHandler = async (event: any) => {
       // TODO: enqueue job to background worker (RabbitMQ / Redis stream)
     }
 
-    // Always enqueue for background durability/DB persistence
-    if (cache.client) {
-      const model = payload.model || process.env.EMBED_MODEL || process.env.PUBLIC_EMBED_MODEL || 'nomic-embed-text';
-      const job = { id, text, model };
-      // Set initial job status
-      const statusKey = `job:embedding:${id}`;
-      const nowIso = new Date().toISOString();
-      await cache.set(statusKey, {
-        id,
-        status: 'queued',
-        queue: 'embedding:jobs',
-        model,
-        progress: 0,
-        timing: { createdAt: nowIso },
-      }, 24 * 60 * 60 * 1000);
-      await cache.rpush('embedding:jobs', JSON.stringify(job));
+    // Always enqueue for background durability/DB persistence. Prefer RabbitMQ when available.
+    const job = { id, text, model: payload.model || 'embeddinggemma-300m' };
+    try {
+      // dynamic import so we don't require amqplib at runtime if not installed
+      const { publishToQueue } = await import('$lib/server/rabbitmq');
+      await publishToQueue('evidence.embedding.queue', job);
+      console.log('📤 Enqueued job to RabbitMQ: ', id);
+    } catch (e) {
+      // Fall back to Redis list-based queue
+      try {
+        if (cache.client) {
+          await cache.rpush('embedding:jobs', JSON.stringify(job));
+          console.log('📤 Enqueued job to Redis list: ', id);
+        }
+      } catch (err) {
+        console.warn('Failed to enqueue job to Redis as fallback:', err?.message || err);
+      }
     }
 
     return json({ ok: true, id }, { status: 202 });

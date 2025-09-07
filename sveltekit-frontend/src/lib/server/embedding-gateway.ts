@@ -1,4 +1,5 @@
 import type { BackendId } from '$lib/types/pipeline';
+import { embedText as embedWithService, getEmbeddingServiceStatus } from './ai/embedder.js';
 
 export interface EmbedGatewayOptions {
   model?: string;
@@ -11,7 +12,7 @@ export interface EmbedGatewayResult {
   model: string;
 }
 
-// Backend-agnostic embedding gateway: tries FastAPI -> vLLM -> Ollama -> Go
+// Backend-agnostic embedding gateway: tries New Embedder -> FastAPI -> vLLM -> Ollama -> Go
 export async function getEmbeddingViaGate(
   fetchFn: typeof fetch,
   text: string,
@@ -24,6 +25,21 @@ export async function getEmbeddingViaGate(
     process.env.EMBED_MODEL_DEFAULT ||
     process.env.PUBLIC_EMBED_MODEL_DEFAULT ||
     'nomic-embed-text';
+
+  // Try new embedder service first (Local Gemma3 + Nomic fallback)
+  try {
+    const status = await getEmbeddingServiceStatus();
+    if (status.activeService !== 'none') {
+      const embedding = await embedWithService(text, model);
+      return { 
+        embedding, 
+        backend: status.activeService === 'local' ? 'local_gemma3' : 'nomic_api' as BackendId, 
+        model 
+      };
+    }
+  } catch (error) {
+    console.warn('New embedder service failed, trying fallback services...', error);
+  }
 
   // FastAPI
   const fastApiUrl = process.env.FASTAPI_URL || process.env.PUBLIC_FASTAPI_URL;
