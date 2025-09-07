@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const ollamaRes = await fetch("http://localhost:11434/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "gemma3", prompt }),
+      body: JSON.stringify({ model: "gemma3-legal:latest", prompt }),
     });
 
     if (!ollamaRes.ok) {
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
     const data = await ollamaRes.json();
-    return json({ response: data.response, model: "gemma3" });
+    return json({ response: data.response, model: "gemma3-legal:latest" });
   } catch (error: any) {
     console.error("Ollama Gemma3 error:", error);
     return json({ error: "Failed to call Ollama Gemma3" }, { status: 500 });

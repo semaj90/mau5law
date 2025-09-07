@@ -185,7 +185,7 @@ export interface EmbeddingResponse {
 
 export interface ChatSessionOptions {
   caseId?: string;
-  model?: "llama3.1:8b" | "gemma2:9b" | "mixtral:8x7b";
+  model?: "gemma3-legal:latest" | "mixtral:8x7b";
   temperature?: number;
   maxTokens?: number;
   contextWindow?: number;

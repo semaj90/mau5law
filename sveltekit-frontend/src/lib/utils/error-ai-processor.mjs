@@ -28,7 +28,7 @@ const CONFIG = {
     },
     ai: {
       ollamaHost: 'localhost:11434',
-      model: 'gemma3',
+      model: 'gemma3-legal:latest',
       embeddingModel: 'nomic-embed-text',
       contextWindow: 4096,
       temperature: 0.1

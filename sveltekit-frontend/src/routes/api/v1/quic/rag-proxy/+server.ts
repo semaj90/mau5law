@@ -46,8 +46,8 @@ export interface RAGResponse {
   cached: boolean;
 }
 
-// Import the Go microservice client
-import { EnhancedRAGClient, goServiceManager } from '$lib/services/go-microservice-client.js';
+// Import the Go microservice manager
+import { goServiceManager } from '$lib/services/goMicroservice';
 import crypto from "crypto";
 import { URL } from "url";
 
@@ -57,7 +57,7 @@ import { URL } from "url";
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const includeMetrics = url.searchParams.get('metrics') === 'true';
-    
+
     // Check RAG proxy health
     const healthResponse = await fetch(`${RAG_QUIC_CONFIG.baseUrl}/health`, {
       signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout)
@@ -86,10 +86,11 @@ export const GET: RequestHandler = async ({ url }) => {
     let metricsData = null;
     if (includeMetrics && proxyStatus !== 'unhealthy') {
       try {
-        const metricsUrl = proxyStatus === 'healthy' 
-          ? `${RAG_QUIC_CONFIG.baseUrl}/metrics`
-          : `${RAG_QUIC_CONFIG.fallbackUrl}/metrics`;
-          
+        const metricsUrl =
+          proxyStatus === 'healthy'
+            ? `${RAG_QUIC_CONFIG.baseUrl}/metrics`
+            : `${RAG_QUIC_CONFIG.fallbackUrl}/metrics`;
+
         const metricsResponse = await fetch(metricsUrl, {
           headers: {
             'Accept': 'application/json'
@@ -137,7 +138,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   } catch (err: any) {
     console.error('RAG QUIC Proxy health check failed:', err);
-    
+
     return json({
       service: 'rag-quic-proxy',
       status: 'error',
@@ -169,9 +170,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       error(400, ensureError({ message: 'Threshold must be between 0 and 1' }));
     }
 
-    // Use Go microservice client instead of direct HTTP
-    const enhancedRagClient = goServiceManager.getEnhancedRAG();
-    
+    // Placeholder: Enhanced RAG go client is not available; use HTTP path or future client
+
     // Prepare request payload for Go service
     const requestPayload = {
       query: ragRequest.query,
@@ -185,13 +185,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
       meta: {
         requestId: crypto.randomUUID(),
         timestamp: Date.now(),
-        protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2'
-      }
+        protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2',
+      },
     };
 
     // Generate ETag for caching
     const requestHash = await generateRequestHash(JSON.stringify(requestPayload));
-    
+
     let response: Response;
     let protocol: string;
 
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         'Content-Type': 'application/json',
         'X-Request-ID': requestPayload.meta.requestId,
         'X-Use-Cache': String(requestPayload.useCache),
-        'X-QUIC-Request': 'true'
+        'X-QUIC-Request': 'true',
       };
 
       // Add ETag for cache revalidation
@@ -208,51 +208,26 @@ export const POST: RequestHandler = async ({ request, url }) => {
         headers['If-None-Match'] = requestHash;
       }
 
-      // Use Go microservice client instead of direct fetch
-      const enhancedRagClient = goServiceManager.getEnhancedRAG();
-      const serviceResponse = await enhancedRagClient.ragQuery(
-        ragRequest.query,
-        {
-          context: ragRequest.context,
-          maxResults: ragRequest.maxResults,
-          threshold: ragRequest.threshold,
-          model: ragRequest.model
-        }
-      );
-
-      if (!serviceResponse.success) {
-        throw new Error(serviceResponse.error || 'Go service call failed');
-      }
-
-      // Convert service response to HTTP Response format
-      response = new Response(JSON.stringify(serviceResponse.data), {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Service-Response-Time': serviceResponse.responseTime?.toString() || '0',
-          'X-Protocol': serviceResponse.protocol || 'HTTP'
-        }
-      });
-
-      protocol = useHttp3 ? 'HTTP/3' : 'HTTP/2';
-
-      // Original fetch as fallback (commented for reference)
-      /* 
+      // Use direct fetch to QUIC proxy (or fallback) for now
+      const targetUrl = useHttp3
+        ? `${RAG_QUIC_CONFIG.baseUrl}/api/rag/query`
+        : `${RAG_QUIC_CONFIG.fallbackUrl}/api/rag/query`;
       response = await fetch(targetUrl, {
         method: 'POST',
         headers,
         body: JSON.stringify(requestPayload),
-        signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout)
+        signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout),
       });
       protocol = useHttp3 ? 'HTTP/3' : 'HTTP/2';
-      */
-
     } catch (quicError) {
       console.error('RAG QUIC Proxy failed:', quicError);
-      error(503, ensureError({
-        message: 'RAG service unavailable',
-        error: quicError instanceof Error ? quicError.message : 'Unknown error'
-      }));
+      error(
+        503,
+        ensureError({
+          message: 'RAG service unavailable',
+          error: quicError instanceof Error ? quicError.message : 'Unknown error',
+        })
+      );
     }
 
     // Handle 304 Not Modified (cached response)
@@ -262,16 +237,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         cached: true,
         message: 'Response served from cache',
         protocol,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
     if (!response.ok) {
       const errorText = await response.text();
-      error(response.status, {
-        message: `RAG proxy error: ${response.statusText}`,
-        details: errorText
-      });
+      error(response.status, `RAG proxy error: ${response.statusText} - ${errorText}`);
     }
 
     const responseData = await response.json();
@@ -282,7 +254,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       model: responseData.model || requestPayload.model,
       confidence: responseData.confidence || 0.8,
       executionTime: responseData.executionTime || 0,
-      cached: responseData.cached || false
+      cached: responseData.cached || false,
     };
 
     return json({
@@ -298,16 +270,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
         executionTimeMs: ragResponse.executionTime,
         confidence: ragResponse.confidence,
         cached: ragResponse.cached,
-        model: ragResponse.model
-      }
+        model: ragResponse.model,
+      },
     });
-
   } catch (err: any) {
     console.error('RAG QUIC Proxy error:', err);
-    error(500, ensureError({
-      message: 'RAG operation failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
-    }));
+    error(500, err instanceof Error ? err.message : 'RAG operation failed');
   }
 };
 
@@ -324,7 +292,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       error(400, ensureError({ message: 'Document ID and content are required' }));
     }
 
-    const targetUrl = useHttp3 
+    const targetUrl = useHttp3
       ? `${RAG_QUIC_CONFIG.baseUrl}/api/rag/documents`
       : `${RAG_QUIC_CONFIG.fallbackUrl}/api/rag/documents`;
 
@@ -332,10 +300,10 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-QUIC-Request': 'true'
+        'X-QUIC-Request': 'true',
       },
       body: JSON.stringify(document),
-      signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout)
+      signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout),
     });
 
     if (!response.ok) {
@@ -348,15 +316,17 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       success: true,
       message: `Document '${document.id}' updated in RAG index`,
       result,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (err: any) {
     console.error('RAG document update error:', err);
-    error(500, ensureError({
-      message: 'Document update failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
-    }));
+    error(
+      500,
+      ensureError({
+        message: 'Document update failed',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+    );
   }
 };
 
@@ -372,16 +342,16 @@ export const DELETE: RequestHandler = async ({ url }) => {
       error(400, ensureError({ message: 'Document ID is required' }));
     }
 
-    const targetUrl = useHttp3 
+    const targetUrl = useHttp3
       ? `${RAG_QUIC_CONFIG.baseUrl}/api/rag/documents/${documentId}`
       : `${RAG_QUIC_CONFIG.fallbackUrl}/api/rag/documents/${documentId}`;
 
     const response = await fetch(targetUrl, {
       method: 'DELETE',
       headers: {
-        'X-QUIC-Request': 'true'
+        'X-QUIC-Request': 'true',
       },
-      signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout)
+      signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout),
     });
 
     if (!response.ok) {
@@ -394,15 +364,17 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: true,
       message: `Document '${documentId}' removed from RAG index`,
       result,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (err: any) {
     console.error('RAG document deletion error:', err);
-    error(500, ensureError({
-      message: 'Document deletion failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
-    }));
+    error(
+      500,
+      ensureError({
+        message: 'Document deletion failed',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+    );
   }
 };
 

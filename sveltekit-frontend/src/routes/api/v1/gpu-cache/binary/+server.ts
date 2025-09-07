@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 
 /*
  * Binary-Optimized GPU Shader Cache API
@@ -7,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 
 import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
 import { binaryEncoder } from '../../../../../lib/middleware/binary-encoding.js';
-import { URL } from "url";
+// URL is globally available in SvelteKit; avoid Node 'url' import
 
 // GET /api/v1/gpu-cache/binary/shader?key=<cacheKey>
 export const GET: RequestHandler = async ({ url, request }) => {
@@ -26,7 +27,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     // Detect client's preferred encoding format
     const acceptHeader = request.headers.get('accept') || '';
     let preferredFormat: 'cbor' | 'msgpack' | 'json' = 'json';
-    
+
     if (acceptHeader.includes('application/cbor')) {
       preferredFormat = 'cbor';
     } else if (acceptHeader.includes('application/msgpack')) {
@@ -38,12 +39,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
       shader: {
         sourceCode: shader.sourceCode,
         metadata: shader.metadata,
-        metrics: shader.metrics
+        metrics: shader.metrics,
       },
       cacheKey,
       timestamp: Date.now(),
-      compressionSavings: `${((1 - 1/shader.metrics.compressionRatio) * 100).toFixed(1)}%`,
-      decodingTime: `${shader.metrics.decodingTime.toFixed(2)}ms`
+      compressionSavings: `${((1 - 1 / shader.metrics.compressionRatio) * 100).toFixed(1)}%`,
+      decodingTime: `${shader.metrics.decodingTime.toFixed(2)}ms`,
     };
 
     if (preferredFormat === 'json') {
@@ -52,19 +53,18 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
     // Binary encoding for better performance
     const { encoded, format, metrics } = await binaryEncoder.encode(responseData, preferredFormat);
-    
+
     const contentType = format === 'cbor' ? 'application/cbor' : 'application/msgpack';
-    
+
     return new Response(encoded, {
       status: 200,
       headers: {
         'content-type': contentType,
         'x-encoding-format': format,
         'x-compression-ratio': metrics.compressionRatio.toString(),
-        'x-encode-time': `${metrics.encodeTime.toFixed(2)}ms`
-      }
+        'x-encode-time': `${metrics.encodeTime.toFixed(2)}ms`,
+      },
     });
-
   } catch (error: any) {
     console.error('Binary shader cache GET error:', error);
     return json({ error: 'Internal server error' }, { status: 500 });
@@ -93,14 +93,17 @@ export const POST: RequestHandler = async ({ request }) => {
     const { sourceCode, compiledBinary, metadata, workflowType } = requestData;
 
     if (!sourceCode || !compiledBinary) {
-      return json({ error: 'Missing required fields: sourceCode, compiledBinary' }, { status: 400 });
+      return json(
+        { error: 'Missing required fields: sourceCode, compiledBinary' },
+        { status: 400 }
+      );
     }
 
     // Convert base64 binary data if needed
     let binaryData: ArrayBuffer;
     if (typeof compiledBinary === 'string') {
       const base64 = compiledBinary.split(',')[1] || compiledBinary;
-      binaryData = Uint8Array.from(atob(base64), c => c.charCodeAt(0)).buffer as ArrayBuffer;
+      binaryData = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)).buffer as ArrayBuffer;
     } else {
       binaryData = compiledBinary;
     }
@@ -109,13 +112,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const entry = await binaryGPUShaderCache.storeShader({
       sourceCode,
       compiledBinary: binaryData,
-      metadata: metadata || {}
+      metadata: metadata || {},
     });
 
     // Get workflow optimization recommendations
     let optimizationRecommendations = null;
     if (workflowType) {
-      optimizationRecommendations = await binaryGPUShaderCache.optimizeForLegalWorkflow(workflowType);
+      optimizationRecommendations =
+        await binaryGPUShaderCache.optimizeForLegalWorkflow(workflowType);
     }
 
     const response = {
@@ -126,18 +130,22 @@ export const POST: RequestHandler = async ({ request }) => {
         shaderType: entry.shaderType,
         encodingFormat: entry.encodingFormat,
         compressionRatio: entry.compressionRatio,
-        memoryFootprint: entry.memoryFootprint
+        memoryFootprint: entry.memoryFootprint,
       },
       optimizationRecommendations,
       metrics: {
-        compressionSavings: `${((1 - 1/entry.compressionRatio) * 100).toFixed(1)}%`,
+        compressionSavings: `${((1 - 1 / entry.compressionRatio) * 100).toFixed(1)}%`,
         memoryReduction: `${(entry.memoryFootprint / 1024).toFixed(1)}KB`,
-        storageEfficiency: entry.compressionRatio > 1.5 ? 'excellent' : entry.compressionRatio > 1.2 ? 'good' : 'moderate'
-      }
+        storageEfficiency:
+          entry.compressionRatio > 1.5
+            ? 'excellent'
+            : entry.compressionRatio > 1.2
+              ? 'good'
+              : 'moderate',
+      },
     };
 
     return json(response);
-
   } catch (error: any) {
     console.error('Binary shader cache POST error:', error);
     return json({ error: 'Failed to store shader' }, { status: 500 });
@@ -171,24 +179,23 @@ export const PUT: RequestHandler = async ({ request }) => {
       totalEncodingTime: results.totalEncodingTime,
       processingTime: processingTime,
       workflowOptimization,
-      shaders: results.encodedShaders.map(shader => ({
+      shaders: results.encodedShaders.map((shader) => ({
         cacheKey: shader.cacheKey,
         shaderType: shader.shaderType,
         encodingFormat: shader.encodingFormat,
-        compressionRatio: shader.compressionRatio
+        compressionRatio: shader.compressionRatio,
       })),
       batchMetrics: {
         averageCompressionRatio: results.totalCompressionRatio / results.encodedShaders.length,
         averageEncodingTime: results.totalEncodingTime / results.encodedShaders.length,
         totalMemorySaved: results.encodedShaders.reduce((total, shader) => {
-          return total + (shader.memoryFootprint * (1 - 1/shader.compressionRatio));
+          return total + shader.memoryFootprint * (1 - 1 / shader.compressionRatio);
         }, 0),
-        recommendedFormat: workflowOptimization?.recommendedEncodingFormat || 'cbor'
-      }
+        recommendedFormat: workflowOptimization?.recommendedEncodingFormat || 'cbor',
+      },
     };
 
     return json(response);
-
   } catch (error: any) {
     console.error('Binary shader cache batch error:', error);
     return json({ error: 'Batch processing failed' }, { status: 500 });
@@ -209,20 +216,20 @@ export const PATCH: RequestHandler = async ({ url }) => {
       return json({ error: 'Shader not found' }, { status: 404 });
     }
 
+    const assets: ArrayBuffer[] = Array.isArray(webgpuShader.binaryAssets)
+      ? webgpuShader.binaryAssets
+      : [webgpuShader.binaryAssets as ArrayBuffer];
     return json({
       shaderModule: webgpuShader.shaderModule,
-      binaryAssets: Array.from(webgpuShader.binaryAssets).map(buffer => 
-        Array.from(new Uint8Array(buffer))
-      ),
+      binaryAssets: assets.map((buffer) => Array.from(new Uint8Array(buffer))),
       compressionSavings: webgpuShader.compressionSavings,
       webgpuReady: true,
       loadingInstructions: {
         createShaderModule: true,
         binaryData: webgpuShader.binaryAssets.length,
-        estimatedLoadTime: `${(webgpuShader.compressionSavings / 1024 / 100).toFixed(1)}ms` // rough estimate
-      }
+        estimatedLoadTime: `${(webgpuShader.compressionSavings / 1024 / 100).toFixed(1)}ms`, // rough estimate
+      },
     });
-
   } catch (error: any) {
     console.error('WebGPU shader cache error:', error);
     return json({ error: 'WebGPU shader retrieval failed' }, { status: 500 });
@@ -235,10 +242,10 @@ export const DELETE: RequestHandler = async () => {
     // Clear encoding performance metrics
     binaryEncoder.clearMetrics();
 
-    return json({ 
-      success: true, 
+    return json({
+      success: true,
       message: 'Binary encoding metrics cleared',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
   } catch (error: any) {

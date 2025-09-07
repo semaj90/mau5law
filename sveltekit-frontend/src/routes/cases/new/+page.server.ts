@@ -25,6 +25,9 @@ export const actions: Actions = {
     if (!createdBy) {
       return fail(401, { error: "Not authenticated." });
     }
+    
+    // TypeScript assertion: createdBy is guaranteed to be string after null check
+    const userId: string = createdBy;
     try {
       await db.insert(cases).values({
         id,
@@ -34,7 +37,7 @@ export const actions: Actions = {
         dangerScore,
         status,
         aiSummary,
-        createdBy,
+        createdBy: userId,
       });
       redirect(303, `/cases/${id}`);
     } catch (e: any) {

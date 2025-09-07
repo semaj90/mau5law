@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 /**
  * Ollama Service - Main integration with local LLM models
- * Implements intelligent fallback: gemma3:legal-latest -> legal-bert
+ * Implements intelligent fallback: gemma3-legal:latest -> legal-bert
  */
 
 import { OLLAMA_CONFIG, getModelConfig, getOptimalModel, selectBestAvailableModel, isLegalTask } from './ollama-config';
@@ -87,12 +87,12 @@ class OllamaService extends EventEmitter {
   }
 
   /**
-   * Check if gemma3:legal-latest is available
+   * Check if gemma3-legal:latest is available
    */
   async checkLegalModel(): Promise<boolean> {
     const { models } = await this.listModels();
     return models?.some((m: any) => 
-      m.name === 'gemma3:legal-latest' || 
+      m.name === 'gemma3-legal:latest' || 
       m.name.includes('gemma3') && m.name.includes('legal')
     );
   }
@@ -548,7 +548,7 @@ class OllamaService extends EventEmitter {
     return {
       ollamaAvailable: isAvailable,
       availableModels: this.availableModels,
-      primaryModel: hasGemma ? 'gemma3:legal-latest' : 'not available',
+      primaryModel: hasGemma ? 'gemma3-legal:latest' : 'not available',
       legalFallback: hasLegalBert ? 'legal-bert' : 'not available',
       cacheSize: this.cache.size,
       queueLength: this.requestQueue.length,

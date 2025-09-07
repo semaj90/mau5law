@@ -455,7 +455,7 @@ function setupWorkerThread() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'llama3.2',
+          model: 'gemma3-legal:latest',
           prompt: prompt,
           stream: false,
           options: {
@@ -474,7 +474,7 @@ function setupWorkerThread() {
       return {
         analysis: data.response,
         confidence: calculateConfidence(data.response),
-        model: 'llama3.2',
+        model: 'gemma3-legal:latest',
         analysisType: analysisType
       };
     } catch (error) {

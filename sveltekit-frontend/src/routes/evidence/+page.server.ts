@@ -24,7 +24,7 @@ const evidenceSchema = z.object({
 
 export const load: PageServerLoad = async ({ url, locals }) => {
   const user = locals.user;
-  if (!user) {
+  if (!user?.id) {
     throw error(401, "Authentication required");
   }
 

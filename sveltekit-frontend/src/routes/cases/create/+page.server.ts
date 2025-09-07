@@ -181,25 +181,25 @@ export const actions: Actions = {
           tags,
           isConfidential,
           notifyAssignee,
-          createdBy: locals.user?.id,
-          createdAt: new Date().toISOString()
+          createdBy: locals.user?.id || 'anonymous',
+          createdAt: new Date().toISOString(),
         },
-        attachments: attachments.map(a => ({
+        attachments: attachments.map((a) => ({
           name: a.originalName,
           size: a.size,
-          mimeType: a.type
+          mimeType: a.type,
         })),
         storage: {
           bucket: 'case-documents',
-          basePath: `cases/${caseNumber}/documents/`
+          basePath: `cases/${caseNumber}/documents/`,
         },
         featureFlags: {
-          embedWith: 'nomic',     // instruct orchestrator to use Nomic / configured embedder
+          embedWith: 'nomic', // instruct orchestrator to use Nomic / configured embedder
           persistVectorTo: ['pgvector', 'qdrant'],
           autoTagWith: 'qdrant',
           cacheHits: true,
-          scheduleGpu: true
-        }
+          scheduleGpu: true,
+        },
       };
 
       // Fire-and-forget: prefer orchestrator enqueue API if available.
@@ -251,9 +251,9 @@ export const actions: Actions = {
                   metadata: {
                     title,
                     priority,
-                    createdBy: locals.user?.id
-                  }
-                }
+                    createdBy: locals.user?.id || 'anonymous',
+                  },
+                },
               });
             } catch (embedErr) {
               console.error('Local embedding (best-effort) failed:', embedErr);
@@ -340,8 +340,8 @@ export const actions: Actions = {
           description,
           priority,
           assignedTo,
-          createdBy: locals.user?.id,
-          createdAt: new Date()
+          createdBy: locals.user?.id || 'anonymous',
+          createdAt: new Date(),
         };
 
         // 3) Vector persistence temporarily disabled - would need proper Drizzle setup
@@ -521,13 +521,15 @@ export const actions: Actions = {
       }
 
       // Check permissions (owner or assigned user)
-    if (!locals.user || (existingCase.createdBy !== locals.user.id &&
-      existingCase.assignedTo !== locals.user.id)) {
-        return fail(403, {
-          form,
-          message: 'You do not have permission to edit this case'
-        });
-      }
+    if (
+      !locals.user?.id ||
+      (existingCase.createdBy !== locals.user.id && existingCase.assignedTo !== locals.user.id)
+    ) {
+      return fail(403, {
+        form,
+        message: 'You do not have permission to edit this case',
+      });
+    }
 
       const {
         title,
@@ -556,16 +558,19 @@ export const actions: Actions = {
       if (locals.audit?.log && locals.user?.id) {
         await locals.audit.log({
           action: 'case_updated',
-          // @ts-expect-error audit typing is loose in this environment
           userId: locals.user.id,
           resourceType: 'case',
           resourceId: updatedCase.id,
           details: {
             changes: {
-              title: existingCase.title !== title ? { from: existingCase.title, to: title } : undefined,
-              priority: existingCase.priority !== priority ? { from: existingCase.priority, to: priority } : undefined
-            }
-          }
+              title:
+                existingCase.title !== title ? { from: existingCase.title, to: title } : undefined,
+              priority:
+                existingCase.priority !== priority
+                  ? { from: existingCase.priority, to: priority }
+                  : undefined,
+            },
+          },
         } as any);
       }
 
@@ -590,22 +595,22 @@ export const actions: Actions = {
     try {
       // Save partial form data as draft
   const draft = await locals.db.caseDraft.upsert({
-        where: {
-          userId_draftKey: {
-    userId: locals.user?.id,
-            draftKey: 'case_creation'
-          }
-        },
-        update: {
-          data: form.data,
-          updatedAt: new Date()
-        },
-        create: {
-      userId: locals.user?.id,
-          draftKey: 'case_creation',
-          data: form.data
-        }
-      });
+    where: {
+      userId_draftKey: {
+        userId: locals.user?.id || 'anonymous',
+        draftKey: 'case_creation',
+      },
+    },
+    update: {
+      data: form.data,
+      updatedAt: new Date(),
+    },
+    create: {
+      userId: locals.user?.id || 'anonymous',
+      draftKey: 'case_creation',
+      data: form.data,
+    },
+  });
 
       return message(form, {
         type: 'success',

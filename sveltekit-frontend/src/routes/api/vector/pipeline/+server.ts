@@ -46,7 +46,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           console.log('📤 Enqueued job to Redis list: ', id);
         }
       } catch (err) {
-        console.warn('Failed to enqueue job to Redis as fallback:', err?.message || err);
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn('Failed to enqueue job to Redis as fallback:', msg);
       }
     }
 

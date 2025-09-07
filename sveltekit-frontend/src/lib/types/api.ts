@@ -5,9 +5,9 @@ import type { User } from './user';
 export interface EvidenceAIAnalysis {
   // Core analysis metrics (required by the user)
   validationScore?: number; // 0-100 scale
-  riskLevel?: "low" | "medium" | "high" | "critical";
-  complexityLevel?: "simple" | "moderate" | "complex" | "highly_complex";
-  
+  riskLevel?: 'low' | 'medium' | 'high' | 'critical';
+  complexityLevel?: 'simple' | 'moderate' | 'complex' | 'highly_complex';
+
   // Analysis results
   summary?: string;
   relevanceScore?: number;
@@ -17,14 +17,14 @@ export interface EvidenceAIAnalysis {
   risks?: string[];
   tags?: string[];
   confidence?: number; // 0-1 scale
-  
+
   // Processing metadata
   analysisMetrics?: AnalysisMetrics;
   processingTime?: number;
   model?: string;
   analyzedAt?: string; // ISO date string
   version?: number;
-  
+
   // Allow additional properties for backward compatibility
   [key: string]: unknown;
 }
@@ -49,7 +49,7 @@ export interface ApiResponse<T = any> {
 export interface ChatMessage {
   id: string;
   content: string;
-  role: "user" | "assistant" | "system";
+  role: 'user' | 'assistant' | 'system';
   timestamp: Date;
   sources?: VectorSearchResult[];
   metadata?: {
@@ -81,7 +81,7 @@ export interface ConversationHistory {
   title: string;
   messages: ChatMessage[];
   timestamp: number;
-  role?: "user" | "assistant" | "system";
+  role?: 'user' | 'assistant' | 'system';
   content?: string;
   metadata?: Record<string, any>;
 }
@@ -101,7 +101,7 @@ export interface ChatRequest {
 }
 export interface ChatResponse {
   content: string;
-  role: "assistant";
+  role: 'assistant';
   metadata?: {
     model?: string;
     temperature?: number;
@@ -117,7 +117,7 @@ export interface EvidenceUploadRequest {
   caseId: string;
   title: string;
   description?: string;
-  type: "document" | "image" | "video" | "audio" | "other";
+  type: 'document' | 'image' | 'video' | 'audio' | 'other';
   url?: string;
   tags?: string[];
   metadata?: Record<string, any>;
@@ -125,7 +125,7 @@ export interface EvidenceUploadRequest {
 export interface EvidenceUploadResponse {
   id: string;
   uploadUrl?: string;
-  processingStatus?: "pending" | "processing" | "completed" | "failed";
+  processingStatus?: 'pending' | 'processing' | 'completed' | 'failed';
 }
 // Evidence Types
 export interface Evidence {
@@ -178,7 +178,7 @@ export interface EvidenceItem {
 // Search API Types
 export interface SearchRequest {
   query: string;
-  type?: "cases" | "evidence" | "statutes" | "all";
+  type?: 'cases' | 'evidence' | 'statutes' | 'all';
   filters?: {
     caseId?: string;
     dateRange?: {
@@ -210,7 +210,7 @@ export interface UserProfile {
   role?: string;
   avatar?: string;
   preferences?: {
-    theme?: "light" | "dark" | "system";
+    theme?: 'light' | 'dark' | 'system';
     notifications?: boolean;
     language?: string;
   };
@@ -219,7 +219,7 @@ export interface UserUpdateRequest {
   name?: string;
   firstName?: string;
   lastName?: string;
-  preferences?: UserProfile["preferences"];
+  preferences?: UserProfile['preferences'];
 }
 // File Upload Types
 export interface FileUploadRequest {
@@ -239,7 +239,7 @@ export interface FileUploadResponse {
 // Vector Search Types
 export interface VectorSearchRequest {
   query: string;
-  type?: "semantic" | "similarity" | "hybrid";
+  type?: 'semantic' | 'similarity' | 'hybrid';
   limit?: number;
   threshold?: number;
   filters?: Record<string, any>;
@@ -249,7 +249,7 @@ export interface VectorSearchResult {
   content: string;
   score: number;
   metadata?: Record<string, any>;
-  type: "case" | "evidence" | "statute" | "document";
+  type: 'case' | 'evidence' | 'statute' | 'document';
 }
 // Embedding Types
 export interface EmbeddingRequest {
@@ -305,7 +305,7 @@ export interface ApiError {
 }
 // Generic API Handler Types
 export type ApiHandler<TRequest = any, TResponse = any> = (
-  request: TRequest,
+  request: TRequest
 ) => Promise<ApiResponse<TResponse>>;
 
 export type ApiErrorHandler = (error: Error) => ApiResponse<never>;
@@ -319,8 +319,8 @@ export interface Case {
   description?: string;
   incidentDate?: Date;
   location?: string;
-  priority: "low" | "medium" | "high" | "critical";
-  status: "open" | "investigating" | "pending" | "closed" | "archived";
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'open' | 'investigating' | 'pending' | 'closed' | 'archived';
   category?: string;
   dangerScore?: number;
   estimatedValue?: number;
@@ -347,28 +347,28 @@ export interface Case {
 export interface EvidenceAIAnalysis {
   // Core analysis metrics
   validationScore?: number; // 0-100 scale
-  riskLevel?: "low" | "medium" | "high" | "critical";
-  complexityLevel?: "simple" | "moderate" | "complex" | "highly_complex";
-  
+  riskLevel?: 'low' | 'medium' | 'high' | 'critical';
+  complexityLevel?: 'simple' | 'moderate' | 'complex' | 'highly_complex';
+
   // Analysis results
   keyFindings?: string[];
   legalImplications?: string[];
   recommendations?: string[];
   risks?: string[];
   confidence?: number; // 0-1 scale
-  
+
   // Processing metadata
   analysisMetrics?: AnalysisMetrics;
   model?: string;
   processingTime?: number; // milliseconds
   analyzedAt?: string; // ISO date string
   version?: number;
-  
+
   // Content analysis
   entities?: NamedEntity[];
   topics?: Topic[];
   sentiment?: SentimentAnalysis;
-  
+
   // Legal-specific analysis
   legalPrecedents?: LegalPrecedent[];
   statuteReferences?: StatuteReference[];
@@ -378,22 +378,22 @@ export interface EvidenceAIAnalysis {
 export interface CaseAIAnalysis {
   // Core analysis metrics
   validationScore?: number; // 0-100 scale
-  riskLevel?: "low" | "medium" | "high" | "critical";
-  complexityLevel?: "simple" | "moderate" | "complex" | "highly_complex";
-  
+  riskLevel?: 'low' | 'medium' | 'high' | 'critical';
+  complexityLevel?: 'simple' | 'moderate' | 'complex' | 'highly_complex';
+
   // Case-specific analysis
   strengthAssessment?: StrengthAssessment;
   timelineAnalysis?: TimelineAnalysis;
   evidenceGaps?: EvidenceGap[];
   prosecutionStrategy?: ProsecutionStrategy;
-  
+
   // Analysis results
   keyFindings?: string[];
   legalImplications?: string[];
   recommendations?: string[];
   risks?: string[];
   confidence?: number; // 0-1 scale
-  
+
   // Processing metadata
   analysisMetrics?: AnalysisMetrics;
   model?: string;
@@ -413,7 +413,7 @@ export interface AnalysisMetrics {
 
 export interface NamedEntity {
   text: string;
-  type: "person" | "organization" | "location" | "date" | "statute" | "case" | "other";
+  type: 'person' | 'organization' | 'location' | 'date' | 'statute' | 'case' | 'other';
   confidence: number;
   startIndex?: number;
   endIndex?: number;
@@ -428,7 +428,7 @@ export interface Topic {
 }
 
 export interface SentimentAnalysis {
-  overall: "positive" | "negative" | "neutral";
+  overall: 'positive' | 'negative' | 'neutral';
   confidence: number; // 0-1 scale
   emotions?: Record<string, number>;
 }
@@ -440,7 +440,7 @@ export interface LegalPrecedent {
   jurisdiction?: string;
   year?: number;
   keyConcepts: string[];
-  applicability?: "directly_applicable" | "analogous" | "distinguishable";
+  applicability?: 'directly_applicable' | 'analogous' | 'distinguishable';
 }
 
 export interface StatuteReference {
@@ -449,19 +449,19 @@ export interface StatuteReference {
   section?: string;
   relevance: number; // 0-1 scale
   jurisdiction?: string;
-  applicability?: "directly_applicable" | "related" | "background";
+  applicability?: 'directly_applicable' | 'related' | 'background';
 }
 
 export interface CaseConnection {
   caseId: string;
-  connectionType: "similar" | "related" | "precedent" | "conflicting";
+  connectionType: 'similar' | 'related' | 'precedent' | 'conflicting';
   strength: number; // 0-1 scale
   description?: string;
   sharedElements: string[];
 }
 
 export interface StrengthAssessment {
-  overall: "strong" | "moderate" | "weak";
+  overall: 'strong' | 'moderate' | 'weak';
   evidenceQuality: number; // 0-100 scale
   legalFoundation: number; // 0-100 scale
   prosecutabilityScore: number; // 0-100 scale
@@ -483,7 +483,7 @@ export interface TimelineAnalysis {
 export interface TimelineEvent {
   date: string; // ISO date
   description: string;
-  importance: "critical" | "important" | "minor";
+  importance: 'critical' | 'important' | 'minor';
   evidenceIds: string[];
   confidence: number; // 0-1 scale
 }
@@ -492,20 +492,20 @@ export interface TimelineGap {
   startDate: string; // ISO date
   endDate: string; // ISO date
   description: string;
-  importance: "critical" | "important" | "minor";
+  importance: 'critical' | 'important' | 'minor';
   investigationPriority: number; // 0-100 scale
 }
 
 export interface EvidenceGap {
-  type: "witness" | "document" | "physical" | "digital" | "expert" | "other";
+  type: 'witness' | 'document' | 'physical' | 'digital' | 'expert' | 'other';
   description: string;
-  importance: "critical" | "important" | "minor";
+  importance: 'critical' | 'important' | 'minor';
   suggestedActions: string[];
   deadline?: string; // ISO date
 }
 
 export interface ProsecutionStrategy {
-  approach: "aggressive" | "standard" | "cautious";
+  approach: 'aggressive' | 'standard' | 'cautious';
   mainArguments: string[];
   supportingEvidence: string[];
   anticipatedDefenses: string[];
@@ -515,11 +515,11 @@ export interface ProsecutionStrategy {
 
 export interface StrategicAction {
   action: string;
-  priority: "high" | "medium" | "low";
+  priority: 'high' | 'medium' | 'low';
   deadline?: string; // ISO date
   assignedTo?: string;
   dependencies?: string[];
-  estimatedEffort?: "low" | "medium" | "high";
+  estimatedEffort?: 'low' | 'medium' | 'high';
 }
 
 export interface StrategicTimeline {
@@ -540,7 +540,7 @@ export interface Milestone {
   name: string;
   date: string; // ISO date
   description: string;
-  importance: "critical" | "important" | "minor";
+  importance: 'critical' | 'important' | 'minor';
 }
 
 // ============================================================================
@@ -557,10 +557,10 @@ export interface APIResponse<T = any> extends ApiResponse<T> {
 
 // Service Tier Enumeration for Protocol Selection
 export enum ServiceTier {
-  ULTRA_FAST = 'ULTRA_FAST',    // < 5ms (QUIC)
-  HIGH_PERF = 'HIGH_PERF',      // < 15ms (gRPC)  
-  STANDARD = 'STANDARD',        // < 50ms (HTTP)
-  REALTIME = 'REALTIME'         // WebSocket events
+  ULTRA_FAST = 'ULTRA_FAST', // < 5ms (QUIC)
+  HIGH_PERF = 'HIGH_PERF', // < 15ms (gRPC)
+  STANDARD = 'STANDARD', // < 50ms (HTTP)
+  REALTIME = 'REALTIME', // WebSocket events
 }
 
 // Multi-Protocol Service Configuration
@@ -569,15 +569,15 @@ export interface ProtocolEndpoint {
   grpc?: string;
   quic?: string;
   websocket?: string;
-  primary?: string;     // For multi-instance services (Ollama)
-  secondary?: string;   // Fallback instances
-  embeddings?: string;  // Specialized endpoints
-  health?: string;      // Health check path
+  primary?: string; // For multi-instance services (Ollama)
+  secondary?: string; // Fallback instances
+  embeddings?: string; // Specialized endpoints
+  health?: string; // Health check path
   tier?: ServiceTier;
   status: 'active' | 'experimental' | 'deprecated' | 'maintenance';
 }
 
-// Database Service Configuration  
+// Database Service Configuration
 export interface DatabaseEndpoint {
   host: string;
   port: number;
@@ -608,48 +608,48 @@ export interface ServiceEndpoints {
   uploadService: ProtocolEndpoint;
   documentProcessor: ProtocolEndpoint;
   grpcServer: ProtocolEndpoint;
-  
-  // AI Enhancement Services (Tier 2) - Advanced Features  
+
+  // AI Enhancement Services (Tier 2) - Advanced Features
   advancedCUDA: ProtocolEndpoint;
   dimensionalCache: ProtocolEndpoint;
   xstateManager: ProtocolEndpoint;
   moduleManager: ProtocolEndpoint;
   recommendationEngine: ProtocolEndpoint;
-  
+
   // Specialized AI Services
   enhancedSemanticArchitecture: ProtocolEndpoint;
   enhancedLegalAI: ProtocolEndpoint;
   enhancedMulticore: ProtocolEndpoint;
   liveAgentEnhanced: ProtocolEndpoint;
-  
+
   // File & Document Services
   ginUpload: ProtocolEndpoint;
   summarizerService: ProtocolEndpoint;
   aiSummary: ProtocolEndpoint;
-  
+
   // Multi-Core Ollama Cluster
   ollama: ProtocolEndpoint;
-  
+
   // Database Services
   postgresql: DatabaseEndpoint;
-  redis: DatabaseEndpoint; 
+  redis: DatabaseEndpoint;
   qdrant: ProtocolEndpoint;
   neo4j?: ProtocolEndpoint;
-  
+
   // Messaging & Communication
   nats: MessagingEndpoint;
-  
+
   // Infrastructure & Monitoring Services
   clusterManager: ProtocolEndpoint;
   loadBalancer: ProtocolEndpoint;
   gpuIndexerService: ProtocolEndpoint;
   contextErrorPipeline: ProtocolEndpoint;
   simdHealth: ProtocolEndpoint;
-  
+
   // Development & Testing
   simpleServer: ProtocolEndpoint;
   testServer: ProtocolEndpoint;
-  
+
   // Frontend
   sveltekit: FrontendEndpoint;
 }
@@ -705,7 +705,7 @@ export interface ClusterMetrics {
 export interface PerformanceMetrics {
   protocols: {
     QUIC: string;
-    gRPC: string; 
+    gRPC: string;
     HTTP: string;
     WebSocket: string;
   };
@@ -753,12 +753,17 @@ export interface EnhancedRAGResponse extends APIResponse {
 
 // Document Upload with Enhanced Processing
 export interface EnhancedUploadRequest extends FileUploadRequest {
+  // Core file descriptors captured alongside the File object
+  filename: string;
+  contentType: string;
   extractText?: boolean;
   performOCR?: boolean;
   generateEmbeddings?: boolean;
   analyzeContent?: boolean;
   userId?: string;
   sessionId?: string;
+  // Optional tags for downstream processing/classification
+  tags?: string[];
 }
 
 export interface EnhancedUploadResponse extends APIResponse {
@@ -927,7 +932,7 @@ export interface ServiceDiscoveryResponse extends APIResponse {
   protocolSupport: {
     HTTP: number;
     gRPC: number;
-    QUIC: number;  
+    QUIC: number;
     WebSocket: number;
   };
   deployment: {
@@ -1003,13 +1008,13 @@ export interface ProtocolRouter {
     endpoint: string,
     options?: RequestInit & { protocol?: 'auto' | 'http' | 'grpc' | 'quic' | 'websocket' }
   ): Promise<Response>;
-  
+
   healthCheck(service: keyof ServiceEndpoints): Promise<HealthCheckResult>;
-  
+
   getOptimalProtocol(service: keyof ServiceEndpoints): 'http' | 'grpc' | 'quic' | 'websocket';
-  
+
   getServiceConfig<T extends keyof ServiceEndpoints>(service: T): ServiceEndpoints[T];
-  
+
   getAllServices(): Array<{
     name: keyof ServiceEndpoints;
     config: ServiceEndpoints[keyof ServiceEndpoints];
@@ -1026,6 +1031,7 @@ export type EnhancedAPIHandler<TRequest = any, TResponse = APIResponse> = (
 // Multi-Protocol Request Options
 export interface MultiProtocolRequestOptions extends Omit<RequestInit, 'cache' | 'priority'> {
   protocol?: 'auto' | 'http' | 'grpc' | 'quic' | 'websocket';
+  method?: string;
   timeout?: number;
   retries?: number;
   fallback?: boolean;
@@ -1041,11 +1047,20 @@ export interface DialogDataProvider {
 
 export interface CommandSearchRequest {
   query: string;
-  type?: string;
+  types?: Array<'cases' | 'evidence' | 'documents' | 'people'>;
+  limit?: number;
+  userId?: string;
 }
 
 export interface CommandSearchResponse {
-  results: any[];
+  results: {
+    cases: any[];
+    evidence: any[];
+    documents: any[];
+    people: any[];
+  };
+  success?: boolean;
+  meta?: Record<string, any>;
 }
 
 export interface LegalDocument {
@@ -1055,5 +1070,5 @@ export interface LegalDocument {
   type: string;
 }
 
-// Export User type for components
-export { User } from './user';
+// Export User type for components (type-only for isolatedModules)
+export type { User } from './user';

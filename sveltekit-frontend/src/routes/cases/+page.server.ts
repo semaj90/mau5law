@@ -32,7 +32,7 @@ const addEvidenceSchema = z.object({
 export const load: PageServerLoad = async ({ url, locals, parent }) => {
   // Ensure user is authenticated
   const user = locals.user;
-  if (!user) {
+  if (!user?.id) {
     throw redirect(302, '/login');
   }
 

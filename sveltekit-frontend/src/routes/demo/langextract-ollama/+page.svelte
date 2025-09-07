@@ -210,7 +210,7 @@ NOW, THEREFORE, in consideration of the mutual covenants contained herein, the p
             {/each}
           {:else}
             <option value="gemma2:2b">gemma2:2b</option>
-            <option value="llama3.2:1b">llama3.2:1b</option>
+            <option value="gemma3-legal:latest">Gemma3 Legal</option>
           {/if}
         </select>
       </div>
@@ -311,7 +311,7 @@ NOW, THEREFORE, in consideration of the mutual covenants contained herein, the p
           text: "This Agreement is entered into...",
           documentType: "contract",
           extractionType: "obligations",
-          model: "gemma2:2b"
+          model: "gemma3-legal:latest"
         }, null, 2)}</code></pre>
       </div>
     </div>

@@ -1046,7 +1046,7 @@ export const aiAssistantMachine = createMachine({
     maxTokens: 2048,
     availableModels: [
       { name: 'gemma3-legal', type: 'legal', maxTokens: 4096, cost: 0.1 },
-      { name: 'llama3.2', type: 'general', maxTokens: 8192, cost: 0.05 },
+      { name: 'gemma3-legal:latest', type: 'legal', maxTokens: 8192, cost: 0.05 },
       { name: 'codellama', type: 'code', maxTokens: 16384, cost: 0.08 }
     ],
     modelLoadBalancing: true,

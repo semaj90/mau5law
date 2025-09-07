@@ -1,5 +1,5 @@
 // WebAssembly LLM Service for Legal AI
-// Client-side gemma3:legal-latest WebAssembly implementation with GPU acceleration
+// Client-side gemma3-legal:latest WebAssembly implementation with GPU acceleration
 
 import type { WASMLLMConfig, WASMLLMResponse } from '../types/vector-jobs';
 

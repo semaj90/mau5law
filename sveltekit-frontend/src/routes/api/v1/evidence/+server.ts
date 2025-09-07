@@ -25,31 +25,28 @@ export const GET: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, { 
-        message: 'Authentication required',
-        code: 'AUTH_REQUIRED'
-      });
+      return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
     }
 
     // Parse query parameters
     const url = new URL(request.url);
     const queryParams = Object.fromEntries(url.searchParams.entries());
     const validatedQuery = EvidenceQuerySchema.parse(queryParams);
-    
+
     // Create service instance
     const evidenceService = new EvidenceCRUDService(locals.user.id);
-    
+
     // Get evidence with pagination - filter by case if specified
-    const result = validatedQuery.caseId 
+    const result = validatedQuery.caseId
       ? await evidenceService.listByCase(validatedQuery.caseId, {
           page: validatedQuery.page,
-          limit: validatedQuery.limit
+          limit: validatedQuery.limit,
         })
       : await evidenceService.list({
           page: validatedQuery.page,
-          limit: validatedQuery.limit
+          limit: validatedQuery.limit,
         });
-    
+
     return json({
       success: true,
       data: result.data,
@@ -59,38 +56,30 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         total: result.total,
         totalPages: result.totalPages,
         hasNext: result.page < result.totalPages,
-        hasPrev: result.page > 1
+        hasPrev: result.page > 1,
       },
       meta: {
         userId: locals.user.id,
         caseId: validatedQuery.caseId || null,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
-
   } catch (err: any) {
     console.error('Error fetching evidence:', err);
-    
+
     if (err instanceof z.ZodError) {
-      return error(400, {
-        message: 'Invalid query parameters',
-        code: 'INVALID_QUERY',
-        details: err.errors
-      });
+      return json(
+        { message: 'Invalid query parameters', code: 'INVALID_QUERY', details: err.errors },
+        { status: 400 }
+      );
     }
-    
-    if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(403, {
-        message: err.message,
-        code: 'ACCESS_DENIED'
-      });
+    if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
+      return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 });
     }
-    
-    return error(500, {
-      message: 'Failed to fetch evidence',
-      code: 'FETCH_FAILED',
-      details: err.message
-    });
+    return json(
+      { message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message },
+      { status: 500 }
+    );
   }
 };
 
@@ -102,58 +91,50 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, { 
-        message: 'Authentication required',
-        code: 'AUTH_REQUIRED'
-      });
+      return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
     }
 
     // Parse request body
     const body = await request.json();
     const validatedData = CreateEvidenceSchema.parse(body) as CreateEvidenceData;
-    
+
     // Create service instance
     const evidenceService = new EvidenceCRUDService(locals.user.id);
-    
+
     // Create evidence
     const evidenceId = await evidenceService.create(validatedData);
-    
+
     // Get the created evidence details
     const createdEvidence = await evidenceService.getById(evidenceId);
-    
-    return json({
-      success: true,
-      data: createdEvidence,
-      meta: {
-        evidenceId,
-        userId: locals.user.id,
-        caseId: validatedData.caseId,
-        timestamp: new Date().toISOString()
-      }
-    }, { status: 201 });
 
+    return json(
+      {
+        success: true,
+        data: createdEvidence,
+        meta: {
+          evidenceId,
+          userId: locals.user.id,
+          caseId: validatedData.caseId,
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 201 }
+    );
   } catch (err: any) {
     console.error('Error creating evidence:', err);
-    
+
     if (err instanceof z.ZodError) {
-      return error(400, {
-        message: 'Invalid evidence data',
-        code: 'INVALID_DATA',
-        details: err.errors
-      });
+      return json(
+        { message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors },
+        { status: 400 }
+      );
     }
-    
-    if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(403, {
-        message: err.message,
-        code: 'ACCESS_DENIED'
-      });
+    if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
+      return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 });
     }
-    
-    return error(500, {
-      message: 'Failed to create evidence',
-      code: 'CREATE_FAILED',
-      details: err.message
-    });
+    return json(
+      { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message },
+      { status: 500 }
+    );
   }
 };

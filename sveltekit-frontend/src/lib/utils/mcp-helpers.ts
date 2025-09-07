@@ -130,7 +130,7 @@ const agentRegistry: Record<
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "gemma2:2b",
+          model: "gemma3-legal:latest",
           prompt: `As a coding assistant, analyze and provide suggestions for: ${prompt}`,
           stream: false,
         }),
@@ -164,7 +164,7 @@ const agentRegistry: Record<
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "gemma2-legal",
+          model: "gemma3-legal:latest",
           prompt: `As a legal AI assistant, provide detailed analysis for: ${prompt}`,
           stream: false,
         }),

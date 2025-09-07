@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types.js';
 
 // AI Synthesizer API Route - Full Stack Integration
-// Uses Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama with gemma3:legal-latest
+// Uses Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama with gemma3-legal:latest
 // TypeScript-safe with Drizzle ORM and MCP Context7 best practices
 
 import { aiOrchestrator } from "$lib/server/ai/enhanced-ai-synthesis-orchestrator";
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ url }) => {
         context7: health.services.context7 || 'unknown',
       },
       models: {
-        primary: 'gemma3:legal-latest',
+        primary: 'gemma3-legal:latest',
         embeddings: 'nomic-embed-text',
         fallback: 'gemma2:2b',
       },

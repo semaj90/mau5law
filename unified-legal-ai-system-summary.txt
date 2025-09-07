@@ -145,3 +145,4 @@ Qdrant: http://localhost:6333
 Neo4j: bolt://localhost:7687 (neo4j/password)
 
 The system is now ready for unified legal AI operations with embeddings, vector search, caching, file storage, and graph-based recommendations all integrated into a single cohesive platform.
+

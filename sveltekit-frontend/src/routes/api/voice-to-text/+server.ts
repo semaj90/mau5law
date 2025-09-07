@@ -6,10 +6,45 @@ const nodeCrypto = () => {
   try { return require("crypto"); } catch { return null; }
 };
 
-async function toArrayBuffer(buf: Buffer | Uint8Array | ArrayBuffer): Promise<any> {
+function isNodeBuffer(x: any): x is Buffer {
+  return (
+    x &&
+    typeof x === 'object' &&
+    typeof (x as any).byteOffset === 'number' &&
+    typeof (x as any).byteLength === 'number' &&
+    typeof (x as any).buffer === 'object' &&
+    typeof (x as any).copy === 'function'
+  );
+}
+
+async function toArrayBuffer(
+  buf: Buffer | Uint8Array | ArrayBuffer | SharedArrayBuffer
+): Promise<ArrayBuffer> {
   if (buf instanceof ArrayBuffer) return buf;
-  if (buf instanceof Uint8Array) return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
-  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+  if (typeof SharedArrayBuffer !== 'undefined' && buf instanceof SharedArrayBuffer) {
+    // clone to ArrayBuffer
+    const tmp = new Uint8Array(buf as any);
+    const out = new ArrayBuffer(tmp.byteLength);
+    new Uint8Array(out).set(tmp);
+    return out;
+  }
+  if (buf instanceof Uint8Array) {
+    const out = new ArrayBuffer(buf.byteLength);
+    new Uint8Array(out).set(buf);
+    return out;
+  }
+  if (isNodeBuffer(buf as any)) {
+    const b = buf as any as Buffer;
+    const view = new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
+    const out = new ArrayBuffer(view.byteLength);
+    new Uint8Array(out).set(view);
+    return out;
+  }
+  // Fallback: create a copy
+  const view = buf instanceof Uint8Array ? buf : new Uint8Array(buf as any);
+  const out = new ArrayBuffer(view.byteLength);
+  new Uint8Array(out).set(view);
+  return out;
 }
 
 function getEnv(...keys: string[]): string | undefined {

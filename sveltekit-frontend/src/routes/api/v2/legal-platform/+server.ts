@@ -7,11 +7,11 @@ import type { RequestHandler } from './$types.js';
  */
 
 import { json, error } from '@sveltejs/kit';
-import { db } from '$lib/server/database.js';
-import { cases, evidence, criminals, legalDocuments } from '$lib/server/database.js';
-import { eq, or, desc } from '$lib/server/db/index.js';
+import { db } from '$lib/server/db/drizzle';
+import { cases, evidence, criminals, legalDocuments } from '$lib/server/db/schema-postgres';
+import { eq, or, desc, ilike, and } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';
-import { URL } from "url";
+import { URL } from 'url';
 
 // Go Microservice Configuration
 const GO_SERVICES = {
@@ -22,35 +22,35 @@ const GO_SERVICES = {
       gpu_compute: '/api/gpu/compute',
       som_train: '/api/som/train',
       xstate_event: '/api/xstate/event',
-      websocket: '/ws'
-    }
+      websocket: '/ws',
+    },
   },
   upload_service: {
     url: 'http://localhost:8093',
     endpoints: {
       upload: '/upload',
       status: '/status',
-      health: '/health'
-    }
+      health: '/health',
+    },
   },
   vector_service: {
     url: 'http://localhost:8095',
     endpoints: {
       search: '/api/vector/search',
-      similarity: '/api/vector/similarity'
-    }
+      similarity: '/api/vector/similarity',
+    },
   },
   grpc_server: {
     url: 'http://localhost:50051',
-    protocols: ['grpc', 'http']
+    protocols: ['grpc', 'http'],
   },
   load_balancer: {
     url: 'http://localhost:8224',
     endpoints: {
       health: '/health',
-      metrics: '/metrics'
-    }
-  }
+      metrics: '/metrics',
+    },
+  },
 };
 
 // Request Types
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const req: LegalPlatformRequest = await request.json();
 
     // Handle health check
-    if (req.action === 'health' as any) {
+    if (req.action === ('health' as any)) {
       const healthChecks = await Promise.allSettled([
         callGoService('enhanced_rag', '/api/health'),
         callGoService('upload_service', '/health'),
@@ -106,14 +106,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const services = {
         enhanced_rag: healthChecks[0].status === 'fulfilled',
         upload_service: healthChecks[1].status === 'fulfilled',
-        database: true // Assume database is healthy if we got this far
+        database: true, // Assume database is healthy if we got this far
       };
 
       return json({
         success: true,
         data: { services },
         timestamp: new Date().toISOString(),
-        message: 'Health check completed'
+        message: 'Health check completed',
       });
     }
 
@@ -154,36 +154,42 @@ export const GET: RequestHandler = async ({ url }) => {
   const req: LegalPlatformRequest = {
     action: action as any,
     entity: entity as any,
-    id: id || undefined
+    id: id || undefined,
   };
 
-  return await POST({ request: new Request('', { method: 'POST', body: JSON.stringify(req) }), url } as any);
+  return await POST({
+    request: new Request('', { method: 'POST', body: JSON.stringify(req) }),
+    url,
+  } as any);
 };
 
 // Case Management Operations
 async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
     case 'create':
-      const newCase = await db.insert(cases).values({
-        id: createId(),
-        caseNumber: `CASE-${Date.now()}`,
-        title: req.data.title,
-        name: req.data.title, // Backward compatibility
-        description: req.data.description,
-        priority: req.data.priority || 'medium',
-        status: 'open',
-        incidentDate: req.data.incidentDate ? new Date(req.data.incidentDate) : undefined,
-        location: req.data.location,
-        userId: req.data.userId,
-        createdBy: req.data.userId,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }).returning();
+      const newCase = await db
+        .insert(cases)
+        .values({
+          id: createId(),
+          caseNumber: `CASE-${Date.now()}`,
+          title: req.data.title,
+          name: req.data.title, // Backward compatibility
+          description: req.data.description,
+          priority: req.data.priority || 'medium',
+          status: 'open',
+          incidentDate: req.data.incidentDate ? new Date(req.data.incidentDate) : undefined,
+          location: req.data.location,
+          userId: req.data.userId,
+          createdBy: req.data.userId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
 
       return json({
         success: true,
         data: newCase[0],
-        message: 'Case created successfully'
+        message: 'Case created successfully',
       });
 
     case 'read':
@@ -201,10 +207,11 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
     case 'update':
       if (!req.id) throw error(400, 'Case ID required for update');
 
-      const updatedCase = await db.update(cases)
+      const updatedCase = await db
+        .update(cases)
         .set({
           ...req.data,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
         .where(eq(cases.id, req.id))
         .returning();
@@ -212,7 +219,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
       return json({
         success: true,
         data: updatedCase[0],
-        message: 'Case updated successfully'
+        message: 'Case updated successfully',
       });
 
     case 'delete':
@@ -222,11 +229,12 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
 
       return json({
         success: true,
-        message: 'Case deleted successfully'
+        message: 'Case deleted successfully',
       });
 
     case 'search':
-      const searchResults = await db.select()
+      const searchResults = await db
+        .select()
         .from(cases)
         .where(
           or(
@@ -248,26 +256,29 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
 async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
     case 'create':
-      const newEvidence = await db.insert(evidence).values({
-        id: createId(),
-        caseId: req.data.caseId,
-        title: req.data.title,
-        description: req.data.description,
-        evidenceType: req.data.evidenceType,
-        fileUrl: req.data.fileUrl,
-        fileName: req.data.fileName,
-        fileSize: req.data.fileSize,
-        mimeType: req.data.mimeType,
-        tags: req.data.tags || [],
-        uploadedBy: req.data.userId,
-        uploadedAt: new Date(),
-        updatedAt: new Date()
-      }).returning();
+      const newEvidence = await db
+        .insert(evidence)
+        .values({
+          id: createId(),
+          caseId: req.data.caseId,
+          title: req.data.title,
+          description: req.data.description,
+          evidenceType: req.data.evidenceType,
+          fileUrl: req.data.fileUrl,
+          fileName: req.data.fileName,
+          fileSize: req.data.fileSize,
+          mimeType: req.data.mimeType,
+          tags: req.data.tags || [],
+          uploadedBy: req.data.userId,
+          uploadedAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
 
       return json({
         success: true,
         data: newEvidence[0],
-        message: 'Evidence created successfully'
+        message: 'Evidence created successfully',
       });
 
     case 'read':
@@ -279,13 +290,16 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
         return json({ success: true, data: evidenceData[0] });
       } else {
         const filters = req.filters || {};
-        let query = db.select().from(evidence);
-
+        const whereClauses = [] as any[];
         if (filters.caseId) {
-          query = query.where(eq(evidence.caseId, filters.caseId));
+          whereClauses.push(eq(evidence.caseId, filters.caseId));
         }
-
-        const allEvidence = await query.orderBy(desc(evidence.uploadedAt)).limit(50);
+        const allEvidence = await db
+          .select()
+          .from(evidence)
+          .where(whereClauses.length ? and(...whereClauses) : (undefined as any))
+          .orderBy(desc(evidence.uploadedAt))
+          .limit(50);
         return json({ success: true, data: allEvidence });
       }
 
@@ -294,13 +308,13 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
       const analysisResult = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
         type: 'evidence_analysis',
         evidenceId: req.id,
-        data: req.data
+        data: req.data,
       });
 
       return json({
         success: true,
         data: analysisResult,
-        message: 'Evidence analysis completed'
+        message: 'Evidence analysis completed',
       });
 
     default:
@@ -312,26 +326,29 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
 async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
     case 'create':
-      const newCriminal = await db.insert(criminals).values({
-        id: createId(),
-        firstName: req.data.firstName,
-        lastName: req.data.lastName,
-        aliases: req.data.aliases || [],
-        dateOfBirth: req.data.dateOfBirth ? new Date(req.data.dateOfBirth) : undefined,
-        gender: req.data.gender,
-        height: req.data.height,
-        weight: req.data.weight,
-        eyeColor: req.data.eyeColor,
-        hairColor: req.data.hairColor,
-        createdBy: req.data.userId,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }).returning();
+      const newCriminal = await db
+        .insert(criminals)
+        .values({
+          id: createId(),
+          firstName: req.data.firstName,
+          lastName: req.data.lastName,
+          aliases: req.data.aliases || [],
+          dateOfBirth: req.data.dateOfBirth ? new Date(req.data.dateOfBirth) : undefined,
+          gender: req.data.gender,
+          height: req.data.height,
+          weight: req.data.weight,
+          eyeColor: req.data.eyeColor,
+          hairColor: req.data.hairColor,
+          createdBy: req.data.userId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
 
       return json({
         success: true,
         data: newCriminal[0],
-        message: 'Criminal record created successfully'
+        message: 'Criminal record created successfully',
       });
 
     case 'read':
@@ -342,7 +359,11 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any>
         }
         return json({ success: true, data: criminalData[0] });
       } else {
-        const allCriminals = await db.select().from(criminals).orderBy(desc(criminals.createdAt)).limit(50);
+        const allCriminals = await db
+          .select()
+          .from(criminals)
+          .orderBy(desc(criminals.createdAt))
+          .limit(50);
         return json({ success: true, data: allCriminals });
       }
 
@@ -355,42 +376,51 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any>
 async function handleDocumentOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
     case 'create':
-      const newDocument = await db.insert(legalDocuments).values({
-        id: createId(),
-        caseId: req.data.caseId,
-        userId: req.data.userId,
-        title: req.data.title,
-        content: req.data.content,
-        documentType: req.data.documentType || 'brief',
-        status: 'draft',
-        version: 1,
-        wordCount: req.data.content ? req.data.content.split(' ').length : 0,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }).returning();
+      const newDocument = await db
+        .insert(legalDocuments)
+        .values({
+          id: createId(),
+          caseId: req.data.caseId,
+          userId: req.data.userId,
+          title: req.data.title,
+          content: req.data.content,
+          documentType: req.data.documentType || 'brief',
+          status: 'draft',
+          version: 1,
+          wordCount: req.data.content ? req.data.content.split(' ').length : 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
 
       return json({
         success: true,
         data: newDocument[0],
-        message: 'Document created successfully'
+        message: 'Document created successfully',
       });
 
     case 'read':
       if (req.id) {
-        const documentData = await db.select().from(legalDocuments).where(eq(legalDocuments.id, req.id));
+        const documentData = await db
+          .select()
+          .from(legalDocuments)
+          .where(eq(legalDocuments.id, req.id));
         if (documentData.length === 0) {
           throw error(404, 'Document not found');
         }
         return json({ success: true, data: documentData[0] });
       } else {
         const filters = req.filters || {};
-        let query = db.select().from(legalDocuments);
-
+        const whereClauses = [] as any[];
         if (filters.caseId) {
-          query = query.where(eq(legalDocuments.caseId, filters.caseId));
+          whereClauses.push(eq(legalDocuments.caseId, filters.caseId));
         }
-
-        const allDocuments = await query.orderBy(desc(legalDocuments.createdAt)).limit(50);
+        const allDocuments = await db
+          .select()
+          .from(legalDocuments)
+          .where(whereClauses.length ? and(...whereClauses) : (undefined as any))
+          .orderBy(desc(legalDocuments.createdAt))
+          .limit(50);
         return json({ success: true, data: allDocuments });
       }
 
@@ -419,12 +449,12 @@ async function handleSearchOperations(req: LegalPlatformRequest): Promise<any> {
     });
   } catch (err: any) {
     // Fallback to traditional database search
-    const fallbackResults = await db.select()
+    const fallbackResults = await db
+      .select()
       .from(cases)
-      .where(or(
-        cases.title.ilike(`%${query}%`),
-        cases.description.ilike(`%${query}%`)
-      ))
+      .where(
+        or(ilike(cases.title, `%${query}%` as any), ilike(cases.description, `%${query}%` as any))
+      )
       .limit(limit);
 
     return json({

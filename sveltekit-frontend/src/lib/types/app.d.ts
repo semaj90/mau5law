@@ -1,12 +1,3 @@
-declare namespace App {
-  interface Locals {
-    user: {
-      id: string;
-      email?: string;
-      role: 'admin' | 'user' | 'prosecutor' | 'detective';
-    } | null;
-    session: import('lucia').Session | null;
-  }
-}
-
-
+// Disabled duplicate App.Locals declaration.
+// Canonical definition lives in `locals-unify.d.ts`.
+export {};

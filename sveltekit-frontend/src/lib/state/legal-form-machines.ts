@@ -58,7 +58,7 @@ export const AIAnalysisSchema = z.object({
   documentId: z.string().uuid(),
   analysisType: z.enum(['summary', 'entities', 'risk', 'recommendations', 'precedents', 'compliance']),
   options: z.object({
-    model: z.string().default('llama3.2'),
+    model: z.string().default('gemma3-legal:latest'),
     temperature: z.number().min(0).max(2).default(0.7),
     maxTokens: z.number().min(100).max(8000).default(2000),
     includeConfidence: z.boolean().default(true),
@@ -721,7 +721,7 @@ export const aiAnalysisMachine = createMachine({
     confidence: 0,
     processingTime: 0,
     tokensUsed: 0,
-    model: 'llama3.2',
+    model: 'gemma3-legal:latest',
     error: null,
     isStreaming: false,
     streamedContent: ''

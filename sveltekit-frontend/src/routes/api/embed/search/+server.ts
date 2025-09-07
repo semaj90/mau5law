@@ -1,37 +1,15 @@
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/database';
-import { document_chunks, vectors, cases, evidence } from '$lib/server/db/schema-postgres';
+import { db, sql } from '$lib/server/db';
 import { json, error } from '@sveltejs/kit';
-import { sql } from 'drizzle-orm';
+import { generateEmbedding, searchSimilarChatsKeyword } from '$lib/server/services/vectorDBService';
 
-// Generate query embedding using Ollama
+// Use optimized embedding generation with caching
 async function generateQueryEmbedding(query: string): Promise<number[]> {
-  try {
-    const response = await fetch('http://localhost:11434/api/embeddings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'nomic-embed-text:latest',
-        prompt: query
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Ollama API error: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    
-    // Validate embedding dimension
-    if (!result.embedding || !Array.isArray(result.embedding)) {
-      throw new Error('Invalid embedding format from Ollama');
-    }
-    
-    return result.embedding;
-  } catch (err) {
-    console.error('Query embedding generation failed:', err);
+  const embedding = await generateEmbedding(query, true); // Use cache
+  if (!embedding) {
     throw new Error('Failed to generate query embedding');
   }
+  return embedding;
 }
 
 // Generate RAG response using Gemma3 legal model
@@ -52,7 +30,7 @@ Response:`;
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gemma3-legal:latest',
+        model: 'legal:latest',
         prompt: prompt,
         stream: false,
         options: {
@@ -90,22 +68,54 @@ export const POST: RequestHandler = async ({ request }) => {
       throw new Error(`Invalid query embedding dimension: expected 768, got ${queryEmbedding?.length}`);
     }
 
-    // Perform vector similarity search using pgvector
-    const embeddingStr = `[${queryEmbedding.join(',')}]`;
+    // Try chat embeddings first, then fallback to document chunks if available
+    let similarChunks = [];
     
-    const similarChunks = await db
-      .select({
-        id: document_chunks.id,
-        chunk_text: document_chunks.chunk_text,
-        chunk_sequence: document_chunks.chunk_sequence,
-        evidence_id: document_chunks.evidence_id,
-        embedding: document_chunks.embedding,
-        similarity: sql<number>`1 - (embedding <=> ${embeddingStr}::vector)`.as('similarity')
-      })
-      .from(document_chunks)
-      .where(sql`1 - (embedding <=> ${embeddingStr}::vector) > ${threshold}`)
-      .orderBy(sql`embedding <=> ${embeddingStr}::vector`)
-      .limit(limit);
+    // Search chat embeddings using optimized service
+    try {
+      const chatResults = await db.execute(
+        sql`SELECT 
+          content as chunk_text,
+          role,
+          conversation_id,
+          metadata,
+          1 - (embedding <=> ${`[${queryEmbedding.join(',')}]`}::vector) as similarity
+        FROM chat_embeddings 
+        WHERE 1 - (embedding <=> ${`[${queryEmbedding.join(',')}]`}::vector) > ${threshold}
+        ORDER BY embedding <=> ${`[${queryEmbedding.join(',')}]`}::vector
+        LIMIT ${limit}`
+      );
+      
+      similarChunks = chatResults.rows.map((row: any) => ({
+        id: row.conversation_id,
+        chunk_text: row.chunk_text,
+        chunk_sequence: 1,
+        evidence_id: null,
+        embedding: null,
+        similarity: parseFloat(row.similarity),
+        role: row.role,
+        metadata: row.metadata ? JSON.parse(row.metadata) : {}
+      }));
+      
+      console.log(`Found ${similarChunks.length} chat embeddings results`);
+    } catch (chatError) {
+      console.warn('Chat embeddings search failed, trying keyword fallback:', chatError);
+      
+      // Fallback to keyword search
+      const keywordResults = await searchSimilarChatsKeyword(query, limit);
+      similarChunks = keywordResults.map(result => ({
+        id: result.conversationId,
+        chunk_text: result.content,
+        chunk_sequence: 1,
+        evidence_id: null,
+        embedding: null,
+        similarity: result.similarity,
+        role: result.role,
+        metadata: result.metadata
+      }));
+      
+      console.log(`Used keyword fallback, found ${similarChunks.length} results`);
+    }
 
     let ragResponse = null;
     
@@ -113,34 +123,17 @@ export const POST: RequestHandler = async ({ request }) => {
       ragResponse = await generateRAGResponse(query, similarChunks);
     }
 
-    // Enhance results with entity information
-    const enhancedResults = await Promise.all(
-      similarChunks.map(async (chunk) => {
-        let entityInfo = null;
-        
-        if (chunk.evidence_id) {
-          const evidenceResult = await db
-            .select({
-              id: evidence.id,
-              name: evidence.name,
-              case_id: evidence.case_id
-            })
-            .from(evidence)
-            .where(sql`${evidence.id} = ${chunk.evidence_id}`)
-            .limit(1);
-          
-          if (evidenceResult.length > 0) {
-            entityInfo = { type: 'evidence', ...evidenceResult[0] };
-          }
-        }
-        
-        return {
-          ...chunk,
-          similarity: Math.round(chunk.similarity * 1000) / 1000, // Round to 3 decimal places
-          entityInfo
-        };
-      })
-    );
+    // Enhance results with conversation context
+    const enhancedResults = similarChunks.map(chunk => ({
+      ...chunk,
+      similarity: Math.round(chunk.similarity * 1000) / 1000, // Round to 3 decimal places
+      entityInfo: {
+        type: 'chat_conversation',
+        conversationId: chunk.id,
+        role: chunk.role || 'unknown',
+        source: 'chat_embeddings'
+      }
+    }));
 
     return json({
       success: true,
@@ -150,8 +143,8 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         resultCount: similarChunks.length,
         threshold,
-        embeddingModel: 'nomic-embed-text:latest',
-        ragModel: includeRAGResponse ? 'gemma3-legal:latest' : null,
+        embeddingModel: 'nomic-embed-text',
+        ragModel: includeRAGResponse ? 'legal:latest' : null,
         searchTime: Date.now()
       }
     });

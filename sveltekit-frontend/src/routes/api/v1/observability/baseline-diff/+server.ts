@@ -1,6 +1,11 @@
 /// <reference types="vite/client" />
 
 import type { RequestHandler } from './$types.js';
+import {
+  loadObservabilityState,
+  saveObservabilityState,
+} from '$lib/services/observability-persistence';
+import { json } from '@sveltejs/kit';
 import { URL } from "url";
 
 export interface BaselineDiff {

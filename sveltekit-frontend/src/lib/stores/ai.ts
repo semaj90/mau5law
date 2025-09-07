@@ -145,7 +145,7 @@ export const aiGlobalMachine = setup({
     caseId: "",
     evidence: [],
     userId: "",
-    model: "gemma3:legal-latest",
+    model: "gemma3-legal:latest",
     stream: "",
     cacheKey: "",
     sources: [],
@@ -254,7 +254,7 @@ export const aiGlobalActions = {
     caseId: string,
     evidence: any[],
     userId: string,
-    model: string = "gemma3:legal-latest"
+    model: string = "gemma3-legal:latest"
   ) => {
     aiGlobalActor.send({
       type: "SUMMARIZE",

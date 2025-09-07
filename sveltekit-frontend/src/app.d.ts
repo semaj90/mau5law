@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare global {
   namespace App {
     interface Locals {
@@ -6,7 +7,14 @@ declare global {
         email?: string;
         role: 'admin' | 'user' | 'prosecutor' | 'detective';
       } | null;
-      session: import('lucia').Session | null;
+      // Keep session loosely typed to avoid hard dependency on lucia types here
+      session: any | null;
+      // Common runtime helpers attached to locals in hooks
+      db?: any;
+      audit?: any;
+      userAgent?: string;
+      // Allow additional service bindings attached in hooks without strict typing
+      [key: string]: any;
     }
   }
 
@@ -28,4 +36,4 @@ declare global {
   declare const process: Process;
 }
 
-
+export {};

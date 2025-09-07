@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 
 /*
  * Ollama Chat API Endpoint
@@ -6,6 +7,65 @@ import type { RequestHandler } from './$types.js';
  */
 
 import { ollamaChatStream } from "$lib/services/ollamaChatStream";
+
+// GET method for health check and model info
+export const GET: RequestHandler = async ({ url }) => {
+  try {
+    // Health check endpoint
+    const action = url.searchParams.get('action') || 'health';
+    
+    if (action === 'health') {
+      const healthCheck = await fetch('http://localhost:11434/api/version', {
+        signal: AbortSignal.timeout(3000)
+      });
+      
+      if (!healthCheck.ok) {
+        throw new Error('Ollama service unavailable');
+      }
+      
+      const version = await healthCheck.json();
+      
+      return json({
+        success: true,
+        status: 'healthy',
+        service: 'ollama-chat',
+        model: 'legal:latest',
+        version: version.version || 'unknown',
+        endpoints: {
+          chat: '/api/ollama/chat',
+          stream: '/api/ollama/chat?stream=true'
+        },
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    if (action === 'models') {
+      const modelsResponse = await fetch('http://localhost:11434/api/tags');
+      const modelsData = await modelsResponse.json();
+      
+      return json({
+        success: true,
+        models: modelsData.models || [],
+        default: 'legal:latest',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    return json({
+      success: false,
+      error: 'Invalid action. Use ?action=health or ?action=models'
+    }, { status: 400 });
+    
+  } catch (error: any) {
+    console.error('Ollama GET error:', error);
+    return json({
+      success: false,
+      status: 'unhealthy',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    }, { status: 503 });
+  }
+};
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -25,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Environment-backed defaults (check your .env for these keys)
     // OLLAMA_MODEL, OLLAMA_TEMPERATURE, OLLAMA_MAX_TOKENS, OLLAMA_STREAM, OLLAMA_USE_VECTOR_SEARCH
-    const model = import.meta.env.OLLAMA_MODEL ?? reqModel ?? 'gemma3:legal:latest';
+    const model = import.meta.env.OLLAMA_MODEL ?? reqModel ?? 'legal:latest';
     const temperature =
       reqTemperature !== undefined
       ? Number(reqTemperature)

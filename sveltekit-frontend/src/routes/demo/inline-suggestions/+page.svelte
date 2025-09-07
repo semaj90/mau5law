@@ -285,7 +285,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                 class="w-full p-2 border rounded-md bg-white"
               >
                 <option value="gemma3-legal">Gemma3 Legal</option>
-                <option value="llama3.2">Llama 3.2</option>
+                <option value="gemma3-legal">Gemma3 Legal</option>
                 <option value="claude-legal">Claude Legal</option>
                 <option value="gpt-4-legal">GPT-4 Legal</option>
               </select>

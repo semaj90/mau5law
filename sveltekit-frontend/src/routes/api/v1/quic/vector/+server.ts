@@ -10,18 +10,21 @@ import { json, error } from '@sveltejs/kit';
 import { randomUUID } from 'node:crypto';
 
 import { ensureError } from '$lib/utils/ensure-error';
-import { vectorOperations, type VectorSearchQuery } from '$lib/server/db/vector-operations.js';
-import { goServiceManager } from '$lib/services/go-microservice-client.js';
-import { URL } from "url";
+// Use canonical VectorSearchQuery type
+import type { VectorSearchQuery } from '$lib/types/ai-assistant';
+// Use the real vector search service singleton (Qdrant + Ollama)
+import { vectorSearchService } from '$lib/services/real-vector-search-service';
+import { goServiceManager } from '$lib/services/goMicroservice';
+import { URL } from 'url';
 
 const QUIC_VECTOR_CONFIG = {
-  primaryPort: 8445,    // QUIC HTTP/3
-  fallbackPort: 8446,   // HTTP/2
+  primaryPort: 8445, // QUIC HTTP/3
+  fallbackPort: 8446, // HTTP/2
   baseUrl: 'http://localhost:8445',
   fallbackUrl: 'http://localhost:8446',
-  timeout: 30000,       // Vector operations can take longer
-  cacheTTL: 300,        // 5 minutes cache TTL
-  maxCacheSize: 1000
+  timeout: 30000, // Vector operations can take longer
+  cacheTTL: 300, // 5 minutes cache TTL
+  maxCacheSize: 1000,
 };
 
 /*
@@ -31,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     // Check vector proxy health
     const healthResponse = await fetch(`${QUIC_VECTOR_CONFIG.baseUrl}/health`, {
-      signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
+      signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
     });
 
     let proxyStatus = 'healthy';
@@ -42,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } else {
       // Try fallback HTTP/2
       const fallbackResponse = await fetch(`${QUIC_VECTOR_CONFIG.fallbackUrl}/health`, {
-        signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
+        signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
       });
 
       if (fallbackResponse.ok) {
@@ -56,39 +59,39 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       service: 'quic-vector-proxy',
       status: proxyStatus,
-      protocol: proxyStatus === 'healthy' ? 'HTTP/3' : proxyStatus === 'fallback' ? 'HTTP/2' : 'N/A',
+      protocol:
+        proxyStatus === 'healthy' ? 'HTTP/3' : proxyStatus === 'fallback' ? 'HTTP/2' : 'N/A',
       ports: {
         quic: QUIC_VECTOR_CONFIG.primaryPort,
-        fallback: QUIC_VECTOR_CONFIG.fallbackPort
+        fallback: QUIC_VECTOR_CONFIG.fallbackPort,
       },
       backends: {
         qdrant: 'http://localhost:6333',
-        pgvector: 'http://localhost:8094' // Enhanced RAG service
+        pgvector: 'http://localhost:8094', // Enhanced RAG service
       },
       features: [
         'Multi-backend Routing (Qdrant + pgvector)',
         'Intelligent Caching',
         'Vector Similarity Search',
         'Cache Management',
-        'Health Monitoring'
+        'Health Monitoring',
       ],
       cache: responseData.cache || {
         enabled: true,
         ttl: QUIC_VECTOR_CONFIG.cacheTTL,
-        maxSize: QUIC_VECTOR_CONFIG.maxCacheSize
+        maxSize: QUIC_VECTOR_CONFIG.maxCacheSize,
       },
       metrics: responseData.metrics || null,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (err: any) {
     console.error('QUIC Vector Proxy health check failed:', err);
-    
+
     return json({
       service: 'quic-vector-proxy',
       status: 'error',
       error: err instanceof Error ? err.message : 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 };
@@ -104,12 +107,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const backend = url.searchParams.get('backend') || 'auto'; // 'auto', 'qdrant', 'pgvector'
 
     // Validate search query
-    if (!searchQuery.query && !searchQuery.embedding) {
+    if (!searchQuery.query && !(searchQuery as any).embedding) {
       error(400, ensureError({ message: 'Either query text or embedding vector is required' }));
     }
 
     // Determine target URL
-    const targetUrl = useHttp3 
+    const targetUrl = useHttp3
       ? `${QUIC_VECTOR_CONFIG.baseUrl}/api/vector/search`
       : `${QUIC_VECTOR_CONFIG.fallbackUrl}/api/vector/search`;
 
@@ -120,8 +123,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         useCache,
         backend,
         requestId: randomUUID(),
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     };
 
     let response: Response;
@@ -130,55 +133,40 @@ export const POST: RequestHandler = async ({ request, url }) => {
     try {
       // Use Go Vector Service if backend is 'auto' or 'vector'
       if (backend === 'auto' || backend === 'vector' || backend === 'pgvector') {
-        const vectorClient = goServiceManager.getClient('vectorService');
-        if (vectorClient) {
-          const serviceResponse = await vectorClient.post('/api/vector/search', requestPayload);
-          
-          if (serviceResponse.success) {
-            return json({
-              success: true,
-              results: serviceResponse.data.results || serviceResponse.data,
-              protocol: serviceResponse.protocol || 'HTTP',
-              source: 'go-vector-service',
-              cached: serviceResponse.data.cached || false,
-              timestamp: new Date().toISOString(),
-              metrics: {
-                totalResults: serviceResponse.data.results?.length || 0,
-                executionTimeMs: serviceResponse.responseTime || 0,
-                cacheHit: serviceResponse.data.cacheHit || false,
-                backend: 'go-vector-service'
-              }
-            });
-          } else {
-            console.warn('Go Vector Service failed, falling back to enhanced RAG:', serviceResponse.error);
-          }
-        }
+        // If a direct Go vector client exists in future, call it here.
+        // For now, skip to Enhanced RAG fallback below.
       }
 
-      // Fallback to Enhanced RAG service 
-      const enhancedRagClient = goServiceManager.getEnhancedRAG();
-      const ragSearchResponse = await enhancedRagClient.semanticSearch(
+      // Fallback to Enhanced RAG service
+      // If Enhanced RAG client becomes available, call it; otherwise fallback to local service
+      const ragSearchResponse = await vectorSearchService.search(
         searchQuery.query || 'vector search',
         {
-          collection: searchQuery.collection,
-          limit: searchQuery.limit || 10
+          // map VectorSearchQuery.limit -> service option maxResults
+          maxResults: searchQuery.limit || 10,
+          // collection is optional and not part of VectorSearchQuery; use if present
+          collection: (searchQuery as any).collection || 'legal_documents',
         }
       );
 
-      if (ragSearchResponse.success) {
+      if (ragSearchResponse) {
         return json({
           success: true,
-          results: ragSearchResponse.data.results || ragSearchResponse.data,
-          protocol: ragSearchResponse.protocol || 'HTTP',
-          source: 'enhanced-rag-service',
+          results: (ragSearchResponse as any).results || ragSearchResponse,
+          protocol: 'HTTP',
+          source: 'vector-search-service',
           cached: false,
           timestamp: new Date().toISOString(),
           metrics: {
-            totalResults: ragSearchResponse.data.results?.length || 0,
-            executionTimeMs: ragSearchResponse.responseTime || 0,
+            totalResults: Array.isArray((ragSearchResponse as any).results)
+              ? (ragSearchResponse as any).results.length
+              : Array.isArray(ragSearchResponse)
+                ? (ragSearchResponse as any).length
+                : 0,
+            executionTimeMs: 0,
             cacheHit: false,
-            backend: 'enhanced-rag'
-          }
+            backend: 'local-service',
+          },
         });
       }
 
@@ -189,31 +177,35 @@ export const POST: RequestHandler = async ({ request, url }) => {
           'Content-Type': 'application/json',
           'X-Vector-Backend': backend,
           'X-Use-Cache': String(useCache),
-          'X-QUIC-Request': 'true'
+          'X-QUIC-Request': 'true',
         },
         body: JSON.stringify(requestPayload),
-        signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
+        signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
       });
       protocol = useHttp3 ? 'HTTP/3' : 'HTTP/2';
-
     } catch (quicError) {
       // Fallback to direct database operations if QUIC proxy fails
       console.warn('QUIC Vector Proxy failed, using direct database access:', quicError);
-      
-      const directResults = await vectorOperations.vectorSearch(searchQuery);
-      
+
+      const direct = await vectorSearchService.search(searchQuery.query || 'vector search', {
+        maxResults: searchQuery.limit || 10,
+        collection: (searchQuery as any).collection || 'legal_documents',
+      });
+
       return json({
         success: true,
-        results: directResults,
+        results: (direct as any).results || (direct as any),
         protocol: 'Direct Database',
         source: 'fallback',
         cached: false,
         timestamp: new Date().toISOString(),
         metrics: {
-          totalResults: directResults.length,
+          totalResults: Array.isArray(direct as any)
+            ? (direct as any).length
+            : ((direct as any).totalCount ?? (direct as any).results?.length ?? 0),
           executionTimeMs: 0,
-          cacheHit: false
-        }
+          cacheHit: false,
+        },
       });
     }
 
@@ -234,16 +226,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
         totalResults: responseData.results?.length || 0,
         executionTimeMs: responseData.executionTime || 0,
         cacheHit: responseData.cacheHit || false,
-        backend: responseData.backend || 'unknown'
-      }
+        backend: responseData.backend || 'unknown',
+      },
     });
-
   } catch (err: any) {
     console.error('QUIC Vector search error:', err);
-    error(500, ensureError({
-      message: 'Vector search failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
-    }));
+    error(
+      500,
+      ensureError({
+        message: 'Vector search failed',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+    );
   }
 };
 
@@ -255,7 +249,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const cacheKey = url.searchParams.get('key');
     const useHttp3 = url.searchParams.get('http3') !== 'false';
 
-    const targetUrl = useHttp3 
+    const targetUrl = useHttp3
       ? `${QUIC_VECTOR_CONFIG.baseUrl}/cache`
       : `${QUIC_VECTOR_CONFIG.fallbackUrl}/cache`;
 
@@ -265,9 +259,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const response = await fetch(`${targetUrl}?${query}`, {
       method: 'DELETE',
       headers: {
-        'X-QUIC-Request': 'true'
+        'X-QUIC-Request': 'true',
       },
-      signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
+      signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
     });
 
     if (!response.ok) {
@@ -280,15 +274,17 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: true,
       message: cacheKey ? `Cache key '${cacheKey}' cleared` : 'All cache cleared',
       result,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (err: any) {
     console.error('Vector cache clear error:', err);
-    error(500, ensureError({
-      message: 'Cache clear failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
-    }));
+    error(
+      500,
+      ensureError({
+        message: 'Cache clear failed',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+    );
   }
 };
 

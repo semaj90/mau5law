@@ -27,7 +27,7 @@ class WebGPUCudaBridge {
 	private processingQueue: CudaProcessingTask[] = [];
 	private isProcessing = false;
 	private ollamaEndpoint = 'http://localhost:11434';
-	private cudaServiceEndpoint = 'http://localhost:8080'; // Go microservice endpoint
+	private cudaServiceEndpoint = 'http://localhost:8085'; // Enhanced Legal CUDA Server
 	
 	constructor() {
 		console.log('🚀 Initializing WebGPU to CUDA Bridge');
@@ -369,25 +369,44 @@ class WebGPUCudaBridge {
 
 	private async runCudaMicroservice(data: ArrayBuffer | Float32Array, config: any): Promise<any> {
 		try {
-			const response = await fetch(`${this.cudaServiceEndpoint}/api/process`, {
+			const response = await fetch(`${this.cudaServiceEndpoint}/api/legal/inference`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					type: 'inference',
-					data: Array.from(data instanceof Float32Array ? data : new Float32Array(data)),
-					config
+					query: config.prompt || config.query || 'Legal analysis required',
+					max_tokens: config.max_tokens || 2048,
+					temperature: config.temperature || 0.7,
+					top_p: config.top_p || 0.9,
+					enable_grpo: config.enable_grpo || true,
+					legal_domain: config.legal_domain || 'general',
+					user_id: config.user_id,
+					session_id: config.session_id,
+					metadata: {
+						webgpu_bridge: true,
+						data_length: data instanceof Float32Array ? data.length : data.byteLength,
+						optimization_level: 'rtx_3060_ti'
+					}
 				})
 			});
 
 			if (!response.ok) {
-				throw new Error(`CUDA microservice error: ${response.status}`);
+				throw new Error(`Enhanced CUDA server error: ${response.status}`);
 			}
 
 			const result = await response.json();
-			return { source: 'cuda-microservice', result };
+			return { 
+				source: 'cuda-enhanced-server', 
+				result: result.response,
+				confidence: result.confidence,
+				processing_time_ms: result.processing_time_ms,
+				tokens_per_second: result.tokens_per_second,
+				gpu_metrics: result.gpu_metrics,
+				grpo: result.grpo,
+				thinking: result.thinking_content
+			};
 			
 		} catch (error) {
-			throw new Error(`All inference backends failed: ${error}`);
+			throw new Error(`Enhanced CUDA server failed: ${error}`);
 		}
 	}
 
@@ -414,22 +433,30 @@ class WebGPUCudaBridge {
 			console.warn('⚠️ Ollama embedding failed, trying CUDA microservice:', error);
 		}
 
-		// Fallback to CUDA microservice
-		const response = await fetch(`${this.cudaServiceEndpoint}/api/embeddings`, {
+		// Fallback to enhanced CUDA server vector search
+		const response = await fetch(`${this.cudaServiceEndpoint}/api/legal/vector-search`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
-				text: config.text || config.prompt,
-				model: config.model || 'sentence-transformers/all-MiniLM-L6-v2'
+				query_vector: config.query_vector || new Array(768).fill(0.1),
+				top_k: config.top_k || 10,
+				threshold: config.threshold || 0.5,
+				legal_domain: config.legal_domain || 'general',
+				include_metadata: true
 			})
 		});
 
 		if (!response.ok) {
-			throw new Error(`Embedding service error: ${response.status}`);
+			throw new Error(`Enhanced vector search error: ${response.status}`);
 		}
 
 		const result = await response.json();
-		return { source: 'cuda-microservice', embeddings: result.embeddings };
+		return { 
+			source: 'cuda-enhanced-server', 
+			embeddings: result.matches,
+			processing_time_ms: result.processing_time_ms,
+			gpu_metrics: result.gpu_metrics
+		};
 	}
 
 	private async processTensorOperations(task: CudaProcessingTask): Promise<any> {

@@ -41,11 +41,7 @@ declare interface RowList<T = any> {
   [k: string]: any;
 }
 
-declare var vi: {
-  restoreAllMocks?: () => void;
-  fn?: any;
-  [k: string]: any;
-};
+// Note: Do NOT declare a global `vi` here; vitest/globals provides proper typings.
 
 // Make `performance.memory` available in tests
 interface Performance {
