@@ -1,5 +1,5 @@
 import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from "./comprehensive-agent-orchestration";
-/**
+/*
  * FlashAttention2 + Context7 Multicore Bridge Integration
  * Connects high-performance GPU attention with multicore error analysis
  * Optimized for RTX 3060 Ti with legal AI processing
@@ -54,7 +54,7 @@ export interface ErrorAnalysisWithAttention {
   }>;
 }
 
-/**
+/*
  * Bridge service connecting FlashAttention2 GPU processing with Context7 multicore analysis
  */
 export class FlashAttentionMulticoreBridge {
@@ -97,7 +97,7 @@ export class FlashAttentionMulticoreBridge {
     console.log('✅ FlashAttention2 + Context7 Multicore Bridge initialized');
   }
 
-  /**
+  /*
    * Process legal text with combined FlashAttention2 + multicore analysis
    */
   async processWithEnhancedAnalysis(
@@ -158,7 +158,7 @@ export class FlashAttentionMulticoreBridge {
     }
   }
 
-  /**
+  /*
    * Specialized error analysis using attention mechanisms
    */
   async analyzeErrorsWithAttention(
@@ -442,7 +442,7 @@ export class FlashAttentionMulticoreBridge {
     return prioritized.sort((a, b) => b.attention_score - a.attention_score).slice(0, 10);
   }
 
-  /**
+  /*
    * Get system status combining both services
    */
   getStatus() {

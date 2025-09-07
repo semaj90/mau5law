@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Unified GPU/WASM Integration API Endpoint
  * Provides centralized access to GPU services and WASM bridge
  * Integrates FlashAttention2, LLVM-WASM bridge, and GPU error processor

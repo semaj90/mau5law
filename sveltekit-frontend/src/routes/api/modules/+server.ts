@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Module Management API
  * Hot-swappable AI modules with zero-downtime updates
  * Supports A/B testing and user preference adaptation

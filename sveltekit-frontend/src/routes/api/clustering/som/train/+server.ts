@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * SvelteKit 2 API Route: SOM Training
  * POST /api/clustering/som/train
  */

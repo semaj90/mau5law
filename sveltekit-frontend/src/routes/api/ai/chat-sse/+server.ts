@@ -4,7 +4,7 @@ import { ollamaService } from '$lib/server/services/OllamaService.js';
 import { logger } from '$lib/server/production-logger.js';
 import { conversationService } from '$lib/server/services/conversation-service';
 
-/**
+/*
  * Enhanced Server-Sent Events (SSE) Chat API
  * Provides real-time streaming responses for Legal AI Assistant
  * Compatible with SvelteKit 2 + Svelte 5 + Enhanced RAG

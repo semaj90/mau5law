@@ -20,7 +20,7 @@ export interface IntegrationTestResult {
   error?: string;
 }
 
-/**
+/*
  * Comprehensive AI Suggestions Integration Test
  * Tests all services, database connections, and Protocol Buffers integration
  */

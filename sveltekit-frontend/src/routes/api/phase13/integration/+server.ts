@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { URL } from "url";
 
-/**
+/*
  * Phase 13 Full Integration API Endpoint
  * Comprehensive system integration management with Context7 MCP guidance
  */
@@ -88,7 +88,7 @@ const mockIntegration = {
   }
 };
 
-/**
+/*
  * GET - System Health and Integration Status
  * Following Context7 MCP monitoring patterns
  */
@@ -160,7 +160,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * POST - Initialize or Configure Integration
  * Dynamic integration management based on Context7 MCP patterns
  */
@@ -270,7 +270,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * PUT - Update Integration Settings
  * Dynamic reconfiguration with service hot-swapping
  */
@@ -309,7 +309,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * DELETE - Reset Integration to Default State
  * System reset with service cleanup
  */

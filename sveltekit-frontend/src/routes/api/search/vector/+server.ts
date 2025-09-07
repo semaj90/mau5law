@@ -1,4 +1,4 @@
-/**
+/*
  * Vector Search API (PGVector-first)
  * Reuses the central EmbeddingRepository to avoid schema drift.
  */

@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Enhanced Legal PDF Ingestion API
  * Handles multiple PDFs with jurisdiction-aware processing
  * Features: Who/What/Why/How extraction, fact-checking, enhanced RAG scoring

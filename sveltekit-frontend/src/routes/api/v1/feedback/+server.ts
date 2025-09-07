@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Feedback Loop API Endpoint
  * Provides rating collection, user pattern analysis, and training data management
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * SvelteKit API Route: GPU-Accelerated Vector Search
  * 
  * Exposes RTX 3060 Ti CUDA vector search to the frontend

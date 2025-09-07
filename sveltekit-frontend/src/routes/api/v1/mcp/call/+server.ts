@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * MCP API Endpoint - Tool Call Router
  * Handles all MCP tool invocations from XState machine services
  */

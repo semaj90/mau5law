@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Multi-Protocol API Gateway Integration
  * SvelteKit frontend integration with enhanced multi-protocol gateway
  * Provides intelligent routing and fallback capabilities
@@ -79,7 +79,7 @@ const PROTOCOL_PRIORITIES: Record<ProtocolType, ProtocolPriority> = {
 	websocket: 4  // Lowest priority - real-time specific
 };
 
-/**
+/*
  * GET /api/v1/multi-protocol - Get multi-protocol gateway status and services
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -140,7 +140,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 };
 
-/**
+/*
  * POST /api/v1/multi-protocol - Execute request with protocol fallback
  */
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	}
 };
 
-/**
+/*
  * PUT /api/v1/multi-protocol/config - Update gateway configuration
  */
 export const PUT: RequestHandler = async ({ request }) => {
@@ -206,7 +206,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 	}
 };
 
-/**
+/*
  * DELETE /api/v1/multi-protocol/circuit-breaker/:service/:endpoint - Reset circuit breaker
  */
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -250,7 +250,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 	}
 };
 
-/**
+/*
  * Validate protocol fallback request
  */
 function validateFallbackRequest(data: any): ProtocolFallbackRequest {
@@ -283,7 +283,7 @@ function validateFallbackRequest(data: any): ProtocolFallbackRequest {
 	};
 }
 
-/**
+/*
  * Execute protocol fallback request through gateway
  */
 async function executeProtocolFallback(request: ProtocolFallbackRequest): Promise<ProtocolFallbackResponse> {
@@ -342,7 +342,7 @@ async function executeProtocolFallback(request: ProtocolFallbackRequest): Promis
 	}
 }
 
-/**
+/*
  * Fetch gateway health status
  */
 async function fetchGatewayHealth(): Promise<any> {
@@ -357,7 +357,7 @@ async function fetchGatewayHealth(): Promise<any> {
 	return await response.json();
 }
 
-/**
+/*
  * Fetch gateway services
  */
 async function fetchGatewayServices(): Promise<any> {
@@ -373,7 +373,7 @@ async function fetchGatewayServices(): Promise<any> {
 	return data.services || {};
 }
 
-/**
+/*
  * Fetch gateway metrics
  */
 async function fetchGatewayMetrics(): Promise<any> {
@@ -388,14 +388,14 @@ async function fetchGatewayMetrics(): Promise<any> {
 	return await response.json();
 }
 
-/**
+/*
  * Generate unique request ID for tracing
  */
 function generateRequestId(): string {
 	return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-/**
+/*
  * Get optimal protocol for service based on requirements
  */
 export function getOptimalProtocol(
@@ -433,7 +433,7 @@ export function getOptimalProtocol(
 	return 'quic';
 }
 
-/**
+/*
  * Create protocol fallback chain based on service and requirements
  */
 export function createFallbackChain(
@@ -460,14 +460,14 @@ export function createFallbackChain(
 	return chain;
 }
 
-/**
+/*
  * Protocol selection utility functions for frontend components
  */
 export const ProtocolUtils = {
 	getOptimalProtocol,
 	createFallbackChain,
 
-	/**
+	/*
 	 * Check if protocol is available for service
 	 */
 	isProtocolAvailable(services: Record<string, ServiceEndpoint[]>, serviceName: string, protocol: ProtocolType): boolean {
@@ -475,7 +475,7 @@ export const ProtocolUtils = {
 		return serviceEndpoints.some(endpoint => endpoint.protocol === protocol && endpoint.healthy);
 	},
 
-	/**
+	/*
 	 * Get best endpoint for service and protocol
 	 */
 	getBestEndpoint(services: Record<string, ServiceEndpoint[]>, serviceName: string, protocol: ProtocolType): ServiceEndpoint | null {
@@ -496,7 +496,7 @@ export const ProtocolUtils = {
 		})[0];
 	},
 
-	/**
+	/*
 	 * Get protocol statistics
 	 */
 	getProtocolStats(services: Record<string, ServiceEndpoint[]>): Record<ProtocolType, {

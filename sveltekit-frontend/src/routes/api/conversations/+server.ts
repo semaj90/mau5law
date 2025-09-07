@@ -1,4 +1,4 @@
-/**
+/*
  * Conversations API - GET and POST endpoints
  * Handles conversation creation and retrieval
  */

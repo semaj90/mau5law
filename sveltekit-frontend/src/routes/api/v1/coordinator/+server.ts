@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Unified API Layer - Master Service Coordinator Endpoints
  * RESTful API for all 38 Go microservices with comprehensive error handling
  */
@@ -9,7 +9,7 @@ import { json } from '@sveltejs/kit';
 import { masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
 import { URL } from "url";
 
-/**
+/*
  * GET /api/v1/coordinator - Get comprehensive system status
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/coordinator - Execute coordinator actions
  */
 export const POST: RequestHandler = async ({ request }) => {

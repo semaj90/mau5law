@@ -5,7 +5,8 @@
  */
 
 import { writable, type Writable } from 'svelte/store';
-// Orphaned content: import type { ComprehensiveCachingArchitecture
+import { cache } from '$lib/server/cache/redis';
+
 // Minimal placeholder interface to prevent type errors if not imported from elsewhere
 interface ComprehensiveCachingArchitecture {
   set(key: string, value: any, options?: { ttl?: number; tags?: string[]; layers?: string[] }): Promise<void>;
@@ -269,6 +270,15 @@ export interface ShaderProgram {
   compilationTime: number;
   lastUsed: number;
   useCount: number;
+  // Enhanced metadata for search
+  vertexSource?: string;
+  fragmentSource?: string;
+  shaderType: 'webgl';
+  operation: string;
+  description: string;
+  tags: string[];
+  embedding?: number[];
+  averageExecutionTime: number;
 }
 
 export interface ShaderCacheMetrics {
@@ -412,6 +422,10 @@ export class WebGLShaderCache {
         const uniforms = this.extractUniforms(program);
         const attributes = this.extractAttributes(program);
 
+        // Get shader metadata for enhanced search capabilities
+        const shaderDef = this.getShaderDefinition(id);
+        const metadata = this.getShaderMetadata(id);
+
         const shaderProgram: ShaderProgram = {
           id,
           name: id,
@@ -420,7 +434,14 @@ export class WebGLShaderCache {
           attributes,
           compilationTime,
           lastUsed: Date.now(),
-          useCount: 1
+          useCount: 1,
+          vertexSource: shaderDef?.vertex,
+          fragmentSource: shaderDef?.fragment,
+          shaderType: 'webgl',
+          operation: metadata.operation,
+          description: metadata.description,
+          tags: metadata.tags,
+          averageExecutionTime: 0
         };
 
         // Cache the compiled shader
@@ -438,6 +459,13 @@ export class WebGLShaderCache {
             tags: ['webgl-shader', 'legal-ai'],
             layers: ['loki', 'redis']
           });
+        }
+
+        // Cache with embedding for search system
+        try {
+          await this.cacheWebGLShaderWithEmbedding(shaderProgram);
+        } catch (error) {
+          console.warn(`Failed to cache shader embedding for ${id}:`, error);
         }
 
         console.log(`✨ Compiled shader '${id}' in ${compilationTime}ms`);
@@ -739,7 +767,177 @@ export class WebGLShaderCache {
     this.updateMetrics();
   }
 
+  /**
+   * Generate semantic embedding for WebGL shader
+   */
+  private async generateShaderEmbedding(vertexSource: string, fragmentSource: string, metadata: { description: string; operation: string; tags: string[] }): Promise<number[]> {
+    try {
+      // Create comprehensive text for embedding
+      const embeddingText = [
+        vertexSource,
+        fragmentSource,
+        metadata.description,
+        metadata.operation,
+        ...metadata.tags
+      ].filter(Boolean).join(' ');
+
+      // Use existing embedding service
+      const response = await fetch('/api/ocr/langextract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: embeddingText,
+          model: 'nomic-embed-text',
+          tags: ['shader', 'webgl', ...metadata.tags],
+          type: 'webgl_shader'
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.embedding || data.tensor || [];
+      } else {
+        return this.generateFallbackEmbedding(vertexSource + fragmentSource);
+      }
+    } catch (error) {
+      console.warn('Failed to generate WebGL shader embedding:', error);
+      return this.generateFallbackEmbedding(vertexSource + fragmentSource);
+    }
+  }
+
+  /**
+   * Generate fallback embedding for WebGL shader
+   */
+  private generateFallbackEmbedding(shaderCode: string): number[] {
+    const features = new Array(384).fill(0);
+    const lines = shaderCode.split('\n');
+    
+    lines.forEach((line, index) => {
+      const hash = this.simpleHash(line);
+      const featureIndex = hash % features.length;
+      features[featureIndex] += 1 / (index + 1);
+    });
+
+    // Normalize
+    const magnitude = Math.sqrt(features.reduce((sum, val) => sum + val * val, 0));
+    return magnitude > 0 ? features.map(val => val / magnitude) : features;
+  }
+
+  private simpleHash(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  }
+
+  /**
+   * Cache WebGL shader with embedding for search
+   */
+  async cacheWebGLShaderWithEmbedding(shaderProgram: ShaderProgram): Promise<void> {
+    if (!shaderProgram.vertexSource || !shaderProgram.fragmentSource) return;
+
+    try {
+      // Generate embedding
+      const embedding = await this.generateShaderEmbedding(
+        shaderProgram.vertexSource,
+        shaderProgram.fragmentSource,
+        {
+          description: shaderProgram.description,
+          operation: shaderProgram.operation,
+          tags: shaderProgram.tags
+        }
+      );
+
+      // Store in unified shader cache for search
+      const searchableShader = {
+        id: shaderProgram.id,
+        name: shaderProgram.name,
+        shaderCode: shaderProgram.vertexSource + '\n\n// Fragment Shader\n' + shaderProgram.fragmentSource,
+        shaderType: 'webgl' as const,
+        operation: shaderProgram.operation,
+        metadata: {
+          compiledAt: Date.now(),
+          lastUsed: shaderProgram.lastUsed,
+          compileTime: shaderProgram.compilationTime,
+          cacheHit: false,
+          usageCount: shaderProgram.useCount,
+          averageExecutionTime: shaderProgram.averageExecutionTime,
+          description: shaderProgram.description,
+          tags: shaderProgram.tags,
+          operation: shaderProgram.operation,
+        },
+        embedding,
+        config: {
+          type: 'webgl' as const,
+          entryPoint: 'main',
+          hasVertex: true,
+          hasFragment: true
+        }
+      };
+
+      // Store in Redis cache
+      await cache.set(`webgl_shader:${shaderProgram.id}`, searchableShader, 24 * 60 * 60 * 1000);
+
+      // Update unified search index
+      const shaderIndex = await cache.get<string[]>('unified_shader_index') || [];
+      if (!shaderIndex.includes(`webgl:${shaderProgram.id}`)) {
+        shaderIndex.push(`webgl:${shaderProgram.id}`);
+        await cache.set('unified_shader_index', shaderIndex, 24 * 60 * 60 * 1000);
+      }
+
+      console.log(`✅ Cached WebGL shader with embedding: ${shaderProgram.id}`);
+    } catch (error) {
+      console.error('Failed to cache WebGL shader with embedding:', error);
+    }
+  }
+
+  /**
+   * Get metadata for legal AI shader operations
+   */
+  private getShaderMetadata(id: string): { description: string; operation: string; tags: string[] } {
+    const shaderName = id.replace('legal-ai-', '');
+    
+    const metadataMap: Record<string, { description: string; operation: string; tags: string[] }> = {
+      'attentionHeatmap': {
+        description: 'Visualizes AI attention weights with dynamic heatmap colors and pulsing effects',
+        operation: 'attention_visualization',
+        tags: ['attention', 'heatmap', 'ai-visualization', 'legal-ai', 'dynamic']
+      },
+      'documentNetwork': {
+        description: 'Renders legal document similarity network with PageRank-based node sizing',
+        operation: 'document_network',
+        tags: ['network', 'similarity', 'pagerank', 'legal-documents', 'graph-visualization']
+      },
+      'textFlow': {
+        description: 'Animates legal document text flow with relevance-based particle systems',
+        operation: 'text_flow',
+        tags: ['text-flow', 'particles', 'relevance', 'animation', 'legal-text']
+      },
+      'evidenceTimeline': {
+        description: 'Timeline visualization for legal evidence with importance and temporal weighting',
+        operation: 'evidence_timeline',
+        tags: ['timeline', 'evidence', 'legal', 'temporal', 'importance-weighting']
+      }
+    };
+
+    return metadataMap[shaderName] || {
+      description: `WebGL shader for ${shaderName}`,
+      operation: shaderName,
+      tags: ['webgl', 'legal-ai']
+    };
+  }
+
   // Public getters
+  public getMetrics(): Writable<ShaderCacheMetrics> {
+    return this.metrics;
+  }
+
+  public getCachedShaders(): Map<string, ShaderProgram> {
+    return this.shaderPrograms;
+  }
 }
 
 /**

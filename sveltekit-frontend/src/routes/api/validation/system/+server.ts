@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 
-/**
+/*
  * Production System Validation API
  * 
  * Endpoints:

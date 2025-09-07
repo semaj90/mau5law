@@ -1,4 +1,4 @@
-/**
+/*
  * RabbitMQ Queue Statistics API Endpoint
  * 
  * Provides detailed statistics about queue performance and message flow

@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Unified Document Processing API
  * Endpoint for complete document processing pipeline
  */

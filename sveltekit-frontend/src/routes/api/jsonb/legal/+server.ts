@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * JSONB Legal API Endpoints
  * 
  * RESTful API for legal metadata operations using optimized JSONB schema.

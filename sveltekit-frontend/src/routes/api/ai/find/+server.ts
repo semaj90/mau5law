@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * AI-Powered Find API with Context7 MCP Integration
  * Advanced semantic search with LLM enhancement and memory graph updates
  */
@@ -114,7 +114,7 @@ const RATE_LIMIT = {
   }
 };
 
-/**
+/*
  * Check rate limiting using Redis
  */
 async function checkRateLimit(key: string): Promise<{ allowed: boolean; remaining: number }> {
@@ -137,7 +137,7 @@ async function checkRateLimit(key: string): Promise<{ allowed: boolean; remainin
   }
 }
 
-/**
+/*
  * Generate cache key for search results
  */
 function generateCacheKey(request: AIFindRequest): string {
@@ -153,7 +153,7 @@ function generateCacheKey(request: AIFindRequest): string {
   return `ai_search:${Buffer.from(JSON.stringify(keyData)).toString('base64')}`;
 }
 
-/**
+/*
  * Enhanced database search with advanced filtering
  * Mock implementation for testing without database connection
  */
@@ -284,7 +284,7 @@ async function performDatabaseSearch(
   }
 }
 
-/**
+/*
  * AI Enhancement using local LLM (Ollama)
  */
 async function enhanceResultsWithAI(
@@ -400,7 +400,7 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
   }
 }
 
-/**
+/*
  * Context7 MCP Analysis Integration
  */
 async function performMCPAnalysis(query: string): Promise<MCPContextAnalysis | null> {
@@ -449,7 +449,7 @@ async function performMCPAnalysis(query: string): Promise<MCPContextAnalysis | n
   }
 }
 
-/**
+/*
  * Generate auto-suggestions based on search context
  */
 function generateAutoSuggestions(query: string, mcpContext: any): AutoMCPSuggestion[] {
@@ -488,7 +488,7 @@ function generateAutoSuggestions(query: string, mcpContext: any): AutoMCPSuggest
   return suggestions;
 }
 
-/**
+/*
  * Update memory graph with search interaction
  */
 async function updateMemoryGraph(query: string, results: any[], metadata: any): Promise<any> {
@@ -513,7 +513,7 @@ async function updateMemoryGraph(query: string, results: any[], metadata: any): 
   }
 }
 
-/**
+/*
  * Main POST handler for AI Find
  */
 export const POST: RequestHandler = async ({ request }) => {
@@ -772,7 +772,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * GET handler for search suggestions
  */
 export const GET: RequestHandler = async ({ url, request }) => {
@@ -871,7 +871,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
   }
 };
 
-/**
+/*
  * Generate AI-powered search suggestions
  */
 async function generateAISuggestions(query: string): Promise<string[]> {
@@ -909,7 +909,7 @@ async function generateAISuggestions(query: string): Promise<string[]> {
   }
 }
 
-/**
+/*
  * Health check endpoint for AI services
  */
 export const OPTIONS: RequestHandler = async () => {

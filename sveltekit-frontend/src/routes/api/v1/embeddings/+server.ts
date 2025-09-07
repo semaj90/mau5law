@@ -1,4 +1,4 @@
-/**
+/*
  * GPU-Accelerated Embeddings API Endpoint
  * Provides access to nomic-embed-text GPU embeddings and semantic search
  */
@@ -11,7 +11,7 @@ import type {
   SemanticSearchRequest 
 } from '$lib/services/gpu-semantic-embedding-service';
 
-/**
+/*
  * POST /api/v1/embeddings
  * Generate embeddings for text or array of texts
  */
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * GET /api/v1/embeddings
  * Get service status and configuration
  */

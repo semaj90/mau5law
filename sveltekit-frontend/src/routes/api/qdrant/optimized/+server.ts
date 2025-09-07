@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 
-/**
+/*
  * Optimized Qdrant API Endpoints
  * Memory-efficient vector operations with cache-like logging system
  * 

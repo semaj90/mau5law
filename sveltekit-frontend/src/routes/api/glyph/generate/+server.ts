@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { glyphDiffusionService, type GlyphRequest } from '$lib/services/glyph-diffusion-service.js';
 import { PNGEmbedExtractor, type LegalAIMetadata } from '$lib/services/png-embed-extractor.js';
 
-/**
+/*
  * Glyph Generation API
  *
  * POST /api/glyph/generate - Generate legal evidence glyphs with tensor caching
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * Health check endpoint
  */
 export const GET: RequestHandler = async () => {

@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Go Microservices Proxy API
  * Handles routing between SvelteKit and Go services with JSON/Protocol Buffer support
  * POST /api/go - Route requests to appropriate Go microservice

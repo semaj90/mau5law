@@ -1,4 +1,4 @@
-/**
+/*
  * Vector Search API with pgvector integration
  * Semantic similarity search across documents, cases, and chunks
  */
@@ -8,7 +8,7 @@ import { db } from '$lib/server/db/connection';
 import { documents, document_chunks, cases, vectors } from '$lib/server/schema/documents';
 import { eq, desc, and, gt, sql } from 'drizzle-orm';
 import { createEmbedding } from '$lib/services/embedding-service';
-import { redis } from '$lib/server/redis';
+import { cache, getCachedSearchResults, cacheSearchResults } from '$lib/server/cache/redis';
 
 const CACHE_TTL = 180; // 3 minutes for vector search results
 const DEFAULT_SIMILARITY_THRESHOLD = 0.7;
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const cacheKey = `vector_search:${Buffer.from(JSON.stringify(searchRequest)).toString('base64')}`;
     
     // Try cache first
-    const cached = await redis.get(cacheKey);
+    const cached = await getCachedSearchResults(query, 'vector-api', { threshold, limit, entity_types, vector_types, filters });
     if (cached) {
       return json(JSON.parse(cached));
     }
@@ -295,7 +295,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     
     // Cache results
-    await redis.setex(cacheKey, CACHE_TTL, JSON.stringify(response));
+    await cacheSearchResults(query, 'vector-api', response.results, { threshold, limit, entity_types, vector_types, filters });
     
     return json(response);
     

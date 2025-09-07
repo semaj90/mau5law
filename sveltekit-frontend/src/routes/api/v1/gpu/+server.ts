@@ -28,7 +28,7 @@ export interface GPUResponse {
 	error?: string;
 }
 
-/** POST /api/v1/gpu - GPU-accelerated processing proxy */
+/* POST /api/v1/gpu - GPU-accelerated processing proxy */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json() as GPURequest;
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 };
 
-/** GET /api/v1/gpu - GPU service status and capabilities */
+/* GET /api/v1/gpu - GPU service status and capabilities */
 export const GET: RequestHandler = async () => {
 	try {
 		// Check GPU service health

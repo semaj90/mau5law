@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types';
 // Environment variables fallback
 const env = process.env || {};
 
-/**
+/*
  * AI Context API Server
  * Provides comprehensive context for the local Gemma3 Legal LLM model
  * Integrates with enhanced legal AI index and documentation system
@@ -119,7 +119,7 @@ export async function GET({ url }): Promise<any> {
   }
 }
 
-/**
+/*
  * POST endpoint for updating context with AI interactions
  */
 export async function POST({ request }): Promise<any> {

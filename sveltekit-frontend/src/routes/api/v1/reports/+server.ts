@@ -1,4 +1,4 @@
-/**
+/*
  * Reports API Routes with Lucia v3 Authentication
  * GET /api/v1/reports - List user's reports (with pagination)
  * POST /api/v1/reports - Create new report
@@ -17,7 +17,7 @@ const ReportsQuerySchema = z.object({
   reportType: z.enum(['analysis', 'summary', 'investigation', 'final']).optional()
 });
 
-/**
+/*
  * GET /api/v1/reports
  * List user's reports with pagination and filtering
  */
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/reports
  * Create new report
  */

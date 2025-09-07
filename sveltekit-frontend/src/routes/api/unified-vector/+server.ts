@@ -1,4 +1,4 @@
-/**
+/*
  * Unified Vector API Endpoint
  * Single endpoint to access all vector systems: WebGPU SOM, WebAssembly RAG, 
  * PageRank, Glyph Diffusion, Neo4j, MinIO, Redis, PostgreSQL

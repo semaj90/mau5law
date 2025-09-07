@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Hybrid GPU Configuration API
  * 
  * Intelligent routing between:
@@ -42,7 +42,7 @@ export interface ServiceHealthStatus {
   load: number;
 }
 
-/**
+/*
  * Check health of all GPU services
  */
 async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>> {
@@ -94,7 +94,7 @@ async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>
   return Object.assign({}, ...results);
 }
 
-/**
+/*
  * Intelligently route request to optimal GPU service
  */
 function selectOptimalService(
@@ -143,7 +143,7 @@ function selectOptimalService(
   }
 }
 
-/**
+/*
  * GET /api/gpu/hybrid - Get hybrid GPU system status
  */
 export const GET: RequestHandler = async () => {
@@ -178,7 +178,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-/**
+/*
  * POST /api/gpu/hybrid - Execute GPU operation with intelligent routing
  */
 export const POST: RequestHandler = async ({ request }) => {
@@ -260,7 +260,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * PUT /api/gpu/hybrid - Update routing configuration
  */
 export const PUT: RequestHandler = async ({ request }) => {
@@ -283,7 +283,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * DELETE /api/gpu/hybrid - Shutdown hybrid GPU system
  */
 export const DELETE: RequestHandler = async () => {

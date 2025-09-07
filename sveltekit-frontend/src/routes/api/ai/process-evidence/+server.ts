@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Enhanced AI Evidence Processing Endpoint
  * Optimized for Gemma3-legal-latest model with native Windows integration
  * Full-stack architecture: PostgreSQL + pgvector + Neo4j + Redis + Ollama

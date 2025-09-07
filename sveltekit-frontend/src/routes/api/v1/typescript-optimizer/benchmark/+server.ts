@@ -11,7 +11,7 @@ import type {
 
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 
-/** POST /api/v1/typescript-optimizer/benchmark - Run performance benchmarks */
+/* POST /api/v1/typescript-optimizer/benchmark - Run performance benchmarks */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json() as BenchmarkRequest;
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 };
 
-/** GET /api/v1/typescript-optimizer/benchmark - Get benchmark capabilities */
+/* GET /api/v1/typescript-optimizer/benchmark - Get benchmark capabilities */
 export const GET: RequestHandler = async () => {
 	return json({
 		service: 'TypeScript Optimizer Benchmark Suite',

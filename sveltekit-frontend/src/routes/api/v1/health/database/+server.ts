@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * PostgreSQL + pgvector Health Check API
  * Validates database connectivity for startup validation
  */

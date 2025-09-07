@@ -1,4 +1,4 @@
-/**
+/*
  * Unified AI Service API Endpoint
  * Tests integration between WASM, LangChain, GPU, and PostgreSQL
  */

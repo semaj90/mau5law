@@ -2,7 +2,7 @@ import cluster from "node:cluster";
 import type { RequestHandler } from './$types';
 
 
-/**
+/*
  * Cluster Status API Endpoint
  * Provides real-time cluster health and worker metrics
  */

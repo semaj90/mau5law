@@ -1,4 +1,4 @@
-/**
+/*
  * SSR QLoRA Chat API Endpoint
  * Integrates with Ollama, WASM bridge, XState machines, and AI components
  */

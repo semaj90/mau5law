@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * MCP Health Check API - Test Database Integration
  * Simple endpoint to verify MCP tools and database connectivity
  */

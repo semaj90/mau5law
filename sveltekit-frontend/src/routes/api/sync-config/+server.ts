@@ -1,4 +1,4 @@
-/**
+/*
  * Configuration Sync API Endpoint
  * Tests and validates all system connections and configurations
  */

@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Current User API Endpoint
  * GET /api/auth/me
  * Enhanced with PostgreSQL + pgvector + Cognitive Cache integration

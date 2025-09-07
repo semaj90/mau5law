@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Deep Legal Analysis API Endpoint
  * Provides comprehensive legal text analysis using LegalBERT and enhanced processing
  */

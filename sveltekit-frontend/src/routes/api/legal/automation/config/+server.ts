@@ -1,4 +1,4 @@
-/**
+/*
  * Legal Automation Configuration API
  * Handles automation setup and batch processing orchestration
  */

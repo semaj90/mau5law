@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * RAG Status API - Returns system status for file processing pipeline
  */
 

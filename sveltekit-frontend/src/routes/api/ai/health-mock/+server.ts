@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 
-/**
+/*
  * Production AI Health Check Endpoint
  * Performs comprehensive health checks across all AI services
  * Returns real-time status and performance metrics

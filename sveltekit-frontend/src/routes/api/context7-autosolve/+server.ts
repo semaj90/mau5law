@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Enhanced Context7 Autosolve Integration API
  * Features: Chat recommendations, reinforcement learning, WebAssembly acceleration
  * Integrates: Multi-layer cache, Go binaries, CUDA processing, Neo4j knowledge graph

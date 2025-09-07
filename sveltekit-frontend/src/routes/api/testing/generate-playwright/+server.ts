@@ -287,7 +287,7 @@ Remaining: ${countRemainingItems()}
 function generatePlaywrightTestFile(testResults: any): string {
   return `{ test, expect, Page } from "@playwright/test";
 
-/**
+/*
  * Generated Playwright Tests for Legal AI Processing Pipeline
  * Generated on: ${new Date().toISOString()}
  * Test Categories: OCR, JSON Conversion, RAG, Clustering, pgai Integration
@@ -652,7 +652,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
   });
 });
 
-/**
+/*
  * Test Configuration and Utilities
  */
 

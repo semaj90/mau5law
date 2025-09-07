@@ -1,4 +1,4 @@
-/**
+/*
  * Cases API Routes with Lucia v3 Authentication
  * GET /api/v1/cases - List user's cases (with pagination)
  * POST /api/v1/cases - Create new case
@@ -18,7 +18,7 @@ const CasesQuerySchema = z.object({
   priority: z.enum(['low', 'medium', 'high', 'urgent']).optional()
 });
 
-/**
+/*
  * GET /api/v1/cases
  * List user's cases with pagination and filtering
  */
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/cases
  * Create a new case
  */

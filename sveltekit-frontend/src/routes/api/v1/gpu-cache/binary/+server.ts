@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Binary-Optimized GPU Shader Cache API
  * Combines GPU shader caching with binary encoding middleware for maximum performance
  */

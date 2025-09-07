@@ -1,4 +1,4 @@
-/**
+/*
  * Image Generation API Endpoint
  * Supports multiple providers: Stable Diffusion WebUI, ComfyUI, Ollama
  * Production-ready with Windows native support

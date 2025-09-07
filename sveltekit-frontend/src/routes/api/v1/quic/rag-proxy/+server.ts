@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * RAG QUIC Proxy API - Enhanced RAG Service with Edge Caching
  * Provides RAG operations with edge caching, metrics, and JSON optimization
  * Port: 8451 (QUIC), 8452 (HTTP/2 fallback)
@@ -51,7 +51,7 @@ import { EnhancedRAGClient, goServiceManager } from '$lib/services/go-microservi
 import crypto from "crypto";
 import { URL } from "url";
 
-/**
+/*
  * GET /api/v1/quic/rag-proxy - RAG proxy health and metrics
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -147,7 +147,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/quic/rag-proxy - Enhanced RAG query with caching
  */
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -311,7 +311,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 };
 
-/**
+/*
  * PUT /api/v1/quic/rag-proxy - Update document in RAG index
  */
 export const PUT: RequestHandler = async ({ request, url }) => {
@@ -360,7 +360,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
   }
 };
 
-/**
+/*
  * DELETE /api/v1/quic/rag-proxy - Remove document from RAG index
  */
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -406,7 +406,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * Generate SHA-256 hash for request caching
  */
 async function generateRequestHash(content: string): Promise<string> {

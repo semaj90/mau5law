@@ -1,4 +1,4 @@
-/**
+/*
  * Database Connection Test Endpoint
  * GET /api/test-db - Test PostgreSQL, Redis, and basic CRUD
  */

@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 
-/**
+/*
  * System Information API
  */
 

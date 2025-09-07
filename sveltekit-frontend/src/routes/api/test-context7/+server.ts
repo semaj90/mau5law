@@ -1,4 +1,4 @@
-/**
+/*
  * Test Context7 MCP Helper Functions
  * Tests the utility functions from mcp-context72-get-library-docs
  */

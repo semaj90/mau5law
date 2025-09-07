@@ -1,4 +1,4 @@
-/**
+/*
  * Gallery API Server - Main Gallery Data Handler
  * Provides unified access to all media types across the legal AI platform
  */

@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * GPU Orchestration API - Advanced Task Dispatch & Automation
  * Handles legal document analysis, autosolve, and GPU task routing
  */

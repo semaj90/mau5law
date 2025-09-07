@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
-/**
+/*
  * Cluster Health Monitoring API
  * Real-time health checks for all 37 Go services + external dependencies
  */

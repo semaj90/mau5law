@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Upload Completion Webhook - MinIO → Ingestion Pipeline Trigger
  * Triggers document processing workflow after successful upload
  */

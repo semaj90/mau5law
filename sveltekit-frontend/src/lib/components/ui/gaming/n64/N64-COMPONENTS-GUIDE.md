@@ -5,30 +5,31 @@ A comprehensive collection of advanced 3D gaming components with texture filteri
 ## Table of Contents
 
 1. [Quick Start](#quick-start)
-2. [Component Overview](#component-overview)  
-3. [Architecture & Design Principles](#architecture--design-principles)
-4. [Component Comparison](#component-comparison)
-5. [Performance Guide](#performance-guide)
-6. [Accessibility Features](#accessibility-features)
-7. [Advanced Usage](#advanced-usage)
-8. [Integration Examples](#integration-examples)
-9. [Best Practices](#best-practices)
-10. [Troubleshooting](#troubleshooting)
+2. [Bits UI Migration (replacing Melt UI)](#bits-ui-migration-replacing-melt-ui)
+3. [Component Overview](#component-overview)
+4. [Architecture & Design Principles](#architecture--design-principles)
+5. [Component Comparison](#component-comparison)
+6. [Performance Guide](#performance-guide)
+7. [Accessibility Features](#accessibility-features)
+8. [Advanced Usage](#advanced-usage)
+9. [Integration Examples](#integration-examples)
+10. [Best Practices](#best-practices)
+11. [Troubleshooting](#troubleshooting)
 
 ## Quick Start
 
 ### Installation
 
 ```typescript
-import { 
-  N64Button, 
-  N64Input, 
-  N64Card, 
-  N64Dialog, 
-  N64Select, 
-  N64ProgressBar, 
+import {
+  N64Button,
+  N64Input,
+  N64Card,
+  N64Dialog,
+  N64Select,
+  N64ProgressBar,
   N64Switch,
-  N64_QUICK_START_CONFIG 
+  N64_QUICK_START_CONFIG
 } from '$lib/components/ui/gaming/n64';
 ```
 
@@ -37,13 +38,13 @@ import {
 ```svelte
 <script lang="ts">
   import { N64Button, N64Card } from '$lib/components/ui/gaming/n64';
-  
+
   let isOpen = false;
 </script>
 
 <!-- Basic N64 Card with 3D effects -->
-<N64Card 
-  variant="primary" 
+<N64Card
+  variant="primary"
   size="medium"
   enableLighting={true}
   enableSpatialAudio={true}
@@ -51,14 +52,75 @@ import {
   {#snippet header()}
     <h2>N64 UI System</h2>
   {/snippet}
-  
+
   <p>Experience true 3D gaming interfaces with advanced texture filtering.</p>
-  
+
   <N64Button onclick={() => isOpen = true}>
     Open Dialog
   </N64Button>
 </N64Card>
 ```
+
+## Bits UI Migration (replacing Melt UI)
+
+This project uses Bits UI for headless UI primitives. If you previously used Melt UI, migrate as follows:
+
+### Uninstall Melt UI and install Bits UI
+
+```bash
+# from sveltekit-frontend/
+npm remove @melt-ui/svelte @melt-ui/pp
+npm i bits-ui
+```
+
+### Import changes
+
+- Before (Melt UI):
+
+```svelte
+<script lang="ts">
+  import { Dialog, Button } from '@melt-ui/svelte';
+</script>
+```
+
+- After (Bits UI):
+
+```svelte
+<script lang="ts">
+  import { Dialog, Button } from 'bits-ui';
+</script>
+```
+
+Bits UI is API-compatible with common Melt UI primitives in most cases. Review component docs for any prop/event differences.
+
+### Using Bits UI with N64 components
+
+Wrap Bits UI primitives inside N64 containers or compose them together:
+
+```svelte
+<script lang="ts">
+  import { Dialog, Button } from 'bits-ui';
+  import { N64Card, N64Button } from '$lib/components/ui/gaming/n64';
+  let open = false;
+<\/script>
+
+<N64Card elevation={12} enableAtmosphere>
+  <Button on:click={() => (open = true)}>
+    <N64Button variant="primary">Open</N64Button>
+  </Button>
+
+  <Dialog bind:open={open}>
+    <div class="n64-dialog">
+      <h3>Bits UI + N64</h3>
+      <N64Button variant="secondary" onclick={() => (open = false)}>Close</N64Button>
+    </div>
+  </Dialog>
+</N64Card>
+```
+
+Notes:
+- Keep styling in N64 components; use Bits UI for accessible behavior/state.
+- If you used any Melt-specific utility packages, replace them with Bits UI equivalents or remove them if redundant.
 
 ### App Root Configuration
 
@@ -66,8 +128,8 @@ For optimal performance and theming, configure your app root:
 
 ```html
 <!-- app.html -->
-<div 
-  data-n64-theme="dark" 
+<div
+  data-n64-theme="dark"
   data-n64-motion="normal"
   data-n64-quality="balanced"
 >
@@ -85,7 +147,7 @@ For optimal performance and theming, configure your app root:
 - **Best for**: CTAs, form submissions, navigation
 
 ```svelte
-<N64Button 
+<N64Button
   variant="primary"
   size="large"
   materialType="pbr"
@@ -102,7 +164,7 @@ For optimal performance and theming, configure your app root:
 - **Best for**: Forms, search fields, user input
 
 ```svelte
-<N64Input 
+<N64Input
   bind:value={username}
   placeholder="Enter username"
   enableInputGlow={true}
@@ -116,7 +178,7 @@ For optimal performance and theming, configure your app root:
 - **Best for**: Content sections, feature highlights, dashboards
 
 ```svelte
-<N64Card 
+<N64Card
   elevation={16}
   enableAtmosphere={true}
   clickable={true}
@@ -124,9 +186,9 @@ For optimal performance and theming, configure your app root:
   {#snippet header()}
     <h3>System Status</h3>
   {/snippet}
-  
+
   <p>All systems operational</p>
-  
+
   {#snippet footer()}
     <small>Last updated: {timestamp}</small>
   {/snippet}
@@ -139,14 +201,14 @@ For optimal performance and theming, configure your app root:
 - **Best for**: Confirmations, forms, detailed content views
 
 ```svelte
-<N64Dialog 
+<N64Dialog
   bind:open={showDialog}
   title="Confirm Action"
   entranceAnimation="portal"
   enableAtmosphere={true}
 >
   <p>Are you sure you want to proceed?</p>
-  
+
   {#snippet footer()}
     <N64Button variant="success" onclick={confirm}>Confirm</N64Button>
     <N64Button variant="secondary" onclick={() => showDialog = false}>Cancel</N64Button>
@@ -160,7 +222,7 @@ For optimal performance and theming, configure your app root:
 - **Best for**: Choice selection, filtering, categorization
 
 ```svelte
-<N64Select 
+<N64Select
   bind:value={selectedOption}
   {options}
   searchable={true}
@@ -175,7 +237,7 @@ For optimal performance and theming, configure your app root:
 - **Best for**: Loading states, progress tracking, completion feedback
 
 ```svelte
-<N64ProgressBar 
+<N64ProgressBar
   {value}
   max={100}
   showPercentage={true}
@@ -191,7 +253,7 @@ For optimal performance and theming, configure your app root:
 - **Best for**: Settings, feature toggles, binary choices
 
 ```svelte
-<N64Switch 
+<N64Switch
   bind:checked={isEnabled}
   label="Enable spatial audio"
   enableMechanicalAnimation={true}
@@ -230,7 +292,7 @@ For optimal performance and theming, configure your app root:
 ### Texture Filtering Options
 
 - **Bilinear**: Smooth texture interpolation
-- **Trilinear**: Enhanced distance filtering  
+- **Trilinear**: Enhanced distance filtering
 - **Anisotropic**: Directional texture sharpening (4x, 8x, 16x)
 - **Texture Streaming**: Dynamic texture updates based on state
 
@@ -270,7 +332,7 @@ import { N64_PERFORMANCE_PRESETS } from '$lib/components/ui/gaming/n64';
 // High-end devices
 const ultraConfig = N64_PERFORMANCE_PRESETS.ultra;
 
-// Most devices  
+// Most devices
 const balancedConfig = N64_PERFORMANCE_PRESETS.balanced;
 
 // Low-end devices
@@ -291,13 +353,13 @@ const recommendedPreset = N64_UTILS.getRecommendedPreset();
 ```svelte
 <script lang="ts">
   import { N64Card } from '$lib/components/ui/gaming/n64';
-  
+
   // Disable expensive features on low-end devices
   const isLowEnd = navigator.hardwareConcurrency <= 2;
   const memoryGB = (navigator as any).deviceMemory || 4;
 </script>
 
-<N64Card 
+<N64Card
   enableLighting={!isLowEnd}
   enableReflections={memoryGB >= 4}
   enableParticles={memoryGB >= 8}
@@ -329,7 +391,7 @@ observer.observe({entryTypes: ['measure']});
 All components include comprehensive ARIA support:
 
 ```svelte
-<N64Button 
+<N64Button
   aria-label="Save document"
   aria-describedby="save-help"
 >
@@ -404,7 +466,7 @@ pannerNode.positionZ.setValueAtTime(-1, audioContext.currentTime);    // Away
 ### Custom Material Shaders
 
 ```svelte
-<N64Surface 
+<N64Surface
   shader="custom-hologram"
   shaderUniforms={{
     time: { value: 0 },
@@ -423,7 +485,7 @@ pannerNode.positionZ.setValueAtTime(-1, audioContext.currentTime);    // Away
 ```svelte
 <script lang="ts">
   import { N64FormGrid, N64Input, N64Select, N64Switch, N64Button } from '$lib/components/ui/gaming/n64';
-  
+
   let formData = {
     username: '',
     category: '',
@@ -432,27 +494,27 @@ pannerNode.positionZ.setValueAtTime(-1, audioContext.currentTime);    // Away
 </script>
 
 <N64FormGrid columns={2} gap="large">
-  <N64Input 
+  <N64Input
     bind:value={formData.username}
     label="Username"
     required
     error={errors.username}
   />
-  
-  <N64Select 
+
+  <N64Select
     bind:value={formData.category}
     label="Category"
     options={categoryOptions}
     searchable
   />
-  
-  <N64Switch 
+
+  <N64Switch
     bind:checked={formData.notifications}
     label="Enable notifications"
     description="Receive updates about your account"
   />
-  
-  <N64Button 
+
+  <N64Button
     variant="success"
     size="large"
     disabled={!isValid}
@@ -471,21 +533,21 @@ pannerNode.positionZ.setValueAtTime(-1, audioContext.currentTime);    // Away
     {#snippet header()}
       <h2>System Status</h2>
     {/snippet}
-    
-    <N64ProgressBar 
-      value={systemHealth} 
+
+    <N64ProgressBar
+      value={systemHealth}
       max={100}
       variant="success"
       showPercentage
       enableTextureStreaming
     />
   </N64Card>
-  
+
   <N64Card elevation={12} class="metrics-card" clickable>
     {#snippet header()}
       <h2>Performance Metrics</h2>
     {/snippet}
-    
+
     <!-- Metrics content -->
   </N64Card>
 </div>
@@ -505,22 +567,22 @@ pannerNode.positionZ.setValueAtTime(-1, audioContext.currentTime);    // Away
 ```svelte
 <script lang="ts">
   import { N64Controller, N64Screen, N64Cartridge } from '$lib/components/ui/gaming/n64';
-  
+
   let gameState = 'menu';
   let audioEnabled = true;
 </script>
 
 <N64Screen variant="crt" enableScanlines>
   <div class="game-interface">
-    <N64Controller 
+    <N64Controller
       bind:state={controllerState}
       onButtonPress={handleInput}
       hapticFeedback
     />
-    
+
     <div class="game-menu">
-      <N64Button 
-        variant="primary" 
+      <N64Button
+        variant="primary"
         size="xl"
         materialType="pbr"
         enableParticles
@@ -528,8 +590,8 @@ pannerNode.positionZ.setValueAtTime(-1, audioContext.currentTime);    // Away
       >
         Start Game
       </N64Button>
-      
-      <N64Switch 
+
+      <N64Switch
         bind:checked={audioEnabled}
         label="Audio"
         enableMechanicalAnimation
@@ -554,7 +616,7 @@ pannerNode.positionZ.setValueAtTime(-1, audioContext.currentTime);    // Away
 1. **Always provide ARIA labels** for interactive elements
 2. **Ensure keyboard navigation** works properly
 3. **Test with screen readers** regularly
-4. **Respect motion preferences** 
+4. **Respect motion preferences**
 5. **Maintain sufficient contrast** ratios
 
 ### Design Consistency
@@ -569,10 +631,10 @@ pannerNode.positionZ.setValueAtTime(-1, audioContext.currentTime);    // Away
 
 ```typescript
 // Good: Group related imports
-import { 
-  N64Button, 
-  N64Card, 
-  N64_PERFORMANCE_PRESETS 
+import {
+  N64Button,
+  N64Card,
+  N64_PERFORMANCE_PRESETS
 } from '$lib/components/ui/gaming/n64';
 
 // Good: Extract configuration
@@ -617,7 +679,7 @@ function createN64Form(config) {
 }
 ```
 
-#### N64.css - Advanced 3D Effects  
+#### N64.css - Advanced 3D Effects
 - **Focus**: True 3D transformations, texture filtering
 - **Components**: Depth layering, atmospheric effects, spatial audio
 - **Effects**: Fog, lighting, material shaders, particle systems
@@ -654,10 +716,10 @@ The N64Canvas component wraps HTML5 Canvas with N64-style texture filtering:
 ```svelte
 <script lang="ts">
   import { N64Canvas } from '$lib/components/ui/gaming/n64';
-  
+
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
-  
+
   function drawN64Scene() {
     // Canvas drawing with N64 post-processing
     ctx.fillStyle = '#4a90e2';
@@ -665,7 +727,7 @@ The N64Canvas component wraps HTML5 Canvas with N64-style texture filtering:
   }
 </script>
 
-<N64Canvas 
+<N64Canvas
   bind:canvas
   bind:context={ctx}
   width={800}
@@ -763,7 +825,7 @@ console.log(N64_UTILS.getHardwareConcurrency());
 
 ### Future Enhancements
 - Real-time ray tracing effects
-- WebGPU compute shader integration  
+- WebGPU compute shader integration
 - VR/AR component extensions
 - Advanced particle systems
 - Network-synchronized spatial audio

@@ -11,7 +11,7 @@ import type {
 
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 
-/** POST /api/v1/typescript-optimizer/gpu - GPU-accelerated error processing */
+/* POST /api/v1/typescript-optimizer/gpu - GPU-accelerated error processing */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json() as OptimizedFixRequest;
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 };
 
-/** GET /api/v1/typescript-optimizer/gpu - Get GPU status and capabilities */
+/* GET /api/v1/typescript-optimizer/gpu - Get GPU status and capabilities */
 export const GET: RequestHandler = async () => {
 	try {
 		const gpuStatusResponse = await fetch(`${ENHANCED_API_BASE_URL}/api/gpu/status`);

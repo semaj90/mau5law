@@ -1,5 +1,5 @@
 
-/**
+/*
  * PostgreSQL CRUD Test Endpoint
  * Tests database connectivity and basic operations
  */

@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Ollama Chat API Endpoint
  * Handles streaming and non-streaming chat requests with legal context
  */

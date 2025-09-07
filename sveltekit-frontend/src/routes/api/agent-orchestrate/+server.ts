@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Agent Orchestrator API Endpoint
  * Coordinates multiple AI agents with Context7 MCP integration and auto-fix capabilities
  */

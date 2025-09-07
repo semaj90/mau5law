@@ -3,7 +3,7 @@ import { dev } from '$app/environment';
 import { lucia } from '$lib/server/auth';
 import type { RequestEvent } from '@sveltejs/kit';
 
-/**
+/*
  * PostgreSQL + Drizzle + Lucia Logout Endpoint
  * Properly invalidates sessions in the database
  */

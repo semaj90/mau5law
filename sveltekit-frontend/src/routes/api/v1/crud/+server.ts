@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Comprehensive CRUD REST API - Legal AI Platform
  * Integrates with PostgreSQL + pgvector using Drizzle ORM
  * Supports all entities with vector search capabilities

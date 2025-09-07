@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Document Drafting Assistant API Endpoint
  * Provides AI-powered legal document drafting assistance with templates and guidance
  */

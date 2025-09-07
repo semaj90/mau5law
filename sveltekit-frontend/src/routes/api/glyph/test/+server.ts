@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Simple Glyph Generation Test API
  * Tests glyph diffusion without database or MinIO dependencies
  */

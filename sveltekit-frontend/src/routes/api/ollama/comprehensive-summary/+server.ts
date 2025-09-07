@@ -1,4 +1,4 @@
-/**
+/*
  * SvelteKit API route for generating a comprehensive summary.
  * This file demonstrates the correct pattern for a POST handler, including
  * type-safe imports, request validation, and error handling.
@@ -13,7 +13,7 @@ import {
   type ComprehensiveSummaryRequest
 } from '$lib/services/comprehensive-ollama-summarizer';
 
-/**
+/*
  * Handles POST requests to generate a comprehensive summary.
  */
 export const POST: RequestHandler = async ({ request }) => {

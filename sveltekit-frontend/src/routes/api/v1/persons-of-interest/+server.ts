@@ -1,4 +1,4 @@
-/**
+/*
  * Persons of Interest API Routes with Lucia v3 Authentication
  * GET /api/v1/persons-of-interest - List user's persons of interest (with pagination)
  * POST /api/v1/persons-of-interest - Create new person of interest
@@ -17,7 +17,7 @@ const PersonsOfInterestQuerySchema = z.object({
   search: z.string().optional()
 });
 
-/**
+/*
  * GET /api/v1/persons-of-interest
  * List user's persons of interest with pagination and filtering
  */
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/persons-of-interest
  * Create new person of interest
  */

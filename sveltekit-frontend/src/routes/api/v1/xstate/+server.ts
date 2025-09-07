@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * XState API Endpoint - State Management & Orchestration
  * Routes to: xstate-manager.exe:8212
  */

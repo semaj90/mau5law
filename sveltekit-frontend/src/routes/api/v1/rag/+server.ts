@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Enhanced RAG API Endpoint - SvelteKit 2 Production
  * Integrates with Enhanced RAG service (port 8094) and dimensional caching
  * Supports multi-protocol routing (HTTP, gRPC, QUIC) with automatic failover
@@ -43,7 +43,7 @@ const DIMENSIONAL_CACHE_CONFIG = {
   }
 };
 
-/**
+/*
  * POST /api/v1/rag - Enhanced RAG Query Processing
  */
 export const POST: RequestHandler = async ({ request, getClientAddress, url }) => {
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
   }
 };
 
-/**
+/*
  * GET /api/v1/rag - RAG Service Health Check and Info
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * Perform Enhanced RAG query with multi-protocol support
  */
 async function performEnhancedRAG(
@@ -252,7 +252,7 @@ async function performEnhancedRAG(
   };
 }
 
-/**
+/*
  * Check dimensional cache for existing results
  */
 async function checkDimensionalCache(query: string, userId?: string): Promise<any> {
@@ -283,7 +283,7 @@ async function checkDimensionalCache(query: string, userId?: string): Promise<an
   }
 }
 
-/**
+/*
  * Store results in dimensional cache
  */
 async function storeDimensionalCache(query: string, results: any, userId?: string): Promise<void> {
@@ -321,7 +321,7 @@ async function storeDimensionalCache(query: string, results: any, userId?: strin
   }
 }
 
-/**
+/*
  * Health check handler
  */
 async function handleHealthCheck(): Promise<Response> {
@@ -377,7 +377,7 @@ async function handleHealthCheck(): Promise<Response> {
   }
 }
 
-/**
+/*
  * Statistics handler
  */
 async function handleStats(): Promise<Response> {
@@ -416,7 +416,7 @@ async function handleStats(): Promise<Response> {
   }
 }
 
-/**
+/*
  * Models handler
  */
 async function handleModels(): Promise<Response> {

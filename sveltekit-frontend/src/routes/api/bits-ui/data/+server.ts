@@ -1,4 +1,4 @@
-/**
+/*
  * Enhanced API Route Example for Bits UI SSR
  * Demonstrates proper data extraction and serialization patterns
  */

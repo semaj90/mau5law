@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Production Logging API Endpoint
  * Handles client-side error logging and monitoring for the Legal AI Platform
  */

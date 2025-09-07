@@ -10,7 +10,7 @@ const logger = {
   warn: (message: string, data?: any) => console.warn(`[WARN] ${message}`, data || '')
 };
 
-/**
+/*
  * Enhanced Caching API with Data Parallelism
  * 
  * Provides multi-layer caching with:

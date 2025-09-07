@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Session Validation API Endpoint
  * GET /api/auth/session - Check current session status
  */

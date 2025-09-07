@@ -1,4 +1,4 @@
-/**
+/*
  * RabbitMQ Message Publishing API Endpoint
  * 
  * Handles publishing messages to RabbitMQ queues for NLP processing pipeline

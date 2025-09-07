@@ -1,4 +1,4 @@
-/**
+/*
  * Individual Evidence API Routes with Lucia v3 Authentication
  * GET /api/v1/evidence/[id] - Get specific evidence
  * PUT /api/v1/evidence/[id] - Update specific evidence
@@ -12,7 +12,7 @@ import { z } from 'zod';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid evidence ID format');
 
-/**
+/*
  * GET /api/v1/evidence/[id]
  * Get a specific evidence by ID
  */
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   }
 };
 
-/**
+/*
  * PUT /api/v1/evidence/[id]
  * Update a specific evidence
  */
@@ -138,7 +138,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
   }
 };
 
-/**
+/*
  * DELETE /api/v1/evidence/[id]
  * Delete a specific evidence
  */

@@ -18,7 +18,7 @@ const unifiedSearchSchema = z.object({
   includeMetadata: z.boolean().default(true)
 });
 
-/**
+/*
  * Reusable handler for the unified search flow.
  * Accepts validated search params and returns a Response via json(...)
  */

@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * QUIC AI Stream API - Real-time AI Streaming Service
  * Provides AI streaming with WebSocket + HTTP/3 support and session management
  * Port: 8447 (QUIC), 8448 (HTTP/2 fallback)
@@ -43,7 +43,7 @@ export interface AIStreamResponse {
   executionTime?: number;
 }
 
-/**
+/*
  * GET /api/v1/quic/ai-stream - AI stream service health and session status
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/quic/ai-stream - Start AI inference with streaming support
  */
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -251,7 +251,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 };
 
-/**
+/*
  * DELETE /api/v1/quic/ai-stream - Terminate AI session
  */
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -298,7 +298,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * PUT /api/v1/quic/ai-stream - Update AI streaming configuration
  */
 export const PUT: RequestHandler = async ({ request }) => {

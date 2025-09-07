@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 
-/**
+/*
  * Unified GPU API Endpoint
  * Handles all GPU-related operations: NVIDIA LLaMA, WASM-LLVM, WebGPU, and NES Bridge
  */

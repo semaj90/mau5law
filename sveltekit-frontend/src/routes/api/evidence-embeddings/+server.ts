@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { embeddingBackfillWorker } from '$lib/server/workers/embedding-backfill-worker.js';
 import { query } from '$lib/server/db/client.js';
 
-/**
+/*
  * Evidence Embeddings API
  * 
  * POST /api/evidence-embeddings - Trigger embedding backfill process
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * Perform semantic search using pgvector similarity
  */
 async function performSemanticSearch(

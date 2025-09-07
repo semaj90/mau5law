@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * PostgreSQL-First Worker Trigger API
  * Handles Redis events for auto-tagging and case processing
  */
@@ -37,7 +37,7 @@ const WorkerTriggerSchema = z.object({
 
 type WorkerTriggerData = z.infer<typeof WorkerTriggerSchema>;
 
-/**
+/*
  * POST /api/worker/autotag/trigger
  * Triggers PostgreSQL-first auto-tagging worker
  */
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
 };
 
-/**
+/*
  * GET /api/worker/autotag/trigger
  * Get worker trigger status and recent events
  */
@@ -210,7 +210,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * DELETE /api/worker/autotag/trigger
  * Clear worker event stream (admin operation)
  */

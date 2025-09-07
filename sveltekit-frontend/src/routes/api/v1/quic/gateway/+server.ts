@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * QUIC Gateway API - HTTP/3 Gateway Proxy
  * Provides high-performance HTTP/3 connectivity to SvelteKit frontend
  * Port: 8443 (QUIC), 8444 (HTTP/2 fallback)
@@ -20,7 +20,7 @@ const QUIC_GATEWAY_CONFIG = {
   retryAttempts: 2
 };
 
-/**
+/*
  * GET /api/v1/quic/gateway - Gateway health and status
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/quic/gateway - Route request through QUIC gateway
  */
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 };
 
-/**
+/*
  * PUT /api/v1/quic/gateway - Update gateway configuration
  */
 export const PUT: RequestHandler = async ({ request }) => {

@@ -2,7 +2,10 @@
  * WebGPU Tensor Acceleration System
  * Client-side GPU acceleration for legal AI operations
  * Complements server-side CUDA acceleration
+ * Enhanced with SIMD GPU Tiling for high-performance evidence analysis
  */
+
+import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
 
 export interface WebGPUTensorConfig {
 	deviceType: 'discrete' | 'integrated' | 'auto';
@@ -399,6 +402,137 @@ export class WebGPUTensorAccelerator {
 			this.updateMetrics(duration);
 			
 			return cosineSimilarity;
+			
+		} catch (error: any) {
+			this.metrics.errorCount++;
+			this.metrics.lastError = error.message;
+			throw error;
+		}
+	}
+
+	/**
+	 * Enhanced vector similarity with SIMD GPU tiling for large embeddings
+	 * This method demonstrates the gpuTile: true option in the hot path
+	 */
+	async calculateVectorSimilarityWithSIMDTiling(
+		vectorA: Float32Array, 
+		vectorB: Float32Array,
+		options: {
+			enableTiling?: boolean;
+			tileSize?: number;
+			useEvidenceAnalysis?: boolean;
+		} = {}
+	): Promise<{
+		similarity: number;
+		gpuMeta?: any;
+		tilingMeta?: any;
+		performanceMetrics: {
+			totalTime: number;
+			simdTime: number;
+			gpuTime: number;
+			throughput: number;
+		}
+	}> {
+		const start = performance.now();
+		const { enableTiling = true, tileSize = 256, useEvidenceAnalysis = false } = options;
+		
+		try {
+			// Standard WebGPU similarity calculation
+			const standardSimilarity = await this.calculateVectorSimilarity(vectorA, vectorB);
+			const gpuTime = performance.now() - start;
+			
+			let tilingMeta = null;
+			let simdTime = 0;
+			
+			if (enableTiling) {
+				console.log('🎯 Applying SIMD GPU tiling to embedding vectors...');
+				
+				const simdStart = performance.now();
+				
+				// Convert vectors to evidence-like data for tiling analysis
+				// This simulates how image evidence would be processed with the same vectors
+				const combinedData = new Float32Array(vectorA.length + vectorB.length);
+				combinedData.set(vectorA, 0);
+				combinedData.set(vectorB, vectorA.length);
+				
+				try {
+					// Apply SIMD GPU tiling to the combined embedding space
+					const evidenceId = `vector_similarity_${Date.now()}`;
+					const tilingResults = await simdGPUTilingEngine.processEvidenceWithSIMDTiling(
+						evidenceId,
+						combinedData,
+						Math.ceil(Math.sqrt(combinedData.length)), // Simulate width
+						Math.ceil(Math.sqrt(combinedData.length)), // Simulate height
+						{
+							tileSize,
+							evidenceType: useEvidenceAnalysis ? 'mixed' : 'text',
+							enableCompression: true,
+							priority: 'high',
+							generateEmbeddings: false // We already have embeddings
+						}
+					);
+					
+					simdTime = performance.now() - simdStart;
+					
+					// Extract tiling metadata for similarity enhancement
+					tilingMeta = {
+						tilesGenerated: tilingResults.chunks.length,
+						avgConfidence: tilingResults.chunks.reduce((sum, chunk) => sum + chunk.metadata.confidence, 0) / tilingResults.chunks.length,
+						compressionRatio: tilingResults.tensorCompressionRatio,
+						memoryRegions: tilingResults.chunks.reduce((acc: any, chunk) => {
+							acc[chunk.memoryRegion] = (acc[chunk.memoryRegion] || 0) + 1;
+							return acc;
+						}, {}),
+						simdMetrics: tilingResults.simdMetrics
+					};
+					
+					// Enhance similarity score with tiling confidence
+					const confidenceBoost = Math.min(0.1, tilingMeta.avgConfidence * 0.05); // Max 10% boost
+					const enhancedSimilarity = standardSimilarity * (1 + confidenceBoost);
+					
+					console.log(`✅ SIMD tiling complete: ${tilingResults.chunks.length} tiles, ${confidenceBoost.toFixed(4)} confidence boost`);
+					
+					const totalTime = performance.now() - start;
+					
+					return {
+						similarity: enhancedSimilarity,
+						gpuMeta: {
+							standardSimilarity,
+							confidenceBoost,
+							tilingEnabled: true,
+							device: this.adapter?.name || 'Unknown GPU'
+						},
+						tilingMeta,
+						performanceMetrics: {
+							totalTime,
+							simdTime,
+							gpuTime,
+							throughput: (combinedData.byteLength / 1024 / 1024) / (totalTime / 1000) // MB/s
+						}
+					};
+					
+				} catch (tilingError) {
+					console.warn('SIMD GPU tiling failed, using standard similarity:', tilingError);
+					simdTime = performance.now() - simdStart;
+				}
+			}
+			
+			const totalTime = performance.now() - start;
+			
+			return {
+				similarity: standardSimilarity,
+				gpuMeta: {
+					standardSimilarity,
+					tilingEnabled: false,
+					device: this.adapter?.name || 'Unknown GPU'
+				},
+				performanceMetrics: {
+					totalTime,
+					simdTime,
+					gpuTime,
+					throughput: ((vectorA.byteLength + vectorB.byteLength) / 1024 / 1024) / (totalTime / 1000) // MB/s
+				}
+			};
 			
 		} catch (error: any) {
 			this.metrics.errorCount++;

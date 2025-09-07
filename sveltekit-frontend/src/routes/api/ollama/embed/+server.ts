@@ -2,7 +2,7 @@
 import type { EmbeddingResponse } from "$lib/types/ollama";
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Ollama Embeddings API Endpoint
  * Handles text embedding generation for legal documents
  */

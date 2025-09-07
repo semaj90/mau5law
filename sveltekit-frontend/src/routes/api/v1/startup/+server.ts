@@ -1,4 +1,4 @@
-/**
+/*
  * Startup Flag API Endpoint
  * Provides service readiness status for automation and monitoring
  */
@@ -12,7 +12,7 @@ import { join } from 'path';
 
 const logsDir = join(process.cwd(), 'logs');
 
-/**
+/*
  * GET /api/v1/startup
  * Get current startup status and service health
  */
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/startup
  * Control startup monitoring (start/stop/restart)
  */
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * Calculate overall health grade based on service summary
  */
 function calculateOverallHealth(summary: any): string {

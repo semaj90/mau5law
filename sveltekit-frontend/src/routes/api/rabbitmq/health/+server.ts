@@ -1,4 +1,4 @@
-/**
+/*
  * RabbitMQ Health Check API Endpoint
  * 
  * Provides health status for RabbitMQ service and queues

@@ -1,4 +1,4 @@
-/**
+/*
  * SvelteKit API Route - Go Tensor Service Bridge
  * Bridges SvelteKit frontend with Go microservice on port 8095
  */

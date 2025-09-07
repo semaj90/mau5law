@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Kernel Splicing Attention API
  * Advanced CUDA attention mechanism with kernel splicing
  * Optimized for RTX 3060 Ti with <1ms processing

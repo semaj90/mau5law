@@ -23,30 +23,30 @@ class NESRLAgent {
     this.config = { ...NES_CONFIG, ...config };
     this.stateSize = config.stateSize || 384;
     this.actionSize = config.actionSize || 256;
-    
+
     // Policy network parameters (flattened)
     this.policyParams = this.initializePolicy();
     this.bestParams = [...this.policyParams];
     this.bestFitness = -Infinity;
-    
+
     // Evolution tracking
     this.generation = 0;
     this.fitnessHistory = [];
     this.populationFitness = [];
-    
+
     // Experience replay buffer
     this.experienceBuffer = [];
     this.maxExperienceSize = 10000;
-    
+
     // Exploration parameters
     this.epsilon = 1.0;
     this.epsilonMin = 0.01;
     this.epsilonDecay = 0.995;
-    
+
     console.log('🧬 NES-RL Agent initialized with', {
       stateSize: this.stateSize,
       actionSize: this.actionSize,
-      populationSize: this.config.populationSize
+      populationSize: this.config.populationSize,
     });
   }
 
@@ -56,13 +56,13 @@ class NESRLAgent {
   initializePolicy() {
     const paramCount = this.calculateParamCount();
     const params = new Float32Array(paramCount);
-    
+
     // Xavier initialization
     const scale = Math.sqrt(2.0 / (this.stateSize + this.actionSize));
     for (let i = 0; i < paramCount; i++) {
       params[i] = (Math.random() * 2 - 1) * scale;
     }
-    
+
     return params;
   }
 
@@ -72,8 +72,9 @@ class NESRLAgent {
   calculateParamCount() {
     const hiddenSize = Math.max(64, Math.min(256, this.stateSize));
     // Input → Hidden → Output
-    return (this.stateSize * hiddenSize) + hiddenSize + 
-           (hiddenSize * this.actionSize) + this.actionSize;
+    return (
+      this.stateSize * hiddenSize + hiddenSize + hiddenSize * this.actionSize + this.actionSize
+    );
   }
 
   /**
@@ -83,9 +84,9 @@ class NESRLAgent {
     const hiddenSize = Math.max(64, Math.min(256, this.stateSize));
     const hidden = new Float32Array(hiddenSize);
     const output = new Float32Array(this.actionSize);
-    
+
     let paramIndex = 0;
-    
+
     // Input to hidden layer
     for (let h = 0; h < hiddenSize; h++) {
       let sum = 0;
@@ -95,7 +96,7 @@ class NESRLAgent {
       sum += params[paramIndex++]; // bias
       hidden[h] = Math.tanh(sum); // activation
     }
-    
+
     // Hidden to output layer
     for (let o = 0; o < this.actionSize; o++) {
       let sum = 0;
@@ -105,7 +106,7 @@ class NESRLAgent {
       sum += params[paramIndex++]; // bias
       output[o] = sum; // linear output
     }
-    
+
     return this.softmax(output);
   }
 
@@ -114,9 +115,9 @@ class NESRLAgent {
    */
   softmax(logits) {
     const maxLogit = Math.max(...logits);
-    const expLogits = logits.map(x => Math.exp(x - maxLogit));
+    const expLogits = logits.map((x) => Math.exp(x - maxLogit));
     const sumExp = expLogits.reduce((sum, x) => sum + x, 0);
-    return expLogits.map(x => x / sumExp);
+    return expLogits.map((x) => x / sumExp);
   }
 
   /**
@@ -124,7 +125,7 @@ class NESRLAgent {
    */
   selectAction(state) {
     const actionProbs = this.forwardPass(state);
-    
+
     // Epsilon-greedy exploration
     if (Math.random() < this.epsilon) {
       // Random action for exploration
@@ -134,19 +135,19 @@ class NESRLAgent {
         probability: actionProbs[randomAction],
         temperature: 0.8 + Math.random() * 0.4,
         maxTokens: 128 + Math.floor(Math.random() * 128),
-        explorationBonus: 0.1
+        explorationBonus: 0.1,
       };
     }
-    
+
     // Sample from policy distribution
     const action = this.sampleFromDistribution(actionProbs);
-    
+
     return {
       action: action,
       probability: actionProbs[action],
       temperature: this.adaptiveTemperature(actionProbs),
       maxTokens: this.adaptiveMaxTokens(state),
-      explorationBonus: 0
+      explorationBonus: 0,
     };
   }
 
@@ -156,14 +157,14 @@ class NESRLAgent {
   sampleFromDistribution(probs) {
     const random = Math.random();
     let cumulative = 0;
-    
+
     for (let i = 0; i < probs.length; i++) {
       cumulative += probs[i];
       if (random <= cumulative) {
         return i;
       }
     }
-    
+
     return probs.length - 1;
   }
 
@@ -175,7 +176,7 @@ class NESRLAgent {
     const entropy = -actionProbs.reduce((sum, p) => sum + (p > 0 ? p * Math.log(p) : 0), 0);
     const maxEntropy = Math.log(this.actionSize);
     const normalizedEntropy = entropy / maxEntropy;
-    
+
     return 0.3 + normalizedEntropy * 0.7; // Range: 0.3 to 1.0
   }
 
@@ -186,7 +187,7 @@ class NESRLAgent {
     // Estimate complexity from state embedding
     const complexity = state.reduce((sum, x) => sum + Math.abs(x), 0) / state.length;
     const normalizedComplexity = Math.min(1, complexity * 2);
-    
+
     return Math.floor(64 + normalizedComplexity * 192); // Range: 64 to 256
   }
 
@@ -196,10 +197,10 @@ class NESRLAgent {
   updatePolicy(stateEmbedding, action, reward) {
     // Store experience
     this.storeExperience(stateEmbedding, action, reward);
-    
+
     // Decay exploration
     this.epsilon = Math.max(this.epsilonMin, this.epsilon * this.epsilonDecay);
-    
+
     // Update if we have enough experiences
     if (this.experienceBuffer.length >= this.config.populationSize) {
       this.performNESUpdate();
@@ -214,11 +215,11 @@ class NESRLAgent {
       state: new Float32Array(state),
       action: action,
       reward: reward,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    
+
     this.experienceBuffer.push(experience);
-    
+
     // Maintain buffer size
     if (this.experienceBuffer.length > this.maxExperienceSize) {
       this.experienceBuffer.shift();
@@ -230,31 +231,33 @@ class NESRLAgent {
    */
   performNESUpdate() {
     console.log(`🧬 Performing NES update - Generation ${this.generation}`);
-    
+
     // Generate population of parameter variations
     const population = this.generatePopulation();
-    
+
     // Evaluate fitness for each individual
     const fitnessScores = this.evaluatePopulation(population);
-    
+
     // Update policy parameters using fitness-weighted average
     this.updateParametersFromPopulation(population, fitnessScores);
-    
+
     // Track progress
     this.generation++;
     const avgFitness = fitnessScores.reduce((sum, f) => sum + f, 0) / fitnessScores.length;
     const maxFitness = Math.max(...fitnessScores);
-    
+
     this.fitnessHistory.push({ avg: avgFitness, max: maxFitness });
-    
+
     // Update best parameters if improved
     if (maxFitness > this.bestFitness) {
       this.bestFitness = maxFitness;
       const bestIndex = fitnessScores.indexOf(maxFitness);
       this.bestParams = [...population[bestIndex]];
     }
-    
-    console.log(`📊 Generation ${this.generation}: Avg=${avgFitness.toFixed(4)}, Max=${maxFitness.toFixed(4)}`);
+
+    console.log(
+      `📊 Generation ${this.generation}: Avg=${avgFitness.toFixed(4)}, Max=${maxFitness.toFixed(4)}`
+    );
   }
 
   /**
@@ -263,7 +266,7 @@ class NESRLAgent {
   generatePopulation() {
     const population = [];
     const noise = this.generateNoise();
-    
+
     for (let i = 0; i < this.config.populationSize; i++) {
       const individual = new Float32Array(this.policyParams.length);
       for (let j = 0; j < individual.length; j++) {
@@ -271,7 +274,7 @@ class NESRLAgent {
       }
       population.push(individual);
     }
-    
+
     return population;
   }
 
@@ -298,7 +301,7 @@ class NESRLAgent {
       this.hasSpareGaussian = false;
       return this.spareGaussian;
     }
-    
+
     this.hasSpareGaussian = true;
     const u = Math.random();
     const v = Math.random();
@@ -312,29 +315,29 @@ class NESRLAgent {
    */
   evaluatePopulation(population) {
     const fitnessScores = [];
-    
+
     for (let i = 0; i < population.length; i++) {
       const individual = population[i];
       let totalFitness = 0;
       let evaluationCount = 0;
-      
+
       // Sample experiences for evaluation
       const sampleSize = Math.min(10, this.experienceBuffer.length);
       const samples = this.sampleExperiences(sampleSize);
-      
+
       for (const experience of samples) {
         const actionProbs = this.forwardPass(experience.state, individual);
         const actionValue = actionProbs[experience.action.action] || 0;
-        
+
         // Fitness combines reward and action probability
         const fitness = experience.reward * actionValue;
         totalFitness += fitness;
         evaluationCount++;
       }
-      
+
       fitnessScores.push(evaluationCount > 0 ? totalFitness / evaluationCount : 0);
     }
-    
+
     return fitnessScores;
   }
 
@@ -345,7 +348,7 @@ class NESRLAgent {
     if (this.experienceBuffer.length <= count) {
       return [...this.experienceBuffer];
     }
-    
+
     const samples = [];
     for (let i = 0; i < count; i++) {
       const randomIndex = Math.floor(Math.random() * this.experienceBuffer.length);
@@ -362,30 +365,31 @@ class NESRLAgent {
     const sortedIndices = fitnessScores
       .map((fitness, index) => ({ fitness, index }))
       .sort((a, b) => b.fitness - a.fitness);
-    
+
     // Select elite individuals
     const eliteCount = Math.floor(this.config.populationSize * this.config.eliteRatio);
-    const eliteIndices = sortedIndices.slice(0, eliteCount).map(item => item.index);
-    
+    const eliteIndices = sortedIndices.slice(0, eliteCount).map((item) => item.index);
+
     // Weighted average of elite parameters
     const newParams = new Float32Array(this.policyParams.length);
     let totalWeight = 0;
-    
+
     for (let i = 0; i < eliteCount; i++) {
       const index = eliteIndices[i];
       const weight = fitnessScores[index];
       totalWeight += weight;
-      
+
       for (let j = 0; j < newParams.length; j++) {
         newParams[j] += population[index][j] * weight;
       }
     }
-    
+
     // Normalize and update
     if (totalWeight > 0) {
       for (let j = 0; j < newParams.length; j++) {
-        this.policyParams[j] = this.config.learningRate * (newParams[j] / totalWeight) + 
-                               (1 - this.config.learningRate) * this.policyParams[j];
+        this.policyParams[j] =
+          this.config.learningRate * (newParams[j] / totalWeight) +
+          (1 - this.config.learningRate) * this.policyParams[j];
       }
     }
   }
@@ -395,25 +399,26 @@ class NESRLAgent {
    */
   async trainBatch(episodes) {
     console.log(`🎯 Training NES agent on ${episodes.length} episodes...`);
-    
+
     for (const episode of episodes) {
       for (const step of episode.steps) {
         await this.updatePolicy(step.state, step.action, step.reward);
       }
     }
-    
+
     // Performance statistics
     const recentFitness = this.fitnessHistory.slice(-10);
-    const avgRecentFitness = recentFitness.length > 0 
-      ? recentFitness.reduce((sum, f) => sum + f.avg, 0) / recentFitness.length 
-      : 0;
-    
+    const avgRecentFitness =
+      recentFitness.length > 0
+        ? recentFitness.reduce((sum, f) => sum + f.avg, 0) / recentFitness.length
+        : 0;
+
     return {
       generation: this.generation,
       avgFitness: avgRecentFitness,
       bestFitness: this.bestFitness,
       epsilon: this.epsilon,
-      experienceCount: this.experienceBuffer.length
+      experienceCount: this.experienceBuffer.length,
     };
   }
 
@@ -429,7 +434,7 @@ class NESRLAgent {
       parameterCount: this.policyParams.length,
       fitnessHistory: this.fitnessHistory.slice(-20), // Last 20 generations
       populationSize: this.config.populationSize,
-      learningRate: this.config.learningRate
+      learningRate: this.config.learningRate,
     };
   }
 
@@ -444,7 +449,7 @@ class NESRLAgent {
       generation: this.generation,
       epsilon: this.epsilon,
       fitnessHistory: this.fitnessHistory,
-      config: this.config
+      config: this.config,
     };
   }
 
@@ -459,8 +464,10 @@ class NESRLAgent {
     this.epsilon = data.epsilon;
     this.fitnessHistory = data.fitnessHistory || [];
     this.config = { ...this.config, ...data.config };
-    
-    console.log(`📥 NES-RL agent loaded - Generation ${this.generation}, Best Fitness: ${this.bestFitness.toFixed(4)}`);
+
+    console.log(
+      `📥 NES-RL agent loaded - Generation ${this.generation}, Best Fitness: ${this.bestFitness.toFixed(4)}`
+    );
   }
 }
 
@@ -473,3 +480,114 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 console.log('🧬 NES-RL module loaded successfully');
+
+// =============== Optional: Local Search Pipeline Bridge ===============
+// This worker can optionally call a local search API (Redis → LokiJS/Fuse.js) if present.
+// It uses a simple message protocol and safe fetch fallbacks. If the API/route is absent,
+// calls resolve to empty arrays and the RL flow continues unaffected.
+
+// Example route this worker expects (to be added server-side):
+//   POST /api/local-search { query: string, limit?: number }
+//   → { results: Array<{ id: string; score?: number; text?: string; metadata?: any }> }
+
+(function attachLocalSearchBridge() {
+  const ENDPOINT =
+    (typeof self !== 'undefined' && self.LOCAL_SEARCH_ENDPOINT) || '/api/local-search';
+  const DEFAULT_LIMIT = 5;
+
+  let agentInstance = null; // lazily created via INIT message
+
+  async function queryLocalSearch(query, limit = DEFAULT_LIMIT) {
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, limit }),
+      });
+      if (!res.ok) throw new Error(`local-search HTTP ${res.status}`);
+      const data = await res.json().catch(() => null);
+      return (data && (data.results || data.documents || data.hits)) || [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function ensureAgent(config) {
+    if (!agentInstance) agentInstance = new NESRLAgent(config || {});
+    return agentInstance;
+  }
+
+  // Basic command protocol for host ↔ worker
+  // postMessage({ type: 'INIT', payload: { stateSize, actionSize, ... } })
+  // postMessage({ type: 'SELECT', payload: { state: Float32Array|number[], query?: string } })
+  // postMessage({ type: 'UPDATE', payload: { state, action, reward } })
+  // postMessage({ type: 'TRAIN_BATCH', payload: { episodes } })
+  // postMessage({ type: 'LOCAL_SEARCH', payload: { query, limit } })
+  // postMessage({ type: 'STATS' })
+  // postMessage({ type: 'SERIALIZE' }) / { type: 'DESERIALIZE', payload: data }
+
+  if (typeof self !== 'undefined') {
+    self.onmessage = async (e) => {
+      const msg = e && e.data ? e.data : e;
+      const { type, payload } = msg || {};
+
+      try {
+        switch (type) {
+          case 'INIT': {
+            const ag = ensureAgent(payload || {});
+            self.postMessage({ type: 'INIT_OK', payload: { stats: ag.getStats() } });
+            break;
+          }
+          case 'SELECT': {
+            const ag = ensureAgent();
+            const result = ag.selectAction(payload.state);
+            let context = [];
+            if (payload.query) {
+              context = await queryLocalSearch(payload.query, payload.limit || DEFAULT_LIMIT);
+            }
+            self.postMessage({ type: 'SELECT_OK', payload: { action: result, context } });
+            break;
+          }
+          case 'UPDATE': {
+            const ag = ensureAgent();
+            ag.updatePolicy(payload.state, payload.action, payload.reward);
+            self.postMessage({ type: 'UPDATE_OK', payload: { stats: ag.getStats() } });
+            break;
+          }
+          case 'TRAIN_BATCH': {
+            const ag = ensureAgent();
+            const summary = await ag.trainBatch(payload.episodes || []);
+            self.postMessage({ type: 'TRAIN_BATCH_OK', payload: summary });
+            break;
+          }
+          case 'LOCAL_SEARCH': {
+            const results = await queryLocalSearch(payload.query, payload.limit || DEFAULT_LIMIT);
+            self.postMessage({ type: 'LOCAL_SEARCH_OK', payload: { results } });
+            break;
+          }
+          case 'STATS': {
+            const ag = ensureAgent();
+            self.postMessage({ type: 'STATS_OK', payload: ag.getStats() });
+            break;
+          }
+          case 'SERIALIZE': {
+            const ag = ensureAgent();
+            self.postMessage({ type: 'SERIALIZE_OK', payload: ag.serialize() });
+            break;
+          }
+          case 'DESERIALIZE': {
+            const ag = ensureAgent();
+            ag.deserialize(payload);
+            self.postMessage({ type: 'DESERIALIZE_OK', payload: { stats: ag.getStats() } });
+            break;
+          }
+          default: {
+            self.postMessage({ type: 'ERROR', error: `Unknown message type: ${type}` });
+          }
+        }
+      } catch (err) {
+        self.postMessage({ type: 'ERROR', error: (err && err.message) || String(err) });
+      }
+    };
+  }
+})();

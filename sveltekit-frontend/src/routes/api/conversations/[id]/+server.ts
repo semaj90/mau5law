@@ -1,4 +1,4 @@
-/**
+/*
  * Single Conversation API - GET conversation with messages
  */
 

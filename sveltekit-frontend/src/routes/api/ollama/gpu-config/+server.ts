@@ -3,7 +3,7 @@ import { ollamaService } from '$lib/server/services/OllamaService';
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 
-/**
+/*
  * Production-ready GPU config endpoint
  * - Configurable timeouts/retries via env
  * - Response validation

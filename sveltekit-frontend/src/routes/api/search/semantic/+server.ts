@@ -2,7 +2,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * SvelteKit 2 API Route: Semantic Search with Clustering Integration
  * POST /api/search/semantic
  */
@@ -290,7 +290,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * Enhance search results with legal context using Gemma3
  */
 async function enhanceLegalContext(
@@ -338,7 +338,7 @@ async function enhanceLegalContext(
   });
 }
 
-/**
+/*
  * Generate cluster insights for the search query
  */
 async function getClusterInsights(

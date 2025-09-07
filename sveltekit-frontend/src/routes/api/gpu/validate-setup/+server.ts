@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * GPU Setup Validation API - Check AI readiness for Legal PDF processing
  * Tests GPU, Ollama, and model availability
  */

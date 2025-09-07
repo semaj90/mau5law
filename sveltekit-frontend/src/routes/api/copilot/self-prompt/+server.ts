@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Copilot Self-Prompt API Endpoint
  * Enables Copilot to leverage comprehensive AI orchestration for autonomous problem-solving
  */
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ url }) => {
   });
 };
 
-/**
+/*
  * Get mode-specific configuration
  */
 function getModeConfiguration(mode: string): Partial<CopilotSelfPromptOptions> {
@@ -226,7 +226,7 @@ function getModeConfiguration(mode: string): Partial<CopilotSelfPromptOptions> {
   }
 }
 
-/**
+/*
  * Format response based on output format
  */
 function formatResponse(result: SelfPromptResult, outputFormat: string) {
@@ -258,7 +258,7 @@ function formatResponse(result: SelfPromptResult, outputFormat: string) {
   }
 }
 
-/**
+/*
  * Format result as Markdown for better readability
  */
 function formatAsMarkdown(result: SelfPromptResult): string {
@@ -300,7 +300,7 @@ ${result.selfPrompt}
   `;
 }
 
-/**
+/*
  * Get usage examples for Copilot integration
  */
 function getCopilotUsageExamples() {

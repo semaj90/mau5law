@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * AI Integration Test Suite
  * Comprehensive testing of all AI/MCP API endpoints
  */
@@ -26,7 +26,7 @@ export interface TestSuite {
   totalDuration: number;
 }
 
-/**
+/*
  * Main test runner
  */
 export const POST: RequestHandler = async ({ request }) => {
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * Test MCP Context7 Integration
  */
 async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
@@ -201,7 +201,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
   };
 }
 
-/**
+/*
  * Test AI Services (Ollama/LLMs)
  */
 async function testAIServices(verbose: boolean): Promise<TestSuite> {
@@ -335,7 +335,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
   };
 }
 
-/**
+/*
  * Test Find API Endpoint
  */
 async function testFindAPI(verbose: boolean): Promise<TestSuite> {
@@ -510,7 +510,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
   };
 }
 
-/**
+/*
  * Test Memory Graph Integration
  */
 async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
@@ -583,7 +583,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
   };
 }
 
-/**
+/*
  * Test Semantic Search Integration
  */
 async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
@@ -654,7 +654,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
   };
 }
 
-/**
+/*
  * Helper function to run individual tests
  */
 async function runTest(
@@ -695,7 +695,7 @@ async function runTest(
   }
 }
 
-/**
+/*
  * Generate recommendations based on test results
  */
 function generateRecommendations(testSuites: TestSuite[]): string[] {
@@ -735,7 +735,7 @@ function generateRecommendations(testSuites: TestSuite[]): string[] {
   return recommendations;
 }
 
-/**
+/*
  * GET handler for quick health check
  */
 export const GET: RequestHandler = async () => {

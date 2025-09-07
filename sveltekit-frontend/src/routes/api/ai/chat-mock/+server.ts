@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { apiSuccess, apiError, validateRequest, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
 
-/**
+/*
  * Production AI Chat Endpoint
  * Routes requests to available AI services (Ollama, Enhanced RAG, etc.)
  * Provides intelligent legal AI responses with source attribution

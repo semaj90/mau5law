@@ -1,4 +1,4 @@
-/**
+/*
  * Semantic Search API Endpoint
  * GPU-accelerated semantic search using nomic-embed-text
  */
@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types';
 import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
 import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding-service';
 
-/**
+/*
  * POST /api/v1/embeddings/search
  * Perform semantic search with GPU acceleration
  */
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * GET /api/v1/embeddings/search
  * Get semantic search endpoint information
  */

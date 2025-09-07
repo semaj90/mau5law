@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * GPU-Accelerated Orchestration Deployment API
  * Deploys the complete orchestration system with model enforcement
  */
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-/**
+/*
  * Deploy the complete GPU-accelerated orchestration system
  */
 async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Promise<any> {
@@ -136,7 +136,7 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
   }
 }
 
-/**
+/*
  * Validate that only gemma3-legal and nomic-embed models are available
  */
 async function validateModelConstraints(config: DeploymentConfig): Promise<any> {
@@ -182,7 +182,7 @@ async function validateModelConstraints(config: DeploymentConfig): Promise<any> 
   }
 }
 
-/**
+/*
  * Initialize the NodeJS orchestrator with model enforcement
  */
 async function initializeNodeJSOrchestrator(config: DeploymentConfig): Promise<any> {
@@ -198,7 +198,7 @@ async function initializeNodeJSOrchestrator(config: DeploymentConfig): Promise<a
   console.log('✅ NodeJS orchestrator ready with model enforcement');
 }
 
-/**
+/*
  * Start the GPU error processor service
  */
 async function startErrorProcessorService(config: DeploymentConfig): Promise<any> {
@@ -217,7 +217,7 @@ async function startErrorProcessorService(config: DeploymentConfig): Promise<any
   }
 }
 
-/**
+/*
  * Configure MCP integration with model constraints
  */
 async function configureMCPIntegration(config: DeploymentConfig): Promise<any> {
@@ -236,7 +236,7 @@ async function configureMCPIntegration(config: DeploymentConfig): Promise<any> {
   }
 }
 
-/**
+/*
  * Verify FlashAttention GPU processing capabilities
  */
 async function verifyFlashAttentionGPU(): Promise<any> {
@@ -256,7 +256,7 @@ async function verifyFlashAttentionGPU(): Promise<any> {
   }
 }
 
-/**
+/*
  * Update the deployment report with current status
  */
 async function updateDeploymentReport(config: DeploymentConfig): Promise<any> {
@@ -299,7 +299,7 @@ async function updateDeploymentReport(config: DeploymentConfig): Promise<any> {
   }
 }
 
-/**
+/*
  * Start the orchestration system services
  */
 async function startOrchestrationSystem(): Promise<any> {
@@ -353,7 +353,7 @@ async function startOrchestrationSystem(): Promise<any> {
   }
 }
 
-/**
+/*
  * Stop the orchestration system
  */
 async function stopOrchestrationSystem(): Promise<any> {
@@ -366,7 +366,7 @@ async function stopOrchestrationSystem(): Promise<any> {
   });
 }
 
-/**
+/*
  * Get current orchestration system status
  */
 async function getOrchestrationStatus(): Promise<DeploymentStatus> {
@@ -445,7 +445,7 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
   return status;
 }
 
-/**
+/*
  * Deploy complete system with auto-start
  */
 export const deployComplete = async (): Promise<any> => {

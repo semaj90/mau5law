@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * QUIC-Go Integration Test API
  * Tests the integration between SvelteKit QUIC endpoints and Go microservices
  */
@@ -9,7 +9,7 @@ import { json, error } from '@sveltejs/kit';
 import { ensureError } from '$lib/utils/ensure-error';
 import { goServiceManager } from '$lib/services/go-microservice-client.js';
 
-/**
+/*
  * GET /api/test/quic-go-integration - Test all QUIC-Go integrations
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -174,7 +174,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * POST /api/test/quic-go-integration - Test specific integration with custom payload
  */
 export const POST: RequestHandler = async ({ request }) => {

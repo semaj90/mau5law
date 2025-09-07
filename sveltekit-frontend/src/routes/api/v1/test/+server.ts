@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Comprehensive Integration Test API - SvelteKit 2 Production
  * Tests all 37 Go microservices and unified API system
  * Validates Windows-native deployment and multi-protocol communication
@@ -35,7 +35,7 @@ export interface ComprehensiveTestReport {
   recommendations: string[];
 }
 
-/**
+/*
  * POST /api/v1/test - Run comprehensive integration tests
  */
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   }
 };
 
-/**
+/*
  * GET /api/v1/test - Test suite information and health
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * Run comprehensive integration tests
  */
 async function runComprehensiveTests(
@@ -178,7 +178,7 @@ async function runComprehensiveTests(
   return report;
 }
 
-/**
+/*
  * Get tests for specific suite
  */
 function getTestsForSuite(testSuite: string): string[] {
@@ -230,7 +230,7 @@ function getTestsForSuite(testSuite: string): string[] {
   }
 }
 
-/**
+/*
  * Run a single test
  */
 async function runSingleTest(
@@ -536,7 +536,7 @@ async function testAIModelAvailability(): Promise<any> {
   };
 }
 
-/**
+/*
  * Generate recommendations based on test results
  */
 function generateRecommendations(
