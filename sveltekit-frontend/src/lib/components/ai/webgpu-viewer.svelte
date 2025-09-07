@@ -19,19 +19,19 @@ let {
 } = $props();
 
 // State
-let canvas = $state<HTMLCanvasElement;
-let device: GPUDevice | null >(null);
-let context = $state<GPUCanvasContext | null >(null);
-let pipeline = $state<GPURenderPipeline | null >(null);
+let canvas = $state<HTMLCanvasElement | null>(null);
+let device: GPUDevice | null = null;
+let context = $state<GPUCanvasContext | null>(null);
+let pipeline = $state<GPURenderPipeline | null>(null);
 let isPlaying = $state(autoRotate);
 let zoom = $state(1.0);
 let rotation = $state({ x: 0, y: 0, z: 0 });
 let mouseDown = $state(false);
 let lastMouse = $state({ x: 0, y: 0 });
-let animationFrame = $state<number;
-let embedBuffer: GPUBuffer | null >(null);
-let uniformBuffer = $state<GPUBuffer | null >(null);
-let bindGroup = $state<GPUBindGroup | null >(null);
+let animationFrame = $state<number | null>(null);
+let embedBuffer: GPUBuffer | null = null;
+let uniformBuffer = $state<GPUBuffer | null>(null);
+let bindGroup = $state<GPUBindGroup | null>(null);
 
 // WebSocket for real-time updates
 let ws = $state<WebSocket | null >(null);
@@ -56,25 +56,25 @@ struct VertexOutput {
 @vertex
 fn main(@builtin(vertex_index) vertexIndex: u32) -> VertexOutput {
   var output: VertexOutput;
-  
+
   let embedding = embeddings[vertexIndex / 6u];
   let quadVertex = vertexIndex % 6u;
-  
+
   // Create a quad for each point
   var offset = vec2<f32>(0.0, 0.0);
   if (quadVertex == 0u || quadVertex == 3u) { offset.x = -0.02; offset.y = -0.02; }
   else if (quadVertex == 1u) { offset.x = 0.02; offset.y = -0.02; }
   else if (quadVertex == 2u || quadVertex == 4u) { offset.x = 0.02; offset.y = 0.02; }
   else if (quadVertex == 5u) { offset.x = -0.02; offset.y = 0.02; }
-  
+
   let pos = vec4<f32>(embedding.x, embedding.y, embedding.z, 1.0);
   let transformed = uniforms.matrix * pos;
   output.position = transformed + vec4<f32>(offset * uniforms.zoom, 0.0, 0.0);
-  
+
   // Color based on position
   output.color = normalize(embedding) * 0.5 + 0.5;
   output.pointSize = 5.0 * uniforms.zoom;
-  
+
   return output;
 }
 `;
@@ -97,13 +97,13 @@ onMount(async () => {
     console.error('WebGPU not supported');
     return;
   }
-  
+
   await initWebGPU();
-  
+
   if (docId) {
     connectWebSocket();
   }
-  
+
   if (isPlaying) {
     animate();
   }
@@ -124,31 +124,32 @@ async function initWebGPU() {
     console.error('No GPU adapter found');
     return;
   }
-  
+
   device = await adapter.requestDevice();
-  
+
+  if (!canvas) return;
   context = canvas.getContext('webgpu');
   if (!context) {
     console.error('Failed to get WebGPU context');
     return;
   }
-  
+
   const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
   context.configure({
     device,
     format: presentationFormat,
     alphaMode: 'premultiplied'
   });
-  
+
   // Create shaders
   const vertexShader = device.createShaderModule({
     code: vertexShaderCode
   });
-  
+
   const fragmentShader = device.createShaderModule({
     code: fragmentShaderCode
   });
-  
+
   // Create pipeline
   pipeline = device.createRenderPipeline({
     layout: 'auto',
@@ -167,10 +168,10 @@ async function initWebGPU() {
       topology: 'triangle-list'
     }
   });
-  
+
   // Create buffers
   updateEmbeddings(embeddings);
-  
+
   // Create uniform buffer
   uniformBuffer = device.createBuffer({
     size: 64 + 8, // mat4x4 + 2 floats
@@ -180,26 +181,26 @@ async function initWebGPU() {
 
 function updateEmbeddings(newEmbeddings: number[][]) {
   if (!device || newEmbeddings.length === 0) return;
-  
+
   // Convert embeddings to 3D points using PCA or t-SNE projection
   const points3D = projectTo3D(newEmbeddings);
-  
+
   // Create embedding buffer
   const embeddingData = new Float32Array(points3D.flat());
-  
+
   if (embedBuffer) {
     embedBuffer.destroy();
   }
-  
+
   embedBuffer = device.createBuffer({
     size: embeddingData.byteLength,
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     mappedAtCreation: true
   });
-  
+
   new Float32Array(embedBuffer.getMappedRange()).set(embeddingData);
   embedBuffer.unmap();
-  
+
   // Create bind group
   if (pipeline && uniformBuffer) {
     bindGroup = device.createBindGroup({
@@ -231,7 +232,7 @@ function projectTo3D(embeddings: number[][]): number[][] {
 
 function createTransformMatrix(): Float32Array {
   const matrix = new Float32Array(16);
-  
+
   // Create rotation matrix
   const cosX = Math.cos(rotation.x);
   const sinX = Math.sin(rotation.x);
@@ -239,37 +240,37 @@ function createTransformMatrix(): Float32Array {
   const sinY = Math.sin(rotation.y);
   const cosZ = Math.cos(rotation.z);
   const sinZ = Math.sin(rotation.z);
-  
+
   // Combined rotation matrix (Y * X * Z)
   matrix[0] = cosY * cosZ + sinY * sinX * sinZ;
   matrix[1] = cosX * sinZ;
   matrix[2] = -sinY * cosZ + cosY * sinX * sinZ;
   matrix[3] = 0;
-  
+
   matrix[4] = -cosY * sinZ + sinY * sinX * cosZ;
   matrix[5] = cosX * cosZ;
   matrix[6] = sinY * sinZ + cosY * sinX * cosZ;
   matrix[7] = 0;
-  
+
   matrix[8] = sinY * cosX;
   matrix[9] = -sinX;
   matrix[10] = cosY * cosX;
   matrix[11] = 0;
-  
+
   matrix[12] = 0;
   matrix[13] = 0;
   matrix[14] = -3; // Move camera back
   matrix[15] = 1;
-  
+
   return matrix;
 }
 
 function render() {
   if (!device || !context || !pipeline || !bindGroup || !uniformBuffer) return;
-  
+
   const commandEncoder = device.createCommandEncoder();
   const textureView = context.getCurrentTexture().createView();
-  
+
   const renderPass = commandEncoder.beginRenderPass({
     colorAttachments: [{
       view: textureView,
@@ -278,21 +279,21 @@ function render() {
       storeOp: 'store'
     }]
   });
-  
+
   // Update uniforms
   const uniformData = new ArrayBuffer(72);
   const uniformArray = new Float32Array(uniformData);
   uniformArray.set(createTransformMatrix(), 0);
   uniformArray[16] = performance.now() / 1000; // time
   uniformArray[17] = zoom; // zoom
-  
+
   device.queue.writeBuffer(uniformBuffer, 0, uniformData);
-  
+
   renderPass.setPipeline(pipeline);
   renderPass.setBindGroup(0, bindGroup);
   renderPass.draw(embeddings.length * 6); // 6 vertices per point (quad)
   renderPass.end();
-  
+
   device.queue.submit([commandEncoder.finish()]);
 }
 
@@ -306,12 +307,12 @@ function animate() {
 
 function connectWebSocket() {
   if (!docId) return;
-  
+
   ws = new WebSocket(`ws://localhost:8080/ws?docId=${docId}`);
-  
+
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    
+
     if (data.type === 'embeddings_update' && data.embeddings) {
       updateEmbeddings(data.embeddings);
       render();
@@ -326,13 +327,13 @@ function handleMouseDown(e: MouseEvent) {
 
 function handleMouseMove(e: MouseEvent) {
   if (!mouseDown) return;
-  
+
   const deltaX = e.clientX - lastMouse.x;
   const deltaY = e.clientY - lastMouse.y;
-  
+
   rotation.y += deltaX * 0.01;
   rotation.x += deltaY * 0.01;
-  
+
   lastMouse = { x: e.clientX, y: e.clientY };
   render();
 }
@@ -373,7 +374,7 @@ function zoomOut() {
 }
 
 // React to prop changes
-$effect(() => { 
+$effect(() => {
   if (embeddings.length > 0 && device) {
     updateEmbeddings(embeddings);
     render();
@@ -404,7 +405,7 @@ $effect(() => {
       <span>{embeddings.length} vectors</span>
     </div>
   </div>
-  
+
   <canvas
     bind:this={canvas}
     width={800}
@@ -412,10 +413,10 @@ $effect(() => {
     onmousedown={handleMouseDown}
     onmousemove={handleMouseMove}
     onmouseup={handleMouseUp}
-    on:on:mouseleave={handleMouseUp}
-    wheel={handleWheel}
+    onmouseleave={handleMouseUp}
+    onwheel={handleWheel}
   />
-  
+
   {#if labels.length > 0}
     <div class="labels">
       {#each labels.slice(0, 10) as label, i}
@@ -435,7 +436,7 @@ $effect(() => {
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
-  
+
   .controls {
     position: absolute;
     top: 1rem;
@@ -448,7 +449,7 @@ $effect(() => {
     border-radius: 8px;
     backdrop-filter: blur(10px);
   }
-  
+
   .control-btn {
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.1);
@@ -458,12 +459,12 @@ $effect(() => {
     cursor: pointer;
     transition: all 0.2s;
   }
-  
+
   .control-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: scale(1.05);
   }
-  
+
   .info {
     display: flex;
     align-items: center;
@@ -472,18 +473,18 @@ $effect(() => {
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.875rem;
   }
-  
+
   canvas {
     display: block;
     width: 100%;
     height: 600px;
     cursor: grab;
   }
-  
+
   canvas:active {
     cursor: grabbing;
   }
-  
+
   .labels {
     position: absolute;
     bottom: 1rem;
@@ -495,7 +496,7 @@ $effect(() => {
     font-size: 0.75rem;
     z-index: 10;
   }
-  
+
   .label {
     padding: 0.25rem 0.5rem;
     background: rgba(0, 0, 0, 0.5);

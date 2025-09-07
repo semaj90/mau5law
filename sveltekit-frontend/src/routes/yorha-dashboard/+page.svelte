@@ -1,6 +1,6 @@
 <!-- YoRHa Legal AI Dashboard - Complete Integration -->
 <script lang="ts">
-  import { $derived } from 'svelte';
+  // Using Svelte 5 runes ($state/$derived) without importing $derived at runtime
   import { onMount } from 'svelte';
   import YoRHaDataGrid from '$lib/components/yorha/YoRHaDataGrid.svelte';
   import YoRHaForm from '$lib/components/yorha/YoRHaForm.svelte';
@@ -366,7 +366,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
     <!-- Controls -->
     <div class="header-controls">
       <div class="search-container">
-  <input type="search" class="search-input" placeholder="Search legal data..." aria-label="Search legal data" bind:value={searchQuery} input={() => triggerSearch()} keydown={(e) => e.key === 'Enter' && loadData()} />
+  <input type="search" class="search-input" placeholder="Search legal data..." aria-label="Search legal data" bind:value={searchQuery} onchange={() => triggerSearch()} keydown={(e) => e.key === 'Enter' && loadData()} />
         <button class="search-btn" onclick={() => loadData()}>SEARCH</button>
       </div>
 
@@ -472,22 +472,28 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
           <!-- Recommendations -->
           {#if ragRecommendations.length > 0}
             <div class="recommendations">
-    <YoRHaModal
-      open={modalOpen}
-      title={(modalType === 'create' ? 'Create' : 'Edit') + ' ' + activeTab.toUpperCase().slice(0, -1)}
-    >
-      <YoRHaForm
-        title={(modalType === 'create' ? 'Create New' : 'Edit') + ' ' + activeTab.toUpperCase().slice(0, -1)}
-        fields={currentFormFields}
-        submitLabel={modalType === 'create' ? 'Create' : 'Update'}
-        submit={(data) => {
-                    {#each rec.actionItems as action}
-                      <span class="rec-action">{action}</span>
-                    {/each}
+              <h3 class="recommendations-title">Recommended Actions</h3>
+              {#each ragRecommendations as rec}
+                <div class="recommendation">
+                  <div class="rec-header">
+                    <span class="rec-title">{rec.title}</span>
+                    <span class="rec-priority">{rec.priority}</span>
                   </div>
+                  <div class="rec-description">{rec.description}</div>
+                  {#if rec.actionItems && rec.actionItems.length}
+                    <div class="rec-actions">
+                      {#each rec.actionItems as action}
+                        <span class="rec-action">{action}</span>
+                      {/each}
+                    </div>
+                  {/if}
                   <div class="rec-meta">
-                    <span class="rec-time">Est. Time: {rec.estimatedTime}</span>
-                    <span class="rec-confidence">Confidence: {(rec.yorha_confidence * 100).toFixed(1)}%</span>
+                    {#if rec.estimatedTime}
+                      <span class="rec-time">Est. Time: {rec.estimatedTime}</span>
+                    {/if}
+                    {#if rec.yorha_confidence}
+                      <span class="rec-confidence">Confidence: {(rec.yorha_confidence * 100).toFixed(1)}%</span>
+                    {/if}
                   </div>
                 </div>
               {/each}
@@ -503,7 +509,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
         <YoRHaTerminal
           title="YoRHa Legal AI Terminal"
           isActive={terminalActive}
-          command={handleTerminalCommand}
+          onCommand={handleTerminalCommand}
         />
       </aside>
     {/if}
@@ -514,19 +520,20 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
     <YoRHaModal
       open={modalOpen}
       title="{modalType === 'create' ? 'Create' : 'Edit'} {activeTab.toUpperCase().slice(0, -1)}"
+      on:close={closeModal}
     >
       <YoRHaForm
         title="{modalType === 'create' ? 'Create New' : 'Edit'} {activeTab.toUpperCase().slice(0, -1)}"
         fields={currentFormFields}
         submitLabel={modalType === 'create' ? 'Create' : 'Update'}
-        submit={(data) => {
+        onsubmit={(data) => {
           if (modalType === 'create') {
             createItem(activeTab, data);
           } else {
             updateItem(activeTab, modalData?.id, data);
           }
         }}
-        cancel={closeModal}
+        oncancel={closeModal}
       />
     </YoRHaModal>
   {/if}

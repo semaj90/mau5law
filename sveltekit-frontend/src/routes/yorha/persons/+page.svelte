@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { $state, $derived } from 'svelte';
+  // $state and $derived are available in runes mode via types, not runtime imports
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Card from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';
@@ -170,7 +170,7 @@
       </div>
 
       <div class="header-right">
-  <Button class="header-btn" on:click={() => showNewPersonModal = true}>
+  <Button class="header-btn" onclick={() => showNewPersonModal = true}>
           <Plus class="w-4 h-4" />
           ADD PERSON
         </Button>
@@ -355,10 +355,10 @@
     </div>
 
     <Dialog.Footer>
-  <Button variant="outline" on:click={() => showNewPersonModal = false}>
+  <Button variant="outline" onclick={() => showNewPersonModal = false}>
         CANCEL
       </Button>
-  <Button on:click={() => showNewPersonModal = false}>
+  <Button onclick={() => showNewPersonModal = false}>
         ADD PERSON
       </Button>
     </Dialog.Footer>

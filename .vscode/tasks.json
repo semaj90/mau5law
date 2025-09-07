@@ -186,6 +186,22 @@
 				"$tsc"
 			],
 			"group": "test"
+		},
+		{
+			"label": "TypeScript: sveltekit-frontend - narrow check",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"sveltekit-frontend"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
 		}
 	]
 }

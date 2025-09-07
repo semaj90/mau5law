@@ -19,15 +19,15 @@
   import { ThinkingProcessor } from "$lib/ai/thinking-processor";
 
   let { height = "500px", caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
-let messageInput = $state("");
+  let messageInput = $state("");
   let messagesContainer: HTMLElement;
   let inputElement: HTMLTextAreaElement;
   let inactivityTimer: NodeJS.Timeout;
-  
+
   // Enhanced thinking style state
 let thinkingStyleEnabled = $state(false);
 let analysisMode = $state(false);
-let lastAnalysisResult = $state<any >(null);
+let lastAnalysisResult = $state<any>(null);
 
   const IDLE_TIMEOUT = 60000; // 60 seconds
 
@@ -63,14 +63,14 @@ let lastAnalysisResult = $state<any >(null);
       chatActions.setTyping(true);
 
       // Check if this is an analysis request
-      const isAnalysisRequest = userMessage.toLowerCase().includes('analyze') || 
+      const isAnalysisRequest = userMessage.toLowerCase().includes('analyze') ||
                                userMessage.toLowerCase().includes('evidence') ||
                                userMessage.toLowerCase().includes('case');
-let response = $state<Response;
-      
+let response: Response;
+
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
         // Use the enhanced analysis endpoint
-        response >(await fetch("/api/analyze", {
+  response = await fetch("/api/analyze", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -80,7 +80,7 @@ let response = $state<Response;
             analysisType: 'reasoning',
             documentType: 'legal_document'
           }),
-        }));
+  });
       } else {
         // Use the regular chat endpoint
         const requestBody: ChatRequest = {
@@ -114,7 +114,7 @@ let response = $state<Response;
         // This is an analysis response
         lastAnalysisResult = apiResponse.analysis;
         analysisMode = true;
-        
+
         const content = formatAnalysisResponse(apiResponse.analysis, apiResponse.metadata);
         chatActions.addMessage(content, "assistant", {
           ...apiResponse.metadata,
@@ -147,8 +147,8 @@ let response = $state<Response;
 
   function formatAnalysisResponse(analysis: any, metadata: any): string {
     if (!analysis) return "Analysis completed.";
-let response = $state(`# AI Analysis Results\n\n`);
-    
+let response = `# AI Analysis Results\n\n`;
+
     // Add thinking process if available
     if (analysis.thinking && thinkingStyleEnabled) {
       response += `## 🧠 Reasoning Process\n\n`;
@@ -156,13 +156,13 @@ let response = $state(`# AI Analysis Results\n\n`);
       response += analysis.thinking.replace(/\n/g, '\n\n') + `\n\n`;
       response += `---\n\n`;
     }
-    
+
     // Add main analysis
     response += `## 📋 Analysis Results\n\n`;
-    
+
     if (analysis.analysis) {
       const analysisData = analysis.analysis;
-      
+
       if (analysisData.key_findings) {
         response += `**Key Findings:**\n`;
         analysisData.key_findings.forEach((finding: string) => {
@@ -170,7 +170,7 @@ let response = $state(`# AI Analysis Results\n\n`);
         });
         response += `\n`;
       }
-      
+
       if (analysisData.legal_implications) {
         response += `**Legal Implications:**\n`;
         analysisData.legal_implications.forEach((implication: string) => {
@@ -178,7 +178,7 @@ let response = $state(`# AI Analysis Results\n\n`);
         });
         response += `\n`;
       }
-      
+
       if (analysisData.recommendations) {
         response += `**Recommendations:**\n`;
         analysisData.recommendations.forEach((rec: string) => {
@@ -186,26 +186,26 @@ let response = $state(`# AI Analysis Results\n\n`);
         });
         response += `\n`;
       }
-      
+
       if (analysisData.raw_analysis) {
         response += analysisData.raw_analysis + `\n\n`;
       }
     }
-    
+
     // Add confidence and metadata
     response += `## 📊 Analysis Metadata\n\n`;
     response += `• **Confidence:** ${Math.round(analysis.confidence * 100)}%\n`;
     response += `• **Model:** ${metadata.model_used}\n`;
     response += `• **Processing Time:** ${metadata.processing_time}ms\n`;
     response += `• **Thinking Style:** ${metadata.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
-    
+
     if (analysis.reasoning_steps && analysis.reasoning_steps.length > 0) {
       response += `\n**Reasoning Steps:**\n`;
       analysis.reasoning_steps.forEach((step: string, index: number) => {
         response += `${index + 1}. ${step}\n`;
       });
     }
-    
+
     return response;
   }
 
@@ -257,12 +257,12 @@ let response = $state(`# AI Analysis Results\n\n`);
 
   function handleThinkingToggle(event: CustomEvent<{ enabled: boolean }>) {
     thinkingStyleEnabled = event.detail.enabled;
-    
+
     // Add a system message to indicate the change
-    const message = thinkingStyleEnabled 
+    const message = thinkingStyleEnabled
       ? "🧠 Thinking Style enabled. AI will now show detailed reasoning process."
       : "⚡ Quick Mode enabled. AI will provide concise responses.";
-    
+
     notifications.add({
       type: "info",
       title: "AI Mode Changed",
@@ -365,36 +365,33 @@ let response = $state(`# AI Analysis Results\n\n`);
   <div class="mx-auto px-4 max-w-7xl">
     <div class="mx-auto px-4 max-w-7xl">
       <div class="mx-auto px-4 max-w-7xl">
-        <ThinkingStyleToggle 
+        <ThinkingStyleToggle
           bind:enabled={thinkingStyleEnabled}
           loading={$isLoading}
           premium={true}
           size="sm"
           toggle={handleThinkingToggle}
         />
-        
+
         {#if caseId}
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             on:on:click={quickAnalyzeEvidence}
             disabled={$isLoading}
           >
             🔍 Quick Analysis
-          </Button>
-        {/if}
-      </div>
-      
+          <Button
+            variant="outline"
+            size="sm"
+            onclick={quickAnalyzeEvidence}
       <div class="mx-auto px-4 max-w-7xl">
         {#if lastAnalysisResult}
           <span class="mx-auto px-4 max-w-7xl">
             📊 Confidence: {Math.round(lastAnalysisResult.confidence * 100)}%
           </span>
         {/if}
-        <div class="mx-auto px-4 max-w-7xl">
-          <div class="mx-auto px-4 max-w-7xl"></div>
-          <span>AI Active</span>
-        </div>
+  <div class="mx-auto px-4 max-w-7xl"><span>AI Active</span></div>
       </div>
     </div>
   </div>
@@ -408,19 +405,17 @@ let response = $state(`# AI Analysis Results\n\n`);
     {#if $currentConversation?.messages.length === 0}
       <!-- Enhanced Welcome Message -->
       <div class="mx-auto px-4 max-w-7xl">
-        <div
-          class="mx-auto px-4 max-w-7xl"
-        >
+        <div class="mx-auto px-4 max-w-7xl">
           <Bot class="mx-auto px-4 max-w-7xl" />
         </div>
         <h3 class="mx-auto px-4 max-w-7xl">
           Hi! I'm {$aiPersonality.name}, your enhanced AI legal assistant
         </h3>
         <p class="mx-auto px-4 max-w-7xl">
-          I can provide both quick responses and detailed reasoning analysis. 
+          I can provide both quick responses and detailed reasoning analysis.
           Toggle thinking style above to see my step-by-step reasoning process.
         </p>
-        
+
         {#if thinkingStyleEnabled}
           <div class="mx-auto px-4 max-w-7xl">
             <p class="mx-auto px-4 max-w-7xl">
@@ -445,14 +440,11 @@ let response = $state(`# AI Analysis Results\n\n`);
     <!-- Typing Indicator -->
     {#if $isTyping}
       <div class="mx-auto px-4 max-w-7xl">
-        <div
-          class="mx-auto px-4 max-w-7xl"
-        >
+        <div class="mx-auto px-4 max-w-7xl">
           <Bot class="mx-auto px-4 max-w-7xl" />
         </div>
         <div class="mx-auto px-4 max-w-7xl">
           <div class="mx-auto px-4 max-w-7xl">
-            <div class="mx-auto px-4 max-w-7xl"></div>
             <div
               class="mx-auto px-4 max-w-7xl"
               style="animation-delay: 0.1s"
@@ -487,12 +479,12 @@ let response = $state(`# AI Analysis Results\n\n`);
         <Textarea
           bind:element={inputElement}
           bind:value={messageInput}
-          placeholder={thinkingStyleEnabled 
+          placeholder={thinkingStyleEnabled
             ? "Ask for detailed analysis... (Enter to send, Shift+Enter for new line)"
             : "Type your message... (Enter to send, Shift+Enter for new line)"}
           class="mx-auto px-4 max-w-7xl"
-          keydown={handleKeyDown}
-          input={autoResize}
+          onkeydown={handleKeyDown}
+          oninput={autoResize}
           disabled={$isLoading}
         />
       </div>
@@ -501,7 +493,7 @@ let response = $state(`# AI Analysis Results\n\n`);
         variant="default"
         size="sm"
         class="mx-auto px-4 max-w-7xl"
-        on:on:click={() => sendMessage()}
+        onclick={() => sendMessage()}
         disabled={$isLoading || !messageInput.trim()}
       >
         {#if $isLoading}
