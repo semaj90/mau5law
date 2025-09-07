@@ -5,11 +5,11 @@
   import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
   import YoRHaDataViz from '$lib/components/yorha/YoRHaDataViz.svelte';
   import type { PageData } from './$types';
-  import { 
-    Monitor, 
-    Cpu, 
-    Database, 
-    Activity, 
+  import {
+    Monitor,
+    Cpu,
+    Database,
+    Activity,
     HardDrive,
     Zap,
     Network,
@@ -26,26 +26,26 @@
   let multicoreStatus = $state(data.multicoreStatus);
 
   let realtimeData = $state({
-    cpuHistory: [],
-    memoryHistory: [],
-    networkHistory: [],
-    timestamp: Date.now();
+    cpuHistory: [] as number[],
+    memoryHistory: [] as number[],
+    networkHistory: [] as number[],
+    timestamp: Date.now()
   });
 
   let isLoading = $state(!data.initialLoad);
-  let lastUpdate = $state(new Date(data.timestamp););
+  let lastUpdate = $state(new Date(data.timestamp));
 
   // Data update intervals
-let metricsInterval = $state<ReturnType<typeof setInterval>;
-let realtimeInterval = $state<ReturnType<typeof setInterval>;
+let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null);
+let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
-  onMount(async () >(> {
-    await loadSystemData());
+  onMount(async () => {
+    await loadSystemData();
     startRealTimeUpdates();
   });
 
-  onDestroy(() >(> {
-    if (metricsInterval) clearInterval(metricsInterval));
+  onDestroy(() => {
+    if (metricsInterval) clearInterval(metricsInterval);
     if (realtimeInterval) clearInterval(realtimeInterval);
   });
 
@@ -59,7 +59,7 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
 
       systemMetrics = status;
       graphData = graph;
-      
+
       // Initialize realtime data
       realtimeData = {
         cpuHistory: generateHistoryData(systemMetrics.backend.cpuUsage),
@@ -254,7 +254,7 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
         <h1>SYSTEM DASHBOARD</h1>
         <div class="yorha-header-subtitle">REAL-TIME MONITORING & ANALYTICS</div>
       </div>
-      
+
       <div class="yorha-header-status">
         <div class="yorha-status-item">
           <Activity size={16} />
@@ -281,8 +281,8 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
           <div class="yorha-metric-header">
             <Database size={24} />
             <h3>DATABASE</h3>
-            <svelte:component this={getStatusIcon(systemMetrics.database.connected ? 'healthy' : 'error')} 
-                             size={20} 
+            <svelte:component this={getStatusIcon(systemMetrics.database.connected ? 'healthy' : 'error')}
+                             size={20}
                              class={getStatusColor(systemMetrics.database.connected ? 'healthy' : 'error')} />
           </div>
           <div class="yorha-metric-stats">
@@ -306,8 +306,8 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
           <div class="yorha-metric-header">
             <Cpu size={24} />
             <h3>BACKEND</h3>
-            <svelte:component this={getStatusIcon(systemMetrics.backend.healthy ? 'healthy' : 'error')} 
-                             size={20} 
+            <svelte:component this={getStatusIcon(systemMetrics.backend.healthy ? 'healthy' : 'error')}
+                             size={20}
                              class={getStatusColor(systemMetrics.backend.healthy ? 'healthy' : 'error')} />
           </div>
           <div class="yorha-metric-stats">
@@ -331,8 +331,8 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
           <div class="yorha-metric-header">
             <Monitor size={24} />
             <h3>FRONTEND</h3>
-            <svelte:component this={getStatusIcon('healthy')} 
-                             size={20} 
+            <svelte:component this={getStatusIcon('healthy')}
+                             size={20}
                              class={getStatusColor('healthy')} />
           </div>
           <div class="yorha-metric-stats">
@@ -356,8 +356,8 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
           <div class="yorha-metric-header">
             <Zap size={24} />
             <h3>HEALTH</h3>
-            <svelte:component this={getStatusIcon('healthy')} 
-                             size={20} 
+            <svelte:component this={getStatusIcon('healthy')}
+                             size={20}
                              class={getStatusColor('healthy')} />
           </div>
           <div class="yorha-metric-stats">
@@ -384,7 +384,7 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
         <TrendingUp size={24} />
         REAL-TIME METRICS
       </h2>
-      
+
       <div class="yorha-charts-grid">
         <div class="yorha-chart-card">
           <h3>CPU USAGE</h3>
@@ -414,7 +414,7 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
 
     <!-- YoRHa System Status Component -->
     <section class="yorha-system-status">
-      <YoRHaSystemStatus 
+      <YoRHaSystemStatus
         systemLoad={systemMetrics.systemLoad || systemMetrics.backend?.cpuUsage || 45}
         gpuUtilization={systemMetrics.gpuUtilization || 78}
         memoryUsage={systemMetrics.backend?.memoryUsage || 62}
@@ -433,10 +433,10 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
         <Network size={24} />
         SYSTEM ARCHITECTURE
       </h2>
-      
+
       <div class="yorha-graph-container">
         {#each graphData.nodes as node}
-          <div class="yorha-graph-node yorha-node-{node.type}" 
+          <div class="yorha-graph-node yorha-node-{node.type}"
                style="left: {node.position.x * 200 + 100}px; top: {node.position.y * 150 + 50}px;">
             <div class="yorha-node-icon">
               {#if node.type === 'database'}
@@ -451,7 +451,7 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
             <div class="yorha-node-status yorha-status-{node.status}"></div>
           </div>
         {/each}
-        
+
         {#each graphData.edges as edge}
           <div class="yorha-graph-edge yorha-edge-{edge.type}">
             <span class="yorha-edge-label">{edge.traffic}% • {edge.latency}ms</span>
@@ -659,11 +659,11 @@ let realtimeInterval = $state<ReturnType<typeof setInterval>;
     .yorha-header-title h1 {
       @apply text-2xl flex-col;
     }
-    
+
     .yorha-metrics-grid {
       @apply grid-cols-1 gap-4;
     }
-    
+
     .yorha-charts-grid {
       @apply grid-cols-1 gap-4;
     }

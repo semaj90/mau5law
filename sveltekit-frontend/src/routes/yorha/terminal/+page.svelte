@@ -14,13 +14,24 @@
   } from 'lucide-svelte';
 
   // Terminal state
-  let terminalHistory = $state([]);
+  type TerminalEntry = {
+    id: number;
+    timestamp: string;
+    text: string;
+    type: 'system' | 'user' | 'success' | 'error' | 'info';
+  };
+
+  let terminalHistory = $state<TerminalEntry[]>([]);
   let currentInput = $state('');
   let isExecuting = $state(false);
-let terminalRef = $state<any;
+  let terminalRef = $state<HTMLElement | null>(null);
 
   // Terminal commands
-  const availableCommands >({
+  const availableCommands: Record<string, {
+    description: string;
+    usage: string;
+    execute: (args: string[]) => void | Promise<void>;
+  }> = {
     help: {
       description: 'Show available commands',
       usage: 'help [command]',
@@ -61,7 +72,7 @@ let terminalRef = $state<any;
       usage: 'version',
       execute: () => showVersion()
     }
-  });
+  };
 
   onMount(() => {
     // Initialize terminal with welcome message
@@ -94,7 +105,8 @@ let terminalRef = $state<any;
       try {
         await availableCommands[cmd].execute(args);
       } catch (error) {
-        addOutput(`Error executing ${cmd}: ${error.message}`, 'error');
+        const e = error as Error;
+        addOutput(`Error executing ${cmd}: ${e?.message || String(error)}`, 'error');
       }
     } else {
       addOutput(`Unknown command: ${cmd}. Type "help" for available commands.`, 'error');
@@ -115,7 +127,7 @@ let terminalRef = $state<any;
       }
     } else {
       addOutput('Available commands:', 'info');
-      Object.entries(availableCommands).forEach(([cmd, info]) => {
+  Object.entries(availableCommands).forEach(([cmd, info]: [string, { description: string; usage: string; execute: (args: string[]) => void | Promise<void> }]) => {
         addOutput(`  ${cmd.padEnd(10)} - ${info.description}`, 'info');
       });
     }
@@ -165,7 +177,8 @@ let terminalRef = $state<any;
         addOutput(`RAG query failed: HTTP ${response.status}`, 'error');
       }
     } catch (error) {
-      addOutput(`RAG query error: ${error.message}`, 'error');
+      const e = error as Error;
+      addOutput(`RAG query error: ${e?.message || String(error)}`, 'error');
     }
   }
 
@@ -183,7 +196,7 @@ let terminalRef = $state<any;
         const result = await response.json();
         addOutput('=== SEARCH RESULTS ===', 'success');
         if (result.results && result.results.length > 0) {
-          result.results.forEach((item, index) => {
+          result.results.forEach((item: any, index: number) => {
             addOutput(`${index + 1}. ${item.title || item.name || 'Untitled'}`, 'info');
           });
         } else {
@@ -193,7 +206,8 @@ let terminalRef = $state<any;
         addOutput(`Search failed: HTTP ${response.status}`, 'error');
       }
     } catch (error) {
-      addOutput(`Search error: ${error.message}`, 'error');
+      const e = error as Error;
+      addOutput(`Search error: ${e?.message || String(error)}`, 'error');
     }
   }
 
@@ -216,7 +230,8 @@ let terminalRef = $state<any;
             addOutput(`Health check failed: HTTP ${response.status}`, 'error');
           }
         } catch (error) {
-          addOutput(`Health check error: ${error.message}`, 'error');
+          const e = error as Error;
+          addOutput(`Health check error: ${e?.message || String(error)}`, 'error');
         }
         break;
 
@@ -326,7 +341,7 @@ let terminalRef = $state<any;
         <input
           type="text"
           bind:value={currentInput}
-          keydown={handleKeydown}
+          onkeydown={handleKeydown}
           disabled={isExecuting}
           class="yorha-terminal-input"
           placeholder="Type command... (try 'help')"

@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import YoRHaDetectiveCommandCenter from '$lib/components/yorha/YoRHaDetectiveCommandCenter.svelte';
   import { browser } from '$app/environment';
-  
+
   // Page data and state
   let systemData = $state({
     activeCases: 12,
@@ -65,13 +65,13 @@ let currentUser = $state({
   <title>YoRHa Command Center | Legal AI Detective Interface</title>
   <meta name="description" content="YoRHa Legal AI Detective Command Center - Manage cases, evidence, and investigations" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </svelte:head>
 
-<YoRHaDetectiveCommandCenter 
-  {currentUser} 
-  {systemData} 
+<YoRHaDetectiveCommandCenter
+  {currentUser}
+  {systemData}
 />
 
 <style>

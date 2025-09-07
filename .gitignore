@@ -632,3 +632,11 @@ pgvector-precompiled/
 sveltekit-frontend/todos/
 81125_nvme.txt
 sveltekit-frontend/nul
+
+# Go binaries
+go-inference-service/inference-service
+sse-rag-service/sse-rag-service
+document-chunker/document-chunker
+go-chat-service/go-chat-service
+*.exe
+

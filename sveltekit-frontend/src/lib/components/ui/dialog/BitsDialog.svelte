@@ -1,6 +1,6 @@
 <!-- Modern Bits-UI Dialog Component for Legal AI App -->
 <script lang="ts">
-  import { Dialog } from 'bits-ui';
+  import * as Dialog from './index';
   import { X } from 'lucide-svelte';
   import { cn } from '$lib/utils';
 
@@ -54,10 +54,10 @@
 
   <!-- Dialog Portal and Overlay -->
   <Dialog.Portal>
-    <Dialog.Overlay 
+    <Dialog.Overlay
       class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     />
-    
+
     <!-- Dialog Content -->
     <Dialog.Content
       className={cn(
@@ -75,7 +75,7 @@
               {title}
             </Dialog.Title>
           {/if}
-          
+
           {#if description}
             <Dialog.Description class="text-sm text-muted-foreground legal-dialog-description">
               {description}

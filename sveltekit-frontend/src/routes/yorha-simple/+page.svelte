@@ -1,8 +1,7 @@
 <!-- Simplified YoRHa Interface -->
 <!-- Svelte runes are declared globally in src/types/svelte-helpers.d.ts -->
-<script context="module" lang="ts">
-// Svelte runes are declared globally in `src/types/svelte-helpers.d.ts`.
-export {};
+<script module lang="ts">
+  export {};
 </script>
 
 <script lang="ts">
@@ -33,9 +32,9 @@ export {};
     networkLatency: 0
   });
 
-  let loading = state(false);
-  let error = state<string | null>(null);
-  let lastUpdated = state<Date>(new Date());
+  let loading = $state(false);
+  let error = $state<string | null>(null);
+  let lastUpdated = $state<Date>(new Date());
 
   // (Removed metricsStore to avoid stale capture; can reintroduce if reactive subscriptions needed)
 
@@ -46,8 +45,8 @@ export {};
   // Production API integration
   async function fetchSystemMetrics() {
     try {
-      loading = true;
-      error = null;
+  loading = true;
+  error = null;
 
       const response = await fetch('/api/yorha/system/status', {
         method: 'GET',
@@ -74,19 +73,19 @@ export {};
         networkLatency: data.networkLatency || Math.floor(Math.random() * 20) + 15
       };
 
-      lastUpdated = new Date();
+  lastUpdated = new Date();
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to fetch system metrics';
       console.error('System metrics fetch error:', err);
     } finally {
-      loading = false;
+  loading = false;
     }
   }
 
   async function performRAGQuery() {
     try {
-      loading = true;
-      error = null;
+  loading = true;
+  error = null;
 
       const response = await fetch('/api/yorha/enhanced-rag', {
         method: 'POST',
@@ -114,7 +113,7 @@ export {};
       error = err instanceof Error ? err.message : 'RAG query failed';
       console.error('RAG query error:', err);
     } finally {
-      loading = false;
+  loading = false;
     }
   }
 

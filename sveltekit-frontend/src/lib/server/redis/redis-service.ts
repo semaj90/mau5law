@@ -1,4 +1,5 @@
-import { createClient } from "redis";
+// Use our compatibility shim that wraps ioredis under a node-redis-like surface
+import createClient from '$lib/shims/redis-shim';
 
 // Redis pub/sub service for real-time updates
 
@@ -20,7 +21,8 @@ class RedisService {
   }
   private async initializeClients() {
     const config: RedisConfig = {
-      url: import.meta.env.REDIS_URL || "redis://localhost:6379",
+      // Standardize on port 4005 across the platform
+      url: import.meta.env.REDIS_URL || 'redis://127.0.0.1:4005',
       // retryDelayOnFailover: 100, // removed - deprecated
       maxRetriesPerRequest: 3,
     };
@@ -32,9 +34,9 @@ class RedisService {
       this.subscriber = createClient(config);
 
       // Setup error handlers
-      this.client.on("error", this.handleError.bind(this));
-      this.publisher.on("error", this.handleError.bind(this));
-      this.subscriber.on("error", this.handleError.bind(this));
+      this.client.on('error', this.handleError.bind(this));
+      this.publisher.on('error', this.handleError.bind(this));
+      this.subscriber.on('error', this.handleError.bind(this));
 
       // Connect all clients
       await Promise.all([
@@ -44,37 +46,29 @@ class RedisService {
       ]);
 
       this.isConnected = true;
-      console.log("✅ Redis clients connected successfully");
+      console.log('✅ Redis clients connected successfully');
     } catch (error: any) {
-      console.error("❌ Redis connection failed:", error);
+      console.error('❌ Redis connection failed:', error);
       this.isConnected = false;
     }
   }
   private handleError(error: Error) {
-    console.error("Redis error:", error);
+    console.error('Redis error:', error);
     this.isConnected = false;
   }
   // Evidence Updates
-  public async publishEvidenceCreated(
-    evidenceId: string,
-    evidenceData: any,
-    userId?: string,
-  ) {
-    await this.publish("evidence_update", {
-      type: "EVIDENCE_CREATED",
+  public async publishEvidenceCreated(evidenceId: string, evidenceData: any, userId?: string) {
+    await this.publish('evidence_update', {
+      type: 'EVIDENCE_CREATED',
       evidenceId,
       data: evidenceData,
       userId,
       timestamp: new Date().toISOString(),
     });
   }
-  public async publishEvidenceUpdated(
-    evidenceId: string,
-    changes: any,
-    userId?: string,
-  ) {
-    await this.publish("evidence_update", {
-      type: "EVIDENCE_UPDATED",
+  public async publishEvidenceUpdated(evidenceId: string, changes: any, userId?: string) {
+    await this.publish('evidence_update', {
+      type: 'EVIDENCE_UPDATED',
       evidenceId,
       changes,
       userId,
@@ -82,21 +76,17 @@ class RedisService {
     });
   }
   public async publishEvidenceDeleted(evidenceId: string, userId?: string) {
-    await this.publish("evidence_update", {
-      type: "EVIDENCE_DELETED",
+    await this.publish('evidence_update', {
+      type: 'EVIDENCE_DELETED',
       evidenceId,
       userId,
       timestamp: new Date().toISOString(),
     });
   }
   // Case Updates
-  public async publishCaseUpdated(
-    caseId: string,
-    changes: any,
-    userId?: string,
-  ) {
-    await this.publish("case_update", {
-      type: "CASE_UPDATED",
+  public async publishCaseUpdated(caseId: string, changes: any, userId?: string) {
+    await this.publish('case_update', {
+      type: 'CASE_UPDATED',
       caseId,
       changes,
       userId,
@@ -107,10 +97,10 @@ class RedisService {
     caseId: string,
     oldStatus: string,
     newStatus: string,
-    userId?: string,
+    userId?: string
   ) {
-    await this.publish("case_update", {
-      type: "CASE_STATUS_CHANGED",
+    await this.publish('case_update', {
+      type: 'CASE_STATUS_CHANGED',
       caseId,
       oldStatus,
       newStatus,
@@ -123,10 +113,10 @@ class RedisService {
     caseId: string,
     nodeId: string,
     position: { x: number; y: number },
-    userId?: string,
+    userId?: string
   ) {
-    await this.publish("canvas_update", {
-      type: "CANVAS_NODE_MOVED",
+    await this.publish('canvas_update', {
+      type: 'CANVAS_NODE_MOVED',
       caseId,
       nodeId,
       position,
@@ -134,26 +124,18 @@ class RedisService {
       timestamp: new Date().toISOString(),
     });
   }
-  public async publishCanvasNodeAdded(
-    caseId: string,
-    nodeData: any,
-    userId?: string,
-  ) {
-    await this.publish("canvas_update", {
-      type: "CANVAS_NODE_ADDED",
+  public async publishCanvasNodeAdded(caseId: string, nodeData: any, userId?: string) {
+    await this.publish('canvas_update', {
+      type: 'CANVAS_NODE_ADDED',
       caseId,
       nodeData,
       userId,
       timestamp: new Date().toISOString(),
     });
   }
-  public async publishCanvasStateChanged(
-    caseId: string,
-    state: any,
-    userId?: string,
-  ) {
-    await this.publish("canvas_update", {
-      type: "CANVAS_STATE_CHANGED",
+  public async publishCanvasStateChanged(caseId: string, state: any, userId?: string) {
+    await this.publish('canvas_update', {
+      type: 'CANVAS_STATE_CHANGED',
       caseId,
       state,
       userId,
@@ -162,8 +144,8 @@ class RedisService {
   }
   // POI Updates
   public async publishPOIUpdated(poiId: string, changes: any, userId?: string) {
-    await this.publish("poi_update", {
-      type: "POI_UPDATED",
+    await this.publish('poi_update', {
+      type: 'POI_UPDATED',
       poiId,
       changes,
       userId,
@@ -171,13 +153,9 @@ class RedisService {
     });
   }
   // Report Updates
-  public async publishReportUpdated(
-    reportId: string,
-    changes: any,
-    userId?: string,
-  ) {
-    await this.publish("report_update", {
-      type: "REPORT_UPDATED",
+  public async publishReportUpdated(reportId: string, changes: any, userId?: string) {
+    await this.publish('report_update', {
+      type: 'REPORT_UPDATED',
       reportId,
       changes,
       userId,
@@ -185,13 +163,9 @@ class RedisService {
     });
   }
   // User Activity
-  public async publishUserActivity(
-    userId: string,
-    activity: string,
-    metadata?: unknown,
-  ) {
-    await this.publish("user_activity", {
-      type: "USER_ACTIVITY",
+  public async publishUserActivity(userId: string, activity: string, metadata?: unknown) {
+    await this.publish('user_activity', {
+      type: 'USER_ACTIVITY',
       userId,
       activity,
       metadata,
@@ -201,7 +175,7 @@ class RedisService {
   // Generic publish method
   private async publish(channel: string, data: any) {
     if (!this.isConnected) {
-      console.warn("Redis not connected, skipping publish");
+      console.warn('Redis not connected, skipping publish');
       return;
     }
     try {
@@ -219,7 +193,7 @@ class RedisService {
       const serialized = JSON.stringify(value);
       await this.client.setEx(key, ttlSeconds, serialized);
     } catch (error: any) {
-      console.error("Cache set error:", error);
+      console.error('Cache set error:', error);
     }
   }
   public async getCache(key: string) {
@@ -229,7 +203,7 @@ class RedisService {
       const cached = await this.client.get(key);
       return cached ? JSON.parse(cached) : null;
     } catch (error: any) {
-      console.error("Cache get error:", error);
+      console.error('Cache get error:', error);
       return null;
     }
   }
@@ -239,17 +213,13 @@ class RedisService {
     try {
       await this.client.del(key);
     } catch (error: any) {
-      console.error("Cache delete error:", error);
+      console.error('Cache delete error:', error);
     }
   }
   // Bulk operations
-  public async publishBulkEvidenceUpdate(
-    evidenceIds: string[],
-    action: string,
-    userId?: string,
-  ) {
-    await this.publish("evidence_update", {
-      type: "EVIDENCE_BULK_UPDATE",
+  public async publishBulkEvidenceUpdate(evidenceIds: string[], action: string, userId?: string) {
+    await this.publish('evidence_update', {
+      type: 'EVIDENCE_BULK_UPDATE',
       evidenceIds,
       action,
       userId,
@@ -258,7 +228,7 @@ class RedisService {
   }
   // Analytics and metrics
   public async trackEvent(event: string, data: any, userId?: string) {
-    await this.publish("analytics", {
+    await this.publish('analytics', {
       event,
       data,
       userId,

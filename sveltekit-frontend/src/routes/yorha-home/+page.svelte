@@ -20,7 +20,7 @@
   // tsserver sometimes reports Svelte components as having no default export — silence for now
   // @ts-ignore: Svelte component typing mismatch
   import YoRHaTable from '$lib/components/yorha/YoRHaTable.svelte';
-  
+
   // System data for command center - Svelte 5 runes pattern
   let systemData = $state({
     activeCases: 12,
@@ -34,10 +34,10 @@
   });
 
   // API response states
-  let ragResult = state<any>(null);
-  let searchResults = state<any[]>([]);
-  let isLoading = state<boolean>(false);
-  let activeSection = state<string>('dashboard');
+  let ragResult = $state<any>(null);
+  let searchResults = $state<any[]>([]);
+  let isLoading = $state<boolean>(false);
+  let activeSection = $state<string>('dashboard');
 
   // Table configuration for results
   const tableColumns = [
@@ -55,8 +55,8 @@
 
   // API integration functions
   async function performRAGQuery(query: string = "Legal case precedent analysis") {
-    isLoading.value = true;
-    ragResult.value = null;
+  isLoading = true;
+  ragResult = null;
 
     try {
       const response = await fetch('/api/yorha/enhanced-rag', {
@@ -66,20 +66,20 @@
       });
 
       if (response.ok) {
-        ragResult.value = await response.json();
-        systemData.value.aiQueries += 1;
-        activeSection.value = 'rag-results';
+  ragResult = await response.json();
+  systemData.aiQueries += 1;
+  activeSection = 'rag-results';
       }
     } catch (error) {
       console.error('RAG query failed:', error);
     } finally {
-      isLoading.value = false;
+  isLoading = false;
     }
   }
 
   async function performSemanticSearch(searchTerm: string = "contract liability") {
-    isLoading.value = true;
-    searchResults.value = [];
+  isLoading = true;
+  searchResults = [];
 
     try {
       const response = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(searchTerm)}&limit=10`);
@@ -87,7 +87,7 @@
       if (response.ok) {
         const data = await response.json();
         const results = Array.isArray(data?.results) ? data.results : [];
-        searchResults.value = results.map((item: any, index: number) => ({
+  searchResults = results.map((item: any, index: number) => ({
           id: (item && (item.id ?? item._id)) || index + 1,
           title: (item && (item.title ?? item.name)) || `Document ${index + 1}`,
           type: (item && item.type) || 'Legal Document',
@@ -95,12 +95,12 @@
           status: (item && item.status) || 'active',
           metadata: item
         }));
-        activeSection.value = 'search-results';
+  activeSection = 'search-results';
       }
     } catch (error) {
       console.error('Semantic search failed:', error);
     } finally {
-      isLoading.value = false;
+  isLoading = false;
     }
   }
 </script>
@@ -130,7 +130,7 @@
     <nav>
       <ul>
         <li>
-          <button class="yorha-btn-sidebar" class:active={activeSection === 'dashboard'} onclick={() => activeSection.value = 'dashboard'}>
+          <button class="yorha-btn-sidebar" class:active={activeSection === 'dashboard'} onclick={() => (activeSection = 'dashboard')}>
             <Monitor />
             <span>Dashboard</span>
           </button>
@@ -164,43 +164,43 @@
   </aside>
 
   <main class="yorha-main-content">
-    {#if isLoading.value}
+  {#if isLoading}
       <div class="loading-overlay">
         <div class="spinner"></div>
         <p>Processing...</p>
       </div>
     {/if}
 
-    {#if activeSection.value === 'dashboard'}
+  {#if activeSection === 'dashboard'}
       <section id="dashboard">
         <h2 class="section-title">System Dashboard</h2>
-        <YoRHaCommandCenter bind:systemData={systemData.value} />
+  <YoRHaCommandCenter {systemData} />
       </section>
     {/if}
 
-    {#if activeSection.value === 'rag-results' && ragResult.value}
+  {#if activeSection === 'rag-results' && ragResult}
       <section id="rag-results">
         <h2 class="section-title">RAG Analysis Results</h2>
         <div class="rag-summary">
           <h3>Summary</h3>
-          <p>{ragResult.value.summary}</p>
+          <p>{ragResult.summary}</p>
         </div>
         <div class="rag-details">
           <h3>Key Points</h3>
           <ul>
-            {#each ragResult.value.keyPoints as point}
+      {#each ragResult.keyPoints as point}
               <li>{point}</li>
             {/each}
           </ul>
         </div>
-        <YoRHaTable title="Cited Sources" columns={tableColumns} data={ragResult.value.sources} />
+    <YoRHaTable title="Cited Sources" columns={tableColumns} data={ragResult.sources} />
       </section>
     {/if}
 
-    {#if activeSection.value === 'search-results' && searchResults.value.length > 0}
+  {#if activeSection === 'search-results' && searchResults.length > 0}
       <section id="search-results">
         <h2 class="section-title">Semantic Search Results</h2>
-        <YoRHaTable title="Found Documents" columns={tableColumns} bind:data={searchResults.value} />
+    <YoRHaTable title="Found Documents" columns={tableColumns} bind:data={searchResults} />
       </section>
     {/if}
   </main>

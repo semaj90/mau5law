@@ -21,7 +21,7 @@ export interface SyncOperation {
   synced: boolean;
   retryCount: number;
 }
-class LokiEvidenceService {
+export class LokiEvidenceService {
   private db: Loki | null = null;
   private evidenceCollection: Collection<LokiEvidence> | null = null;
   private syncQueue: Collection<SyncOperation> | null = null;
@@ -36,20 +36,20 @@ class LokiEvidenceService {
   private async initializeDatabase(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        this.db = new Loki("evidence_db.json", {
-          adapter: new LokiIndexedAdapter("evidence_db"),
+        this.db = new Loki('evidence_db.json', {
+          adapter: new LokiIndexedAdapter('evidence_db'),
           autoload: true,
           autoloadCallback: () => {
             this.setupCollections();
             this.isInitialized = true;
-            console.log("✅ Loki database initialized");
+            console.log('✅ Loki database initialized');
             resolve();
           },
           autosave: true,
           autosaveInterval: 4000,
         });
       } catch (error: any) {
-        console.error("❌ Loki database initialization failed:", error);
+        console.error('❌ Loki database initialization failed:', error);
         reject(error);
       }
     });
@@ -59,27 +59,24 @@ class LokiEvidenceService {
 
     // Evidence collection with indices for fast queries
     this.evidenceCollection =
-      (this.db.getCollection("evidence") as Collection<LokiEvidence>) ||
-      (this.db.addCollection("evidence", {
-        indices: ["id", "caseId", "type"],
-        unique: ["id"],
+      (this.db.getCollection('evidence') as Collection<LokiEvidence>) ||
+      (this.db.addCollection('evidence', {
+        indices: ['id', 'caseId', 'type'],
+        unique: ['id'],
       }) as Collection<LokiEvidence>);
 
     // Sync queue for offline operations
     this.syncQueue =
-      (this.db.getCollection("syncQueue") as Collection<SyncOperation>) ||
-      (this.db.addCollection("syncQueue", {
-        indices: ["timestamp", "synced", "type"],
+      (this.db.getCollection('syncQueue') as Collection<SyncOperation>) ||
+      (this.db.addCollection('syncQueue', {
+        indices: ['timestamp', 'synced', 'type'],
       }) as Collection<SyncOperation>);
 
     // Clean up old synced operations (keep last 1000)
     const syncedOps = this.syncQueue.find({ synced: true });
     if (syncedOps.length > 1000) {
       const toDelete = syncedOps
-        .sort(
-          (a, b) =>
-            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-        )
+        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
         .slice(0, syncedOps.length - 1000);
 
       toDelete.forEach((op) => this.syncQueue?.remove(op));
@@ -88,7 +85,7 @@ class LokiEvidenceService {
   // Evidence CRUD operations with local caching
   public async createEvidence(evidence: Evidence): Promise<void> {
     if (!this.evidenceCollection) {
-      throw new Error("Database not initialized");
+      throw new Error('Database not initialized');
     }
     try {
       // Insert into local collection
@@ -97,8 +94,8 @@ class LokiEvidenceService {
       // Add to sync queue
       await this.addToSyncQueue({
         id: crypto.randomUUID(),
-        type: "CREATE",
-        collectionName: "evidence",
+        type: 'CREATE',
+        collectionName: 'evidence',
         recordId: evidence.id,
         data: evidence,
         timestamp: new Date().toISOString(),
@@ -111,16 +108,13 @@ class LokiEvidenceService {
         this.processSyncQueue();
       }
     } catch (error: any) {
-      console.error("Failed to create evidence locally:", error);
+      console.error('Failed to create evidence locally:', error);
       throw error;
     }
   }
-  public async updateEvidence(
-    evidenceId: string,
-    changes: Partial<Evidence>
-  ): Promise<void> {
+  public async updateEvidence(evidenceId: string, changes: Partial<Evidence>): Promise<void> {
     if (!this.evidenceCollection) {
-      throw new Error("Database not initialized");
+      throw new Error('Database not initialized');
     }
     try {
       const existing = this.evidenceCollection.findOne({
@@ -143,8 +137,8 @@ class LokiEvidenceService {
       // Add to sync queue
       await this.addToSyncQueue({
         id: crypto.randomUUID(),
-        type: "UPDATE",
-        collectionName: "evidence",
+        type: 'UPDATE',
+        collectionName: 'evidence',
         recordId: evidenceId,
         data: changes,
         timestamp: new Date().toISOString(),
@@ -157,13 +151,13 @@ class LokiEvidenceService {
         this.processSyncQueue();
       }
     } catch (error: any) {
-      console.error("Failed to update evidence locally:", error);
+      console.error('Failed to update evidence locally:', error);
       throw error;
     }
   }
   public async deleteEvidence(evidenceId: string): Promise<void> {
     if (!this.evidenceCollection) {
-      throw new Error("Database not initialized");
+      throw new Error('Database not initialized');
     }
     try {
       const existing = this.evidenceCollection.findOne({
@@ -178,8 +172,8 @@ class LokiEvidenceService {
       // Add to sync queue
       await this.addToSyncQueue({
         id: crypto.randomUUID(),
-        type: "DELETE",
-        collectionName: "evidence",
+        type: 'DELETE',
+        collectionName: 'evidence',
         recordId: evidenceId,
         timestamp: new Date().toISOString(),
         synced: false,
@@ -191,7 +185,7 @@ class LokiEvidenceService {
         this.processSyncQueue();
       }
     } catch (error: any) {
-      console.error("Failed to delete evidence locally:", error);
+      console.error('Failed to delete evidence locally:', error);
       throw error;
     }
   }
@@ -213,13 +207,13 @@ class LokiEvidenceService {
 
     return this.evidenceCollection.where((obj: LokiEvidence) => {
       const searchFields = [
-        (obj as any).title || "",
-        (obj as any).description || "",
-        (obj as any).type || "",
+        (obj as any).title || '',
+        (obj as any).description || '',
+        (obj as any).type || '',
         ...((obj as any).tags || []),
-        (obj as any).metadata ? JSON.stringify((obj as any).metadata) : "",
+        (obj as any).metadata ? JSON.stringify((obj as any).metadata) : '',
       ]
-        .join(" ")
+        .join(' ')
         .toLowerCase();
 
       return searchFields.includes(query.toLowerCase());
@@ -229,10 +223,7 @@ class LokiEvidenceService {
     if (!this.evidenceCollection) return [];
     return this.evidenceCollection.find({ type: type } as any);
   }
-  public getEvidenceByDateRange(
-    startDate: string,
-    endDate: string
-  ): LokiEvidence[] {
+  public getEvidenceByDateRange(startDate: string, endDate: string): LokiEvidence[] {
     if (!this.evidenceCollection) return [];
 
     return this.evidenceCollection.where((obj: LokiEvidence) => {
@@ -257,11 +248,11 @@ class LokiEvidenceService {
 
     all.forEach((evidence) => {
       // Count by type
-      const type = (evidence as any).type || "unknown";
+      const type = (evidence as any).type || 'unknown';
       byType[type] = (byType[type] || 0) + 1;
 
       // Count by case
-      const caseId = (evidence as any).caseId || "unknown";
+      const caseId = (evidence as any).caseId || 'unknown';
       byCase[caseId] = (byCase[caseId] || 0) + 1;
 
       // Count recent evidence
@@ -324,25 +315,25 @@ class LokiEvidenceService {
     const { type, recordId, data } = operation;
 
     switch (type) {
-      case "CREATE":
-        await fetch("/api/evidence", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+      case 'CREATE':
+        await fetch('/api/evidence', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
         break;
 
-      case "UPDATE":
+      case 'UPDATE':
         await fetch(`/api/evidence/${recordId}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
         break;
 
-      case "DELETE":
+      case 'DELETE':
         await fetch(`/api/evidence/${recordId}`, {
-          method: "DELETE",
+          method: 'DELETE',
         });
         break;
     }
@@ -383,15 +374,11 @@ class LokiEvidenceService {
       } else {
         // Both have the item - check timestamps and resolve conflict
         const serverUpdated = new Date(serverItem.timeline?.updatedAt || 0);
-        const localUpdated = new Date(
-          (localItem as any).timeline?.updatedAt || 0
-        );
+        const localUpdated = new Date((localItem as any).timeline?.updatedAt || 0);
 
         if (serverUpdated > localUpdated) {
           // Server is newer - update local
-          this.evidenceCollection.update(
-            Object.assign({}, localItem, serverItem)
-          );
+          this.evidenceCollection.update(Object.assign({}, localItem, serverItem));
         }
         // If local is newer, keep local version (it will sync to server later)
       }
@@ -413,9 +400,7 @@ class LokiEvidenceService {
 
     // This is a placeholder - Loki.js doesn't have a direct compact method
     // In a real implementation, you might recreate the database with current data
-    console.log(
-      "Database compaction requested - implement based on Loki.js version"
-    );
+    console.log('Database compaction requested - implement based on Loki.js version');
   }
   public async clearLocalData(): Promise<void> {
     if (!this.evidenceCollection || !this.syncQueue) return;

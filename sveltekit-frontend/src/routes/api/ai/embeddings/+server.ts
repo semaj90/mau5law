@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   try {
     const body: EmbeddingRequest = await request.json();
-    
+
     if (!body.text) {
       return json({ error: 'Text is required' }, { status: 400 });
     }
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Try backends in order of preference
     const backends = ['ollama', 'vllm', 'fallback'];
-    
+
     for (const backend of backends) {
       try {
         const result = await generateEmbedding(text, model, backend, targetDimensions);
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
             model: result.model,
             backend: result.backend,
             dimensions: result.embedding.length,
-            processingTime: Math.round(processingTime)
+            processingTime: Math.round(processingTime),
           } as EmbeddingResponse);
         }
       } catch (error) {
@@ -63,13 +63,15 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     return json({ error: 'All embedding backends unavailable' }, { status: 503 });
-
   } catch (error) {
     console.error('Embedding API error:', error);
-    return json({ 
-      error: 'Internal server error', 
-      details: error instanceof Error ? error.message : String(error) 
-    }, { status: 500 });
+    return json(
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -80,7 +82,7 @@ export const GET: RequestHandler = async () => {
   const health = {
     ollama: await checkOllamaHealth(),
     vllm: await checkVLLMHealth(),
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 
   return json(health);
@@ -90,22 +92,21 @@ export const GET: RequestHandler = async () => {
  * Generate embedding using specific backend
  */
 async function generateEmbedding(
-  text: string, 
-  model: string, 
+  text: string,
+  model: string,
   backend: string,
   targetDimensions: number
 ): Promise<{ embedding: number[]; model: string; backend: string } | null> {
-  
   switch (backend) {
     case 'ollama':
       return await generateOllamaEmbedding(text, model);
-      
+
     case 'vllm':
       return await generateVLLMEmbedding(text, model);
-      
+
     case 'fallback':
       return await generateFallbackEmbedding(text, targetDimensions);
-      
+
     default:
       return null;
   }
@@ -121,9 +122,9 @@ async function generateOllamaEmbedding(text: string, model: string) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model,
-        prompt: text
+        prompt: text,
       }),
-      signal: AbortSignal.timeout(30000)
+      signal: AbortSignal.timeout(30000),
     });
 
     if (!response.ok) {
@@ -131,7 +132,7 @@ async function generateOllamaEmbedding(text: string, model: string) {
     }
 
     const data = await response.json();
-    
+
     if (!data.embedding || !Array.isArray(data.embedding)) {
       throw new Error('Invalid embedding format from Ollama');
     }
@@ -139,9 +140,8 @@ async function generateOllamaEmbedding(text: string, model: string) {
     return {
       embedding: data.embedding,
       model,
-      backend: 'ollama'
+      backend: 'ollama',
     };
-
   } catch (error) {
     console.error('Ollama embedding error:', error);
     throw error;
@@ -158,9 +158,9 @@ async function generateVLLMEmbedding(text: string, model: string) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: model || 'sentence-transformers/all-MiniLM-L6-v2',
-        input: text
+        input: text,
       }),
-      signal: AbortSignal.timeout(30000)
+      signal: AbortSignal.timeout(30000),
     });
 
     if (!response.ok) {
@@ -168,7 +168,7 @@ async function generateVLLMEmbedding(text: string, model: string) {
     }
 
     const data = await response.json();
-    
+
     if (!data.data?.[0]?.embedding) {
       throw new Error('Invalid embedding format from vLLM');
     }
@@ -176,9 +176,8 @@ async function generateVLLMEmbedding(text: string, model: string) {
     return {
       embedding: data.data[0].embedding,
       model: data.model || model,
-      backend: 'vllm'
+      backend: 'vllm',
     };
-
   } catch (error) {
     console.error('vLLM embedding error:', error);
     throw error;
@@ -192,19 +191,20 @@ async function generateVLLMEmbedding(text: string, model: string) {
 async function generateFallbackEmbedding(text: string, dimensions: number) {
   try {
     // Simple bag-of-words + TF-IDF approach for fallback
-    const words = text.toLowerCase()
+    const words = text
+      .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter(w => w.length > 2);
+      .filter((w) => w.length > 2);
 
     // Create a basic embedding based on text features
     const embedding = new Array(dimensions).fill(0);
-    
+
     // Hash-based feature extraction
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
       const hash = simpleHash(word);
-      
+
       for (let j = 0; j < dimensions; j++) {
         const feature = (hash + j) % dimensions;
         embedding[feature] += 1.0 / Math.sqrt(words.length);
@@ -223,7 +223,7 @@ async function generateFallbackEmbedding(text: string, dimensions: number) {
     const textLength = text.length;
     const avgWordLength = words.reduce((sum, w) => sum + w.length, 0) / words.length;
     const uniqueWords = new Set(words).size;
-    
+
     // Incorporate these features into the embedding
     if (dimensions > 10) {
       embedding[0] = Math.tanh(textLength / 1000); // Text length feature
@@ -234,9 +234,8 @@ async function generateFallbackEmbedding(text: string, dimensions: number) {
     return {
       embedding,
       model: 'fallback-tfidf',
-      backend: 'fallback'
+      backend: 'fallback',
     };
-
   } catch (error) {
     console.error('Fallback embedding error:', error);
     throw error;
@@ -268,10 +267,9 @@ async function checkOllamaHealth(): Promise<{ healthy: boolean; models?: string[
     if (response.ok) {
       const data = await response.json();
       const models = data.models?.map((m: any) => m.name) || [];
-      const hasEmbeddingModel = models.some((name: string) => 
-        name.includes('nomic-embed') || 
-        name.includes('embed') ||
-        name.includes('sentence')
+      const hasEmbeddingModel = models.some(
+        (name: string) =>
+          name.includes('nomic-embed') || name.includes('embed') || name.includes('sentence')
       );
 
       return {
@@ -283,9 +281,9 @@ async function checkOllamaHealth(): Promise<{ healthy: boolean; models?: string[
       return { healthy: false, error: `HTTP ${response.status}` };
     }
   } catch (error) {
-    return { 
-      healthy: false, 
-      error: error instanceof Error ? error.message : 'Connection failed' 
+    return {
+      healthy: false,
+      error: error instanceof Error ? error.message : 'Connection failed',
     };
   }
 }
@@ -311,9 +309,9 @@ async function checkVLLMHealth(): Promise<{ healthy: boolean; models?: string[];
       return { healthy: false, error: `HTTP ${response.status}` };
     }
   } catch (error) {
-    return { 
-      healthy: false, 
-      error: error instanceof Error ? error.message : 'Connection failed' 
+    return {
+      healthy: false,
+      error: error instanceof Error ? error.message : 'Connection failed',
     };
   }
 }
