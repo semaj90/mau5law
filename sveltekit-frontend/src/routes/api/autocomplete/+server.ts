@@ -2,7 +2,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Auto-Complete API Endpoint
  * Provides real-time legal phrase suggestions using semantic search
  */

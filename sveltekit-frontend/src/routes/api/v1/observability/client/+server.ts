@@ -1,4 +1,4 @@
-/**
+/*
  * Client-side metrics collection endpoint
  * Integrates with server-side observability infrastructure
  */

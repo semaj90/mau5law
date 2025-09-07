@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * AI Summary Save Endpoint
  * Saves legal AI analysis results to PostgreSQL with audit trail
  */

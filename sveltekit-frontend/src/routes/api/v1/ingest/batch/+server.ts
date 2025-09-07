@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 
 // import { INGEST_SERVICE_URL, MAX_BATCH_SIZE } from '$env/static/private';
 
-/**
+/*
  * Batch Document Ingestion API
  * Handles multiple documents with enhanced error handling and progress tracking
  * Integrates with Go ingest service on port 8227

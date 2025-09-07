@@ -18,10 +18,10 @@ export async function POST({ request }): Promise<any> {
         console.log(`Starting indexing for directory: ${directoryPath}`);
 
         // 1. Scan files using fast-glob
-        const files = await fg(`${directoryPath}/**/*`, {
+        const files = await fg(`${directoryPath}/*/*`, {
             dot: true, // Include dotfiles
             onlyFiles: true, // Only return files, not directories
-            ignore: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/build/**'] // Common ignores
+            ignore: ['**/node_modules/*', '**/.git/*', '**/dist/*', '**/build/*'] // Common ignores
         });
 
         console.log(`Found ${files.length} files. Delegating to Go microservice...`);

@@ -1,4 +1,4 @@
-/**
+/*
  * Gallery Download API - File Download Handler
  * Handles secure file downloads with access control and logging
  */

@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 
-/**
+/*
  * WebSocket endpoint for real-time security validation progress updates
  * This handles WebSocket upgrade requests for the registration form
  */
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ request }) => {
   );
 };
 
-/**
+/*
  * WebSocket handler (would be implemented by the SvelteKit adapter)
  * This is a placeholder showing the expected behavior
  */
@@ -44,7 +44,7 @@ export interface ValidationProgressMessage {
   details?: any;
 }
 
-/**
+/*
  * Example WebSocket message flow for validation progress:
  * 
  * 1. { type: 'progress', message: 'Initializing validation...', percentage: 0 }

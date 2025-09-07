@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * SvelteKit API Route: GPU Tensor Processing
  * Integrates with Go GPU microservice and provides load balancing
  */

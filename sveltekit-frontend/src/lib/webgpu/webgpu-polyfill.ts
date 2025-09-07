@@ -2,6 +2,7 @@
 // Provides GPU acceleration for legal AI vector processing with fallback support
 
 import type { WebGPUDevice, WebGPUComputeShader, WebGPUVectorOperation } from '$lib/types/vector-jobs';
+import { shaderCacheManager } from './shader-cache-manager';
 
 export class WebGPUPolyfill {
   private device: GPUDevice | null = null;
@@ -44,6 +45,9 @@ export class WebGPUPolyfill {
 
           this.queue = this.device.queue;
           this.isWebGPUAvailable = true;
+
+          // Initialize shader cache manager
+          await shaderCacheManager.initialize(this.device);
 
           console.log('🔥 WebGPU initialized successfully');
           console.log('GPU:', this.adapter.info);
@@ -287,6 +291,158 @@ export class WebGPUPolyfill {
     return { module, pipeline, bindGroupLayout };
   }
 
+  private async createSimilarityShader(vectorLength: number): Promise<WebGPUComputeShader> {
+    if (!this.device) throw new Error('WebGPU device not available');
+
+    const shaderId = `similarity_${vectorLength}`;
+    
+    // Try to get cached shader first
+    try {
+      const cached = await shaderCacheManager.getShader(shaderId, '', {
+        type: 'compute',
+        entryPoint: 'main'
+      });
+      
+      if (cached && cached.shaderModule && cached.pipeline && cached.bindGroupLayout) {
+        console.log(`🎯 Using cached similarity shader: ${shaderId}`);
+        return {
+          module: cached.shaderModule,
+          pipeline: cached.pipeline as GPUComputePipeline,
+          bindGroupLayout: cached.bindGroupLayout
+        };
+      }
+    } catch (error) {
+      console.warn('Failed to retrieve cached shader:', error);
+    }
+
+    const shaderCode = `
+      struct VectorData {
+        values: array<f32>
+      };
+
+      struct SimilarityResult {
+        dot_product: f32,
+        norm1: f32,
+        norm2: f32
+      };
+
+      @group(0) @binding(0) var<storage, read> vector1: VectorData;
+      @group(0) @binding(1) var<storage, read> vector2: VectorData;
+      @group(0) @binding(2) var<storage, read_write> result: SimilarityResult;
+
+      @compute @workgroup_size(256)
+      fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
+        let index = global_id.x;
+        
+        if (index >= ${vectorLength}u) {
+          return;
+        }
+        
+        let v1 = vector1.values[index];
+        let v2 = vector2.values[index];
+        
+        let dot_contribution = v1 * v2;
+        let norm1_contribution = v1 * v1;  
+        let norm2_contribution = v2 * v2;
+
+        // Simple atomic accumulation (requires shader-f16 feature for atomicAdd on f32)
+        // For compatibility, we'll use a different approach
+        if (index == 0u) {
+          var total_dot: f32 = 0.0;
+          var total_norm1: f32 = 0.0;
+          var total_norm2: f32 = 0.0;
+          
+          for (var i: u32 = 0u; i < ${vectorLength}u; i++) {
+            let val1 = vector1.values[i];
+            let val2 = vector2.values[i];
+            total_dot += val1 * val2;
+            total_norm1 += val1 * val1;
+            total_norm2 += val2 * val2;
+          }
+          
+          result.dot_product = total_dot;
+          result.norm1 = sqrt(total_norm1);
+          result.norm2 = sqrt(total_norm2);
+        }
+      }
+    `;
+
+    const module = this.device.createShaderModule({
+      code: shaderCode,
+    });
+
+    const bindGroupLayout = this.device.createBindGroupLayout({
+      entries: [
+        {
+          binding: 0,
+          visibility: GPUShaderStage.COMPUTE,
+          buffer: { type: 'read-only-storage' },
+        },
+        {
+          binding: 1,
+          visibility: GPUShaderStage.COMPUTE,
+          buffer: { type: 'read-only-storage' },
+        },
+        {
+          binding: 2,
+          visibility: GPUShaderStage.COMPUTE,
+          buffer: { type: 'storage' },
+        },
+      ],
+    });
+
+    const pipeline = this.device.createComputePipeline({
+      layout: this.device.createPipelineLayout({
+        bindGroupLayouts: [bindGroupLayout],
+      }),
+      compute: {
+        module,
+        entryPoint: 'main',
+      },
+    });
+
+    const shaderResult = { module, pipeline, bindGroupLayout };
+
+    // Cache the compiled shader for future use
+    try {
+      const compiledShader = {
+        id: shaderId,
+        wgsl: shaderCode,
+        shaderModule: module,
+        pipeline,
+        bindGroupLayout,
+        config: {
+          type: 'compute' as const,
+          entryPoint: 'main'
+        },
+        metadata: {
+          compiledAt: Date.now(),
+          lastUsed: Date.now(),
+          compileTime: performance.now() - Date.now(), // Approximate
+          cacheHit: false,
+          usageCount: 1,
+          averageExecutionTime: 0,
+          description: `Vector similarity compute shader for ${vectorLength} dimensions`,
+          operation: 'vector_similarity',
+          tags: ['similarity', 'vector', 'compute', 'webgpu']
+        }
+      };
+
+      await shaderCacheManager.cacheShaderWithEmbedding(
+        compiledShader,
+        compiledShader.metadata.description,
+        compiledShader.metadata.operation,
+        compiledShader.metadata.tags
+      );
+      
+      console.log(`✅ Cached new similarity shader: ${shaderId}`);
+    } catch (error) {
+      console.warn('Failed to cache shader:', error);
+    }
+
+    return shaderResult;
+  }
+
   private async computeEmbeddingWebGL(
     inputVector: number[],
     dimensions: number
@@ -493,10 +649,86 @@ export class WebGPUPolyfill {
   }
 
   private async computeSimilarityWebGPU(vector1: number[], vector2: number[]): Promise<number> {
-    // WebGPU cosine similarity computation
-    // Implementation similar to embedding computation but for dot product and norms
-    // Simplified for brevity - would implement full compute shader
-    return this.computeSimilarityCPU(vector1, vector2);
+    if (!this.device) throw new Error('WebGPU device not available');
+
+    const vectorLength = vector1.length;
+    
+    // Get or create similarity compute shader
+    const shaderKey = `similarity_${vectorLength}`;
+    let shader = this.shaderCache.get(shaderKey);
+
+    if (!shader) {
+      shader = await this.createSimilarityShader(vectorLength);
+      this.shaderCache.set(shaderKey, shader);
+    }
+
+    // Create buffers
+    const vector1Buffer = this.device.createBuffer({
+      size: vectorLength * 4,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+    });
+
+    const vector2Buffer = this.device.createBuffer({
+      size: vectorLength * 4,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+    });
+
+    const resultBuffer = this.device.createBuffer({
+      size: 12, // 3 floats: dot_product, norm1, norm2
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+    });
+
+    const readBuffer = this.device.createBuffer({
+      size: 12,
+      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+    });
+
+    // Write input data
+    this.queue!.writeBuffer(vector1Buffer, 0, new Float32Array(vector1));
+    this.queue!.writeBuffer(vector2Buffer, 0, new Float32Array(vector2));
+
+    // Create bind group
+    const bindGroup = this.device.createBindGroup({
+      layout: shader.bindGroupLayout,
+      entries: [
+        { binding: 0, resource: { buffer: vector1Buffer } },
+        { binding: 1, resource: { buffer: vector2Buffer } },
+        { binding: 2, resource: { buffer: resultBuffer } },
+      ],
+    });
+
+    // Dispatch compute shader
+    const commandEncoder = this.device.createCommandEncoder();
+    const computePass = commandEncoder.beginComputePass();
+
+    computePass.setPipeline(shader.pipeline);
+    computePass.setBindGroup(0, bindGroup);
+    computePass.dispatchWorkgroups(1); // Single workgroup since thread 0 processes all elements
+    computePass.end();
+
+    // Copy result
+    commandEncoder.copyBufferToBuffer(resultBuffer, 0, readBuffer, 0, 12);
+    this.queue!.submit([commandEncoder.finish()]);
+
+    // Read result
+    await readBuffer.mapAsync(GPUMapMode.READ);
+    const results = new Float32Array(readBuffer.getMappedRange());
+    
+    const dotProduct = results[0];
+    const norm1 = results[1];
+    const norm2 = results[2];
+    
+    readBuffer.unmap();
+
+    // Cleanup buffers
+    vector1Buffer.destroy();
+    vector2Buffer.destroy();
+    resultBuffer.destroy();
+    readBuffer.destroy();
+
+    // Calculate cosine similarity
+    const magnitude = norm1 * norm2;
+    return magnitude === 0 ? 0 : dotProduct / magnitude;
   }
 
   private async computeSimilarityWebGL(vector1: number[], vector2: number[]): Promise<number> {

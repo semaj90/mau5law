@@ -110,3 +110,19 @@ Further reading
 - Svelte docs: stores, actions, onMount/onDestroy
 
 Keep each primitive small, test interactions cross-platform, and document the API so consumers can style freely.
+
+## Assets & performance: mipmaps and caching
+
+When rendering textures (WebGL/WebGPU), enable mipmaps for power-of-two textures and sample with a mip-filter (e.g., `LINEAR_MIPMAP_LINEAR`). Reasons:
+- Fewer cache misses: sampling lower mip levels reduces texture cache thrashing at smaller on-screen sizes.
+- Lower bandwidth: GPU fetches smaller texels, improving throughput on animating/scrolling scenes.
+- Better quality: trilinear filtering avoids shimmering/aliasing as elements scale.
+
+Guidelines
+- Generate mipmaps once per texture and let the sampler pick LOD automatically; you don’t need to manually swap resolutions.
+- Use power-of-two texture dimensions where possible to get native mipmap support everywhere.
+- For UI images (non-WebGL), prefer responsive images (`srcset`/`sizes`) or pre-generated thumbnails; browsers cache the smallest acceptable asset for the current DPR/viewport.
+- Caching: smaller assets improve hit ratio and reduce transfer time. Set far-future cache-control with revisioned URLs; use `ETag`/`immutable` where appropriate.
+
+Rule of thumb
+- If the on-screen size is much smaller than the source, sampling from a lower mip level is both faster and cleaner. Keep originals for zoom/HD, let the pipeline (mipmaps or responsive images) serve the right level.

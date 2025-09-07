@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { glyphDiffusionService } from '$lib/services/glyph-diffusion-service.js';
 import { embeddingService } from '$lib/services/embedding-service.js';
 
-/**
+/*
  * Glyph Tensor Search API
  * 
  * GET /api/glyph/search - Search for similar tensor artifacts

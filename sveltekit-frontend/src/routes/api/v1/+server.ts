@@ -1,4 +1,4 @@
-/**
+/*
  * Unified JSON API Router v1 - SvelteKit 2 Production Implementation
  * Integrates all 37 Go microservices with production-quality endpoints
  * Windows-native deployment with comprehensive error handling
@@ -110,7 +110,7 @@ const PRODUCTION_ENDPOINTS = {
   }
 } as const;
 
-/**
+/*
  * Protocol-aware request handler with automatic failover
  */
 async function makeServiceRequest(
@@ -167,7 +167,7 @@ async function makeServiceRequest(
   }
 }
 
-/**
+/*
  * GET /api/v1 - API Discovery & Health Overview
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -231,7 +231,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * Comprehensive health check across all services
  */
 async function handleHealthCheck(): Promise<Response> {
@@ -299,7 +299,7 @@ async function handleHealthCheck(): Promise<Response> {
   } satisfies APIResponse<typeof data>);
 }
 
-/**
+/*
  * Service discovery endpoint
  */
 async function handleServiceDiscovery(): Promise<Response> {
@@ -329,7 +329,7 @@ async function handleServiceDiscovery(): Promise<Response> {
   } satisfies APIResponse<typeof data>);
 }
 
-/**
+/*
  * Performance metrics endpoint
  */
 async function handleMetrics(): Promise<Response> {
@@ -363,7 +363,7 @@ async function handleMetrics(): Promise<Response> {
   } satisfies APIResponse<typeof data>);
 }
 
-/**
+/*
  * Cluster status with Windows-native process monitoring
  */
 async function handleClusterStatus(): Promise<Response> {
@@ -392,7 +392,7 @@ async function handleClusterStatus(): Promise<Response> {
   } satisfies APIResponse<typeof data>);
 }
 
-/**
+/*
  * Helper function to determine service protocols
  */
 function getServiceProtocols(config: any): string[] {

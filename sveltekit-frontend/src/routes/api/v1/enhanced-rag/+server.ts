@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Enhanced RAG API - Direct Integration with Go Microservices
  * Provides seamless integration with Enhanced RAG Go service (port 8094)
  */
@@ -47,7 +47,7 @@ export interface EnhancedRAGResponse {
   vectorResults?: any[];
 }
 
-/**
+/*
  * GET /api/v1/enhanced-rag - Enhanced RAG service health and capabilities
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/enhanced-rag - Enhanced RAG query with vector integration
  */
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -295,7 +295,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 };
 
-/**
+/*
  * PUT /api/v1/enhanced-rag - Upload document for RAG processing
  */
 export const PUT: RequestHandler = async ({ request }) => {
@@ -345,7 +345,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * DELETE /api/v1/enhanced-rag - Remove document from RAG index
  */
 export const DELETE: RequestHandler = async ({ url }) => {

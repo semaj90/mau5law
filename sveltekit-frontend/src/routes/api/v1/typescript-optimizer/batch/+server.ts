@@ -12,7 +12,7 @@ import type {
 
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 
-/** POST /api/v1/typescript-optimizer/batch - Batch process TypeScript errors */
+/* POST /api/v1/typescript-optimizer/batch - Batch process TypeScript errors */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json() as OptimizedFixRequest;

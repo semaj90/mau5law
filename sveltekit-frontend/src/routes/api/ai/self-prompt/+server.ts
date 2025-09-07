@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Self-Prompting AI System for Prosecutors
  * Generates contextual suggestions based on case data and workflow
  */

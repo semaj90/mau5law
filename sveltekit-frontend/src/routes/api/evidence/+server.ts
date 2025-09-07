@@ -63,7 +63,7 @@ export interface EvidenceData {
   [k: string]: any;
 }
 
-/**
+/*
  * Lightweight fallback analysis used when a real AI backend is not available.
  * Keeps types satisfied and provides predictable default values.
  */

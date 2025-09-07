@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 
-/**
+/*
  * Server-Sent Events endpoint for streaming AI suggestions
  */
 export async function POST({ request }: RequestEvent): Promise<any> {
@@ -184,7 +184,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
   }
 }
 
-/**
+/*
  * Handle GET requests for stream testing
  */
 export async function GET({ url }: RequestEvent): Promise<any> {

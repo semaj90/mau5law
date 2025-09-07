@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * AI-Assisted Boilerplate Generation API
  * Generates legal boilerplate text based on high-performing phrase patterns
  */

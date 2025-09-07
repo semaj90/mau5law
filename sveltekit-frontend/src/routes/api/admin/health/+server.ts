@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * System Health API Endpoint
  */
 

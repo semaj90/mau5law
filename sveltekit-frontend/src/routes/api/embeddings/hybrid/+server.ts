@@ -2,7 +2,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Hybrid Vector Embedding API - PGVector + Qdrant + Local LLM Integration
  * Supports multiple embedding models with fallback strategies
  */
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * Generate embedding using PGVector (PostgreSQL)
  */
 async function generatePGVectorEmbedding(
@@ -211,7 +211,7 @@ async function generatePGVectorEmbedding(
   }
 }
 
-/**
+/*
  * Generate embedding using Qdrant
  */
 async function generateQdrantEmbedding(
@@ -257,7 +257,7 @@ async function generateQdrantEmbedding(
   }
 }
 
-/**
+/*
  * Generate embedding using hybrid approach (PGVector → Qdrant → Local)
  */
 async function generateHybridEmbedding(
@@ -283,7 +283,7 @@ async function generateHybridEmbedding(
   return { embedding, backend: "local_fallback" };
 }
 
-/**
+/*
  * Generate embedding using Ollama
  */
 async function generateOllamaEmbedding(
@@ -329,7 +329,7 @@ async function generateOllamaEmbedding(
   }
 }
 
-/**
+/*
  * Generate local embedding (fallback)
  */
 function generateLocalEmbedding(content: string, model: string): number[] {
@@ -374,7 +374,7 @@ function generateLocalEmbedding(content: string, model: string): number[] {
   return embedding;
 }
 
-/**
+/*
  * Store embedding in database
  */
 async function storeEmbedding(
@@ -392,7 +392,7 @@ async function storeEmbedding(
   }
 }
 
-/**
+/*
  * Check system health
  */
 async function checkSystemHealth(): Promise<any> {
@@ -431,7 +431,7 @@ async function checkSystemHealth(): Promise<any> {
   return health;
 }
 
-/**
+/*
  * Utility functions
  */
 function hashContent(content: string): string {

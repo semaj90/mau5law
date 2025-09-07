@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Enhanced AI Chat API Endpoint
  * Integrates AI input synthesis, LegalBERT middleware, RAG pipeline, and streaming responses
  */

@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Evidence Upload API (Production Ready)
  * Responsibilities:
  *  - Accept multipart/form-data (files[] + optional flags)

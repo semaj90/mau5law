@@ -1,4 +1,4 @@
-/**
+/*
  * Database Setup API Endpoint
  * Initializes all required tables, indexes, and sample data for the unified vector system
  */

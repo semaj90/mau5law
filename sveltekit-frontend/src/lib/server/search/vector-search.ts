@@ -38,7 +38,12 @@ if (!browser) {
       cache = cacheModule.cache;
     } catch (error: any) {
       console.warn("Redis cache not available:", error);
-      cache = { get: async () => null, set: async () => {} };
+      cache = { 
+        get: async () => null, 
+        set: async () => {},
+        getSearchResults: async () => null,
+        setSearchResults: async () => {}
+      };
     }
     try {
       // Import Loki.js for local database
@@ -442,10 +447,9 @@ export async function vectorSearch(
     searchType = "hybrid",
   } = options;
 
-  // Check cache first
+  // Check cache first using specialized search cache
   if (useCache) {
-    const cacheKey = `vector_search:${JSON.stringify({ query, ...options })}`;
-    const cached = (await cache.get(cacheKey)) as VectorSearchResult[] | null;
+    const cached = (await cache.getSearchResults(query, 'vector', options)) as VectorSearchResult[] | null;
     if (cached) {
       return {
         results: cached,
@@ -526,10 +530,9 @@ export async function vectorSearch(
         source = "fuzzy_search";
       }
     }
-    // Cache successful results
+    // Cache successful results using specialized search cache
     if (useCache && results.length > 0) {
-      const cacheKey = `vector_search:${JSON.stringify({ query, ...options })}`;
-      await cache.set(cacheKey, results, 5 * 60 * 1000); // 5 minutes
+      await cache.setSearchResults(query, 'vector', results, options);
     }
     return {
       results,

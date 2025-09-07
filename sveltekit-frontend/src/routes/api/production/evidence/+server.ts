@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Production Evidence Processing API
  * Smart detection and analysis pipeline
  */

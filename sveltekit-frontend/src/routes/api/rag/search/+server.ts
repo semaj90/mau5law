@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * RAG Search API - Semantic search across processed documents
  */
 import { db, documents, embeddings, searchSessions } from "$lib/server/database";

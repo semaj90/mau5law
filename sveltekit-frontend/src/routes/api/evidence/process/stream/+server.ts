@@ -1,4 +1,4 @@
-/**
+/*
  * SvelteKit Streaming API for Real-time Legal Evidence Processing
  * 
  * Provides Server-Sent Events (SSE) for streaming workflow updates

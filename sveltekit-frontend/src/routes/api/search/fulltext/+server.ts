@@ -1,4 +1,4 @@
-/**
+/*
  * Full-Text Search API - PostgreSQL + Drizzle ORM + Loki.js
  * Traditional text search with advanced PostgreSQL features
  */
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * Search PostgreSQL with Drizzle ORM using various text search modes
  */
 async function searchPostgreSQL(
@@ -284,7 +284,7 @@ async function searchPostgreSQL(
   }
 }
 
-/**
+/*
  * Search Loki.js log entries for system activity
  */
 async function searchLokiLogs(

@@ -1,5 +1,5 @@
 
-/**
+/*
  * Documents API with pgvector integration
  * Handles document CRUD operations with vector embeddings
  */

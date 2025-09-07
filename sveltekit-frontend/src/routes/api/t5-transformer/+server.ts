@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * T5 Transformer API
  * Sequence-to-sequence processing for legal document transformation
  * Integrates with t5-transformer Go service on port 8122

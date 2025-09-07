@@ -9,7 +9,7 @@ import { insertChatMessageWithEmbedding, searchSimilarMessages } from '$lib/serv
 import type { RequestHandler } from './$types';
 
 
-/**
+/*
  * Database Persistence Test for AI Recommendations
  * Tests database operations, vector embeddings, and recommendations storage
  */
@@ -490,7 +490,7 @@ async function cleanupTestData(userId: string, sessionId: string): Promise<any> 
   }
 }
 
-/**
+/*
  * GET endpoint for quick health check
  */
 export async function GET(): Promise<any> {

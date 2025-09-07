@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Document Detail API - Complete Server-Side Integration
  * Combines Postgres+pgvector, Neo4j, and GPU acceleration for comprehensive document analysis
  * Implements the "Slow Path" from the hybrid cache architecture

@@ -1,12 +1,12 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Job Status Polling API - Real-time Job Progress Tracking
  * Provides polling endpoint for ingestion job status updates
  */
 
 import { json } from '@sveltejs/kit';
-import { redis } from '$lib/server/cache/redis-service';
+import { getJobStatus, updateJobProgress, getJobProgress, publishJobUpdate } from '$lib/api/services/job-cache-service';
 
 export interface JobStatus {
   id: string;
@@ -54,22 +54,18 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
 
     console.log(`🔍 GET /api/v1/jobs/${jobId}/status`);
 
-    // Get job data from Redis
-    const jobKey = `ingestion:${jobId}`;
-    const jobData = await redis.get(jobKey);
+    // Get job data from unified cache service
+    const job = await getJobStatus(jobId);
 
-    if (!jobData) {
+    if (!job) {
       return json({
         success: false,
         error: 'Job not found'
       }, { status: 404 });
     }
 
-    const job = JSON.parse(jobData) as JobStatus;
-
     // Get additional progress data if available
-    const progressKey = `progress:${jobId}`;
-    const progressData = await redis.get(progressKey);
+    const progressData = await getJobProgress(jobId);
     
     if (progressData) {
       try {

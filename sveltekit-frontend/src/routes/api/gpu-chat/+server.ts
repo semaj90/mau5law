@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 
-/**
+/*
  * GPU-Optimized Production System with CUDA/TensorRT
  * Integrates Go microservices, Ollama, LangChain, NVIDIA toolkit
  * Port 5173 with automatic fallback

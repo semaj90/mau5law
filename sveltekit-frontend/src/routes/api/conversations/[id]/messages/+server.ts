@@ -1,4 +1,4 @@
-/**
+/*
  * Conversation Messages API - POST new messages to conversation
  */
 

@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { cognitiveCache } from '$lib/services/cognitive-cache-integration';
 
-/**
+/*
  * Test endpoint for thread-safe JSONB operations and GPU acceleration
  * Tests concurrent access patterns and race condition prevention
  */

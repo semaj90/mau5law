@@ -8,7 +8,7 @@ import { ollamaSuggestionsService } from '$lib/services/ollama-suggestions-servi
 import { enhancedRAGSuggestionsService } from '$lib/services/enhanced-rag-suggestions-service.js';
 import { aiSuggestionsClient } from '$lib/services/ai-suggestions-grpc-client.js';
 
-/**
+/*
  * Health check endpoint for AI Suggestions services
  */
 export async function GET({ url }: RequestEvent): Promise<any> {

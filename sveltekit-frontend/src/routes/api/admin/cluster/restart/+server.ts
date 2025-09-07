@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Cluster Restart API Endpoint
  * Handles graceful rolling restart of worker processes
  */
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-/**
+/*
  * Perform rolling restart of all workers
  */
 async function performRollingRestart(
@@ -205,7 +205,7 @@ async function performRollingRestart(
   }
 }
 
-/**
+/*
  * Wait for a worker to exit
  */
 function waitForWorkerExit(worker: Worker): Promise<void> {
@@ -221,7 +221,7 @@ function waitForWorkerExit(worker: Worker): Promise<void> {
   });
 }
 
-/**
+/*
  * Wait for cluster to have the expected number of healthy workers
  */
 function waitForHealthyWorkers(

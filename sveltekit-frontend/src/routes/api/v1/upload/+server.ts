@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Enhanced Upload API Endpoint - SvelteKit 2 Production
  * Integrates with Upload service (port 8093) with advanced file processing
  * Supports document analysis, OCR, embedding generation, and metadata extraction
@@ -69,7 +69,7 @@ const FILE_CONFIG = {
   ]
 };
 
-/**
+/*
  * POST /api/v1/upload - Enhanced File Upload with Processing
  */
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   }
 };
 
-/**
+/*
  * GET /api/v1/upload - Upload Service Info and Health
  */
 export const GET: RequestHandler = async ({ url }) => {

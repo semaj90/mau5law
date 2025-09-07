@@ -1,4 +1,4 @@
-/**
+/*
  * Gallery Upload API - File Upload Handler
  * Handles file uploads for all media types in the gallery system
  */

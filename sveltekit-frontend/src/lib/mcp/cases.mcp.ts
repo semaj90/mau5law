@@ -7,7 +7,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { sql, eq, and, like, desc } from 'drizzle-orm';
 import * as schema from '../db/schema.js';
-import { redis } from '../server/cache/redis-service.js';
+import { cache } from '../server/cache/redis.js';
 import { minioService } from '../server/storage/minio-service.js';
 
 // Database connection
@@ -51,9 +51,9 @@ export async function loadCase(caseId: string): Promise<CaseData | null> {
   try {
     console.log(`🔍 MCP Tool: loadCase(${caseId})`);
 
-    // Check Redis cache first
+    // Check centralized cache first
     const cacheKey = `case:${caseId}`;
-    const cached = await redis.get<CaseData>(cacheKey);
+    const cached = await cache.get<CaseData>(cacheKey);
     if (cached) {
       console.log(`📦 Cache hit for case ${caseId}`);
       return cached;
@@ -75,8 +75,8 @@ export async function loadCase(caseId: string): Promise<CaseData | null> {
       return null;
     }
 
-    // Cache the result
-    await redis.set(cacheKey, result, 300); // 5 minutes TTL
+    // Cache the result (TTL will be converted from seconds to ms automatically)
+    await cache.set(cacheKey, result, 300); // 5 minutes TTL
 
     console.log(`✅ Case ${caseId} loaded from database`);
     return result as CaseData;
@@ -108,10 +108,10 @@ export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | '
     }).returning();
 
     // Invalidate related caches
-    await redis.del(`user:${caseData.userId}:cases`);
+    await cache.del(`user:${caseData.userId}:cases`);
 
-    // Publish event to Redis pub/sub for real-time updates
-    await redis.publish('case:created', {
+    // Publish event for real-time updates
+    await cache.publish('case:created', {
       caseId: newCase.id,
       title: newCase.title,
       userId: newCase.userId,
@@ -149,11 +149,11 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
     }
 
     // Invalidate caches
-    await redis.del(`case:${caseId}`);
-    await redis.del(`user:${updated.userId}:cases`);
+    await cache.del(`case:${caseId}`);
+    await cache.del(`user:${updated.userId}:cases`);
 
     // Publish update event
-    await redis.publish('case:updated', {
+    await cache.publish('case:updated', {
       caseId,
       changes: updates,
       timestamp: Date.now()
@@ -199,10 +199,10 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
     }).returning();
 
     // Invalidate case cache
-    await redis.del(`case:${caseId}`);
+    await cache.del(`case:${caseId}`);
 
     // Publish evidence added event
-    await redis.publish('evidence:added', {
+    await cache.publish('evidence:added', {
       caseId,
       evidenceId: newEvidence.id,
       evidenceType: evidence.evidenceType,
@@ -230,9 +230,8 @@ export async function searchCases(query: string, userId: string, filters?: {
   try {
     console.log(`🔍 MCP Tool: searchCases("${query}")`);
 
-    // Check cache first
-    const cacheKey = `search:cases:${Buffer.from(query + JSON.stringify(filters)).toString('base64')}`;
-    const cached = await redis.get(cacheKey);
+    // Check cache first - use specialized search cache
+    const cached = await cache.getSearchResults(query, 'cases', filters);
     if (cached) {
       console.log(`📦 Cache hit for search: ${query}`);
       return cached;
@@ -273,8 +272,8 @@ export async function searchCases(query: string, userId: string, filters?: {
       totalCount: results.length
     };
 
-    // Cache results for 5 minutes
-    await redis.set(cacheKey, searchResult, 300);
+    // Cache results using specialized search cache
+    await cache.setSearchResults(query, 'cases', searchResult.cases, filters);
 
     console.log(`✅ Found ${results.length} cases`);
     return searchResult;
@@ -301,7 +300,7 @@ export async function getUserCases(userId: string, options: {
 
     // Check cache
     const cacheKey = `user:${userId}:cases:${JSON.stringify(options)}`;
-    const cached = await redis.get(cacheKey);
+    const cached = await cache.get(cacheKey);
     if (cached) {
       return cached;
     }
@@ -326,8 +325,8 @@ export async function getUserCases(userId: string, options: {
 
     const result = { cases: cases as CaseData[], totalCount: count };
 
-    // Cache for 2 minutes
-    await redis.set(cacheKey, result, 120);
+    // Cache for 2 minutes (TTL will be converted from seconds to ms)
+    await cache.set(cacheKey, result, 120);
 
     return result;
 

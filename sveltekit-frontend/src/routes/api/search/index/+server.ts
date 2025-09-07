@@ -1,4 +1,4 @@
-/**
+/*
  * Unified Search Index API
  * Orchestrates: PostgreSQL + Drizzle + pgvector + Qdrant + MinIO + Loki.js
  */
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * Build PostgreSQL + Drizzle index with pgvector
  */
 async function buildPostgreSQLIndex() {
@@ -149,7 +149,7 @@ async function buildPostgreSQLIndex() {
   }
 }
 
-/**
+/*
  * Build Qdrant vector index
  */
 async function buildVectorIndex() {
@@ -216,7 +216,7 @@ async function buildVectorIndex() {
   }
 }
 
-/**
+/*
  * Build MinIO object storage index
  */
 async function buildMinIOIndex() {
@@ -287,7 +287,7 @@ async function buildMinIOIndex() {
   }
 }
 
-/**
+/*
  * Build Loki.js log index
  */
 async function buildLokiIndex() {

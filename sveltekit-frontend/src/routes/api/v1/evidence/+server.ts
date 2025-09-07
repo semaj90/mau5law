@@ -1,4 +1,4 @@
-/**
+/*
  * Evidence API Routes with Lucia v3 Authentication
  * GET /api/v1/evidence - List user's evidence (with pagination)
  * POST /api/v1/evidence - Create new evidence
@@ -17,7 +17,7 @@ const EvidenceQuerySchema = z.object({
   isPublic: z.coerce.boolean().optional()
 });
 
-/**
+/*
  * GET /api/v1/evidence
  * List user's evidence with pagination and filtering
  */
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/evidence
  * Create new evidence
  */

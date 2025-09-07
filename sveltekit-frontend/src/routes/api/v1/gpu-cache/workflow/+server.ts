@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Legal Workflow Optimization API
  * Integrates binary encoding, GPU caching, and NES orchestration for legal workflows
  */

@@ -4,7 +4,7 @@ import { getQueueStats, getJobStatus, cancelJob, clearCompletedJobs } from "$lib
 import type { RequestHandler } from './$types';
 
 
-/**
+/*
  * Get overall queue statistics
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 };
 
-/**
+/*
  * Cancel a job or clear completed jobs
  */
 export const DELETE: RequestHandler = async ({ url }) => {

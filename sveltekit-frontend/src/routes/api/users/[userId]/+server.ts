@@ -1,6 +1,8 @@
 import { users } from '$lib/server/db/schema-postgres';
 import { db } from '$lib/server/db/index';
 import { eq } from 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import { authService } from '$lib/server/auth';
 import type { RequestHandler } from './$types';
 
 
@@ -108,10 +110,10 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       if (data.role !== undefined) updateData.role = data.role;
       if (data.isActive !== undefined) updateData.isActive = data.isActive;
     }
-    // Handle password change
+    // Handle password change using authService
     if (data.password) {
-      const bcrypt = await import("bcrypt");
-      updateData.hashedPassword = await bcrypt.hash(data.password, 12);
+      const argon2id = new (await import('oslo/password')).Argon2id();
+      updateData.hashedPassword = await argon2id.hash(data.password);
     }
     const [updatedUser] = await db
       .update(users)
@@ -234,8 +236,8 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       updateData.avatarUrl = data.avatarUrl;
     } else if (data.operation === "updatePassword") {
       if (data.password) {
-        const bcrypt = await import("bcrypt");
-        updateData.hashedPassword = await bcrypt.hash(data.password, 12);
+        const argon2id = new (await import('oslo/password')).Argon2id();
+        updateData.hashedPassword = await argon2id.hash(data.password);
       }
     } else if (data.operation === "updateProfile") {
       if (data.name !== undefined) updateData.name = data.name;

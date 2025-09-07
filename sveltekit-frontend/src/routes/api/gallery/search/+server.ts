@@ -1,4 +1,4 @@
-/**
+/*
  * Gallery Search API - Advanced Search and Filtering
  * Provides comprehensive search capabilities across all gallery content
  */

@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Enhanced GPU Cache API Endpoint - Full Stack Integration
  * Provides RESTful interface with Binary Encoding + NES Cache + WebGPU + SOM Clustering
  * Integrates: Binary encoding, NES cache orchestrator, WebGPU RAG, SOM clustering, PostgreSQL+pgvector, Qdrant, Neo4j

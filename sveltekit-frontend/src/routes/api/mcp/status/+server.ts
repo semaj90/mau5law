@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * MCP Integration Status API Endpoint
  * Provides status information about the enhanced MCP integration
  */

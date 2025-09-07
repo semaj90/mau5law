@@ -34,7 +34,7 @@ function getNATSService(): EnhancedNATSMessagingService {
 	return natsService;
 }
 
-/** POST /api/v1/nats - Publish message or perform NATS operations */
+/* POST /api/v1/nats - Publish message or perform NATS operations */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 };
 
-/** GET /api/v1/nats - Get NATS system status and metrics */
+/* GET /api/v1/nats - Get NATS system status and metrics */
 export const GET: RequestHandler = async () => {
 	try {
 		const nats = getNATSService();

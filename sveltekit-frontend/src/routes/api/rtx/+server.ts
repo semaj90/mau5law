@@ -1,4 +1,4 @@
-/**
+/*
  * RTX 3060 Ti Integration API
  * SvelteKit → Go → CUDA Pipeline with FlashAttention2 + Tensor Core optimization
  * Achieves 150 GFLOPS with 4-bit quantization and 50:1 compression

@@ -1,4 +1,4 @@
-/**
+/*
  * Enhanced RAG API Endpoint
  * GPU-accelerated RAG queries with semantic embeddings
  */
@@ -19,7 +19,7 @@ interface RAGRequest {
   };
 }
 
-/**
+/*
  * POST /api/v1/embeddings/rag
  * Enhanced RAG query with GPU-accelerated embeddings
  */
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * GET /api/v1/embeddings/rag
  * Get enhanced RAG endpoint information
  */

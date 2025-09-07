@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 
-/**
+/*
  * Production AI Connection Endpoint
  * Connects to actual Ollama service running on port 11434
  * Validates model availability and establishes connection

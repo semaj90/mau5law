@@ -6,7 +6,7 @@
 import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant";
 import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { createClient } from "redis";
+import { cache, cacheEmbedding, getCachedEmbedding, cacheSearchResults, getCachedSearchResults } from '$lib/server/cache/redis';
 
 // import neo4j from "neo4j-driver"; // TODO: Install neo4j-driver dependency
 const neo4j = null as any;
@@ -152,7 +152,6 @@ export interface IngestionStats {
 export class EnhancedIngestionPipeline {
   private qdrantClient: InstanceType<typeof QdrantClient>;
   private pgPool: Pool;
-  private redisClient: any;
   private rabbitConnection: any;
   private neo4jDriver: any;
   private vectorStore?: QdrantVectorStore;
@@ -191,9 +190,6 @@ export class EnhancedIngestionPipeline {
     });
     this.pgPool = new Pool({
       connectionString: config.pgConnectionString || import.meta.env.DATABASE_URL,
-    });
-    this.redisClient = createClient({
-      url: config.redisUrl || "redis://localhost:6379",
     });
     this.neo4jDriver = neo4j.driver(
       config.neo4jUrl || "bolt://localhost:7687",

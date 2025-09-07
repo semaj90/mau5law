@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * GPU Shader Cache Integration Test Endpoint
  * Tests all aspects of the reinforcement learning shader cache system
  */

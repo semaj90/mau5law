@@ -2,7 +2,7 @@ import cluster from "node:cluster";
 import type { RequestHandler } from './$types';
 
 
-/**
+/*
  * Cluster Scaling API Endpoint
  * Handles dynamic scaling of worker processes
  */

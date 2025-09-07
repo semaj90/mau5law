@@ -7,7 +7,7 @@ import { users, sessions, cases } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 import { logger } from '$lib/server/logger';
 
-/**
+/*
  * Development Authentication Endpoint
  * GET  -> create / ensure dev session (optional ?seed=true)
  * POST -> clear session

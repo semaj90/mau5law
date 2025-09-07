@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * WebAssembly Inference Test API Endpoint
  * Tests the complete WebAssembly RAG inference pipeline
  */

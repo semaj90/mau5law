@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Enhanced Vector Intelligence Recommendations API
  * Integrates GPU caching, reinforcement learning, and multi-protocol optimization
  * Provides intelligent recommendations using vector analysis and machine learning

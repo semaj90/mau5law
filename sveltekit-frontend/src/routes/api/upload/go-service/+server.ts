@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types';
 const GO_UPLOAD_SERVICE_URL = 'http://localhost:8093';
 const GO_UPLOAD_TIMEOUT = 30000; // 30 seconds
 
-/**
+/*
  * Proxy to Go Upload Service
  * Routes file uploads to the Go microservice for processing
  */
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * Health check endpoint for Go service
  */
 export const GET: RequestHandler = async () => {

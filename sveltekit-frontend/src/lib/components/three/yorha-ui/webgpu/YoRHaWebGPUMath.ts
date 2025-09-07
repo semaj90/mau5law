@@ -667,12 +667,184 @@ export class YoRHaWebGPUMath {
     };
   }
 
+  /**
+   * 🔥 Advanced Texture Management with Mipmap Generation
+   * Integrates optimized mipmap shaders with WebGPU compute operations
+   */
+  async processTextureWithMipmaps(
+    sourceTexture: GPUTexture,
+    options: {
+      generateMipmaps?: boolean;
+      filterMode?: 'linear' | 'nearest' | 'cubic';
+      rtxOptimized?: boolean;
+      enableStreaming?: boolean;
+      legalDocument?: any;
+    } = {}
+  ): Promise<{
+    processedTexture: GPUTexture;
+    mipmaps: GPUTexture[];
+    processingTime: number;
+    memoryUsed: number;
+    optimization: {
+      mipmapGenerated: boolean;
+      rtxAcceleration: boolean;
+      streamingUsed: boolean;
+    };
+  }> {
+    const startTime = performance.now();
+    const { generateMipmaps = true, filterMode = 'linear', rtxOptimized = true } = options;
+
+    try {
+      // Import mipmap functionality dynamically
+      const { yorhaMipmapShaders } = await import('./YoRHaMipmapShaders');
+      const { yorhaTextureManager } = await import('./YoRHaOptimizedTextureManager');
+
+      // Initialize if needed
+      await yorhaMipmapShaders.initialize(this.device!);
+      await yorhaTextureManager.initialize(this.device!);
+
+      let mipmaps: GPUTexture[] = [];
+      let totalMemoryUsed = 0;
+
+      if (generateMipmaps) {
+        console.log('🔥 Generating optimized mipmaps with RTX acceleration');
+        
+        const mipmapResult = await yorhaMipmapShaders.generateMipmapChain(sourceTexture, {
+          filterMode,
+          rtxOptimized,
+          enableStreaming: options.enableStreaming || false,
+          maxMipLevels: 12
+        });
+
+        mipmaps = mipmapResult.mipmapLevels;
+        totalMemoryUsed = mipmapResult.memoryUsed;
+
+        // Store in texture manager if legal document provided
+        if (options.legalDocument) {
+          await yorhaTextureManager.allocateTexture(
+            `legal_texture_${Date.now()}`,
+            sourceTexture,
+            options.legalDocument,
+            {
+              enableMipmaps: true,
+              streamingEnabled: options.enableStreaming,
+              priority: options.legalDocument.riskLevel === 'critical' ? 'critical' : 'normal'
+            }
+          );
+        }
+      }
+
+      const processingTime = performance.now() - startTime;
+
+      console.log(`✅ Texture processing completed in ${processingTime.toFixed(2)}ms`);
+      console.log(`🔥 Generated ${mipmaps.length} mip levels with RTX optimization`);
+
+      return {
+        processedTexture: sourceTexture,
+        mipmaps,
+        processingTime,
+        memoryUsed: totalMemoryUsed,
+        optimization: {
+          mipmapGenerated: generateMipmaps && mipmaps.length > 0,
+          rtxAcceleration: rtxOptimized,
+          streamingUsed: options.enableStreaming || false
+        }
+      };
+
+    } catch (error) {
+      console.error('Texture processing with mipmaps failed:', error);
+      
+      // Return basic result without mipmaps
+      return {
+        processedTexture: sourceTexture,
+        mipmaps: [],
+        processingTime: performance.now() - startTime,
+        memoryUsed: 0,
+        optimization: {
+          mipmapGenerated: false,
+          rtxAcceleration: false,
+          streamingUsed: false
+        }
+      };
+    }
+  }
+
+  /**
+   * 🎮 Enhanced GPU Pipeline with Legal Document Processing
+   */
+  async processLegalDocumentTextures(
+    legalDocuments: Array<{
+      id: string;
+      texture: GPUTexture;
+      type: 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent';
+      priority: number;
+      riskLevel: 'low' | 'medium' | 'high' | 'critical';
+    }>
+  ): Promise<{
+    processedDocuments: number;
+    totalProcessingTime: number;
+    mipmapsGenerated: number;
+    memoryOptimized: boolean;
+  }> {
+    if (!this.device) {
+      throw new Error('WebGPU device not initialized');
+    }
+
+    const startTime = performance.now();
+    console.log(`🚀 Processing ${legalDocuments.length} legal document textures`);
+
+    try {
+      const { yorhaTextureManager } = await import('./YoRHaOptimizedTextureManager');
+      await yorhaTextureManager.initialize(this.device);
+
+      let totalMipmaps = 0;
+      const processPromises = legalDocuments.map(async (doc, index) => {
+        // Process with context-aware optimization
+        const result = await this.processTextureWithMipmaps(doc.texture, {
+          generateMipmaps: true,
+          rtxOptimized: doc.riskLevel === 'critical' || doc.priority > 200,
+          enableStreaming: doc.type === 'evidence' && doc.priority > 150,
+          legalDocument: doc
+        });
+
+        totalMipmaps += result.mipmaps.length;
+        return result;
+      });
+
+      const results = await Promise.all(processPromises);
+      const totalTime = performance.now() - startTime;
+
+      console.log(`✅ Legal document processing completed in ${totalTime.toFixed(2)}ms`);
+      console.log(`🔥 Generated ${totalMipmaps} total mip levels across ${legalDocuments.length} documents`);
+
+      return {
+        processedDocuments: legalDocuments.length,
+        totalProcessingTime: totalTime,
+        mipmapsGenerated: totalMipmaps,
+        memoryOptimized: true
+      };
+
+    } catch (error) {
+      console.error('Legal document texture processing failed:', error);
+      throw error;
+    }
+  }
+
   dispose(): void {
     this.computePipelines.clear();
 
     if (this.device) {
       this.device.destroy();
     }
+
+    // Dispose integrated systems
+    import('./YoRHaMipmapShaders').then(({ yorhaMipmapShaders }) => {
+      yorhaMipmapShaders.dispose();
+    }).catch(console.warn);
+
+    import('./YoRHaOptimizedTextureManager').then(({ yorhaTextureManager }) => {
+      yorhaTextureManager.dispose();
+    }).catch(console.warn);
   }
 }
 

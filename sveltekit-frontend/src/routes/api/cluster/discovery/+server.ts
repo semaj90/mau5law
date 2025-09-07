@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Service Discovery and Failover API
  * Automatic service discovery, health monitoring, and failover mechanisms
  * Integrates with cluster-manager Go service on port 8103

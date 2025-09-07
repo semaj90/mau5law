@@ -4,37 +4,35 @@
  */
 
 const CACHE_NAME = 'legal-ai-v1';
-const STATIC_ASSETS = [
-  '/',
-  '/offline.html'
-];
+const STATIC_ASSETS = ['/', '/offline.html'];
 
 // Install event - cache static assets
-self.addEventListener('install', function(event) {
+self.addEventListener('install', function (event) {
   console.log('Service Worker: Installing...');
-  
+
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(function(cache) {
+    caches
+      .open(CACHE_NAME)
+      .then(function (cache) {
         console.log('Service Worker: Caching static assets');
         return cache.addAll(STATIC_ASSETS);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.error('Service Worker: Failed to cache static assets', error);
       })
   );
-  
+
   self.skipWaiting();
 });
 
 // Activate event - clean up old caches
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', function (event) {
   console.log('Service Worker: Activating...');
-  
+
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
+    caches.keys().then(function (cacheNames) {
       return Promise.all(
-        cacheNames.map(function(cacheName) {
+        cacheNames.map(function (cacheName) {
           if (cacheName !== CACHE_NAME) {
             console.log('Service Worker: Deleting old cache', cacheName);
             return caches.delete(cacheName);
@@ -43,66 +41,61 @@ self.addEventListener('activate', function(event) {
       );
     })
   );
-  
+
   self.clients.claim();
 });
 
 // Fetch event - serve from cache with network fallback
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', function (event) {
   // Skip cross-origin requests
   if (!event.request.url.startsWith(self.location.origin)) {
     return;
   }
-  
+
   // Handle API requests differently
   if (event.request.url.includes('/api/')) {
     event.respondWith(
-      fetch(event.request)
-        .catch(function() {
-          return new Response(
-            JSON.stringify({ error: 'Network unavailable', offline: true }), 
-            {
-              status: 503,
-              headers: { 'Content-Type': 'application/json' }
-            }
-          );
-        })
+      fetch(event.request).catch(function () {
+        return new Response(JSON.stringify({ error: 'Network unavailable', offline: true }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      })
     );
     return;
   }
-  
+
   // Cache-first strategy for static assets
   event.respondWith(
-    caches.match(event.request)
-      .then(function(response) {
+    caches
+      .match(event.request)
+      .then(function (response) {
         if (response) {
           return response;
         }
-        
-        return fetch(event.request)
-          .then(function(response) {
-            // Don't cache non-successful responses
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            
-            // Don't cache POST requests or form submissions
-            if (event.request.method !== 'GET') {
-              return response;
-            }
-            
-            // Clone the response for caching
-            const responseToCache = response.clone();
-            
-            caches.open(CACHE_NAME)
-              .then(function(cache) {
-                cache.put(event.request, responseToCache);
-              });
-            
+
+        return fetch(event.request).then(function (response) {
+          // Don't cache non-successful responses
+          if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
+          }
+
+          // Don't cache POST requests or form submissions
+          if (event.request.method !== 'GET') {
+            return response;
+          }
+
+          // Clone the response for caching
+          const responseToCache = response.clone();
+
+          caches.open(CACHE_NAME).then(function (cache) {
+            cache.put(event.request, responseToCache);
           });
+
+          return response;
+        });
       })
-      .catch(function() {
+      .catch(function () {
         // Return offline page for navigation requests
         if (event.request.mode === 'navigate') {
           return caches.match('/offline.html');
@@ -112,7 +105,7 @@ self.addEventListener('fetch', function(event) {
 });
 
 // Background sync for legal document processing
-self.addEventListener('sync', function(event) {
+self.addEventListener('sync', function (event) {
   if (event.tag === 'legal-document-sync') {
     event.waitUntil(syncLegalDocuments());
   }
@@ -128,9 +121,9 @@ async function syncLegalDocuments() {
 }
 
 // Push notifications for case updates
-self.addEventListener('push', function(event) {
+self.addEventListener('push', function (event) {
   if (!event.data) return;
-  
+
   const data = event.data.json();
   const options = {
     body: data.body || 'Legal AI Platform notification',
@@ -141,29 +134,69 @@ self.addEventListener('push', function(event) {
     actions: [
       {
         action: 'view',
-        title: 'View Case'
+        title: 'View Case',
       },
       {
         action: 'dismiss',
-        title: 'Dismiss'
-      }
-    ]
+        title: 'Dismiss',
+      },
+    ],
   };
-  
-  event.waitUntil(
-    self.registration.showNotification(data.title || 'Legal AI Platform', options)
-  );
+
+  event.waitUntil(self.registration.showNotification(data.title || 'Legal AI Platform', options));
 });
 
 // Notification click handling
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener('notificationclick', function (event) {
   event.notification.close();
-  
+
   if (event.action === 'view') {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
+    event.waitUntil(clients.openWindow('/'));
   }
 });
 
 console.log('Service Worker: Loaded');
+
+// SIMD tensor parse handler (append)
+self.addEventListener('message', function (event) {
+  const data = event && event.data ? event.data : {};
+  if (data && data.type === 'SIMD_PARSE_TENSOR') {
+    // Expect an ArrayBuffer for zero-copy; fall back to typed array if provided
+    try {
+      const port = event.ports && event.ports[0];
+      const payload = data.payload;
+      const buffer = payload instanceof ArrayBuffer ? payload : payload && payload.buffer;
+      const f32 = buffer ? new Float32Array(buffer) : new Float32Array(0);
+
+      // Simple SIMD-friendly aggregation (placeholder): length, sum, min, max
+      let sum = 0.0;
+      let min = Number.POSITIVE_INFINITY;
+      let max = Number.NEGATIVE_INFINITY;
+      for (let i = 0; i < f32.length; i++) {
+        const v = f32[i];
+        sum += v;
+        if (v < min) min = v;
+        if (v > max) max = v;
+      }
+      const meta = { type: 'SIMD_PARSED', length: f32.length, sum, min, max };
+      if (port) {
+        port.postMessage(meta);
+      } else {
+        // Fallback: broadcast (less precise for matching request)
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+          clients.forEach((client) => client.postMessage(meta));
+        });
+      }
+    } catch (err) {
+      const errMsg = { type: 'SIMD_ERROR', error: String(err) };
+      const port = event.ports && event.ports[0];
+      if (port) {
+        port.postMessage(errMsg);
+      } else {
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+          clients.forEach((client) => client.postMessage(errMsg));
+        });
+      }
+    }
+  }
+});

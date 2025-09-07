@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Dimensional Cache API
  * Multi-dimensional array caching with LRU eviction
  * Supports embeddings, attention weights, and metadata

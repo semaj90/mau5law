@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Elemental Awareness API - YOLO-style hover analysis
  * Provides legal context for any UI element when hovered
  */

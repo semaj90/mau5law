@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * QUIC Services Management API - Central Hub for All QUIC Services
  * Provides centralized management, health monitoring, and configuration for all QUIC services
  */
@@ -73,7 +73,7 @@ export interface QUICClusterStatus {
   timestamp: string;
 }
 
-/**
+/*
  * GET /api/v1/quic - Get comprehensive QUIC services status
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/quic - Execute command across QUIC services
  */
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -228,7 +228,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 };
 
-/**
+/*
  * PUT /api/v1/quic - Update QUIC services configuration
  */
 export const PUT: RequestHandler = async ({ request }) => {
@@ -269,7 +269,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
 };
 
-/**
+/*
  * Check health of individual QUIC service
  */
 async function checkServiceHealth(
@@ -355,7 +355,7 @@ async function checkServiceHealth(
   };
 }
 
-/**
+/*
  * Execute command on specific service
  */
 async function executeServiceCommand(

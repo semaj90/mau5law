@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Cluster API Endpoint - Service Orchestration & Health
  * Routes to: cluster-http.exe:8213, modular-cluster-service-production.exe:8215
  */

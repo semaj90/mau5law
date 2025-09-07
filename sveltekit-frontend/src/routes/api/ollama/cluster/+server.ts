@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
-/**
+/*
  * Multi-core Ollama Cluster Management API
  * Load balancing, health monitoring, and model management
  * Integrates with multi-core-ollama service on port 8125

@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * PostgreSQL-First Architecture Test Endpoint
  * 
  * This endpoint demonstrates the complete PostgreSQL-centered workflow:

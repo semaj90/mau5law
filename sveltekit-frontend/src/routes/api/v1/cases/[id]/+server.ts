@@ -1,4 +1,4 @@
-/**
+/*
  * Individual Case API Routes with Lucia v3 Authentication
  * GET /api/v1/cases/[id] - Get specific case
  * PUT /api/v1/cases/[id] - Update specific case
@@ -12,7 +12,7 @@ import { z } from 'zod';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid case ID format');
 
-/**
+/*
  * GET /api/v1/cases/[id]
  * Get a specific case by ID
  */
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   }
 };
 
-/**
+/*
  * PUT /api/v1/cases/[id]
  * Update a specific case
  */
@@ -138,7 +138,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
   }
 };
 
-/**
+/*
  * DELETE /api/v1/cases/[id]
  * Delete a specific case
  */

@@ -1,8 +1,12 @@
 declare global {
   namespace App {
     interface Locals {
-      user: import("lucia").User | null;
-      session: import("lucia").Session | null;
+      user: {
+        id: string;
+        email?: string;
+        role: 'admin' | 'user' | 'prosecutor' | 'detective';
+      } | null;
+      session: import('lucia').Session | null;
     }
   }
 
@@ -21,7 +25,7 @@ declare global {
     cwd(): string;
   }
 
-  var process: Process;
+  declare const process: Process;
 }
 
 

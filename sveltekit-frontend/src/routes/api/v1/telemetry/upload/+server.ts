@@ -1,4 +1,4 @@
-/**
+/*
  * Telemetry Upload API Endpoint
  * Receives and processes structured upload telemetry events
  */
@@ -28,7 +28,7 @@ interface ProcessedTelemetryStats {
   };
 }
 
-/**
+/*
  * POST /api/v1/telemetry/upload
  * Accepts batched telemetry events for processing and storage
  */
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   }
 };
 
-/**
+/*
  * GET /api/v1/telemetry/upload
  * Returns telemetry status and recent session statistics
  */
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
   });
 };
 
-/**
+/*
  * Process a batch of telemetry events and extract performance statistics
  */
 function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
@@ -167,7 +167,7 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
   };
 }
 
-/**
+/*
  * Store telemetry events (implement with your preferred storage solution)
  */
 async function storeTelemetryEvents(batch: TelemetryBatch, clientIp: string): Promise<void> {
@@ -183,7 +183,7 @@ async function storeTelemetryEvents(batch: TelemetryBatch, clientIp: string): Pr
   }
 }
 
-/**
+/*
  * Retrieve session statistics (implement with your preferred storage)
  */
 async function getSessionStats(sessionId: string): Promise<any> {

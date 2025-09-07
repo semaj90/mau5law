@@ -2,7 +2,7 @@ import { langExtractService, type LegalExtractionRequest } from "$lib/services/l
 import type { RequestHandler } from './$types';
 
 
-/**
+/*
  * LangExtract + Ollama API Endpoint
  * Provides local LLM processing for legal document extraction
  */

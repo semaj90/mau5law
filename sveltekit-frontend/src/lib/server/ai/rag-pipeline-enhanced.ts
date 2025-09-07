@@ -1,10 +1,10 @@
 /**
  * Enhanced RAG Pipeline - Legal AI Platform
- * 
+ *
  * Advanced Retrieval-Augmented Generation system specifically designed for legal AI
  * applications with comprehensive document processing, vector search, and intelligent
  * question answering capabilities.
- * 
+ *
  * Features:
  * - Multi-modal document ingestion with legal-specific chunking
  * - Hybrid vector and keyword search with PostgreSQL pgvector
@@ -14,7 +14,7 @@
  * - Redis caching for embeddings and search results
  * - Real-time metrics and performance monitoring
  * - Legal compliance and audit trail tracking
- * 
+ *
  * @author Legal AI Platform Team
  * @version 4.2.0
  * @lastModified 2025-01-20
@@ -65,7 +65,7 @@ export interface DatabaseConfig {
 }
 
 /**
- * Redis Configuration  
+ * Redis Configuration
  */
 export interface RedisConfig {
   host: string;
@@ -133,7 +133,7 @@ const createDefaultConfig = (): RAGConfig => ({
   database: {
     host: import.meta.env.DATABASE_HOST || 'localhost',
     port: parseInt(import.meta.env.DATABASE_PORT || '5432'),
-    database: import.meta.env.DATABASE_NAME || 'legal_ai_db', 
+    database: import.meta.env.DATABASE_NAME || 'legal_ai_db',
     username: import.meta.env.DATABASE_USER || 'legal_admin',
     password: import.meta.env.DATABASE_PASSWORD || '123456',
     max: parseInt(import.meta.env.DATABASE_MAX_CONNECTIONS || '20'),
@@ -142,8 +142,8 @@ const createDefaultConfig = (): RAGConfig => ({
     connect_timeout: parseInt(import.meta.env.DATABASE_CONNECT_TIMEOUT || '10')
   },
   redis: {
-    host: import.meta.env.REDIS_HOST || 'localhost',
-    port: parseInt(import.meta.env.REDIS_PORT || '6379'),
+  host: (process.env.REDIS_HOST as any) || 'localhost',
+  port: parseInt(process.env.REDIS_PORT || '4005'),
     db: parseInt(import.meta.env.REDIS_DB || '0'),
     maxRetriesPerRequest: parseInt(import.meta.env.REDIS_MAX_RETRIES || '3'),
     cacheTtl: parseInt(import.meta.env.RAG_CACHE_TTL || '86400'), // 24 hours
@@ -339,7 +339,7 @@ class InputValidator {
     if (this.config.sanitization.maxLineLength > 0) {
       sanitized = sanitized
         .split('\n')
-        .map(line => line.length > this.config.sanitization.maxLineLength ? 
+        .map(line => line.length > this.config.sanitization.maxLineLength ?
           line.substring(0, this.config.sanitization.maxLineLength) + '...' : line)
         .join('\n');
     }
@@ -381,37 +381,37 @@ class RateLimiter {
   isAllowed(identifier: string): boolean {
     const now = Date.now();
     const windowStart = now - this.config.windowMs;
-    
+
     let requests = this.requests.get(identifier) || [];
     requests = requests.filter(time => time > windowStart);
-    
+
     if (requests.length >= this.config.perMinute) {
       return false;
     }
-    
+
     requests.push(now);
     this.requests.set(identifier, requests);
-    
+
     return true;
   }
 
   getRemainingRequests(identifier: string): number {
     const now = Date.now();
     const windowStart = now - this.config.windowMs;
-    
+
     const requests = this.requests.get(identifier) || [];
     const validRequests = requests.filter(time => time > windowStart);
-    
+
     return Math.max(0, this.config.perMinute - validRequests.length);
   }
 
   getTimeUntilReset(identifier: string): number {
     const requests = this.requests.get(identifier) || [];
     if (requests.length === 0) return 0;
-    
+
     const oldestRequest = Math.min(...requests);
     const resetTime = oldestRequest + this.config.windowMs;
-    
+
     return Math.max(0, resetTime - Date.now());
   }
 }
@@ -427,12 +427,12 @@ class MetricsCollector {
   recordTiming(operation: string, duration: number, labels?: Record<string, string>): void {
     const timings = this.metrics.get(operation) || [];
     timings.push(duration);
-    
+
     // Keep only last 1000 measurements
     if (timings.length > 1000) {
       timings.shift();
     }
-    
+
     this.metrics.set(operation, timings);
 
     // Record labeled metrics
@@ -463,7 +463,7 @@ class MetricsCollector {
 
   getMetrics(): Record<string, any> {
     const result: Record<string, any> = {};
-    
+
     // Add timing metrics with percentiles
     for (const [operation, timings] of this.metrics.entries()) {
       if (timings.length > 0) {
@@ -477,7 +477,7 @@ class MetricsCollector {
         result[`${operation}_max_ms`] = sorted[sorted.length - 1];
       }
     }
-    
+
     // Add counter metrics
     for (const [name, value] of this.counters.entries()) {
       result[name] = value;
@@ -487,7 +487,7 @@ class MetricsCollector {
     for (const [labelKey, labelMap] of this.labels.entries()) {
       result[labelKey] = Object.fromEntries(labelMap);
     }
-    
+
     return result;
   }
 
@@ -563,11 +563,11 @@ class LegalChunker {
         if (matches && matches.length > 1) {
           // Split content by pattern matches
           const sections = content.split(pattern).filter(Boolean);
-          
+
           structuredChunks = sections
             .filter(section => section.trim().length > 50)
             .map(section => section.trim());
-          
+
           if (structuredChunks.length > 1) break;
         }
       } catch (error: any) {
@@ -638,7 +638,7 @@ class LegalChunker {
 
 /**
  * Enhanced Legal RAG Pipeline
- * 
+ *
  * Comprehensive RAG system for legal AI applications with advanced features
  * for document processing, vector search, and intelligent question answering.
  */
@@ -740,8 +740,8 @@ export class EnhancedLegalRAGPipeline {
     try {
       this.redis = new Redis({
         ...this.config.redis,
-        retryStrategy: (times) => Math.min(times * 50, 2000),
-        reconnectOnError: (err) => {
+  retryStrategy: (times: number) => Math.min(times * 50, 2000),
+  reconnectOnError: (err: any) => {
           console.warn('Redis reconnect on error:', err.message);
           return err.message.includes('READONLY');
         },
@@ -844,14 +844,14 @@ export class EnhancedLegalRAGPipeline {
    */
   async ingestLegalDocument(params: DocumentIngestionParams): Promise<IngestionResult> {
     const startTime = Date.now();
-    
+
     try {
       // Validate and sanitize inputs
       const title = this.validator.validateAndSanitize(params.title, 500);
       const content = this.validator.validateAndSanitize(params.content, this.config.security.validation.maxDocumentSize);
       const documentType = this.validator.validateAndSanitize(params.documentType, 50);
       const userId = params.userId;
-      
+
       if (!this.validator.validateUUID(userId)) {
         throw new Error('Invalid user ID format');
       }
@@ -874,7 +874,7 @@ export class EnhancedLegalRAGPipeline {
       const { caseId, metadata = {}, confidentialityLevel = 'public', jurisdiction, clientId } = params;
 
       // Start transaction for document creation
-      const [document] = await this.db!.transaction(async (tx) => {
+  const [document] = await this.db!.transaction(async (tx: any) => {
         const [doc] = await tx.insert(schema.legal_documents)
           .values({
             title,
@@ -1000,9 +1000,9 @@ export class EnhancedLegalRAGPipeline {
       console.log(`[RAG] Document ingestion completed in ${processingTime}ms (${successfulChunks}/${chunks.length} chunks successful)`);
 
       this.metrics.incrementCounter('documents_ingested');
-      this.metrics.recordTiming('ingestion_time', processingTime, { 
+      this.metrics.recordTiming('ingestion_time', processingTime, {
         document_type: documentType,
-        confidentiality_level: confidentialityLevel 
+        confidentiality_level: confidentialityLevel
       });
 
       return {
@@ -1023,7 +1023,7 @@ export class EnhancedLegalRAGPipeline {
 
     } catch (error: any) {
       const processingTime = Date.now() - startTime;
-      
+
       console.error('[RAG] Ingestion error:', error);
       this.metrics.incrementCounter('ingestion_errors');
       this.metrics.recordTiming('ingestion_error_time', processingTime);
@@ -1039,13 +1039,13 @@ export class EnhancedLegalRAGPipeline {
    */
   async hybridSearch(params: SearchParams): Promise<SearchResult[]> {
     const startTime = Date.now();
-    
+
     try {
       const query = this.validator.validateAndSanitize(params.query, 1000);
-      const { 
-        caseId, 
-        documentType, 
-        limit = this.config.rag.maxSources, 
+      const {
+        caseId,
+        documentType,
+        limit = this.config.rag.maxSources,
         threshold = this.config.rag.similarityThreshold,
         userId,
         includeMetadata = true,
@@ -1065,7 +1065,7 @@ export class EnhancedLegalRAGPipeline {
       // Build SQL conditions using template literals
       let vectorWhereClause = `1 - (dc.embedding::vector <=> '${JSON.stringify(queryEmbedding)}'::vector) > ${threshold}`;
       let keywordWhereClause = `to_tsvector('english', dc.content) @@ plainto_tsquery('english', '${query.replace(/'/g, "''")}')`;
-      
+
       if (caseId && this.validator.validateUUID(caseId)) {
         vectorWhereClause += ` AND dc.metadata->>'caseId' = '${caseId}'`;
         keywordWhereClause += ` AND dc.metadata->>'caseId' = '${caseId}'`;
@@ -1078,7 +1078,7 @@ export class EnhancedLegalRAGPipeline {
 
       // Perform vector similarity search
       const vectorResults = await this.sql!`
-        SELECT 
+        SELECT
           dc.id,
           dc.content,
           dc.metadata,
@@ -1095,14 +1095,14 @@ export class EnhancedLegalRAGPipeline {
 
       // Perform keyword search
       const keywordResults = await this.sql!`
-        SELECT 
+        SELECT
           dc.id,
           dc.content,
           dc.metadata,
           dc.document_id,
           ld.title,
           ld.confidentiality_level,
-          ts_rank(to_tsvector('english', dc.content), 
+          ts_rank(to_tsvector('english', dc.content),
                   plainto_tsquery('english', ${query})) as text_rank
         FROM document_chunks dc
         LEFT JOIN legal_documents ld ON dc.document_id = ld.id
@@ -1139,11 +1139,11 @@ export class EnhancedLegalRAGPipeline {
 
       // Sort by combined score or other criteria
       let sortedResults = Array.from(combinedResults.values());
-      
+
       switch (sortBy) {
         case 'date':
-          sortedResults.sort((a, b) => 
-            new Date(b.metadata?.ingestionDate || 0).getTime() - 
+          sortedResults.sort((a, b) =>
+            new Date(b.metadata?.ingestionDate || 0).getTime() -
             new Date(a.metadata?.ingestionDate || 0).getTime()
           );
           break;
@@ -1192,13 +1192,13 @@ export class EnhancedLegalRAGPipeline {
    */
   async answerLegalQuestion(params: QuestionParams): Promise<AnswerResult> {
     const startTime = Date.now();
-    
+
     try {
       const question = this.validator.validateAndSanitize(params.question, 2000);
-      const { 
-        caseId, 
-        userId, 
-        conversationContext, 
+      const {
+        caseId,
+        userId,
+        conversationContext,
         confidentialityLevel,
         requireSources = true,
         maxSources = 5
@@ -1284,8 +1284,8 @@ Answer:
       ]);
 
       // Handle streaming response or direct string
-      const answer = typeof llmResponse === 'string' 
-        ? llmResponse 
+      const answer = typeof llmResponse === 'string'
+        ? llmResponse
         : (llmResponse as any).parse || (llmResponse as any).content || String(llmResponse);
 
       // Analyze answer quality and extract insights
@@ -1354,7 +1354,7 @@ Answer:
 
     } catch (error: any) {
       const processingTime = Date.now() - startTime;
-      
+
       console.error('[RAG] QA error:', error);
       this.metrics.incrementCounter('qa_errors');
 
@@ -1385,10 +1385,10 @@ Answer:
    */
   async analyzeContract(contractText: string, jurisdiction?: string): Promise<ContractAnalysisResult> {
     const startTime = Date.now();
-    
+
     try {
       const sanitizedText = this.validator.validateAndSanitize(contractText, 1048576); // 1MB limit
-      
+
       await this.ensureInitialized();
 
       const contractPrompt = PromptTemplate.fromTemplate(`
@@ -1457,8 +1457,8 @@ Provide specific clause references and line numbers where applicable. Focus on p
       ]);
 
       // Handle streaming response or direct string
-      const analysis = typeof llmResponse === 'string' 
-        ? llmResponse 
+      const analysis = typeof llmResponse === 'string'
+        ? llmResponse
         : (llmResponse as any).parse || (llmResponse as any).content || String(llmResponse);
 
       const parsedAnalysis = this.parseContractAnalysis(analysis);
@@ -1531,7 +1531,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
     if (!this.config.rag.enableAutoTagging) return [];
 
     const tagPrompt = PromptTemplate.fromTemplate(`
-Extract relevant legal tags from this {documentType} document. 
+Extract relevant legal tags from this {documentType} document.
 Focus on: legal concepts, practice areas, jurisdictions, case types, parties, and key legal topics.
 
 Document excerpt:
@@ -1561,8 +1561,8 @@ Limit to 10 most relevant tags.
       ]);
 
       // Handle streaming response or direct string
-      const response = typeof llmResponse === 'string' 
-        ? llmResponse 
+      const response = typeof llmResponse === 'string'
+        ? llmResponse
         : (llmResponse as any).parse || (llmResponse as any).content || String(llmResponse);
 
       // Extract JSON from response
@@ -1585,11 +1585,11 @@ Limit to 10 most relevant tags.
   private async analyzeAnswer(answer: string, sources: SearchResult[]) {
     // Calculate confidence based on source relevance and answer characteristics
     const avgScore = sources.length > 0 ? sources.reduce((sum, doc) => sum + doc.score, 0) / sources.length : 0;
-    
+
     // Adjust confidence based on answer length and citation count
     const citations = (answer.match(/\[Source \d+\]/g) || []).length;
     const citationBonus = sources.length > 0 ? Math.min(citations / sources.length, 0.3) : 0;
-    
+
     const baseConfidence = Math.min(0.95, avgScore + citationBonus);
 
     // Extract key points from structured answer
@@ -1730,7 +1730,7 @@ Limit to 10 most relevant tags.
 
     for (const line of lines) {
       const trimmed = line.trim();
-      
+
       if (trimmed.includes('CONTRACT TYPE')) currentSection = 'type';
       else if (trimmed.includes('KEY TERMS')) currentSection = 'terms';
       else if (trimmed.includes('RISK')) currentSection = 'risks';
@@ -1738,7 +1738,7 @@ Limit to 10 most relevant tags.
       else if (trimmed.includes('RECOMMENDATIONS')) currentSection = 'recommendations';
       else if (trimmed && currentSection) {
         const cleanLine = trimmed.replace(/^[-•*\d.]\s*/, '');
-        
+
         switch (currentSection) {
           case 'type':
             if (!sections.contractType && !cleanLine.includes(':') && cleanLine.length > 3) {
@@ -1750,14 +1750,14 @@ Limit to 10 most relevant tags.
             break;
           case 'risks':
             if (cleanLine.length > 10) {
-              const severity: 'low' | 'medium' | 'high' = 
+              const severity: 'low' | 'medium' | 'high' =
                 cleanLine.toLowerCase().includes('high') ? 'high' :
                 cleanLine.toLowerCase().includes('medium') ? 'medium' : 'low';
-              
+
               const category = cleanLine.toLowerCase().includes('liability') ? 'liability' :
                              cleanLine.toLowerCase().includes('compliance') ? 'compliance' :
                              cleanLine.toLowerCase().includes('financial') ? 'financial' : 'general';
-              
+
               sections.risks.push({
                 description: cleanLine,
                 severity,
@@ -1891,7 +1891,7 @@ Limit to 10 most relevant tags.
         this.redis ? (this.redis as any).quit() : Promise.resolve(),
         this.sql?.end(),
       ]);
-      
+
       this.initialized = false;
       console.log('[RAG] Pipeline closed successfully');
     } catch (error: any) {

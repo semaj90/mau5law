@@ -1,4 +1,4 @@
-/**
+/*
  * Enhanced Vector Pipeline API Endpoint
  * Integrates MinIO law PDFs with FastEmbed for optimized vector search
  */
@@ -49,7 +49,7 @@ class VectorPipelineService {
 		this.cudaEnabled = process.env.CUDA_ENABLED === 'true';
 	}
 
-	/**
+	/*
 	 * Process documents from MinIO with FastEmbed integration
 	 */
 	async processDocuments(request: VectorPipelineRequest): Promise<ProcessingResult> {
@@ -98,7 +98,7 @@ class VectorPipelineService {
 		}
 	}
 
-	/**
+	/*
 	 * Process a single document
 	 */
 	private async processDocument(
@@ -157,7 +157,7 @@ class VectorPipelineService {
 		return results;
 	}
 
-	/**
+	/*
 	 * Download document from MinIO
 	 */
 	private async downloadFromMinio(bucketName: string, objectKey: string): Promise<Buffer> {
@@ -176,7 +176,7 @@ class VectorPipelineService {
 		}
 	}
 
-	/**
+	/*
 	 * Extract text content from document
 	 */
 	private async extractTextContent(content: Buffer, filename: string): Promise<string> {
@@ -206,7 +206,7 @@ class VectorPipelineService {
 		}
 	}
 
-	/**
+	/*
 	 * Split text into chunks with overlap
 	 */
 	private chunkText(text: string, chunkSize: number, overlap: number): string[] {
@@ -228,7 +228,7 @@ class VectorPipelineService {
 		return chunks.filter(chunk => chunk.trim().length > 0);
 	}
 
-	/**
+	/*
 	 * Generate embeddings using FastEmbed service
 	 */
 	private async generateEmbeddings(texts: string[], model: string): Promise<number[][]> {
@@ -258,7 +258,7 @@ class VectorPipelineService {
 		}
 	}
 
-	/**
+	/*
 	 * Store embeddings in PostgreSQL
 	 */
 	private async storeEmbeddings(results: EmbeddingResult[]): Promise<void> {
@@ -299,7 +299,7 @@ class VectorPipelineService {
 		}
 	}
 
-	/**
+	/*
 	 * Check for existing embeddings
 	 */
 	private async checkExistingEmbeddings(documentId: string): Promise<EmbeddingResult[]> {
@@ -327,7 +327,7 @@ class VectorPipelineService {
 		}
 	}
 
-	/**
+	/*
 	 * List objects in MinIO bucket
 	 */
 	private async listBucketObjects(bucketName: string): Promise<string[]> {
@@ -350,7 +350,7 @@ class VectorPipelineService {
 		}
 	}
 
-	/**
+	/*
 	 * Search similar documents using vector similarity
 	 */
 	async searchSimilar(query: string, options: {
@@ -415,7 +415,7 @@ class VectorPipelineService {
 		}
 	}
 
-	/**
+	/*
 	 * Get pipeline statistics
 	 */
 	async getStats(): Promise<any> {

@@ -1,4 +1,4 @@
-/**
+/*
  * Embedding Worker Management API
  * Controls RabbitMQ embedding workers and job queuing
  */

@@ -8,7 +8,7 @@ import type { LegalAISession, LegalContext, SessionStatus } from '$lib/types/yor
 // Session storage (in production, use database)
 const activeSessions = new Map<string, LegalAISession>();
 
-/** POST /api/v1/legal/session/create - Create new legal AI session */
+/* POST /api/v1/legal/session/create - Create new legal AI session */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 };
 
-/** GET /api/v1/legal/session/create - Get session creation info and active sessions */
+/* GET /api/v1/legal/session/create - Get session creation info and active sessions */
 export const GET: RequestHandler = async () => {
 	return json({
 		service: 'Legal AI Session Manager',

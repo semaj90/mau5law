@@ -37,10 +37,12 @@
     if (!browser) return;
 
     (async () => {
-      // Production-only service worker registration guard
-      if ('serviceWorker' in navigator && !import.meta.env.DEV) {
+      // Service worker registration
+      if ('serviceWorker' in navigator) {
         try {
-          const reg = await navigator.serviceWorker.register('/service-worker.js');
+          // In dev, register lightweight SW at /sw.js; in prod, use SvelteKit's service-worker
+          const swPath = import.meta.env.DEV ? '/sw.js' : '/service-worker.js';
+          const reg = await navigator.serviceWorker.register(swPath);
           console.log('🛡️ Service worker registered:', reg.scope);
         } catch (e) {
           console.warn('Service worker registration failed:', e);

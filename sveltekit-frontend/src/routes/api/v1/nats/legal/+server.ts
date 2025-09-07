@@ -22,7 +22,7 @@ function getNATSService(): EnhancedNATSMessagingService {
 	return natsService;
 }
 
-/** POST /api/v1/nats/legal - Publish legal AI events */
+/* POST /api/v1/nats/legal - Publish legal AI events */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 };
 
-/** GET /api/v1/nats/legal - Get legal AI event schemas and capabilities */
+/* GET /api/v1/nats/legal - Get legal AI event schemas and capabilities */
 export const GET: RequestHandler = async () => {
 	return json({
 		service: 'Legal AI NATS Events',

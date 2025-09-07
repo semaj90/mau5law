@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Enhanced RAG API Endpoints - Backend Integration
  * Integrates with Enhanced RAG Backend (localhost:8000)
  * /api/rag/upload - Upload documents (PDF/text/images)
@@ -23,7 +23,7 @@ import { URL } from "url";
 const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || "http://localhost:8000";
 const RAG_TIMEOUT = 30000;
 
-/**
+/*
  * Forward request to Enhanced RAG Backend with error handling and logging
  */
 async function forwardToRAGBackend(
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 };
 
-/**
+/*
  * Handle document upload via Enhanced RAG Backend
  */
 // Archived: handleUpload moved to archived-handlers.ts
@@ -155,12 +155,12 @@ async function handleQueueSummarize(request: Request): Promise<any> {
   }
 }
 
-/**
+/*
  * Handle web crawling via Enhanced RAG Backend
  */
 // Archived: handleCrawl moved to archived-handlers.ts
 
-/**
+/*
  * Handle enhanced search (vector/hybrid/chunk)
  */
 async function handleSearch(request: Request): Promise<any> {
@@ -207,7 +207,7 @@ async function handleSearch(request: Request): Promise<any> {
   }
 }
 
-/**
+/*
  * Handle AI text analysis
  */
 async function handleAnalyze(request: Request): Promise<any> {
@@ -243,7 +243,7 @@ async function handleAnalyze(request: Request): Promise<any> {
   }
 }
 
-/**
+/*
  * Handle AI text summarization
  */
 async function handleSummarize(request: Request): Promise<any> {
@@ -275,17 +275,17 @@ async function handleSummarize(request: Request): Promise<any> {
   }
 }
 
-/**
+/*
  * Handle multi-agent workflows
  */
 // Archived: handleWorkflow moved to archived-handlers.ts
 
-/**
+/*
  * Handle AI chat
  */
 // Archived: handleChat moved to archived-handlers.ts
 
-/**
+/*
  * Handle Enhanced RAG Backend health check
  */
 async function handleStatus(): Promise<any> {
@@ -334,7 +334,7 @@ async function handleStatus(): Promise<any> {
   }
 }
 
-/**
+/*
  * GET handler for status and stats
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -401,7 +401,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * PATCH handler for cache operations
  */
 export const PATCH: RequestHandler = async ({ url }) => {
@@ -435,7 +435,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * DELETE handler for cache clearing
  */
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -461,22 +461,22 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * Handle pgai document processing using local Gemma3 models
  */
 // Archived: handlePgaiProcess moved to archived-handlers.ts
 
-/**
+/*
  * Handle pgai custom analysis
  */
 // Archived: handlePgaiCustomAnalysis moved to archived-handlers.ts
 
-/**
+/*
  * Handle pgai document comparison
  */
 // Archived: handlePgaiComparison moved to archived-handlers.ts
 
-/**
+/*
  * Handle pgai information extraction
  */
 // Archived: handlePgaiExtraction moved to archived-handlers.ts

@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Auto-Tagging API Endpoint
  * Integrates with Ollama GPU service, PostgreSQL pgvector, and Go microservice
  * Provides real-time AI analysis for document uploads

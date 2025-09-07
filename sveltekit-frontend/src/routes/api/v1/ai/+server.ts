@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * AI API Endpoint - Comprehensive AI Services
  * Routes to: ai-enhanced.exe:8096, enhanced-legal-ai.exe:8202, live-agent-enhanced.exe:8200
  */

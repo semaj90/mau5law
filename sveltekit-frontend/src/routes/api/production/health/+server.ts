@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Production Health Check API
  * Comprehensive system status for all services
  */

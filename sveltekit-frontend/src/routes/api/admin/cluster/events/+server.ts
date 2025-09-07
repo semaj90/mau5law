@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 import type { RequestHandler } from './$types';
 
 
-/**
+/*
  * Cluster Events API Endpoint (Server-Sent Events)
  * Provides real-time cluster health and worker metrics via SSE
  */
@@ -173,7 +173,7 @@ export const GET: RequestHandler = async ({ request }) => {
   });
 };
 
-/**
+/*
  * Send Server-Sent Event
  */
 function sendSSEEvent(
@@ -189,7 +189,7 @@ function sendSSEEvent(
   }
 }
 
-/**
+/*
  * Setup cluster event listeners for real-time updates
  */
 function setupClusterEventListeners(controller: ReadableStreamDefaultController) {

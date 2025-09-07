@@ -55,7 +55,7 @@ export interface RiskAssessment {
 const GO_SERVER_URL = import.meta.env.GO_SERVER_URL || 'http://localhost:8080';
 const USE_QUEUE = import.meta.env.USE_QUEUE !== 'false'; // Enable by default
 
-/**
+/*
  * Process document through BullMQ worker system
  * Integrates with Go Legal AI Server via queue workers
  */
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	}
 };
 
-/**
+/*
  * Get Go server health status
  */
 export const GET: RequestHandler = async () => {

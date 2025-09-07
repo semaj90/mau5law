@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector';
 
-/**
+/*
  * Full Stack Demo: SIMD + PGVector + Redis + GPU Integration
  * Tests all components of the YoRHa Legal AI system
  */

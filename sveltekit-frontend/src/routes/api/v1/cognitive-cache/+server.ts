@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Cognitive Cache API Endpoint
  * Unified interface for Reinforcement Learning Cache + GPU Shader Cache
  * Provides intelligent caching with ML-driven decision making

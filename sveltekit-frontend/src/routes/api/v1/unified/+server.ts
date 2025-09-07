@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Unified API Layer with JSON responses
  * Central API endpoint that orchestrates all backend services
  */

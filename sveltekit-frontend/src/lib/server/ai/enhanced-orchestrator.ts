@@ -3,16 +3,26 @@
 // Connects Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama, and Go services
 
 import { logger } from './logger';
-import { drizzle } from "drizzle-orm/postgres-js";
-import { pgTable, text, vector, timestamp, jsonb, uuid, integer, boolean } from "drizzle-orm/pg-core";
+import { createHash } from 'node:crypto';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import {
+  pgTable,
+  text,
+  vector,
+  timestamp,
+  jsonb,
+  uuid,
+  integer,
+  boolean,
+} from 'drizzle-orm/pg-core';
 import type { PoolConfig } from 'pg';
-import { eq, sql } from "drizzle-orm";
-import postgres from "postgres";
-import { createMachine, createActor, fromPromise, interpret } from "xstate";
-import { OllamaEmbeddings, ChatOllama } from "@langchain/ollama";
-import { Neo4jVectorStore } from "@langchain/community/vectorstores/neo4j_vector";
+import { eq, sql } from 'drizzle-orm';
+import postgres from 'postgres';
+import { createMachine, createActor, fromPromise, interpret } from 'xstate';
+import { OllamaEmbeddings, ChatOllama } from '@langchain/ollama';
+import { Neo4jVectorStore } from '@langchain/community/vectorstores/neo4j_vector';
 import Redis from 'ioredis';
-import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
+import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
 import type { Document as LangChainDocumentType } from '@langchain/core/documents';
 import type { Document as LangChainDocument } from '@langchain/core/documents';
 // Import existing components
@@ -21,7 +31,7 @@ import { legalBERT } from './legalbert-middleware';
 import { cachingLayer } from './caching-layer';
 import { feedbackLoop } from './feedback-loop';
 import { monitoringService } from './monitoring-service';
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events';
 
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 
@@ -102,7 +112,7 @@ const services = {
   // Redis Configuration
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '6379'),
+    port: parseInt(process.env.REDIS_PORT || '4005'),
     db: 0,
     keyPrefix: 'legal-ai:',
   },
@@ -126,14 +136,13 @@ export const db = drizzle(pgConnection, {
 const redis = new Redis({
   ...services.redis,
   maxRetriesPerRequest: 3,
-  retryStrategy: (times) => Math.min(times * 50, 2000),
+  retryStrategy: (times: number) => Math.min(times * 50, 2000),
 });
 
 // ===== UTILITY FUNCTIONS =====
 
 function generateCacheKey(query: string): string {
-  const crypto = require('crypto');
-  return crypto.createHash('sha256').update(query).digest('hex');
+  return createHash('sha256').update(query).digest('hex');
 }
 
 function applyMMR(documents: any[], lambda: number = 0.7): unknown[] {
@@ -464,8 +473,8 @@ export class EnhancedAISynthesisOrchestrator {
   private service: any;
   private neo4jStore: Neo4jVectorStore | null = null;
   private pgVectorStore: PGVectorStore | null = null;
-  private ollama: ChatOllama;
-  private embeddings: OllamaEmbeddings;
+  private ollama!: ChatOllama;
+  private embeddings!: OllamaEmbeddings;
   private initialized: boolean = false;
 
   constructor() {
@@ -527,7 +536,7 @@ export class EnhancedAISynthesisOrchestrator {
           password: services.neo4j.password,
           indexName: 'legal_documents',
           textNodeProperty: 'text',
-          embeddingNodeProperty: 'embedding'
+          embeddingNodeProperty: 'embedding',
         });
       } catch {
         this.neo4jStore = null;
@@ -560,7 +569,7 @@ export class EnhancedAISynthesisOrchestrator {
             contentColumnName: 'content',
             metadataColumnName: 'metadata',
           },
-          distanceStrategy: 'cosine' // Use cosine similarity
+          distanceStrategy: 'cosine', // Use cosine similarity
         });
       } catch {
         this.pgVectorStore = null;
@@ -665,7 +674,7 @@ export class EnhancedAISynthesisOrchestrator {
           logger.info(`[PGVector] Found ${results.length} documents`);
           return results.map((doc, index) => ({
             ...doc,
-            score: 1.0 - (index * 0.1),
+            score: 1.0 - index * 0.1,
           }));
         }),
 
@@ -1095,7 +1104,13 @@ TEMPLATE """{{ if .System }}<|system|>
   private async testServiceConnectivity() {
     const serviceTests = [
       { name: 'PostgreSQL', test: () => pgConnection`SELECT 1` },
-      { name: 'Redis', test: async () => { await (redis as any).set('health-check', 'ok', 'EX', 1); return true; } },
+      {
+        name: 'Redis',
+        test: async () => {
+          await (redis as any).set('health-check', 'ok', 'EX', 1);
+          return true;
+        },
+      },
       { name: 'Neo4j', test: () => this.neo4jStore !== null },
       { name: 'Enhanced RAG', test: () => fetch(`${services.goMicroservice.enhancedRAG}/health`) },
       {
@@ -1178,7 +1193,6 @@ TEMPLATE """{{ if .System }}<|system|>
     return intersection.size / union.size;
   }
 
-
   // ===== PUBLIC API =====
 
   async process(query: string, options?: Record<string, any>): Promise<any> {
@@ -1198,7 +1212,7 @@ TEMPLATE """{{ if .System }}<|system|>
             endTime: null,
             stageTimings: {},
           },
-        }
+        },
       });
 
       service.subscribe({
@@ -1212,7 +1226,9 @@ TEMPLATE """{{ if .System }}<|system|>
               .values({
                 query,
                 solution: result,
-                confidence: result?.confidence_score ? Math.round(result.confidence_score * 100) : null,
+                confidence: result?.confidence_score
+                  ? Math.round(result.confidence_score * 100)
+                  : null,
                 processingTime: Date.now() - startTime,
                 serviceUsed: 'enhanced-orchestrator',
                 success: true,
@@ -1224,7 +1240,7 @@ TEMPLATE """{{ if .System }}<|system|>
             reject(new Error('Processing failed'));
           }
         },
-        error: reject
+        error: reject,
       });
 
       service.start();
@@ -1232,7 +1248,10 @@ TEMPLATE """{{ if .System }}<|system|>
     });
   }
 
-  async processWithStreaming(query: string, options?: Record<string, any>): Promise<AsyncGenerator<any>> {
+  async processWithStreaming(
+    query: string,
+    options?: Record<string, any>
+  ): Promise<AsyncGenerator<any>> {
     const self = this;
 
     async function* streamResults() {
@@ -1244,7 +1263,7 @@ TEMPLATE """{{ if .System }}<|system|>
           query,
           ...(options || {}),
           streaming: true,
-        }
+        },
       });
 
       service.subscribe({
@@ -1258,7 +1277,7 @@ TEMPLATE """{{ if .System }}<|system|>
           if (snapshot.status === 'done' || snapshot.status === 'error') {
             isComplete = true;
           }
-        }
+        },
       });
 
       service.start();

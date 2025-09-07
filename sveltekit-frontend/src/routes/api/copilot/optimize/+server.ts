@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types';
 
-/**
+/*
  * Simple Copilot Optimization API for Testing
  */
 

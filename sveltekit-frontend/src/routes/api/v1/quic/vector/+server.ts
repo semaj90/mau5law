@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * QUIC Vector Proxy API - High-Performance Vector Operations
  * Provides vector search with intelligent caching and multi-backend routing
  * Port: 8445 (QUIC), 8446 (HTTP/2 fallback)
@@ -24,7 +24,7 @@ const QUIC_VECTOR_CONFIG = {
   maxCacheSize: 1000
 };
 
-/**
+/*
  * GET /api/v1/quic/vector - Vector proxy health and cache status
  */
 export const GET: RequestHandler = async ({ url }) => {
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * POST /api/v1/quic/vector - Vector search with QUIC acceleration
  */
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -247,7 +247,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 };
 
-/**
+/*
  * DELETE /api/v1/quic/vector - Clear vector cache
  */
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -292,7 +292,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 };
 
-/**
+/*
  * PUT /api/v1/quic/vector - Update vector proxy configuration
  */
 export const PUT: RequestHandler = async ({ request }) => {

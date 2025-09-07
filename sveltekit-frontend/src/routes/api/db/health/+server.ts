@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
-/**
+/*
  * Database Health Check API Endpoint
  * GET /api/db/health - Check database connectivity and pgvector extension
  */
