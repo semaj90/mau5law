@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(export PGPASSWORD=123456)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:123456@localhost:5432/legal_ai_db\" NODE_ENV=\"development\" npm run dev)",
+      "Bash(npx tsx:*)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:123456@localhost:5432/legal_ai_db\" npm run db:push)",
+      "Bash(PGPASSWORD=123456 psql -h localhost -p 5432 -U postgres -d legal_ai_db -c \"GRANT USAGE ON SCHEMA public TO legal_admin; GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO legal_admin; GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO legal_admin; GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO legal_admin;\")",
+      "Bash(PGPASSWORD=123456 psql -h localhost -p 5432 -U legal_admin -d legal_ai_db -c \"SELECT id, email, name FROM users LIMIT 5;\")",
+      "Bash(PGPASSWORD=123456 psql -h localhost -p 5432 -U legal_admin -d legal_ai_db -c \"SELECT email, password_hash IS NOT NULL as has_password FROM users WHERE email = ''test@example.com'';\")",
+      "Bash(PGPASSWORD=123456 psql -h localhost -p 5432 -U legal_admin -d legal_ai_db -c \"\\d users\")",
+      "Bash(sed:*)",
+      "Bash(git add:*)",
+      "Bash(redis-server:*)",
+      "Bash(choco install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
