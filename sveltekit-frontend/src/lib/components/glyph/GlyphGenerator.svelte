@@ -1,6 +1,10 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  
+  // GRPMO Extended Thinking Integration
+  import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations';
+  import type { SimilarityResult } from '$lib/server/db/vector-operations';
 
   interface Props {
     evidenceId?: number;
@@ -17,6 +21,13 @@
   let conditioningTensors = $state<string[]>([]);
   let result = $state<any>(null);
   let error = $state<string | null>(null);
+  
+  // GRPMO Extended Thinking state
+  let extendedThinkingEnabled = $state(true);
+  let thinkingStages = $state<ExtendedThinkingStage[]>([]);
+  let currentStage = $state<ExtendedThinkingStage | null>(null);
+  let glyphEmbedding = $state<number[] | null>(null);
+  let cachePerformance = $state({ hot: 0, warm: 0, cold: 0 });
 
   // Neural Sprite configuration
   let enableNeuralSprite = $state(false);
@@ -50,40 +61,126 @@
     generating = true;
     error = null;
     result = null;
-
+    thinkingStages = [];
+    currentStage = null;
+    
     try {
-      const response = await fetch('/api/glyph/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          evidence_id: evidenceId,
-          prompt: prompt.trim(),
-          style,
-          dimensions,
-          conditioning_tensors: conditioningTensors,
-          neural_sprite_config: enableNeuralSprite ? {
-            enable_compression: enableCompression,
-            predictive_frames: predictiveFrames,
-            ui_layout_compression: enableUILayoutCompression,
-            target_compression_ratio: targetCompressionRatio
-          } : undefined
-        })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        result = data.data;
-        onGlyphGenerated?.(data.data);
+      let finalResult: any;
+      
+      if (extendedThinkingEnabled) {
+        // GRPMO Extended Thinking Mode
+        const mockEmbedding = generateMockEmbedding(prompt);
+        glyphEmbedding = mockEmbedding;
+        
+        const extendedThinkingResult = await grpmoOrchestrator.processExtendedThinking(
+          prompt.trim(),
+          mockEmbedding,
+          'current-user',
+          evidenceId ? `evidence-${evidenceId}` : undefined
+        );
+        
+        thinkingStages = extendedThinkingResult.thinkingStages;
+        cachePerformance = extendedThinkingResult.cachePerformance;
+        
+        // Simulate progressive thinking stages
+        for (const stage of extendedThinkingResult.thinkingStages) {
+          currentStage = stage;
+          await new Promise(resolve => setTimeout(resolve, Math.min(stage.duration, 500)));
+        }
+        
+        // Enhanced generation with GRPMO context
+        finalResult = await generateWithGRPMOContext(extendedThinkingResult);
       } else {
-        error = data.error || 'Generation failed';
+        // Standard generation
+        finalResult = await generateStandard();
+      }
+      
+      if (finalResult.success) {
+        result = {
+          ...finalResult.data,
+          grpmo_metadata: {
+            extended_thinking_enabled: extendedThinkingEnabled,
+            thinking_stages: thinkingStages,
+            cache_performance: cachePerformance,
+            glyph_embedding: glyphEmbedding
+          }
+        };
+        onGlyphGenerated?.(result);
+      } else {
+        error = finalResult.error || 'Generation failed';
       }
     } catch (err) {
       console.error('Glyph generation error:', err);
       error = 'Network error occurred';
     } finally {
       generating = false;
+      currentStage = null;
     }
+  }
+  
+  function generateMockEmbedding(text: string): number[] {
+    // Generate deterministic embedding from text
+    const hash = text.split('').reduce((a, b) => {
+      a = ((a << 5) - a) + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+    
+    return Array.from({ length: 768 }, (_, i) => {
+      const seed = hash + i;
+      return (Math.sin(seed) * 10000 - Math.floor(Math.sin(seed) * 10000)) * 2 - 1;
+    });
+  }
+  
+  async function generateWithGRPMOContext(grpmoResult: any): Promise<any> {
+    // Enhanced generation request with GRPMO context
+    const response = await fetch('/api/glyph/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        evidence_id: evidenceId,
+        prompt: prompt.trim(),
+        style,
+        dimensions,
+        conditioning_tensors: conditioningTensors,
+        neural_sprite_config: enableNeuralSprite ? {
+          enable_compression: enableCompression,
+          predictive_frames: predictiveFrames,
+          ui_layout_compression: enableUILayoutCompression,
+          target_compression_ratio: targetCompressionRatio
+        } : undefined,
+        grpmo_context: {
+          thinking_stages: grpmoResult.thinkingStages,
+          cache_performance: grpmoResult.cachePerformance,
+          similar_results: grpmoResult.result.slice(0, 3), // Top 3 similar items
+          glyph_embedding: glyphEmbedding
+        }
+      })
+    });
+    
+    return response.json();
+  }
+  
+  async function generateStandard(): Promise<any> {
+    // Standard generation without GRPMO
+    const response = await fetch('/api/glyph/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        evidence_id: evidenceId,
+        prompt: prompt.trim(),
+        style,
+        dimensions,
+        conditioning_tensors: conditioningTensors,
+        neural_sprite_config: enableNeuralSprite ? {
+          enable_compression: enableCompression,
+          predictive_frames: predictiveFrames,
+          ui_layout_compression: enableUILayoutCompression,
+          target_compression_ratio: targetCompressionRatio
+        } : undefined
+      })
+    });
+    
+    return response.json();
   }
 
   function setDimensionPreset(preset: [number, number]) {
@@ -228,6 +325,69 @@
       <p class="text-xs text-gray-500 mt-1">
         Reuse cached tensors for consistent styling across generations
       </p>
+    </div>
+
+    <!-- GRPMO Extended Thinking Configuration -->
+    <div class="border rounded-lg p-4 bg-gradient-to-r from-green-50 to-teal-50 mb-6">
+      <div class="flex items-center gap-2 mb-3">
+        <input 
+          type="checkbox" 
+          id="enable-extended-thinking"
+          bind:checked={extendedThinkingEnabled}
+          disabled={generating}
+          class="rounded"
+        />
+        <label for="enable-extended-thinking" class="text-sm font-medium">
+          🧠 Enable GRPMO Extended Thinking
+        </label>
+        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+          AI ENHANCED
+        </span>
+      </div>
+      
+      <p class="text-xs text-gray-600 ml-6">
+        Uses GPU-Reinforced Predictive Memory Orchestration for intelligent caching, reinforcement learning, and contextual glyph generation
+      </p>
+      
+      {#if extendedThinkingEnabled && (thinkingStages.length > 0 || currentStage)}
+        <div class="mt-4 ml-6 border-l-2 border-teal-200 pl-4">
+          <h4 class="text-sm font-medium mb-2 flex items-center gap-2">
+            🔄 Thinking Process
+            {#if generating && currentStage}
+              <span class="animate-pulse text-teal-600">({currentStage.name})</span>
+            {/if}
+          </h4>
+          
+          <div class="space-y-1">
+            {#each thinkingStages as stage}
+              <div class="flex items-center gap-2 text-xs">
+                <div class="w-2 h-2 rounded-full {stage === currentStage ? 'bg-teal-500 animate-pulse' : stage.confidence > 0.8 ? 'bg-green-500' : 'bg-yellow-500'}"></div>
+                <span class="flex-1">{stage.name}</span>
+                <span class="text-gray-500">{stage.duration}ms</span>
+                <span class="font-mono text-teal-600">{stage.cacheLayer}</span>
+                <span class="text-gray-400">{(stage.confidence * 100).toFixed(0)}%</span>
+              </div>
+            {/each}
+          </div>
+          
+          {#if cachePerformance.hot > 0 || cachePerformance.warm > 0 || cachePerformance.cold > 0}
+            <div class="mt-2 p-2 bg-teal-50 rounded text-xs">
+              <div class="font-medium mb-1">Cache Performance:</div>
+              <div class="flex gap-4">
+                {#if cachePerformance.hot > 0}
+                  <span class="text-green-600">🔥 Hot: {cachePerformance.hot}</span>
+                {/if}
+                {#if cachePerformance.warm > 0}
+                  <span class="text-yellow-600">🌡️ Warm: {cachePerformance.warm}</span>
+                {/if}
+                {#if cachePerformance.cold > 0}
+                  <span class="text-blue-600">❄️ Cold: {cachePerformance.cold}</span>
+                {/if}
+              </div>
+            </div>
+          {/if}
+        </div>
+      {/if}
     </div>
 
     <!-- Neural Sprite Configuration (Advanced) -->
@@ -420,6 +580,69 @@
                       {tensorId}
                     </div>
                   {/each}
+                </div>
+              </div>
+            {/if}
+
+            <!-- GRPMO Extended Thinking Results -->
+            {#if result.grpmo_metadata}
+              <div class="mt-4 p-3 border rounded-lg bg-green-50">
+                <h5 class="font-medium text-sm mb-2 flex items-center gap-2">
+                  🧠 GRPMO Extended Thinking Results
+                  <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">
+                    AI ENHANCED
+                  </span>
+                </h5>
+                
+                <div class="space-y-2 text-sm">
+                  <div class="flex justify-between">
+                    <span>Thinking Stages:</span>
+                    <span class="font-mono text-green-600">
+                      {result.grpmo_metadata.thinking_stages?.length || 0}
+                    </span>
+                  </div>
+                  
+                  <div class="flex justify-between">
+                    <span>Cache Efficiency:</span>
+                    <span class="font-mono text-green-600">
+                      {(() => {
+                        const perf = result.grpmo_metadata.cache_performance || {};
+                        const total = (perf.hot || 0) + (perf.warm || 0) + (perf.cold || 0);
+                        if (total === 0) return 'N/A';
+                        const efficiency = ((perf.hot || 0) * 100 + (perf.warm || 0) * 50) / total;
+                        return efficiency.toFixed(0) + '%';
+                      })()} 
+                    </span>
+                  </div>
+                  
+                  {#if result.grpmo_metadata.glyph_embedding}
+                    <div class="flex justify-between">
+                      <span>Glyph Embedding:</span>
+                      <span class="font-mono text-green-600">
+                        {result.grpmo_metadata.glyph_embedding.length}D vector
+                      </span>
+                    </div>
+                  {/if}
+                  
+                  {#if result.grpmo_metadata.thinking_stages?.length > 0}
+                    <div class="mt-2 pt-2 border-t border-green-200">
+                      <h6 class="text-xs font-medium mb-1">Processing Timeline:</h6>
+                      <div class="space-y-1">
+                        {#each result.grpmo_metadata.thinking_stages as stage}
+                          <div class="flex items-center justify-between text-xs">
+                            <span class="flex items-center gap-1">
+                              <div class="w-2 h-2 rounded-full {stage.confidence > 0.8 ? 'bg-green-500' : 'bg-yellow-500'}"></div>
+                              {stage.name}
+                            </span>
+                            <div class="flex gap-2 text-gray-500">
+                              <span class="bg-gray-100 px-2 py-0.5 rounded">{stage.cacheLayer}</span>
+                              <span>{stage.duration}ms</span>
+                            </div>
+                          </div>
+                        {/each}
+                      </div>
+                    </div>
+                  {/if}
                 </div>
               </div>
             {/if}

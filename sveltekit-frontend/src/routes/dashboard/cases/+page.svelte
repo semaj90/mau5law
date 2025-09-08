@@ -415,15 +415,15 @@
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {#each filteredCases as case}
+            {#each filteredCases as caseItem}
               <Table.Row class="hover:bg-nier-bg-tertiary">
                 <Table.Cell class="py-4">
                   <div class="space-y-1">
-                    <div class="font-medium text-nier-text-primary">{case.title}</div>
-                    <div class="text-sm text-nier-text-muted">{case.case_number}</div>
-                    {#if case.description}
+                    <div class="font-medium text-nier-text-primary">{caseItem.title}</div>
+                    <div class="text-sm text-nier-text-muted">{caseItem.case_number}</div>
+                    {#if caseItem.description}
                       <div class="text-xs text-nier-text-muted truncate max-w-xs">
-                        {case.description}
+                        {caseItem.description}
                       </div>
                     {/if}
                   </div>
@@ -431,9 +431,9 @@
                 
                 <Table.Cell>
                   <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full {getStatusColor(case.status)}"></div>
+                    <div class="w-2 h-2 rounded-full {getStatusColor(caseItem.status)}"></div>
                     <Badge variant="outline" class="capitalize">
-                      {case.status}
+                      {caseItem.status}
                     </Badge>
                   </div>
                 </Table.Cell>
@@ -441,21 +441,21 @@
                 <Table.Cell>
                   <div class="flex items-center gap-2">
                     <Users class="w-4 h-4 text-nier-text-muted" />
-                    <span class="text-sm">{case.assigned_to || 'Unassigned'}</span>
+                    <span class="text-sm">{caseItem.assigned_to || 'Unassigned'}</span>
                   </div>
                 </Table.Cell>
                 
                 <Table.Cell>
                   <div class="text-sm">
-                    <div>{formatDate(case.created_at)}</div>
-                    <div class="text-xs text-nier-text-muted">{formatRelativeTime(case.created_at)}</div>
+                    <div>{formatDate(caseItem.created_at)}</div>
+                    <div class="text-xs text-nier-text-muted">{formatRelativeTime(caseItem.created_at)}</div>
                   </div>
                 </Table.Cell>
                 
                 <Table.Cell>
                   <div class="text-sm">
-                    <div>{formatDate(case.updated_at)}</div>
-                    <div class="text-xs text-nier-text-muted">{formatRelativeTime(case.updated_at)}</div>
+                    <div>{formatDate(caseItem.updated_at)}</div>
+                    <div class="text-xs text-nier-text-muted">{formatRelativeTime(caseItem.updated_at)}</div>
                   </div>
                 </Table.Cell>
                 
@@ -464,14 +464,14 @@
                     <Button
                       variant="ghost"
                       size="sm"
-                      onclick={() => goto(`/dashboard/cases/${case.id}`)}
+                      onclick={() => goto(`/dashboard/cases/${caseItem.id}`)}
                     >
                       <Eye class="w-4 h-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onclick={() => goto(`/dashboard/cases/${case.id}/edit`)}
+                      onclick={() => goto(`/dashboard/cases/${caseItem.id}/edit`)}
                     >
                       <Edit class="w-4 h-4" />
                     </Button>

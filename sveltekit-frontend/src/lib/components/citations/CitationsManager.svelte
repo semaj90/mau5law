@@ -538,7 +538,7 @@
 
 <!-- Add Citation Modal -->
 {#if showAddForm}
-	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onclick|self={hideAddCitationForm}>
+	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onclick={(e) => { if (e.target === e.currentTarget) hideAddCitationForm(); }}>
 		<Card class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
 			<CardHeader>
 				<CardTitle>Add New Citation</CardTitle>

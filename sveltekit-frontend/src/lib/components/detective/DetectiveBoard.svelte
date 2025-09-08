@@ -514,8 +514,8 @@
 										borderRadius: '8px'
 									}
 								}}
-								on:consider={(e) => handleDndConsider(e, column.id)}
-								on:finalize={(e) => handleDndFinalize(e, column.id)}
+								onconsider={(e) => handleDndConsider(e, column.id)}
+								onfinalize={(e) => handleDndFinalize(e, column.id)}
 							>
 								{#each column.items as item (item.id)}
 									<div
@@ -647,7 +647,7 @@
 {#if findModal.show}
 	<div
 		class="fixed z-50 inset-0 bg-black/60 flex items-center justify-center"
-		onclick|self={closeFindModal}
+		onclick={(e) => { if (e.target === e.currentTarget) closeFindModal(); }}
 	>
 		<div
 			class="bg-background border border-primary rounded-lg shadow-lg p-6 w-full max-w-lg"

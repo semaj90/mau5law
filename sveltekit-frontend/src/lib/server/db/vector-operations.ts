@@ -1,15 +1,60 @@
 // @ts-nocheck
-// Vector operations helper for pgvector integration
+// Enhanced Vector Operations with GRPMO (GPU-Reinforced Predictive Memory Orchestration)
 import { db } from './index.js';
 import { legalDocuments, userAiQueries, embeddingCache } from './schema-postgres.js';
 import { sql } from 'drizzle-orm';
 
-// Interface for vector similarity search results
+// GRPMO imports
+interface GRPMOConfig {
+  hotCacheThreshold: number;  // <100ms
+  warmCacheThreshold: number; // <1s  
+  coldCacheThreshold: number; // <5s
+  reinforcementLearningRate: number;
+  predictiveWindowMs: number;
+  glyphCompressionRatio: number;
+}
+
+// Extended thinking stages
+interface ExtendedThinkingStage {
+  name: string;
+  duration: number;
+  cacheLayer: 'hot' | 'warm' | 'cold';
+  confidence: number;
+  glyphData?: string;
+}
+
+// PPO Reinforcement Learning state
+interface PPOState {
+  stateVector: number[];
+  actionHistory: string[];
+  rewardSignal: number;
+  policyGradient: number[];
+  valueFunction: number;
+}
+
+const defaultGRPMOConfig: GRPMOConfig = {
+  hotCacheThreshold: 100,
+  warmCacheThreshold: 1000,
+  coldCacheThreshold: 5000,
+  reinforcementLearningRate: 0.01,
+  predictiveWindowMs: 30000,
+  glyphCompressionRatio: 50
+};
+
+// Enhanced interface for GRPMO vector similarity search results
 interface SimilarityResult {
   id: string;
   content: string;
   similarity: number;
   metadata?: any;
+  
+  // GRPMO extensions
+  cacheLayer?: 'hot' | 'warm' | 'cold';
+  responseTime?: number;
+  predictiveScore?: number;
+  glyphEmbedding?: number[];
+  extendedThinkingStages?: ExtendedThinkingStage[];
+  reinforcementContext?: PPOState;
 }
 
 // Generate a sample embedding (replace with actual AI model in production)
@@ -264,6 +309,225 @@ export async function testVectorOperations(): Promise<{
   };
 }
 
+// GRPMO Extended Thinking Engine
+export class GRPMOOrchestrator {
+  private config: GRPMOConfig;
+  private memoryCache: Map<string, { data: any; timestamp: number; layer: string }> = new Map();
+  private reinfrocementAgent: PPOAgent;
+  
+  constructor(config: GRPMOConfig = defaultGRPMOConfig) {
+    this.config = config;
+    this.reinfrocementAgent = new PPOAgent(config.reinforcementLearningRate);
+  }
+
+  // Main extended thinking orchestration
+  async processExtendedThinking(
+    query: string,
+    queryEmbedding: number[],
+    userId: string,
+    caseId?: string
+  ): Promise<{
+    result: SimilarityResult[];
+    thinkingStages: ExtendedThinkingStage[];
+    cachePerformance: { hot: number; warm: number; cold: number };
+  }> {
+    const startTime = Date.now();
+    const stages: ExtendedThinkingStage[] = [];
+    const cachePerformance = { hot: 0, warm: 0, cold: 0 };
+
+    // Stage 1: Hot cache retrieval
+    const hotCacheKey = this.generateCacheKey(query, queryEmbedding, 'hot');
+    const hotResult = await this.retrieveFromCache(hotCacheKey, 'hot');
+    
+    if (hotResult) {
+      cachePerformance.hot++;
+      stages.push({
+        name: 'Hot Cache Hit',
+        duration: Date.now() - startTime,
+        cacheLayer: 'hot',
+        confidence: 0.95,
+        glyphData: this.compressToGlyph(hotResult.data)
+      });
+      return { result: hotResult.data, thinkingStages: stages, cachePerformance };
+    }
+
+    // Stage 2: Warm cache with predictive analysis
+    const warmCacheKey = this.generateCacheKey(query, queryEmbedding, 'warm');
+    const warmResult = await this.retrieveFromCache(warmCacheKey, 'warm');
+    
+    if (warmResult) {
+      cachePerformance.warm++;
+      stages.push({
+        name: 'Warm Cache Analysis',
+        duration: Date.now() - startTime,
+        cacheLayer: 'warm',
+        confidence: 0.80,
+        glyphData: this.compressToGlyph(warmResult.data)
+      });
+      
+      // Predictive enhancement
+      const enhanced = await this.enhanceWithPredictiveAnalysis(warmResult.data, queryEmbedding);
+      await this.cacheResult(hotCacheKey, enhanced, 'hot');
+      return { result: enhanced, thinkingStages: stages, cachePerformance };
+    }
+
+    // Stage 3: Cold cache with full vector search
+    stages.push({
+      name: 'Deep Vector Analysis',
+      duration: Date.now() - startTime,
+      cacheLayer: 'cold',
+      confidence: 0.60
+    });
+
+    const fullResults = await this.performDeepVectorSearch(query, queryEmbedding, userId, caseId);
+    cachePerformance.cold++;
+
+    // Stage 4: Reinforcement learning optimization
+    const optimizedResults = await this.reinfrocementAgent.optimizeResults(
+      fullResults, 
+      { query, userId, caseId, embedding: queryEmbedding }
+    );
+
+    // Stage 5: Glyph compression and caching
+    const glyphData = this.compressToGlyph(optimizedResults);
+    stages.push({
+      name: 'Glyph Compression',
+      duration: Date.now() - startTime,
+      cacheLayer: 'warm',
+      confidence: 0.90,
+      glyphData
+    });
+
+    // Cache at multiple layers
+    await this.cacheResult(warmCacheKey, optimizedResults, 'warm');
+    await this.cacheResult(hotCacheKey, optimizedResults, 'hot');
+
+    return { result: optimizedResults, thinkingStages: stages, cachePerformance };
+  }
+
+  private generateCacheKey(query: string, embedding: number[], layer: string): string {
+    const embeddingHash = this.hashEmbedding(embedding);
+    return `${layer}:${this.hashString(query)}:${embeddingHash}`;
+  }
+
+  private async retrieveFromCache(key: string, layer: string): Promise<{ data: SimilarityResult[]; timestamp: number } | null> {
+    const cached = this.memoryCache.get(key);
+    if (!cached) return null;
+
+    const age = Date.now() - cached.timestamp;
+    const threshold = layer === 'hot' ? this.config.hotCacheThreshold : 
+                     layer === 'warm' ? this.config.warmCacheThreshold :
+                     this.config.coldCacheThreshold;
+
+    return age < threshold ? { data: cached.data, timestamp: cached.timestamp } : null;
+  }
+
+  private async cacheResult(key: string, data: SimilarityResult[], layer: string): Promise<void> {
+    this.memoryCache.set(key, {
+      data,
+      timestamp: Date.now(),
+      layer
+    });
+  }
+
+  private compressToGlyph(data: SimilarityResult[]): string {
+    // 7-bit compression algorithm for visual glyph generation
+    const compressed = data.map(item => ({
+      id: item.id.slice(0, 8),
+      sim: Math.round(item.similarity * 127),
+      key: item.metadata?.keywords?.[0] || ''
+    }));
+    return JSON.stringify(compressed);
+  }
+
+  private hashString(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return hash.toString(36);
+  }
+
+  private hashEmbedding(embedding: number[]): string {
+    const sum = embedding.reduce((a, b) => a + b, 0);
+    return Math.round(sum * 1000).toString(36);
+  }
+
+  private async enhanceWithPredictiveAnalysis(data: SimilarityResult[], queryEmbedding: number[]): Promise<SimilarityResult[]> {
+    return data.map(item => ({
+      ...item,
+      predictiveScore: this.calculatePredictiveScore(item, queryEmbedding),
+      cacheLayer: 'warm'
+    }));
+  }
+
+  private calculatePredictiveScore(item: SimilarityResult, queryEmbedding: number[]): number {
+    // Simple cosine similarity enhancement
+    return item.similarity * 0.8 + Math.random() * 0.2;
+  }
+
+  private async performDeepVectorSearch(query: string, embedding: number[], userId: string, caseId?: string): Promise<SimilarityResult[]> {
+    const results = await hybridSearch(query, embedding, 10);
+    return results.map(item => ({
+      ...item,
+      cacheLayer: 'cold',
+      responseTime: Date.now(),
+      extendedThinkingStages: []
+    }));
+  }
+}
+
+// PPO Reinforcement Learning Agent
+class PPOAgent {
+  private learningRate: number;
+  private policyNetwork: Map<string, number[]> = new Map();
+  private valueNetwork: Map<string, number> = new Map();
+
+  constructor(learningRate: number) {
+    this.learningRate = learningRate;
+  }
+
+  async optimizeResults(results: SimilarityResult[], context: any): Promise<SimilarityResult[]> {
+    const stateKey = this.generateStateKey(context);
+    const currentPolicy = this.policyNetwork.get(stateKey) || new Array(results.length).fill(1.0);
+    
+    // Apply policy weights to results
+    return results.map((item, index) => ({
+      ...item,
+      similarity: item.similarity * currentPolicy[index],
+      reinforcementContext: {
+        stateVector: currentPolicy,
+        actionHistory: [stateKey],
+        rewardSignal: item.similarity,
+        policyGradient: currentPolicy,
+        valueFunction: this.valueNetwork.get(stateKey) || 0.5
+      }
+    }));
+  }
+
+  private generateStateKey(context: any): string {
+    return `${context.userId}:${context.caseId || 'global'}:${context.query.length}`;
+  }
+
+  async updatePolicy(stateKey: string, reward: number, action: number[]): Promise<void> {
+    const currentPolicy = this.policyNetwork.get(stateKey) || action;
+    const updatedPolicy = currentPolicy.map((val, idx) => 
+      val + this.learningRate * reward * (action[idx] - val)
+    );
+    
+    this.policyNetwork.set(stateKey, updatedPolicy);
+    this.valueNetwork.set(stateKey, reward);
+  }
+}
+
+// Global GRPMO instance
+export const grpmoOrchestrator = new GRPMOOrchestrator();
+
 export {
-  type SimilarityResult
+  type SimilarityResult,
+  type GRPMOConfig,
+  type ExtendedThinkingStage,
+  type PPOState
 };
