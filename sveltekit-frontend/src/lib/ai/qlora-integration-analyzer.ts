@@ -105,7 +105,7 @@ export class QLoRAIntegrationAnalyzer {
   private soraMoogle: SoraMoogleIntegration;
   private graphTraversal: SoraGraphTraversal;
   private topologyPredictor: QLoRATopologyPredictor;
-  
+
   private userProfiles = new Map<string, UserBehaviorProfile>();
   private modelInsights = new Map<string, ModelPerformanceInsights>();
   private analysisHistory: FeedbackAnalysis[] = [];
@@ -118,7 +118,7 @@ export class QLoRAIntegrationAnalyzer {
     this.soraMoogle = soraMoogle;
     this.graphTraversal = graphTraversal;
     this.topologyPredictor = topologyPredictor;
-    
+
     console.log('🔬 QLoRA Integration Analyzer initialized');
   }
 
@@ -136,9 +136,9 @@ export class QLoRAIntegrationAnalyzer {
     }>
   ): Promise<FeedbackAnalysis> {
     console.log(`🔍 Analyzing ${feedbackBatch.length} feedback entries for distillation optimization...`);
-    
+
     const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+
     try {
       // 1. Sora-Moogle: Advanced pattern recognition in feedback data
       const behaviorPatterns = await this.soraMoogle.analyzeBehaviorPatterns(

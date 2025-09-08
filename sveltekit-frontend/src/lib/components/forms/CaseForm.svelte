@@ -104,7 +104,7 @@ let tagInput = $state('');
       {#if !isEditing}
         <button
           type="button"
-          on:onclick={() => generateCaseNumber()}
+          onclick={() => generateCaseNumber()}
           class="space-y-4"
         >
           Generate Case #
@@ -261,7 +261,7 @@ let tagInput = $state('');
               {tag}
               <button
                 type="button"
-                on:onclick={() => removeTag(tag)}
+                onclick={() => removeTag(tag)}
                 class="space-y-4"
               >
                 ×
@@ -281,7 +281,7 @@ let tagInput = $state('');
           />
           <button
             type="button"
-            on:onclick={() => addTag()}
+            onclick={() => addTag()}
             class="space-y-4"
           >
             Add Tag
@@ -317,7 +317,7 @@ let tagInput = $state('');
       <div class="space-y-4">
         <button
           type="button"
-          on:onclick={() => dispatch('cancel')}
+          onclick={() => dispatch('cancel')}
           class="space-y-4"
           disabled={$submitting}
         >
