@@ -24,7 +24,7 @@ let memoryCacheSize = 0;
 export class RedisIntegration {
   constructor(options = {}) {
     this.options = {
-      connectionUrl: process.env.REDIS_URL || 'redis://127.0.0.1:4005',
+      connectionUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
       defaultTTL: DEFAULT_TTL,
       useCompression: true,
       fallbackToMemory: true,
@@ -50,7 +50,7 @@ export class RedisIntegration {
       this.isConnected = true;
       console.log(' Redis connected successfully');
     } catch (error) {
-      console.warn('   Redis connection failed, using memory cache fallback:', error.message);
+      console.warn('ï¿½  Redis connection failed, using memory cache fallback:', error.message);
       this.isConnected = false;
       
       if (this.connectionAttempts < this.maxConnectionAttempts) {

@@ -37,9 +37,9 @@
     showMetadata?: boolean;
   } = $props();
 
-  let formattedTime = "";
-  let isSourcesExpanded = false;
-  let isMetadataExpanded = false;
+  let formattedTime = $state("");
+  let isSourcesExpanded = $state(false);
+  let isMetadataExpanded = $state(false);
 
   // Format timestamp
   onMount(() => {

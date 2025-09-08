@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { copilotOrchestrator } from "$lib/utils/mcp-helpers";
 import { performContext7Search, context7AgentOrchestrator, context7SemanticAuditor } from '$lib/ai/context7-adapter';
+import type { AuditLogEntry } from '$lib/types/legal';
 import type { RequestHandler } from './$types';
 
 
@@ -20,11 +21,7 @@ export interface SemanticAuditResult {
   agentTriggered?: boolean;
 }
 
-export interface AuditLogEntry {
-  timestamp: string;
-  query?: string;
-  results?: SemanticAuditResult[];
-}
+// Using AuditLogEntry from $lib/types/legal.ts
 
 export interface AgentTrigger {
   type?: string;
@@ -43,13 +40,21 @@ export interface Context7SearchOptions {
 async function logAuditResult(results: SemanticAuditResult[]): Promise<any> {
   // Use the Context7 adapter orchestrator for logging (real or mock)
   for (const result of results) {
-    const logEntry: any = {
-      timestamp: new Date().toISOString(),
-      step: (result as any).step || 'unknown',
-      status: (result as any).status || 'unknown',
-      message: (result as any).message || JSON.stringify(result),
-      suggestedFix: (result as any).suggestedFix ?? null,
-      agentTriggered: (result as any).agentTriggered ?? false,
+    const logEntry = {
+      id: `audit_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+      action: 'semantic_audit',
+      entityType: 'SYSTEM' as const,
+      entityId: result.id || 'unknown',
+      userId: 'system',
+      severity: 'INFO' as const,
+      timestamp: new Date(),
+      details: {
+        step: (result as any).step || 'unknown',
+        status: (result as any).status || 'unknown',
+        message: (result as any).message || JSON.stringify(result),
+        suggestedFix: (result as any).suggestedFix ?? null,
+        agentTriggered: (result as any).agentTriggered ?? false,
+      }
     };
     context7AgentOrchestrator.logAuditEntry(logEntry);
   }
@@ -171,13 +176,22 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error("[Real Semantic Audit] Error:", error);
 
     // Log the error using Context7 orchestrator
-    context7AgentOrchestrator.logAuditEntry({
-      timestamp: new Date().toISOString(),
-      step: 'semantic_audit_error',
-      status: 'error',
-      message: `Semantic audit failed: ${error}`,
-      agentTriggered: false
-    });
+    const errorLogEntry: AuditLogEntry = {
+      id: `error_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+      action: 'semantic_audit_error',
+      entityType: 'SYSTEM',
+      entityId: 'semantic_audit',
+      userId: 'system',
+      severity: 'ERROR',
+      timestamp: new Date(),
+      details: {
+        step: 'semantic_audit_error',
+        status: 'error',
+        message: `Semantic audit failed: ${error}`,
+        agentTriggered: false
+      }
+    };
+    context7AgentOrchestrator.logAuditEntry(errorLogEntry);
 
     return new Response(JSON.stringify({
       error: 'Semantic audit failed',

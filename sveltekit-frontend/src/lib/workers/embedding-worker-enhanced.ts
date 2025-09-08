@@ -384,8 +384,8 @@ export class EnhancedEmbeddingWorker {
     await this.sleep(processingTime);
     
     // Mock embedding generation - replace with actual service call
-    const embeddingSize = model === 'nomic-embed-text' ? 768 : 
-                         model.includes('large') ? 1536 : 768;
+    const embeddingSize = model === 'nomic-embed-text' ? 384 : 
+                         model.includes('large') ? 1536 : 384;
     
     // Generate more realistic embeddings (normalized vectors)
     const embedding = Array.from({ length: embeddingSize }, () => (Math.random() - 0.5) * 2);

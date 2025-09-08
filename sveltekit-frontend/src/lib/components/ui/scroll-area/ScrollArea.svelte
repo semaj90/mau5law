@@ -11,7 +11,7 @@
 </script>
 
 <ScrollAreaPrimitive.Root
-	class={cn("relative overflow-hidden", class)}
+	class={cn("relative overflow-hidden", className)}
 	{...rest}
 >
 	<ScrollAreaPrimitive.Viewport class="h-full w-full rounded-[inherit]">

@@ -25,7 +25,7 @@ export async function generateEmbedding(
   text: string,
   options: EmbeddingOptions = {},
 ): Promise<number[] | null> {
-  const { model = "nomic-embed-text", cache = true, maxTokens = 8000 } = options;
+  const { model = "embeddinggemma", cache = true, maxTokens = 8000 } = options;
 
   if (!text || text.trim().length === 0) {
     return null;
@@ -58,7 +58,7 @@ export async function generateEmbedding(
   }
 }
 // Local Ollama embedding generation
-async function generateLocalEmbedding(text: string, model: string = "nomic-embed-text"): Promise<number[]> {
+async function generateLocalEmbedding(text: string, model: string = "embeddinggemma"): Promise<number[]> {
   const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434";
   
   try {
@@ -78,12 +78,39 @@ async function generateLocalEmbedding(text: string, model: string = "nomic-embed
     }
 
     const data = await response.json();
-    return data.embedding;
+    const rawEmbedding = data.embedding;
+    
+    // Quantize EmbeddingGemma (768D) to 384D for schema compatibility
+    if (model === 'embeddinggemma' && rawEmbedding.length === 768) {
+      return quantizeEmbedding(rawEmbedding, 384);
+    }
+    
+    return rawEmbedding;
   } catch (error: any) {
     console.error("Ollama embedding generation failed:", error);
     // Fallback to mock embedding for development
-    return generateMockEmbedding(384); // nomic-embed-text is 768 dimensions
+    return generateMockEmbedding(384); // Fallback to 384D for schema compatibility
   }
+}
+
+// Quantize high-dimensional embeddings to target dimensions (with quality preservation)
+function quantizeEmbedding(embedding: number[], targetDimensions: number): number[] {
+  if (embedding.length <= targetDimensions) {
+    return embedding;
+  }
+  
+  // Use stride-based sampling to preserve semantic structure
+  const step = embedding.length / targetDimensions;
+  const quantized = new Array(targetDimensions);
+  
+  for (let i = 0; i < targetDimensions; i++) {
+    const sourceIndex = Math.floor(i * step);
+    quantized[i] = embedding[sourceIndex];
+  }
+  
+  // Normalize the quantized vector to preserve semantic magnitude
+  const magnitude = Math.sqrt(quantized.reduce((sum, val) => sum + val * val, 0));
+  return quantized.map(val => val / (magnitude || 1));
 }
 
 // Mock embedding generation for development/testing
@@ -102,7 +129,7 @@ export async function generateBatchEmbeddings(
   texts: string[],
   options: EmbeddingOptions = {},
 ): Promise<number[][]> {
-  const { model = "nomic-embed-text" } = options;
+  const { model = "embeddinggemma" } = options;
 
   // Process texts individually for now (Ollama doesn't support batch)
   const embeddings: (number[] | null)[] = [];

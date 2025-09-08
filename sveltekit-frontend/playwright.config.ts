@@ -1,5 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Fix conflict with Vitest matchers
+delete (globalThis as any).__vitest_index__;
+delete (globalThis as any).__vitest_worker__;
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,

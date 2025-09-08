@@ -153,23 +153,23 @@ export const POST: RequestHandler = async ({ request }) => {
         });
         
       case 'submit_job':
-        const { jobType, data, priority = 2 } = payload;
+        const { jobType: submittedJobType, data, priority = 2 } = payload;
         
-        if (!jobType || !data) {
+        if (!submittedJobType || !data) {
           return json({
             success: false,
             error: { message: 'jobType and data are required' }
           }, { status: 400 });
         }
         
-        const jobId = await submitDirectTensorJob(jobType, data, priority);
+        const jobId = await submitDirectTensorJob(submittedJobType, data, priority);
         
         return json({
           success: true,
           message: 'Tensor job submitted successfully',
           data: {
             jobId,
-            jobType,
+            jobType: submittedJobType,
             priority,
             submitted_at: new Date().toISOString()
           }
@@ -213,8 +213,8 @@ export const POST: RequestHandler = async ({ request }) => {
           }, { status: 400 });
         }
         
-        const jobType = batchProcess ? 'wasm_batch_normalize' : 'wasm_vector_operations';
-        const normalizeJobId = await submitDirectTensorJob(jobType, {
+        const normalizeJobType = batchProcess ? 'wasm_batch_normalize' : 'wasm_vector_operations';
+        const normalizeJobId = await submitDirectTensorJob(normalizeJobType, {
           vectors,
           operation: batchProcess ? 'batch_process' : 'normalize'
         }, 2);

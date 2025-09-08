@@ -1,19 +1,16 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-  import { $effect } from 'svelte';
+  import { $effect, onMount } from 'svelte';
 
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
   import { Card } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { serviceStatus } from '$lib/stores/chatStore';
-  import { onMount } from 'svelte';
 
   // Use the XState machine through the store
   const { state } = useChatActor();
-let userInput = $state('');
-let chatContainer = $state<HTMLElement | null>(null);
+  let userInput = $state('');
+  let chatContainer = $state<HTMLElement | null>(null);
 
   // Send message handler
   function handleSubmit() {
@@ -32,7 +29,9 @@ let chatContainer = $state<HTMLElement | null>(null);
     if ($state.context.messages && chatContainer) {
       // Wait for DOM update
       setTimeout(() => {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+        if (chatContainer) {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
       }, 10);
     }
   });

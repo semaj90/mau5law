@@ -2,10 +2,10 @@
 // Bridges XState-managed AI assistant with WebAssembly llama.cpp service
 // Integrates WebGPU tensor acceleration and ONNX.js fallbacks
 
-import { webLlamaService, type WebLlamaResponse, type WebLlamaConfig } from '../ai/webasm-llamacpp.js';
-import { tensorAccelerator, acceleratedSimilarity } from '../server/tensor-acceleration.js';
+import { webLlamaService, type WebLlamaResponse, type WebLlamaConfig } from '../ai/webasm-llamacpp';
+import { tensorAccelerator, acceleratedSimilarity } from '../webgpu/tensor-acceleration';
 import { browser } from '$app/environment';
-import type { ConversationEntry } from '../stores/aiAssistant.svelte.js';
+import type { ConversationEntry } from '../stores/aiAssistant.svelte';
 
 export interface WebAssemblyAIConfig {
   // Primary server-side endpoints
@@ -44,7 +44,7 @@ export interface WebAssemblyAIResponse {
 export class WebAssemblyAIAdapter {
   private initialized = false;
   private config: WebAssemblyAIConfig;
-  private currentModel = 'gemma3-legal';
+  private currentModel = 'gemma3:270m';
   private activeInferenceMethod: 'ollama' | 'python' | 'onnx' | 'unknown' = 'unknown';
   private onnxSession: any = null; // ONNX.js inference session
   private gpuAvailable = false;
@@ -56,7 +56,7 @@ export class WebAssemblyAIAdapter {
       pythonMiddlewareEndpoint: '/api/python-ai',
       
       // Client-side fallback
-      onnxModelPath: '/models/gemma3-legal-distilled.onnx',
+      onnxModelPath: '/models/gemma3-270m.onnx',
       wasmPath: '/wasm/vector-ops.wasm',
       enableGPU: true,
       enableMultiCore: true,
@@ -203,7 +203,7 @@ export class WebAssemblyAIAdapter {
       throw new Error('No models available in Ollama');
     }
     
-    this.currentModel = models.models[0]?.name || 'gemma3-legal';
+    this.currentModel = models.models[0]?.name || 'gemma3:270m';
     console.log(`[WebAssembly AI] Ollama initialized with model: ${this.currentModel}`);
   }
 
@@ -214,7 +214,7 @@ export class WebAssemblyAIAdapter {
     const statusCheck = await fetch(`${this.config.pythonMiddlewareEndpoint}/status`);
     const status = await statusCheck.json();
     
-    this.currentModel = status.model || 'gemma3-legal-python';
+    this.currentModel = status.model || 'gemma3:270m';
     console.log(`[WebAssembly AI] Python middleware initialized with model: ${this.currentModel}`);
   }
 
@@ -240,7 +240,7 @@ export class WebAssemblyAIAdapter {
         enableCpuMemArena: true,
       });
       
-      this.currentModel = 'gemma3-legal-onnx';
+      this.currentModel = 'gemma3:270m';
       console.log('[WebAssembly AI] ONNX.js initialized successfully');
     } catch (error) {
       console.error('[WebAssembly AI] ONNX initialization failed:', error);
@@ -432,7 +432,7 @@ export class WebAssemblyAIAdapter {
           processingTime: 0,
           confidence: 0.7, // ONNX models typically lower confidence
           method: 'onnx',
-          modelUsed: 'gemma3-legal-onnx',
+          modelUsed: 'gemma3:270m',
           fromCache: false
         }
       };
@@ -648,9 +648,9 @@ export class WebAssemblyAIAdapter {
    */
   getAvailableModels(): string[] {
     return [
-      'gemma3-legal',
-      'gemma3-legal-8b',
-      'gemma3-legal-4b'
+      'gemma3:270m',
+      'gemma3:2b',
+      'gemma3:9b'
     ];
   }
 

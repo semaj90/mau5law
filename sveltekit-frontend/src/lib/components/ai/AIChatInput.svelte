@@ -124,8 +124,8 @@ let isMultiline = $state(false);
       class:near-limit={isNearLimit}
       class:at-limit={isAtLimit}
       rows={rows}
-      input={handleInput}
-      keydown={handleKeydown}
+      oninput={handleInput}
+      onkeydown={handleKeydown}
       onfocus={handleFocus}
       onblur={handleBlur}
       aria-label="Chat message input"
@@ -148,7 +148,7 @@ let isMultiline = $state(false);
         class="send-button"
         disabled={disabled}
         class:has-content={value.trim().length > 0}
-        on:on:click={() => handleSend()}
+        onclick={() => handleSend()}
         title="Send message (Enter)"
         aria-label="Send message"
       >

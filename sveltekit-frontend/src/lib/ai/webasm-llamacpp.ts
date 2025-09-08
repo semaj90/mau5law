@@ -89,7 +89,7 @@ class WebAssemblyLlamaService {
 
   constructor(config: Partial<WebLlamaConfig> = {}) {
     this.config = {
-      modelUrl: '/models/gemma-3-legal-8b-q4_k_m.gguf',
+      modelUrl: '/models/gemma3:270m',
       wasmUrl: '/wasm/llama.wasm',
       threadsCount: navigator.hardwareConcurrency || 4,
       contextSize: 8192,
@@ -131,7 +131,7 @@ class WebAssemblyLlamaService {
       }
 
       this.webgpuDevice = await adapter.requestDevice({
-        requiredFeatures: ['shader-f16'] as GPUFeatureName[],
+        requiredFeatures: [] as GPUFeatureName[], // No special features for broader compatibility
         requiredLimits: {
           maxBufferSize: 1024 * 1024 * 1024, // 1GB
           maxStorageBufferBindingSize: 512 * 1024 * 1024, // 512MB
@@ -203,6 +203,12 @@ class WebAssemblyLlamaService {
    * Initialize Web Worker for multi-threading
    */
   private initializeWorker(): void {
+    // Only initialize workers in browser context
+    if (typeof window === 'undefined' || typeof Worker === 'undefined') {
+      console.log('[WebLlama] Skipping worker initialization - not in browser context');
+      return;
+    }
+
     try {
       // Create a module worker for parallel generation
       this.worker = new Worker(new URL('../../workers/webllama.worker.ts', import.meta.url), {
@@ -243,7 +249,7 @@ class WebAssemblyLlamaService {
       }
 
       this.modelLoaded = true;
-      this.currentModel = models.models[0]?.name || 'gemma3-legal';
+      this.currentModel = models.models[0]?.name || 'gemma3:270m';
       console.log(`[WebLlama] Connected to Ollama with model: ${this.currentModel}`);
       return true;
 

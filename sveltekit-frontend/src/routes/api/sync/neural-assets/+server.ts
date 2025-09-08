@@ -4,12 +4,12 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { mockDataGenerators } from '$lib/server/sync/mock-api-sync.js';
-import { bitmapSpriteCache } from '$lib/ai/bitmap-sprite-cache.js';
-import { chrRomManager } from '$lib/services/chr-rom-manager.js';
-import { db } from '$lib/server/db/drizzle.js';
-import { vectorEmbeddings, legalDocuments } from '$lib/server/db/schema-postgres.js';
+import type { RequestHandler } from '@sveltejs/kit';
+import { mockDataGenerators } from '$lib/server/sync/mock-api-sync-simple';
+// import { bitmapSpriteCache } from '$lib/ai/bitmap-sprite-cache';
+// import { chrRomManager } from '$lib/services/chr-rom-manager';
+// import { db } from '$lib/server/db/drizzle';
+// import { vectorEmbeddings, legalDocuments } from '$lib/server/db/schema-postgres';
 import { cosineDistance, desc, sql, eq } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -29,22 +29,31 @@ export const GET: RequestHandler = async ({ url }) => {
           assets: assetPredictions,
           count: assetPredictions.length,
           aggregateMetrics: {
-            avgConfidence: assetPredictions.reduce((sum, a) => sum + a.totalConfidence, 0) / assetPredictions.length,
-            avgCacheEfficiency: assetPredictions.reduce((sum, a) => sum + a.cacheHitRatio, 0) / assetPredictions.length,
-            avgPredictionLatency: assetPredictions.reduce((sum, a) => sum + a.predictionLatencyMs, 0) / assetPredictions.length,
-            assetTypeDistribution: assetPredictions.reduce((acc, a) => {
-              acc[a.assetType] = (acc[a.assetType] || 0) + 1;
-              return acc;
-            }, {} as Record<string, number>)
+            avgConfidence:
+              assetPredictions.reduce((sum, a) => sum + a.totalConfidence, 0) /
+              assetPredictions.length,
+            avgCacheEfficiency:
+              assetPredictions.reduce((sum, a) => sum + a.cacheHitRatio, 0) /
+              assetPredictions.length,
+            avgPredictionLatency:
+              assetPredictions.reduce((sum, a) => sum + a.predictionLatencyMs, 0) /
+              assetPredictions.length,
+            assetTypeDistribution: assetPredictions.reduce(
+              (acc, a) => {
+                acc[a.assetType] = (acc[a.assetType] || 0) + 1;
+                return acc;
+              },
+              {} as Record<string, number>
+            ),
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'bitmap_sprites':
         // Generate bitmap sprite cache states
         const spriteStates = mockDataGenerators.generateMockEmbeddingShards(count);
 
-        const bitmapSprites = spriteStates.map(shard => ({
+        const bitmapSprites = spriteStates.map((shard) => ({
           shardId: shard.shardId,
           spriteMatrix: Array.from({ length: 8 }, () =>
             Array.from({ length: 8 }, () => Math.floor(Math.random() * 4))
@@ -55,7 +64,7 @@ export const GET: RequestHandler = async ({ url }) => {
           predictiveScore: Math.random(),
           lastAccessed: new Date(Date.now() - Math.random() * 86400000).toISOString(),
           hitCount: Math.floor(Math.random() * 1000),
-          mockData: true
+          mockData: true,
         }));
 
         return json({
@@ -64,11 +73,12 @@ export const GET: RequestHandler = async ({ url }) => {
           count: bitmapSprites.length,
           cacheStats: {
             totalHits: bitmapSprites.reduce((sum, s) => sum + s.hitCount, 0),
-            avgCompressionRatio: bitmapSprites.reduce((sum, s) => sum + s.compressionRatio, 0) / bitmapSprites.length,
-            activeCacheEntries: bitmapSprites.filter(s => s.cacheState === 'active').length,
-            staleEntries: bitmapSprites.filter(s => s.cacheState === 'stale').length
+            avgCompressionRatio:
+              bitmapSprites.reduce((sum, s) => sum + s.compressionRatio, 0) / bitmapSprites.length,
+            activeCacheEntries: bitmapSprites.filter((s) => s.cacheState === 'active').length,
+            staleEntries: bitmapSprites.filter((s) => s.cacheState === 'stale').length,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'chr_manifests':
@@ -81,12 +91,14 @@ export const GET: RequestHandler = async ({ url }) => {
           count: chrManifests.length,
           systemMetrics: {
             totalBanks: chrManifests.reduce((sum, m) => sum + m.bankCount, 0),
-            avgSpriteCount: chrManifests.reduce((sum, m) => sum + m.spriteCount, 0) / chrManifests.length,
-            compressionEfficiency: chrManifests.reduce((sum, m) => sum + m.compressionRatio, 0) / chrManifests.length,
+            avgSpriteCount:
+              chrManifests.reduce((sum, m) => sum + m.spriteCount, 0) / chrManifests.length,
+            compressionEfficiency:
+              chrManifests.reduce((sum, m) => sum + m.compressionRatio, 0) / chrManifests.length,
             memoryFootprint: chrManifests.reduce((sum, m) => sum + m.memoryFootprint, 0),
-            optimizationLevels: [...new Set(chrManifests.map(m => m.optimizationLevel))].length
+            optimizationLevels: [...new Set(chrManifests.map((m) => m.optimizationLevel))].length,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'predictive_cache':
@@ -104,30 +116,27 @@ export const GET: RequestHandler = async ({ url }) => {
             assetId: `asset_${Math.floor(Math.random() * 1000)}`,
             latency: Math.floor(Math.random() * 50),
             success: Math.random() > 0.1,
-            timestamp: new Date(Date.now() - Math.random() * 3600000).toISOString()
-          }))
+            timestamp: new Date(Date.now() - Math.random() * 3600000).toISOString(),
+          })),
         };
 
         return json({
           action: 'predictive_cache',
           cache: mockCacheData,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'vector_similarity':
         // Get vector similarity analysis for neural assets
-        const embeddingCount = Math.min(count, 10); // Limit for performance
-        const recentEmbeddings = await db
-          .select({
-            id: vectorEmbeddings.id,
-            documentId: vectorEmbeddings.documentId,
-            embedding: vectorEmbeddings.embedding,
-            metadata: vectorEmbeddings.metadata,
-            createdAt: vectorEmbeddings.createdAt
-          })
-          .from(vectorEmbeddings)
-          .orderBy(desc(vectorEmbeddings.createdAt))
-          .limit(embeddingCount);
+        // Mock embeddings data
+        const embeddingCount = Math.min(count, 10);
+        const recentEmbeddings = Array.from({ length: embeddingCount }, (_, i) => ({
+          id: `embedding_${i}`,
+          documentId: `doc_${i}`,
+          embedding: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
+          metadata: { mockData: true },
+          createdAt: new Date(Date.now() - Math.random() * 86400000),
+        }));
 
         const similarityMatrix = [];
 
@@ -147,7 +156,7 @@ export const GET: RequestHandler = async ({ url }) => {
               similarity,
               neuralDistance: 1 - similarity,
               clusterId: Math.floor(similarity * 5), // Mock cluster assignment
-              mockCalculation: true
+              mockCalculation: true,
             });
           }
         }
@@ -158,11 +167,12 @@ export const GET: RequestHandler = async ({ url }) => {
           count: similarityMatrix.length,
           embeddingStats: {
             totalEmbeddings: recentEmbeddings.length,
-            avgSimilarity: similarityMatrix.reduce((sum, s) => sum + s.similarity, 0) / similarityMatrix.length,
-            clusters: [...new Set(similarityMatrix.map(s => s.clusterId))].length,
-            strongSimilarities: similarityMatrix.filter(s => s.similarity > 0.8).length
+            avgSimilarity:
+              similarityMatrix.reduce((sum, s) => sum + s.similarity, 0) / similarityMatrix.length,
+            clusters: [...new Set(similarityMatrix.map((s) => s.clusterId))].length,
+            strongSimilarities: similarityMatrix.filter((s) => s.similarity > 0.8).length,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'cache_health':
@@ -173,48 +183,65 @@ export const GET: RequestHandler = async ({ url }) => {
             hitRatio: 0.82 + Math.random() * 0.15,
             memoryUsed: Math.floor(Math.random() * 256) + 64, // MB
             compressionRatio: 0.25 + Math.random() * 0.3,
-            status: Math.random() > 0.1 ? 'healthy' : 'degraded'
+            status: Math.random() > 0.1 ? 'healthy' : 'degraded',
           },
           chrRomCache: {
             banks: Math.floor(Math.random() * 16 + 4),
             utilization: 0.6 + Math.random() * 0.3,
             avgBankSize: Math.floor(Math.random() * 8192 + 4096), // bytes
             swapRate: Math.random() * 0.05,
-            status: Math.random() > 0.05 ? 'healthy' : 'warning'
+            status: Math.random() > 0.05 ? 'healthy' : 'warning',
           },
           predictiveEngine: {
             accuracy: 0.75 + Math.random() * 0.2,
             predictions: Math.floor(Math.random() * 1000 + 500),
             mispredictions: Math.floor(Math.random() * 50 + 10),
             adaptationRate: Math.random() * 0.1,
-            status: Math.random() > 0.05 ? 'healthy' : 'learning'
+            status: Math.random() > 0.05 ? 'healthy' : 'learning',
           },
-          overallHealth: Math.random() > 0.8 ? 'optimal' : Math.random() > 0.6 ? 'good' : Math.random() > 0.3 ? 'warning' : 'critical'
+          overallHealth:
+            Math.random() > 0.8
+              ? 'optimal'
+              : Math.random() > 0.6
+                ? 'good'
+                : Math.random() > 0.3
+                  ? 'warning'
+                  : 'critical',
         };
 
         return json({
           action: 'cache_health',
           health: healthMetrics,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       default:
-        return json({
-          error: 'Unknown action',
-          availableActions: [
-            'assets', 'bitmap_sprites', 'chr_manifests',
-            'predictive_cache', 'vector_similarity', 'cache_health'
-          ],
-          timestamp: new Date().toISOString()
-        }, { status: 400 });
+        return json(
+          {
+            error: 'Unknown action',
+            availableActions: [
+              'assets',
+              'bitmap_sprites',
+              'chr_manifests',
+              'predictive_cache',
+              'vector_similarity',
+              'cache_health',
+            ],
+            timestamp: new Date().toISOString(),
+          },
+          { status: 400 }
+        );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Neural topology assets API error:', error);
-    return json({
-      error: 'Neural assets operation failed',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    }, { status: 500 });
+    return json(
+      {
+        error: 'Neural assets operation failed',
+        message: error?.message || 'Unknown error',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -234,31 +261,31 @@ export const POST: RequestHandler = async ({ request }) => {
           beforeOptimization: {
             hitRatio: 0.75 + Math.random() * 0.1,
             memoryUsed: Math.floor(Math.random() * 200 + 100),
-            responseTime: Math.floor(Math.random() * 20 + 10)
+            responseTime: Math.floor(Math.random() * 20 + 10),
           },
           afterOptimization: {
             hitRatio: Math.min(targetEfficiency, 0.95),
             memoryUsed: Math.floor(Math.random() * 150 + 80),
-            responseTime: Math.floor(Math.random() * 15 + 5)
+            responseTime: Math.floor(Math.random() * 15 + 5),
           },
           optimizationsApplied: [
             'LRU eviction policy updated',
             'Predictive preloading enabled',
             'Compression threshold adjusted',
-            'Cache partitioning optimized'
+            'Cache partitioning optimized',
           ],
           estimatedImprovements: {
             performanceGain: `${Math.floor(Math.random() * 25 + 15)}%`,
             memoryReduction: `${Math.floor(Math.random() * 20 + 10)}%`,
-            responseTimeImprovement: `${Math.floor(Math.random() * 30 + 20)}%`
+            responseTimeImprovement: `${Math.floor(Math.random() * 30 + 20)}%`,
           },
-          mockOptimization: true
+          mockOptimization: true,
         };
 
         return json({
           action: 'optimize_cache',
           result: optimizationResult,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'generate_sprites':
@@ -277,10 +304,16 @@ export const POST: RequestHandler = async ({ request }) => {
             matrix: Array.from({ length: 8 }, () =>
               Array.from({ length: 8 }, () => Math.floor(Math.random() * 4))
             ),
-            palette: Array.from({ length: 4 }, () => `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`),
+            palette: Array.from(
+              { length: 4 },
+              () =>
+                `#${Math.floor(Math.random() * 16777215)
+                  .toString(16)
+                  .padStart(6, '0')}`
+            ),
             compressionLevel,
             generatedAt: new Date().toISOString(),
-            mockGeneration: true
+            mockGeneration: true,
           };
         });
 
@@ -289,7 +322,7 @@ export const POST: RequestHandler = async ({ request }) => {
           sprites: generatedSprites,
           count: generatedSprites.length,
           parameters: { documentIds, spriteCount, compressionLevel },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'update_chr_manifest':
@@ -308,74 +341,95 @@ export const POST: RequestHandler = async ({ request }) => {
           beforeUpdate: {
             bankCount: Math.floor(Math.random() * 8 + 4),
             spriteCount: Math.floor(Math.random() * 256 + 128),
-            memoryFootprint: Math.floor(Math.random() * 65536 + 32768)
+            memoryFootprint: Math.floor(Math.random() * 65536 + 32768),
           },
           afterUpdate: {
             bankCount: Math.floor(Math.random() * 8 + 4),
             spriteCount: Math.floor(Math.random() * 256 + 128) + (newSprites?.length || 0),
-            memoryFootprint: Math.floor(Math.random() * 65536 + 32768)
+            memoryFootprint: Math.floor(Math.random() * 65536 + 32768),
           },
           changesApplied: [
             'Bank allocation rebalanced',
             'Sprite deduplication performed',
             'Compression optimization applied',
-            'Memory layout optimized'
+            'Memory layout optimized',
           ],
-          mockUpdate: true
+          mockUpdate: true,
         };
 
         return json({
           action: 'update_chr_manifest',
           result: updateResult,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'predict_asset_usage':
         // Predict future asset usage patterns
         const { timeHorizon = 3600, assetTypes, userContext } = params;
 
-        const predictions = Array.from({ length: Math.min(assetTypes?.length || 5, 10) }, (_, i) => {
-          const assetType = assetTypes?.[i] || `asset_type_${i}`;
-          return {
-            assetType,
-            timeHorizon,
-            predicted: {
-              usageFrequency: Math.random(),
-              peakUsageTime: Date.now() + Math.random() * timeHorizon * 1000,
-              expectedLoad: Math.random() * 100,
-              cacheRecommendation: Math.random() > 0.5 ? 'preload' : 'lazy_load',
-              confidenceScore: 0.6 + Math.random() * 0.3
-            },
-            userContext: userContext || { sessionType: 'analysis', focusIntensity: Math.random() },
-            mockPrediction: true
-          };
-        });
+        const predictions = Array.from(
+          { length: Math.min(assetTypes?.length || 5, 10) },
+          (_, i) => {
+            const assetType = assetTypes?.[i] || `asset_type_${i}`;
+            return {
+              assetType,
+              timeHorizon,
+              predicted: {
+                usageFrequency: Math.random(),
+                peakUsageTime: Date.now() + Math.random() * timeHorizon * 1000,
+                expectedLoad: Math.random() * 100,
+                cacheRecommendation: Math.random() > 0.5 ? 'preload' : 'lazy_load',
+                confidenceScore: 0.6 + Math.random() * 0.3,
+              },
+              userContext: userContext || {
+                sessionType: 'analysis',
+                focusIntensity: Math.random(),
+              },
+              mockPrediction: true,
+            };
+          }
+        );
 
         return json({
           action: 'predict_asset_usage',
           predictions,
           timeHorizon,
           aggregateMetrics: {
-            avgConfidence: predictions.reduce((sum, p) => sum + p.predicted.confidenceScore, 0) / predictions.length,
-            preloadRecommendations: predictions.filter(p => p.predicted.cacheRecommendation === 'preload').length,
-            totalExpectedLoad: predictions.reduce((sum, p) => sum + p.predicted.expectedLoad, 0)
+            avgConfidence:
+              predictions.reduce((sum, p) => sum + p.predicted.confidenceScore, 0) /
+              predictions.length,
+            preloadRecommendations: predictions.filter(
+              (p) => p.predicted.cacheRecommendation === 'preload'
+            ).length,
+            totalExpectedLoad: predictions.reduce((sum, p) => sum + p.predicted.expectedLoad, 0),
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       default:
-        return json({
-          error: 'Unknown POST action',
-          availableActions: ['optimize_cache', 'generate_sprites', 'update_chr_manifest', 'predict_asset_usage'],
-          timestamp: new Date().toISOString()
-        }, { status: 400 });
+        return json(
+          {
+            error: 'Unknown POST action',
+            availableActions: [
+              'optimize_cache',
+              'generate_sprites',
+              'update_chr_manifest',
+              'predict_asset_usage',
+            ],
+            timestamp: new Date().toISOString(),
+          },
+          { status: 400 }
+        );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Neural topology assets POST API error:', error);
-    return json({
-      error: 'POST operation failed',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    }, { status: 500 });
+    return json(
+      {
+        error: 'POST operation failed',
+        message: error?.message || 'Unknown error',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
 };

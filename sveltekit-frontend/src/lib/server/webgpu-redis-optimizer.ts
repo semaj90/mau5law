@@ -152,35 +152,40 @@ export class WebGPURedisOptimizer {
   private initializeThreadPools(): void {
     const coreCount = navigator.hardwareConcurrency || 4;
     
-    // Create thread pools for different workload types
-    ['compression', 'decompression', 'serialization'].forEach(poolType => {
-      const workers: Worker[] = [];
-      
-      for (let i = 0; i < Math.min(coreCount, 8); i++) {
-        try {
-          const worker = new Worker(new URL('../workers/cache-worker.ts', import.meta.url), {
-            type: 'module',
-            name: `${poolType}-worker-${i}`
-          });
-          
-          worker.postMessage({ 
-            type: 'init', 
-            config: { 
-              poolType, 
-              threadId: i,
-              rtxOptimizations: true,
-              simdEnabled: true
-            } 
-          });
-          
-          workers.push(worker);
-        } catch (error) {
-          console.warn(`Failed to create ${poolType} worker ${i}:`, error);
+    // Only create workers in browser context
+    if (typeof window !== 'undefined' && typeof Worker !== 'undefined') {
+      // Create thread pools for different workload types
+      ['compression', 'decompression', 'serialization'].forEach(poolType => {
+        const workers: Worker[] = [];
+        
+        for (let i = 0; i < Math.min(coreCount, 8); i++) {
+          try {
+            const worker = new Worker(new URL('../workers/cache-worker.ts', import.meta.url), {
+              type: 'module',
+              name: `${poolType}-worker-${i}`
+            });
+            
+            worker.postMessage({ 
+              type: 'init', 
+              config: { 
+                poolType, 
+                threadId: i,
+                rtxOptimizations: true,
+                simdEnabled: true
+              } 
+            });
+            
+            workers.push(worker);
+          } catch (error) {
+            console.warn(`Failed to create ${poolType} worker ${i}:`, error);
+          }
         }
-      }
-      
-      this.threadPools.set(poolType.charCodeAt(0), workers);
-    });
+        
+        this.threadPools.set(poolType.charCodeAt(0), workers);
+      });
+    } else {
+      console.log('WebGPU Redis Optimizer: Skipping worker initialization - not in browser context');
+    }
 
     console.log(`⚡ Thread pools initialized: ${this.threadPools.size} pools, ${coreCount} cores detected`);
   }
