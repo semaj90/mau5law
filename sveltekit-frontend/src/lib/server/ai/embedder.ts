@@ -75,7 +75,7 @@ export async function embedText(text: string, model?: string): Promise<number[]>
   }
 
   const modelName = model || EMBEDDING_CONFIG.defaultModel;
-  
+
   // Check Redis cache first
   const cachedEmbedding = await cache.getEmbedding(text, modelName);
   if (cachedEmbedding) {
@@ -95,19 +95,23 @@ export async function embedText(text: string, model?: string): Promise<number[]>
       if (nomicEmbeddings) {
         embedding = await embedWithNomic(text);
       } else {
-        throw new Error('No embedding service available. Configure NOMIC_API_KEY or LOCAL_EMBEDDER_URL');
+        throw new Error(
+          'No embedding service available. Configure NOMIC_API_KEY or LOCAL_EMBEDDER_URL'
+        );
       }
     }
   } else if (nomicEmbeddings) {
     embedding = await embedWithNomic(text);
   } else {
-    throw new Error('No embedding service available. Configure NOMIC_API_KEY or LOCAL_EMBEDDER_URL');
+    throw new Error(
+      'No embedding service available. Configure NOMIC_API_KEY or LOCAL_EMBEDDER_URL'
+    );
   }
 
   // Cache the result in Redis
   await cache.setEmbedding(text, embedding, modelName);
   console.log('💾 Embedding cached in Redis');
-  
+
   return embedding;
 }
 
@@ -175,10 +179,15 @@ export async function getEmbeddingServiceStatus(): Promise<{
   // Check local service
   if (EMBEDDING_CONFIG.useLocal) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+
       const response = await fetch(EMBEDDING_CONFIG.localUrl + '/health', {
         method: 'GET',
-        timeout: 2000
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
       localAvailable = response.ok;
     } catch (error) {
       // Local service not available

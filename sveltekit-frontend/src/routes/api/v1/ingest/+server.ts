@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
 import { INGEST_SERVICE_URL } from '$env/static/private';
 import type { RequestHandler } from './$types';
-
 
 /*
  * SvelteKit API proxy to Go Ingest Service (port 8227)
@@ -35,7 +35,7 @@ export interface IngestResponse {
 // Single document ingestion
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
-    const requestData = await request.json();
+    const requestData = await readBodyFast(request);
 
     // Validate request structure
     if (!requestData.title || !requestData.content) {

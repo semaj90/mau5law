@@ -10,6 +10,7 @@
   import FeedbackWidget from '$lib/components/feedback/FeedbackWidget.svelte';
   import type { FeedbackTrigger } from '$lib/types/feedback';
   import type { Snippet } from 'svelte';
+  import { chrCache } from '$lib/gpu/chrrom-cache';
 
   // Modern button component
   import ModernButton from '$lib/components/ui/button/Button.svelte';
@@ -33,13 +34,16 @@
   // Create feedback store and set context immediately (must be synchronous)
   const feedbackStore = createFeedbackStore();
   setFeedbackStore(feedbackStore);
-  
+
   let store = $state<ReturnType<typeof createFeedbackStore>>(feedbackStore);
 
   onMount(() => {
     if (!browser) return;
 
     (async () => {
+  // Open a single SSE connection to hydrate CHR cache globally
+  try { chrCache.connect('/api/chrrom/push'); } catch {}
+
       // Service worker registration
       if ('serviceWorker' in navigator) {
         try {
@@ -388,20 +392,20 @@
     display: flex;
     flex-direction: column;
   }
-  
+
   :global(.stretch-fit-content) {
     flex: 1;
     width: 100%;
     min-height: 0; /* Allow flex child to shrink */
   }
-  
+
   :global(.full-viewport) {
     min-height: 100vh;
     min-width: 100vw;
     display: flex;
     flex-direction: column;
   }
-  
+
   :global(.flex-stretch) {
     display: flex;
     flex: 1;

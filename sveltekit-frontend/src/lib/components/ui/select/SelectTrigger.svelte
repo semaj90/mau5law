@@ -12,10 +12,7 @@
 
 <Select.Trigger class="space-y-4 {className}" {...rest}>
   {@render children?.()}
-  {/* No <slot> usage to avoid slot/snippet conflict */}
-  {#if false}
-    <slot />
-  {/if}
+  <!-- No <slot> usage to avoid slot/snippet conflict -->
 </Select.Trigger>
 
 <style>

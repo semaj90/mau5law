@@ -226,57 +226,29 @@ class WebAssemblyLlamaService {
    */
   async loadModel(): Promise<boolean> {
     try {
-      console.log('[WebLlama] Loading WASM module and model...');
+      console.log('[WebLlama] Connecting to Ollama API...');
 
-      // Load WASM module
-      const wasmResponse = await fetch(this.config.wasmUrl);
-      if (!wasmResponse.ok) {
-        throw new Error(`Failed to fetch WASM: ${wasmResponse.statusText}`);
+      // Check if Ollama is available
+      const healthCheck = await fetch('/api/ai/health');
+      if (!healthCheck.ok) {
+        throw new Error('Ollama API not available');
       }
 
-      const wasmBytes = await wasmResponse.arrayBuffer();
-
-      // Initialize WASM with WebGPU support if available
-      const imports = this.createWasmImports();
-      this.module = await WebAssembly.instantiate(wasmBytes, imports);
-
-      // Load model file
-      const modelResponse = await fetch(this.config.modelUrl);
-      if (!modelResponse.ok) {
-        throw new Error(`Failed to fetch model: ${modelResponse.statusText}`);
+      // Verify model is loaded in Ollama
+      const modelCheck = await fetch('/api/ai/models');
+      const models = await modelCheck.json();
+      
+      if (!models.models || models.models.length === 0) {
+        throw new Error('No models available in Ollama');
       }
 
-      const modelBytes = await modelResponse.arrayBuffer();
+      this.modelLoaded = true;
+      this.currentModel = models.models[0]?.name || 'gemma3-legal';
+      console.log(`[WebLlama] Connected to Ollama with model: ${this.currentModel}`);
+      return true;
 
-      // Initialize model in WASM
-      type WebAssemblyInstantiateResult = { instance: WebAssembly.Instance };
-      const wasmModule = this.module as WebAssemblyInstantiateResult;
-      const exp = wasmModule.instance.exports as any;
-
-      let loaded = false;
-      if (typeof exp.llama_load_model === 'function') {
-        loaded = !!exp.llama_load_model(
-          new Uint8Array(modelBytes),
-          this.config.contextSize,
-          this.config.threadsCount
-        );
-      } else {
-        console.warn(
-          '[WebLlama] llama_load_model not found in WASM exports. Assuming mock success for dev'
-        );
-        loaded = true;
-      }
-
-      if (loaded) {
-        this.modelLoaded = true;
-        this.currentModel = this.config.modelUrl;
-        console.log('[WebLlama] Model loaded successfully');
-        return true;
-      } else {
-        throw new Error('Failed to load model in WASM');
-      }
     } catch (error: any) {
-      console.error('[WebLlama] Model loading failed:', error);
+      console.error('[WebLlama] Ollama connection failed:', error);
       return false;
     }
   }
@@ -688,57 +660,48 @@ class WebAssemblyLlamaService {
   }
 
   private async generateDirect(prompt: string, options: any): Promise<WebLlamaResponse> {
-    // Direct WASM function calls
+    // Call Ollama API directly
     const opts = options as LlamaGenerationParams;
     const maxTokens = opts.maxTokens || 1024;
     const temperature = opts.temperature || this.config.temperature;
 
-    // Encode prompt to bytes
-    const promptBytes = new TextEncoder().encode(prompt);
+    try {
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.currentModel,
+          prompt: prompt,
+          options: {
+            num_predict: maxTokens,
+            temperature: temperature,
+          },
+          stream: false,
+        }),
+      });
 
-    // Allocate memory for prompt
-    type WebAssemblyInstantiateResult = { instance: WebAssembly.Instance };
-    const wasmModule = this.module as unknown as WebAssemblyInstantiateResult;
-    const exp = (wasmModule as any).instance.exports as any;
-    const promptPtr = typeof exp.malloc === 'function' ? exp.malloc(promptBytes.length) : 0;
-    const memory = new Uint8Array((exp.memory as WebAssembly.Memory).buffer);
-    memory.set(promptBytes, promptPtr);
+      if (!response.ok) {
+        throw new Error(`Ollama API error: ${response.statusText}`);
+      }
 
-    // Call WASM inference function
-    const resultPtr =
-      typeof exp.llama_generate === 'function'
-        ? exp.llama_generate(
-            promptPtr,
-            promptBytes.length,
-            maxTokens,
-            temperature,
-            this.config.batchSize
-          )
-        : promptPtr; // echo pointer if function missing (dev)
+      const data = await response.json();
+      const resultText = data.response || '';
 
-    // Read result from WASM memory
-    const resultLength =
-      typeof exp.get_result_length === 'function'
-        ? exp.get_result_length(resultPtr)
-        : promptBytes.length;
-    const resultBytes = memory.slice(resultPtr, resultPtr + resultLength);
-    const resultText = new TextDecoder().decode(resultBytes);
-
-    // Free allocated memory
-    if (typeof exp.free === 'function') {
-      exp.free(promptPtr);
-      exp.free(resultPtr);
+      return {
+        text: resultText,
+        tokensGenerated: this.estimateTokenCount(resultText),
+        processingTime: 0, // Will be set by caller
+        confidence: 0.85,
+        fromCache: false,
+        cacheHit: false,
+        processingPath: 'ollama',
+      };
+    } catch (error: any) {
+      console.error('[WebLlama] Ollama API call failed:', error);
+      throw error;
     }
-
-    return {
-      text: resultText,
-      tokensGenerated: this.estimateTokenCount(resultText),
-      processingTime: 0, // Will be set by caller
-      confidence: 0.85,
-      fromCache: false,
-      cacheHit: false,
-      processingPath: this.worker && this.config.enableMultiCore ? 'worker' : 'wasm',
-    };
   }
 
   private buildLegalAnalysisPrompt(title: string, content: string, analysisType: string): string {

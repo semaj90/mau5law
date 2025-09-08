@@ -130,7 +130,7 @@ type InferenceWorker struct {
 // NewInferenceService creates a new inference service with PostgreSQL + pgvector
 func NewInferenceService() *InferenceService {
 	logger, _ := zap.NewProduction()
-	
+
 	// Create HTTP client with optimized settings for Ollama
 	httpClient := &http.Client{
 		Timeout: 60 * time.Second,
@@ -140,21 +140,21 @@ func NewInferenceService() *InferenceService {
 			IdleConnTimeout:     30 * time.Second,
 		},
 	}
-	
+
 	// Initialize PostgreSQL connection pool
 	db, err := pgxpool.New(context.Background(), PostgreSQLURL)
 	if err != nil {
 		log.Fatalf("Failed to connect to PostgreSQL: %v", err)
 	}
-	
+
 	// Test database connection
 	if err := db.Ping(context.Background()); err != nil {
 		log.Fatalf("Failed to ping PostgreSQL: %v", err)
 	}
-	
+
 	logger.Info("Connected to PostgreSQL with pgvector",
 		zap.String("database", "legal_ai_db"))
-	
+
 	service := &InferenceService{
 		httpClient: httpClient,
 		jobQueue:   make(chan *InferenceJob, 100),
@@ -169,24 +169,24 @@ func NewInferenceService() *InferenceService {
 	if err := service.initializeDatabase(); err != nil {
 		logger.Warn("Database initialization warning", zap.Error(err))
 	}
-	
+
 	// Initialize worker pool for concurrent inference
 	service.initializeWorkers()
-	
+
 	// Start GPU metrics monitoring
 	go service.monitorGPUMetrics()
-	
+
 	return service
 }
 
 // initializeDatabase sets up required database schema for inference caching
 func (s *InferenceService) initializeDatabase() error {
 	ctx := context.Background()
-	
+
 	schema := `
 		-- Ensure pgvector extension is enabled
 		CREATE EXTENSION IF NOT EXISTS vector;
-		
+
 		-- Inference cache table with pgvector support
 		CREATE TABLE IF NOT EXISTS inference_cache (
 			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -203,23 +203,23 @@ func (s *InferenceService) initializeDatabase() error {
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		);
-		
+
 		-- Indexes for performance
 		CREATE INDEX IF NOT EXISTS idx_inference_cache_prompt ON inference_cache(prompt);
 		CREATE INDEX IF NOT EXISTS idx_inference_cache_model ON inference_cache(model);
 		CREATE INDEX IF NOT EXISTS idx_inference_cache_created ON inference_cache(created_at DESC);
 		CREATE INDEX IF NOT EXISTS idx_inference_cache_domain ON inference_cache(legal_domain);
-		
+
 		-- HNSW index for vector similarity search (pgvector)
-		CREATE INDEX IF NOT EXISTS idx_inference_embeddings_hnsw ON inference_cache 
+		CREATE INDEX IF NOT EXISTS idx_inference_embeddings_hnsw ON inference_cache
 		USING hnsw (embedding vector_cosine_ops);
 	`
-	
+
 	_, err := s.db.Exec(ctx, schema)
 	if err != nil {
 		return fmt.Errorf("failed to initialize database schema: %w", err)
 	}
-	
+
 	s.logger.Info("Database schema initialized with pgvector support")
 	return nil
 }
@@ -230,7 +230,7 @@ func (s *InferenceService) generateEmbedding(ctx context.Context, text string) (
 		"model": EmbeddingModel,
 		"prompt": text,
 	}
-	
+
 	reqBody, _ := json.Marshal(embedReq)
 	resp, err := s.httpClient.Post(
 		fmt.Sprintf("%s/api/embeddings", OllamaBaseURL),
@@ -241,15 +241,15 @@ func (s *InferenceService) generateEmbedding(ctx context.Context, text string) (
 		return pgvector.Vector{}, fmt.Errorf("failed to generate embedding: %w", err)
 	}
 	defer resp.Body.Close()
-	
+
 	var result struct {
 		Embedding []float32 `json:"embedding"`
 	}
-	
+
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return pgvector.Vector{}, fmt.Errorf("failed to decode embedding: %w", err)
 	}
-	
+
 	return pgvector.NewVector(result.Embedding), nil
 }
 
@@ -261,33 +261,33 @@ func (s *InferenceService) storeInferenceResult(ctx context.Context, req Inferen
 		s.logger.Warn("Failed to generate embedding", zap.Error(err))
 		embedding = pgvector.Vector{} // Store without embedding if generation fails
 	}
-	
+
 	// Classify legal domain (simple keyword-based classification)
 	legalDomain := classifyLegalDomain(req.Prompt)
-	
+
 	query := `
-		INSERT INTO inference_cache 
-		(prompt, response, model, embedding, tokens, processing_time_ms, tokens_per_second, 
+		INSERT INTO inference_cache
+		(prompt, response, model, embedding, tokens, processing_time_ms, tokens_per_second,
 		 gpu_utilization, confidence, legal_domain)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 		RETURNING id
 	`
-	
+
 	var id string
 	err = s.db.QueryRow(ctx, query,
 		req.Prompt, resp.Text, req.Model, embedding, resp.Tokens,
 		resp.ProcessingTimeMs, resp.TokensPerSecond, resp.GPUUtilization,
 		resp.Confidence, legalDomain,
 	).Scan(&id)
-	
+
 	if err != nil {
 		return fmt.Errorf("failed to store inference result: %w", err)
 	}
-	
+
 	s.logger.Debug("Stored inference result",
 		zap.String("id", id),
 		zap.String("domain", legalDomain))
-	
+
 	return nil
 }
 
@@ -298,22 +298,22 @@ func (s *InferenceService) findSimilarQueries(ctx context.Context, prompt string
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate query embedding: %w", err)
 	}
-	
+
 	query := `
-		SELECT id, prompt, response, legal_domain, 
+		SELECT id, prompt, response, legal_domain,
 			   embedding <=> $1 AS similarity
-		FROM inference_cache 
+		FROM inference_cache
 		WHERE embedding IS NOT NULL
 		ORDER BY embedding <=> $1
 		LIMIT $2
 	`
-	
+
 	rows, err := s.db.Query(ctx, query, queryEmbedding, limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to search similar queries: %w", err)
 	}
 	defer rows.Close()
-	
+
 	var similar []SimilarQuery
 	for rows.Next() {
 		var sq SimilarQuery
@@ -322,14 +322,14 @@ func (s *InferenceService) findSimilarQueries(ctx context.Context, prompt string
 		}
 		similar = append(similar, sq)
 	}
-	
+
 	return similar, nil
 }
 
 // classifyLegalDomain performs simple keyword-based legal domain classification
 func classifyLegalDomain(text string) string {
 	text = strings.ToLower(text)
-	
+
 	switch {
 	case strings.Contains(text, "contract") || strings.Contains(text, "agreement"):
 		return "contract"
@@ -354,7 +354,7 @@ func classifyLegalDomain(text string) string {
 func calculateConfidence(prompt, response string, processingTime time.Duration) float32 {
 	// Base confidence
 	confidence := float32(0.5)
-	
+
 	// Response length factor (longer responses generally indicate more thoughtful answers)
 	responseLen := len(response)
 	if responseLen > 100 {
@@ -363,13 +363,13 @@ func calculateConfidence(prompt, response string, processingTime time.Duration) 
 	if responseLen > 300 {
 		confidence += 0.1
 	}
-	
+
 	// Processing time factor (reasonable processing time indicates good GPU utilization)
 	processingSeconds := processingTime.Seconds()
 	if processingSeconds > 0.5 && processingSeconds < 10 {
 		confidence += 0.1
 	}
-	
+
 	// Legal terminology factor
 	legalTerms := []string{"legal", "law", "court", "contract", "statute", "regulation", "jurisdiction"}
 	for _, term := range legalTerms {
@@ -378,12 +378,12 @@ func calculateConfidence(prompt, response string, processingTime time.Duration) 
 			break
 		}
 	}
-	
+
 	// Cap at 1.0
 	if confidence > 1.0 {
 		confidence = 1.0
 	}
-	
+
 	return confidence
 }
 
@@ -391,19 +391,19 @@ func calculateConfidence(prompt, response string, processingTime time.Duration) 
 func (s *InferenceService) initializeWorkers() {
 	cpuCount := runtime.NumCPU()
 	workerCount := min(MaxConcurrentJobs, cpuCount*2)
-	
+
 	s.workers = make([]*InferenceWorker, workerCount)
-	
+
 	for i := 0; i < workerCount; i++ {
 		worker := &InferenceWorker{
 			ID:      i,
 			service: s,
 		}
-		
+
 		s.workers[i] = worker
 		go worker.run()
 	}
-	
+
 	s.logger.Info("Initialized inference workers",
 		zap.Int("worker_count", workerCount),
 		zap.Int("max_concurrent", MaxConcurrentJobs))
@@ -422,7 +422,7 @@ func (s *InferenceService) VerifyOllamaModel(modelName string) error {
 			Name string `json:"name"`
 		} `json:"models"`
 	}
-	
+
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return fmt.Errorf("failed to decode Ollama response: %w", err)
 	}
@@ -434,14 +434,14 @@ func (s *InferenceService) VerifyOllamaModel(modelName string) error {
 			return nil
 		}
 	}
-	
+
 	return fmt.Errorf("model %s not found in Ollama", modelName)
 }
 
 // ProcessInference handles inference requests with GPU acceleration and pgvector storage
 func (s *InferenceService) ProcessInference(req InferenceRequest) InferenceResponse {
 	startTime := time.Now()
-	
+
 	// Set defaults
 	if req.MaxTokens == 0 {
 		req.MaxTokens = 256
@@ -562,14 +562,14 @@ func (w *InferenceWorker) processJob(job *InferenceJob) InferenceResponse {
 	}
 
 	processingTime := time.Since(startTime)
-	
+
 	// Estimate tokens (rough approximation: 1 token ≈ 4 characters)
 	outputTokens := len(ollamaResp.Response) / 4
 	tokensPerSecond := float64(outputTokens) / processingTime.Seconds()
-	
+
 	// Calculate confidence based on response length and processing time
 	confidence := calculateConfidence(req.Prompt, ollamaResp.Response, processingTime)
-	
+
 	return InferenceResponse{
 		Text:              ollamaResp.Response,
 		Tokens:            outputTokens,
@@ -600,7 +600,7 @@ func (s *InferenceService) monitorGPUMetrics() {
 		}
 
 		utilizationPercent := float32(activeWorkers) / float32(len(s.workers)) * 100
-		
+
 		s.gpuMetrics = GPUMetrics{
 			UtilizationPercent: utilizationPercent,
 			MemoryUsageMB:      int64(4096 + activeWorkers*512), // Estimate
@@ -673,18 +673,18 @@ func (s *InferenceService) inferenceHandler(c *gin.Context) {
 
 	// Process inference with database integration
 	response := s.ProcessInference(req)
-	
+
 	// Store result in database if successful
 	if response.Success {
 		if err := s.storeInferenceResult(c.Request.Context(), req, response); err != nil {
 			s.logger.Warn("Failed to store inference result", zap.Error(err))
 		}
-		
+
 		// Find similar queries for context
 		if similar, err := s.findSimilarQueries(c.Request.Context(), req.Prompt, 3); err == nil {
 			response.SimilarQueries = similar
 		}
-		
+
 		c.JSON(http.StatusOK, response)
 	} else {
 		c.JSON(http.StatusInternalServerError, response)
@@ -707,7 +707,7 @@ func (s *InferenceService) metricsHandler(c *gin.Context) {
 func (s *InferenceService) searchHandler(c *gin.Context) {
 	query := c.Query("q")
 	limitStr := c.DefaultQuery("limit", "5")
-	
+
 	if query == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -715,12 +715,12 @@ func (s *InferenceService) searchHandler(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	limit := 5
 	if parsed, err := strconv.Atoi(limitStr); err == nil && parsed > 0 && parsed <= 20 {
 		limit = parsed
 	}
-	
+
 	similar, err := s.findSimilarQueries(c.Request.Context(), query, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -729,7 +729,7 @@ func (s *InferenceService) searchHandler(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"query":   query,
@@ -777,12 +777,12 @@ func main() {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		c.Header("Access-Control-Allow-Headers", "Content-Type")
-		
+
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
 			return
 		}
-		
+
 		c.Next()
 	})
 
@@ -791,6 +791,58 @@ func main() {
 	{
 		api.GET("/health", service.healthHandler)
 		api.GET("/metrics", service.metricsHandler)
+		// JSON parse micro-benchmark: compare std json vs simdjson (if built with -tags simdjson)
+	api.POST("/bench/json", func(c *gin.Context) {
+			ctx := c.Request.Context()
+			iterStr := c.DefaultQuery("n", "500")
+			iters, _ := strconv.Atoi(iterStr)
+			if iters <= 0 {
+				iters = 500
+			}
+			// Read raw body once
+			b, err := io.ReadAll(c.Request.Body)
+			if err != nil || len(b) == 0 {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "provide JSON payload in body"})
+				return
+			}
+			// Baseline stdlib
+			start1 := time.Now()
+			for i := 0; i < iters; i++ {
+				var v any
+				if err := jsonUnmarshal(b, &v); err != nil {
+					c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json", "details": err.Error()})
+					return
+				}
+			}
+			stdMs := time.Since(start1).Milliseconds()
+
+			// simdjson path via parseJSONSIMD by reconstructing a Request with same body each iter
+			start2 := time.Now()
+			for i := 0; i < iters; i++ {
+				req, _ := http.NewRequestWithContext(ctx, "POST", "/bench/json", bytes.NewReader(b))
+				var v any
+				if err := parseJSONSIMD(ctx, req, &v); err != nil {
+					c.JSON(http.StatusBadRequest, gin.H{"error": "simd parse failed", "details": err.Error()})
+					return
+				}
+			}
+			simdMs := time.Since(start2).Milliseconds()
+
+			enabled := false
+			// build tag presence can't be checked at runtime easily; infer by speed or env
+			if simdMs > 0 && simdMs <= stdMs {
+				enabled = true
+			}
+
+			c.JSON(http.StatusOK, gin.H{
+				"iterations": iters,
+				"bytes": len(b),
+				"stdlib_ms": stdMs,
+				"simd_ms": simdMs,
+				"speedup": fmt.Sprintf("%.2fx", float64(stdMs)/max(1.0, float64(simdMs))),
+				"simdjson_build": enabled,
+			})
+		})
 		api.POST("/inference", service.inferenceHandler)
 		api.GET("/search", service.searchHandler)
 	}

@@ -35,7 +35,12 @@ export type JobType =
   | 'semantic_search'
   | 'ml_clustering'
   | 'gpu_inference'
-  | 'workflow_orchestration';
+  | 'workflow_orchestration'
+  | 'wasm_vector_operations'
+  | 'wasm_tensor_processing'
+  | 'wasm_similarity_compute'
+  | 'wasm_batch_normalize'
+  | 'wasm_embedding_compress';
 
 export type JobPriority = 'critical' | 'high' | 'normal' | 'low' | 'background';
 
@@ -565,6 +570,41 @@ export class OptimizedRabbitMQOrchestrator {
         maxDelay: 120000,
         jitterEnabled: true
       },
+      'wasm_vector_operations': {
+        maxAttempts: 2,
+        backoffStrategy: 'linear',
+        baseDelay: 1000,
+        maxDelay: 5000,
+        jitterEnabled: false
+      },
+      'wasm_tensor_processing': {
+        maxAttempts: 3,
+        backoffStrategy: 'exponential',
+        baseDelay: 2000,
+        maxDelay: 15000,
+        jitterEnabled: true
+      },
+      'wasm_similarity_compute': {
+        maxAttempts: 2,
+        backoffStrategy: 'linear',
+        baseDelay: 500,
+        maxDelay: 3000,
+        jitterEnabled: false
+      },
+      'wasm_batch_normalize': {
+        maxAttempts: 2,
+        backoffStrategy: 'linear',
+        baseDelay: 800,
+        maxDelay: 4000,
+        jitterEnabled: false
+      },
+      'wasm_embedding_compress': {
+        maxAttempts: 1,
+        backoffStrategy: 'linear',
+        baseDelay: 300,
+        maxDelay: 1000,
+        jitterEnabled: false
+      },
       // Default config for other types
     } as any;
 
@@ -588,12 +628,12 @@ export class OptimizedRabbitMQOrchestrator {
     return {
       cpu_intensive: ['legal_document_analysis', 'pdf_ocr'].includes(jobType),
       gpu_required: ['cuda_acceleration', 'gpu_inference'].includes(jobType),
-      memory_intensive: ['vector_embedding', 'ml_clustering'].includes(jobType),
+      memory_intensive: ['vector_embedding', 'ml_clustering', 'wasm_tensor_processing'].includes(jobType),
       io_bound: ['evidence_processing', 'pdf_ocr'].includes(jobType),
       network_dependent: ['semantic_search', 'citation_validation'].includes(jobType),
-      cache_friendly: ['case_similarity', 'semantic_search'].includes(jobType),
-      parallelizable: ['vector_embedding', 'image_analysis'].includes(jobType),
-      batch_optimizable: ['ml_clustering', 'vector_embedding'].includes(jobType)
+      cache_friendly: ['case_similarity', 'semantic_search', 'wasm_similarity_compute', 'wasm_embedding_compress'].includes(jobType),
+      parallelizable: ['vector_embedding', 'image_analysis', 'wasm_batch_normalize', 'wasm_vector_operations'].includes(jobType),
+      batch_optimizable: ['ml_clustering', 'vector_embedding', 'wasm_batch_normalize', 'wasm_tensor_processing'].includes(jobType)
     };
   }
 
@@ -613,7 +653,12 @@ export class OptimizedRabbitMQOrchestrator {
       'semantic_search': 3000,            // 3 seconds
       'ml_clustering': 90000,             // 90 seconds
       'gpu_inference': 2000,              // 2 seconds
-      'workflow_orchestration': 5000      // 5 seconds
+      'workflow_orchestration': 5000,     // 5 seconds
+      'wasm_vector_operations': 500,      // 0.5 seconds (WASM fast)
+      'wasm_tensor_processing': 1500,     // 1.5 seconds
+      'wasm_similarity_compute': 200,     // 0.2 seconds (very fast)
+      'wasm_batch_normalize': 800,        // 0.8 seconds
+      'wasm_embedding_compress': 300      // 0.3 seconds (ultra fast)
     };
 
     return estimates[jobType] || 15000;

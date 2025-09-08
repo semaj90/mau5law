@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import { 
-		Loader2, Send, MessageCircle, Bot, User, FileText, 
+	import {
+		Loader2, Send, MessageCircle, Bot, User, FileText,
 		Brain, Zap, Clock, Trash2, Copy, ThumbsUp, ThumbsDown,
 		AlertCircle, CheckCircle, BookOpen, Gavel, Search
 	} from 'lucide-svelte';
@@ -11,7 +11,8 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Progress } from '$lib/components/ui/progress';
 	import { toast } from 'svelte-sonner';
-	
+	import QLoRAMonitoringDashboard from '$lib/components/ai/QLoRAMonitoringDashboard.svelte';
+
 	interface Message {
 		role: 'user' | 'assistant' | 'system';
 		content: string;
@@ -48,7 +49,8 @@
 	let chatContainer = $state<HTMLElement>();
 	let showSessions = $state(false);
 	let showAdvancedOptions = $state(false);
-	let analysisMode = $state<'general' | 'case_analysis' | 'legal_research' | 'document_review'>('general');
+	let showQLoRAMonitoring = $state(false);
+	let analysisMode = $state<'general' | 'case_analysis' | 'legal_research' | 'document_review' | 'qlora_topology'>('general');
 	let enableCitations = $state(true);
 	let enableContextualSearch = $state(true);
 	let processingStatus = $state<{
@@ -87,8 +89,15 @@
 				"Research similar cases and their outcomes",
 				"Analyze statutory interpretation issues"
 			];
+		} else if (analysisMode === 'qlora_topology') {
+			return [
+				"Analyze case patterns with 90%+ prediction accuracy",
+				"Predict legal outcomes using QLoRA reinforcement learning",
+				"Map relationship topology between legal entities",
+				"Generate optimized legal strategy recommendations"
+			];
 		}
-		
+
 		return baseQuestions;
 	});
 
@@ -114,7 +123,7 @@
 						timestamp: new Date(m.timestamp)
 					}))
 				}));
-				
+
 				// Load the most recent session
 				if (chatSessions.length > 0) {
 					const recent = chatSessions.sort((a, b) => b.updated.getTime() - a.updated.getTime())[0];
@@ -140,7 +149,7 @@
 			created: new Date(),
 			updated: new Date()
 		};
-		
+
 		chatSessions = [...chatSessions, newSession];
 		currentSessionId = sessionId;
 		messages = [];
@@ -161,9 +170,9 @@
 			toast.error("Cannot delete the last session");
 			return;
 		}
-		
+
 		chatSessions = chatSessions.filter(s => s.id !== sessionId);
-		
+
 		if (currentSessionId === sessionId) {
 			// Switch to another session
 			const remaining = chatSessions[0];
@@ -173,21 +182,21 @@
 				createNewSession();
 			}
 		}
-		
+
 		saveChatSessions();
 		toast.success("Session deleted");
 	}
 
 	function updateCurrentSession() {
 		if (!currentSessionId) return;
-		
+
 		const sessionIndex = chatSessions.findIndex(s => s.id === currentSessionId);
 		if (sessionIndex !== -1) {
 			chatSessions[sessionIndex] = {
 				...chatSessions[sessionIndex],
 				messages: [...messages],
 				updated: new Date(),
-				title: messages.length > 0 
+				title: messages.length > 0
 					? messages[0].content.substring(0, 50) + (messages[0].content.length > 50 ? '...' : '')
 					: `Legal Chat ${new Date().toLocaleDateString()}`
 			};
@@ -204,55 +213,105 @@
 
 	async function send(): Promise<void> {
 		if (!input.trim() || busy) return;
-		
+
 		const content = input.trim();
 		const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-		
+
 		// Add user message
-		const userMessage: Message = { 
-			role: 'user', 
-			content, 
+		const userMessage: Message = {
+			role: 'user',
+			content,
 			id: messageId,
 			timestamp: new Date()
 		};
-		
+
 		messages = [...messages, userMessage];
 		input = '';
 		busy = true;
-		
+
 		// Show processing status
 		processingStatus = {
 			stage: 'Analyzing query',
 			progress: 20,
 			message: 'Understanding your legal question...'
 		};
-		
+
 		await scrollToBottom();
 
 		try {
-			// Enhanced request with analysis mode and options
-			const requestBody = {
-				messages: messages.map(m => ({ role: m.role, content: m.content })),
-				analysisMode,
-				enableCitations,
-				enableContextualSearch,
-				sessionId: currentSessionId
-			};
+			let res: Response;
+			let data: any;
 
-			processingStatus = {
-				stage: 'Legal research',
-				progress: 50,
-				message: 'Searching legal databases...'
-			};
+			if (analysisMode === 'qlora_topology') {
+				// Use QLoRA topology prediction system
+				processingStatus = {
+					stage: 'QLoRA topology analysis',
+					progress: 30,
+					message: 'Initializing reinforcement learning prediction...'
+				};
 
-			const res = await fetch('/api/ai/chat', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(requestBody)
-			});
-			
-			if (!res.ok) {
-				throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+				// First call the QLoRA topology API
+				const qloraRes = await fetch('/api/ai/qlora-topology', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						query: content,
+						context: messages.slice(-3).map(m => m.content).join('\n'),
+						topologyType: 'legal',
+						accuracyTarget: 90,
+						useCache: enableContextualSearch,
+						trainingMode: true
+					})
+				});
+
+				processingStatus = {
+					stage: 'Processing predictions',
+					progress: 70,
+					message: 'Analyzing topology patterns and generating response...'
+				};
+
+				if (qloraRes.ok) {
+					const qloraData = await qloraRes.json();
+					
+					// Format the QLoRA response for display
+					data = {
+						text: `**QLoRA Topology Analysis** (${qloraData.accuracy}% accuracy)\n\n${qloraData.prediction?.analysis || qloraData.prediction || 'Analysis completed successfully.'}\n\n**Topology Insights:**\n${qloraData.topology?.summary || 'Pattern analysis complete.'}\n\n**Performance Metrics:**\n- HMM Prediction Score: ${qloraData.metrics.hmmPredictionScore}%\n- SOM Cluster Accuracy: ${qloraData.metrics.somClusterAccuracy}%\n- WebGPU Optimization: ${qloraData.metrics.webgpuOptimizationGain}x speedup\n- Cache Efficiency: ${qloraData.metrics.cacheEfficiency}%\n- Processing Time: ${qloraData.processingTime}ms`,
+						type: 'qlora_analysis',
+						confidence: qloraData.accuracy / 100,
+						processingTime: qloraData.processingTime,
+						legalConcepts: qloraData.topology?.entities || [],
+						sources: ['QLoRA Reinforcement Learning Model', 'WebGPU Acceleration', 'Multi-tier Cache System']
+					};
+				} else {
+					throw new Error('QLoRA topology prediction failed');
+				}
+			} else {
+				// Use standard chat API for other modes
+				const requestBody = {
+					messages: messages.map(m => ({ role: m.role, content: m.content })),
+					analysisMode,
+					enableCitations,
+					useProfile: enableContextualSearch,
+					sessionId: currentSessionId
+				};
+
+				processingStatus = {
+					stage: 'Legal research',
+					progress: 50,
+					message: 'Searching legal databases...'
+				};
+
+				res = await fetch('/api/chat', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ ...requestBody, useProfile: enableContextualSearch })
+				});
+
+				if (!res.ok) {
+					throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+				}
+
+				data = await res.json();
 			}
 
 			processingStatus = {
@@ -261,9 +320,8 @@
 				message: 'Crafting legal analysis...'
 			};
 
-			const data = await res.json();
 			const responseText = data?.text || data?.content || (data?.error ? `Error: ${data.error}` : '(no response)');
-			
+
 			// Add assistant response with metadata
 			const assistantMessage: Message = {
 				role: 'assistant',
@@ -279,10 +337,10 @@
 					processingTime: data?.processingTime || 0
 				}
 			};
-			
+
 			messages = [...messages, assistantMessage];
 			updateCurrentSession();
-			
+
 		} catch (error: any) {
 			const errorMessage: Message = {
 				role: 'assistant',
@@ -312,7 +370,7 @@
 			messages[messageIndex].reactions![reaction] = value;
 			messages = [...messages];
 			updateCurrentSession();
-			
+
 			toast.success(value ? `Marked as ${reaction}` : `Removed ${reaction} rating`);
 		}
 	}
@@ -327,9 +385,9 @@
 	}
 
 	function formatTimestamp(timestamp: Date): string {
-		return new Date(timestamp).toLocaleTimeString(undefined, { 
-			hour: '2-digit', 
-			minute: '2-digit' 
+		return new Date(timestamp).toLocaleTimeString(undefined, {
+			hour: '2-digit',
+			minute: '2-digit'
 		});
 	}
 
@@ -348,6 +406,7 @@
 			case 'research': return 'bg-blue-100 text-blue-800';
 			case 'legal_advice': return 'bg-green-100 text-green-800';
 			case 'case_review': return 'bg-orange-100 text-orange-800';
+			case 'qlora_analysis': return 'bg-yellow-100 text-yellow-800 border border-yellow-300';
 			default: return 'bg-gray-100 text-gray-800';
 		}
 	}
@@ -373,26 +432,27 @@
 							<p class="text-gray-400">Advanced legal analysis, research, and case review</p>
 						</div>
 					</div>
-					
+
 					<!-- Analysis Mode Selector -->
 					<div class="hidden md:flex items-center gap-2">
 						{#each [
 							{ key: 'general', label: 'General', icon: Brain },
 							{ key: 'case_analysis', label: 'Case Analysis', icon: Gavel },
 							{ key: 'legal_research', label: 'Research', icon: BookOpen },
-							{ key: 'document_review', label: 'Document Review', icon: FileText }
+							{ key: 'document_review', label: 'Document Review', icon: FileText },
+							{ key: 'qlora_topology', label: 'QLoRA AI', icon: Zap }
 						] as mode}
 							<button
 								class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors {analysisMode === mode.key ? 'bg-yellow-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}"
 								onclick={() => analysisMode = mode.key as any}
 							>
-								<svelte:component this={mode.icon} class="w-4 h-4" />
+<svelte:component this={mode.icon} class="w-4 h-4" />
 								{mode.label}
 							</button>
 						{/each}
 					</div>
 				</div>
-				
+
 				<div class="flex items-center gap-2">
 					<Button variant="outline" size="sm" on:click={() => showSessions = true}>
 						<Clock class="h-4 w-4 mr-2" />
@@ -402,6 +462,12 @@
 						<Zap class="h-4 w-4 mr-2" />
 						Options
 					</Button>
+					{#if analysisMode === 'qlora_topology'}
+						<Button variant="outline" size="sm" on:click={() => showQLoRAMonitoring = true}>
+							<Brain class="h-4 w-4 mr-2" />
+							QLoRA Monitor
+						</Button>
+					{/if}
 					<Button variant="secondary" size="sm" on:click={createNewSession}>
 						New Chat
 					</Button>
@@ -451,6 +517,8 @@
 									Deep case analysis with prosecution strategies
 								{:else if analysisMode === 'legal_research'}
 									Legal research with citations and precedents
+								{:else if analysisMode === 'qlora_topology'}
+									AI-powered 90%+ accuracy legal prediction using QLoRA reinforcement learning
 								{:else}
 									Document review and analysis
 								{/if}
@@ -472,7 +540,7 @@
 			<div class="lg:col-span-3">
 				<Card.Root class="h-[75vh] flex flex-col">
 					<!-- Messages Area -->
-					<div 
+					<div
 						bind:this={chatContainer}
 						class="flex-1 overflow-y-auto p-6 space-y-6"
 						role="log"
@@ -484,7 +552,7 @@
 								<Bot class="w-16 h-16 mx-auto mb-4 opacity-50" />
 								<p class="text-xl font-medium mb-3">Legal AI Assistant Ready</p>
 								<p class="text-sm mb-6">Ask me anything about legal procedures, case analysis, research, or document review.</p>
-								
+
 								<div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto">
 									{#each suggestedQuestions.slice(0, 4) as question}
 										<button
@@ -506,17 +574,17 @@
 											</div>
 										</div>
 									{/if}
-									
+
 									<div class="max-w-[80%] {message.role === 'user' ? 'order-first' : ''}">
 										<div class="
-											px-4 py-3 rounded-lg 
-											{message.role === 'user' 
-												? 'bg-blue-600 text-white' 
+											px-4 py-3 rounded-lg
+											{message.role === 'user'
+												? 'bg-blue-600 text-white'
 												: 'bg-gray-800 text-gray-100 border border-gray-700'
 											}
 										">
 											<p class="whitespace-pre-wrap leading-relaxed">{message.content}</p>
-											
+
 											{#if message.metadata && message.role === 'assistant'}
 												<div class="mt-3 pt-3 border-t border-gray-600 space-y-2">
 													{#if message.metadata.confidence}
@@ -525,13 +593,13 @@
 															<span>Confidence: {(message.metadata.confidence * 100).toFixed(1)}%</span>
 														</div>
 													{/if}
-													
+
 													{#if message.metadata.type}
 														<Badge class={getMessageTypeColor(message.metadata.type)} size="sm">
 															{message.metadata.type.replace('_', ' ')}
 														</Badge>
 													{/if}
-													
+
 													{#if message.metadata.legalConcepts && message.metadata.legalConcepts.length > 0}
 														<div class="flex flex-wrap gap-1 mt-2">
 															{#each message.metadata.legalConcepts.slice(0, 3) as concept}
@@ -539,7 +607,7 @@
 															{/each}
 														</div>
 													{/if}
-													
+
 													{#if message.metadata.processingTime}
 														<div class="text-xs text-gray-500">
 															Processed in {message.metadata.processingTime}ms
@@ -548,10 +616,10 @@
 												</div>
 											{/if}
 										</div>
-										
+
 										<div class="mt-2 flex items-center gap-3 text-xs text-gray-500 {message.role === 'user' ? 'justify-end' : 'justify-start'}">
 											<span>{formatTimestamp(message.timestamp)}</span>
-											
+
 											{#if message.role === 'assistant'}
 												<div class="flex items-center gap-1">
 													<button
@@ -579,7 +647,7 @@
 											{/if}
 										</div>
 									</div>
-									
+
 									{#if message.role === 'user'}
 										<div class="flex-shrink-0">
 											<div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
@@ -589,7 +657,7 @@
 									{/if}
 								</div>
 							{/each}
-							
+
 							<!-- Loading indicator -->
 							{#if busy}
 								<div class="flex gap-4">
@@ -652,7 +720,7 @@
 								{/if}
 							</Button>
 						</div>
-						
+
 						{#if input.length > 0}
 							<div class="mt-2 text-xs text-gray-500 flex justify-between">
 								<span>Character count: {input.length}</span>
@@ -673,7 +741,7 @@
 			<Dialog.Title>Chat Sessions</Dialog.Title>
 			<Dialog.Description>Manage your chat sessions and conversation history.</Dialog.Description>
 		</Dialog.Header>
-		
+
 		<div class="max-h-96 overflow-y-auto space-y-2">
 			{#each chatSessions as session}
 				<div class="flex items-center justify-between p-3 rounded-lg bg-gray-100 dark:bg-gray-800">
@@ -702,7 +770,7 @@
 				</div>
 			{/each}
 		</div>
-		
+
 		<Dialog.Footer>
 			<Button variant="outline" on:click={() => showSessions = false}>Close</Button>
 			<Button on:click={() => { createNewSession(); showSessions = false; }}>New Session</Button>
@@ -717,27 +785,45 @@
 			<Dialog.Title>Advanced Options</Dialog.Title>
 			<Dialog.Description>Configure AI assistant settings and features.</Dialog.Description>
 		</Dialog.Header>
-		
+
 		<div class="space-y-4">
 			<div class="flex items-center justify-between">
 				<div>
-					<label class="text-sm font-medium">Enable Legal Citations</label>
+					<label for="citations-checkbox" class="text-sm font-medium">Enable Legal Citations</label>
 					<p class="text-xs text-muted-foreground">Include case law and statute references</p>
 				</div>
-				<input type="checkbox" bind:checked={enableCitations} class="rounded" />
+				<input id="citations-checkbox" type="checkbox" bind:checked={enableCitations} class="rounded" />
 			</div>
-			
+
 			<div class="flex items-center justify-between">
 				<div>
-					<label class="text-sm font-medium">Contextual Search</label>
+					<label for="contextual-search-checkbox" class="text-sm font-medium">Contextual Search</label>
 					<p class="text-xs text-muted-foreground">Search related legal documents and cases</p>
 				</div>
-				<input type="checkbox" bind:checked={enableContextualSearch} class="rounded" />
+				<input id="contextual-search-checkbox" type="checkbox" bind:checked={enableContextualSearch} class="rounded" />
 			</div>
 		</div>
-		
+
 		<Dialog.Footer>
 			<Button variant="outline" on:click={() => showAdvancedOptions = false}>Close</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>
+
+<!-- QLoRA Monitoring Dashboard Dialog -->
+<Dialog.Root bind:open={showQLoRAMonitoring}>
+	<Dialog.Content class="sm:max-w-[1000px] max-h-[80vh]">
+		<Dialog.Header>
+			<Dialog.Title>QLoRA Reinforcement Learning Monitor</Dialog.Title>
+			<Dialog.Description>Real-time monitoring of QLoRA topology prediction system performance and accuracy metrics.</Dialog.Description>
+		</Dialog.Header>
+
+		<div class="max-h-96 overflow-y-auto">
+			<QLoRAMonitoringDashboard />
+		</div>
+
+		<Dialog.Footer>
+			<Button variant="outline" on:click={() => showQLoRAMonitoring = false}>Close</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>

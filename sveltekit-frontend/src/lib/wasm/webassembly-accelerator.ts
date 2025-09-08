@@ -209,54 +209,69 @@ export class WebAssemblyAccelerator {
   }
 
   /**
-   * Vector operations with WASM SIMD
+   * Vector operations with compiled WASM module
    */
   async computeEmbeddingsSIMD(vectors: Float32Array[]): Promise<Float32Array> {
-    if (!this.modules.has("vector-ops")) {
-      const wasmBytes = await this.loadVectorOpsModule();
-      await this.loadModule(wasmBytes, {}, "vector-ops");
+    try {
+      // Import our compiled WASM wrapper
+      const { vectorWasm } = await import('../wasm/vector-wasm-wrapper.js');
+      
+      if (!vectorWasm.isInitialized()) {
+        await vectorWasm.initialize();
+      }
+
+      if (vectors.length === 0) {
+        return new Float32Array(0);
+      }
+
+      // Use the first vector as query and compute similarities with others
+      const query = vectors[0];
+      const others = vectors.slice(1);
+      
+      if (others.length === 0) {
+        return query; // Just return the single vector
+      }
+
+      // Compute batch similarities using our WASM module
+      const similarities = await vectorWasm.computeBatchSimilarities(query, others, 'cosine');
+      
+      // Create a result embedding based on weighted averages
+      const result = new Float32Array(query.length);
+      result.set(query); // Start with the query vector
+      
+      // Weight by similarity scores
+      for (let i = 0; i < others.length; i++) {
+        const weight = similarities[i];
+        for (let j = 0; j < query.length; j++) {
+          result[j] += others[i][j] * weight;
+        }
+      }
+      
+      // Normalize the result
+      return await vectorWasm.normalizeVector(result);
+
+    } catch (error) {
+      console.warn('WASM vector computation failed, using fallback:', error);
+      // Fallback to simple average
+      if (vectors.length === 0) return new Float32Array(0);
+      
+      const result = new Float32Array(vectors[0].length);
+      for (const vector of vectors) {
+        for (let i = 0; i < vector.length; i++) {
+          result[i] += vector[i];
+        }
+      }
+      
+      // Normalize
+      const norm = Math.sqrt(result.reduce((sum, val) => sum + val * val, 0));
+      if (norm > 0) {
+        for (let i = 0; i < result.length; i++) {
+          result[i] /= norm;
+        }
+      }
+      
+      return result;
     }
-
-    const module = this.modules.get("vector-ops")!;
-
-    // Flatten vectors into single array
-    const flatVectors = new Float32Array(
-      vectors.reduce((acc, v) => acc + v.length, 0)
-    );
-    let offset = 0;
-    for (const vector of vectors) {
-      flatVectors.set(vector, offset);
-      offset += vector.length;
-    }
-
-    // Allocate WASM memory
-    const vectorsPtr = module.exports.malloc(flatVectors.length * 4);
-    const resultPtr = module.exports.malloc(vectors[0].length * 4);
-
-    // Copy data to WASM
-    const wasmMemory = new Float32Array(module.memory.buffer);
-    wasmMemory.set(flatVectors, vectorsPtr / 4);
-
-    // Compute embeddings
-    module.exports.compute_embeddings(
-      vectorsPtr,
-      resultPtr,
-      vectors.length,
-      vectors[0].length
-    );
-
-    // Read result
-    const result = new Float32Array(
-      wasmMemory.buffer,
-      resultPtr,
-      vectors[0].length
-    ).slice();
-
-    // Cleanup
-    module.exports.free(vectorsPtr);
-    module.exports.free(resultPtr);
-
-    return result;
   }
 
   /**

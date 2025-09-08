@@ -21,20 +21,20 @@ print(f"Found {len(messages)} messages without embeddings")
 
 for msg_id, content in messages:
     print(f"Processing message {msg_id}: {content[:50]}...")
-    
+
     # Generate embedding using nomic-embed-text via Ollama
     response = requests.post("http://localhost:11434/api/embeddings", json={
         "model": "nomic-embed-text",
         "prompt": content
     })
-    
+
     if response.status_code == 200:
         embedding = response.json()["embedding"]
-        
+
         # Update message with embedding (convert to PostgreSQL vector format)
         embedding_str = "[" + ",".join(map(str, embedding)) + "]"
         cur.execute("UPDATE messages SET embedding = %s::vector WHERE id = %s", (embedding_str, msg_id))
-        
+
         print(f"[OK] Updated message {msg_id} with {len(embedding)}-dim embedding")
     else:
         print(f"[ERROR] Failed to generate embedding for message {msg_id}: {response.text}")

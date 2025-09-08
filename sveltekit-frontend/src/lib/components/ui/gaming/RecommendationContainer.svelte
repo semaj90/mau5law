@@ -6,22 +6,26 @@
   import * as Collapsible from 'bits-ui/collapsible';
   import * as Card from 'bits-ui/card';
   import * as Badge from 'bits-ui/badge';
+  import * as Tooltip from 'bits-ui/tooltip';
   import RetroRecommendationModal from './modals/RetroRecommendationModal.svelte';
+  import { 
+    enhancedRecommendationIntegration,
+    type EnhancedRecommendation,
+    type RecommendationContext,
+    type UserProfile
+  } from '$lib/services/enhanced-recommendation-integration';
 
   interface Props {
     consoleStyle?: 'nes' | 'snes' | 'n64' | 'ps1' | 'ps2' | 'yorha';
     position?: 'under-nav' | 'floating' | 'sidebar';
     showContainer?: boolean;
     autoHide?: boolean;
-    recommendations?: Array<{
-      id: string;
-      type: 'detective' | 'legal' | 'evidence' | 'ai';
-      title: string;
-      description: string;
-      confidence: number;
-      priority: 'low' | 'medium' | 'high' | 'critical';
-      action?: () => void;
-    }>;
+    recommendations?: EnhancedRecommendation[];
+    documents?: any[];
+    query?: string;
+    recommendationContext?: RecommendationContext;
+    userProfile?: UserProfile;
+    enableEnhancedMode?: boolean;
   }
 
   let {
@@ -29,7 +33,12 @@
     position = 'under-nav',
     showContainer = $bindable(true),
     autoHide = true,
-    recommendations = []
+    recommendations = $bindable([]),
+    documents = [],
+    query = '',
+    recommendationContext = {},
+    userProfile = null,
+    enableEnhancedMode = true
   }: Props = $props();
 
   // State management
@@ -82,6 +91,13 @@
     recommendations.filter(r => r.priority === 'high').length
   );
 
+  // Feedback tracking
+  let feedbackCooldown = $state(new Set<string>());
+  let processingFeedback = $state(false);
+  let enhancedModeActive = $state(false);
+  let loadingEnhancedRecommendations = $state(false);
+  let recommendationError = $state<string | null>(null);
+
   function openModal(type?: string) {
     selectedRecommendations = type 
       ? groupedRecommendations[type] || []
@@ -114,6 +130,16 @@
     }
   }
 
+  // Initialize enhanced mode
+  $effect(() => {
+    if (enableEnhancedMode && enhancedRecommendationIntegration && !enhancedModeActive) {
+      enhancedModeActive = true;
+      if (documents && documents.length > 0 && query) {
+        generateEnhancedRecommendations();
+      }
+    }
+  });
+
   // Auto-show for critical recommendations
   $effect(() => {
     if (criticalCount > 0 && showContainer) {
@@ -122,8 +148,256 @@
     }
   });
 
+  // Watch for context changes and regenerate recommendations
+  $effect(() => {
+    if (enhancedModeActive && documents && query && recommendationContext) {
+      generateEnhancedRecommendations();
+    }
+  });
+
+  // Enhanced Recommendation Generation
+  async function generateEnhancedRecommendations() {
+    if (!enableEnhancedMode || !enhancedRecommendationIntegration || !documents || !query) {
+      return;
+    }
+
+    try {
+      loadingEnhancedRecommendations = true;
+      recommendationError = null;
+
+      const enhancedRecs = await enhancedRecommendationIntegration.generateEnhancedRecommendations(
+        query,
+        documents,
+        recommendationContext || {},
+        userProfile || createDefaultUserProfile()
+      );
+
+      recommendations = enhancedRecs;
+      console.log(`Generated ${enhancedRecs.length} enhanced recommendations`);
+
+    } catch (error) {
+      console.error('Enhanced recommendation generation failed:', error);
+      recommendationError = error instanceof Error ? error.message : 'Unknown error';
+    } finally {
+      loadingEnhancedRecommendations = false;
+    }
+  }
+
+  // Create default user profile if none provided
+  function createDefaultUserProfile(): UserProfile {
+    return {
+      userId: 'anonymous',
+      role: 'user',
+      expertise: [],
+      preferences: {
+        recommendationTypes: ['legal', 'evidence', 'detective', 'ai'],
+        confidenceThreshold: 0.3,
+        maxRecommendations: 15
+      },
+      history: {
+        queries: [],
+        feedback: []
+      }
+    };
+  }
+
+  // Enhanced Feedback Functions with Integration Service
+  async function submitFeedback(
+    recommendationId: string, 
+    feedback: 'positive' | 'negative',
+    recommendation: EnhancedRecommendation
+  ) {
+    if (feedbackCooldown.has(recommendationId) || processingFeedback) {
+      return;
+    }
+
+    try {
+      processingFeedback = true;
+      feedbackCooldown.add(recommendationId);
+
+      // Update local state immediately for UI responsiveness
+      const recIndex = recommendations.findIndex(r => r.id === recommendationId);
+      if (recIndex !== -1) {
+        recommendations[recIndex].feedback = feedback;
+        recommendations[recIndex].feedbackTimestamp = new Date();
+      }
+
+      let result;
+
+      if (enableEnhancedMode && enhancedRecommendationIntegration) {
+        // Use enhanced integration service for feedback
+        result = await enhancedRecommendationIntegration.submitRecommendationFeedback(
+          recommendationId,
+          feedback,
+          recommendation,
+          recommendationContext || {}
+        );
+
+        if (!result.success) {
+          throw new Error('Enhanced feedback submission failed');
+        }
+
+        // Trigger distillation if needed
+        if (result.shouldTriggerDistillation) {
+          await fetch('/api/qlora-distillation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              trigger: 'feedback_threshold',
+              feedbackCount: result.totalFeedbackCount
+            })
+          });
+        }
+
+      } else {
+        // Fallback to direct API call
+        const response = await fetch('/api/rl-feedback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            recommendationId,
+            feedback,
+            recommendationType: recommendation.type,
+            recommendationTitle: recommendation.title,
+            recommendationDescription: recommendation.description,
+            confidence: recommendation.confidence,
+            priority: recommendation.priority,
+            context: recommendation.context || '',
+            query: recommendation.query || '',
+            userInteractionData: {
+              timestamp: Date.now(),
+              consoleStyle,
+              position,
+              sessionContext: {
+                totalRecommendations: recommendations.length,
+                criticalCount,
+                highCount
+              }
+            }
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Feedback submission failed: ${response.statusText}`);
+        }
+
+        result = await response.json();
+
+        if (result.shouldTriggerDistillation) {
+          await fetch('/api/qlora-distillation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              trigger: 'feedback_threshold',
+              feedbackCount: result.totalFeedbackCount
+            })
+          });
+        }
+      }
+
+      // Remove from cooldown after success
+      setTimeout(() => {
+        feedbackCooldown.delete(recommendationId);
+      }, 3000); // 3-second cooldown per recommendation
+
+    } catch (error) {
+      console.error('Failed to submit feedback:', error);
+      
+      // Revert UI state on error
+      const recIndex = recommendations.findIndex(r => r.id === recommendationId);
+      if (recIndex !== -1) {
+        recommendations[recIndex].feedback = null;
+        recommendations[recIndex].feedbackTimestamp = undefined;
+      }
+      
+      feedbackCooldown.delete(recommendationId);
+    } finally {
+      processingFeedback = false;
+    }
+  }
+
+  function getFeedbackButtonClass(recId: string, feedbackType: 'positive' | 'negative', currentFeedback?: string) {
+    const isSelected = currentFeedback === feedbackType;
+    const inCooldown = feedbackCooldown.has(recId);
+    
+    let baseClass = 'feedback-btn';
+    if (feedbackType === 'positive') {
+      baseClass += isSelected ? ' feedback-positive-selected' : ' feedback-positive';
+    } else {
+      baseClass += isSelected ? ' feedback-negative-selected' : ' feedback-negative';
+    }
+    
+    if (inCooldown || processingFeedback) {
+      baseClass += ' feedback-disabled';
+    }
+    
+    return baseClass;
+  }
+
+  // Enhanced mode utilities
+  function toggleEnhancedMode() {
+    enableEnhancedMode = !enableEnhancedMode;
+    if (enableEnhancedMode && documents && query) {
+      generateEnhancedRecommendations();
+    }
+  }
+
+  async function updateRecommendationContext(newContext: Partial<RecommendationContext>) {
+    if (enableEnhancedMode && enhancedRecommendationIntegration) {
+      recommendationContext = { ...recommendationContext, ...newContext };
+      
+      await enhancedRecommendationIntegration.updateRecommendationContext(
+        recommendationContext,
+        userProfile || createDefaultUserProfile()
+      );
+      
+      // Regenerate recommendations with new context
+      if (documents && query) {
+        generateEnhancedRecommendations();
+      }
+    }
+  }
+
+  async function predictRecommendationNeeds() {
+    if (enableEnhancedMode && enhancedRecommendationIntegration && query) {
+      try {
+        const prediction = await enhancedRecommendationIntegration.predictRecommendationNeeds(
+          query,
+          recommendationContext || {},
+          userProfile || createDefaultUserProfile()
+        );
+        
+        console.log('Predicted recommendation needs:', prediction);
+        
+        // Dispatch event for external listeners
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('recommendations:predicted', {
+            detail: prediction
+          }));
+        }
+        
+      } catch (error) {
+        console.error('Recommendation needs prediction failed:', error);
+      }
+    }
+  }
+
+  // Trigger prediction when query changes
+  $effect(() => {
+    if (query && enableEnhancedMode) {
+      predictRecommendationNeeds();
+    }
+  });
+
   onDestroy(() => {
     if (hideTimer) clearTimeout(hideTimer);
+    
+    // Cleanup enhanced integration if needed
+    if (enhancedRecommendationIntegration) {
+      // The singleton will handle cleanup on page unload
+    }
   });
 </script>
 
@@ -147,7 +421,31 @@
           <div class="trigger-content">
             <div class="trigger-left">
               <span class="trigger-icon">🎯</span>
-              <span class="trigger-title">AI Recommendations</span>
+              <span class="trigger-title">
+                {enableEnhancedMode && enhancedModeActive ? 'Enhanced AI Recommendations' : 'AI Recommendations'}
+              </span>
+              
+              <!-- Enhanced Mode Status -->
+              {#if enableEnhancedMode && enhancedModeActive}
+                <Badge.Root class="enhanced-badge" variant="outline">
+                  QLoRA
+                </Badge.Root>
+              {/if}
+              
+              <!-- Loading Indicator -->
+              {#if loadingEnhancedRecommendations}
+                <Badge.Root class="loading-badge" variant="outline">
+                  ⚡ Processing
+                </Badge.Root>
+              {/if}
+              
+              <!-- Error Indicator -->
+              {#if recommendationError}
+                <Badge.Root class="error-badge" variant="destructive">
+                  ⚠️ Error
+                </Badge.Root>
+              {/if}
+              
               {#if criticalCount > 0}
                 <Badge.Root class="critical-badge" variant="destructive">
                   {criticalCount}
@@ -195,6 +493,47 @@
                       ></div>
                       <span class="rec-preview-text">{rec.title}</span>
                       <span class="rec-confidence">{(rec.confidence * 100).toFixed(0)}%</span>
+                      
+                      <!-- RL Feedback Buttons -->
+                      <div class="feedback-controls">
+                        <Tooltip.Root>
+                          <Tooltip.Trigger asChild let:builder>
+                            <button
+                              use:builder.action
+                              {...builder}
+                              class={getFeedbackButtonClass(rec.id, 'positive', rec.feedback)}
+                              onclick={() => submitFeedback(rec.id, 'positive', rec)}
+                              disabled={feedbackCooldown.has(rec.id) || processingFeedback}
+                            >
+                              👍
+                            </button>
+                          </Tooltip.Trigger>
+                          <Tooltip.Content side="top">
+                            <div class="feedback-tooltip">
+                              {rec.feedback === 'positive' ? 'Helpful recommendation!' : 'Mark as helpful'}
+                            </div>
+                          </Tooltip.Content>
+                        </Tooltip.Root>
+                        
+                        <Tooltip.Root>
+                          <Tooltip.Trigger asChild let:builder>
+                            <button
+                              use:builder.action
+                              {...builder}
+                              class={getFeedbackButtonClass(rec.id, 'negative', rec.feedback)}
+                              onclick={() => submitFeedback(rec.id, 'negative', rec)}
+                              disabled={feedbackCooldown.has(rec.id) || processingFeedback}
+                            >
+                              👎
+                            </button>
+                          </Tooltip.Trigger>
+                          <Tooltip.Content side="top">
+                            <div class="feedback-tooltip">
+                              {rec.feedback === 'negative' ? 'Marked as unhelpful' : 'Mark as unhelpful'}
+                            </div>
+                          </Tooltip.Content>
+                        </Tooltip.Root>
+                      </div>
                     </div>
                   {/each}
                   
@@ -405,6 +744,25 @@
     background: #F59E0B;
   }
 
+  .enhanced-badge {
+    background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+    color: white;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+  }
+
+  .loading-badge {
+    background: rgba(59, 130, 246, 0.8);
+    color: white;
+    animation: pulse 1s infinite;
+  }
+
+  .error-badge {
+    background: #EF4444;
+    color: white;
+    animation: pulse 1.5s infinite;
+  }
+
   .collapsible-content {
     overflow: hidden;
   }
@@ -475,6 +833,7 @@
     padding: 0.25rem 0;
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
+    position: relative;
   }
 
   .priority-dot {
@@ -586,6 +945,90 @@
 
   .view-all-count {
     opacity: 0.7;
+  }
+
+  /* Reinforcement Learning Feedback Styles */
+  .feedback-controls {
+    display: flex;
+    gap: 0.25rem;
+    margin-left: auto;
+    align-items: center;
+  }
+
+  .feedback-btn {
+    padding: 0.25rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feedback-btn:hover:not(.feedback-disabled) {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+  }
+
+  .feedback-positive {
+    color: #10B981;
+  }
+
+  .feedback-positive-selected {
+    color: #10B981;
+    opacity: 1;
+    background: rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  }
+
+  .feedback-negative {
+    color: #EF4444;
+  }
+
+  .feedback-negative-selected {
+    color: #EF4444;
+    opacity: 1;
+    background: rgba(239, 68, 68, 0.2);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+  }
+
+  .feedback-disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  .feedback-tooltip {
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Console-specific feedback button styles */
+  .recommendation-container.nes .feedback-btn {
+    border-radius: 0;
+    image-rendering: pixelated;
+    border: 2px outset rgba(255, 255, 255, 0.3);
+  }
+
+  .recommendation-container.yorha .feedback-btn {
+    border: 1px solid #D4AF37;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+  }
+
+  .recommendation-container.n64 .feedback-btn {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.1));
   }
 
   /* Responsive design */

@@ -360,13 +360,13 @@ export const metrics = new MetricsCollector();
  */
 export function measureTime(operation: string) {
   return function <T extends (...args: any[]) => Promise<any>>(
-    target: any,
-    propertyName: string,
+    _target: any,
+    _propertyName: string,
     descriptor: TypedPropertyDescriptor<T>
   ) {
     const method = descriptor.value!;
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (this: any, ...args: any[]) {
       const start = Date.now();
       try {
         const result = await method.apply(this, args);
@@ -386,14 +386,18 @@ export function measureTime(operation: string) {
 export function validateDocumentSize(content: string): void {
   const sizeBytes = Buffer.byteLength(content, 'utf8');
   if (sizeBytes > env.RAG_MAX_DOCUMENT_SIZE) {
-    throw new Error(`Document size (${sizeBytes} bytes) exceeds maximum allowed size (${env.RAG_MAX_DOCUMENT_SIZE} bytes)`);
+    throw new Error(
+      `Document size (${sizeBytes} bytes) exceeds maximum allowed size (${env.RAG_MAX_DOCUMENT_SIZE} bytes)`
+    );
   }
 }
 
 /**
  * Extracts legal entities from text using simple patterns
  */
-export function extractLegalEntities(text: string): Array<{ type: string; value: string; confidence: number }> {
+export function extractLegalEntities(
+  text: string
+): Array<{ type: string; value: string; confidence: number }> {
   const entities: Array<{ type: string; value: string; confidence: number }> = [];
 
   // Case law citations
@@ -424,7 +428,7 @@ export function extractLegalEntities(text: string): Array<{ type: string; value:
  * Creates a unique session ID
  */
 export function createSessionId(): string {
-  return `rag_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return `rag_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 }
 
 // === HEALTH CHECK UTILITIES ===
