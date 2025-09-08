@@ -1,0 +1,34 @@
+{
+  "targets": {
+    "debug": {
+      "outFile": "static/wasm/debug.wasm",
+      "textFile": "static/wasm/debug.wat",
+      "sourceMap": true,
+      "debug": true
+    },
+    "release": {
+      "outFile": "static/wasm/release.wasm",
+      "optimizeLevel": 3,
+      "shrinkLevel": 1,
+      "converge": false,
+      "noAssert": false
+    },
+    "vector-ops": {
+      "outFile": "static/wasm/vector-ops.wasm",
+      "optimizeLevel": 3,
+      "shrinkLevel": 1,
+      "converge": true,
+      "noAssert": true,
+      "runtime": "minimal"
+    }
+  },
+  "options": {
+    "bindings": "esm",
+    "exportRuntime": false,
+    "transform": [],
+    "lib": ["ESNext"]
+  },
+  "include": [
+    "src/wasm/**/*.as"
+  ]
+}

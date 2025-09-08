@@ -118,7 +118,16 @@ export const GET: RequestHandler = async ({ url }) => {
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
+    // Use SIMD-accelerated JSON parsing for cache payloads
+    const body = await (async () => {
+      try {
+        const { readBodyFastWithMetrics } = await import('$lib/simd/simd-json-integration.js');
+        return await readBodyFastWithMetrics(request);
+      } catch {
+        // Fallback if SIMD module not available
+        return await request.json();
+      }
+    })();
     const { operation } = body;
 
     // Handle different cache operations

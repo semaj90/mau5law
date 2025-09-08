@@ -523,6 +523,270 @@ export class NESGPUMemoryBridge {
   }
 
   /**
+   * CHR-ROM Pattern Cache Integration
+   * Store pre-computed UI patterns in dedicated memory banks for 0ms response times
+   */
+  private chrRomPatterns = new Map<string, {
+    pattern: any;
+    bankId: number;
+    priority: number;
+    textureId?: string;
+  }>();
+
+  /**
+   * Store CHR-ROM UI pattern in dedicated memory bank
+   */
+  async storeCHRROMPattern(
+    patternId: string,
+    pattern: {
+      renderableHTML: string;
+      type: string;
+      priority: number;
+      compressedData: Uint8Array;
+      bankId: number;
+    }
+  ): Promise<boolean> {
+    const startTime = performance.now();
+
+    try {
+      // Store pattern in appropriate memory bank based on priority
+      const bankRegion = this.cudaRegions.get(this.getBankNameForId(pattern.bankId));
+      
+      if (!bankRegion) {
+        console.warn(`⚠️ Memory bank ${pattern.bankId} not available for CHR-ROM pattern ${patternId}`);
+        return false;
+      }
+
+      // Create GPU texture for pattern data if it contains visual elements
+      let textureId: string | undefined;
+      if (pattern.renderableHTML.includes('<svg') || pattern.type === 'svg_icon') {
+        const patternTexture = await this.createPatternTexture(pattern);
+        if (patternTexture) {
+          textureId = `chrrom_${patternId}`;
+          this.textureCache.set(textureId, patternTexture);
+        }
+      }
+
+      // Store in CHR-ROM cache
+      this.chrRomPatterns.set(patternId, {
+        pattern,
+        bankId: pattern.bankId,
+        priority: pattern.priority,
+        textureId
+      });
+
+      const storeTime = performance.now() - startTime;
+      console.log(`🎮 CHR-ROM pattern ${patternId} stored in bank ${pattern.bankId} (${storeTime.toFixed(2)}ms)`);
+
+      return true;
+    } catch (error) {
+      console.error(`❌ Failed to store CHR-ROM pattern ${patternId}:`, error);
+      return false;
+    }
+  }
+
+  /**
+   * Retrieve CHR-ROM pattern with 0ms access time
+   */
+  getCHRROMPattern(patternId: string): {
+    renderableHTML: string;
+    textureId?: string;
+    bankId: number;
+    priority: number;
+  } | null {
+    const cachedPattern = this.chrRomPatterns.get(patternId);
+    
+    if (!cachedPattern) {
+      console.log(`⚠️ CHR-ROM cache miss for pattern ${patternId}`);
+      return null;
+    }
+
+    // Simulate NES-style instant memory access
+    console.log(`⚡ CHR-ROM pattern ${patternId} retrieved from bank ${cachedPattern.bankId} - 0ms access time!`);
+    
+    return {
+      renderableHTML: cachedPattern.pattern.renderableHTML,
+      textureId: cachedPattern.textureId,
+      bankId: cachedPattern.bankId,
+      priority: cachedPattern.priority
+    };
+  }
+
+  /**
+   * Create GPU texture for visual pattern elements
+   */
+  private async createPatternTexture(pattern: {
+    renderableHTML: string;
+    type: string;
+    compressedData: Uint8Array;
+  }): Promise<GPUTextureMatrix | null> {
+    if (!this.device) return null;
+
+    try {
+      // Create a small texture for pattern data (e.g., 64x64 for icons)
+      const textureSize = pattern.type === 'svg_icon' ? 64 : 128;
+      const textureData = new Float32Array(textureSize * textureSize);
+
+      // Generate pattern data based on HTML content hash
+      const htmlHash = this.hashString(pattern.renderableHTML);
+      for (let i = 0; i < textureData.length; i++) {
+        textureData[i] = Math.sin((i + htmlHash) * 0.01) * 0.5 + 0.5;
+      }
+
+      return await this.createRankingTexture('chrrom_pattern', textureData, {
+        width: textureSize,
+        height: textureSize
+      });
+    } catch (error) {
+      console.warn('Failed to create pattern texture:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Hash string for texture generation
+   */
+  private hashString(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return Math.abs(hash);
+  }
+
+  /**
+   * Get memory bank name for bank ID
+   */
+  private getBankNameForId(bankId: number): string {
+    // Map bank IDs to memory regions (NES-style)
+    switch (bankId) {
+      case 0:
+      case 1: return 'INTERNAL_RAM'; // Fastest access
+      case 2:
+      case 3: return 'CHR_ROM'; // Pattern data
+      case 4:
+      case 5: return 'PRG_ROM'; // Program logic
+      default: return 'CHR_ROM'; // Default to CHR-ROM
+    }
+  }
+
+  /**
+   * Batch load multiple CHR-ROM patterns
+   */
+  async batchLoadCHRROMPatterns(patterns: Array<{
+    id: string;
+    renderableHTML: string;
+    type: string;
+    priority: number;
+    compressedData: Uint8Array;
+    bankId: number;
+  }>): Promise<number> {
+    console.log(`🔄 Batch loading ${patterns.length} CHR-ROM patterns...`);
+    
+    const loadPromises = patterns.map(pattern => 
+      this.storeCHRROMPattern(pattern.id, pattern)
+    );
+    
+    const results = await Promise.all(loadPromises);
+    const successCount = results.filter(Boolean).length;
+    
+    console.log(`✅ Batch loaded ${successCount}/${patterns.length} CHR-ROM patterns`);
+    return successCount;
+  }
+
+  /**
+   * Get CHR-ROM memory bank status
+   */
+  getCHRROMBankStatus(): {
+    bankId: number;
+    name: string;
+    patternCount: number;
+    memoryUsage: number;
+    accessSpeed: 'fastest' | 'fast' | 'normal' | 'slow';
+  }[] {
+    const bankStats = new Map<number, { count: number; size: number }>();
+    
+    // Count patterns per bank
+    for (const cached of this.chrRomPatterns.values()) {
+      const current = bankStats.get(cached.bankId) || { count: 0, size: 0 };
+      current.count++;
+      current.size += cached.pattern.compressedData.length;
+      bankStats.set(cached.bankId, current);
+    }
+
+    // Generate bank status
+    return Array.from({ length: 8 }, (_, bankId) => {
+      const stats = bankStats.get(bankId) || { count: 0, size: 0 };
+      return {
+        bankId,
+        name: this.getBankNameForId(bankId),
+        patternCount: stats.count,
+        memoryUsage: stats.size,
+        accessSpeed: bankId <= 1 ? 'fastest' : bankId <= 3 ? 'fast' : bankId <= 5 ? 'normal' : 'slow'
+      };
+    });
+  }
+
+  /**
+   * Clear CHR-ROM patterns from specific bank
+   */
+  clearCHRROMBank(bankId: number): number {
+    let clearedCount = 0;
+    
+    for (const [patternId, cached] of this.chrRomPatterns) {
+      if (cached.bankId === bankId) {
+        // Clean up associated texture
+        if (cached.textureId) {
+          const texture = this.textureCache.get(cached.textureId);
+          if (texture) {
+            texture.texture?.destroy();
+            texture.gpuBuffer?.destroy();
+            this.textureCache.delete(cached.textureId);
+          }
+        }
+        
+        this.chrRomPatterns.delete(patternId);
+        clearedCount++;
+      }
+    }
+
+    if (clearedCount > 0) {
+      console.log(`🧹 Cleared ${clearedCount} CHR-ROM patterns from bank ${bankId}`);
+    }
+
+    return clearedCount;
+  }
+
+  /**
+   * Optimize CHR-ROM memory layout
+   */
+  async optimizeCHRROMLayout(): Promise<void> {
+    console.log('🔧 Optimizing CHR-ROM memory layout...');
+    
+    // Sort patterns by priority and usage
+    const patterns = Array.from(this.chrRomPatterns.entries()).map(([id, cached]) => ({
+      id,
+      ...cached,
+      optimalBank: cached.priority >= 4 ? 0 : cached.priority >= 3 ? 1 : 2
+    }));
+
+    // Reorganize patterns into optimal banks
+    for (const pattern of patterns) {
+      if (pattern.bankId !== pattern.optimalBank) {
+        // Move pattern to optimal bank
+        const patternData = pattern.pattern;
+        patternData.bankId = pattern.optimalBank;
+        
+        await this.storeCHRROMPattern(pattern.id, patternData);
+      }
+    }
+
+    console.log('✅ CHR-ROM memory layout optimized');
+  }
+
+  /**
    * Clean up resources
    */
   async destroy(): Promise<void> {

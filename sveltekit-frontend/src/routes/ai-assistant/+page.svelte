@@ -224,7 +224,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <Button
             variant="outline"
-            onclick={() => handleQuickQuery('Explain contract formation requirements')}
+            on:click={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
             class="justify-start"
           >
@@ -232,7 +232,7 @@
           </Button>
           <Button
             variant="outline"
-            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
             class="justify-start"
           >
@@ -240,7 +240,7 @@
           </Button>
           <Button
             variant="outline"
-            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
+            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
             class="justify-start"
           >
@@ -248,7 +248,7 @@
           </Button>
           <Button
             variant="outline"
-            onclick={() => handleQuickQuery('What are the elements of negligence?')}
+            on:click={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
             class="justify-start"
           >
@@ -329,7 +329,7 @@
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <Button
-                  onclick={sendMessage}
+                  on:click={sendMessage}
                   disabled={!currentMessage.trim() || isStreaming}
                   class="px-6"
                 >
@@ -408,7 +408,7 @@
                 <Button
                   variant="outline"
                   size="sm"
-                  onclick={checkSystemStatus}
+                  on:click={checkSystemStatus}
                   class="w-full justify-start"
                   fullWidth={true}
                 >
@@ -422,7 +422,7 @@
                 <Button
                   variant="outline"
                   size="sm"
-                  onclick={() => window.open('/api/v1/cluster/health', '_blank')}
+                  on:click={() => window.open('/api/v1/cluster/health', '_blank')}
                   class="w-full justify-start"
                   fullWidth={true}
                 >

@@ -3,6 +3,9 @@
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { quintOut, elasticOut } from 'svelte/easing';
+  import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
+  import { WebGPUSOMCache } from '$lib/webgpu/som-webgpu-cache';
+  import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
 
   interface Props {
     processing?: boolean;
@@ -21,6 +24,9 @@
     }>;
     lodLevel?: 'low' | 'medium' | 'high' | 'ultra';
     style?: 'nes' | 'snes' | 'n64' | 'ps1' | 'yorha';
+    adaptiveRendering?: boolean;
+    performanceTarget?: 'smooth' | 'balanced' | 'quality';
+    userId?: string;
   }
 
   let {
@@ -28,7 +34,10 @@
     document = null,
     connections = [],
     lodLevel = 'medium',
-    style = 'n64'
+    style = 'n64',
+    adaptiveRendering = true,
+    performanceTarget = 'balanced',
+    userId = 'default'
   }: Props = $props();
 
   // State
@@ -53,6 +62,33 @@
   let rotationZ = $state(0);
   let zoom = $state(1);
   let pulseIntensity = $state(0);
+
+  // Adaptive Rendering Engine State
+  let performanceMetrics = $state({
+    fps: 60,
+    frameTime: 16.67, // milliseconds
+    memoryUsage: 0,
+    cacheHitRate: 0.8,
+    renderComplexity: 1.0,
+    lastFrameTimestamp: 0
+  });
+  
+  let adaptiveQuality = $state<'8BIT_NES' | '16BIT_SNES' | '32BIT_N64' | '64BIT_PS2' | 'ULTRA_YORHA'>('32BIT_N64');
+  let qualityTier = $state({
+    name: '32BIT_N64',
+    renderTarget: '1080p',
+    particleMultiplier: 1.0,
+    effectIntensity: 1.0,
+    shaderComplexity: 'medium',
+    antiAliasing: true,
+    shadowQuality: 'medium',
+    textureFiltering: 'bilinear'
+  });
+  
+  let performanceHistory: number[] = [];
+  let lastQualityAdjustment = 0;
+  let frameCounter = 0;
+  let gpuCache: WebGPUSOMCache;
 
   // Style configurations
   const styleConfigs = {
@@ -130,7 +166,84 @@
 
   let currentLOD = $derived(lodConfigs[lodLevel]);
 
-  onMount(() => {
+  // Quality Tier Configurations for Adaptive Rendering
+  const qualityTiers = {
+    '8BIT_NES': {
+      name: '8BIT_NES',
+      renderTarget: '540p',
+      particleMultiplier: 0.3,
+      effectIntensity: 0.4,
+      shaderComplexity: 'low',
+      antiAliasing: false,
+      shadowQuality: 'off',
+      textureFiltering: 'nearest',
+      pixelated: true,
+      maxParticles: 25,
+      updateRate: 8
+    },
+    '16BIT_SNES': {
+      name: '16BIT_SNES', 
+      renderTarget: '720p',
+      particleMultiplier: 0.5,
+      effectIntensity: 0.6,
+      shaderComplexity: 'low',
+      antiAliasing: true,
+      shadowQuality: 'low',
+      textureFiltering: 'bilinear',
+      pixelated: false,
+      maxParticles: 50,
+      updateRate: 6
+    },
+    '32BIT_N64': {
+      name: '32BIT_N64',
+      renderTarget: '1080p',
+      particleMultiplier: 1.0,
+      effectIntensity: 0.8,
+      shaderComplexity: 'medium',
+      antiAliasing: true,
+      shadowQuality: 'medium',
+      textureFiltering: 'trilinear',
+      pixelated: false,
+      maxParticles: 100,
+      updateRate: 4
+    },
+    '64BIT_PS2': {
+      name: '64BIT_PS2',
+      renderTarget: '1440p',
+      particleMultiplier: 1.5,
+      effectIntensity: 1.0,
+      shaderComplexity: 'high',
+      antiAliasing: true,
+      shadowQuality: 'high',
+      textureFiltering: 'anisotropic',
+      pixelated: false,
+      maxParticles: 150,
+      updateRate: 2
+    },
+    'ULTRA_YORHA': {
+      name: 'ULTRA_YORHA',
+      renderTarget: '4K',
+      particleMultiplier: 2.0,
+      effectIntensity: 1.2,
+      shaderComplexity: 'ultra',
+      antiAliasing: true,
+      shadowQuality: 'ultra',
+      textureFiltering: 'anisotropic16x',
+      pixelated: false,
+      maxParticles: 200,
+      updateRate: 1
+    }
+  };
+
+  onMount(async () => {
+    // Initialize GPU cache for adaptive rendering
+    gpuCache = new WebGPUSOMCache();
+    await gpuCache.initializeWebGPU();
+    
+    if (adaptiveRendering) {
+      initializeAdaptiveEngine();
+    }
+    
     if (processing) {
       startProcessingAnimation();
     }
@@ -168,9 +281,15 @@
   function initializeParticles() {
     particles = [];
     
-    for (let i = 0; i < currentLOD.particleCount; i++) {
+    const targetParticleCount = adaptiveRendering 
+      ? Math.floor(qualityTier.maxParticles * qualityTier.particleMultiplier)
+      : currentLOD.particleCount;
+    
+    for (let i = 0; i < targetParticleCount; i++) {
       particles.push(createParticle('data'));
     }
+    
+    console.log(`🎮 Initialized ${targetParticleCount} particles for quality tier: ${qualityTier.name}`);
   }
 
   function createParticle(type: 'data' | 'connection' | 'analysis' | 'result') {
@@ -200,8 +319,15 @@
   }
 
   function animate() {
+    const frameStartTime = performance.now();
+    
     updateParticles();
     updateCamera();
+    
+    if (adaptiveRendering) {
+      updatePerformanceMetrics(frameStartTime);
+      evaluateQualityAdjustment();
+    }
     
     animationFrame = requestAnimationFrame(() => {
       if (processing) animate();
@@ -342,6 +468,15 @@
   }
 
   function getContainerStyle() {
+    // Apply adaptive rendering settings
+    const adaptiveFilter = adaptiveRendering 
+      ? `${currentStyle.filter} brightness(${1 + pulseIntensity * qualityTier.effectIntensity})`
+      : `${currentStyle.filter} brightness(${1 + pulseIntensity * 0.3})`;
+    
+    const imageRendering = adaptiveRendering && qualityTier.pixelated 
+      ? 'pixelated'
+      : qualityTier.textureFiltering === 'nearest' ? 'pixelated' : 'auto';
+    
     return `
       transform: 
         perspective(1000px)
@@ -349,7 +484,9 @@
         rotateY(${rotationY * 0.1}deg) 
         rotateZ(${rotationZ * 0.05}deg)
         scale(${zoom});
-      filter: ${currentStyle.filter} brightness(${1 + pulseIntensity * 0.3});
+      filter: ${adaptiveFilter};
+      image-rendering: ${imageRendering};
+      will-change: transform, filter;
     `;
   }
 
@@ -373,6 +510,281 @@
       complete: 'Processing complete'
     };
     return descriptions[processingStage];
+  }
+
+  // ===============================
+  // ADAPTIVE RENDERING ENGINE
+  // ===============================
+
+  /**
+   * Initialize the Adaptive Rendering Engine
+   */
+  async function initializeAdaptiveEngine(): Promise<void> {
+    // Update user state in predictive engine
+    await predictiveAssetEngine.updateUserState(userId, 'rendering_session', 'initialize', {
+      document_type: document?.type || 'unknown',
+      task: 'document_processing',
+      complexity_level: document?.complexity > 0.7 ? 'advanced' : 'intermediate',
+      performance_target: performanceTarget
+    });
+    
+    // Set initial quality tier based on performance target
+    adaptiveQuality = getInitialQualityTier(performanceTarget);
+    qualityTier = qualityTiers[adaptiveQuality];
+    
+    console.log('🚀 Adaptive Rendering Engine initialized:', {
+      quality: adaptiveQuality,
+      target: performanceTarget,
+      userId
+    });
+  }
+
+  /**
+   * Get initial quality tier based on performance target
+   */
+  function getInitialQualityTier(target: string): typeof adaptiveQuality {
+    switch (target) {
+      case 'smooth': return '16BIT_SNES';   // Prioritize framerate
+      case 'balanced': return '32BIT_N64';   // Balance quality and performance  
+      case 'quality': return '64BIT_PS2';    // Prioritize visual quality
+      default: return '32BIT_N64';
+    }
+  }
+
+  /**
+   * Update performance metrics based on frame timing
+   */
+  function updatePerformanceMetrics(frameStartTime: number): void {
+    const frameEndTime = performance.now();
+    const frameTime = frameEndTime - frameStartTime;
+    
+    // Calculate FPS
+    const currentFPS = 1000 / Math.max(frameTime, 1);
+    
+    // Update metrics with exponential moving average
+    performanceMetrics.fps = performanceMetrics.fps * 0.9 + currentFPS * 0.1;
+    performanceMetrics.frameTime = performanceMetrics.frameTime * 0.9 + frameTime * 0.1;
+    performanceMetrics.lastFrameTimestamp = frameEndTime;
+    
+    // Update performance history
+    performanceHistory.push(currentFPS);
+    if (performanceHistory.length > 60) { // Keep last 60 frames (1 second at 60fps)
+      performanceHistory.shift();
+    }
+    
+    // Update cache hit rate from RL cache
+    const cacheStats = reinforcementLearningCache.getLearningState();
+    performanceMetrics.cacheHitRate = cacheStats.hitRate;
+    
+    frameCounter++;
+  }
+
+  /**
+   * Evaluate if quality adjustment is needed based on performance
+   */
+  function evaluateQualityAdjustment(): void {
+    const now = Date.now();
+    
+    // Only adjust every 2 seconds to avoid oscillation
+    if (now - lastQualityAdjustment < 2000) return;
+    
+    // Calculate average FPS over recent frames
+    const avgFPS = performanceHistory.length > 0 
+      ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length
+      : 60;
+    
+    // Calculate performance score (0-1, where 1 is perfect)
+    const performanceScore = calculatePerformanceScore(avgFPS);
+    
+    // Determine if adjustment is needed
+    const shouldUpgrade = performanceScore > 0.85 && canUpgradeQuality();
+    const shouldDowngrade = performanceScore < 0.7 && canDowngradeQuality();
+    
+    if (shouldUpgrade) {
+      upgradeQuality();
+      lastQualityAdjustment = now;
+    } else if (shouldDowngrade) {
+      downgradeQuality();
+      lastQualityAdjustment = now;
+    }
+  }
+
+  /**
+   * Calculate overall performance score
+   */
+  function calculatePerformanceScore(avgFPS: number): number {
+    let score = 0;
+    
+    // FPS contribution (60% weight)
+    const fpsTargets = {
+      'smooth': 60,
+      'balanced': 55, 
+      'quality': 45
+    };
+    const targetFPS = fpsTargets[performanceTarget] || 55;
+    const fpsScore = Math.min(avgFPS / targetFPS, 1.2); // Allow slight overclock
+    score += fpsScore * 0.6;
+    
+    // Cache hit rate contribution (20% weight)
+    score += performanceMetrics.cacheHitRate * 0.2;
+    
+    // Frame consistency contribution (20% weight)
+    const frameConsistency = calculateFrameConsistency();
+    score += frameConsistency * 0.2;
+    
+    return Math.min(score, 1.0);
+  }
+
+  /**
+   * Calculate frame consistency (lower variance = higher consistency)
+   */
+  function calculateFrameConsistency(): number {
+    if (performanceHistory.length < 10) return 0.8; // Default for insufficient data
+    
+    const mean = performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length;
+    const variance = performanceHistory.reduce((sum, fps) => sum + Math.pow(fps - mean, 2), 0) / performanceHistory.length;
+    const stdDev = Math.sqrt(variance);
+    
+    // Convert to consistency score (lower std dev = higher consistency)
+    return Math.max(0, 1 - (stdDev / mean));
+  }
+
+  /**
+   * Check if quality can be upgraded
+   */
+  function canUpgradeQuality(): boolean {
+    const qualityOrder = ['8BIT_NES', '16BIT_SNES', '32BIT_N64', '64BIT_PS2', 'ULTRA_YORHA'];
+    const currentIndex = qualityOrder.indexOf(adaptiveQuality);
+    return currentIndex < qualityOrder.length - 1;
+  }
+
+  /**
+   * Check if quality can be downgraded
+   */
+  function canDowngradeQuality(): boolean {
+    const qualityOrder = ['8BIT_NES', '16BIT_SNES', '32BIT_N64', '64BIT_PS2', 'ULTRA_YORHA'];
+    const currentIndex = qualityOrder.indexOf(adaptiveQuality);
+    return currentIndex > 0;
+  }
+
+  /**
+   * Upgrade to higher quality tier
+   */
+  async function upgradeQuality(): Promise<void> {
+    const qualityOrder: Array<typeof adaptiveQuality> = ['8BIT_NES', '16BIT_SNES', '32BIT_N64', '64BIT_PS2', 'ULTRA_YORHA'];
+    const currentIndex = qualityOrder.indexOf(adaptiveQuality);
+    
+    if (currentIndex < qualityOrder.length - 1) {
+      const newQuality = qualityOrder[currentIndex + 1];
+      await transitionToQuality(newQuality, 'upgrade');
+    }
+  }
+
+  /**
+   * Downgrade to lower quality tier
+   */
+  async function downgradeQuality(): Promise<void> {
+    const qualityOrder: Array<typeof adaptiveQuality> = ['8BIT_NES', '16BIT_SNES', '32BIT_N64', '64BIT_PS2', 'ULTRA_YORHA'];
+    const currentIndex = qualityOrder.indexOf(adaptiveQuality);
+    
+    if (currentIndex > 0) {
+      const newQuality = qualityOrder[currentIndex - 1];
+      await transitionToQuality(newQuality, 'downgrade');
+    }
+  }
+
+  /**
+   * Transition to new quality tier with smooth animation
+   */
+  async function transitionToQuality(newQuality: typeof adaptiveQuality, direction: 'upgrade' | 'downgrade'): Promise<void> {
+    console.log(`🎮 Quality ${direction}: ${adaptiveQuality} → ${newQuality}`);
+    
+    // Update predictive engine with quality change
+    await predictiveAssetEngine.updateUserState(userId, 'rendering_session', `quality_${direction}`, {
+      previous_quality: adaptiveQuality,
+      new_quality: newQuality,
+      performance_score: calculatePerformanceScore(performanceMetrics.fps),
+      cache_hit_rate: performanceMetrics.cacheHitRate
+    });
+    
+    // Smooth transition: adjust particles gradually
+    const oldTier = qualityTiers[adaptiveQuality];
+    const newTier = qualityTiers[newQuality];
+    
+    // Update quality state
+    adaptiveQuality = newQuality;
+    qualityTier = newTier;
+    
+    // Adjust particle count smoothly
+    const targetParticleCount = Math.floor(newTier.maxParticles * newTier.particleMultiplier);
+    await adjustParticleCount(targetParticleCount);
+    
+    // Update cache with quality preference
+    await gpuCache.storeResult(`user_quality_preference_${userId}`, {
+      quality: newQuality,
+      timestamp: Date.now(),
+      performance_context: {
+        fps: performanceMetrics.fps,
+        frame_time: performanceMetrics.frameTime,
+        cache_hit_rate: performanceMetrics.cacheHitRate
+      }
+    });
+  }
+
+  /**
+   * Gradually adjust particle count to avoid jarring transitions
+   */
+  async function adjustParticleCount(targetCount: number): Promise<void> {
+    const currentCount = particles.length;
+    const difference = targetCount - currentCount;
+    
+    if (difference === 0) return;
+    
+    // Gradual adjustment over 1 second
+    const steps = 10;
+    const stepSize = Math.ceil(Math.abs(difference) / steps);
+    const stepDelay = 100; // milliseconds
+    
+    for (let step = 0; step < steps; step++) {
+      await new Promise(resolve => setTimeout(resolve, stepDelay));
+      
+      if (difference > 0) {
+        // Add particles
+        const toAdd = Math.min(stepSize, targetCount - particles.length);
+        for (let i = 0; i < toAdd; i++) {
+          particles.push(createParticle('data'));
+        }
+      } else {
+        // Remove particles
+        const toRemove = Math.min(stepSize, particles.length - targetCount);
+        particles.splice(0, toRemove);
+      }
+      
+      if (particles.length === targetCount) break;
+    }
+  }
+
+  /**
+   * Get adaptive quality information for display
+   */
+  function getAdaptiveQualityInfo(): {
+    tier: string;
+    fps: number;
+    particles: number;
+    cacheHit: number;
+    performanceScore: number;
+  } {
+    const avgFPS = performanceHistory.length > 0 
+      ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length
+      : 60;
+    
+    return {
+      tier: qualityTier.name,
+      fps: Math.round(avgFPS),
+      particles: particles.length,
+      cacheHit: Math.round(performanceMetrics.cacheHitRate * 100),
+      performanceScore: Math.round(calculatePerformanceScore(avgFPS) * 100)
+    };
   }
 </script>
 
@@ -509,15 +921,44 @@
     >
       {style.toUpperCase()} Mode
     </div>
+
+    <!-- Adaptive Quality Indicator (if adaptive rendering is enabled) -->
+    {#if adaptiveRendering}
+      {@const qualityInfo = getAdaptiveQualityInfo()}
+      <div 
+        class="adaptive-quality-indicator"
+        style="
+          background: rgba(212, 175, 55, 0.1);
+          border: 1px solid #D4AF37;
+          color: #D4AF37;
+          border-radius: {currentStyle.borderRadius};
+        "
+      >
+        <div class="quality-tier">🎮 {qualityInfo.tier}</div>
+        <div class="quality-metrics">
+          <span class="fps">{qualityInfo.fps} FPS</span>
+          <span class="performance">P:{qualityInfo.performanceScore}%</span>
+          <span class="cache">C:{qualityInfo.cacheHit}%</span>
+        </div>
+      </div>
+    {/if}
   </div>
 
   <!-- Debug Info (only in development) -->
   {#if import.meta.env.DEV}
+    {@const qualityInfo = getAdaptiveQualityInfo()}
     <div class="debug-info">
       <div>Particles: {particles.length}</div>
       <div>Stage: {processingStage}</div>
       <div>Pulse: {pulseIntensity.toFixed(2)}</div>
       <div>Zoom: {zoom.toFixed(2)}</div>
+      {#if adaptiveRendering}
+        <div>Quality: {qualityInfo.tier}</div>
+        <div>FPS: {qualityInfo.fps}</div>
+        <div>Performance: {qualityInfo.performanceScore}%</div>
+        <div>Frame Time: {performanceMetrics.frameTime.toFixed(1)}ms</div>
+        <div>Cache Hit: {qualityInfo.cacheHit}%</div>
+      {/if}
     </div>
   {/if}
 </div>
@@ -634,13 +1075,40 @@
 
   .stage-indicator,
   .lod-indicator,
-  .style-indicator {
+  .style-indicator,
+  .adaptive-quality-indicator {
     padding: 0.5rem 1rem;
     font-size: 0.8rem;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
     backdrop-filter: blur(10px);
+  }
+
+  .adaptive-quality-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 120px;
+  }
+
+  .quality-tier {
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .quality-metrics {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    opacity: 0.9;
+  }
+
+  .quality-metrics span {
+    padding: 0.1rem 0.3rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
   }
 
   .stage-indicator {
@@ -710,6 +1178,15 @@
     .ui-overlay {
       flex-direction: column;
       align-items: flex-start;
+    }
+    
+    .adaptive-quality-indicator {
+      min-width: 100px;
+      font-size: 0.7rem;
+    }
+    
+    .quality-metrics {
+      gap: 0.25rem;
     }
   }
 </style>

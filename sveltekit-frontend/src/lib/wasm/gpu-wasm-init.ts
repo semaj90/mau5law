@@ -5,7 +5,7 @@
  * Optimized for RTX 3060 with legal AI applications
  */
 
-import { writable, derived, type Writable } from "$lib/utils/svelte/store";
+import { writable, derived, type Writable } from "svelte/store";
 import { browser } from "$app/environment";
 
 // WebAssembly GPU Configuration

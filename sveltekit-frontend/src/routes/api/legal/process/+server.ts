@@ -7,10 +7,12 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const body = await request.json();
+		// Use SIMD-accelerated JSON parsing for legal document payloads
+		const body = await readBodyFastWithMetrics(request);
 		
 		const {
 			documentId,

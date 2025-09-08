@@ -49,6 +49,17 @@ export class WebGPUSOMCache {
   private todosCollection: Collection<any>;
   private errorsCollection: Collection<any>;
   private cacheCollection: Collection<any>;
+  
+  // Redis integration
+  private redisClient: any = null;
+  private redisConnected = false;
+  private redisConfig = {
+    host: 'localhost',
+    port: 6379,
+    keyPrefix: 'som:cache:',
+    syncInterval: 30000 // 30 seconds
+  };
+  private syncTimer: any = null;
 
   // WebGPU compute shaders for semantic operations
   private similarityShader = `
@@ -736,6 +747,328 @@ export class WebGPUSOMCache {
       const store = transaction.objectStore('cache');
       await store.clear();
     }
+    
+    // Clear Redis cache keys if connected
+    if (this.redisConnected && this.redisClient) {
+      try {
+        const keys = await this.redisClient.keys(`${this.redisConfig.keyPrefix}*`);
+        if (keys.length > 0) {
+          await this.redisClient.del(...keys);
+        }
+      } catch (error) {
+        console.error('Failed to clear Redis cache:', error);
+      }
+    }
+  }
+
+  /**
+   * Initialize Redis connection for distributed caching
+   */
+  async initializeRedis(config?: Partial<typeof this.redisConfig>): Promise<boolean> {
+    try {
+      if (config) {
+        this.redisConfig = { ...this.redisConfig, ...config };
+      }
+      
+      // Use Redis client via fetch API for browser compatibility
+      const testConnection = await fetch('/api/cache/redis/ping', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.redisConfig)
+      });
+      
+      if (testConnection.ok) {
+        this.redisConnected = true;
+        this.startRedisSync();
+        console.log('✅ Redis SOM cache connection established');
+        return true;
+      } else {
+        console.warn('⚠️ Redis connection failed, continuing with local cache only');
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Redis initialization error:', error);
+      this.redisConnected = false;
+      return false;
+    }
+  }
+
+  /**
+   * Start Redis sync timer
+   */
+  private startRedisSync(): void {
+    if (this.syncTimer) {
+      clearInterval(this.syncTimer);
+    }
+    
+    this.syncTimer = setInterval(() => {
+      this.syncWithRedis().catch(error => 
+        console.error('Redis sync error:', error)
+      );
+    }, this.redisConfig.syncInterval);
+  }
+
+  /**
+   * Sync local SOM cache with Redis distributed cache
+   */
+  async syncWithRedis(): Promise<void> {
+    if (!this.redisConnected) return;
+    
+    try {
+      // Get local cache entries that need to be synced
+      const localEntries = this.cacheCollection.find({
+        timestamp: { $gte: Date.now() - this.redisConfig.syncInterval }
+      });
+      
+      // Sync recent entries to Redis
+      for (const entry of localEntries) {
+        const redisKey = `${this.redisConfig.keyPrefix}${entry.key}`;
+        
+        await fetch('/api/cache/redis/set', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            key: redisKey,
+            value: entry.value,
+            ttl: 3600 // 1 hour
+          })
+        });
+      }
+      
+      // Get recent updates from Redis
+      const redisUpdates = await fetch('/api/cache/redis/get-recent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prefix: this.redisConfig.keyPrefix,
+          since: Date.now() - this.redisConfig.syncInterval
+        })
+      });
+      
+      if (redisUpdates.ok) {
+        const updates = await redisUpdates.json();
+        
+        // Update local cache with Redis data
+        for (const update of updates.entries) {
+          const localKey = update.key.replace(this.redisConfig.keyPrefix, '');
+          
+          // Update local cache
+          this.cacheCollection.removeWhere({ key: localKey });
+          this.cacheCollection.insert({
+            key: localKey,
+            value: update.value,
+            timestamp: Date.now(),
+            source: 'redis'
+          });
+        }
+      }
+      
+    } catch (error) {
+      console.error('Redis sync failed:', error);
+    }
+  }
+
+  /**
+   * Store result with Redis distribution
+   */
+  async storeResult(key: string, data: any, options?: { 
+    ttl?: number; 
+    priority?: number; 
+    distributeToRedis?: boolean 
+  }): Promise<void> {
+    const opts = { ttl: 3600, priority: 5, distributeToRedis: true, ...options };
+    
+    // Store locally
+    this.cacheCollection.removeWhere({ key });
+    this.cacheCollection.insert({
+      key,
+      value: data,
+      timestamp: Date.now(),
+      priority: opts.priority,
+      ttl: opts.ttl,
+      source: 'local'
+    });
+    
+    // Distribute to Redis if connected and requested
+    if (this.redisConnected && opts.distributeToRedis) {
+      try {
+        const redisKey = `${this.redisConfig.keyPrefix}${key}`;
+        
+        await fetch('/api/cache/redis/set', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            key: redisKey,
+            value: data,
+            ttl: opts.ttl
+          })
+        });
+      } catch (error) {
+        console.error('Failed to distribute to Redis:', error);
+      }
+    }
+  }
+
+  /**
+   * Get cached result from local or Redis
+   */
+  async getCachedResult(key: string): Promise<any | null> {
+    // Check local cache first
+    const localResult = this.cacheCollection.findOne({ key });
+    if (localResult && localResult.timestamp > Date.now() - (localResult.ttl * 1000)) {
+      return localResult.value;
+    }
+    
+    // Check Redis if connected
+    if (this.redisConnected) {
+      try {
+        const redisKey = `${this.redisConfig.keyPrefix}${key}`;
+        
+        const response = await fetch('/api/cache/redis/get', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: redisKey })
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          if (result.value) {
+            // Store in local cache for faster future access
+            this.cacheCollection.removeWhere({ key });
+            this.cacheCollection.insert({
+              key,
+              value: result.value,
+              timestamp: Date.now(),
+              source: 'redis'
+            });
+            
+            return result.value;
+          }
+        }
+      } catch (error) {
+        console.error('Redis get failed:', error);
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Precompute embeddings for cache warming
+   */
+  async precomputeEmbeddings(payload: any): Promise<void> {
+    try {
+      const { errorMessages, batchSize = 10 } = payload;
+      
+      if (!errorMessages || !Array.isArray(errorMessages)) {
+        return;
+      }
+      
+      // Process in batches to avoid overwhelming the system
+      for (let i = 0; i < errorMessages.length; i += batchSize) {
+        const batch = errorMessages.slice(i, i + batchSize);
+        
+        for (const errorMessage of batch) {
+          const embeddingKey = `embedding:${this.hashString(errorMessage)}`;
+          
+          // Check if already cached
+          const cached = await this.getCachedResult(embeddingKey);
+          if (!cached) {
+            // Generate embedding using WebGPU if available
+            const embedding = await this.computeErrorEmbedding(errorMessage);
+            await this.storeResult(embeddingKey, embedding, {
+              ttl: 7200, // 2 hours
+              priority: 3,
+              distributeToRedis: true
+            });
+          }
+        }
+        
+        // Small delay between batches
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    } catch (error) {
+      console.error('Precompute embeddings failed:', error);
+    }
+  }
+
+  /**
+   * Train SOM in background
+   */
+  async trainInBackground(): Promise<void> {
+    try {
+      // Get recent error data for training
+      const recentErrors = this.errorsCollection.find({
+        timestamp: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() }
+      });
+      
+      if (recentErrors.length < 10) {
+        console.log('Insufficient data for SOM training');
+        return;
+      }
+      
+      // Extract features for SOM training
+      const trainingData = recentErrors.map(error => ({
+        features: [
+          error.severity === 'critical' ? 1.0 : error.severity === 'high' ? 0.7 : 0.3,
+          error.message.length / 1000, // Normalized message length
+          error.dependencies?.length || 0,
+          this.hashString(error.category) / 1000000 // Normalized category hash
+        ],
+        metadata: { id: error.id, category: error.category }
+      }));
+      
+      // Train SOM (simplified implementation)
+      const somResult = await this.trainSOM(trainingData);
+      
+      // Store SOM model in cache
+      await this.storeResult('som:model:latest', somResult, {
+        ttl: 86400, // 24 hours
+        priority: 10,
+        distributeToRedis: true
+      });
+      
+      console.log('🧠 SOM background training completed');
+      
+    } catch (error) {
+      console.error('SOM background training failed:', error);
+    }
+  }
+
+  /**
+   * Simplified SOM training implementation
+   */
+  private async trainSOM(trainingData: any[]): Promise<any> {
+    // This is a simplified implementation
+    // In a real system, you would use a proper SOM algorithm
+    const clusters = {};
+    
+    for (const data of trainingData) {
+      const key = data.features.map(f => Math.round(f * 10)).join(',');
+      if (!clusters[key]) {
+        clusters[key] = [];
+      }
+      clusters[key].push(data.metadata);
+    }
+    
+    return {
+      clusters,
+      trainingCount: trainingData.length,
+      timestamp: Date.now()
+    };
+  }
+
+  /**
+   * Simple string hash function
+   */
+  private hashString(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash);
   }
 
   dispose(): void {
@@ -743,6 +1076,15 @@ export class WebGPUSOMCache {
     if (this.indexDB) {
       this.indexDB.close();
     }
+    
+    // Clean up Redis sync timer
+    if (this.syncTimer) {
+      clearInterval(this.syncTimer);
+      this.syncTimer = null;
+    }
+    
+    this.redisConnected = false;
+    this.redisClient = null;
   }
 }
 
@@ -752,8 +1094,9 @@ export async function initializeSOMCache(): Promise<WebGPUSOMCache> {
 
   const webGPUEnabled = await cache.initializeWebGPU();
   const indexDBEnabled = await cache.initializeIndexDB();
+  const redisEnabled = await cache.initializeRedis();
 
-  console.log(`🧠 SOM Cache initialized - WebGPU: ${webGPUEnabled}, IndexDB: ${indexDBEnabled}`);
+  console.log(`🧠 SOM Cache initialized - WebGPU: ${webGPUEnabled}, IndexDB: ${indexDBEnabled}, Redis: ${redisEnabled}`);
 
   return cache;
 }

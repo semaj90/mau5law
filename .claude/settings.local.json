@@ -50,7 +50,14 @@
       "Bash(PGPASSWORD=123456 psql -h localhost -p 5432 -U legal_admin -d legal_ai_db -c \"SELECT COUNT(*) FROM messages;\")",
       "Bash(python:*)",
       "Bash(npm run:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(npm install:*)",
+      "Bash(npx asc:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(go get:*)",
+      "Bash(sed:*)",
+      "Bash(node:*)",
+      "Bash(timeout 30 npm run build)"
     ],
     "deny": [],
     "ask": []

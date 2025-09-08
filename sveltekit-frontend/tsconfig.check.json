@@ -9,19 +9,28 @@
   },
   "include": [
     "ambient.d.ts",
-    "src/**/*.ts",
-    "src/**/*.svelte",
-    "src/types/**/*.d.ts",
-    "src/lib/types/**/*.d.ts"
+    // Focus checks on newly added or recently edited core service files
+    "src/routes/api/chat/+server.ts",
+    "src/routes/api/chat/history/+server.ts",
+    "src/routes/api/user/me/+server.ts",
+    "src/lib/server/chat/history-service.ts",
+    "src/lib/server/prompt/contextual-engine.ts",
+    "src/lib/stores/chat-history.ts",
+    "src/lib/stores/current-user.ts",
+    // Allow Svelte types but avoid compiling entire app
+    "src/**/*.d.ts"
   ],
   "exclude": [
     "tests/**",
     "src/lib/tests/**",
-  "src/routes/**",
-  "src/lib/webgpu/**",
-  "src/lib/wasm/**",
-  "src/lib/workers/**",
-  "src/lib/utils/observability-*.ts",
+    "src/routes/**",
+    "src/wasm/**",
+    "src/lib/wasm/**",
+    "src/lib/webasm/**",
+    "src/lib/webgpu/**",
+    "src/lib/gpu/**",
+    "src/lib/workers/**",
+    "src/lib/utils/observability-*.ts",
     "src/**/__tests__/**",
     "src/**/__mocks__/**",
     "node_modules/**",

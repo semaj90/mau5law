@@ -1,15 +1,34 @@
 /**
  * SIMD Tensor Parsing Service Worker
- * Handles multi-dimensional tensor streaming and parsing
- * Optimized for low-latency binary data processing
+ * Handles multi-dimensional tensor streaming and parsing with WASM vector operations
+ * Optimized for low-latency binary data processing with compiled WebAssembly
  */
 
 const CACHE_NAME = 'tensor-cache-v1';
 const TENSOR_ENDPOINTS = ['/api/tensor/', '/api/embeddings'];
 
-// Install event - cache essential resources
+// WASM module instance for vector operations
+let wasmModule = null;
+let wasmReady = false;
+
+// Load WebAssembly vector operations module
+async function loadWASMModule() {
+  try {
+    const wasmResponse = await fetch('/wasm/vector-ops.wasm');
+    const wasmBytes = await wasmResponse.arrayBuffer();
+    wasmModule = await WebAssembly.instantiate(wasmBytes);
+    wasmReady = true;
+    console.log('🚀 WASM vector operations loaded in tensor worker');
+  } catch (error) {
+    console.warn('⚠️ WASM loading failed, falling back to JS:', error);
+    wasmReady = false;
+  }
+}
+
+// Install event - cache essential resources and load WASM
 self.addEventListener('install', event => {
   console.log('📦 SIMD Tensor Service Worker installing...');
+  event.waitUntil(loadWASMModule());
   self.skipWaiting();
 });
 
@@ -181,10 +200,72 @@ async function processBinaryTensor(response) {
 }
 
 /**
- * SIMD-style processing for Float32Array
- * Applies normalization and quantization optimizations
+ * WASM-accelerated or fallback processing for Float32Array
+ * Uses compiled WebAssembly vector operations when available
  */
 function simdProcessFloatArray(inputArray) {
+  if (wasmReady && wasmModule) {
+    return processFloatArrayWASM(inputArray);
+  }
+  
+  // Fallback to JavaScript SIMD-style processing
+  return processFloatArrayJS(inputArray);
+}
+
+/**
+ * WebAssembly-accelerated vector processing
+ */
+function processFloatArrayWASM(inputArray) {
+  try {
+    const length = inputArray.length;
+    const wasmMemory = wasmModule.instance.exports.memory;
+    const floatView = new Float32Array(wasmMemory.buffer);
+    
+    // Allocate memory in WASM
+    const inputPtr = wasmModule.instance.exports.__new(length * 4, 0); // 4 bytes per float32
+    const outputPtr = wasmModule.instance.exports.__new(length * 4, 0);
+    
+    // Copy input data to WASM memory
+    const inputOffset = inputPtr >>> 2; // Convert to float32 array index
+    const outputOffset = outputPtr >>> 2;
+    
+    for (let i = 0; i < length; i++) {
+      floatView[inputOffset + i] = inputArray[i];
+    }
+    
+    // Call WASM normalize function (we need to add this to our AssemblyScript)
+    const normalizedPtr = wasmModule.instance.exports.normalizeVector 
+      ? wasmModule.instance.exports.normalizeVector(inputPtr, length)
+      : outputPtr;
+    
+    // Copy result back to JavaScript
+    const result = new Float32Array(length);
+    const resultOffset = normalizedPtr >>> 2;
+    
+    for (let i = 0; i < length; i++) {
+      result[i] = floatView[resultOffset + i];
+    }
+    
+    // Clean up WASM memory
+    wasmModule.instance.exports.__unpin(inputPtr);
+    wasmModule.instance.exports.__unpin(outputPtr);
+    if (normalizedPtr !== outputPtr) {
+      wasmModule.instance.exports.__unpin(normalizedPtr);
+    }
+    
+    return Array.from(result);
+    
+  } catch (error) {
+    console.warn('WASM processing failed, falling back to JS:', error);
+    return processFloatArrayJS(inputArray);
+  }
+}
+
+/**
+ * JavaScript fallback SIMD-style processing for Float32Array
+ * Applies normalization and quantization optimizations
+ */
+function processFloatArrayJS(inputArray) {
   const length = inputArray.length;
   const outputArray = new Float32Array(length);
   
@@ -303,16 +384,215 @@ self.addEventListener('message', event => {
  * Process tensor data sent directly via postMessage
  */
 async function processTensorMessage(data) {
+  const startTime = Date.now();
+  
   if (data.embeddings && Array.isArray(data.embeddings)) {
     return {
       ...data,
       embeddings: simdProcessFloatArray(new Float32Array(data.embeddings)),
       processed: true,
-      processing_time: Date.now() - data.timestamp
+      processing_time: startTime - (data.timestamp || startTime)
     };
   }
   
+  // Handle vector similarity requests
+  if (data.operation === 'similarity' && data.query && data.vectors) {
+    return await processVectorSimilarity(data, startTime);
+  }
+  
+  // Handle batch normalization requests
+  if (data.operation === 'batch_normalize' && data.vectors) {
+    return await processBatchNormalize(data, startTime);
+  }
+  
   return data;
+}
+
+/**
+ * Process vector similarity computation using WASM
+ */
+async function processVectorSimilarity(data, startTime) {
+  try {
+    if (!wasmReady || !wasmModule) {
+      // Fallback to JavaScript computation
+      return processVectorSimilarityJS(data, startTime);
+    }
+    
+    const { query, vectors, algorithm = 0 } = data; // 0 = cosine similarity
+    const queryVector = new Float32Array(query);
+    const vectorDim = queryVector.length;
+    const vectorCount = vectors.length;
+    
+    // Allocate WASM memory
+    const wasmMemory = wasmModule.instance.exports.memory;
+    const floatView = new Float32Array(wasmMemory.buffer);
+    
+    // Allocate pointers
+    const queryPtr = wasmModule.instance.exports.__new(vectorDim * 4, 0);
+    const vectorsPtr = wasmModule.instance.exports.__new(vectorCount * vectorDim * 4, 0);
+    const resultsPtr = wasmModule.instance.exports.__new(vectorCount * 4, 0);
+    
+    // Copy query vector to WASM
+    const queryOffset = queryPtr >>> 2;
+    for (let i = 0; i < vectorDim; i++) {
+      floatView[queryOffset + i] = queryVector[i];
+    }
+    
+    // Copy all vectors to WASM
+    const vectorsOffset = vectorsPtr >>> 2;
+    for (let v = 0; v < vectorCount; v++) {
+      const vector = new Float32Array(vectors[v]);
+      for (let i = 0; i < vectorDim; i++) {
+        floatView[vectorsOffset + v * vectorDim + i] = vector[i];
+      }
+    }
+    
+    // Call WASM batch similarity computation
+    wasmModule.instance.exports.computeBatchSimilarity(
+      queryPtr, vectorsPtr, resultsPtr, vectorDim, vectorCount, algorithm
+    );
+    
+    // Copy results back
+    const results = [];
+    const resultsOffset = resultsPtr >>> 2;
+    for (let i = 0; i < vectorCount; i++) {
+      results.push(floatView[resultsOffset + i]);
+    }
+    
+    // Clean up WASM memory
+    wasmModule.instance.exports.__unpin(queryPtr);
+    wasmModule.instance.exports.__unpin(vectorsPtr);
+    wasmModule.instance.exports.__unpin(resultsPtr);
+    
+    return {
+      ...data,
+      similarities: results,
+      processed: true,
+      processing_time: Date.now() - startTime,
+      acceleration: 'wasm'
+    };
+    
+  } catch (error) {
+    console.warn('WASM similarity computation failed, using JS fallback:', error);
+    return processVectorSimilarityJS(data, startTime);
+  }
+}
+
+/**
+ * JavaScript fallback for vector similarity
+ */
+function processVectorSimilarityJS(data, startTime) {
+  const { query, vectors } = data;
+  const queryVector = new Float32Array(query);
+  
+  const similarities = vectors.map(vector => {
+    const v = new Float32Array(vector);
+    return cosineSimilarityJS(queryVector, v);
+  });
+  
+  return {
+    ...data,
+    similarities,
+    processed: true,
+    processing_time: Date.now() - startTime,
+    acceleration: 'javascript'
+  };
+}
+
+/**
+ * JavaScript cosine similarity implementation
+ */
+function cosineSimilarityJS(a, b) {
+  if (a.length !== b.length) return 0;
+  
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
+  
+  for (let i = 0; i < a.length; i++) {
+    dotProduct += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+  
+  if (normA === 0 || normB === 0) return 0;
+  
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
+/**
+ * Process batch vector normalization using WASM
+ */
+async function processBatchNormalize(data, startTime) {
+  try {
+    if (!wasmReady || !wasmModule) {
+      // Fallback to JavaScript processing
+      return {
+        ...data,
+        vectors: data.vectors.map(v => processFloatArrayJS(new Float32Array(v))),
+        processed: true,
+        processing_time: Date.now() - startTime,
+        acceleration: 'javascript'
+      };
+    }
+    
+    const { vectors } = data;
+    const numVectors = vectors.length;
+    const vectorLength = vectors[0].length;
+    
+    // Allocate WASM memory
+    const wasmMemory = wasmModule.instance.exports.memory;
+    const floatView = new Float32Array(wasmMemory.buffer);
+    
+    const vectorsPtr = wasmModule.instance.exports.__new(numVectors * vectorLength * 4, 0);
+    
+    // Copy vectors to WASM
+    const vectorsOffset = vectorsPtr >>> 2;
+    for (let v = 0; v < numVectors; v++) {
+      const vector = new Float32Array(vectors[v]);
+      for (let i = 0; i < vectorLength; i++) {
+        floatView[vectorsOffset + v * vectorLength + i] = vector[i];
+      }
+    }
+    
+    // Call WASM batch normalization
+    const normalizedPtr = wasmModule.instance.exports.batchNormalizeVectors(
+      vectorsPtr, numVectors, vectorLength
+    );
+    
+    // Copy results back
+    const normalizedVectors = [];
+    const normalizedOffset = normalizedPtr >>> 2;
+    for (let v = 0; v < numVectors; v++) {
+      const vector = [];
+      for (let i = 0; i < vectorLength; i++) {
+        vector.push(floatView[normalizedOffset + v * vectorLength + i]);
+      }
+      normalizedVectors.push(vector);
+    }
+    
+    // Clean up WASM memory
+    wasmModule.instance.exports.__unpin(vectorsPtr);
+    wasmModule.instance.exports.__unpin(normalizedPtr);
+    
+    return {
+      ...data,
+      vectors: normalizedVectors,
+      processed: true,
+      processing_time: Date.now() - startTime,
+      acceleration: 'wasm'
+    };
+    
+  } catch (error) {
+    console.warn('WASM batch normalization failed, using JS fallback:', error);
+    return {
+      ...data,
+      vectors: data.vectors.map(v => processFloatArrayJS(new Float32Array(v))),
+      processed: true,
+      processing_time: Date.now() - startTime,
+      acceleration: 'javascript'
+    };
+  }
 }
 
 console.log('🚀 SIMD Tensor Service Worker loaded');
