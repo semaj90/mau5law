@@ -1031,190 +1031,203 @@ export type NewDocumentChunk = typeof documentChunks.$inferInsert;
 
 // === UNIFIED SEARCH SERVICE TABLES ===
 
-export const documents = pgTable("documents", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  title: varchar("title", { length: 500 }).notNull(),
-  content: text("content").notNull(),
-  file_path: text("file_path"),
-  mime_type: varchar("mime_type", { length: 100 }),
-  file_size: integer("file_size"),
-  metadata: jsonb("metadata").$type<{
-    source: 'upload' | 'manual' | 'api' | 'evidence';
-    userId?: string;
-    tags: string[];
-    category: 'contract' | 'evidence' | 'brief' | 'citation' | 'other';
-    confidenceLevel: number;
-    extractedEntities?: string[];
-    keyTerms?: string[];
-    summary?: string;
-    neo4jNodeId?: string;
-    shaderData?: any;
-    priority?: string;
-    processing?: {
-      status: 'pending' | 'processing' | 'completed' | 'failed';
-      chunksGenerated?: number;
-      embeddingsCreated?: number;
-      error?: string;
-      processingTime?: number;
-    };
-  }>().notNull().default({}),
-  
+export const documents = pgTable('documents', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: varchar('title', { length: 500 }).notNull(),
+  content: text('content').notNull(),
+  file_path: text('file_path'),
+  mime_type: varchar('mime_type', { length: 100 }),
+  file_size: integer('file_size'),
+  metadata: jsonb('metadata')
+    .$type<{
+      source: 'upload' | 'manual' | 'api' | 'evidence';
+      userId?: string;
+      tags: string[];
+      category: 'contract' | 'evidence' | 'brief' | 'citation' | 'other';
+      confidenceLevel: number;
+      extractedEntities?: string[];
+      keyTerms?: string[];
+      summary?: string;
+      neo4jNodeId?: string;
+      shaderData?: any;
+      priority?: string;
+      processing?: {
+        status: 'pending' | 'processing' | 'completed' | 'failed';
+        chunksGenerated?: number;
+        embeddingsCreated?: number;
+        error?: string;
+        processingTime?: number;
+      };
+    }>()
+    .notNull()
+    .default({}),
+
   // Search optimization fields
-  fulltext_search: text("fulltext_search"), // Generated column for full-text search
-  keywords: jsonb("keywords").$type<string[]>().default([]),
-  semantic_hash: text("semantic_hash"), // Content hash for deduplication
-  
+  fulltext_search: text('fulltext_search'), // Generated column for full-text search
+  keywords: jsonb('keywords').$type<string[]>().default([]),
+  semantic_hash: text('semantic_hash'), // Content hash for deduplication
+
   // Caching and access tracking
-  cached_data: jsonb("cached_data").$type<{
-    search_results?: any[];
-    related_documents?: string[];
-    recommendations?: any[];
-    last_accessed: string;
-    access_count: number;
-  }>().default({}),
-  
+  cached_data: jsonb('cached_data')
+    .$type<{
+      search_results?: any[];
+      related_documents?: string[];
+      recommendations?: any[];
+      last_accessed: string;
+      access_count: number;
+    }>()
+    .default({}),
+
   // Status and lifecycle
-  status: varchar("status", { length: 20 }).default("active").notNull(),
-  is_public: boolean("is_public").default(false),
-  
-  created_at: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updated_at: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  status: varchar('status', { length: 20 }).default('active').notNull(),
+  is_public: boolean('is_public').default(false),
+
+  created_at: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
 });
 
 // Enhanced document chunks with unified search support
-export const document_chunks = pgTable("document_chunks", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  document_id: uuid("document_id").references(() => documents.id, { onDelete: "cascade" }),
-  chunk_index: integer("chunk_index").notNull(),
-  chunk_text: text("chunk_text").notNull(),
-  
+export const document_chunks = pgTable('document_chunks', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  document_id: uuid('document_id').references(() => documents.id, { onDelete: 'cascade' }),
+  chunk_index: integer('chunk_index').notNull(),
+  chunk_text: text('chunk_text').notNull(),
+
   // Vector embedding (aligned to 768 for flexibility, but configurable via metadata)
-  embedding: vector("embedding", { dimensions: 768 }),
-  
+  embedding: vector('embedding', { dimensions: 768 }),
+
   // Enhanced metadata for unified search
-  metadata: jsonb("metadata").$type<{
-    source?: string;
-    jobId?: string;
-    documentId?: string;
-    priority?: string;
-    workerId?: string;
-    processingTime?: number;
-    timestamp?: string;
-    chunkType?: 'content' | 'summary' | 'header' | 'footer';
-    parentChunk?: string;
-    confidence?: number;
-    language?: string;
-    extractedEntities?: string[];
-    keyTerms?: string[];
-  }>().default({}),
-  
-  created_at: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  metadata: jsonb('metadata')
+    .$type<{
+      source?: string;
+      jobId?: string;
+      documentId?: string;
+      priority?: string;
+      workerId?: string;
+      processingTime?: number;
+      timestamp?: string;
+      chunkType?: 'content' | 'summary' | 'header' | 'footer';
+      parentChunk?: string;
+      confidence?: number;
+      language?: string;
+      extractedEntities?: string[];
+      keyTerms?: string[];
+    }>()
+    .default({}),
+
+  created_at: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
 });
 
 // Search index optimization table
-export const search_indexes = pgTable("search_indexes", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  index_name: varchar("index_name", { length: 100 }).notNull().unique(),
-  index_type: varchar("index_type", { length: 50 }).notNull(), // 'fulltext', 'vector', 'composite', 'facet'
-  target_table: varchar("target_table", { length: 50 }).notNull(),
-  target_columns: jsonb("target_columns").$type<string[]>().notNull(),
-  index_config: jsonb("index_config").default({}).notNull(),
-  performance_stats: jsonb("performance_stats").$type<{
-    avgQueryTime: number;
-    totalQueries: number;
-    lastOptimized: string;
-    hitRate: number;
-  }>().default({}),
-  is_active: boolean("is_active").default(true),
-  created_at: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updated_at: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+export const search_indexes = pgTable('search_indexes', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  index_name: varchar('index_name', { length: 100 }).notNull().unique(),
+  index_type: varchar('index_type', { length: 50 }).notNull(), // 'fulltext', 'vector', 'composite', 'facet'
+  target_table: varchar('target_table', { length: 50 }).notNull(),
+  target_columns: jsonb('target_columns').$type<string[]>().notNull(),
+  index_config: jsonb('index_config').default({}).notNull(),
+  performance_stats: jsonb('performance_stats')
+    .$type<{
+      avgQueryTime: number;
+      totalQueries: number;
+      lastOptimized: string;
+      hitRate: number;
+    }>()
+    .default({}),
+  is_active: boolean('is_active').default(true),
+  created_at: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
 });
 
 // Search query cache for performance
-export const search_cache = pgTable("search_cache", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  cache_key: text("cache_key").notNull().unique(),
-  query_hash: text("query_hash").notNull(),
-  query_data: jsonb("query_data").notNull(),
-  result_data: jsonb("result_data").notNull(),
-  result_count: integer("result_count").notNull(),
-  performance_metrics: jsonb("performance_metrics").$type<{
-    executionTime: number;
-    memoryUsed: number;
-    cpuUsage: number;
-    cacheHit: boolean;
-  }>().default({}),
-  expires_at: timestamp("expires_at", { mode: "date" }).notNull(),
-  hit_count: integer("hit_count").default(0),
-  created_at: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  last_accessed: timestamp("last_accessed", { mode: "date" }).defaultNow().notNull(),
+export const search_cache = pgTable('search_cache', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  cache_key: text('cache_key').notNull().unique(),
+  query_hash: text('query_hash').notNull(),
+  query_data: jsonb('query_data').notNull(),
+  result_data: jsonb('result_data').notNull(),
+  result_count: integer('result_count').notNull(),
+  performance_metrics: jsonb('performance_metrics')
+    .$type<{
+      executionTime: number;
+      memoryUsed: number;
+      cpuUsage: number;
+      cacheHit: boolean;
+    }>()
+    .default({}),
+  expires_at: timestamp('expires_at', { mode: 'date' }).notNull(),
+  hit_count: integer('hit_count').default(0),
+  created_at: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  last_accessed: timestamp('last_accessed', { mode: 'date' }).defaultNow().notNull(),
 });
 
 // Document processing jobs for async operations
-export const processing_jobs = pgTable("processing_jobs", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  job_id: varchar("job_id", { length: 100 }).notNull().unique(),
-  document_id: uuid("document_id").references(() => documents.id, { onDelete: "cascade" }),
-  job_type: varchar("job_type", { length: 50 }).notNull(), // 'embedding', 'chunking', 'indexing', 'neo4j_sync'
-  status: varchar("status", { length: 20 }).default("pending").notNull(),
-  priority: varchar("priority", { length: 20 }).default("normal").notNull(),
-  
-  job_data: jsonb("job_data").notNull(),
-  result_data: jsonb("result_data").default({}),
-  
-  progress: integer("progress").default(0), // 0-100
-  error_message: text("error_message"),
-  retry_count: integer("retry_count").default(0),
-  max_retries: integer("max_retries").default(3),
-  
-  worker_id: varchar("worker_id", { length: 100 }),
-  started_at: timestamp("started_at", { mode: "date" }),
-  completed_at: timestamp("completed_at", { mode: "date" }),
-  
-  created_at: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updated_at: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+export const processing_jobs = pgTable('processing_jobs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  job_id: varchar('job_id', { length: 100 }).notNull().unique(),
+  document_id: uuid('document_id').references(() => documents.id, { onDelete: 'cascade' }),
+  job_type: varchar('job_type', { length: 50 }).notNull(), // 'embedding', 'chunking', 'indexing', 'neo4j_sync'
+  status: varchar('status', { length: 20 }).default('pending').notNull(),
+  priority: varchar('priority', { length: 20 }).default('normal').notNull(),
+
+  job_data: jsonb('job_data').notNull(),
+  result_data: jsonb('result_data').default({}),
+
+  progress: integer('progress').default(0), // 0-100
+  error_message: text('error_message'),
+  retry_count: integer('retry_count').default(0),
+  max_retries: integer('max_retries').default(3),
+
+  worker_id: varchar('worker_id', { length: 100 }),
+  started_at: timestamp('started_at', { mode: 'date' }),
+  completed_at: timestamp('completed_at', { mode: 'date' }),
+
+  created_at: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
 });
 
 // Neo4j synchronization table for graph relationships
-export const neo4j_sync = pgTable("neo4j_sync", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  entity_id: uuid("entity_id").notNull(),
-  entity_type: varchar("entity_type", { length: 50 }).notNull(), // 'document', 'case', 'evidence', 'user'
-  neo4j_node_id: varchar("neo4j_node_id", { length: 100 }),
-  neo4j_labels: jsonb("neo4j_labels").$type<string[]>().default([]),
-  sync_status: varchar("sync_status", { length: 20 }).default("pending").notNull(),
-  relationship_data: jsonb("relationship_data").default({}),
-  last_sync_at: timestamp("last_sync_at", { mode: "date" }),
-  sync_error: text("sync_error"),
-  created_at: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updated_at: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+export const neo4j_sync = pgTable('neo4j_sync', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  entity_id: uuid('entity_id').notNull(),
+  entity_type: varchar('entity_type', { length: 50 }).notNull(), // 'document', 'case', 'evidence', 'user'
+  neo4j_node_id: varchar('neo4j_node_id', { length: 100 }),
+  neo4j_labels: jsonb('neo4j_labels').$type<string[]>().default([]),
+  sync_status: varchar('sync_status', { length: 20 }).default('pending').notNull(),
+  relationship_data: jsonb('relationship_data').default({}),
+  last_sync_at: timestamp('last_sync_at', { mode: 'date' }),
+  sync_error: text('sync_error'),
+  created_at: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
 });
 
 // Performance monitoring and analytics
-export const query_analytics = pgTable("query_analytics", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  user_id: uuid("user_id").references(() => users.id),
-  session_id: varchar("session_id", { length: 100 }),
-  query_type: varchar("query_type", { length: 50 }).notNull(),
-  query_text: text("query_text"),
-  query_vector: vector("query_vector", { dimensions: 768 }),
-  
-  results_returned: integer("results_returned"),
-  response_time_ms: integer("response_time_ms"),
-  cache_hit: boolean("cache_hit").default(false),
-  
-  filters_applied: jsonb("filters_applied").default({}),
-  search_method: varchar("search_method", { length: 50 }), // 'vector', 'fulltext', 'hybrid', 'faceted'
-  
-  user_interaction: jsonb("user_interaction").$type<{
-    clickedResults?: number[];
-    timeOnResults?: number;
-    refinedQuery?: boolean;
-    exportedResults?: boolean;
-  }>().default({}),
-  
-  performance_metrics: jsonb("performance_metrics").default({}),
-  created_at: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+export const query_analytics = pgTable('query_analytics', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').references(() => users.id),
+  session_id: varchar('session_id', { length: 100 }),
+  query_type: varchar('query_type', { length: 50 }).notNull(),
+  query_text: text('query_text'),
+  query_vector: vector('query_vector', { dimensions: 768 }),
+
+  results_returned: integer('results_returned'),
+  response_time_ms: integer('response_time_ms'),
+  cache_hit: boolean('cache_hit').default(false),
+
+  filters_applied: jsonb('filters_applied').default({}),
+  search_method: varchar('search_method', { length: 50 }), // 'vector', 'fulltext', 'hybrid', 'faceted'
+
+  user_interaction: jsonb('user_interaction')
+    .$type<{
+      clickedResults?: number[];
+      timeOnResults?: number;
+      refinedQuery?: boolean;
+      exportedResults?: boolean;
+    }>()
+    .default({}),
+
+  performance_metrics: jsonb('performance_metrics').default({}),
+  created_at: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
 });
 
 // === TYPE EXPORTS FOR UNIFIED SEARCH ===
@@ -1264,3 +1277,46 @@ export const query_analyticsRelations = relations(query_analytics, ({ one }) => 
     references: [users.id],
   }),
 }));
+
+// === NEURAL TOPOLOGY TABLES FOR SCAFFOLD SYSTEM ===
+
+// Vector embeddings with pgvector support
+export const vectorEmbeddings = pgTable('vector_embeddings', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  documentId: uuid('document_id').references(() => legalDocuments.id, { onDelete: 'cascade' }),
+  embedding: vector('embedding', { dimensions: 1536 }), // Using pgvector
+  model: varchar('model', { length: 100 }).default('ada_002').notNull(),
+  dimensions: integer('dimensions').default(1536).notNull(),
+  metadata: jsonb('metadata').default({}).notNull(),
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+});
+
+// QLoRA training jobs for neural topology
+export const qloraTrainingJobs = pgTable('qlora_training_jobs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  documentId: uuid('document_id').references(() => legalDocuments.id),
+  configJson: jsonb('config_json').notNull(), // QLoRA configuration
+  status: varchar('status', { length: 50 }).default('pending').notNull(), // pending, training, completed, failed
+  topologyStateJson: jsonb('topology_state_json'), // Neural topology state
+  accuracy: decimal('accuracy', { precision: 5, scale: 4 }),
+  trainingTime: integer('training_time'), // milliseconds
+  metadata: jsonb('metadata').default({}).notNull(),
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  completedAt: timestamp('completed_at', { mode: 'date' }),
+});
+
+// Predictive asset cache for HMM+SOM system
+export const predictiveAssetCache = pgTable('predictive_asset_cache', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id),
+  assetId: varchar('asset_id', { length: 255 }).notNull(),
+  predictionData: jsonb('prediction_data').notNull(), // AssetPrediction object
+  confidence: decimal('confidence', { precision: 5, scale: 4 }).notNull(),
+  hitCount: integer('hit_count').default(0).notNull(),
+  lastHit: timestamp('last_hit', { mode: 'date' }),
+  ttl: timestamp('ttl', { mode: 'date' }).notNull(), // Time to live
+  metadata: jsonb('metadata').default({}).notNull(),
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+});

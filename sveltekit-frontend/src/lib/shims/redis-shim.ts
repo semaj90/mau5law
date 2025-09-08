@@ -1,7 +1,7 @@
 // Minimal compatibility shim: expose a createClient function that returns an ioredis client
 // This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.
 export async function createClient(opts?: any) {
-  const url = typeof opts === 'string' ? opts : opts?.url || process.env.REDIS_URL || 'redis://127.0.0.1:4005';
+  const url = typeof opts === 'string' ? opts : opts?.url || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
   const { default: IORedis } = await import('ioredis');
   const client = new IORedis(url);
 

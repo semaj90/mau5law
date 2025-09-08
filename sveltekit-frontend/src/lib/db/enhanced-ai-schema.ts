@@ -17,10 +17,10 @@ export const aiResponses = pgTable('ai_responses', {
   thinkingStructured: jsonb('thinking_structured').default(sql`'{}'::jsonb`), // Parsed reasoning steps
   reasoningSteps: jsonb('reasoning_steps').default(sql`'[]'::jsonb`), // Step-by-step array
   
-  // Embeddings (using nomic-embed-text via Ollama)
-  queryEmbedding: vector('query_embedding', { dimensions: 768 }), // pgvector for query
-  responseEmbedding: vector('response_embedding', { dimensions: 768 }), // pgvector for response
-  contextEmbedding: vector('context_embedding', { dimensions: 768 }), // Combined context
+  // Embeddings (using nomic-embed-text via Ollama - optimized to 384D for performance)
+  queryEmbedding: vector('query_embedding', { dimensions: 384 }), // pgvector for query
+  responseEmbedding: vector('response_embedding', { dimensions: 384 }), // pgvector for response
+  contextEmbedding: vector('context_embedding', { dimensions: 384 }), // Combined context
   
   // Model and confidence
   model: text('model').notNull().default('gemma3-legal:latest'),

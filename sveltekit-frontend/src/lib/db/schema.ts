@@ -17,13 +17,13 @@ export const users = pgTable("users", {
   updated_at: timestamp("updated_at").defaultNow().notNull()
 });
 
-// Documents table with proper pgvector support (1536 dimensions for OpenAI)
+// Documents table with proper pgvector support (384 dimensions for nomic-embed-text)
 export const documents = pgTable("documents", {
   id: text("id").primaryKey(), // UUID as text for flexibility
   filename: text("filename").notNull(),
   content: text("content").notNull(),
   summary: text("summary"),
-  embedding: vector("embedding", { dimensions: 1536 }), // OpenAI embeddings
+  embedding: vector("embedding", { dimensions: 384 }), // nomic-embed-text embeddings (optimized)
   user_id: integer("user_id").references(() => users.id).notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),

@@ -4,8 +4,13 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { syncOrchestrator, databaseSync, vectorSearch, mockDataGenerators } from '$lib/server/sync/mock-api-sync.js';
+import type { RequestHandler } from '@sveltejs/kit';
+import {
+  syncOrchestrator,
+  databaseSync,
+  vectorSearch,
+  mockDataGenerators,
+} from '$lib/server/sync/mock-api-sync-simple';
 
 // GET /api/sync - Health check and status
 export const GET: RequestHandler = async ({ url }) => {

@@ -1,0 +1,125 @@
+# Neural Topology Legal AI Platform - QUIC + gRPC Caddy Configuration
+{
+    admin localhost:2021
+    # Enable experimental HTTP/3 QUIC transport for neural topology system
+    servers {
+        protocols h1 h2 h3
+    }
+}
+
+# Main neural topology platform endpoint (HTTPS + QUIC/HTTP3)
+localhost:443, neuraltopology.local:443 {
+    # Neural Topology Sync APIs (SvelteKit on port 5175)
+    handle /api/sync/* {
+        reverse_proxy localhost:5173 {
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+            header_up X-Neural-Topology "enabled"
+        }
+    }
+
+    # Frontend and API routes (SvelteKit)
+    handle /api/* {
+        reverse_proxy localhost:5173 {
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+        }
+    }
+
+    # gRPC endpoints for GPU inference
+    handle /grpc/* {
+        reverse_proxy localhost:8080 {
+            transport http {
+                versions h2c
+            }
+        }
+    }
+
+    # File uploads to MinIO
+    handle /files/* {
+        reverse_proxy localhost:9000
+    }
+
+    # Ollama AI inference (GPU-accelerated)
+    handle /ollama/* {
+        reverse_proxy localhost:11434
+    }
+
+    # GPU metrics and monitoring
+    handle /gpu/* {
+        reverse_proxy localhost:8080
+    }
+
+    # Static frontend files (Neural Topology SvelteKit on 5175)
+    handle {
+        reverse_proxy localhost:5173 {
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+            header_up X-Neural-Topology-Frontend "active"
+            # Enable WebSocket support for HMR
+            header_up Connection {>Connection}
+            header_up Upgrade {>Upgrade}
+        }
+    }
+
+    # Security headers for neural topology legal data protection
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        X-Legal-AI-Version "v1.1.0"
+        X-Neural-Topology-Version "v1.0.0"
+        X-GPU-Acceleration "RTX-3060-Ti"
+        X-QUIC-Enabled "true"
+        X-HTTP3-Support "active"
+        X-Vector-Embeddings "pgvector-1536"
+        Alt-Svc "h3=\":443\"; ma=86400"
+    }
+}
+
+# Neural Topology Development proxy for testing
+localhost:8443 {
+    # Route neural topology APIs directly
+    handle /api/sync/* {
+        reverse_proxy localhost:5175
+    }
+
+    # Fallback to GPU inference
+    handle /* {
+        reverse_proxy localhost:8080
+    }
+
+    header X-Development-Mode "true"
+    header X-Neural-Topology-Dev "enabled"
+}
+
+# Neural Topology Health monitoring endpoint
+localhost:2020 {
+    handle /health {
+        respond "Neural Topology Legal AI Platform - Healthy" 200
+    }
+
+    handle /health/neural {
+        reverse_proxy localhost:5175/api/sync?action=health
+    }
+
+    handle /health/qlora {
+        reverse_proxy localhost:5175/api/sync/qlora-samples?action=health
+    }
+
+    handle /health/assets {
+        reverse_proxy localhost:5175/api/sync/neural-assets?action=health
+    }
+
+    handle /health/detailed {
+        reverse_proxy localhost:5175/api/health
+    }
+}
+
+# QUIC connection testing endpoint
+localhost:3443 {
+    handle /quic-test {
+        respond "QUIC/HTTP3 Working - Legal AI Platform" 200
+    }
+    header Alt-Svc "h3=\":3443\"; ma=86400"
+}

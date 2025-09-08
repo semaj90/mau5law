@@ -58,7 +58,7 @@ interface SimilarityResult {
 }
 
 // Generate a sample embedding (replace with actual AI model in production)
-export function generateSampleEmbedding(dimensions: number = 768): number[] {
+export function generateSampleEmbedding(dimensions: number = 384): number[] {
   return Array.from({ length: dimensions }, () => Math.random() * 2 - 1);
 }
 

@@ -3,8 +3,14 @@
  * Integrates neural topology scaffolds with SvelteKit 2, PostgreSQL, pgvector, and Drizzle ORM
  */
 
-import { db, sql } from '$lib/server/db/drizzle.js';
-import { users, legalDocuments, vectorEmbeddings, qloraTrainingJobs, predictiveAssetCache } from '$lib/server/db/schema-postgres.js';
+import { db, sql } from '$lib/server/db/drizzle';
+import {
+  users,
+  legalDocuments,
+  vectorEmbeddings,
+  qloraTrainingJobs,
+  predictiveAssetCache,
+} from '$lib/server/db/schema-postgres';
 import { eq, desc, and, or, inArray } from 'drizzle-orm';
 import type {
   QLoRATopologyState,

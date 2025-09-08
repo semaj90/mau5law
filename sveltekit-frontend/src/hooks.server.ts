@@ -1,6 +1,15 @@
 // src/hooks.server.ts - SvelteKit hooks for Lucia v3 authentication
 import { lucia } from "$lib/server/auth";
+import { redisService } from "$lib/server/redis-service";
 import type { Handle } from "@sveltejs/kit";
+
+// Initialize Redis service on server startup
+console.log('🚀 [hooks.server.ts] Initializing Redis service...');
+redisService.initialize().catch((error) => {
+  console.error('❌ [hooks.server.ts] Redis initialization failed:', error);
+});
+
+console.log('📋 [hooks.server.ts] Starting request handling...');
 
 export const handle: Handle = async ({ event, resolve }) => {
 	// Extract session ID from cookies

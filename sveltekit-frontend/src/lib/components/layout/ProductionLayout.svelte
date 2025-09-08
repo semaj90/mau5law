@@ -6,10 +6,11 @@
   import { 
     Home, Users, Search, Database, Eye, Folder, BarChart3, 
     Terminal, Settings, Bell, Menu, X, Zap,
-    ChevronDown, LogOut, User, Calendar, Activity
+    ChevronDown, LogOut, User, Calendar, Activity, MessageSquare
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import { authStore } from '$lib/stores/auth-store.svelte.js';
+  import ClientSideAIChat from '$lib/components/ai/ClientSideAIChat.svelte';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -95,6 +96,7 @@
   let isSidebarOpen = $state(true);
   let isMobileMenuOpen = $state(false);
   let showNotifications = $state(false);
+  let showClientChat = $state(false);
   let currentTime = $state(new Date());
   let systemStatus = $state({
     ai: true,
@@ -399,6 +401,18 @@
 
         <!-- Header Right -->
         <div class="flex items-center gap-3">
+          <!-- Client-Side AI Chat Toggle -->
+          <div class="relative">
+            <button 
+              class="p-2 text-gray-400 hover:text-green-400 transition-colors relative group"
+              onclick={() => showClientChat = !showClientChat}
+              title="Client-Side AI Chat (Gemma 270MB)"
+            >
+              <MessageSquare class="w-5 h-5" />
+              <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full group-hover:animate-pulse"></div>
+            </button>
+          </div>
+
           <!-- Notifications -->
           <div class="relative">
             <button 
@@ -462,12 +476,19 @@
     </header>
 
     <!-- Page Content -->
-    <main class={cn(
+    <main id="app" class={cn(
       "min-h-[calc(100vh-4rem)]",
       fullWidth ? "" : "container mx-auto p-6"
     )}>
       {@render children()}
     </main>
+
+    <!-- Floating Client-Side AI Chat -->
+    {#if showClientChat}
+      <div class="fixed bottom-6 right-6 z-50 w-80 max-w-[calc(100vw-2rem)]">
+        <ClientSideAIChat collapsed={false} showStatus={true} />
+      </div>
+    {/if}
 
     <!-- Footer -->
     <footer class="border-t border-yellow-600/30 bg-yorha-bg-secondary/50 backdrop-blur-sm p-4">
