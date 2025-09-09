@@ -302,7 +302,7 @@
 			<!-- Individual Task Buttons -->
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 				{#each demoTasks as task}
-					<Button
+					<Button class="bits-btn bits-btn"
 						variant="outline"
 						disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
 						onclick={() => processTask(task)}
@@ -322,7 +322,7 @@
 				<Button
 					disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
 					onclick={processParallelTasks}
-					class="bg-yorha-primary hover:bg-yorha-primary/80"
+					class="bg-yorha-primary hover:bg-yorha-primary/80 bits-btn bits-btn"
 				>
 					{#if isProcessing}
 						<div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>

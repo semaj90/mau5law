@@ -465,7 +465,7 @@
   >
     <div
       class="space-y-4"
-      on:click|stopPropagation
+      onclick|stopPropagation
       role="document"
     >
       <div class="space-y-4">
@@ -678,3 +678,4 @@
     white-space: normal !important;
 }
 </style>
+

@@ -147,13 +147,13 @@
       {/if}
 
       {#if filterable}
-        <Button variant="outline" size="sm">
+        <Button class="bits-btn bits-btn" variant="outline" size="sm">
           <Filter class="w-4 h-4" />
         </Button>
       {/if}
 
       {#if exportable}
-        <Button variant="outline" size="sm" on:click={handleExport}>
+        <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleExport}>
           <Download class="w-4 h-4 mr-2" />
           Export
         </Button>
@@ -256,11 +256,11 @@
 
     {#if totalPages > 1}
       <div class="flex items-center gap-2">
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="outline"
           size="sm"
           disabled={currentPage === 0}
-          on:click={() => currentPage = Math.max(0, currentPage - 1)}
+          onclick={() => currentPage = Math.max(0, currentPage - 1)}
         >
           Previous
         </Button>
@@ -269,11 +269,11 @@
           Page {currentPage + 1} of {totalPages}
         </span>
 
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="outline"
           size="sm"
           disabled={currentPage >= totalPages - 1}
-          on:click={() => currentPage = Math.min(totalPages - 1, currentPage + 1)}
+          onclick={() => currentPage = Math.min(totalPages - 1, currentPage + 1)}
         >
           Next
         </Button>

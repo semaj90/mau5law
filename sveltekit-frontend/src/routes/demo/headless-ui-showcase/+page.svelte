@@ -1,8 +1,13 @@
 <script lang="ts">
   import { Dialog } from 'bits-ui';
   import { fade, fly } from 'svelte/transition';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
   // Dialog state
   let isDialogOpen: boolean = false;
@@ -83,7 +88,7 @@
           </p>
 
           <button
-            on:click={() => (isDialogOpen = true)}
+            onclick={() => (isDialogOpen = true)}
             class="nes-btn is-primary w-full"
           >
             Open Bits UI Dialog
@@ -125,13 +130,13 @@
           <div class="flex gap-2 mt-4">
             <button
               class="nes-btn is-success flex-1"
-              on:click={() => addNotification('success', `Command executed: ${inputValue || 'default'}`)}
+              onclick={() => addNotification('success', `Command executed: ${inputValue || 'default'}`)}
             >
               Execute
             </button>
             <button
               class="nes-btn is-warning flex-1"
-              on:click={simulateAsyncOperation}
+              onclick={simulateAsyncOperation}
               disabled={isLoading}
             >
               {isLoading ? 'Processing...' : 'Async Process'}
@@ -166,16 +171,16 @@
           <div class="flex flex-wrap gap-2">
             <Button
               variant="default"
-              class="nes-btn is-primary"
-              on:click={() => addNotification('success', 'Bits UI Button clicked! 🎮')}
+              class="nes-btn is-primary bits-btn bits-btn"
+              onclick={() => addNotification('success', 'Bits UI Button clicked! 🎮')}
             >
               Hybrid Button
             </Button>
 
             <Button
               variant="outline"
-              class="nes-btn"
-              on:click={() => addNotification('warning', 'Warning: Retro mode activated!')}
+              class="nes-btn bits-btn bits-btn"
+              onclick={() => addNotification('warning', 'Warning: Retro mode activated!')}
             >
               Outline + NES
             </Button>
@@ -353,7 +358,7 @@
           <div class="flex gap-2">
             <button
               class="nes-btn is-success flex-1"
-              on:click={() => {
+              onclick={() => {
                 addNotification('success', 'Dialog action confirmed! 🎯');
                 isDialogOpen = false;
               }}

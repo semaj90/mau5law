@@ -24,8 +24,15 @@ Real-time collaboration interface for multiple investigators working on evidence
 
   import { onMount } from 'svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea';
   import { Users, MessageCircle, MapPin, Send, Eye, UserCheck } from 'lucide-svelte';
 
@@ -228,9 +235,7 @@ Real-time collaboration interface for multiple investigators working on evidence
                 </div>
               </div>
             </div>
-            <Badge variant="secondary" class={getRoleColor(participant.role)}>
-              {participant.role}
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{participant.role}</span>
           </div>
         {/each}
       </CardContent>
@@ -314,7 +319,7 @@ Real-time collaboration interface for multiple investigators working on evidence
               onclick={sendMessage}
               disabled={!newMessage.trim()}
               size="sm"
-              class="self-end"
+              class="self-end bits-btn bits-btn"
             >
               <Send class="w-4 h-4" />
             </Button>
@@ -331,7 +336,7 @@ Real-time collaboration interface for multiple investigators working on evidence
             <MapPin class="w-4 h-4 mr-2" />
             Annotations ({collaborationSession.annotations.length})
           </div>
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
             onclick={() => showAnnotationInput = !showAnnotationInput}
@@ -349,10 +354,10 @@ Real-time collaboration interface for multiple investigators working on evidence
               class="mb-3"
             />
             <div class="flex space-x-2">
-              <Button onclick={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
+              <Button class="bits-btn bits-btn" onclick={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
                 Add Annotation
               </Button>
-              <Button onclick={() => showAnnotationInput = false} variant="outline" size="sm">
+              <Button class="bits-btn bits-btn" onclick={() => showAnnotationInput = false} variant="outline" size="sm">
                 Cancel
               </Button>
             </div>

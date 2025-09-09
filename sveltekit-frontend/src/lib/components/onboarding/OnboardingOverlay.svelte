@@ -3,7 +3,9 @@
 import { onMount } from 'svelte';
 
 import { browser } from "$app/environment";
-import { Button } from "$lib/components/ui/button";
+import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
 import {
   ArrowLeft,
   ArrowRight,
@@ -303,10 +305,10 @@ $: currentStepData = steps[currentStep] || null;
 
         <div class="w-4 h-4">
           {#if autoProgress}
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="ghost"
               size="sm"
-              on:on:click={() => toggleAutoProgress()}
+              on:onclick={() => toggleAutoProgress()}
               class="w-4 h-4"
               aria-label={isPlaying
                 ? "Pause auto-progress"
@@ -320,10 +322,10 @@ $: currentStepData = steps[currentStep] || null;
             </Button>
           {/if}
 
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:on:click={() => closeOnboarding()}
+            on:onclick={() => closeOnboarding()}
             aria-label="Close onboarding"
           >
             <X class="w-4 h-4" />
@@ -392,7 +394,7 @@ $: currentStepData = steps[currentStep] || null;
       <div class="w-4 h-4">
         <div class="w-4 h-4">
           {#if allowSkip}
-            <Button variant="ghost" size="sm" on:on:click={() => skipOnboarding()}>
+            <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
             </Button>
@@ -422,17 +424,17 @@ $: currentStepData = steps[currentStep] || null;
         </div>
 
         <div class="w-4 h-4">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:on:click={() => previousStep()}
+            on:onclick={() => previousStep()}
             disabled={currentStep === 0}
           >
             <ArrowLeft class="w-4 h-4" />
             Back
           </Button>
 
-          <Button on:on:click={() => nextStep()} size="sm">
+          <Button class="bits-btn bits-btn" on:onclick={() => nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="w-4 h-4" />
               Complete

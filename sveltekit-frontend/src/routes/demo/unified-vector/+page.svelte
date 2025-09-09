@@ -56,7 +56,7 @@
       
       <div class="flex space-x-4 text-sm">
         <button 
-          on:click={() => showDocumentation = !showDocumentation}
+          onclick={() => showDocumentation = !showDocumentation}
           class="border border-green-400 px-3 py-1 hover:bg-green-900 transition-colors"
         >
           {showDocumentation ? 'HIDE DOCS' : 'SHOW DOCS'}

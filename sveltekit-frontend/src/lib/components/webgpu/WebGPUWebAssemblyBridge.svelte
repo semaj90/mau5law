@@ -3,7 +3,12 @@
   import { webLlamaService } from '$lib/ai/webasm-llamacpp';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter';
   import WebGPUGemmaClient from '$lib/webgpu/webgpu-gemma-client.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
 
   // Props
@@ -221,7 +226,7 @@
       <CardTitle class="flex items-center gap-2">
         🔗 WebGPU + WebAssembly Integration Bridge
         {#if loading}
-          <Badge variant="secondary">Initializing...</Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Initializing...</span>
         {:else if initialized}
           <Badge class="bg-green-100 text-green-800">Ready</Badge>
         {:else if error}
@@ -252,7 +257,7 @@
             <h4 class="font-semibold mb-2">🎮 Capabilities</h4>
             <div class="flex flex-wrap gap-1">
               {#each capabilities as capability}
-                <Badge variant="secondary" class="text-xs">{capability}</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{capability}</span>
               {/each}
             </div>
           </div>
@@ -260,7 +265,7 @@
             <h4 class="font-semibold mb-2">⚡ Processing Modes</h4>
             <div class="flex flex-wrap gap-1">
               {#each processingModes as mode}
-                <Badge variant="outline" class="text-xs">{mode}</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{mode}</span>
               {/each}
             </div>
           </div>

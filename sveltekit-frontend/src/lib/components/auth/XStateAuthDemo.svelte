@@ -6,8 +6,12 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import { Badge } from '$lib/components/ui/badge';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
@@ -253,9 +257,9 @@ let unsubscribeHealth = $state<(() => void) | null>(null);
             </div>
 
             <Button
-              on:on:click={demonstrateLogin}
+              on:onclick={demonstrateLogin}
               disabled={isLoading || authenticated}
-              class="w-full"
+              class="w-full bits-btn bits-btn"
             >
               {#if isLoading}
                 <Loader2 class="h-4 w-4 mr-2 animate-spin" />
@@ -295,23 +299,23 @@ let unsubscribeHealth = $state<(() => void) | null>(null);
           </Alert>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button on:on:click={demonstrateAI} variant="outline">
+            <Button class="bits-btn bits-btn" on:onclick={demonstrateAI} variant="outline">
               <Brain class="h-4 w-4 mr-2" />
               Test AI Assistant
             </Button>
 
-            <Button on:on:click={demonstrateUpload} variant="outline">
+            <Button class="bits-btn bits-btn" on:onclick={demonstrateUpload} variant="outline">
               <Zap class="h-4 w-4 mr-2" />
               Demo File Upload
             </Button>
 
-            <Button on:on:click={demonstrateSessionActivity} variant="outline">
+            <Button class="bits-btn bits-btn" on:onclick={demonstrateSessionActivity} variant="outline">
               <Settings class="h-4 w-4 mr-2" />
               Record Activity
             </Button>
           </div>
 
-          <Button on:on:click={demonstrateLogout} variant="destructive" class="w-full">
+          <Button on:onclick={demonstrateLogout} variant="destructive" class="w-full bits-btn bits-btn">
             <LogOut class="h-4 w-4 mr-2" />
             Demonstrate Logout
           </Button>
@@ -360,10 +364,10 @@ let unsubscribeHealth = $state<(() => void) | null>(null);
             {/if}
 
             <div class="flex gap-2">
-              <Button on:on:click={() => demoStep = 'dashboard'} variant="outline">
+              <Button class="bits-btn bits-btn" on:onclick={() => demoStep = 'dashboard'} variant="outline">
                 Back to Dashboard
               </Button>
-              <Button on:on:click={demonstrateLogout} variant="destructive">
+              <Button class="bits-btn bits-btn" on:onclick={demonstrateLogout} variant="destructive">
                 <LogOut class="h-4 w-4 mr-2" />
                 Complete Demo
               </Button>
@@ -379,7 +383,7 @@ let unsubscribeHealth = $state<(() => void) | null>(null);
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
               <div class="font-medium">Security Level</div>
-              <Badge variant="outline">{session.securityLevel || 'standard'}</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{session.securityLevel || 'standard'}</span>
             </div>
             <div>
               <div class="font-medium">Permissions</div>

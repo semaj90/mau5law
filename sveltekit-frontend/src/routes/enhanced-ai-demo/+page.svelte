@@ -5,8 +5,10 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import Card from '$lib/components/ui/Card.svelte';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/CardContent.svelte';
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/CardTitle.svelte';
@@ -167,17 +169,17 @@
           <!-- Action Buttons -->
           <div class="flex gap-4">
             <Button
-              on:click={handleAnalyze}
+              onclick={handleAnalyze}
               disabled={!testQuery.trim() ||
                 processingStatus === 'processing' ||
                 !systemInitialized}
-              class="bg-blue-600 hover:bg-blue-700 text-white">
+              class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn">
               {processingStatus === 'processing' ? 'Analyzing...' : 'Analyze with AI'}
             </Button>
 
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="outline"
-              on:click={handleClear}
+              onclick={handleClear}
               disabled={processingStatus === 'processing'}>
               Clear
             </Button>

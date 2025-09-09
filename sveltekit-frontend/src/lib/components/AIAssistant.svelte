@@ -3,8 +3,15 @@
   import { useMachine } from '@xstate/svelte';
   // Toast notifications removed - using simple state instead
 
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea';
   import EnhancedButton from '$lib/components/ui/EnhancedButton.svelte';
 

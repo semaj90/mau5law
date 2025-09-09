@@ -1,8 +1,17 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import ProfessionalEditor from '$lib/components/editor/ProfessionalEditor.svelte';
   import AIChatInterface from '$lib/components/ai/AIChatInterface.svelte';
@@ -245,14 +254,14 @@
             </CardHeader>
             <CardContent class="space-y-4">
               <div class="button-group">
-                <Button class="yorha-btn-primary">Primary Action</Button>
-                <Button class="yorha-btn-secondary">Secondary</Button>
-                <Button disabled>Disabled</Button>
+                <Button class="yorha-btn-primary bits-btn bits-btn">Primary Action</Button>
+                <Button class="yorha-btn-secondary bits-btn bits-btn">Secondary</Button>
+                <Button class="bits-btn bits-btn" disabled>Disabled</Button>
               </div>
               <div class="button-group">
-                <Button size="sm">Small</Button>
-                <Button size="md">Medium</Button>
-                <Button size="lg">Large</Button>
+                <Button class="bits-btn bits-btn" size="sm">Small</Button>
+                <Button class="bits-btn bits-btn" size="md">Medium</Button>
+                <Button class="bits-btn bits-btn" size="lg">Large</Button>
               </div>
             </CardContent>
           </Card>

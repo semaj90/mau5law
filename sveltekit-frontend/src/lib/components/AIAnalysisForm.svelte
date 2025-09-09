@@ -114,9 +114,9 @@ let isAnalyzing = $state(false);
 
   <div class="mb-6">
     <Button
-      on:on:click={startAnalysis}
+      on:onclick={startAnalysis}
       disabled={isAnalyzing}
-      class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg disabled:opacity-50"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg disabled:opacity-50 bits-btn bits-btn"
     >
       {isAnalyzing ? 'Analyzing...' : 'Start AI Analysis'}
     </Button>

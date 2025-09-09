@@ -291,8 +291,8 @@
 		</div>
 		
 		<div class="button-row">
-			<button class="ps1-button" on:click={resetParallax}>🔄 Reset</button>
-			<button class="ps1-button" on:click={toggleAutoRotate}>
+			<button class="ps1-button" onclick={resetParallax}>🔄 Reset</button>
+			<button class="ps1-button" onclick={toggleAutoRotate}>
 				{parallaxConfig.enableAutoRotate ? '⏸️' : '▶️'} Auto Rotate
 			</button>
 		</div>

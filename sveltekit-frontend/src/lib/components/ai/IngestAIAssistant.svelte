@@ -7,13 +7,13 @@
   
   import { onMount } from 'svelte';
   import { writable, derived } from 'svelte/store';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/input/Input.svelte';
-  import Card from '$lib/components/ui/Card.svelte';
+  import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/CardContent.svelte';
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/CardTitle.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
+  // Badge replaced with span - not available in enhanced-bits
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import Alert from '$lib/components/ui/alert/Alert.svelte';
   import AlertDescription from '$lib/components/ui/alert/AlertDescription.svelte';
@@ -242,13 +242,9 @@ let batchMode = $state(false);
     </div>
     
     <div class="flex items-center space-x-2">
-      <Badge variant="outline">
-        {$isProcessing ? 'Processing...' : 'Ready'}
-      </Badge>
+      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$isProcessing ? 'Processing...' : 'Ready'}</span>
       {#if $performanceMetrics.totalRequests > 0}
-        <Badge variant="secondary">
-          {$performanceMetrics.successRate.toFixed(1)}% Success
-        </Badge>
+        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{$performanceMetrics.successRate.toFixed(1)}% Success</span>
       {/if}
     </div>
   </div>
@@ -258,7 +254,7 @@ let batchMode = $state(false);
     <Alert variant="destructive" class="mb-4">
       <AlertDescription class="flex items-center justify-between">
         <span>{error.message}</span>
-        <Button variant="ghost" size="sm" on:on:click={() => dismissError(error.id)}>
+        <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => dismissError(error.id)}>
           ✕
         </Button>
       </AlertDescription>
@@ -314,10 +310,10 @@ let batchMode = $state(false);
           <Label>Document Type</Label>
           <div class="grid grid-cols-2 gap-2">
             {#each documentTypes as type}
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant={selectedDocumentType === type.value ? 'default' : 'outline'}
                 size="sm"
-                on:on:click={() => selectedDocumentType = type.value}
+                on:onclick={() => selectedDocumentType = type.value}
                 disabled={$isProcessing}
                 class="justify-start"
               >
@@ -341,16 +337,16 @@ let batchMode = $state(false);
         
         <div class="flex space-x-2">
           <Button
-            on:on:click={ingestDocument}
+            on:onclick={ingestDocument}
             disabled={!$canIngest || $isProcessing}
-            class="flex-1"
+            class="flex-1 bits-btn bits-btn"
           >
             {$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
           </Button>
           
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:on:click={addToBatch}
+            on:onclick={addToBatch}
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
           >
             ➕ Add to Batch
@@ -385,10 +381,10 @@ let batchMode = $state(false);
                     {doc.type} • {doc.content.length} chars
                   </div>
                 </div>
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:on:click={() => removeFromBatch(doc.id)}
+                  on:onclick={() => removeFromBatch(doc.id)}
                 >
                   ✕
                 </Button>
@@ -398,15 +394,15 @@ let batchMode = $state(false);
           
           <div class="space-y-2">
             <Button
-              on:on:click={processBatch}
+              on:onclick={processBatch}
               disabled={$isProcessing}
-              class="w-full"
+              class="w-full bits-btn bits-btn"
             >
               {$processingStatus === 'batch_processing' ? 'Processing Batch...' : `🔥 Process ${$batchDocuments.length} Documents`}
             </Button>
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="outline"
-              on:on:click={() => batchDocuments.set([])}
+              on:onclick={() => batchDocuments.set([])}
               disabled={$isProcessing}
               size="sm"
               class="w-full"
@@ -438,7 +434,7 @@ let batchMode = $state(false);
                     {result.is_batch ? `Success Rate: ${result.successRate}` : `Type: ${result.type}`}
                   </div>
                 </div>
-                <Badge variant="success">✓ Completed</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">✓ Completed</span>
               </div>
               
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">

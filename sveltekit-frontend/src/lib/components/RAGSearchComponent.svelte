@@ -95,7 +95,7 @@
     fileInput.type = 'file';
     fileInput.accept = '.txt,.pdf,.doc,.docx';
     
-    fileInput.on:change= async (event) => {
+    fileInput.onchange= async (event) => {
       const file = event.target.files[0];
       if (!file) return;
       
@@ -192,14 +192,14 @@
           disabled={isSearching}
         />
         <ModernButton
-          on:on:on:click={performSearch}
+          on:on:onclick={performSearch}
           disabled={isSearching || !searchQuery.trim()}
           class="bg-green-600 hover:bg-green-700"
         >
           {isSearching ? '🔍 Searching...' : '🔍 Search'}
         </ModernButton>
         <ModernButton
-          on:on:on:click={ingestDocument}
+          on:on:onclick={ingestDocument}
           variant="outline"
           class="border-blue-500 text-blue-400"
         >

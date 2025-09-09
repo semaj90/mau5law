@@ -56,7 +56,7 @@
 	  <button
 		class="n64-panel__toggle"
 		aria-expanded={open}
-		on:click={toggle}
+		onclick={toggle}
 		aria-label={open ? 'Collapse panel' : 'Expand panel'}
 	  >
 		{open ? '▾' : '▸'}
@@ -70,3 +70,4 @@
 	</div>
   {/if}
 </div>
+

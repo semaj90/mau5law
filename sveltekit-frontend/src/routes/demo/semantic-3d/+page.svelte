@@ -7,7 +7,12 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import Enhanced3DSemanticProcessor from '$lib/components/Enhanced3DSemanticProcessor.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
 
   let pageTitle = '3D Semantic Analysis';
@@ -205,7 +210,7 @@
               <div class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="font-semibold">{opt.technique}</h3>
-                  <Badge variant="secondary" class="bg-green-100 text-green-800">{opt.benefit}</Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{opt.benefit}</span>
                 </div>
                 <p class="text-gray-600 text-sm">{opt.description}</p>
               </div>

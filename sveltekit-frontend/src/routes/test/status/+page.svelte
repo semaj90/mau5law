@@ -1,7 +1,7 @@
 <!-- Route Status Check - Verify All Routes Work -->
 <script>
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
 let routeTests = $state([
     { name: 'Test Hub', path: '/test', status: 'pending', responseTime: null },
     { name: 'CRUD Interface', path: '/test/crud', status: 'pending', responseTime: null },
@@ -89,16 +89,16 @@ let isTestingRoutes = $state(false);
   </div>
 
   <div class="flex justify-center gap-4">
-    <Button
-      on:click={runAllRouteTests}
+    <Button class="bits-btn bits-btn"
+      onclick={runAllRouteTests}
       disabled={isTestingRoutes}
       variant="default"
     >
       {isTestingRoutes ? '🔄 Testing...' : '🚀 Test All Routes'}
     </Button>
 
-    <Button
-      on:click={() => window.location.href = '/test'}
+    <Button class="bits-btn bits-btn"
+      onclick={() => window.location.href = '/test'}
       variant="outline"
     >
       ← Back to Test Hub

@@ -101,7 +101,7 @@
       {#if !isEditing}
         <button
           type="button"
-          on:click={() => generateCaseNumber()}
+          onclick={() => generateCaseNumber()}
           class="container mx-auto px-4"
         >
           Generate Case #
@@ -258,7 +258,7 @@
               {tag}
               <button
                 type="button"
-                on:click={() => removeTag(tag)}
+                onclick={() => removeTag(tag)}
                 class="container mx-auto px-4"
               >
                 ×
@@ -278,7 +278,7 @@
           />
           <button
             type="button"
-            on:click={() => addTag()}
+            onclick={() => addTag()}
             class="container mx-auto px-4"
           >
             Add Tag
@@ -314,7 +314,7 @@
       <div class="container mx-auto px-4">
         <button
           type="button"
-          on:click={() => dispatch('cancel')}
+          onclick={() => dispatch('cancel')}
           class="container mx-auto px-4"
           disabled={$submitting}
         >
@@ -364,3 +364,4 @@
     border-color: #10b981;
 }
 </style>
+

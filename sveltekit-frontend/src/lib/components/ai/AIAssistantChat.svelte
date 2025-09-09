@@ -1,9 +1,18 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button/index.js';
-  import { Input } from '$lib/components/ui/input/index.js';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea/index.js';
   import { Separator } from '$lib/components/ui/separator/index.js';
   import { Select } from '$lib/components/ui/select/index.js';
@@ -232,10 +241,10 @@
       
       <div class="flex items-center gap-2">
         {#if showSettings}
-          <Button 
+          <Button class="bits-btn bits-btn" 
             variant="ghost" 
             size="sm"
-            on:on:click={() => showSettingsDialog = true}
+            on:onclick={() => showSettingsDialog = true}
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -245,10 +254,10 @@
         {/if}
 
         {#if hasConversation}
-          <Button 
+          <Button class="bits-btn bits-btn" 
             variant="ghost" 
             size="sm"
-            on:on:click={() => showExportDialog = true}
+            on:onclick={() => showExportDialog = true}
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -283,10 +292,10 @@
               <span class="font-medium capitalize">{entry.type}</span>
               <span>{formatTime(entry.timestamp)}</span>
               {#if entry.metadata?.model}
-                <Badge variant="outline" class="text-xs">{entry.metadata.model}</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{entry.metadata.model}</span>
               {/if}
               {#if entry.metadata?.context7Used}
-                <Badge variant="secondary" class="text-xs">Context7</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Context7</span>
               {/if}
             </div>
             <div class="p-3 rounded-lg border {getRoleColor(entry.type)}">
@@ -318,8 +327,8 @@
           <Button 
             variant="outline" 
             size="sm" 
-            class="mt-2"
-            on:on:click={retryLast}
+            class="mt-2 bits-btn bits-btn"
+            on:onclick={retryLast}
           >
             Retry
           </Button>
@@ -362,9 +371,7 @@
             Use Context7 Enhancement
           </label>
           {#if context7Analysis() && useContext7}
-            <Badge variant="secondary" class="text-xs">
-              Confidence: {Math.round((context7Analysis()?.confidence || 0) * 100)}%
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Confidence: {Math.round((context7Analysis()?.confidence || 0) * 100)}%</span>
           {/if}
         </div>
       {/if}
@@ -381,9 +388,9 @@
         
         <div class="flex flex-col gap-1">
           <Button 
-            on:on:click={sendMessage}
+            on:onclick={sendMessage}
             disabled={!canSend}
-            class="px-4"
+            class="px-4 bits-btn bits-btn"
           >
             {#if isProcessing()}
               <div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
@@ -395,10 +402,10 @@
           </Button>
           
           {#if isProcessing()}
-            <Button 
+            <Button class="bits-btn bits-btn" 
               variant="outline"
               size="sm"
-              on:on:click={stopGeneration}
+              on:onclick={stopGeneration}
             >
               <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect x="6" y="6" width="12" height="12" />
@@ -477,10 +484,10 @@
               <span class="text-sm">Embeddings</span>
             </div>
           </div>
-          <Button 
+          <Button class="bits-btn bits-btn" 
             variant="outline" 
             size="sm"
-            on:on:click={() => aiAssistantManager.checkClusterHealth()}
+            on:onclick={() => aiAssistantManager.checkClusterHealth()}
           >
             Refresh Health
           </Button>
@@ -488,14 +495,14 @@
       </div>
 
       <div class="flex justify-between gap-2">
-        <Button 
+        <Button class="bits-btn bits-btn" 
           variant="destructive"
-          on:on:click={clearConversation}
+          on:onclick={clearConversation}
           disabled={!hasConversation}
         >
           Clear Chat
         </Button>
-        <Button on:on:click={() => showSettingsDialog = false}>
+        <Button class="bits-btn bits-btn" on:onclick={() => showSettingsDialog = false}>
           Close
         </Button>
       </div>
@@ -529,13 +536,13 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button 
+        <Button class="bits-btn bits-btn" 
           variant="outline"
-          on:on:click={() => showExportDialog = false}
+          on:onclick={() => showExportDialog = false}
         >
           Cancel
         </Button>
-        <Button on:on:click={() => {
+        <Button class="bits-btn bits-btn" on:onclick={() => {
           exportConversation();
           showExportDialog = false;
         }}>

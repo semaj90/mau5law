@@ -12,9 +12,16 @@
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
 
   // UI Components
-  import { Button } from '$lib/components/ui/button/index.js';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs/index.js';
 
   // Icons
@@ -108,9 +115,7 @@
       <div class="flex items-center justify-center gap-2 bg-green-50 border border-green-200 rounded-lg p-3">
         <Wifi class="w-5 h-5 text-green-500" />
         <span class="text-green-700 font-medium">Real-time connection established</span>
-        <Badge variant="secondary" class="bg-green-100 text-green-800">
-          Enhanced RAG Active
-        </Badge>
+        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Enhanced RAG Active</span>
       </div>
     {:else if $state.connectionStatus === 'connecting'}
       <div class="flex items-center justify-center gap-2 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
@@ -121,9 +126,7 @@
       <div class="flex items-center justify-center gap-2 bg-blue-50 border border-blue-200 rounded-lg p-3">
         <Database class="w-5 h-5 text-blue-500" />
         <span class="text-blue-700 font-medium">Using HTTP fallback mode</span>
-        <Badge variant="secondary" class="bg-blue-100 text-blue-800">
-          Standard Search
-        </Badge>
+        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Standard Search</span>
       </div>
     {/if}
   </div>
@@ -254,8 +257,8 @@
               <Button
                 variant="outline"
                 size="sm"
-                class="w-full justify-start text-left h-auto p-2"
-                on:click={() => testSearch(query)}
+                class="w-full justify-start text-left h-auto p-2 bits-btn bits-btn"
+                onclick={() => testSearch(query)}
               >
                 <div class="text-xs truncate">{query}</div>
               </Button>
@@ -283,9 +286,7 @@
 
             <div class="flex justify-between">
               <span>Search Status:</span>
-              <Badge variant="outline">
-                {$searchStatus}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$searchStatus}</span>
             </div>
 
             <div class="flex justify-between">
@@ -353,23 +354,17 @@
           <div class="space-y-2 text-xs">
             <div class="flex justify-between items-center">
               <span>Enhanced RAG (8094)</span>
-              <Badge variant="outline" class="text-green-600">
-                Active
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Active</span>
             </div>
 
             <div class="flex justify-between items-center">
               <span>Upload Service (8093)</span>
-              <Badge variant="outline" class="text-green-600">
-                Active
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Active</span>
             </div>
 
             <div class="flex justify-between items-center">
               <span>WebSocket Stream</span>
-              <Badge variant="outline" class="{$state.connectionStatus === 'connected' ? 'text-green-600' : 'text-gray-500'}">
-                {$state.connectionStatus === 'connected' ? 'Connected' : 'Pending'}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$state.connectionStatus === 'connected' ? 'Connected' : 'Pending'}</span>
             </div>
           </div>
         </CardContent>

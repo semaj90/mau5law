@@ -4,9 +4,18 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
 -->
 <script lang="ts">
   import type { Props } from "$lib/types/global";
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Badge } from '$lib/components/ui/badge';
@@ -306,7 +315,7 @@ let response = $state<Response;
           class="hidden"
           id="file-input"
         />
-        <Button variant="outline" on:on:click={() => document.getElementById('file-input')?.click()}>
+        <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => document.getElementById('file-input')?.click()}>
           Select Files
         </Button>
       {:else}
@@ -332,10 +341,10 @@ let response = $state<Response;
                     AI Analysis
                   </Badge>
                 {/if}
-                <Button 
+                <Button class="bits-btn bits-btn" 
                   variant="ghost" 
                   size="sm"
-                  on:on:click={() => removeFile(index)}
+                  on:onclick={() => removeFile(index)}
                 >
                   <X class="w-4 h-4" />
                 </Button>
@@ -352,14 +361,14 @@ let response = $state<Response;
               class="hidden"
               id="add-more-files"
             />
-            <Button 
+            <Button class="bits-btn bits-btn" 
               variant="outline" 
-              on:on:click={() => document.getElementById('add-more-files')?.click()}
+              on:onclick={() => document.getElementById('add-more-files')?.click()}
               disabled={selectedFiles.length >= maxFiles}
             >
               Add More Files
             </Button>
-            <Button on:on:click={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
+            <Button class="bits-btn bits-btn" on:onclick={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
               {#if uploading}
                 Processing...
               {:else}
@@ -416,13 +425,9 @@ let response = $state<Response;
               </div>
               
               <div class="flex flex-col items-end space-y-1">
-                <Badge variant="secondary" class="text-xs">
-                  {result.embedding || 'Vector stored'}
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{result.embedding || 'Vector stored'}</span>
                 {#if result.qdrantId}
-                  <Badge variant="outline" class="text-xs">
-                    Searchable
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Searchable</span>
                 {/if}
               </div>
             </div>
@@ -430,9 +435,9 @@ let response = $state<Response;
         {/each}
 
         <div class="flex justify-center mt-4">
-          <Button 
+          <Button class="bits-btn bits-btn" 
             variant="outline" 
-            on:on:click={() => {
+            on:onclick={() => {
               uploadResults = [];
               selectedFiles = [];
             }}

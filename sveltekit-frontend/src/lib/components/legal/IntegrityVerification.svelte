@@ -308,9 +308,7 @@ Displays detailed integrity verification results with AI analysis
       <div class="mb-4">
         <div class="flex items-center justify-between">
           <span class="text-sm font-medium">Overall Risk Level</span>
-          <Badge variant="outline" class={getRiskLevelColor(aiAnalysis.riskLevel)}>
-            {aiAnalysis.riskLevel.toUpperCase()}
-          </Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{aiAnalysis.riskLevel.toUpperCase()}</span>
         </div>
       </div>
       

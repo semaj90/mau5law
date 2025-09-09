@@ -60,21 +60,21 @@
       <div class="button-showcase">
         <button
           class="nes-btn is-primary"
-          on:click={incrementCounter}
+          onclick={incrementCounter}
         >
           Primary Button
         </button>
 
         <button
           class="nes-btn is-success"
-          on:click={showToast}
+          onclick={showToast}
         >
           Success Button
         </button>
 
         <button
           class="nes-btn is-warning"
-          on:click={resetCounter}
+          onclick={resetCounter}
         >
           Warning Button
         </button>
@@ -88,7 +88,7 @@
 
         <button
           class="nes-btn"
-          on:click={() => dialogOpen = true}
+          onclick={() => dialogOpen = true}
         >
           Open Dialog
         </button>
@@ -103,8 +103,8 @@
 
     <!-- Dialog Component -->
     {#if dialogOpen}
-      <div class="dialog-overlay" on:click={() => dialogOpen = false}>
-        <div class="nes-dialog dialog-content" on:click|stopPropagation>
+      <div class="dialog-overlay" onclick={() => dialogOpen = false}>
+        <div class="nes-dialog dialog-content" onclick|stopPropagation>
           <form method="dialog">
             <h3 class="nes-text is-primary">
               🏆 Achievement Unlocked!
@@ -122,8 +122,8 @@
               </div>
             </div>
             <menu class="dialog-actions">
-              <button class="nes-btn" on:click={() => dialogOpen = false}>Cancel</button>
-              <button class="nes-btn is-primary" on:click={() => dialogOpen = false}>Accept</button>
+              <button class="nes-btn" onclick={() => dialogOpen = false}>Cancel</button>
+              <button class="nes-btn is-primary" onclick={() => dialogOpen = false}>Accept</button>
             </menu>
           </form>
         </div>
@@ -237,19 +237,19 @@
         <div class="tab-list">
           <button
             class={`nes-btn ${activeTab === 'tab1' ? 'is-primary' : ''}`}
-            on:click={() => activeTab = 'tab1'}
+            onclick={() => activeTab = 'tab1'}
           >
             🎮 Games
           </button>
           <button
             class={`nes-btn ${activeTab === 'tab2' ? 'is-primary' : ''}`}
-            on:click={() => activeTab = 'tab2'}
+            onclick={() => activeTab = 'tab2'}
           >
             ⚙️ Settings
           </button>
           <button
             class={`nes-btn ${activeTab === 'tab3' ? 'is-primary' : ''}`}
-            on:click={() => activeTab = 'tab3'}
+            onclick={() => activeTab = 'tab3'}
           >
             👤 Profile
           </button>
@@ -304,7 +304,7 @@
         <p>
           You've successfully triggered a NES.css styled toast notification!
         </p>
-        <button class="nes-btn is-small" on:click={() => toastOpen = false}>×</button>
+        <button class="nes-btn is-small" onclick={() => toastOpen = false}>×</button>
       </div>
     {/if}
 
@@ -335,7 +335,7 @@
         <div class="popover-wrapper">
           <button
             class="nes-btn is-success"
-            on:click={() => popoverOpen = !popoverOpen}
+            onclick={() => popoverOpen = !popoverOpen}
           >
             Open Popover
           </button>

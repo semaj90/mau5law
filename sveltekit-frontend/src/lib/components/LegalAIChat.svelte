@@ -1,8 +1,17 @@
 <!-- Updated AI Chat for GPU Ollama -->
 <script lang="ts">
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   
   let messages = $state<{role: string, content: string}[]>([]);
   let input = $state('');
@@ -60,7 +69,7 @@
     </div>
     <div class="flex space-x-2">
       <Input bind:value={input} placeholder="Legal question..." keydown={(e) => e.key === 'Enter' && sendMessage()} />
-      <Button on:on:click={sendMessage} disabled={isLoading}>Send</Button>
+      <Button class="bits-btn bits-btn" on:onclick={sendMessage} disabled={isLoading}>Send</Button>
     </div>
   </CardContent>
 </Card>

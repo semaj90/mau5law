@@ -2,22 +2,13 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable, derived } from 'svelte/store';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Progress } from '$lib/components/ui/progress';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import {
-    Settings,
-    AlertTriangle,
-    CheckCircle,
-    BarChart3,
-    Zap,
-    History,
-    TrendingUp,
-    Brain,
-    Clock
-  } from 'lucide-svelte';
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';
 
   // Props
   interface Props {
@@ -29,7 +20,7 @@
   let {
     currentModel = 'gemma3-legal',
     initialLimit = 8000,
-    class = ''
+    class: className = ''
   }: Props = $props();
 
   const dispatch = createEventDispatcher();
@@ -249,8 +240,7 @@
     URL.revokeObjectURL(url);
   }
 
-  // Expose the recordTokenUsage function
-  export { recordTokenUsage };
+  // Note: recordTokenUsage function is available for calling from parent components
 
   onMount(() => {
     // Auto-set limit based on current model
@@ -261,20 +251,23 @@
   });
 </script>
 
-<Card class="token-usage-manager {className}">
-  <CardHeader>
-    <CardTitle class="flex items-center justify-between">
+<Card class="bits-card token-usage-manager {className}" variant="default" legal={true}>
+  <CardHeader class="bits-card-header">
+    <CardTitle class="bits-card-title flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <Settings class="h-5 w-5" />
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
         Token Usage Manager
       </div>
-      <Badge variant={warningLevel === 'normal' ? 'default' : 'destructive'}>
+      <div class="bits-badge bits-badge-{warningLevel === 'normal' ? 'default' : 'destructive'} px-2 py-1 rounded text-xs font-bold">
         {Math.round(usagePercentage)}%
-      </Badge>
+      </div>
     </CardTitle>
   </CardHeader>
 
-  <CardContent class="space-y-4">
+  <CardContent class="bits-card-content space-y-4">
     <!-- Token Limit Slider -->
     <div class="space-y-2" data-testid="token-limit-section">
       <label for="token-limit-slider" class="text-sm font-medium">
@@ -287,7 +280,7 @@
         max="32000"
         step="100"
         bind:value={tokenLimit}
-        change={(e) => updateTokenLimit(parseInt((e.target as HTMLSelectElement).value))}
+        onchange={(e: Event) => updateTokenLimit(parseInt((e.target as HTMLInputElement).value))}
         data-testid="token-limit-slider"
         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
       />
@@ -304,11 +297,12 @@
         <span>Remaining: <span data-testid="tokens-remaining">{tokensRemaining.toLocaleString()}</span></span>
       </div>
 
-      <Progress
-        value={usagePercentage}
-        class="h-3 {progressColor}"
-        data-testid="usage-progress"
-      />
+      <div class="w-full bg-gray-200 rounded-full h-3 {progressColor}" data-testid="usage-progress">
+        <div
+          class="bg-blue-600 h-3 rounded-full transition-all duration-300"
+          style="width: {Math.min(usagePercentage, 100)}%"
+        ></div>
+      </div>
 
       <div class="text-xs text-gray-500">
         Est. {estimatedMessagesRemaining} messages remaining
@@ -317,16 +311,18 @@
 
     <!-- Warning Alerts -->
     {#if isNearLimit}
-      <Alert variant="destructive" data-testid="token-warning">
-        <AlertTriangle class="h-4 w-4" />
-        <AlertDescription>
+      <div class="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-md text-red-800" data-testid="token-warning">
+        <svg class="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        </svg>
+        <span>
           {#if isAtLimit}
             Token limit reached! Consider optimizing or increasing limit.
           {:else}
             Approaching token limit ({Math.round(usagePercentage)}% used)
           {/if}
-        </AlertDescription>
-      </Alert>
+        </span>
+      </div>
     {/if}
 
     <!-- Token Breakdown -->
@@ -357,7 +353,9 @@
     {#if currentSession.messageCount > 0}
       <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
         <div class="flex items-center gap-2">
-          <BarChart3 class="h-4 w-4 text-blue-500" />
+          <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+          </svg>
           <span class="text-sm">Session Stats</span>
         </div>
         <div class="text-right text-sm">
@@ -374,27 +372,34 @@
       <Button
         size="sm"
         variant="outline"
-        on:click={() => showHistory = !showHistory}
+        class="bits-btn bits-btn-outline bits-btn bits-btn"
+        onclick={() => showHistory = !showHistory}
         data-testid="token-history-button"
       >
-        <History class="h-4 w-4 mr-1" />
+        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
         History
       </Button>
 
       <Button
         size="sm"
         variant="outline"
-        on:click={optimizeTokenUsage}
+        class="bits-btn bits-btn-outline bits-btn bits-btn"
+        onclick={optimizeTokenUsage}
         disabled={!autoOptimize}
       >
-        <Zap class="h-4 w-4 mr-1" />
+        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
         Optimize
       </Button>
 
       <Button
         size="sm"
         variant="outline"
-        on:click={resetSession}
+        class="bits-btn bits-btn-outline bits-btn bits-btn"
+        onclick={resetSession}
       >
         Reset
       </Button>
@@ -402,7 +407,8 @@
       <Button
         size="sm"
         variant="outline"
-        on:click={exportUsageData}
+        class="bits-btn bits-btn-outline bits-btn bits-btn"
+        onclick={exportUsageData}
       >
         Export
       </Button>
@@ -451,7 +457,9 @@
     {#if showOptimization && currentSession.messageCount > 2}
       <div class="p-3 border rounded-lg" data-testid="optimization-metrics">
         <div class="flex items-center gap-2 mb-2">
-          <TrendingUp class="h-4 w-4 text-green-500" />
+          <svg class="h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+          </svg>
           <span class="text-sm font-medium">Optimization Metrics</span>
         </div>
         <div class="grid grid-cols-2 gap-4 text-sm">

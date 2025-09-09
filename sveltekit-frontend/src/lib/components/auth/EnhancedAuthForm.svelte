@@ -1,8 +1,12 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import { Button } from '$lib/components/ui/button/index.js';
-  import { Input } from '$lib/components/ui/input/index.js';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label/index.js';
   import { Alert } from '$lib/components/ui/alert/index.js';
   import { Badge } from '$lib/components/ui/badge/index.js';
@@ -396,9 +400,7 @@ let strength = $state(0);
               class={!validation.hasValidEmail && formData.email ? 'border-red-500' : ''}
             />
             {#if mode === 'register' && formState.emailExists}
-              <Badge variant="destructive" class="absolute right-2 top-2 text-xs">
-                Email exists
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-red-500 text-white">Email exists</span>
             {/if}
           </div>
           {#if !validation.hasValidEmail && formData.email}
@@ -531,7 +533,7 @@ let strength = $state(0);
         <!-- Submit Button -->
         <Button 
           type="submit" 
-          class="w-full"
+          class="w-full bits-btn bits-btn"
           disabled={formState.loading || !validation.isValid}
         >
           {#if formState.loading}
@@ -549,8 +551,8 @@ let strength = $state(0);
           <Button 
             type="button"
             variant="outline"
-            class="w-full"
-            on:on:click={handleGuestLogin}
+            class="w-full bits-btn bits-btn"
+            on:onclick={handleGuestLogin}
             disabled={formState.loading}
           >
             Continue as Guest

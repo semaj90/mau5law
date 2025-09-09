@@ -1,7 +1,9 @@
 <!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`
 https://svelte.dev/e/const_tag_invalid_placement -->
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     AlertTriangle,
     ArrowRight,
@@ -545,15 +547,15 @@ Build on previous responses:
       <div class="bg-white rounded-lg shadow-md p-6 mt-6">
         <h3 class="text-lg font-semibold mb-4">Need More Help?</h3>
         <div class="space-y-3">
-          <Button variant="outline" class="w-full justify-start">
+          <Button variant="outline" class="w-full justify-start bits-btn bits-btn">
             <MessageSquare class="h-4 w-4 mr-2" />
             Contact Support
           </Button>
-          <Button variant="outline" class="w-full justify-start">
+          <Button variant="outline" class="w-full justify-start bits-btn bits-btn">
             <Video class="h-4 w-4 mr-2" />
             Video Tutorials
           </Button>
-          <Button variant="outline" class="w-full justify-start">
+          <Button variant="outline" class="w-full justify-start bits-btn bits-btn">
             <Download class="h-4 w-4 mr-2" />
             User Manual (PDF)
           </Button>
@@ -621,7 +623,7 @@ Build on previous responses:
                         .substring(0, 200)}...
                     </div>
 
-                    <Button variant="outline" size="sm">
+                    <Button class="bits-btn bits-btn" variant="outline" size="sm">
                       <Book class="h-4 w-4 mr-2" />
                       Read Full Article
                       <ArrowRight class="h-4 w-4 ml-2" />
@@ -681,11 +683,11 @@ Build on previous responses:
               help you succeed.
             </p>
             <div class="flex gap-3">
-              <Button variant="outline" size="sm">
+              <Button class="bits-btn bits-btn" variant="outline" size="sm">
                 <MessageSquare class="h-4 w-4 mr-2" />
                 Start Live Chat
               </Button>
-              <Button variant="outline" size="sm">
+              <Button class="bits-btn bits-btn" variant="outline" size="sm">
                 <ExternalLink class="h-4 w-4 mr-2" />
                 Submit Ticket
               </Button>

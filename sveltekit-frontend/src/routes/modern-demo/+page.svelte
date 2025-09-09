@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { ModernCard, ModernButton, ModernDialog } from '$lib/components/ui/modern';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent,
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     Shield,
     Settings,

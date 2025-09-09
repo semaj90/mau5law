@@ -365,8 +365,8 @@
     on:mouseleave={handleMouseLeave}
     on:mousedown={handleMouseDown}
     on:mouseup={handleMouseUp}
-    on:click={handleClick}
-    on:keydown={handleKeydown}
+    onclick={handleClick}
+    onkeydown={handleKeydown}
   >
     <!-- N64 Visual Enhancement Layers -->
     <div class="n64-card-overlay" aria-hidden="true">

@@ -249,9 +249,7 @@ let statusCheckInterval = $state<number;
 							<!-- Capabilities -->
 							<div class="flex flex-wrap gap-1 mb-2">
 								{#each provider.capabilities as capability}
-									<Badge variant="outline" class="text-xs text-yorha-text-tertiary border-yorha-border">
-										{capability}
-									</Badge>
+									<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{capability}</span>
 								{/each}
 							</div>
 

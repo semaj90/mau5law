@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import type { Citation } from "$lib/types/api";
   import { Copy, Search, Star, Tag, Trash2 } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import Card from '$lib/components/ui/Card.svelte';
+  // Badge replaced with span - not available in enhanced-bits
+  import { Card } from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/Input.svelte';
 
   let { citations = $bindable() } = $props(); // Citation[] = [];
@@ -101,28 +103,28 @@ let filteredCitations = $state<Citation[] >([]);
           <div class="container mx-auto px-4">
             <h3 class="container mx-auto px-4">{citation.title}</h3>
             <div class="container mx-auto px-4">
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant="ghost"
                 size="sm"
-                on:on:click={() => toggleFavorite(citation)}
+                on:onclick={() => toggleFavorite(citation)}
                 class="container mx-auto px-4"
               >
                 <Star class="container mx-auto px-4" />
               </Button>
 
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant="ghost"
                 size="sm"
-                on:on:click={() => copyCitation(citation)}
+                on:onclick={() => copyCitation(citation)}
                 title="Copy citation"
               >
                 <Copy class="container mx-auto px-4" />
               </Button>
 
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant="ghost"
                 size="sm"
-                on:on:click={() => deleteCitation(citation)}
+                on:onclick={() => deleteCitation(citation)}
                 title="Delete citation"
                 class="container mx-auto px-4"
               >
@@ -179,9 +181,7 @@ let filteredCitations = $state<Citation[] >([]);
             <span class="container mx-auto px-4">
               Saved {new Date(citation.savedAt).toLocaleDateString()}
             </span>
-            <Badge variant="secondary" class="container mx-auto px-4">
-              {citation.category}
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{citation.category}</span>
           </div>
         </div>
       </Card>
@@ -191,10 +191,10 @@ let filteredCitations = $state<Citation[] >([]);
       <div class="container mx-auto px-4">
         {#if searchQuery || selectedCategory !== "all"}
           <p class="container mx-auto px-4">No citations match your search criteria.</p>
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="secondary"
             size="sm"
-            on:on:click={() => {
+            on:onclick={() => {
               searchQuery = "";
               selectedCategory = "all";
             "

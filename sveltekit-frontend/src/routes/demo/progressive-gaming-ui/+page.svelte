@@ -13,10 +13,16 @@
   import { onMount } from 'svelte';
   import { ProgressiveGamingProvider } from '$lib/components/ui/gaming/core/ProgressiveGamingProvider.svelte';
   import { useGamingEvolution } from '$lib/components/ui/gaming/core/useGamingEvolution.js';
-  import { NES8BitButton } from '$lib/components/ui/gaming/8bit/NES8BitButton.svelte';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { NES8BitContainer } from '$lib/components/ui/gaming/8bit/NES8BitContainer.svelte';
-  import { SNES16BitButton } from '$lib/components/ui/gaming/16bit/SNES16BitButton.svelte';
-  import { N643DButton } from '$lib/components/ui/gaming/n64/N643DButton.svelte';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
 
   // Database and API integration
   let databaseStatus = $state<any>(null);
@@ -194,7 +200,7 @@
       <h3>Select Gaming Era:</h3>
       <div class="era-buttons">
         <NES8BitButton
-          on:click={() => selectedEra = '8bit'}
+          onclick={() => selectedEra = '8bit'}
           variant={selectedEra === '8bit' ? 'success' : 'primary'}
           enableSound={true}
         >
@@ -202,7 +208,7 @@
         </NES8BitButton>
 
         <SNES16BitButton
-          on:click={() => selectedEra = '16bit'}
+          onclick={() => selectedEra = '16bit'}
           variant={selectedEra === '16bit' ? 'success' : 'primary'}
           enableEnhancedSound={true}
         >
@@ -210,7 +216,7 @@
         </SNES16BitButton>
 
         <N643DButton
-          on:click={() => selectedEra = 'n64'}
+          onclick={() => selectedEra = 'n64'}
           variant={selectedEra === 'n64' ? 'success' : 'primary'}
           enableParticles={true}
         >
@@ -233,7 +239,7 @@
           </ul>
 
           <div class="button-demo">
-            <NES8BitButton nesVariant="is-primary" on:click={() => demoCounter++}>
+            <NES8BitButton nesVariant="is-primary" onclick={() => demoCounter++}>
               Action ({demoCounter})
             </NES8BitButton>
             <NES8BitButton nesVariant="is-success" enableSound={true}>
@@ -257,7 +263,7 @@
           </ul>
 
           <div class="button-demo">
-            <SNES16BitButton on:click={() => demoCounter++} enableLayerEffects={true}>
+            <SNES16BitButton onclick={() => demoCounter++} enableLayerEffects={true}>
               Layer Effects ({demoCounter})
             </SNES16BitButton>
             <SNES16BitButton enableMode7={true} plasmaEffect={enableEffects}>
@@ -283,7 +289,7 @@
 
           <div class="button-demo-3d">
             <N643DButton
-              on:click={() => demoCounter++}
+              onclick={() => demoCounter++}
               meshComplexity="high"
               enableLighting={true}
               enableReflections={true}
@@ -295,7 +301,7 @@
               materialType="pbr"
               enableParticles={true}
               enableFog={true}
-              on:click={testDataOperations}
+              onclick={testDataOperations}
             >
               PBR + Particles + DB Test
             </N643DButton>
@@ -373,11 +379,11 @@
       </div>
 
       <div class="action-buttons">
-  <NES8BitButton on:click={checkDatabaseConnection} loading={loading}>
+  <NES8BitButton onclick={checkDatabaseConnection} loading={loading}>
           Refresh Status
         </NES8BitButton>
 
-  <SNES16BitButton on:click={testDataOperations}>
+  <SNES16BitButton onclick={testDataOperations}>
           Test Database Ops
         </SNES16BitButton>
       </div>

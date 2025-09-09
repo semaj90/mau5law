@@ -1,12 +1,13 @@
 <script lang="ts">
   import {
     Card,
-    CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
-  } from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input/index.js';
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Search, BookOpen, ExternalLink, Bot, MessageSquare } from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -148,8 +149,8 @@ let isSearching = $state<boolean >(false);
             <CardTitle class="text-lg">{link.title}</CardTitle>
             <CardDescription>{link.description}</CardDescription>
             <div class="flex gap-2">
-              <Badge variant="secondary">{link.jurisdiction}</Badge>
-              <Badge variant="outline">{link.category}</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{link.jurisdiction}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{link.category}</span>
             </div>
           </CardHeader>
           <CardContent>

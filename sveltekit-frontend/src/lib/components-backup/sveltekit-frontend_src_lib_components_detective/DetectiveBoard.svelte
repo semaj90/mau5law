@@ -166,7 +166,7 @@
 </script>
 
 <svelte:window
-  on:click={() => closeContextMenu()}
+  onclick={() => closeContextMenu()}
   onkeydown={handleGlobalKeydown}
 />
 
@@ -193,7 +193,7 @@
             <Button
               variant={viewMode === "columns" ? "default" : "outline"}
               size="sm"
-              on:click={() => switchViewMode("columns")}
+              onclick={() => switchViewMode("columns")}
             >
               <span class="mr-2">📋</span>
               Columns
@@ -201,7 +201,7 @@
             <Button
               variant={viewMode === "canvas" ? "default" : "outline"}
               size="sm"
-              on:click={() => switchViewMode("canvas")}
+              onclick={() => switchViewMode("canvas")}
             >
               <span class="mr-2">🎨</span>
               Canvas
@@ -463,10 +463,10 @@
               />
               <Button
                 size="sm"
-                on:click={runFindSearch}
+                onclick={runFindSearch}
                 disabled={findModal.loading}>Search</Button
               >
-              <Button size="sm" variant="outline" on:click={closeFindModal}
+              <Button size="sm" variant="outline" onclick={closeFindModal}
                 >Close</Button
               >
             </div>
@@ -550,3 +550,4 @@
     {/if}
   </div>
 {/if}
+

@@ -13,7 +13,12 @@
   import SNES16BitButton from '$lib/components/ui/gaming/16bit/SNES16BitButton.svelte';
   import N643DButton from '$lib/components/ui/gaming/n64/N643DButton.svelte';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 
   // Test state
@@ -254,7 +259,7 @@
       <Button.Root
   onclick={runIntegrationTests}
         disabled={isRunningTests}
-        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold bits-btn bits-btn"
       >
         {isRunningTests ? '🔄 Running Tests...' : '🚀 Run All Tests'}
       </Button.Root>
@@ -359,7 +364,7 @@
           <div class="component-section">
             <h3 class="text-xl font-semibold text-white mb-4">Modern Bits-UI Integration</h3>
             <div class="flex gap-4 flex-wrap">
-              <Button.Root class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">
+              <Button.Root class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded bits-btn bits-btn">
                 Bits-UI Button
               </Button.Root>
               <ModernButton variant="primary">

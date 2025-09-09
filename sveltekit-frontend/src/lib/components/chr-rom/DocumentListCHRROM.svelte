@@ -11,9 +11,15 @@
   import type { CHRROMPattern } from '$lib/services/chr-rom-precomputation.js';
   import '$lib/styles/chr-rom-rendering.css';
 
-  // Component props
-  export let documents: Array<{ id: string; title: string; [key: string]: any }> = [];
-  export let showPerformanceMetrics = false;
+  interface Props {
+    documents?: Array<{ id: string; title: string; [key: string]: any }>;
+    showPerformanceMetrics?: boolean;
+  }
+
+  let {
+    documents = [],
+    showPerformanceMetrics = false
+  }: Props = $props();
   
   // Reactive state for CHR-ROM patterns
   let documentPatterns = new Map<string, Map<string, CHRROMPattern | null>>();
@@ -242,7 +248,7 @@
           </span>
         </div>
       </div>
-      <button on:click={refreshPatterns} class="refresh-btn">
+      <button onclick={refreshPatterns} class="refresh-btn">
         🔄 Refresh Patterns
       </button>
     </div>

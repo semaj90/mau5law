@@ -2,8 +2,12 @@
   // Svelte 5 runes are used directly without imports
   import { enhance } from '$app/forms';
   // import { Dialog } from 'bits-ui';
-  import { Button } from '$lib/components/ui/button/index.js';
-  import { Input } from '$lib/components/ui/input/index.js';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label/index.js';
   import { Alert } from '$lib/components/ui/alert/index.js';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
@@ -286,7 +290,7 @@
         <!-- Submit Button -->
         <Button 
           type="submit" 
-          class="w-full"
+          class="w-full bits-btn bits-btn"
           disabled={loading || !isValid}
         >
           {#if loading}

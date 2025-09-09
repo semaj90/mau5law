@@ -610,7 +610,7 @@ let pageStore = $state<any;
         {steps}
         currentStep={currentStep}
         validationresults={validationResults}
-        step-on:on:click={(e) => jumpToStep(e.detail)}
+        step-on:onclick={(e) => jumpToStep(e.detail)}
     />
 
     <!-- Processing queue indicator -->

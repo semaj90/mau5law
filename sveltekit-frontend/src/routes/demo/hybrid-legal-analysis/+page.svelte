@@ -1,7 +1,9 @@
 <!-- Enhanced Hybrid Legal Analysis 3D Demo Page -->
 <script lang="ts">
   import HybridLegalAnalysis3D from "$lib/components/ui/enhanced-bits/HybridLegalAnalysis3D.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import { Code, FileText, BookOpen, Gavel, Zap, Brain, Activity } from "lucide-svelte";
 
@@ -187,7 +189,7 @@
 
     <!-- Control Panel -->
     <div class="flex flex-wrap gap-4 mb-8">
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         onclick={loadSampleData}
         disabled={isLoading}
@@ -198,7 +200,7 @@
         {/snippet}
       </Button>
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         onclick={testEmbeddingGeneration}
         disabled={isLoading}
@@ -209,7 +211,7 @@
         {/snippet}
       </Button>
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         onclick={run3DVisualization}
         disabled={isLoading}

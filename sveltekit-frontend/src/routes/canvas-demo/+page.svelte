@@ -6,7 +6,9 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import UnifiedCanvasIntegration from '$lib/components/canvas/UnifiedCanvasIntegration.svelte';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   
   let caseId = 'demo-case-001';
   let unifiedCanvas: any;
@@ -116,12 +118,12 @@
         variant="outline"
         size="sm"
         onclick={runDemoScenario}
-        class="demo-btn"
+        class="demo-btn bits-btn bits-btn"
       >
         🚀 Run Demo Scenario
       </Button>
       
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         size="sm"
         onclick={() => showEventLog = !showEventLog}
@@ -134,7 +136,7 @@
         variant="outline"
         size="sm"
         onclick={clearEventLog}
-        class="demo-btn"
+        class="demo-btn bits-btn bits-btn"
       >
         🗑️ Clear Log
       </Button>

@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button/index.js';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
   import * as Card from '$lib/components/ui/Card/index.js';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
@@ -140,14 +142,14 @@
           <div class="component-section">
             <h4 class="section-title">Action Buttons</h4>
             <div class="button-group">
-              <Button.Root class="snes-btn snes-btn-a">A</Button.Root>
-              <Button.Root class="snes-btn snes-btn-b">B</Button.Root>
-              <Button.Root class="snes-btn snes-btn-x">X</Button.Root>
-              <Button.Root class="snes-btn snes-btn-y">Y</Button.Root>
+              <Button.Root class="snes-btn snes-btn-a bits-btn bits-btn">A</Button.Root>
+              <Button.Root class="snes-btn snes-btn-b bits-btn bits-btn">B</Button.Root>
+              <Button.Root class="snes-btn snes-btn-x bits-btn bits-btn">X</Button.Root>
+              <Button.Root class="snes-btn snes-btn-y bits-btn bits-btn">Y</Button.Root>
             </div>
             <div class="shoulder-buttons">
-              <Button.Root class="snes-btn snes-btn-l">L</Button.Root>
-              <Button.Root class="snes-btn snes-btn-r">R</Button.Root>
+              <Button.Root class="snes-btn snes-btn-l bits-btn bits-btn">L</Button.Root>
+              <Button.Root class="snes-btn snes-btn-r bits-btn bits-btn">R</Button.Root>
             </div>
           </div>
 
@@ -155,13 +157,13 @@
           <div class="component-section">
             <h4 class="section-title">D-Pad Navigation</h4>
             <div class="dpad">
-              <Button.Root class="dpad-btn dpad-up">▲</Button.Root>
+              <Button.Root class="dpad-btn dpad-up bits-btn bits-btn">▲</Button.Root>
               <div class="dpad-middle">
-                <Button.Root class="dpad-btn dpad-left">◄</Button.Root>
+                <Button.Root class="dpad-btn dpad-left bits-btn bits-btn">◄</Button.Root>
                 <div class="dpad-center"></div>
-                <Button.Root class="dpad-btn dpad-right">►</Button.Root>
+                <Button.Root class="dpad-btn dpad-right bits-btn bits-btn">►</Button.Root>
               </div>
-              <Button.Root class="dpad-btn dpad-down">▼</Button.Root>
+              <Button.Root class="dpad-btn dpad-down bits-btn bits-btn">▼</Button.Root>
             </div>
           </div>
 
@@ -269,8 +271,8 @@
           <!-- Interactive Dialog -->
           <div class="dialog-section">
             <Button.Root
-              class="snes-btn snes-btn-primary"
-              on:click={() => dialogOpen = true}
+              class="snes-btn snes-btn-primary bits-btn bits-btn"
+              onclick={() => dialogOpen = true}
             >
               🗨️ Open Message Box
             </Button.Root>
@@ -289,8 +291,8 @@
                     </Dialog.Description>
                     <div class="dialog-actions">
                       <Button.Root
-                        class="snes-btn snes-btn-confirm"
-                        on:click={() => dialogOpen = false}
+                        class="snes-btn snes-btn-confirm bits-btn bits-btn"
+                        onclick={() => dialogOpen = false}
                       >
                         ✓ OK
                       </Button.Root>

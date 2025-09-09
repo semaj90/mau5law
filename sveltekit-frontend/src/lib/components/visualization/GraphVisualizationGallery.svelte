@@ -3,7 +3,7 @@
   import { writable } from 'svelte/store';
   import { GraphVisualizationEngine, type GraphVisualizationResult, type GraphNode, type GraphEdge } from '$lib/services/graph-visualization-engine';
   import { MultiLayerCache } from '$lib/services/multi-layer-cache';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
 
   // Props
   let {
@@ -289,7 +289,7 @@
       </div>
 
       <!-- Generate Button -->
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="legal"
         disabled={$isGenerating}
         onclick={() => generateVisualizationsForAllAlgorithms()}
@@ -344,7 +344,7 @@
 
         <!-- Item Controls -->
         <div class="item-controls">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="evidence"
             size="small"
             onclick={() => regenerateVisualization(visualization.metadata.algorithm)}
@@ -372,7 +372,7 @@
   {#if filteredVisualizations.length === 0 && !$isGenerating}
     <div class="empty-state nes-container is-rounded">
       <p class="nes-text is-disabled">No visualizations generated yet.</p>
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="legal"
         onclick={() => generateVisualizationsForAllAlgorithms()}
       >

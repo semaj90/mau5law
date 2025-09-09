@@ -5,8 +5,12 @@
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
-  import { Button } from '$lib/components/ui/button/index.js';
-  import { Input } from '$lib/components/ui/input/index.js';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label/index.js';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
   import * as Select from '$lib/components/ui/select/index.js';
@@ -50,8 +54,8 @@
     tags: z.string().optional()
   });
 
-  // Props from load function
-  export let data: PageData;
+  // Props from load function  
+  let { data }: { data: PageData } = $props();
   let form: ActionData | null = null;
 
   // Superforms for type-safe form handling
@@ -132,35 +136,41 @@
   let searchFeedback: any;
   let caseCreationFeedback: any;
 
-  // Sync local select variables from the form stores
-  $: createFormPriority = $createFormData?.priority ?? 'medium';
-  $: createFormStatus = $createFormData?.status ?? 'open';
-  $: evidenceFormType = $evidenceFormData?.evidenceType ?? 'document';
+  // Sync local select variables from the form stores using Svelte 5 runes
+  let createFormPriority = $derived($createFormData?.priority ?? 'medium');
+  let createFormStatus = $derived($createFormData?.status ?? 'open');
+  let evidenceFormType = $derived($evidenceFormData?.evidenceType ?? 'document');
 
-  // When local select vars change, push back to the superform store (avoid binding directly to $store expressions)
-  $: if (createFormData && typeof createFormData.update === 'function') {
-    const current = get(createFormData);
-    if (current?.priority !== createFormPriority) {
-      createFormData.update((c: any) => ({ ...c, priority: createFormPriority }));
+  // Update form stores when local select variables change
+  $effect(() => {
+    if (createFormData && typeof createFormData.update === 'function') {
+      const current = get(createFormData);
+      if (current?.priority !== createFormPriority) {
+        createFormData.update((c: any) => ({ ...c, priority: createFormPriority }));
+      }
     }
-  }
+  });
 
-  $: if (createFormData && typeof createFormData.update === 'function') {
-    const current = get(createFormData);
-    if (current?.status !== createFormStatus) {
-      createFormData.update((c: any) => ({ ...c, status: createFormStatus }));
+  $effect(() => {
+    if (createFormData && typeof createFormData.update === 'function') {
+      const current = get(createFormData);
+      if (current?.status !== createFormStatus) {
+        createFormData.update((c: any) => ({ ...c, status: createFormStatus }));
+      }
     }
-  }
+  });
 
-  $: if (evidenceFormData && typeof evidenceFormData.update === 'function') {
-    const current = get(evidenceFormData);
-    if (current?.evidenceType !== evidenceFormType) {
-      evidenceFormData.update((c: any) => ({ ...c, evidenceType: evidenceFormType }));
+  $effect(() => {
+    if (evidenceFormData && typeof evidenceFormData.update === 'function') {
+      const current = get(evidenceFormData);
+      if (current?.evidenceType !== evidenceFormType) {
+        evidenceFormData.update((c: any) => ({ ...c, evidenceType: evidenceFormType }));
+      }
     }
-  }
+  });
 
-  // Filtered and sorted cases (reactive)
-  $: filteredCases = (() => {
+  // Filtered and sorted cases using Svelte 5 runes
+  let filteredCases = $derived((() => {
     let filtered = data?.userCases || [];
 
     if (searchQuery.trim()) {
@@ -190,7 +200,7 @@
     });
 
     return filtered;
-  })();
+  })());
 
   // Priority colors
   const priorityColors = {
@@ -301,14 +311,16 @@
     }
   }
 
-  // Set evidence form case ID when dialog opens - update the superform store properly
-  $: if (addEvidenceDialogOpen && data?.activeCase?.id) {
-    if (evidenceFormData && typeof evidenceFormData.update === 'function') {
-      evidenceFormData.update((c: any) => ({ ...c, caseId: data.activeCase.id }));
-    } else if (evidenceFormData && typeof evidenceFormData.set === 'function') {
-      evidenceFormData.set({ ...(get(evidenceFormData) as any), caseId: data.activeCase.id });
+  // Set evidence form case ID when dialog opens using Svelte 5 runes
+  $effect(() => {
+    if (addEvidenceDialogOpen && data?.activeCase?.id) {
+      if (evidenceFormData && typeof evidenceFormData.update === 'function') {
+        evidenceFormData.update((c: any) => ({ ...c, caseId: data.activeCase.id }));
+      } else if (evidenceFormData && typeof evidenceFormData.set === 'function') {
+        evidenceFormData.set({ ...(get(evidenceFormData) as any), caseId: data.activeCase.id });
+      }
     }
-  }
+  });
 </script>
 
 <svelte:head>
@@ -326,7 +338,7 @@
           Manage cases with AI-powered search and PostgreSQL vector storage
         </p>
       </div>
-  <Button on:click={() => createCaseDialogOpen = true} class="gap-2">
+  <Button class="bits-btn bits-btn" onclick={() => createCaseDialogOpen = true} class="gap-2">
         <Plus class="h-4 w-4" />
         New Case
       </Button>
@@ -390,9 +402,9 @@
           <Button
             variant="outline"
             size="sm"
-            on:click={performVectorSearch}
+            onclick={performVectorSearch}
             disabled={!searchQuery.trim() || isSearching}
-            class="gap-2"
+            class="gap-2 bits-btn bits-btn"
           >
             {#if isSearching}
               <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
@@ -437,11 +449,11 @@
       <!-- Case Detail View -->
       <div class="space-y-6">
         <div class="flex items-center justify-between">
-          <Button variant="outline" on:click={() => goto('/cases')}>
+          <Button class="bits-btn bits-btn" variant="outline" onclick={() => goto('/cases')}>
             ← Back to Cases
           </Button>
           <div class="flex gap-2">
-            <Button variant="outline" size="sm" on:click={() => addEvidenceDialogOpen = true}>
+            <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => addEvidenceDialogOpen = true}>
               <Plus class="h-4 w-4 mr-2" />
               Add Evidence
             </Button>
@@ -461,10 +473,10 @@
                     {data.activeCase.status}
                   </Badge>
                   {#if data.activeCase.location}
-                    <Badge variant="secondary">📍 {data.activeCase.location}</Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">📍 {data.activeCase.location}</span>
                   {/if}
                   {#if data.activeCase.jurisdiction}
-                    <Badge variant="outline">⚖️ {data.activeCase.jurisdiction}</Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">⚖️ {data.activeCase.jurisdiction}</span>
                   {/if}
                 </div>
               </div>
@@ -489,7 +501,7 @@
               <Card.Content class="flex flex-col items-center justify-center py-12">
                 <FileText class="h-12 w-12 text-muted-foreground mb-4" />
                 <p class="text-muted-foreground mb-4">No evidence has been added to this case yet.</p>
-                <Button on:click={() => addEvidenceDialogOpen = true}>
+                <Button class="bits-btn bits-btn" onclick={() => addEvidenceDialogOpen = true}>
                   <Plus class="h-4 w-4 mr-2" />
                   Add First Evidence
                 </Button>
@@ -503,14 +515,14 @@
                     <div class="flex items-center justify-between">
                       <Card.Title class="text-lg">{evidence.title}</Card.Title>
                       <div class="flex gap-2">
-                        <Badge variant="secondary">{evidence.evidenceType}</Badge>
-                        <Button variant="ghost" size="sm">
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{evidence.evidenceType}</span>
+                        <Button class="bits-btn bits-btn" variant="ghost" size="sm">
                           <Edit2 class="h-4 w-4" />
                         </Button>
-                        <Button
+                        <Button class="bits-btn bits-btn"
                           variant="ghost"
                           size="sm"
-                          on:click={() => confirmDeleteEvidence(evidence)}
+                          onclick={() => confirmDeleteEvidence(evidence)}
                         >
                           <Trash2 class="h-4 w-4" />
                         </Button>
@@ -546,7 +558,7 @@
         <Tabs.Content value="all-cases" class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {#each filteredCases as caseItem}
-              <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" on:click={() => viewCase(caseItem)}>
+              <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" onclick={() => viewCase(caseItem)}>
                 <Card.Header>
                   <div class="flex items-start justify-between">
                     <Card.Title class="text-lg line-clamp-2">{caseItem.title}</Card.Title>
@@ -588,7 +600,7 @@
                     <p class="text-muted-foreground mb-4">
                       {searchQuery.trim() ? 'No cases found matching your search.' : 'No cases found.'}
                     </p>
-                    <Button on:click={() => createCaseDialogOpen = true}>
+                    <Button class="bits-btn bits-btn" onclick={() => createCaseDialogOpen = true}>
                       <Plus class="h-4 w-4 mr-2" />
                       Create Your First Case
                     </Button>
@@ -603,13 +615,11 @@
           {#if vectorSearchResults.length > 0}
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {#each vectorSearchResults as result}
-                <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" on:click={() => viewCase(result)}>
+                <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" onclick={() => viewCase(result)}>
                   <Card.Header>
                     <div class="flex items-start justify-between">
                       <Card.Title class="text-lg line-clamp-2">{result.title}</Card.Title>
-                      <Badge variant="secondary" class="text-xs">
-                        {Math.round(result.similarity * 100)}% match
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(result.similarity * 100)}% match</span>
                     </div>
                   </Card.Header>
                   <Card.Content>
@@ -700,36 +710,53 @@
   </div>
 </div>
 
-            <SelectRoot bind:selected={createFormPriority}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="critical">Critical</SelectItem>
-              </SelectContent>
-            </SelectRoot>
-            <input type="hidden" name="priority" value={createFormPriority} />
+<!-- Create Case Dialog -->
+<Dialog.Root>
+  <Dialog.Trigger asChild let:builder>
+    <Button builders={[builder]} class="flex items-center gap-2 bits-btn bits-btn">
+      <Plus class="h-4 w-4" />
+      Create Case
+    </Button>
+  </Dialog.Trigger>
+  <Dialog.Content class="max-w-2xl">
+    <Dialog.Header>
+      <Dialog.Title>Create New Case</Dialog.Title>
+    </Dialog.Header>
+    <form method="post" action="?/createCase" use:enhance={createCaseSubmit} class="space-y-4">
+      <div class="grid gap-4">
+        <div class="grid gap-2">
           <Label for="case-title">Case Title *</Label>
           <Input
             id="case-title"
-            <SelectRoot bind:selected={createFormStatus}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="open">Open</SelectItem>
-                <SelectItem value="investigating">Investigating</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-              </SelectContent>
-            </SelectRoot>
-            <input type="hidden" name="status" value={createFormStatus} />
+            name="title"
+            bind:value={$createFormData.title}
+            placeholder="Enter case title..."
+            required
+          />
+        </div>
+        <div class="grid gap-2">
+          <Label for="case-description">Description</Label>
+          <Textarea
+            id="case-description"
+            name="description"
             bind:value={$createFormData.description}
             placeholder="Describe the case details..."
             class="min-h-[100px]"
           />
+        </div>
+        <div class="grid gap-2">
+          <Label for="case-status">Status</Label>
+          <SelectRoot bind:selected={createFormStatus}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="open">Open</SelectItem>
+              <SelectItem value="investigating">Investigating</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+            </SelectContent>
+          </SelectRoot>
+          <input type="hidden" name="status" value={createFormStatus} />
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div class="grid gap-2">
@@ -793,10 +820,10 @@
         </div>
       </div>
       <Dialog.Footer>
-  <Button variant="outline" type="button" on:click={() => createCaseDialogOpen = false}>
+  <Button class="bits-btn bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>
           Cancel
         </Button>
-        <Button type="submit" disabled={!$createFormData.title?.trim()}>
+        <Button class="bits-btn bits-btn" type="submit" disabled={!$createFormData.title?.trim()}>
           Create Case
         </Button>
       </Dialog.Footer>
@@ -804,6 +831,22 @@
   </Dialog.Content>
 </Dialog.Root>
 
+<!-- Add Evidence Dialog -->
+<Dialog.Root>
+  <Dialog.Trigger asChild let:builder>
+    <Button builders={[builder]} variant="outline" class="flex items-center gap-2 bits-btn bits-btn">
+      <Plus class="h-4 w-4" />
+      Add Evidence
+    </Button>
+  </Dialog.Trigger>
+  <Dialog.Content class="max-w-lg">
+    <Dialog.Header>
+      <Dialog.Title>Add Evidence</Dialog.Title>
+    </Dialog.Header>
+    <form method="post" action="?/addEvidence" use:enhance={addEvidenceSubmit} class="space-y-4">
+      <div class="grid gap-4">
+        <div class="grid gap-2">
+          <Label for="evidence-type">Evidence Type</Label>
           <SelectRoot bind:selected={evidenceFormType}>
             <SelectTrigger>
               <SelectValue placeholder="Select type" />
@@ -865,10 +908,10 @@
         </div>
       </div>
       <Dialog.Footer>
-  <Button variant="outline" type="button" on:click={() => addEvidenceDialogOpen = false}>
+  <Button class="bits-btn bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>
           Cancel
         </Button>
-        <Button type="submit" disabled={!$evidenceFormData.title?.trim()}>
+        <Button class="bits-btn bits-btn" type="submit" disabled={!$evidenceFormData.title?.trim()}>
           Add Evidence
         </Button>
       </Dialog.Footer>
@@ -887,10 +930,10 @@
       </AlertDialog.Description>
     </AlertDialog.Header>
     <AlertDialog.Footer>
-  <Button variant="outline" on:click={() => deleteEvidenceDialogOpen = false}>
+  <Button class="bits-btn bits-btn" variant="outline" onclick={() => deleteEvidenceDialogOpen = false}>
         Cancel
       </Button>
-  <Button variant="destructive" on:click={deleteEvidence}>
+  <Button class="bits-btn bits-btn" variant="destructive" onclick={deleteEvidence}>
         Delete Evidence
       </Button>
     </AlertDialog.Footer>

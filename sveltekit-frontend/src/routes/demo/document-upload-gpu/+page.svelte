@@ -188,7 +188,7 @@
             <input
               type="file"
               bind:this={fileInput}
-              on:change={handleFileSelect}
+              onchange={handleFileSelect}
               accept=".pdf,.doc,.docx,.txt"
               class="w-full bg-nier-bg-tertiary border border-nier-border-muted rounded p-golden-md text-nier-text-primary"
             />

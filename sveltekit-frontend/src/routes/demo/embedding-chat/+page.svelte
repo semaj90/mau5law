@@ -1,7 +1,9 @@
 <!-- EmbeddingGemma Chat Demo Page -->
 <script lang="ts">
   import EmbeddingGemmaChat from "$lib/components/ui/enhanced-bits/EmbeddingGemmaChat.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import { Code, FileText, BookOpen, Gavel } from "lucide-svelte";
 
@@ -103,7 +105,7 @@
 
     <!-- Sample Data Controls -->
     <div class="flex flex-wrap gap-4 mb-6">
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         onclick={() => loadSampleDocuments('contracts')}
       >
@@ -113,7 +115,7 @@
         {/snippet}
       </Button>
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         onclick={() => loadSampleDocuments('cases')}
       >
@@ -123,7 +125,7 @@
         {/snippet}
       </Button>
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         onclick={clearDocuments}
         disabled={currentDocuments.length === 0}

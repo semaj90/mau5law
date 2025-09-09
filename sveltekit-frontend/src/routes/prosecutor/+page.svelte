@@ -4,9 +4,18 @@ Features: Case management, evidence upload, AI chat, vector search
 -->
 <script lang="ts">
   import type { SearchResults } from "$lib/types/global";
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import EvidenceUploadComponent from '$lib/components/prosecutor/EvidenceUploadComponent.svelte';
   import EnhancedAIChatAssistant from '$lib/components/prosecutor/EnhancedAIChatAssistant.svelte';
@@ -201,19 +210,17 @@ let response = $state<Response;
       <CardContent>
         <div class="flex flex-wrap gap-2">
           {#each cases as caseItem}
-            <Button
+            <Button class="bits-btn bits-btn"
               variant={selectedCaseId === caseItem.id ? 'default' : 'outline'}
               size="sm"
-              on:click={() => selectCase(caseItem.id)}
+              onclick={() => selectCase(caseItem.id)}
             >
               {caseItem.caseNumber} - {caseItem.title}
-              <Badge variant="secondary" class="ml-2">
-                {caseItem.status}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{caseItem.status}</span>
             </Button>
           {/each}
 
-          <Button variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" variant="outline" size="sm">
             <Plus class="w-4 h-4 mr-1" />
             New Case
           </Button>
@@ -232,7 +239,7 @@ let response = $state<Response;
               <Search class="w-5 h-5" />
               Enhanced Vector Search
               {#if webGPUEnabled}
-                <Badge variant="secondary">GPU Accelerated</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">GPU Accelerated</span>
               {/if}
             </CardTitle>
           </CardHeader>
@@ -243,7 +250,7 @@ let response = $state<Response;
                 placeholder="Search evidence, cases, precedents..."
                 class="flex-1"
               />
-              <Button on:click={performVectorSearch} disabled={!searchQuery.trim()}>
+              <Button class="bits-btn bits-btn" onclick={performVectorSearch} disabled={!searchQuery.trim()}>
                 <Search class="w-4 h-4" />
               </Button>
             </div>
@@ -262,14 +269,12 @@ let response = $state<Response;
                         {#if result.payload?.tags}
                           <div class="flex gap-1 mt-2">
                             {#each result.payload.tags as tag}
-                              <Badge variant="outline" class="text-xs">{tag}</Badge>
+                              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                             {/each}
                           </div>
                         {/if}
                       </div>
-                      <Badge variant="secondary" class="text-xs">
-                        {Math.round(result.score * 100)}% match
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(result.score * 100)}% match</span>
                     </div>
                   </div>
                 {/each}
@@ -324,7 +329,7 @@ let response = $state<Response;
                           {evidence.aiAnalysis.prosecutionRelevance}
                         </Badge>
                       {/if}
-                      <Button variant="ghost" size="sm">
+                      <Button class="bits-btn bits-btn" variant="ghost" size="sm">
                         <Eye class="w-4 h-4" />
                       </Button>
                     </div>
@@ -360,7 +365,7 @@ let response = $state<Response;
                         {#if poi.tags}
                           <div class="flex gap-1 mt-1">
                             {#each poi.tags as tag}
-                              <Badge variant="outline" class="text-xs">{tag}</Badge>
+                              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                             {/each}
                           </div>
                         {/if}
@@ -377,7 +382,7 @@ let response = $state<Response;
               </div>
             {/if}
 
-            <Button variant="outline" size="sm" class="w-full mt-3">
+            <Button variant="outline" size="sm" class="w-full mt-3 bits-btn bits-btn">
               <Plus class="w-4 h-4 mr-1" />
               Add Person of Interest
             </Button>

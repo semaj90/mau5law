@@ -4,7 +4,12 @@
 -->
 <script lang="ts">
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { FileText, Save, Download, Share2, Settings } from 'lucide-svelte';
   
@@ -103,7 +108,7 @@
         <span class="save-status">Last saved: {lastSaved.toLocaleTimeString()}</span>
       {/if}
       {#if isModified}
-        <Badge variant="outline" class="modified-badge">Unsaved</Badge>
+        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Unsaved</span>
       {/if}
     </div>
   </div>

@@ -4,9 +4,18 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
   import {
@@ -161,9 +170,7 @@ https://svelte.dev/e/js_parse_error -->
           <CardTitle class="flex items-center gap-2">
             <Brain class="h-6 w-6 text-blue-600" />
             Enhanced RAG System
-            <Badge variant="outline" class="ml-2">
-              {ragState.status.version}
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{ragState.status.version}</span>
           </CardTitle>
           <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
             Neural-powered legal research with SOM clustering and ML optimization
@@ -222,16 +229,16 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <Button
-            on:on:click={handleSearch}
+            on:onclick={handleSearch}
             disabled={!searchQuery.trim() || ragState.isLoading}
-            class="px-6"
+            class="px-6 bits-btn bits-btn"
           >
             {ragState.isLoading ? 'Searching...' : 'Search'}
           </Button>
 
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:on:click={() => showAdvancedOptions = !showAdvancedOptions}
+            on:onclick={() => showAdvancedOptions = !showAdvancedOptions}
           >
             <Settings class="h-4 w-4" />
           </Button>
@@ -256,10 +263,10 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <div class="flex flex-wrap gap-2">
             {#each intelligentSuggestions as suggestion}
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant="ghost"
                 size="sm"
-                on:on:click={() => selectSuggestion(suggestion)}
+                on:onclick={() => selectSuggestion(suggestion)}
                 class="h-8 px-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border border-yellow-200"
               >
                 <Sparkles class="h-3 w-3 mr-1" />
@@ -322,8 +329,8 @@ https://svelte.dev/e/js_parse_error -->
               <Button
                 variant="outline"
                 size="sm"
-                on:on:click={handleOptimization}
-                class="mt-2 w-full"
+                on:onclick={handleOptimization}
+                class="mt-2 w-full bits-btn bits-btn"
               >
                 <Zap class="h-4 w-4 mr-1" />
                 Optimize Now
@@ -355,25 +362,25 @@ https://svelte.dev/e/js_parse_error -->
 
             <!-- View Toggle -->
             <div class="flex gap-2">
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant={visualizationMode === 'list' ? 'default' : 'outline'}
                 size="sm"
-                on:on:click={() => visualizationMode = 'list'}
+                on:onclick={() => visualizationMode = 'list'}
               >
                 List
               </Button>
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant={visualizationMode === 'clusters' ? 'default' : 'outline'}
                 size="sm"
-                on:on:click={() => visualizationMode = 'clusters'}
+                on:onclick={() => visualizationMode = 'clusters'}
               >
                 <Target class="h-4 w-4 mr-1" />
                 Clusters
               </Button>
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant={visualizationMode === 'performance' ? 'default' : 'outline'}
                 size="sm"
-                on:on:click={() => visualizationMode = 'performance'}
+                on:onclick={() => visualizationMode = 'performance'}
               >
                 <BarChart3 class="h-4 w-4 mr-1" />
                 Analytics
@@ -398,14 +405,10 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="flex items-center gap-4 text-sm text-gray-600">
                       <span>Relevance: {Math.round(result.score * 100)}%</span>
                       {#if result.cacheLayer}
-                        <Badge variant="outline" class="text-xs">
-                          {result.cacheLayer}
-                        </Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.cacheLayer}</span>
                       {/if}
                       {#if result.clusterId}
-                        <Badge variant="secondary" class="text-xs">
-                          Cluster {result.clusterId}
-                        </Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Cluster {result.clusterId}</span>
                       {/if}
                     </div>
                   </div>
@@ -436,9 +439,7 @@ https://svelte.dev/e/js_parse_error -->
                 {#if result.document.metadata.tags}
                   <div class="flex flex-wrap gap-1">
                     {#each result.document.metadata.tags.slice(0, 5) as tag}
-                      <Badge variant="outline" class="text-xs">
-                        {tag}
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                     {/each}
                   </div>
                 {/if}
@@ -452,22 +453,18 @@ https://svelte.dev/e/js_parse_error -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {#each clusterVisualization as cluster}
             <Card class="cursor-pointer transition-all {cluster.isSelected ? 'ring-2 ring-blue-500' : ''}"
-                  on:on:click={() => handleClusterSelect(cluster.id)}>
+                  on:onclick={() => handleClusterSelect(cluster.id)}>
               <CardHeader>
                 <CardTitle class="flex items-center justify-between">
                   <span>Cluster {cluster.id}</span>
-                  <Badge variant="secondary">
-                    {cluster.relevantResults.length} results
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{cluster.relevantResults.length} results</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div class="space-y-2">
                   <div class="flex flex-wrap gap-1">
                     {#each cluster.keywords.slice(0, 6) as keyword}
-                      <Badge variant="outline" class="text-xs">
-                        {keyword}
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{keyword}</span>
                     {/each}
                   </div>
 

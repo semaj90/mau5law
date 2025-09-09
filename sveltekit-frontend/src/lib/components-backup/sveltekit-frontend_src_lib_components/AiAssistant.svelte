@@ -181,7 +181,7 @@
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-lg font-bold uno-text-white">AI Evidence Assistant</h2>
     <Button
-      on:click={handleProcessEvidence}
+      onclick={handleProcessEvidence}
       disabled={isLoading || !user}
       class="uno-bg-blue-600 hover:uno-bg-blue-700 uno-text-white uno-px-4 uno-py-2 uno-rounded transition-colors"
     >
@@ -223,3 +223,4 @@
     font-family: 'Fira Code', 'Courier New', monospace;
   }
 </style>
+

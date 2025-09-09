@@ -2,8 +2,13 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import Button from '$lib/components/ui/Button.svelte';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import { Button } from '$lib/components/ui/enhanced-bits';
 
   // Svelte 5 runes for reactive state
   let isLoading = $state(false);
@@ -385,7 +390,7 @@
       {:else if authError}
         <div class="text-red-600 space-y-2">
           <p><strong>Error:</strong> {authError}</p>
-          <Button on:click={goToLogin} variant="default">Go to Login</Button>
+          <Button class="bits-btn bits-btn" onclick={goToLogin} variant="default">Go to Login</Button>
         </div>
       {:else}
         <p class="text-gray-500">Checking authentication...</p>
@@ -400,25 +405,25 @@
     </CardHeader>
     <CardContent>
       <div class="flex flex-wrap gap-3">
-  <Button on:click={runAuthenticatedCRUDTest} disabled={isLoading || !isAuthenticated} variant="default">
+  <Button class="bits-btn bits-btn" onclick={runAuthenticatedCRUDTest} disabled={isLoading || !isAuthenticated} variant="default">
           {isLoading ? '⏳ Testing...' : '🚀 Run Authenticated CRUD Test'}
         </Button>
-  <Button on:click={() => checkAuth()} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
           🔍 Check Auth
         </Button>
-  <Button on:click={testAuthenticatedGET} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button class="bits-btn bits-btn" onclick={testAuthenticatedGET} disabled={isLoading || !isAuthenticated} variant="secondary">
           📋 Test GET
         </Button>
-  <Button on:click={testAuthenticatedPOST} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button class="bits-btn bits-btn" onclick={testAuthenticatedPOST} disabled={isLoading || !isAuthenticated} variant="secondary">
           📝 Test POST
         </Button>
-  <Button on:click={() => testAuthenticatedPUT()} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button class="bits-btn bits-btn" onclick={() => testAuthenticatedPUT()} disabled={isLoading || !isAuthenticated} variant="secondary">
           ✏️ Test PUT
         </Button>
-  <Button on:click={() => testAuthenticatedDELETE()} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button class="bits-btn bits-btn" onclick={() => testAuthenticatedDELETE()} disabled={isLoading || !isAuthenticated} variant="secondary">
           🗑️ Test DELETE
         </Button>
-  <Button on:click={clearResults} variant="ghost">
+  <Button class="bits-btn bits-btn" onclick={clearResults} variant="ghost">
           🧹 Clear Results
         </Button>
       </div>

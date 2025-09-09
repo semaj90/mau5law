@@ -1,7 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced/Card.svelte';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/modular/Badge.svelte';
   import { cn } from '$lib/utils';
 
@@ -182,7 +187,7 @@
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">Test Controls</h2>
           <div class="flex gap-3">
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="outline"
               onclick={runAllTests}
               disabled={isRunning}
@@ -191,7 +196,7 @@
                 {isRunning ? 'Running Tests...' : 'Run All Tests'}
               {/snippet}
             </Button>
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="default"
               onclick={testSSEStream}
               disabled={isRunning}

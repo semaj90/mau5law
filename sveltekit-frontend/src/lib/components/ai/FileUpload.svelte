@@ -149,7 +149,7 @@ let uploadStartTime = $state(0);
       </div>
     </div>
 
-    <Button on:on:click={handleUpload} disabled={isUploading} class="w-full">
+    <Button on:onclick={handleUpload} disabled={isUploading} class="w-full bits-btn bits-btn">
       {#if isUploading}
         <Loader2 class="mr-2 h-4 w-4 animate-spin" />
         Uploading...

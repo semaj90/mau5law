@@ -2,8 +2,15 @@
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button/index.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Separator } from '$lib/components/ui/separator/index.js';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs/index.js';
@@ -356,13 +363,13 @@ let servicesHealthy = $state(false);
             <div class="space-y-2">
               <h4 class="font-semibold">🎯 Demo Actions:</h4>
               <div class="space-y-2">
-                <Button on:on:click={demoLogin} disabled={authenticatedUser !== null}>
+                <Button class="bits-btn bits-btn" on:onclick={demoLogin} disabled={authenticatedUser !== null}>
                   Demo Login
                 </Button>
-                <Button on:on:click={demoAIInteraction} disabled={!authenticatedUser}>
+                <Button class="bits-btn bits-btn" on:onclick={demoAIInteraction} disabled={!authenticatedUser}>
                   Test AI Assistant
                 </Button>
-                <Button on:on:click={demoLogout} disabled={!authenticatedUser} variant="outline">
+                <Button class="bits-btn bits-btn" on:onclick={demoLogout} disabled={!authenticatedUser} variant="outline">
                   Demo Logout
                 </Button>
               </div>
@@ -384,7 +391,7 @@ let servicesHealthy = $state(false);
               <p class="text-gray-600">
                 Demonstrate the modern authentication system with Svelte 5 runes and XState integration.
               </p>
-              <Button on:on:click={() => showAuthDialog = true}>
+              <Button class="bits-btn bits-btn" on:onclick={() => showAuthDialog = true}>
                 Open Authentication Dialog
               </Button>
             </div>
@@ -398,7 +405,7 @@ let servicesHealthy = $state(false);
                   <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}</p>
                 </div>
               </div>
-              <Button on:on:click={demoLogout} variant="outline">
+              <Button class="bits-btn bits-btn" on:onclick={demoLogout} variant="outline">
                 Logout
               </Button>
             </div>
@@ -437,14 +444,14 @@ let servicesHealthy = $state(false);
               </div>
               
               <div class="flex gap-2">
-                <Button 
-                  on:on:click={() => sessionManager.performSecurityCheck()} 
+                <Button class="bits-btn bits-btn" 
+                  on:onclick={() => sessionManager.performSecurityCheck()} 
                   size="sm"
                 >
                   Security Check
                 </Button>
-                <Button 
-                  on:on:click={() => sessionManager.refreshSession()} 
+                <Button class="bits-btn bits-btn" 
+                  on:onclick={() => sessionManager.refreshSession()} 
                   size="sm" 
                   variant="outline"
                 >
@@ -511,7 +518,7 @@ let servicesHealthy = $state(false);
               </div>
             </div>
             
-            <Button on:on:click={checkSystemHealth}>
+            <Button class="bits-btn bits-btn" on:onclick={checkSystemHealth}>
               Refresh System Health
             </Button>
           </div>

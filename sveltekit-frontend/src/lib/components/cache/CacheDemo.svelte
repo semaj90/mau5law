@@ -359,7 +359,7 @@
       <CardTitle class="flex items-center gap-2">
         <Database size={24} />
         Multi-Layer Cache System Demo
-        <Badge variant="secondary">Loki.js + Redis + PostgreSQL</Badge>
+        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Loki.js + Redis + PostgreSQL</span>
       </CardTitle>
     </CardHeader>
     <CardContent>
@@ -435,22 +435,22 @@
             </div>
 
             <div class="flex flex-wrap gap-2">
-              <Button on:on:click={setCacheValue} disabled={$isLoading}>
+              <Button class="bits-btn bits-btn" on:onclick={setCacheValue} disabled={$isLoading}>
                 <Database class="mr-2" size={16} />
                 Set Value
               </Button>
               
-              <Button variant="outline" on:on:click={getCacheValue} disabled={$isLoading}>
+              <Button class="bits-btn bits-btn" variant="outline" on:onclick={getCacheValue} disabled={$isLoading}>
                 <RefreshCw class="mr-2" size={16} />
                 Get Value
               </Button>
               
-              <Button variant="destructive" on:on:click={deleteCacheValue} disabled={$isLoading}>
+              <Button class="bits-btn bits-btn" variant="destructive" on:onclick={deleteCacheValue} disabled={$isLoading}>
                 <Trash2 class="mr-2" size={16} />
                 Delete
               </Button>
               
-              <Button variant="destructive" on:on:click={clearCache} disabled={$isLoading}>
+              <Button class="bits-btn bits-btn" variant="destructive" on:onclick={clearCache} disabled={$isLoading}>
                 <XCircle class="mr-2" size={16} />
                 Clear All
               </Button>
@@ -463,10 +463,10 @@
           <CardHeader>
             <CardTitle class="flex items-center justify-between">
               Test Results
-              <Button 
+              <Button class="bits-btn bits-btn" 
                 variant="ghost" 
                 size="sm" 
-                on:on:click={() => testResults.set([])}
+                on:onclick={() => testResults.set([])}
               >
                 Clear
               </Button>
@@ -685,9 +685,9 @@
           <CardContent class="space-y-4">
             <div class="space-y-2">
               <Button 
-                on:on:click={runPerformanceTest} 
+                on:onclick={runPerformanceTest} 
                 disabled={$isLoading}
-                class="w-full"
+                class="w-full bits-btn bits-btn"
               >
                 <Zap class="mr-2" size={16} />
                 Run Batch Performance Test
@@ -700,9 +700,9 @@
             <div class="space-y-2">
               <Button 
                 variant="outline"
-                on:on:click={testCacheHitMiss} 
+                on:onclick={testCacheHitMiss} 
                 disabled={$isLoading}
-                class="w-full"
+                class="w-full bits-btn bits-btn"
               >
                 <BarChart3 class="mr-2" size={16} />
                 Test Cache Hit/Miss
@@ -715,9 +715,9 @@
             <div class="space-y-2">
               <Button 
                 variant="outline"
-                on:on:click={refreshStats} 
+                on:onclick={refreshStats} 
                 disabled={$isLoading}
-                class="w-full"
+                class="w-full bits-btn bits-btn"
               >
                 <RefreshCw class="mr-2" size={16} />
                 Refresh Statistics

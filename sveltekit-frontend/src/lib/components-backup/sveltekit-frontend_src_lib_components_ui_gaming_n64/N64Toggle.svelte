@@ -77,7 +77,7 @@
   role="switch"
   aria-checked={checked}
   aria-disabled={disabled}
-  on:click={toggle}
+  onclick={toggle}
   on:keydown={handleKey}
   disabled={disabled}
   {name}
@@ -86,3 +86,4 @@
 	<span class="thumb" style="transform: translateX({thumbX}px)"></span>
   </span>
 </button>
+

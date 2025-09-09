@@ -201,7 +201,7 @@
 
           <!-- Manual Refresh -->
           <button 
-            on:click={fetchDashboardData}
+            onclick={fetchDashboardData}
             class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-sm"
           >
             Refresh
@@ -254,19 +254,19 @@
           <h2 class="text-xl font-bold text-gray-900">Workflow Control</h2>
           <div class="flex space-x-2">
             <button 
-              on:click={() => controlWorkflow('pause_processing')}
+              onclick={() => controlWorkflow('pause_processing')}
               class="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
             >
               Pause
             </button>
             <button 
-              on:click={() => controlWorkflow('resume_processing')}
+              onclick={() => controlWorkflow('resume_processing')}
               class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
             >
               Resume
             </button>
             <button 
-              on:click={() => controlWorkflow('clear_completed')}
+              onclick={() => controlWorkflow('clear_completed')}
               class="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600"
             >
               Clear Completed
@@ -346,7 +346,7 @@
         
         <div class="mt-4 flex justify-between items-center">
           <button 
-            on:click={submitTestJob}
+            onclick={submitTestJob}
             class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             Submit Job

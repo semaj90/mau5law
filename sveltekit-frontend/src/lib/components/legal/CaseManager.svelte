@@ -230,7 +230,7 @@
     
     <Dialog bind:open={$isCreateDialogOpen}>
       <DialogTrigger asChild let:builder>
-        <Button builders={[builder]} class="bg-blue-600 hover:bg-blue-700">
+        <Button builders={[builder]} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
           Create New Case
         </Button>
       </DialogTrigger>
@@ -239,7 +239,7 @@
           <DialogTitle>Create New Case</DialogTitle>
         </DialogHeader>
         
-        <form on:submit|preventDefault={createCase} class="space-y-4">
+        <form onsubmit|preventDefault={createCase} class="space-y-4">
           <div class="space-y-2">
             <Label for="title">Case Title *</Label>
             <Input 
@@ -311,17 +311,17 @@
           </div>
           
           <div class="flex justify-end space-x-2 pt-4">
-            <Button 
+            <Button class="bits-btn bits-btn" 
               type="button" 
               variant="outline"
-              on:on:click={() => isCreateDialogOpen.set(false)}
+              on:onclick={() => isCreateDialogOpen.set(false)}
             >
               Cancel
             </Button>
             <Button 
               type="submit" 
               disabled={$loading}
-              class="bg-blue-600 hover:bg-blue-700"
+              class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
             >
               {$loading ? 'Creating...' : 'Create Case'}
             </Button>
@@ -402,17 +402,17 @@
             </p>
             
             <div class="flex space-x-2">
-              <Button 
+              <Button class="bits-btn bits-btn" 
                 size="sm" 
                 variant="outline"
-                on:on:click={() => openEditDialog(caseData)}
+                on:onclick={() => openEditDialog(caseData)}
               >
                 Edit
               </Button>
-              <Button 
+              <Button class="bits-btn bits-btn" 
                 size="sm" 
                 variant="destructive"
-                on:on:click={() => deleteCase(caseData.id!)}
+                on:onclick={() => deleteCase(caseData.id!)}
               >
                 Delete
               </Button>
@@ -434,8 +434,8 @@
         
         {#if !$searchQuery}
           <Button 
-            class="bg-blue-600 hover:bg-blue-700"
-            on:on:click={() => isCreateDialogOpen.set(true)}
+            class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
+            on:onclick={() => isCreateDialogOpen.set(true)}
           >
             Create First Case
           </Button>
@@ -451,7 +451,7 @@
         <DialogTitle>Edit Case</DialogTitle>
       </DialogHeader>
       
-      <form on:submit|preventDefault={updateCase} class="space-y-4">
+      <form onsubmit|preventDefault={updateCase} class="space-y-4">
         <div class="space-y-2">
           <Label for="edit-title">Case Title *</Label>
           <Input 
@@ -523,17 +523,17 @@
         </div>
         
         <div class="flex justify-end space-x-2 pt-4">
-          <Button 
+          <Button class="bits-btn bits-btn" 
             type="button" 
             variant="outline"
-            on:on:click={() => isEditDialogOpen.set(false)}
+            on:onclick={() => isEditDialogOpen.set(false)}
           >
             Cancel
           </Button>
           <Button 
             type="submit" 
             disabled={$loading}
-            class="bg-blue-600 hover:bg-blue-700"
+            class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
           >
             {$loading ? 'Updating...' : 'Update Case'}
           </Button>

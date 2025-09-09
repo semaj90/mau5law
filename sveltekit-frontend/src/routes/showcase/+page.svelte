@@ -44,8 +44,8 @@
   } from 'lucide-svelte';
 
   // Import our enhanced UI components
-  import Button from '$lib/components/ui/Button.svelte';
-  import Card from '$lib/components/ui/Card.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Card } from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/Input.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
 
@@ -116,7 +116,7 @@ let layoutData = $state({
           bind:value={searchQuery}
           placeholder="Search cases, evidence, legal documents..."
           class="flex-1" />
-  <Button on:click={performVectorSearch} loading={isSearching} disabled={!searchQuery.trim()}>
+  <Button class="bits-btn bits-btn" onclick={performVectorSearch} loading={isSearching} disabled={!searchQuery.trim()}>
           <Search class="w-5 h-5 mr-2" />
           Search
         </Button>
@@ -158,10 +158,10 @@ let layoutData = $state({
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Button Variants</h3>
           <div class="space-y-3">
-            <Button variant="default">Primary Action</Button>
-            <Button variant="secondary">Secondary Action</Button>
-            <Button variant="ghost">Ghost Button</Button>
-            <Button variant="destructive">Delete Action</Button>
+            <Button class="bits-btn bits-btn" variant="default">Primary Action</Button>
+            <Button class="bits-btn bits-btn" variant="secondary">Secondary Action</Button>
+            <Button class="bits-btn bits-btn" variant="ghost">Ghost Button</Button>
+            <Button class="bits-btn bits-btn" variant="destructive">Delete Action</Button>
           </div>
         </div>
       </Card>
@@ -170,7 +170,7 @@ let layoutData = $state({
       <Card>
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Modal Component</h3>
-          <Button on:click={() => (modalOpen = true)}>Open Modal</Button>
+          <Button class="bits-btn bits-btn" onclick={() => (modalOpen = true)}>Open Modal</Button>
 
           <Modal bind:open={modalOpen} title="System Alert">
             <div class="mt-4">
@@ -179,8 +179,8 @@ let layoutData = $state({
                 integrates with bits-ui and follows Svelte 5 best practices.
               </p>
               <div class="flex gap-2 justify-end">
-                <Button variant="ghost" on:click={() => (modalOpen = false)}>Cancel</Button>
-                <Button on:click={() => (modalOpen = false)}>Acknowledge</Button>
+                <Button class="bits-btn bits-btn" variant="ghost" onclick={() => (modalOpen = false)}>Cancel</Button>
+                <Button class="bits-btn bits-btn" onclick={() => (modalOpen = false)}>Acknowledge</Button>
               </div>
             </div>
           </Modal>

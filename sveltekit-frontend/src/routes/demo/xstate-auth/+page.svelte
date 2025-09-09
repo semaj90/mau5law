@@ -6,7 +6,9 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import XStateAuthDemo from '$lib/components/auth/XStateAuthDemo.svelte';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import * as Card from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
   import {
@@ -217,8 +219,8 @@
                 {successfulTests}/{totalTests} Tests Passed
               </Badge>
             {/if}
-            <Button
-              on:click={runTests}
+            <Button class="bits-btn bits-btn"
+              onclick={runTests}
               disabled={isRunningTests}
               variant={allTestsPassed ? 'outline' : 'default'}
             >

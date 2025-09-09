@@ -419,7 +419,7 @@
     on:dragleave={handleDragLeave}
     on:dragover|preventDefault
     on:drop={handleDrop}
-    on:keydown={(e) => {
+    onkeydown={(e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         document.getElementById('file-input')?.click();
@@ -462,7 +462,7 @@
         type="file"
         multiple
         accept={acceptedTypes.join(',')}
-        on:change={handleFileSelect}
+        onchange={handleFileSelect}
         style="display: none"
       />
       

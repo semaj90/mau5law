@@ -6,7 +6,9 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { useMachine } from '@xstate/svelte';
 	import { createMachine, assign } from 'xstate';
-	import { Button } from '$lib/components/ui/Button.svelte';
+	import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
 	import { cn } from '$lib/utils/cn';
 	import { chatStore } from '$lib/stores/chat';
 	import type { ChatMessage, ChatSession } from '$lib/types/chat';
@@ -262,9 +264,7 @@ let chatContainer = $state<HTMLDivElement;
 			<div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
 			<h2 class="text-xl font-semibold text-gray-800">Legal AI Assistant</h2>
 			{#if $state.context.confidence > 0}
-				<Badge variant="secondary" class="ml-2">
-					Confidence: {Math.round($state.context.confidence * 100)}%
-				</Badge>
+				<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Confidence: {Math.round($state.context.confidence * 100)}%</span>
 			{/if}
 		</div>
 		
@@ -357,18 +357,18 @@ let chatContainer = $state<HTMLDivElement;
 					<span class="text-sm text-red-700">{$state.context.error}</span>
 				</div>
 				<div class="flex space-x-2">
-					<Button 
+					<Button class="bits-btn bits-btn" 
 						size="sm" 
 						variant="outline"
-						on:on:click={() => send({ type: 'RETRY' })}
+						on:onclick={() => send({ type: 'RETRY' })}
 						class="text-red-700 border-red-300 hover:bg-red-50"
 					>
 						Retry
 					</Button>
-					<Button 
+					<Button class="bits-btn bits-btn" 
 						size="sm" 
 						variant="ghost"
-						on:on:click={() => send({ type: 'CLEAR_ERROR' })}
+						on:onclick={() => send({ type: 'CLEAR_ERROR' })}
 						class="text-red-700 hover:bg-red-50"
 					>
 						Dismiss
@@ -393,7 +393,7 @@ let chatContainer = $state<HTMLDivElement;
 			</div>
 			<div class="flex flex-col justify-end">
 				<Button
-					on:on:click={handleSend}
+					on:onclick={handleSend}
 					disabled={!messageInput.trim() || $state.matches('sending')}
 					class={cn(
 						"px-6 py-3 rounded-lg font-medium transition-colors",

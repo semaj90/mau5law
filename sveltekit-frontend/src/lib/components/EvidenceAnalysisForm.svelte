@@ -254,8 +254,8 @@ let isAnalyzing = $state(false);
           </p>
         </div>
         <Button.Root
-          on:on:click={performAutomatedAnalysis}
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          on:onclick={performAutomatedAnalysis}
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn bits-btn"
         >
           🤖 Start Analysis
         </Button.Root>
@@ -301,8 +301,8 @@ let isAnalyzing = $state(false);
                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getConfidenceColor(entity.confidence)}">
                   {Math.round(entity.confidence * 100)}%
                 </span>
-                <Button.Root
-                  on:on:click={() => removeEntity(index)}
+                <Button class="bits-btn bits-btn".Root
+                  on:onclick={() => removeEntity(index)}
                   class="p-1 text-red-600 hover:text-red-800 focus:outline-none"
                 >
                   ×
@@ -322,8 +322,8 @@ let isAnalyzing = $state(false);
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-medium text-gray-900">Key Facts</h3>
       <Button.Root
-        on:on:click={addKeyFact}
-        class="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+        on:onclick={addKeyFact}
+        class="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 bits-btn bits-btn"
       >
         + Add Fact
       </Button.Root>
@@ -341,8 +341,8 @@ let isAnalyzing = $state(false);
                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               ></textarea>
             </div>
-            <Button.Root
-              on:on:click={() => removeKeyFact(index)}
+            <Button class="bits-btn bits-btn".Root
+              on:onclick={() => removeKeyFact(index)}
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none"
             >
               Remove
@@ -360,8 +360,8 @@ let isAnalyzing = $state(false);
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-medium text-gray-900">Legal Issues</h3>
       <Button.Root
-        on:on:click={addLegalIssue}
-        class="px-3 py-1 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        on:onclick={addLegalIssue}
+        class="px-3 py-1 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 bits-btn bits-btn"
       >
         + Add Issue
       </Button.Root>
@@ -380,8 +380,8 @@ let isAnalyzing = $state(false);
                 <option value={category}>{category}</option>
               {/each}
             </select>
-            <Button.Root
-              on:on:click={() => removeLegalIssue(index)}
+            <Button class="bits-btn bits-btn".Root
+              on:onclick={() => removeLegalIssue(index)}
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none"
             >
               Remove
@@ -420,24 +420,24 @@ let isAnalyzing = $state(false);
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 border-t border-gray-200">
     <Button.Root
-      on:on:click={handlePrevious}
-      class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      on:onclick={handlePrevious}
+      class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn bits-btn"
     >
       ← Previous
     </Button.Root>
 
     <div class="flex space-x-3">
       <Button.Root
-        on:on:click={handleSaveDraft}
-        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        on:onclick={handleSaveDraft}
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn bits-btn"
       >
         Save Draft
       </Button.Root>
 
       <Button.Root
-        on:on:click={handleNext}
+        on:onclick={handleNext}
         disabled={formData.key_facts.length === 0}
-        class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn bits-btn"
       >
         Next: AI Analysis →
       </Button.Root>

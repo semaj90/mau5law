@@ -2,8 +2,10 @@
   Simple Case Creation Test Page - Testing bits-ui buttons and database integration
 -->
 <script lang="ts">
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Input } from '$lib/components/ui/input';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import * as Card from '$lib/components/ui/card';
@@ -155,10 +157,10 @@ let formData = $state({
 
         <!-- Submit Button (bits-ui Button) -->
         <div class="flex justify-end space-x-3 pt-6 border-t">
-          <Button
+          <Button class="bits-btn bits-btn"
             type="button"
             variant="outline"
-            on:click={() => {
+            onclick={() => {
               formData = {
                 caseNumber: '',
                 title: '',
@@ -174,7 +176,7 @@ let formData = $state({
           <Button
             type="submit"
             disabled={isSubmitting || !formData.caseNumber || !formData.title}
-            class="min-w-[120px]"
+            class="min-w-[120px] bits-btn bits-btn"
           >
             {#if isSubmitting}
               <Loader2 class="mr-2 h-4 w-4 animate-spin" />

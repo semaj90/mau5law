@@ -1,9 +1,9 @@
 <script lang="ts">
 
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import Card from '$lib/components/ui/Card.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  // Badge replaced with span - not available in enhanced-bits
+  import { Card } from '$lib/components/ui/enhanced-bits';
   import {
     Upload, Move, RotateCcw, Trash2, ZoomIn, ZoomOut,
     Save, Download, Image as ImageIcon, FileText
@@ -422,9 +422,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
           <ImageIcon class="h-5 w-5" />
           Evidence Canvas
           {#if evidenceCount > 0}
-            <Badge variant="secondary">
-              {#snippet children()}{evidenceCount} items{/snippet}
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{#snippet children()}{evidenceCount} items{/snippet}</span>
           {/if}
         </div>
         <div class="flex items-center gap-3 text-sm text-gray-600">
@@ -450,7 +448,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
               onchange={handleFileUpload}
               disabled={isLoading}
             />
-            <Button variant="outline" disabled={isLoading}>
+            <Button class="bits-btn bits-btn" variant="outline" disabled={isLoading}>
               <Upload class="h-4 w-4 mr-2" />
               Upload Evidence
             </Button>
@@ -459,26 +457,26 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
         <!-- Add Annotation -->
         {#if !readOnly}
-          <Button variant="outline" onclick={addAnnotation}>
+          <Button class="bits-btn bits-btn" variant="outline" onclick={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
           </Button>
         {/if}
 
         <!-- Zoom Controls -->
-        <Button variant="outline" onclick={zoomIn}>
+        <Button class="bits-btn bits-btn" variant="outline" onclick={zoomIn}>
           <ZoomIn class="h-4 w-4" />
         </Button>
-        <Button variant="outline" onclick={zoomOut}>
+        <Button class="bits-btn bits-btn" variant="outline" onclick={zoomOut}>
           <ZoomOut class="h-4 w-4" />
         </Button>
-        <Button variant="outline" onclick={resetZoom}>
+        <Button class="bits-btn bits-btn" variant="outline" onclick={resetZoom}>
           <RotateCcw class="h-4 w-4" />
         </Button>
 
         <!-- Object Controls -->
         {#if hasSelectedObject && !readOnly}
-          <Button variant="destructive" onclick={deleteSelected}>
+          <Button class="bits-btn bits-btn" variant="destructive" onclick={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
           </Button>
@@ -486,13 +484,13 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
         <!-- Save & Export -->
         {#if !readOnly}
-          <Button variant="default" onclick={saveCanvas}>
+          <Button class="bits-btn bits-btn" variant="default" onclick={saveCanvas}>
             <Save class="h-4 w-4 mr-2" />
             Save
           </Button>
         {/if}
 
-        <Button variant="outline" onclick={exportCanvas}>
+        <Button class="bits-btn bits-btn" variant="outline" onclick={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
         </Button>

@@ -275,8 +275,8 @@
     aria-describedby={ariaDescribedby}
     on:focus={handleFocus}
     on:blur={handleBlur}
-    on:input={handleInput}
-    on:change={handleChange}
+    oninput={handleInput}
+    onchange={handleChange}
     on:mouseenter={handleMouseEnter}
     on:mouseleave={handleMouseLeave}
   />

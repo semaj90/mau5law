@@ -1,8 +1,10 @@
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { createEventDispatcher } from "svelte";
-  import Badge from '$lib/components/ui/Badge.svelte';
+  // Badge replaced with span - not available in enhanced-bits
   import * as Dialog from '$lib/components/ui/dialog';
   import Drawer from '$lib/components/ui/drawer/Drawer.svelte';
   import Grid from '$lib/components/ui/grid/Grid.svelte';
@@ -178,7 +180,7 @@ let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" 
           <div class="space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-semibold">Overview</h3>
-              <Button on:on:click={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
+              <Button class="bits-btn bits-btn" on:onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
                 <Sparkles class="w-4 h-4 mr-2" /> Regenerate
               </Button>
             </div>
@@ -200,9 +202,7 @@ let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" 
 
             <h3 class="text-lg font-semibold">Risk Assessment</h3>
             <div class="flex items-center gap-2">
-              <Badge variant="outline" class="{getRiskColor(caseData.summary.riskAssessment.level)}">
-                {caseData.summary.riskAssessment.level}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseData.summary.riskAssessment.level}</span>
               <span class="text-muted-foreground">({caseData.summary.riskAssessment.factors.join(', ')})</span>
             </div>
 
@@ -238,7 +238,7 @@ let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" 
           <div class="flex flex-col items-center justify-center h-48 text-muted-foreground">
             <Brain class="w-16 h-16 mb-4 opacity-50" />
             <p>No AI summary available for this case.</p>
-            <Button on:on:click={generateSummary} disabled={isGeneratingSummary} class="mt-4">
+            <Button on:onclick={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn bits-btn">
               <Sparkles class="w-4 h-4 mr-2" /> Generate Summary
             </Button>
           </div>

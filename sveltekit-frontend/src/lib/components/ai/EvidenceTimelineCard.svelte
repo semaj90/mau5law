@@ -2,9 +2,16 @@
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
 
   // runes-mode: props accessed via $props()
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import Separator from '$lib/components/ui/separator/Separator.svelte';
 
   // Access props via Svelte runes $props()
@@ -109,13 +116,13 @@
     <div class="flex items-center justify-between">
       <CardTitle class="text-xl font-semibold flex items-center gap-2">
         ⏰ Evidence Timeline
-        <Badge variant="outline">{timelineEvents.length} events</Badge>
+        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{timelineEvents.length} events</span>
       </CardTitle>
       <div class="flex gap-2">
-        <Button variant="outline" size="sm">
+        <Button class="bits-btn bits-btn" variant="outline" size="sm">
           📊 Timeline Analysis
         </Button>
-        <Button variant="outline" size="sm">
+        <Button class="bits-btn bits-btn" variant="outline" size="sm">
           🗂️ Export Timeline
         </Button>
       </div>
@@ -204,9 +211,7 @@
                           <h5 class="text-xs font-medium text-gray-600 mb-2">Persons Involved:</h5>
                           <div class="flex flex-wrap gap-1">
                             {#each event.persons as person}
-                              <Badge variant="outline" class="text-xs bg-blue-50 text-blue-700 border-blue-200">
-                                👤 {person}
-                              </Badge>
+                              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">👤 {person}</span>
                             {/each}
                           </div>
                         </div>
@@ -236,13 +241,13 @@
         </div>
 
         <div class="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" variant="outline" size="sm">
             🔍 Find Gaps
           </Button>
-          <Button variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" variant="outline" size="sm">
             🕸️ Show Connections
           </Button>
-          <Button size="sm">
+          <Button class="bits-btn bits-btn" size="sm">
             📝 Generate Report
           </Button>
         </div>

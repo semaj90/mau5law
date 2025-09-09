@@ -330,7 +330,7 @@ let messageInput = $state<HTMLTextAreaElement;
     class="chat-overlay"
     transitifade={{ duration: 200 }}
     on:on:onclick={(e) => { if (e.target === e.currentTarget) closeChat(); }}
-    on:keydown={(e) => e.key === "Escape" && closeChat()}
+    onkeydown={(e) => e.key === "Escape" && closeChat()}
     role="dialog"
     aria-modal="true"
     aria-labelledby="chat-title"

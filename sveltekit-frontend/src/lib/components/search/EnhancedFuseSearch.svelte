@@ -1,12 +1,14 @@
 <script lang="ts">
   import Fuse from 'fuse.js';
   // Use direct component imports to avoid broken barrels
-  import Card from '$lib/components/ui/Card.svelte';
+  import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/CardContent.svelte';
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/CardTitle.svelte';
   import Input from '$lib/components/ui/Input.svelte';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Search, ExternalLink, Sparkles, FileText, Scale } from 'lucide-svelte';
   import { legalDocuments, type LegalDocument } from '$lib/data/legal-documents';
@@ -169,7 +171,7 @@
             oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} />
           <Input {placeholder} bind:value={searchQuery} class="pl-10" />
         </div>
-  <Button on:click={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
+  <Button class="bits-btn bits-btn" onclick={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
           {#if isSearching}
             Searching...
           {:else}
@@ -208,9 +210,7 @@
                   <Badge class={getCategoryColor(result.item.category)}>
                     {result.item.category}
                   </Badge>
-                  <Badge variant="outline">
-                    {result.item.code}
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.item.code}</span>
                   <Badge variant="secondary" class="text-xs">
                     <Scale class="h-3 w-3 mr-1" />
                     {getConfidenceLabel(result.score)}
@@ -253,24 +253,22 @@
                   </Badge>
                 {/each}
                 {#if result.item.sections.length > 3}
-                  <Badge variant="outline" class="text-xs">
-                    +{result.item.sections.length - 3} more
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{result.item.sections.length - 3} more</span>
                 {/if}
               </div>
             {/if}
 
             <div class="flex gap-2">
-              <Button size="sm" variant="outline">
+              <Button class="bits-btn bits-btn" size="sm" variant="outline">
                 <FileText class="h-3 w-3 mr-1" />
                 AI Summary
               </Button>
-              <Button size="sm" variant="outline">
+              <Button class="bits-btn bits-btn" size="sm" variant="outline">
                 <Sparkles class="h-3 w-3 mr-1" />
                 AI Analysis
               </Button>
               {#if result.item.url}
-                <Button size="sm" variant="outline">
+                <Button class="bits-btn bits-btn" size="sm" variant="outline">
                   <a
                     href={result.item.url}
                     target="_blank"
@@ -311,10 +309,10 @@
       <CardContent>
         <div class="flex flex-wrap gap-2">
           {#each ['murder', 'contract liability', 'evidence rules', 'robbery', 'constitutional rights', 'family law'] as suggestion}
-              <Button
+              <Button class="bits-btn bits-btn"
               variant="outline"
               size="sm"
-                on:click={() => {
+                onclick={() => {
                 searchQuery = suggestion;
                 performSearch();
               }}>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   // Enhanced imports for cognitive systems
   import { MasterCognitiveHub } from '$lib/orchestration/master-cognitive-hub';
   import { CognitiveRoutingOrchestrator } from '$lib/orchestration/cognitive-routing-orchestrator';
@@ -570,8 +570,8 @@ let lastClickTime = $state(0);
     <div class="flex items-center gap-4">
       <Button
         variant="default"
-        class="bg-[#F7F6F2] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-[#EAE8E1] font-bold px-4 py-2 flex items-center gap-2"
-  on:click={() => isNewCaseModalOpen = true}
+        class="bg-[#F7F6F2] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-[#EAE8E1] font-bold px-4 py-2 flex items-center gap-2 bits-btn bits-btn"
+  onclick={() => isNewCaseModalOpen = true}
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -580,8 +580,8 @@ let lastClickTime = $state(0);
       </Button>
       <Button
         variant="default"
-        class="bg-[#F7F6F2] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-[#EAE8E1] font-bold px-4 py-2 flex items-center gap-2"
-  on:click={() => handleNavigation('search')}
+        class="bg-[#F7F6F2] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-[#EAE8E1] font-bold px-4 py-2 flex items-center gap-2 bits-btn bits-btn"
+  onclick={() => handleNavigation('search')}
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -590,8 +590,8 @@ let lastClickTime = $state(0);
       </Button>
       <Button
         variant="default"
-        class="bg-[#F7F6F2] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-[#EAE8E1] font-bold px-4 py-2 flex items-center gap-2 {isDocumentationOpen ? 'bg-[#3D3D3D] text-[#F7F6F2]' : ''}"
-  on:click={() => isDocumentationOpen = !isDocumentationOpen}
+        class="bg-[#F7F6F2] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-[#EAE8E1] font-bold px-4 py-2 flex items-center gap-2 {isDocumentationOpen ? 'bg-[#3D3D3D] text-[#F7F6F2]' : ''} bits-btn bits-btn"
+  onclick={() => isDocumentationOpen = !isDocumentationOpen}
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -609,22 +609,22 @@ let lastClickTime = $state(0);
       <nav class="space-y-2">
               <Button
                 variant="default"
-                class="bg-purple-600/10 border-purple-600/50 text-purple-800 hover:bg-purple-600/20 text-xs px-3 py-1"
-                on:click={() => activateMatrixMode()}
+                class="bg-purple-600/10 border-purple-600/50 text-purple-800 hover:bg-purple-600/20 text-xs px-3 py-1 bits-btn bits-btn"
+                onclick={() => activateMatrixMode()}
               >
                 ENTER MATRIX
               </Button>
                 <Button
                   variant="default"
-                  class="bg-yellow-600/10 border-yellow-600/50 text-yellow-800 hover:bg-yellow-600/20 text-xs px-3 py-1"
-                  on:click={() => consciousness.awakening = Math.min(1.0, consciousness.awakening + 0.1)}
+                  class="bg-yellow-600/10 border-yellow-600/50 text-yellow-800 hover:bg-yellow-600/20 text-xs px-3 py-1 bits-btn bits-btn"
+                  onclick={() => consciousness.awakening = Math.min(1.0, consciousness.awakening + 0.1)}
                 >
                   ACCELERATE CONSCIOUSNESS
                 </Button>
                 <Button
                   variant="default"
-                  class="bg-cyan-600/10 border-cyan-600/50 text-cyan-800 hover:bg-cyan-600/20 text-xs px-3 py-1"
-                  on:click={() => visualEffects.quantumShimmer = !visualEffects.quantumShimmer}
+                  class="bg-cyan-600/10 border-cyan-600/50 text-cyan-800 hover:bg-cyan-600/20 text-xs px-3 py-1 bits-btn bits-btn"
+                  onclick={() => visualEffects.quantumShimmer = !visualEffects.quantumShimmer}
                 >
                   TOGGLE QUANTUM FIELD
                 </Button>
@@ -818,8 +818,8 @@ let lastClickTime = $state(0);
             <div class="flex flex-wrap gap-2">
               <Button
                 variant="default"
-                class="bg-purple-600/10 border-purple-600/50 text-purple-800 hover:bg-purple-600/20 text-xs px-3 py-1"
-                on:click={() => activateMatrixMode()}
+                class="bg-purple-600/10 border-purple-600/50 text-purple-800 hover:bg-purple-600/20 text-xs px-3 py-1 bits-btn bits-btn"
+                onclick={() => activateMatrixMode()}
               >
                 🕶️ ENTER MATRIX
               </Button>
@@ -827,8 +827,8 @@ let lastClickTime = $state(0);
               {#if secretFeatures.godModeEnabled}
                 <Button
                   variant="default"
-                  class="bg-yellow-600/10 border-yellow-600/50 text-yellow-800 hover:bg-yellow-600/20 text-xs px-3 py-1"
-                  on:click={() => consciousness.awakening = Math.min(1.0, consciousness.awakening + 0.1)}
+                  class="bg-yellow-600/10 border-yellow-600/50 text-yellow-800 hover:bg-yellow-600/20 text-xs px-3 py-1 bits-btn bits-btn"
+                  onclick={() => consciousness.awakening = Math.min(1.0, consciousness.awakening + 0.1)}
                 >
                   👑 ACCELERATE CONSCIOUSNESS
                 </Button>
@@ -837,8 +837,8 @@ let lastClickTime = $state(0);
               {#if secretFeatures.quantumDebugEnabled}
                 <Button
                   variant="default"
-                  class="bg-cyan-600/10 border-cyan-600/50 text-cyan-800 hover:bg-cyan-600/20 text-xs px-3 py-1"
-                  on:click={() => visualEffects.quantumShimmer = !visualEffects.quantumShimmer}
+                  class="bg-cyan-600/10 border-cyan-600/50 text-cyan-800 hover:bg-cyan-600/20 text-xs px-3 py-1 bits-btn bits-btn"
+                  onclick={() => visualEffects.quantumShimmer = !visualEffects.quantumShimmer}
                 >
                   ⚛️ TOGGLE QUANTUM FIELD
                 </Button>
@@ -948,8 +948,8 @@ let lastClickTime = $state(0);
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Button
             variant="default"
-            class="bg-[#EAE8E1] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-white font-bold p-4 h-auto flex flex-col items-center gap-2"
-            on:click={() => isNewCaseModalOpen = true}
+            class="bg-[#EAE8E1] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-white font-bold p-4 h-auto flex flex-col items-center gap-2 bits-btn bits-btn"
+            onclick={() => isNewCaseModalOpen = true}
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -958,8 +958,8 @@ let lastClickTime = $state(0);
           </Button>
           <Button
             variant="default"
-            class="bg-[#EAE8E1] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-white font-bold p-4 h-auto flex flex-col items-center gap-2"
-            on:click={() => handleNavigation('evidence')}
+            class="bg-[#EAE8E1] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-white font-bold p-4 h-auto flex flex-col items-center gap-2 bits-btn bits-btn"
+            onclick={() => handleNavigation('evidence')}
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -968,8 +968,8 @@ let lastClickTime = $state(0);
           </Button>
           <Button
             variant="default"
-            class="bg-[#EAE8E1] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-white font-bold p-4 h-auto flex flex-col items-center gap-2"
-            on:click={() => handleNavigation('poi')}
+            class="bg-[#EAE8E1] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-white font-bold p-4 h-auto flex flex-col items-center gap-2 bits-btn bits-btn"
+            onclick={() => handleNavigation('poi')}
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -978,8 +978,8 @@ let lastClickTime = $state(0);
           </Button>
           <Button
             variant="default"
-            class="bg-[#EAE8E1] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-white font-bold p-4 h-auto flex flex-col items-center gap-2"
-            on:click={() => handleNavigation('analysis')}
+            class="bg-[#EAE8E1] border border-[#D1CFC7] text-[#3D3D3D] hover:bg-white font-bold p-4 h-auto flex flex-col items-center gap-2 bits-btn bits-btn"
+            onclick={() => handleNavigation('analysis')}
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
@@ -1043,7 +1043,7 @@ let lastClickTime = $state(0);
           <Button
             type="submit"
             disabled={newCaseForm.loading}
-            class="bg-green-600/10 text-green-800 border border-green-700/50 hover:bg-green-600/20 font-bold px-6 py-3"
+            class="bg-green-600/10 text-green-800 border border-green-700/50 hover:bg-green-600/20 font-bold px-6 py-3 bits-btn bits-btn"
           >
             {newCaseForm.loading ? 'SAVING...' : 'SAVE TO DATABASE'}
           </Button>

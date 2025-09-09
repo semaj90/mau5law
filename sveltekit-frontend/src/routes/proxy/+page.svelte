@@ -1,5 +1,9 @@
 <script lang="ts">
-  export let data: { message: string; path: string; targetExample: string; now: string };
+  interface Props {
+    data: { message: string; path: string; targetExample: string; now: string };
+  }
+
+  let { data }: Props = $props();
 </script>
 
 <div class="p-6 space-y-4 border border-neutral-700 rounded-lg bg-neutral-900/50">

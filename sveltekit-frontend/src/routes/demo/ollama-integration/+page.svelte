@@ -18,11 +18,20 @@
     type IntegratedChatResponse,
     type OllamaServiceStatus
   } from '$lib/services/ollama-integration-layer';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card";
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { ScrollArea } from '$lib/components/ui/scroll-area';
   import {
     Activity,
@@ -339,7 +348,7 @@ let stats = $state<any >(null);
       <Badge variant={isInitialized ? 'default' : 'secondary'}>
         {isInitialized ? 'Ready' : 'Initializing'}
       </Badge>
-  <Button variant="outline" size="sm" on:click={refreshServiceStatus}>
+  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={refreshServiceStatus}>
         <Settings class="w-4 h-4" />
       </Button>
     </div>
@@ -427,9 +436,9 @@ let stats = $state<any >(null);
         <!-- Test Actions -->
         <div class="grid grid-cols-2 gap-2">
           <Button
-            on:click={testBasicChat}
+            onclick={testBasicChat}
             disabled={!isInitialized || isLoading}
-            class="flex items-center gap-2"
+            class="flex items-center gap-2 bits-btn bits-btn"
           >
             {#if isLoading}
               <Loader2 class="w-4 h-4 animate-spin" />
@@ -440,30 +449,30 @@ let stats = $state<any >(null);
           </Button>
 
           <Button
-            on:click={testDocumentSummary}
+            onclick={testDocumentSummary}
             disabled={!isInitialized || isLoading}
             variant="secondary"
-            class="flex items-center gap-2"
+            class="flex items-center gap-2 bits-btn bits-btn"
           >
             <FileText class="w-4 h-4" />
             Document Summary
           </Button>
 
           <Button
-            on:click={testRAGQuery}
+            onclick={testRAGQuery}
             disabled={!isInitialized || isLoading}
             variant="outline"
-            class="flex items-center gap-2"
+            class="flex items-center gap-2 bits-btn bits-btn"
           >
             <Database class="w-4 h-4" />
             RAG Query
           </Button>
 
           <Button
-            on:click={testDirectAPI}
+            onclick={testDirectAPI}
             disabled={!isInitialized || isLoading}
             variant="outline"
-            class="flex items-center gap-2"
+            class="flex items-center gap-2 bits-btn bits-btn"
           >
             <Zap class="w-4 h-4" />
             Direct API
@@ -473,10 +482,10 @@ let stats = $state<any >(null);
         <!-- Streaming Test -->
         <div class="border-t pt-4">
           <Button
-            on:click={testStreamingResponse}
+            onclick={testStreamingResponse}
             disabled={!isInitialized || isStreaming}
             variant="secondary"
-            class="w-full flex items-center gap-2"
+            class="w-full flex items-center gap-2 bits-btn bits-btn"
           >
             {#if isStreaming}
               <Loader2 class="w-4 h-4 animate-spin" />
@@ -500,10 +509,10 @@ let stats = $state<any >(null);
         <!-- System Actions -->
         <div class="border-t pt-4 space-y-2">
           <Button
-            on:click={warmupServices}
+            onclick={warmupServices}
             disabled={isLoading}
             variant="outline"
-            class="w-full flex items-center gap-2"
+            class="w-full flex items-center gap-2 bits-btn bits-btn"
           >
             <Zap class="w-4 h-4" />
             Warmup All Services
@@ -521,10 +530,10 @@ let stats = $state<any >(null);
             Test Results ({responses.length})
           </span>
           {#if responses.length > 0}
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="outline"
               size="sm"
-              on:click={() => responses = []}
+              onclick={() => responses = []}
             >
               Clear
             </Button>
@@ -545,7 +554,7 @@ let stats = $state<any >(null);
                 <Card>
                   <CardHeader class="pb-2">
                     <div class="flex items-center justify-between">
-                      <Badge variant="outline">{result.type}</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.type}</span>
                       <span class="text-xs text-muted-foreground">
                         {result.processingTime}ms • {result.timestamp.toLocaleTimeString()}
                       </span>

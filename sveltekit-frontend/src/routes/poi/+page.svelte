@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
 
   // State
 let searchQuery = $state('');
@@ -63,20 +63,20 @@ let persons = $state([
     </div>
 
     <div class="flex flex-wrap gap-2 items-center">
-    <Button
+    <Button class="bits-btn bits-btn"
         variant="outline"
         size="sm"
-  on:click={() => (showFilters = !showFilters)}
+  onclick={() => (showFilters = !showFilters)}
         class={showFilters ? 'bg-blue-50 border-blue-300' : ''}
       >
         <Filter class="w-4 h-4 mr-2" />
         Filters
       </Button>
 
-    <Button
+    <Button class="bits-btn bits-btn"
         variant="outline"
         size="sm"
-  on:click={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
+  onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
       >
         {#if viewMode === 'grid'}
           <List class="w-4 h-4" />
@@ -85,7 +85,7 @@ let persons = $state([
         {/if}
       </Button>
 
-      <Button>
+      <Button class="bits-btn bits-btn">
         <Plus class="w-4 h-4 mr-2" />
         Add Person
       </Button>
@@ -131,7 +131,7 @@ let persons = $state([
         </div>
 
         <div class="flex items-end">
-          <Button variant="outline" size="sm" class="w-full">
+          <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">
             Clear Filters
           </Button>
         </div>
@@ -157,7 +157,7 @@ let persons = $state([
         {searchQuery ? 'Try adjusting your search criteria' : 'Add persons to get started'}
       </p>
       {#if !searchQuery}
-        <Button>
+        <Button class="bits-btn bits-btn">
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
         </Button>
@@ -195,11 +195,11 @@ let persons = $state([
           </div>
 
           <div class="flex gap-2">
-            <Button size="sm" class="flex-1">
+            <Button size="sm" class="flex-1 bits-btn bits-btn">
               <Eye class="w-3 h-3 mr-1" />
               View
             </Button>
-            <Button variant="outline" size="sm" class="flex-1">
+            <Button variant="outline" size="sm" class="flex-1 bits-btn bits-btn">
               <Edit class="w-3 h-3 mr-1" />
               Edit
             </Button>
@@ -228,11 +228,11 @@ let persons = $state([
             </div>
 
             <div class="flex gap-2">
-              <Button size="sm">
+              <Button class="bits-btn bits-btn" size="sm">
                 <Eye class="w-3 h-3 mr-1" />
                 View
               </Button>
-              <Button variant="outline" size="sm">
+              <Button class="bits-btn bits-btn" variant="outline" size="sm">
                 <Edit class="w-3 h-3 mr-1" />
                 Edit
               </Button>

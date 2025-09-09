@@ -204,7 +204,7 @@ let alertOpen = $state(false);
   </div>
 
   <!-- Bits UI Button -->
-  <Button.Root class="mx-auto px-4 max-w-7xl" on:on:click={showSuccessNotification}>
+  <Button.Root class="mx-auto px-4 max-w-7xl bits-btn bits-btn" on:onclick={showSuccessNotification}>
     Create New Case
   </Button.Root>
 
@@ -262,7 +262,7 @@ let alertOpen = $state(false);
           <Dialog.Close class="mx-auto px-4 max-w-7xl">
             Close
           </Dialog.Close>
-          <Button.Root class="mx-auto px-4 max-w-7xl">
+          <Button.Root class="mx-auto px-4 max-w-7xl bits-btn bits-btn">
             Get Started
           </Button.Root>
         </div>
@@ -289,7 +289,7 @@ let alertOpen = $state(false);
           <AlertDialog.Cancel class="mx-auto px-4 max-w-7xl">
             Cancel
           </AlertDialog.Cancel>
-          <AlertDialog.Action class="mx-auto px-4 max-w-7xl" on:on:click={showErrorNotification}>
+          <AlertDialog.Action class="mx-auto px-4 max-w-7xl" on:onclick={showErrorNotification}>
             Delete Permanently
           </AlertDialog.Action>
         </div>

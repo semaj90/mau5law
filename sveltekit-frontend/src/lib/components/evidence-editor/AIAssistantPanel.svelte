@@ -1,8 +1,17 @@
 <script lang="ts">
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Search, Bot, Sparkles, FileText, Users, Clock, Tags } from 'lucide-svelte';
   import { onMount, createEventDispatcher } from 'svelte';
   import Fuse from 'fuse.js';
@@ -182,7 +191,7 @@ let fuse = $state<Fuse<any> | null >(null);
           class="flex-1"
         />
         {#if searchQuery}
-          <Button on:on:click={clearSearch} variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" on:onclick={clearSearch} variant="outline" size="sm">
             Clear
           </Button>
         {/if}
@@ -212,15 +221,13 @@ let fuse = $state<Fuse<any> | null >(null);
                     {#if result.tags && result.tags.length > 0}
                       <div class="flex flex-wrap gap-1 mt-2">
                         {#each result.tags.slice(0, 3) as tag}
-                          <Badge variant="secondary" class="text-xs">{tag}</Badge>
+                          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
                         {/each}
                       </div>
                     {/if}
                   </div>
                   {#if result.score !== undefined}
-                    <Badge variant="outline" class="ml-2">
-                      {Math.round((1 - result.score) * 100)}% match
-                    </Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round((1 - result.score) * 100)}% match</span>
                   {/if}
                 </div>
               </button>
@@ -253,11 +260,11 @@ let fuse = $state<Fuse<any> | null >(null);
         </div>
 
         <div class="flex gap-2">
-          <Button on:on:click={analyzeWithAI} disabled={isProcessing} class="flex-1">
+          <Button on:onclick={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn bits-btn">
             <Sparkles class="w-4 h-4 mr-2" />
             {isProcessing ? 'Analyzing...' : 'Analyze with AI'}
           </Button>
-          <Button on:on:click={generateInsights} disabled={isProcessing} variant="outline">
+          <Button class="bits-btn bits-btn" on:onclick={generateInsights} disabled={isProcessing} variant="outline">
             Generate Insights
           </Button>
         </div>

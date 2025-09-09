@@ -3,9 +3,14 @@
 	import { onMount } from 'svelte';
 	import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
 	import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 	import Button from '$lib/components/ui/button/Button.svelte';
-	import Badge from '$lib/components/ui/Badge.svelte';
+	// Badge replaced with span - not available in enhanced-bits
 	import { Activity, Cpu, Database, Zap, Eye, Grid3X3, Canvas } from 'lucide-svelte';
 
 	// Svelte 5 state management
@@ -174,7 +179,7 @@
 				<div class="flex items-center gap-3">
 					<!-- View Mode Switcher -->
 					<div class="flex gap-1 bg-muted rounded-md p-1">
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchViewMode('canvas')}
@@ -183,7 +188,7 @@
 							<Canvas class="w-4 h-4 mr-1" />
 							Canvas
 						</Button>
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant={viewMode === 'board' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchViewMode('board')}
@@ -192,7 +197,7 @@
 							<Grid3X3 class="w-4 h-4 mr-1" />
 							Board
 						</Button>
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant={viewMode === 'hybrid' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchViewMode('hybrid')}
@@ -243,13 +248,13 @@
 				</div>
 				
 				<div class="flex gap-2">
-					<Button variant="outline" size="sm" onclick={syncCanvasToBoard}>
+					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={syncCanvasToBoard}>
 						Sync Canvas → Board
 					</Button>
-					<Button variant="outline" size="sm" onclick={syncBoardToCanvas}>
+					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={syncBoardToCanvas}>
 						Sync Board → Canvas
 					</Button>
-					<Button variant="default" size="sm" onclick={processUnifiedAnalysis}>
+					<Button class="bits-btn bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
 						Analyze All Evidence
 					</Button>
 				</div>
@@ -336,7 +341,7 @@
 							</div>
 							<div class="flex gap-1 mt-1">
 								{#each (analysis.tags || []).slice(0, 3) as tag}
-									<Badge variant="outline" class="text-xs py-0">{tag}</Badge>
+									<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
 								{/each}
 							</div>
 						</div>

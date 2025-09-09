@@ -3,8 +3,15 @@
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { createPhase13Integration } from '$lib/state/phase13StateMachine';
   import { createStatelessAPICoordinator } from '$lib/services/stateless-api-coordinator';
   import { createEnhancedRAGEngine, RAGHelpers } from '$lib/services/enhanced-rag-pagerank';
@@ -398,10 +405,10 @@ let context7Integration = $state<any >(null);
           class="border border-slate-600 rounded bg-black"></canvas>
         <div class="flex flex-col gap-2">
           <Button
-            on:click={startWebGLDemo}
+            onclick={startWebGLDemo}
             disabled={!systemInitialized}
             variant="outline"
-            class="text-white border-slate-600 hover:bg-slate-700">
+            class="text-white border-slate-600 hover:bg-slate-700 bits-btn bits-btn">
             Start WebGL Demo
           </Button>
           <p class="text-sm text-gray-400">
@@ -424,16 +431,16 @@ let context7Integration = $state<any >(null);
             class="w-full p-3 rounded border border-slate-600 bg-slate-700 text-white placeholder-gray-400" />
           <div class="flex gap-2">
             <Button
-              on:click={performEnhancedRAGSearch}
+              onclick={performEnhancedRAGSearch}
               disabled={!systemInitialized || ragActive}
-              class="bg-blue-600 hover:bg-blue-700">
+              class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
               {ragActive ? 'Searching...' : 'Search'}
             </Button>
             <Button
-              on:click={getContext7Recommendations}
+              onclick={getContext7Recommendations}
               disabled={!systemInitialized}
               variant="outline"
-              class="text-white border-slate-600 hover:bg-slate-700">
+              class="text-white border-slate-600 hover:bg-slate-700 bits-btn bits-btn">
               Get Recommendations
             </Button>
           </div>
@@ -448,15 +455,15 @@ let context7Integration = $state<any >(null);
         <h3 class="text-lg font-semibold text-white mb-4">System Controls</h3>
         <div class="space-y-4">
           <Button
-            on:click={startAPICoordination}
+            onclick={startAPICoordination}
             disabled={!systemInitialized || apiActive}
-            class="w-full bg-green-600 hover:bg-green-700">
+            class="w-full bg-green-600 hover:bg-green-700 bits-btn bits-btn">
             {apiActive ? 'API Active' : 'Start API Coordination'}
           </Button>
           <Button
-            on:click={runFullDemo}
+            onclick={runFullDemo}
             disabled={!systemInitialized}
-            class="w-full bg-purple-600 hover:bg-purple-700">
+            class="w-full bg-purple-600 hover:bg-purple-700 bits-btn bits-btn">
             Run Full Demo
           </Button>
           <div class="text-sm text-gray-400">
@@ -488,9 +495,9 @@ let context7Integration = $state<any >(null);
                 <span class="text-xs text-gray-400">
                   PageRank: {result.pageRankBoost?.toFixed(3) || '0.000'}
                 </span>
-                <Button
+                <Button class="bits-btn bits-btn"
                   size="sm"
-                  on:click={() => submitPositiveFeedback(index)}
+                  onclick={() => submitPositiveFeedback(index)}
                   class="text-xs bg-green-600 hover:bg-green-700">
                   👍 Relevant
                 </Button>

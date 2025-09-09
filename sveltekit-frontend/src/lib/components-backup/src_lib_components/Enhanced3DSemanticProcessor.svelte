@@ -483,13 +483,13 @@
           
           <div class="flex space-x-2">
             <Button.Root 
-              on:click={() => fileInput?.click()}
+              onclick={() => fileInput?.click()}
               class="bg-blue-600 hover:bg-blue-700"
             >
               📁 Select Files
             </Button.Root>
             <Button.Root 
-              on:click={clearAll}
+              onclick={clearAll}
               variant="outline"
               class="border-red-300 text-red-700 hover:bg-red-50"
             >
@@ -522,7 +522,7 @@
                    transition:fly={{ y: -10, duration: 200 }}>
                 {#each autocompleteSuggestions as suggestion}
                   <button
-                    on:click={() => applyAutocompleteSuggestion(suggestion)}
+                    onclick={() => applyAutocompleteSuggestion(suggestion)}
                     class="w-full px-3 py-2 text-left hover:bg-gray-100 
                            flex items-center justify-between"
                   >

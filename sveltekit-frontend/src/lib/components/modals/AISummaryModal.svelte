@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   import { aiService } from '$lib/services/aiService';
   import * as Dialog from '$lib/components/ui/dialog';
   import Button from "$lib/components/ui/button";
-  import Badge from '$lib/components/ui/Badge.svelte';
+  // Badge replaced with span - not available in enhanced-bits
   import { Sparkles, Copy, X, AlertCircle, Check } from 'lucide-svelte';
 let copied = $state(false);
 
@@ -67,7 +67,7 @@ let copied = $state(false);
       <!-- Summary Content -->
       <div class="space-y-4">
         <div class="space-y-4">
-          <Button on:on:click={() => copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
+          <Button class="bits-btn bits-btn" on:onclick={() => copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
             <Copy class="space-y-4" />
             <span class="space-y-4">Copy</span>
           </Button>
@@ -91,7 +91,7 @@ let copied = $state(false);
 
   <Dialog.Footer>
     <Dialog.Close asChild>
-      <Button on:on:click={() => closeModal()} variant="secondary" aria-label="Close summary modal">
+      <Button class="bits-btn bits-btn" on:onclick={() => closeModal()} variant="secondary" aria-label="Close summary modal">
         <X class="space-y-4" />
         <span class="space-y-4">Close</span>
       </Button>

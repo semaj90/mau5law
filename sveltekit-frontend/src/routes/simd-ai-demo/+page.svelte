@@ -3,8 +3,13 @@
   import SIMDAIAssistantDemo from '$lib/components/ai/SIMDAIAssistantDemo.svelte';
   import SIMDTextTilingDemo from '$lib/components/ai/SIMDTextTilingDemo.svelte';
   import SIMDGlyphDemo from '$lib/components/ai/SIMDGlyphDemo.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   
   let activeDemo = $state('overview');
   let systemStatus = $state(null);
@@ -267,7 +272,7 @@
             </div>
           </div>
           
-          <Button onclick={runSystemBenchmark} variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" onclick={runSystemBenchmark} variant="outline" size="sm">
             🧪 Run Benchmark
           </Button>
         </div>

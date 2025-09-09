@@ -1,8 +1,15 @@
 <script lang="ts">
   import { Dialog } from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import { Card } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Checkbox } from '$lib/components/ui/checkbox';
 
   let dialogOpen = false;
@@ -95,16 +102,16 @@
         <div class="nes-container">
           <p class="nes-text is-primary">GAME CONTROLS</p>
           <div class="button-grid">
-            <Button class="nes-btn action-btn" on:click={increaseScore}>
+            <Button class="nes-btn action-btn bits-btn bits-btn" onclick={increaseScore}>
               A BUTTON
             </Button>
-            <Button class="nes-btn action-btn" on:click={decreaseHealth}>
+            <Button class="nes-btn action-btn bits-btn bits-btn" onclick={decreaseHealth}>
               B BUTTON
             </Button>
-            <Button class="nes-btn start-btn" on:click={() => dialogOpen = true}>
+            <Button class="nes-btn start-btn bits-btn bits-btn" onclick={() => dialogOpen = true}>
               START
             </Button>
-            <Button class="nes-btn select-btn">
+            <Button class="nes-btn select-btn bits-btn bits-btn">
               SELECT
             </Button>
           </div>
@@ -117,13 +124,13 @@
       <div class="nes-container">
         <p class="nes-text is-primary">DIRECTIONAL PAD</p>
         <div class="dpad">
-          <Button class="nes-btn dpad-btn dpad-up">▲</Button>
+          <Button class="nes-btn dpad-btn dpad-up bits-btn bits-btn">▲</Button>
           <div class="dpad-middle">
-            <Button class="nes-btn dpad-btn dpad-left">◄</Button>
+            <Button class="nes-btn dpad-btn dpad-left bits-btn bits-btn">◄</Button>
             <div class="dpad-center"></div>
-            <Button class="nes-btn dpad-btn dpad-right">►</Button>
+            <Button class="nes-btn dpad-btn dpad-right bits-btn bits-btn">►</Button>
           </div>
-          <Button class="nes-btn dpad-btn dpad-down">▼</Button>
+          <Button class="nes-btn dpad-btn dpad-down bits-btn bits-btn">▼</Button>
         </div>
       </div>
     </div>
@@ -212,8 +219,8 @@
           </div>
       </div>
       <div class="menu-actions">
-        <Button class="nes-btn is-primary" on:click={() => dialogOpen = false}>START GAME</Button>
-        <Button class="nes-btn" on:click={() => dialogOpen = false}>CANCEL</Button>
+        <Button class="nes-btn is-primary bits-btn bits-btn" onclick={() => dialogOpen = false}>START GAME</Button>
+        <Button class="nes-btn bits-btn bits-btn" onclick={() => dialogOpen = false}>CANCEL</Button>
       </div>
     </div>
   </Dialog>

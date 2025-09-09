@@ -551,10 +551,10 @@
             spellcheck="false"
             aria-label="Command search"
           />
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:on:click={() => (open = false)}
+            on:onclick={() => (open = false)}
             class="close-button"
             aria-label="Close command palette"
           >

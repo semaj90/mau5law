@@ -268,9 +268,7 @@
 					</div>
 					<div class="flex justify-between items-center">
 						<span class="text-sm text-gray-300">Predictor Status</span>
-						<Badge variant="secondary" class={getStatusColor(metrics.predictorStatus)}>
-							{metrics.predictorStatus}
-						</Badge>
+						<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{metrics.predictorStatus}</span>
 					</div>
 				</div>
 			</Card.Content>

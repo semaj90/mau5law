@@ -8,9 +8,16 @@ https://svelte.dev/e/bind_invalid_expression -->
   import { onMount } from 'svelte';
   import EnhancedInlineEditor from '$lib/components/ai/EnhancedInlineEditor.svelte';
   import { inlineSuggestionService, type SuggestionOptions } from '$lib/services/inlineSuggestionService';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Switch } from '$lib/components/ui/switch';
   import { Slider } from '$lib/components/ui/slider';
 
@@ -180,10 +187,10 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
           <CardContent>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               {#each demoScenarios as scenario}
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   size="sm"
-                  on:click={() => loadScenario(scenario)}
+                  onclick={() => loadScenario(scenario)}
                   class="justify-start text-left"
                 >
                   {scenario.title}
@@ -201,7 +208,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                 <CardTitle>AI-Enhanced Legal Editor</CardTitle>
                 <CardDescription>Start typing to see intelligent suggestions appear</CardDescription>
               </div>
-              <Button on:click={resetDemo} variant="outline" size="sm">
+              <Button class="bits-btn bits-btn" onclick={resetDemo} variant="outline" size="sm">
                 Reset Demo
               </Button>
             </div>
@@ -256,9 +263,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
               <h4 class="font-semibold mb-3">Suggestion Types</h4>
               <div class="flex flex-wrap gap-2">
                 {#each Object.entries(stats.suggestionTypes) as [type, count]}
-                  <Badge variant="secondary" class="capitalize">
-                    {type.replace('_', ' ')}: {count}
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{type.replace('_', ' ')}: {count}</span>
                 {/each}
               </div>
             </div>
@@ -423,23 +428,23 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
           <CardContent>
             <div class="space-y-3 text-sm">
               <div class="flex gap-2">
-                <Badge variant="outline" size="sm">1</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">1</span>
                 <span>Start typing in the editor above</span>
               </div>
               <div class="flex gap-2">
-                <Badge variant="outline" size="sm">2</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">2</span>
                 <span>Wait for AI suggestions to appear</span>
               </div>
               <div class="flex gap-2">
-                <Badge variant="outline" size="sm">3</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">3</span>
                 <span>Use ↑↓ arrows to navigate suggestions</span>
               </div>
               <div class="flex gap-2">
-                <Badge variant="outline" size="sm">4</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">4</span>
                 <span>Press Tab or Enter to accept</span>
               </div>
               <div class="flex gap-2">
-                <Badge variant="outline" size="sm">5</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">5</span>
                 <span>Press Esc to dismiss suggestions</span>
               </div>
             </div>

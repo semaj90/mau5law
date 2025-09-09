@@ -390,7 +390,7 @@ let enableGPUAnalysis = $state(false);
   <div 
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
     transitifade={{ duration: 200 }}
-    on:click|self={handleClose}
+    onclick|self={handleClose}
     role="dialog"
     aria-modal="true"
     aria-labelledby="document-detail-title"

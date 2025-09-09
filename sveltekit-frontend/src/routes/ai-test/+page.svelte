@@ -2,8 +2,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import { Card } from "$lib/components/ui/card";
-  import Badge from '$lib/components/ui/Badge.svelte';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  // Badge replaced with span - not available in enhanced-bits
   import EnhancedAIChatTest from '$lib/components/ai/EnhancedAIChatTest.svelte';
   import {
     Bot,
@@ -155,9 +160,7 @@
           </div>
 
           {#if systemStatus.ollama.version}
-            <Badge variant="outline" class="mt-2">
-              v{systemStatus.ollama.version}
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">v{systemStatus.ollama.version}</span>
           {/if}
 
           {#if systemStatus.ollama.error}
@@ -218,8 +221,8 @@
         </div>
 
         <div class="flex gap-2 mt-2">
-          <Badge variant="outline">CUDA 12.9</Badge>
-          <Badge variant="outline">8GB VRAM</Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">CUDA 12.9</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">8GB VRAM</span>
         </div>
       </Card>
     </div>
@@ -307,7 +310,7 @@
 
     <!-- Refresh Button -->
     <div class="text-center mt-8">
-  <Button variant="outline" on:click={checkSystemStatus} disabled={isLoading} class="gap-2">
+  <Button variant="outline" onclick={checkSystemStatus} disabled={isLoading} class="gap-2 bits-btn bits-btn">
         {#if isLoading}
           <Loader2 class="h-4 w-4 animate-spin" />
         {:else}

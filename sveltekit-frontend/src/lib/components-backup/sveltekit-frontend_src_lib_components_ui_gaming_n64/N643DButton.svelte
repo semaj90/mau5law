@@ -52,7 +52,7 @@
 <button
     bind:this={rootEl}
     class="n64-3d-button {size} {disabled ? 'is-disabled' : ''} {className}"
-    on:click={handleClick}
+    onclick={handleClick}
     on:keydown={onKeydown}
     aria-label={ariaLabel}
     aria-disabled={disabled}

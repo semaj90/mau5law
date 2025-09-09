@@ -43,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   import GridItem from '$lib/components/ui/grid/GridItem.svelte';
   import Button from "$lib/components/ui/button";
   import Input from '$lib/components/ui/Input.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
+  // Badge replaced with span - not available in enhanced-bits
   
   // Icons
   import { FileText, Brain, Tag, Scale, Zap, Download, Upload, Sparkles } from 'lucide-svelte';
@@ -144,14 +144,14 @@ let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
         </div>
         
         <div class="space-y-4">
-          <Button variant="secondary" size="sm">
+          <Button class="bits-btn bits-btn" variant="secondary" size="sm">
             <Download class="space-y-4" />
             Export
           </Button>
-          <Button 
+          <Button class="bits-btn bits-btn" 
             variant="primary" 
             size="sm" 
-            on:on:click={() => analyzeEvidence()}
+            on:onclick={() => analyzeEvidence()}
             disabled={isAnalyzing}
           >
             {#if isAnalyzing}
@@ -269,7 +269,7 @@ let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
             <!-- Existing Tags -->
             <div class="space-y-4">
               {#each evidence.tags || [] as tag}
-                <Badge variant="secondary">{tag}</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
               {/each}
               {#each evidence.analysis?.suggestedTags || [] as tag}
                 <Badge variant="secondary" class="space-y-4">
@@ -285,7 +285,7 @@ let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
                 placeholder="Add tags (comma-separated)"
                 class="space-y-4"
               />
-              <Button size="sm" on:on:click={() => updateTags()} disabled={!newTags.trim()}>
+              <Button class="bits-btn bits-btn" size="sm" on:onclick={() => updateTags()} disabled={!newTags.trim()}>
                 Add
               </Button>
             </div>
@@ -313,10 +313,10 @@ let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
   {/if}
 
   <svelte:fragment slot="footer" let:close>
-    <Button variant="secondary" on:on:click={() => close()}>
+    <Button class="bits-btn bits-btn" variant="secondary" on:onclick={() => close()}>
       Close
     </Button>
-    <Button variant="primary" on:on:click={() => onsaveAnalysis?.()}>
+    <Button class="bits-btn bits-btn" variant="primary" on:onclick={() => onsaveAnalysis?.()}>
       Save Analysis
     </Button>
   </svelte:fragment>

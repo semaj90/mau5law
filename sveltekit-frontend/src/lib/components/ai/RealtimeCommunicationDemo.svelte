@@ -9,9 +9,21 @@
     type RealtimeMessage,
     type StreamingResponse,
   } from '$lib/services/realtime-communication';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
-  import { CardTitle } from "$lib/components/ui/card";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
   // Reactive state using Svelte 5 runes
   let status = $state($connectionStatus);
@@ -298,11 +310,11 @@ let metricsInterval = $state<number;
       <CardTitle class="flex items-center justify-between">
         <span>Connection Status</span>
         {#if !isInitialized}
-          <Button on:click={initializeConnection} disabled={isInitializing} class="px-4 py-2">
+          <Button onclick={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
             {isInitializing ? 'Initializing...' : 'Connect'}
           </Button>
         {:else}
-          <Button on:click={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700">
+          <Button onclick={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
             Disconnect
           </Button>
         {/if}
@@ -413,7 +425,7 @@ let metricsInterval = $state<number;
               </div>
             </div>
 
-            <Button on:click={sendTestMessage} class="w-full">Send Message</Button>
+            <Button onclick={sendTestMessage} class="w-full bits-btn bits-btn">Send Message</Button>
           </div>
         </CardContent>
       </Card>
@@ -448,7 +460,7 @@ let metricsInterval = $state<number;
               </select>
             </div>
 
-            <Button on:click={startStreamingRequest} class="w-full">Start Stream</Button>
+            <Button onclick={startStreamingRequest} class="w-full bits-btn bits-btn">Start Stream</Button>
           </div>
         </CardContent>
       </Card>
@@ -459,7 +471,7 @@ let metricsInterval = $state<number;
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           <span>Performance Metrics</span>
-          <Button on:click={testPerformance} class="text-sm px-3 py-1">Run Performance Test</Button>
+          <Button onclick={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">Run Performance Test</Button>
         </CardTitle>
       </CardHeader>
       <CardContent>

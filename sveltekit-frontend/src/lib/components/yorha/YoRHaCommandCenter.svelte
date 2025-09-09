@@ -3,9 +3,16 @@
   // Svelte 5 runes and modern imports
   import { onMount } from 'svelte';
   import { goto } from "$app/navigation";
-  import { Button } from '$lib/components/ui/button/index.js';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import RealTimeLegalSearch from '$lib/components/search/RealTimeLegalSearch.svelte';
   import YoRHaCaseForm from './YoRHaCaseForm.svelte';
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
@@ -337,7 +344,7 @@
           role="button"
           tabindex="0"
           aria-label="{action.label} - {action.icon}"
-          on:keydown={(e) => {
+          onkeydown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               handleQuickAction(action);

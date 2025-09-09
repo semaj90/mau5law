@@ -1,7 +1,12 @@
 <script>
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   
   let isProcessing = $state(false);
   let results = $state([]);
@@ -364,7 +369,7 @@
         </div>
         
         <div class="flex items-end">
-          <Button 
+          <Button class="bits-btn bits-btn" 
             onclick={() => processSingleText(Math.floor(Math.random() * sampleTexts.length))}
             disabled={isProcessing}
             class="w-full text-sm"
@@ -376,13 +381,13 @@
       
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2">
-        <Button onclick={processBatchTexts} disabled={isProcessing} variant="outline" size="sm">
+        <Button class="bits-btn bits-btn" onclick={processBatchTexts} disabled={isProcessing} variant="outline" size="sm">
           📦 Batch Process ({sampleTexts.length})
         </Button>
-        <Button onclick={benchmarkCompressionLevels} disabled={isProcessing} variant="outline" size="sm">
+        <Button class="bits-btn bits-btn" onclick={benchmarkCompressionLevels} disabled={isProcessing} variant="outline" size="sm">
           🧪 Compression Benchmark
         </Button>
-        <Button onclick={clearAll} variant="outline" size="sm">
+        <Button class="bits-btn bits-btn" onclick={clearAll} variant="outline" size="sm">
           🗑️ Clear All
         </Button>
       </div>
@@ -550,7 +555,7 @@
         <div class="text-6xl mb-4">🧬</div>
         <h3 class="text-lg font-medium mb-2">No SIMD Text Processing Results Yet</h3>
         <p class="mb-4">Process your first text with ultra-compressed 7-bit tiling!</p>
-        <Button 
+        <Button class="bits-btn bits-btn" 
           onclick={() => processSingleText(0)}
           disabled={isProcessing}
         >
@@ -566,7 +571,7 @@
       <CardHeader>
         <CardTitle class="flex justify-between items-center">
           📝 Processing Logs
-          <Button onclick={() => processingLogs = []} variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" onclick={() => processingLogs = []} variant="outline" size="sm">
             Clear Logs
           </Button>
         </CardTitle>

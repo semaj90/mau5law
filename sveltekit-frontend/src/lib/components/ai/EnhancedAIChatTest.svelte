@@ -3,10 +3,17 @@
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import Input from '$lib/components/ui/Input.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import { Card } from '$lib/components/ui/card';
+  // Badge replaced with span - not available in enhanced-bits
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import ScrollArea from '$lib/components/ui/scrollarea/ScrollArea.svelte';
   import {
     Bot,
@@ -331,7 +338,7 @@ let fullContent = $state('');
 
 <Dialog.Root bind:open>
   <Dialog.Trigger>
-    <Button variant="outline" class="gap-2">
+    <Button variant="outline" class="gap-2 bits-btn bits-btn">
       <MessageCircle class="h-4 w-4" />
       {title}
     </Button>
@@ -353,9 +360,7 @@ let fullContent = $state('');
           </div>
 
           {#if caseId}
-            <Badge variant="secondary" class="text-xs">
-              Case: {caseId}
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {caseId}</span>
           {/if}
         </div>
 
@@ -380,18 +385,18 @@ let fullContent = $state('');
           </div>
 
           <!-- Action Buttons -->
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:on:click={downloadConversation}
+            on:onclick={downloadConversation}
             disabled={messages.length <= 1}>
             <Download class="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" on:on:click={clearMessages} disabled={messages.length <= 1}>
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={clearMessages} disabled={messages.length <= 1}>
             <Trash2 class="h-4 w-4" />
           </Button>
           <Dialog.Close>
-            <Button variant="ghost" size="sm">✕</Button>
+            <Button class="bits-btn bits-btn" variant="ghost" size="sm">✕</Button>
           </Dialog.Close>
         </div>
       </div>
@@ -420,18 +425,12 @@ let fullContent = $state('');
 
                 {#if message.metadata}
                   <div class="flex items-center gap-2 mt-2 pt-2 border-t border-current/20">
-                    <Badge variant="outline" class="text-xs">
-                      {message.metadata.model || 'AI'}
-                    </Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.metadata.model || 'AI'}</span>
                     {#if message.metadata.provider}
-                      <Badge variant="outline" class="text-xs">
-                        {message.metadata.provider}
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.metadata.provider}</span>
                     {/if}
                     {#if message.metadata.gpu}
-                      <Badge variant="outline" class="text-xs">
-                        {message.metadata.gpu}
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.metadata.gpu}</span>
                     {/if}
                   </div>
                 {/if}
@@ -463,9 +462,9 @@ let fullContent = $state('');
             class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             keydown={handleKeydown} />
           <Button
-            on:on:click={sendMessage}
+            on:onclick={sendMessage}
             disabled={!currentMessage.trim() || !isConnected || isLoading}
-            class="px-4">
+            class="px-4 bits-btn bits-btn">
             {#if isLoading}
               <Loader2 class="h-4 w-4 animate-spin" />
             {:else}

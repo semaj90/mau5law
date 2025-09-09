@@ -5,8 +5,12 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import {
     Search, Filter, Grid, List,
@@ -394,10 +398,8 @@
           </p>
         </div>
         <div class="flex items-center gap-3">
-          <Badge variant="outline" class="text-sm">
-            {productionDemos} Production Ready
-          </Badge>
-          <Button on:click={() => goto('/')} variant="outline">
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{productionDemos} Production Ready</span>
+          <Button class="bits-btn bits-btn" onclick={() => goto('/')} variant="outline">
             <ChevronRight class="h-4 w-4 mr-2 rotate-180" />
             Back to Home
           </Button>
@@ -430,17 +432,17 @@
         </div>
 
         <div class="flex items-center border rounded-lg p-1">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant={viewMode === 'grid' ? 'default' : 'ghost'}
             size="sm"
-            on:click={() => viewMode = 'grid'}
+            onclick={() => viewMode = 'grid'}
           >
             <Grid class="h-4 w-4" />
           </Button>
-          <Button
+          <Button class="bits-btn bits-btn"
             variant={viewMode === 'list' ? 'default' : 'ghost'}
             size="sm"
-            on:click={() => viewMode = 'list'}
+            onclick={() => viewMode = 'list'}
           >
             <List class="h-4 w-4" />
           </Button>
@@ -475,9 +477,7 @@
                   <p class="text-muted-foreground">{category.description}</p>
                 </div>
               </div>
-              <Badge variant="outline" class="ml-auto">
-                {category.demos.length} demo{category.demos.length !== 1 ? 's' : ''}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{category.demos.length} demo{category.demos.length !== 1 ? 's' : ''}</span>
             </div>
 
             <!-- Demos Grid/List -->
@@ -508,19 +508,15 @@
 
                       <div class="flex flex-wrap gap-1 mb-4">
                         {#each demo.features.slice(0, 3) as feature}
-                          <Badge variant="outline" class="text-xs">
-                            {feature}
-                          </Badge>
+                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{feature}</span>
                         {/each}
                         {#if demo.features.length > 3}
-                          <Badge variant="outline" class="text-xs">
-                            +{demo.features.length - 3} more
-                          </Badge>
+                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{demo.features.length - 3} more</span>
                         {/if}
                       </div>
 
-                      <Button
-                        on:click={() => navigateToDemo(demo.path)}
+                      <Button class="bits-btn bits-btn"
+                        onclick={() => navigateToDemo(demo.path)}
                         class="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
                         variant="outline"
                       >
@@ -553,15 +549,13 @@
                                 </Badge>
                                 <div class="flex gap-1">
                                   {#each demo.features.slice(0, 3) as feature}
-                                    <Badge variant="outline" class="text-xs">
-                                      {feature}
-                                    </Badge>
+                                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{feature}</span>
                                   {/each}
                                 </div>
                               </div>
                             </div>
-                            <Button
-                              on:click={() => navigateToDemo(demo.path)}
+                            <Button class="bits-btn bits-btn"
+                              onclick={() => navigateToDemo(demo.path)}
                               variant="outline"
                               size="sm"
                             >

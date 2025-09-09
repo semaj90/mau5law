@@ -497,7 +497,7 @@
           <Button.Root
             type="button"
             variant="outline"
-            on:click={addTag}
+            onclick={addTag}
             disabled={!newTag.trim()}
           >
             Add Tag
@@ -509,7 +509,7 @@
               <Badge.Root 
                 variant="secondary" 
                 class="flex items-center space-x-1 cursor-pointer hover:bg-gray-200"
-                on:click={() => removeTag(tag)}
+                onclick={() => removeTag(tag)}
               >
                 {tag}
                 
@@ -622,7 +622,7 @@
           <Button.Root
             type="button"
             variant="outline"
-            on:click={resetForm}
+            onclick={resetForm}
             disabled={$state.matches('submitting')}
           >
             Reset
@@ -649,3 +649,4 @@
   .document-metadata-form {
     @apply max-w-4xl mx-auto;
   }
+

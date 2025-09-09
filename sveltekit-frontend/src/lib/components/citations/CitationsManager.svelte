@@ -1,10 +1,17 @@
 <!-- Citations Manager - Legal Citation System with AI-powered search -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 	import Button from '$lib/components/ui/button/Button.svelte';
-	import Badge from '$lib/components/ui/Badge.svelte';
-	import { Input } from '$lib/components/ui/input';
+	// Badge replaced with span - not available in enhanced-bits
+	import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
 	import { 
 		Search, BookOpen, ExternalLink, Download, 
 		Plus, FileText, Calendar, User, Tags,
@@ -340,12 +347,12 @@
 				
 				<div class="flex items-center gap-2">
 					{#if !readonly}
-						<Button variant="outline" size="sm" onclick={showAddCitationForm}>
+						<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={showAddCitationForm}>
 							<Plus class="w-4 h-4 mr-1" />
 							Add Citation
 						</Button>
 					{/if}
-					<Button variant="outline" size="sm" onclick={exportCitations}>
+					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={exportCitations}>
 						<Download class="w-4 h-4 mr-1" />
 						Export
 					</Button>
@@ -373,7 +380,7 @@
 				
 				<!-- Sort Options -->
 				<div class="flex gap-2">
-					<Button
+					<Button class="bits-btn bits-btn"
 						variant={sortBy === 'date' ? 'default' : 'outline'}
 						size="sm"
 						onclick={() => changeSortBy('date')}
@@ -381,7 +388,7 @@
 						<Calendar class="w-4 h-4 mr-1" />
 						Date
 					</Button>
-					<Button
+					<Button class="bits-btn bits-btn"
 						variant={sortBy === 'title' ? 'default' : 'outline'}
 						size="sm"
 						onclick={() => changeSortBy('title')}
@@ -389,7 +396,7 @@
 						<SortAsc class="w-4 h-4 mr-1" />
 						Title
 					</Button>
-					<Button
+					<Button class="bits-btn bits-btn"
 						variant={sortBy === 'relevance' ? 'default' : 'outline'}
 						size="sm"
 						onclick={() => changeSortBy('relevance')}
@@ -418,9 +425,7 @@
 						onclick={() => selectCategory(category.id)}
 					>
 						<span>{category.label}</span>
-						<Badge variant="secondary" class="text-xs">
-							{category.count}
-						</Badge>
+						<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{category.count}</span>
 					</button>
 				{/each}
 			</CardContent>
@@ -453,13 +458,9 @@
 								<div class="flex-1 pr-4">
 									<div class="flex items-center gap-2 mb-2">
 										<h3 class="font-semibold text-lg">{citation.title}</h3>
-										<Badge variant="outline" class="text-xs">
-											{citation.category}
-										</Badge>
+										<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{citation.category}</span>
 										{#if citation.relevanceScore > 80}
-											<Badge variant="default" class="text-xs">
-												High Relevance
-											</Badge>
+											<span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">High Relevance</span>
 										{/if}
 									</div>
 									
@@ -498,7 +499,7 @@
 								</div>
 								
 								<div class="flex items-center gap-1">
-									<Button
+									<Button class="bits-btn bits-btn"
 										variant="ghost"
 										size="sm"
 										onclick={() => viewCitationDetails(citation)}
@@ -507,7 +508,7 @@
 										<Eye class="w-4 h-4" />
 									</Button>
 									{#if citation.url}
-										<Button
+										<Button class="bits-btn bits-btn"
 											variant="ghost"
 											size="sm"
 											onclick={() => window.open(citation.url, '_blank')}
@@ -517,7 +518,7 @@
 										</Button>
 									{/if}
 									{#if !readonly}
-										<Button
+										<Button class="bits-btn bits-btn"
 											variant="ghost"
 											size="sm"
 											onclick={() => deleteCitation(citation.id)}
@@ -596,10 +597,10 @@
 				</div>
 				
 				<div class="flex justify-end gap-2 pt-4">
-					<Button variant="outline" onclick={hideAddCitationForm}>
+					<Button class="bits-btn bits-btn" variant="outline" onclick={hideAddCitationForm}>
 						Cancel
 					</Button>
-					<Button onclick={saveCitation}>
+					<Button class="bits-btn bits-btn" onclick={saveCitation}>
 						Save Citation
 					</Button>
 				</div>
@@ -649,7 +650,7 @@
 						<strong>Tags:</strong>
 						<div class="flex flex-wrap gap-1 mt-1">
 							{#each selectedCitation.tags as tag}
-								<Badge variant="outline" class="text-xs">{tag}</Badge>
+								<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
 							{/each}
 						</div>
 					</div>
@@ -657,16 +658,16 @@
 				
 				<div class="flex justify-between items-center pt-4">
 					<div>
-						<Badge variant="outline">Relevance: {selectedCitation.relevanceScore}%</Badge>
+						<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Relevance: {selectedCitation.relevanceScore}%</span>
 					</div>
 					<div class="flex gap-2">
 						{#if selectedCitation.url}
-							<Button variant="outline" onclick={() => window.open(selectedCitation.url, '_blank')}>
+							<Button class="bits-btn bits-btn" variant="outline" onclick={() => window.open(selectedCitation.url, '_blank')}>
 								<ExternalLink class="w-4 h-4 mr-1" />
 								Open Link
 							</Button>
 						{/if}
-						<Button onclick={hideDetailModal}>
+						<Button class="bits-btn bits-btn" onclick={hideDetailModal}>
 							Close
 						</Button>
 					</div>

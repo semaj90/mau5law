@@ -4,8 +4,15 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import {
     Bot,
@@ -266,7 +273,7 @@ export function activate(context: vscode.ExtensionContext) {
             <Settings class="h-5 w-5" />
             System Architecture
           </span>
-          <Button variant="ghost" size="sm" on:click={() => showArchitecture = !showArchitecture}>
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={() => showArchitecture = !showArchitecture}>
             {showArchitecture ? 'Hide' : 'Show'} Details
           </Button>
         </CardTitle>
@@ -314,7 +321,7 @@ export function activate(context: vscode.ExtensionContext) {
             <Code class="h-5 w-5" />
             VS Code Extension Integration
           </span>
-          <Button variant="ghost" size="sm" on:click={() => showIntegration = !showIntegration}>
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={() => showIntegration = !showIntegration}>
             {showIntegration ? 'Hide' : 'Show'} Examples
           </Button>
         </CardTitle>

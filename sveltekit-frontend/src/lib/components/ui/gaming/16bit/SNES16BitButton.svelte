@@ -204,7 +204,7 @@ let buttonElement = $state<HTMLButtonElement | null >(null);
   {form}
   {name}
   {value}
-  on:on:on:click={handleClick}
+  on:on:onclick={handleClick}
   on:on:on:mouseenter={handleHover}
   on:on:on:mouseleave={handleUnhover}
   on:focus={handleFocus}

@@ -43,7 +43,7 @@
         <button
           class="drawer-close"
           aria-label="Close drawer"
-          on:click|stopPropagation={handleClose}
+          onclick|stopPropagation={handleClose}
         >
           <X size="24" />
         </button>

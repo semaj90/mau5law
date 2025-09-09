@@ -3,8 +3,15 @@
   import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
   import N64LoadingRing from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
   import N64EvolutionLoader from '$lib/components/ui/gaming/n64/N64EvolutionLoader.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Brain, Zap, Cpu, Database } from 'lucide-svelte';
 
@@ -99,10 +106,10 @@
           N64 Progress Components - Legal AI Integration Test
         </div>
         <div class="flex gap-2">
-          <Button on:click={startAnimation} disabled={mockData.isProcessing}>
+          <Button class="bits-btn bits-btn" onclick={startAnimation} disabled={mockData.isProcessing}>
             Start AI Processing
           </Button>
-          <Button variant="outline" on:click={resetData}>
+          <Button class="bits-btn bits-btn" variant="outline" onclick={resetData}>
             Reset
           </Button>
         </div>
@@ -317,9 +324,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each ['classic', 'gold', 'red', 'blue', 'green', 'purple'] as theme}
           <div class="space-y-2">
-            <Badge variant="outline" class="w-full justify-center">
-              {theme.charAt(0).toUpperCase() + theme.slice(1)}
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{theme.charAt(0).toUpperCase() + theme.slice(1)}</span>
             <N64ProgressBar 
               value={75} 
               max={100}

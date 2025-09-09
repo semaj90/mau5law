@@ -546,7 +546,7 @@ How can I assist you with your legal needs today?`);
 			</main>
 
 			<footer class="border-t border-yorha-border bg-yorha-bg-secondary p-4">
-				<form class="flex space-x-3" on:submit|preventDefault={sendMessage} role="search" aria-label="Send message to AI">
+				<form class="flex space-x-3" onsubmit|preventDefault={sendMessage} role="search" aria-label="Send message to AI">
 					<textarea
 						bind:this={inputElement}
 						bind:value={inputValue}

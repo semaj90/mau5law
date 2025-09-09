@@ -1,7 +1,16 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input/index.js';
-  import { Button } from '$lib/components/ui/button/index.js';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
   import { Loader2, Bot, MessageSquare, FileText, Search, Sparkles, Zap } from 'lucide-svelte';
@@ -225,8 +234,8 @@
               {disabled}
               class="pl-10" />
           </div>
-          <Button
-            on:on:click={performAISearch}
+          <Button class="bits-btn bits-btn"
+            on:onclick={performAISearch}
             disabled={disabled || isAISearching || !aiSearchQuery.trim()}
             size="sm">
             {#if isAISearching}
@@ -246,9 +255,7 @@
               </div>
             {/each}
             {#if aiSearchResults.length > 3}
-              <Badge variant="outline" class="text-xs">
-                +{aiSearchResults.length - 3} more results
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{aiSearchResults.length - 3} more results</span>
             {/if}
           </div>
         {/if}
@@ -273,10 +280,10 @@
             rows="2"
             class="resize-none" />
           <Button
-            on:on:click={performAIChat}
+            on:onclick={performAIChat}
             disabled={disabled || isAIChatting || !aiChatMessage.trim()}
             size="sm"
-            class="w-full">
+            class="w-full bits-btn bits-btn">
             {#if isAIChatting}
               <Loader2 class="h-4 w-4 animate-spin mr-2" />
               Thinking...
@@ -315,10 +322,10 @@
             rows="2"
             class="resize-none" />
           <Button
-            on:on:click={performAISummarization}
+            on:onclick={performAISummarization}
             disabled={disabled || isSummarizing || !summarizeText.trim()}
             size="sm"
-            class="w-full">
+            class="w-full bits-btn bits-btn">
             {#if isSummarizing}
               <Loader2 class="h-4 w-4 animate-spin mr-2" />
               Summarizing...
@@ -343,16 +350,16 @@
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
-      <Button variant="outline" on:on:click={clearResults} size="sm">Clear All Results</Button>
+      <Button class="bits-btn bits-btn" variant="outline" on:onclick={clearResults} size="sm">Clear All Results</Button>
     </div>
   {/if}
 
   <!-- Quick Actions -->
   <div class="flex flex-wrap gap-2 justify-center">
-    <Button
+    <Button class="bits-btn bits-btn"
       variant="outline"
       size="sm"
-      on:on:click={() => {
+      on:onclick={() => {
         aiSearchQuery = 'California murder laws';
         performAISearch();
       }}
@@ -360,10 +367,10 @@
       <Bot class="h-3 w-3 mr-1" />
       Murder Laws
     </Button>
-    <Button
+    <Button class="bits-btn bits-btn"
       variant="outline"
       size="sm"
-      on:on:click={() => {
+      on:onclick={() => {
         aiChatMessage = 'What are the elements of a valid contract?';
         performAIChat();
       }}
@@ -371,10 +378,10 @@
       <MessageSquare class="h-3 w-3 mr-1" />
       Contract Elements
     </Button>
-    <Button
+    <Button class="bits-btn bits-btn"
       variant="outline"
       size="sm"
-      on:on:click={() => {
+      on:onclick={() => {
         aiSearchQuery = 'evidence admissibility rules';
         performAISearch();
       }}

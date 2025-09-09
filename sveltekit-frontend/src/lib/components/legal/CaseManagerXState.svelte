@@ -5,8 +5,8 @@
   import { useMachine } from '@xstate/svelte';
   import { legalCaseMachine, legalCaseSelectors } from '$lib/state/legal-case-machine.js';
   import type { LegalCaseContext, LegalCaseEvents } from '$lib/state/legal-case-machine.js';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Card from '$lib/components/ui/Card.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Card } from '$lib/components/ui/enhanced-bits';
 
   // Get caseId from route params
   let caseId = $state<string | null>(null);
@@ -132,10 +132,10 @@ let fileInput = $state<HTMLInputElement;
         <h3 class="text-lg font-semibold text-red-800 mb-2">Error</h3>
         <p class="text-red-600 mb-4">{$state.context.error}</p>
         <div class="flex gap-2">
-          <Button variant="outline" size="sm" on:on:click={handleRetry}>
+          <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={handleRetry}>
             Retry
           </Button>
-          <Button variant="ghost" size="sm" on:on:click={handleDismissError}>
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={handleDismissError}>
             Dismiss
           </Button>
         </div>
@@ -190,7 +190,7 @@ let fileInput = $state<HTMLInputElement;
             ></textarea>
           </div>
           
-          <Button on:on:click={handleCreateCase} class="w-full">
+          <Button on:onclick={handleCreateCase} class="w-full bits-btn bits-btn">
             Create Case
           </Button>
         </div>
@@ -297,7 +297,7 @@ let fileInput = $state<HTMLInputElement;
                   change={onFileChange}
                   class="hidden"
                 />
-                <Button on:on:click={triggerFileUpload}>
+                <Button class="bits-btn bits-btn" on:onclick={triggerFileUpload}>
                   Choose Files
                 </Button>
               </div>
@@ -317,8 +317,8 @@ let fileInput = $state<HTMLInputElement;
                             <p class="text-sm text-gray-500">{item.type}</p>
                           </div>
                           <div class="flex gap-2">
-                            <Button size="sm" variant="outline">View</Button>
-                            <Button size="sm" on:on:click={() => send({ type: 'SELECT_EVIDENCE', evidence: item })}>
+                            <Button class="bits-btn bits-btn" size="sm" variant="outline">View</Button>
+                            <Button class="bits-btn bits-btn" size="sm" on:onclick={() => send({ type: 'SELECT_EVIDENCE', evidence: item })}>
                               Select
                             </Button>
                           </div>
@@ -344,15 +344,15 @@ let fileInput = $state<HTMLInputElement;
               <div class="p-6">
                 <h3 class="text-lg font-semibold mb-4">AI Analysis</h3>
                 <div class="flex gap-3 mb-4">
-                  <Button 
-                    on:on:click={handleStartAIAnalysis}
+                  <Button class="bits-btn bits-btn" 
+                    on:onclick={handleStartAIAnalysis}
                     disabled={!canStartAIAnalysis}
                   >
                     Start AI Analysis
                   </Button>
-                  <Button 
+                  <Button class="bits-btn bits-btn" 
                     variant="outline"
-                    on:on:click={handleFindSimilarCases}
+                    on:onclick={handleFindSimilarCases}
                   >
                     Find Similar Cases
                   </Button>
@@ -375,7 +375,7 @@ let fileInput = $state<HTMLInputElement;
                             <h5 class="font-medium">{similarCase.title}</h5>
                             <p class="text-sm text-gray-500">Similarity: {similarCase.similarity}%</p>
                           </div>
-                          <Button size="sm" variant="outline">View</Button>
+                          <Button class="bits-btn bits-btn" size="sm" variant="outline">View</Button>
                         </div>
                       {/each}
                     </div>
@@ -397,7 +397,7 @@ let fileInput = $state<HTMLInputElement;
                   placeholder="Enter search query..."
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <Button>Search</Button>
+                <Button class="bits-btn bits-btn">Search</Button>
               </div>
             </div>
           </Card>

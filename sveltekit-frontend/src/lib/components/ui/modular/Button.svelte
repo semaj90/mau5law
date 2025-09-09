@@ -66,7 +66,7 @@
 </script>
 
 <!-- Wrap in Bits-UI if desired:
-<ButtonPrimitive.Root asChild> -->
+<Button class="bits-btn bits-btn"Primitive.Root asChild> -->
 <button
   class={buttonClass}
   disabled={isDisabled}

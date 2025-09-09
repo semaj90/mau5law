@@ -11,7 +11,9 @@
     resetProcessor,
     type EvidenceUploadProps
   } from '$lib/stores/evidence-workflow';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Progress } from '$lib/components/ui/progress';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import { Badge } from '$lib/components/ui/badge';
@@ -173,13 +175,13 @@
         bind:this={fileInput}
         type="file"
         accept={allowedTypes.join(',')}
-        on:change={handleFileSelect}
+        onchange={handleFileSelect}
         class="hidden"
       />
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
-        on:click={() => fileInput?.click()}
+        onclick={() => fileInput?.click()}
         class="mt-2"
       >
         Select File
@@ -199,10 +201,10 @@
           <p class="text-sm text-blue-600 mt-1">Evidence ID: {evidenceId}</p>
         </div>
         <div class="flex gap-2">
-          <Button variant="outline" size="sm" on:click={handleReset}>
+          <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleReset}>
             Change File
           </Button>
-          <Button on:click={startProcessing} class="bg-blue-600 hover:bg-blue-700">
+          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
             Process Evidence
           </Button>
         </div>
@@ -216,8 +218,7 @@
       <div class="mb-4">
         <div class="flex items-center justify-between mb-2">
           <h3 class="font-medium text-gray-900">Processing Evidence</h3>
-          <Badge variant="outline" class={getStateColor(state.value)}>
-            {#if state.value === 'validating'}
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{#if state.value === 'validating'}
               Validating
             {:else if state.value === 'analyzing'}
               AI Analysis
@@ -225,8 +226,7 @@
               Embedding Metadata
             {:else if state.value === 'uploading'}
               Uploading & Indexing
-            {/if}
-          </Badge>
+            {/if}</span>
         </div>
         <Progress value={progress} class="w-full" />
         <p class="text-sm text-gray-600 mt-1">{progress}% complete</p>
@@ -268,14 +268,14 @@
 
       {#if artifactUrl}
         <div class="flex gap-2 mt-4">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => window.open(artifactUrl, '_blank')}
+            onclick={() => window.open(artifactUrl, '_blank')}
           >
             Download Artifact
           </Button>
-          <Button variant="outline" size="sm" on:click={handleReset}>
+          <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleReset}>
             Process Another
           </Button>
         </div>
@@ -290,10 +290,10 @@
       <AlertDescription>
         <div class="mb-2">{error}</div>
         <div class="flex gap-2">
-          <Button variant="outline" size="sm" on:click={handleRetry}>
+          <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleRetry}>
             Retry
           </Button>
-          <Button variant="outline" size="sm" on:click={handleReset}>
+          <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleReset}>
             Reset
           </Button>
         </div>

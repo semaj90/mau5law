@@ -20,7 +20,7 @@
 
   import { fade, slide, scale } from 'svelte/transition';
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import { cn } from '$lib/utils';
 let showTooltip = $state(false);
 let showConfig = $state(false);
@@ -72,7 +72,7 @@ let focusAreas = $state({
       variant={enabled ? "crimson" : "nier"}
       size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
       disabled={loading || (!premium && !enabled)}
-      on:on:click={handleToggle}
+      on:onclick={handleToggle}
       class={cn(
         "thinking-toggle-btn transition-all duration-300",
         enabled && "animate-crimson-glow",
@@ -109,8 +109,8 @@ let focusAreas = $state({
       <Button
         variant="ghost"
         size="sm"
-        on:on:click={handleConfigure}
-        class="config-btn ml-2"
+        on:onclick={handleConfigure}
+        class="config-btn ml-2 bits-btn bits-btn"
         disabled={loading}
       >
         <Settings size={14} />
@@ -122,8 +122,8 @@ let focusAreas = $state({
       <Button
         variant="ghost"
         size="sm"
-        on:on:click={handleUpgrade}
-        class="upgrade-btn ml-2"
+        on:onclick={handleUpgrade}
+        class="upgrade-btn ml-2 bits-btn bits-btn"
       >
         <Info size={14} class="text-harvard-gold" />
       </Button>
@@ -245,10 +245,10 @@ let focusAreas = $state({
       </div>
 
       <div class="config-actions">
-        <Button variant="ghost" size="sm" on:on:click={() => showConfig = false}>
+        <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => showConfig = false}>
           Cancel
         </Button>
-        <Button variant="crimson" size="sm">
+        <Button class="bits-btn bits-btn" variant="crimson" size="sm">
           Save Configuration
         </Button>
       </div>
@@ -267,7 +267,7 @@ let focusAreas = $state({
           <strong>Unlock Advanced AI Reasoning</strong>
           <p>Get step-by-step legal analysis with transparent thinking process</p>
         </div>
-        <Button variant="gold" size="sm" on:on:click={handleUpgrade}>
+        <Button class="bits-btn bits-btn" variant="gold" size="sm" on:onclick={handleUpgrade}>
           Upgrade Now
         </Button>
       </div>

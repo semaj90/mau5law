@@ -17,14 +17,13 @@
  * Usage:
  * ```typescript
  * import {
- *   N64Button,
- *   N64Input,
- *   N64Card,
- *   N64Dialog,
- *   N64Select,
- *   N64ProgressBar,
- *   N64Switch
- * } from '$lib/components/ui/gaming/n64';
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent,
+    Button,
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
  * ```
  */
 

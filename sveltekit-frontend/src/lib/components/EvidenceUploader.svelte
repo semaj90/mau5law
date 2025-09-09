@@ -175,7 +175,7 @@
     role="button"
     tabindex="0"
     on:on:onclick={() => document.getElementById('file-input')?.click()}
-    on:keydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
+    onkeydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
     aria-label="Upload evidence files - drag and drop or click to browse"
   >
     <input

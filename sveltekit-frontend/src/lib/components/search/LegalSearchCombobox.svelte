@@ -321,7 +321,7 @@ let suggestions = $state<string[] >([]);
                   <Combobox.Item
                     value={search}
                     class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                    on:on:click={() => {
+                    on:onclick={() => {
                       inputValue = search;
                       performSearch(search);
                     }}
@@ -344,7 +344,7 @@ let suggestions = $state<string[] >([]);
                   <Combobox.Item
                     value={suggestion}
                     class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                    on:on:click={() => {
+                    on:onclick={() => {
                       inputValue = suggestion;
                       performSearch(suggestion);
                     }}
@@ -365,7 +365,7 @@ let suggestions = $state<string[] >([]);
                 "hover:bg-gray-50 cursor-pointer transition-colors",
                 "data-[highlighted]:bg-blue-50"
               )}
-              on:on:click={() => handleSelect(result)}
+              on:onclick={() => handleSelect(result)}
             >
               <!-- Type Icon -->
               <div class={cn("flex-shrink-0 mt-1", typeColors[result.type] || 'text-gray-500')}>

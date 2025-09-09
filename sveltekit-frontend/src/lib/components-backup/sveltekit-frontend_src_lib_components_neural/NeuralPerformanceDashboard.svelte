@@ -161,7 +161,7 @@
           Last Update: {new Date(lastUpdate).toLocaleTimeString()}
         </div>
         <button 
-          on:click={toggleMonitoring}
+          onclick={toggleMonitoring}
           class="px-3 py-1 bg-white/20 hover:bg-white/30 rounded text-sm font-medium transition-colors"
         >
           {isMonitoring ? 'Pause' : 'Resume'}

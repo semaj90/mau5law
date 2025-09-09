@@ -4,9 +4,16 @@ Compact AI recommendations component for sidebar/dashboard use
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     Lightbulb,
     Target,
@@ -158,23 +165,23 @@ Compact AI recommendations component for sidebar/dashboard use
   }
 </script>
 
-<Card class="shadcn-card">
-  <CardHeader class="shadcn-card-header {compact ? 'p-3' : 'p-4'}">
+<Card class="bits-card" variant="default" legal={true}>
+  <CardHeader class="bits-card-header {compact ? 'p-3' : 'p-4'}" variant="default" legal={true}>
     <CardTitle class="flex items-center justify-between">
       <div class="flex items-center gap-2">
         <Lightbulb class="h-4 w-4 text-yellow-600" />
         <span class="{compact ? 'text-sm' : 'text-base'}">AI Recommendations</span>
         {#if recommendations.length > 0}
-          <Badge variant="outline" class="text-xs">{recommendations.length}</Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{recommendations.length}</span>
         {/if}
       </div>
 
       <Button
         variant="ghost"
         size="sm"
-        on:on:click={loadRecommendations}
+        on:onclick={loadRecommendations}
         disabled={isLoading}
-        class="h-7 w-7 p-0"
+        class="h-7 w-7 p-0 bits-btn bits-btn"
       >
         <RefreshCw class="h-3 w-3 {isLoading ? 'animate-spin' : ''}" />
       </Button>
@@ -187,7 +194,7 @@ Compact AI recommendations component for sidebar/dashboard use
     {/if}
   </CardHeader>
 
-  <CardContent class="shadcn-card-content {compact ? 'p-3' : 'p-4'} pt-0">
+  <CardContent class="bits-card-content {compact ? 'p-3' : 'p-4'} pt-0" variant="default" legal={true}>
     {#if isLoading}
       <div class="space-y-3">
         {#each Array(maxRecommendations) as _}
@@ -232,7 +239,7 @@ Compact AI recommendations component for sidebar/dashboard use
                   <SvelteComponent_1 class="h-2 w-2 mr-1" />
                   {rec.priority}
                 </Badge>
-                <Badge variant="outline" class="text-xs">{rec.category}</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{rec.category}</span>
               </div>
 
               <div class="flex items-center gap-1">

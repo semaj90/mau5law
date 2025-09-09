@@ -514,7 +514,7 @@ Please provide a contextual response that takes into account the relevant inform
           <Button
             variant="ghost"
             size="sm"
-            on:click={() => (showValidationPanel = !showValidationPanel)}
+            onclick={() => (showValidationPanel = !showValidationPanel)}
             disabled={!validator}
           >
             <TestTube class="w-4 h-4" />
@@ -524,7 +524,7 @@ Please provide a contextual response that takes into account the relevant inform
           <Button
             variant="ghost"
             size="sm"
-            on:click={runQuickValidation}
+            onclick={runQuickValidation}
             disabled={!validator || isRunningValidation}
           >
             ⚡
@@ -534,7 +534,7 @@ Please provide a contextual response that takes into account the relevant inform
           <Button
             variant="ghost"
             size="sm"
-            on:click={() => (showMetrics = !showMetrics)}
+            onclick={() => (showMetrics = !showMetrics)}
           >
             <Settings class="w-4 h-4" />
           </Button>
@@ -543,7 +543,7 @@ Please provide a contextual response that takes into account the relevant inform
           <Button
             variant="ghost"
             size="sm"
-            on:click={optimizeMemory}
+            onclick={optimizeMemory}
             disabled={!bvectorStore}
           >
             🧹
@@ -584,7 +584,7 @@ Please provide a contextual response that takes into account the relevant inform
             <div class="flex gap-2">
               <Button
                 size="sm"
-                on:click={runContextualValidation}
+                onclick={runContextualValidation}
                 disabled={isRunningValidation}
               >
                 {#if isRunningValidation}
@@ -706,7 +706,7 @@ Please provide a contextual response that takes into account the relevant inform
                   variant="ghost"
                   size="sm"
                   class="h-6 px-2"
-                  on:click={() => provideFeedback(msg.id, 5)}
+                  onclick={() => provideFeedback(msg.id, 5)}
                   disabled={lastUserFeedback?.messageId === msg.id}
                 >
                   <ThumbsUp class="w-3 h-3" />
@@ -715,7 +715,7 @@ Please provide a contextual response that takes into account the relevant inform
                   variant="ghost"
                   size="sm"
                   class="h-6 px-2"
-                  on:click={() => provideFeedback(msg.id, 2)}
+                  onclick={() => provideFeedback(msg.id, 2)}
                   disabled={lastUserFeedback?.messageId === msg.id}
                 >
                   <ThumbsDown class="w-3 h-3" />
@@ -789,7 +789,7 @@ Please provide a contextual response that takes into account the relevant inform
     </div>
 
     <Button
-      on:click={sendMessage}
+      onclick={sendMessage}
       disabled={!canSend}
       class="px-4"
     >

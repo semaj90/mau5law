@@ -10,12 +10,16 @@
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   import EnhancedAIAssistant from '$lib/components/ai/EnhancedAIAssistant.svelte';
   import CitationsManager from '$lib/components/citations/CitationsManager.svelte';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import * as Card from '$lib/components/ui/card';
   import * as Tabs from '$lib/components/ui/tabs';
   import * as Dialog from '$lib/components/ui/dialog';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import {
@@ -346,13 +350,13 @@
               {currentCase.priority.toUpperCase()}
             </Badge>
             <span class="case-title">{currentCase.title}</span>
-            <Badge variant="outline" class="ml-2">{currentCase.status}</Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{currentCase.status}</span>
           </div>
         {/if}
       </div>
 
       <div class="workspace-actions">
-  <Button on:click={saveInvestigation} variant="outline" size="sm">
+  <Button class="bits-btn bits-btn" onclick={saveInvestigation} variant="outline" size="sm">
           <Save class="w-4 h-4 mr-2" />
           Save Progress
         </Button>
@@ -464,7 +468,7 @@
                       {#if item.tags.length > 0}
                         <div class="evidence-tags">
                           {#each item.tags as tag}
-                            <Badge variant="outline" class="tag">{tag}</Badge>
+                            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                           {/each}
                         </div>
                       {/if}
@@ -533,7 +537,7 @@
                 onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && sendChatMessage()}
                 class="flex-1"
               />
-              <Button on:click={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
+              <Button class="bits-btn bits-btn" onclick={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
                 <MessageSquare class="w-4 h-4" />
               </Button>
             </div>

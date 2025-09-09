@@ -25,8 +25,15 @@
    */
 
   import EvidenceProcessingWorkflow from '$lib/components/evidence/EvidenceProcessingWorkflow.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { onMount } from 'svelte';
 
   // Demo state
@@ -121,21 +128,21 @@
   <!-- Demo Mode Selector -->
   <div class="flex justify-center">
     <div class="flex gap-2 p-1 bg-gray-100 rounded-lg">
-      <Button
+      <Button class="bits-btn bits-btn"
         variant={selectedDemo === 'single' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'single'}
       >
         Single Workflow
       </Button>
-      <Button
+      <Button class="bits-btn bits-btn"
         variant={selectedDemo === 'multiple' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'multiple'}
       >
         Multiple Sessions
       </Button>
-      <Button
+      <Button class="bits-btn bits-btn"
         variant={selectedDemo === 'dashboard' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'dashboard'}
@@ -192,7 +199,7 @@
                 <label for="auto-refresh" class="text-sm font-normal">
                   Auto-refresh
                 </label>
-                <Button onclick={loadActiveSessions} variant="outline" size="sm">
+                <Button class="bits-btn bits-btn" onclick={loadActiveSessions} variant="outline" size="sm">
                   Refresh
                 </Button>
               </div>
@@ -231,7 +238,7 @@
                           style="width: {session.progress}%"
                         ></div>
                       </div>
-                      <Button
+                      <Button class="bits-btn bits-btn"
                         onclick={() => cancelSession(session.evidenceId)}
                         variant="outline"
                         size="sm"
@@ -260,7 +267,7 @@
             </p>
 
             <div class="space-y-2">
-              <Button
+              <Button class="bits-btn bits-btn"
                 onclick={() => selectedDemo = 'single'}
                 class="w-full justify-start"
                 variant="outline"
@@ -268,7 +275,7 @@
                 🧬 Neural Sprite Workflow
               </Button>
 
-              <Button
+              <Button class="bits-btn bits-btn"
                 onclick={() => selectedDemo = 'multiple'}
                 class="w-full justify-start"
                 variant="outline"

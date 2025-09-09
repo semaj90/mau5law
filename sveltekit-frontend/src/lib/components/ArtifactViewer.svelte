@@ -3,8 +3,15 @@
   import { fade, scale } from 'svelte/transition';
   import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps } from '$lib/stores/evidence-workflow';
   import type { LegalAIMetadata } from '$lib/types/legal-ai-metadata';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
@@ -135,7 +142,7 @@
       </div>
 
       {#if allowDownload && downloadUrl}
-        <Button on:click={handleDownload} class="flex items-center gap-2">
+        <Button onclick={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
           <Download class="w-4 h-4" />
           Download
         </Button>
@@ -161,12 +168,7 @@
                 transition:scale
               />
               {#if extractedMetadata}
-                <Badge
-                  variant="outline"
-                  class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm"
-                >
-                  Metadata Embedded
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Metadata Embedded</span>
               {/if}
             </div>
           {:else}
@@ -219,9 +221,7 @@
             <div class="flex items-center gap-2">
               <Zap class="w-4 h-4 text-yellow-500" />
               <span class="font-medium text-gray-700">Confidence:</span>
-              <Badge variant="outline">
-                {formatConfidence(artifact.confidence)}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{formatConfidence(artifact.confidence)}</span>
             </div>
           {/if}
 
@@ -276,9 +276,7 @@
                         <h4 class="font-medium text-gray-900 mb-2">Entities</h4>
                         <div class="flex flex-wrap gap-2">
                           {#each analysis.entities as entity}
-                            <Badge variant="outline" class="text-xs">
-                              {entity.name} ({entity.type})
-                            </Badge>
+                            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{entity.name} ({entity.type})</span>
                           {/each}
                         </div>
                       </div>
@@ -291,7 +289,7 @@
                           {#each Object.entries(analysis.classifications) as [key, value]}
                             <div class="flex justify-between">
                               <span class="capitalize">{key.replace('_', ' ')}:</span>
-                              <Badge variant="outline" class="text-xs">{value}</Badge>
+                              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{value}</span>
                             </div>
                           {/each}
                         </div>
@@ -378,9 +376,9 @@
                         <div class="text-xs text-gray-500">
                           Duration: {step.duration_ms}ms
                           {#if step.success}
-                            <Badge variant="outline" class="ml-2 text-green-600">Success</Badge>
+                            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Success</span>
                           {:else}
-                            <Badge variant="destructive" class="ml-2">Failed</Badge>
+                            <span class="px-2 py-1 rounded text-xs font-medium bg-red-500 text-white">Failed</span>
                           {/if}
                         </div>
                       </div>

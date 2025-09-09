@@ -10,12 +10,14 @@ https://svelte.dev/e/js_parse_error -->
     show = true
   }: Props = $props();
 
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   </script>
 
 {#if show}
   <div class="space-y-4" data-position={position}>
-    <Button />
+    <Button class="bits-btn bits-btn" />
   </div>
 {/if}
 

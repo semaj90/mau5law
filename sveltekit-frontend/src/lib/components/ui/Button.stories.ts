@@ -30,7 +30,7 @@ const meta = {
       description: 'Show loading state with spinner'
     }
   }
-} satisfies Meta<Button>;
+} satisfies Meta<Button class="bits-btn bits-btn">;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

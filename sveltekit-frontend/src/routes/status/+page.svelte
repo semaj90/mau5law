@@ -8,7 +8,12 @@
   import { browser } from '$app/environment';
   import { Button } from 'bits-ui';
   import GPUCacheIntegrationDemo from '$lib/components/ui/gaming/demo/GPUCacheIntegrationDemo.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
 
   // System status state
@@ -229,7 +234,7 @@ let successCount = $state(0);
         <Button.Root
           onclick={loadSystemStatus}
           disabled={isLoading}
-          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg bits-btn bits-btn"
         >
           {isLoading ? '🔄' : '🔃'} Refresh
         </Button.Root>
@@ -447,7 +452,7 @@ let successCount = $state(0);
                   <h5 class="text-gray-400 mb-1">Protocols:</h5>
                   <div class="flex flex-wrap gap-2">
                     {#each systemHealth.architecture.protocols as protocol}
-                      <Badge variant="outline" class="text-xs">{protocol}</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{protocol}</span>
                     {/each}
                   </div>
                 </div>
@@ -455,7 +460,7 @@ let successCount = $state(0);
                   <h5 class="text-gray-400 mb-1">Features:</h5>
                   <div class="flex flex-wrap gap-2">
                     {#each systemHealth.architecture.features as feature}
-                      <Badge variant="secondary" class="text-xs">{feature}</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{feature}</span>
                     {/each}
                   </div>
                 </div>

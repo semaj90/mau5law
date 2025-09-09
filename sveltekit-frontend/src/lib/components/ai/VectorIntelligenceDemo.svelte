@@ -1,9 +1,16 @@
 <script lang="ts">
   import { Search, Database, Brain, FileText, AlertCircle, CheckCircle2, Loader2, Star, Clock } from "lucide-svelte";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import Input from "$lib/components/ui/Input.svelte";
-  import Badge from "$lib/components/ui/Badge.svelte";
-  import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/Card";
+  // Badge replaced with span - not available in enhanced-bits
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
   type SearchResult = {
     id: string
@@ -186,7 +193,7 @@
         <Button
           type="submit"
           disabled={searchButtonDisabled}
-          class="min-w-[100px]"
+          class="min-w-[100px] bits-btn bits-btn"
         >
           {#if isSearching}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />
@@ -202,10 +209,10 @@
       <div class="flex flex-wrap gap-2">
         <span class="text-sm text-muted-foreground">Try:</span>
         {#each ["property ownership transfer", "contract liability clauses", "employment agreements", "intellectual property rights"] as example}
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => { query = example; }}
+            onclick={() => { query = example; }}
             disabled={isSearching}
           >
             {example}
@@ -254,7 +261,7 @@
     <div class="space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="text-lg font-semibold">Search Results</h3>
-        <Badge variant="secondary">{results.length} found</Badge>
+        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{results.length} found</span>
       </div>
 
       <div class="grid gap-4">
@@ -262,7 +269,7 @@
           {@const typeStyle = getDocumentTypeStyle(result.documentType)}
           <Card
             class="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500"
-            on:click={() => selectedResult = result}
+            onclick={() => selectedResult = result}
           >
             <CardContent class="pt-6">
               <div class="space-y-3">
@@ -304,7 +311,7 @@
                   {#if result.metadata.tags}
                     <div class="flex flex-wrap gap-1">
                       {#each result.metadata.tags as tag}
-                        <Badge variant="outline" class="text-xs">{tag}</Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                       {/each}
                     </div>
                   {/if}
@@ -342,9 +349,9 @@
           </p>
         </div>
         <div class="flex justify-center">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:click={() => { results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 }; }}
+            onclick={() => { results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 }; }}
           >
             Load Demo Results
           </Button>
@@ -361,7 +368,7 @@
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           {selectedResult.title}
-          <Button variant="ghost" size="sm" on:click={() => selectedResult = null}>
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={() => selectedResult = null}>
             ×
           </Button>
         </CardTitle>
@@ -370,7 +377,7 @@
         <p class="text-sm">{selectedResult.content}</p>
         <div class="flex items-center gap-2">
           <Badge>Similarity: {formatSimilarity(selectedResult.similarity)}</Badge>
-          <Badge variant="outline">{selectedResult.documentType}</Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{selectedResult.documentType}</span>
         </div>
       </CardContent>
     </Card>

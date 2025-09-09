@@ -8,9 +8,16 @@
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service';
   import { enhancedRAGService } from '$lib/services/enhanced-rag-service';
   import { natsMessaging } from '$lib/services/nats-messaging-service';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
@@ -432,9 +439,9 @@ let activeTab = $state('chat');
               GPU: {$gpuStatus.layers} layers
             </Badge>
           {:else}
-            <Badge variant="secondary">CPU Mode</Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">CPU Mode</span>
           {/if}
-          <Badge variant="outline">{$currentModel}</Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$currentModel}</span>
         </div>
       </CardTitle>
     </CardHeader>
@@ -469,9 +476,7 @@ let activeTab = $state('chat');
                       <div class="space-y-1">
                         {#each message.metadata.sources as source}
                           <div class="text-xs">
-                            <Badge variant="outline" class="mr-1">
-                              {(source.relevanceScore * 100).toFixed(0)}%
-                            </Badge>
+                            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(source.relevanceScore * 100).toFixed(0)}%</span>
                             {source.title}
                           </div>
                         {/each}
@@ -524,7 +529,7 @@ let activeTab = $state('chat');
 
       <!-- Input Area -->
       <div class="p-4 border-t">
-        <form on:submit|preventDefault={sendMessage} class="flex gap-2">
+        <form onsubmit|preventDefault={sendMessage} class="flex gap-2">
           <Textarea
             bind:value={userInput}
             placeholder="Ask a legal question..."
@@ -541,7 +546,7 @@ let activeTab = $state('chat');
           <Button 
             type="submit" 
             disabled={$isProcessing || !userInput.trim()}
-            class="self-end"
+            class="self-end bits-btn bits-btn"
           >
             {#if $isProcessing}
               <Loader2 class="h-4 w-4 animate-spin" />
@@ -571,11 +576,11 @@ let activeTab = $state('chat');
             </Alert>
             
             <div class="grid grid-cols-2 gap-4">
-              <Button variant="outline" class="justify-start">
+              <Button variant="outline" class="justify-start bits-btn bits-btn">
                 <FileText class="h-4 w-4 mr-2" />
                 Upload Document
               </Button>
-              <Button variant="outline" class="justify-start">
+              <Button variant="outline" class="justify-start bits-btn bits-btn">
                 <Search class="h-4 w-4 mr-2" />
                 Search Documents
               </Button>

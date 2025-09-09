@@ -1,7 +1,14 @@
 <script lang="ts">
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
   let evidenceText = $state(`This is a test contract regarding intellectual property rights and licensing agreements.
 The contract includes provisions for patent licensing, trademark usage, and trade secret protection.
@@ -149,14 +156,14 @@ The agreement is valid for 5 years with automatic renewal options.`);
     <CardContent>
       <div class="space-y-4">
         <Button
-          on:click={testEmbeddingAPI}
-          class="mr-2"
+          onclick={testEmbeddingAPI}
+          class="mr-2 bits-btn bits-btn"
         >
           Test Embedding API
         </Button>
 
-        <Button
-          on:click={testEmbeddingService}
+        <Button class="bits-btn bits-btn"
+          onclick={testEmbeddingService}
           variant="outline"
         >
           Test Embedding Service

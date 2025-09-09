@@ -9,7 +9,12 @@
 
     // UI components (Svelte 5 + melt v0.39.0 compatible)
     import Button from '$lib/components/ui/button/Button.svelte';
-    import { Card } from '$lib/components/ui/card';
+    import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
     import { aiGlobalStore, aiGlobalActions } from '$lib/stores/ai';
 
     // Type definition for AI store context
@@ -96,7 +101,7 @@
           onclick={handleSummarize}
           disabled={!user || $aiGlobalStore.context.loading}
           variant="primary"
-          class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg"
+          class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
           {!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
         </Button>
@@ -104,7 +109,7 @@
           onclick={saveSummary}
           disabled={!$aiGlobalStore.context.summary || $aiGlobalStore.context.loading}
           variant="primary"
-          class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg"
+          class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
           Save Summary
         </Button>

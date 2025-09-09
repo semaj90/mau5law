@@ -20,7 +20,7 @@
 
   let { 
     fields = $bindable(),
-    on:submit= $bindable(), 
+    onsubmit= $bindable(), 
     submitText = $bindable(),
     submitClass = $bindable()
   } = $props();

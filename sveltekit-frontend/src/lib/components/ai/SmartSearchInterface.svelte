@@ -3,9 +3,16 @@
 	import { onMount } from 'svelte';
   import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
 	import type { SemanticChunk } from '$lib/ai/frontend-rag-pipeline';
-	import { Button } from '$lib/components/ui/button';
+	import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
 	import Input from '$lib/components/ui/Input.svelte';
-	import { Card } from '$lib/components/ui/card';
+	import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
 	// State management with Svelte 5
 	let query = $state('');
@@ -207,9 +214,9 @@
 			disabled={isSearching}
 		/>
 		<Button 
-			on:on:click={performSearch}
+			on:onclick={performSearch}
 			disabled={isSearching || !query.trim()}
-			class="px-6"
+			class="px-6 bits-btn bits-btn"
 		>
 			{#if isSearching}
 				<div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>

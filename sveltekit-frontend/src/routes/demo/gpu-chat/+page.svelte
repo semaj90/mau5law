@@ -101,7 +101,7 @@
   </div>
 
   <!-- Input Form -->
-  <form on:submit|preventDefault={handleSubmit} class="flex gap-3">
+  <form onsubmit|preventDefault={handleSubmit} class="flex gap-3">
     <input 
       type="text"
       bind:value={userInput}

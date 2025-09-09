@@ -8,8 +8,10 @@
   import { zod } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
   import { writable } from 'svelte/store';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Input } from '$lib/components/ui/input';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Checkbox } from '$lib/components/ui/checkbox';
@@ -332,10 +334,10 @@
 
       <!-- Advanced Options -->
       <div class="border-t pt-6">
-        <Button
+        <Button class="bits-btn bits-btn"
           type="button"
           variant="ghost"
-          on:click={() => showAdvanced = !showAdvanced}
+          onclick={() => showAdvanced = !showAdvanced}
           class="mb-4"
         >
           {showAdvanced ? 'Hide' : 'Show'} Advanced Options
@@ -469,11 +471,11 @@
                         <p class="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
                       </div>
                     </div>
-                    <Button
+                    <Button class="bits-btn bits-btn"
                       type="button"
                       variant="ghost"
                       size="sm"
-                      on:click={() => removeFile(index)}
+                      onclick={() => removeFile(index)}
                     >
                       Remove
                     </Button>
@@ -489,21 +491,21 @@
       <div class="flex items-center justify-between pt-6 border-t">
         <div class="flex items-center space-x-4">
           {#if enableAutoSave && !editMode}
-            <Button type="button" variant="outline" on:click={() => { if (ondraft) ondraft({ data: $form }); }}>
+            <Button class="bits-btn bits-btn" type="button" variant="outline" onclick={() => { if (ondraft) ondraft({ data: $form }); }}>
               Save as Draft
             </Button>
           {/if}
         </div>
 
         <div class="flex items-center space-x-3">
-          <Button type="button" variant="outline">
+          <Button class="bits-btn bits-btn" type="button" variant="outline">
             Cancel
           </Button>
 
           <Button
             type="submit"
             disabled={$submitting || !$isValid}
-            class="min-w-[120px]"
+            class="min-w-[120px] bits-btn bits-btn"
           >
             {#if $submitting}
               <Loader2 class="mr-2 h-4 w-4 animate-spin" />
@@ -524,8 +526,8 @@
     <h2 class="text-lg font-semibold text-red-800 mb-2">Form Error</h2>
     <p class="text-red-700 mb-4">The case form encountered an error:</p>
     <p class="text-red-600 font-mono text-sm mb-4 bg-red-100 p-2 rounded">{componentError.message}</p>
-    <Button
-  on:click={() => { componentError = null; }}
+    <Button class="bits-btn bits-btn"
+  onclick={() => { componentError = null; }}
       variant="outline"
       class="border-red-300 text-red-700 hover:bg-red-50"
     >

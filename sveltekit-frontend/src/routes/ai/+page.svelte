@@ -1,7 +1,9 @@
 <script lang="ts">
   import { page } from "$app/state";
   import ChatInterface from "$lib/components/ai/ChatInterface.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     chatActions,
     chatStore,
@@ -111,10 +113,10 @@ let selectedConversationId = $state<string | null >(null);
                 <Clock class="space-y-4" />
                 Chat History
               </h2>
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant="outline"
                 size="sm"
-                on:on:click={() => startNewChat()}
+                on:onclick={() => startNewChat()}
               >
                 <Plus class="space-y-4" />
                 New
@@ -178,10 +180,10 @@ let selectedConversationId = $state<string | null >(null);
           >
             <div class="space-y-4">
               {#if !showHistory}
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   size="sm"
-                  on:on:click={() => showHistoryPanel()}
+                  on:onclick={() => showHistoryPanel()}
                 >
                   <Clock class="space-y-4" />
                   History
@@ -202,20 +204,20 @@ let selectedConversationId = $state<string | null >(null);
 
             <div class="space-y-4">
               {#if $chatStore.currentConversation}
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   size="sm"
-                  on:on:click={() => chatActions.saveToStorage()}
+                  on:onclick={() => chatActions.saveToStorage()}
                 >
                   <Save class="space-y-4" />
                   Save
                 </Button>
               {/if}
 
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant="outline"
                 size="sm"
-                on:on:click={() => startNewChat()}
+                on:onclick={() => startNewChat()}
               >
                 <Plus class="space-y-4" />
                 New Chat
@@ -244,8 +246,8 @@ let selectedConversationId = $state<string | null >(null);
               {#each ["Analyze this case for legal precedents", "Generate a prosecution strategy", "Summarize evidence findings", "Draft a legal brief outline", "Research similar cases", "Identify key witnesses to interview"] as prompt}
                 <Button
                   variant="outline"
-                  class="space-y-4"
-                  on:on:click={() => {
+                  class="space-y-4 bits-btn bits-btn"
+                  on:onclick={() => {
                     if (!$chatStore.currentConversation)
                       chatActions.newConversation();
                     // Add the prompt to the conversation

@@ -244,37 +244,37 @@
               <!-- Center section -->
               <div class="controller-center">
                 <div class="dpad-3d">
-                  <Button.Root class="dpad-btn-3d dpad-up-3d">▲</Button.Root>
+                  <Button.Root class="dpad-btn-3d dpad-up-3d bits-btn bits-btn">▲</Button.Root>
                   <div class="dpad-middle-3d">
-                    <Button.Root class="dpad-btn-3d dpad-left-3d">◄</Button.Root>
+                    <Button.Root class="dpad-btn-3d dpad-left-3d bits-btn bits-btn">◄</Button.Root>
                     <div class="dpad-center-3d"></div>
-                    <Button.Root class="dpad-btn-3d dpad-right-3d">►</Button.Root>
+                    <Button.Root class="dpad-btn-3d dpad-right-3d bits-btn bits-btn">►</Button.Root>
                   </div>
-                  <Button.Root class="dpad-btn-3d dpad-down-3d">▼</Button.Root>
+                  <Button.Root class="dpad-btn-3d dpad-down-3d bits-btn bits-btn">▼</Button.Root>
                 </div>
 
-                <Button.Root class="start-button-3d">START</Button.Root>
+                <Button.Root class="start-button-3d bits-btn bits-btn">START</Button.Root>
               </div>
 
               <!-- Right section -->
               <div class="controller-right">
                 <div class="c-buttons">
-                  <Button.Root class="c-btn c-up">C↑</Button.Root>
+                  <Button.Root class="c-btn c-up bits-btn bits-btn">C↑</Button.Root>
                   <div class="c-middle">
-                    <Button.Root class="c-btn c-left">C←</Button.Root>
-                    <Button.Root class="c-btn c-right">C→</Button.Root>
+                    <Button.Root class="c-btn c-left bits-btn bits-btn">C←</Button.Root>
+                    <Button.Root class="c-btn c-right bits-btn bits-btn">C→</Button.Root>
                   </div>
-                  <Button.Root class="c-btn c-down">C↓</Button.Root>
+                  <Button.Root class="c-btn c-down bits-btn bits-btn">C↓</Button.Root>
                 </div>
 
                 <div class="face-buttons-3d">
-                  <Button.Root class="n64-btn-3d n64-btn-a">A</Button.Root>
-                  <Button.Root class="n64-btn-3d n64-btn-b">B</Button.Root>
+                  <Button.Root class="n64-btn-3d n64-btn-a bits-btn bits-btn">A</Button.Root>
+                  <Button.Root class="n64-btn-3d n64-btn-b bits-btn bits-btn">B</Button.Root>
                 </div>
 
                 <div class="shoulder-buttons-3d">
-                  <Button.Root class="n64-btn-3d n64-btn-z">Z</Button.Root>
-                  <Button.Root class="n64-btn-3d n64-btn-r">R</Button.Root>
+                  <Button.Root class="n64-btn-3d n64-btn-z bits-btn bits-btn">Z</Button.Root>
+                  <Button.Root class="n64-btn-3d n64-btn-r bits-btn bits-btn">R</Button.Root>
                 </div>
               </div>
 
@@ -414,8 +414,8 @@
           <!-- 3D Dialog Demo -->
           <div class="dialog-section-3d">
             <Button.Root
-              class="n64-btn-primary"
-              on:click={() => dialogOpen = true}
+              class="n64-btn-primary bits-btn bits-btn"
+              onclick={() => dialogOpen = true}
             >
               🌟 Show N64 Dialog
             </Button.Root>
@@ -435,8 +435,8 @@
                     </Dialog.Description>
                     <div class="dialog-actions-3d">
                       <Button.Root
-                        class="n64-btn-dialog"
-                        on:click={() => dialogOpen = false}
+                        class="n64-btn-dialog bits-btn bits-btn"
+                        onclick={() => dialogOpen = false}
                       >
                         ✓ Acknowledge
                       </Button.Root>

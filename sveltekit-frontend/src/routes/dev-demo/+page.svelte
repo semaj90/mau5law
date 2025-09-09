@@ -4,7 +4,12 @@
   import { zod } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
   import Button from '$lib/components/ui/enhanced/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced/Card.svelte';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import Input from '$lib/components/ui/enhanced/Input.svelte';
   import { Badge } from '$lib/components/ui/modular/Badge.svelte';
   import { cn } from '$lib/utils';
@@ -234,9 +239,7 @@
                     {authStatus.hint}
                   </p>
                 {:else}
-                  <Badge variant="secondary">
-                    {#snippet children()}Loading...{/snippet}
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{#snippet children()}Loading...{/snippet}</span>
                 {/if}
               </div>
 
@@ -358,7 +361,7 @@
                   </div>
                 </div>
 
-                <Button type="submit" class="w-full">
+                <Button type="submit" class="w-full bits-btn bits-btn">
                   {#snippet children()}Create Case{/snippet}
                 </Button>
               </form>
@@ -417,7 +420,7 @@
                     disabled={isStreaming}
                     class="flex-1"
                   />
-                  <Button on:click={sendChatMessage} disabled={isStreaming || !currentMessage.trim()}>
+                  <Button class="bits-btn bits-btn" onclick={sendChatMessage} disabled={isStreaming || !currentMessage.trim()}>
                     {#snippet children()}
                       {isStreaming ? 'Sending...' : 'Send'}
                     {/snippet}
@@ -454,11 +457,9 @@
                           {caseItem.priority.toUpperCase()}
                         {/snippet}
                       </Badge>
-                      <Badge variant="outline">
-                        {#snippet children()}
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{#snippet children()}
                           {caseItem.status.toUpperCase()}
-                        {/snippet}
-                      </Badge>
+                        {/snippet}</span>
                     </div>
                     <p class="text-xs text-gray-500">
                       Case #{caseItem.caseNumber || caseItem.id?.substring(0, 8)}

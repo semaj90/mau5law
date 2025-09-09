@@ -4,9 +4,18 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 -->
 <script lang="ts">
   import type { Props } from "$lib/types/global";
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
   import { 
@@ -246,9 +255,7 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
         <div class="flex items-center gap-2">
           <Bot class="w-5 h-5 text-blue-500" />
           Legal AI Assistant
-          <Badge variant="secondary" class="ml-2">
-            Gemma3Legal
-          </Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Gemma3Legal</span>
         </div>
         
         <div class="flex items-center gap-2 text-sm">
@@ -285,10 +292,10 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
         </h4>
         <div class="flex flex-wrap gap-2">
           {#each selfPromptSuggestions as suggestion}
-            <Button 
+            <Button class="bits-btn bits-btn" 
               variant="outline" 
               size="sm"
-              on:on:click={() => useSelfPrompt(suggestion)}
+              on:onclick={() => useSelfPrompt(suggestion)}
               disabled={isTyping}
             >
               {suggestion}
@@ -308,9 +315,7 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
       </div>
       <p class="text-sm">{elementAnalysis.relevance || 'Analyzing...'}</p>
       {#if elementAnalysis.legalContext}
-        <Badge variant="secondary" class="mt-1 text-xs">
-          {elementAnalysis.legalContext}
-        </Badge>
+        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{elementAnalysis.legalContext}</span>
       {/if}
     </div>
   {/if}
@@ -332,13 +337,9 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
               
               {#if message.metadata?.confidence}
                 <div class="mt-2 flex items-center gap-2">
-                  <Badge variant="secondary" class="text-xs">
-                    {Math.round(message.metadata.confidence * 100)}% confident
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.metadata.confidence * 100)}% confident</span>
                   {#if message.metadata.ragSources > 0}
-                    <Badge variant="outline" class="text-xs">
-                      {message.metadata.ragSources} sources
-                    </Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.metadata.ragSources} sources</span>
                   {/if}
                 </div>
               {/if}
@@ -351,9 +352,7 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
                       <div class="flex items-center gap-1">
                         <FileText class="w-3 h-3" />
                         {source.metadata?.fileName || source.id}
-                        <Badge variant="outline" class="text-xs ml-auto">
-                          {Math.round(source.score * 100)}% match
-                        </Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round(source.score * 100)}% match</span>
                       </div>
                       <p class="mt-1">{source.content.substring(0, 100)}...</p>
                     </div>
@@ -400,8 +399,8 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
             disabled={isTyping}
           />
         </div>
-        <Button 
-          on:on:click={sendMessage}
+        <Button class="bits-btn bits-btn" 
+          on:onclick={sendMessage}
           disabled={isTyping || !currentMessage.trim()}
         >
           <Send class="w-4 h-4" />
@@ -432,10 +431,10 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
           
           <div class="flex items-center gap-2">
             {#if enableEnhancedRAG}
-              <Badge variant="outline" class="text-xs">RAG Active</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">RAG Active</span>
             {/if}
             {#if enableElementalAwareness}
-              <Badge variant="outline" class="text-xs">YOLO Aware</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">YOLO Aware</span>
             {/if}
           </div>
         </div>

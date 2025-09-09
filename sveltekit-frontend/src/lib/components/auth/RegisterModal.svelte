@@ -44,7 +44,7 @@
     <Dialog.Content class="content">
       <Dialog.Title class="title">Register</Dialog.Title>
       {#if error}<div class="error">{error}</div>{/if}
-      <form on:submit|preventDefault={handleRegister} class="form">
+      <form onsubmit|preventDefault={handleRegister} class="form">
         <label>
           <span>Email</span>
           <input

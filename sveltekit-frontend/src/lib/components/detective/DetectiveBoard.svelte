@@ -1,8 +1,13 @@
 <!-- Detective Board - Enhanced 3-Column Grid with NES.css, RabbitMQ & GPU Integration -->
 <script lang="ts">
-	import Badge from '$lib/components/ui/Badge.svelte';
+	// Badge replaced with span - not available in enhanced-bits
 	import Button from '$lib/components/ui/button/Button.svelte';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import { page } from '$app/stores';
 	import Fuse from 'fuse.js';
@@ -425,7 +430,7 @@
 				<div class="flex items-center gap-4">
 					<!-- View Mode Switcher -->
 					<div class="flex gap-2">
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant={viewMode === 'columns' ? 'default' : 'outline'}
 							size="sm"
 							onclick={() => switchViewMode('columns')}
@@ -433,7 +438,7 @@
 							<span class="mr-2">📋</span>
 							Columns
 						</Button>
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'outline'}
 							size="sm"
 							onclick={() => switchViewMode('canvas')}
@@ -462,11 +467,11 @@
 									</div>
 								{/if}
 							</div>
-							<Badge variant="outline">{activeUsers.length} online</Badge>
+							<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{activeUsers.length} online</span>
 						</div>
 					{/if}
 
-					<Button size="sm">
+					<Button class="bits-btn bits-btn" size="sm">
 						<span class="mr-2">➕</span>
 						New Case
 					</Button>
@@ -488,9 +493,7 @@
 									<div class="w-3 h-3 bg-primary rounded-full" />
 									{column.title}
 								</CardTitle>
-								<Badge variant="secondary">
-									{column.items.length}
-								</Badge>
+								<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{column.items.length}</span>
 							</div>
 						</CardHeader>
 
@@ -665,10 +668,10 @@
 					}}
 				/>
 				<div class="flex gap-2">
-					<Button onclick={runFindSearch} disabled={findModal.loading}>
+					<Button class="bits-btn bits-btn" onclick={runFindSearch} disabled={findModal.loading}>
 						{#if findModal.loading}Searching...{:else}Search{/if}
 					</Button>
-					<Button variant="outline" onclick={closeFindModal}>Close</Button>
+					<Button class="bits-btn bits-btn" variant="outline" onclick={closeFindModal}>Close</Button>
 				</div>
 
 				{#if findModal.error}

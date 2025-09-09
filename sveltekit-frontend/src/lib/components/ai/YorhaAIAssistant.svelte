@@ -669,7 +669,7 @@ let typingTimeout = $state<number;
 	<!-- Trigger Button -->
 	<Button.Root
 		{...$trigger}
-		on:click={openDialog}
+		onclick={openDialog}
 		variant="default"
 		size="lg"
 		class={cn(
@@ -736,17 +736,15 @@ let typingTimeout = $state<number;
 
 					<div class="flex items-center gap-2">
 						<!-- Metrics badge -->
-						<Badge variant="secondary" class="text-xs">
-							{metrics.totalMessages} msgs
-						</Badge>
+						<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{metrics.totalMessages} msgs</span>
 
 						<!-- Close button -->
 						<Button.Root
 							{...$close}
 							variant="ghost"
 							size="sm"
-							on:click={closeDialog}
-							class="h-6 w-6 p-0"
+							onclick={closeDialog}
+							class="h-6 w-6 p-0 bits-btn bits-btn"
 						>
 							<span class="sr-only">Close</span>
 							<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -767,9 +765,7 @@ let typingTimeout = $state<number;
 							</p>
 
 							{#if caseID}
-								<Badge variant="outline" class="mt-2">
-									Case: {caseID}
-								</Badge>
+								<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Case: {caseID}</span>
 							{/if}
 						</div>
 					{:else}
@@ -801,21 +797,15 @@ let typingTimeout = $state<number;
 												<span>{formatTimestamp(message.timestamp)}</span>
 
 												{#if message.metadata.token_count}
-													<Badge variant="secondary" class="text-xs">
-														{message.metadata.token_count} tokens
-													</Badge>
+													<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{message.metadata.token_count} tokens</span>
 												{/if}
 
 												{#if message.metadata.processing_time}
-													<Badge variant="secondary" class="text-xs">
-														{Math.round(message.metadata.processing_time)}ms
-													</Badge>
+													<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.metadata.processing_time)}ms</span>
 												{/if}
 
 												{#if message.metadata.gpu_accelerated}
-													<Badge variant="secondary" class="text-xs bg-green-500/20 text-green-400">
-														GPU
-													</Badge>
+													<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">GPU</span>
 												{/if}
 											</div>
 										{/if}
@@ -826,7 +816,7 @@ let typingTimeout = $state<number;
 												{#each message.metadata.suggestions as suggestion}
 													<button
 														class="text-xs text-blue-400 hover:text-blue-300 underline block"
-														on:click={() => {
+														onclick={() => {
 															currentMessage = suggestion;
 															sendMessage();
 														}}
@@ -858,20 +848,14 @@ let typingTimeout = $state<number;
 					{#if chatSession.context.userIntent !== 'general' || caseID}
 						<div class="flex items-center gap-2 text-xs text-muted-foreground">
 							{#if chatSession.context.userIntent !== 'general'}
-								<Badge variant="outline" class="text-xs">
-									Intent: {chatSession.context.userIntent}
-								</Badge>
+								<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Intent: {chatSession.context.userIntent}</span>
 							{/if}
 
 							{#if caseID}
-								<Badge variant="outline" class="text-xs">
-									Case: {caseID}
-								</Badge>
+								<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Case: {caseID}</span>
 							{/if}
 
-							<Badge variant="outline" class="text-xs">
-								Confidence: {Math.round(chatSession.context.confidence * 100)}%
-							</Badge>
+							<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Confidence: {Math.round(chatSession.context.confidence * 100)}%</span>
 						</div>
 					{/if}
 
@@ -887,7 +871,7 @@ let typingTimeout = $state<number;
 						/>
 
 						<Button.Root
-							on:click={sendMessage}
+							onclick={sendMessage}
 							disabled={!canSendMessage}
 							variant="default"
 							size="sm"
@@ -912,9 +896,9 @@ let typingTimeout = $state<number;
 							<Button.Root
 								variant="ghost"
 								size="sm"
-								on:click={clearChat}
+								onclick={clearChat}
 								disabled={!hasMessages}
-								class="text-xs h-6 px-2"
+								class="text-xs h-6 px-2 bits-btn bits-btn"
 							>
 								Clear
 							</Button.Root>
@@ -923,22 +907,17 @@ let typingTimeout = $state<number;
 								<Button.Root
 									variant="ghost"
 									size="sm"
-									class="text-xs h-6 px-2"
+									class="text-xs h-6 px-2 bits-btn bits-btn"
 								>
 									MCP
 								</Button.Root>
 							{/if}
 
 							{#if enableGPUAcceleration}
-								<Badge
-									variant="secondary"
-									class={cn(
-										"text-xs h-6",
-										metrics.gpuUtilization > 50 && "bg-green-500/20 text-green-400"
+								<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">50 && "bg-green-500/20 text-green-400"
 									)}
 								>
-									GPU {Math.round(metrics.gpuUtilization)}%
-								</Badge>
+									GPU {Math.round(metrics.gpuUtilization)}%</span>
 							{/if}
 						</div>
 

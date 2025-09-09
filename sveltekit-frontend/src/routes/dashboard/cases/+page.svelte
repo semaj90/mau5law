@@ -8,8 +8,12 @@
   
   // Modern UI Components
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import * as Table from '$lib/components/ui/table';
   import * as Dialog from '$lib/components/ui/dialog';
@@ -262,7 +266,7 @@
       <h1 class="text-3xl font-bold text-nier-text-primary">Cases</h1>
       <p class="text-nier-text-muted mt-1">Manage legal cases and track progress</p>
     </div>
-    <Button onclick={() => showNewCaseDialog = true} class="gap-2">
+    <Button class="bits-btn bits-btn" onclick={() => showNewCaseDialog = true} class="gap-2">
       <Plus class="w-4 h-4" />
       New Case
     </Button>
@@ -282,9 +286,7 @@
           </div>
         </div>
         <div class="mt-2 flex items-center gap-2">
-          <Badge variant="secondary" class="text-xs">
-            +{caseStats.thisWeek} this week
-          </Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">+{caseStats.thisWeek} this week</span>
         </div>
       </Card.Content>
     </Card.Root>
@@ -301,9 +303,7 @@
           </div>
         </div>
         <div class="mt-2 flex items-center gap-2">
-          <Badge variant="outline" class="text-xs">
-            {((caseStats.active / caseStats.total) * 100).toFixed(1)}% of total
-          </Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{((caseStats.active / caseStats.total) * 100).toFixed(1)}% of total</span>
         </div>
       </Card.Content>
     </Card.Root>
@@ -367,7 +367,7 @@
         </div>
         
         <div class="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" variant="outline" size="sm">
             <Filter class="w-4 h-4 mr-2" />
             More Filters
           </Button>
@@ -388,7 +388,7 @@
         <div class="p-6 text-center">
           <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
           <p class="text-red-600">{error}</p>
-          <Button onclick={loadCases} variant="outline" size="sm" class="mt-2">
+          <Button onclick={loadCases} variant="outline" size="sm" class="mt-2 bits-btn bits-btn">
             Retry
           </Button>
         </div>
@@ -397,7 +397,7 @@
           <FileText class="w-8 h-8 text-nier-text-muted mx-auto mb-2" />
           <p class="text-nier-text-muted">No cases found</p>
           {#if searchQuery || selectedStatus !== 'all'}
-            <Button onclick={() => { searchQuery = ''; selectedStatus = 'all'; }} variant="outline" size="sm" class="mt-2">
+            <Button class="bits-btn bits-btn" onclick={() => { searchQuery = ''; selectedStatus = 'all'; }} variant="outline" size="sm" class="mt-2">
               Clear Filters
             </Button>
           {/if}
@@ -432,9 +432,7 @@
                 <Table.Cell>
                   <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full {getStatusColor(caseItem.status)}"></div>
-                    <Badge variant="outline" class="capitalize">
-                      {caseItem.status}
-                    </Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseItem.status}</span>
                   </div>
                 </Table.Cell>
                 
@@ -461,21 +459,21 @@
                 
                 <Table.Cell class="text-right">
                   <div class="flex items-center justify-end gap-2">
-                    <Button
+                    <Button class="bits-btn bits-btn"
                       variant="ghost"
                       size="sm"
                       onclick={() => goto(`/dashboard/cases/${caseItem.id}`)}
                     >
                       <Eye class="w-4 h-4" />
                     </Button>
-                    <Button
+                    <Button class="bits-btn bits-btn"
                       variant="ghost"
                       size="sm"
                       onclick={() => goto(`/dashboard/cases/${caseItem.id}/edit`)}
                     >
                       <Edit class="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button class="bits-btn bits-btn" variant="ghost" size="sm">
                       <MoreHorizontal class="w-4 h-4" />
                     </Button>
                   </div>
@@ -557,10 +555,10 @@
     </div>
     
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => showNewCaseDialog = false}>
+      <Button class="bits-btn bits-btn" variant="outline" onclick={() => showNewCaseDialog = false}>
         Cancel
       </Button>
-      <Button onclick={createCase} disabled={!newCase.title.trim()}>
+      <Button class="bits-btn bits-btn" onclick={createCase} disabled={!newCase.title.trim()}>
         Create Case
       </Button>
     </Dialog.Footer>

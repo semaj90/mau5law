@@ -8,7 +8,7 @@
 
   import { browser } from "$app/environment";
   import { onMount, onDestroy } from "svelte";
-  import Button from "$lib/components/ui/Button.svelte";
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import { notifications } from "$lib/stores/notification";
   import {
     Circle,
@@ -456,26 +456,26 @@ let currentPath = $state<any >(null);
       <div
         class="space-y-4"
       >
-        <Button
+        <Button class="bits-btn bits-btn"
           variant={selectedTool === "select" ? "primary" : "outline"}
           size="sm"
-          on:on:click={() => selectTool("select")}
+          on:onclick={() => selectTool("select")}
           disabled={readonly}
         >
           <Move class="space-y-4" />
         </Button>
-        <Button
+        <Button class="bits-btn bits-btn"
           variant={selectedTool === "draw" ? "primary" : "outline"}
           size="sm"
-          on:on:click={() => selectTool("draw")}
+          on:onclick={() => selectTool("draw")}
           disabled={readonly}
         >
           ✏️
         </Button>
-        <Button
+        <Button class="bits-btn bits-btn"
           variant={selectedTool === "text" ? "primary" : "outline"}
           size="sm"
-          on:on:click={() => selectTool("text")}
+          on:onclick={() => selectTool("text")}
           disabled={readonly}
         >
           <Type class="space-y-4" />
@@ -487,17 +487,17 @@ let currentPath = $state<any >(null);
         <div
           class="space-y-4"
         >
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:on:click={() => addShape("rectangle")}
+            on:onclick={() => addShape("rectangle")}
           >
             <Square class="space-y-4" />
           </Button>
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:on:click={() => addShape("circle")}
+            on:onclick={() => addShape("circle")}
           >
             <Circle class="space-y-4" />
           </Button>
@@ -508,18 +508,18 @@ let currentPath = $state<any >(null);
       <div
         class="space-y-4"
       >
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="outline"
           size="sm"
-          on:on:click={() => undo()}
+          on:onclick={() => undo()}
           disabled={readonly || historyIndex <= 0}
         >
           <Undo class="space-y-4" />
         </Button>
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="outline"
           size="sm"
-          on:on:click={() => redo()}
+          on:onclick={() => redo()}
           disabled={readonly || historyIndex >= canvasHistory.length - 1}
         >
           <Redo class="space-y-4" />
@@ -528,16 +528,16 @@ let currentPath = $state<any >(null);
 
       <!-- Zoom -->
       <div class="space-y-4">
-        <Button variant="outline" size="sm" on:on:click={() => zoomOut()}>
+        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => zoomOut()}>
           <ZoomOut class="space-y-4" />
         </Button>
         <span class="space-y-4"
           >{Math.round(zoom * 100)}%</span
         >
-        <Button variant="outline" size="sm" on:on:click={() => zoomIn()}>
+        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => zoomIn()}>
           <ZoomIn class="space-y-4" />
         </Button>
-        <Button variant="outline" size="sm" on:on:click={() => resetZoom()}
+        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => resetZoom()}
           >Reset</Button
         >
       </div>
@@ -546,15 +546,15 @@ let currentPath = $state<any >(null);
     <!-- Actions -->
     <div class="space-y-4">
       {#if !readonly}
-        <Button variant="outline" size="sm" on:on:click={() => deleteSelected()}>
+        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => deleteSelected()}>
           <Trash2 class="space-y-4" />
         </Button>
-        <Button variant="outline" size="sm" on:on:click={() => saveCanvas()}>
+        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => saveCanvas()}>
           <Save class="space-y-4" />
           Save
         </Button>
       {/if}
-      <Button variant="outline" size="sm" on:on:click={() => exportCanvas()}>
+      <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => exportCanvas()}>
         <Download class="space-y-4" />
         Export
       </Button>

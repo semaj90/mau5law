@@ -6,8 +6,12 @@
   import { onMount, onDestroy } from 'svelte';
   import { wasmLlama } from '$lib/services/webasm-llama-complete';
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea';
   import { Badge } from '$lib/components/ui/badge';
   import * as Alert from '$lib/components/ui/alert';
@@ -407,7 +411,7 @@
         <div class="space-y-2">
           <Label for="method">Inference Method</Label>
           <div class="flex gap-2">
-            <Button 
+            <Button class="bits-btn bits-btn" 
               variant={useWebAssembly ? "default" : "outline"} 
               size="sm"
               onclick={() => useWebAssembly = true}
@@ -415,7 +419,7 @@
               <Cpu class="h-3 w-3 mr-1" />
               WASM
             </Button>
-            <Button 
+            <Button class="bits-btn bits-btn" 
               variant={!useWebAssembly ? "default" : "outline"} 
               size="sm"
               onclick={() => useWebAssembly = false}
@@ -479,10 +483,8 @@
             AI Chat Demo ({currentMethod})
           </Card.Title>
           <div class="flex gap-2">
-            <Badge variant="secondary">
-              {chatHistory.length} messages
-            </Badge>
-            <Button variant="outline" size="sm" onclick={clearChat}>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{chatHistory.length} messages</span>
+            <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={clearChat}>
               Clear Chat
             </Button>
           </div>
@@ -542,7 +544,7 @@
           <Button 
             onclick={sendMessage}
             disabled={!currentPrompt.trim() || isStreamingActive}
-            class="shrink-0"
+            class="shrink-0 bits-btn bits-btn"
           >
             {#if isStreamingActive}
               <Loader2 class="h-4 w-4 animate-spin" />

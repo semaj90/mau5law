@@ -14,7 +14,9 @@ https://svelte.dev/e/component_invalid_directive -->
   import { Editor } from "@tiptap/core";
   import StarterKit from "@tiptap/starter-kit";
   import { onMount } from "svelte";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Select } from "$lib/components/ui/select";
   import { Separator } from "$lib/components/ui/separator";
 let editor = $state<Editor | null >(null);
@@ -47,16 +49,16 @@ let editorElement = $state<HTMLElement;
       <Button 
         variant="ghost" 
         size="sm" 
-        class="nier-toolbar-btn"
-        on:on:click={() => editor?.commands.undo()}
+        class="nier-toolbar-btn bits-btn bits-btn"
+        on:onclick={() => editor?.commands.undo()}
       >
         ↶
       </Button>
       <Button 
         variant="ghost" 
         size="sm" 
-        class="nier-toolbar-btn"
-        on:on:click={() => editor?.commands.redo()}
+        class="nier-toolbar-btn bits-btn bits-btn"
+        on:onclick={() => editor?.commands.redo()}
       >
         ↷
       </Button>
@@ -88,18 +90,18 @@ let editorElement = $state<HTMLElement;
       <Button 
         variant="ghost" 
         size="sm" 
-        class="nier-toolbar-btn"
+        class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('bold')}
-        on:on:click={() => editor?.chain().focus().toggleBold().run()}
+        on:onclick={() => editor?.chain().focus().toggleBold().run()}
       >
         <strong>B</strong>
       </Button>
       <Button 
         variant="ghost" 
         size="sm" 
-        class="nier-toolbar-btn"
+        class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('italic')}
-        on:on:click={() => editor?.chain().focus().toggleItalic().run()}
+        on:onclick={() => editor?.chain().focus().toggleItalic().run()}
       >
         <em>I</em>
       </Button>

@@ -237,7 +237,7 @@
               id="processing_{option.value}"
               label={option.label}
               checked={selectedProcessingOptions.has(option.value)}
-              on:change={(e) => {
+              onchange={(e) => {
                 if (e.detail) {
                   selectedProcessingOptions.add(option.value);
                 } else {
@@ -367,7 +367,7 @@
   <div class="mt-8 pt-6 border-t border-gray-200">
     <button 
       class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-      on:click={handleSubmit}
+      onclick={handleSubmit}
       disabled={processing || !selectedAutomationType || !selectedSource}
     >
       {#if processing}

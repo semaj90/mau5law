@@ -1,7 +1,12 @@
 <script lang="ts">
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
   import EvidenceManager from '$lib/components/evidence/EvidenceManager.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import { onMount } from 'svelte';
   

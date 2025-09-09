@@ -1,6 +1,8 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import { user } from "$lib/stores/user";
   import { Download, Eye, EyeOff, Palette, RefreshCw, Save, Settings, Shield, Trash2, Upload, User as UserIcon } from "lucide-svelte";
@@ -424,20 +426,20 @@
                       change={handleAvatarChange}
                       class="space-y-4"
                     />
-                    <Button
+                    <Button class="bits-btn bits-btn"
                       variant="outline"
                       size="sm"
-                      on:click={() =>
+                      onclick={() =>
                         document.getElementById("avatar")?.click()}
                     >
                       <Upload class="space-y-4" />
                       Upload
                     </Button>
                     {#if avatarPreview}
-                      <Button
+                      <Button class="bits-btn bits-btn"
                         variant="outline"
                         size="sm"
-                        on:click={() => clearAvatar()}
+                        onclick={() => clearAvatar()}
                       >
                         <Trash2 class="space-y-4" />
                         Remove
@@ -905,7 +907,7 @@
                     </select>
                   </div>
 
-                  <Button on:click={() => exportUserData()}>
+                  <Button class="bits-btn bits-btn" onclick={() => exportUserData()}>
                     <Download class="space-y-4" />
                     Export My Data
                   </Button>
@@ -964,9 +966,9 @@
                       This will reset all your preferences to default values.
                       This action cannot be undone.
                     </p>
-                    <Button
+                    <Button class="bits-btn bits-btn"
                       variant="outline"
-                      on:click={() => resetToDefaults()}
+                      onclick={() => resetToDefaults()}
                     >
                       <RefreshCw class="space-y-4" />
                       Reset to Defaults
@@ -985,11 +987,11 @@
               Changes are saved automatically when you update settings
             </div>
             <div class="space-y-4">
-              <Button variant="outline" on:click={() => loadSettings()}>
+              <Button class="bits-btn bits-btn" variant="outline" onclick={() => loadSettings()}>
                 <RefreshCw class="space-y-4" />
                 Reset Changes
               </Button>
-              <Button on:click={() => saveSettings()} disabled={isSaving}>
+              <Button class="bits-btn bits-btn" onclick={() => saveSettings()} disabled={isSaving}>
                 {#if isSaving}
                   <RefreshCw class="space-y-4" />
                   Saving...

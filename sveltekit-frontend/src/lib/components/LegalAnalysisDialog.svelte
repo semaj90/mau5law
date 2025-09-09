@@ -75,7 +75,7 @@ import { Progress } from 'bits-ui/components/progress';
 
 <Dialog.Root {open} {onOpenChange}>
   <Dialog.Trigger>
-    <Button class="legal-action-btn bg-blue-600 hover:bg-blue-700 text-white">
+    <Button class="legal-action-btn bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn">
       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -119,7 +119,7 @@ import { Progress } from 'bits-ui/components/progress';
                     <Badge variant={legalCase.priority === 'high' ? 'destructive' : 'default'}>
                       {legalCase.priority}
                     </Badge>
-                    <Badge variant="outline">{legalCase.status}</Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{legalCase.status}</span>
                   </div>
                 </div>
               </SelectItem>
@@ -228,17 +228,17 @@ import { Progress } from 'bits-ui/components/progress';
     </div>
 
     <Dialog.Footer class="border-t border-gray-100 p-6 flex justify-end space-x-3">
-      <Button 
+      <Button class="bits-btn bits-btn" 
         variant="outline" 
-        on:on:click={() => onOpenChange(false)}
+        on:onclick={() => onOpenChange(false)}
         disabled={loading.analysis}
       >
         Cancel
       </Button>
       <Button 
-        on:on:click={handleAnalysis}
+        on:onclick={handleAnalysis}
         disabled={!selectedCaseForAnalysis || loading.analysis || analysisStatus === 'analyzing'}
-        class="bg-blue-600 hover:bg-blue-700 text-white"
+        class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
       >
         {#if analysisStatus === 'analyzing'}
           <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">

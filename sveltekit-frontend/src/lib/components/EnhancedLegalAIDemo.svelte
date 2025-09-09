@@ -34,8 +34,15 @@ https://svelte.dev/e/js_parse_error -->
   } from '$lib/stores/enhancedLokiStore';
 
   // UI Components
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
 
@@ -285,8 +292,8 @@ let realTimeUpdates = $state<any[] >([]);
               rows={4}
               class="w-full"
             />
-            <Button
-              on:on:click={() => addCustomEvidence()}
+            <Button class="bits-btn bits-btn"
+              on:onclick={() => addCustomEvidence()}
               disabled={!evidenceText.trim() || processingActive}
               class="w-full"
             >
@@ -305,15 +312,15 @@ let realTimeUpdates = $state<any[] >([]);
               <div class="border rounded-lg p-3">
                 <div class="flex items-center justify-between mb-2">
                   <h4 class="font-medium text-sm">{demo.fileName}</h4>
-                  <Badge variant="outline">{demo.type}</Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{demo.type}</span>
                 </div>
                 <p class="text-xs text-gray-600 mb-3">
                   {demo.content.slice(0, 100)}...
                 </p>
-                <Button
+                <Button class="bits-btn bits-btn"
                   size="sm"
                   variant="outline"
-                  on:on:click={() => addDemoEvidence(demo)}
+                  on:onclick={() => addDemoEvidence(demo)}
                   disabled={processingActive}
                   class="w-full"
                 >
@@ -330,16 +337,16 @@ let realTimeUpdates = $state<any[] >([]);
             <CardTitle>System Controls</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
-            <Button variant="outline" on:on:click={() => checkSystemHealth()} class="w-full">
+            <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => checkSystemHealth()} class="w-full">
               Health Check
             </Button>
-            <Button variant="outline" on:on:click={() => syncCache()} class="w-full">
+            <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => syncCache()} class="w-full">
               Sync Cache
             </Button>
-            <Button variant="outline" on:on:click={() => clearErrors()} class="w-full">
+            <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => clearErrors()} class="w-full">
               Clear Errors
             </Button>
-            <Button variant="destructive" on:on:click={() => clearCache()} class="w-full">
+            <Button class="bits-btn bits-btn" variant="destructive" on:onclick={() => clearCache()} class="w-full">
               Clear Cache
             </Button>
           </CardContent>
@@ -414,7 +421,7 @@ let realTimeUpdates = $state<any[] >([]);
                 {#each aiRecommendations.slice(-3) as rec}
                   <div class="border rounded-lg p-3">
                     <div class="flex items-center justify-between mb-2">
-                      <Badge variant="outline">{rec.type}</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{rec.type}</span>
                       <span class="text-xs font-medium">
                         {(rec.confidence * 100).toFixed(0)}%
                       </span>
@@ -472,7 +479,7 @@ let realTimeUpdates = $state<any[] >([]);
                 {#each graphRelationships.slice(0, 5) as node}
                   <div class="border rounded-lg p-3">
                     <div class="flex items-center justify-between mb-2">
-                      <Badge variant="outline">{node.type}</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{node.type}</span>
                       <span class="text-xs text-gray-500">
                         {node.connections?.length || 0} connections
                       </span>

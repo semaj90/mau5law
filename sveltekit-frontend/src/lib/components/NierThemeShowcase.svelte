@@ -206,7 +206,7 @@
           <button
             <!-- <!-- <!-- use:melt={$trigger} -->
             class="nier-button-crimson"
-            on:on:on:click={() => showModal = true}
+            on:on:onclick={() => showModal = true}
           >
             Open Modal Dialog
           </button>
@@ -231,7 +231,7 @@
               </p>
               
               <div class="flex gap-4 justify-end">
-                <button <!-- <!-- <!-- use:melt={$close} --> class="nier-button-outline px-4 py-2" on:on:on:click={() => showModal = false}>
+                <button <!-- <!-- <!-- use:melt={$close} --> class="nier-button-outline px-4 py-2" on:on:onclick={() => showModal = false}>
                   Cancel
                 </button>
                 <button class="nier-button-digital px-4 py-2">

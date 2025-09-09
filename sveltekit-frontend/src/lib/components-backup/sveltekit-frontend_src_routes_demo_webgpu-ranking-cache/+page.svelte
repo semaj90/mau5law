@@ -409,7 +409,7 @@
         <button 
           class="search-button"
           disabled={isSearching || !searchQuery.trim()}
-          on:click={performSearch}
+          onclick={performSearch}
         >
           {isSearching ? '🔄 SEARCHING...' : '🔍 SEARCH'}
         </button>
@@ -492,13 +492,13 @@
 
   <!-- Demo Actions -->
   <div class="demo-actions">
-    <button class="action-button clear" on:click={clearCache}>
+    <button class="action-button clear" onclick={clearCache}>
       🧹 Clear Cache
     </button>
-    <button class="action-button reload" on:click={reloadSampleData}>
+    <button class="action-button reload" onclick={reloadSampleData}>
       📁 Reload Sample Data
     </button>
-    <button class="action-button optimize" on:click={() => console.log('Manual optimization would be triggered')}>
+    <button class="action-button optimize" onclick={() => console.log('Manual optimization would be triggered')}>
       ⚙️ Optimize System
     </button>
   </div>

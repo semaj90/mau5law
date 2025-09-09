@@ -486,8 +486,8 @@ let comparison = $state(0);
       </div>
 
       <div class="search-actions">
-        <Button
-          on:on:click={() => performSearch()}
+        <Button class="bits-btn bits-btn"
+          on:onclick={() => performSearch()}
           disabled={$isSearching || !$searchQuery.trim()}
           class="search-button"
         >
@@ -501,9 +501,9 @@ let comparison = $state(0);
         </Button>
 
         {#if enableFilters}
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:on:click={() => showFilters.update((s) => !s)}
+            on:onclick={() => showFilters.update((s) => !s)}
             class="filter-button"
           >
             <Filter class="mr-2" size={16} />
@@ -517,9 +517,9 @@ let comparison = $state(0);
         {/if}
 
         {#if enableAnalytics}
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:on:click={() => showAnalytics.update((s) => !s)}
+            on:onclick={() => showAnalytics.update((s) => !s)}
           >
             <BarChart3 class="mr-2" size={16} />
             Analytics
@@ -534,10 +534,10 @@ let comparison = $state(0);
         <p class="history-label">Recent searches:</p>
         <div class="history-tags">
           {#each $searchHistory.slice(0, 5) as historyItem}
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="ghost"
               size="sm"
-              on:on:click={() => {
+              on:onclick={() => {
                 searchQuery.set(historyItem);
                 performSearch(historyItem);
               }}
@@ -558,7 +558,7 @@ let comparison = $state(0);
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           <span>Advanced Filters</span>
-          <Button variant="ghost" size="sm" on:on:click={resetFilters}>
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={resetFilters}>
             Reset
           </Button>
         </CardTitle>
@@ -656,7 +656,7 @@ let comparison = $state(0);
           </div>
         </div>
 
-        <Button on:on:click={applyFilters} class="w-full">Apply Filters</Button>
+        <Button on:onclick={applyFilters} class="w-full bits-btn bits-btn">Apply Filters</Button>
       </CardContent>
     </Card>
   {/if}
@@ -693,7 +693,7 @@ let comparison = $state(0);
       <!-- Results List -->
       <div class="results-list">
         {#each $searchResults as result (result.id)}
-          <Card class="result-item" on:on:click={() => handleResultClick(result)}>
+          <Card class="result-item" on:onclick={() => handleResultClick(result)}>
             <CardContent class="result-content">
               <!-- Result Header -->
               <div class="result-header">
@@ -745,22 +745,22 @@ let comparison = $state(0);
               {#if result.metadata.tags && result.metadata.tags.length > 0}
                 <div class="result-tags">
                   {#each result.metadata.tags as tag}
-                    <Badge variant="outline" class="tag-badge">{tag}</Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                   {/each}
                 </div>
               {/if}
 
               <!-- Result Actions -->
               <div class="result-actions">
-                <Button variant="ghost" size="sm">
+                <Button class="bits-btn bits-btn" variant="ghost" size="sm">
                   <Eye class="mr-1" size={14} />
                   View
                 </Button>
-                <Button variant="ghost" size="sm">
+                <Button class="bits-btn bits-btn" variant="ghost" size="sm">
                   <Download class="mr-1" size={14} />
                   Download
                 </Button>
-                <Button variant="ghost" size="sm">
+                <Button class="bits-btn bits-btn" variant="ghost" size="sm">
                   <Share2 class="mr-1" size={14} />
                   Share
                 </Button>
@@ -779,7 +779,7 @@ let comparison = $state(0);
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button variant="outline" on:on:click={resetFilters}>Reset Filters</Button>
+        <Button class="bits-btn bits-btn" variant="outline" on:onclick={resetFilters}>Reset Filters</Button>
       </div>
     </div>
   {/if}
@@ -917,7 +917,7 @@ let comparison = $state(0);
                     {#each $searchAnalytics.topQueries as { query, count }}
                       <div class="query-item">
                         <span class="query-text">{query}</span>
-                        <Badge variant="secondary">{count} searches</Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{count} searches</span>
                       </div>
                     {/each}
                   </div>

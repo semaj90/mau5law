@@ -1,7 +1,12 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
 
   // Props
@@ -237,7 +242,7 @@
       <CardTitle class="flex items-center gap-2">
         🎯 3D Semantic Analysis
         {#if processing}
-          <Badge variant="secondary" class="bg-blue-100 text-blue-800">Processing...</Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Processing...</span>
         {:else if results}
           <Badge class="bg-green-100 text-green-800">Complete</Badge>
         {/if}
@@ -274,10 +279,10 @@
           
           <!-- Configuration badges -->
           <div class="flex flex-wrap gap-1">
-            <Badge variant="outline" class="text-xs">Max: {maxConcurrent}</Badge>
-            <Badge variant="outline" class="text-xs">Dims: {embeddingDimensions}</Badge>
-            <Badge variant="outline" class="text-xs">Scale: {spatialScale}x</Badge>
-            <Badge variant="outline" class="text-xs">LOD: {lodThreshold}</Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Max: {maxConcurrent}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Dims: {embeddingDimensions}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Scale: {spatialScale}x</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">LOD: {lodThreshold}</span>
           </div>
         </div>
       </div>

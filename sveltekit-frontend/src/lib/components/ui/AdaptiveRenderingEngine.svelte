@@ -38,20 +38,21 @@ export interface SystemMetrics {
   drawCalls: number;
 }
 
-export interface RenderingProps {
+interface Props {
   content: any;
-  assetType: string;
-  priority: number;
+  assetType?: string;
+  priority?: number;
   predictive?: boolean;
   className?: string;
 }
 
-// Props for the component
-export let content: any;
-export let assetType: string = 'general';
-export let priority: number = 50;
-export let predictive: boolean = false;
-export let className: string = '';
+let {
+  content,
+  assetType = 'general',
+  priority = 50,
+  predictive = false,
+  className = ''
+}: Props = $props();
 
 // Reactive state using Svelte 5 runes
 let currentQuality = $state<QualityConfig>({

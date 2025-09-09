@@ -1,6 +1,8 @@
 <script lang="ts">
   import GoldenRatioGrid from '$lib/components/ui/layout/GoldenRatioGrid.svelte';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Card } from '$lib/components/ui/enhanced-bits';
 
   let currentVariant = $state<'sidebar' | 'dashboard' | 'split' | 'content' | 'legal-document'>('dashboard');
@@ -40,7 +42,7 @@
         <h3 class="text-phi-lg font-semibold mb-phi-md">Grid Variant</h3>
         <div class="flex gap-phi-sm flex-wrap">
           {#each variants as variant}
-            <Button
+            <Button class="bits-btn bits-btn"
               variant={currentVariant === variant ? 'primary' : 'outline'}
               size="sm"
               onclick={() => currentVariant = variant}
@@ -56,7 +58,7 @@
         <h3 class="text-phi-lg font-semibold mb-phi-md">Golden Direction</h3>
         <div class="flex gap-phi-sm flex-wrap">
           {#each directions as direction}
-            <Button
+            <Button class="bits-btn bits-btn"
               variant={currentDirection === direction ? 'primary' : 'outline'}
               size="sm"
               onclick={() => currentDirection = direction}
@@ -73,7 +75,7 @@
       <Button
         variant="outline"
   onclick={toggleDebugGrid}
-        class="text-phi-sm"
+        class="text-phi-sm bits-btn bits-btn"
       >
         {showDebugGrid ? 'Hide' : 'Show'} Debug Grid
       </Button>
@@ -204,9 +206,9 @@
             <div class="nier-golden-panel">
               <h4 class="text-phi-md font-semibold mb-phi-sm">Quick Actions</h4>
               <div class="space-y-phi-sm">
-                <Button variant="outline" size="sm" class="w-full">Export Report</Button>
-                <Button variant="outline" size="sm" class="w-full">Share Case</Button>
-                <Button variant="outline" size="sm" class="w-full">Schedule Review</Button>
+                <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">Export Report</Button>
+                <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">Share Case</Button>
+                <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">Schedule Review</Button>
               </div>
             </div>
 

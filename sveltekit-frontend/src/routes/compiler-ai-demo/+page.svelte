@@ -3,8 +3,15 @@
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { createEnhancedRAGEngine } from '$lib/services/enhanced-rag-pagerank';
   import {
     createCompilerFeedbackLoop,
@@ -269,20 +276,20 @@ let feedbackLoop = $state<any >(null);
     <!-- Controls -->
     <div class="flex gap-4 mb-8 justify-center">
       <Button
-        on:click={startMonitoring}
+        onclick={startMonitoring}
         disabled={!systemInitialized || isMonitoring}
-        class="bg-green-600 hover:bg-green-700">
+        class="bg-green-600 hover:bg-green-700 bits-btn bits-btn">
         Start Monitoring
       </Button>
 
-  <Button on:click={stopMonitoring} disabled={!isMonitoring} class="bg-red-600 hover:bg-red-700">
+  <Button onclick={stopMonitoring} disabled={!isMonitoring} class="bg-red-600 hover:bg-red-700 bits-btn bits-btn">
         Stop Monitoring
       </Button>
 
       <Button
-        on:click={addTestError}
+        onclick={addTestError}
         disabled={!systemInitialized}
-        class="bg-orange-600 hover:bg-orange-700">
+        class="bg-orange-600 hover:bg-orange-700 bits-btn bits-btn">
         Add Test Error
       </Button>
     </div>

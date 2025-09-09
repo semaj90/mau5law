@@ -456,7 +456,7 @@
   <!-- WebGPU Canvas -->
   <canvas
     bind:this={canvasRef}
-    on:click={handleCanvasClick}
+    onclick={handleCanvasClick}
     on:mousemove={handleCanvasClick}
     class="render-canvas"
     aria-label="3D Neo4j Knowledge Graph Visualization"
@@ -510,7 +510,7 @@
       <div class="error-message">{error}</div>
       <button 
         class="retry-button"
-        on:click={loadRecommendations}
+        onclick={loadRecommendations}
         disabled={isLoading}
       >
         Retry Loading
@@ -546,7 +546,7 @@
   <div class="camera-controls">
     <button 
       class="control-button"
-      on:click={() => animation.enabled = !animation.enabled}
+      onclick={() => animation.enabled = !animation.enabled}
       title="Toggle Animation"
     >
       {animation.enabled ? '⏸️' : '▶️'}
@@ -554,7 +554,7 @@
     
     <button 
       class="control-button"
-      on:click={() => camera = { ...camera, position: { x: 0, y: 0, z: 50 } }}
+      onclick={() => camera = { ...camera, position: { x: 0, y: 0, z: 50 } }}
       title="Reset Camera"
     >
       🎯

@@ -313,7 +313,7 @@
           <Button
             variant="ghost"
             size="sm"
-            on:click={() => (showSettings = !showSettings)}
+            onclick={() => (showSettings = !showSettings)}
           >
             <Settings class="w-4 h-4" />
           </Button>
@@ -322,7 +322,7 @@
           <Button
             variant="ghost"
             size="sm"
-            on:click={checkOllamaHealth}
+            onclick={checkOllamaHealth}
             disabled={isLoading}
           >
             <RefreshCw class="w-4 h-4" />
@@ -447,7 +447,7 @@
                   <Button
                     variant="outline"
                     size="sm"
-                    on:click={() => selectSuggestion(suggestion)}
+                    onclick={() => selectSuggestion(suggestion)}
                     class="text-xs"
                   >
                     {suggestion}
@@ -497,7 +497,7 @@
     </div>
 
     <Button
-      on:click={sendMessage}
+      onclick={sendMessage}
       disabled={!canSend || ollamaStatus !== "healthy"}
       class="px-3"
       data-testid="send-button"
@@ -512,7 +512,7 @@
     <!-- Additional Actions -->
     <Button
       variant="outline"
-      on:click={clearChat}
+      onclick={clearChat}
       disabled={chatHistory.length === 0}
     >
       Clear
@@ -520,7 +520,7 @@
 
     <Button
       variant="outline"
-      on:click={exportChat}
+      onclick={exportChat}
       disabled={chatHistory.length === 0}
     >
       Export
@@ -570,3 +570,4 @@
     background-color: #9ca3af;
   }
 </style>
+

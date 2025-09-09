@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import { createAccordion, melt } from 'melt';
   
   // Bits UI Dialog
@@ -101,20 +101,20 @@ let selectedDemo = $state('overview');
         <h2 class="text-2xl font-bold">Button Components</h2>
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button variant="default">Default</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="outline">Outline</Button>
-          <Button variant="ghost">Ghost</Button>
-          <Button variant="legal">Legal</Button>
-          <Button variant="evidence">Evidence</Button>
-          <Button variant="case">Case</Button>
-          <Button variant="destructive">Destructive</Button>
+          <Button class="bits-btn bits-btn" variant="default">Default</Button>
+          <Button class="bits-btn bits-btn" variant="secondary">Secondary</Button>
+          <Button class="bits-btn bits-btn" variant="outline">Outline</Button>
+          <Button class="bits-btn bits-btn" variant="ghost">Ghost</Button>
+          <Button class="bits-btn bits-btn" variant="legal">Legal</Button>
+          <Button class="bits-btn bits-btn" variant="evidence">Evidence</Button>
+          <Button class="bits-btn bits-btn" variant="case">Case</Button>
+          <Button class="bits-btn bits-btn" variant="destructive">Destructive</Button>
         </div>
         
         <div class="grid grid-cols-3 gap-4">
-          <Button size="sm">Small</Button>
-          <Button size="default">Default</Button>
-          <Button size="lg">Large</Button>
+          <Button class="bits-btn bits-btn" size="sm">Small</Button>
+          <Button class="bits-btn bits-btn" size="default">Default</Button>
+          <Button class="bits-btn bits-btn" size="lg">Large</Button>
         </div>
         
         <div class="bg-muted p-4 rounded-lg">
@@ -234,7 +234,7 @@ let selectedDemo = $state('overview');
             ></textarea>
           </div>
           
-          <Button type="submit" class="w-full">Submit Form</Button>
+          <Button type="submit" class="w-full bits-btn bits-btn">Submit Form</Button>
         </form>
         
         <div class="bg-muted p-4 rounded-lg">

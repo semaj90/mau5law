@@ -2,8 +2,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
   // System status and results
   const systemHealth = writable(null);
@@ -337,9 +342,9 @@ Both parties acknowledge they have read and agree to these terms.`,
 
           <!-- Execute Button -->
           <Button 
-            on:on:click={executeOperation}
+            on:onclick={executeOperation}
             disabled={isLoading || !testInput.trim()}
-            class="w-full"
+            class="w-full bits-btn bits-btn"
           >
             {#if isLoading}
               <span class="inline-flex items-center">

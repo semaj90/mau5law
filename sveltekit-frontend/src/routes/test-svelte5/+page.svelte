@@ -1,6 +1,6 @@
 <script lang="ts">
   import { $state } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
 
   // Test Svelte 5 state with bits-ui v2.9.4
   let dialogOpen = $state(false);
@@ -32,7 +32,7 @@
     <!-- Test modern Button component with Svelte 5 patterns -->
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">Modern Button (Svelte 5)</h2>
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="default"
   onclick={handleButtonClick}
       >

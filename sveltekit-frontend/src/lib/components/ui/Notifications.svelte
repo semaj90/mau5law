@@ -1,6 +1,8 @@
 <script lang="ts">
 
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { quintOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import { notifications, type Notification } from "../../stores/notification";
@@ -83,10 +85,10 @@
           {#if notification.actions && notification.actions.length > 0}
             <div class="space-y-4">
               {#each notification.actions as action}
-                <Button
+                <Button class="bits-btn bits-btn"
                   size="sm"
                   variant={action.variant || "secondary"}
-                  on:on:click={() => handleAction(notification, action)}
+                  on:onclick={() => handleAction(notification, action)}
                 >
                   {action.label}
                 </Button>

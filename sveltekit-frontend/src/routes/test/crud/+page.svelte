@@ -6,20 +6,29 @@
   import { invalidateAll } from '$app/navigation';
 
   // Gaming UI Components
-  import { ProgressiveGamingProvider, NES8BitButton, SNES16BitButton, N643DButton } from '$lib/components/ui/gaming';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
 
   // Standard UI Components
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
 
   // Form components
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
 
   /** @type {import('./$types').PageData} */
-  export let data;
+  let { data } = $props();
 let isCreating = $state(false);
 let editingCase = $state(null);
 let isDeleting = $state(false);
@@ -149,7 +158,7 @@ let showSystemHealth = $state(false);
       </div>
 
       <div class="flex flex-wrap gap-2">
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="outline"
           size="sm"
           onclick={() => showSystemHealth = !showSystemHealth}
@@ -189,13 +198,13 @@ let showSystemHealth = $state(false);
 
             <div class="space-y-2">
               <h4 class="font-medium">Server</h4>
-              <Badge variant="default">SSR Active</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">SSR Active</span>
               <p class="text-sm text-muted-foreground">Cases: {data.cases?.length || 0}</p>
             </div>
 
             <div class="space-y-2">
               <h4 class="font-medium">UI Framework</h4>
-              <Badge variant="default">SvelteKit + bits-ui</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">SvelteKit + bits-ui</span>
               <p class="text-sm text-muted-foreground">Gaming Era: {gamingEra.toUpperCase()}</p>
             </div>
           </div>
@@ -355,7 +364,7 @@ let showSystemHealth = $state(false);
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           📋 Cases List
-          <Badge variant="outline">{data.cases?.length || 0} total</Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{data.cases?.length || 0} total</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -396,7 +405,7 @@ let showSystemHealth = $state(false);
 
                   <!-- Action Buttons -->
                   <div class="flex gap-2">
-                    <Button
+                    <Button class="bits-btn bits-btn"
                       variant="outline"
                       size="sm"
                       onclick={() => startEdit(caseItem)}
@@ -405,7 +414,7 @@ let showSystemHealth = $state(false);
                       ✏️ Edit
                     </Button>
 
-                    <Button
+                    <Button class="bits-btn bits-btn"
                       variant="destructive"
                       size="sm"
                       onclick={() => confirmDelete(caseItem)}

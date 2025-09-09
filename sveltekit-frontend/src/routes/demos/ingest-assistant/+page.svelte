@@ -7,12 +7,14 @@
 
   // Import IngestAIAssistant from '$lib/components/ai/IngestAIAssistant.svelte';
   // Use direct component imports (barrel was unreliable)
-  import Card from '$lib/components/ui/Card.svelte';
+  import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/CardContent.svelte';
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/CardTitle.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { onMount } from 'svelte';
 type ServiceHealth = { upstream?: { port?: number; config?: { embed_model?: string; batch_size?: number } } };
 type IngestItem = { id: string; title: string; type: string; status: string; timestamp: string; processingTime: number };
@@ -171,7 +173,7 @@ let recentIngests = $state<IngestItem[]>([]);
                   Type: {ingest.type} • Processing: {ingest.processingTime.toFixed(1)}ms
                 </div>
               </div>
-              <Badge variant="default">✓ {ingest.status}</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">✓ {ingest.status}</span>
             </div>
           {/each}
         </div>
@@ -193,7 +195,7 @@ let recentIngests = $state<IngestItem[]>([]);
           is available at <code>$lib/components/ai/IngestAIAssistant.svelte</code>
         </p>
         <div class="space-y-2">
-          <Button on:click={() => window.open('/api/v1/ingest', '_blank')}>
+          <Button class="bits-btn bits-btn" onclick={() => window.open('/api/v1/ingest', '_blank')}>
             Test API Directly
           </Button>
         </div>
@@ -301,10 +303,10 @@ let recentIngests = $state<IngestItem[]>([]);
       AI-powered processing and vector semantic search
     </p>
     <div class="flex justify-center space-x-4">
-  <Button variant="outline" size="sm" on:click={checkServiceHealth}>
+  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={checkServiceHealth}>
         🔄 Refresh Status
       </Button>
-  <Button variant="outline" size="sm" on:click={loadRecentIngests}>
+  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={loadRecentIngests}>
         📊 Load Recent
       </Button>
     </div>

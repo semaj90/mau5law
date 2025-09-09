@@ -132,7 +132,7 @@
             on:keydown={(e) => e.key === "Enter" && performSearch()}
           />
           <Button
-            on:click={performSearch}
+            onclick={performSearch}
             disabled={searching || !query.trim()}
           >
             {#if searching}
@@ -371,3 +371,4 @@
     </Card>
   {/if}
 </div>
+

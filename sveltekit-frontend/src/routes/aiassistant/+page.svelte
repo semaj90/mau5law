@@ -46,10 +46,19 @@
 
   // TODO: Replace with melt-ui equivalent when available
   // import { Tabs } from 'bits-ui';
-  import { Button } from '$lib/components/ui/button/index.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Input } from '$lib/components/ui/input/index.js';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea/index.js';
 
   // Real-time search integration
@@ -460,15 +469,15 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
         <h1 class="text-2xl font-bold text-slate-900">🤖 AI Assistant</h1>
-        <Badge variant="outline" class="text-green-600 border-green-600">Context7 Active</Badge>
+        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Context7 Active</span>
       </div>
 
       <div class="flex items-center space-x-2">
-  <Button variant="outline" size="sm" on:click={exportChatHistory}>
+  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={exportChatHistory}>
           <Download class="h-4 w-4 mr-1" />
           Export
         </Button>
-        <Button variant="outline" size="sm">
+        <Button class="bits-btn bits-btn" variant="outline" size="sm">
           <Settings class="h-4 w-4" />
         </Button>
       </div>
@@ -487,10 +496,10 @@
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Reports</h3>
             <div class="flex items-center space-x-1">
-              <Button size="sm" variant="ghost" on:click={() => adjustPanelWidth('reports', -5)}>
+              <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={() => adjustPanelWidth('reports', -5)}>
                 <Minimize class="h-3 w-3" />
               </Button>
-              <Button size="sm" variant="ghost" on:click={() => togglePanel('reports')}>
+              <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('reports')}>
                 <Minimize class="h-3 w-3" />
               </Button>
             </div>
@@ -535,7 +544,7 @@
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Summaries</h3>
-            <Button size="sm" variant="ghost" on:click={() => togglePanel('summaries')}>
+            <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('summaries')}>
               <Minimize class="h-3 w-3" />
             </Button>
           </div>
@@ -563,7 +572,7 @@
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Citations</h3>
-            <Button size="sm" variant="ghost" on:click={() => togglePanel('citations')}>
+            <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('citations')}>
               <Minimize class="h-3 w-3" />
             </Button>
           </div>
@@ -577,9 +586,7 @@
                   <div class="flex justify-between items-center">
                     <span class="text-xs text-slate-500"
                       >{new Date(citation.date).toLocaleDateString()}</span>
-                    <Badge variant="outline" class="text-xs">
-                      {(citation.relevance * 100).toFixed(0)}% relevant
-                    </Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(citation.relevance * 100).toFixed(0)}% relevant</span>
                   </div>
                 </div>
               {/each}
@@ -610,7 +617,7 @@
               </span>
             </div>
           </div>
-          <Button size="sm" variant="ghost" on:click={() => togglePanel('chat')}>
+          <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('chat')}>
             <Expand class="h-3 w-3" />
           </Button>
         </div>
@@ -720,7 +727,7 @@
               <Button
                 variant="outline"
                 size="sm"
-                on:click={startVoiceInput}
+                onclick={startVoiceInput}
                 disabled={isListening || isProcessing}
                 class={isListening ? 'bg-red-100 border-red-300' : ''}>
                 {#if isListening}
@@ -731,7 +738,7 @@
               </Button>
             {/if}
 
-            <Button on:click={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
+            <Button class="bits-btn bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
               <Send class="h-4 w-4" />
             </Button>
           </div>

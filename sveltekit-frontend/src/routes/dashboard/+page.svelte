@@ -8,7 +8,9 @@
   
   // Modern UI Components
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Progress } from '$lib/components/ui/progress';
   import { Badge } from '$lib/components/ui/badge';
   
@@ -182,7 +184,7 @@
         <Activity class="w-3 h-3 mr-1" />
         System Healthy
       </Badge>
-      <Button variant="outline" size="sm">
+      <Button class="bits-btn bits-btn" variant="outline" size="sm">
         <BarChart3 class="w-4 h-4 mr-2" />
         Export Report
       </Button>
@@ -219,9 +221,7 @@
           <p class="text-sm font-medium text-nier-text-muted">Vector Queries</p>
           <div class="flex items-center gap-2 mt-2">
             <span class="text-2xl font-bold text-nier-text-primary">{dashboardData.totalVectorQueries.toLocaleString()}</span>
-            <Badge variant="secondary" class="text-xs text-purple-600">
-              {dashboardData.avgQueryTime}ms avg
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{dashboardData.avgQueryTime}ms avg</span>
           </div>
         </div>
         <div class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
@@ -239,9 +239,7 @@
           <p class="text-sm font-medium text-nier-text-muted">AI Tasks Today</p>
           <div class="flex items-center gap-2 mt-2">
             <span class="text-2xl font-bold text-nier-text-primary">{dashboardData.aiTasksCompleted}</span>
-            <Badge variant="secondary" class="text-xs text-orange-600">
-              {dashboardData.aiProcessingTime}s avg
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{dashboardData.aiProcessingTime}s avg</span>
           </div>
         </div>
         <div class="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center">
@@ -259,9 +257,7 @@
           <p class="text-sm font-medium text-nier-text-muted">System Load</p>
           <div class="flex items-center gap-2 mt-2">
             <span class="text-2xl font-bold text-nier-text-primary">{dashboardData.systemLoad}%</span>
-            <Badge variant="secondary" class="text-xs text-green-600">
-              {dashboardData.uptime} uptime
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{dashboardData.uptime} uptime</span>
           </div>
         </div>
         <div class="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
@@ -350,7 +346,7 @@
             {/each}
           </div>
           <div class="mt-4 text-center">
-            <Button variant="outline" size="sm">
+            <Button class="bits-btn bits-btn" variant="outline" size="sm">
               View All Activity
               <ChevronRight class="w-4 h-4 ml-2" />
             </Button>
@@ -382,9 +378,7 @@
                   {term.term}
                 </span>
               </div>
-              <Badge variant="secondary" class="text-xs">
-                {term.count}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{term.count}</span>
             </div>
           {/each}
         </div>

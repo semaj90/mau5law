@@ -331,7 +331,7 @@
 <!-- Keyboard Shortcuts Modal -->
 {#if showShortcuts}
   <div class="shortcuts-overlay" onclick={() => showShortcuts = false}>
-    <div class="shortcuts-modal yorha-card" on:click|stopPropagation>
+    <div class="shortcuts-modal yorha-card" onclick|stopPropagation>
       <h3 class="shortcuts-title gradient-text-primary">
         Keyboard Shortcuts
       </h3>

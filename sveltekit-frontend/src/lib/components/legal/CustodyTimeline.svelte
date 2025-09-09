@@ -167,9 +167,7 @@ Displays the chronological chain of custody events with detailed audit trail
               </div>
               
               <!-- Event badge -->
-              <Badge variant="secondary" class="ml-4 shrink-0">
-                {formatEventTitle(event.eventType)}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{formatEventTitle(event.eventType)}</span>
             </div>
             
             <!-- Event metadata -->
@@ -223,9 +221,7 @@ Displays the chronological chain of custody events with detailed audit trail
               <h4 class="font-semibold text-blue-900">
                 Currently: {formatEventTitle(currentStage)}
               </h4>
-              <Badge variant="secondary" class="bg-blue-100 text-blue-800">
-                In Progress
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">In Progress</span>
             </div>
             <p class="text-sm text-blue-700">
               This stage is currently being processed...

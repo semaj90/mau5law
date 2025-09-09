@@ -24,8 +24,15 @@
   import NeuralSpriteRenderer from '$lib/components/three/NeuralSpriteRenderer.svelte';
   
   // YoRHa UI components
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   
   // Props
   export let userId: string;
@@ -371,14 +378,14 @@
             <div class="feedback-buttons">
               <button 
                 class="feedback-btn positive"
-                on:click={() => provideFeedback(message.id, 1)}
+                onclick={() => provideFeedback(message.id, 1)}
                 title="Good response"
               >
                 👍
               </button>
               <button 
                 class="feedback-btn negative"
-                on:click={() => provideFeedback(message.id, -1)}
+                onclick={() => provideFeedback(message.id, -1)}
                 title="Poor response"
               >
                 👎
@@ -417,9 +424,9 @@
       />
       
       <Button 
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={!$canSend}
-        class="send-button"
+        class="send-button bits-btn bits-btn"
         variant="ghost"
       >
         {#if $isStreaming}
@@ -430,10 +437,10 @@
       </Button>
       
       <Button 
-        on:click={clearChat}
+        onclick={clearChat}
         variant="outline"
         size="sm"
-        class="clear-button"
+        class="clear-button bits-btn bits-btn"
       >
         Clear
       </Button>
