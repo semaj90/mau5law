@@ -9,7 +9,7 @@ import { Worker, type Job } from "bullmq";
 // TODO: Fix import - // Orphaned content: import {  import { evidence } from "$lib/server/db/schema-postgres";
 // TODO: Fix import - // Orphaned content: import {  // Configuration
 const GO_SERVER_URL = import.meta.env.GO_SERVER_URL || 'http://localhost:8080';
-const REDIS_URL = import.meta.env.REDIS_URL || 'redis://localhost:4005';
+const REDIS_URL = import.meta.env.REDIS_URL || 'redis://localhost:6379';
 
 // Job data interfaces
 export interface LegalAIJobData {
@@ -217,11 +217,11 @@ export function createLegalAIWorker(): Worker {
     {
       connection: {
         host: 'localhost',
-        port: 4005,
+        port: 6379,
         // Parse Redis URL if provided
         ...(REDIS_URL.startsWith('redis://') && {
           host: new URL(REDIS_URL).hostname,
-          port: parseInt(new URL(REDIS_URL).port) || 4005,
+          port: parseInt(new URL(REDIS_URL).port) || 6379,
         }),
       },
       concurrency: 2, // Process 2 documents simultaneously

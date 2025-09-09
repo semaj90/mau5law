@@ -4,15 +4,15 @@ import { json } from '@sveltejs/kit';
 import { readBodyFast } from '$lib/server/utils/json-fast';
 import { randomUUID } from 'crypto';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/db/database';
-import {
-  chatSessions,
-  chatMessages,
-  type NewChatSession,
-  type NewChatMessage,
-} from '$lib/db/chat-schema';
+import { db } from '$lib/server/db/client';
+import { chatSessions, chatMessages } from '$lib/server/db/schema-unified';
+import type { InferInsertModel } from 'drizzle-orm';
 import { eq, desc } from 'drizzle-orm';
 import { buildUserContextPrompt } from '$lib/server/prompt/contextual-engine';
+
+// Type aliases for insert operations
+type NewChatSession = InferInsertModel<typeof chatSessions>;
+type NewChatMessage = InferInsertModel<typeof chatMessages>;
 // Local ID helper to avoid missing import issues
 const generateId = () => randomUUID();
 
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const body: ChatRequest = await readBodyFast(request);
-  const { messages, sessionId, model = 'gemma3-legal', stream = true, useProfile = true } = body;
+    const { messages, sessionId, model = 'gemma3-legal', stream = true, useProfile = true } = body;
 
     if (!messages || messages.length === 0) {
       return json({ error: 'Messages array required' }, { status: 400 });
@@ -93,12 +93,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       currentSessionId = generateId();
       const newSession: NewChatSession = {
         id: currentSessionId,
-        model,
+        userId: (locals.user as any)?.id || null,
+        title: 'Chat Session',
+        context: {},
         metadata: {
+          model,
           userAgent: request.headers.get('user-agent'),
-          userId: (locals.user as any)?.id,
+          messageCount: 0,
         },
-        messageCount: 0,
       };
       await db.insert(chatSessions).values(newSession);
     }
@@ -110,15 +112,23 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       sessionId: currentSessionId,
       content: lastUserMessage.content,
       role: 'user',
-      model,
+      embedding: null, // Will be populated by embedding worker later
+      metadata: {
+        model,
+        userId: (locals.user as any)?.id,
+      },
     };
     await db.insert(chatMessages).values(newUserMessage);
 
-    // Update session message count
+    // Update session with new message count in metadata
     await db
       .update(chatSessions)
       .set({
-        messageCount: messages.length + 1,
+        metadata: {
+          model,
+          messageCount: messages.length + 1,
+          userAgent: request.headers.get('user-agent'),
+        },
         updatedAt: new Date(),
       })
       .where(eq(chatSessions.id, currentSessionId));
@@ -144,9 +154,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         sessionId: currentSessionId,
         content: cudaResponse.response,
         role: 'assistant',
-        model,
-        confidence: cudaResponse.confidence,
+        embedding: null, // Will be populated by embedding worker later
         metadata: {
+          model,
+          confidence: cudaResponse.confidence,
           tokensPerSecond: cudaResponse.tokensPerSecond,
           vectorSimilarity: cudaResponse.vectorSimilarity,
           grpoScore: cudaResponse.grpoScore,
@@ -282,20 +293,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               sessionId: currentSessionId,
               content: fullResponse,
               role: 'assistant',
-              model,
-              confidence,
+              embedding: null, // Will be populated by embedding worker later
               metadata: {
+                model,
+                confidence,
                 tokensPerSecond,
                 ...metadata,
               },
             };
             await db.insert(chatMessages).values(newAiMessage);
 
-            // Update session message count
+            // Update session message count in metadata
             await db
               .update(chatSessions)
               .set({
-                messageCount: messages.length + 2, // User + AI message
+                metadata: {
+                  model,
+                  messageCount: messages.length + 2, // User + AI message
+                  userAgent: headers?.['user-agent'],
+                },
                 updatedAt: new Date(),
               })
               .where(eq(chatSessions.id, currentSessionId));
@@ -382,19 +398,19 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
   // Poll for result (simple polling for now)
   let attempts = 0;
   const maxAttempts = 30; // 30 seconds max wait
-  
+
   while (attempts < maxAttempts) {
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
     attempts++;
 
     const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`);
-    
+
     if (!resultResponse.ok) {
       continue; // Keep trying
     }
 
     const resultData = await resultResponse.json();
-    
+
     if (resultData.completed_at && resultData.result) {
       // Task completed successfully
       const result = resultData.result;
@@ -409,11 +425,11 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
         recommendations: ['Response generated using RTX 3060 Ti'],
       };
     }
-    
+
     if (resultData.error) {
       throw new Error(`CUDA task failed: ${resultData.error}`);
     }
-    
+
     // Task is still processing, continue polling
   }
 

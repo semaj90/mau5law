@@ -75,13 +75,21 @@ self.addEventListener('fetch', (event) => {
   // API: network-first
   if (req.url.includes('/api/')) {
     event.respondWith(
-      fetch(req).catch(
-        () =>
-          new Response(JSON.stringify({ error: 'Network unavailable', offline: true }), {
+      fetch(req).catch((error) => {
+        console.warn('SW: API fetch failed for', req.url, error.message || error);
+        return new Response(
+          JSON.stringify({
+            error: 'Network unavailable',
+            offline: true,
+            url: req.url,
+            method: req.method,
+          }),
+          {
             status: 503,
             headers: { 'Content-Type': 'application/json' },
-          })
-      )
+          }
+        );
+      })
     );
     return;
   }

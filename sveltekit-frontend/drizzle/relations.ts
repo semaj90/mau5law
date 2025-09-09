@@ -1,172 +1,232 @@
 import { relations } from "drizzle-orm/relations";
-import { users, legalCases, neuralModels, tensorProcessingJobs, modelTrainingHistory, chatSessions, shaderCacheEntries, shaderUserPatterns, shaderDependencies, shaderCompilationQueue, chatMessages, shaderPreloadQueue, cases, legalDocuments, evidence, documentSections, sessions } from "./schema";
+import { cases, aiReports, users, attachmentVerifications, evidence, canvasAnnotations, canvasStates, caseEmbeddings, caseScores, citations, legalDocuments, emailVerificationCodes, evidenceVectors, hashVerifications, legalAnalysisSessions, legalResearch, passwordResetTokens, personsOfInterest, ragSessions, reports, savedReports, sessions, themes, userEmbeddings, autoTags, userAiQueries } from "./schema";
 
-export const legalCasesRelations = relations(legalCases, ({one}) => ({
-	user_assignedTo: one(users, {
-		fields: [legalCases.assignedTo],
-		references: [users.id],
-		relationName: "legalCases_assignedTo_users_id"
+export const aiReportsRelations = relations(aiReports, ({one}) => ({
+	case: one(cases, {
+		fields: [aiReports.caseId],
+		references: [cases.id]
 	}),
-	user_createdBy: one(users, {
-		fields: [legalCases.createdBy],
-		references: [users.id],
-		relationName: "legalCases_createdBy_users_id"
+	user: one(users, {
+		fields: [aiReports.createdBy],
+		references: [users.id]
 	}),
+}));
+
+export const casesRelations = relations(cases, ({many}) => ({
+	aiReports: many(aiReports),
+	canvasStates: many(canvasStates),
+	caseEmbeddings: many(caseEmbeddings),
+	caseScores: many(caseScores),
+	citations: many(citations),
+	legalAnalysisSessions: many(legalAnalysisSessions),
+	legalResearches: many(legalResearch),
+	personsOfInterests: many(personsOfInterest),
+	reports: many(reports),
+	savedReports: many(savedReports),
+	legalDocuments: many(legalDocuments),
+	userAiQueries: many(userAiQueries),
 }));
 
 export const usersRelations = relations(users, ({many}) => ({
-	legalCases_assignedTo: many(legalCases, {
-		relationName: "legalCases_assignedTo_users_id"
-	}),
-	legalCases_createdBy: many(legalCases, {
-		relationName: "legalCases_createdBy_users_id"
-	}),
-	neuralModels: many(neuralModels),
-	tensorProcessingJobs: many(tensorProcessingJobs),
-	chatSessions: many(chatSessions),
-	shaderCacheEntries: many(shaderCacheEntries),
-	shaderUserPatterns: many(shaderUserPatterns),
-	shaderCompilationQueues: many(shaderCompilationQueue),
-	chatMessages: many(chatMessages),
-	shaderPreloadQueues: many(shaderPreloadQueue),
-	cases: many(cases),
-	legalDocuments: many(legalDocuments),
+	aiReports: many(aiReports),
+	attachmentVerifications: many(attachmentVerifications),
+	canvasAnnotations: many(canvasAnnotations),
+	canvasStates: many(canvasStates),
+	caseScores: many(caseScores),
+	citations: many(citations),
+	emailVerificationCodes: many(emailVerificationCodes),
+	hashVerifications: many(hashVerifications),
+	legalAnalysisSessions: many(legalAnalysisSessions),
+	legalResearches: many(legalResearch),
+	passwordResetTokens: many(passwordResetTokens),
+	personsOfInterests: many(personsOfInterest),
+	ragSessions: many(ragSessions),
+	reports: many(reports),
+	savedReports: many(savedReports),
 	sessions: many(sessions),
+	themes: many(themes),
+	userEmbeddings: many(userEmbeddings),
+	legalDocuments: many(legalDocuments),
+	autoTags: many(autoTags),
+	userAiQueries: many(userAiQueries),
 }));
 
-export const neuralModelsRelations = relations(neuralModels, ({one, many}) => ({
-	neuralModel: one(neuralModels, {
-		fields: [neuralModels.parentModelId],
-		references: [neuralModels.id],
-		relationName: "neuralModels_parentModelId_neuralModels_id"
-	}),
-	neuralModels: many(neuralModels, {
-		relationName: "neuralModels_parentModelId_neuralModels_id"
-	}),
+export const attachmentVerificationsRelations = relations(attachmentVerifications, ({one}) => ({
 	user: one(users, {
-		fields: [neuralModels.createdBy],
-		references: [users.id]
-	}),
-	modelTrainingHistories: many(modelTrainingHistory),
-}));
-
-export const tensorProcessingJobsRelations = relations(tensorProcessingJobs, ({one}) => ({
-	user: one(users, {
-		fields: [tensorProcessingJobs.userId],
+		fields: [attachmentVerifications.verifiedBy],
 		references: [users.id]
 	}),
 }));
 
-export const modelTrainingHistoryRelations = relations(modelTrainingHistory, ({one}) => ({
-	neuralModel: one(neuralModels, {
-		fields: [modelTrainingHistory.modelId],
-		references: [neuralModels.id]
+export const canvasAnnotationsRelations = relations(canvasAnnotations, ({one}) => ({
+	evidence: one(evidence, {
+		fields: [canvasAnnotations.evidenceId],
+		references: [evidence.id]
 	}),
-}));
-
-export const chatSessionsRelations = relations(chatSessions, ({one, many}) => ({
 	user: one(users, {
-		fields: [chatSessions.userId],
-		references: [users.id]
-	}),
-	chatMessages: many(chatMessages),
-}));
-
-export const shaderCacheEntriesRelations = relations(shaderCacheEntries, ({one, many}) => ({
-	user: one(users, {
-		fields: [shaderCacheEntries.createdBy],
-		references: [users.id]
-	}),
-	shaderUserPatterns: many(shaderUserPatterns),
-	shaderDependencies_parentShaderId: many(shaderDependencies, {
-		relationName: "shaderDependencies_parentShaderId_shaderCacheEntries_id"
-	}),
-	shaderDependencies_childShaderId: many(shaderDependencies, {
-		relationName: "shaderDependencies_childShaderId_shaderCacheEntries_id"
-	}),
-	shaderPreloadQueues: many(shaderPreloadQueue),
-}));
-
-export const shaderUserPatternsRelations = relations(shaderUserPatterns, ({one}) => ({
-	user: one(users, {
-		fields: [shaderUserPatterns.userId],
-		references: [users.id]
-	}),
-	shaderCacheEntry: one(shaderCacheEntries, {
-		fields: [shaderUserPatterns.shaderCacheId],
-		references: [shaderCacheEntries.id]
-	}),
-}));
-
-export const shaderDependenciesRelations = relations(shaderDependencies, ({one}) => ({
-	shaderCacheEntry_parentShaderId: one(shaderCacheEntries, {
-		fields: [shaderDependencies.parentShaderId],
-		references: [shaderCacheEntries.id],
-		relationName: "shaderDependencies_parentShaderId_shaderCacheEntries_id"
-	}),
-	shaderCacheEntry_childShaderId: one(shaderCacheEntries, {
-		fields: [shaderDependencies.childShaderId],
-		references: [shaderCacheEntries.id],
-		relationName: "shaderDependencies_childShaderId_shaderCacheEntries_id"
-	}),
-}));
-
-export const shaderCompilationQueueRelations = relations(shaderCompilationQueue, ({one}) => ({
-	user: one(users, {
-		fields: [shaderCompilationQueue.userId],
+		fields: [canvasAnnotations.createdBy],
 		references: [users.id]
 	}),
 }));
 
-export const chatMessagesRelations = relations(chatMessages, ({one}) => ({
-	chatSession: one(chatSessions, {
-		fields: [chatMessages.sessionId],
-		references: [chatSessions.id]
+export const evidenceRelations = relations(evidence, ({many}) => ({
+	canvasAnnotations: many(canvasAnnotations),
+	evidenceVectors: many(evidenceVectors),
+	hashVerifications: many(hashVerifications),
+	legalDocuments: many(legalDocuments),
+}));
+
+export const canvasStatesRelations = relations(canvasStates, ({one}) => ({
+	case: one(cases, {
+		fields: [canvasStates.caseId],
+		references: [cases.id]
 	}),
 	user: one(users, {
-		fields: [chatMessages.userId],
+		fields: [canvasStates.createdBy],
 		references: [users.id]
 	}),
 }));
 
-export const shaderPreloadQueueRelations = relations(shaderPreloadQueue, ({one}) => ({
-	user: one(users, {
-		fields: [shaderPreloadQueue.userId],
-		references: [users.id]
-	}),
-	shaderCacheEntry: one(shaderCacheEntries, {
-		fields: [shaderPreloadQueue.shaderCacheId],
-		references: [shaderCacheEntries.id]
+export const caseEmbeddingsRelations = relations(caseEmbeddings, ({one}) => ({
+	case: one(cases, {
+		fields: [caseEmbeddings.caseId],
+		references: [cases.id]
 	}),
 }));
 
-export const casesRelations = relations(cases, ({one}) => ({
+export const caseScoresRelations = relations(caseScores, ({one}) => ({
+	case: one(cases, {
+		fields: [caseScores.caseId],
+		references: [cases.id]
+	}),
 	user: one(users, {
-		fields: [cases.assignedAttorney],
+		fields: [caseScores.calculatedBy],
+		references: [users.id]
+	}),
+}));
+
+export const citationsRelations = relations(citations, ({one}) => ({
+	case: one(cases, {
+		fields: [citations.caseId],
+		references: [cases.id]
+	}),
+	legalDocument: one(legalDocuments, {
+		fields: [citations.documentId],
+		references: [legalDocuments.id]
+	}),
+	user: one(users, {
+		fields: [citations.createdBy],
 		references: [users.id]
 	}),
 }));
 
 export const legalDocumentsRelations = relations(legalDocuments, ({one, many}) => ({
-	user: one(users, {
-		fields: [legalDocuments.createdBy],
-		references: [users.id]
+	citations: many(citations),
+	case: one(cases, {
+		fields: [legalDocuments.caseId],
+		references: [cases.id]
 	}),
 	evidence: one(evidence, {
 		fields: [legalDocuments.evidenceId],
 		references: [evidence.id]
 	}),
-	documentSections: many(documentSections),
+	user: one(users, {
+		fields: [legalDocuments.createdBy],
+		references: [users.id]
+	}),
 }));
 
-export const evidenceRelations = relations(evidence, ({many}) => ({
-	legalDocuments: many(legalDocuments),
+export const emailVerificationCodesRelations = relations(emailVerificationCodes, ({one}) => ({
+	user: one(users, {
+		fields: [emailVerificationCodes.userId],
+		references: [users.id]
+	}),
 }));
 
-export const documentSectionsRelations = relations(documentSections, ({one}) => ({
-	legalDocument: one(legalDocuments, {
-		fields: [documentSections.documentId],
-		references: [legalDocuments.id]
+export const evidenceVectorsRelations = relations(evidenceVectors, ({one}) => ({
+	evidence: one(evidence, {
+		fields: [evidenceVectors.evidenceId],
+		references: [evidence.id]
+	}),
+}));
+
+export const hashVerificationsRelations = relations(hashVerifications, ({one}) => ({
+	evidence: one(evidence, {
+		fields: [hashVerifications.evidenceId],
+		references: [evidence.id]
+	}),
+	user: one(users, {
+		fields: [hashVerifications.verifiedBy],
+		references: [users.id]
+	}),
+}));
+
+export const legalAnalysisSessionsRelations = relations(legalAnalysisSessions, ({one}) => ({
+	case: one(cases, {
+		fields: [legalAnalysisSessions.caseId],
+		references: [cases.id]
+	}),
+	user: one(users, {
+		fields: [legalAnalysisSessions.userId],
+		references: [users.id]
+	}),
+}));
+
+export const legalResearchRelations = relations(legalResearch, ({one}) => ({
+	case: one(cases, {
+		fields: [legalResearch.caseId],
+		references: [cases.id]
+	}),
+	user: one(users, {
+		fields: [legalResearch.createdBy],
+		references: [users.id]
+	}),
+}));
+
+export const passwordResetTokensRelations = relations(passwordResetTokens, ({one}) => ({
+	user: one(users, {
+		fields: [passwordResetTokens.userId],
+		references: [users.id]
+	}),
+}));
+
+export const personsOfInterestRelations = relations(personsOfInterest, ({one}) => ({
+	case: one(cases, {
+		fields: [personsOfInterest.caseId],
+		references: [cases.id]
+	}),
+	user: one(users, {
+		fields: [personsOfInterest.createdBy],
+		references: [users.id]
+	}),
+}));
+
+export const ragSessionsRelations = relations(ragSessions, ({one}) => ({
+	user: one(users, {
+		fields: [ragSessions.userId],
+		references: [users.id]
+	}),
+}));
+
+export const reportsRelations = relations(reports, ({one}) => ({
+	case: one(cases, {
+		fields: [reports.caseId],
+		references: [cases.id]
+	}),
+	user: one(users, {
+		fields: [reports.createdBy],
+		references: [users.id]
+	}),
+}));
+
+export const savedReportsRelations = relations(savedReports, ({one}) => ({
+	case: one(cases, {
+		fields: [savedReports.caseId],
+		references: [cases.id]
+	}),
+	user: one(users, {
+		fields: [savedReports.createdBy],
+		references: [users.id]
 	}),
 }));
 
@@ -174,5 +234,37 @@ export const sessionsRelations = relations(sessions, ({one}) => ({
 	user: one(users, {
 		fields: [sessions.userId],
 		references: [users.id]
+	}),
+}));
+
+export const themesRelations = relations(themes, ({one}) => ({
+	user: one(users, {
+		fields: [themes.createdBy],
+		references: [users.id]
+	}),
+}));
+
+export const userEmbeddingsRelations = relations(userEmbeddings, ({one}) => ({
+	user: one(users, {
+		fields: [userEmbeddings.userId],
+		references: [users.id]
+	}),
+}));
+
+export const autoTagsRelations = relations(autoTags, ({one}) => ({
+	user: one(users, {
+		fields: [autoTags.confirmedBy],
+		references: [users.id]
+	}),
+}));
+
+export const userAiQueriesRelations = relations(userAiQueries, ({one}) => ({
+	user: one(users, {
+		fields: [userAiQueries.userId],
+		references: [users.id]
+	}),
+	case: one(cases, {
+		fields: [userAiQueries.caseId],
+		references: [cases.id]
 	}),
 }));

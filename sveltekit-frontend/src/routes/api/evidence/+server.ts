@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db/index.js';
 import { sql, eq, and, or, ilike, count, desc, asc } from 'drizzle-orm';
-import { evidence, cases } from '$lib/server/db/schemas/cases-schema.js';
+import { evidence, cases } from '$lib/server/db/schema-postgres.js';
 import { caseManagementService } from '$lib/services/case-management-service.js';
 import { enhancedEmbeddingWorker } from '$lib/workers/embedding-worker-enhanced.js';
 import { randomUUID } from 'node:crypto';

@@ -59,10 +59,11 @@
   });
 </script>
 
+{#if interactive}
 <div
   class={cardClass}
-  role={interactive ? "button" : undefined}
-  tabindex={interactive ? 0 : -1}
+  role="button"
+  tabindex="0"
   {...restProps}
 >
   {#if loading}
@@ -70,3 +71,14 @@
   {/if}
   {@render children?.()}
 </div>
+{:else}
+<div
+  class={cardClass}
+  {...restProps}
+>
+  {#if loading}
+    <div class="neural-sprite-loading absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+  {/if}
+  {@render children?.()}
+</div>
+{/if}

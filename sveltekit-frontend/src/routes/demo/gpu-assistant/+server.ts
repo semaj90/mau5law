@@ -12,7 +12,14 @@ const db = drizzle(sql);
 async function ensureSession(): Promise<string> {
   // create a session row and return id
   const id = uuid();
-  await db.insert(chatSessions).values({ id });
+  await db.insert(chatSessions).values({
+    id,
+    userId: null, // Optional field, can be null for demo sessions
+    title: 'GPU Assistant Demo Session',
+    context: {}, // Default empty object
+    metadata: {}, // Default empty object
+    // createdAt and updatedAt have defaultNow() so they're auto-populated
+  });
   return id;
 }
 

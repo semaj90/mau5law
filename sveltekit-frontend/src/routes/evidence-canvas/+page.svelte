@@ -1,5 +1,5 @@
 <script lang="ts">
-  import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
+  import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
   import { page } from '$app/stores';
   
   let title = $state('Evidence Canvas - Legal AI Platform');
@@ -19,7 +19,7 @@
   </header>
   
   <main class="main-content">
-    <EvidenceCanvas />
+    <FabricCanvas />
   </main>
 </div>
 

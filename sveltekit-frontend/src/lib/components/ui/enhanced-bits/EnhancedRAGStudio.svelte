@@ -5,7 +5,7 @@
     children?: import('svelte').Snippet;
   }
   import { onMount } from 'svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/Card';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Textarea } from '$lib/components/ui/textarea';
