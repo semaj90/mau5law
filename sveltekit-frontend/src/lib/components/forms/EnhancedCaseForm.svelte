@@ -168,7 +168,7 @@ let errors = $state<Record<string, string> >({});
 }
 </script>
 
-<form on:submit|preventDefault={handleSubmit} class="container mx-auto px-4">
+<form onsubmit|preventDefault={handleSubmit} class="container mx-auto px-4">
   <div class="container mx-auto px-4">
     <!-- Basic Information -->
     <section class="container mx-auto px-4">

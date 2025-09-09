@@ -29,7 +29,7 @@
   <p class="text-sm opacity-80">Embeds text via /api/ai/tensor then asks the Service Worker to SIMD-parse the tensor.</p>
 
   <textarea bind:value={input} rows="4" class="w-full p-3 border rounded bg-black/20"></textarea>
-  <button class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 disabled:opacity-50" on:click={run} disabled={busy}>
+  <button class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 disabled:opacity-50" onclick={run} disabled={busy}>
     {busy ? 'Working…' : 'Run'}
   </button>
 

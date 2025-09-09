@@ -11,19 +11,35 @@
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
 
-  // Props
-  export let query = '';
-  export let userIntent: 'search' | 'legal_research' | 'case_lookup' | 'document_analysis' = 'search';
-  export let maxSuggestions = 5;
-  export let showTypos = true;
-  export let showSemantic = true;
-  export let threshold = 0.3;
-  export let context: { caseId?: string; practiceArea?: string; jurisdiction?: string } = {};
-  export let debounceMs = 150;
-  export let showMetrics = false;
-  export let enablePredictiveAnalytics = true;
-  export let sessionId = `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  export let userId: string | undefined = undefined;
+  interface Props {
+    query?: string;
+    userIntent?: 'search' | 'legal_research' | 'case_lookup' | 'document_analysis';
+    maxSuggestions?: number;
+    showTypos?: boolean;
+    showSemantic?: boolean;
+    threshold?: number;
+    context?: { caseId?: string; practiceArea?: string; jurisdiction?: string };
+    debounceMs?: number;
+    showMetrics?: boolean;
+    enablePredictiveAnalytics?: boolean;
+    sessionId?: string;
+    userId?: string | undefined;
+  }
+
+  let {
+    query = '',
+    userIntent = 'search',
+    maxSuggestions = 5,
+    showTypos = true,
+    showSemantic = true,
+    threshold = 0.3,
+    context = {},
+    debounceMs = 150,
+    showMetrics = false,
+    enablePredictiveAnalytics = true,
+    sessionId = `session-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    userId = undefined
+  }: Props = $props();
 
   // XState machine for predictive typing
   let predictiveTypingService: any;
@@ -442,7 +458,7 @@
           {#each predictiveSuggestions as suggestion, index}
             <button
               class="suggestion-item predictive-suggestion w-full text-left p-3 hover:bg-blue-50 focus:bg-blue-100 focus:outline-none transition-colors duration-150 border-b border-gray-100"
-              on:click={() => handleSuggestionClick(suggestion)}
+              onclick={() => handleSuggestionClick(suggestion)}
               in:fly={{ y: 10, duration: 200, delay: index * 30 }}
             >
               <div class="flex items-start justify-between space-x-3">
@@ -497,7 +513,7 @@
           {#each suggestions as suggestion, index}
             <button
               class="suggestion-item w-full text-left p-3 hover:bg-gray-50 focus:bg-blue-50 focus:outline-none transition-colors duration-150 border-b border-gray-100 last:border-b-0"
-              on:click={() => handleSuggestionClick(suggestion)}
+              onclick={() => handleSuggestionClick(suggestion)}
               in:fly={{ y: 10, duration: 200, delay: index * 50 }}
             >
               <div class="flex items-start justify-between space-x-3">

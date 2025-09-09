@@ -2,8 +2,13 @@
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { aiAssistantMachine } from '$lib/machines/aiAssistantMachine.js';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   
   interface Props {
     initialContext?: any;
@@ -339,7 +344,7 @@
         </div>
         
         <div class="flex items-end">
-          <Button onclick={toggleSIMD} variant="outline" class="w-full text-sm">
+          <Button onclick={toggleSIMD} variant="outline" class="w-full text-sm bits-btn bits-btn">
             {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
           </Button>
         </div>
@@ -368,7 +373,7 @@
         <!-- Sample Queries -->
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as sample, index}
-            <Button
+            <Button class="bits-btn bits-btn"
               onclick={() => loadSampleQuery(index)}
               variant="outline"
               size="sm"
@@ -378,7 +383,7 @@
               Sample {index + 1}
             </Button>
           {/each}
-          <Button onclick={clearConversation} variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" onclick={clearConversation} variant="outline" size="sm">
             Clear All
           </Button>
         </div>
@@ -547,7 +552,7 @@
       <CardHeader>
         <CardTitle class="flex justify-between items-center">
           📝 System Logs
-          <Button onclick={() => processingLogs = []} variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" onclick={() => processingLogs = []} variant="outline" size="sm">
             Clear Logs
           </Button>
         </CardTitle>

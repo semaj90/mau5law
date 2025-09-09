@@ -51,14 +51,14 @@
                 <button
                     type="button"
                     class="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    on:click={handleEdit}
+                    onclick={handleEdit}
                 >
                     Edit
                 </button>
                 <button
                     type="button"
                     class="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                    on:click={handleDelete}
+                    onclick={handleDelete}
                 >
                     Delete
                 </button>

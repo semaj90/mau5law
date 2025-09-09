@@ -1,14 +1,17 @@
 <script lang="ts">
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
-    CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
-  } from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input';
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import {
     Select,
@@ -156,7 +159,7 @@ let vectorSearchFeedback = $state<any>(null);
             placeholder="Enter your legal search query..."
             class="flex-1"
             keydown={(e) => e.key === 'Enter' && performSearch()} />
-          <Button on:click={performSearch} disabled={searching || !query.trim()}>
+          <Button class="bits-btn bits-btn" onclick={performSearch} disabled={searching || !query.trim()}>
             {#if searching}
               <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               Searching...
@@ -274,9 +277,7 @@ let vectorSearchFeedback = $state<any>(null);
                   {result.metadata?.filename || result.metadata?.title || 'Untitled'}
                 </CardDescription>
               </div>
-              <Badge variant="secondary" class="text-lg">
-                {formatScore(result.score)}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{formatScore(result.score)}</span>
             </div>
           </CardHeader>
           <CardContent class="space-y-4">
@@ -343,9 +344,7 @@ let vectorSearchFeedback = $state<any>(null);
               <div class="flex flex-wrap gap-2">
                 {#each Object.entries(result.metadata).slice(0, 5) as [key, value]}
                   {#if typeof value === 'string' || typeof value === 'number'}
-                    <Badge variant="outline" class="text-xs">
-                      {key}: {value}
-                    </Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{key}: {value}</span>
                   {/if}
                 {/each}
               </div>

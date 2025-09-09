@@ -3,12 +3,21 @@
   import { chrRomService, getCachedPattern } from '$lib/services/chr-rom-precomputation-service';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
 
-  // Props
-  export let targetElementSelector: string = '[data-legal-id]';
-  export let interactionType: 'hover' | 'click' | 'focus' = 'hover';
-  export let patternPrefix: string = 'summary';
-  export let fallbackApiEndpoint: string = '/api/legal/summary';
-  export let enableDebugMode: boolean = false;
+  interface Props {
+    targetElementSelector?: string;
+    interactionType?: 'hover' | 'click' | 'focus';
+    patternPrefix?: string;
+    fallbackApiEndpoint?: string;
+    enableDebugMode?: boolean;
+  }
+
+  let {
+    targetElementSelector = '[data-legal-id]',
+    interactionType = 'hover',
+    patternPrefix = 'summary',
+    fallbackApiEndpoint = '/api/legal/summary',
+    enableDebugMode = false
+  }: Props = $props();
 
   // State
   let isInitialized = false;

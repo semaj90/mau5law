@@ -146,7 +146,7 @@ I can provide more specific guidance if you share additional details about your 
   </div>
 
   <!-- Input -->
-  <form class="container mx-auto px-4" on:submit|preventDefault={handleSubmit}>
+  <form class="container mx-auto px-4" onsubmit|preventDefault={handleSubmit}>
     <input
       type="text"
       bind:value={query}
@@ -235,7 +235,7 @@ I can provide more specific guidance if you share additional details about your 
       <div
         class="container mx-auto px-4"
         role="document"
-        on:click|stopPropagation
+        onclick|stopPropagation
         keydown={(e) => {
           if (e.key === "Escape") {
             showCitationDialog = false;

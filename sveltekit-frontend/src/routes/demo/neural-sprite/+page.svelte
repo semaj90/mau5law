@@ -62,7 +62,7 @@
   <h1>Neural Sprite — Demo</h1>
   <p>Select an image to preview. This basic page avoids runtime errors and demonstrates a file input + preview.</p>
 
-  <input type="file" accept="image/*" on:change="{onFileChange}" />
+  <input type="file" accept="image/*" onchange="{onFileChange}" />
 
   {#if error}
 	<div class="error">{error}</div>

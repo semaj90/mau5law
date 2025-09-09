@@ -85,16 +85,16 @@
 	aria-label={ariaLabel}
 	aria-modal="true"
 	{id}
-	on:click={(e) => {
+	onclick={(e) => {
 	  if (e.target === e.currentTarget) close();
 	}}
   >
-	<div class="n64-modal" on:click|stopPropagation>
+	<div class="n64-modal" onclick|stopPropagation>
 	  <div class="n64-modal__header">
 		<slot name="header">
 		  <span>{ariaLabel}</span>
 		</slot>
-		<button class="n64-modal__close" aria-label="Close modal" on:click={close}>✕</button>
+		<button class="n64-modal__close" aria-label="Close modal" onclick={close}>✕</button>
 	  </div>
 
 	  <div class="n64-modal__body">
@@ -107,3 +107,4 @@
 	</div>
   </div>
 {/if}
+

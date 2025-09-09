@@ -10,8 +10,12 @@
   
   // Modern UI Components
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   
   // Icons from Lucide
@@ -161,9 +165,7 @@
             <span class="flex-1 font-medium">{section.title}</span>
             
             {#if section.badge}
-              <Badge variant="outline" class="text-xs">
-                {section.badge}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{section.badge}</span>
             {/if}
             
             {#if section.status}
@@ -219,7 +221,7 @@
             variant="ghost"
             size="sm"
             onclick={toggleSidebar}
-            class="p-2"
+            class="p-2 bits-btn bits-btn"
           >
             <Menu class="w-5 h-5" />
           </Button>
@@ -248,20 +250,18 @@
           </div>
           
           <!-- Quick Actions -->
-          <Button variant="ghost" size="sm" class="relative">
+          <Button variant="ghost" size="sm" class="relative bits-btn bits-btn">
             <Bell class="w-5 h-5" />
             {#if notifications > 0}
-              <Badge variant="destructive" class="absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center">
-                {notifications}
-              </Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-red-500 text-white">{notifications}</span>
             {/if}
           </Button>
           
-          <Button variant="ghost" size="sm">
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm">
             <Settings class="w-5 h-5" />
           </Button>
           
-          <Button variant="ghost" size="sm">
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm">
             <User class="w-5 h-5" />
           </Button>
         </div>

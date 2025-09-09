@@ -441,7 +441,7 @@
   <div
     bind:this={backdropElement}
     class={backdropClasses()}
-    on:click={handleBackdropClick}
+    onclick={handleBackdropClick}
     transition:fade={{ duration: reducedMotion ? 0 : animationDuration }}
     aria-hidden="true"
   >
@@ -468,7 +468,7 @@
     aria-label={ariaLabel}
     aria-labelledby={ariaLabelledby || (title ? titleId : undefined)}
     aria-describedby={ariaDescribedby || (description ? descId : undefined)}
-    on:keydown={handleKeydown}
+    onkeydown={handleKeydown}
     transition:getTransitionFunction
   >
     <div class="n64-dialog-container {className}">
@@ -522,7 +522,7 @@
         <button
           type="button"
           class="n64-dialog-close"
-          on:click={handleClose}
+          onclick={handleClose}
           aria-label="Close dialog"
         >
           <span aria-hidden="true">×</span>

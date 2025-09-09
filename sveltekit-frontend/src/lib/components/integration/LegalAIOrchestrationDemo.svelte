@@ -6,8 +6,13 @@
 <script lang="ts">
   import { workflowOrchestrator, workflowStore, currentWorkflowStore, healthStore, isSystemHealthy } from '$lib/services/end-to-end-api-integration.js';
   import type { LegalResearchWorkflowRequest, DocumentProcessingWorkflowRequest, CaseCreationWorkflowRequest } from '$lib/services/end-to-end-api-integration.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import Button from '$lib/components/ui/Button.svelte';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import { Button } from '$lib/components/ui/enhanced-bits';
 
   // Svelte 5 runes for state management
   let selectedWorkflow = $state<'legal-research' | 'document-processing' | 'case-creation'>('legal-research');
@@ -233,7 +238,7 @@ This Purchase Agreement ("Agreement") is entered into on [DATE], between ABC Cor
           <Button 
             variant="outline" 
             onclick={loadDemoData}
-            class="w-full"
+            class="w-full bits-btn bits-btn"
           >
             Load Demo Data
           </Button>
@@ -381,7 +386,7 @@ This Purchase Agreement ("Agreement") is entered into on [DATE], between ABC Cor
             <Button 
               onclick={executeWorkflow}
               disabled={isProcessing || !systemHealthy}
-              class="w-full {isProcessing ? 'opacity-50 cursor-not-allowed' : ''}"
+              class="w-full {isProcessing ? 'opacity-50 cursor-not-allowed' : ''} bits-btn bits-btn"
             >
               {#if isProcessing}
                 <div class="flex items-center justify-center space-x-2">

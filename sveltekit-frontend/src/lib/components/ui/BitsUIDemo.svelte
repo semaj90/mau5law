@@ -109,10 +109,10 @@
     </h2>
 
     <!-- Dialog Trigger Button -->
-    <Button
+    <Button class="bits-btn bits-btn"
       variant="primary"
       size="md"
-      on:on:click={() => showDialog = true}
+      on:onclick={() => showDialog = true}
     >
       <Plus class="w-4 h-4 mr-2" />
       Create New Case
@@ -163,15 +163,15 @@
       {/snippet}
 
       {#snippet footer()}
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="outline"
-          on:on:click={() => showDialog = false}
+          on:onclick={() => showDialog = false}
         >
           Cancel
         </Button>
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="primary"
-          on:on:click={handleCreateCase}
+          on:onclick={handleCreateCase}
           disabled={!caseName || !clientName || !selectedCaseType}
         >
           Create Case
@@ -199,10 +199,10 @@
               </p>
             </div>
             <div class="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button class="bits-btn bits-btn" variant="outline" size="sm">
                 <Eye class="w-4 h-4" />
               </Button>
-              <Button variant="outline" size="sm">
+              <Button class="bits-btn bits-btn" variant="outline" size="sm">
                 <Edit class="w-4 h-4" />
               </Button>
             </div>

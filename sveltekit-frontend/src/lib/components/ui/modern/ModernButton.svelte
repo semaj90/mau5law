@@ -81,7 +81,7 @@
     class={buttonClasses}
     target={external ? '_blank' : undefined}
     rel={external ? 'noopener noreferrer' : undefined}
-    on:click={handleClick}
+    onclick={handleClick}
   >
     <span class="button-content">
       {#if loading}
@@ -99,7 +99,7 @@
     {type}
     {disabled}
     class={buttonClasses}
-    on:click={handleClick}
+    onclick={handleClick}
   >
     <span class="button-content">
       {#if loading}

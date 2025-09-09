@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
     message
   }: Props = $props();
 
-  import Button from "$lib/components/ui/Button.svelte";
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import { chatActions } from "$lib/stores/chatStore";
   import { notifications } from "$lib/stores/notification";
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, User as UserIcon } from "lucide-svelte";
@@ -132,8 +132,8 @@ https://svelte.dev/e/js_parse_error -->
           <Button
             variant="ghost"
             size="sm"
-            class="space-y-4"
-            on:on:click={() => copyToClipboard()}
+            class="space-y-4 bits-btn bits-btn"
+            on:onclick={() => copyToClipboard()}
             title="Copy message"
           >
             <Copy class="space-y-4" />
@@ -143,8 +143,8 @@ https://svelte.dev/e/js_parse_error -->
           <Button
             variant="ghost"
             size="sm"
-            class="space-y-4"
-            on:on:click={() => toggleSaved()}
+            class="space-y-4 bits-btn bits-btn"
+            on:onclick={() => toggleSaved()}
             title={message.saved ? "Remove from saved" : "Save message"}
           >
             {#if message.saved}
@@ -158,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button
             variant="ghost"
             size="sm"
-            class="space-y-4"
+            class="space-y-4 bits-btn bits-btn"
             title="More options"
           >
             <MoreVertical class="space-y-4" />

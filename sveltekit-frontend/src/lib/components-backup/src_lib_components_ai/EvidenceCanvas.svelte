@@ -129,7 +129,7 @@
           on:keydown={(e) => e.key === 'Enter' && analyzeCanvas()}
         />
         <button
-          on:click={analyzeCanvas}
+          onclick={analyzeCanvas}
           class="px-4 py-2 bg-indigo-600 text-white rounded"
           disabled={analyzing}
           aria-busy={analyzing}
@@ -137,7 +137,7 @@
           {analyzing ? 'Analyzing...' : 'Analyze'}
         </button>
         <button
-          on:click={downloadPDF}
+          onclick={downloadPDF}
           class="px-4 py-2 bg-blue-600 text-white rounded"
           disabled={pdfLoading}
           aria-busy={pdfLoading}
@@ -180,4 +180,5 @@
         border-radius: 8px;
       }
     </style>
+
 

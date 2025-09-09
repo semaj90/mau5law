@@ -2,8 +2,13 @@
 <script lang="ts">
   import { pipelineManager, type PipelineType, type PipelineResult } from '$lib/services/pipeline-manager';
   import { PipelineVisualizer } from '$lib/services/pipeline-visualizer';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   
   // Reactive state using Svelte 5 runes
   let isProcessing = $state(false);
@@ -228,7 +233,7 @@
           <Button 
             onclick={executePipeline}
             disabled={isProcessing}
-            class="w-full"
+            class="w-full bits-btn bits-btn"
           >
             {isProcessing ? '⏳ Processing...' : '🚀 Execute Pipeline'}
           </Button>
@@ -237,7 +242,7 @@
 
       <!-- Advanced Controls -->
       <div class="flex flex-wrap gap-2">
-        <Button 
+        <Button class="bits-btn bits-btn" 
           onclick={autoExecutePipeline}
           disabled={isProcessing}
           variant="outline"
@@ -245,7 +250,7 @@
           🧠 Auto-Select Optimal
         </Button>
         
-        <Button 
+        <Button class="bits-btn bits-btn" 
           onclick={batchProcess}
           disabled={isProcessing}
           variant="outline"
@@ -253,21 +258,21 @@
           📦 Batch Process
         </Button>
         
-        <Button 
+        <Button class="bits-btn bits-btn" 
           onclick={checkSystemHealth}
           variant="outline"
         >
           🏥 Health Check
         </Button>
         
-        <Button 
+        <Button class="bits-btn bits-btn" 
           onclick={generateReport}
           variant="outline"
         >
           📈 Performance Report
         </Button>
         
-        <Button 
+        <Button class="bits-btn bits-btn" 
           onclick={cleanup}
           variant="destructive"
         >
@@ -291,7 +296,7 @@
           placeholder="Search across all pipelines..."
           onkeypress={(e) => e.key === 'Enter' && searchPipelines()}
         />
-        <Button onclick={searchPipelines}>
+        <Button class="bits-btn bits-btn" onclick={searchPipelines}>
           🔍 Search
         </Button>
       </div>

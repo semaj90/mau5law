@@ -2,7 +2,9 @@
 <script lang="ts">
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte";
   import { evidenceStore } from "$lib/stores/evidenceStore";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
@@ -193,13 +195,13 @@
 
         <div class="space-y-4">
           {#if !demoMode}
-            <Button onclick={() => startDemoMode()}>
+            <Button class="bits-btn bits-btn" onclick={() => startDemoMode()}>
               <Activity class="space-y-4" />
               Start Demo
             </Button>
           {/if}
 
-          <Button variant="outline" onclick={() => clearAllEvidence()}>
+          <Button class="bits-btn bits-btn" variant="outline" onclick={() => clearAllEvidence()}>
             <Database class="space-y-4" />
             Clear All
           </Button>
@@ -385,7 +387,7 @@
               <Button
                 size="sm"
                 variant="outline"
-                class="space-y-4"
+                class="space-y-4 bits-btn bits-btn"
                 onclick={() => (selectedTypes = ["video", "image"])}
               >
                 Visual Evidence
@@ -393,7 +395,7 @@
               <Button
                 size="sm"
                 variant="outline"
-                class="space-y-4"
+                class="space-y-4 bits-btn bits-btn"
                 onclick={() => (selectedTypes = ["testimony", "document"])}
               >
                 Testimonial
@@ -401,7 +403,7 @@
               <Button
                 size="sm"
                 variant="outline"
-                class="space-y-4"
+                class="space-y-4 bits-btn bits-btn"
                 onclick={() => {
                   selectedTypes = [];
                   searchQuery = "";

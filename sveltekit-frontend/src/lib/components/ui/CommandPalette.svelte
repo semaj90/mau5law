@@ -170,7 +170,7 @@ let selectedIndex = $state(0);
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
       <div 
         class="bg-nier-surface border border-nier-gray rounded-lg shadow-2xl nier-border-glow"
-        on:click|stopPropagation
+        onclick|stopPropagation
         role="dialog"
         tabindex="0"
       >

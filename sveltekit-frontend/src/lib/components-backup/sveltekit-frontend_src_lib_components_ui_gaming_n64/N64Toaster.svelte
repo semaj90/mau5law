@@ -58,7 +58,8 @@
   {#each toasts as t (t.id)}
 	<div class="n64-toast {t.type}">
 	  <div class="message">{t.message}</div>
-	  <button class="close" on:click={() => remove(t.id)} aria-label="Dismiss">✕</button>
+	  <button class="close" onclick={() => remove(t.id)} aria-label="Dismiss">✕</button>
 	</div>
   {/each}
 </div>
+

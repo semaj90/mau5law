@@ -60,7 +60,7 @@
   <div class="inputs">
     <div>
       <label>Pick image for OCR:</label>
-      <input type="file" accept="image/*" on:change={onImageSelected} disabled={ocrBusy}>
+      <input type="file" accept="image/*" onchange={onImageSelected} disabled={ocrBusy}>
       {#if ocrBusy}<span>OCR…</span>{/if}
     </div>
     <div class="text">
@@ -70,7 +70,7 @@
   </div>
 
   <div class="actions">
-    <button on:click={run} disabled={runBusy}>Process</button>
+    <button onclick={run} disabled={runBusy}>Process</button>
     {#if runBusy}<span>Running…</span>{/if}
   </div>
 

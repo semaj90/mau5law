@@ -2,7 +2,9 @@
 <script lang="ts">
   // Svelte runes ($state, $derived, etc.) are declared globally in src/types/svelte-helpers.d.ts
 
-  import { Button } from "$lib/components/ui/button/index.js";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { evidenceStore, type Evidence } from "$lib/stores/evidenceStore";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
   import {
@@ -344,30 +346,30 @@ let aVal = $state<any, bVal: any;
 
   <!-- Action Buttons -->
   <div class="mx-auto px-4 max-w-7xl">
-    <Button
+    <Button class="bits-btn bits-btn"
       variant="ghost"
       size="sm"
-      on:on:click={() => evidenceStore.undo()}
+      on:onclick={() => evidenceStore.undo()}
       disabled={!evidenceStore.canUndo()}
       title="Undo (Ctrl+Z)"
     >
       <Undo2 class="mx-auto px-4 max-w-7xl" />
     </Button>
 
-    <Button
+    <Button class="bits-btn bits-btn"
       variant="ghost"
       size="sm"
-      on:on:click={() => evidenceStore.redo()}
+      on:onclick={() => evidenceStore.redo()}
       disabled={!evidenceStore.canRedo()}
       title="Redo (Ctrl+Y)"
     >
       <Redo2 class="mx-auto px-4 max-w-7xl" />
     </Button>
 
-    <Button
+    <Button class="bits-btn bits-btn"
       variant="ghost"
       size="sm"
-      on:on:click={() => syncWithServer()}
+      on:onclick={() => syncWithServer()}
       disabled={isLoading}
       title="Sync with server"
     >
@@ -442,10 +444,10 @@ let aVal = $state<any, bVal: any;
           <option value="relevance">Relevance</option>
         </select>
 
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="ghost"
           size="sm"
-          on:on:click={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
+          on:onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
         >
           {#if sortOrder === "asc"}
             <SortAsc class="mx-auto px-4 max-w-7xl" />
@@ -459,10 +461,10 @@ let aVal = $state<any, bVal: any;
     <!-- Right: View and Actions -->
     <div class="mx-auto px-4 max-w-7xl">
       <!-- View Mode Toggle -->
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="ghost"
         size="sm"
-        on:on:click={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
+        on:onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
       >
         {#if viewMode === "grid"}
           <List class="mx-auto px-4 max-w-7xl" />
@@ -473,14 +475,14 @@ let aVal = $state<any, bVal: any;
 
       <!-- Selection Actions -->
       {#if selectedEvidence.size > 0}
-        <Button variant="outline" size="sm" on:on:click={() => clearSelection()}>
+        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => clearSelection()}>
           Clear ({selectedEvidence.size})
         </Button>
 
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="danger"
           size="sm"
-          on:on:click={() => {
+          on:onclick={() => {
             if (confirm(`Delete ${selectedEvidence.size} selected items?`)) {
               selectedEvidence.forEach((id) => deleteEvidence(id));
             }
@@ -490,13 +492,13 @@ let aVal = $state<any, bVal: any;
           Delete
         </Button>
       {:else}
-        <Button variant="ghost" size="sm" on:on:click={() => selectAll()}>
+        <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => selectAll()}>
           Select All
         </Button>
       {/if}
 
       <!-- Add Evidence -->
-      <Button on:on:click={() => createEvidence()}>
+      <Button class="bits-btn bits-btn" on:onclick={() => createEvidence()}>
         <span class="mx-auto px-4 max-w-7xl">+</span>
         Add Evidence
       </Button>
@@ -527,7 +529,7 @@ let aVal = $state<any, bVal: any;
             ? "No evidence matches your current filters."
             : "No evidence has been added yet."}
         </p>
-        <Button on:on:click={() => createEvidence()}>Add First Evidence</Button>
+        <Button class="bits-btn bits-btn" on:onclick={() => createEvidence()}>Add First Evidence</Button>
       </div>
     </div>
   {:else}
@@ -564,18 +566,18 @@ let aVal = $state<any, bVal: any;
                   </span>
                 {/if}
 
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:on:click={() => (editingEvidence = item.id)}
+                  on:onclick={() => (editingEvidence = item.id)}
                 >
                   <Eye class="mx-auto px-4 max-w-7xl" />
                 </Button>
 
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:on:click={() => deleteEvidence(item.id)}
+                  on:onclick={() => deleteEvidence(item.id)}
                 >
                   <Trash2 class="mx-auto px-4 max-w-7xl" />
                 </Button>
@@ -597,9 +599,9 @@ let aVal = $state<any, bVal: any;
                   placeholder="Description"
                 ></textarea>
                 <div class="mx-auto px-4 max-w-7xl">
-                  <Button
+                  <Button class="bits-btn bits-btn"
                     size="sm"
-                    on:on:click={() =>
+                    on:onclick={() =>
                       updateEvidence(item.id, {
                         title: item.title,
                         description: item.description,
@@ -607,10 +609,10 @@ let aVal = $state<any, bVal: any;
                   >
                     Save
                   </Button>
-                  <Button
+                  <Button class="bits-btn bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:on:click={() => (editingEvidence = null)}
+                    on:onclick={() => (editingEvidence = null)}
                   >
                     Cancel
                   </Button>
@@ -749,17 +751,17 @@ let aVal = $state<any, bVal: any;
                   class="mx-auto px-4 max-w-7xl"
                 >
                   <div class="mx-auto px-4 max-w-7xl">
-                    <Button
+                    <Button class="bits-btn bits-btn"
                       variant="ghost"
                       size="sm"
-                      on:on:click={() => (editingEvidence = item.id)}
+                      on:onclick={() => (editingEvidence = item.id)}
                     >
                       <Eye class="mx-auto px-4 max-w-7xl" />
                     </Button>
-                    <Button
+                    <Button class="bits-btn bits-btn"
                       variant="ghost"
                       size="sm"
-                      on:on:click={() => deleteEvidence(item.id)}
+                      on:onclick={() => deleteEvidence(item.id)}
                     >
                       <Trash2 class="mx-auto px-4 max-w-7xl" />
                     </Button>
@@ -783,11 +785,11 @@ let aVal = $state<any, bVal: any;
         </div>
 
         <div class="mx-auto px-4 max-w-7xl">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
             disabled={currentPage === 0}
-            on:on:click={() => currentPage--}
+            on:onclick={() => currentPage--}
           >
             Previous
           </Button>
@@ -796,11 +798,11 @@ let aVal = $state<any, bVal: any;
             Page {currentPage + 1} of {totalPages}
           </span>
 
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
             disabled={currentPage >= totalPages - 1}
-            on:on:click={() => currentPage++}
+            on:onclick={() => currentPage++}
           >
             Next
           </Button>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import Button from "$lib/components/ui/Button.svelte";
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import { notifications } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import {
@@ -583,15 +583,15 @@ let unitIndex = $state(0);
       </div>
 
       <div class="container mx-auto px-4">
-        <Button {disabled}>
+        <Button class="bits-btn bits-btn" {disabled}>
           <Paperclip class="container mx-auto px-4" />
           Choose Files
         </Button>
 
         {#if enableCameraCapture}
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="secondary"
-            on:on:click={handleCameraCaptureClick}
+            on:onclick={handleCameraCaptureClick}
             {disabled}
           >
             <Camera class="container mx-auto px-4" />
@@ -602,7 +602,7 @@ let unitIndex = $state(0);
         {#if enableAudioRecording}
           <Button
             variant="secondary"
-            on:on:click={handleAudioRecordingClick}
+            on:onclick={handleAudioRecordingClick}
             {disabled}
             class={isRecording ? "bg-red-100 text-red-700" : ""}
           >
@@ -636,9 +636,9 @@ let unitIndex = $state(0);
 
         <div class="container mx-auto px-4">
           {#if !autoUpload && files.some((f) => f.status === "pending")}
-            <Button
+            <Button class="bits-btn bits-btn"
               size="sm"
-              on:on:click={() => uploadFiles()}
+              on:onclick={() => uploadFiles()}
               disabled={isUploading}
             >
               {#if isUploading}
@@ -650,10 +650,10 @@ let unitIndex = $state(0);
             </Button>
           {/if}
 
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:on:click={() => (files = [])}
+            on:onclick={() => (files = [])}
             disabled={isUploading}
           >
             Clear All
@@ -724,10 +724,10 @@ let unitIndex = $state(0);
             <!-- Actions -->
             <div class="container mx-auto px-4">
               {#if file.status === "success" && file.url}
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:on:click={() => window.open(file.url, "_blank")}
+                  on:onclick={() => window.open(file.url, "_blank")}
                   aria-label="View {file.name}"
                 >
                   <Eye class="container mx-auto px-4" />
@@ -735,20 +735,20 @@ let unitIndex = $state(0);
               {/if}
 
               {#if file.status === "error"}
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:on:click={() => retryUpload(file.id)}
+                  on:onclick={() => retryUpload(file.id)}
                   aria-label="Retry upload of {file.name}"
                 >
                   <Upload class="container mx-auto px-4" />
                 </Button>
               {/if}
 
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant="ghost"
                 size="sm"
-                on:on:click={() => removeFile(file.id)}
+                on:onclick={() => removeFile(file.id)}
                 disabled={file.status === "uploading"}
                 aria-label="Remove {file.name}"
               >

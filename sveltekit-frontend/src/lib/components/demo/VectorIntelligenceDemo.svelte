@@ -1,10 +1,19 @@
 <script lang="ts">
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
+  // Badge replaced with span - not available in enhanced-bits
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Loader2, Search, Brain, Zap, Database } from 'lucide-svelte';
   import { context7Service, type VectorIntelligence } from '$lib/services/context7Service';
 
@@ -97,7 +106,7 @@ let searchHistory = $state<string[] >([]);
     <div class="flex items-center gap-3 mb-4">
       <Brain class="h-8 w-8 text-blue-600" />
       <h1 class="text-3xl font-bold">Vector Intelligence Demo</h1>
-      <Badge variant="secondary">Phase 5 Enhanced</Badge>
+      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Phase 5 Enhanced</span>
     </div>
     <p class="text-gray-600">
       Demonstrate semantic search, document similarity, and AI-powered legal research capabilities
@@ -125,9 +134,9 @@ let searchHistory = $state<string[] >([]);
           keydown={(e) => e.key === 'Enter' && performSearch()}
         />
         <Button
-          on:on:click={performSearch}
+          on:onclick={performSearch}
           disabled={$isAnalyzing || !searchQuery.trim()}
-          class="px-6"
+          class="px-6 bits-btn bits-btn"
         >
           {#if $isAnalyzing}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />
@@ -147,7 +156,7 @@ let searchHistory = $state<string[] >([]);
             <Badge
               variant={selectedFilters.includes(filter) ? 'default' : 'outline'}
               class="cursor-pointer hover:bg-blue-100 transition-colors"
-              on:on:click={() => toggleFilter(filter)}
+              on:onclick={() => toggleFilter(filter)}
             >
               {filter}
             </Badge>
@@ -163,8 +172,8 @@ let searchHistory = $state<string[] >([]);
             <Button
               variant="outline"
               size="sm"
-              class="text-xs"
-              on:on:click={() => useSampleQuery(query)}
+              class="text-xs bits-btn bits-btn"
+              on:onclick={() => useSampleQuery(query)}
             >
               {query}
             </Button>
@@ -183,7 +192,7 @@ let searchHistory = $state<string[] >([]);
             <Database class="h-5 w-5" />
             Search Results
             {#if searchResults?.results.length}
-              <Badge variant="secondary">{searchResults.results.length} matches</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{searchResults.results.length} matches</span>
             {/if}
           </CardTitle>
         </CardHeader>
@@ -223,9 +232,7 @@ let searchHistory = $state<string[] >([]);
                   <!-- Metadata -->
                   <div class="flex flex-wrap gap-2 mt-3">
                     {#each Object.entries(result.metadata) as [key, value]}
-                      <Badge variant="outline" class="text-xs">
-                        {key}: {value}
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{key}: {value}</span>
                     {/each}
                   </div>
                 </div>
@@ -277,7 +284,7 @@ let searchHistory = $state<string[] >([]);
           <CardHeader>
             <div class="flex items-center justify-between">
               <CardTitle class="text-lg">Recent Searches</CardTitle>
-              <Button variant="ghost" size="sm" on:on:click={clearHistory}>
+              <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={clearHistory}>
                 Clear
               </Button>
             </div>
@@ -306,19 +313,19 @@ let searchHistory = $state<string[] >([]);
           <div class="space-y-3 text-sm">
             <div class="flex justify-between">
               <span>Vector Database:</span>
-              <Badge variant="outline" class="text-green-600">Active</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Active</span>
             </div>
             <div class="flex justify-between">
               <span>AI Engine:</span>
-              <Badge variant="outline" class="text-green-600">Ready</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Ready</span>
             </div>
             <div class="flex justify-between">
               <span>Cache:</span>
-              <Badge variant="outline" class="text-blue-600">Enabled</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Enabled</span>
             </div>
             <div class="flex justify-between">
               <span>Context7:</span>
-              <Badge variant="outline" class="text-green-600">Connected</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Connected</span>
             </div>
           </div>
         </CardContent>

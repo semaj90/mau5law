@@ -1,6 +1,13 @@
 <script lang="ts">
   // Use modular components
-  import { Button, Card, Input, Form, Progress, Badge, FileUpload } from '$lib/components/ui/modular';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent,
+    Button,
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import type { UploadFile } from '$lib/components/ui/modular/types';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import { Label } from '$lib/components/ui/label';
@@ -272,7 +279,7 @@ let progress = $state(0);
           disabled={$submitting || uploadFiles.length === 0} 
           variant="evidence" 
           size="lg"
-          class="w-full"
+          class="w-full bits-btn bits-btn"
           loading={$submitting}
         >
           {#snippet children()}

@@ -7,7 +7,9 @@
   }
 
 
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { aiPersonality } from "$lib/stores/chatStore";
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
   
@@ -77,8 +79,8 @@
         <Button
           variant="outline"
           size="sm"
-          class="space-y-4"
-          on:on:click={() => handleAccept()}
+          class="space-y-4 bits-btn bits-btn"
+          on:onclick={() => handleAccept()}
         >
           <MessageCircle class="space-y-4" />
           Yes, help me
@@ -88,8 +90,8 @@
         <Button
           variant="ghost"
           size="sm"
-          class="space-y-4"
-          on:on:click={() => onquickResponse?.()}
+          class="space-y-4 bits-btn bits-btn"
+          on:onclick={() => onquickResponse?.()}
         >
           <Lightbulb class="space-y-4" />
           Summarize
@@ -99,8 +101,8 @@
         <Button
           variant="ghost"
           size="sm"
-          class="space-y-4"
-          on:on:click={() => handleDismiss()}
+          class="space-y-4 bits-btn bits-btn"
+          on:onclick={() => handleDismiss()}
           title="Not now"
         >
           <X class="space-y-4" />

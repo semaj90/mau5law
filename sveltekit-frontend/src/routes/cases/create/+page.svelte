@@ -10,7 +10,9 @@
   import EnhancedCaseFormWithZod from '$lib/components/forms/EnhancedCaseFormWithZod.svelte';
   import { toast } from '$lib/components/ui/toast';
   import { Alert } from '$lib/components/ui/alert';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { ArrowLeft, Save, AlertCircle, CheckCircle } from 'lucide-svelte';
   import type { PageData } from './$types';
   import type { CaseForm } from '$lib/schemas/forms';
@@ -104,10 +106,10 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
   <div class="mb-8">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="ghost"
           size="sm"
-          on:click={() => goto('/cases')}
+          onclick={() => goto('/cases')}
           class="flex items-center space-x-2"
         >
           <ArrowLeft class="h-4 w-4" />
@@ -132,9 +134,9 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
       <!-- Quick Actions -->
       <div class="flex items-center space-x-3">
         {#if !data.editMode}
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:click={() => goto('/cases/templates')}
+            onclick={() => goto('/cases/templates')}
             class="flex items-center space-x-2"
           >
             <Save class="h-4 w-4" />

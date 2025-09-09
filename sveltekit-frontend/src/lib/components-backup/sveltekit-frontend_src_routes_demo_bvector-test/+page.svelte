@@ -214,7 +214,7 @@
     
     <div class="flex items-center gap-3">
       <Button
-        on:click={checkSystemStatus}
+        onclick={checkSystemStatus}
         variant="outline"
         size="sm"
         disabled={isRunning}
@@ -225,7 +225,7 @@
       
       {#if hasResults}
         <Button
-          on:click={exportResults}
+          onclick={exportResults}
           variant="outline"
           size="sm"
         >
@@ -364,7 +364,7 @@
       <CardContent class="space-y-4">
         <div class="flex gap-3">
           <Button
-            on:click={runTests}
+            onclick={runTests}
             disabled={!canRunTests}
             class="flex-1"
           >
@@ -374,7 +374,7 @@
 
           {#if isRunning}
             <Button
-              on:click={stopTests}
+              onclick={stopTests}
               variant="outline"
             >
               <Square class="w-4 h-4 mr-2" />

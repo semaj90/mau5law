@@ -3,7 +3,9 @@
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import { Tooltip } from "$lib/components/ui";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import {
     AlertCircle,
@@ -238,7 +240,7 @@ let popularSearches = $state([
 
           <!-- Search Actions -->
           <div class="space-y-4">
-            <Button type="submit" disabled={isSearching || !searchQuery.trim()}>
+            <Button class="bits-btn bits-btn" type="submit" disabled={isSearching || !searchQuery.trim()}>
               {#if isSearching}
                 <Loader2 class="space-y-4" />
                 Searching...
@@ -249,7 +251,7 @@ let popularSearches = $state([
             </Button>
 
             <Tooltip content="Show/hide advanced search filters">
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant="outline"
                 type="button"
                 onclick={() => (showAdvancedFilters = !showAdvancedFilters)}
@@ -261,7 +263,7 @@ let popularSearches = $state([
 
             {#if selectedType || selectedCaseId || threshold !== 0.7 || limit !== 20}
               <Tooltip content="Clear all filters">
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   type="button"
                   onclick={() => clearFilters()}
@@ -528,19 +530,19 @@ let popularSearches = $state([
         <h3 class="space-y-4">Quick Actions</h3>
         <div class="space-y-4">
           <a href="/cases" class="space-y-4">
-            <Button variant="outline" class="space-y-4">
+            <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <Database class="space-y-4" />
               Browse Cases
             </Button>
           </a>
           <a href="/evidence" class="space-y-4">
-            <Button variant="outline" class="space-y-4">
+            <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <FileText class="space-y-4" />
               Browse Evidence
             </Button>
           </a>
           <a href="/ai-assistant" class="space-y-4">
-            <Button variant="outline" class="space-y-4">
+            <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <Eye class="space-y-4" />
               AI Assistant
             </Button>

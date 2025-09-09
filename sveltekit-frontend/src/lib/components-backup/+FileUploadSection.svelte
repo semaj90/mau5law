@@ -95,7 +95,7 @@
     <div class="mb-3 form-check">
       <Checkbox id="tagCheckbox" bind:checked={tag} label="Tag with AI" />
     </div>
-    <button class="btn btn-primary" on:click={handleSubmit}>Upload</button>
+    <button class="btn btn-primary" onclick={handleSubmit}>Upload</button>
   </div>
 </div>
 

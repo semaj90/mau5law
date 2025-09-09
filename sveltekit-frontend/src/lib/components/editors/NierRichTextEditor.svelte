@@ -1,9 +1,14 @@
 <!-- NieR-themed Rich Text Editor for Legal Investigation Notes -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 	import Button from '$lib/components/ui/button/Button.svelte';
-	import Badge from '$lib/components/ui/Badge.svelte';
+	// Badge replaced with span - not available in enhanced-bits
 	import {
 		Bold, Italic, Underline, List, ListOrdered,
 		Link2, Image, Quote, Code, Save,
@@ -306,7 +311,7 @@
 							size="sm"
 							onclick={toggleBold}
 							disabled={readonly}
-							class="h-8 w-8 p-0"
+							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Bold class="w-4 h-4" />
 						</Button>
@@ -315,7 +320,7 @@
 							size="sm"
 							onclick={toggleItalic}
 							disabled={readonly}
-							class="h-8 w-8 p-0"
+							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Italic class="w-4 h-4" />
 						</Button>
@@ -324,7 +329,7 @@
 							size="sm"
 							onclick={toggleUnderline}
 							disabled={readonly}
-							class="h-8 w-8 p-0"
+							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Underline class="w-4 h-4" />
 						</Button>
@@ -337,7 +342,7 @@
 							size="sm"
 							onclick={insertList}
 							disabled={readonly}
-							class="h-8 w-8 p-0"
+							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<List class="w-4 h-4" />
 						</Button>
@@ -346,7 +351,7 @@
 							size="sm"
 							onclick={insertOrderedList}
 							disabled={readonly}
-							class="h-8 w-8 p-0"
+							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<ListOrdered class="w-4 h-4" />
 						</Button>
@@ -355,7 +360,7 @@
 							size="sm"
 							onclick={insertQuote}
 							disabled={readonly}
-							class="h-8 w-8 p-0"
+							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Quote class="w-4 h-4" />
 						</Button>
@@ -368,7 +373,7 @@
 							size="sm"
 							onclick={insertLink}
 							disabled={readonly}
-							class="h-8 w-8 p-0"
+							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Link2 class="w-4 h-4" />
 						</Button>
@@ -377,7 +382,7 @@
 							size="sm"
 							onclick={insertCode}
 							disabled={readonly}
-							class="h-8 w-8 p-0"
+							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Code class="w-4 h-4" />
 						</Button>
@@ -390,7 +395,7 @@
 							size="sm"
 							onclick={saveContent}
 							disabled={readonly}
-							class="h-8"
+							class="h-8 bits-btn bits-btn"
 						>
 							<Save class="w-4 h-4 mr-1" />
 							Save
@@ -401,7 +406,7 @@
 				<div class="flex items-center gap-2">
 					<!-- Theme Switcher -->
 					<div class="flex gap-1 bg-muted rounded-md p-1">
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant={nieRTheme.mode === 'android' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchTheme('android')}
@@ -409,7 +414,7 @@
 						>
 							2B
 						</Button>
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant={nieRTheme.mode === 'yorha' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchTheme('yorha')}
@@ -417,7 +422,7 @@
 						>
 							9S
 						</Button>
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant={nieRTheme.mode === 'machine' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchTheme('machine')}
@@ -433,9 +438,7 @@
 							<FileText class="w-3 h-3 mr-1" />
 							{wordCount} words
 						</Badge>
-						<Badge variant="outline" class="px-2 py-1">
-							{characterCount} chars
-						</Badge>
+						<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{characterCount} chars</span>
 						{#if isEditing}
 							<Badge variant="default" class="px-2 py-1">
 								<Zap class="w-3 h-3 mr-1" />

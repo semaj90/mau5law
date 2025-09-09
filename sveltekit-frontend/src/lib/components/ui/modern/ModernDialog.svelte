@@ -94,7 +94,7 @@
           {#if showClose}
             <DialogPrimitive.Close
               class="dialog-close"
-              on:click={handleClose}
+              onclick={handleClose}
             >
               <svg
                 class="w-4 h-4"

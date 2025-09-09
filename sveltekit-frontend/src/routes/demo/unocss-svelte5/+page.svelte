@@ -1,6 +1,13 @@
 <script lang="ts">
 	import { preventDefault } from 'svelte/legacy';
-  import { Button, Card, Input } from '$lib/components/ui/enhanced';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent,
+    Button,
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
 	import { nierClasses, animationClasses } from '$lib/components/ui/enhanced';
 
 	let name = $state('');
@@ -38,12 +45,12 @@
 			<Card elevated class="p-6 space-y-4">
 				<h3 class="text-xl font-semibold">Enhanced Buttons</h3>
 				<div class="space-y-3">
-					<Button variant="nier">NieR Style</Button>
-					<Button variant="default" {loading}>
+					<Button class="bits-btn bits-btn" variant="nier">NieR Style</Button>
+					<Button class="bits-btn bits-btn" variant="default" {loading}>
 						{loading ? 'Processing...' : 'Default Style'}
 					</Button>
-					<Button variant="outline" size="sm">Small Outline</Button>
-					<Button variant="destructive" size="lg">Large Destructive</Button>
+					<Button class="bits-btn bits-btn" variant="outline" size="sm">Small Outline</Button>
+					<Button class="bits-btn bits-btn" variant="destructive" size="lg">Large Destructive</Button>
 				</div>
 			</Card>
 
@@ -111,7 +118,7 @@
 							required
 						/>
 					</div>
-					<Button 
+					<Button class="bits-btn bits-btn" 
 						type="submit" 
 						variant="nier" 
 						{loading}

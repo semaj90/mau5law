@@ -30,8 +30,15 @@ and AI-powered verification features.
   import IntegrityVerification from './IntegrityVerification.svelte';
   import CollaborationPanel from './CollaborationPanel.svelte';
   import WorkflowProgress from './WorkflowProgress.svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert';
   import { AlertTriangle, CheckCircle, Clock, Users, FileCheck, Shield } from 'lucide-svelte';
@@ -323,7 +330,7 @@ and AI-powered verification features.
               Begin the Evidence Chain of Custody workflow to ensure proper handling,
               verification, and documentation of evidence integrity.
             </p>
-            <Button onclick={startWorkflow} class="w-full">
+            <Button onclick={startWorkflow} class="w-full bits-btn bits-btn">
               Start Custody Workflow
             </Button>
           </CardContent>
@@ -339,7 +346,7 @@ and AI-powered verification features.
                 <FileCheck class="w-5 h-5 mr-2" />
                 Integrity Verification
               </div>
-              <Button 
+              <Button class="bits-btn bits-btn" 
                 variant="outline" 
                 size="sm"
                 onclick={() => showIntegrityDetails = !showIntegrityDetails}
@@ -388,10 +395,10 @@ and AI-powered verification features.
           <CardContent class="space-y-4">
             {#if currentState.value === 'awaitingApproval'}
               <div class="flex space-x-3">
-                <Button onclick={approveWorkflow} variant="success">
+                <Button class="bits-btn bits-btn" onclick={approveWorkflow} variant="success">
                   Approve Custody
                 </Button>
-                <Button onclick={rejectWorkflow} variant="destructive">
+                <Button class="bits-btn bits-btn" onclick={rejectWorkflow} variant="destructive">
                   Reject Custody
                 </Button>
               </div>
@@ -399,15 +406,15 @@ and AI-powered verification features.
 
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
-                <Button onclick={() => showTransferDialog = true} variant="outline">
+                <Button class="bits-btn bits-btn" onclick={() => showTransferDialog = true} variant="outline">
                   Transfer Custody
                 </Button>
                 {#if !activeCollaborators.includes(userId)}
-                  <Button onclick={joinCollaboration} variant="outline">
+                  <Button class="bits-btn bits-btn" onclick={joinCollaboration} variant="outline">
                     Join Collaboration
                   </Button>
                 {:else}
-                  <Button onclick={leaveCollaboration} variant="outline">
+                  <Button class="bits-btn bits-btn" onclick={leaveCollaboration} variant="outline">
                     Leave Collaboration
                   </Button>
                 {/if}
@@ -416,10 +423,10 @@ and AI-powered verification features.
 
             {#if currentState.value === 'error'}
               <div class="flex space-x-3">
-                <Button onclick={retryWorkflow}>
+                <Button class="bits-btn bits-btn" onclick={retryWorkflow}>
                   Retry Workflow
                 </Button>
-                <Button onclick={cancelWorkflow} variant="destructive">
+                <Button class="bits-btn bits-btn" onclick={cancelWorkflow} variant="destructive">
                   Cancel Workflow
                 </Button>
               </div>
@@ -468,11 +475,11 @@ and AI-powered verification features.
           <Button 
             onclick={startCustodyTransfer}
             disabled={!transferReason.trim()}
-            class="flex-1"
+            class="flex-1 bits-btn bits-btn"
           >
             Transfer
           </Button>
-          <Button 
+          <Button class="bits-btn bits-btn" 
             onclick={() => showTransferDialog = false}
             variant="outline"
             class="flex-1"

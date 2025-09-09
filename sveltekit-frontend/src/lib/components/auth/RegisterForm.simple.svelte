@@ -5,8 +5,12 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import { Eye, EyeOff, Shield, Loader2, AlertCircle, UserPlus } from 'lucide-svelte';
   
@@ -413,7 +417,7 @@ let score = $state(0);
       <!-- Submit Button -->
       <Button 
         type="submit" 
-        class="w-full" 
+        class="w-full bits-btn bits-btn" 
         disabled={isLoading}
       >
         {#if isLoading}

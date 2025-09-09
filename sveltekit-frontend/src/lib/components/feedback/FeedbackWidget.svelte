@@ -117,7 +117,7 @@
 </script>
 
 {#if show}
-  <!-- Updated to Svelte 5 event syntax: use onclick/onkeydown instead of on:click etc. -->
+  <!-- Updated to Svelte 5 event syntax: use onclick/onkeydown instead of onclick etc. -->
   <div class="feedback-overlay" onclick={close} onkeydown={(e) => e.key === 'Enter' && close()} role="button" tabindex="0">
     <div class="feedback-widget" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.key === 'Enter' && e.stopPropagation()} role="dialog" aria-labelledby="feedback-title" tabindex="0">
       {#if !isSubmitted}

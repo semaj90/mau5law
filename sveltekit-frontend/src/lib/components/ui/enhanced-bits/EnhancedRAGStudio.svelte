@@ -5,9 +5,18 @@
     children?: import('svelte').Snippet;
   }
   import { onMount } from 'svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/Card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea';
   import { Badge } from '$lib/components/ui/badge';
   import {
@@ -267,41 +276,41 @@ let logsInterval = $state<number | null >(null);
 
   <!-- Navigation Tabs -->
   <div class="flex gap-2 mb-6">
-    <Button
+    <Button class="bits-btn bits-btn"
       variant={activeTab === 'search' ? 'default' : 'outline'}
-      on:click={() => activeTab = 'search'}
+      onclick={() => activeTab = 'search'}
       class="flex items-center gap-2"
     >
       <Search class="w-4 h-4" />
       Search
     </Button>
-    <Button
+    <Button class="bits-btn bits-btn"
       variant={activeTab === 'upload' ? 'default' : 'outline'}
-      on:click={() => activeTab = 'upload'}
+      onclick={() => activeTab = 'upload'}
       class="flex items-center gap-2"
     >
       <Upload class="w-4 h-4" />
       Upload
     </Button>
-    <Button
+    <Button class="bits-btn bits-btn"
       variant={activeTab === 'crawl' ? 'default' : 'outline'}
-      on:click={() => activeTab = 'crawl'}
+      onclick={() => activeTab = 'crawl'}
       class="flex items-center gap-2"
     >
       <Globe class="w-4 h-4" />
       Crawl
     </Button>
-    <Button
+    <Button class="bits-btn bits-btn"
       variant={activeTab === 'logs' ? 'default' : 'outline'}
-      on:click={() => activeTab = 'logs'}
+      onclick={() => activeTab = 'logs'}
       class="flex items-center gap-2"
     >
       <FileText class="w-4 h-4" />
       Logs
     </Button>
-    <Button
+    <Button class="bits-btn bits-btn"
       variant={activeTab === 'settings' ? 'default' : 'outline'}
-      on:click={() => activeTab = 'settings'}
+      onclick={() => activeTab = 'settings'}
       class="flex items-center gap-2"
     >
       <Settings class="w-4 h-4" />
@@ -328,7 +337,7 @@ let logsInterval = $state<number | null >(null);
                 class="flex-1"
                 keydown={(e) => e.key === 'Enter' && handleSearch()}
               />
-              <Button on:click={handleSearch} disabled={isLoading || !searchQuery.trim()}>
+              <Button class="bits-btn bits-btn" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
                 {#if isLoading}
                   <RefreshCw class="w-4 h-4 animate-spin" />
                 {:else}
@@ -349,22 +358,22 @@ let logsInterval = $state<number | null >(null);
                         <div class="font-medium">{result.metadata.title || 'Untitled'}</div>
                         <div class="text-sm text-gray-600 mb-2">{result.content}</div>
                         <div class="flex gap-2">
-                          <Badge variant="outline">Score: {result.score.toFixed(3)}</Badge>
-                          <Badge variant="outline">{result.metadata.type}</Badge>
+                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Score: {result.score.toFixed(3)}</span>
+                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.metadata.type}</span>
                         </div>
                       </div>
                       <div class="flex gap-1 ml-4">
-                        <Button
+                        <Button class="bits-btn bits-btn"
                           size="sm"
                           variant="outline"
-                          on:click={() => submitFeedback(result.id, 1)}
+                          onclick={() => submitFeedback(result.id, 1)}
                         >
                           👍
                         </Button>
-                        <Button
+                        <Button class="bits-btn bits-btn"
                           size="sm"
                           variant="outline"
-                          on:click={() => submitFeedback(result.id, -1)}
+                          onclick={() => submitFeedback(result.id, -1)}
                         >
                           👎
                         </Button>
@@ -395,7 +404,7 @@ let logsInterval = $state<number | null >(null);
                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
             </div>
-            <Button on:click={handleUpload} disabled={isLoading || !uploadFile}>
+            <Button class="bits-btn bits-btn" onclick={handleUpload} disabled={isLoading || !uploadFile}>
               {#if isLoading}
                 <RefreshCw class="w-4 h-4 animate-spin mr-2" />
               {:else}
@@ -423,7 +432,7 @@ let logsInterval = $state<number | null >(null);
                 type="url"
               />
             </div>
-            <Button on:click={handleCrawl} disabled={isLoading || !crawlUrl.trim()}>
+            <Button class="bits-btn bits-btn" onclick={handleCrawl} disabled={isLoading || !crawlUrl.trim()}>
               {#if isLoading}
                 <RefreshCw class="w-4 h-4 animate-spin mr-2" />
               {:else}
@@ -482,7 +491,7 @@ let logsInterval = $state<number | null >(null);
               <label class="block text-sm font-medium mb-2">Cache TTL (seconds)</label>
               <Input type="number" min="60" max="86400" value="7200" />
             </div>
-            <Button>Save Settings</Button>
+            <Button class="bits-btn bits-btn">Save Settings</Button>
           </CardContent>
         </Card>
       {/if}

@@ -1,7 +1,9 @@
 <!-- YoRHa Terminal Interface with AI Commands -->
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Button } from "$lib/components/ui/button";
+	import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
 	import { aiGlobalStore, aiGlobalActions } from "$lib/stores/ai";
 	import type { Writable } from "svelte/store";
 
@@ -358,13 +360,13 @@
 
 		<div class="header-right">
 			<div class="role-switcher">
-				<Button class={"role-btn " + (currentRole === 'detective' ? 'active' : '')} on:click={() => switchRole("detective")}>
+				<Button class={"role-btn " + (currentRole === 'detective' ? 'active' : '')} onclick={() => switchRole("detective")}>
 					Detective
 				</Button>
-				<Button class={"role-btn " + (currentRole === 'prosecutor' ? 'active' : '')} on:click={() => switchRole("prosecutor")}>
+				<Button class={"role-btn " + (currentRole === 'prosecutor' ? 'active' : '')} onclick={() => switchRole("prosecutor")}>
 					Prosecutor
 				</Button>
-				<Button class={"role-btn " + (currentRole === 'admin' ? 'active' : '')} on:click={() => switchRole("admin")}>
+				<Button class={"role-btn " + (currentRole === 'admin' ? 'active' : '')} onclick={() => switchRole("admin")}>
 					Admin
 				</Button>
 			</div>
@@ -389,7 +391,7 @@
 					bind:value={terminalInput}
 					class="terminal-input"
 					disabled={isProcessing}
-					on:keydown={handleKeyDown}
+					onkeydown={handleKeyDown}
 					placeholder=""
 					spellcheck="false"
 					autocomplete="off"
@@ -405,11 +407,11 @@
 
 	<!-- Quick Commands -->
 	<div class="quick-commands">
-		<Button on:click={() => { terminalInput = "help"; void executeCommand(); }}>Help</Button>
-		<Button on:click={() => { terminalInput = "status"; void executeCommand(); }}>Status</Button>
-		<Button on:click={() => { terminalInput = "context7"; void executeCommand(); }}>Test Context7</Button>
-		<Button on:click={() => { terminalInput = "analyze contract dispute"; void executeCommand(); }}>Sample Analysis</Button>
-		<Button on:click={() => { terminalInput = "clear"; void executeCommand(); }}>Clear</Button>
+		<Button class="bits-btn bits-btn" onclick={() => { terminalInput = "help"; void executeCommand(); }}>Help</Button>
+		<Button class="bits-btn bits-btn" onclick={() => { terminalInput = "status"; void executeCommand(); }}>Status</Button>
+		<Button class="bits-btn bits-btn" onclick={() => { terminalInput = "context7"; void executeCommand(); }}>Test Context7</Button>
+		<Button class="bits-btn bits-btn" onclick={() => { terminalInput = "analyze contract dispute"; void executeCommand(); }}>Sample Analysis</Button>
+		<Button class="bits-btn bits-btn" onclick={() => { terminalInput = "clear"; void executeCommand(); }}>Clear</Button>
 	</div>
 </div>
 

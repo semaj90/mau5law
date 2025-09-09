@@ -3,8 +3,12 @@
   import { onMount } from 'svelte';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
   import * as Card from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input/index.js';
-  import { Button } from '$lib/components/ui/button/index.js';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
@@ -248,30 +252,28 @@ let contextText = $state('');
                           {formatTimestamp(message.timestamp)}
                         </span>
                         {#if message.metadata?.tokensPerSecond}
-                          <Badge variant="outline" class="text-xs">
-                            {Math.round(message.metadata.tokensPerSecond)} tok/s
-                          </Badge>
+                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round(message.metadata.tokensPerSecond)} tok/s</span>
                         {/if}
                       </div>
 
                       {#if message.role === 'assistant' && !message.error}
                         <div class="flex items-center gap-1">
-                          <Button
+                          <Button class="bits-btn bits-btn"
                             variant="ghost"
                             size="sm"
-                            on:on:click={() => copyToClipboard(message.content)}>
+                            on:onclick={() => copyToClipboard(message.content)}>
                             <Copy class="h-3 w-3" />
                           </Button>
-                          <Button
+                          <Button class="bits-btn bits-btn"
                             variant="ghost"
                             size="sm"
-                            on:on:click={() => provideFeedback(message.id, 'positive')}>
+                            on:onclick={() => provideFeedback(message.id, 'positive')}>
                             <ThumbsUp class="h-3 w-3" />
                           </Button>
-                          <Button
+                          <Button class="bits-btn bits-btn"
                             variant="ghost"
                             size="sm"
-                            on:on:click={() => provideFeedback(message.id, 'negative')}>
+                            on:onclick={() => provideFeedback(message.id, 'negative')}>
                             <ThumbsDown class="h-3 w-3" />
                           </Button>
                         </div>
@@ -287,8 +289,8 @@ let contextText = $state('');
                       <Button
                         variant="outline"
                         size="sm"
-                        class="text-xs h-auto py-1 px-2"
-                        on:on:click={() => handleSuggestionClick(suggestion)}>
+                        class="text-xs h-auto py-1 px-2 bits-btn bits-btn"
+                        on:onclick={() => handleSuggestionClick(suggestion)}>
                         {suggestion}
                       </Button>
                     {/each}
@@ -340,14 +342,14 @@ let contextText = $state('');
           keydown={handleKeydown}
           disabled={isLoading}
           class="flex-1" />
-        <Button on:on:click={sendMessage} disabled={isLoading || !currentMessage.trim()}>
+        <Button class="bits-btn bits-btn" on:onclick={sendMessage} disabled={isLoading || !currentMessage.trim()}>
           {#if isLoading}
             <Loader2 class="h-4 w-4 animate-spin" />
           {:else}
             <Send class="h-4 w-4" />
           {/if}
         </Button>
-        <Button variant="outline" on:on:click={clearChat}>
+        <Button class="bits-btn bits-btn" variant="outline" on:onclick={clearChat}>
           <X class="h-4 w-4" />
         </Button>
       </div>

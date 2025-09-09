@@ -6,10 +6,14 @@
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import * as Tooltip from '$lib/components/ui/tooltip';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea';
   import type { ChatMessage, MessageAnalysis, RAGContext, Recommendation } from '$lib/types/ai-chat';
 
@@ -289,7 +293,7 @@
                 </span>
               </div>
               {#if enableWebGPU && webgpuAccelerator}
-                <Badge variant="secondary" class="text-xs">WebGPU Enabled</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">WebGPU Enabled</span>
               {/if}
             </Card.Description>
           </div>
@@ -303,7 +307,7 @@
                   variant="ghost" 
                   size="sm" 
                   builders={[builder]}
-                  class="p-2"
+                  class="p-2 bits-btn bits-btn"
                 >
                   <MagnifyingGlassIcon class="w-4 h-4" />
                 </Button>
@@ -314,7 +318,7 @@
             </Tooltip.Root>
           {/if}
           
-          <Button variant="ghost" size="sm" onclick={clearChat}>
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={clearChat}>
             Clear
           </Button>
         </div>
@@ -344,13 +348,9 @@
               
               {#if message.role === 'assistant' && message.confidence}
                 <div class="flex gap-1 mt-2">
-                  <Badge variant="secondary" class="text-xs">
-                    {Math.round(message.confidence * 100)}%
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.confidence * 100)}%</span>
                   {#if message.tokensPerSecond}
-                    <Badge variant="secondary" class="text-xs">
-                      {Math.round(message.tokensPerSecond)} tok/s
-                    </Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.tokensPerSecond)} tok/s</span>
                   {/if}
                 </div>
               {/if}
@@ -400,7 +400,7 @@
         <Button 
           onclick={sendMessage}
           disabled={!currentMessage.trim() || isTyping || !isConnected}
-          class="self-end"
+          class="self-end bits-btn bits-btn"
         >
           <PaperPlaneIcon class="w-4 h-4" />
         </Button>
@@ -432,12 +432,8 @@
             <div>
               <h4 class="font-medium mb-2">Sentiment Analysis</h4>
               <div class="flex gap-2">
-                <Badge variant="outline">
-                  Sentiment: {currentAnalysis.sentiment || 'Neutral'}
-                </Badge>
-                <Badge variant="outline">
-                  Confidence: {Math.round((currentAnalysis.confidence || 0) * 100)}%
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Sentiment: {currentAnalysis.sentiment || 'Neutral'}</span>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Confidence: {Math.round((currentAnalysis.confidence || 0) * 100)}%</span>
               </div>
             </div>
           {/if}
@@ -453,7 +449,7 @@
         </div>
         
         <Dialog.Footer>
-          <Button variant="outline" onclick={() => ($open = false)}>
+          <Button class="bits-btn bits-btn" variant="outline" onclick={() => ($open = false)}>
             Close
           </Button>
         </Dialog.Footer>

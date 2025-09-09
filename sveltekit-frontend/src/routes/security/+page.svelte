@@ -1,6 +1,8 @@
 <script lang="ts">
   import SecurityMonitoringDashboard from "$lib/components/security/SecurityMonitoringDashboard.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { ArrowLeft, Shield } from "lucide-svelte";
 </script>
 
@@ -16,7 +18,7 @@
   <!-- Header -->
   <div class="space-y-4">
     <a href="/dashboard" class="space-y-4">
-      <Button variant="outline" size="sm">
+      <Button class="bits-btn bits-btn" variant="outline" size="sm">
         <ArrowLeft class="space-y-4" />
         Back to Dashboard
       </Button>

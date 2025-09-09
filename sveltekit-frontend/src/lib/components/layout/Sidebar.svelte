@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   let { open = false }: Props = $props();
 
   import { page } from "$app/state";
-  import Button from "$lib/components/ui/Button.svelte";
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import { cn } from "$lib/utils";
   import {
     BarChart3,
@@ -137,11 +137,11 @@ let mounted = $state(false);
     <!-- Quick actions -->
     <div class="p-4 border-b border-nier-gray">
       <div class="grid grid-cols-2 gap-2">
-        <Button variant="primary" size="sm" class="justify-start">
+        <Button variant="primary" size="sm" class="justify-start bits-btn bits-btn">
           <Plus class="mr-2 h-4 w-4" />
           New Case
         </Button>
-        <Button variant="ghost" size="sm" class="justify-start">
+        <Button variant="ghost" size="sm" class="justify-start bits-btn bits-btn">
           <Search class="mr-2 h-4 w-4" />
           Search
         </Button>

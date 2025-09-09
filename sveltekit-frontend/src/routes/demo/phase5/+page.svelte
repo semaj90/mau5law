@@ -1,8 +1,15 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  // Badge replaced with span - not available in enhanced-bits
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import {
     Zap, Brain, Database, Canvas, Search, Settings,
@@ -256,9 +263,7 @@
                 Intelligent caching with Context7 service optimization
               </p>
               {#if context7Stats}
-                <Badge variant="outline" class="mt-2">
-                  {context7Stats.size} cached items
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{context7Stats.size} cached items</span>
               {/if}
             </div>
             <div class="text-center">
@@ -267,7 +272,7 @@
               <p class="text-sm text-gray-600">
                 High-performance LLM inference with optimized throughput
               </p>
-              <Badge variant="outline" class="mt-2">8000+ tokens/sec</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">8000+ tokens/sec</span>
             </div>
             <div class="text-center">
               <Zap class="h-12 w-12 mx-auto mb-3 text-purple-600" />
@@ -275,7 +280,7 @@
               <p class="text-sm text-gray-600">
                 Live collaboration with WebSocket connections
               </p>
-              <Badge variant="outline" class="mt-2">Sub-100ms latency</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Sub-100ms latency</span>
             </div>
           </div>
         </CardContent>
@@ -292,8 +297,8 @@
           </CardHeader>
           <CardContent>
             <Button
-              class="w-full"
-              on:click={() => activeTab = 'vector-demo'}
+              class="w-full bits-btn bits-btn"
+              onclick={() => activeTab = 'vector-demo'}
             >
               <Search class="h-4 w-4 mr-2" />
               Launch Vector Demo
@@ -312,8 +317,8 @@
           <CardContent>
             <Button
               variant="outline"
-              class="w-full"
-              on:click={() => activeTab = 'fabric-canvas'}
+              class="w-full bits-btn bits-btn"
+              onclick={() => activeTab = 'fabric-canvas'}
             >
               <Canvas class="h-4 w-4 mr-2" />
               Open Canvas

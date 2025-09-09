@@ -318,7 +318,7 @@
 
 
 
-						on:click={() => applyPromptTemplate(String(prompt))}
+						onclick={() => applyPromptTemplate(String(prompt))}
 
 
 			Legal AI Templates
@@ -329,7 +329,7 @@
 					<Button
 						variant="outline"
 						size="sm"
-						on:click={() => applyPromptTemplate(prompt)}
+						onclick={() => applyPromptTemplate(prompt)}
 					>
 						{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
 
@@ -421,7 +421,7 @@
 
 
 					<Button
-						on:click={sendMessage}
+						onclick={sendMessage}
 						disabled={!$canSend}
 						class="px-6"
 					>
@@ -434,7 +434,7 @@
 					<Button
 						variant="outline"
 						size="sm"
-						on:click={() => inputText = ''}
+						onclick={() => inputText = ''}
 					>
 						Clear
 
@@ -515,4 +515,5 @@
 	.loading-spinner {
 		@apply w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
 	}
+
 

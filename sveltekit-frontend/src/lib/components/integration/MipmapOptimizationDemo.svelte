@@ -4,8 +4,13 @@
   import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath';
   import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders';
   import { yorhaTextureManager } from '$lib/components/three/yorha-ui/webgpu/YoRHaOptimizedTextureManager';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
   // Reactive state using Svelte 5 runes
   let isInitialized = $state(false);
@@ -331,7 +336,7 @@
         </div>
         
         {#if !isInitialized && !isProcessing}
-          <Button onclick={initializeSystem} size="sm">
+          <Button class="bits-btn bits-btn" onclick={initializeSystem} size="sm">
             🔄 Initialize System
           </Button>
         {/if}
@@ -421,7 +426,7 @@
                 </div>
               </div>
               
-              <Button 
+              <Button class="bits-btn bits-btn" 
                 onclick={() => processDocument(index)}
                 disabled={!isInitialized || isProcessing}
                 size="sm"
@@ -434,14 +439,14 @@
 
         <!-- Batch Operations -->
         <div class="flex gap-2 pt-4 border-t">
-          <Button 
+          <Button class="bits-btn bits-btn" 
             onclick={batchProcessDocuments}
             disabled={!isInitialized || isProcessing}
           >
             🚀 Batch Process All
           </Button>
           
-          <Button 
+          <Button class="bits-btn bits-btn" 
             onclick={generateMipmapDemo}
             disabled={!isInitialized || isProcessing}
             variant="outline"

@@ -359,11 +359,11 @@
       </div>
 
       <div class="flex gap-2">
-        <Button variant="outline" on:click={resetForm} disabled={analyzing}>
+        <Button variant="outline" onclick={resetForm} disabled={analyzing}>
           Reset
         </Button>
         <Button
-          on:click={startAnalysis}
+          onclick={startAnalysis}
           disabled={analyzing || !caseId || !evidenceContent}
         >
           {analyzing ? "Analyzing..." : "Start Analysis"}
@@ -520,7 +520,7 @@
                   variant="outline"
                   size="sm"
                   class="mt-2"
-                  on:click={() => viewDetailedResults(data)}
+                  onclick={() => viewDetailedResults(data)}
                 >
                   View Details →
                 </Button>
@@ -530,10 +530,10 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" on:click={() => (showResults = false)}>
+          <Button variant="outline" onclick={() => (showResults = false)}>
             Close
           </Button>
-          <Button on:click={() => goto(`/cases/${caseId}`)}>
+          <Button onclick={() => goto(`/cases/${caseId}`)}>
             View Case Details
           </Button>
         </DialogFooter>
@@ -558,3 +558,4 @@
     animation: pulse-glow 2s infinite;
   }
 </style>
+

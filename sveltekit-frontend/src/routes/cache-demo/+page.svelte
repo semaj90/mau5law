@@ -191,7 +191,7 @@
 
     <div class="flex gap-4 mb-4">
       <ModernButton
-  on:click={runCacheDemo}
+  onclick={runCacheDemo}
         disabled={cacheDemo.loading}
         class="bg-blue-600 hover:bg-blue-700"
       >
@@ -199,7 +199,7 @@
       </ModernButton>
 
       <ModernButton
-  on:click={triggerIdle}
+  onclick={triggerIdle}
         variant="outline"
         class="border-yellow-500 text-yellow-400 hover:bg-yellow-500/10"
       >
@@ -207,7 +207,7 @@
       </ModernButton>
 
       <ModernButton
-  on:click={triggerActivity}
+  onclick={triggerActivity}
         variant="outline"
         class="border-green-500 text-green-400 hover:bg-green-500/10"
       >
@@ -215,7 +215,7 @@
       </ModernButton>
 
       <ModernButton
-  on:click={clearAllCaches}
+  onclick={clearAllCaches}
         variant="outline"
         class="border-red-500 text-red-400 hover:bg-red-500/10"
       >

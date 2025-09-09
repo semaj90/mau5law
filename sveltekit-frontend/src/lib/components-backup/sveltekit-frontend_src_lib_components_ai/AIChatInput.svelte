@@ -138,7 +138,7 @@
         class="send-button"
         disabled={disabled}
         class:has-content={value.trim().length > 0}
-        on:click={() => handleSend()}
+        onclick={() => handleSend()}
         title="Send message (Enter)"
         aria-label="Send message"
       >
@@ -331,3 +331,4 @@
       height: 16px;
 }}
 </style>
+

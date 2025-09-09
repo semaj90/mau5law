@@ -212,8 +212,8 @@
 			<input type="file" {accept} {multiple} on:change={selectFiles} />
 			<Button class="select-btn" type="button">Select Files</Button>
 		</label>
-		<Button type="button" disabled={uploading || files.length===0} on:click={startUpload}>Start</Button>
-		<Button type="button" disabled={!uploading} on:click={cancelAll}>Cancel</Button>
+		<Button type="button" disabled={uploading || files.length===0} onclick={startUpload}>Start</Button>
+		<Button type="button" disabled={!uploading} onclick={cancelAll}>Cancel</Button>
 	</div>
 
 	{#if files.length > 0}
@@ -234,7 +234,7 @@
 					</div>
 					<div class="actions">
 						{#if f.status === 'error'}<span class="err" title={f.error}>⚠</span>{/if}
-						<button class="remove" on:click={() => removeFile(f.id)} disabled={f.status==='uploading'}>✕</button>
+						<button class="remove" onclick={() => removeFile(f.id)} disabled={f.status==='uploading'}>✕</button>
 					</div>
 				</div>
 			{/each}
@@ -285,3 +285,4 @@
 	button:hover:enabled { background:#334155; }
 	button:disabled { opacity:.45; cursor:not-allowed; }
 </style>
+

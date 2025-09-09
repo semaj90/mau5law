@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { Evidence } from '$lib/types';
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     evidenceActions,
     evidenceGrid,
@@ -246,7 +248,7 @@ let searchInput = $state<HTMLInputElement>();
         </select>
 
         <!-- Sort direction -->
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="secondary"
           size="sm"
           onclick={() => toggleSort(sortBy)}
@@ -260,7 +262,7 @@ let searchInput = $state<HTMLInputElement>();
         </Button>
 
         <!-- View mode toggle -->
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="secondary"
           size="sm"
           onclick={() => toggleViewMode()}
@@ -282,18 +284,18 @@ let searchInput = $state<HTMLInputElement>();
           {selectedItems.size} item{selectedItems.size !== 1 ? "s" : ""} selected
         </span>
         <div class="flex items-center gap-2">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="secondary"
             size="sm"
             onclick={() => clearSelection()}
           >
             Clear
           </Button>
-          <Button variant="secondary" size="sm" class="flex items-center gap-2">
+          <Button variant="secondary" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
             <Download class="w-4 h-4" />
             Download
           </Button>
-          <Button variant="secondary" size="sm" class="flex items-center gap-2">
+          <Button variant="secondary" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
             <Archive class="w-4 h-4" />
             Archive
           </Button>
@@ -313,7 +315,7 @@ let searchInput = $state<HTMLInputElement>();
     <div class="text-center py-12">
       <div class="text-red-600 dark:text-red-400 mb-2">Error loading evidence</div>
       <p class="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="secondary"
         size="sm"
         onclick={() => evidenceActions.loadEvidence(caseId)}
@@ -503,7 +505,7 @@ let searchInput = $state<HTMLInputElement>();
 
               <!-- Actions -->
               <div class="space-y-4">
-                <Button variant="ghost" size="sm" class="space-y-4">
+                <Button variant="ghost" size="sm" class="space-y-4 bits-btn bits-btn">
                   <MoreHorizontal class="space-y-4" />
                 </Button>
               </div>

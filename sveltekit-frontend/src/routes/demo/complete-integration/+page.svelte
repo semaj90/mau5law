@@ -9,7 +9,12 @@
   import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
   import NES3DLODProcessor from '$lib/components/ui/gaming/effects/NES3DLODProcessor.svelte';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
 
   let pageTitle = 'Complete Integration Demo';

@@ -247,7 +247,7 @@
       class="w-4 h-4"
       role="button"
       tabindex={0}
-      on:click={() => closeOnboarding()}
+      onclick={() => closeOnboarding()}
       on:keydown={(e) => {
         if (e.key === "Escape") {
           closeOnboarding();
@@ -289,7 +289,7 @@
             <Button
               variant="ghost"
               size="sm"
-              on:click={() => toggleAutoProgress()}
+              onclick={() => toggleAutoProgress()}
               class="w-4 h-4"
               aria-label={isPlaying
                 ? "Pause auto-progress"
@@ -306,7 +306,7 @@
           <Button
             variant="ghost"
             size="sm"
-            on:click={() => closeOnboarding()}
+            onclick={() => closeOnboarding()}
             aria-label="Close onboarding"
           >
             <X class="w-4 h-4" />
@@ -375,7 +375,7 @@
       <div class="w-4 h-4">
         <div class="w-4 h-4">
           {#if allowSkip}
-            <Button variant="ghost" size="sm" on:click={() => skipOnboarding()}>
+            <Button variant="ghost" size="sm" onclick={() => skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
             </Button>
@@ -390,7 +390,7 @@
                   class="w-4 h-4"
                   class:active={index === currentStep}
                   class:completed={index < currentStep}
-                  on:click={() => goToStep(index)}
+                  onclick={() => goToStep(index)}
                   aria-label="Go to step {index + 1}: {step.title}"
                 >
                   {#if index < currentStep}
@@ -408,14 +408,14 @@
           <Button
             variant="ghost"
             size="sm"
-            on:click={() => previousStep()}
+            onclick={() => previousStep()}
             disabled={currentStep === 0}
           >
             <ArrowLeft class="w-4 h-4" />
             Back
           </Button>
 
-          <Button on:click={() => nextStep()} size="sm">
+          <Button onclick={() => nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="w-4 h-4" />
               Complete
@@ -692,3 +692,4 @@
       order: -1;
 }}
 </style>
+

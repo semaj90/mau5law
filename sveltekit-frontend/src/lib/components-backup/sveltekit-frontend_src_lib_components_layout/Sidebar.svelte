@@ -99,7 +99,7 @@
 {#if open}
   <div
     class="fixed inset-0 z-40 bg-black/50 lg:hidden"
-    on:click={closeSidebar}
+    onclick={closeSidebar}
     role="button"
     tabindex="0"
     on:keydown={(e) => e.key === "Enter" && closeSidebar()}
@@ -161,7 +161,7 @@
                   ? "bg-harvard-crimson text-white shadow-nier-glow"
                   : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
               )}
-              on:click={closeSidebar}
+              onclick={closeSidebar}
             >
               <div class="flex items-center">
                 {@const Icon = item.icon}
@@ -213,7 +213,7 @@
                     ? "bg-harvard-crimson text-white shadow-nier-glow"
                     : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
                 )}
-                on:click={closeSidebar}
+                onclick={closeSidebar}
               >
                 {@const Icon = item.icon}
                 <Icon
@@ -247,7 +247,7 @@
                     ? "bg-harvard-crimson text-white shadow-nier-glow"
                     : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
                 )}
-                on:click={closeSidebar}
+                onclick={closeSidebar}
               >
                 {@const Icon = item.icon}
                 <Icon
@@ -308,3 +308,4 @@
     border-radius: 2px;
   }
 </style>
+

@@ -2,7 +2,9 @@
   import { onMount } from 'svelte';
   import { $state } from 'svelte';
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
   import { 
@@ -155,7 +157,7 @@
       </div>
       
       <div class="header-right">
-        <Button class="header-btn">
+        <Button class="header-btn bits-btn bits-btn">
           <Brain class="w-4 h-4" />
           RUN ANALYSIS
         </Button>
@@ -292,7 +294,7 @@
                   <div class="analysis-basic-info">
                     <span class="analysis-id">{analysis.id}</span>
                     <span class="analysis-case">{analysis.case_id}</span>
-                    <Badge variant="outline" class="analysis-type">{analysis.type}</Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{analysis.type}</span>
                   </div>
                   <div class="analysis-status">
                     {#if analysis.status === 'completed'}
@@ -302,7 +304,7 @@
                       <Badge class="bg-blue-600 text-white">PROCESSING</Badge>
                       <Activity class="w-4 h-4 animate-pulse" />
                     {:else}
-                      <Badge variant="secondary">{analysis.status.toUpperCase()}</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{analysis.status.toUpperCase()}</span>
                     {/if}
                   </div>
                 </div>
@@ -313,7 +315,7 @@
                 
                 <div class="analysis-footer">
                   <span class="analysis-timestamp">{analysis.timestamp}</span>
-                  <Button size="sm" variant="outline">View Details</Button>
+                  <Button class="bits-btn bits-btn" size="sm" variant="outline">View Details</Button>
                 </div>
               </div>
             {/each}

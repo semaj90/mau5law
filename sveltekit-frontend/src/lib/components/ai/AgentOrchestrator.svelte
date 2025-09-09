@@ -5,8 +5,10 @@ Manages AutoGen and CrewAI multi-agent workflows
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
-  import { Button } from '$lib/components/ui/button';
-  import Card from '$lib/components/ui/Card.svelte';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/CardContent.svelte';
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/CardTitle.svelte';
@@ -430,10 +432,10 @@ let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
         CrewAI {serviceStatus.crewai ? 'Online' : 'Offline'}
       </Badge>
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         size="sm"
-  on:click={checkServiceStatus}
+  onclick={checkServiceStatus}
       >
         <RefreshCw class="h-4 w-4" />
       </Button>
@@ -524,9 +526,9 @@ let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
       <div class="flex gap-2">
         <Button
-          on:click={executeWorkflow}
+          onclick={executeWorkflow}
           disabled={isProcessing || !inputText.trim() || (!serviceStatus.autogen && selectedProvider === 'autogen') || (!serviceStatus.crewai && selectedProvider === 'crewai')}
-          class="flex-1"
+          class="flex-1 bits-btn bits-btn"
         >
           {#if isProcessing}
             <Pause class="h-4 w-4 mr-2" />
@@ -538,16 +540,16 @@ let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
         </Button>
 
         {#if isProcessing}
-          <Button variant="outline" on:click={cancelExecution}>
+          <Button class="bits-btn bits-btn" variant="outline" onclick={cancelExecution}>
             <Square class="h-4 w-4" />
           </Button>
         {/if}
 
         {#if conversationMessages.length > 0 || executionResults.length > 0}
-          <Button variant="outline" on:click={clearResults}>
+          <Button class="bits-btn bits-btn" variant="outline" onclick={clearResults}>
             Clear
           </Button>
-          <Button variant="outline" on:click={downloadResults}>
+          <Button class="bits-btn bits-btn" variant="outline" onclick={downloadResults}>
             <Download class="h-4 w-4" />
           </Button>
         {/if}
@@ -646,9 +648,7 @@ let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
               <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-2">
                   <span class="font-medium text-sm">{result.taskId}</span>
-                  <Badge variant="outline" class="text-xs">
-                    {result.agentId}
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.agentId}</span>
                 </div>
 
                 <div class="flex items-center gap-2">
@@ -686,8 +686,8 @@ let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Button
             variant="outline"
-            class="h-auto p-4 justify-start"
-            on:click={() => {
+            class="h-auto p-4 justify-start bits-btn bits-btn"
+            onclick={() => {
               selectedWorkflow = 'case_analysis';
               selectedProvider = 'autogen';
               inputText = 'John Smith was accused of embezzling $50,000 from his employer over a 6-month period. Evidence includes suspicious bank transfers, altered financial records, and witness testimony from colleagues who noticed unusual behavior.';
@@ -701,8 +701,8 @@ let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
           <Button
             variant="outline"
-            class="h-auto p-4 justify-start"
-            on:click={() => {
+            class="h-auto p-4 justify-start bits-btn bits-btn"
+            onclick={() => {
               selectedWorkflow = 'contract_analysis';
               selectedProvider = 'crewai';
               inputText = 'Software licensing agreement between TechCorp and ClientCorp for enterprise SaaS platform. Contract includes liability limitations, data processing clauses, and termination provisions. Review for compliance and negotiation opportunities.';
@@ -716,8 +716,8 @@ let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
           <Button
             variant="outline"
-            class="h-auto p-4 justify-start"
-            on:click={() => {
+            class="h-auto p-4 justify-start bits-btn bits-btn"
+            onclick={() => {
               selectedWorkflow = 'evidence_review';
               selectedProvider = 'autogen';
               inputText = 'Digital evidence package includes: smartphone data extraction, email communications, cloud storage files, and network logs. Chain of custody maintained by certified technician. Need admissibility assessment for federal court.';
@@ -731,8 +731,8 @@ let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
           <Button
             variant="outline"
-            class="h-auto p-4 justify-start"
-            on:click={() => {
+            class="h-auto p-4 justify-start bits-btn bits-btn"
+            onclick={() => {
               selectedWorkflow = 'legal_research';
               selectedProvider = 'autogen';
               inputText = 'Research precedents for cryptocurrency fraud cases involving privacy coins. Focus on 4th Amendment protections, blockchain analysis admissibility, and international cooperation in digital asset recovery.';

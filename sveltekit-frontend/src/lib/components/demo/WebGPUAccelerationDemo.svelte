@@ -2,8 +2,15 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
   // Reactive state using Svelte 5 runes
   let capabilities = $state<WebGPUCapabilities | null>(null);
@@ -428,9 +435,9 @@ let sum = $state(0);
             </div>
 
             <Button
-              on:on:click={runSimilarityDemo}
+              on:onclick={runSimilarityDemo}
               disabled={isProcessing || activeDemo === 'similarity'}
-              class="w-full">
+              class="w-full bits-btn bits-btn">
               {isProcessing && activeDemo === 'similarity' ? 'Computing...' : 'Run Similarity Test'}
             </Button>
           </div>
@@ -479,9 +486,9 @@ let sum = $state(0);
             </div>
 
             <Button
-              on:on:click={runClusteringDemo}
+              on:onclick={runClusteringDemo}
               disabled={isProcessing || activeDemo === 'clustering'}
-              class="w-full">
+              class="w-full bits-btn bits-btn">
               {isProcessing && activeDemo === 'clustering' ? 'Clustering...' : 'Run Clustering'}
             </Button>
           </div>
@@ -515,9 +522,9 @@ let sum = $state(0);
             </div>
 
             <Button
-              on:on:click={runMatrixDemo}
+              on:onclick={runMatrixDemo}
               disabled={isProcessing || activeDemo === 'matrix'}
-              class="w-full">
+              class="w-full bits-btn bits-btn">
               {isProcessing && activeDemo === 'matrix' ? 'Computing...' : 'Run Matrix Multiply'}
             </Button>
           </div>

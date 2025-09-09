@@ -5,11 +5,20 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Button } from "$lib/components/ui/button";
-  import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card";
-  import { Input } from "$lib/components/ui/input";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from "$lib/components/ui/label";
-  import Badge from "$lib/components/ui/Badge.svelte";
+  // Badge replaced with span - not available in enhanced-bits
   import {
     AlertCircle,
     File as FileIcon,
@@ -362,7 +371,7 @@ let tagInput = $state("");
                 {/if}
               </div>
 
-              <Button variant="ghost" size="sm" on:on:click={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
+              <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
                 <X class="h-4 w-4" />
               </Button>
             </div>
@@ -372,7 +381,7 @@ let tagInput = $state("");
     {/if}
 
     {#if !compact && selectedFiles.length > 0}
-      <form class="space-y-6" on:submit|preventDefault={handleFormSubmit}>
+      <form class="space-y-6" onsubmit|preventDefault={handleFormSubmit}>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
             <Label for="title">Title *</Label>
@@ -418,7 +427,7 @@ let tagInput = $state("");
           <Label for="tags">Tags</Label>
           <div class="flex gap-2">
             <Input bind:value={tagInput} placeholder="Add a tag" disabled={isUploading} keydown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())} />
-            <Button type="button" variant="outline" on:on:click={addTag} disabled={isUploading}>Add</Button>
+            <Button class="bits-btn bits-btn" type="button" variant="outline" on:onclick={addTag} disabled={isUploading}>Add</Button>
           </div>
 
           {#if formState.tags.length > 0}
@@ -471,9 +480,9 @@ let tagInput = $state("");
       </p>
 
       <div class="flex gap-2">
-        <Button variant="outline" on:on:click={() => oncancel?.()} disabled={isUploading}>Cancel</Button>
+        <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => oncancel?.()} disabled={isUploading}>Cancel</Button>
 
-        <Button on:on:click={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
+        <Button class="bits-btn bits-btn" on:onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
           {#if isUploading}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />Uploading...
           {:else}

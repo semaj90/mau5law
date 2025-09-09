@@ -408,9 +408,9 @@
 
         <!-- Process Button -->
         <Button.Root
-          on:on:click={processDocument}
+          on:onclick={processDocument}
           disabled={processing || !serviceStatus.healthy}
-          class="w-full mt-4 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-semibold rounded-lg transition-colors"
+          class="w-full mt-4 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-semibold rounded-lg transition-colors bits-btn bits-btn"
         >
           {#if processing}
             <div class="flex items-center justify-center gap-2">
@@ -464,9 +464,9 @@
 
         <!-- Search Button -->
         <Button.Root
-          on:on:click={performVectorSearch}
+          on:onclick={performVectorSearch}
           disabled={searching || !serviceStatus.healthy}
-          class="w-full mt-4 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-400 text-white font-semibold rounded-lg transition-colors"
+          class="w-full mt-4 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-400 text-white font-semibold rounded-lg transition-colors bits-btn bits-btn"
         >
           {#if searching}
             <div class="flex items-center justify-center gap-2">

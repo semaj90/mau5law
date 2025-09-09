@@ -162,7 +162,7 @@
   >
     <div
       class="shortcuts-dialog__document"
-      on:click|stopPropagation
+      onclick|stopPropagation
       role="document"
     >
       <div class="shortcuts-dialog__header">
@@ -378,3 +378,4 @@
     font-size: 0.98rem;
   }
 </style>
+

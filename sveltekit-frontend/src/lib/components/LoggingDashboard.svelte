@@ -9,7 +9,9 @@
     type LogLevel,
     type LogFilter
   } from '$lib/services/logging-aggregation-service';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
 
   // Modern Svelte 5 props via $props rune
@@ -164,10 +166,10 @@
         </h2>
 
         <div class="flex items-center gap-2">
-          <Button size="sm" variant="outline" onclick={exportLogs}>
+          <Button class="bits-btn bits-btn" size="sm" variant="outline" onclick={exportLogs}>
             📤 Export
           </Button>
-          <Button size="sm" variant="outline" onclick={clearLogs}>
+          <Button class="bits-btn bits-btn" size="sm" variant="outline" onclick={clearLogs}>
             🗑️ Clear
           </Button>
         </div>
@@ -259,7 +261,7 @@
             <button
               type="button"
               class="log-entry group w-full text-left hover:bg-gray-800 p-2 rounded cursor-pointer transition-colors duration-150"
-              on:click={() => selectEntry(entry)}
+              onclick={() => selectEntry(entry)}
             >
               <div class="flex items-start gap-3">
                 <!-- Timestamp -->
@@ -303,7 +305,7 @@
 
                 <!-- Actions -->
                 <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button size="sm" variant="ghost" on:click={(e) => { e.stopPropagation(); selectEntry(entry); }}>
+                  <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={(e) => { e.stopPropagation(); selectEntry(entry); }}>
                     👁️
                   </Button>
                 </div>
@@ -325,7 +327,7 @@
           <h3 class="text-xl font-bold text-green-400 flex items-center gap-2">
             {getLevelIcon(selectedEntry.level)} Log Entry Details
           </h3>
-          <Button variant="ghost" on:click={() => showDetails = false}>
+          <Button class="bits-btn bits-btn" variant="ghost" onclick={() => showDetails = false}>
             ✕
           </Button>
         </div>
@@ -437,7 +439,7 @@
               <div class="text-sm text-gray-400">Tags</div>
               <div class="flex flex-wrap gap-2 mt-2">
                 {#each selectedEntry.tags as tag}
-                  <Badge variant="outline" class="text-xs">{tag}</Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                 {/each}
               </div>
             </div>
@@ -446,13 +448,13 @@
 
         <!-- Actions -->
         <div class="flex gap-2 mt-6">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:click={() => navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
+            onclick={() => navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
           >
             📋 Copy JSON
           </Button>
-          <Button variant="outline" on:click={() => showDetails = false}>
+          <Button class="bits-btn bits-btn" variant="outline" onclick={() => showDetails = false}>
             Close
           </Button>
         </div>

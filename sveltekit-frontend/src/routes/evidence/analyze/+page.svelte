@@ -1,15 +1,13 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import Badge from '$lib/components/ui/Badge.svelte';
+  // Badge replaced with span - not available in enhanced-bits
   import Button from '$lib/components/ui/button/Button.svelte';
   import {
     Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
-  } from '$lib/components/ui/card';
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     Dialog,
     DialogContent,
@@ -305,7 +303,7 @@
           <div class="flex items-center gap-2 text-sm text-muted-foreground">
             <span>📎</span>
             <span>{evidenceFile.name}</span>
-            <Badge variant="outline">{(evidenceFile.size / 1024).toFixed(1)} KB</Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(evidenceFile.size / 1024).toFixed(1)} KB</span>
           </div>
         {/if}
       </div>
@@ -337,15 +335,13 @@
           </Badge>
         {/if}
         {#if evidenceType !== 'other'}
-          <Badge variant="outline">
-            {evidenceTypes.find((t) => t.value === evidenceType)?.label}
-          </Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{evidenceTypes.find((t) => t.value === evidenceType)?.label}</span>
         {/if}
       </div>
 
     <div class="flex gap-2">
-  <Button variant="outline" on:click={resetForm} disabled={analyzing}>Reset</Button>
-  <Button on:click={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+  <Button class="bits-btn bits-btn" variant="outline" onclick={resetForm} disabled={analyzing}>Reset</Button>
+  <Button class="bits-btn bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
         </Button>
       </div>
@@ -421,11 +417,11 @@
                         {step.name}
                       </h3>
                       {#if isProcessing}
-                        <Badge variant="outline" class="animate-pulse">Processing</Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Processing</span>
                       {:else if isCompleted}
                         <Badge class="bg-green-100 text-green-800">Completed</Badge>
                       {:else}
-                        <Badge variant="secondary">Pending</Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Pending</span>
                       {/if}
                     </div>
                     <p class="text-sm text-muted-foreground">
@@ -480,8 +476,8 @@
                 <Button
                   variant="outline"
                   size="sm"
-                  class="mt-2"
-                  on:click={() => viewDetailedResults(data)}>
+                  class="mt-2 bits-btn bits-btn"
+                  onclick={() => viewDetailedResults(data)}>
                   View Details →
                 </Button>
               </CardContent>
@@ -490,8 +486,8 @@
         </div>
 
         <DialogFooter>
-          <Button variant="outline" on:click={() => (showResults = false)}>Close</Button>
-          <Button on:click={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
+          <Button class="bits-btn bits-btn" variant="outline" onclick={() => (showResults = false)}>Close</Button>
+          <Button class="bits-btn bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -295,8 +295,8 @@ let suggestionLoading = $state<Record<string, boolean> >({});
 					{#if !uploadedFile}
 						<Button
 							variant="outline"
-							class="mt-4"
-							on:on:click={() => fileInput.click()}
+							class="mt-4 bits-btn bits-btn"
+							on:onclick={() => fileInput.click()}
 						>
 							Browse Files
 						</Button>
@@ -348,7 +348,7 @@ let suggestionLoading = $state<Record<string, boolean> >({});
 			</CardTitle>
 		</CardHeader>
 		<CardContent>
-			<form on:submit|preventDefault={handleSubmit} class="space-y-6">
+			<form onsubmit|preventDefault={handleSubmit} class="space-y-6">
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 					{#each populatedFields as field (field.name)}
 						<div class="space-y-2" transition:fade>
@@ -409,8 +409,8 @@ let suggestionLoading = $state<Record<string, boolean> >({});
 											<Button
 												variant="outline"
 												size="sm"
-												class="text-xs h-6 px-2"
-												on:on:click={() => applySuggestion(field.name, suggestion)}
+												class="text-xs h-6 px-2 bits-btn bits-btn"
+												on:onclick={() => applySuggestion(field.name, suggestion)}
 											>
 												{suggestion}
 											</Button>
@@ -445,9 +445,9 @@ let suggestionLoading = $state<Record<string, boolean> >({});
 					</div>
 
 					<div class="flex items-center space-x-3">
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant="outline"
-							on:on:click={() => {
+							on:onclick={() => {
 								populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
 								formErrors.set({});
 							}}
@@ -458,7 +458,7 @@ let suggestionLoading = $state<Record<string, boolean> >({});
 						<Button
 							type="submit"
 							disabled={!isFormValid}
-							class="bg-yorha-primary hover:bg-yorha-primary/80 disabled:opacity-50"
+							class="bg-yorha-primary hover:bg-yorha-primary/80 disabled:opacity-50 bits-btn bits-btn"
 						>
 							Submit Form
 						</Button>
@@ -475,10 +475,10 @@ let suggestionLoading = $state<Record<string, boolean> >({});
 				<CardTitle class="flex items-center space-x-2">
 					<span>🔍</span>
 					<span>Extracted Data</span>
-					<Button
+					<Button class="bits-btn bits-btn"
 						variant="ghost"
 						size="sm"
-						on:on:click={() => showPreview = !showPreview}
+						on:onclick={() => showPreview = !showPreview}
 					>
 						{showPreview ? 'Hide' : 'Show'}
 					</Button>

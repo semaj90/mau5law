@@ -1025,7 +1025,7 @@
   multiple
   accept={acceptedTypes.join(',')}
   bind:this={fileInput}
-  on:change={handleFileSelect}
+  onchange={handleFileSelect}
   style="display: none;"
 />
 
@@ -1088,7 +1088,7 @@
   <!-- Toolbar -->
   <div class="toolbar" class:n64-toolbar={enableN64Style}>
     <button 
-      on:click={analyzeCanvas} 
+      onclick={analyzeCanvas} 
       disabled={analyzing}
       class="analyze-btn"
       class:n64-btn={enableN64Style}
@@ -1103,7 +1103,7 @@
     </button>
     
     <button 
-      on:click={openFileDialog} 
+      onclick={openFileDialog} 
       disabled={uploading}
       class="upload-btn"
       class:n64-btn={enableN64Style}
@@ -1113,7 +1113,7 @@
     </button>
     
     <button 
-      on:click={triggerUnifiedProcessing} 
+      onclick={triggerUnifiedProcessing} 
       disabled={uploadedFiles.length === 0}
       class="unified-process-btn"
       class:n64-btn={enableN64Style}
@@ -1258,7 +1258,7 @@
             <button 
               class="remove-btn" 
               class:n64-remove={enableN64Style}
-              on:click={() => removeFile(file.id)}
+              onclick={() => removeFile(file.id)}
               disabled={file.status === 'uploading'}
             >
               <X class="w-3 h-3" />

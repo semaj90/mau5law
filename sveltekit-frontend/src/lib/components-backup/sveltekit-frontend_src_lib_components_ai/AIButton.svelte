@@ -133,7 +133,7 @@
 				{loading ? 'animate-pulse' : ''}
 			"
 			{disabled}
-			on:click={handleClick}
+			onclick={handleClick}
 			on:keydown={handleKeydown}
 			on:mouseenter={showTooltipHandler}
 			on:mouseleave={hideTooltipHandler}
@@ -216,3 +216,4 @@
 		animation: float 3s linear infinite;
 	}
 </style>
+

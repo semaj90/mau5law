@@ -3,7 +3,7 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Button from '$lib/components/ui/Button.svelte';
+	import { Button } from '$lib/components/ui/enhanced-bits';
 	
 	// Svelte 5 runes for reactive state
 	let query = $state('');
@@ -262,9 +262,9 @@
 				disabled={isProcessing}
 			/>
 			<Button
-				on:on:click={performGPULegalSearch}
+				on:onclick={performGPULegalSearch}
 				disabled={isProcessing || !gpuStatus?.available}
-				class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 min-w-[140px]"
+				class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 min-w-[140px] bits-btn bits-btn"
 			>
 				{#if isProcessing}
 					<span class="flex items-center">

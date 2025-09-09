@@ -21,9 +21,18 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     Settings,
     Zap,
   } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Switch } from '$lib/components/ui/switch';
   import * as Collapsible from '$lib/components/ui/collapsible';
@@ -1185,19 +1194,19 @@ ${relatedReports.length > 0 ? `**Database Stats:**
           <Brain class="w-5 h-5" />
           Enhanced Legal AI Assistant
           {#if userRole}
-            <Badge variant="secondary">{userRole}</Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{userRole}</span>
           {/if}
           {#if caseId}
-            <Badge variant="outline">Case: {caseId}</Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Case: {caseId}</span>
           {/if}
           {#if reportId}
-            <Badge variant="outline" class="bg-blue-50 text-blue-700 border-blue-200">Report: {reportId.slice(0, 8)}...</Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Report: {reportId.slice(0, 8)}...</span>
           {/if}
           {#if persistConversation && currentSessionId}
-            <Badge variant="outline" class="bg-green-50 text-green-700 border-green-200">DB Connected</Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">DB Connected</span>
           {/if}
           {#if relatedReports.length > 0}
-            <Badge variant="outline" class="bg-purple-50 text-purple-700 border-purple-200">{relatedReports.length} Related</Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{relatedReports.length} Related</span>
           {/if}
         </CardTitle>
 
@@ -1223,7 +1232,7 @@ ${relatedReports.length > 0 ? `**Database Stats:**
           </div>
 
           <!-- Settings Toggle -->
-          <Button variant="ghost" size="sm" on:on:click={() => (showSettings = !showSettings)}>
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => (showSettings = !showSettings)}>
             <Settings class="w-4 h-4" />
           </Button>
         </div>
@@ -1296,11 +1305,11 @@ ${relatedReports.length > 0 ? `**Database Stats:**
               <div class="flex items-center justify-between mb-2">
                 <span class="font-medium">Database Status</span>
                 {#if isSavingToDatabase}
-                  <Badge variant="outline" class="text-yellow-600">Syncing...</Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Syncing...</span>
                 {:else if lastSyncTime}
-                  <Badge variant="outline" class="text-green-600">Synced</Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Synced</span>
                 {:else}
-                  <Badge variant="outline" class="text-gray-600">Ready</Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Ready</span>
                 {/if}
               </div>
               <div class="space-y-1 text-gray-600">
@@ -1350,15 +1359,11 @@ ${relatedReports.length > 0 ? `**Database Stats:**
               <span class="text-xs text-gray-500">{formatTimestamp(message.timestamp)}</span>
 
               {#if message.confidence && settings.includeConfidenceScores}
-                <Badge variant="outline" class={getConfidenceColor(message.confidence)}>
-                  {Math.round(message.confidence * 100)}% confidence
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round(message.confidence * 100)}% confidence</span>
               {/if}
 
               {#if message.processingTime}
-                <Badge variant="outline" class="text-xs">
-                  {message.processingTime}ms
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.processingTime}ms</span>
               {/if}
 
               {#if streamingMessageId === message.id && isStreaming}
@@ -1471,7 +1476,7 @@ ${relatedReports.length > 0 ? `**Database Stats:**
 
           <!-- Message Actions -->
           <div class="flex-shrink-0 flex flex-col gap-1">
-            <Button variant="ghost" size="sm" on:on:click={() => copyToClipboard(message.content)}>
+            <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => copyToClipboard(message.content)}>
               <FileText class="w-3 h-3" />
             </Button>
           </div>
@@ -1498,7 +1503,7 @@ ${relatedReports.length > 0 ? `**Database Stats:**
       keydown={handleKeyDown}
       disabled={isProcessing}
       class="flex-1" />
-    <Button on:on:click={sendMessage} disabled={!currentInput.trim() || isProcessing}>
+    <Button class="bits-btn bits-btn" on:onclick={sendMessage} disabled={!currentInput.trim() || isProcessing}>
       {#if isProcessing}
         <Loader2 class="w-4 h-4 animate-spin" />
       {:else}
@@ -1513,7 +1518,7 @@ ${relatedReports.length > 0 ? `**Database Stats:**
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           Detailed Analysis
-          <Button variant="ghost" size="sm" on:on:click={() => (showAdvancedAnalysis = false)}>
+          <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => (showAdvancedAnalysis = false)}>
             ×
           </Button>
         </CardTitle>

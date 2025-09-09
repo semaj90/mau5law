@@ -4,8 +4,8 @@
   import { draggable } from '$lib/actions/draggable';
   import { aiService } from '$lib/services/aiService';
 // UI Components
-  import Badge from "$lib/components/ui/Badge.svelte";
-import Card from "$lib/components/ui/Card.svelte";
+  // Badge replaced with span - not available in enhanced-bits
+import { Card } from '$lib/components/ui/enhanced-bits';
 import CardContent from "$lib/components/ui/CardContent.svelte";
 import CardFooter from "$lib/components/ui/CardFooter.svelte";
 import CardHeader from "$lib/components/ui/CardHeader.svelte";
@@ -345,9 +345,7 @@ let formData = $state({
         dispatch("update", { ...poi, threatLevel: "low" });
       }}
     >
-      <Badge variant="secondary" class="container mx-auto px-4">
-        Low
-      </Badge>
+      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Low</span>
       Low
     </ContextMenu.Item>
     <ContextMenu.Item
@@ -356,9 +354,7 @@ let formData = $state({
         dispatch("update", { ...poi, threatLevel: "medium" });
       }}
     >
-      <Badge variant="secondary" class="container mx-auto px-4">
-        Medium
-      </Badge>
+      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Medium</span>
       Medium
     </ContextMenu.Item>
     <ContextMenu.Item
@@ -367,9 +363,7 @@ let formData = $state({
         dispatch("update", { ...poi, threatLevel: "high" });
       }}
     >
-      <Badge variant="secondary" class="container mx-auto px-4">
-        High
-      </Badge>
+      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">High</span>
       High
     </ContextMenu.Item>
 

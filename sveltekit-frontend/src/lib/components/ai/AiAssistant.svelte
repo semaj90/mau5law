@@ -9,7 +9,12 @@
 
   // UI components (Svelte 5 + melt v0.39.0 compatible)
   import Button from '$lib/components/ui/button/Button.svelte';
-  import { Card } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { aiGlobalStore, aiGlobalActions } from '$lib/stores/ai';
   import { legalCaseStore, legalCaseActions } from '$lib/stores/legal-case';
 
@@ -120,7 +125,7 @@
         onclick={handleSummarize}
         disabled={!user || $aiGlobalStore.context.loading}
         variant="primary"
-        class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg"
+        class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
       >
         {!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
       </Button>
@@ -128,7 +133,7 @@
         onclick={saveSummary}
         disabled={!$aiGlobalStore.context.summary || $aiGlobalStore.context.loading}
         variant="primary"
-        class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg"
+        class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
       >
         Save Summary
       </Button>
@@ -137,7 +142,7 @@
           onclick={handleGenerateEmbedding}
           disabled={!user || $legalCaseStore.context.generatingEmbedding}
           variant="secondary"
-          class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg"
+          class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
           {$legalCaseStore.context.generatingEmbedding ? 'Generating...' : 'Find Related Evidence'}
         </Button>
@@ -145,7 +150,7 @@
           onclick={handleSearchRelatedEvidence}
           disabled={!user || $legalCaseStore.context.searchingRelatedEvidence}
           variant="outline"
-          class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg"
+          class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
           {$legalCaseStore.context.searchingRelatedEvidence ? 'Searching...' : 'Semantic Search'}
         </Button>

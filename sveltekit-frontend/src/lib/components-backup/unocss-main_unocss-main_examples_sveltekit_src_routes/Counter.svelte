@@ -5,7 +5,7 @@
 	}
 </script>
 
-<button on:click={increment}>
+<button onclick={increment}>
 	Clicks: {count}
 </button>
 
@@ -32,3 +32,4 @@
 		background-color: rgb(255 62 0 / 0.2);
 	}
 </style>
+

@@ -3,12 +3,23 @@
 
   const dispatch = createEventDispatcher();
 
-  // Public API
-  export let accept = 'image/*,application/pdf';
-  export let multiple = false;
-  export let maxSize = 10 * 1024 * 1024; // 10 MB
-  export let disabled = false;
-  export let ariaLabel = 'Upload evidence files';
+  // Props interface
+  interface Props {
+    accept?: string;
+    multiple?: boolean;
+    maxSize?: number;
+    disabled?: boolean;
+    ariaLabel?: string;
+  }
+
+  // Public API using Svelte 5 runes
+  let {
+    accept = 'image/*,application/pdf',
+    multiple = false,
+    maxSize = 10 * 1024 * 1024, // 10 MB
+    disabled = false,
+    ariaLabel = 'Upload evidence files'
+  }: Props = $props();
 
   let files = [];
   let inputEl;
@@ -126,7 +137,7 @@
   role="button"
   aria-label={ariaLabel}
   tabindex="0"
-  on:click={() => !disabled && inputEl.click()}
+  onclick={() => !disabled && inputEl.click()}
   on:drop|preventDefault={onDrop}
   on:dragover|preventDefault={onDragOver}
 >
@@ -135,7 +146,7 @@
 	type="file"
 	{accept}
 	{multiple}
-	on:change={onInputChange}
+	onchange={onInputChange}
 	style="display: none;"
 	aria-hidden="true"
   />
@@ -159,7 +170,7 @@
 		  <div style="font-size: 0.85rem; color: #666;">{bytesToSize(f.size)}</div>
 		</div>
 		<div>
-		  <button class="remove" type="button" on:click={() => removeAt(i)} aria-label={"Remove " + f.name}>Remove</button>
+		  <button class="remove" type="button" onclick={() => removeAt(i)} aria-label={"Remove " + f.name}>Remove</button>
 		</div>
 	  </div>
 	{/each}

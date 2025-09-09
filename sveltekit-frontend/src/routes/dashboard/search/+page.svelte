@@ -8,8 +8,12 @@
   
   // Modern UI Components  
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import * as Tabs from '$lib/components/ui/tabs';
   import { Progress } from '$lib/components/ui/progress';
@@ -209,7 +213,7 @@
         <Sparkles class="w-3 h-3 mr-1" />
         pgvector + AI
       </Badge>
-      <Button variant="outline" size="sm">
+      <Button class="bits-btn bits-btn" variant="outline" size="sm">
         <Settings class="w-4 h-4 mr-2" />
         Settings
       </Button>
@@ -233,7 +237,7 @@
           <Button 
             onclick={performSearch}
             disabled={loading || !query.trim()}
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2 bits-btn bits-btn"
           >
             {#if loading}
               <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
@@ -310,12 +314,8 @@
             Search Results ({results.length})
           </Card.Title>
           <div class="flex items-center gap-4 text-sm text-nier-text-muted">
-            <Badge variant="outline">
-              {formatSearchTime(searchInfo.search_time_ms)}
-            </Badge>
-            <Badge variant="secondary">
-              {searchInfo.embedding_model}
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{formatSearchTime(searchInfo.search_time_ms)}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{searchInfo.embedding_model}</span>
           </div>
         </div>
         <Card.Description>
@@ -333,7 +333,7 @@
           <div class="text-center py-8">
             <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
             <p class="text-red-600">{error}</p>
-            <Button onclick={performSearch} variant="outline" size="sm" class="mt-2">
+            <Button onclick={performSearch} variant="outline" size="sm" class="mt-2 bits-btn bits-btn">
               Retry Search
             </Button>
           </div>
@@ -356,18 +356,12 @@
                       {result.title || `Document ${result.document_id.slice(0, 8)}`}
                     </h3>
                     <div class="flex items-center gap-2 mt-1">
-                      <Badge variant="outline" class="text-xs capitalize">
-                        {result.document_type.replace('_', ' ')}
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.document_type.replace('_', ' ')}</span>
                       {#if result.case_id}
-                        <Badge variant="secondary" class="text-xs">
-                          Case: {result.case_id.slice(0, 8)}
-                        </Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {result.case_id.slice(0, 8)}</span>
                       {/if}
                       {#if result.metadata.file_type}
-                        <Badge variant="outline" class="text-xs">
-                          {result.metadata.file_type.toUpperCase()}
-                        </Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.metadata.file_type.toUpperCase()}</span>
                       {/if}
                     </div>
                   </div>
@@ -417,11 +411,11 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
-                  <Button variant="ghost" size="sm">
+                  <Button class="bits-btn bits-btn" variant="ghost" size="sm">
                     <Eye class="w-4 h-4 mr-1" />
                     View
                   </Button>
-                  <Button variant="ghost" size="sm">
+                  <Button class="bits-btn bits-btn" variant="ghost" size="sm">
                     <ChevronRight class="w-4 h-4" />
                   </Button>
                 </div>

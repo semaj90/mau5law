@@ -4,7 +4,12 @@
     class?: string;
     children?: import('svelte').Snippet;
   }
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/button';
   // import { Avatar } from '$lib/components/ui/Avatar.svelte';
@@ -144,9 +149,7 @@ let showFullDetails = $state(false);
               <span class="text-gray-500">Aliases:</span>
               <div class="mt-1 flex flex-wrap gap-1">
                 {#each person.details.aliases as alias}
-                  <Badge variant="outline" class="text-xs">
-                    {alias}
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{alias}</span>
                 {/each}
               </div>
             </div>
@@ -204,7 +207,7 @@ let showFullDetails = $state(false);
       <Button 
         variant="outline" 
         size="sm" 
-        class="flex-1 text-xs"
+        class="flex-1 text-xs bits-btn bits-btn"
         onclick={() => showFullDetails = !showFullDetails}
       >
         {showFullDetails ? 'Less' : 'More'} Info
@@ -213,17 +216,17 @@ let showFullDetails = $state(false);
       <Button 
         variant="outline" 
         size="sm" 
-        class="flex-1 text-xs"
+        class="flex-1 text-xs bits-btn bits-btn"
       >
         🕸️ Graph View
       </Button>
       
       {#if person.role === 'suspect'}
-        <Button size="sm" class="flex-1 text-xs">
+        <Button size="sm" class="flex-1 text-xs bits-btn bits-btn">
           📋 Profile
         </Button>
       {:else if person.role === 'witness'}
-        <Button size="sm" class="flex-1 text-xs">
+        <Button size="sm" class="flex-1 text-xs bits-btn bits-btn">
           📞 Contact
         </Button>
       {/if}

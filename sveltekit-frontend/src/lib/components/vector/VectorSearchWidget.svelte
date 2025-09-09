@@ -6,7 +6,9 @@ Compact searchable component for embedding in other interfaces
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from "$lib/components/ui/badge";
   import {
     Search,
@@ -186,7 +188,7 @@ Compact searchable component for embedding in other interfaces
                   <Badge class={`text-xs ${getConfidenceColor(result?.similarity || 0)}`}>
                     {Math.round((result?.similarity || 0) * 100)}%
                   </Badge>
-                  <Badge variant="outline" class="text-xs">{result?.source || 'unknown'}</Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result?.source || 'unknown'}</span>
                 </div>
               </div>
 

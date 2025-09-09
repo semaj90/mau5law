@@ -378,7 +378,7 @@
 >
   <YoRHaDetectiveForm
     fields={newCaseFormFields}
-    on:submit={handleNewCaseSubmit}
+    onsubmit={handleNewCaseSubmit}
     submitText="SAVE TO DATABASE"
     submitClass="yorha-btn-success"
   />

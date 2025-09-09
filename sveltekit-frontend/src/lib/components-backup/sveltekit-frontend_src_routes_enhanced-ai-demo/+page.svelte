@@ -160,7 +160,7 @@
           <!-- Action Buttons -->
           <div class="flex gap-4">
             <Button
-              on:click={handleAnalyze}
+              onclick={handleAnalyze}
               disabled={!testQuery.trim() || processingStatus === 'processing' || !systemInitialized}
               class="bg-blue-600 hover:bg-blue-700 text-white"
             >
@@ -169,7 +169,7 @@
 
             <Button
               variant="outline"
-              on:click={handleClear}
+              onclick={handleClear}
               disabled={processingStatus === 'processing'}
             >
               Clear

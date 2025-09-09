@@ -1,9 +1,18 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea';
   import { Progress } from '$lib/components/ui/progress';
   import { Tabs } from '$lib/components/ui/tabs';
@@ -320,37 +329,37 @@
     <div class="tab-nav">
       <button
         class="tab-button {activeTab === 'overview' ? 'active' : ''}"
-        on:click={() => activeTab = 'overview'}
+        onclick={() => activeTab = 'overview'}
       >
         📊 System Overview
       </button>
       <button
         class="tab-button {activeTab === 'upload' ? 'active' : ''}"
-        on:click={() => activeTab = 'upload'}
+        onclick={() => activeTab = 'upload'}
       >
         📤 Evidence Upload
       </button>
       <button
         class="tab-button {activeTab === 'search' ? 'active' : ''}"
-        on:click={() => activeTab = 'search'}
+        onclick={() => activeTab = 'search'}
       >
         🔍 Semantic Search
       </button>
       <button
         class="tab-button {activeTab === 'canvas' ? 'active' : ''}"
-        on:click={() => activeTab = 'canvas'}
+        onclick={() => activeTab = 'canvas'}
       >
         🖼️ Evidence Canvas
       </button>
       <button
         class="tab-button {activeTab === 'cache' ? 'active' : ''}"
-        on:click={() => activeTab = 'cache'}
+        onclick={() => activeTab = 'cache'}
       >
         ⚡ GPU Cache
       </button>
       <button
         class="tab-button {activeTab === 'workflow' ? 'active' : ''}"
-        on:click={() => activeTab = 'workflow'}
+        onclick={() => activeTab = 'workflow'}
       >
         🔄 Workflow
       </button>
@@ -514,9 +523,9 @@
               </div>
 
               <Button
-                on:click={handleFileUpload}
+                onclick={handleFileUpload}
                 disabled={!isSystemReady}
-                class="upload-button"
+                class="upload-button bits-btn bits-btn"
               >
                 🚀 Process Evidence Files
               </Button>
@@ -558,12 +567,12 @@
                 bind:value={searchQuery}
                 placeholder="Enter your search query (e.g., 'contract terms', 'witness testimony', 'evidence timeline')"
                 class="search-input"
-                on:keydown={(e) => e.key === 'Enter' && performSearch()}
+                onkeydown={(e) => e.key === 'Enter' && performSearch()}
               />
               <Button
-                on:click={performSearch}
+                onclick={performSearch}
                 disabled={!isSystemReady || isSearching}
-                class="search-button"
+                class="search-button bits-btn bits-btn"
               >
                 {#if isSearching}🔄 Searching...{:else}🔍 Search{/if}
               </Button>
@@ -589,7 +598,7 @@
                   <div class="result-header">
                     <h5>{result.title}</h5>
                     <div class="result-meta">
-                      <Badge variant="secondary">{result.source}</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{result.source}</span>
                       <span class="similarity">
                         {Math.round(result.similarity * 100)}% match
                       </span>
@@ -597,7 +606,7 @@
                   </div>
                   <p class="result-content">{result.content}</p>
                   {#if result.url}
-                    <Button size="sm" variant="outline" class="view-button">
+                    <Button size="sm" variant="outline" class="view-button bits-btn bits-btn">
                       👁️ View Evidence
                     </Button>
                   {/if}
@@ -643,7 +652,7 @@
             <div class="evidence-samples">
               {#each evidenceItems as evidence}
                 <Card class="evidence-sample"
-                      on:click={() => addEvidenceToCanvas(evidence)}
+                      onclick={() => addEvidenceToCanvas(evidence)}
                       role="button"
                       tabindex="0">
                   <div class="sample-icon">

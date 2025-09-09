@@ -6,8 +6,15 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Progress } from '$lib/components/ui/progress';
   import { 
     Play, 
@@ -273,7 +280,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     </div>
     
     <div class="flex items-center gap-2">
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         size="sm"
         onclick={refreshStatus}
@@ -283,7 +290,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
         Refresh
       </Button>
       
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         size="sm"
         onclick={() => showSettings = !showSettings}
@@ -292,7 +299,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       </Button>
       
       {#if !isInitialized}
-        <Button onclick={initializeOrchestrator} disabled={isProcessing}>
+        <Button class="bits-btn bits-btn" onclick={initializeOrchestrator} disabled={isProcessing}>
           <Play class="h-4 w-4 mr-2" />
           Initialize
         </Button>
@@ -381,21 +388,17 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
               <p class="text-xs text-gray-500">{provider.endpoint}</p>
               <div class="flex flex-wrap gap-1">
                 {#each provider.models.slice(0, 2) as model}
-                  <Badge variant="outline" class="text-xs">
-                    {model.split(':')[0]}
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{model.split(':')[0]}</span>
                 {/each}
                 {#if provider.models.length > 2}
-                  <Badge variant="outline" class="text-xs">
-                    +{provider.models.length - 2}
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{provider.models.length - 2}</span>
                 {/if}
               </div>
               
               <Button
                 variant="outline"
                 size="sm"
-                class="w-full mt-2"
+                class="w-full mt-2 bits-btn bits-btn"
                 onclick={() => submitTestTask(provider.id)}
                 disabled={provider.status !== 'online'}
               >
@@ -417,7 +420,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             <Activity class="h-5 w-5" />
             Active Tasks ({activeTasks.size})
           </span>
-          <Button variant="outline" size="sm" onclick={clearCompletedTasks}>
+          <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={clearCompletedTasks}>
             Clear Completed
           </Button>
         </CardTitle>
@@ -440,10 +443,8 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
               </div>
               
               <div class="flex items-center gap-2">
-                <Badge variant="outline" class="text-xs">
-                  {task.priority}
-                </Badge>
-                <Button
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{task.priority}</span>
+                <Button class="bits-btn bits-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => cancelTask(taskId)}

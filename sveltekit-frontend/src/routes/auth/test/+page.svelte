@@ -11,7 +11,9 @@
   import * as Card from '$lib/components/ui/card';
   import * as Alert from '$lib/components/ui/alert';
   import * as Tabs from '$lib/components/ui/tabs';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
   import {
@@ -280,8 +282,8 @@
       </div>
 
       <div class="flex gap-2">
-        <Button
-          on:click={runInitialTests}
+        <Button class="bits-btn bits-btn"
+          onclick={runInitialTests}
           disabled={testRunning}
           variant="outline"
         >
@@ -321,8 +323,8 @@
             </Card.Description>
           </Card.Header>
           <Card.Content class="space-y-4">
-            <Button
-              on:click={() => populateTestData('login')}
+            <Button class="bits-btn bits-btn"
+              onclick={() => populateTestData('login')}
               variant="outline"
               size="sm"
             >
@@ -349,8 +351,8 @@
             </Card.Description>
           </Card.Header>
           <Card.Content class="space-y-4">
-            <Button
-              on:click={() => populateTestData('register')}
+            <Button class="bits-btn bits-btn"
+              onclick={() => populateTestData('register')}
               variant="outline"
               size="sm"
             >
@@ -384,7 +386,7 @@
             </div>
             <div class="space-y-2">
               <div class="text-sm font-medium">Machine State</div>
-              <Badge variant="outline">{authStore.machineState}</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{authStore.machineState}</span>
             </div>
             <div class="space-y-2">
               <div class="text-sm font-medium">Session Status</div>
@@ -484,10 +486,10 @@
                         <span>Tokens:</span>
                         <span>{context7Docs[index].metadata.tokenCount}</span>
                       </div>
-                      <Badge variant="default">Available</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">Available</span>
                     </div>
                   {:else}
-                    <Badge variant="destructive">Failed</Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-red-500 text-white">Failed</span>
                   {/if}
                 </div>
               {/each}

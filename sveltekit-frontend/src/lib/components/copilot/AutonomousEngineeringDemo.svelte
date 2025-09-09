@@ -4,8 +4,15 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
@@ -331,7 +338,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-2">
               <h3 class="font-semibold text-sm">{example.title}</h3>
-              <Badge variant="outline" class="text-xs">{example.mode}</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{example.mode}</span>
             </div>
             <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">
               {example.description}
@@ -341,14 +348,12 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                 <Badge class="text-xs {getPriorityColor(example.urgency)}">
                   {example.urgency}
                 </Badge>
-                <Badge variant="outline" class="text-xs">
-                  {example.platform}
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{example.platform}</span>
               </div>
-              <Button
+              <Button class="bits-btn bits-btn"
                 size="sm"
                 variant="outline"
-                on:on:click={() => executeExample(example)}
+                on:onclick={() => executeExample(example)}
                 disabled={isProcessing}
               >
                 Run
@@ -443,9 +448,9 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
 
       <div class="flex gap-2">
         <Button
-          on:on:click={executePrompt}
+          on:onclick={executePrompt}
           disabled={isProcessing || !userPrompt.trim()}
-          class="flex-1"
+          class="flex-1 bits-btn bits-btn"
         >
           {#if isProcessing}
             <Pause class="h-4 w-4 mr-2" />
@@ -456,19 +461,19 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           {/if}
         </Button>
 
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="outline"
-          on:on:click={executeViaAPI}
+          on:onclick={executeViaAPI}
           disabled={isProcessing || !userPrompt.trim()}
         >
           Via API
         </Button>
 
         {#if currentResult}
-          <Button variant="outline" on:on:click={downloadResult}>
+          <Button class="bits-btn bits-btn" variant="outline" on:onclick={downloadResult}>
             <Download class="h-4 w-4" />
           </Button>
-          <Button variant="outline" on:on:click={clearResults}>
+          <Button class="bits-btn bits-btn" variant="outline" on:onclick={clearResults}>
             <RefreshCw class="h-4 w-4" />
           </Button>
         {/if}
@@ -575,9 +580,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                       <Badge class="text-xs {getPriorityColor(action.priority)}">
                         {action.priority}
                       </Badge>
-                      <Badge variant="outline" class="text-xs">
-                        {action.type}
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{action.type}</span>
                     </div>
                     
                     {#if action.commands?.length > 0}
@@ -619,7 +622,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                   <div class="flex items-center justify-between mb-2">
                     <h3 class="font-semibold text-sm">{rec.title}</h3>
                     <div class="flex items-center gap-2">
-                      <Badge variant="outline" class="text-xs">{rec.category}</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{rec.category}</span>
                       <Badge class="text-xs bg-blue-100 text-blue-800">
                         Priority: {rec.priority}
                       </Badge>
@@ -670,9 +673,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                   <div class="flex items-center justify-between mb-2">
                     <h4 class="font-medium">{phase.name}</h4>
                     <div class="flex items-center gap-2">
-                      <Badge variant="outline" class="text-xs">
-                        Order: {phase.order}
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Order: {phase.order}</span>
                       {#if phase.canRunInParallel}
                         <Badge class="text-xs bg-green-100 text-green-800">
                           Parallel

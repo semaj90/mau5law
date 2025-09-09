@@ -445,7 +445,7 @@
           class:active={$demoState.currentStep === index + 1}
           class:completed={$demoState.currentStep > index + 1}
           disabled={!$canProceed}
-          on:click={() => demoState.update(s => ({ ...s, currentStep: index + 1 }))}
+          onclick={() => demoState.update(s => ({ ...s, currentStep: index + 1 }))}
         >
           <span class="step-number">{index + 1}</span>
           <span class="step-title">{step.title}</span>

@@ -1,7 +1,9 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { UiTooltip as Tooltip } from "$lib/components/ui";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import {
     AlertCircle,
@@ -308,13 +310,13 @@
               </div>
               <div class="space-y-4">
                 <Tooltip content="Preview file contents">
-                  <Button variant="outline" size="sm" disabled={!filePreview}>
+                  <Button class="bits-btn bits-btn" variant="outline" size="sm" disabled={!filePreview}>
                     <Eye class="space-y-4" />
                     Preview
                   </Button>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
-                  <Button
+                  <Button class="bits-btn bits-btn"
                     variant="outline"
                     size="sm"
                     onclick={() => clearImport()}
@@ -334,7 +336,7 @@
                 </p>
                 <p class="space-y-4">or click to browse</p>
               </div>
-              <Button variant="outline" on:click={() => fileInput?.click()}>
+              <Button class="bits-btn bits-btn" variant="outline" onclick={() => fileInput?.click()}>
                 Select File
               </Button>
             </div>
@@ -492,7 +494,7 @@
       {#if importFile}
         <div class="space-y-4">
           <div class="space-y-4">
-            <Button
+            <Button class="bits-btn bits-btn"
               onclick={() => performImport()}
               disabled={isImporting}
               class="space-y-4"
@@ -508,7 +510,7 @@
               {/if}
             </Button>
             <Tooltip content="Clear current import and start over">
-              <Button variant="outline" on:click={() => clearImport()}>
+              <Button class="bits-btn bits-btn" variant="outline" onclick={() => clearImport()}>
                 <X class="space-y-4" />
                 Cancel
               </Button>
@@ -532,7 +534,7 @@
             <h4 class="space-y-4">Cases</h4>
             <div class="space-y-4">
               <Tooltip content="Download JSON example for cases">
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("cases", "json")}
@@ -541,7 +543,7 @@
                 </Button>
               </Tooltip>
               <Tooltip content="Download CSV example for cases">
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("cases", "csv")}
@@ -556,7 +558,7 @@
             <h4 class="space-y-4">Evidence</h4>
             <div class="space-y-4">
               <Tooltip content="Download JSON example for evidence">
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("evidence", "json")}
@@ -565,7 +567,7 @@
                 </Button>
               </Tooltip>
               <Tooltip content="Download CSV example for evidence">
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("evidence", "csv")}
@@ -598,19 +600,19 @@
         <h3 class="space-y-4">Quick Actions</h3>
         <div class="space-y-4">
           <a href="/export" class="space-y-4">
-            <Button variant="outline" class="space-y-4">
+            <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <Download class="space-y-4" />
               Export Data
             </Button>
           </a>
           <a href="/cases" class="space-y-4">
-            <Button variant="outline" class="space-y-4">
+            <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <Database class="space-y-4" />
               View Cases
             </Button>
           </a>
           <a href="/evidence" class="space-y-4">
-            <Button variant="outline" class="space-y-4">
+            <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <FileText class="space-y-4" />
               View Evidence
             </Button>

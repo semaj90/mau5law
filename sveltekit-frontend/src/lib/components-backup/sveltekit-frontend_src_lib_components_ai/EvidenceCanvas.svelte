@@ -94,7 +94,7 @@
 </script>
 
 <div class="toolbar">
-  <button on:click={analyzeCanvas} disabled={analyzing}
+  <button onclick={analyzeCanvas} disabled={analyzing}
     >{analyzing ? "Analyzing…" : "Analyze Canvas"}</button
   >
   <label
@@ -208,3 +208,4 @@
     color: #555;
   }
 </style>
+

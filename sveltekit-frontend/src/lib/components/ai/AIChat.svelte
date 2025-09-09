@@ -2,9 +2,18 @@
   import { $effect, onMount } from 'svelte';
 
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
-  import { Card } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { serviceStatus } from '$lib/stores/chatStore';
 
   // Use the XState machine through the store
@@ -56,7 +65,7 @@
         {/if}
       </p>
     </div>
-  <Button variant="outline" size="sm" onclick={handleClear}>
+  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleClear}>
       Clear Chat
     </Button>
   </div>
@@ -94,7 +103,7 @@
         disabled={$state.matches('loading')}
         class="flex-1"
       />
-      <Button type="submit" disabled={$state.matches('loading') || !userInput.trim()}>
+      <Button class="bits-btn bits-btn" type="submit" disabled={$state.matches('loading') || !userInput.trim()}>
         {$state.matches('loading') ? 'Thinking...' : 'Send'}
       </Button>
     </form>

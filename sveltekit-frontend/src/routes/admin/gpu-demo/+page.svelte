@@ -3,8 +3,15 @@
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     createGPUClusterManager,
     checkGPUCapabilities,
@@ -638,32 +645,32 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
 
         <!-- Visualization Controls -->
         <div class="grid grid-cols-2 gap-2">
-          <Button
-            on:click={() => startVisualization('attentionHeatmap')}
+          <Button class="bits-btn bits-btn"
+            onclick={() => startVisualization('attentionHeatmap')}
             disabled={!isInitialized}
             variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}
             class="text-sm">
             Attention Heatmap
           </Button>
 
-          <Button
-            on:click={() => startVisualization('documentNetwork')}
+          <Button class="bits-btn bits-btn"
+            onclick={() => startVisualization('documentNetwork')}
             disabled={!isInitialized}
             variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}
             class="text-sm">
             Document Network
           </Button>
 
-            <Button
-              on:click={() => startVisualization('evidenceTimeline')}
+            <Button class="bits-btn bits-btn"
+              onclick={() => startVisualization('evidenceTimeline')}
               disabled={!isInitialized}
               variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}
               class="text-sm">
               Evidence Timeline
             </Button>
 
-          <Button
-            on:click={() => startVisualization('textFlow')}
+          <Button class="bits-btn bits-btn"
+            onclick={() => startVisualization('textFlow')}
             disabled={!isInitialized}
             variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}
             class="text-sm">
@@ -674,16 +681,16 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
         <!-- Render Controls -->
         <div class="flex gap-2">
           {#if isRendering}
-            <Button on:click={stopVisualization} class="bg-red-600 hover:bg-red-700">
+            <Button onclick={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn bits-btn">
               Stop Rendering
             </Button>
           {/if}
 
           <Button
-            on:click={executeGPUWorkload}
+            onclick={executeGPUWorkload}
             disabled={!isInitialized}
             variant="outline"
-            class="text-white border-slate-600 hover:bg-slate-700">
+            class="text-white border-slate-600 hover:bg-slate-700 bits-btn bits-btn">
             Execute GPU Workload
           </Button>
         </div>

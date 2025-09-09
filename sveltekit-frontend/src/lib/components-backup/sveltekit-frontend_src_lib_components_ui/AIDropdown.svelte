@@ -198,7 +198,7 @@
           use:melt={ $item }
           class="ai-menu__item"
           class:ai-menu__item--selected={ selectedItem === reportType.id }
-          on:click={ () => handleItemSelect(reportType.id) }
+          onclick={ () => handleItemSelect(reportType.id) }
           disabled={ disabled || isGenerating }
           data-value={ reportType.id }
         >
@@ -236,7 +236,7 @@
           class="ai-menu__item"
           class:ai-menu__item--selected={ selectedItem === tool.id }
           class:ai-menu__item--disabled={ tool.requiresContent && !hasContent }
-          on:click={ () => handleItemSelect(tool.id, tool.requiresContent) }
+          onclick={ () => handleItemSelect(tool.id, tool.requiresContent) }
           disabled={ disabled ||
             isGenerating ||
             (tool.requiresContent && !hasContent) }
@@ -543,3 +543,4 @@
       color: white }
   }
 </style>
+

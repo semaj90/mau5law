@@ -3,8 +3,13 @@
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   
   // Import QLorA training service
@@ -217,7 +222,7 @@
         </div>
         
         <label for="file-input" class="inline-block">
-          <Button class="bg-cyan-600 hover:bg-cyan-700">
+          <Button class="bg-cyan-600 hover:bg-cyan-700 bits-btn bits-btn">
             Select Files
           </Button>
         </label>
@@ -258,7 +263,7 @@
         </div>
         
         {#if trainingEnabled}
-          <Button 
+          <Button class="bits-btn bits-btn" 
             onclick={() => startTraining(selectedFiles)}
             class="w-full bg-green-600 hover:bg-green-700"
             disabled={currentJob?.status === 'running'}
@@ -354,22 +359,22 @@
         <!-- Training Controls -->
         <div class="flex gap-3">
           {#if currentJob.status === 'running'}
-            <Button onclick={pauseTraining} variant="outline" size="sm">
+            <Button class="bits-btn bits-btn" onclick={pauseTraining} variant="outline" size="sm">
               ⏸️ Pause
             </Button>
-            <Button onclick={stopTraining} variant="destructive" size="sm">
+            <Button class="bits-btn bits-btn" onclick={stopTraining} variant="destructive" size="sm">
               ⏹️ Stop
             </Button>
           {:else if currentJob.status === 'paused'}
-            <Button onclick={resumeTraining} variant="default" size="sm">
+            <Button class="bits-btn bits-btn" onclick={resumeTraining} variant="default" size="sm">
               ▶️ Resume
             </Button>
-            <Button onclick={stopTraining} variant="destructive" size="sm">
+            <Button class="bits-btn bits-btn" onclick={stopTraining} variant="destructive" size="sm">
               ⏹️ Stop
             </Button>
           {/if}
           
-          <Button 
+          <Button class="bits-btn bits-btn" 
             onclick={() => showAdvancedConfig = !showAdvancedConfig} 
             variant="ghost" 
             size="sm"

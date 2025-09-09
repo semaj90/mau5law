@@ -2,8 +2,13 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { cognitiveSmartRouter } from '$lib/ai/cognitive-smart-router';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   
   // Stores for reactive UI
   const messages = writable([]);
@@ -319,10 +324,10 @@
             <div class="flex items-center justify-between">
               <CardTitle>💬 AI Assistant Chat</CardTitle>
               <div class="flex gap-2">
-                <Button 
+                <Button class="bits-btn bits-btn" 
                   variant="outline" 
                   size="sm"
-                  on:click={clearChat}
+                  onclick={clearChat}
                 >
                   🗑️ Clear
                 </Button>
@@ -393,31 +398,31 @@
                   <p class="text-lg mb-2">👋 Welcome to the GPU Inference Demo!</p>
                   <p>Ask me anything about legal analysis, contracts, or test the AI engines.</p>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 max-w-md mx-auto">
-                    <Button 
+                    <Button class="bits-btn bits-btn" 
                       variant="outline" 
                       size="sm"
-                      on:click={() => currentInput = "Analyze the key elements of a valid contract"}
+                      onclick={() => currentInput = "Analyze the key elements of a valid contract"}
                     >
                       📝 Contract Analysis
                     </Button>
-                    <Button 
+                    <Button class="bits-btn bits-btn" 
                       variant="outline" 
                       size="sm"
-                      on:click={() => currentInput = "What are common legal risks in mergers?"}
+                      onclick={() => currentInput = "What are common legal risks in mergers?"}
                     >
                       ⚖️ Legal Risks
                     </Button>
-                    <Button 
+                    <Button class="bits-btn bits-btn" 
                       variant="outline" 
                       size="sm"
-                      on:click={() => currentInput = "Test GPU performance with vector embeddings"}
+                      onclick={() => currentInput = "Test GPU performance with vector embeddings"}
                     >
                       🎮 GPU Test
                     </Button>
-                    <Button 
+                    <Button class="bits-btn bits-btn" 
                       variant="outline" 
                       size="sm"
-                      on:click={() => currentInput = "Compare different AI engines"}
+                      onclick={() => currentInput = "Compare different AI engines"}
                     >
                       🚀 Engine Comparison
                     </Button>
@@ -438,9 +443,9 @@
                   disabled={isProcessing}
                 ></textarea>
                 <Button
-                  on:click={sendMessage}
+                  onclick={sendMessage}
                   disabled={!currentInput.trim() || isProcessing}
-                  class="px-6"
+                  class="px-6 bits-btn bits-btn"
                 >
                   {#if isProcessing}
                     ⏳ Processing...

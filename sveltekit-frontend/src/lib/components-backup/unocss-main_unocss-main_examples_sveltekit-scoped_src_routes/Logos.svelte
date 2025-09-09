@@ -18,7 +18,7 @@
     {/if}
   </div>
 
-  <Button on:click={toggle}>Toggle Svelte Logo</Button>
+  <Button onclick={toggle}>Toggle Svelte Logo</Button>
 </Toggle>
 
 <style>
@@ -31,3 +31,4 @@
     filter: drop-shadow(0 0 2em #ff3e00aa);
   }
 </style>
+

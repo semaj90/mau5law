@@ -1,7 +1,9 @@
 <script lang="ts">
 
   import { browser } from "$app/environment";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { Accessibility, Keyboard, Maximize2, Minimize2 } from "lucide-svelte";
   import { onMount } from "svelte";
@@ -173,7 +175,7 @@ let isFullscreen = $state(false);
   >
     <div
       class="mx-auto px-4 max-w-7xl"
-      on:click|stopPropagation
+      onclick|stopPropagation
       role="document"
     >
       <div class="mx-auto px-4 max-w-7xl">
@@ -228,8 +230,8 @@ let isFullscreen = $state(false);
     <Button
       variant="outline"
       size="sm"
-      class="mx-auto px-4 max-w-7xl"
-      on:click={() => (showAccessibilityPanel = !showAccessibilityPanel)}
+      class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
+      onclick={() => (showAccessibilityPanel = !showAccessibilityPanel)}
       aria-label="Toggle accessibility panel"
     >
       <Accessibility class="mx-auto px-4 max-w-7xl" />
@@ -241,8 +243,8 @@ let isFullscreen = $state(false);
     <Button
       variant="outline"
       size="sm"
-      class="mx-auto px-4 max-w-7xl"
-      on:click={() => (showShortcuts = !showShortcuts)}
+      class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
+      onclick={() => (showShortcuts = !showShortcuts)}
       aria-label="Show keyboard shortcuts"
     >
       <Keyboard class="mx-auto px-4 max-w-7xl" />
@@ -257,8 +259,8 @@ let isFullscreen = $state(false);
     <Button
       variant="outline"
       size="sm"
-      class="mx-auto px-4 max-w-7xl"
-      on:click={() => toggleFullscreen()}
+      class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
+      onclick={() => toggleFullscreen()}
       aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
     >
       {#if isFullscreen}

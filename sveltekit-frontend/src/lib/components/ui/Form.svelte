@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { createFormStore, type FormOptions } from '$lib/stores/form';
   import { notifications } from '$lib/stores/notification';
 

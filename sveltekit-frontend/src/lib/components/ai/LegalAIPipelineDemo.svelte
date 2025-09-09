@@ -264,7 +264,7 @@
       <h3>📄 Single Document Processing</h3>
       <div class="processing-controls">
         <button 
-          on:click={processSingleDocument}
+          onclick={processSingleDocument}
           disabled={!$pipelineReady || isProcessing}
           class="btn btn-primary"
         >
@@ -276,7 +276,7 @@
         </button>
 
         <button 
-          on:click={() => lastProcessedDoc = sampleLegalDocument}
+          onclick={() => lastProcessedDoc = sampleLegalDocument}
           class="btn btn-secondary"
         >
           📋 Load Sample
@@ -292,7 +292,7 @@
           class="document-input"
         ></textarea>
         <button 
-          on:click={testCustomDocument}
+          onclick={testCustomDocument}
           disabled={!$pipelineReady || isProcessing || !lastProcessedDoc.trim()}
           class="btn btn-primary"
         >
@@ -357,7 +357,7 @@
       <h3>🔄 Bulk Document Processing</h3>
       <div class="bulk-controls">
         <button 
-          on:click={processBulkDocuments}
+          onclick={processBulkDocuments}
           disabled={!$pipelineReady || isBulkProcessing}
           class="btn btn-primary"
         >
@@ -413,7 +413,7 @@
     <div class="panel log-panel">
       <div class="log-header">
         <h3>📝 Processing Log</h3>
-        <button on:click={clearLogs} class="btn btn-small">🧹 Clear</button>
+        <button onclick={clearLogs} class="btn btn-small">🧹 Clear</button>
       </div>
       <div class="log-container">
         {#each processingLog as logEntry}

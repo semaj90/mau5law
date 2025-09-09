@@ -214,7 +214,7 @@
       </div>
 
       <div class="header-right">
-        <Button class="header-btn" onclick={() => showNewPersonModal = true}>
+        <Button class="header-btn bits-btn bits-btn" onclick={() => showNewPersonModal = true}>
           <Plus class="w-4 h-4" />
           ADD PERSON
         </Button>
@@ -326,23 +326,21 @@
 
             <div class="person-cases">
               {#each person.cases as caseId}
-                <Badge variant="outline" class="case-badge">
-                  {caseId}
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseId}</span>
               {/each}
             </div>
           </Card.Content>
 
           <Card.Footer class="person-actions">
-            <Button size="sm" variant="outline">
+            <Button class="bits-btn bits-btn" size="sm" variant="outline">
               <Eye class="w-4 h-4" />
               View
             </Button>
-            <Button size="sm" variant="outline">
+            <Button class="bits-btn bits-btn" size="sm" variant="outline">
               <Edit class="w-4 h-4" />
               Edit
             </Button>
-            <Button size="sm" variant="destructive">
+            <Button class="bits-btn bits-btn" size="sm" variant="destructive">
               <Trash2 class="w-4 h-4" />
               Remove
             </Button>
@@ -414,10 +412,10 @@
     </div>
 
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => showNewPersonModal = false}>
+      <Button class="bits-btn bits-btn" variant="outline" onclick={() => showNewPersonModal = false}>
         CANCEL
       </Button>
-      <Button onclick={() => showNewPersonModal = false}>
+      <Button class="bits-btn bits-btn" onclick={() => showNewPersonModal = false}>
         ADD PERSON
       </Button>
     </Dialog.Footer>

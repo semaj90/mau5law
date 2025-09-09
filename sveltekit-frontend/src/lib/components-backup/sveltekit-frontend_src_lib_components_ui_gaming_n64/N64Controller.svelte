@@ -8,7 +8,8 @@
 </style>
 
 <div class="controller">
-  <button on:click={() => onPress('A')}>A</button>
-  <button on:click={() => onPress('B')}>B</button>
-  <button on:click={() => onPress('Start')}>Start</button>
+  <button onclick={() => onPress('A')}>A</button>
+  <button onclick={() => onPress('B')}>B</button>
+  <button onclick={() => onPress('Start')}>Start</button>
 </div>
+

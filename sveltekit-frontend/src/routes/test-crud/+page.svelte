@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import Card from '$lib/components/ui/Card.svelte';
+  import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/CardContent.svelte';
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/CardTitle.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
 
   // Svelte 5 runes for state management
   let isLoading = $state(false);
@@ -226,22 +226,22 @@
     </CardHeader>
     <CardContent>
       <div class="flex flex-wrap gap-3">
-  <Button on:click={runFullCRUDTest} disabled={isLoading} variant="default">
+  <Button class="bits-btn bits-btn" onclick={runFullCRUDTest} disabled={isLoading} variant="default">
           {isLoading ? '⏳ Testing...' : '🚀 Run Full CRUD Test'}
         </Button>
-  <Button on:click={testGETOperations} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn bits-btn" onclick={testGETOperations} disabled={isLoading} variant="secondary">
           🔍 Test GET
         </Button>
-  <Button on:click={testPOSTOperation} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn bits-btn" onclick={testPOSTOperation} disabled={isLoading} variant="secondary">
           📝 Test POST
         </Button>
-  <Button on:click={() => testPUTOperation()} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn bits-btn" onclick={() => testPUTOperation()} disabled={isLoading} variant="secondary">
           ✏️ Test PUT
         </Button>
-  <Button on:click={() => testDELETEOperation()} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn bits-btn" onclick={() => testDELETEOperation()} disabled={isLoading} variant="secondary">
           🗑️ Test DELETE
         </Button>
-  <Button on:click={clearResults} variant="ghost">
+  <Button class="bits-btn bits-btn" onclick={clearResults} variant="ghost">
           🧹 Clear Results
         </Button>
       </div>

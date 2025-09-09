@@ -195,7 +195,7 @@
             <Badge
               variant={selectedModel === model ? "default" : "outline"}
               class="cursor-pointer"
-              on:click={() => (selectedModel = model)}
+              onclick={() => (selectedModel = model)}
             >
               {model}
             </Badge>
@@ -203,10 +203,10 @@
         </div>
 
         <div class="mt-4 flex gap-2">
-          <Button on:click={testGeneration} variant="outline">
+          <Button onclick={testGeneration} variant="outline">
             Test Generation
           </Button>
-          <Button on:click={checkOllamaHealth} variant="outline">
+          <Button onclick={checkOllamaHealth} variant="outline">
             Refresh Status
           </Button>
         </div>
@@ -278,3 +278,4 @@
     font-family: "Inter", system-ui, sans-serif;
   }
 </style>
+

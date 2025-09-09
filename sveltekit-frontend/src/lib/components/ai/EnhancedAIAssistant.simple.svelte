@@ -158,7 +158,7 @@ Would you like me to elaborate on any of these aspects?`,
     </div>
 
     <!-- Input -->
-    <form class="container mx-auto px-4" on:submit|preventDefault={handleSubmit}>
+    <form class="container mx-auto px-4" onsubmit|preventDefault={handleSubmit}>
       <div class="container mx-auto px-4">
         <input
           type="text"

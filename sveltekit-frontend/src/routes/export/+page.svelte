@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import TooltipContent from "$lib/components/ui/TooltipContent.svelte";
   import TooltipTrigger from "$lib/components/ui/TooltipTrigger.svelte";
@@ -252,14 +254,14 @@
                 Case Filter (Optional)
               </label>
               <div class="space-y-4">
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => selectAllCases()}
                 >
                   Select All
                 </Button>
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => clearCaseSelection()}
@@ -334,7 +336,7 @@
           <!-- Export Button -->
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
+              <Button class="bits-btn bits-btn"
                 onclick={() => exportData()}
                 disabled={exportLoading || (!includeCases && !includeEvidence)}
                 class="space-y-4"

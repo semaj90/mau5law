@@ -1,7 +1,14 @@
 <script lang="ts">
   import GlyphGenerator from '$lib/components/glyph/GlyphGenerator.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   
   // Demo state
   let selectedEvidenceId = $state(12345);
@@ -106,7 +113,7 @@
         <CardHeader>
           <CardTitle class="text-lg flex items-center justify-between">
             🔍 Tensor Search
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="outline"
               onclick={() => showAdvanced = !showAdvanced}
               class="text-xs px-2 py-1"
@@ -128,7 +135,7 @@
               <Button
                 onclick={searchTensors}
                 disabled={searching || !tensorSearchQuery.trim()}
-                class="px-3 py-2 text-sm"
+                class="px-3 py-2 text-sm bits-btn bits-btn"
               >
                 {searching ? '...' : 'Search'}
               </Button>
@@ -195,7 +202,7 @@
           <Button
             variant="outline"
             onclick={clearRecentGlyphs}
-            class="text-sm px-3 py-1"
+            class="text-sm px-3 py-1 bits-btn bits-btn"
           >
             Clear All
           </Button>

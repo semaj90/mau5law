@@ -8,6 +8,6 @@
 
 <h1>Button Test Page</h1>
 
-<Button class="bg-blue-500 text-white px-4 py-2 rounded">
+<Button class="bg-blue-500 text-white px-4 py-2 rounded bits-btn bits-btn">
   Test Button
 </Button>

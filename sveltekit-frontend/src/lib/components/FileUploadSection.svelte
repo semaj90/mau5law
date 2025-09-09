@@ -1,6 +1,12 @@
 <script lang="ts">
   // Use modular components and types
-  import { FileUpload, Button, Badge, Progress, Card } from '$lib/components/ui/modular';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent,
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import type { UploadFile } from '$lib/components/ui/modular/types';
   import FileUploadProgress from './upload/FileUploadProgress.svelte';
 

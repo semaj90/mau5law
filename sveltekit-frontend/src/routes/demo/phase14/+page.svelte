@@ -401,7 +401,7 @@ let lastFrameTime = $state(0);
           <UnifiedButton
             {...getDemoButtonProps(scenario.id)}
             variant={currentDemo === scenario.id ? 'primary' : 'secondary'}
-            on:click={() => currentDemo = scenario.id}
+            onclick={() => currentDemo = scenario.id}
           >
             {scenario.title}
           </UnifiedButton>
@@ -450,13 +450,13 @@ let lastFrameTime = $state(0);
               </div>
 
               <div class=\"flex flex-wrap gap-3\">
-                <UnifiedButton on:click={testMemoryOperations} variant=\"evidence\">
+                <UnifiedButton onclick={testMemoryOperations} variant=\"evidence\">
                   Test Memory Operations
                 </UnifiedButton>
-                <UnifiedButton on:click={testCacheOperations} variant=\"case\">
+                <UnifiedButton onclick={testCacheOperations} variant=\"case\">
                   Test Cache Operations
                 </UnifiedButton>
-                <UnifiedButton on:click={testGPUAnimations} variant=\"legal\">
+                <UnifiedButton onclick={testGPUAnimations} variant=\"legal\">
                   Test GPU Animations
                 </UnifiedButton>
               </div>
@@ -506,7 +506,7 @@ let lastFrameTime = $state(0);
                 <!-- Dialog Demo -->
                 <div>
                   <h3 class=\"text-lg font-semibold mb-3\">Modal Dialog</h3>
-                  <UnifiedButton on:click={() => showDialog = true} variant=\"case\">
+                  <UnifiedButton onclick={() => showDialog = true} variant=\"case\">
                     Open Legal Analysis Dialog
                   </UnifiedButton>
                 </div>
@@ -543,7 +543,7 @@ let lastFrameTime = $state(0);
 
               <div class=\"mb-6\">
                 <UnifiedButton
-                  on:click={runAIAnalysis}
+                  onclick={runAIAnalysis}
                   variant=\"legal\"
                   disabled={!sampleDocument.trim()}
                   legalContext={{
@@ -789,7 +789,7 @@ let lastFrameTime = $state(0);
           <h3 class=\"font-semibold text-gray-900 mb-3\">Quick Actions</h3>
           <div class=\"space-y-2\">
             <UnifiedButton
-              on:click={runAIAnalysis}
+              onclick={runAIAnalysis}
               variant=\"legal\"
               size=\"sm\"
               disabled={!sampleDocument.trim()}
@@ -797,14 +797,14 @@ let lastFrameTime = $state(0);
               Run AI Analysis
             </UnifiedButton>
             <UnifiedButton
-              on:click={testMemoryOperations}
+              onclick={testMemoryOperations}
               variant=\"evidence\"
               size=\"sm\"
             >
               Test Memory
             </UnifiedButton>
             <UnifiedButton
-              on:click={testGPUAnimations}
+              onclick={testGPUAnimations}
               variant=\"case\"
               size=\"sm\"
             >
@@ -890,7 +890,7 @@ let lastFrameTime = $state(0);
 
   {#snippet footer()}
     <UnifiedButton
-      on:click={() => showDialog = false}
+      onclick={() => showDialog = false}
       variant=\"secondary\"
     >
       Close

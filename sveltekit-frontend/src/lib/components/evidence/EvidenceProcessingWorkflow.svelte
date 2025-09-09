@@ -1,100 +1,4 @@
-<script lang="ts" runes>
-import { createEventDispatcher } from 'svelte';
 
-export let sessionId: string | null = null;
-export let endpoint = '/api/evidence/process/stream';
-
-const dispatch = createEventDispatcher();
-
-const state = $state({
-  connected: false,
-  events: [] as any[],
-  files: [] as { name: string; progress?: number }[]
-});
-
-function connect(sid: string) {
-  const url = `${endpoint}?sessionId=${encodeURIComponent(sid)}`;
-  const es = new EventSource(url);
-  es.onopen = () => { state.connected = true; };
-  es.onmessage = (ev) => {
-    try {
-      const data = JSON.parse(ev.data);
-      state.events.push(data);
-      if (data.type === 'progress') {
-        const f = state.files.find(x => x.name === data.file);
-        if (f) f.progress = data.progress;
-      }
-      if (data.type === 'file:complete') {
-        dispatch('filecomplete', data);
-      }
-    } catch (e) {
-      state.events.push({ raw: ev.data });
-    }
-  };
-  es.onerror = () => { state.connected = false; es.close(); };
-  return es;
-}
-
-let es: EventSource | null = null;
-
-function startProcessing() {
-  const files = state.files.map(f => ({ name: f.name }));
-  fetch(endpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ files, sessionId }) })
-    .then(r => r.json())
-    .then(js => {
-      sessionId = js.sessionId;
-      if (es) es.close();
-      es = connect(sessionId);
-    });
-}
-
-function addFile(name:string) { state.files.push({ name, progress: 0 }); }
-
-// drag-and-drop
-function onDrop(e:DragEvent) {
-  e.preventDefault();
-  const dt = e.dataTransfer;
-  if (!dt) return;
-  for (const f of Array.from(dt.files || [])) addFile(f.name);
-}
-
-function onDragOver(e:DragEvent) { e.preventDefault(); }
-</script>
-
-<style>
-/* Minimal styles for demo */
-.workflow { padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
-.dropzone { border: 2px dashed #bbb; padding: 1rem; }
-.file-row { display:flex; align-items:center; gap:8px; padding:4px 0 }
-.progress { height:8px; background:#eee; width:200px; border-radius:4px; overflow:hidden }
-.progress > i { display:block; height:100%; background:#4caf50 }
-</style>
-
-<div class="workflow">
-  <div class="dropzone" on:drop={onDrop} on:dragover={onDragOver}>
-    Drop files here to enqueue for processing
-  </div>
-
-  <div style="margin-top:8px">
-    <button on:click={startProcessing} disabled={!state.files.length}>Start</button>
-    <button on:click={() => { state.files = []; state.events = []; if (es) es.close(); }}>Reset</button>
-  </div>
-
-  <div style="margin-top:8px">
-    {#each state.files as f}
-      <div class="file-row">
-        <div style="width:160px">{f.name}</div>
-        <div class="progress"><i style="width:{f.progress ?? 0}%"></i></div>
-        <div>{f.progress ?? 0}%</div>
-      </div>
-    {/each}
-  </div>
-
-  <details style="margin-top:8px">
-    <summary>Events ({state.events.length})</summary>
-    <pre style="max-height:240px; overflow:auto">{JSON.stringify(state.events.slice(-50), null, 2)}</pre>
-  </details>
-</div>
 <script lang="ts">
   /**
    * xState-Powered Evidence Processing Workflow Component
@@ -109,8 +13,13 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
 
   import { createActor } from 'xstate';
   import { evidenceProcessingMachine, type EvidenceProcessingContext, getProcessingProgress, getCurrentStep } from '$lib/state/evidence-processing-machine.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/button';
   import { onMount, onDestroy } from 'svelte';
 
   interface Props {
@@ -119,6 +28,8 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
     neuralSpriteEnabled?: boolean;
     onCompleted?: (result: any) => void;
     onError?: (error: string) => void;
+    sessionId?: string | null;
+    endpoint?: string;
   }
 
   let {
@@ -126,7 +37,9 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
     autoStart = false,
     neuralSpriteEnabled = true,
     onCompleted,
-    onError
+    onError,
+    sessionId = null,
+    endpoint = '/api/evidence/process/stream'
   } = $props<Props>();
 
   // xState actor for client-side state management
@@ -371,7 +284,7 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
             id="file-upload"
           />
           <label for="file-upload">
-            <Button variant="outline" class="cursor-pointer">
+            <Button variant="outline" class="cursor-pointer bits-btn bits-btn">
               Choose File
             </Button>
           </label>
@@ -393,7 +306,7 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
         </div>
 
         {#if !isProcessing && !isCompleted}
-          <Button onclick={resetWorkflow} variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
             Change File
           </Button>
         {/if}
@@ -467,7 +380,7 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
     <!-- Processing Controls -->
     {#if selectedFile && !isProcessing && !isCompleted && !hasError}
       <div class="flex justify-center">
-        <Button onclick={startProcessing} class="px-8 py-3">
+        <Button onclick={startProcessing} class="px-8 py-3 bits-btn bits-btn">
           🚀 Start Processing Workflow
         </Button>
       </div>
@@ -516,7 +429,7 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
 
         {#if canCancel}
           <div class="flex justify-center">
-            <Button onclick={cancelProcessing} variant="outline">
+            <Button class="bits-btn bits-btn" onclick={cancelProcessing} variant="outline">
               Cancel Processing
             </Button>
           </div>
@@ -537,10 +450,10 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
           {/each}
         </div>
         <div class="flex gap-2 mt-3">
-          <Button onclick={retryProcessing} variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" onclick={retryProcessing} variant="outline" size="sm">
             Retry
           </Button>
-          <Button onclick={resetWorkflow} variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
             Reset
           </Button>
         </div>
@@ -561,7 +474,7 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
           {#if currentState.context.portableArtifact}
             <div class="space-y-3">
               <div class="flex items-center justify-center gap-4">
-                <Button
+                <Button class="bits-btn bits-btn"
                   onclick={() => window.open(currentState.context.portableArtifact.enhancedPngUrl, '_blank')}
                   class="px-4 py-2"
                 >
@@ -569,7 +482,7 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
                 </Button>
 
                 {#if currentState.context.minioStorage}
-                  <Button
+                  <Button class="bits-btn bits-btn"
                     onclick={() => window.open(currentState.context.minioStorage.storageUrl, '_blank')}
                     variant="outline"
                   >
@@ -587,7 +500,7 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
             </div>
           {/if}
 
-          <Button onclick={resetWorkflow} variant="outline">
+          <Button class="bits-btn bits-btn" onclick={resetWorkflow} variant="outline">
             Process Another Evidence
           </Button>
         </div>
@@ -601,7 +514,7 @@ function onDragOver(e:DragEvent) { e.preventDefault(); }
           <span class="text-2xl">⏸️</span>
           <h3 class="font-medium text-yellow-800">Processing Cancelled</h3>
           <p class="text-sm text-yellow-700">Workflow was cancelled by user</p>
-          <Button onclick={resetWorkflow} variant="outline" size="sm">
+          <Button class="bits-btn bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
             Start New Workflow
           </Button>
         </div>

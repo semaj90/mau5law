@@ -11,8 +11,13 @@
     type RAGQuery,
     type RAGResponse,
   } from '$lib/services/enhanced-rag-semantic-analyzer';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
   // Reactive state using runes
   let sampleLegalText = $state(`
@@ -208,9 +213,9 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                 )} words
               </div>
               <Button
-                on:on:click={analyzeDocument}
+                on:onclick={analyzeDocument}
                 disabled={isAnalyzing || !sampleLegalText.trim()}
-                class="px-6">
+                class="px-6 bits-btn bits-btn">
                 {isAnalyzing ? 'Analyzing...' : 'Analyze Document'}
               </Button>
             </div>
@@ -409,9 +414,9 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
 
             <div class="flex justify-end">
               <Button
-                on:on:click={performRAGQuery}
+                on:onclick={performRAGQuery}
                 disabled={isAnalyzing || !queryText.trim()}
-                class="px-6">
+                class="px-6 bits-btn bits-btn">
                 {isAnalyzing ? 'Querying...' : 'Execute RAG Query'}
               </Button>
             </div>

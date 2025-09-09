@@ -403,7 +403,7 @@ let searchTimeout = $state<NodeJS.Timeout;
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Create New Case</h3>
         
-        <form on:submit|preventDefault={createCase} class="space-y-4">
+        <form onsubmit|preventDefault={createCase} class="space-y-4">
           <div>
             <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Case Title *</label>
             <input 
@@ -507,7 +507,7 @@ let searchTimeout = $state<NodeJS.Timeout;
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Case</h3>
         
-        <form on:submit|preventDefault={updateCase} class="space-y-4">
+        <form onsubmit|preventDefault={updateCase} class="space-y-4">
           <div>
             <label for="edit-title" class="block text-sm font-medium text-gray-700 mb-1">Case Title *</label>
             <input 

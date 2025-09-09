@@ -174,7 +174,7 @@ let buttonElement = $state<HTMLButtonElement | null >(null);
   {formtarget}
   {name}
   {value}
-  on:on:on:click={handleClick}
+  on:on:onclick={handleClick}
   on:on:on:mouseenter={handleHover}
   on:focus={handleFocus}
   class="nes-8bit-button nes-btn {nesVariant} {className}"

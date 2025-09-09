@@ -5,8 +5,15 @@
   import { prefetchMachine } from '$lib/machines/prefetchMachine';
   import OllamaAgentShell from '$lib/components/ai/ollama-agent-shell.svelte';
   import WebGPUViewer from '$lib/components/ai/webgpu-viewer.svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import { Play, Pause, Brain, Cpu, Database, Zap, Globe, Activity, Terminal, Eye } from 'lucide-svelte';
@@ -377,13 +384,9 @@
         <CardContent>
           <div class="space-y-4">
             <div class="flex items-center gap-4 mb-4">
-              <Badge variant="outline" class="bg-blue-500/10 text-blue-400 border-blue-500/30">
-                {embeddings.length} Vectors Loaded
-              </Badge>
-              <Badge variant="outline" class="bg-green-500/10 text-green-400 border-green-500/30">
-                WebGPU Enabled
-              </Badge>
-              <Button on:click={generateDemoEmbeddings} size="sm">
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{embeddings.length} Vectors Loaded</span>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">WebGPU Enabled</span>
+              <Button class="bits-btn bits-btn" onclick={generateDemoEmbeddings} size="sm">
                 Regenerate Embeddings
               </Button>
             </div>
@@ -414,13 +417,9 @@
         <CardContent>
           <div class="space-y-4">
             <div class="flex items-center gap-4 mb-4">
-              <Badge variant="outline" class="bg-purple-500/10 text-purple-400 border-purple-500/30">
-                Model: gemma3-legal
-              </Badge>
-              <Badge variant="outline" class="bg-orange-500/10 text-orange-400 border-orange-500/30">
-                Streaming: Enabled
-              </Badge>
-              <Button on:click={openAgentShell} size="sm">
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Model: gemma3-legal</span>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Streaming: Enabled</span>
+              <Button class="bits-btn bits-btn" onclick={openAgentShell} size="sm">
                 <Terminal class="h-4 w-4 mr-2" />
                 Open Agent Shell
               </Button>
@@ -428,13 +427,13 @@
 
             <!-- Integration Test Buttons -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <Button on:click={testOllamaIntegration} class="bg-blue-600 hover:bg-blue-700">
+              <Button onclick={testOllamaIntegration} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
                 Test AI Analysis
               </Button>
-              <Button on:click={testEmbeddingGeneration} class="bg-green-600 hover:bg-green-700">
+              <Button onclick={testEmbeddingGeneration} class="bg-green-600 hover:bg-green-700 bits-btn bits-btn">
                 Generate Embeddings
               </Button>
-              <Button on:click={testVectorSimilarity} class="bg-purple-600 hover:bg-purple-700">
+              <Button onclick={testVectorSimilarity} class="bg-purple-600 hover:bg-purple-700 bits-btn bits-btn">
                 Vector Similarity
               </Button>
             </div>
@@ -466,16 +465,14 @@
             <!-- Current State -->
             <div class="flex items-center justify-between">
               <div>
-                <Badge variant="outline" class="bg-yellow-500/10 text-yellow-400 border-yellow-500/30 mb-2">
-                  State: {prefetchStats.state}
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">State: {prefetchStats.state}</span>
                 {#if prefetchStats.confidence > 0}
                   <div class="text-sm text-slate-400">
                     Intent Confidence: {Math.round(prefetchStats.confidence * 100)}%
                   </div>
                 {/if}
               </div>
-              <Button on:click={() => prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
+              <Button class="bits-btn bits-btn" onclick={() => prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
                 Trigger Prediction
               </Button>
             </div>
@@ -502,13 +499,13 @@
 
             <!-- Control Buttons -->
             <div class="flex gap-4">
-              <Button on:click={() => prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm" class="bg-green-600 hover:bg-green-700">
+              <Button class="bits-btn bits-btn" onclick={() => prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm" class="bg-green-600 hover:bg-green-700">
                 Simulate Cache Hit
               </Button>
-              <Button on:click={() => prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm" class="bg-red-600 hover:bg-red-700">
+              <Button class="bits-btn bits-btn" onclick={() => prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm" class="bg-red-600 hover:bg-red-700">
                 Simulate Cache Miss
               </Button>
-              <Button on:click={() => prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
+              <Button class="bits-btn bits-btn" onclick={() => prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
                 Reset Metrics
               </Button>
             </div>
@@ -529,7 +526,7 @@
               </CardDescription>
             </div>
             <Button
-              on:click={isMonitoring ? stopPerformanceMonitoring : startPerformanceMonitoring}
+              onclick={isMonitoring ? stopPerformanceMonitoring : startPerformanceMonitoring}
               class={isMonitoring ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
             >
               {#if isMonitoring}

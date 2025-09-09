@@ -2,7 +2,9 @@
 <!-- Combines EmbeddingGemma + NES YoRHa 3D + Hybrid Vector APIs -->
 <script lang="ts">
   import { onMount, tick } from "svelte";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import { enhancedEmbeddingService } from "$lib/services/enhanced-embedding-service";
   import { 
@@ -609,7 +611,7 @@
         variant="outline"
         onclick={startHybridAnalysis}
         disabled={isAnalyzing || documents.length === 0}
-        class="nes-btn is-primary"
+        class="nes-btn is-primary bits-btn bits-btn"
       >
         {#snippet children()}
           {#if isAnalyzing}
@@ -626,7 +628,7 @@
         variant="outline"
         onclick={checkSystemHealth}
         disabled={isAnalyzing}
-        class="nes-btn is-warning"
+        class="nes-btn is-warning bits-btn bits-btn"
       >
         {#snippet children()}
           <Activity class="w-4 h-4 mr-2" />
@@ -634,7 +636,7 @@
         {/snippet}
       </Button>
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         onclick={() => enable3DVisualization = !enable3DVisualization}
         class="nes-btn {enable3DVisualization ? 'is-success' : 'is-normal'}"

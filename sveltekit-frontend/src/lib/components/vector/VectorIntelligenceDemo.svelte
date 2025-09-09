@@ -4,38 +4,14 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Textarea } from '$lib/components/ui/textarea';
-  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
-  import { Separator } from '$lib/components/ui/separator';
   import {
-    Brain,
-    Search,
-    Lightbulb,
-    AlertTriangle,
-    TrendingUp,
-    Users,
-    FileText,
-    Target,
-    Zap,
-    Activity,
-    BarChart3,
-    Network,
-    Eye,
-    Settings,
-    Play,
-    Pause,
-    RefreshCw,
-    Download,
-    Share,
-    CheckCircle,
-    Clock,
-    Star,
-    Tag,
-    Link
-  } from 'lucide-svelte';
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';
+
 
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
   import type {
@@ -185,7 +161,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
     } catch (error) {
       console.error('Search failed:', error);
-      processingStage = `Search failed: ${error.message}`;
+      processingStage = `Search failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
     } finally {
       isProcessing = false;
     }
@@ -223,7 +199,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
     } catch (error) {
       console.error('Recommendation generation failed:', error);
-      processingStage = `Failed: ${error.message}`;
+      processingStage = `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
     } finally {
       isProcessing = false;
     }
@@ -243,7 +219,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
     } catch (error) {
       console.error('Semantic analysis failed:', error);
-      processingStage = `Analysis failed: ${error.message}`;
+      processingStage = `Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
     } finally {
       isProcessing = false;
     }
@@ -356,14 +332,16 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
   </div>
 
   <!-- Demo Examples -->
-  <Card class="shadcn-card">
-    <CardHeader class="shadcn-card-header">
+  <Card class="bits-card" variant="default" legal={true}>
+    <CardHeader class="bits-card-header">
       <CardTitle class="flex items-center gap-2">
-        <Play class="h-5 w-5" />
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h8m-4-6v8M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16l-5-3.5L9 21z"></path>
+        </svg>
         Quick Demo Examples
       </CardTitle>
     </CardHeader>
-    <CardContent class="shadcn-card-content">
+    <CardContent class="bits-card-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Search Examples -->
         <div class="space-y-3">
@@ -372,7 +350,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             Semantic Search
           </h3>
           {#each demoSearchQueries as example}
-            <div class="demo-example-card" on:onclick={() => loadDemoQuery(example.query)}>
+            <div class="demo-example-card" onclick={() => loadDemoQuery(example.query)}>
               <h4 class="font-medium text-sm mb-1">{example.category}</h4>
               <p class="text-xs text-muted-foreground mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded font-mono">{example.query}</p>
@@ -387,7 +365,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             AI Recommendations
           </h3>
           {#each demoRecommendationContexts as example}
-            <div class="demo-example-card" on:onclick={() => loadDemoContext(example.context, example.role)}>
+            <div class="demo-example-card" onclick={() => loadDemoContext(example.context, example.role)}>
               <h4 class="font-medium text-sm mb-1">{example.description}</h4>
               <Badge class="bits-badge-outline text-xs mb-2">{example.role}</Badge>
               <p class="text-xs text-muted-foreground">{example.context.substring(0, 80)}...</p>
@@ -402,7 +380,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             Document Analysis
           </h3>
           {#each demoAnalysisContent as example}
-            <div class="demo-example-card" on:onclick={() => loadDemoContent(example.content)}>
+            <div class="demo-example-card" onclick={() => loadDemoContent(example.content)}>
               <h4 class="font-medium text-sm mb-1">{example.type}</h4>
               <p class="text-xs text-muted-foreground mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded">{example.content.substring(0, 60)}...</p>
@@ -415,37 +393,37 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
   <!-- Tab Navigation -->
   <div class="flex items-center justify-center space-x-1 bg-muted p-1 rounded-lg w-fit mx-auto">
-    <Button
+    <Button class="bits-btn bits-btn"
       variant={activeTab === 'search' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() => activeTab = 'search'}
+  onclick={() => activeTab = 'search'}
       class="flex items-center gap-2"
     >
       <Search class="h-4 w-4" />
       Search
     </Button>
-    <Button
+    <Button class="bits-btn bits-btn"
       variant={activeTab === 'recommendations' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() => activeTab = 'recommendations'}
+  onclick={() => activeTab = 'recommendations'}
       class="flex items-center gap-2"
     >
       <Lightbulb class="h-4 w-4" />
       Recommendations
     </Button>
-    <Button
+    <Button class="bits-btn bits-btn"
       variant={activeTab === 'analysis' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() => activeTab = 'analysis'}
+  onclick={() => activeTab = 'analysis'}
       class="flex items-center gap-2"
     >
       <BarChart3 class="h-4 w-4" />
       Analysis
     </Button>
-    <Button
+    <Button class="bits-btn bits-btn"
       variant={activeTab === 'health' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() => activeTab = 'health'}
+  onclick={() => activeTab = 'health'}
       class="flex items-center gap-2"
     >
       <Activity class="h-4 w-4" />
@@ -455,8 +433,8 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
   <!-- Processing Indicator -->
   {#if isProcessing}
-    <Card class="shadcn-card">
-      <CardContent class="shadcn-card-content">
+    <Card class="bits-card" variant="default" legal={true}>
+      <CardContent class="bits-card-content" variant="default" legal={true}>
         <div class="flex items-center justify-center space-x-3 py-8">
           <div class="animate-spin h-6 w-6 border border-primary border-t-transparent rounded-full"></div>
           <span class="text-muted-foreground">{processingStage}</span>
@@ -469,47 +447,43 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
   {#if activeTab === 'search'}
     <!-- Semantic Search Tab -->
     <div class="space-y-6">
-      <Card class="shadcn-card">
-        <CardHeader class="shadcn-card-header">
+      <Card class="bits-card" variant="default" legal={true}>
+        <CardHeader class="bits-card-header" variant="default" legal={true}>
           <CardTitle class="flex items-center gap-2">
             <Search class="h-5 w-5" />
             Semantic Vector Search
           </CardTitle>
         </CardHeader>
-        <CardContent class="shadcn-card-content space-y-4">
+        <CardContent class="bits-card-content space-y-4" variant="default" legal={true}>
           <div class="space-y-2">
-            <label class="bits-label">Search Query</label>
-            <Textarea
+            <label class="bits-label" for="search-query">Search Query</label>
+            <textarea
+              id="search-query"
               bind:value={searchQuery}
               placeholder="Enter your legal search query..."
-              class="vector-search-input min-h-[80px]"
-            />
+              class="vector-search-input min-h-[80px] w-full p-2 border rounded"
+            ></textarea>
           </div>
 
           {#if showAdvancedOptions}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
-                <label class="bits-label">Case Type Filter</label>
-                <Select bind:value={selectedCaseType}>
-                  <SelectTrigger class="bits-select-trigger">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="criminal">Criminal</SelectItem>
-                    <SelectItem value="civil">Civil</SelectItem>
-                    <SelectItem value="corporate">Corporate</SelectItem>
-                    <SelectItem value="general">General</SelectItem>
-                  </SelectContent>
-                </Select>
+                <label class="bits-label" for="case-type-filter">Case Type Filter</label>
+                <select id="case-type-filter" bind:value={selectedCaseType} class="bits-select-trigger w-full p-2 border rounded">
+                  <option value="criminal">Criminal</option>
+                  <option value="civil">Civil</option>
+                  <option value="corporate">Corporate</option>
+                  <option value="general">General</option>
+                </select>
               </div>
             </div>
           {/if}
 
           <div class="flex items-center gap-2">
             <Button
-              on:click={performSearch}
+              onclick={performSearch}
               disabled={isProcessing || !searchQuery.trim()}
-              class="bits-btn-default"
+              class="bits-btn-default bits-btn bits-btn"
             >
               {#if isProcessing}
                 <Pause class="h-4 w-4 mr-2" />
@@ -519,10 +493,10 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                 Search
               {/if}
             </Button>
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="outline"
               size="sm"
-              on:click={() => showAdvancedOptions = !showAdvancedOptions}
+              onclick={() => showAdvancedOptions = !showAdvancedOptions}
             >
               <Settings class="h-4 w-4" />
             </Button>
@@ -532,19 +506,19 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
       <!-- Search Results -->
       {#if searchResults.length > 0}
-        <Card class="shadcn-card">
-          <CardHeader class="shadcn-card-header">
+        <Card class="bits-card" variant="default" legal={true}>
+          <CardHeader class="bits-card-header" variant="default" legal={true}>
             <CardTitle class="flex items-center justify-between">
               <span class="flex items-center gap-2">
                 <Eye class="h-5 w-5" />
                 Search Results ({searchResults.length})
               </span>
-              <Button variant="outline" size="sm">
+              <Button class="bits-btn bits-btn" variant="outline" size="sm">
                 <Download class="h-4 w-4" />
               </Button>
             </CardTitle>
           </CardHeader>
-          <CardContent class="shadcn-card-content">
+          <CardContent class="bits-card-content" variant="default" legal={true}>
             <div class="space-y-4">
               {#each searchResults as result}
                 <div class="vector-result-item">
@@ -590,21 +564,22 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
   {:else if activeTab === 'recommendations'}
     <!-- AI Recommendations Tab -->
     <div class="space-y-6">
-      <Card class="shadcn-card">
-        <CardHeader class="shadcn-card-header">
+      <Card class="bits-card" variant="default" legal={true}>
+        <CardHeader class="bits-card-header" variant="default" legal={true}>
           <CardTitle class="flex items-center gap-2">
             <Lightbulb class="h-5 w-5" />
             AI Recommendations
           </CardTitle>
         </CardHeader>
-        <CardContent class="shadcn-card-content space-y-4">
+        <CardContent class="bits-card-content space-y-4" variant="default" legal={true}>
           <div class="space-y-2">
-            <label class="bits-label">Context Description</label>
-            <Textarea
+            <label class="bits-label" for="context-description">Context Description</label>
+            <textarea
+              id="context-description"
               bind:value={recommendationContext}
               placeholder="Describe your current situation or challenge..."
-              class="vector-search-input min-h-[100px]"
-            />
+              class="vector-search-input min-h-[100px] w-full p-2 border rounded"
+            ></textarea>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -640,9 +615,9 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
           </div>
 
           <Button
-            on:click={generateRecommendations}
+            onclick={generateRecommendations}
             disabled={isProcessing || !recommendationContext.trim()}
-            class="bits-btn-default"
+            class="bits-btn-default bits-btn bits-btn"
           >
             {#if isProcessing}
               <Pause class="h-4 w-4 mr-2" />
@@ -657,24 +632,24 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
       <!-- Recommendations Results -->
       {#if recommendations.length > 0}
-        <Card class="shadcn-card">
-          <CardHeader class="shadcn-card-header">
+        <Card class="bits-card" variant="default" legal={true}>
+          <CardHeader class="bits-card-header" variant="default" legal={true}>
             <CardTitle class="flex items-center justify-between">
               <span class="flex items-center gap-2">
                 <Target class="h-5 w-5" />
                 Intelligent Recommendations ({recommendations.length})
               </span>
               <div class="flex items-center gap-2">
-                <Button variant="outline" size="sm">
+                <Button class="bits-btn bits-btn" variant="outline" size="sm">
                   <Share class="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button class="bits-btn bits-btn" variant="outline" size="sm">
                   <Download class="h-4 w-4" />
                 </Button>
               </div>
             </CardTitle>
           </CardHeader>
-          <CardContent class="shadcn-card-content">
+          <CardContent class="bits-card-content" variant="default" legal={true}>
             <div class="recommendation-container">
               {#each recommendations as rec}
                 {@const SvelteComponent = getRecommendationIcon(rec.type)}
@@ -727,14 +702,14 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
   {:else if activeTab === 'analysis'}
     <!-- Semantic Analysis Tab -->
     <div class="space-y-6">
-      <Card class="shadcn-card">
-        <CardHeader class="shadcn-card-header">
+      <Card class="bits-card" variant="default" legal={true}>
+        <CardHeader class="bits-card-header" variant="default" legal={true}>
           <CardTitle class="flex items-center gap-2">
             <BarChart3 class="h-5 w-5" />
             Document Semantic Analysis
           </CardTitle>
         </CardHeader>
-        <CardContent class="shadcn-card-content space-y-4">
+        <CardContent class="bits-card-content space-y-4" variant="default" legal={true}>
           <div class="space-y-2">
             <label class="bits-label">Document Content</label>
             <Textarea
@@ -745,9 +720,9 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
           </div>
 
           <Button
-            on:click={performSemanticAnalysis}
+            onclick={performSemanticAnalysis}
             disabled={isProcessing || !analysisContent.trim()}
-            class="bits-btn-default"
+            class="bits-btn-default bits-btn bits-btn"
           >
             {#if isProcessing}
               <Pause class="h-4 w-4 mr-2" />
@@ -764,14 +739,14 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
       {#if semanticAnalysis}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Entities -->
-          <Card class="shadcn-card">
-            <CardHeader class="shadcn-card-header">
+          <Card class="bits-card" variant="default" legal={true}>
+            <CardHeader class="bits-card-header" variant="default" legal={true}>
               <CardTitle class="flex items-center gap-2">
                 <Users class="h-5 w-5" />
                 Extracted Entities ({semanticAnalysis.entities?.length || 0})
               </CardTitle>
             </CardHeader>
-            <CardContent class="shadcn-card-content">
+            <CardContent class="bits-card-content" variant="default" legal={true}>
               {#if semanticAnalysis.entities?.length > 0}
                 <div class="semantic-entity-container">
                   {#each semanticAnalysis.entities as entity}
@@ -790,14 +765,14 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
           </Card>
 
           <!-- Themes -->
-          <Card class="shadcn-card">
-            <CardHeader class="shadcn-card-header">
+          <Card class="bits-card" variant="default" legal={true}>
+            <CardHeader class="bits-card-header" variant="default" legal={true}>
               <CardTitle class="flex items-center gap-2">
                 <Tag class="h-5 w-5" />
                 Document Themes ({semanticAnalysis.themes?.length || 0})
               </CardTitle>
             </CardHeader>
-            <CardContent class="shadcn-card-content">
+            <CardContent class="bits-card-content" variant="default" legal={true}>
               {#if semanticAnalysis.themes?.length > 0}
                 <div class="space-y-3">
                   {#each semanticAnalysis.themes as theme}
@@ -822,14 +797,14 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
           </Card>
 
           <!-- Relationships -->
-          <Card class="shadcn-card">
-            <CardHeader class="shadcn-card-header">
+          <Card class="bits-card" variant="default" legal={true}>
+            <CardHeader class="bits-card-header" variant="default" legal={true}>
               <CardTitle class="flex items-center gap-2">
                 <Network class="h-5 w-5" />
                 Entity Relationships ({semanticAnalysis.relationships?.length || 0})
               </CardTitle>
             </CardHeader>
-            <CardContent class="shadcn-card-content">
+            <CardContent class="bits-card-content" variant="default" legal={true}>
               {#if semanticAnalysis.relationships?.length > 0}
                 <div class="relationship-container">
                   {#each semanticAnalysis.relationships as rel}
@@ -848,14 +823,14 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
           </Card>
 
           <!-- Complexity Metrics -->
-          <Card class="shadcn-card">
-            <CardHeader class="shadcn-card-header">
+          <Card class="bits-card" variant="default" legal={true}>
+            <CardHeader class="bits-card-header" variant="default" legal={true}>
               <CardTitle class="flex items-center gap-2">
                 <BarChart3 class="h-5 w-5" />
                 Complexity Analysis
               </CardTitle>
             </CardHeader>
-            <CardContent class="shadcn-card-content">
+            <CardContent class="bits-card-content" variant="default" legal={true}>
               <div class="space-y-4">
                 <div class="space-y-2">
                   <div class="flex justify-between text-sm">
@@ -916,19 +891,19 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
   {:else if activeTab === 'health'}
     <!-- System Health Tab -->
     <div class="space-y-6">
-      <Card class="shadcn-card">
-        <CardHeader class="shadcn-card-header">
+      <Card class="bits-card" variant="default" legal={true}>
+        <CardHeader class="bits-card-header" variant="default" legal={true}>
           <CardTitle class="flex items-center justify-between">
             <span class="flex items-center gap-2">
               <Activity class="h-5 w-5" />
               Vector Intelligence System Health
             </span>
-            <Button variant="outline" size="sm" on:click={loadSystemHealth}>
+            <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={loadSystemHealth}>
               <RefreshCw class="h-4 w-4" />
             </Button>
           </CardTitle>
         </CardHeader>
-        <CardContent class="shadcn-card-content">
+        <CardContent class="bits-card-content" variant="default" legal={true}>
           {#if systemHealth}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Card class="border">

@@ -7,7 +7,9 @@
   import { writable } from 'svelte/store';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
   import CanvasBoard from '$lib/components/yorha/CanvasBoard.svelte';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   
   const dispatch = createEventDispatcher();
   
@@ -210,7 +212,7 @@
     </div>
     
     <div class="mode-controls">
-      <Button
+      <Button class="bits-btn bits-btn"
         variant={currentMode === 'evidence' ? 'default' : 'outline'}
         size="sm"
         onclick={() => switchMode('evidence')}
@@ -219,7 +221,7 @@
         📁 Evidence Only
       </Button>
       
-      <Button
+      <Button class="bits-btn bits-btn"
         variant={currentMode === 'drawing' ? 'default' : 'outline'}
         size="sm" 
         onclick={() => switchMode('drawing')}
@@ -228,7 +230,7 @@
         🎨 Drawing Only
       </Button>
       
-      <Button
+      <Button class="bits-btn bits-btn"
         variant={currentMode === 'both' ? 'default' : 'outline'}
         size="sm"
         onclick={() => switchMode('both')}
@@ -242,7 +244,7 @@
         size="sm"
         onclick={syncCanvasBoards}
         disabled={syncInProgress}
-        class="sync-btn"
+        class="sync-btn bits-btn bits-btn"
       >
         {syncInProgress ? '🔄 Syncing...' : '🔄 Sync'}
       </Button>
@@ -251,7 +253,7 @@
         variant="outline"
         size="sm"
         onclick={clearAllCanvases}
-        class="clear-btn"
+        class="clear-btn bits-btn bits-btn"
       >
         🗑️ Clear
       </Button>

@@ -5,9 +5,16 @@
     class?: string;
     children?: import('svelte').Snippet;
   }
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
   
   let { analysisData = $bindable() } = $props(); // {
@@ -67,7 +74,7 @@ let showDetails = $state(false);
       <div>
         <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
           📄 Evidence Analysis
-          <Badge variant="outline">{evidence.documentType}</Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{evidence.documentType}</span>
         </h3>
         
         {#if evidence.keyFacts?.length}
@@ -110,7 +117,7 @@ let showDetails = $state(false);
       <div>
         <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
           👥 Persons of Interest
-          <Badge variant="outline">{persons.length} identified</Badge>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{persons.length} identified</span>
         </h3>
         
         <div class="grid gap-3 md:grid-cols-2">
@@ -213,9 +220,7 @@ let showDetails = $state(false);
             <h4 class="font-medium mb-2">Viable Charges:</h4>
             <div class="flex flex-wrap gap-2">
               {#each synthesis.legalStrategy.viableCharges as charge}
-                <Badge variant="outline" class="bg-purple-50 text-purple-800 border-purple-200">
-                  {charge}
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{charge}</span>
               {/each}
             </div>
           </div>
@@ -225,23 +230,23 @@ let showDetails = $state(false);
 
     <!-- Action Buttons -->
     <div class="flex items-center gap-3 pt-4 border-t">
-      <Button 
+      <Button class="bits-btn bits-btn" 
         variant="outline" 
         size="sm"
-        on:on:click={() => showDetails = !showDetails}
+        on:onclick={() => showDetails = !showDetails}
       >
         {showDetails ? 'Hide' : 'Show'} Full Analysis
       </Button>
       
-      <Button variant="outline" size="sm">
+      <Button class="bits-btn bits-btn" variant="outline" size="sm">
         📊 View Timeline
       </Button>
       
-      <Button variant="outline" size="sm">
+      <Button class="bits-btn bits-btn" variant="outline" size="sm">
         🕸️ Relationship Graph  
       </Button>
       
-      <Button size="sm">
+      <Button class="bits-btn bits-btn" size="sm">
         📝 Generate Report
       </Button>
     </div>

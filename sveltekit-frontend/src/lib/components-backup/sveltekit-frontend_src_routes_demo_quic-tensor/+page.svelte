@@ -214,7 +214,7 @@
 				<CardTitle class="text-purple-300 flex items-center gap-2">
 					📊 System Status
 					<Button 
-						on:click={checkHealth} 
+						onclick={checkHealth} 
 						disabled={isLoading}
 						variant="secondary" 
 						size="sm"
@@ -277,7 +277,7 @@
 						<div class="flex flex-wrap gap-2">
 							{#each sampleQueries as query, index}
 								<Button
-									on:click={() => useSampleQuery(index)}
+									onclick={() => useSampleQuery(index)}
 									variant={selectedQuery === index ? "default" : "secondary"}
 									size="sm"
 								>
@@ -338,10 +338,10 @@
 
 					<!-- Actions -->
 					<div class="flex gap-2">
-						<Button on:click={fetchSuggestions} disabled={isLoading || !searchQuery.trim()} variant="default" size="sm">
+						<Button onclick={fetchSuggestions} disabled={isLoading || !searchQuery.trim()} variant="default" size="sm">
 							🔄 Refresh Suggestions
 						</Button>
-						<Button on:click={clearCache} variant="secondary" size="sm">
+						<Button onclick={clearCache} variant="secondary" size="sm">
 							🗑️ Clear Cache
 						</Button>
 					</div>
@@ -378,7 +378,7 @@
 					<!-- Process Document -->
 					<div class="space-y-3">
 						<Button 
-							on:click={processDocument} 
+							onclick={processDocument} 
 							disabled={isLoading}
 							class="w-full"
 							variant="default"
@@ -398,7 +398,7 @@
 								</div>
 
 								<div class="flex gap-2 pt-2">
-									<Button on:click={testInterpolation} disabled={isLoading} variant="secondary" size="sm">
+									<Button onclick={testInterpolation} disabled={isLoading} variant="secondary" size="sm">
 										🔄 Test Tricubic Interpolation
 									</Button>
 								</div>
@@ -436,7 +436,7 @@
 						<span>❌</span>
 						<span class="font-medium">Error:</span>
 						<span>{error}</span>
-						<Button on:click={() => error = null} variant="ghost" size="sm" class="ml-auto">
+						<Button onclick={() => error = null} variant="ghost" size="sm" class="ml-auto">
 							✕
 						</Button>
 					</div>

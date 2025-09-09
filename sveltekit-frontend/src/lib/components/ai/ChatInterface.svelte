@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from "$lib/components/ui/textarea/index";
   import {
     aiPersonality,
@@ -374,10 +376,10 @@ let response = `# AI Analysis Results\n\n`;
         />
 
         {#if caseId}
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:on:click={quickAnalyzeEvidence}
+            on:onclick={quickAnalyzeEvidence}
             disabled={$isLoading}
           >
             🔍 Quick Analysis
@@ -385,7 +387,7 @@ let response = `# AI Analysis Results\n\n`;
             variant="outline"
             size="sm"
             onclick={quickAnalyzeEvidence}
-      <div class="mx-auto px-4 max-w-7xl">
+      <div class="mx-auto px-4 max-w-7xl bits-btn bits-btn">
         {#if lastAnalysisResult}
           <span class="mx-auto px-4 max-w-7xl">
             📊 Confidence: {Math.round(lastAnalysisResult.confidence * 100)}%
@@ -492,7 +494,7 @@ let response = `# AI Analysis Results\n\n`;
       <Button
         variant="default"
         size="sm"
-        class="mx-auto px-4 max-w-7xl"
+        class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
         onclick={() => sendMessage()}
         disabled={$isLoading || !messageInput.trim()}
       >

@@ -1,7 +1,9 @@
 <!-- Enhanced AI Chat Assistant with EmbeddingGemma + RAG Integration -->
 <!-- Uses Svelte 5 patterns with bits-ui components -->
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from "$lib/components/ui/textarea/index";
   import { notifications } from "$lib/stores/notification";
   import { Bot, Send, Loader2, Brain, Zap, FileText, Search, Activity, Database } from "lucide-svelte";
@@ -464,7 +466,7 @@
     </div>
     
     <div class="flex items-center gap-2">
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         size="sm"
         onclick={() => useAdvancedRAG = !useAdvancedRAG}
@@ -482,7 +484,7 @@
       </Button>
       
       {#if showDocumentAnalysis}
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="outline"
           size="sm"
           onclick={analyzeDocuments}
@@ -495,7 +497,7 @@
         </Button>
       {/if}
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         size="sm"
         onclick={checkServiceHealth}
@@ -511,7 +513,7 @@
         {/snippet}
       </Button>
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
         size="sm"
         onclick={queueEmbeddingJobs}
@@ -533,7 +535,7 @@
           RAG Context: {selectedDocuments.length > 0 ? selectedDocuments.length : availableDocuments.length} of {availableDocuments.length} documents
         </span>
         <div class="flex gap-2">
-          <Button variant="outline" size="xs" onclick={addDocument}>
+          <Button class="bits-btn bits-btn" variant="outline" size="xs" onclick={addDocument}>
             {#snippet children()}
               <FileText class="w-3 h-3 mr-1" />
               Add Doc
@@ -641,7 +643,7 @@
         />
       </div>
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="default"
         size="default"
         onclick={sendMessage}

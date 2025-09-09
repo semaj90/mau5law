@@ -1,6 +1,11 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   
   // GRPMO Extended Thinking Integration
   import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations';
@@ -317,7 +322,7 @@
         variant="outline"
         onclick={addConditioningTensor}
         disabled={generating}
-        class="text-sm"
+        class="text-sm bits-btn bits-btn"
       >
         + Add Conditioning Tensor
       </Button>
@@ -491,7 +496,7 @@
       <Button
         onclick={generateGlyph}
         disabled={generating || !prompt.trim()}
-        class="px-6 py-2"
+        class="px-6 py-2 bits-btn bits-btn"
       >
         {#if generating}
           <div class="flex items-center gap-2">

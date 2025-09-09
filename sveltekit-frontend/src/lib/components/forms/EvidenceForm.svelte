@@ -12,7 +12,9 @@
 // Corrected UI component import paths
   import Textarea from "$lib/components/ui/Textarea.svelte";
   import Button from "$lib/components/ui/button";
-  import { Input } from "$lib/components/ui/input";
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from "$lib/components/ui/label";
   import type { Evidence } from "$lib/types/api";
   import { createSelect, melt } from "melt";
@@ -105,10 +107,10 @@
   </div>
 
   <div class="space-y-4">
-    <Button type="button" variant="ghost" on:on:click={() => dispatch("cancel")}
+    <Button class="bits-btn bits-btn" type="button" variant="ghost" on:onclick={() => dispatch("cancel")}
       >Cancel</Button
     >
-    <Button type="submit" disabled={$submitting}>
+    <Button class="bits-btn bits-btn" type="submit" disabled={$submitting}>
       {#if $submitting}
         Saving...
       {:else}

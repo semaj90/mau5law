@@ -164,7 +164,7 @@
               <button
                 type="button"
                 class="space-y-4"
-                on:click={startEdit}
+                onclick={startEdit}
                 title="Edit Note"
               >
                 <Edit3 class="space-y-4" />
@@ -173,7 +173,7 @@
               <button
                 type="button"
                 class="space-y-4"
-                on:click={cancelEdit}
+                onclick={cancelEdit}
               >
                 Cancel
               </button>
@@ -183,7 +183,7 @@
           <button
             type="button"
             class="space-y-4"
-            on:click={() => (isSaved ? handleRemoveFromSaved() : handleSaveForLater())}
+            onclick={() => (isSaved ? handleRemoveFromSaved() : handleSaveForLater())}
             title={isSaved ? "Remove from saved" : "Save for later"}
           >
             {#if isSaved}
@@ -196,7 +196,7 @@
           <button
             type="button"
             class="space-y-4"
-            on:click={closeModal}
+            onclick={closeModal}
             title="Close"
           >
             <X class="space-y-4" />
@@ -215,7 +215,7 @@
                 {tag}
                 <button
                   type="button"
-                  on:click={() => removeTag(tag)}
+                  onclick={() => removeTag(tag)}
                   class="space-y-4"
                 >
                   <X class="space-y-4" />
@@ -277,3 +277,4 @@
     </div>
   </div>
 {/if}
+

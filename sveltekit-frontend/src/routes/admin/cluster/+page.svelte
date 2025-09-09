@@ -3,8 +3,15 @@
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     Activity,
     Cpu,
@@ -357,8 +364,8 @@ let eventSource = $state<EventSource | null>(null);
           </div>
 
           <div class="flex gap-2">
-            <Button
-              on:click={() => scaleCluster(targetWorkers)}
+            <Button class="bits-btn bits-btn"
+              onclick={() => scaleCluster(targetWorkers)}
               disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}
               class="flex-1">
               {#if isScaling}
@@ -370,16 +377,16 @@ let eventSource = $state<EventSource | null>(null);
               {/if}
             </Button>
 
-            <Button
-              on:click={() => scaleCluster(clusterHealth.totalWorkers + 1)}
+            <Button class="bits-btn bits-btn"
+              onclick={() => scaleCluster(clusterHealth.totalWorkers + 1)}
               disabled={isScaling}
               variant="outline"
               class="px-3">
               +1
             </Button>
 
-            <Button
-              on:click={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
+            <Button class="bits-btn bits-btn"
+              onclick={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               disabled={isScaling || clusterHealth.totalWorkers <= 1}
               variant="outline"
               class="px-3">
@@ -398,9 +405,9 @@ let eventSource = $state<EventSource | null>(null);
 
         <div class="space-y-3">
           <Button
-            on:click={rollingRestart}
+            onclick={rollingRestart}
             disabled={isRestarting}
-            class="w-full bg-orange-600 hover:bg-orange-700">
+            class="w-full bg-orange-600 hover:bg-orange-700 bits-btn bits-btn">
             {#if isRestarting}
               <RefreshCw class="h-4 w-4 mr-2 animate-spin" />
               Restarting...
@@ -410,7 +417,7 @@ let eventSource = $state<EventSource | null>(null);
             {/if}
           </Button>
 
-          <Button on:click={fetchClusterStatus} variant="outline" class="w-full">
+          <Button onclick={fetchClusterStatus} variant="outline" class="w-full bits-btn bits-btn">
             <RefreshCw class="h-4 w-4 mr-2" />
             Refresh Status
           </Button>

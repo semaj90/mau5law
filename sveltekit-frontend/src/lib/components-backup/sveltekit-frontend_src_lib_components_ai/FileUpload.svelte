@@ -85,7 +85,7 @@
       </div>
     </div>
 
-    <Button on:click={handleUpload} disabled={isUploading} class="w-full">
+    <Button onclick={handleUpload} disabled={isUploading} class="w-full">
       {#if isUploading}
         <Loader2 class="mr-2 h-4 w-4 animate-spin" />
         Uploading...
@@ -118,3 +118,4 @@
     {/if}
   </CardContent>
 </Card>
+

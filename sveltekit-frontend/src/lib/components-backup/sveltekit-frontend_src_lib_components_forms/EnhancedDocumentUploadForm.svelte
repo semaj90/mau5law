@@ -276,7 +276,7 @@
           <Button
             variant="ghost"
             size="sm"
-            on:click={handleSaveDraft}
+            onclick={handleSaveDraft}
             disabled={$isSubmitting}
           >
             <Save size={16} />
@@ -284,7 +284,7 @@
           <Button
             variant="ghost"
             size="sm"
-            on:click={handleReset}
+            onclick={handleReset}
             disabled={$isSubmitting}
           >
             <RotateCcw size={16} />
@@ -323,7 +323,7 @@
         on:dragleave={handleDragLeave}
         role="button"
         tabindex="0"
-        on:click={() => fileInput?.click()}
+        onclick={() => fileInput?.click()}
         on:keydown={(e) => e.key === "Enter" && fileInput?.click()}
       >
         {#if selectedFile}
@@ -339,7 +339,7 @@
             <Button
               variant="ghost"
               size="sm"
-              on:click|stopPropagation={removeFile}
+              onclick|stopPropagation={removeFile}
               disabled={$isSubmitting}
             >
               <X size={16} />
@@ -550,7 +550,7 @@
               <Button
                 variant="outline"
                 size="sm"
-                on:click={() => actor.send({ type: "RETRY" })}
+                onclick={() => actor.send({ type: "RETRY" })}
                 disabled={contextValue.retryCount >= contextValue.maxRetries}
               >
                 Retry ({contextValue.maxRetries - contextValue.retryCount} attempts
@@ -561,7 +561,7 @@
                 <Button
                   variant="ghost"
                   size="sm"
-                  on:click={() => actor.send({ type: "SKIP_PROCESSING" })}
+                  onclick={() => actor.send({ type: "SKIP_PROCESSING" })}
                   class="ml-2"
                 >
                   Skip AI Processing
@@ -603,7 +603,7 @@
       <div class="flex gap-3">
         <Button
           variant="outline"
-          on:click={handleReset}
+          onclick={handleReset}
           disabled={$isSubmitting}
         >
           Reset Form
@@ -611,7 +611,7 @@
 
         <Button
           type="submit"
-          on:click|preventDefault={handleSubmit}
+          onclick|preventDefault={handleSubmit}
           disabled={!canSubmit}
         >
           {#if $isSubmitting}
@@ -680,3 +680,4 @@
     @apply text-sm text-muted-foreground;
   }
 </style>
+

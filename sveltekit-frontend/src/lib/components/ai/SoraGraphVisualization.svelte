@@ -536,7 +536,7 @@ let reranker = $state<LegalAIReranker | null >(null);
           <div 
             class="path-item"
             class:high-score={path.totalScore > 0.8}
-            on:on:click={() => handlePathSelection(index)}
+            on:onclick={() => handlePathSelection(index)}
           >
             <div class="path-header">
               <span class="path-score">Score: {path.totalScore.toFixed(3)}</span>

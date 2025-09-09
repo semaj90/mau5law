@@ -1,9 +1,18 @@
 <!-- Simple Working Chat Component for CUDA AI Backend -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
@@ -156,7 +165,7 @@
           {getStatusText()}
         </Badge>
       </CardTitle>
-      <Button variant="ghost" size="sm" onclick={clearMessages}>
+      <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={clearMessages}>
         Clear Chat
       </Button>
     </div>
@@ -181,18 +190,12 @@
               
               {#if message.role === 'assistant' && message.confidence}
                 <div class="flex gap-2 mt-2 text-xs opacity-70">
-                  <Badge variant="secondary" class="text-xs">
-                    Confidence: {Math.round(message.confidence * 100)}%
-                  </Badge>
+                  <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Confidence: {Math.round(message.confidence * 100)}%</span>
                   {#if message.tokensPerSecond}
-                    <Badge variant="secondary" class="text-xs">
-                      {Math.round(message.tokensPerSecond)} tok/s
-                    </Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.tokensPerSecond)} tok/s</span>
                   {/if}
                   {#if message.taskId}
-                    <Badge variant="secondary" class="text-xs">
-                      Task: {message.taskId.slice(-8)}
-                    </Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Task: {message.taskId.slice(-8)}</span>
                   {/if}
                 </div>
               {/if}
@@ -229,7 +232,7 @@
         disabled={isLoading || connectionStatus !== 'connected'}
         class="flex-1"
       />
-      <Button 
+      <Button class="bits-btn bits-btn" 
         onclick={sendMessage}
         disabled={!inputMessage.trim() || isLoading || connectionStatus !== 'connected'}
       >

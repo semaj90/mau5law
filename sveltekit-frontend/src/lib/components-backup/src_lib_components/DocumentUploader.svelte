@@ -281,7 +281,7 @@
     on:dragover={handleDragOver}
     on:dragleave={handleDragLeave}
     on:drop={handleDrop}
-    on:click={openFileDialog}
+    onclick={openFileDialog}
   role="button"
   tabindex={disabled ? -1 : 0}
   aria-disabled={disabled}
@@ -333,7 +333,7 @@
           <button
             type="button"
             class="text-red-400 hover:text-red-600"
-            on:click={() => dismissError(index)}
+            onclick={() => dismissError(index)}
           >
 
 
@@ -397,7 +397,7 @@
               <Button.Root
                 variant="ghost"
                 size="sm"
-                on:click={() => removeFile(file)}
+                onclick={() => removeFile(file)}
                 class="text-gray-400 hover:text-red-600"
               >
 
@@ -465,3 +465,4 @@
     justify-content: center;
   }
   </style>
+

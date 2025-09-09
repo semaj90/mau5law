@@ -374,7 +374,7 @@
       on:dragover={handleDragOver}
       on:dragleave={handleDragLeave}
       on:drop={handleDrop}
-      on:click={openFileDialog}
+      onclick={openFileDialog}
   on:keydown={(e: KeyboardEvent) => e.key === "Enter" && openFileDialog()}
       role="button"
       tabindex="0"
@@ -451,7 +451,7 @@
               <Button
                 variant="ghost"
                 size="sm"
-                on:click={() => removeFile(file.name)}
+                onclick={() => removeFile(file.name)}
                 disabled={isUploading}
                 class="flex-shrink-0"
               >
@@ -571,7 +571,7 @@
             <Button
               type="button"
               variant="outline"
-              on:click={addTag}
+              onclick={addTag}
               disabled={isUploading}
             >
               Add
@@ -586,7 +586,7 @@
                     variant="ghost"
                     size="sm"
                     class="h-auto p-0 hover:bg-transparent"
-                    on:click={() => removeTag(tag)}
+                    onclick={() => removeTag(tag)}
                     disabled={isUploading}
                   >
                     <X class="h-3 w-3" />
@@ -664,14 +664,14 @@
       <div class="flex gap-2">
         <Button
           variant="outline"
-          on:click={() => dispatch("cancel")}
+          onclick={() => dispatch("cancel")}
           disabled={isUploading}
         >
           Cancel
         </Button>
 
         <Button
-          on:click={handleFormSubmit}
+          onclick={handleFormSubmit}
           disabled={selectedFiles.length === 0 ||
             isUploading ||
             Object.keys($errors).length > 0}
@@ -712,3 +712,4 @@
     display: none
   }
 </style>
+

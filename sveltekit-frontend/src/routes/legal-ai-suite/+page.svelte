@@ -1,7 +1,12 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import Badge from '$lib/components/ui/Badge.svelte';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  // Badge replaced with span - not available in enhanced-bits
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { AlertCircle, UploadCloud, Search, Brain, CheckCircle, AlertTriangle } from 'lucide-svelte';
   import GPUAcceleratedLegalSearch from '$lib/components/gpu/GPUAcceleratedLegalSearch.svelte';
@@ -459,9 +464,7 @@ let loggingInterval = $state<number | null >(null);
                         {result.sourceDocument ?? 'Unknown Source'}
                       </span>
                       <div class="flex space-x-1">
-                        <Badge variant="outline" class="text-xs">
-                          Similarity: {((result.similarity ?? 0) * 100).toFixed(0)}%
-                        </Badge>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Similarity: {((result.similarity ?? 0) * 100).toFixed(0)}%</span>
                         <Badge
                           variant={getFactCheckBadgeVariant(result.factCheckStatus ?? 'UNVERIFIED')}
                           class="text-xs">
@@ -493,9 +496,9 @@ let loggingInterval = $state<number | null >(null);
             <span>🔥</span>
             <span>GPU-Accelerated Legal Search</span>
             {#if systemMetrics.gpuAcceleration}
-              <Badge variant="default" class="text-xs">GPU Active</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">GPU Active</span>
             {:else}
-              <Badge variant="outline" class="text-xs">CPU Mode</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">CPU Mode</span>
             {/if}
           </CardTitle>
         </CardHeader>

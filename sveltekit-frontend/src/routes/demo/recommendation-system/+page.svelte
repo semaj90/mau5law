@@ -5,7 +5,12 @@
   import RecommendationContainer from '$lib/components/ui/gaming/RecommendationContainer.svelte';
   import { recommendationOrchestrator, recommendations } from '$lib/services/recommendation-orchestrator';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
   // State for demo
   let currentConsole = $state('n64');
@@ -239,28 +244,28 @@
       </Card.Header>
       <Card.Content>
         <div class="demo-controls">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant={isDetectiveMode ? 'default' : 'outline'}
             onclick={toggleDetectiveMode}
           >
             {isDetectiveMode ? 'Exit Detective Mode' : 'Enter Detective Mode'}
           </Button>
           
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             onclick={() => simulateActivity('idle')}
           >
             Simulate Idle State
           </Button>
           
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             onclick={() => simulateActivity('typing')}
           >
             Simulate Typing
           </Button>
           
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="destructive"
             onclick={addCriticalAlert}
           >
@@ -269,10 +274,10 @@
         </div>
         
         <div class="utility-controls">
-          <Button variant="secondary" onclick={clearRecommendations}>
+          <Button class="bits-btn bits-btn" variant="secondary" onclick={clearRecommendations}>
             Clear All
           </Button>
-          <Button variant="secondary" onclick={resetDemo}>
+          <Button class="bits-btn bits-btn" variant="secondary" onclick={resetDemo}>
             Reset Demo
           </Button>
         </div>

@@ -2,14 +2,18 @@
 <script lang="ts">
   import TokenUsageManager from "$lib/components/TokenUsageManager.svelte";
   import { Badge } from "$lib/components/ui/badge";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
-    CardContent,
     CardHeader,
     CardTitle,
-  } from "$lib/components/ui/card";
-  import { Input } from "$lib/components/ui/input";
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { ScrollArea } from "$lib/components/ui/scroll-area";
   import type { ChatRequest, ChatResponse } from "$routes/api/ai/chat/+server";
   import {
@@ -311,19 +315,19 @@
           </select>
 
           <!-- Settings Toggle -->
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:on:click={() => (showSettings = !showSettings)}
+            on:onclick={() => (showSettings = !showSettings)}
           >
             <Settings class="w-4 h-4" />
           </Button>
 
           <!-- Health Check -->
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:on:click={checkOllamaHealth}
+            on:onclick={checkOllamaHealth}
             disabled={isLoading}
           >
             <RefreshCw class="w-4 h-4" />
@@ -445,10 +449,10 @@
             {#if msg.suggestions && msg.suggestions.length > 0}
               <div class="mt-3 flex flex-wrap gap-2">
                 {#each msg.suggestions as suggestion}
-                  <Button
+                  <Button class="bits-btn bits-btn"
                     variant="outline"
                     size="sm"
-                    on:on:click={() => selectSuggestion(suggestion)}
+                    on:onclick={() => selectSuggestion(suggestion)}
                     class="text-xs"
                   >
                     {suggestion}
@@ -463,9 +467,7 @@
                 <p class="text-xs text-muted-foreground mb-1">Related Cases:</p>
                 <div class="flex flex-wrap gap-1">
                   {#each msg.relatedCases as caseTitle}
-                    <Badge variant="secondary" class="text-xs">
-                      {caseTitle}
-                    </Badge>
+                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{caseTitle}</span>
                   {/each}
                 </div>
               </div>
@@ -498,9 +500,9 @@
     </div>
 
     <Button
-      on:on:click={sendMessage}
+      on:onclick={sendMessage}
       disabled={!canSend || ollamaStatus !== "healthy"}
-      class="px-3"
+      class="px-3 bits-btn bits-btn"
       data-testid="send-button"
     >
       {#if isLoading}
@@ -511,17 +513,17 @@
     </Button>
 
     <!-- Additional Actions -->
-    <Button
+    <Button class="bits-btn bits-btn"
       variant="outline"
-      on:on:click={clearChat}
+      on:onclick={clearChat}
       disabled={chatHistory.length === 0}
     >
       Clear
     </Button>
 
-    <Button
+    <Button class="bits-btn bits-btn"
       variant="outline"
-      on:on:click={exportChat}
+      on:onclick={exportChat}
       disabled={chatHistory.length === 0}
     >
       Export

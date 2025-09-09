@@ -1,7 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced/Card.svelte';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/modular/Badge.svelte';
   import { cn } from '$lib/utils';
 
@@ -165,21 +170,21 @@
         <CardContent>
           {#snippet children()}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Button on:click={runAllTests} disabled={isRunning} variant="default">
+              <Button class="bits-btn bits-btn" onclick={runAllTests} disabled={isRunning} variant="default">
                 {#snippet children()}
                   {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
                 {/snippet}
               </Button>
 
-              <Button on:click={createDevSession} variant="outline">
+              <Button class="bits-btn bits-btn" onclick={createDevSession} variant="outline">
                 {#snippet children()}🔑 Create Dev Session{/snippet}
               </Button>
 
-              <Button on:click={checkAuthStatus} variant="outline">
+              <Button class="bits-btn bits-btn" onclick={checkAuthStatus} variant="outline">
                 {#snippet children()}👤 Check Auth Status{/snippet}
               </Button>
 
-              <Button on:click={clearSession} variant="destructive">
+              <Button class="bits-btn bits-btn" onclick={clearSession} variant="destructive">
                 {#snippet children()}🚪 Clear Session{/snippet}
               </Button>
             </div>

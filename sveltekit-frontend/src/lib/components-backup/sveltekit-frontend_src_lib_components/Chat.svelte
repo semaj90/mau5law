@@ -336,14 +336,14 @@
 					<Button 
 						variant="outline" 
 						size="xs" 
-						on:click={() => send({ type: 'RETRY' })}
+						onclick={() => send({ type: 'RETRY' })}
 					>
 						Retry
 					</Button>
 					<Button 
 						variant="ghost" 
 						size="xs" 
-						on:click={() => send({ type: 'CANCEL' })}
+						onclick={() => send({ type: 'CANCEL' })}
 					>
 						Dismiss
 					</Button>
@@ -405,28 +405,28 @@
 			<Button 
 				variant="outline" 
 				size="xs" 
-				on:click={() => messageInput = "Analyze this legal document for key terms and clauses."}
+				onclick={() => messageInput = "Analyze this legal document for key terms and clauses."}
 			>
 				📄 Analyze Document
 			</Button>
 			<Button 
 				variant="outline" 
 				size="xs" 
-				on:click={() => messageInput = "What are the legal implications of this case?"}
+				onclick={() => messageInput = "What are the legal implications of this case?"}
 			>
 				⚖️ Legal Analysis
 			</Button>
 			<Button 
 				variant="outline" 
 				size="xs" 
-				on:click={() => messageInput = "Search for similar cases and precedents."}
+				onclick={() => messageInput = "Search for similar cases and precedents."}
 			>
 				🔍 Find Precedents
 			</Button>
 			<Button 
 				variant="outline" 
 				size="xs" 
-				on:click={() => messageInput = "Generate a case summary."}
+				onclick={() => messageInput = "Generate a case summary."}
 			>
 				📋 Case Summary
 			</Button>
@@ -453,3 +453,4 @@
 		field-sizing: content
 	}
 </style>
+

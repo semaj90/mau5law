@@ -39,7 +39,7 @@
 <p class="muted">Client-side check for adapter/device availability, limits, and common pitfalls.</p>
 
 <div>
-  <button on:click={run} aria-label="Re-run diagnostics">Re-run</button>
+  <button onclick={run} aria-label="Re-run diagnostics">Re-run</button>
 </div>
 
 {#if loading}

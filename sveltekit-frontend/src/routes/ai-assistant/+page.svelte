@@ -1,8 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import Card from '$lib/components/ui/Card.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
+  import {
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';
   import { cn } from '$lib/utils';
   import type { ChatMessage, SystemStatus } from '$lib/types/ai';
 
@@ -222,33 +226,33 @@
       {#snippet children()}
         <h2 class="text-xl font-semibold mb-4">Quick Legal Queries</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:click={() => handleQuickQuery('Explain contract formation requirements')}
+            onclick={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
             class="justify-start"
           >
             {#snippet children()}Contract Law{/snippet}
           </Button>
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
             class="justify-start"
           >
             {#snippet children()}Evidence Rules{/snippet}
           </Button>
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
+            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
             class="justify-start"
           >
             {#snippet children()}Liability{/snippet}
           </Button>
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:click={() => handleQuickQuery('What are the elements of negligence?')}
+            onclick={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
             class="justify-start"
           >
@@ -267,10 +271,10 @@
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-xl font-semibold">Legal AI Chat</h2>
               <div class="flex gap-2">
-                <Badge variant={isStreaming ? "default" : "secondary"}>
-                  {#snippet children()}{isStreaming ? 'Streaming...' : 'Ready'}{/snippet}
-                </Badge>
-                <Button variant="outline" size="sm" on:click={clearChat} disabled={isStreaming}>
+                <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
+                  {isStreaming ? 'Streaming...' : 'Ready'}
+                </span>
+                <Button variant="outline" size="sm" class="bits-btn bits-btn-outline bits-btn bits-btn" onclick={clearChat} disabled={isStreaming}>
                   {#snippet children()}Clear{/snippet}
                 </Button>
               </div>
@@ -329,9 +333,9 @@
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <Button
-                  on:click={sendMessage}
+                  onclick={sendMessage}
                   disabled={!currentMessage.trim() || isStreaming}
-                  class="px-6"
+                  class="px-6 bits-btn bits-btn"
                 >
                   {#snippet children()}
                     {#if isStreaming}
@@ -357,9 +361,9 @@
             {#snippet children()}
               <h3 class="font-semibold mb-3">AI Model</h3>
               <div class="space-y-2">
-                <Badge variant="secondary">
-                  {#snippet children()}Gemma3-Legal{/snippet}
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
+                  Gemma3-Legal
+                </span>
                 <p class="text-xs text-gray-500">
                   Specialized legal language model with contract analysis capabilities
                 </p>
@@ -408,8 +412,8 @@
                 <Button
                   variant="outline"
                   size="sm"
-                  on:click={checkSystemStatus}
-                  class="w-full justify-start"
+                  onclick={checkSystemStatus}
+                  class="w-full justify-start bits-btn bits-btn"
                   fullWidth={true}
                 >
                   {#snippet children()}
@@ -419,10 +423,10 @@
                     Refresh Status
                   {/snippet}
                 </Button>
-                <Button
+                <Button class="bits-btn bits-btn"
                   variant="outline"
                   size="sm"
-                  on:click={() => window.open('/api/v1/cluster/health', '_blank')}
+                  onclick={() => window.open('/api/v1/cluster/health', '_blank')}
                   class="w-full justify-start"
                   fullWidth={true}
                 >

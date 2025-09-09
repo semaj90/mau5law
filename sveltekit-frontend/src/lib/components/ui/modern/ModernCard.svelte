@@ -77,7 +77,7 @@
   class={cardClasses}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
-  on:click={handleClick}
+  onclick={handleClick}
   keydown={(e) => {
     if (clickable && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();

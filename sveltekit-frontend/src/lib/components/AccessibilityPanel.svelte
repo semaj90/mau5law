@@ -1,6 +1,8 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import {
     AlertTriangle,
@@ -483,16 +485,16 @@ let screenReaderMode = $state(false);
   >
     <div
       class="mx-auto px-4 max-w-7xl"
-      on:click|stopPropagation
+      onclick|stopPropagation
       role="document"
     >
       <div class="mx-auto px-4 max-w-7xl">
         <div class="mx-auto px-4 max-w-7xl">
           <h2 id="accessibility-panel-title" class="mx-auto px-4 max-w-7xl">Accessibility Panel</h2>
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:click={() => (showPanel = false)}
+            onclick={() => (showPanel = false)}
             aria-label="Close accessibility panel"
           >
             ✕
@@ -560,9 +562,9 @@ let screenReaderMode = $state(false);
         <div class="mx-auto px-4 max-w-7xl">
           <div class="mx-auto px-4 max-w-7xl">
             <h3 class="mx-auto px-4 max-w-7xl">Accessibility Audit</h3>
-            <Button
+            <Button class="bits-btn bits-btn"
               size="sm"
-              on:click={() => runAccessibilityAudit()}
+              onclick={() => runAccessibilityAudit()}
               disabled={isAuditing}
               class="mx-auto px-4 max-w-7xl"
             >
@@ -616,8 +618,8 @@ let screenReaderMode = $state(false);
               <Button
                 variant="outline"
                 size="sm"
-                class="mx-auto px-4 max-w-7xl"
-                on:click={() => exportAuditResults()}
+                class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
+                onclick={() => exportAuditResults()}
               >
                 <Download class="mx-auto px-4 max-w-7xl" />
                 Export Report

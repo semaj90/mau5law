@@ -1,6 +1,8 @@
 mcp<script lang="ts">
 
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import { notifications, type Notification } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
@@ -188,10 +190,10 @@ let enableSounds = $state(true);
 >
   {#if hiddenCount > 0}
     <div class="container mx-auto px-4">
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="ghost"
         size="sm"
-        on:on:click={() => (maxVisible += 5)}
+        on:onclick={() => (maxVisible += 5)}
         class="container mx-auto px-4"
       >
         +{hiddenCount} more notifications
@@ -263,12 +265,12 @@ let enableSounds = $state(true);
                   {#if notification.actions && notification.actions.length > 0}
                     <div class="container mx-auto px-4">
                       {#each notification.actions as action}
-                        <Button
+                        <Button class="bits-btn bits-btn"
                           size="sm"
                           variant={action.variant === "primary"
                             ? "default"
                             : "ghost"}
-                          on:on:click={() =>
+                          on:onclick={() =>
                             handleNotificationAction(notification, action)}
                           class="container mx-auto px-4"
                         >
@@ -281,10 +283,10 @@ let enableSounds = $state(true);
 
                 <!-- Dismiss button -->
                 <div class="container mx-auto px-4">
-                  <Button
+                  <Button class="bits-btn bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:on:click={() => dismissNotification(notification.id)}
+                    on:onclick={() => dismissNotification(notification.id)}
                     class="container mx-auto px-4"
                     aria-label="Dismiss notification"
                   >
@@ -302,10 +304,10 @@ let enableSounds = $state(true);
   <!-- Dismiss all button for multiple notifications -->
   {#if visibleNotifications.length > 1}
     <div class="container mx-auto px-4">
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="ghost"
         size="sm"
-        on:on:click={() => dismissAll()}
+        on:onclick={() => dismissAll()}
         class="container mx-auto px-4"
       >
         Clear all ({$notifications.notifications.length})

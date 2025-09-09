@@ -364,7 +364,7 @@ comment Advanced YoRHa Testing Suite
   <section class="yorha-test-controls">
       <button
         class="yorha-test-run-btn {isRunning ? 'running' : ''}"
-        on:click={runAllTests}
+        onclick={runAllTests}
         disabled={isRunning}
       >
       >

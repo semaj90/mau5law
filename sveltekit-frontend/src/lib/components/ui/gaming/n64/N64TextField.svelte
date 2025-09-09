@@ -30,8 +30,8 @@
   bind:value
   {placeholder}
   {disabled}
-  on:input={onInput}
-  on:change={onChange}
+  oninput={onInput}
+  onchange={onChange}
   aria-label={placeholder || 'N64 text field'}
 />
 

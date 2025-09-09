@@ -3,8 +3,15 @@
   import { page } from "$app/stores";
   import EvidenceUploadModal from "$lib/components/modals/EvidenceUploadModal.svelte";
   import EvidenceValidationModal from "$lib/components/modals/EvidenceValidationModal.svelte";
-  import { Button } from "$lib/components/ui/button";
-  import { Card } from "$lib/components/ui/card";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import AdvancedFileUpload from "$lib/components/upload/AdvancedFileUpload.svelte";
   import ThinkingStyleToggle from "$lib/components/ai/ThinkingStyleToggle.svelte";
@@ -658,10 +665,10 @@ let display = $state("");
         </div>
 
         <Tooltip content="Refresh evidence list">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => refreshEvidence()}
+            onclick={() => refreshEvidence()}
             disabled={loading}
             aria-label="Refresh evidence"
           >
@@ -672,10 +679,10 @@ let display = $state("");
         </Tooltip>
 
         <Tooltip content="Toggle filters">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => (showFilters = !showFilters)}
+            onclick={() => (showFilters = !showFilters)}
             class={showFilters ? 'nes-legal-priority-high' : ''}
             aria-label="Toggle filters"
             aria-expanded={showFilters}
@@ -686,10 +693,10 @@ let display = $state("");
         </Tooltip>
 
         <Tooltip content="Toggle view mode">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
+            onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
             aria-label="Toggle view mode"
             class="yorha-3d-button"
           >
@@ -702,10 +709,10 @@ let display = $state("");
         </Tooltip>
 
         <Tooltip content="Advanced file upload">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => handleAdvancedUpload()}
+            onclick={() => handleAdvancedUpload()}
             class="neural-sprite-cached"
           >
             <Upload class="w-4 h-4 mr-2" />
@@ -714,9 +721,9 @@ let display = $state("");
         </Tooltip>
 
         <Tooltip content="Standard evidence upload">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="evidence"
-            on:click={() => openUploadModal()}
+            onclick={() => openUploadModal()}
           >
             <Plus class="w-4 h-4 mr-2" />
             Upload Evidence
@@ -752,10 +759,10 @@ let display = $state("");
           <option value="collectedBy">Collector</option>
         </select>
 
-        <Button
+        <Button class="bits-btn bits-btn"
           variant="outline"
           size="sm"
-          on:click={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
+          onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
           aria-label="Toggle sort order"
           class="yorha-3d-button"
         >
@@ -790,10 +797,10 @@ let display = $state("");
         </div>
 
         <div class="mx-auto px-4 max-w-7xl">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => bulkOperation("analyze")}
+            onclick={() => bulkOperation("analyze")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -806,10 +813,10 @@ let display = $state("");
             {/if}
           </Button>
 
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => bulkOperation("verify")}
+            onclick={() => bulkOperation("verify")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -817,10 +824,10 @@ let display = $state("");
             Verify
           </Button>
 
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => bulkOperation("archive")}
+            onclick={() => bulkOperation("archive")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -828,10 +835,10 @@ let display = $state("");
             Archive
           </Button>
 
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => bulkOperation("export")}
+            onclick={() => bulkOperation("export")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -839,10 +846,10 @@ let display = $state("");
             Export
           </Button>
 
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => bulkOperation("delete")}
+            onclick={() => bulkOperation("delete")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -850,10 +857,10 @@ let display = $state("");
             Delete
           </Button>
 
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
             size="sm"
-            on:click={() => {
+            onclick={() => {
               selectedEvidence.clear();
               selectedEvidence = selectedEvidence;
               showBulkActions = false;
@@ -880,7 +887,7 @@ let display = $state("");
         <h3 class="mx-auto px-4 max-w-7xl">Error Loading Evidence</h3>
         <div class="mx-auto px-4 max-w-7xl">{error}</div>
       </div>
-  <Button variant="outline" size="sm" on:click={() => refreshEvidence()}>
+  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => refreshEvidence()}>
         <RefreshCw class="mx-auto px-4 max-w-7xl" />
         Retry
       </Button>
@@ -910,13 +917,13 @@ let display = $state("");
       </p>
       {#if !searchQuery && !selectedType && !selectedStatus && !selectedCollector && !dateFrom && !dateTo}
         <div class="mx-auto px-4 max-w-7xl">
-          <Button on:click={() => openUploadModal()} class="mx-auto px-4 max-w-7xl">
+          <Button class="bits-btn bits-btn" onclick={() => openUploadModal()} class="mx-auto px-4 max-w-7xl">
             <Plus class="mx-auto px-4 max-w-7xl" />
             Upload Evidence
           </Button>
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="outline"
-            on:click={() => handleAdvancedUpload()}
+            onclick={() => handleAdvancedUpload()}
             class="mx-auto px-4 max-w-7xl"
           >
             <Upload class="mx-auto px-4 max-w-7xl" />
@@ -937,10 +944,10 @@ let display = $state("");
         </span>
 
         {#if visibleEvidence.length > 0}
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:click={() => selectAllEvidence()}
+            onclick={() => selectAllEvidence()}
             class="mx-auto px-4 max-w-7xl"
             aria-label="Select all visible evidence"
           >
@@ -979,7 +986,7 @@ let display = $state("");
 
                 <div class="dropdown dropdown-end">
                   <Tooltip content="Evidence actions">
-                    <Button variant="ghost" size="sm" class="yorha-3d-button">
+                    <Button variant="ghost" size="sm" class="yorha-3d-button bits-btn bits-btn">
                       <MoreHorizontal class="w-4 h-4" />
                     </Button>
                   </Tooltip>
@@ -1057,10 +1064,10 @@ let display = $state("");
 
               <!-- Enhanced Actions with AI Analysis -->
               <div class="flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <Button
+                <Button class="bits-btn bits-btn"
                   size="sm"
                   variant={thinkingStyleEnabled ? "neural" : "yorha"}
-                  on:click={() => analyzeEvidence(evidence)}
+                  onclick={() => analyzeEvidence(evidence)}
                   disabled={analysisInProgress.has(evidence.id)}
                   class="flex-1"
                 >
@@ -1077,7 +1084,7 @@ let display = $state("");
                 </Button>
 
                 <a href="/evidence/{evidence.id}">
-                  <Button size="sm" variant="evidence" class="flex-1">
+                  <Button size="sm" variant="evidence" class="flex-1 bits-btn bits-btn">
                     <Eye class="w-3 h-3 mr-1" />
                     View
                   </Button>
@@ -1168,10 +1175,10 @@ let display = $state("");
                 </div>
 
                 <div class="mx-auto px-4 max-w-7xl">
-                  <Button
+                  <Button class="bits-btn bits-btn"
                     size="sm"
                     variant="outline"
-                    on:click={() => analyzeEvidence(evidence)}
+                    onclick={() => analyzeEvidence(evidence)}
                     disabled={analysisInProgress.has(evidence.id)}
                     class="mx-auto px-4 max-w-7xl"
                   >
@@ -1188,7 +1195,7 @@ let display = $state("");
                   </Button>
 
                   <a href="/evidence/{evidence.id}" class="mx-auto px-4 max-w-7xl">
-                    <Button size="sm" variant="outline">
+                    <Button class="bits-btn bits-btn" size="sm" variant="outline">
                       <Eye class="mx-auto px-4 max-w-7xl" />
                       View
                     </Button>
@@ -1196,7 +1203,7 @@ let display = $state("");
 
                   <div class="mx-auto px-4 max-w-7xl">
                     <Tooltip content="More actions">
-                      <Button
+                      <Button class="bits-btn bits-btn"
                         variant="ghost"
                         size="sm"
                         tabindex={0}
@@ -1247,9 +1254,9 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            class="mx-auto px-4 max-w-7xl"
+            class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
             disabled={currentPage === 1}
-            on:click={() => (currentPage = Math.max(1, currentPage - 1))}
+            onclick={() => (currentPage = Math.max(1, currentPage - 1))}
             aria-label="Previous page"
           >
             Previous
@@ -1262,8 +1269,8 @@ let display = $state("");
             <Button
               variant={page === currentPage ? "default" : "outline"}
               size="sm"
-              class="mx-auto px-4 max-w-7xl"
-              on:click={() => (currentPage = page)}
+              class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
+              onclick={() => (currentPage = page)}
               aria-label="Go to page {page}"
               aria-current={page === currentPage ? "page" : undefined}
             >
@@ -1274,9 +1281,9 @@ let display = $state("");
           <Button
             variant="outline"
             size="sm"
-            class="mx-auto px-4 max-w-7xl"
+            class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
             disabled={currentPage === totalPages}
-            on:click={() =>
+            onclick={() =>
               (currentPage = Math.min(totalPages, currentPage + 1))}
             aria-label="Next page"
           >
@@ -1313,7 +1320,7 @@ let display = $state("");
           {/if}
           - {analysisModal.evidence.title}
         </h3>
-  <Button variant="ghost" size="sm" on:click={closeAnalysisModal}>
+  <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={closeAnalysisModal}>
           ✕
         </Button>
       </div>
@@ -1336,8 +1343,8 @@ let display = $state("");
       </div>
 
       <div class="mx-auto px-4 max-w-7xl">
-  <Button variant="outline" on:click={closeAnalysisModal}>Close</Button>
-  <Button on:click={() => {
+  <Button class="bits-btn bits-btn" variant="outline" onclick={closeAnalysisModal}>Close</Button>
+  <Button class="bits-btn bits-btn" onclick={() => {
           // Save analysis or perform other actions
           closeAnalysisModal();
         }}>Save Analysis</Button>
@@ -1366,7 +1373,7 @@ let display = $state("");
       tabindex={0}
       aria-label="Close modal"
       onclick={() => (showAdvancedUpload = false)}
-      on:keydown={(e) => e.key === "Escape" && (showAdvancedUpload = false)}
+      onkeydown={(e) => e.key === "Escape" && (showAdvancedUpload = false)}
     ></div>
   </div>
 {/if}

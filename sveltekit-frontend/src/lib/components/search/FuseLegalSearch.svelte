@@ -1,8 +1,12 @@
 <script lang="ts">
   import Fuse from 'fuse.js';
   import { onMount } from 'svelte';
-  import { Input } from '$lib/components/ui/input/index.js';
-  import { Button } from '$lib/components/ui/button/index.js';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import * as Card from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Search, Loader2, ExternalLink, Bot } from 'lucide-svelte';
@@ -174,12 +178,8 @@
                 {@html law.highlighted.title || law.title}
               </Card.Title>
               <div class="flex items-center gap-2 ml-2">
-                <Badge variant="outline" class="text-xs {getScoreColor(law.fuseScore)}">
-                  {getScoreLabel(law.fuseScore)}
-                </Badge>
-                <Badge variant="secondary" class="text-xs">
-                  {law.jurisdiction}
-                </Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{getScoreLabel(law.fuseScore)}</span>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{law.jurisdiction}</span>
               </div>
             </div>
             <Card.Description class="text-sm">
@@ -201,16 +201,16 @@
           {#if showAIActions}
             <Card.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
-                <Button size="sm" on:on:click={() => handleAIAction(law, 'summary')}>
+                <Button class="bits-btn bits-btn" size="sm" on:onclick={() => handleAIAction(law, 'summary')}>
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
                 </Button>
-                <Button variant="outline" size="sm" on:on:click={() => handleAIAction(law, 'chat')}>
+                <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => handleAIAction(law, 'chat')}>
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI
                 </Button>
                 {#if law.fullTextUrl}
-                  <Button variant="outline" size="sm" asChild>
+                  <Button class="bits-btn bits-btn" variant="outline" size="sm" asChild>
                     <a href={law.fullTextUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink class="h-3 w-3 mr-1" />
                       Full Text

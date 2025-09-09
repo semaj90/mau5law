@@ -68,7 +68,7 @@
           <Upload class="space-y-4" />
           <h2 class="space-y-4">Upload Evidence</h2>
         </div>
-        <Button variant="ghost" size="sm" on:click={() => closeModal()}>
+        <Button variant="ghost" size="sm" onclick={() => closeModal()}>
           <X class="space-y-4" />
         </Button>
       </div>
@@ -85,7 +85,7 @@
           on:drop={handleDrop}
           on:dragover={handleDragOver}
           on:dragleave={handleDragLeave}
-          on:click={() => fileInput?.click()}
+          onclick={() => fileInput?.click()}
           on:keydown={(e) =>
             (e.key === "Enter" || e.key === " ") && fileInput?.click()}
         >
@@ -96,7 +96,7 @@
           <p id="evidence-dropzone-instructions" class="space-y-4">
             Support for images, documents, audio, and video files
           </p>
-          <Button variant="outline" on:click={() => fileInput?.click()}>
+          <Button variant="outline" onclick={() => fileInput?.click()}>
             Choose Files
           </Button>
           <input
@@ -171,7 +171,7 @@
                       <Button
                         variant="ghost"
                         size="sm"
-                        on:click={() => removeFile(file.id)}
+                        onclick={() => removeFile(file.id)}
                       >
                         <X class="space-y-4" />
                       </Button>
@@ -201,12 +201,12 @@
         </div>
 
         <div class="space-y-4">
-          <Button variant="outline" on:click={() => closeModal()}>
+          <Button variant="outline" onclick={() => closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
           </Button>
 
           {#if completedUploads.length > 0}
-            <Button on:click={() => onviewEvidence?.()}>
+            <Button onclick={() => onviewEvidence?.()}>
               View Evidence
             </Button>
           {/if}
@@ -215,3 +215,4 @@
     </div>
   </div>
 {/if}
+

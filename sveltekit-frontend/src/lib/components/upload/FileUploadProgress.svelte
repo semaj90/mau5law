@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { Progress, Card, Badge } from '$lib/components/ui/modular';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 
   interface Props {
     progress?: number;

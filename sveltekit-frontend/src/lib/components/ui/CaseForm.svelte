@@ -1,8 +1,10 @@
 <script lang="ts">
 
   import { goto } from "$app/navigation";
-  import { Button } from "$lib/components/ui/button";
-  import Card from '$lib/components/ui/Card.svelte';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import { Card } from '$lib/components/ui/enhanced-bits';
   import Form from '$lib/components/ui/Form.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import { notifications } from '$lib/stores/notification';
@@ -318,12 +320,12 @@ let isFormDirty = $state(false);
                     blur={() => formApi.touchField("tags")}
                   />
                 </div>
-                <Button
+                <Button class="bits-btn bits-btn"
                   type="button"
                   variant="secondary"
                   size="md"
                   data-icon="${1}"
-                  on:on:click={() => addTag()}
+                  on:onclick={() => addTag()}
                 >
                   Add
                 </Button>

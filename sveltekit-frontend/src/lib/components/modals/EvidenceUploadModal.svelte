@@ -1,6 +1,6 @@
 <script lang="ts">
 
-  import Button from "$lib/components/ui/Button.svelte";
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import { $derived } from 'svelte';
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
   import { formatFileSize } from "$lib/utils/file-utils";
@@ -66,7 +66,7 @@ let dragActive = $state(false);
           <Upload class="container mx-auto px-4" />
           <h2 class="container mx-auto px-4">Upload Evidence</h2>
         </div>
-        <Button variant="ghost" size="sm" on:on:click={() => closeModal()}>
+        <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => closeModal()}>
           <X class="container mx-auto px-4" />
         </Button>
       </div>
@@ -94,7 +94,7 @@ let dragActive = $state(false);
           <p id="evidence-dropzone-instructions" class="container mx-auto px-4">
             Support for images, documents, audio, and video files
           </p>
-          <Button variant="outline" on:on:click={() => fileInput?.click()}>
+          <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => fileInput?.click()}>
             Choose Files
           </Button>
           <input
@@ -166,10 +166,10 @@ let dragActive = $state(false);
                     </div>
 
                     <div class="container mx-auto px-4">
-                      <Button
+                      <Button class="bits-btn bits-btn"
                         variant="ghost"
                         size="sm"
-                        on:on:click={() => removeFile(file.id)}
+                        on:onclick={() => removeFile(file.id)}
                       >
                         <X class="container mx-auto px-4" />
                       </Button>
@@ -199,12 +199,12 @@ let dragActive = $state(false);
         </div>
 
         <div class="container mx-auto px-4">
-          <Button variant="outline" on:on:click={() => closeModal()}>
+          <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
           </Button>
 
           {#if completedUploads.length > 0}
-            <Button on:on:click={() => dispatch("viewEvidence", completedUploads)}>
+            <Button class="bits-btn bits-btn" on:onclick={() => dispatch("viewEvidence", completedUploads)}>
               View Evidence
             </Button>
           {/if}

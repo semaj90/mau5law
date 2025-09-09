@@ -195,7 +195,7 @@
     <Button.Root
       onclick={testGemma3}
       disabled={isProcessing}
-      class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+      class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
     >
       {#if currentTest === 'gemma3'}
         <Loader2 class="w-4 h-4 animate-spin" />
@@ -208,7 +208,7 @@
     <Button.Root
       onclick={testSynthesis}
       disabled={isProcessing}
-      class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
+      class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white bits-btn bits-btn"
     >
       {#if currentTest === 'synthesis'}
         <Loader2 class="w-4 h-4 animate-spin" />
@@ -221,7 +221,7 @@
     <Button.Root
       onclick={testRAG}
       disabled={isProcessing}
-      class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white"
+      class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white bits-btn bits-btn"
     >
       {#if currentTest === 'rag'}
         <Loader2 class="w-4 h-4 animate-spin" />

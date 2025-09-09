@@ -313,12 +313,12 @@
 			{step}
 			{disabled}
 			bind:value
-			on:input={handleInput}
+			oninput={handleInput}
 			on:mousedown={handleInteractionStart}
 			on:mouseup={handleInteractionEnd}
 			on:touchstart={handleInteractionStart}
 			on:touchend={handleInteractionEnd}
-			on:keydown={handleKeydown}
+			onkeydown={handleKeydown}
 			class="n64-slider-input"
 			aria-label={label}
 			aria-valuemin={min}

@@ -375,7 +375,7 @@
         <button 
           class="view-btn"
           class:active={viewMode === 'grid'}
-          on:click={() => viewMode = 'grid'}
+          onclick={() => viewMode = 'grid'}
           title="Grid View"
         >
           <Archive class="w-4 h-4" />
@@ -383,7 +383,7 @@
         <button 
           class="view-btn"
           class:active={viewMode === 'timeline'}
-          on:click={() => viewMode = 'timeline'}
+          onclick={() => viewMode = 'timeline'}
           title="Timeline View"
         >
           <Clock class="w-4 h-4" />
@@ -391,7 +391,7 @@
         <button 
           class="view-btn"
           class:active={viewMode === 'network'}
-          on:click={() => viewMode = 'network'}
+          onclick={() => viewMode = 'network'}
           title="Network View"
         >
           <Network class="w-4 h-4" />
@@ -402,7 +402,7 @@
       <button 
         class="detective-toggle"
         class:active={detectiveMode}
-        on:click={toggleDetectiveMode}
+        onclick={toggleDetectiveMode}
         title="Toggle Detective Mode"
       >
         {#if detectiveMode}
@@ -418,7 +418,7 @@
       {#if $selectedEvidence.length > 0}
         <button 
           class="analyze-btn"
-          on:click={analyzeSelectedEvidence}
+          onclick={analyzeSelectedEvidence}
           disabled={loadingAnalysis}
           title="Analyze Selected Evidence"
         >
@@ -436,7 +436,7 @@
       <button 
         class="filter-toggle"
         class:active={showFilters}
-        on:click={() => showFilters = !showFilters}
+        onclick={() => showFilters = !showFilters}
         title="Toggle Filters"
       >
         <Filter class="w-4 h-4" />
@@ -505,7 +505,7 @@
         <h3>🕵️ Detective Insights</h3>
         <button 
           class="insights-toggle"
-          on:click={() => showInsights = !showInsights}
+          onclick={() => showInsights = !showInsights}
         >
           {showInsights ? 'Hide' : 'Show'} Insights
         </button>
@@ -543,7 +543,7 @@
             on:dragstart={e => handleDragStart(e, evidence.id)}
             on:dragover={e => e.preventDefault()}
             on:drop={e => handleDrop(e, evidence.id)}
-            on:click={() => toggleEvidenceSelection(evidence.id)}
+            onclick={() => toggleEvidenceSelection(evidence.id)}
           >
             <!-- Evidence Header -->
             <div class="card-header">

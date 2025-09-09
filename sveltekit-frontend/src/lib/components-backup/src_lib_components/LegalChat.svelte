@@ -121,7 +121,7 @@
 
     <div class="flex gap-2 items-end">
       <textarea bind:value={input} on:keydown={handleKeydown} placeholder="Ask a legal question..." disabled={isLoading} class="flex-1 px-4 py-2 border rounded-lg resize-none dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50" rows="2"></textarea>
-      <button on:click={sendMessage} disabled={!canSend} class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+      <button onclick={sendMessage} disabled={!canSend} class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
         {#if isLoading}Sending...{:else}Send{/if}
       </button>
     </div>
@@ -134,4 +134,5 @@
     .animate-pulse { animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
   </style>
   </style>
+
 

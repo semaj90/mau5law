@@ -8,8 +8,8 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import Card from '$lib/components/ui/Card.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
+  import { Card } from '$lib/components/ui/enhanced-bits';
+  // Badge replaced with span - not available in enhanced-bits
 
   // Import route configuration
   import { allRoutes, getRoutesByCategory, searchRoutes } from '$lib/data/routes-config';
@@ -173,17 +173,17 @@ let currentPath = $state('');
 
       <div class="flex gap-4 mb-6">
         <Button
-          on:click={runAllTests}
+          onclick={runAllTests}
           disabled={isLoading}
-          class="bg-yorha-secondary text-yorha-bg-primary hover:bg-yorha-secondary-dark"
+          class="bg-yorha-secondary text-yorha-bg-primary hover:bg-yorha-secondary-dark bits-btn bits-btn"
         >
           {isLoading ? 'Running Tests...' : 'Run All Tests'}
         </Button>
 
         <Button
-          on:click={calculateRouteStats}
+          onclick={calculateRouteStats}
           variant="outline"
-          class="border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
+          class="border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary bits-btn bits-btn"
         >
           Refresh Stats
         </Button>
@@ -214,22 +214,22 @@ let currentPath = $state('');
           <div class="space-y-3">
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Total Routes:</span>
-              <Badge variant="secondary">{$routeStats.total}</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{$routeStats.total}</span>
             </div>
 
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Active:</span>
-              <Badge variant="default">{$routeStats.active}</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">{$routeStats.active}</span>
             </div>
 
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Experimental:</span>
-              <Badge variant="outline">{$routeStats.experimental}</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$routeStats.experimental}</span>
             </div>
 
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Beta:</span>
-              <Badge variant="destructive">{$routeStats.beta}</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-red-500 text-white">{$routeStats.beta}</span>
             </div>
           </div>
         {:else}
@@ -245,7 +245,7 @@ let currentPath = $state('');
             {#each Object.entries($routeStats.categories) as [category, count]}
               <div class="flex justify-between text-sm">
                 <span class="text-yorha-text-secondary capitalize">{category}:</span>
-                <Badge variant="outline" class="text-xs">{count}</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{count}</span>
               </div>
             {/each}
           </div>
@@ -256,37 +256,37 @@ let currentPath = $state('');
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Quick Navigation</h3>
 
         <div class="space-y-2">
-          <Button
+          <Button class="bits-btn bits-btn"
             size="sm"
             variant="ghost"
-            on:click={() => navigateToRoute('/')}
+            onclick={() => navigateToRoute('/')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🏠 Home
           </Button>
 
-          <Button
+          <Button class="bits-btn bits-btn"
             size="sm"
             variant="ghost"
-            on:click={() => navigateToRoute('/demo')}
+            onclick={() => navigateToRoute('/demo')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🎯 Demo Overview
           </Button>
 
-          <Button
+          <Button class="bits-btn bits-btn"
             size="sm"
             variant="ghost"
-            on:click={() => navigateToRoute('/dev/mcp-tools')}
+            onclick={() => navigateToRoute('/dev/mcp-tools')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🔧 MCP Tools
           </Button>
 
-          <Button
+          <Button class="bits-btn bits-btn"
             size="sm"
             variant="ghost"
-            on:click={() => navigateToRoute('/cases')}
+            onclick={() => navigateToRoute('/cases')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             📁 Case Management
@@ -343,7 +343,7 @@ let currentPath = $state('');
             <div class="bg-yorha-bg-secondary p-2 rounded text-xs">
               <div class="flex justify-between items-center">
                 <span class="font-mono text-yorha-accent">{route.id}</span>
-                <Badge variant="outline" class="text-xs">{route.category}</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{route.category}</span>
               </div>
               <div class="text-yorha-text-secondary">{route.route}</div>
               <div class="text-yorha-text-muted text-xs">{route.description}</div>

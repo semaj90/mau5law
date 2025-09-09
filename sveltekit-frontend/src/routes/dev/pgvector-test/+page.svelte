@@ -5,12 +5,21 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
 
@@ -291,7 +300,7 @@
             </CardDescription>
           </CardHeader>
           <CardContent class="space-y-3">
-            <Button on:click={testConnection} disabled={isLoading} class="w-full">
+            <Button onclick={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
               {isLoading ? 'Testing...' : 'Test Connection'}
             </Button>
 
@@ -318,7 +327,7 @@
             </CardDescription>
           </CardHeader>
           <CardContent class="space-y-3">
-            <Button on:click={getDatabaseStats} disabled={isLoading} class="w-full">
+            <Button onclick={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
               {isLoading ? 'Loading...' : 'Get Statistics'}
             </Button>
 
@@ -347,13 +356,13 @@
         </CardHeader>
         <CardContent>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Button on:click={() => seedDatabase(10)} disabled={isLoading}>
+            <Button class="bits-btn bits-btn" onclick={() => seedDatabase(10)} disabled={isLoading}>
               Seed 10 Documents
             </Button>
-            <Button on:click={() => seedDatabase(50)} disabled={isLoading}>
+            <Button class="bits-btn bits-btn" onclick={() => seedDatabase(50)} disabled={isLoading}>
               Seed 50 Documents
             </Button>
-            <Button on:click={() => createIndex(100, 'cosine')} disabled={isLoading}>
+            <Button class="bits-btn bits-btn" onclick={() => createIndex(100, 'cosine')} disabled={isLoading}>
               Create IVFFLAT Index
             </Button>
           </div>
@@ -382,7 +391,7 @@
               />
             </div>
             <div class="flex items-end">
-              <Button on:click={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
+              <Button class="bits-btn bits-btn" onclick={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
                 {isLoading ? 'Searching...' : 'Search'}
               </Button>
             </div>
@@ -441,7 +450,7 @@
             </CardDescription>
           </CardHeader>
           <CardContent class="space-y-3">
-            <Button on:click={testDocumentInsert} disabled={isLoading} class="w-full">
+            <Button onclick={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
               {isLoading ? 'Inserting...' : 'Test Document Insert'}
             </Button>
             <p class="text-sm text-muted-foreground">
@@ -460,16 +469,16 @@
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="grid grid-cols-2 gap-2">
-              <Button on:click={() => createIndex(50, 'cosine')} disabled={isLoading} size="sm">
+              <Button class="bits-btn bits-btn" onclick={() => createIndex(50, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (50 lists)
               </Button>
-              <Button on:click={() => createIndex(100, 'cosine')} disabled={isLoading} size="sm">
+              <Button class="bits-btn bits-btn" onclick={() => createIndex(100, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (100 lists)
               </Button>
-              <Button on:click={() => createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
+              <Button class="bits-btn bits-btn" onclick={() => createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
                 Euclidean
               </Button>
-              <Button on:click={() => createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
+              <Button class="bits-btn bits-btn" onclick={() => createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
                 Inner Product
               </Button>
             </div>

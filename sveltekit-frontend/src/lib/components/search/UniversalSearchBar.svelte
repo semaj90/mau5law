@@ -342,7 +342,7 @@ let searchTimeout = $state<NodeJS.Timeout | null>(null);
         {placeholder}
         class="flex-1 bg-transparent outline-none text-lg {inputClasses.includes('text-') ? '' : 'text-current'}"
         onfocus={() => showResults = true}
-        on:keydown={(e) => {
+        onkeydown={(e) => {
           if (e.key === 'Escape') {
             showResults = false;
             searchInput = '';

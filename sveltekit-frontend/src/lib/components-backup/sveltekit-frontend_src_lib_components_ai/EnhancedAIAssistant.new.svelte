@@ -241,7 +241,7 @@ I can provide more specific guidance if you share additional details about your 
       <div
         class="space-y-4"
         role="document"
-        on:click|stopPropagation
+        onclick|stopPropagation
         onkeydown={(e) => {
           if (e.key === "Escape") {
             showCitationDialog = false;
@@ -578,3 +578,4 @@ I can provide more specific guidance if you share additional details about your 
     background: #e5e7eb;
 }
 </style>
+

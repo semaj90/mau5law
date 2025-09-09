@@ -171,7 +171,7 @@
                       </p>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" on:click={ removeFile }>
+                  <Button variant="ghost" size="sm" onclick={ removeFile }>
                     <X class="h-4 w-4" />
                   </Button>
                 </div>
@@ -349,3 +349,4 @@
     </form>
   </CardContent>
 </Card>
+

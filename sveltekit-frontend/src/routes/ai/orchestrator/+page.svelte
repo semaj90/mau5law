@@ -4,8 +4,15 @@ Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
   import {
@@ -274,8 +281,8 @@ Showcases the service worker-based AI orchestration system
               <Button
                 variant="outline"
                 size="sm"
-                class="w-full"
-                on:click={() => runDemoScenario(scenario)}
+                class="w-full bits-btn bits-btn"
+                onclick={() => runDemoScenario(scenario)}
                 disabled={isProcessing}
               >
                 {#if isProcessing}
@@ -323,9 +330,9 @@ Showcases the service worker-based AI orchestration system
 
           <div class="flex gap-2">
             <Button
-              on:click={submitCustomTask}
+              onclick={submitCustomTask}
               disabled={isProcessing || !selectedModel}
-              class="flex-1"
+              class="flex-1 bits-btn bits-btn"
             >
               {#if isProcessing}
                 <Pause class="h-4 w-4 mr-2" />
@@ -336,7 +343,7 @@ Showcases the service worker-based AI orchestration system
               {/if}
             </Button>
 
-            <Button variant="outline" on:click={clearResults}>
+            <Button class="bits-btn bits-btn" variant="outline" onclick={clearResults}>
               <RotateCcw class="h-4 w-4" />
             </Button>
           </div>
@@ -352,7 +359,7 @@ Showcases the service worker-based AI orchestration system
               Task Results ({demoResults.length})
             </span>
             {#if demoResults.length > 0}
-              <Button variant="ghost" size="sm" on:click={clearResults}>
+              <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={clearResults}>
                 Clear
               </Button>
             {/if}
@@ -377,9 +384,7 @@ Showcases the service worker-based AI orchestration system
                       <span class="font-medium text-sm">
                         {result.task.providerId} - {result.task.model}
                       </span>
-                      <Badge variant="outline" class="text-xs">
-                        {result.task.type}
-                      </Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.task.type}</span>
                     </div>
 
                     {#if result.response}

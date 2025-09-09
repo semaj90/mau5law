@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
   import {
     errorHandler,
     type UserFriendlyError,
@@ -193,10 +195,10 @@ Timestamp: ${new Date().toISOString()}`;
           <div class="mx-auto px-4 max-w-7xl">
             <div class="mx-auto px-4 max-w-7xl">
               <span class="mx-auto px-4 max-w-7xl">Technical Details</span>
-              <Button
+              <Button class="bits-btn bits-btn"
                 variant="ghost"
                 size="sm"
-                on:on:click={() => copyErrorDetails()}
+                on:onclick={() => copyErrorDetails()}
                 class="mx-auto px-4 max-w-7xl"
                 aria-label="Copy error details"
               >
@@ -217,7 +219,7 @@ Timestamp: ${new Date().toISOString()}`;
             size="sm"
             variant="outline"
             class={getButtonClass(currentError.severity)}
-            on:on:click={() => retryAction()}
+            on:onclick={() => retryAction()}
             disabled={retryInProgress}
             aria-label="Retry action"
           >
@@ -231,10 +233,10 @@ Timestamp: ${new Date().toISOString()}`;
         {/if}
 
         {#if currentError.showDetails}
-          <Button
+          <Button class="bits-btn bits-btn"
             size="sm"
             variant="ghost"
-            on:on:click={() => (showDetails = !showDetails)}
+            on:onclick={() => (showDetails = !showDetails)}
             aria-label="Toggle error details"
           >
             {#if showDetails}
@@ -245,10 +247,10 @@ Timestamp: ${new Date().toISOString()}`;
           </Button>
         {/if}
 
-        <Button
+        <Button class="bits-btn bits-btn"
           size="sm"
           variant="ghost"
-          on:on:click={() => clearError()}
+          on:onclick={() => clearError()}
           aria-label="Dismiss error"
         >
           <X class="mx-auto px-4 max-w-7xl" />
@@ -287,10 +289,10 @@ Timestamp: ${new Date().toISOString()}`;
               <div class="mx-auto px-4 max-w-7xl">
                 <div class="mx-auto px-4 max-w-7xl">
                   <h4 class="mx-auto px-4 max-w-7xl">Technical Details</h4>
-                  <Button
+                  <Button class="bits-btn bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:on:click={() => copyErrorDetails()}
+                    on:onclick={() => copyErrorDetails()}
                     class="mx-auto px-4 max-w-7xl"
                     aria-label="Copy error details"
                   >
@@ -310,10 +312,10 @@ Timestamp: ${new Date().toISOString()}`;
 
         <div class="mx-auto px-4 max-w-7xl">
           {#if currentError.severity === "critical" || currentError.severity === "error"}
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="outline"
               size="sm"
-              on:on:click={() => reportError()}
+              on:onclick={() => reportError()}
               class="mx-auto px-4 max-w-7xl"
             >
               <Bug class="mx-auto px-4 max-w-7xl" />
@@ -322,10 +324,10 @@ Timestamp: ${new Date().toISOString()}`;
           {/if}
 
           {#if currentError.showDetails}
-            <Button
+            <Button class="bits-btn bits-btn"
               variant="outline"
               size="sm"
-              on:on:click={() => (showDetails = !showDetails)}
+              on:onclick={() => (showDetails = !showDetails)}
               class="mx-auto px-4 max-w-7xl"
             >
               {#if showDetails}
@@ -341,7 +343,7 @@ Timestamp: ${new Date().toISOString()}`;
           {#if currentError.canRetry}
             <Button
               class={`gap-2 ${getButtonClass(currentError.severity)}`}
-              on:on:click={() => retryAction()}
+              on:onclick={() => retryAction()}
               disabled={retryInProgress}
             >
               {#if retryInProgress}
@@ -354,9 +356,9 @@ Timestamp: ${new Date().toISOString()}`;
             </Button>
           {/if}
 
-          <Button
+          <Button class="bits-btn bits-btn"
             variant={currentError.canRetry ? "outline" : "default"}
-            on:on:click={() => clearError()}
+            on:onclick={() => clearError()}
           >
             {currentError.canRetry ? "Cancel" : "Close"}
           </Button>

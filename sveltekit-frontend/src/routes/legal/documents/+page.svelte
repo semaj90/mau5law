@@ -6,8 +6,12 @@
     Trash2, Edit2, Bot, Zap, AlertCircle, CheckCircle,
     Clock, BarChart3
   } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
+  import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import * as Card from '$lib/components/ui/card';
   import * as Dialog from '$lib/components/ui/dialog';
@@ -349,11 +353,11 @@
         </p>
       </div>
       <div class="flex gap-2">
-        <Button variant="outline" on:click={() => goto('/legal/documents/templates')}>
+        <Button class="bits-btn bits-btn" variant="outline" onclick={() => goto('/legal/documents/templates')}>
           <FileText class="h-4 w-4 mr-2" />
           Templates
         </Button>
-        <Button on:click={() => showUploadDialog = true}>
+        <Button class="bits-btn bits-btn" onclick={() => showUploadDialog = true}>
           <Plus class="h-4 w-4 mr-2" />
           Upload Document
         </Button>
@@ -470,7 +474,7 @@
               : 'Try adjusting your search terms or filters'
             }
           </p>
-          <Button on:click={() => showUploadDialog = true}>
+          <Button class="bits-btn bits-btn" onclick={() => showUploadDialog = true}>
             <Plus class="h-4 w-4 mr-2" />
             Upload Document
           </Button>
@@ -479,7 +483,7 @@
     {:else}
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {#each filteredDocuments as document}
-          <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" on:click={() => viewDocument(document)}>
+          <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" onclick={() => viewDocument(document)}>
             <Card.Header>
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-3">
@@ -500,10 +504,10 @@
                   </div>
                 </div>
                 <div class="flex gap-1">
-                  <Button variant="ghost" size="sm" on:click={(e) => { e.stopPropagation(); editDocument(document); }}>
+                  <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); editDocument(document); }}>
                     <Edit2 class="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" on:click={(e) => { e.stopPropagation(); deleteDocument(document); }}>
+                  <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); deleteDocument(document); }}>
                     <Trash2 class="h-4 w-4" />
                   </Button>
                 </div>
@@ -525,10 +529,10 @@
                 {#if document.tags.length > 0}
                   <div class="flex flex-wrap gap-1">
                     {#each document.tags.slice(0, 3) as tag}
-                      <Badge variant="outline" class="text-xs">{tag}</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                     {/each}
                     {#if document.tags.length > 3}
-                      <Badge variant="outline" class="text-xs">+{document.tags.length - 3} more</Badge>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{document.tags.length - 3} more</span>
                     {/if}
                   </div>
                 {/if}
@@ -582,7 +586,7 @@
               <FileText class="h-8 w-8 mx-auto text-green-600" />
               <p class="font-medium">{uploadFile.name}</p>
               <p class="text-sm text-muted-foreground">{formatFileSize(uploadFile.size)}</p>
-              <Button variant="outline" size="sm" on:click={() => uploadFile = null}>
+              <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => uploadFile = null}>
                 Remove
               </Button>
             </div>
@@ -598,7 +602,7 @@
                     type="file" 
                     class="sr-only" 
                     accept=".pdf,.doc,.docx,.txt,.rtf" 
-                    on:change={handleFileSelect} 
+                    onchange={handleFileSelect} 
                   />
                 </label>
               </div>
@@ -662,10 +666,10 @@
     </div>
 
     <Dialog.Footer>
-      <Button variant="outline" on:click={() => { showUploadDialog = false; resetUploadForm(); }}>
+      <Button class="bits-btn bits-btn" variant="outline" onclick={() => { showUploadDialog = false; resetUploadForm(); }}>
         Cancel
       </Button>
-      <Button on:click={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
+      <Button class="bits-btn bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
         {#if uploading}
           <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2"></div>
         {:else}
@@ -708,7 +712,7 @@
             <strong class="text-sm">Tags:</strong>
             <div class="flex flex-wrap gap-1 mt-1">
               {#each selectedDocument.tags as tag}
-                <Badge variant="outline" class="text-xs">{tag}</Badge>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
               {/each}
             </div>
           </div>
@@ -719,7 +723,7 @@
             <div class="flex items-center gap-2">
               <Bot class="h-5 w-5 text-purple-600" />
               <h3 class="font-semibold">AI Analysis</h3>
-              <Badge variant="secondary">Confidence: {(selectedDocument.aiAnalysis.confidence * 100).toFixed(1)}%</Badge>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Confidence: {(selectedDocument.aiAnalysis.confidence * 100).toFixed(1)}%</span>
             </div>
             
             <div class="space-y-2">
@@ -785,10 +789,10 @@
       </div>
       
       <Dialog.Footer>
-        <Button variant="outline" on:click={() => showAIAnalysisDialog = false}>
+        <Button class="bits-btn bits-btn" variant="outline" onclick={() => showAIAnalysisDialog = false}>
           Close
         </Button>
-        <Button on:click={() => editDocument(selectedDocument)}>
+        <Button class="bits-btn bits-btn" onclick={() => editDocument(selectedDocument)}>
           <Edit2 class="h-4 w-4 mr-2" />
           Edit Document
         </Button>

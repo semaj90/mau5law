@@ -1,8 +1,13 @@
 <!-- EvidenceCard.svelte - Fixed for Svelte 5 -->
 <script lang="ts">
-  import Badge from "$lib/components/ui/Badge.svelte";
+  // Badge replaced with span - not available in enhanced-bits
   import Button from "$lib/components/ui/button/Button.svelte";
-  import { Card, CardContent, CardHeader } from "$lib/components/ui/card";
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import type { Evidence } from "$lib/types/index";
 
   // --- SVELTE 5 PROPS ---
@@ -103,18 +108,18 @@
         <Button
           variant="ghost"
           size="sm"
-          class="h-8 w-8 p-0"
+          class="h-8 w-8 p-0 bits-btn bits-btn"
           aria-label="View Evidence"
-          on:click={() => onView?.(item)}
+          onclick={() => onView?.(item)}
         >
           <i class="i-lucide-eye w-4 h-4" aria-hidden="true"></i>
         </Button>
         <Button
           variant="ghost"
           size="sm"
-          class="h-8 w-8 p-0"
+          class="h-8 w-8 p-0 bits-btn bits-btn"
           aria-label="More Options"
-          on:click={() => onMoreOptions?.(item)}
+          onclick={() => onMoreOptions?.(item)}
         >
           <i class="i-lucide-more-horizontal w-4 h-4" aria-hidden="true"></i>
         </Button>
@@ -170,14 +175,10 @@
       {#if item.tags && item.tags.length > 0}
         <div class="flex flex-wrap gap-1">
           {#each item.tags.slice(0, 3) as tag}
-            <Badge variant="secondary" class="text-xs px-2 py-0.5">
-              {tag}
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
           {/each}
           {#if item.tags.length > 3}
-            <Badge variant="outline" class="text-xs px-2 py-0.5">
-              +{item.tags.length - 3}
-            </Badge>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{item.tags.length - 3}</span>
           {/if}
         </div>
       {/if}

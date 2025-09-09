@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
     onvalidated
   }: Props = $props();
 
-  import Button from "$lib/components/ui/Button.svelte";
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import {
     AlertTriangle,
@@ -133,11 +133,11 @@ let showCorrections = $state(false);
           </DialogPrimitive.Description>
         </div>
         <DialogPrimitive.Close let:builder>
-          <Button
+          <Button class="bits-btn bits-btn"
             {...builder}
             variant="ghost"
             size="sm"
-            on:on:click={() => closeModal()}
+            on:onclick={() => closeModal()}
           >
             ×
           </Button>
@@ -210,8 +210,8 @@ let showCorrections = $state(false);
             <div class="space-y-4">
               <Button
                 variant={validationChoice === "approve" ? "default" : "outline"}
-                class="space-y-4"
-                on:on:click={() => handleValidationChoice("approve")}
+                class="space-y-4 bits-btn bits-btn"
+                on:onclick={() => handleValidationChoice("approve")}
               >
                 <CheckCircle class="space-y-4" />
                 Yes, it's accurate
@@ -219,8 +219,8 @@ let showCorrections = $state(false);
 
               <Button
                 variant={validationChoice === "reject" ? "danger" : "outline"}
-                class="space-y-4"
-                on:on:click={() => handleValidationChoice("reject")}
+                class="space-y-4 bits-btn bits-btn"
+                on:onclick={() => handleValidationChoice("reject")}
               >
                 <XCircle class="space-y-4" />
                 No, needs correction
@@ -331,11 +331,11 @@ let showCorrections = $state(false);
                     keydown={(e) =>
                       e.key === "Enter" && (e.preventDefault(), addTag())}
                   />
-                  <Button
+                  <Button class="bits-btn bits-btn"
                     type="button"
                     variant="secondary"
                     size="sm"
-                    on:on:click={() => addTag()}
+                    on:onclick={() => addTag()}
                   >
                     <Tag class="space-y-4" />
                   </Button>
@@ -347,16 +347,16 @@ let showCorrections = $state(false);
 
         <!-- Footer -->
         <div class="space-y-4">
-          <Button
+          <Button class="bits-btn bits-btn"
             variant="ghost"
-            on:on:click={() => closeModal()}
+            on:onclick={() => closeModal()}
             disabled={isSubmitting}
           >
             Cancel
           </Button>
 
-          <Button
-            on:on:click={() => submitValidation()}
+          <Button class="bits-btn bits-btn"
+            on:onclick={() => submitValidation()}
             disabled={!validationChoice || isSubmitting}
             class="space-y-4"
           >

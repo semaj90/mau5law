@@ -382,7 +382,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
               <FinalFantasyButton
                 variant="magic"
                 size="small"
-                on:click={() => showYoRHaModal = true}
+                onclick={() => showYoRHaModal = true}
                 icon="🤖"
               >
                 {#snippet children()}YoRHa 3D{/snippet}
@@ -391,7 +391,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
               <FinalFantasyButton
                 variant="item"
                 size="small"
-                on:click={() => showNESModal = true}
+                onclick={() => showNESModal = true}
                 icon="🎮"
               >
                 {#snippet children()}NES Cache{/snippet}
@@ -400,7 +400,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
               <FinalFantasyButton
                 variant="success"
                 size="small"
-                on:click={() => showWebGLModal = true}
+                onclick={() => showWebGLModal = true}
                 icon="🌟"
               >
                 {#snippet children()}WebGL GPU{/snippet}
@@ -409,7 +409,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
               <FinalFantasyButton
                 variant="primary"
                 size="small"
-                on:click={() => showHybridModal = true}
+                onclick={() => showHybridModal = true}
                 icon="⚡"
               >
                 {#snippet children()}Hybrid Sync{/snippet}
@@ -588,7 +588,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     {/snippet}
 
     {#snippet actions()}
-  <FinalFantasyButton variant="secondary" on:click={() => showYoRHaModal = false}>
+  <FinalFantasyButton variant="secondary" onclick={() => showYoRHaModal = false}>
         {#snippet children()}Close{/snippet}
       </FinalFantasyButton>
     {/snippet}
@@ -651,7 +651,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     {/snippet}
 
     {#snippet actions()}
-  <FinalFantasyButton variant="secondary" on:click={() => showNESModal = false}>
+  <FinalFantasyButton variant="secondary" onclick={() => showNESModal = false}>
         {#snippet children()}Close{/snippet}
       </FinalFantasyButton>
     {/snippet}
@@ -725,7 +725,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     </FinalFantasyContainer>
 
     <svelte:fragment slot="actions">
-  <FinalFantasyButton variant="secondary" on:click={() => showWebGLModal = false}>
+  <FinalFantasyButton variant="secondary" onclick={() => showWebGLModal = false}>
         Close
       </FinalFantasyButton>
     </svelte:fragment>
@@ -790,7 +790,7 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
     </FinalFantasyContainer>
 
     <svelte:fragment slot="actions">
-  <FinalFantasyButton variant="secondary" on:click={() => showHybridModal = false}>
+  <FinalFantasyButton variant="secondary" onclick={() => showHybridModal = false}>
         Close
       </FinalFantasyButton>
     </svelte:fragment>

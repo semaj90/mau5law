@@ -482,7 +482,7 @@
 
       <div class="search-actions">
         <Button
-          on:click={() => performSearch()}
+          onclick={() => performSearch()}
           disabled={$isSearching || !$searchQuery.trim()}
           class="search-button"
         >
@@ -498,7 +498,7 @@
         {#if enableFilters}
           <Button
             variant="outline"
-            on:click={() => showFilters.update((s) => !s)}
+            onclick={() => showFilters.update((s) => !s)}
             class="filter-button"
           >
             <Filter class="mr-2" size={16} />
@@ -514,7 +514,7 @@
         {#if enableAnalytics}
           <Button
             variant="outline"
-            on:click={() => showAnalytics.update((s) => !s)}
+            onclick={() => showAnalytics.update((s) => !s)}
           >
             <BarChart3 class="mr-2" size={16} />
             Analytics
@@ -532,7 +532,7 @@
             <Button
               variant="ghost"
               size="sm"
-              on:click={() => {
+              onclick={() => {
                 searchQuery.set(historyItem);
                 performSearch(historyItem);
               }}
@@ -553,7 +553,7 @@
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           <span>Advanced Filters</span>
-          <Button variant="ghost" size="sm" on:click={resetFilters}>
+          <Button variant="ghost" size="sm" onclick={resetFilters}>
             Reset
           </Button>
         </CardTitle>
@@ -651,7 +651,7 @@
           </div>
         </div>
 
-        <Button on:click={applyFilters} class="w-full">Apply Filters</Button>
+        <Button onclick={applyFilters} class="w-full">Apply Filters</Button>
       </CardContent>
     </Card>
   {/if}
@@ -688,7 +688,7 @@
       <!-- Results List -->
       <div class="results-list">
         {#each $searchResults as result (result.id)}
-          <Card class="result-item" on:click={() => handleResultClick(result)}>
+          <Card class="result-item" onclick={() => handleResultClick(result)}>
             <CardContent class="result-content">
               <!-- Result Header -->
               <div class="result-header">
@@ -774,7 +774,7 @@
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button variant="outline" on:click={resetFilters}>Reset Filters</Button>
+        <Button variant="outline" onclick={resetFilters}>Reset Filters</Button>
       </div>
     </div>
   {/if}
@@ -1375,3 +1375,4 @@
     color: var(--muted-foreground);
   }
 </style>
+

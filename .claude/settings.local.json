@@ -2,7 +2,18 @@
   "permissions": {
     "allow": [
       "Bash(npx svelte-kit sync)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(npm run dev:full:redis-gpu:*)",
+      "Bash(curl:*)",
+      "Bash(psql:*)",
+      "Bash(timeout 30 npm run dev:full:redis-gpu)",
+      "Bash(npm run dev:full:*)",
+      "Bash(timeout:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npx tsx:*)",
+      "Bash(time curl:*)",
+      "Bash(npx vite build:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

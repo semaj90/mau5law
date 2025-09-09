@@ -1,10 +1,11 @@
 <!-- Comprehensive Legal Components Demo -->
 <script lang="ts">
-  import { 
-    BitsDataTable, BitsCombobox, BitsDatePicker, ToastProvider,
-    CaseTimeline, ChainOfCustodyTracker, LegalPrecedentCard, CriminalProfile,
-    type DataTableColumn, type ComboboxOption
-  } from '$lib/components/ui/bits';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
   import { Calendar, FileText, Users, Scale, Shield, AlertTriangle } from 'lucide-svelte';
   // Page state
   let activeTab = $state('data-table');

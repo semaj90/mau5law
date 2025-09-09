@@ -314,28 +314,28 @@
     <button 
       class="n64-tab"
       class:active={selectedTab === 'evidence'}
-      on:click={() => selectedTab = 'evidence'}
+      onclick={() => selectedTab = 'evidence'}
     >
       EVIDENCE
     </button>
     <button 
       class="n64-tab"
       class:active={selectedTab === 'conflicts'}
-      on:click={() => selectedTab = 'conflicts'}
+      onclick={() => selectedTab = 'conflicts'}
     >
       CONFLICTS ({conflicts.length})
     </button>
     <button 
       class="n64-tab"
       class:active={selectedTab === 'search'}
-      on:click={() => selectedTab = 'search'}
+      onclick={() => selectedTab = 'search'}
     >
       SEARCH
     </button>
     <button 
       class="n64-tab"
       class:active={selectedTab === 'cache'}
-      on:click={() => selectedTab = 'cache'}
+      onclick={() => selectedTab = 'cache'}
     >
       CACHE
     </button>
@@ -364,10 +364,10 @@
                 bind:this={fileInput}
                 type="file"
                 accept="image/*,application/pdf,.txt,.doc,.docx"
-                on:change={handleFileSelect}
+                onchange={handleFileSelect}
                 style="display: none;"
               />
-              <button class="n64-button" on:click={() => fileInput?.click()}>
+              <button class="n64-button" onclick={() => fileInput?.click()}>
                 SELECT FILE
               </button>
             </div>
@@ -379,7 +379,7 @@
             <div class="evidence-header">
               <h3>EVIDENCE #{currentEvidence.id.slice(-8)}</h3>
               <div class="evidence-actions">
-                <button class="n64-button small" on:click={screenshotEvidence}>
+                <button class="n64-button small" onclick={screenshotEvidence}>
                   📸 ENHANCE
                 </button>
               </div>
@@ -457,7 +457,7 @@
             <h4>RECENT EVIDENCE</h4>
             <div class="history-grid">
               {#each evidenceHistory.slice(0, 6) as evidence}
-                <div class="history-item" on:click={() => currentEvidence = evidence}>
+                <div class="history-item" onclick={() => currentEvidence = evidence}>
                   <div class="history-id">#{evidence.id.slice(-6)}</div>
                   <div class="history-type">{evidence.type.toUpperCase()}</div>
                   <div class="history-relevance" class:high={evidence.analysis.legalRelevance === 'high'}>
@@ -524,7 +524,7 @@
           <input
             type="text"
             bind:value={searchQuery}
-            on:input={handleSearchInput}
+            oninput={handleSearchInput}
             placeholder="Enter search query..."
             class="n64-input"
           />
@@ -538,7 +538,7 @@
               {#each searchSuggestions as suggestion}
                 <button 
                   class="suggestion-item"
-                  on:click={() => applySuggestion(suggestion)}
+                  onclick={() => applySuggestion(suggestion)}
                 >
                   <div class="suggestion-query">{suggestion.query}</div>
                   <div class="suggestion-meta">

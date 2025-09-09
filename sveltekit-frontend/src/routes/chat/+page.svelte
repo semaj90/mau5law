@@ -5,7 +5,9 @@
 		Brain, Zap, Clock, Trash2, Copy, ThumbsUp, ThumbsDown,
 		AlertCircle, CheckCircle, BookOpen, Gavel, Search
 	} from 'lucide-svelte';
-	import { Button } from '$lib/components/ui/button';
+	import {
+    Button
+  } from '$lib/components/ui/enhanced-bits';;
 	import * as Card from '$lib/components/ui/card';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Badge } from '$lib/components/ui/badge';
@@ -454,21 +456,21 @@
 				</div>
 
 				<div class="flex items-center gap-2">
-					<Button variant="outline" size="sm" on:click={() => showSessions = true}>
+					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => showSessions = true}>
 						<Clock class="h-4 w-4 mr-2" />
 						Sessions ({chatSessions.length})
 					</Button>
-					<Button variant="outline" size="sm" on:click={() => showAdvancedOptions = true}>
+					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => showAdvancedOptions = true}>
 						<Zap class="h-4 w-4 mr-2" />
 						Options
 					</Button>
 					{#if analysisMode === 'qlora_topology'}
-						<Button variant="outline" size="sm" on:click={() => showQLoRAMonitoring = true}>
+						<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => showQLoRAMonitoring = true}>
 							<Brain class="h-4 w-4 mr-2" />
 							QLoRA Monitor
 						</Button>
 					{/if}
-					<Button variant="secondary" size="sm" on:click={createNewSession}>
+					<Button class="bits-btn bits-btn" variant="secondary" size="sm" onclick={createNewSession}>
 						New Chat
 					</Button>
 				</div>
@@ -509,7 +511,7 @@
 					</Card.Header>
 					<Card.Content>
 						<div class="space-y-2">
-							<Badge variant="secondary">{analysisMode.replace('_', ' ')}</Badge>
+							<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{analysisMode.replace('_', ' ')}</span>
 							<p class="text-xs text-gray-400">
 								{#if analysisMode === 'general'}
 									General legal questions and guidance
@@ -603,7 +605,7 @@
 													{#if message.metadata.legalConcepts && message.metadata.legalConcepts.length > 0}
 														<div class="flex flex-wrap gap-1 mt-2">
 															{#each message.metadata.legalConcepts.slice(0, 3) as concept}
-																<Badge variant="outline" class="text-xs">{concept}</Badge>
+																<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{concept}</span>
 															{/each}
 														</div>
 													{/if}
@@ -708,10 +710,10 @@
 								></textarea>
 							</div>
 							<Button
-								on:click={send}
+								onclick={send}
 								disabled={busy || !input.trim()}
 								size="lg"
-								class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+								class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold bits-btn bits-btn"
 							>
 								{#if busy}
 									<Loader2 class="w-5 h-5 animate-spin" />
@@ -752,17 +754,17 @@
 						</p>
 					</div>
 					<div class="flex items-center gap-2">
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant={currentSessionId === session.id ? 'default' : 'outline'}
 							size="sm"
-							on:click={() => { loadSession(session.id); showSessions = false; }}
+							onclick={() => { loadSession(session.id); showSessions = false; }}
 						>
 							{currentSessionId === session.id ? 'Current' : 'Load'}
 						</Button>
-						<Button
+						<Button class="bits-btn bits-btn"
 							variant="ghost"
 							size="sm"
-							on:click={() => deleteSession(session.id)}
+							onclick={() => deleteSession(session.id)}
 						>
 							<Trash2 class="h-4 w-4" />
 						</Button>
@@ -772,8 +774,8 @@
 		</div>
 
 		<Dialog.Footer>
-			<Button variant="outline" on:click={() => showSessions = false}>Close</Button>
-			<Button on:click={() => { createNewSession(); showSessions = false; }}>New Session</Button>
+			<Button class="bits-btn bits-btn" variant="outline" onclick={() => showSessions = false}>Close</Button>
+			<Button class="bits-btn bits-btn" onclick={() => { createNewSession(); showSessions = false; }}>New Session</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
@@ -805,7 +807,7 @@
 		</div>
 
 		<Dialog.Footer>
-			<Button variant="outline" on:click={() => showAdvancedOptions = false}>Close</Button>
+			<Button class="bits-btn bits-btn" variant="outline" onclick={() => showAdvancedOptions = false}>Close</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
@@ -823,7 +825,7 @@
 		</div>
 
 		<Dialog.Footer>
-			<Button variant="outline" on:click={() => showQLoRAMonitoring = false}>Close</Button>
+			<Button class="bits-btn bits-btn" variant="outline" onclick={() => showQLoRAMonitoring = false}>Close</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>

@@ -2,10 +2,17 @@
 <!-- Integrates Ollama, LLaMA.cpp WebASM, WebGPU acceleration, and Go microservices -->
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+  } from '$lib/components/ui/enhanced-bits';;
 	import Button from '$lib/components/ui/button/Button.svelte';
-	import Badge from '$lib/components/ui/Badge.svelte';
-	import { Input } from '$lib/components/ui/input';
+	// Badge replaced with span - not available in enhanced-bits
+	import {
+    Input
+  } from '$lib/components/ui/enhanced-bits';;
 	import { 
 		Bot, Send, Cpu, Zap, Database, MessageSquare,
 		Settings, Mic, MicOff, Upload, Download,
@@ -562,11 +569,11 @@
 						</Badge>
 					</div>
 					
-					<Button variant="outline" size="sm" onclick={exportConversation}>
+					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={exportConversation}>
 						<Download class="w-4 h-4 mr-1" />
 						Export
 					</Button>
-					<Button variant="outline" size="sm" onclick={clearConversation}>
+					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={clearConversation}>
 						<Square class="w-4 h-4 mr-1" />
 						Clear
 					</Button>
@@ -650,9 +657,7 @@
 								
 								{#if message.backend}
 									<div class="flex items-center gap-1 text-xs">
-										<Badge variant="outline" class="text-xs py-0">
-											{message.backend}
-										</Badge>
+										<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.backend}</span>
 										{#if message.processingTime}
 											<span class="opacity-70">{message.processingTime}ms</span>
 										{/if}
@@ -702,7 +707,7 @@
 							variant="ghost"
 							size="sm"
 							onclick={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
-							class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+							class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bits-btn bits-btn"
 							disabled={readonly}
 						>
 							{#if voiceRecording.isRecording}
@@ -714,7 +719,7 @@
 					{/if}
 				</div>
 				
-				<Button 
+				<Button class="bits-btn bits-btn" 
 					onclick={sendMessage}
 					disabled={!currentMessage.trim() || isProcessing || readonly}
 				>
@@ -725,16 +730,16 @@
 			
 			<!-- Quick Actions -->
 			<div class="flex gap-2 mt-3 flex-wrap">
-				<Button variant="outline" size="sm" onclick={() => currentMessage = 'Analyze the evidence in this case'}>
+				<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'Analyze the evidence in this case'}>
 					🔍 Analyze Evidence
 				</Button>
-				<Button variant="outline" size="sm" onclick={() => currentMessage = 'What are the key legal issues?'}>
+				<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'What are the key legal issues?'}>
 					⚖️ Legal Issues
 				</Button>
-				<Button variant="outline" size="sm" onclick={() => currentMessage = 'Generate a case summary'}>
+				<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'Generate a case summary'}>
 					📋 Case Summary
 				</Button>
-				<Button variant="outline" size="sm" onclick={() => currentMessage = 'Find relevant precedents'}>
+				<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'Find relevant precedents'}>
 					📚 Find Precedents
 				</Button>
 			</div>

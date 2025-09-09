@@ -464,7 +464,7 @@ let dropZone = $state<HTMLDivElement;
         to {maxFiles} files
       </p>
 
-      <Button variant="outline" class="mt-4" disabled={$isProcessing}>
+      <Button variant="outline" class="mt-4 bits-btn bits-btn" disabled={$isProcessing}>
         <Upload class="mr-2" size={16} />
         Choose Files
       </Button>
@@ -563,19 +563,19 @@ let dropZone = $state<HTMLDivElement;
 
                 <div class="action-buttons">
                   {#if showMetadataForm && file.status === "pending"}
-                    <Button
+                    <Button class="bits-btn bits-btn"
                       variant="ghost"
                       size="sm"
-                      on:on:click={() => openMetadataDialog(file)}
+                      on:onclick={() => openMetadataDialog(file)}
                     >
                       Edit
                     </Button>
                   {/if}
 
-                  <Button
+                  <Button class="bits-btn bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:on:click={() => removeFile(file.id)}
+                    on:onclick={() => removeFile(file.id)}
                     disabled={file.status === "uploading" ||
                       file.status === "processing"}
                   >
@@ -591,8 +591,8 @@ let dropZone = $state<HTMLDivElement;
 
     <!-- Upload Actions -->
     <div class="upload-actions mt-6">
-      <Button
-        on:on:click={uploadFiles}
+      <Button class="bits-btn bits-btn"
+        on:onclick={uploadFiles}
         disabled={$isProcessing || $files.every((f) => f.status !== "pending")}
         class="mr-4"
       >
@@ -606,9 +606,9 @@ let dropZone = $state<HTMLDivElement;
         {/if}
       </Button>
 
-      <Button
+      <Button class="bits-btn bits-btn"
         variant="outline"
-        on:on:click={() => files.set([])}
+        on:onclick={() => files.set([])}
         disabled={$isProcessing}
       >
         Clear All
@@ -687,11 +687,11 @@ let dropZone = $state<HTMLDivElement;
           </div>
 
           <div class="dialog-actions">
-            <Button variant="outline" on:on:click={() => showMetadata.set(false)}>
+            <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => showMetadata.set(false)}>
               Cancel
             </Button>
-            <Button
-              on:on:click={() => {
+            <Button class="bits-btn bits-btn"
+              on:onclick={() => {
                 if ($selectedFile) {
                   updateFileMetadata($selectedFile.id, $selectedFile.metadata);
                 }

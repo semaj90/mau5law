@@ -1,21 +1,13 @@
 import type { RequestHandler } from './$types';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
 import { json } from '@sveltejs/kit';
 import { randomUUID } from 'node:crypto';
+import { dbPool } from '$lib/server/database-pool-service';
+import { embeddingCache } from '$lib/server/embedding-cache-service';
 import { chatMessages } from '$lib/server/db/schema-unified';
 import { eq } from 'drizzle-orm';
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
-const sql = postgres(connectionString, { 
-  host: 'localhost',
-  port: 5433,
-  database: 'legal_ai_db',
-  username: 'legal_admin',
-  password: '123456',
-  max: 5 
-});
-const db = drizzle(sql);
+// Using enhanced database pool service
+// No need for manual connection setup
 
 async function askOllama(prompt: string, model = 'gemma3-legal'): Promise<string> {
   try {
@@ -32,19 +24,35 @@ async function askOllama(prompt: string, model = 'gemma3-legal'): Promise<string
   }
 }
 
-async function generateGemmaEmbedding(text: string): Promise<number[] | null> {
+async function generateGemmaEmbedding(text: string, model: string = 'nomic-embed-text'): Promise<number[] | null> {
   try {
+    // Check cache first
+    const cached = await embeddingCache.getEmbedding(text, model);
+    if (cached) {
+      console.log('📋 Using cached embedding');
+      return cached;
+    }
+
+    // Generate new embedding
     const res = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        model: 'nomic-embed-text', // Fallback to nomic if gemma embeddings not available
+        model,
         prompt: text 
       })
     });
     if (!res.ok) throw new Error(`Embedding error ${res.status}`);
     const data = await res.json();
-    return data.embedding || null;
+    
+    const embedding = data.embedding || null;
+    if (embedding) {
+      // Cache the result
+      await embeddingCache.cacheEmbedding(text, embedding, model);
+      console.log('💾 Cached new embedding');
+    }
+    
+    return embedding;
   } catch (e) {
     console.warn('Embedding generation failed, storing without embedding:', e);
     return null;
@@ -62,18 +70,34 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!sessionId) return json({ error: 'sessionId required' }, { status: 400 });
     if (!content) return json({ error: 'content required' }, { status: 400 });
 
-    // Ensure the session exists, create it if it doesn't
-    const existingSession = await sql`
-      SELECT id FROM chat_sessions WHERE id = ${sessionId}
-    `;
+    // Get database connection with pooling
+    const db = await dbPool.getDrizzle('gpu-assistant');
+    
+    // Ensure the session exists using cached query
+    const sessionCheckQuery = 'SELECT id FROM chat_sessions WHERE id = $1';
+    const existingSession = await dbPool.queryCached(
+      sessionCheckQuery, 
+      [sessionId], 
+      'gpu-assistant',
+      60 // Cache for 1 minute
+    );
     
     if (existingSession.length === 0) {
       // Create the session if it doesn't exist
-      await sql`
+      const insertQuery = `
         INSERT INTO chat_sessions (id, title, context, metadata) 
-        VALUES (${sessionId}, 'GPU Assistant Session', '{}', '{"source": "gpu-assistant"}')
+        VALUES ($1, $2, $3, $4)
         ON CONFLICT (id) DO NOTHING
       `;
+      await dbPool.queryCached(
+        insertQuery,
+        [sessionId, 'GPU Assistant Session', '{}', '{"source": "gpu-assistant"}'],
+        'gpu-assistant',
+        1 // Short cache for insert operations
+      );
+      
+      // Invalidate session cache after insert
+      await embeddingCache.invalidate(sessionId, 'sessions');
     }
 
     // Generate embedding for user message
@@ -88,18 +112,16 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: { source: 'gpu-assistant', hasEmbedding: !!userEmbedding }
     };
     
-    // Insert user message with proper vector embedding
-    if (userEmbedding && userEmbedding.length > 0) {
-      await sql`
-        INSERT INTO chat_messages (id, session_id, role, content, embedding, metadata)
-        VALUES (${userMsg.id}, ${sessionId}, ${userMsg.role}, ${content}, ${JSON.stringify(userEmbedding)}::vector, ${JSON.stringify(userMsg.metadata)})
-      `;
-    } else {
-      await sql`
-        INSERT INTO chat_messages (id, session_id, role, content, metadata)
-        VALUES (${userMsg.id}, ${sessionId}, ${userMsg.role}, ${content}, ${JSON.stringify(userMsg.metadata)})
-      `;
-    }
+    // Insert user message with proper vector embedding using pooled connection
+    const insertUserQuery = userEmbedding && userEmbedding.length > 0 ?
+      'INSERT INTO chat_messages (id, session_id, role, content, embedding, metadata) VALUES ($1, $2, $3, $4, $5::vector, $6)' :
+      'INSERT INTO chat_messages (id, session_id, role, content, metadata) VALUES ($1, $2, $3, $4, $5)';
+      
+    const userParams = userEmbedding && userEmbedding.length > 0 ?
+      [userMsg.id, sessionId, userMsg.role, content, JSON.stringify(userEmbedding), JSON.stringify(userMsg.metadata)] :
+      [userMsg.id, sessionId, userMsg.role, content, JSON.stringify(userMsg.metadata)];
+      
+    await dbPool.queryCached(insertUserQuery, userParams, 'gpu-assistant', 1);
 
     // Get AI response
     const reply = await askOllama(content, model);
@@ -116,18 +138,19 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: { source: 'gpu-assistant', model, hasEmbedding: !!assistantEmbedding }
     };
     
-    // Insert assistant message with proper vector embedding
-    if (assistantEmbedding && assistantEmbedding.length > 0) {
-      await sql`
-        INSERT INTO chat_messages (id, session_id, role, content, embedding, metadata)
-        VALUES (${asstMsg.id}, ${sessionId}, ${asstMsg.role}, ${reply}, ${JSON.stringify(assistantEmbedding)}::vector, ${JSON.stringify(asstMsg.metadata)})
-      `;
-    } else {
-      await sql`
-        INSERT INTO chat_messages (id, session_id, role, content, metadata)
-        VALUES (${asstMsg.id}, ${sessionId}, ${asstMsg.role}, ${reply}, ${JSON.stringify(asstMsg.metadata)})
-      `;
-    }
+    // Insert assistant message with proper vector embedding using pooled connection
+    const insertAssistantQuery = assistantEmbedding && assistantEmbedding.length > 0 ?
+      'INSERT INTO chat_messages (id, session_id, role, content, embedding, metadata) VALUES ($1, $2, $3, $4, $5::vector, $6)' :
+      'INSERT INTO chat_messages (id, session_id, role, content, metadata) VALUES ($1, $2, $3, $4, $5)';
+      
+    const assistantParams = assistantEmbedding && assistantEmbedding.length > 0 ?
+      [asstMsg.id, sessionId, asstMsg.role, reply, JSON.stringify(assistantEmbedding), JSON.stringify(asstMsg.metadata)] :
+      [asstMsg.id, sessionId, asstMsg.role, reply, JSON.stringify(asstMsg.metadata)];
+      
+    await dbPool.queryCached(insertAssistantQuery, assistantParams, 'gpu-assistant', 1);
+    
+    // Invalidate session cache after new messages
+    await embeddingCache.invalidate(sessionId, 'sessions');
 
     return json({ 
       success: true,
@@ -155,13 +178,19 @@ export const GET: RequestHandler = async ({ url }) => {
       );
     }
     
-    // Use raw SQL to avoid schema issues
-    const messages = await sql`
+    // Use cached query for message retrieval
+    const messagesQuery = `
       SELECT id, session_id, role, content, metadata, created_at
       FROM chat_messages 
-      WHERE session_id = ${sessionId}
+      WHERE session_id = $1
       ORDER BY created_at ASC
     `;
+    const messages = await dbPool.queryCached(
+      messagesQuery, 
+      [sessionId], 
+      'gpu-assistant',
+      30 // Cache messages for 30 seconds
+    );
     
     return json({ 
       success: true, 

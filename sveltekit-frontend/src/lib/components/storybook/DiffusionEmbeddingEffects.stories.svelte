@@ -408,7 +408,7 @@
 					<input 
 						type="checkbox" 
 						checked={enabled} 
-						on:change={() => toggleFeatureFlag(flag)}
+						onchange={() => toggleFeatureFlag(flag)}
 					>
 					<span class="flag-name">{flag}</span>
 				</label>
