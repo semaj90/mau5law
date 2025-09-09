@@ -1,15 +1,16 @@
 <script lang="ts">
-  import { Dialog, Button, Badge, Card, Checkbox, Select, Tabs, Toast, Popover, Tooltip } from 'bits-ui';
+  import { Dialog, Button, Card, Checkbox, Select, Tabs, Toast, Popover, Tooltip } from 'bits-ui';
   import 'nes.css/css/nes.min.css';
 
-  let dialogOpen = $state(false);
-  let toastOpen = $state(false);
-  let popoverOpen = $state(false);
-  let tooltipOpen = $state(false);
-  let selectedValue = $state('option1');
-  let checkboxChecked = $state(false);
-  let activeTab = $state('tab1');
-  let counterValue = $state(0);
+  // Use plain Svelte variables instead of non-standard $state(...) helper
+  let dialogOpen: boolean = false;
+  let toastOpen: boolean = false;
+  let popoverOpen: boolean = false;
+  let tooltipOpen: boolean = false;
+  let selectedValue: string = 'option1';
+  let checkboxChecked: boolean = false;
+  let activeTab: string = 'tab1';
+  let counterValue: number = 0;
 
   function showToast() {
     toastOpen = true;
@@ -97,15 +98,15 @@
     </section>
 
     <!-- Dialog Component -->
-    <Dialog.Root bind:open={dialogOpen}>
-      <Dialog.Portal>
-        <Dialog.Overlay class="dialog-overlay" />
-        <Dialog.Content class="nes-dialog dialog-content">
+    <svelte:component this={Dialog.Root} bind:open={dialogOpen}>
+      <svelte:component this={Dialog.Portal}>
+        <svelte:component this={Dialog.Overlay} class="dialog-overlay" />
+        <svelte:component this={Dialog.Content} class="nes-dialog dialog-content">
           <form method="dialog">
-            <Dialog.Title class="nes-text is-primary">
+            <svelte:component this={Dialog.Title} class="nes-text is-primary">
               🏆 Achievement Unlocked!
-            </Dialog.Title>
-            <Dialog.Description>
+            </svelte:component>
+            <svelte:component this={Dialog.Description}>
               <div class="nes-container">
                 <p>You've successfully opened a NES.css styled dialog!</p>
                 <div class="lists">
@@ -116,40 +117,30 @@
                   </ul>
                 </div>
               </div>
-            </Dialog.Description>
+            </svelte:component>
             <menu class="dialog-actions">
-              <Dialog.Close class="nes-btn">Cancel</Dialog.Close>
-              <Dialog.Close class="nes-btn is-primary">Accept</Dialog.Close>
+              <svelte:component this={Dialog.Close} class="nes-btn">Cancel</svelte:component>
+              <svelte:component this={Dialog.Close} class="nes-btn is-primary">Accept</svelte:component>
             </menu>
           </form>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </svelte:component>
+      </svelte:component>
+    </svelte:component>
 
     <!-- Badge Components -->
     <section class="component-section">
       <h2 class="nes-text is-success">🏷️ Badges</h2>
 
       <div class="badge-showcase">
-        <Badge.Root class="nes-badge">
-          <span class="is-dark">Default</span>
-        </Badge.Root>
+        <div class="nes-badge"><span class="is-dark">Default</span></div>
 
-        <Badge.Root class="nes-badge">
-          <span class="is-primary">Primary</span>
-        </Badge.Root>
+        <div class="nes-badge"><span class="is-primary">Primary</span></div>
 
-        <Badge.Root class="nes-badge">
-          <span class="is-success">Success</span>
-        </Badge.Root>
+        <div class="nes-badge"><span class="is-success">Success</span></div>
 
-        <Badge.Root class="nes-badge">
-          <span class="is-warning">Warning</span>
-        </Badge.Root>
+        <div class="nes-badge"><span class="is-warning">Warning</span></div>
 
-        <Badge.Root class="nes-badge">
-          <span class="is-error">Error</span>
-        </Badge.Root>
+        <div class="nes-badge"><span class="is-error">Error</span></div>
       </div>
     </section>
 
@@ -158,41 +149,41 @@
       <h2 class="nes-text is-warning">🎴 Cards</h2>
 
       <div class="card-grid">
-        <Card.Root class="nes-container">
-          <Card.Header>
-            <Card.Title class="nes-text is-primary">Game Stats</Card.Title>
-          </Card.Header>
-          <Card.Content>
+        <svelte:component this={Card.Root} class="nes-container">
+          <svelte:component this={Card.Header}>
+            <svelte:component this={Card.Title} class="nes-text is-primary">Game Stats</svelte:component>
+          </svelte:component>
+          <svelte:component this={Card.Content}>
             <div class="stats">
               <p>Level: <span class="nes-text is-success">42</span></p>
               <p>Score: <span class="nes-text is-warning">12,345</span></p>
               <p>Lives: <span class="nes-text is-error">❤️❤️❤️</span></p>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </svelte:component>
+        </svelte:component>
 
-        <Card.Root class="nes-container with-title">
+        <svelte:component this={Card.Root} class="nes-container with-title">
           <p class="title">Inventory</p>
-          <Card.Content>
+          <svelte:component this={Card.Content}>
             <div class="inventory-items">
               <div class="nes-badge"><span class="is-success">🗡️ Sword</span></div>
               <div class="nes-badge"><span class="is-primary">🛡️ Shield</span></div>
               <div class="nes-badge"><span class="is-warning">💎 Gem</span></div>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </svelte:component>
+        </svelte:component>
 
-        <Card.Root class="nes-container is-dark">
-          <Card.Header>
-            <Card.Title class="nes-text is-primary">Dark Mode</Card.Title>
-          </Card.Header>
-          <Card.Content>
+        <svelte:component this={Card.Root} class="nes-container is-dark">
+          <svelte:component this={Card.Header}>
+            <svelte:component this={Card.Title} class="nes-text is-primary">Dark Mode</svelte:component>
+          </svelte:component>
+          <svelte:component this={Card.Content}>
             <p>This card uses the dark theme variant.</p>
             <Button.Root class="nes-btn is-success">
               Action
             </Button.Root>
-          </Card.Content>
-        </Card.Root>
+          </svelte:component>
+        </svelte:component>
       </div>
     </section>
 
@@ -211,31 +202,31 @@
           <textarea id="textarea_field" class="nes-textarea" placeholder="Describe your adventure..."></textarea>
         </div>
 
-        <Checkbox.Root
+        <svelte:component this={Checkbox.Root}
           bind:checked={checkboxChecked}
           class="checkbox-wrapper"
         >
-          <Checkbox.Input class="nes-checkbox" />
-          <Checkbox.Label class="nes-text">
+          <svelte:component this={Checkbox.Input} class="nes-checkbox" />
+          <svelte:component this={Checkbox.Label} class="nes-text">
             Accept terms and conditions
             {#if checkboxChecked}
               <span class="nes-text is-success">✓</span>
             {/if}
-          </Checkbox.Label>
-        </Checkbox.Root>
+          </svelte:component>
+        </svelte:component>
 
         <div class="nes-select">
-          <Select.Root bind:selected={selectedValue}>
-            <Select.Trigger class="nes-select-trigger">
-              <Select.Value placeholder="Choose difficulty" />
-            </Select.Trigger>
-            <Select.Content class="nes-container">
-              <Select.Item value="easy" class="nes-text is-success">🟢 Easy</Select.Item>
-              <Select.Item value="normal" class="nes-text is-warning">🟡 Normal</Select.Item>
-              <Select.Item value="hard" class="nes-text is-error">🔴 Hard</Select.Item>
-              <Select.Item value="expert" class="nes-text is-primary">💜 Expert</Select.Item>
-            </Select.Content>
-          </Select.Root>
+          <svelte:component this={Select.Root} bind:selected={selectedValue}>
+            <svelte:component this={Select.Trigger} class="nes-select-trigger">
+              <svelte:component this={Select.Value} placeholder="Choose difficulty" />
+            </svelte:component>
+            <svelte:component this={Select.Content} class="nes-container">
+              <svelte:component this={Select.Item} value="easy" class="nes-text is-success">🟢 Easy</svelte:component>
+              <svelte:component this={Select.Item} value="normal" class="nes-text is-warning">🟡 Normal</svelte:component>
+              <svelte:component this={Select.Item} value="hard" class="nes-text is-error">🔴 Hard</svelte:component>
+              <svelte:component this={Select.Item} value="expert" class="nes-text is-primary">💜 Expert</svelte:component>
+            </svelte:component>
+          </svelte:component>
         </div>
       </div>
     </section>
@@ -244,20 +235,20 @@
     <section class="component-section">
       <h2 class="nes-text is-success">📂 Tabs</h2>
 
-      <Tabs.Root bind:value={activeTab} class="tabs-wrapper">
-        <Tabs.List class="tab-list">
-          <Tabs.Trigger value="tab1" class="nes-btn {activeTab === 'tab1' ? 'is-primary' : ''}">
+      <svelte:component this={Tabs.Root} bind:value={activeTab} class="tabs-wrapper">
+        <svelte:component this={Tabs.List} class="tab-list">
+          <svelte:component this={Tabs.Trigger} value="tab1" class={`nes-btn ${activeTab === 'tab1' ? 'is-primary' : ''}`}>
             🎮 Games
-          </Tabs.Trigger>
-          <Tabs.Trigger value="tab2" class="nes-btn {activeTab === 'tab2' ? 'is-primary' : ''}">
+          </svelte:component>
+          <svelte:component this={Tabs.Trigger} value="tab2" class={`nes-btn ${activeTab === 'tab2' ? 'is-primary' : ''}`}>
             ⚙️ Settings
-          </Tabs.Trigger>
-          <Tabs.Trigger value="tab3" class="nes-btn {activeTab === 'tab3' ? 'is-primary' : ''}">
+          </svelte:component>
+          <svelte:component this={Tabs.Trigger} value="tab3" class={`nes-btn ${activeTab === 'tab3' ? 'is-primary' : ''}`}>
             👤 Profile
-          </Tabs.Trigger>
-        </Tabs.List>
+          </svelte:component>
+        </svelte:component>
 
-        <Tabs.Content value="tab1" class="nes-container">
+        <svelte:component this={Tabs.Content} value="tab1" class="nes-container">
           <h3 class="nes-text is-primary">Game Library</h3>
           <div class="game-list">
             <div class="nes-container is-rounded">
@@ -270,9 +261,9 @@
               <p>🚀 Metroid - <span class="nes-text is-error">Not Started</span></p>
             </div>
           </div>
-        </Tabs.Content>
+        </svelte:component>
 
-        <Tabs.Content value="tab2" class="nes-container">
+        <svelte:component this={Tabs.Content} value="tab2" class="nes-container">
           <h3 class="nes-text is-primary">Game Settings</h3>
           <div class="settings-grid">
             <label class="nes-text">
@@ -284,27 +275,27 @@
               <span>🔇 Sound Off</span>
             </label>
           </div>
-        </Tabs.Content>
+        </svelte:component>
 
-        <Tabs.Content value="tab3" class="nes-container">
+        <svelte:component this={Tabs.Content} value="tab3" class="nes-container">
           <h3 class="nes-text is-primary">Player Profile</h3>
           <div class="profile-info">
             <p>🏆 High Score: 99,999</p>
             <p>⭐ Level: Master</p>
             <p>🎖️ Achievements: 47/50</p>
           </div>
-        </Tabs.Content>
-      </Tabs.Root>
+        </svelte:component>
+      </svelte:component>
     </section>
 
     <!-- Toast Component -->
-    <Toast.Root bind:open={toastOpen} class="nes-container is-success toast-container">
-      <Toast.Title class="nes-text">🎉 Success!</Toast.Title>
-      <Toast.Description>
+    <svelte:component this={Toast.Root} bind:open={toastOpen} class="nes-container is-success toast-container">
+      <svelte:component this={Toast.Title} class="nes-text">🎉 Success!</svelte:component>
+      <svelte:component this={Toast.Description}>
         You've successfully triggered a NES.css styled toast notification!
-      </Toast.Description>
-      <Toast.Close class="nes-btn is-small">×</Toast.Close>
-    </Toast.Root>
+      </svelte:component>
+      <svelte:component this={Toast.Close} class="nes-btn is-small">×</svelte:component>
+    </svelte:component>
 
     <!-- Interactive Elements -->
     <section class="component-section">
@@ -312,21 +303,21 @@
 
       <div class="interactive-grid">
         <!-- Tooltip -->
-        <Tooltip.Root bind:open={tooltipOpen}>
-          <Tooltip.Trigger class="nes-btn is-warning">
+        <svelte:component this={Tooltip.Root} bind:open={tooltipOpen}>
+          <svelte:component this={Tooltip.Trigger} class="nes-btn is-warning">
             Hover for Tooltip
-          </Tooltip.Trigger>
-          <Tooltip.Content class="nes-balloon from-left">
+          </svelte:component>
+          <svelte:component this={Tooltip.Content} class="nes-balloon from-left">
             <p>This is a NES.css styled tooltip! 🎮</p>
-          </Tooltip.Content>
-        </Tooltip.Root>
+          </svelte:component>
+        </svelte:component>
 
         <!-- Popover -->
-        <Popover.Root bind:open={popoverOpen}>
-          <Popover.Trigger class="nes-btn is-success">
+        <svelte:component this={Popover.Root} bind:open={popoverOpen}>
+          <svelte:component this={Popover.Trigger} class="nes-btn is-success">
             Open Popover
-          </Popover.Trigger>
-          <Popover.Content class="nes-container popover-content">
+          </svelte:component>
+          <svelte:component this={Popover.Content} class="nes-container popover-content">
             <h4 class="nes-text is-primary">Game Menu</h4>
             <div class="menu-options">
               <Button.Root class="nes-btn menu-btn">Continue</Button.Root>
@@ -334,8 +325,8 @@
               <Button.Root class="nes-btn menu-btn">Load Game</Button.Root>
               <Button.Root class="nes-btn is-error menu-btn">Quit</Button.Root>
             </div>
-          </Popover.Content>
-        </Popover.Root>
+          </svelte:component>
+        </svelte:component>
 
         <!-- Progress Indicator -->
         <div class="nes-container">
@@ -362,8 +353,6 @@
 </div>
 
 <style>
-  @import 'nes.css/css/nes.min.css';
-
   /* Global styling */
   :global(body) {
     font-family: "Press Start 2P", cursive;

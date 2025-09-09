@@ -2,13 +2,13 @@
 
   import { onMount } from 'svelte';
   import { writable, derived } from 'svelte/store';
-  import { 
-    copilotOrchestrator, 
-    generateMCPPrompt, 
-    commonMCPQueries, 
+  import {
+    copilotOrchestrator,
+    generateMCPPrompt,
+    commonMCPQueries,
     formatMCPResponse,
     type OrchestrationOptions,
-    type AgentResult 
+    type AgentResult
   } from '$lib/utils/mcp-helpers';
 
   // Agent orchestration state
@@ -107,7 +107,7 @@
     agentResults.set([]);
     orchestrationLog.set([]);
     agentCommunications.set([]);
-    
+
     const selectedWorkflowConfig = workflows.find(w => w.id === selectedWorkflow);
     if (!selectedWorkflowConfig) {
       console.error('Selected workflow not found');
@@ -131,7 +131,7 @@
    */
   async function runOrchestrationLoop(workflow: any, prompt: string) {
     let currentPrompt = prompt;
-    
+
     for (let i = 0; i < maxIterations; i++) {
       currentIteration = i + 1;
       addLogEntry('iteration-start', '', `Starting iteration ${i + 1}/${maxIterations}`, {});
@@ -139,7 +139,7 @@
       // Phase 1: Semantic Search and Memory Analysis
       currentPhase.set('semantic-search');
       const searchResults = await executeSemanticSearch(currentPrompt);
-      
+
       // Phase 2: Memory Graph Reading
       currentPhase.set('memory-analysis');
       const memoryResults = await executeMemoryAnalysis(currentPrompt);
@@ -149,7 +149,7 @@
       const orchestrationOptions: OrchestrationOptions = {
         ...workflow.options,
         agents: workflow.agents,
-        context: { 
+        context: {
           iteration: i + 1,
           previousResults: i > 0 ? $agentResults : [],
           searchResults,
@@ -158,7 +158,7 @@
       };
 
       const results = await copilotOrchestrator(currentPrompt, orchestrationOptions);
-      
+
       // Update agent results store
       if (results.agentResults) {
         agentResults.update(prev => [...prev, ...results.agentResults]);
@@ -168,7 +168,7 @@
       currentPhase.set('self-prompting');
       if (enableSelfPrompting && results.selfPrompt) {
         const selfPromptResult = await generateSelfPrompt(results, workflow.agents);
-        
+
         // Use the self-generated prompt for the next iteration
         if (selfPromptResult.nextPrompt && i < maxIterations - 1) {
           currentPrompt = selfPromptResult.nextPrompt;
@@ -202,16 +202,16 @@
    */
   async function executeSemanticSearch(prompt: string) {
     addLogEntry('semantic-search', 'context7', `Executing semantic search for: ${prompt}`, {});
-    
+
     updateAgentStatus('context7', 'processing', 'Performing semantic search');
-    
+
     // Simulate Context7 semantic search
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     const searchResults = {
       query: prompt,
       results: [
-        { 
+        {
           document: 'Legal Precedent DB',
           relevance: 0.89,
           snippet: 'Evidence analysis protocols for criminal cases...',
@@ -228,7 +228,7 @@
 
     updateAgentStatus('context7', 'completed', 'Semantic search completed');
     addLogEntry('semantic-search', 'context7', 'Semantic search completed', searchResults);
-    
+
     return searchResults;
   }
 
@@ -237,11 +237,11 @@
    */
   async function executeMemoryAnalysis(prompt: string) {
     addLogEntry('memory-analysis', 'memory-server', `Reading memory graph for: ${prompt}`, {});
-    
+
     updateAgentStatus('memory-server', 'processing', 'Analyzing memory graph');
-    
+
     await new Promise(resolve => setTimeout(resolve, 600));
-    
+
     const memoryResults = {
       nodes: [
         {
@@ -266,7 +266,7 @@
 
     updateAgentStatus('memory-server', 'completed', 'Memory analysis completed');
     addLogEntry('memory-analysis', 'memory-server', 'Memory graph analysis completed', memoryResults);
-    
+
     return memoryResults;
   }
 
@@ -275,10 +275,10 @@
    */
   async function generateSelfPrompt(results: any, agents: string[]) {
     addLogEntry('self-prompting', 'meta-agent', 'Analyzing results for self-prompting', {});
-    
+
     // Simulate meta-analysis by the orchestration system
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const analysis = {
       strengths: [
         'Strong legal precedent identification',
@@ -293,8 +293,8 @@
       nextFocus: 'Investigate temporal relationships between evidence items and witness statements'
     };
 
-    const nextPrompt = `Based on previous analysis, focus on: ${analysis.nextFocus}. 
-    Specifically examine witness testimony timing relative to evidence collection, 
+    const nextPrompt = `Based on previous analysis, focus on: ${analysis.nextFocus}.
+    Specifically examine witness testimony timing relative to evidence collection,
     and identify any inconsistencies or corroborating patterns that strengthen the case.`;
 
     const selfPromptResult = {
@@ -305,7 +305,7 @@
     };
 
     addLogEntry('self-prompting', 'meta-agent', 'Self-prompt generated', selfPromptResult);
-    
+
     return selfPromptResult;
   }
 
@@ -314,7 +314,7 @@
    */
   async function synthesizeIterationResults(results: any, iteration: number) {
     addLogEntry('synthesis', 'synthesizer', `Synthesizing iteration ${iteration} results`, {});
-    
+
     const synthesis = {
       iteration,
       keyFindings: [
@@ -331,7 +331,7 @@
     };
 
     addLogEntry('synthesis', 'synthesizer', 'Iteration synthesis completed', synthesis);
-    
+
     return synthesis;
   }
 
@@ -342,7 +342,7 @@
     // Simple heuristic: if we have sufficient high-confidence results
     const agentConfidence = results.agentResults?.map((r: any) => r.confidence || 0.8) || [];
     const avgConfidence = agentConfidence.reduce((a: number, b: number) => a + b, 0) / agentConfidence.length;
-    
+
     return avgConfidence > 0.85 && currentIteration >= 2;
   }
 
@@ -352,7 +352,7 @@
   async function generateFinalReport() {
     currentPhase.set('final-report');
     addLogEntry('final-report', 'orchestrator', 'Generating comprehensive final report', {});
-    
+
     const finalReport = {
       summary: 'Multi-agent legal evidence analysis completed successfully',
       totalIterations: currentIteration,
@@ -390,10 +390,10 @@
     for (const query of mcpQueries) {
       const prompt = generateMCPPrompt(query);
       addLogEntry('context7-demo', 'context7', `Executing: ${prompt}`, {});
-      
+
       // Simulate MCP tool execution
       await new Promise(resolve => setTimeout(resolve, 300));
-      
+
       const mockResult = {
         tool: query.tool,
         result: `Context7 analysis completed for ${query.component || query.area || query.feature}`,
@@ -486,7 +486,7 @@
         <span class="text-sm text-blue-700">Iteration {currentIteration}/{maxIterations}</span>
       </div>
       <div class="w-full bg-blue-200 rounded-full h-2">
-        <div 
+        <div
           class="bg-blue-600 h-2 rounded-full transition-all duration-500"
           style="width: {$progress}%"
         ></div>
@@ -498,7 +498,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">Workflow Configuration</h3>
-      
+
       <div class="space-y-4">
         <div>
           <label for="workflow" class="block text-sm font-medium mb-2">Select Workflow</label>
@@ -570,7 +570,7 @@
 
       <div class="flex gap-3 mt-6">
         <button
-          on:onclick={executeWorkflow}
+          onclick={executeWorkflow}
           disabled={$isRunning}
           class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -583,18 +583,18 @@
             Execute Workflow
           {/if}
         </button>
-        
+
         {#if $isRunning}
           <button
-            on:onclick={stopWorkflow}
+            onclick={stopWorkflow}
             class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
           >
             Stop
           </button>
         {/if}
-        
+
         <button
-          on:onclick={clearLogs}
+          onclick={clearLogs}
           disabled={$isRunning}
           class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
         >
@@ -606,7 +606,7 @@
     <!-- Agent Status Panel -->
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">Agent Status</h3>
-      
+
       <div class="space-y-3">
         {#each Object.entries($agentStatus) as [agent, status]}
           <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -632,7 +632,7 @@
 
       <div class="mt-4 pt-4 border-t border-gray-200">
         <button
-          on:onclick={demonstrateContext7Integration}
+          onclick={demonstrateContext7Integration}
           disabled={$isRunning}
           class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:opacity-50"
         >
@@ -645,7 +645,7 @@
   <!-- Real-time Orchestration Log -->
   <div class="bg-white border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-semibold mb-4">Real-time Orchestration Log</h3>
-    
+
     <div class="max-h-96 overflow-y-auto space-y-3">
       {#each $orchestrationLog as entry}
         <div class="border-l-4 pl-4 py-2 {
@@ -671,7 +671,7 @@
           {/if}
         </div>
       {/each}
-      
+
       {#if $orchestrationLog.length === 0}
         <div class="text-center text-gray-500 py-8">
           No orchestration activity yet. Click "Execute Workflow" to begin.
@@ -684,7 +684,7 @@
   {#if $agentCommunications.length > 0}
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">Agent Communication Network</h3>
-      
+
       <div class="space-y-2">
         {#each $agentCommunications as comm}
           <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
@@ -716,7 +716,7 @@
   {#if $agentResults.length > 0}
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">Agent Results Summary</h3>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each $agentResults as result}
           <div class="border border-gray-200 rounded-lg p-4">
@@ -737,7 +737,7 @@
   <!-- Usage Guide -->
   <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-semibold mb-4">Demo Features & Usage</h3>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
         <h4 class="font-medium text-gray-900 mb-2">🤖 Agent Orchestration</h4>
@@ -748,7 +748,7 @@
           <li>• Context7 MCP tool integration</li>
         </ul>
       </div>
-      
+
       <div>
         <h4 class="font-medium text-gray-900 mb-2">🔄 Self-Prompting Loops</h4>
         <ul class="text-sm text-gray-600 space-y-1">
@@ -759,7 +759,7 @@
           <li>• Dynamic prompt evolution</li>
         </ul>
       </div>
-      
+
       <div>
         <h4 class="font-medium text-gray-900 mb-2">⚖️ Legal AI Workflows</h4>
         <ul class="text-sm text-gray-600 space-y-1">
@@ -770,7 +770,7 @@
           <li>• Automated recommendation generation</li>
         </ul>
       </div>
-      
+
       <div>
         <h4 class="font-medium text-gray-900 mb-2">🔧 Context7 MCP Integration</h4>
         <ul class="text-sm text-gray-600 space-y-1">
@@ -803,17 +803,17 @@
   .max-h-96::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .max-h-96::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 3px;
   }
-  
+
   .max-h-96::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
   }
-  
+
   .max-h-96::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }

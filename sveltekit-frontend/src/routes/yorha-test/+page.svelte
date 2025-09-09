@@ -1,6 +1,6 @@
-<!-- Advanced YoRHa Testing Suite -->
+comment Advanced YoRHa Testing Suite
 <script lang="ts">
-  import { onMount, SvelteComponent } from 'svelte';
+  import { onMount } from 'svelte';
   import {
     TestTube,
     CheckCircle,
@@ -34,7 +34,7 @@
   }
 
   // Production-ready test suites
-  let testSuites = $state<TestSuite[]>([
+  let testSuites: TestSuite[] = [
     {
       name: 'Frontend Components',
       description: 'SvelteKit and UI component testing',
@@ -83,13 +83,13 @@
         { name: 'Performance Metrics', status: 'pending' }
       ]
     }
-  ]);
+  ];
 
-  let isRunning = $state(false);
-  let currentTest = $state<string | null>(null);
-  let overallProgress = $state(0);
-  let startTime = $state<Date | null>(null);
-  let endTime = $state<Date | null>(null);
+  let isRunning = false;
+  let currentTest: string | null = null;
+  let overallProgress = 0;
+  let startTime: Date | null = null;
+  let endTime: Date | null = null;
 
   // Test execution functions
   async function runFrontendTests(suite: TestSuite): Promise<void> {
@@ -326,7 +326,8 @@
   }
 
   // Reactive stats exposed to template
-  let stats = $derived(getTestStats());
+  let stats = getTestStats();
+  $: stats = getTestStats();
 
   // Auto-run tests on mount
   onMount(() => {
@@ -361,11 +362,11 @@
 
   <!-- Test Controls -->
   <section class="yorha-test-controls">
-    <div class="yorha-test-controls-content">
       <button
         class="yorha-test-run-btn {isRunning ? 'running' : ''}"
-        onclick={runAllTests}
+        on:click={runAllTests}
         disabled={isRunning}
+      >
       >
         {#if isRunning}
           <Activity size={20} />

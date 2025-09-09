@@ -5,14 +5,14 @@
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 
   // Dialog state
-  let isDialogOpen = $state(false);
+  let isDialogOpen: boolean = false;
 
   // Bits UI components (imported from your existing library)
-  let selectedValue = $state('option1');
-  let inputValue = $state('');
-  let isLoading = $state(false);
-  let progress = $state(0);
-  let notifications = $state<Array<{id: number, message: string, type: 'success' | 'warning' | 'error'}>>([]);
+  let selectedValue: string = 'option1';
+  let inputValue: string = '';
+  let isLoading: boolean = false;
+  let progress: number = 0;
+  let notifications: Array<{ id: number; message: string; type: 'success' | 'warning' | 'error' }> = [];
 
   function addNotification(type: 'success' | 'warning' | 'error', message: string) {
     const id = Date.now();
@@ -79,14 +79,14 @@
         </CardHeader>
         <CardContent class="space-y-4">
           <p class="text-sm text-nier-text-secondary">
-            Melt UI provides the behavior, NES.css provides the retro styling.
+            Bits UI provides the headless behavior; NES.css supplies the retro styling.
           </p>
 
           <button
-            on:onclick={() => isDialogOpen = true}
+            on:click={() => (isDialogOpen = true)}
             class="nes-btn is-primary w-full"
           >
-            Open Retro Dialog
+            Open Bits UI Dialog
           </button>
         </CardContent>
       </Card>
@@ -125,13 +125,13 @@
           <div class="flex gap-2 mt-4">
             <button
               class="nes-btn is-success flex-1"
-              onclick={() => addNotification('success', `Command executed: ${inputValue || 'default'}`)}
+              on:click={() => addNotification('success', `Command executed: ${inputValue || 'default'}`)}
             >
               Execute
             </button>
             <button
               class="nes-btn is-warning flex-1"
-              onclick={simulateAsyncOperation}
+              on:click={simulateAsyncOperation}
               disabled={isLoading}
             >
               {isLoading ? 'Processing...' : 'Async Process'}
@@ -316,6 +316,8 @@
 </div>
 
 <!-- Bits UI Dialog Implementation -->
+<!-- Styles moved to src/styles/global.css -->
+
 <Dialog.Root bind:open={isDialogOpen}>
   <Dialog.Portal>
     <Dialog.Overlay
@@ -351,7 +353,7 @@
           <div class="flex gap-2">
             <button
               class="nes-btn is-success flex-1"
-              on:onclick={() => {
+              on:click={() => {
                 addNotification('success', 'Dialog action confirmed! 🎯');
                 isDialogOpen = false;
               }}
@@ -369,80 +371,3 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
-<style>
-  .headless-ui-showcase {
-    padding: 2rem;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
-  }
-
-  /* Custom dialog styling to integrate NES + YoRHa */
-  .nes-dialog .nes-container {
-    border-color: var(--color-nier-border-primary);
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-  }
-
-  /* Enhanced button hover effects */
-  .nes-btn:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  /* Notification animations */
-  .nes-container.is-success {
-    border-color: #00ff41;
-    background-color: rgba(0, 255, 65, 0.1);
-  }
-
-  .nes-container.is-warning {
-    border-color: #ffaa00;
-    background-color: rgba(255, 170, 0, 0.1);
-  }
-
-  .nes-container.is-error {
-    border-color: #ff0041;
-    background-color: rgba(255, 0, 65, 0.1);
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .headless-ui-showcase {
-      padding: 1rem;
-    }
-
-    .grid-cols-1.xl\\:grid-cols-3 {
-      gap: 1rem;
-    }
-
-    .nes-dialog {
-      max-width: 90vw;
-    }
-  }
-
-  /* Smooth animations */
-  * {
-    transition: all 0.15s ease;
-  }
-
-  /* Status indicator animations */
-  .ai-status-online {
-    animation: pulse 2s infinite;
-  }
-
-  .ai-status-processing {
-    animation: bounce 1s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-
-  @keyframes bounce {
-    0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
-    40%, 43% { transform: translate3d(0, -5px, 0); }
-    70% { transform: translate3d(0, -3px, 0); }
-    90% { transform: translate3d(0, -1px, 0); }
-  }
-</style>

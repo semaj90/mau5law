@@ -5,6 +5,8 @@ import ComponentFallback from './ComponentFallback.svelte';
 export default {
   Button: ComponentFallback,
   Dialog: ComponentFallback,
+  Badge: ComponentFallback,
+  Card: ComponentFallback,
   ScrollAreaViewport: ComponentFallback,
   // add more named mappings as you find usages
 };
@@ -20,6 +22,8 @@ export const Checkbox = ComponentFallback;
 export const Radio = ComponentFallback;
 export const Tooltip = ComponentFallback;
 export const Popover = ComponentFallback;
+export const Badge = ComponentFallback;
+export const Card = ComponentFallback;
 ;
 // Provide types entry for TypeScript consumers (optional)
 export { default as Component } from './ComponentFallback.svelte';

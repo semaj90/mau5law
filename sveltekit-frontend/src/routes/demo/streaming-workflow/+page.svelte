@@ -1,7 +1,22 @@
+<script lang="ts" runes>
+  import EvidenceProcessingWorkflow from '$lib/components/evidence/EvidenceProcessingWorkflow.svelte';
+  import { onMount } from 'svelte';
+
+  let sessionId: string | null = null;
+
+  onMount(() => {
+    // no-op
+  });
+</script>
+
+<h1>Streaming Evidence Processing Demo</h1>
+<p>This demo shows multiple sessions and a live workflow UI.</p>
+
+<EvidenceProcessingWorkflow bind:sessionId />
 <script lang="ts">
   /**
    * Streaming Workflow Demo Page
-   * 
+   *
    * Demonstrates the complete integrated system:
    * - xState workflow orchestration
    * - Real-time SSE streaming
@@ -22,7 +37,7 @@
 
   onMount(() => {
     loadActiveSessions();
-    
+
     if (autoRefresh) {
       refreshInterval = setInterval(loadActiveSessions, 2000);
     }
@@ -66,7 +81,7 @@
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    
+
     if (minutes > 0) {
       return `${minutes}m ${remainingSeconds}s`;
     }
@@ -98,7 +113,7 @@
   <div class="text-center space-y-2">
     <h1 class="text-3xl font-bold">🏛️ Streaming Legal Evidence Processing</h1>
     <p class="text-gray-600 max-w-2xl mx-auto">
-      Real-time workflow orchestration with xState, Neural Sprite compression, PNG metadata embedding, 
+      Real-time workflow orchestration with xState, Neural Sprite compression, PNG metadata embedding,
       and MinIO artifact storage. Complete D-phase integration demonstration.
     </p>
   </div>
@@ -106,21 +121,21 @@
   <!-- Demo Mode Selector -->
   <div class="flex justify-center">
     <div class="flex gap-2 p-1 bg-gray-100 rounded-lg">
-      <Button 
+      <Button
         variant={selectedDemo === 'single' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'single'}
       >
         Single Workflow
       </Button>
-      <Button 
+      <Button
         variant={selectedDemo === 'multiple' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'multiple'}
       >
         Multiple Sessions
       </Button>
-      <Button 
+      <Button
         variant={selectedDemo === 'dashboard' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'dashboard'}
@@ -133,7 +148,7 @@
   {#if selectedDemo === 'single'}
     <!-- Single Workflow Demo -->
     <div class="max-w-4xl mx-auto">
-      <EvidenceProcessingWorkflow 
+      <EvidenceProcessingWorkflow
         evidenceId={`demo_${Date.now()}`}
         neuralSpriteEnabled={true}
         onCompleted={handleWorkflowCompleted}
@@ -144,13 +159,13 @@
   {:else if selectedDemo === 'multiple'}
     <!-- Multiple Sessions Demo -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <EvidenceProcessingWorkflow 
+      <EvidenceProcessingWorkflow
         evidenceId={`workflow_a_${Date.now()}`}
         neuralSpriteEnabled={true}
         onCompleted={handleWorkflowCompleted}
         onError={handleWorkflowError}
       />
-      <EvidenceProcessingWorkflow 
+      <EvidenceProcessingWorkflow
         evidenceId={`workflow_b_${Date.now()}`}
         neuralSpriteEnabled={false}
         onCompleted={handleWorkflowCompleted}
@@ -168,8 +183,8 @@
             <CardTitle class="flex items-center justify-between">
               📊 Active Processing Sessions
               <div class="flex items-center gap-2">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   id="auto-refresh"
                   bind:checked={autoRefresh}
                   class="rounded"
@@ -183,7 +198,7 @@
               </div>
             </CardTitle>
           </CardHeader>
-          
+
           <CardContent>
             {#if activeSessions.length === 0}
               <div class="text-center py-8 text-gray-500">
@@ -208,17 +223,17 @@
                         </div>
                       </div>
                     </div>
-                    
+
                     <div class="flex items-center gap-2">
                       <div class="w-16 bg-gray-200 rounded-full h-2">
-                        <div 
-                          class="bg-blue-600 h-2 rounded-full transition-all" 
+                        <div
+                          class="bg-blue-600 h-2 rounded-full transition-all"
                           style="width: {session.progress}%"
                         ></div>
                       </div>
-                      <Button 
+                      <Button
                         onclick={() => cancelSession(session.evidenceId)}
-                        variant="outline" 
+                        variant="outline"
                         size="sm"
                       >
                         Cancel
@@ -238,22 +253,22 @@
           <CardHeader>
             <CardTitle>🚀 Quick Start</CardTitle>
           </CardHeader>
-          
+
           <CardContent class="space-y-4">
             <p class="text-sm text-gray-600">
               Launch new evidence processing workflows with different configurations
             </p>
-            
+
             <div class="space-y-2">
-              <Button 
+              <Button
                 onclick={() => selectedDemo = 'single'}
                 class="w-full justify-start"
                 variant="outline"
               >
                 🧬 Neural Sprite Workflow
               </Button>
-              
-              <Button 
+
+              <Button
                 onclick={() => selectedDemo = 'multiple'}
                 class="w-full justify-start"
                 variant="outline"
@@ -261,7 +276,7 @@
                 ⚡ Parallel Processing
               </Button>
             </div>
-            
+
             <div class="border-t pt-4">
               <h4 class="font-medium mb-2">System Status</h4>
               <div class="space-y-1 text-sm">
@@ -291,7 +306,7 @@
           <CardHeader>
             <CardTitle>🌟 D-Phase Features</CardTitle>
           </CardHeader>
-          
+
           <CardContent>
             <div class="space-y-3 text-sm">
               <div class="flex items-start gap-2">
@@ -301,7 +316,7 @@
                   <div class="text-gray-600">Complete workflow state management</div>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
                 <span class="text-green-600">✅</span>
                 <div>
@@ -309,7 +324,7 @@
                   <div class="text-gray-600">Live progress updates via Server-Sent Events</div>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
                 <span class="text-green-600">✅</span>
                 <div>
@@ -317,7 +332,7 @@
                   <div class="text-gray-600">AI-powered tensor compression & optimization</div>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
                 <span class="text-green-600">✅</span>
                 <div>
@@ -325,7 +340,7 @@
                   <div class="text-gray-600">Self-contained evidence with embedded metadata</div>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-2">
                 <span class="text-green-600">✅</span>
                 <div>
@@ -345,7 +360,7 @@
     <CardHeader>
       <CardTitle>🔧 Technical Architecture</CardTitle>
     </CardHeader>
-    
+
     <CardContent>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
         <div class="space-y-2">
@@ -357,7 +372,7 @@
             <li>• Real-time UI updates</li>
           </ul>
         </div>
-        
+
         <div class="space-y-2">
           <h4 class="font-medium text-blue-600">🚀 Backend (SvelteKit)</h4>
           <ul class="space-y-1 text-gray-600">
@@ -367,7 +382,7 @@
             <li>• Session management</li>
           </ul>
         </div>
-        
+
         <div class="space-y-2">
           <h4 class="font-medium text-green-600">🧬 Processing Pipeline</h4>
           <ul class="space-y-1 text-gray-600">
@@ -377,7 +392,7 @@
             <li>• Portable artifact creation</li>
           </ul>
         </div>
-        
+
         <div class="space-y-2">
           <h4 class="font-medium text-orange-600">🗄️ Storage & Indexing</h4>
           <ul class="space-y-1 text-gray-600">

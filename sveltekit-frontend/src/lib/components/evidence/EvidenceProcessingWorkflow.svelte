@@ -1,7 +1,104 @@
+<script lang="ts" runes>
+import { createEventDispatcher } from 'svelte';
+
+export let sessionId: string | null = null;
+export let endpoint = '/api/evidence/process/stream';
+
+const dispatch = createEventDispatcher();
+
+const state = $state({
+  connected: false,
+  events: [] as any[],
+  files: [] as { name: string; progress?: number }[]
+});
+
+function connect(sid: string) {
+  const url = `${endpoint}?sessionId=${encodeURIComponent(sid)}`;
+  const es = new EventSource(url);
+  es.onopen = () => { state.connected = true; };
+  es.onmessage = (ev) => {
+    try {
+      const data = JSON.parse(ev.data);
+      state.events.push(data);
+      if (data.type === 'progress') {
+        const f = state.files.find(x => x.name === data.file);
+        if (f) f.progress = data.progress;
+      }
+      if (data.type === 'file:complete') {
+        dispatch('filecomplete', data);
+      }
+    } catch (e) {
+      state.events.push({ raw: ev.data });
+    }
+  };
+  es.onerror = () => { state.connected = false; es.close(); };
+  return es;
+}
+
+let es: EventSource | null = null;
+
+function startProcessing() {
+  const files = state.files.map(f => ({ name: f.name }));
+  fetch(endpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ files, sessionId }) })
+    .then(r => r.json())
+    .then(js => {
+      sessionId = js.sessionId;
+      if (es) es.close();
+      es = connect(sessionId);
+    });
+}
+
+function addFile(name:string) { state.files.push({ name, progress: 0 }); }
+
+// drag-and-drop
+function onDrop(e:DragEvent) {
+  e.preventDefault();
+  const dt = e.dataTransfer;
+  if (!dt) return;
+  for (const f of Array.from(dt.files || [])) addFile(f.name);
+}
+
+function onDragOver(e:DragEvent) { e.preventDefault(); }
+</script>
+
+<style>
+/* Minimal styles for demo */
+.workflow { padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
+.dropzone { border: 2px dashed #bbb; padding: 1rem; }
+.file-row { display:flex; align-items:center; gap:8px; padding:4px 0 }
+.progress { height:8px; background:#eee; width:200px; border-radius:4px; overflow:hidden }
+.progress > i { display:block; height:100%; background:#4caf50 }
+</style>
+
+<div class="workflow">
+  <div class="dropzone" on:drop={onDrop} on:dragover={onDragOver}>
+    Drop files here to enqueue for processing
+  </div>
+
+  <div style="margin-top:8px">
+    <button on:click={startProcessing} disabled={!state.files.length}>Start</button>
+    <button on:click={() => { state.files = []; state.events = []; if (es) es.close(); }}>Reset</button>
+  </div>
+
+  <div style="margin-top:8px">
+    {#each state.files as f}
+      <div class="file-row">
+        <div style="width:160px">{f.name}</div>
+        <div class="progress"><i style="width:{f.progress ?? 0}%"></i></div>
+        <div>{f.progress ?? 0}%</div>
+      </div>
+    {/each}
+  </div>
+
+  <details style="margin-top:8px">
+    <summary>Events ({state.events.length})</summary>
+    <pre style="max-height:240px; overflow:auto">{JSON.stringify(state.events.slice(-50), null, 2)}</pre>
+  </details>
+</div>
 <script lang="ts">
   /**
    * xState-Powered Evidence Processing Workflow Component
-   * 
+   *
    * Real-time streaming workflow orchestration with:
    * - File upload with drag & drop
    * - Live progress tracking via SSE
@@ -65,17 +162,17 @@
   // Initialize actor subscription
   onMount(() => {
     actor.start();
-    
+
     // Subscribe to state changes
     const subscription = actor.subscribe((state) => {
       currentState = state;
-      
+
       // Handle completion
       if (state.matches('completed')) {
         onCompleted?.(state.context);
         disconnectStream();
       }
-      
+
       // Handle errors
       if (state.matches('error')) {
         onError?.(state.context.errors.join(', '));
@@ -110,7 +207,7 @@
   function handleFileDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-    
+
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       selectedFile = files[0];
@@ -153,11 +250,11 @@
 
       // Connect to SSE stream
       eventSource = new EventSource(`/api/evidence/process/stream?evidenceId=${evidenceId}`);
-      
+
       eventSource.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          
+
           if (data.type === 'connection_established') {
             console.log('🔗 Streaming connection established for', evidenceId);
             return;
@@ -186,14 +283,14 @@
 
   function updateClientFromServer(serverData: any) {
     const { currentState: serverState, context: serverContext } = serverData;
-    
+
     // Sync client state with server state
     if (serverState !== currentState.value) {
       // Map server events to client events based on state transitions
       if (serverState === 'analyzing' && !currentState.matches('analyzing')) {
         actor.send({ type: 'START_ANALYSIS' });
       }
-      
+
       // Update context with server context
       currentState = { ...currentState, context: { ...serverContext } };
     }
@@ -211,7 +308,7 @@
       await fetch(`/api/evidence/process/stream?evidenceId=${evidenceId}`, {
         method: 'DELETE'
       });
-      
+
       actor.send({ type: 'CANCEL_PROCESSING' });
       disconnectStream();
     } catch (error) {
@@ -245,11 +342,11 @@
       Real-time streaming workflow with Neural Sprite optimization and portable artifact generation
     </p>
   </CardHeader>
-  
+
   <CardContent class="space-y-6">
     <!-- File Upload Section -->
     {#if !selectedFile && !isProcessing && !isCompleted}
-      <div 
+      <div
         role="button"
         tabindex="0"
         aria-label="Drop files here to upload or click to select files"
@@ -266,8 +363,8 @@
               Drag and drop a file here, or click to select
             </p>
           </div>
-          <input 
-            type="file" 
+          <input
+            type="file"
             onchange={handleFileSelect}
             accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
             class="hidden"
@@ -294,7 +391,7 @@
             </div>
           </div>
         </div>
-        
+
         {#if !isProcessing && !isCompleted}
           <Button onclick={resetWorkflow} variant="outline" size="sm">
             Change File
@@ -307,8 +404,8 @@
     {#if selectedFile && !isProcessing && !isCompleted}
       <div class="border rounded-lg p-4 bg-gradient-to-r from-purple-50 to-blue-50">
         <div class="flex items-center gap-2 mb-3">
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             id="enable-neural-sprite"
             bind:checked={neuralSpriteConfig.enable_compression}
             class="rounded"
@@ -320,15 +417,15 @@
             ADVANCED
           </span>
         </div>
-        
+
         {#if neuralSpriteConfig.enable_compression}
           <div class="space-y-3 ml-6 border-l-2 border-purple-200 pl-4">
             <div class="flex items-center gap-2">
               <label class="text-sm text-gray-600 w-32">Compression:</label>
-              <input 
-                type="range" 
-                min="10" 
-                max="100" 
+              <input
+                type="range"
+                min="10"
+                max="100"
                 bind:value={neuralSpriteConfig.target_compression_ratio}
                 class="flex-1"
               />
@@ -336,13 +433,13 @@
                 {neuralSpriteConfig.target_compression_ratio}:1
               </span>
             </div>
-            
+
             <div class="flex items-center gap-2">
               <label class="text-sm text-gray-600 w-32">Pred. Frames:</label>
-              <input 
-                type="range" 
-                min="0" 
-                max="10" 
+              <input
+                type="range"
+                min="0"
+                max="10"
                 bind:value={neuralSpriteConfig.predictive_frames}
                 class="flex-1"
               />
@@ -350,10 +447,10 @@
                 {neuralSpriteConfig.predictive_frames}
               </span>
             </div>
-            
+
             <div class="flex items-center gap-2">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 id="ui-layout-compression"
                 bind:checked={neuralSpriteConfig.ui_layout_compression}
                 class="rounded"
@@ -383,14 +480,14 @@
           <h3 class="font-medium">Processing Evidence</h3>
           <span class="text-sm text-gray-600">{progress}% Complete</span>
         </div>
-        
+
         <div class="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            class="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+          <div
+            class="bg-blue-600 h-2 rounded-full transition-all duration-300"
             style="width: {progress}%"
           ></div>
         </div>
-        
+
         <!-- Current Step Display -->
         <div class="space-y-2">
           {#each currentState.context.streamingUpdates as update}
@@ -459,20 +556,20 @@
           <p class="text-sm text-green-700">
             Evidence processed successfully in {Math.round(currentState.context.processingTimeMs / 1000)}s
           </p>
-          
+
           <!-- Results Display -->
           {#if currentState.context.portableArtifact}
             <div class="space-y-3">
               <div class="flex items-center justify-center gap-4">
-                <Button 
+                <Button
                   onclick={() => window.open(currentState.context.portableArtifact.enhancedPngUrl, '_blank')}
                   class="px-4 py-2"
                 >
                   📦 Download Portable Artifact
                 </Button>
-                
+
                 {#if currentState.context.minioStorage}
-                  <Button 
+                  <Button
                     onclick={() => window.open(currentState.context.minioStorage.storageUrl, '_blank')}
                     variant="outline"
                   >
@@ -480,7 +577,7 @@
                   </Button>
                 {/if}
               </div>
-              
+
               <!-- Neural Sprite Results -->
               {#if currentState.context.portableArtifact.compressionRatio}
                 <div class="text-sm text-gray-600">
@@ -489,7 +586,7 @@
               {/if}
             </div>
           {/if}
-          
+
           <Button onclick={resetWorkflow} variant="outline">
             Process Another Evidence
           </Button>

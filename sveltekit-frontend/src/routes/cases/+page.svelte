@@ -10,6 +10,12 @@
   import { Label } from '$lib/components/ui/label/index.js';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
   import * as Select from '$lib/components/ui/select/index.js';
+  // Local aliases for template usage
+  const SelectRoot = Select.Root;
+  const SelectTrigger = Select.Trigger;
+  const SelectContent = Select.Content;
+  const SelectValue = Select.Value;
+  const SelectItem = Select.Item;
   import * as Dialog from '$lib/components/ui/dialog/index.js';
   import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
   import { Badge } from '$lib/components/ui/badge/index.js';
@@ -20,6 +26,7 @@
   import { Plus, Search, Filter, Edit2, Trash2, FileText, Eye, AlertCircle } from 'lucide-svelte';
   import { cn } from '$lib/utils.js';
   import type { PageData, ActionData } from './$types.js';
+  import { get } from 'svelte/store';
 
   // Feedback Integration
   import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
@@ -44,8 +51,8 @@
   });
 
   // Props from load function
-  let { data }: { data: PageData } = $props();
-  let form: ActionData = $state(null);
+  export let data: PageData;
+  let form: ActionData | null = null;
 
   // Superforms for type-safe form handling
   const createCaseForm = superForm(data.createCaseForm, {
@@ -97,32 +104,64 @@
   const { form: createFormData, enhance: createEnhance } = createCaseForm;
   const { form: evidenceFormData, enhance: evidenceEnhance } = addEvidenceForm;
 
+  // Local vars to bind selects (avoid binding to store-derived expressions)
+  let createFormPriority = '';
+  let createFormStatus = '';
+  let evidenceFormType = '';
+
   // UI state
-  let createCaseDialogOpen = $state(false);
-  let addEvidenceDialogOpen = $state(false);
-  let deleteEvidenceDialogOpen = $state(false);
-  let evidenceToDelete = $state(null);
+  let createCaseDialogOpen = false;
+  let addEvidenceDialogOpen = false;
+  let deleteEvidenceDialogOpen = false;
+  let evidenceToDelete: any = null;
 
   // Search and filter state
-  let searchQuery = $state('');
-  let statusFilter = $state('all');
-  let priorityFilter = $state('all');
-  let sortBy = $state('createdAt');
-  let sortOrder = $state('desc');
+  let searchQuery = '';
+  let statusFilter: string | 'all' = 'all';
+  let priorityFilter: string | 'all' = 'all';
+  let sortBy = 'createdAt';
+  let sortOrder: 'asc' | 'desc' = 'desc';
 
   // Vector search state
-  let useVectorSearch = $state(false);
-  let vectorSearchResults = $state([]);
-  let isSearching = $state(false);
+  let useVectorSearch = false;
+  let vectorSearchResults: any[] = [];
+  let isSearching = false;
 
   // Feedback integration references
   let pageFeedback: any;
   let searchFeedback: any;
   let caseCreationFeedback: any;
 
-  // Filtered and sorted cases
-  let filteredCases = $derived(() => {
-    let filtered = data.userCases || [];
+  // Sync local select variables from the form stores
+  $: createFormPriority = $createFormData?.priority ?? 'medium';
+  $: createFormStatus = $createFormData?.status ?? 'open';
+  $: evidenceFormType = $evidenceFormData?.evidenceType ?? 'document';
+
+  // When local select vars change, push back to the superform store (avoid binding directly to $store expressions)
+  $: if (createFormData && typeof createFormData.update === 'function') {
+    const current = get(createFormData);
+    if (current?.priority !== createFormPriority) {
+      createFormData.update((c: any) => ({ ...c, priority: createFormPriority }));
+    }
+  }
+
+  $: if (createFormData && typeof createFormData.update === 'function') {
+    const current = get(createFormData);
+    if (current?.status !== createFormStatus) {
+      createFormData.update((c: any) => ({ ...c, status: createFormStatus }));
+    }
+  }
+
+  $: if (evidenceFormData && typeof evidenceFormData.update === 'function') {
+    const current = get(evidenceFormData);
+    if (current?.evidenceType !== evidenceFormType) {
+      evidenceFormData.update((c: any) => ({ ...c, evidenceType: evidenceFormType }));
+    }
+  }
+
+  // Filtered and sorted cases (reactive)
+  $: filteredCases = (() => {
+    let filtered = data?.userCases || [];
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -144,14 +183,14 @@
 
     // Sort cases
     filtered.sort((a, b) => {
-      const aVal = a[sortBy as keyof typeof a];
-      const bVal = b[sortBy as keyof typeof b];
-      const comparison = aVal > bVal ? 1 : -1;
+      const aVal = (a as any)[sortBy];
+      const bVal = (b as any)[sortBy];
+      const comparison = aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
       return sortOrder === 'desc' ? -comparison : comparison;
     });
 
     return filtered;
-  });
+  })();
 
   // Priority colors
   const priorityColors = {
@@ -262,12 +301,14 @@
     }
   }
 
-  // Set evidence form case ID when dialog opens
-  $effect(() => {
-    if (addEvidenceDialogOpen && data.activeCase?.id) {
-      $evidenceFormData.caseId = data.activeCase.id;
+  // Set evidence form case ID when dialog opens - update the superform store properly
+  $: if (addEvidenceDialogOpen && data?.activeCase?.id) {
+    if (evidenceFormData && typeof evidenceFormData.update === 'function') {
+      evidenceFormData.update((c: any) => ({ ...c, caseId: data.activeCase.id }));
+    } else if (evidenceFormData && typeof evidenceFormData.set === 'function') {
+      evidenceFormData.set({ ...(get(evidenceFormData) as any), caseId: data.activeCase.id });
     }
-  });
+  }
 </script>
 
 <svelte:head>
@@ -659,32 +700,32 @@
   </div>
 </div>
 
-<!-- Create Case Dialog -->
-<Dialog.Root bind:open={createCaseDialogOpen}>
-  <Dialog.Content class="sm:max-w-[600px]">
-    <Dialog.Header>
-      <Dialog.Title>Create New Case</Dialog.Title>
-      <Dialog.Description>
-        Add a new legal case with AI-powered categorization and PostgreSQL storage.
-      </Dialog.Description>
-    </Dialog.Header>
-    <form method="POST" action="?/createCase" use:createEnhance>
-      <div class="grid gap-4 py-4">
-        <div class="grid gap-2">
+            <SelectRoot bind:selected={createFormPriority}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select priority" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="low">Low</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="high">High</SelectItem>
+                <SelectItem value="critical">Critical</SelectItem>
+              </SelectContent>
+            </SelectRoot>
+            <input type="hidden" name="priority" value={createFormPriority} />
           <Label for="case-title">Case Title *</Label>
           <Input
             id="case-title"
-            name="title"
-            bind:value={$createFormData.title}
-            placeholder="Enter case title..."
-            required
-          />
-        </div>
-        <div class="grid gap-2">
-          <Label for="case-description">Description</Label>
-          <Textarea
-            id="case-description"
-            name="description"
+            <SelectRoot bind:selected={createFormStatus}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="open">Open</SelectItem>
+                <SelectItem value="investigating">Investigating</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+              </SelectContent>
+            </SelectRoot>
+            <input type="hidden" name="status" value={createFormStatus} />
             bind:value={$createFormData.description}
             placeholder="Describe the case details..."
             class="min-h-[100px]"
@@ -763,21 +804,21 @@
   </Dialog.Content>
 </Dialog.Root>
 
-<!-- Add Evidence Dialog -->
-<Dialog.Root bind:open={addEvidenceDialogOpen}>
-  <Dialog.Content class="sm:max-w-[525px]">
-    <Dialog.Header>
-      <Dialog.Title>Add Evidence</Dialog.Title>
-      <Dialog.Description>
-        Add new evidence with AI-powered analysis and vector indexing.
-      </Dialog.Description>
-    </Dialog.Header>
-    <form method="POST" action="?/addEvidence" use:evidenceEnhance>
-      <input type="hidden" name="caseId" value={$evidenceFormData.caseId} />
-      <div class="grid gap-4 py-4">
-        <div class="grid gap-2">
-          <Label for="evidence-title">Evidence Title *</Label>
-          <Input
+          <SelectRoot bind:selected={evidenceFormType}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="document">Document</SelectItem>
+              <SelectItem value="photo">Photo</SelectItem>
+              <SelectItem value="video">Video</SelectItem>
+              <SelectItem value="audio">Audio</SelectItem>
+              <SelectItem value="physical">Physical Evidence</SelectItem>
+              <SelectItem value="digital">Digital Evidence</SelectItem>
+              <SelectItem value="testimony">Testimony</SelectItem>
+            </SelectContent>
+          </SelectRoot>
+          <input type="hidden" name="evidenceType" value={evidenceFormType} />
             id="evidence-title"
             name="title"
             bind:value={$evidenceFormData.title}

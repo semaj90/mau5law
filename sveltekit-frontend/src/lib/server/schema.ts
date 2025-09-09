@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, boolean, json } from './db';
+import { pgTable, serial, text, timestamp, boolean, json } from 'drizzle-orm/pg-core';
 
 export const storage_files = pgTable('storage_files', {
   id: serial('id').primaryKey(),

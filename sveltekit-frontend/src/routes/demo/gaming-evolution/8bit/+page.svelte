@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { Dialog, Button, Badge, Card, Checkbox } from 'bits-ui';
-  import 'nes.css/css/nes.min.css';
+  import { Dialog } from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Card } from '$lib/components/ui/card';
+  import { Checkbox } from '$lib/components/ui/checkbox';
 
-  let dialogOpen = $state(false);
-  let health = $state(3);
-  let score = $state(1250);
-  let level = $state(1);
+  let dialogOpen = false;
+  let health = 3;
+  let score = 1250;
+  let level = 1;
 
   function decreaseHealth() {
     if (health > 0) health--;
@@ -92,18 +95,18 @@
         <div class="nes-container">
           <p class="nes-text is-primary">GAME CONTROLS</p>
           <div class="button-grid">
-            <Button.Root class="nes-btn action-btn" on:click={increaseScore}>
+            <Button class="nes-btn action-btn" on:click={increaseScore}>
               A BUTTON
-            </Button.Root>
-            <Button.Root class="nes-btn action-btn" on:click={decreaseHealth}>
+            </Button>
+            <Button class="nes-btn action-btn" on:click={decreaseHealth}>
               B BUTTON
-            </Button.Root>
-            <Button.Root class="nes-btn start-btn" on:click={() => dialogOpen = true}>
+            </Button>
+            <Button class="nes-btn start-btn" on:click={() => dialogOpen = true}>
               START
-            </Button.Root>
-            <Button.Root class="nes-btn select-btn">
+            </Button>
+            <Button class="nes-btn select-btn">
               SELECT
-            </Button.Root>
+            </Button>
           </div>
         </div>
       </div>
@@ -114,13 +117,13 @@
       <div class="nes-container">
         <p class="nes-text is-primary">DIRECTIONAL PAD</p>
         <div class="dpad">
-          <Button.Root class="nes-btn dpad-btn dpad-up">▲</Button.Root>
+          <Button class="nes-btn dpad-btn dpad-up">▲</Button>
           <div class="dpad-middle">
-            <Button.Root class="nes-btn dpad-btn dpad-left">◄</Button.Root>
+            <Button class="nes-btn dpad-btn dpad-left">◄</Button>
             <div class="dpad-center"></div>
-            <Button.Root class="nes-btn dpad-btn dpad-right">►</Button.Root>
+            <Button class="nes-btn dpad-btn dpad-right">►</Button>
           </div>
-          <Button.Root class="nes-btn dpad-btn dpad-down">▼</Button.Root>
+          <Button class="nes-btn dpad-btn dpad-down">▼</Button>
         </div>
       </div>
     </div>
@@ -132,30 +135,30 @@
       <p class="title">NES TECHNICAL SPECS</p>
       <div class="specs-grid">
         <div class="spec-item">
-          <Badge.Root class="nes-badge spec-badge">
+          <Badge class="nes-badge spec-badge">
             <span class="is-primary">CPU</span>
-          </Badge.Root>
+          </Badge>
           <p>6502 @ 1.79MHz</p>
         </div>
 
         <div class="spec-item">
-          <Badge.Root class="nes-badge spec-badge">
+          <Badge class="nes-badge spec-badge">
             <span class="is-success">COLORS</span>
-          </Badge.Root>
+          </Badge>
           <p>25 on screen / 64 total</p>
         </div>
 
         <div class="spec-item">
-          <Badge.Root class="nes-badge spec-badge">
+          <Badge class="nes-badge spec-badge">
             <span class="is-warning">RESOLUTION</span>
-          </Badge.Root>
+          </Badge>
           <p>256 × 240 pixels</p>
         </div>
 
         <div class="spec-item">
-          <Badge.Root class="nes-badge spec-badge">
+          <Badge class="nes-badge spec-badge">
             <span class="is-error">MEMORY</span>
-          </Badge.Root>
+          </Badge>
           <p>2KB RAM</p>
         </div>
       </div>
@@ -163,68 +166,57 @@
   </section>
 
   <!-- Game Selection Menu -->
-  <Dialog.Root bind:open={dialogOpen}>
-    <Dialog.Portal>
-      <Dialog.Overlay class="dialog-overlay" />
-      <Dialog.Content class="nes-dialog game-menu">
-        <Dialog.Title class="nes-text is-primary">
-          GAME SELECT
-        </Dialog.Title>
-        <Dialog.Description>
+  <Dialog bind:open={dialogOpen}>
+    <div slot="content" class="nes-dialog game-menu">
+      <h2 class="nes-text is-primary">GAME SELECT</h2>
+      <div class="game-selection-description">
           <div class="game-list">
-            <Card.Root class="nes-container game-card">
-              <Card.Content>
-                <div class="game-preview">
-                  <div class="game-icon mario-icon"></div>
-                  <div class="game-info">
-                    <h3>SUPER MARIO BROS</h3>
-                    <p>WORLD 1-1</p>
-                    <Badge.Root class="nes-badge">
-                      <span class="is-success">CLASSIC</span>
-                    </Badge.Root>
-                  </div>
+            <Card class="nes-container game-card">
+              <div class="game-preview">
+                <div class="game-icon mario-icon"></div>
+                <div class="game-info">
+                  <h3>SUPER MARIO BROS</h3>
+                  <p>WORLD 1-1</p>
+                  <Badge class="nes-badge">
+                    <span class="is-success">CLASSIC</span>
+                  </Badge>
                 </div>
-              </Card.Content>
-            </Card.Root>
+              </div>
+            </Card>
 
-            <Card.Root class="nes-container game-card">
-              <Card.Content>
-                <div class="game-preview">
-                  <div class="game-icon zelda-icon"></div>
-                  <div class="game-info">
-                    <h3>THE LEGEND OF ZELDA</h3>
-                    <p>ADVENTURE</p>
-                    <Badge.Root class="nes-badge">
-                      <span class="is-warning">RPG</span>
-                    </Badge.Root>
-                  </div>
+            <Card class="nes-container game-card">
+              <div class="game-preview">
+                <div class="game-icon zelda-icon"></div>
+                <div class="game-info">
+                  <h3>THE LEGEND OF ZELDA</h3>
+                  <p>ADVENTURE</p>
+                  <Badge class="nes-badge">
+                    <span class="is-warning">RPG</span>
+                  </Badge>
                 </div>
-              </Card.Content>
-            </Card.Root>
+              </div>
+            </Card>
 
-            <Card.Root class="nes-container game-card">
-              <Card.Content>
-                <div class="game-preview">
-                  <div class="game-icon metroid-icon"></div>
-                  <div class="game-info">
-                    <h3>METROID</h3>
-                    <p>PLANET ZEBES</p>
-                    <Badge.Root class="nes-badge">
-                      <span class="is-error">ACTION</span>
-                    </Badge.Root>
-                  </div>
+            <Card class="nes-container game-card">
+              <div class="game-preview">
+                <div class="game-icon metroid-icon"></div>
+                <div class="game-info">
+                  <h3>METROID</h3>
+                  <p>PLANET ZEBES</p>
+                  <Badge class="nes-badge">
+                    <span class="is-error">ACTION</span>
+                  </Badge>
                 </div>
-              </Card.Content>
-            </Card.Root>
+              </div>
+            </Card>
           </div>
-        </Dialog.Description>
-        <div class="menu-actions">
-          <Dialog.Close class="nes-btn is-primary">START GAME</Dialog.Close>
-          <Dialog.Close class="nes-btn">CANCEL</Dialog.Close>
-        </div>
-      </Dialog.Content>
-    </Dialog.Portal>
-  </Dialog.Root>
+      </div>
+      <div class="menu-actions">
+        <Button class="nes-btn is-primary" on:click={() => dialogOpen = false}>START GAME</Button>
+        <Button class="nes-btn" on:click={() => dialogOpen = false}>CANCEL</Button>
+      </div>
+    </div>
+  </Dialog>
 
   <!-- 8-bit Color Analysis -->
   <section class="color-analysis">
@@ -256,8 +248,6 @@
 </div>
 
 <style>
-  @import 'nes.css/css/nes.min.css';
-
   :global(body) {
     font-family: "Press Start 2P", cursive;
     background: linear-gradient(45deg, #1a1a2e, #16213e);
@@ -377,7 +367,7 @@
     margin-top: 1rem;
   }
 
-  .action-btn, .start-btn, .select-btn {
+  :global(.action-btn), :global(.start-btn), :global(.select-btn) {
     font-size: 0.7rem;
     padding: 0.5rem;
   }
@@ -396,7 +386,7 @@
     margin-top: 1rem;
   }
 
-  .dpad-up {
+  :global(.dpad-up) {
     grid-column: 2;
     grid-row: 1;
   }
@@ -408,7 +398,7 @@
     align-items: center;
   }
 
-  .dpad-left {
+  :global(.dpad-left) {
     grid-column: 1;
   }
 
@@ -419,16 +409,16 @@
     border: 2px solid #333;
   }
 
-  .dpad-right {
+  :global(.dpad-right) {
     grid-column: 3;
   }
 
-  .dpad-down {
+  :global(.dpad-down) {
     grid-column: 2;
     grid-row: 3;
   }
 
-  .dpad-btn {
+  :global(.dpad-btn) {
     width: 40px;
     height: 40px;
     padding: 0;
@@ -455,19 +445,19 @@
     padding: 1rem;
   }
 
-  .spec-badge {
+  :global(.spec-badge) {
     margin-bottom: 0.5rem;
   }
 
   /* Dialog Styling */
-  .dialog-overlay {
+  :global(.dialog-overlay) {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.9);
     z-index: 999;
   }
 
-  .game-menu {
+  :global(.game-menu) {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -486,8 +476,45 @@
     margin: 1rem 0;
   }
 
-  .game-card {
+  :global(.game-card) {
     margin: 1rem 0;
+  }
+
+  /* Selectors applied via bits-ui components or dynamic markup */
+  :global(.checkbox-wrapper) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  :global(.nes-select-trigger) {
+    width: 100%;
+    padding: 8px;
+  }
+
+  :global(.menu-btn) {
+    width: 100%;
+    text-align: left;
+  }
+
+  :global(.toast-container) {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    max-width: 400px;
+    z-index: 1000;
+  }
+
+  :global(.nes-balloon.from-left::after) {
+    border-color: transparent white transparent transparent;
+  }
+
+  :global(.tab-list) {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
   }
 
   .game-preview {
