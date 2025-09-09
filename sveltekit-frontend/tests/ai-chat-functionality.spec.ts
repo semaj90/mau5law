@@ -158,7 +158,7 @@ test.describe('Legal AI Chat Functionality', () => {
         const data = await response.json();
         return { success: true, data };
       } catch (error) {
-        return { success: false, error: error.message };
+        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
       }
     });
 
@@ -228,7 +228,10 @@ test.describe('Legal AI Chat Functionality', () => {
           console.log(`✅ Service worker at ${endpoint} is healthy`);
         }
       } catch (error) {
-        console.log(`Service worker at ${endpoint} not available:`, error.message);
+        console.log(
+          `Service worker at ${endpoint} not available:`,
+          error instanceof Error ? error.message : 'Unknown error'
+        );
       }
     }
   });
@@ -237,7 +240,7 @@ test.describe('Legal AI Chat Functionality', () => {
     // Disable JavaScript to test SSR
     await page.context().addInitScript(() => {
       // Mark that we're testing SSR
-      window.SSR_TEST = true;
+      (window as any).SSR_TEST = true;
     });
 
     await page.goto('http://localhost:5173');
@@ -274,7 +277,11 @@ test.describe('Legal AI Chat Functionality', () => {
           });
           return { success: response.ok, status: response.status, index };
         } catch (error) {
-          return { success: false, error: error.message, index };
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+            index,
+          };
         }
       }, i);
 
@@ -299,7 +306,7 @@ test.describe('Legal AI Chat Functionality', () => {
         });
         return { success: response.ok, status: response.status };
       } catch (error) {
-        return { success: false, error: error.message };
+        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
       }
     });
 
@@ -346,7 +353,7 @@ test.describe('Performance Tests', () => {
         const endTime = Date.now();
         return { success: response.ok, time: endTime - startTime };
       } catch (error) {
-        return { success: false, error: error.message };
+        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
       }
     });
 

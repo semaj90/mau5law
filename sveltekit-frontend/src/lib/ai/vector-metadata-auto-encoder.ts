@@ -592,7 +592,11 @@ class VectorMetadataAutoEncoder {
     operation: 'insert' | 'update' | 'upsert';
     status: 'success' | 'pending' | 'failed';
   }>> {
-    const operations = [];
+    const operations: Array<{
+      index_id: string;
+      operation: 'insert' | 'update' | 'upsert';
+      status: 'success' | 'pending' | 'failed';
+    }> = [];
     const indexesToUpdate = targetIndexes || Array.from(this.searchIndexes.keys());
 
     for (const indexId of indexesToUpdate) {
@@ -624,7 +628,7 @@ class VectorMetadataAutoEncoder {
     entryId: string,
     metadata: EncodedVectorMetadata,
     config: SearchIndexIntegration
-  ): Promise<{ operation: string; success: boolean }> {
+  ): Promise<{ operation: 'insert' | 'update' | 'upsert'; success: boolean }> {
     // Simulate index operations - would integrate with actual search engines
     console.log(`📊 Updating ${config.index_type} index ${indexId} for entry ${entryId}`);
 

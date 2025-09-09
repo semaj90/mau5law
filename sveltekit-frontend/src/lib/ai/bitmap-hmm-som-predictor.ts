@@ -71,15 +71,22 @@ export class BitmapHMMSOMPredictor {
   private predictionAccuracy = 60; // Starting accuracy, improves with learning
 
   constructor(som?: LegalDocumentSOM, redis?: IORedis) {
-    this.som = som || new LegalDocumentSOM({
-      gridSize: { width: 16, height: 16 },
-      inputDimension: 768,
-      learningRate: 0.1,
-      neighborhoodRadius: 8,
-      epochs: 1000,
-      enableGPU: true,
-      decayRate: 0.01
-    });
+    this.som =
+      som ||
+      new LegalDocumentSOM({
+        algorithm: 'som',
+        gridWidth: 16,
+        gridHeight: 16,
+        width: 16,
+        height: 16,
+        k: 100,
+        maxIterations: 1000,
+        tolerance: 0.001,
+        learningRate: 0.1,
+        dimensions: 768,
+        iterations: 1000,
+        radius: 8,
+      });
     this.redis = redis || createRedisInstance();
   }
 

@@ -1,6 +1,6 @@
 /**
  * LangChain-SIMD Bridge - Direct Integration
- * 
+ *
  * Connects the LangChain Ollama service directly to the SIMD compression pipeline,
  * enabling ultra-compressed 7-bit text processing with instantaneous UI generation.
  * This bridge eliminates intermediate processing steps for maximum performance.
@@ -18,7 +18,7 @@ export interface SIMDLangChainConfig extends Partial<LangChainConfig> {
   batchOptimization: boolean;
   cacheStrategy: 'aggressive' | 'balanced' | 'minimal';
   qualityTier: 'nes' | 'snes' | 'n64';
-  
+
   // Performance optimization
   maxConcurrentProcessing: number;
   memoryPoolSize: number; // MB
@@ -38,7 +38,7 @@ export interface SIMDProcessingResult extends ProcessingResult {
     gpuProcessingTime: number;
     instantUIComponents: InstantUIComponent[];
   };
-  
+
   // Performance metrics
   pipelineStats: {
     langchainTime: number;
@@ -83,7 +83,7 @@ export class LangChainSIMDBridge {
       maxRetrieverResults: 10,
       useCuda: true,
       vectorDimensions: 384,
-      
+
       // SIMD defaults
       simdConfig: {
         compressionRatio: 109,
@@ -101,7 +101,7 @@ export class LangChainSIMDBridge {
       maxConcurrentProcessing: 8,
       memoryPoolSize: 256,
       gpuAccelerationLevel: 0.85,
-      
+
       ...config
     };
 
@@ -126,13 +126,13 @@ export class LangChainSIMDBridge {
   ): Promise<SIMDProcessingResult> {
     const pipelineStartTime = Date.now();
     const processingId = `simd-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     console.log(`🚀 SIMD Pipeline processing: ${content.length} chars (ID: ${processingId})`);
 
     // Phase 1: LangChain processing (unless skipped)
     let langchainResult: ProcessingResult;
     let langchainTime = 0;
-    
+
     if (!options.skipLangChain) {
       const langchainStart = Date.now();
       langchainResult = await langChainOllamaService.processDocument(content, metadata);
@@ -160,14 +160,14 @@ export class LangChainSIMDBridge {
     // Phase 3: Instant UI generation (if enabled)
     let instantComponents: InstantUIComponent[] = [];
     let uiGenerationTime = 0;
-    
+
     if (this.config.enableInstantUI && options.generateUI !== false) {
       const uiStart = Date.now();
-      
+
       try {
         // Initialize WebGPU renderer if not already done
         const initialized = await webgpuTextTileRenderer.initialize();
-        
+
         if (initialized) {
           instantComponents = await webgpuTextTileRenderer.renderTilesToComponents(
             simdResult.compressedTiles,
@@ -181,12 +181,12 @@ export class LangChainSIMDBridge {
           console.warn('WebGPU not available, generating CPU-fallback components');
           instantComponents = this.generateCPUFallbackComponents(simdResult.compressedTiles);
         }
-        
+
       } catch (error) {
         console.error('UI generation failed, using fallback:', error);
         instantComponents = this.generateCPUFallbackComponents(simdResult.compressedTiles);
       }
-      
+
       uiGenerationTime = Date.now() - uiStart;
     }
 
@@ -200,12 +200,11 @@ export class LangChainSIMDBridge {
       embeddings: langchainResult.embeddings,
       processingTime: totalPipelineTime,
       metadata: {
-        ...langchainResult.metadata,
-        simdEnhanced: true,
-        compressionTarget: this.config.compressionTarget,
-        qualityTier: this.config.qualityTier
-      },
-      
+        totalTokens: langchainResult.metadata?.totalTokens || 0,
+        avgChunkSize: langchainResult.metadata?.avgChunkSize || 0,
+        model: langchainResult.metadata?.model || 'unknown'
+      } as { totalTokens: number; avgChunkSize: number; model: string; },
+
       // SIMD enhancement data
       simdData: {
         compressedTiles: simdResult.compressedTiles.map(tile => ({
@@ -218,7 +217,7 @@ export class LangChainSIMDBridge {
         gpuProcessingTime: simdCompressionTime + uiGenerationTime,
         instantUIComponents: instantComponents
       },
-      
+
       // Performance pipeline metrics
       pipelineStats: {
         langchainTime,
@@ -283,7 +282,7 @@ export class LangChainSIMDBridge {
         if (initialized) {
           instantComponents = await webgpuTextTileRenderer.renderTilesToComponents(
             simdResult.compressedTiles,
-            { 
+            {
               target: 'component-data',
               instantMode: true,
               qualityOverride: this.config.qualityTier
@@ -310,7 +309,7 @@ export class LangChainSIMDBridge {
       sources: queryResult.sources,
       confidence: queryResult.confidence,
       processingTime,
-      
+
       // SIMD enhancements
       instantComponents,
       compressionStats
@@ -332,24 +331,24 @@ export class LangChainSIMDBridge {
     } = {}
   ): Promise<SIMDProcessingResult[]> {
     const { concurrencyLimit = this.config.maxConcurrentProcessing, enableUIGeneration = true } = options;
-    
+
     console.log(`📦 SIMD Batch processing: ${documents.length} documents (concurrency: ${concurrencyLimit})`);
 
     const results: SIMDProcessingResult[] = [];
-    
+
     // Process in controlled batches to manage memory
     for (let i = 0; i < documents.length; i += concurrencyLimit) {
       const batch = documents.slice(i, i + concurrencyLimit);
-      
-      const batchPromises = batch.map(doc => 
+
+      const batchPromises = batch.map(doc =>
         this.processDocument(doc.content, doc.metadata || {}, {
           generateUI: enableUIGeneration
         })
       );
-      
+
       const batchResults = await Promise.all(batchPromises);
       results.push(...batchResults);
-      
+
       console.log(`📊 Batch ${Math.floor(i / concurrencyLimit) + 1}/${Math.ceil(documents.length / concurrencyLimit)} complete`);
     }
 
@@ -395,13 +394,13 @@ export class LangChainSIMDBridge {
    * Calculate memory efficiency of SIMD processing
    */
   private calculateMemoryEfficiency(
-    originalSize: number, 
+    originalSize: number,
     simdResult: TextEmbeddingResult
   ): number {
     const compressedSize = simdResult.compressedTiles.reduce((sum, tile) => sum + tile.compressedData.length, 0);
     const vertexBufferSize = simdResult.vertexBufferCache.byteLength;
     const componentDataSize = simdResult.uiComponents.componentData.byteLength;
-    
+
     const totalSIMDSize = compressedSize + vertexBufferSize + componentDataSize;
     return Math.max(0, 1 - (totalSIMDSize / (originalSize * 4))); // Assuming 4 bytes per char baseline
   }
@@ -411,12 +410,12 @@ export class LangChainSIMDBridge {
    */
   private updatePerformanceMetrics(result: SIMDProcessingResult): void {
     this.performanceMetrics.totalProcessed++;
-    
+
     // Rolling average for compression ratio
-    this.performanceMetrics.averageCompressionRatio = 
-      (this.performanceMetrics.averageCompressionRatio * (this.performanceMetrics.totalProcessed - 1) + 
+    this.performanceMetrics.averageCompressionRatio =
+      (this.performanceMetrics.averageCompressionRatio * (this.performanceMetrics.totalProcessed - 1) +
        result.simdData.totalCompressionRatio) / this.performanceMetrics.totalProcessed;
-    
+
     // Rolling average for processing time
     this.performanceMetrics.averageProcessingTime =
       (this.performanceMetrics.averageProcessingTime * (this.performanceMetrics.totalProcessed - 1) +
@@ -467,35 +466,35 @@ export class LangChainSIMDBridge {
     results: any;
   }> {
     console.log('🧪 Testing SIMD-LangChain pipeline...');
-    
+
     const testDocument = `
       Software License Agreement
-      
+
       This agreement grants the licensee non-exclusive rights to use the software.
       The license fee is $50,000 annually with maintenance support included.
       Reverse engineering and redistribution are prohibited without written consent.
-      
+
       The software includes advanced AI capabilities for legal document processing,
       including SIMD-optimized text compression and GPU-accelerated rendering.
     `;
 
     try {
       const startTime = Date.now();
-      
+
       // Test document processing
       const processResult = await this.processDocument(testDocument, {
         type: 'legal',
         test: true
       });
-      
+
       // Test query processing
       const queryResult = await this.queryDocuments(
         "What are the key terms of this software license?",
         { maxResults: 5 }
       );
-      
+
       const totalTime = Date.now() - startTime;
-      
+
       return {
         success: true,
         performance: {
@@ -510,13 +509,13 @@ export class LangChainSIMDBridge {
           query: queryResult
         }
       };
-      
+
     } catch (error) {
       console.error('Pipeline test failed:', error);
       return {
         success: false,
         performance: {},
-        results: { error: error.message }
+        results: { error: error instanceof Error ? error.message : 'Unknown error' }
       };
     }
   }

@@ -77,8 +77,8 @@ export interface MultiDimensionalQuery {
 }
 
 export class MultiDimensionalImageCache {
-  private som: SOMNeuralNetwork;
-  private autoencoder: GraphPatternAutoEncoder;
+  private som!: SOMNeuralNetwork;
+  private autoencoder!: GraphPatternAutoEncoder;
   private multiLayerCache: MultiLayerCache;
   private rlCache = reinforcementLearningCache;
 
@@ -245,7 +245,7 @@ export class MultiDimensionalImageCache {
       metadata.compressionRatio = compressionData.compressionRatio;
 
       // Create GPU texture if applicable
-      let gpuTexture: GPUTextureMatrix | undefined;
+      let gpuTexture: GPUTextureMatrix | null = null;
       if (dimensions.visual === 'hires' || dimensions.algorithm === 'som') {
         gpuTexture = await this.createGPUTexture(cacheKey, imageData, {
           width: parseInt(imageData.split(',')[0].split(';')[1]?.split('=')[1]) || 800,
@@ -264,7 +264,7 @@ export class MultiDimensionalImageCache {
         },
         metadata,
         compressionData,
-        gpuTexture,
+        gpuTexture: gpuTexture || undefined,
         cacheStats: {
           hitCount: 0,
           missCount: 0,

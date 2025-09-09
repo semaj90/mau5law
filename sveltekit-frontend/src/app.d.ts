@@ -5,7 +5,15 @@ declare global {
       user: {
         id: string;
         email?: string;
-        role: 'admin' | 'user' | 'prosecutor' | 'detective';
+        role:
+          | 'admin'
+          | 'lead_prosecutor'
+          | 'prosecutor'
+          | 'paralegal'
+          | 'investigator'
+          | 'analyst'
+          | 'viewer'
+          | 'user';
       } | null;
       // Keep session loosely typed to avoid hard dependency on lucia types here
       session: any | null;

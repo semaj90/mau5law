@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js';
  */
 
 import { json } from '@sveltejs/kit';
-import { redisServiceService } from '$lib/server/redisService-service';
+import { redisService } from '$lib/server/redis-service';
 import { minioService } from '$lib/server/storage/minio-service';
 import { db } from '$lib/server/db/client';
 import { evidence, documents } from '$lib/db/schema';

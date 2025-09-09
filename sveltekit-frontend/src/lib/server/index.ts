@@ -60,6 +60,7 @@ export * from './protocols/nats-messaging';
 export * from './cache/redis-client';
 export * from './cache/memory-cache';
 export * from './cache/vector-cache';
+export * from './redis-service';
 
 // --- Health & Monitoring ---
 export * from './health/service-monitor';
@@ -89,42 +90,56 @@ export * from './workflow/task-scheduler';
 // --- Core Application Types ---
 export type {
   // Database Types
-  User, Case, Evidence, Document, Citation,
-  
+  User,
+  Case,
+  Evidence,
+  Document,
+  Citation,
+
   // API Types
-  ApiResponse, ApiError, ApiMetadata,
-  
+  ApiResponse,
+  ApiError,
+  ApiMetadata,
+
   // Legal Domain Types
-  LegalDocument, CaseType, EvidenceType,
-  
+  LegalDocument,
+  CaseType,
+  EvidenceType,
+
   // AI/ML Types
-  EmbeddingVector, SemanticAnalysis, RAGResponse,
-  
+  EmbeddingVector,
+  SemanticAnalysis,
+  RAGResponse,
+
   // System Types
-  ServiceHealth, PerformanceMetrics, SystemStatus,
-  
+  ServiceHealth,
+  PerformanceMetrics,
+  SystemStatus,
+
   // Communication Types
-  WebSocketMessage, GRPCRequest, QuicPayload
+  WebSocketMessage,
+  GRPCRequest,
+  QuicPayload,
 } from './types';
 
 // --- Utility Functions ---
-export { 
-  generateId, 
-  validateInput, 
+export {
+  generateId,
+  validateInput,
   sanitizeHtml,
   formatResponse,
   handleError,
   logRequest,
-  measurePerformance
+  measurePerformance,
 } from './utils';
 
 // --- Constants & Configuration ---
-export { 
+export {
   API_ENDPOINTS,
   SERVICE_PORTS,
   PROTOCOL_CONFIG,
   PERFORMANCE_THRESHOLDS,
-  SECURITY_SETTINGS
+  SECURITY_SETTINGS,
 } from './config';
 
 // --- Default Exports for Common Services ---
@@ -133,6 +148,7 @@ export { default as evidenceService } from './evidence.service';
 export { default as minioService } from './storage/minio-service';
 export { default as ollamaService } from './ai/ollama-service';
 export { default as redisClient } from './cache/redis-client';
+export { redisService } from './redis-service';
 export { default as healthMonitor } from './health/service-monitor';
 
 // --- Re-exports from External Dependencies ---

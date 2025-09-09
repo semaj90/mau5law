@@ -58,11 +58,11 @@ let uploadProgress = $state<Map<string, number>>(new Map());
   let hasUploadProgress = $derived(uploadProgress.size > 0);
   let zoomPercentage = $derived(Math.round(zoomLevel * 100));
   let minioStatusText = $derived(
-    minioStatus === 'connected' ? 'MinIO' : 
+    minioStatus === 'connected' ? 'MinIO' :
     minioStatus === 'disconnected' ? 'Demo' : 'Checking...'
   );
   let minioStatusColor = $derived(
-    minioStatus === 'connected' ? 'bg-green-500' : 
+    minioStatus === 'connected' ? 'bg-green-500' :
     minioStatus === 'disconnected' ? 'bg-red-500' : 'bg-yellow-500 animate-pulse'
   );
 
@@ -150,7 +150,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
     if (!evidence.urlExpiry || Date.now() < evidence.urlExpiry) {
       return evidence.url || '';
     }
-    
+
     try {
       // Refresh presigned URL
       const response = await fetch(`/api/v1/minio/url-refresh`, {
@@ -161,7 +161,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
           fileName: evidence.metadata.fileName
         })
       });
-      
+
       if (response.ok) {
         const result = await response.json();
         return result.url;
@@ -169,7 +169,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
     } catch (error) {
       console.warn('Failed to refresh URL for:', evidence.id);
     }
-    
+
     return evidence.url || '';
   }
 
@@ -198,7 +198,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
       } else if (evidence.type === 'document') {
         const fabric = await import('fabric');
 
-        const rect = new fabric.Rect({
+        const rect = new fabric.fabric.Rect({
           left: evidence.x,
           top: evidence.y,
           width: 120,
@@ -251,7 +251,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
   async function uploadEvidence(file: File) {
     const fileId = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
-    
+
     try {
       isLoading = true;
       uploadProgress.set(fileId, 0);
@@ -524,7 +524,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
               <span class="text-blue-600">{progress}%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+              <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
                    style="width: {progress}%"></div>
             </div>
           </div>
