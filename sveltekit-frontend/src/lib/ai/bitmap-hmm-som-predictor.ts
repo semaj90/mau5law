@@ -1,7 +1,7 @@
 /**
  * Bitmap Hidden Markov Chain with SOM Integration
  * Revolutionary predictive asset loading system for 90%+ prediction confidence
- * 
+ *
  * Architecture:
  * - SOM clusters user interaction states into a 2D topology map
  * - HMM models state transition probabilities between SOM clusters
@@ -72,12 +72,13 @@ export class BitmapHMMSOMPredictor {
 
   constructor(som?: LegalDocumentSOM, redis?: IORedis) {
     this.som = som || new LegalDocumentSOM({
-      width: 16,
-      height: 16,
-      dimensions: 768,
+      gridSize: { width: 16, height: 16 },
+      inputDimension: 768,
       learningRate: 0.1,
-      radius: 8,
-      iterations: 1000
+      neighborhoodRadius: 8,
+      epochs: 1000,
+      enableGPU: true,
+      decayRate: 0.01
     });
     this.redis = redis || createRedisInstance();
   }
@@ -108,7 +109,7 @@ export class BitmapHMMSOMPredictor {
   createSOMBitmap(somActivations: number[][], userContext: any): SOMBitmap {
     const width = this.som.config.width;
     const height = this.som.config.height;
-    
+
     // Calculate bits needed (width * height bits, packed into bytes)
     const bitsNeeded = width * height;
     const bytesNeeded = Math.ceil(bitsNeeded / 8);
@@ -125,7 +126,7 @@ export class BitmapHMMSOMPredictor {
       for (let x = 0; x < width; x++) {
         const activation = somActivations[x] ? somActivations[x][y] || 0 : 0;
         const isActive = activation > threshold;
-        
+
         if (isActive) {
           const byteIndex = Math.floor(bitIndex / 8);
           const bitPosition = bitIndex % 8;
@@ -153,15 +154,15 @@ export class BitmapHMMSOMPredictor {
   async recordInteraction(userAction: string, context: any): Promise<void> {
     const embedding = await this.contextToEmbedding(context);
     const somResult = await this.som.cluster(embedding);
-    
+
     // Create SOM activations map (simplified for demonstration)
-    const activations = Array(this.som.config.width).fill(null).map(() => 
+    const activations = Array(this.som.config.width).fill(null).map(() =>
       Array(this.som.config.height).fill(0)
     );
     activations[somResult.x][somResult.y] = somResult.confidence;
 
     const bitmap = this.createSOMBitmap(activations, context);
-    
+
     // Find or create state
     let state = this.findStateByBitmap(bitmap);
     if (!state) {
@@ -187,7 +188,7 @@ export class BitmapHMMSOMPredictor {
     }
 
     this.currentState = state;
-    
+
     // Trigger predictive asset loading
     await this.triggerPredictiveLoading();
   }
@@ -424,7 +425,7 @@ export class BitmapHMMSOMPredictor {
     for (let i = 0; i < bitmap1.data.length; i++) {
       const byte1 = bitmap1.data[i];
       const byte2 = bitmap2.data[i];
-      
+
       // Count matching bits
       for (let bit = 0; bit < 8 && (i * 8 + bit) < totalBits; bit++) {
         const bit1 = (byte1 >> bit) & 1;
@@ -452,7 +453,7 @@ export class BitmapHMMSOMPredictor {
       context.timestamp || Date.now(),
       Object.keys(context).length
     ];
-    
+
     // Pad to SOM dimensions
     while (features.length < this.som.config.dimensions) {
       features.push(Math.random() * 0.1);
@@ -463,7 +464,7 @@ export class BitmapHMMSOMPredictor {
 
   private extractAssetTypes(context: any): string[] {
     const assets = [];
-    
+
     if (context.route?.includes('dashboard')) assets.push('dashboard_components');
     if (context.route?.includes('document')) assets.push('document_viewer');
     if (context.route?.includes('evidence')) assets.push('evidence_canvas');
@@ -529,17 +530,17 @@ export class BitmapHMMSOMPredictor {
 
   private calculatePredictionConfidence(nextStates: Array<{ probability: number }>): number {
     if (nextStates.length === 0) return 0;
-    
+
     const topProbability = nextStates[0]?.probability || 0;
     const diversityPenalty = nextStates.length > 3 ? 0.9 : 1.0; // Penalize scattered predictions
-    
+
     return Math.min(95, (topProbability * this.predictionAccuracy * diversityPenalty));
   }
 
   private generateSVGPattern(assetType: string, priority: number): string {
     const size = 16;
     const color = priority > 80 ? '#ff6b6b' : priority > 60 ? '#ffd93d' : '#6bcf7f';
-    
+
     return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
       <rect width="${size}" height="${size}" fill="${color}" opacity="0.8"/>
       <text x="8" y="12" text-anchor="middle" font-size="8" fill="white">${assetType.charAt(0).toUpperCase()}</text>
@@ -549,7 +550,7 @@ export class BitmapHMMSOMPredictor {
   private async triggerPredictiveLoading(): Promise<void> {
     const prediction = await this.predictNextStates();
     const chrPatterns = this.generateCHRROMPredictions(prediction);
-    
+
     // Store predictions in Redis for immediate access
     for (const pattern of chrPatterns) {
       await this.redis.setex(pattern.cacheKey, 300, pattern.svgPattern); // 5 minute TTL
@@ -561,12 +562,12 @@ export class BitmapHMMSOMPredictor {
   private calculateOutcomeSimilarity(actual: string, predicted: string): number {
     const actualWords = actual.toLowerCase().split('_');
     const predictedWords = predicted.toLowerCase().split('_');
-    
+
     let matches = 0;
     for (const word of actualWords) {
       if (predictedWords.includes(word)) matches++;
     }
-    
+
     return matches / Math.max(actualWords.length, predictedWords.length);
   }
 
@@ -600,7 +601,7 @@ export class BitmapHMMSOMPredictor {
       this.states = new Map(data.states);
       this.transitions = new Map(data.transitions);
       this.predictionAccuracy = data.predictionAccuracy || 60;
-      
+
       console.log(`📥 Loaded HMM-SOM model with ${this.states.size} states and accuracy ${this.predictionAccuracy}%`);
     } catch (error) {
       console.error('Failed to load HMM-SOM model from Redis:', error);

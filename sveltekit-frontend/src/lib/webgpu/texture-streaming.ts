@@ -6,7 +6,16 @@
  * - 40KB total memory budget  
  * - Meshoptimizer compression with legal document context
  * - WebGL2 fallback for universal browser support
+ * - Buffer conversion utilities for proper ArrayBuffer/Float32Array handling
  */
+
+import { 
+  WebGPUBufferUtils, 
+  toArrayBuffer, 
+  BufferTypeGuards, 
+  type BufferLike,
+  BufferDebugUtils
+} from '../utils/buffer-conversion.js';
 
 // Memory constraints (Nintendo NES inspired)
 const MEMORY_CONSTRAINTS = {
@@ -257,7 +266,7 @@ export class WebGPUTextureStreamer {
 
   async loadTexture(
     id: string,
-    data: ArrayBuffer,
+    data: BufferLike,
     width: number,
     height: number,
     options: {
@@ -289,13 +298,18 @@ export class WebGPUTextureStreamer {
         }
       }
 
-      // Compress texture if enabled
-      let finalData = data;
+      // Convert to ArrayBuffer and compress texture if enabled
+      let finalData = toArrayBuffer(data);
       let compressed = false;
       
       if (compress && this.compressionWorker) {
-        finalData = await this.compressTexture(data, width, height, legalContext);
+        finalData = await this.compressTexture(finalData, width, height, legalContext);
         compressed = true;
+      }
+      
+      // Debug buffer info for legal context textures
+      if (legalContext?.riskIndicator) {
+        BufferDebugUtils.logBuffer(data, `Legal Risk Texture ${id}`);
       }
 
       // Clean up existing texture if it exists to prevent duplicates
@@ -381,10 +395,14 @@ export class WebGPUTextureStreamer {
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
 
-    // Upload texture data
+    // Upload texture data with proper buffer handling
+    const textureData = BufferTypeGuards.isArrayBuffer(nesTexture.data) 
+      ? nesTexture.data 
+      : toArrayBuffer(nesTexture.data);
+      
     this.device.queue.writeTexture(
       { texture },
-      nesTexture.data,
+      textureData,
       { bytesPerRow: nesTexture.width * 4, rowsPerImage: nesTexture.height },
       { width: nesTexture.width, height: nesTexture.height }
     );
@@ -406,7 +424,11 @@ export class WebGPUTextureStreamer {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 
-    // Upload texture data
+    // Upload texture data with proper buffer conversion
+    const textureData = BufferTypeGuards.isArrayBuffer(nesTexture.data)
+      ? new Uint8Array(nesTexture.data)
+      : new Uint8Array(toArrayBuffer(nesTexture.data));
+      
     this.gl.texImage2D(
       this.gl.TEXTURE_2D,
       0,
@@ -416,7 +438,7 @@ export class WebGPUTextureStreamer {
       0,
       this.gl.RGBA,
       this.gl.UNSIGNED_BYTE,
-      new Uint8Array(nesTexture.data)
+      textureData
     );
 
     this.webglTextures.set(nesTexture.id, texture);

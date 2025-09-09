@@ -9,6 +9,8 @@
 <script lang="ts">
   import LegalDocumentProcessor from '$lib/components/legal/LegalDocumentProcessor.svelte';
   import type { LegalDocument } from '$lib/services/legalRAGEngine';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import * as Card from '$lib/components/ui/card';
   
   // Sample legal documents for testing
   const sampleDocuments: Partial<LegalDocument>[] = [

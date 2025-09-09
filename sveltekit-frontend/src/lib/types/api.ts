@@ -45,6 +45,40 @@ export interface ApiResponse<T = any> {
   error?: string;
   message?: string;
 }
+
+// Health Check Types
+export interface HealthStatus {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  timestamp: string;
+  uptime: number;
+  checks?: Record<string, boolean>;
+}
+
+export interface ServiceHealth {
+  service: string;
+  status: HealthStatus;
+  dependencies?: Record<string, HealthStatus>;
+}
+
+export interface SystemInfo {
+  version: string;
+  environment: string;
+  services: ServiceHealth[];
+  lastUpdated: string;
+}
+
+// AI Analysis Types
+export interface AIAnalysisRequest {
+  content: string;
+  analysisType: string;
+  options?: Record<string, any>;
+}
+
+export interface AIAnalysisResponse {
+  analysis: string;
+  confidence: number;
+  metadata?: Record<string, any>;
+}
 // AI Chat API Types
 export interface ChatMessage {
   id: string;
@@ -250,6 +284,21 @@ export interface VectorSearchResult {
   score: number;
   metadata?: Record<string, any>;
   type: 'case' | 'evidence' | 'statute' | 'document';
+}
+
+export interface VectorSearchResponse {
+  results: VectorSearchResult[];
+  total: number;
+  processingTime?: number;
+}
+
+// RAG (Retrieval Augmented Generation) Types
+export interface RAGRequest {
+  query: string;
+  context?: string[];
+  maxResults?: number;
+  temperature?: number;
+  model?: string;
 }
 // Embedding Types
 export interface EmbeddingRequest {

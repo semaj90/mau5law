@@ -34,14 +34,14 @@
     caseId?: string;
     model?: string;
     useRAG?: boolean;
-    class?: string;
+    className?: string;
   }
 
   let {
     caseId = undefined,
     model = "gemma3-legal",
     useRAG = true,
-    class = "",
+    className = "",
   }: Props = $props();
 
   // Reactive state using Svelte 5 runes
@@ -94,7 +94,7 @@
   // Health check function
   async function checkOllamaHealth() {
     try {
-      const response = await fetch("/api/ai/chat", { method: "GET" });
+      const response = await fetch("/api/chat", { method: "GET" });
       const data = await response.json();
 
       ollamaStatus = data.status === "healthy" ? "healthy" : "unhealthy";
@@ -142,10 +142,15 @@
         useRAG,
       };
 
-      const response = await fetch("/api/ai/chat", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(chatRequest),
+        body: JSON.stringify({
+          messages: [{ role: "user", content: userMessage }],
+          model,
+          stream: streamMode,
+          sessionId: caseId
+        }),
       });
 
       if (!response.ok) {
@@ -318,7 +323,7 @@
           <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:onclick={() => (showSettings = !showSettings)}
+            onclick={() => (showSettings = !showSettings)}
           >
             <Settings class="w-4 h-4" />
           </Button>
@@ -327,7 +332,7 @@
           <Button class="bits-btn bits-btn"
             variant="ghost"
             size="sm"
-            on:onclick={checkOllamaHealth}
+            onclick={checkOllamaHealth}
             disabled={isLoading}
           >
             <RefreshCw class="w-4 h-4" />
@@ -410,7 +415,7 @@
 
   <!-- Chat History -->
   <Card class="flex-1 mb-4">
-    <ScrollArea class="h-96 p-4" bind:viewport={chatContainer}>
+    <ScrollArea class="h-[600px] p-6" bind:viewport={chatContainer}>
       {#if chatHistory.length === 0}
         <div class="text-center text-muted-foreground py-8">
           <MessageSquare class="w-12 h-12 mx-auto mb-4 opacity-50" />
@@ -421,28 +426,30 @@
         </div>
       {:else}
         {#each chatHistory as msg}
-          <div class="mb-6 {msg.type === 'user' ? 'text-right' : 'text-left'}">
+          <div class="mb-8 {msg.type === 'user' ? 'text-right' : 'text-left'}">
+            <!-- Timestamp -->
+            <div class="text-xs text-muted-foreground mb-2 px-2 {msg.type === 'user' ? 'text-right' : 'text-left'}">
+              {msg.timestamp.toLocaleTimeString()} • {msg.timestamp.toLocaleDateString()}
+            </div>
+            
             <div
-              class="inline-block max-w-[80%] {msg.type === 'user'
-                ? 'bg-blue-600 text-white rounded-l-lg rounded-br-lg'
-                : 'bg-gray-100 text-gray-900 rounded-r-lg rounded-bl-lg'} px-4 py-2"
+              class="inline-block max-w-[85%] {msg.type === 'user'
+                ? 'bg-blue-600 text-white rounded-2xl rounded-br-md shadow-md'
+                : 'bg-gray-50 text-gray-900 rounded-2xl rounded-bl-md border border-gray-200 shadow-sm'} px-6 py-4"
               data-testid={msg.type === "assistant"
                 ? "chat-response"
                 : "chat-message"}
             >
-              <div class="whitespace-pre-wrap">{msg.content}</div>
+              <div class="whitespace-pre-wrap text-[15px] leading-relaxed">{msg.content}</div>
 
               <!-- Performance Info for Assistant Messages -->
               {#if msg.type === "assistant" && msg.performance}
-                <div class="text-xs opacity-70 mt-2 border-t pt-2">
-                  {msg.performance.duration}ms • {msg.performance.tokens} tokens
+                <div class="text-xs opacity-60 mt-3 pt-2 border-t border-gray-300">
+                  <span class="font-mono">{msg.performance.duration}ms</span> • 
+                  <span class="font-mono">{msg.performance.tokens} tokens</span> • 
+                  <span class="font-mono">{msg.performance.tokensPerSecond?.toFixed(1)} tok/s</span>
                 </div>
               {/if}
-            </div>
-
-            <!-- Message Timestamp -->
-            <div class="text-xs text-muted-foreground mt-1">
-              {msg.timestamp.toLocaleTimeString()}
             </div>
 
             <!-- Suggestions -->
@@ -452,7 +459,7 @@
                   <Button class="bits-btn bits-btn"
                     variant="outline"
                     size="sm"
-                    on:onclick={() => selectSuggestion(suggestion)}
+                    onclick={() => selectSuggestion(suggestion)}
                     class="text-xs"
                   >
                     {suggestion}
@@ -487,35 +494,37 @@
   </Card>
 
   <!-- Input Area -->
-  <div class="flex gap-2">
+  <div class="flex gap-3 p-4 bg-white border-t border-gray-200 rounded-b-lg">
     <div class="flex-1">
       <Input
         bind:value={message}
-        placeholder="Ask the Legal AI Assistant..."
+        placeholder="Type your legal question here..."
         keypress={handleKeyPress}
         disabled={isLoading || ollamaStatus !== "healthy"}
-        class="pr-12"
+        class="h-12 text-[15px] px-4 border-2 border-gray-200 focus:border-blue-500 rounded-xl"
         data-testid="chat-input"
       />
     </div>
 
     <Button
-      on:onclick={sendMessage}
+      onclick={sendMessage}
       disabled={!canSend || ollamaStatus !== "healthy"}
-      class="px-3 bits-btn bits-btn"
+      class="h-12 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium bits-btn bits-btn"
       data-testid="send-button"
     >
       {#if isLoading}
-        <Loader2 class="w-4 h-4 animate-spin" />
+        <Loader2 class="w-5 h-5 animate-spin mr-2" />
+        <span>Sending...</span>
       {:else}
-        <Send class="w-4 h-4" />
+        <Send class="w-5 h-5 mr-2" />
+        <span>Send</span>
       {/if}
     </Button>
 
     <!-- Additional Actions -->
     <Button class="bits-btn bits-btn"
       variant="outline"
-      on:onclick={clearChat}
+      onclick={clearChat}
       disabled={chatHistory.length === 0}
     >
       Clear
@@ -523,7 +532,7 @@
 
     <Button class="bits-btn bits-btn"
       variant="outline"
-      on:onclick={exportChat}
+      onclick={exportChat}
       disabled={chatHistory.length === 0}
     >
       Export
@@ -544,10 +553,12 @@
   .ollama-chat-interface {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    max-width: 56rem;
+    height: 100vh;
+    max-width: 64rem;
     margin-left: auto;
     margin-right: auto;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 1rem;
   }
 
   .ollama-chat-interface :global(.scroll-area) {

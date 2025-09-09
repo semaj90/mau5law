@@ -2,10 +2,9 @@ import { db } from "$lib/server/db/client";
 import { chatSessions, chatMessages } from "$lib/server/db/schema-unified";
 import { desc, eq, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
-import type { InferInsertModel } from 'drizzle-orm';
-
-type NewChatSession = InferInsertModel<typeof chatSessions>;
-type NewChatMessage = InferInsertModel<typeof chatMessages>;
+// Use InferModel or define types directly for better compatibility
+type NewChatSession = typeof chatSessions.$inferInsert;
+type NewChatMessage = typeof chatMessages.$inferInsert;
 
 export class ChatHistoryService {
   static async getSessionsByUser(userId: string, limit = 20) {

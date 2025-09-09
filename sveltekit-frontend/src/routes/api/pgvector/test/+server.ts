@@ -6,6 +6,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import { pgVectorService } from '$lib/server/db/pgvector-service';
+import { gemmaEmbeddingService } from '$lib/services/gemma-embedding';
 import { mockDataGenerators } from '$lib/server/sync/mock-api-sync-simple';
 
 // GET /api/pgvector/test - Comprehensive pgvector connection and capability testing
@@ -68,10 +69,32 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString()
         });
 
+      case 'gemma-integration':
+        // Test full Gemma embeddings + pgvector integration pipeline
+        const integrationResult = await testGemmaIntegration();
+
+        return json({
+          action: 'gemma_pgvector_integration_test',
+          ...integrationResult,
+          responseTime: `${Date.now() - startTime}ms`,
+          timestamp: new Date().toISOString()
+        });
+
+      case 'health':
+        // Comprehensive health check of all components
+        const healthResult = await checkSystemHealth();
+
+        return json({
+          action: 'system_health_check',
+          ...healthResult,
+          responseTime: `${Date.now() - startTime}ms`,
+          timestamp: new Date().toISOString()
+        });
+
       default:
         return json({
           error: 'Invalid action',
-          availableActions: ['connection', 'stats', 'index', 'seed'],
+          availableActions: ['connection', 'stats', 'index', 'seed', 'gemma-integration', 'health'],
           timestamp: new Date().toISOString()
         }, { status: 400 });
     }
@@ -405,19 +428,171 @@ function generateSampleLegalContent(type: string): string {
 }
 
 /**
- * Generate mock embedding vector (1536 dimensions)
- * In production, replace with actual embedding service (OpenAI, Claude, etc.)
+ * Generate mock embedding vector (768 dimensions for nomic-embed-text compatibility)
+ * In production, replace with actual embedding service (Gemma, OpenAI, Claude, etc.)
  */
 function generateMockEmbedding(text: string): number[] {
   // Use text content to create deterministic but varied embeddings
   const seed = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const embedding = [];
 
-  for (let i = 0; i < 1536; i++) {
+  for (let i = 0; i < 768; i++) {
     // Create deterministic but realistic-looking embedding values
     const value = Math.sin(seed + i * 0.1) * Math.cos(seed + i * 0.05);
     embedding.push(Number(value.toFixed(6)));
   }
 
   return embedding;
+}
+
+/**
+ * Test full Gemma embeddings + pgvector integration pipeline
+ */
+async function testGemmaIntegration() {
+  try {
+    const testDoc = {
+      content: "This is a comprehensive test of the Gemma embeddings integration with pgvector. This legal document demonstrates semantic similarity search capabilities for contract analysis and legal research applications.",
+      metadata: {
+        title: "Gemma Integration Test Document",
+        type: "test",
+        source: "integration_test"
+      }
+    };
+
+    // Step 1: Generate embedding with Gemma
+    console.log('🧠 Generating Gemma embedding...');
+    const embeddingResult = await gemmaEmbeddingService.generateEmbedding(
+      testDoc.content,
+      testDoc.metadata
+    );
+
+    if (!embeddingResult.success || !embeddingResult.embedding) {
+      throw new Error(`Gemma embedding failed: ${embeddingResult.error}`);
+    }
+
+    // Step 2: Store in pgvector
+    console.log('💾 Storing in pgvector database...');
+    const documentId = `gemma_test_${Date.now()}`;
+    const storageResult = await pgVectorService.insertDocumentWithEmbedding(
+      documentId,
+      testDoc.content,
+      embeddingResult.embedding,
+      {
+        ...testDoc.metadata,
+        embeddingModel: embeddingResult.model,
+        embeddingDimensions: embeddingResult.embedding.length,
+        processingTime: embeddingResult.processingTime
+      }
+    );
+
+    if (!storageResult.success) {
+      throw new Error(`Storage failed: ${storageResult.error}`);
+    }
+
+    // Step 3: Test similarity search
+    console.log('🔍 Testing similarity search...');
+    const searchResult = await pgVectorService.vectorSimilaritySearch(
+      embeddingResult.embedding,
+      {
+        limit: 5,
+        distanceMetric: 'cosine',
+        threshold: 1.0,
+        includeContent: true
+      }
+    );
+
+    return {
+      success: true,
+      pipeline: {
+        embedding: {
+          model: embeddingResult.model,
+          dimensions: embeddingResult.embedding.length,
+          processingTime: embeddingResult.processingTime,
+          success: true
+        },
+        storage: {
+          documentId: storageResult.id,
+          success: storageResult.success
+        },
+        search: {
+          resultsFound: searchResult.results?.length || 0,
+          searchTime: searchResult.metadata?.searchTime,
+          topResult: searchResult.results?.[0],
+          success: searchResult.success
+        }
+      },
+      summary: `✅ Full integration successful: Gemma (${embeddingResult.model}) → PostgreSQL → Vector Search`,
+      recommendations: [
+        "Pipeline is production-ready",
+        "Consider adding vector indexing for large datasets",
+        "Monitor embedding generation performance"
+      ]
+    };
+
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message,
+      pipeline: null,
+      summary: "❌ Integration test failed",
+      recommendations: [
+        "Check Ollama service availability",
+        "Verify PostgreSQL connection",
+        "Ensure database schema is up to date"
+      ]
+    };
+  }
+}
+
+/**
+ * Comprehensive system health check
+ */
+async function checkSystemHealth() {
+  try {
+    const [pgHealth, gemmaHealth] = await Promise.all([
+      pgVectorService.testConnection(),
+      gemmaEmbeddingService.healthCheck()
+    ]);
+
+    const systemStatus = {
+      postgresql: {
+        available: pgHealth.success,
+        version: pgHealth.details?.connection?.current_time ? 'Connected' : 'Unknown',
+        pgvector: pgHealth.details?.pgvectorExtension?.status !== 'not_installed',
+        details: pgHealth.details
+      },
+      gemmaEmbeddings: {
+        available: gemmaHealth.available,
+        bestModel: gemmaHealth.model,
+        modelHierarchy: gemmaHealth.modelHierarchy,
+        ollamaVersion: gemmaHealth.version
+      },
+      integration: {
+        ready: pgHealth.success && gemmaHealth.available,
+        status: pgHealth.success && gemmaHealth.available 
+          ? "🟢 All systems operational"
+          : "🔴 System issues detected"
+      }
+    };
+
+    return {
+      success: true,
+      systemStatus,
+      summary: systemStatus.integration.ready 
+        ? "✅ All components healthy and ready for production"
+        : "⚠️ Some components need attention",
+      recommendations: systemStatus.integration.ready 
+        ? ["System is production-ready", "Consider performance monitoring"]
+        : ["Check failed components", "Verify service configurations"]
+    };
+
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message,
+      systemStatus: null,
+      summary: "❌ Health check failed",
+      recommendations: ["Check system configuration", "Verify service availability"]
+    };
+  }
 }

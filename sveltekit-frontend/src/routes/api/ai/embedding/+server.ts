@@ -1,42 +1,67 @@
 
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from './$types';
-
+import { gemmaEmbeddingService } from '$lib/services/gemma-embedding.js';
 
 export const POST: RequestHandler = async ({ request }) => {
+  const startTime = Date.now();
+  
   try {
-    const { text } = await request.json();
-    if (!text || text.trim() === "") {
-      return json({ error: "Text is required" }, { status: 400 });
+    const { text, content, metadata } = await request.json();
+    const inputText = text || content;
+    
+    if (!inputText || inputText.trim() === "") {
+      return json({ 
+        error: "Text or content is required",
+        timestamp: new Date().toISOString()
+      }, { status: 400 });
     }
-    // Call Ollama embedding API (nomic-embed-text)
-    const ollamaRes = await fetch("http://localhost:11434/api/embeddings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "nomic-embed-text", input: text }),
+
+    // Use the improved Gemma embedding service
+    const result = await gemmaEmbeddingService.generateEmbedding(inputText, metadata);
+    
+    if (!result.success) {
+      return json({ 
+        error: result.error,
+        model: result.model,
+        timestamp: new Date().toISOString()
+      }, { status: 500 });
+    }
+
+    return json({ 
+      embedding: result.embedding,
+      metadata: result.metadata,
+      model: result.model,
+      processingTime: result.processingTime,
+      responseTime: `${Date.now() - startTime}ms`,
+      timestamp: new Date().toISOString()
     });
-    if (!ollamaRes.ok) {
-      const errorText = await ollamaRes.text();
-      return json(
-        { error: "Ollama error", details: errorText },
-        { status: 500 }
-      );
-    }
-    const data = await ollamaRes.json();
-    let embedding: number[] = [];
-    if (Array.isArray(data?.embedding)) embedding = data.embedding;
-    else if (Array.isArray(data?.embeddings)) {
-      embedding = Array.isArray(data.embeddings[0])
-        ? data.embeddings[0]
-        : data.embeddings;
-    } else if (
-      Array.isArray(data?.data) &&
-      Array.isArray(data.data[0]?.embedding)
-    ) {
-      embedding = data.data[0].embedding;
-    }
-    return json({ embedding });
+    
   } catch (error: any) {
-    return json({ error: "Failed to get embedding" }, { status: 500 });
+    return json({ 
+      error: `Failed to get embedding: ${error.message}`,
+      responseTime: `${Date.now() - startTime}ms`,
+      timestamp: new Date().toISOString()
+    }, { status: 500 });
+  }
+};
+
+export const GET: RequestHandler = async () => {
+  try {
+    const healthResult = await gemmaEmbeddingService.healthCheck();
+    
+    return json({
+      service: "AI Embedding API",
+      ...healthResult,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error: any) {
+    return json({
+      service: "AI Embedding API", 
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    }, { status: 500 });
   }
 };

@@ -11,7 +11,7 @@ import { vectorEmbeddings, legalDocuments, qloraTrainingJobs } from './schema-po
 // Production PostgreSQL Configuration
 const connectionConfig = {
   host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432'),
+  port: parseInt(process.env.DB_PORT || '5433'), // Updated to use port 5433
   database: process.env.DB_NAME || 'legal_ai_db',
   user: process.env.DB_USER || 'legal_admin',
   password: process.env.DB_PASSWORD || '123456',
@@ -111,9 +111,9 @@ export class PgVectorService {
     metadata: any = {}
   ): Promise<{ success: boolean; id?: number; error?: string }> {
     try {
-      // Validate embedding dimensions (1536 for OpenAI/Claude)
-      if (embedding.length !== 1536) {
-        throw new Error(`Invalid embedding dimension: expected 1536, got ${embedding.length}`);
+      // Validate embedding dimensions (768 for nomic-embed-text, gemma models vary)
+      if (embedding.length !== 768 && embedding.length !== 1536) {
+        throw new Error(`Invalid embedding dimension: expected 768 or 1536, got ${embedding.length}`);
       }
 
       const client = await this.pool.connect();
@@ -121,38 +121,28 @@ export class PgVectorService {
       try {
         await client.query('BEGIN');
 
-        // Insert legal document
+        // Insert legal document with embedding
+        const embeddingStr = `[${embedding.join(',')}]`;
         const docResult = await client.query(
-          `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, created_at)
-           VALUES ($1, $2, $3, $4, $5, NOW())
-           ON CONFLICT (document_id) DO UPDATE SET
-           content = EXCLUDED.content,
-           metadata = EXCLUDED.metadata,
-           updated_at = NOW()
+          `INSERT INTO legal_documents (title, content, document_type, keywords, embedding, created_at)
+           VALUES ($1, $2, $3, $4, $5::vector, NOW())
            RETURNING id`,
-          [documentId, metadata.title || 'Untitled', content, metadata.type || 'contract', metadata]
+          [
+            metadata.title || 'Untitled', 
+            content, 
+            metadata.type || 'contract', 
+            JSON.stringify(metadata),
+            embeddingStr
+          ]
         );
 
         const docId = docResult.rows[0].id;
-
-        // Insert vector embedding with proper formatting
-        const embeddingStr = `[${embedding.join(',')}]`;
-        const vectorResult = await client.query(
-          `INSERT INTO vector_embeddings (document_id, embedding, metadata, created_at)
-           VALUES ($1, $2::vector, $3, NOW())
-           ON CONFLICT (document_id) DO UPDATE SET
-           embedding = EXCLUDED.embedding,
-           metadata = EXCLUDED.metadata,
-           updated_at = NOW()
-           RETURNING id`,
-          [documentId, embeddingStr, { docId, ...metadata }]
-        );
 
         await client.query('COMMIT');
 
         return {
           success: true,
-          id: vectorResult.rows[0].id
+          id: docId
         };
       } catch (error) {
         await client.query('ROLLBACK');
@@ -183,8 +173,8 @@ export class PgVectorService {
     } = {}
   ): Promise<{ success: boolean; results?: any[]; error?: string; metadata?: any }> {
     try {
-      if (queryEmbedding.length !== 1536) {
-        throw new Error(`Invalid query embedding dimension: expected 1536, got ${queryEmbedding.length}`);
+      if (queryEmbedding.length !== 768 && queryEmbedding.length !== 1536) {
+        throw new Error(`Invalid query embedding dimension: expected 768 or 1536, got ${queryEmbedding.length}`);
       }
 
       const {
@@ -206,28 +196,28 @@ export class PgVectorService {
 
       let query = `
         SELECT
-          ve.id,
-          ve.document_id,
-          ve.metadata->>'title' as title,
-          ve.metadata->>'type' as document_type,
-          ${includeContent ? 've.content,' : ''}
-          ve.embedding ${distanceOperator} $1::vector as distance,
-          ve.metadata as embedding_metadata,
-          ve.created_at
-        FROM vector_embeddings ve
-        WHERE (ve.embedding ${distanceOperator} $1::vector) < $2
+          ld.id,
+          ld.title,
+          ld.document_type,
+          ${includeContent ? 'ld.content,' : ''}
+          ld.embedding ${distanceOperator} $1::vector as distance,
+          ld.keywords as metadata,
+          ld.created_at
+        FROM legal_documents ld
+        WHERE ld.embedding IS NOT NULL 
+        AND (ld.embedding ${distanceOperator} $1::vector) < $2
       `;
 
       const queryParams = [embeddingStr, threshold];
       let paramIndex = 3;
 
       if (documentType) {
-        query += ` AND ve.metadata->>'type' = $${paramIndex}`;
+        query += ` AND ld.document_type = $${paramIndex}`;
         queryParams.push(documentType);
         paramIndex++;
       }
 
-      query += ` ORDER BY ve.embedding ${distanceOperator} $1::vector LIMIT $${paramIndex}`;
+      query += ` ORDER BY ld.embedding ${distanceOperator} $1::vector LIMIT $${paramIndex}`;
       queryParams.push(limit);
 
       const client = await this.pool.connect();

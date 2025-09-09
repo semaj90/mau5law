@@ -8,32 +8,33 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Enhanced button component with multiple variants and states for the Legal AI Platform'
-      }
-    }
+        component:
+          'Enhanced button component with multiple variants and states for the Legal AI Platform',
+      },
+    },
   },
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: ['default', 'legal', 'evidence', 'case', 'destructive', 'ghost', 'outline']
+      options: ['default', 'legal', 'evidence', 'case', 'destructive', 'ghost', 'outline'],
     },
     size: {
-      control: { type: 'select' }, 
-      options: ['sm', 'default', 'lg', 'xl']
+      control: { type: 'select' },
+      options: ['sm', 'default', 'lg', 'xl'],
     },
     disabled: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     loading: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     fullWidth: {
       control: { type: 'boolean' },
-      description: 'Make button full width'
-    }
+      description: 'Make button full width',
+    },
   },
-  tags: ['autodocs']
-} satisfies Meta<Button class="bits-btn bits-btn">;
+  tags: ['autodocs'],
+} satisfies Meta<Button>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

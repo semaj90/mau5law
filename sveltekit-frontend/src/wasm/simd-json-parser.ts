@@ -67,7 +67,7 @@ function findPatternMatches(text: string, pattern: string): string[] {
   // Use regex for pattern matching (would be SIMD in actual WASM)
   try {
     const regex = new RegExp(pattern, 'g');
-    let match;
+    let match: RegExpExecArray | null;
     while ((match = regex.exec(text)) !== null) {
       matches.push(match[0]);
     }

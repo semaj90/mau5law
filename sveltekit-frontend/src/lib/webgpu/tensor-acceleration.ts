@@ -34,110 +34,110 @@ export interface GPUMetrics {
 }
 
 export class WebGPUTensorAccelerator {
-	private device: GPUDevice | null = null;
-	private adapter: GPUAdapter | null = null;
-	private queue: GPUQueue | null = null;
-	private config: WebGPUTensorConfig;
-	private shaderCache = new Map<string, GPUShaderModule>();
-	private bufferPool: GPUBuffer[] = [];
-	private metrics: GPUMetrics = {
-		memoryUsage: 0,
-		computeUtilization: 0,
-		operationsPerSecond: 0,
-		averageLatency: 0,
-		totalOperations: 0,
-		errorCount: 0
-	};
-	private isInitialized = false;
-	private operationQueue: TensorOperation[] = [];
-	private processingQueue = false;
+  private device: GPUDevice | null = null;
+  private adapter: GPUAdapter | null = null;
+  private queue: GPUQueue | null = null;
+  private config: WebGPUTensorConfig;
+  private shaderCache = new Map<string, GPUShaderModule>();
+  private bufferPool: GPUBuffer[] = [];
+  private metrics: GPUMetrics = {
+    memoryUsage: 0,
+    computeUtilization: 0,
+    operationsPerSecond: 0,
+    averageLatency: 0,
+    totalOperations: 0,
+    errorCount: 0,
+  };
+  private isInitialized = false;
+  private operationQueue: TensorOperation[] = [];
+  private processingQueue = false;
 
-	constructor(config: Partial<WebGPUTensorConfig> = {}) {
-		this.config = {
-			deviceType: 'auto',
-			powerPreference: 'high-performance',
-			enableDebug: false,
-			maxBufferSize: 256 * 1024 * 1024, // 256MB
-			shaderCacheEnabled: true,
-			...config
-		};
-	}
+  constructor(config: Partial<WebGPUTensorConfig> = {}) {
+    this.config = {
+      deviceType: 'auto',
+      powerPreference: 'high-performance',
+      enableDebug: false,
+      maxBufferSize: 256 * 1024 * 1024, // 256MB
+      shaderCacheEnabled: true,
+      ...config,
+    };
+  }
 
-	async initialize(): Promise<boolean> {
-		try {
-			console.log('🚀 Initializing WebGPU Tensor Accelerator...');
+  async initialize(): Promise<boolean> {
+    try {
+      console.log('🚀 Initializing WebGPU Tensor Accelerator...');
 
-			if (!navigator.gpu) {
-				throw new Error('WebGPU not supported in this browser');
-			}
+      if (!navigator.gpu) {
+        throw new Error('WebGPU not supported in this browser');
+      }
 
-			// Request GPU adapter
-			this.adapter = await navigator.gpu.requestAdapter({
-				powerPreference: this.config.powerPreference,
-				forceFallbackAdapter: false
-			});
+      // Request GPU adapter
+      this.adapter = await navigator.gpu.requestAdapter({
+        powerPreference: this.config.powerPreference,
+        forceFallbackAdapter: false,
+      });
 
-			if (!this.adapter) {
-				throw new Error('Failed to get WebGPU adapter');
-			}
+      if (!this.adapter) {
+        throw new Error('Failed to get WebGPU adapter');
+      }
 
-			console.log('📊 WebGPU Adapter Info:', {
-				vendor: this.adapter.info?.vendor,
-				architecture: this.adapter.info?.architecture,
-				device: this.adapter.info?.device,
-				limits: this.adapter.limits
-			});
+      console.log('📊 WebGPU Adapter Info:', {
+        vendor: this.adapter.info?.vendor,
+        architecture: this.adapter.info?.architecture,
+        device: this.adapter.info?.device,
+        limits: this.adapter.limits,
+      });
 
-			// Request GPU device
-			const requiredFeatures: GPUFeatureName[] = [];
-			const availableFeatures = Array.from(this.adapter.features);
-			
-			// Enable useful features if available
-			if (availableFeatures.includes('timestamp-query' as GPUFeatureName)) {
-				requiredFeatures.push('timestamp-query' as GPUFeatureName);
-			}
+      // Request GPU device
+      const requiredFeatures: GPUFeatureName[] = [];
+      const availableFeatures = Array.from(this.adapter.features);
 
-			this.device = await this.adapter.requestDevice({
-				requiredFeatures,
-				requiredLimits: {
-					maxBufferSize: this.config.maxBufferSize,
-					maxStorageBufferBindingSize: this.config.maxBufferSize,
-					maxComputeWorkgroupStorageSize: 32768
-				}
-			});
+      // Enable useful features if available
+      if (availableFeatures.includes('timestamp-query' as GPUFeatureName)) {
+        requiredFeatures.push('timestamp-query' as GPUFeatureName);
+      }
 
-			this.queue = this.device.queue;
+      this.device = await this.adapter.requestDevice({
+        requiredFeatures,
+        requiredLimits: {
+          maxBufferSize: this.config.maxBufferSize,
+          maxStorageBufferBindingSize: this.config.maxBufferSize,
+          maxComputeWorkgroupStorageSize: 32768,
+        },
+      });
 
-			// Set up error handling
-			this.device.addEventListener('uncapturederror', (event: any) => {
-				this.metrics.errorCount++;
-				this.metrics.lastError = event.error.message;
-				console.error('WebGPU Error:', event.error);
-			});
+      this.queue = this.device.queue;
 
-			// Initialize shader cache
-			await this.initializeShaders();
+      // Set up error handling
+      this.device.addEventListener('uncapturederror', (event: any) => {
+        this.metrics.errorCount++;
+        this.metrics.lastError = event.error.message;
+        console.error('WebGPU Error:', event.error);
+      });
 
-			this.isInitialized = true;
-			console.log('✅ WebGPU Tensor Accelerator initialized successfully');
+      // Initialize shader cache
+      await this.initializeShaders();
 
-			// Start metrics collection
-			this.startMetricsCollection();
+      this.isInitialized = true;
+      console.log('✅ WebGPU Tensor Accelerator initialized successfully');
 
-			return true;
-		} catch (error: any) {
-			console.error('💥 WebGPU initialization failed:', error);
-			this.metrics.errorCount++;
-			this.metrics.lastError = error.message;
-			return false;
-		}
-	}
+      // Start metrics collection
+      this.startMetricsCollection();
 
-	private async initializeShaders(): Promise<void> {
-		if (!this.device) throw new Error('Device not initialized');
+      return true;
+    } catch (error: any) {
+      console.error('💥 WebGPU initialization failed:', error);
+      this.metrics.errorCount++;
+      this.metrics.lastError = error.message;
+      return false;
+    }
+  }
 
-		const shaders = {
-			vectorSimilarity: `
+  private async initializeShaders(): Promise<void> {
+    if (!this.device) throw new Error('Device not initialized');
+
+    const shaders = {
+      vectorSimilarity: `
 				@group(0) @binding(0) var<storage, read> vectorA: array<f32>;
 				@group(0) @binding(1) var<storage, read> vectorB: array<f32>;
 				@group(0) @binding(2) var<storage, read_write> result: array<f32>;
@@ -147,20 +147,20 @@ export class WebGPUTensorAccelerator {
 				fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 					let index = global_id.x;
 					let size = u32(params.x);
-					
+
 					if (index >= size) {
 						return;
 					}
 
 					let a = vectorA[index];
 					let b = vectorB[index];
-					
+
 					// Compute dot product component
 					result[index] = a * b;
 				}
 			`,
-			
-			cosineReduction: `
+
+      cosineReduction: `
 				@group(0) @binding(0) var<storage, read> dotProducts: array<f32>;
 				@group(0) @binding(1) var<storage, read> normA: array<f32>;
 				@group(0) @binding(2) var<storage, read> normB: array<f32>;
@@ -170,22 +170,22 @@ export class WebGPUTensorAccelerator {
 				var<workgroup> temp: array<f32, 256>;
 
 				@compute @workgroup_size(256)
-				fn main(@builtin(global_invocation_id) global_id: vec3<u32>, 
+				fn main(@builtin(global_invocation_id) global_id: vec3<u32>,
 						@builtin(local_invocation_id) local_id: vec3<u32>,
 						@builtin(workgroup_id) workgroup_id: vec3<u32>) {
 					let index = global_id.x;
 					let local_index = local_id.x;
 					let size = u32(params.x);
-					
+
 					// Load data into shared memory
 					if (index < size) {
 						temp[local_index] = dotProducts[index];
 					} else {
 						temp[local_index] = 0.0;
 					}
-					
+
 					workgroupBarrier();
-					
+
 					// Reduction within workgroup
 					var stride = 128u;
 					while (stride > 0u) {
@@ -195,7 +195,7 @@ export class WebGPUTensorAccelerator {
 						workgroupBarrier();
 						stride = stride / 2u;
 					}
-					
+
 					// Write result
 					if (local_index == 0u) {
 						let dot_sum = temp[0];
@@ -207,7 +207,7 @@ export class WebGPUTensorAccelerator {
 				}
 			`,
 
-			embedding: `
+      embedding: `
 				@group(0) @binding(0) var<storage, read> input: array<u32>;
 				@group(0) @binding(1) var<storage, read> weights: array<f32>;
 				@group(0) @binding(2) var<storage, read_write> output: array<f32>;
@@ -219,15 +219,15 @@ export class WebGPUTensorAccelerator {
 					let input_size = u32(params.x);
 					let embedding_dim = u32(params.y);
 					let vocab_size = u32(params.z);
-					
+
 					if (output_index >= input_size * embedding_dim) {
 						return;
 					}
-					
+
 					let token_idx = output_index / embedding_dim;
 					let dim_idx = output_index % embedding_dim;
 					let token_id = input[token_idx];
-					
+
 					if (token_id < vocab_size) {
 						let weight_idx = token_id * embedding_dim + dim_idx;
 						output[output_index] = weights[weight_idx];
@@ -237,7 +237,7 @@ export class WebGPUTensorAccelerator {
 				}
 			`,
 
-			matrixMultiply: `
+      matrixMultiply: `
 				@group(0) @binding(0) var<storage, read> matrixA: array<f32>;
 				@group(0) @binding(1) var<storage, read> matrixB: array<f32>;
 				@group(0) @binding(2) var<storage, read_write> result: array<f32>;
@@ -252,485 +252,532 @@ export class WebGPUTensorAccelerator {
 					let M = u32(params.x);
 					let N = u32(params.y);
 					let K = u32(params.z);
-					
+
 					let row = global_id.y;
 					let col = global_id.x;
 					let localRow = local_id.y;
 					let localCol = local_id.x;
-					
+
 					var sum = 0.0;
-					
+
 					let numTiles = (K + 15u) / 16u;
-					
+
 					for (var tile = 0u; tile < numTiles; tile++) {
 						let tileCol = tile * 16u + localCol;
 						let tileRow = tile * 16u + localRow;
-						
+
 						// Load tile A
 						if (row < M && tileCol < K) {
 							tileA[localRow][localCol] = matrixA[row * K + tileCol];
 						} else {
 							tileA[localRow][localCol] = 0.0;
 						}
-						
+
 						// Load tile B
 						if (tileRow < K && col < N) {
 							tileB[localRow][localCol] = matrixB[tileRow * N + col];
 						} else {
 							tileB[localRow][localCol] = 0.0;
 						}
-						
+
 						workgroupBarrier();
-						
+
 						// Compute partial sum
 						for (var k = 0u; k < 16u; k++) {
 							sum += tileA[localRow][k] * tileB[k][localCol];
 						}
-						
+
 						workgroupBarrier();
 					}
-					
+
 					// Write result
 					if (row < M && col < N) {
 						result[row * N + col] = sum;
 					}
 				}
-			`
-		};
+			`,
+    };
 
-		for (const [name, source] of Object.entries(shaders)) {
-			const shader = this.device.createShaderModule({
-				label: `${name}Shader`,
-				code: source
-			});
-			
-			if (this.config.shaderCacheEnabled) {
-				this.shaderCache.set(name, shader);
-			}
-		}
-	}
+    for (const [name, source] of Object.entries(shaders)) {
+      const shader = this.device.createShaderModule({
+        label: `${name}Shader`,
+        code: source,
+      });
 
-	async calculateVectorSimilarity(vectorA: Float32Array, vectorB: Float32Array): Promise<number> {
-		if (!this.isInitialized || !this.device) {
-			throw new Error('WebGPU not initialized');
-		}
+      if (this.config.shaderCacheEnabled) {
+        this.shaderCache.set(name, shader);
+      }
+    }
+  }
 
-		const start = performance.now();
-		
-		try {
-			const size = Math.min(vectorA.length, vectorB.length);
-			
-			// Create buffers
-			const bufferA = this.createBuffer(vectorA, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
-			const bufferB = this.createBuffer(vectorB, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
-			const resultBuffer = this.device.createBuffer({
-				size: size * 4,
-				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
-			});
-			const paramsBuffer = this.device.createBuffer({
-				size: 16,
-				usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
-			});
-			
-			// Upload parameters
-			this.queue!.writeBuffer(paramsBuffer, 0, new Float32Array([size, 0, 0, 0]));
-			
-			// Create bind group
-			const shader = this.shaderCache.get('vectorSimilarity')!;
-			const computePipeline = this.device.createComputePipeline({
-				layout: 'auto',
-				compute: {
-					module: shader,
-					entryPoint: 'main'
-				}
-			});
-			
-			const bindGroup = this.device.createBindGroup({
-				layout: computePipeline.getBindGroupLayout(0),
-				entries: [
-					{ binding: 0, resource: { buffer: bufferA } },
-					{ binding: 1, resource: { buffer: bufferB } },
-					{ binding: 2, resource: { buffer: resultBuffer } },
-					{ binding: 3, resource: { buffer: paramsBuffer } }
-				]
-			});
-			
-			// Execute computation
-			const commandEncoder = this.device.createCommandEncoder();
-			const computePass = commandEncoder.beginComputePass();
-			computePass.setPipeline(computePipeline);
-			computePass.setBindGroup(0, bindGroup);
-			computePass.dispatchWorkgroups(Math.ceil(size / 256));
-			computePass.end();
-			
-			// Copy result to staging buffer
-			const stagingBuffer = this.device.createBuffer({
-				size: size * 4,
-				usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
-			});
-			
-			commandEncoder.copyBufferToBuffer(resultBuffer, 0, stagingBuffer, 0, size * 4);
-			this.queue!.submit([commandEncoder.finish()]);
-			
-			// Read result
-			await stagingBuffer.mapAsync(GPUMapMode.READ);
-			const resultArray = new Float32Array(stagingBuffer.getMappedRange());
-			
-			// Calculate cosine similarity
-			let dotProduct = 0;
-			let normA = 0;
-			let normB = 0;
-			
-			for (let i = 0; i < size; i++) {
-				dotProduct += resultArray[i];
-				normA += vectorA[i] * vectorA[i];
-				normB += vectorB[i] * vectorB[i];
-			}
-			
-			const cosineSimilarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-			
-			// Cleanup
-			stagingBuffer.unmap();
-			bufferA.destroy();
-			bufferB.destroy();
-			resultBuffer.destroy();
-			stagingBuffer.destroy();
-			paramsBuffer.destroy();
-			
-			// Update metrics
-			const duration = performance.now() - start;
-			this.updateMetrics(duration);
-			
-			return cosineSimilarity;
-			
-		} catch (error: any) {
-			this.metrics.errorCount++;
-			this.metrics.lastError = error.message;
-			throw error;
-		}
-	}
+  async calculateVectorSimilarity(vectorA: Float32Array, vectorB: Float32Array): Promise<number> {
+    if (!this.isInitialized || !this.device) {
+      throw new Error('WebGPU not initialized');
+    }
 
-	/**
-	 * Enhanced vector similarity with SIMD GPU tiling for large embeddings
-	 * This method demonstrates the gpuTile: true option in the hot path
-	 */
-	async calculateVectorSimilarityWithSIMDTiling(
-		vectorA: Float32Array, 
-		vectorB: Float32Array,
-		options: {
-			enableTiling?: boolean;
-			tileSize?: number;
-			useEvidenceAnalysis?: boolean;
-		} = {}
-	): Promise<{
-		similarity: number;
-		gpuMeta?: any;
-		tilingMeta?: any;
-		performanceMetrics: {
-			totalTime: number;
-			simdTime: number;
-			gpuTime: number;
-			throughput: number;
-		}
-	}> {
-		const start = performance.now();
-		const { enableTiling = true, tileSize = 256, useEvidenceAnalysis = false } = options;
-		
-		try {
-			// Standard WebGPU similarity calculation
-			const standardSimilarity = await this.calculateVectorSimilarity(vectorA, vectorB);
-			const gpuTime = performance.now() - start;
-			
-			let tilingMeta = null;
-			let simdTime = 0;
-			
-			if (enableTiling) {
-				console.log('🎯 Applying SIMD GPU tiling to embedding vectors...');
-				
-				const simdStart = performance.now();
-				
-				// Convert vectors to evidence-like data for tiling analysis
-				// This simulates how image evidence would be processed with the same vectors
-				const combinedData = new Float32Array(vectorA.length + vectorB.length);
-				combinedData.set(vectorA, 0);
-				combinedData.set(vectorB, vectorA.length);
-				
-				try {
-					// Apply SIMD GPU tiling to the combined embedding space
-					const evidenceId = `vector_similarity_${Date.now()}`;
-					const tilingResults = await simdGPUTilingEngine.processEvidenceWithSIMDTiling(
-						evidenceId,
-						combinedData,
-						Math.ceil(Math.sqrt(combinedData.length)), // Simulate width
-						Math.ceil(Math.sqrt(combinedData.length)), // Simulate height
-						{
-							tileSize,
-							evidenceType: useEvidenceAnalysis ? 'mixed' : 'text',
-							enableCompression: true,
-							priority: 'high',
-							generateEmbeddings: false // We already have embeddings
-						}
-					);
-					
-					simdTime = performance.now() - simdStart;
-					
-					// Extract tiling metadata for similarity enhancement
-					tilingMeta = {
-						tilesGenerated: tilingResults.chunks.length,
-						avgConfidence: tilingResults.chunks.reduce((sum, chunk) => sum + chunk.metadata.confidence, 0) / tilingResults.chunks.length,
-						compressionRatio: tilingResults.tensorCompressionRatio,
-						memoryRegions: tilingResults.chunks.reduce((acc: any, chunk) => {
-							acc[chunk.memoryRegion] = (acc[chunk.memoryRegion] || 0) + 1;
-							return acc;
-						}, {}),
-						simdMetrics: tilingResults.simdMetrics
-					};
-					
-					// Enhance similarity score with tiling confidence
-					const confidenceBoost = Math.min(0.1, tilingMeta.avgConfidence * 0.05); // Max 10% boost
-					const enhancedSimilarity = standardSimilarity * (1 + confidenceBoost);
-					
-					console.log(`✅ SIMD tiling complete: ${tilingResults.chunks.length} tiles, ${confidenceBoost.toFixed(4)} confidence boost`);
-					
-					const totalTime = performance.now() - start;
-					
-					return {
-						similarity: enhancedSimilarity,
-						gpuMeta: {
-							standardSimilarity,
-							confidenceBoost,
-							tilingEnabled: true,
-							device: this.adapter?.name || 'Unknown GPU'
-						},
-						tilingMeta,
-						performanceMetrics: {
-							totalTime,
-							simdTime,
-							gpuTime,
-							throughput: (combinedData.byteLength / 1024 / 1024) / (totalTime / 1000) // MB/s
-						}
-					};
-					
-				} catch (tilingError) {
-					console.warn('SIMD GPU tiling failed, using standard similarity:', tilingError);
-					simdTime = performance.now() - simdStart;
-				}
-			}
-			
-			const totalTime = performance.now() - start;
-			
-			return {
-				similarity: standardSimilarity,
-				gpuMeta: {
-					standardSimilarity,
-					tilingEnabled: false,
-					device: this.adapter?.name || 'Unknown GPU'
-				},
-				performanceMetrics: {
-					totalTime,
-					simdTime,
-					gpuTime,
-					throughput: ((vectorA.byteLength + vectorB.byteLength) / 1024 / 1024) / (totalTime / 1000) // MB/s
-				}
-			};
-			
-		} catch (error: any) {
-			this.metrics.errorCount++;
-			this.metrics.lastError = error.message;
-			throw error;
-		}
-	}
+    const start = performance.now();
 
-	async batchProcessEmbeddings(queries: string[]): Promise<Float32Array[]> {
-		const embeddings: Float32Array[] = [];
-		
-		for (const query of queries) {
-			// Simple tokenization and embedding (in production, use proper tokenizer)
-			const tokens = this.simpleTokenize(query);
-			const embedding = await this.generateEmbedding(tokens);
-			embeddings.push(embedding);
-		}
-		
-		return embeddings;
-	}
+    try {
+      const size = Math.min(vectorA.length, vectorB.length);
 
-	private simpleTokenize(text: string): Uint32Array {
-		// Simplified tokenization - replace with proper tokenizer
-		const words = text.toLowerCase().split(/\W+/).filter(w => w.length > 0);
-		const tokens = words.map(word => this.getTokenId(word));
-		return new Uint32Array(tokens);
-	}
+      // Create buffers
+      const bufferA = this.createBuffer(vectorA, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
+      const bufferB = this.createBuffer(vectorB, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
+      const resultBuffer = this.device.createBuffer({
+        size: size * 4,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      });
+      const paramsBuffer = this.device.createBuffer({
+        size: 16,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
 
-	private getTokenId(word: string): number {
-		// Simple hash-based token ID (replace with proper vocabulary)
-		let hash = 0;
-		for (let i = 0; i < word.length; i++) {
-			hash = ((hash << 5) - hash + word.charCodeAt(i)) & 0xffffffff;
-		}
-		return Math.abs(hash) % 50000; // Assume vocab size of 50k
-	}
+      // Upload parameters
+      this.queue!.writeBuffer(paramsBuffer, 0, new Float32Array([size, 0, 0, 0]));
 
-	private async generateEmbedding(tokens: Uint32Array): Promise<Float32Array> {
-		if (!this.device) throw new Error('Device not initialized');
+      // Create bind group
+      const shader = this.shaderCache.get('vectorSimilarity')!;
+      const computePipeline = this.device.createComputePipeline({
+        layout: 'auto',
+        compute: {
+          module: shader,
+          entryPoint: 'main',
+        },
+      });
 
-		const embeddingDim = 384; // nomic-embed-text dimension
-		const vocabSize = 50000;
-		
-		// Create random weights (in production, load pre-trained weights)
-		const weights = new Float32Array(vocabSize * embeddingDim);
-		for (let i = 0; i < weights.length; i++) {
-			weights[i] = (Math.random() - 0.5) * 0.1;
-		}
-		
-		// Create buffers
-		const tokensBuffer = this.createBuffer(tokens, GPUBufferUsage.STORAGE);
-		const weightsBuffer = this.createBuffer(weights, GPUBufferUsage.STORAGE);
-		const outputBuffer = this.device.createBuffer({
-			size: tokens.length * embeddingDim * 4,
-			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
-		});
-		const paramsBuffer = this.device.createBuffer({
-			size: 16,
-			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
-		});
-		
-		// Upload parameters
-		this.queue!.writeBuffer(paramsBuffer, 0, new Float32Array([tokens.length, embeddingDim, vocabSize, 0]));
-		
-		// Execute embedding computation
-		const shader = this.shaderCache.get('embedding')!;
-		const computePipeline = this.device.createComputePipeline({
-			layout: 'auto',
-			compute: {
-				module: shader,
-				entryPoint: 'main'
-			}
-		});
-		
-		const bindGroup = this.device.createBindGroup({
-			layout: computePipeline.getBindGroupLayout(0),
-			entries: [
-				{ binding: 0, resource: { buffer: tokensBuffer } },
-				{ binding: 1, resource: { buffer: weightsBuffer } },
-				{ binding: 2, resource: { buffer: outputBuffer } },
-				{ binding: 3, resource: { buffer: paramsBuffer } }
-			]
-		});
-		
-		const commandEncoder = this.device.createCommandEncoder();
-		const computePass = commandEncoder.beginComputePass();
-		computePass.setPipeline(computePipeline);
-		computePass.setBindGroup(0, bindGroup);
-		computePass.dispatchWorkgroups(Math.ceil((tokens.length * embeddingDim) / 256));
-		computePass.end();
-		
-		// Copy and read result
-		const stagingBuffer = this.device.createBuffer({
-			size: tokens.length * embeddingDim * 4,
-			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
-		});
-		
-		commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, tokens.length * embeddingDim * 4);
-		this.queue!.submit([commandEncoder.finish()]);
-		
-		await stagingBuffer.mapAsync(GPUMapMode.READ);
-		const result = new Float32Array(stagingBuffer.getMappedRange());
-		
-		// Average token embeddings
-		const finalEmbedding = new Float32Array(embeddingDim);
-		for (let i = 0; i < embeddingDim; i++) {
-			let sum = 0;
-			for (let j = 0; j < tokens.length; j++) {
-				sum += result[j * embeddingDim + i];
-			}
-			finalEmbedding[i] = sum / tokens.length;
-		}
-		
-		// Cleanup
-		stagingBuffer.unmap();
-		tokensBuffer.destroy();
-		weightsBuffer.destroy();
-		outputBuffer.destroy();
-		stagingBuffer.destroy();
-		paramsBuffer.destroy();
-		
-		return finalEmbedding;
-	}
+      const bindGroup = this.device.createBindGroup({
+        layout: computePipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: { buffer: bufferA } },
+          { binding: 1, resource: { buffer: bufferB } },
+          { binding: 2, resource: { buffer: resultBuffer } },
+          { binding: 3, resource: { buffer: paramsBuffer } },
+        ],
+      });
 
-	private createBuffer(data: ArrayBufferView, usage: GPUBufferUsageFlags): GPUBuffer {
-		const buffer = this.device!.createBuffer({
-			size: data.byteLength,
-			usage
-		});
-		this.queue!.writeBuffer(buffer, 0, data);
-		return buffer;
-	}
+      // Execute computation
+      const commandEncoder = this.device.createCommandEncoder();
+      const computePass = commandEncoder.beginComputePass();
+      computePass.setPipeline(computePipeline);
+      computePass.setBindGroup(0, bindGroup);
+      computePass.dispatchWorkgroups(Math.ceil(size / 256));
+      computePass.end();
 
-	private updateMetrics(duration: number): void {
-		this.metrics.totalOperations++;
-		this.metrics.averageLatency = (this.metrics.averageLatency * (this.metrics.totalOperations - 1) + duration) / this.metrics.totalOperations;
-		this.metrics.operationsPerSecond = 1000 / this.metrics.averageLatency;
-	}
+      // Copy result to staging buffer
+      const stagingBuffer = this.device.createBuffer({
+        size: size * 4,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      });
 
-	private startMetricsCollection(): void {
-		setInterval(() => {
-			if (this.adapter?.info) {
-				// Update memory usage if available
-				this.metrics.memoryUsage = (this.adapter as any).memoryUsage || 0;
-			}
-		}, 1000);
-	}
+      commandEncoder.copyBufferToBuffer(resultBuffer, 0, stagingBuffer, 0, size * 4);
+      this.queue!.submit([commandEncoder.finish()]);
 
-	getMetrics(): GPUMetrics {
-		return { ...this.metrics };
-	}
+      // Read result
+      await stagingBuffer.mapAsync(GPUMapMode.READ);
+      const resultArray = new Float32Array(stagingBuffer.getMappedRange());
 
-	getCapabilities(): Record<string, unknown> {
-		return {
-			isSupported: !!navigator.gpu,
-			isInitialized: this.isInitialized,
-			adapter: this.adapter?.info || null,
-			limits: this.adapter?.limits || null,
-			features: this.adapter ? Array.from(this.adapter.features) : [],
-			shaderCacheSize: this.shaderCache.size
-		};
-	}
+      // Calculate cosine similarity
+      let dotProduct = 0;
+      let normA = 0;
+      let normB = 0;
 
-	async cleanup(): Promise<void> {
-		if (this.device) {
-			this.device.destroy();
-			this.device = null;
-		}
-		
-		this.bufferPool.forEach(buffer => buffer.destroy());
-		this.bufferPool = [];
-		this.shaderCache.clear();
-		this.isInitialized = false;
-		
-		console.log('🧹 WebGPU Tensor Accelerator cleaned up');
-	}
+      for (let i = 0; i < size; i++) {
+        dotProduct += resultArray[i];
+        normA += vectorA[i] * vectorA[i];
+        normB += vectorB[i] * vectorB[i];
+      }
+
+      const cosineSimilarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+
+      // Cleanup
+      stagingBuffer.unmap();
+      bufferA.destroy();
+      bufferB.destroy();
+      resultBuffer.destroy();
+      stagingBuffer.destroy();
+      paramsBuffer.destroy();
+
+      // Update metrics
+      const duration = performance.now() - start;
+      this.updateMetrics(duration);
+
+      return cosineSimilarity;
+    } catch (error: any) {
+      this.metrics.errorCount++;
+      this.metrics.lastError = error.message;
+      throw error;
+    }
+  }
+
+  /**
+   * Enhanced vector similarity with SIMD GPU tiling for large embeddings
+   * This method demonstrates the gpuTile: true option in the hot path
+   */
+  async calculateVectorSimilarityWithSIMDTiling(
+    vectorA: Float32Array,
+    vectorB: Float32Array,
+    options: {
+      enableTiling?: boolean;
+      tileSize?: number;
+      useEvidenceAnalysis?: boolean;
+    } = {}
+  ): Promise<{
+    similarity: number;
+    gpuMeta?: any;
+    tilingMeta?: any;
+    performanceMetrics: {
+      totalTime: number;
+      simdTime: number;
+      gpuTime: number;
+      throughput: number;
+    };
+  }> {
+    const start = performance.now();
+    const { enableTiling = true, tileSize = 256, useEvidenceAnalysis = false } = options;
+
+    try {
+      // Standard WebGPU similarity calculation
+      const standardSimilarity = await this.calculateVectorSimilarity(vectorA, vectorB);
+      const gpuTime = performance.now() - start;
+
+      let tilingMeta = null;
+      let simdTime = 0;
+
+      if (enableTiling) {
+        console.log('🎯 Applying SIMD GPU tiling to embedding vectors...');
+
+        const simdStart = performance.now();
+
+        // Convert vectors to evidence-like data for tiling analysis
+        // This simulates how image evidence would be processed with the same vectors
+        const combinedData = new Float32Array(vectorA.length + vectorB.length);
+        combinedData.set(vectorA, 0);
+        combinedData.set(vectorB, vectorA.length);
+
+        try {
+          // Apply SIMD GPU tiling to the combined embedding space
+          const evidenceId = `vector_similarity_${Date.now()}`;
+          const tilingResults = await simdGPUTilingEngine.processEvidenceWithSIMDTiling(
+            evidenceId,
+            combinedData,
+            Math.ceil(Math.sqrt(combinedData.length)), // Simulate width
+            Math.ceil(Math.sqrt(combinedData.length)), // Simulate height
+            {
+              tileSize,
+              evidenceType: useEvidenceAnalysis ? 'mixed' : 'text',
+              enableCompression: true,
+              priority: 'high',
+              generateEmbeddings: false, // We already have embeddings
+            }
+          );
+
+          simdTime = performance.now() - simdStart;
+
+          // Extract tiling metadata for similarity enhancement
+          tilingMeta = {
+            tilesGenerated: tilingResults.chunks.length,
+            avgConfidence:
+              tilingResults.chunks.reduce((sum, chunk) => sum + chunk.metadata.confidence, 0) /
+              tilingResults.chunks.length,
+            compressionRatio: tilingResults.tensorCompressionRatio,
+            memoryRegions: tilingResults.chunks.reduce((acc: any, chunk) => {
+              acc[chunk.memoryRegion] = (acc[chunk.memoryRegion] || 0) + 1;
+              return acc;
+            }, {}),
+            simdMetrics: tilingResults.simdMetrics,
+          };
+
+          // Enhance similarity score with tiling confidence
+          const confidenceBoost = Math.min(0.1, tilingMeta.avgConfidence * 0.05); // Max 10% boost
+          const enhancedSimilarity = standardSimilarity * (1 + confidenceBoost);
+
+          console.log(
+            `✅ SIMD tiling complete: ${tilingResults.chunks.length} tiles, ${confidenceBoost.toFixed(4)} confidence boost`
+          );
+
+          const totalTime = performance.now() - start;
+
+          return {
+            similarity: enhancedSimilarity,
+            gpuMeta: {
+              standardSimilarity,
+              confidenceBoost,
+              tilingEnabled: true,
+              device: this.adapter?.name || 'Unknown GPU',
+            },
+            tilingMeta,
+            performanceMetrics: {
+              totalTime,
+              simdTime,
+              gpuTime,
+              throughput: combinedData.byteLength / 1024 / 1024 / (totalTime / 1000), // MB/s
+            },
+          };
+        } catch (tilingError) {
+          console.warn('SIMD GPU tiling failed, using standard similarity:', tilingError);
+          simdTime = performance.now() - simdStart;
+        }
+      }
+
+      const totalTime = performance.now() - start;
+
+      return {
+        similarity: standardSimilarity,
+        gpuMeta: {
+          standardSimilarity,
+          tilingEnabled: false,
+          device: this.adapter?.name || 'Unknown GPU',
+        },
+        performanceMetrics: {
+          totalTime,
+          simdTime,
+          gpuTime,
+          throughput: (vectorA.byteLength + vectorB.byteLength) / 1024 / 1024 / (totalTime / 1000), // MB/s
+        },
+      };
+    } catch (error: any) {
+      this.metrics.errorCount++;
+      this.metrics.lastError = error.message;
+      throw error;
+    }
+  }
+
+  async batchProcessEmbeddings(queries: string[]): Promise<Float32Array[]> {
+    const embeddings: Float32Array[] = [];
+
+    for (const query of queries) {
+      // Simple tokenization and embedding (in production, use proper tokenizer)
+      const tokens = this.simpleTokenize(query);
+      const embedding = await this.generateEmbedding(tokens);
+      embeddings.push(embedding);
+    }
+
+    return embeddings;
+  }
+
+  private simpleTokenize(text: string): Uint32Array {
+    // Simplified tokenization - replace with proper tokenizer
+    const words = text
+      .toLowerCase()
+      .split(/\W+/)
+      .filter((w) => w.length > 0);
+    const tokens = words.map((word) => this.getTokenId(word));
+    return new Uint32Array(tokens);
+  }
+
+  private getTokenId(word: string): number {
+    // Simple hash-based token ID (replace with proper vocabulary)
+    let hash = 0;
+    for (let i = 0; i < word.length; i++) {
+      hash = ((hash << 5) - hash + word.charCodeAt(i)) & 0xffffffff;
+    }
+    return Math.abs(hash) % 50000; // Assume vocab size of 50k
+  }
+
+  private async generateEmbedding(tokens: Uint32Array): Promise<Float32Array> {
+    if (!this.device) throw new Error('Device not initialized');
+
+    const embeddingDim = 384; // nomic-embed-text dimension
+    const vocabSize = 50000;
+
+    // Create random weights (in production, load pre-trained weights)
+    const weights = new Float32Array(vocabSize * embeddingDim);
+    for (let i = 0; i < weights.length; i++) {
+      weights[i] = (Math.random() - 0.5) * 0.1;
+    }
+
+    // Create buffers
+    const tokensBuffer = this.createBuffer(tokens, GPUBufferUsage.STORAGE);
+    const weightsBuffer = this.createBuffer(weights, GPUBufferUsage.STORAGE);
+    const outputBuffer = this.device.createBuffer({
+      size: tokens.length * embeddingDim * 4,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+    });
+    const paramsBuffer = this.device.createBuffer({
+      size: 16,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
+
+    // Upload parameters
+    this.queue!.writeBuffer(
+      paramsBuffer,
+      0,
+      new Float32Array([tokens.length, embeddingDim, vocabSize, 0])
+    );
+
+    // Execute embedding computation
+    const shader = this.shaderCache.get('embedding')!;
+    const computePipeline = this.device.createComputePipeline({
+      layout: 'auto',
+      compute: {
+        module: shader,
+        entryPoint: 'main',
+      },
+    });
+
+    const bindGroup = this.device.createBindGroup({
+      layout: computePipeline.getBindGroupLayout(0),
+      entries: [
+        { binding: 0, resource: { buffer: tokensBuffer } },
+        { binding: 1, resource: { buffer: weightsBuffer } },
+        { binding: 2, resource: { buffer: outputBuffer } },
+        { binding: 3, resource: { buffer: paramsBuffer } },
+      ],
+    });
+
+    const commandEncoder = this.device.createCommandEncoder();
+    const computePass = commandEncoder.beginComputePass();
+    computePass.setPipeline(computePipeline);
+    computePass.setBindGroup(0, bindGroup);
+    computePass.dispatchWorkgroups(Math.ceil((tokens.length * embeddingDim) / 256));
+    computePass.end();
+
+    // Copy and read result
+    const stagingBuffer = this.device.createBuffer({
+      size: tokens.length * embeddingDim * 4,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+    });
+
+    commandEncoder.copyBufferToBuffer(
+      outputBuffer,
+      0,
+      stagingBuffer,
+      0,
+      tokens.length * embeddingDim * 4
+    );
+    this.queue!.submit([commandEncoder.finish()]);
+
+    await stagingBuffer.mapAsync(GPUMapMode.READ);
+    const result = new Float32Array(stagingBuffer.getMappedRange());
+
+    // Average token embeddings
+    const finalEmbedding = new Float32Array(embeddingDim);
+    for (let i = 0; i < embeddingDim; i++) {
+      let sum = 0;
+      for (let j = 0; j < tokens.length; j++) {
+        sum += result[j * embeddingDim + i];
+      }
+      finalEmbedding[i] = sum / tokens.length;
+    }
+
+    // Cleanup
+    stagingBuffer.unmap();
+    tokensBuffer.destroy();
+    weightsBuffer.destroy();
+    outputBuffer.destroy();
+    stagingBuffer.destroy();
+    paramsBuffer.destroy();
+
+    return finalEmbedding;
+  }
+
+  private createBuffer(data: ArrayBufferView, usage: GPUBufferUsageFlags): GPUBuffer {
+    const buffer = this.device!.createBuffer({
+      size: data.byteLength,
+      usage,
+    });
+    this.queue!.writeBuffer(buffer, 0, data);
+    return buffer;
+  }
+
+  private updateMetrics(duration: number): void {
+    this.metrics.totalOperations++;
+    this.metrics.averageLatency =
+      (this.metrics.averageLatency * (this.metrics.totalOperations - 1) + duration) /
+      this.metrics.totalOperations;
+    this.metrics.operationsPerSecond = 1000 / this.metrics.averageLatency;
+  }
+
+  private startMetricsCollection(): void {
+    setInterval(() => {
+      if (this.adapter?.info) {
+        // Update memory usage if available
+        this.metrics.memoryUsage = (this.adapter as any).memoryUsage || 0;
+      }
+    }, 1000);
+  }
+
+  getMetrics(): GPUMetrics {
+    return { ...this.metrics };
+  }
+
+  getCapabilities(): Record<string, unknown> {
+    return {
+      isSupported: !!navigator.gpu,
+      isInitialized: this.isInitialized,
+      adapter: this.adapter?.info || null,
+      limits: this.adapter?.limits || null,
+      features: this.adapter ? Array.from(this.adapter.features) : [],
+      shaderCacheSize: this.shaderCache.size,
+    };
+  }
+
+  async cleanup(): Promise<void> {
+    if (this.device) {
+      this.device.destroy();
+      this.device = null;
+    }
+
+    this.bufferPool.forEach((buffer) => buffer.destroy());
+    this.bufferPool = [];
+    this.shaderCache.clear();
+    this.isInitialized = false;
+
+    console.log('🧹 WebGPU Tensor Accelerator cleaned up');
+  }
 }
 
 // Singleton instance
 let tensorAccelerator: WebGPUTensorAccelerator | null = null;
 
 export async function initializeWebGPU(): Promise<WebGPUTensorAccelerator | null> {
-	if (!tensorAccelerator) {
-		tensorAccelerator = new WebGPUTensorAccelerator({
-			powerPreference: 'high-performance',
-			enableDebug: true,
-			shaderCacheEnabled: true
-		});
-		
-		const success = await tensorAccelerator.initialize();
-		if (!success) {
-			tensorAccelerator = null;
-		}
-	}
-	
-	return tensorAccelerator;
+  if (!tensorAccelerator) {
+    tensorAccelerator = new WebGPUTensorAccelerator({
+      powerPreference: 'high-performance',
+      enableDebug: true,
+      shaderCacheEnabled: true,
+    });
+
+    const success = await tensorAccelerator.initialize();
+    if (!success) {
+      tensorAccelerator = null;
+    }
+  }
+
+  return tensorAccelerator;
 }
 
 export function getWebGPUAccelerator(): WebGPUTensorAccelerator | null {
-	return tensorAccelerator;
+  return tensorAccelerator;
+}
+
+// Export singleton instance and compatibility functions
+export { tensorAccelerator };
+
+export async function acceleratedSimilarity(a: Float32Array, b: Float32Array): Promise<number> {
+  const accelerator = getWebGPUAccelerator();
+  if (!accelerator) {
+    // Fallback to CPU implementation
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
+
+    for (let i = 0; i < Math.min(a.length, b.length); i++) {
+      dotProduct += a[i] * b[i];
+      normA += a[i] * a[i];
+      normB += b[i] * b[i];
+    }
+
+    if (normA === 0 || normB === 0) return 0;
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  }
+
+  // Use WebGPU acceleration - simplified fallback for now
+  // TODO: Implement proper WebGPU vector similarity computation
+  const dotProduct = a.reduce((sum, val, i) => sum + val * (b[i] || 0), 0);
+  const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+  const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+
+  if (normA === 0 || normB === 0) return 0;
+  return dotProduct / (normA * normB);
 }

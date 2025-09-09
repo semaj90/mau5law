@@ -1,7 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-  import { $derived } from 'svelte';
 
   // ======================================================================
   // ENHANCED LEGAL AI DEMO COMPONENT
@@ -9,7 +6,6 @@ https://svelte.dev/e/js_parse_error -->
   // ======================================================================
 
   import { onMount, onDestroy } from 'svelte';
-  import { writable, derived } from 'svelte/store';
 
   // Enhanced stores and machines
   import {
@@ -24,6 +20,7 @@ https://svelte.dev/e/js_parse_error -->
   } from '$lib/stores/enhancedStateMachines';
 
   // Create local store for vector similarity since it's not exported
+  import { writable } from 'svelte/store';
   const vectorSimilarityStore = writable([]);
 
   import {
@@ -34,9 +31,6 @@ https://svelte.dev/e/js_parse_error -->
   } from '$lib/stores/enhancedLokiStore';
 
   // UI Components
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -49,11 +43,11 @@ https://svelte.dev/e/js_parse_error -->
   // ======================================================================
   // COMPONENT STATE
   // ======================================================================
-let machines = $state<any >(null);
-let evidenceText = $state('');
-let selectedCaseId = $state('demo-case-001');
-let processingActive = $state(false);
-let realTimeUpdates = $state<any[] >([]);
+  let machines = $state<any>(null);
+  let evidenceText = $state('');
+  let selectedCaseId = $state('demo-case-001');
+  let processingActive = $state(false);
+  let realTimeUpdates = $state<any[]>([]);
 
   // Demo evidence samples
   const demoEvidences = [
@@ -84,15 +78,15 @@ let realTimeUpdates = $state<any[] >([]);
   // REACTIVE STATEMENTS
   // ======================================================================
 
-  let currentProcessing = $derived($currentlyProcessingStore);
-  let processingResults = $derived($processingResultsStore);
-  let aiRecommendations = $derived($aiRecommendationsStore);
-  let vectorMatches = $derived($vectorSimilarityStore);
-  let graphRelationships = $derived($graphRelationshipsStore);
-  let systemHealth = $derived($systemHealthStore);
-  let cacheStats = $derived($cacheStatsStore);
-  let cacheHealth = $derived($cacheHealthStore);
-  let streamingConnected = $derived($streamingStore.isStreaming);
+  let currentProcessing = $derived($currentlyProcessingStore || null);
+  let processingResults = $derived($processingResultsStore || []);
+  let aiRecommendations = $derived($aiRecommendationsStore || []);
+  let vectorMatches = $derived($vectorSimilarityStore || []);
+  let graphRelationships = $derived($graphRelationshipsStore || []);
+  let systemHealth = $derived($systemHealthStore || { health: 'unknown', errors: [], cacheHits: 0, lastSync: null });
+  let cacheStats = $derived($cacheStatsStore || { hits: 0, misses: 0, evictions: 0, syncOperations: 0, lastSync: null });
+  let cacheHealth = $derived($cacheHealthStore || { health: 'unknown', hitRate: 0 });
+  let streamingConnected = $derived($streamingStore?.isStreaming || false);
 
   // ======================================================================
   // INITIALIZATION
@@ -289,21 +283,21 @@ let realTimeUpdates = $state<any[] >([]);
             <Textarea
               bind:value={evidenceText}
               placeholder="Enter evidence content..."
+            <Textarea
+              bind:value={evidenceText}
+              placeholder="Enter evidence content..."
               rows={4}
               class="w-full"
             />
-            <Button class="bits-btn bits-btn"
-              on:onclick={() => addCustomEvidence()}
+            <button
+              class="bits-btn bits-btn w-full"
+              onclick={addCustomEvidence}
               disabled={!evidenceText.trim() || processingActive}
-              class="w-full"
             >
               Process Evidence
-            </Button>
+            </button>
           </CardContent>
         </Card>
-
-        <!-- Demo Evidence -->
-        <Card>
           <CardHeader>
             <CardTitle>Demo Evidence</CardTitle>
           </CardHeader>
@@ -317,15 +311,12 @@ let realTimeUpdates = $state<any[] >([]);
                 <p class="text-xs text-gray-600 mb-3">
                   {demo.content.slice(0, 100)}...
                 </p>
-                <Button class="bits-btn bits-btn"
-                  size="sm"
-                  variant="outline"
-                  on:onclick={() => addDemoEvidence(demo)}
+                <button type="button" class="bits-btn bits-btn w-full"
+                  onclick={() => addDemoEvidence(demo)}
                   disabled={processingActive}
-                  class="w-full"
                 >
                   Process This Evidence
-                </Button>
+                </button>
               </div>
             {/each}
           </CardContent>
@@ -337,18 +328,18 @@ let realTimeUpdates = $state<any[] >([]);
             <CardTitle>System Controls</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
-            <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => checkSystemHealth()} class="w-full">
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => checkSystemHealth()}>
               Health Check
-            </Button>
-            <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => syncCache()} class="w-full">
+            </button>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => syncCache()}>
               Sync Cache
-            </Button>
-            <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => clearErrors()} class="w-full">
+            </button>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearErrors()}>
               Clear Errors
-            </Button>
-            <Button class="bits-btn bits-btn" variant="destructive" on:onclick={() => clearCache()} class="w-full">
+            </button>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearCache()}>
               Clear Cache
-            </Button>
+            </button>
           </CardContent>
         </Card>
       </div>

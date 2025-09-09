@@ -26,7 +26,7 @@ export interface EmbeddingActorOutput {
 
 export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingActorInput }) => {
   const startTime = Date.now();
-  
+
   try {
     const response = await fetchWithTimeout('/api/ai/embed', {
       method: 'POST',
@@ -34,9 +34,9 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
       body: JSON.stringify({
         text: input.text,
         documentId: input.documentId,
-        caseId: input.caseId
+        caseId: input.caseId,
       }),
-      timeout: 30000
+      timeout: 30000,
     });
 
     if (!response.ok) {
@@ -44,13 +44,13 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
     }
 
     const data = await response.json();
-    
+
     return {
       embedding: data.embedding,
       dimensions: data.dimensions || 768,
       model: data.model || 'nomic-embed-text',
       processingTime: Date.now() - startTime,
-      tokenCount: data.tokenCount
+      tokenCount: data.tokenCount,
     } as EmbeddingActorOutput;
   } catch (error: any) {
     throw new Error(`Embedding actor failed: ${error.message}`);
@@ -75,35 +75,37 @@ export interface DocumentProcessingOutput {
   success: boolean;
 }
 
-export const documentProcessingActor = fromPromise(async ({ input }: { input: DocumentProcessingInput }) => {
-  const startTime = Date.now();
-  
-  try {
-    const response = await fetchWithTimeout('/api/ai/process-document', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input),
-      timeout: 60000 // 60s timeout for document processing
-    });
+export const documentProcessingActor = fromPromise(
+  async ({ input }: { input: DocumentProcessingInput }) => {
+    const startTime = Date.now();
 
-    if (!response.ok) {
-      throw new Error(`Document processing failed: ${response.statusText}`);
+    try {
+      const response = await fetchWithTimeout('/api/ai/process-document', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+        timeout: 60000, // 60s timeout for document processing
+      });
+
+      if (!response.ok) {
+        throw new Error(`Document processing failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      return {
+        documentId: input.documentId,
+        summary: data.summary,
+        entities: data.entities,
+        embeddings: data.embeddings,
+        processingTime: Date.now() - startTime,
+        success: data.success || true,
+      } as DocumentProcessingOutput;
+    } catch (error: any) {
+      throw new Error(`Document processing actor failed: ${error.message}`);
     }
-
-    const data = await response.json();
-    
-    return {
-      documentId: input.documentId,
-      summary: data.summary,
-      entities: data.entities,
-      embeddings: data.embeddings,
-      processingTime: Date.now() - startTime,
-      success: data.success || true
-    } as DocumentProcessingOutput;
-  } catch (error: any) {
-    throw new Error(`Document processing actor failed: ${error.message}`);
   }
-});
+);
 
 // ===== LEGAL ANALYSIS ACTOR =====
 
@@ -125,13 +127,13 @@ export interface LegalAnalysisOutput {
 
 export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAnalysisInput }) => {
   const startTime = Date.now();
-  
+
   try {
     const response = await fetchWithTimeout('/api/ai/legal-analysis', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
-      timeout: 45000
+      timeout: 45000,
     });
 
     if (!response.ok) {
@@ -139,14 +141,14 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
     }
 
     const data = await response.json();
-    
+
     return {
       riskScore: data.riskScore || 0,
       riskFactors: data.riskFactors || [],
       recommendations: data.recommendations || [],
       precedents: data.precedents || [],
       confidence: data.confidence || 0.5,
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     } as LegalAnalysisOutput;
   } catch (error: any) {
     throw new Error(`Legal analysis actor failed: ${error.message}`);
@@ -178,13 +180,13 @@ export interface RAGSearchOutput {
 
 export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchInput }) => {
   const startTime = Date.now();
-  
+
   try {
     const response = await fetchWithTimeout('/api/ai/rag-search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
-      timeout: 30000
+      timeout: 30000,
     });
 
     if (!response.ok) {
@@ -192,12 +194,12 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
     }
 
     const data = await response.json();
-    
+
     return {
       results: data.results || [],
       totalResults: data.totalResults || 0,
       processingTime: Date.now() - startTime,
-      model: data.model || 'unknown'
+      model: data.model || 'unknown',
     } as RAGSearchOutput;
   } catch (error: any) {
     throw new Error(`RAG search actor failed: ${error.message}`);
@@ -206,15 +208,21 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
 
 // ===== ACTOR FACTORY FUNCTIONS =====
 
-export function createEmbeddingActor(input: EmbeddingActorInput): ActorRefFrom<typeof embeddingActor> {
+export function createEmbeddingActor(
+  input: EmbeddingActorInput
+): ActorRefFrom<typeof embeddingActor> {
   return createActor(embeddingActor, { input });
 }
 
-export function createDocumentProcessingActor(input: DocumentProcessingInput): ActorRefFrom<typeof documentProcessingActor> {
+export function createDocumentProcessingActor(
+  input: DocumentProcessingInput
+): ActorRefFrom<typeof documentProcessingActor> {
   return createActor(documentProcessingActor, { input });
 }
 
-export function createLegalAnalysisActor(input: LegalAnalysisInput): ActorRefFrom<typeof legalAnalysisActor> {
+export function createLegalAnalysisActor(
+  input: LegalAnalysisInput
+): ActorRefFrom<typeof legalAnalysisActor> {
   return createActor(legalAnalysisActor, { input });
 }
 
@@ -250,9 +258,9 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
       // Execute steps in parallel
       const promises = input.steps.map(async (step, index) => {
         try {
-          let actor;
+          let actor: any; // XState v5 actor type
           const stepId = `step_${index}`;
-          
+
           switch (step.type) {
             case 'embedding':
               actor = createEmbeddingActor(step.input);
@@ -269,39 +277,36 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
             default:
               throw new Error(`Unknown step type: ${step.type}`);
           }
-          
+
           actor.start();
           const result = await new Promise((resolve, reject) => {
-            const subscription = actor.subscribe({
-              next: (snapshot: any) => {
-                if (snapshot.status === 'done') {
-                  resolve(snapshot.output);
-                  subscription.unsubscribe();
-                } else if (snapshot.status === 'error') {
-                  reject(snapshot.error);
-                  subscription.unsubscribe();
-                }
-              },
-              error: reject
+            const subscription = actor.subscribe((snapshot: any) => {
+              if (snapshot.status === 'done') {
+                resolve(snapshot.output);
+                subscription.unsubscribe();
+              } else if (snapshot.status === 'error') {
+                reject(snapshot.error);
+                subscription.unsubscribe();
+              }
             });
           });
-          
+
           results[stepId] = result;
         } catch (error: any) {
           errors.push({ step: `step_${index}`, error: error.message });
         }
       });
-      
+
       await Promise.allSettled(promises);
     } else {
       // Execute steps sequentially
       for (let i = 0; i < input.steps.length; i++) {
         const step = input.steps[i];
         const stepId = `step_${i}`;
-        
+
         try {
-          let actor;
-          
+          let actor: any; // XState v5 actor type
+
           switch (step.type) {
             case 'embedding':
               actor = createEmbeddingActor(step.input);
@@ -318,35 +323,32 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
             default:
               throw new Error(`Unknown step type: ${step.type}`);
           }
-          
+
           actor.start();
           const result = await new Promise((resolve, reject) => {
-            const subscription = actor.subscribe({
-              next: (snapshot: any) => {
-                if (snapshot.status === 'done') {
-                  resolve(snapshot.output);
-                  subscription.unsubscribe();
-                } else if (snapshot.status === 'error') {
-                  reject(snapshot.error);
-                  subscription.unsubscribe();
-                }
-              },
-              error: reject
+            const subscription = actor.subscribe((snapshot: any) => {
+              if (snapshot.status === 'done') {
+                resolve(snapshot.output);
+                subscription.unsubscribe();
+              } else if (snapshot.status === 'error') {
+                reject(snapshot.error);
+                subscription.unsubscribe();
+              }
             });
           });
-          
+
           results[stepId] = result;
         } catch (error: any) {
           errors.push({ step: stepId, error: error.message });
         }
       }
     }
-    
+
     return {
       results,
       totalTime: Date.now() - startTime,
       success: errors.length === 0,
-      errors
+      errors,
     } as WorkflowOutput;
   } catch (error: any) {
     throw new Error(`Workflow actor failed: ${error.message}`);
@@ -361,14 +363,17 @@ export function createWorkflowActor(input: WorkflowInput): ActorRefFrom<typeof w
 
 export async function runActor<T>(actor: ActorRefFrom<any>): Promise<T> {
   return new Promise((resolve, reject) => {
-    actor.subscribe({
-      complete: () => {
-        const snapshot = actor.getSnapshot();
-        resolve(snapshot.output as T);
+    const subscription = actor.subscribe({
+      next: (snapshot) => {
+        if (snapshot.status === 'done') {
+          subscription.unsubscribe();
+          resolve(snapshot.output as T);
+        }
       },
       error: (error) => {
+        subscription.unsubscribe();
         reject(error);
-      }
+      },
     });
     actor.start();
   });

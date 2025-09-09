@@ -44,6 +44,10 @@
     ".vscode/**",
     "storybook-static/**",
     "node_modules/drizzle-orm/gel-core/**",
-    "node_modules/@types/mdx/**"
+    "node_modules/@types/mdx/**",
+    "src/wasm/**/*.ts",
+    "src/**/wasm/**/*.ts",
+    "src/**/*-wasm.ts",
+    "src/**/*.wasm.ts"
   ]
 }

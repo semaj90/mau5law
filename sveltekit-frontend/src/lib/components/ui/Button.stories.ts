@@ -8,29 +8,39 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Primary UI button component with multiple variants for legal AI platform'
-      }
-    }
+        component: 'Primary UI button component with multiple variants for legal AI platform',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link', 'legal', 'evidence', 'case']
+      options: [
+        'default',
+        'destructive',
+        'outline',
+        'secondary',
+        'ghost',
+        'link',
+        'legal',
+        'evidence',
+        'case',
+      ],
     },
     size: {
       control: 'select',
-      options: ['default', 'sm', 'lg', 'icon']
+      options: ['default', 'sm', 'lg', 'icon'],
     },
     disabled: {
-      control: 'boolean'
+      control: 'boolean',
     },
     loading: {
       control: 'boolean',
-      description: 'Show loading state with spinner'
-    }
-  }
-} satisfies Meta<Button class="bits-btn bits-btn">;
+      description: 'Show loading state with spinner',
+    },
+  },
+} satisfies Meta<Button>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

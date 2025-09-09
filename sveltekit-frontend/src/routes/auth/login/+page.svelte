@@ -5,6 +5,8 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import NesAuthModal from '$lib/components/auth/NesAuthModal.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import * as Card from '$lib/components/ui/card';
   
   interface Props {
     data?: any;
