@@ -2,12 +2,16 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"runtime"
 	"sync"
 	"time"
+
+	"legal-ai-cuda/internal/cuda"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,6 +59,8 @@ type CUDAService struct {
 	httpServer  *gin.Engine
 	shutdownCtx context.Context
 	shutdown    context.CancelFunc
+	// Optional path to an external native CUDA worker (cuda-worker.exe)
+	externalWorkerPath string
 }
 
 // RTX 3060 Ti specifications
@@ -71,13 +77,14 @@ const (
 // NewCUDAService creates a new CUDA service with RTX 3060 Ti optimization
 func NewCUDAService() *CUDAService {
 	ctx, cancel := context.WithCancel(context.Background())
-	
+
 	service := &CUDAService{
 		workers:     make([]*CUDAWorker, 0),
 		taskQueue:   make(chan *CUDATask, TASK_QUEUE_SIZE),
 		results:     make(map[string]*CUDATask),
 		shutdownCtx: ctx,
 		shutdown:    cancel,
+		externalWorkerPath: cuda.FindCudaWorkerPath(),
 	}
 
 	// Initialize RTX 3060 Ti worker
@@ -95,15 +102,15 @@ func NewCUDAService() *CUDAService {
 		Temperature:       45.0, // Simulated idle temperature
 		PowerUsage:        50.0, // Simulated idle power usage (watts)
 	}
-	
+
 	service.workers = append(service.workers, worker)
-	
+
 	// Start worker goroutine
 	go service.workerLoop(worker)
-	
+
 	// Start cleanup routine
 	go service.cleanupLoop()
-	
+
 	log.Printf("CUDA Service initialized with RTX 3060 Ti (Device 0)")
 	return service
 }
@@ -123,29 +130,29 @@ func (s *CUDAService) workerLoop(worker *CUDAWorker) {
 // processTask executes a CUDA task on the specified worker
 func (s *CUDAService) processTask(worker *CUDAWorker, task *CUDATask) {
 	startTime := time.Now()
-	
+
 	worker.mutex.Lock()
 	worker.ActiveJobs++
 	worker.TotalJobs++
 	worker.Status = "busy"
 	worker.Utilization = minFloat32(100.0, float32(worker.ActiveJobs)*25.0) // Estimate utilization
 	worker.mutex.Unlock()
-	
+
 	task.StartedAt = &startTime
-	
+
 	// Simulate CUDA kernel execution based on task type
 	result, err := s.executeCUDAKernel(worker, task)
-	
+
 	completedTime := time.Now()
 	task.CompletedAt = &completedTime
 	task.GPUTimeMs = completedTime.Sub(startTime).Milliseconds()
-	
+
 	if err != nil {
 		task.Error = err.Error()
 	} else {
 		task.Result = result
 	}
-	
+
 	// Update worker status
 	worker.mutex.Lock()
 	worker.ActiveJobs--
@@ -160,13 +167,13 @@ func (s *CUDAService) processTask(worker *CUDAWorker, task *CUDATask) {
 		worker.PowerUsage = 50.0 + (worker.Utilization * 1.8)   // Simulate power scaling
 	}
 	worker.mutex.Unlock()
-	
+
 	// Store result
 	s.resultsMux.Lock()
 	s.results[task.ID] = task
 	s.resultsMux.Unlock()
-	
-	log.Printf("CUDA Task %s completed in %dms on GPU %d", 
+
+	log.Printf("CUDA Task %s completed in %dms on GPU %d",
 		task.ID, task.GPUTimeMs, worker.DeviceID)
 }
 
@@ -190,25 +197,25 @@ func (s *CUDAService) executeCUDAKernel(worker *CUDAWorker, task *CUDATask) (int
 func (s *CUDAService) executeInferenceKernel(worker *CUDAWorker, task *CUDATask) (interface{}, error) {
 	// Simulate transformer inference workload
 	// RTX 3060 Ti can handle ~35-40 layers of Gemma 7B efficiently
-	
+
 	prompt, ok := task.Payload["prompt"].(string)
 	if !ok {
 		return nil, fmt.Errorf("missing or invalid prompt")
 	}
-	
+
 	maxTokens := 256
 	if mt, ok := task.Payload["max_tokens"].(float64); ok {
 		maxTokens = int(mt)
 	}
-	
+
 	// Simulate processing time based on token count and GPU capabilities
 	// RTX 3060 Ti: ~15-25 tokens/second for 7B models
 	processingTimeMs := int64(float64(maxTokens) * 45.0) // Conservative estimate
 	task.MemoryUsedMB = int64(float64(maxTokens) * 0.8)  // Estimate memory usage
-	
+
 	// Simulate actual processing delay
 	time.Sleep(time.Duration(processingTimeMs) * time.Millisecond / 10) // 10x speed for simulation
-	
+
 	result := map[string]interface{}{
 		"text":              fmt.Sprintf("Generated response for: %s", prompt[:minInt(50, len(prompt))]),
 		"tokens":            maxTokens,
@@ -218,7 +225,7 @@ func (s *CUDAService) executeInferenceKernel(worker *CUDAWorker, task *CUDATask)
 		"memory_used_mb":    task.MemoryUsedMB,
 		"tensor_cores_used": worker.TensorCoreCount,
 	}
-	
+
 	return result, nil
 }
 
@@ -228,24 +235,24 @@ func (s *CUDAService) executeEmbeddingKernel(worker *CUDAWorker, task *CUDATask)
 	if !ok {
 		return nil, fmt.Errorf("missing or invalid text")
 	}
-	
+
 	dimension := 768 // Default embedding dimension
 	if d, ok := task.Payload["dimension"].(float64); ok {
 		dimension = int(d)
 	}
-	
+
 	// RTX 3060 Ti is very efficient for embedding generation
 	processingTimeMs := int64(float64(len(text)) * 0.1) // ~10ms per 100 characters
 	task.MemoryUsedMB = int64(dimension * 4 / 1024 / 1024) // 4 bytes per float32
-	
+
 	time.Sleep(time.Duration(processingTimeMs) * time.Millisecond / 20) // 20x speed for simulation
-	
+
 	// Generate mock embedding vector
 	embedding := make([]float32, dimension)
 	for i := range embedding {
 		embedding[i] = float32(i%100) / 100.0 // Deterministic mock data
 	}
-	
+
 	result := map[string]interface{}{
 		"embedding":         embedding,
 		"dimension":         dimension,
@@ -253,33 +260,33 @@ func (s *CUDAService) executeEmbeddingKernel(worker *CUDAWorker, task *CUDATask)
 		"memory_used_mb":    task.MemoryUsedMB,
 		"text_length":       len(text),
 	}
-	
+
 	return result, nil
 }
 
-// executeVectorSearchKernel simulates vector similarity search on RTX 3060 Ti  
+// executeVectorSearchKernel simulates vector similarity search on RTX 3060 Ti
 func (s *CUDAService) executeVectorSearchKernel(worker *CUDAWorker, task *CUDATask) (interface{}, error) {
 	queryVector, ok := task.Payload["query_vector"].([]interface{})
 	if !ok {
 		return nil, fmt.Errorf("missing or invalid query_vector")
 	}
-	
+
 	limit := 10
 	if l, ok := task.Payload["limit"].(float64); ok {
 		limit = int(l)
 	}
-	
+
 	vectorCount := 1000000 // Simulate searching through 1M vectors
 	if vc, ok := task.Payload["vector_count"].(float64); ok {
 		vectorCount = int(vc)
 	}
-	
+
 	// RTX 3060 Ti excellent for parallel vector operations
 	processingTimeMs := int64(float64(vectorCount) * 0.001) // ~1ms per 1000 vectors
 	task.MemoryUsedMB = int64(float64(vectorCount*len(queryVector)*4) / 1024 / 1024)
-	
+
 	time.Sleep(time.Duration(processingTimeMs) * time.Millisecond / 50) // 50x speed for simulation
-	
+
 	// Generate mock search results
 	results := make([]map[string]interface{}, limit)
 	for i := 0; i < limit; i++ {
@@ -289,7 +296,7 @@ func (s *CUDAService) executeVectorSearchKernel(worker *CUDAWorker, task *CUDATa
 			"metadata":   map[string]string{"type": "legal_document"},
 		}
 	}
-	
+
 	result := map[string]interface{}{
 		"results":           results,
 		"total_searched":    vectorCount,
@@ -297,7 +304,7 @@ func (s *CUDAService) executeVectorSearchKernel(worker *CUDAWorker, task *CUDATa
 		"memory_used_mb":    task.MemoryUsedMB,
 		"vectors_per_second": float64(vectorCount) / (float64(processingTimeMs) / 1000.0),
 	}
-	
+
 	return result, nil
 }
 
@@ -307,19 +314,19 @@ func (s *CUDAService) executeMatrixMultiplyKernel(worker *CUDAWorker, task *CUDA
 	if sa, ok := task.Payload["size_a"].(float64); ok {
 		sizeA = int(sa)
 	}
-	
+
 	sizeB := 1024
 	if sb, ok := task.Payload["size_b"].(float64); ok {
 		sizeB = int(sb)
 	}
-	
+
 	// RTX 3060 Ti tensor cores excel at matrix multiplication
 	operations := int64(sizeA) * int64(sizeB) * int64(sizeA) // A*B operations
 	processingTimeMs := operations / 10000000                // ~10M ops per ms on RTX 3060 Ti
 	task.MemoryUsedMB = int64((sizeA*sizeB + sizeB*sizeA + sizeA*sizeA) * 4 / 1024 / 1024)
-	
+
 	time.Sleep(time.Duration(processingTimeMs) * time.Millisecond / 100) // 100x speed for simulation
-	
+
 	result := map[string]interface{}{
 		"matrix_size_a":     [2]int{sizeA, sizeB},
 		"matrix_size_b":     [2]int{sizeB, sizeA},
@@ -329,7 +336,7 @@ func (s *CUDAService) executeMatrixMultiplyKernel(worker *CUDAWorker, task *CUDA
 		"gflops":           float64(operations) / float64(processingTimeMs) / 1000.0,
 		"tensor_cores_used": worker.TensorCoreCount,
 	}
-	
+
 	return result, nil
 }
 
@@ -337,7 +344,7 @@ func (s *CUDAService) executeMatrixMultiplyKernel(worker *CUDAWorker, task *CUDA
 func (s *CUDAService) cleanupLoop() {
 	ticker := time.NewTicker(5 * time.Minute)
 	defer ticker.Stop()
-	
+
 	for {
 		select {
 		case <-s.shutdownCtx.Done():
@@ -351,10 +358,10 @@ func (s *CUDAService) cleanupLoop() {
 // cleanupOldResults removes results older than 1 hour
 func (s *CUDAService) cleanupOldResults() {
 	cutoff := time.Now().Add(-1 * time.Hour)
-	
+
 	s.resultsMux.Lock()
 	defer s.resultsMux.Unlock()
-	
+
 	for id, task := range s.results {
 		if task.CompletedAt != nil && task.CompletedAt.Before(cutoff) {
 			delete(s.results, id)
@@ -367,20 +374,20 @@ func (s *CUDAService) setupHTTPHandlers() {
 	gin.SetMode(gin.ReleaseMode)
 	s.httpServer = gin.New()
 	s.httpServer.Use(gin.Logger(), gin.Recovery())
-	
+
 	// CORS middleware
 	s.httpServer.Use(func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		c.Header("Access-Control-Allow-Headers", "Content-Type")
-		
+
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
 			return
 		}
 		c.Next()
 	})
-	
+
 	api := s.httpServer.Group("/api/v1")
 	{
 		api.GET("/health", s.healthHandler)
@@ -396,7 +403,7 @@ func (s *CUDAService) healthHandler(c *gin.Context) {
 	totalWorkers := len(s.workers)
 	readyWorkers := 0
 	totalJobs := int64(0)
-	
+
 	for _, worker := range s.workers {
 		worker.mutex.Lock()
 		if worker.Status == "ready" {
@@ -405,7 +412,7 @@ func (s *CUDAService) healthHandler(c *gin.Context) {
 		totalJobs += worker.TotalJobs
 		worker.mutex.Unlock()
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"service":        "cuda-service-worker",
 		"status":         "healthy",
@@ -442,7 +449,7 @@ func (s *CUDAService) workersHandler(c *gin.Context) {
 		}
 		worker.mutex.Unlock()
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"workers": workers,
 		"count":   len(workers),
@@ -453,11 +460,11 @@ func (s *CUDAService) metricsHandler(c *gin.Context) {
 	s.resultsMux.RLock()
 	completedTasks := len(s.results)
 	s.resultsMux.RUnlock()
-	
+
 	// Calculate average processing time
 	var totalProcessingTime int64
 	var taskCount int64
-	
+
 	s.resultsMux.RLock()
 	for _, task := range s.results {
 		if task.CompletedAt != nil {
@@ -466,12 +473,12 @@ func (s *CUDAService) metricsHandler(c *gin.Context) {
 		}
 	}
 	s.resultsMux.RUnlock()
-	
+
 	avgProcessingTime := float64(0)
 	if taskCount > 0 {
 		avgProcessingTime = float64(totalProcessingTime) / float64(taskCount)
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"completed_tasks":      completedTasks,
 		"queued_tasks":         len(s.taskQueue),
@@ -488,17 +495,19 @@ func (s *CUDAService) submitTaskHandler(c *gin.Context) {
 	var req struct {
 		Type     string                 `json:"type" binding:"required"`
 		Priority int                    `json:"priority"`
-		Payload  map[string]interface{} `json:"payload" binding:"required"`
+	// Payload may be a JSON object or a base64-encoded string (field name: payload_b64)
+	Payload  map[string]interface{} `json:"payload"`
+	PayloadB64 string               `json:"payload_b64"`
 		Metadata map[string]string      `json:"metadata"`
 	}
-	
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": fmt.Sprintf("Invalid request: %v", err),
 		})
 		return
 	}
-	
+
 	task := &CUDATask{
 		ID:        fmt.Sprintf("task_%d", time.Now().UnixNano()),
 		Type:      req.Type,
@@ -507,7 +516,65 @@ func (s *CUDAService) submitTaskHandler(c *gin.Context) {
 		Metadata:  req.Metadata,
 		CreatedAt: time.Now(),
 	}
-	
+
+	// If payload_b64 is provided, attempt to decode and unmarshal into Payload
+	if req.PayloadB64 != "" {
+		raw, err := base64.StdEncoding.DecodeString(req.PayloadB64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid base64 payload"})
+			return
+		}
+
+		// Try decode as JSON object
+		var p map[string]interface{}
+		if err := json.Unmarshal(raw, &p); err == nil {
+			task.Payload = p
+		} else {
+			// store raw bytes as a base64 payload field
+			task.Payload = map[string]interface{}{"raw_b64": req.PayloadB64}
+		}
+	}
+
+	// If an external native cuda-worker exists and the task requests native acceleration, forward
+	if s.externalWorkerPath != "" {
+		// Build a minimal request for external worker
+		externalReq := map[string]interface{}{
+			"job_id": task.ID,
+			"type":   task.Type,
+			"priority": task.Priority,
+			"payload": task.Payload,
+			"metadata": task.Metadata,
+		}
+		go func() {
+			// run with a conservative timeout using the centralized helper
+			resp, err := cuda.RunExternalCudaWorker(context.Background(), s.externalWorkerPath, externalReq, 60*time.Second)
+			if err != nil {
+				log.Printf("external cuda worker error: %v", err)
+				// fallback to local simulated queue
+				select {
+				case s.taskQueue <- task:
+				default:
+					log.Printf("task queue full, dropping task %s", task.ID)
+				}
+				return
+			}
+
+			// convert external response into task.Result and mark completed
+			completed := time.Now()
+			task.Result = resp
+			task.CompletedAt = &completed
+			task.GPUTimeMs = 0
+
+			s.resultsMux.Lock()
+			s.results[task.ID] = task
+			s.resultsMux.Unlock()
+		}()
+
+		c.JSON(http.StatusAccepted, gin.H{"task_id": task.ID, "status": "processing_native"})
+		return
+	}
+
+	// Otherwise enqueue for simulated processing
 	select {
 	case s.taskQueue <- task:
 		c.JSON(http.StatusAccepted, gin.H{
@@ -524,35 +591,35 @@ func (s *CUDAService) submitTaskHandler(c *gin.Context) {
 
 func (s *CUDAService) getResultHandler(c *gin.Context) {
 	taskID := c.Param("id")
-	
+
 	s.resultsMux.RLock()
 	task, exists := s.results[taskID]
 	s.resultsMux.RUnlock()
-	
+
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "Task not found",
 		})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, task)
 }
 
 func (s *CUDAService) getStatusHandler(c *gin.Context) {
 	taskID := c.Param("id")
-	
+
 	s.resultsMux.RLock()
 	task, exists := s.results[taskID]
 	s.resultsMux.RUnlock()
-	
+
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "Task not found",
 		})
 		return
 	}
-	
+
 	status := "queued"
 	if task.StartedAt != nil {
 		status = "processing"
@@ -564,7 +631,7 @@ func (s *CUDAService) getStatusHandler(c *gin.Context) {
 			status = "completed"
 		}
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"task_id":     task.ID,
 		"status":      status,
@@ -595,10 +662,10 @@ func minFloat32(a, b float32) float32 {
 func main() {
 	log.Printf("Starting CUDA Service Worker for RTX 3060 Ti")
 	log.Printf("Available CPU cores: %d", runtime.NumCPU())
-	
+
 	service := NewCUDAService()
 	service.setupHTTPHandlers()
-	
+
 	// Start HTTP server
 	go func() {
 		log.Printf("Starting HTTP server on :8096")
@@ -606,14 +673,14 @@ func main() {
 			log.Fatalf("HTTP server failed: %v", err)
 		}
 	}()
-	
+
 	// Future: gRPC server setup would go here
-	
+
 	log.Printf("CUDA Service Worker is running")
 	log.Printf("HTTP API: http://localhost:8096/api/v1/health")
 	log.Printf("Workers: http://localhost:8096/api/v1/workers")
 	log.Printf("Metrics: http://localhost:8096/api/v1/metrics")
-	
+
 	// Keep the service running
 	select {}
 }

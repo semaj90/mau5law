@@ -1,0 +1,161 @@
+# Comprehensive TODO List: SvelteKit Frontend Error Fixes
+# Similar to go-experiments cleanup - systematic error resolution
+# Generated: 2025-01-09
+
+## OVERVIEW
+The frontend has 23,000+ TypeScript errors preventing proper route functionality.
+Routes appear "available" in RoutesList but fail to load due to compilation issues.
+This cleanup plan addresses all critical error categories systematically.
+
+## HIGH PRIORITY FIXES (Critical Infrastructure)
+
+### 1. Redis Service TypeScript Errors
+- File: src/lib/server/redis-service.ts
+- Issues:
+  * Module "ioredis" has no exported member "Cluster"
+  * Duplicate identifier 'maxRetriesPerRequest'
+  * Property 'call', 'status', 'info', 'exists', 'keys' does not exist on type 'Redis'
+- Impact: Core caching and session management broken
+- Priority: CRITICAL
+
+### 2. Resolve ioredis Import and Type Issues
+- Problem: ioredis type definitions incompatible with current usage
+- Fix: Update Redis client initialization and method calls
+- Affects: All Redis-dependent services
+- Priority: CRITICAL
+
+### 3. Fix Vite Config Loading Failures
+- File: vite.config.js
+- Error: "failed to load config from vite.config.js"
+- Issue: Complex polyfills causing preprocessing failures
+- Solution: Use working vite.config.prod.js as reference
+- Priority: CRITICAL (blocks build)
+
+## SERVICE INTEGRATION ISSUES
+
+### 4. Resolve XState v5 Compatibility Issues
+- File: src/lib/orchestration/optimized-rabbitmq-orchestrator.ts
+- Issues:
+  * Expected 11-12 type arguments, but got 2 in createMachine
+  * Event type checking failures
+  * Context property access errors
+- Impact: State machine orchestration broken
+- Priority: HIGH
+
+### 5. Fix Service Worker TypeScript Errors
+- File: src/service-worker.ts
+- Issues:
+  * ExtendableEvent type mismatches
+  * Missing exports (somWebGPUCache, simdJsonWorkerClient)
+  * addEventListener overload conflicts
+  * Missing skipWaiting property
+- Impact: PWA functionality and caching broken
+- Priority: HIGH
+
+### 6. Resolve Missing Exports in WebGPU SOM Cache
+- File: src/lib/webgpu/som-webgpu-cache.ts
+- Issues:
+  * Missing export 'somWebGPUCache'
+  * Duplicate function implementation 'getCachedResult'
+  * Property 'computeErrorEmbedding' does not exist
+- Impact: WebGPU acceleration and SOM clustering broken
+- Priority: HIGH
+
+### 7. Fix RabbitMQ Orchestrator Type Errors
+- File: src/lib/orchestration/optimized-rabbitmq-orchestrator.ts
+- Issues:
+  * Missing exports 'rabbitmqService', 'QUEUES'
+  * Event parameter type issues
+  * Context property access failures
+- Impact: Message queue orchestration broken
+- Priority: HIGH
+
+## CONFIGURATION & IMPORT PROBLEMS
+
+### 8. Resolve Redis-WebGPU Integration Config Issues
+- File: src/lib/integrations/redis-webgpu-simd-integration.ts
+- Issue: Property 'defaultTTL' does not exist on type 'RedisWebGPUConfig'
+- Impact: Hybrid caching system broken
+- Priority: MEDIUM
+
+### 9. Fix hooks.server.ts Redis Service Import
+- File: src/hooks.server.ts
+- Issue: Module has no exported member 'redisService'
+- Impact: Server-side Redis initialization broken
+- Priority: MEDIUM
+
+### 10. Resolve Duplicate Function Implementations
+- Files: Multiple files with duplicate function definitions
+- Impact: Compilation conflicts and ambiguous behavior
+- Priority: MEDIUM
+
+### 11. Fix Missing Type Definitions and Exports
+- Multiple files with import/export mismatches
+- Need to audit and fix all missing exports
+- Priority: MEDIUM
+
+### 12. Resolve SIMD JSON Worker Client Import Errors
+- File: src/lib/simd/simd-json-worker-client.js
+- Issue: Missing export 'simdJsonWorkerClient'
+- Should be: 'SIMDJSONWorkerClient'
+- Impact: SIMD JSON processing broken
+- Priority: MEDIUM
+
+## BUILD PIPELINE ISSUES
+
+### 13. Fix Preprocessing and Build Pipeline Errors
+- Multiple ESBuild service crashes: "write EPIPE"
+- Preprocessing failures across many files
+- Need to stabilize build pipeline
+- Priority: HIGH (blocks development)
+
+## FINAL VERIFICATION
+
+### 14. Test All Route Availability After Fixes
+- Verify RoutesList component works correctly
+- Test navigation to all discovered routes
+- Ensure /all-routes page functions properly
+- Priority: LOW (after all fixes)
+
+### 15. Verify Embedding Worker Functionality
+- Test both simple and enhanced embedding workers
+- Verify WebWorker API integration
+- Confirm embedding generation works
+- Priority: LOW (after all fixes)
+
+## IMPLEMENTATION STRATEGY
+
+### Phase 1: Critical Infrastructure (Week 1)
+1. Fix Redis service and ioredis issues
+2. Stabilize Vite config
+3. Resolve preprocessing failures
+
+### Phase 2: Service Integration (Week 2)
+4. Fix XState v5 compatibility
+5. Resolve service worker errors
+6. Fix WebGPU SOM cache issues
+7. Resolve RabbitMQ orchestrator
+
+### Phase 3: Configuration Cleanup (Week 3)
+8. Fix Redis-WebGPU integration
+9. Resolve hooks.server.ts imports
+10. Clean up duplicate functions
+11. Fix missing exports
+12. Resolve SIMD worker imports
+
+### Phase 4: Verification (Week 4)
+13. Stabilize build pipeline completely
+14. Test all route functionality
+15. Verify embedding workers
+
+## SUCCESS METRICS
+- Reduce TypeScript errors from 23,000+ to under 100
+- All routes in /all-routes page actually functional
+- Build process completes without failures
+- All services properly integrated and working
+
+## NOTES
+- Similar approach to go-experiments cleanup
+- Focus on consolidation over feature addition
+- Prioritize working functionality over experimental features
+- Keep browser compatibility shims (essential for legal AI platform)

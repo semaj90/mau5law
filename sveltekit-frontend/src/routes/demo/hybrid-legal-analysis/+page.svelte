@@ -325,7 +325,7 @@
         <h4 class="font-medium text-gray-800 mb-2">Svelte 5 Integration:</h4>
         <ul class="space-y-1">
           <li>• Uses <code>$state()</code>, <code>$effect()</code>, and <code>$derived()</code> runes</li>
-          <li>• Modern <code>{#snippet}</code> pattern instead of legacy slots</li>
+          <li>- Modern snippet pattern instead of legacy slots</li>
           <li>• TypeScript strict mode with comprehensive interfaces</li>
           <li>• UnoCSS atomic styling with custom shortcuts</li>
         </ul>

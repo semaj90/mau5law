@@ -2,6 +2,7 @@
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.1.0",
     "@oslojs/crypto": "^1.0.1",
-    "@oslojs/jwt": "^0.3.0"
+    "@oslojs/jwt": "^0.3.0",
+    "pg": "^8.16.3"
   }
 }

@@ -303,7 +303,6 @@
                   variant="ghost" 
                   size="sm" 
                   builders={[builder]}
-                  use:trigger
                   class="p-2"
                 >
                   <MagnifyingGlassIcon class="w-4 h-4" />

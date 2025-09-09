@@ -210,22 +210,22 @@
 
   <!-- Sidebar Navigation -->
   <aside class={cn(
-    "fixed top-0 left-0 h-full bg-yorha-bg-secondary border-r border-yellow-600/30 transition-all duration-300 z-40",
+    "fixed top-0 left-0 h-full bg-slate-900 border-r border-slate-700 transition-all duration-300 z-40 shadow-xl",
     isSidebarOpen ? "w-72" : "w-16",
     isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
   )}>
     <div class="flex flex-col h-full">
       <!-- Sidebar Header -->
-      <div class="p-4 border-b border-yellow-600/30">
+      <div class="p-4 border-b border-slate-700 bg-gradient-to-r from-slate-900 to-slate-800">
         <div class="flex items-center justify-between">
           <div class={cn("flex items-center gap-3", !isSidebarOpen && "justify-center")}>
-            <div class="yorha-3d-button neural-sprite-active p-2">
-              <Zap class="w-6 h-6 text-yellow-400" />
+            <div class="professional-logo-container p-2 bg-slate-800/50 rounded-lg">
+              <Zap class="w-6 h-6 text-amber-400" />
             </div>
             {#if isSidebarOpen}
               <div class="flex flex-col">
-                <h1 class="text-lg font-bold text-yellow-400 uppercase tracking-wide">YoRHa Legal</h1>
-                <p class="text-xs text-gray-400">Investigation Platform</p>
+                <h1 class="text-lg font-semibold text-amber-400 tracking-wide">Legal AI Platform</h1>
+                <p class="text-xs text-slate-400">Professional Investigation Suite</p>
               </div>
             {/if}
           </div>
@@ -352,7 +352,7 @@
     isSidebarOpen ? "ml-72" : "ml-16"
   )}>
     <!-- Top Header Bar -->
-    <header class="sticky top-0 z-30 bg-yorha-bg-primary/95 backdrop-blur-sm border-b border-yellow-600/30">
+    <header class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-700 shadow-sm">
       <div class="flex items-center justify-between p-4">
         <!-- Header Left -->
         <div class="flex items-center gap-4">
@@ -393,9 +393,9 @@
 
         <!-- Header Center - Page Title -->
         <div class="flex-1 text-center hidden lg:block">
-          <h1 class="text-lg font-bold text-yellow-400 uppercase tracking-wide">{title}</h1>
+          <h1 class="text-lg font-semibold text-amber-400 tracking-wide">{title}</h1>
           {#if subtitle}
-            <p class="text-sm text-gray-400">{subtitle}</p>
+            <p class="text-sm text-slate-400">{subtitle}</p>
           {/if}
         </div>
 

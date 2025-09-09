@@ -294,7 +294,7 @@
             <ul class="text-sm text-gray-700 space-y-1 grid grid-cols-1 md:grid-cols-2 gap-2">
               <li>• <strong>Automatic Fallbacks:</strong> GPU → WASM → CPU</li>
               <li>• <strong>Real-time Switching:</strong> Adaptive method selection</li>
-              <li>• <strong>Memory Efficient:</strong> < 200MB total footprint</li>
+              <li>• <strong>Memory Efficient:</strong> &lt; 200MB total footprint</li>
               <li>• <strong>Error Recovery:</strong> Graceful degradation</li>
               <li>• <strong>Performance Monitoring:</strong> Live metrics</li>
               <li>• <strong>Cache Intelligence:</strong> Semantic similarity</li>

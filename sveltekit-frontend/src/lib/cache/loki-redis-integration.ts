@@ -9,7 +9,7 @@
  */
 
 import Loki from 'lokijs';
-import { redis } from '$lib/server/cache/redis-service';
+import { redisService } from '$lib/server/redis-service';
 import { nesMemory, type LegalDocument } from '../memory/nes-memory-architecture.js';
 import { EventEmitter } from 'events';
 import type { Redis as IORedisClient } from 'ioredis';
@@ -178,20 +178,24 @@ export class LokiRedisCache extends EventEmitter {
 
   private async initializeRedis(): Promise<void> {
     try {
-      // Use centralized Redis service
-      this.redis = redis;
+      // Use Docker Redis service
+      await redisService.initialize();
+      this.redis = redisService.redis;
       
-      // Use centralized Redis service for subscriber as well
-      this.subscriber = redis;
+      // Use centralized Redis service for subscriber as well  
+      this.subscriber = redisService.subscriber;
 
       // Redis service handles connection management
-
       this.stats.redis.connected = true;
       
-      console.log('✅ Redis clients connected');
+      console.log('✅ Docker Redis clients connected');
     } catch (error: any) {
-      console.error('❌ Redis connection failed:', error);
-      throw error;
+      console.error('❌ Docker Redis connection failed:', error);
+      // Fall back to memory-only mode
+      this.redis = null;
+      this.subscriber = null;
+      this.stats.redis.connected = false;
+      console.log('📝 Running in memory-only cache mode');
     }
   }
 
@@ -736,6 +740,42 @@ export class LokiRedisCache extends EventEmitter {
 
   getStats(): CacheStats {
     return { ...this.stats };
+  }
+
+  // Public methods for accessing cached data
+  async get(key: string): Promise<string | null> {
+    if (!this.redis) return null;
+
+    try {
+      const value = await this.redis.get(`${CACHE_CONFIG.redis.keyPrefix}${key}`);
+      if (value) {
+        this.stats.redis.hits++;
+        this.stats.redis.operations++;
+      } else {
+        this.stats.redis.misses++;
+      }
+      return value;
+    } catch (error: any) {
+      console.error(`❌ Redis get error for ${key}:`, error);
+      this.stats.redis.misses++;
+      return null;
+    }
+  }
+
+  async set(key: string, value: string, ttl?: number): Promise<void> {
+    if (!this.redis) return;
+
+    try {
+      const fullKey = `${CACHE_CONFIG.redis.keyPrefix}${key}`;
+      if (ttl) {
+        await this.redis.setex(fullKey, ttl, value);
+      } else {
+        await this.redis.set(fullKey, value);
+      }
+      this.stats.redis.operations++;
+    } catch (error: any) {
+      console.error(`❌ Redis set error for ${key}:`, error);
+    }
   }
 
   async clear(): Promise<void> {

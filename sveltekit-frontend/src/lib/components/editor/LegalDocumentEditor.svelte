@@ -1,4 +1,4 @@
-<!-- Enhanced Legal Document Editor with UnoCSS + Melt UI -->
+<!-- Enhanced Legal Document Editor with UnoCSS + bits-ui -->
 <script lang="ts">
   import {
     createDialog,
@@ -18,7 +18,7 @@
     Scale,
     Search,
     Settings,
-    Share2,
+    /* Share moved to bits-ui */
     X,
   } from "lucide-svelte";
   import { createEventDispatcher, onMount } from "svelte";

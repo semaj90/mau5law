@@ -16,7 +16,7 @@
 </script>
 
 <div
-	className={cn(
+	class={cn(
 		"relative h-2 w-full overflow-hidden rounded-full bg-secondary",
 		className
 	)}

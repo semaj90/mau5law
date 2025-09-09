@@ -5,7 +5,7 @@
 
 import { somWebGPUCache } from './lib/webgpu/som-webgpu-cache.js';
 import { redisWebGPUIntegration } from './lib/integrations/redis-webgpu-simd-integration.js';
-import { simdJsonWorkerClient } from './lib/simd/simd-json-worker-client.js';
+import { simdJSONClient } from './lib/simd/simd-json-worker-client.js';
 
 // Service Worker Global State
 let isRedisConnected = false;
@@ -28,7 +28,7 @@ const activeWarmingTasks = new Map<string, Promise<any>>();
  * Initialize integrated systems on service worker startup
  */
 async function initializeIntegratedSystems(): Promise<void> {
-  console.log('=€ Service Worker: Initializing integrated systems...');
+  console.log('=ï¿½ Service Worker: Initializing integrated systems...');
   
   try {
     // Initialize Redis + WebGPU + SIMD integration
@@ -54,13 +54,13 @@ async function initializeIntegratedSystems(): Promise<void> {
 /**
  * Handle install event - prepare for background processing
  */
-self.addEventListener('install', (event: ExtendableEvent) => {
-  console.log('=æ Service Worker: Installing...');
+self.addEventListener('install', (event) => {
+  console.log('=ï¿½ Service Worker: Installing...');
   
-  event.waitUntil(
+  (event as ExtendableEvent).waitUntil(
     Promise.all([
       initializeIntegratedSystems(),
-      self.skipWaiting()
+      (self as any).skipWaiting()
     ])
   );
 });
@@ -68,12 +68,12 @@ self.addEventListener('install', (event: ExtendableEvent) => {
 /**
  * Handle activate event - take control and sync caches
  */
-self.addEventListener('activate', (event: ExtendableEvent) => {
+self.addEventListener('activate', (event) => {
   console.log('= Service Worker: Activating...');
   
-  event.waitUntil(
+  (event as ExtendableEvent).waitUntil(
     Promise.all([
-      self.clients.claim(),
+      (self as any).clients.claim(),
       syncDistributedCaches()
     ])
   );
@@ -120,11 +120,11 @@ async function handleAPIRequest(request: Request): Promise<Response> {
   const cacheKey = generateCacheKey(request);
   
   try {
-    // Check cache hierarchy: Memory ’ SOM ’ Redis ’ Network
+    // Check cache hierarchy: Memory ï¿½ SOM ï¿½ Redis ï¿½ Network
     let cachedResponse = await checkCacheHierarchy(cacheKey, request);
     
     if (cachedResponse) {
-      console.log(`<¯ Cache hit for ${url.pathname}`);
+      console.log(`<ï¿½ Cache hit for ${url.pathname}`);
       return cachedResponse;
     }
     
@@ -469,7 +469,7 @@ async function processCacheWarmingQueue(): Promise<void> {
         }
       })
       .catch((error) => {
-        console.warn(`  Cache warming failed: ${task.id}`, error);
+        console.warn(`ï¿½ Cache warming failed: ${task.id}`, error);
         task.retries++;
         if (task.retries < 3) {
           task.priority = Math.max(1, task.priority - 1);
@@ -538,7 +538,7 @@ async function syncWithRedisCache(): Promise<void> {
  * Train SOM in background
  */
 async function trainSOMInBackground(): Promise<void> {
-  console.log('>à Training SOM in background...');
+  console.log('>ï¿½ Training SOM in background...');
   
   try {
     if (somCacheReady) {
@@ -581,4 +581,4 @@ self.addEventListener('message', (event: MessageEvent) => {
   }
 });
 
-console.log('=€ Service Worker: Redis + WebGPU + SIMD integration loaded');
+console.log('=ï¿½ Service Worker: Redis + WebGPU + SIMD integration loaded');

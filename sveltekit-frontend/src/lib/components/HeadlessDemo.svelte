@@ -1,60 +1,60 @@
 <script lang="ts">
   interface Props {
-    items?: unknown;
+    items?: string[];
   }
   let {
     items = ['Active Cases', 'Pending Cases', 'Closed Cases']
   }: Props = $props();
 
-  import { createDialog, createSelect } from 'melt';
   import { fade } from 'svelte/transition';
   
   export const title = 'Legal Case Manager';
-    
-  // Melt UI Dialog
-  const {
-    elements: { trigger, overlay, content, title: dialogTitle, description, close },
-    states: { open }
-  } = createDialog();
   
-  // Melt UI Select
-  const {
-    elements: { trigger: selectTrigger, menu, option, label },
-    states: { selectedLabel, open: selectOpen }
-  } = createSelect({
-    defaultSelected: { value: items[0], label: items[0] }
-  });
+  let dialogOpen = $state(false);
+  let selectOpen = $state(false);
+  let selectedItem = $state(items[0]);
+
+  function toggleDialog() {
+    dialogOpen = !dialogOpen;
+  }
+
+  function toggleSelect() {
+    selectOpen = !selectOpen;
+  }
+
+  function selectItem(item: string) {
+    selectedItem = item;
+    selectOpen = false;
+  }
 </script>
 
 <div class="space-y-4">
-  <h2 class="space-y-4">Headless UI Components Demo</h2>
+  <h2 class="text-xl font-semibold">Headless UI Components Demo</h2>
   
-  <!-- Melt UI Button -->
-  <button class="space-y-4">
+  <!-- Basic Button -->
+  <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
     Primary Action Button
   </button>
   
-  <!-- Melt UI Select -->
-  <div class="space-y-4">
+  <!-- Simple Select -->
+  <div class="space-y-4 relative">
     <button 
-      use:selectTrigger 
-      class="space-y-4"
+      onclick={toggleSelect}
+      class="border border-gray-300 rounded px-4 py-2 w-full text-left"
       aria-label="Case Type Filter"
     >
-      {$selectedLabel || 'Select case type...'}
+      {selectedItem || 'Select case type...'}
     </button>
     
-    {#if $selectOpen}
+    {#if selectOpen}
       <div 
-        use:menu 
-        class="space-y-4"
-        transitifade={{ duration: 150 }}
+        class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-lg mt-1 z-10"
+        transition:fade={{ duration: 150 }}
       >
-        {#each items as item, index}
+        {#each items as item}
           <div 
-            use:option
-            class="space-y-4"
-            data-value={item}
+            class="p-2 hover:bg-gray-100 cursor-pointer"
+            onclick={() => selectItem(item)}
           >
             {item}
           </div>
@@ -63,30 +63,35 @@
     {/if}
   </div>
   
-  <!-- Melt UI Dialog Trigger -->
+  <!-- Dialog Trigger -->
   <button 
-    use:trigger
-    class="space-y-4"
+    onclick={toggleDialog}
+    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
   >
     Open Case Details Dialog
   </button>
   
-  <!-- Melt UI Dialog -->
-  {#if $open}
-    <div use:overlay class="space-y-4" transitifade={{ duration: 150 }}>
-      <div use:content class="space-y-4">
-        <h3 use:dialogTitle class="space-y-4">
+  <!-- Dialog -->
+  {#if dialogOpen}
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" transition:fade={{ duration: 150 }}>
+      <div 
+        class="bg-white p-6 rounded shadow-lg max-w-md w-full"
+        role="dialog"
+        aria-labelledby="dialog-title"
+        aria-describedby="dialog-desc"
+      >
+        <h3 id="dialog-title" class="text-lg font-semibold mb-4">
           Case Management System
         </h3>
-        <p use:description class="space-y-4">
-          This is a demo of Melt UI headless components integrated with PicoCSS styling and custom CSS variables.
+        <p id="dialog-desc" class="text-gray-600 mb-6">
+          This is a demo of simple UI components integrated with Tailwind styling for legal case management.
         </p>
         
-        <div class="space-y-4">
-          <button use:close class="space-y-4">
+        <div class="flex gap-2 justify-end">
+          <button onclick={toggleDialog} class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
             Cancel
           </button>
-          <button class="space-y-4">
+          <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
             Save Changes
           </button>
         </div>
@@ -94,58 +99,3 @@
     </div>
   {/if}
 </div>
-
-<style>
-  /* @unocss-include */
-  .headless-demo {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: var(--spacing-lg);
-}
-  .select-menu {
-    position: absolute;
-    z-index: 50;
-    min-width: 200px;
-    background-color: var(--color-background);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    padding: var(--spacing-xs);
-    margin-top: var(--spacing-xs);
-}
-  .select-option {
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: background-color var(--transition-fast);
-}
-  .select-option:hover {
-    background-color: var(--color-surface);
-}
-  .dialog-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    background-color: rgb(0 0 0 / 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--spacing-lg);
-}
-.dialog-title {
-    font-size: var(--font-size-xl);
-    font-weight: 600;
-    margin-bottom: var(--spacing-md);
-    color: var(--color-text);
-}
-  .dialog-description {
-    color: var(--color-text-muted);
-    margin-bottom: var(--spacing-lg);
-    line-height: 1.6;
-}
-  .dialog-actions {
-    display: flex;
-    gap: var(--spacing-sm);
-    justify-content: flex-end;
-}
-</style>

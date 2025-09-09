@@ -1,26 +1,30 @@
 <script lang="ts">
-  interface Props { evidence: ExtendedEvidence; onView: (evidence: Evidence) => void;,
-    onEdit: (evidence: Evidence) => void;,
-    onDelete: (evidence: Evidence) => void;,
-    onDownload: (evidence: Evidence) => void;,
-    draggable?: any;
-    compact?: any;
-    expandOnHover?: any;
-   }
-  let { evidence,
-    onView = > void = () => { },
-    onEdit = > void = () => {},
-    onDelete = > void = () => {},
-    onDownload = > void = () => {},
+  interface Props {
+    evidence: ExtendedEvidence;
+    onView: (evidence: Evidence) => void;
+    onEdit: (evidence: Evidence) => void;
+    onDelete: (evidence: Evidence) => void;
+    onDownload: (evidence: Evidence) => void;
+    draggable?: boolean;
+    compact?: boolean;
+    expandOnHover?: boolean;
+  }
+  let {
+    evidence,
+    onView = () => {},
+    onEdit = () => {},
+    onDelete = () => {},
+    onDownload = () => {},
     draggable = true,
     compact = false,
     expandOnHover = false
-  } = $props();
+  }: Props = $props();
 
 
 
   
-  import { Download,
+  import {
+    Download,
     PenLine,
     Eye,
     FileText,
@@ -29,11 +33,12 @@
     Link,
     Tag,
     Trash2,
-    Video,
-   } from "lucide-svelte";
-  import { quintOut  } from "svelte/easing";
-  import { fly, scale  } from "svelte/transition";
-  import type { Evidence  } from '$lib/stores/report';
+    Video
+  } from "lucide-svelte";
+  import { quintOut } from "svelte/easing";
+  import { fly, scale } from "svelte/transition";
+  import { createTooltip, melt } from '@melt-ui/svelte';
+  import type { Evidence } from '$lib/stores/report';
 
   type ExtendedEvidence = Evidence & { evidenceType?: string;
     fileSize?: number;
@@ -43,11 +48,13 @@
 
                   export const showPreview = true;
 
-  const { elements: { trigger:, tooltipTrigger, content: tooltipContent },
-    states: { open: tooltipOpen },
-  } = createTooltip({ positioning: {, placement: "top"  },
+  const {
+    elements: { trigger: tooltipTrigger, content: tooltipContent },
+    states: { open: tooltipOpen }
+  } = createTooltip({
+    positioning: { placement: "top" },
     openDelay: 500,
-    closeDelay: 0,
+    closeDelay: 0
   });
 
   const getIcon = (type: Evidence["type"]) => { switch (type) {
@@ -62,7 +69,7 @@
       case "link":
         return Link;
       default:
-        return, FileText;
+        return FileText;
      }
   };
 
@@ -76,11 +83,11 @@
   const fileSize = evidence.metadata?.size || evidence.fileSize || 0;
   let isHovered = false;
 
-  let IconComponent = $derived(getIcon()
+  let IconComponent = $derived(getIcon(
     ["document", "image", "video", "audio", "link"].includes(evidence.evidenceType || evidence.type)
       ? (evidence.evidenceType || evidence.type) as Evidence["type"]
       : "document"
-  );
+  ));
 
   function handleMouseEnter() { if (expandOnHover) {
       isHovered = true;
@@ -98,7 +105,7 @@
     { compact ? 'text-sm' : '' }
     { draggable ? 'cursor-grab active:cursor-grabbing' : '' }
     { isHovered ? 'scale-105 z-10 shadow-2xl' : '' }"
-  transitionscale={ { duration: 200, easing: quintOut }}
+  transition:scale={{ duration: 200, easing: quintOut }}
   onmouseenter={ handleMouseEnter }
   onmouseleave={ handleMouseLeave }
   role="article"
@@ -262,7 +269,7 @@
   <div
     use:melt={ $tooltipContent }
     class="mx-auto px-4"
-    transitionfly={ { y: -5, duration: 150  }}
+    transition:fly={{ y: -5, duration: 150 }}
   >
     <div class="mx-auto px-4">
       <strong>{ evidence.title }</strong>

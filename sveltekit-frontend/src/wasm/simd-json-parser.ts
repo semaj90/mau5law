@@ -76,37 +76,37 @@ export namespace SIMDStringOps {
 export class SIMDJSONParser {
 
   // Fast parse legal document from JSON bytes
-  export function parseDocument(jsonBytes: Uint8Array): LegalDocumentWASM {
+  static parseDocument(jsonBytes: Uint8Array): LegalDocumentWASM {
     const doc = new LegalDocumentWASM();
 
     // Convert bytes to string for parsing
     const jsonStr = String.UTF8.decode(jsonBytes.buffer);
 
     // SIMD-accelerated field extraction
-    doc.id = extractStringField(jsonStr, "id");
-    doc.title = extractStringField(jsonStr, "title");
-    doc.content = extractStringField(jsonStr, "content");
-    doc.confidence = extractNumberField(jsonStr, "confidence");
+    doc.id = SIMDJSONParser.extractStringField(jsonStr, "id");
+    doc.title = SIMDJSONParser.extractStringField(jsonStr, "title");
+    doc.content = SIMDJSONParser.extractStringField(jsonStr, "content");
+    doc.confidence = SIMDJSONParser.extractNumberField(jsonStr, "confidence");
     doc.processedAt = Date.now();
 
     // Use SIMD for entity and citation counting
-    doc.entityCount = countLegalEntities(doc.content);
+    doc.entityCount = SIMDJSONParser.countLegalEntities(doc.content);
     doc.citationCount = SIMDStringOps.extractCitations(doc.content).length;
 
     return doc;
   }
 
   // Batch process multiple documents with SIMD
-  export function parseBatch(jsonArrayBytes: Uint8Array): Array<LegalDocumentWASM> {
+  static parseBatch(jsonArrayBytes: Uint8Array): Array<LegalDocumentWASM> {
     const documents = new Array<LegalDocumentWASM>();
     const jsonStr = String.UTF8.decode(jsonArrayBytes.buffer);
 
     // Split array into individual document strings
-    const docStrings = splitJSONArray(jsonStr);
+    const docStrings = SIMDJSONParser.splitJSONArray(jsonStr);
 
     for (let i = 0; i < docStrings.length; i++) {
       const docBytes = String.UTF8.encode(docStrings[i]);
-      const doc = parseDocument(Uint8Array.wrap(docBytes));
+      const doc = SIMDJSONParser.parseDocument(Uint8Array.wrap(docBytes));
       documents.push(doc);
     }
 
@@ -114,7 +114,7 @@ export class SIMDJSONParser {
   }
 
   // SIMD-optimized string field extraction
-  function extractStringField(json: string, fieldName: string): string {
+  private static extractStringField(json: string, fieldName: string): string {
     const startPattern = `"${fieldName}":"`;
     const startIndex = json.indexOf(startPattern);
     if (startIndex === -1) return "";
@@ -127,7 +127,7 @@ export class SIMDJSONParser {
   }
 
   // SIMD-optimized number field extraction
-  function extractNumberField(json: string, fieldName: string): f64 {
+  private static extractNumberField(json: string, fieldName: string): f64 {
     const startPattern = `"${fieldName}":`;
     const startIndex = json.indexOf(startPattern);
     if (startIndex === -1) return 0.0;
@@ -150,7 +150,7 @@ export class SIMDJSONParser {
   }
 
   // Split JSON array string into individual document strings
-  function splitJSONArray(jsonArray: string): Array<string> {
+  private static splitJSONArray(jsonArray: string): Array<string> {
     const documents = new Array<string>();
     let braceCount = 0;
     let currentDoc = "";
@@ -203,7 +203,7 @@ export class SIMDJSONParser {
   }
 
   // Count legal entities using SIMD pattern matching
-  function countLegalEntities(text: string): i32 {
+  private static countLegalEntities(text: string): i32 {
     let count = 0;
 
     // Legal entity patterns (simplified)

@@ -4,7 +4,7 @@
   import {
     Brain, Activity, Zap, Shield, Search, Users, BarChart3,
     Database, Folder, Eye, TrendingUp, Clock, AlertCircle,
-    CheckCircle, FileText, MapPin, Calendar
+    CheckCircle, FileText, MapPin, Calendar, Edit3
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
@@ -84,10 +84,18 @@
     {
       title: 'Person Tracking',
       description: 'Manage persons of interest',
-      href: '/persons',
+      href: '/persons-of-interest',
       icon: Users,
       gradient: 'from-yellow-600 to-yellow-700',
       stats: '156 active records'
+    },
+    {
+      title: 'Text Editor',
+      description: 'NieR-themed rich text editor',
+      href: '/text-editor',
+      icon: Edit3,
+      gradient: 'from-red-600 to-red-700',
+      stats: 'Legal documents'
     }
   ];
 
@@ -132,8 +140,8 @@
 </script>
 
 <svelte:head>
-  <title>YoRHa Legal AI - Command Center</title>
-  <meta name="description" content="Advanced legal investigation platform with AI-powered analysis and vector intelligence" />
+  <title>Legal AI Platform - Professional Command Center</title>
+  <meta name="description" content="Professional legal investigation platform with AI-powered analysis and intelligent case management" />
 </svelte:head>
 
 <ProductionLayout title="Command Center" subtitle="Central Operations Hub">
@@ -192,8 +200,8 @@
     <div class="yorha-3d-panel">
       <div class="p-6">
         <div class="flex items-center gap-3 mb-6">
-          <Zap class="w-6 h-6 text-yellow-400" />
-          <h2 class="text-xl font-bold text-yellow-400 uppercase tracking-wide">Quick Actions</h2>
+          <Zap class="w-6 h-6 text-amber-400" />
+          <h2 class="text-xl font-semibold text-amber-400 tracking-wide">Quick Actions</h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -216,6 +224,25 @@
               <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </a>
           {/each}
+          
+          <!-- All Routes Button -->
+          <a
+            href="/all-routes"
+            class="group relative overflow-hidden rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 p-6 text-white hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+            aria-label="All Routes: Browse all available pages and features"
+          >
+            <div class="relative z-10">
+              <div class="flex items-center justify-between mb-4">
+                <MapPin class="w-8 h-8" />
+                <div class="text-xs opacity-75 font-medium">Browse</div>
+              </div>
+              <h3 class="font-bold text-lg mb-2">All Routes</h3>
+              <p class="text-sm opacity-90">Browse all available pages and features</p>
+            </div>
+
+            <!-- Hover effect overlay -->
+            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
         </div>
       </div>
     </div>
@@ -226,10 +253,10 @@
         <div class="p-6">
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
-              <Clock class="w-6 h-6 text-yellow-400" />
-              <h3 class="text-xl font-bold text-yellow-400 uppercase tracking-wide">Recent Activity</h3>
+              <Clock class="w-6 h-6 text-amber-400" />
+              <h3 class="text-xl font-semibold text-amber-400 tracking-wide">Recent Activity</h3>
             </div>
-            <a href="/activity" class="text-yellow-400 hover:text-yellow-300 text-sm font-medium">
+            <a href="/activity" class="text-amber-400 hover:text-amber-300 text-sm font-medium">
               View All →
             </a>
           </div>
@@ -262,8 +289,8 @@
         <div class="p-6">
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
-              <Shield class="w-6 h-6 text-yellow-400" />
-              <h3 class="text-xl font-bold text-yellow-400 uppercase tracking-wide">System Status</h3>
+              <Shield class="w-6 h-6 text-amber-400" />
+              <h3 class="text-xl font-semibold text-amber-400 tracking-wide">System Status</h3>
             </div>
             <div class="flex items-center gap-2 text-green-400">
               <CheckCircle class="w-4 h-4" />
@@ -315,8 +342,8 @@
       <div class="p-6">
         <div class="flex items-center justify-between mb-6">
           <div class="flex items-center gap-3">
-            <Brain class="w-6 h-6 text-yellow-400" />
-            <h3 class="text-xl font-bold text-yellow-400 uppercase tracking-wide">AI Intelligence Summary</h3>
+            <Brain class="w-6 h-6 text-amber-400" />
+            <h3 class="text-xl font-semibold text-amber-400 tracking-wide">AI Intelligence Summary</h3>
           </div>
           <div class="flex items-center gap-2 text-purple-400">
             <TrendingUp class="w-4 h-4" />
@@ -350,26 +377,25 @@
 
 <style>
   .yorha-3d-panel {
-    /* Replaced Tailwind @apply with equivalent plain CSS to avoid unknown at-rule errors */
-    background-color: rgba(31, 41, 55, 0.5);
-    border: 1px solid rgba(75, 85, 99, 1);
-    border-radius: 0.5rem;
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(40, 40, 40, 0.8) 100%);
+    /* Professional card styling with modern glass morphism */
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.85) 100%);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 0.75rem;
+    backdrop-filter: blur(12px);
     box-shadow:
-      0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06),
-      inset 0 1px 0 rgba(255, 215, 0, 0.05);
+      0 8px 32px -8px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(148, 163, 184, 0.05),
+      inset 0 1px 0 rgba(248, 250, 252, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .yorha-3d-panel:hover {
+    transform: translateY(-2px);
     box-shadow:
-      0 8px 25px -5px rgba(0, 0, 0, 0.1),
-      0 4px 10px -2px rgba(0, 0, 0, 0.05),
-      inset 0 1px 0 rgba(255, 215, 0, 0.1),
-      0 0 0 1px rgba(255, 215, 0, 0.05);
+      0 20px 64px -12px rgba(0, 0, 0, 0.35),
+      0 0 0 1px rgba(251, 191, 36, 0.1),
+      inset 0 1px 0 rgba(248, 250, 252, 0.1);
+    border-color: rgba(251, 191, 36, 0.2);
   }
 
   /* Animation enhancements */

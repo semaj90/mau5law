@@ -90,22 +90,22 @@
 
 <style>
 	.gaming-button {
-		position: relative
+		position: relative;
 		display: inline-flex;
-		align-items: center
-		justify-content: center
+		align-items: center;
+		justify-content: center;
 		gap: 8px;
 		border: 2px solid var(--yorha-text-muted, #808080);
 		border-radius: 0;
 		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
 		font-weight: 500;
-		text-transform: uppercase
+		text-transform: uppercase;
 		letter-spacing: 2px;
-		cursor: pointer
+		cursor: pointer;
 		transition: all 0.2s ease;
-		overflow: hidden
-		user-select: none
-		outline: none
+		overflow: hidden;
+		user-select: none;
+		outline: none;
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		color: var(--yorha-text-primary, #e0e0e0);
 	}
@@ -247,10 +247,10 @@
 	
 	/* Button Content */
 	.button-content {
-		position: relative
+		position: relative;
 		z-index: 2;
-		display: flex
-		align-items: center
+		display: flex;
+		align-items: center;
 		gap: 8px;
 		transition: opacity 0.2s ease;
 	}
@@ -261,7 +261,7 @@
 	
 	/* Loading Spinner */
 	.loading-spinner {
-		position: absolute
+		position: absolute;
 		width: 20px;
 		height: 20px;
 		border: 2px solid rgba(255, 255, 255, 0.3);
@@ -273,7 +273,7 @@
 	
 	/* Gaming Effects */
 	.button-overlay {
-		position: absolute
+		position: absolute;
 		top: 0;
 		left: -100%;
 		width: 100%;
@@ -288,7 +288,7 @@
 	}
 	
 	.scan-line {
-		position: absolute
+		position: absolute;
 		top: 0;
 		left: 0;
 		right: 0;

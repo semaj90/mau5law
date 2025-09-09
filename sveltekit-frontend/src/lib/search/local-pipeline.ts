@@ -70,7 +70,7 @@ export class LocalSearchPipeline {
 
     if (!this.redis) {
       try {
-        const modB: any = await import('$lib/server/cache/redis-service');
+        const modB: any = await import('$lib/server/redis-service');
         if (modB?.redis?.get) this.redis = modB.redis;
       } catch {}
     }

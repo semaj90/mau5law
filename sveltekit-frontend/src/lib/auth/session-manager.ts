@@ -2,7 +2,7 @@
 // Handles secure session storage, management, and cleanup
 
 import { dev } from '$app/environment';
-import { redis } from '$lib/server/cache/redis-service';
+import { redis } from '$lib/server/redis-service';
 import { randomBytes, createHash } from 'crypto';
 import type { AuthUser, AuthSession } from './auth-store.js';
 import type { UserRole } from './roles.js';

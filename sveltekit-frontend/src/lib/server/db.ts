@@ -1,49 +1,56 @@
-// src/lib/server/db.ts - Drizzle ORM client setup
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { DATABASE_URL } from '$env/static/private';
-import * as pgSchema from './db/schema-postgres';
-import * as domainSchema from './db/schema';
+/*
+  Consolidated Drizzle DB client and helper exports.
+  This file provides a single `db` export and common helpers/aliases
+  to prevent duplicate export errors during builds.
+
+  It prefers `DATABASE_URL` env var. If not present, `db` will be null
+  and routes that depend on DB should guard accordingly.
+*/
+
+import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import { sql } from 'drizzle-orm';
-
-const client = postgres(DATABASE_URL!);
-// Combine canonical postgres schema with domain extensions so db.query.* works across both
-const combinedSchema = { ...(pgSchema as Record<string, unknown>), ...(domainSchema as Record<string, unknown>) };
-export const db = drizzle(client, { schema: combinedSchema });
-
-// Re-export commonly used helpers so existing imports work
-export { sql, eq, and, or, ilike, like, desc, asc, count } from 'drizzle-orm';
-
-// Provide a stable helpers bag for where/order builders
-// Consumers can: import { helpers } from '$lib/server/db'; const { eq, and, or, ilike, desc, asc, count } = helpers;
 import { eq, and, or, ilike, like, desc, asc, count } from 'drizzle-orm';
 
-export const helpers = {
-	eq,
-	and,
-	or,
-	ilike,
-	like,
-	desc,
-	asc,
-	count
-} as const;
-
-// Re-export selected tables expected by routes
-// Primary unified schema under ./db/schema.ts
+// Re-export commonly used pg-core helpers for schema files that import from $lib/server/db
 export {
-	users,
-	cases,
-	evidence,
-	legalDocuments,
-} from './db/schema-postgres';
+  pgTable,
+  serial,
+  text,
+  integer,
+  timestamp,
+  boolean,
+  json,
+  index,
+} from 'drizzle-orm/pg-core';
 
-// Provide snake_case alias for legacy imports  
+// Load schema pieces (many routes import tables directly from these)
+import * as pgSchema from './db/schema-postgres';
+import * as domainSchema from './schema';
+
+const CONNECTION = process.env.DATABASE_URL || '';
+
+let db: ReturnType<typeof drizzle> | null = null;
+if (CONNECTION) {
+  const pool = new Pool({ connectionString: CONNECTION });
+  // Combine schemas so Drizzle has knowledge of both sets
+  const combinedSchema = {
+    ...(pgSchema as Record<string, unknown>),
+    ...(domainSchema as Record<string, unknown>),
+  };
+  db = drizzle(pool, { schema: combinedSchema });
+}
+
+export { db };
+
+// Re-export sql/helpers for convenience
+export { sql, eq, and, or, ilike, like, desc, asc, count };
+
+// Provide a helpers bag for consumers
+export const helpers = { eq, and, or, ilike, like, desc, asc, count } as const;
+
+// Re-export commonly referenced tables to preserve existing import sites
+export { users, cases, evidence, legalDocuments } from './db/schema-postgres';
 export { legalDocuments as legal_documents } from './db/schema-postgres';
-
-// Compatibility aliases: some code refers to legalDocuments from alternate schema
-// Also expose legacy domain legalDocuments if needed
-export { legalDocuments as legal_documents_v2 } from './db/schema';
-
-// Also expose alternate schema tables if routes import from $lib/server/schema
+export { legalDocuments as legal_documents_v2 } from './schema';
 export * as legacySchema from './schema';

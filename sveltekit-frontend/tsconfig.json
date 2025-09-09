@@ -4,7 +4,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "types": ["svelte", "vite/client", "vitest/globals", "@sveltejs/kit", "@webgpu/types"],
+    "types": ["svelte", "vite/client", "vitest/globals", "@sveltejs/kit", "@webgpu/types", "node"],
     "strict": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
@@ -20,11 +20,7 @@
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
     "downlevelIteration": true,
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ]
+    "lib": ["ES2022", "DOM", "DOM.Iterable"]
   },
   "include": [
     "ambient.d.ts",
