@@ -365,6 +365,83 @@ class RedisService {
   }
 
   /**
+   * Hash operations
+   */
+  async hget(key: string, field: string): Promise<string | null> {
+    const client = this.getClient();
+    if (!client) return null;
+
+    try {
+      return await (client as any).hget(key, field);
+    } catch (error) {
+      console.error(`[RedisService] Failed to hget ${key} ${field}:`, error);
+      return null;
+    }
+  }
+
+  async hset(key: string, field: string, value: string): Promise<boolean> {
+    const client = this.getClient();
+    if (!client) return false;
+
+    try {
+      await (client as any).hset(key, field, value);
+      return true;
+    } catch (error) {
+      console.error(`[RedisService] Failed to hset ${key} ${field}:`, error);
+      return false;
+    }
+  }
+
+  async hgetall(key: string): Promise<{[field: string]: string}> {
+    const client = this.getClient();
+    if (!client) return {};
+
+    try {
+      return await (client as any).hgetall(key) || {};
+    } catch (error) {
+      console.error(`[RedisService] Failed to hgetall ${key}:`, error);
+      return {};
+    }
+  }
+
+  async hincrby(key: string, field: string, increment: number): Promise<number> {
+    const client = this.getClient();
+    if (!client) return 0;
+
+    try {
+      return await (client as any).hincrby(key, field, increment);
+    } catch (error) {
+      console.error(`[RedisService] Failed to hincrby ${key} ${field}:`, error);
+      return 0;
+    }
+  }
+
+  async expire(key: string, seconds: number): Promise<boolean> {
+    const client = this.getClient();
+    if (!client) return false;
+
+    try {
+      await (client as any).expire(key, seconds);
+      return true;
+    } catch (error) {
+      console.error(`[RedisService] Failed to expire ${key}:`, error);
+      return false;
+    }
+  }
+
+  async pipeline(): any {
+    const client = this.getClient();
+    if (!client) return null;
+
+    try {
+      return (client as any).pipeline();
+    } catch (error) {
+      console.error(`[RedisService] Failed to create pipeline:`, error);
+      return null;
+    }
+  }
+
+  /**
    * Cleanup and close connections
    */
   async shutdown(): Promise<void> {

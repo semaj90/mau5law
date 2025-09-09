@@ -113,7 +113,7 @@ User question: ${message}`;
           });
 
           // Call Ollama streaming API
-          const response = await fetch("http://localhost:11434/api/generate", {
+          const response = await fetch("http://localhost:11436/api/generate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

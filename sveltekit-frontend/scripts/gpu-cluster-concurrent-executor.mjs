@@ -1,6 +1,8 @@
 #!/usr/bin/env zx
 
 import { $, argv, chalk, sleep } from 'zx';
+import postgres from 'postgres';
+import { randomUUID } from 'node:crypto';
 
 // GPU Cluster Concurrent Executor
 // Orchestrates multiple GPU workers with concurrent execution
@@ -8,22 +10,33 @@ console.log(chalk.cyan('🚀 GPU Cluster Concurrent Executor v1.0'));
 
 const config = {
   workers: argv.workers || 4,
-  gpuContexts: argv['gpu-contexts'] || 1,
-  tasks: argv.tasks?.split(',') || ['inference', 'training', 'vectorization'],
+  gpuContexts: argv['gpu-contexts'] || 2, // RTX 3060 Ti can handle 2 concurrent contexts efficiently
+  tasks: argv.tasks?.split(',') || ['legal-embeddings', 'case-similarity', 'evidence-processing'],
   profile: argv.profile || false,
   enableGPU: argv.enableGPU || process.env.ENABLE_GPU === 'true',
   enableMCP: argv.enableMCP || false,
-  maxMemory: argv.maxMemory || '8192',
-  timeout: argv.timeout || 300000
+  maxMemory: argv.maxMemory || '6144', // Optimized for RTX 3060 Ti 8GB VRAM
+  timeout: argv.timeout || 600000, // Longer timeout for legal document processing
+  // RTX 3060 Ti specific optimizations
+  gpuMemoryReservation: argv.gpuMemory || '6144', // Reserve 6GB for GPU operations
+  batchSize: argv.batchSize || 16, // Optimal batch size for RTX 3060 Ti
+  legalOptimization: argv.legalMode || true,
+  embeddingDimensions: argv.embeddingDim || 384, // nomic-embed-text dimensions
+  similarityThreshold: argv.similarity || 0.7
 };
 
-console.log(chalk.blue('📋 Configuration:'));
+console.log(chalk.blue('📋 Legal AI GPU Configuration:'));
 console.log(`   Workers: ${config.workers}`);
 console.log(`   GPU Contexts: ${config.gpuContexts}`);
 console.log(`   Tasks: ${config.tasks.join(', ')}`);
 console.log(`   Profile Mode: ${config.profile}`);
 console.log(`   GPU Enabled: ${config.enableGPU}`);
 console.log(`   Max Memory: ${config.maxMemory}MB`);
+console.log(`   GPU Memory Reserved: ${config.gpuMemoryReservation}MB`);
+console.log(`   Batch Size: ${config.batchSize}`);
+console.log(`   Legal Optimization: ${config.legalOptimization}`);
+console.log(`   Embedding Dimensions: ${config.embeddingDimensions}`);
+console.log(`   Similarity Threshold: ${config.similarityThreshold}`);
 
 // Check GPU availability
 async function checkGPUAvailability() {
@@ -43,37 +56,85 @@ async function checkGPUAvailability() {
   }
 }
 
-// Task definitions
+// Legal AI Task definitions optimized for RTX 3060 Ti
 const taskDefinitions = {
-  'inference': {
-    name: 'AI Inference',
-    cmd: ['npm', 'run', 'check:typescript'],
-    env: { OLLAMA_GPU_LAYERS: '30', RTX_3060_OPTIMIZATION: 'true' }
+  'legal-embeddings': {
+    name: 'Legal Document Embeddings',
+    cmd: ['node', 'scripts/generate-legal-embeddings.mjs'],
+    env: { 
+      OLLAMA_GPU_LAYERS: '35', 
+      RTX_3060_OPTIMIZATION: 'true',
+      LEGAL_EMBEDDING_MODEL: 'nomic-embed-text',
+      GPU_MEMORY_LIMIT: '8192',
+      BATCH_SIZE: '32'
+    }
   },
-  'training': {
-    name: 'Model Training',
-    cmd: ['npm', 'run', 'build:wasm'],
-    env: { ENABLE_TRAINING: 'true' }
+  'case-similarity': {
+    name: 'Case Similarity Analysis',
+    cmd: ['node', 'scripts/process-case-similarity.mjs'],
+    env: { 
+      OLLAMA_GPU_LAYERS: '35',
+      RTX_3060_OPTIMIZATION: 'true',
+      PGVECTOR_ENABLED: 'true',
+      SIMILARITY_THRESHOLD: '0.7'
+    }
+  },
+  'legal-inference': {
+    name: 'Legal AI Inference',
+    cmd: ['npm', 'run', 'check:typescript'],
+    env: { 
+      OLLAMA_GPU_LAYERS: '30', 
+      RTX_3060_OPTIMIZATION: 'true',
+      LEGAL_MODEL: 'gemma3-legal',
+      GPU_CONTEXT_SIZE: '4096'
+    }
+  },
+  'evidence-processing': {
+    name: 'Evidence Document Processing',
+    cmd: ['node', 'scripts/process-evidence-batch.mjs'],
+    env: { 
+      ENABLE_TRAINING: 'true',
+      GPU_ACCELERATION: 'true',
+      MINIO_ENABLED: 'true',
+      OCR_GPU_ENABLED: 'true'
+    }
   },
   'vectorization': {
-    name: 'Vector Operations',
+    name: 'Legal Vector Operations',
     cmd: ['npm', 'run', 'build:wasm'],
-    env: { ENABLE_WASM_GPU: 'true' }
+    env: { 
+      ENABLE_WASM_GPU: 'true',
+      LEGAL_VECTOR_DIM: '384',
+      HNSW_ENABLED: 'true'
+    }
+  },
+  'chat-persistence': {
+    name: 'Chat Session Persistence',
+    cmd: ['node', 'scripts/persist-chat-embeddings.mjs'],
+    env: { 
+      PGVECTOR_ENABLED: 'true',
+      EMBEDDING_CACHE: 'true',
+      REDIS_ENABLED: 'true'
+    }
   },
   'simd-parser': {
-    name: 'SIMD Parser',
-    cmd: ['npm', 'run', 'check:svelte'],
-    env: { SIMD_ENABLED: 'true' }
-  },
-  'simd-indexer': {
-    name: 'SIMD Indexer', 
-    cmd: ['npm', 'run', 'rag:verify-embeddings'],
-    env: { SIMD_INDEXING: 'true' }
+    name: 'Legal Document SIMD Parser',
+    cmd: ['node', 'scripts/simd-legal-parser.mjs'],
+    env: { 
+      SIMD_ENABLED: 'true',
+      LEGAL_PARSING: 'true',
+      PDF_GPU_ACCELERATION: 'true',
+      WASM_ENABLED: 'true'
+    }
   },
   'webgpu-som': {
-    name: 'WebGPU SOM Cache',
+    name: 'WebGPU Legal Knowledge SOM',
     cmd: ['npm', 'run', 'check:ultra-fast'],
-    env: { WEBGPU_ENABLED: 'true' }
+    env: { 
+      WEBGPU_ENABLED: 'true',
+      LEGAL_SOM_CACHE: 'true',
+      KNOWLEDGE_GRAPH: 'true'
+    }
   }
 };
 
@@ -131,6 +192,117 @@ async function executeWorker(workerId, task) {
   }
 }
 
+// Store performance metrics in database for tracking
+async function storePerformanceMetrics(results, summary) {
+  try {
+    const databaseUrl = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
+    const sql = postgres(databaseUrl, { 
+      host: 'localhost',
+      port: 5433,
+      database: 'legal_ai_db',
+      username: 'legal_admin',
+      password: '123456',
+      max: 2 
+    });
+    
+    console.log(chalk.blue('\n💾 Storing performance metrics...'));
+    
+    // Store overall execution summary
+    const executionId = randomUUID();
+    
+    try {
+      await sql`
+        INSERT INTO gpu_cluster_executions (
+          id, execution_date, total_workers, gpu_contexts, avg_duration_ms, 
+          success_rate, total_tasks, successful_tasks, failed_tasks, 
+          configuration, metadata
+        ) VALUES (
+          ${executionId},
+          NOW(),
+          ${summary.totalWorkers},
+          ${summary.gpuContexts},
+          ${Math.round(summary.avgDuration)},
+          ${Math.round(summary.successRate * 100) / 100},
+          ${results.length},
+          ${results.filter(r => r.success).length},
+          ${results.filter(r => !r.success).length},
+          ${JSON.stringify({
+            maxMemory: config.maxMemory,
+            gpuMemoryReservation: config.gpuMemoryReservation,
+            batchSize: config.batchSize,
+            legalOptimization: config.legalOptimization,
+            embeddingDimensions: config.embeddingDimensions,
+            similarityThreshold: config.similarityThreshold
+          })},
+          ${JSON.stringify({
+            rtx3060Optimized: true,
+            tasks: config.tasks,
+            profile: config.profile,
+            timestamp: new Date().toISOString()
+          })}
+        )
+      `;
+      
+      // Store individual task results
+      for (const result of results) {
+        await sql`
+          INSERT INTO gpu_task_results (
+            execution_id, worker_id, task_name, task_type, duration_ms, 
+            success, error_message, metadata
+          ) VALUES (
+            ${executionId},
+            ${result.workerId || 0},
+            ${result.task || 'unknown'},
+            'legal-ai',
+            ${result.duration || 0},
+            ${result.success || false},
+            ${result.error || null},
+            ${JSON.stringify({
+              timestamp: new Date().toISOString(),
+              output_size: result.output?.length || 0,
+              gpu_optimized: true
+            })}
+          )
+        `;
+      }
+      
+      console.log(chalk.green(`✅ Stored metrics for execution ${executionId.slice(0, 8)}...`));
+      
+    } catch (dbError) {
+      if (dbError.message.includes('relation') && dbError.message.includes('does not exist')) {
+        console.log(chalk.yellow('⚠️  Performance tracking tables not found, creating minimal log...'));
+        
+        // Fallback: create a simple log entry in case_activities
+        try {
+          await sql`
+            INSERT INTO case_activities (case_id, activity_type, description, metadata)
+            VALUES (
+              null,
+              'gpu_cluster_execution',
+              'GPU cluster executed with ${results.length} tasks, ${results.filter(r => r.success).length} successful',
+              ${JSON.stringify({
+                execution_id: executionId,
+                summary,
+                tasks: results.map(r => ({ task: r.task, success: r.success, duration: r.duration }))
+              })}
+            )
+          `;
+          console.log(chalk.green('✅ Logged execution to case_activities'));
+        } catch (fallbackError) {
+          console.log(chalk.yellow(`⚠️  Could not log to case_activities: ${fallbackError.message}`));
+        }
+      } else {
+        throw dbError;
+      }
+    }
+    
+    await sql.end();
+    
+  } catch (error) {
+    console.log(chalk.yellow(`⚠️  Could not store performance metrics: ${error.message}`));
+  }
+}
+
 // Main execution
 async function main() {
   console.log(chalk.cyan('\n🔍 Checking system requirements...'));
@@ -161,8 +333,8 @@ async function main() {
   console.log(chalk.cyan(`\n⏳ Waiting for ${workers.length} workers to complete...`));
   await Promise.allSettled(workers);
 
-  // Report results
-  console.log(chalk.cyan('\n📊 Execution Summary:'));
+  // Report results and store performance data
+  console.log(chalk.cyan('\n📊 Legal AI Execution Summary:'));
   
   const successful = results.filter(r => r.success);
   const failed = results.filter(r => !r.success);
@@ -173,6 +345,14 @@ async function main() {
   if (successful.length > 0) {
     const avgDuration = successful.reduce((sum, r) => sum + r.duration, 0) / successful.length;
     console.log(chalk.blue(`⏱️  Average duration: ${Math.round(avgDuration)}ms`));
+    
+    // Store performance metrics in database
+    await storePerformanceMetrics(results, {
+      totalWorkers: config.workers,
+      gpuContexts: config.gpuContexts,
+      avgDuration,
+      successRate: (successful.length / results.length) * 100
+    });
   }
 
   // Profile report

@@ -383,6 +383,123 @@ class DevFullManager {
     return redisProcess;
   }
 
+  async startRedisGPUBridge() {
+    this.log('Redis-GPU', '🔗 Starting Redis-GPU Pipeline Bridge...', 'blue');
+    
+    const bridgeProcess = spawn('node', ['scripts/redis-gpu-bridge.mjs'], {
+      stdio: 'pipe',
+      env: { 
+        ...process.env,
+        REDIS_URL: 'redis://127.0.0.1:6379',
+        ENABLE_GPU: 'true',
+        RTX_3060_OPTIMIZATION: 'true'
+      }
+    });
+    
+    bridgeProcess.stdout.on('data', (data) => {
+      const output = data.toString().trim();
+      if (output.includes('Starting Redis-GPU Pipeline Bridge')) {
+        this.log('Redis-GPU', '🚀 Bridge initializing...', 'blue');
+      } else if (output.includes('Redis connection established')) {
+        this.log('Redis-GPU', '✅ Bridge connected to Redis', 'green');
+      } else if (output.includes('GPU job')) {
+        this.log('Redis-GPU', `📦 ${output}`, 'cyan');
+      } else if (output.includes('completed')) {
+        this.log('Redis-GPU', `✅ ${output}`, 'green');
+      } else if (output.includes('error') || output.includes('❌')) {
+        this.log('Redis-GPU', `❌ ${output}`, 'red');
+      } else {
+        this.log('Redis-GPU', output, 'blue');
+      }
+    });
+    
+    bridgeProcess.stderr.on('data', (data) => {
+      const error = data.toString().trim();
+      if (error.includes('Redis is already connecting')) {
+        this.log('Redis-GPU', '⚠️  Redis connection already active, waiting...', 'yellow');
+      } else {
+        this.log('Redis-GPU', `⚠️  ${error}`, 'yellow');
+      }
+    });
+    
+    bridgeProcess.on('close', (code) => {
+      if (code !== 0 && !this.isShuttingDown) {
+        this.log('Redis-GPU', `❌ Bridge exited with code ${code}`, 'red');
+      }
+    });
+    
+    this.processes.push(bridgeProcess);
+    return bridgeProcess;
+  }
+
+  async startGPUCluster() {
+    this.log('GPU-Cluster', '⚡ Starting GPU Cluster Concurrent Executor...', 'magenta');
+    
+    const clusterProcess = spawn('node', [
+      'scripts/gpu-cluster-concurrent-executor.mjs',
+      '--tasks=legal-embeddings,case-similarity,evidence-processing',
+      '--workers=4',
+      '--enableGPU=true',
+      '--profile=true'
+    ], {
+      stdio: 'pipe',
+      env: { 
+        ...process.env,
+        ENABLE_GPU: 'true',
+        RTX_3060_OPTIMIZATION: 'true',
+        OLLAMA_GPU_LAYERS: '35',
+        GPU_MEMORY_LIMIT: '6144',
+        BATCH_SIZE: '16'
+      }
+    });
+    
+    clusterProcess.stdout.on('data', (data) => {
+      const output = data.toString().trim();
+      if (output.includes('GPU Cluster Concurrent Executor')) {
+        this.log('GPU-Cluster', '🚀 Cluster initializing...', 'magenta');
+      } else if (output.includes('GPU detected')) {
+        this.log('GPU-Cluster', '✅ RTX 3060 Ti detected', 'green');
+      } else if (output.includes('Worker') && output.includes('Starting')) {
+        this.log('GPU-Cluster', `👥 ${output}`, 'cyan');
+      } else if (output.includes('Completed')) {
+        this.log('GPU-Cluster', `✅ ${output}`, 'green');
+      } else if (output.includes('Failed') || output.includes('❌')) {
+        this.log('GPU-Cluster', `❌ ${output}`, 'red');
+      } else if (output.includes('Configuration')) {
+        this.log('GPU-Cluster', `📋 ${output}`, 'blue');
+      } else {
+        this.log('GPU-Cluster', output, 'magenta');
+      }
+    });
+    
+    clusterProcess.stderr.on('data', (data) => {
+      const error = data.toString().trim();
+      if (error.includes('CUDA')) {
+        this.log('GPU-Cluster', `🎮 ${error}`, 'yellow');
+      } else {
+        this.log('GPU-Cluster', `⚠️  ${error}`, 'yellow');
+      }
+    });
+    
+    clusterProcess.on('close', (code) => {
+      if (code !== 0 && !this.isShuttingDown) {
+        this.log('GPU-Cluster', `❌ Cluster exited with code ${code}`, 'red');
+        // Auto-restart GPU cluster if it fails
+        if (!this.isShuttingDown) {
+          this.log('GPU-Cluster', '🔄 Restarting GPU cluster in 5 seconds...', 'yellow');
+          setTimeout(() => {
+            if (!this.isShuttingDown) {
+              this.startGPUCluster();
+            }
+          }, 5000);
+        }
+      }
+    });
+    
+    this.processes.push(clusterProcess);
+    return clusterProcess;
+  }
+
   setupGracefulShutdown() {
     const shutdown = async (signal) => {
       this.isShuttingDown = true;
@@ -409,8 +526,9 @@ class DevFullManager {
 
   async start() {
     this.log('System', '🚀 Starting Legal AI Full Development Stack...', 'green');
-    this.log('System', '📋 Services: Docker Stack + CUDA + Frontend + Ollama', 'white');
+    this.log('System', '📋 Services: Docker Stack + CUDA + Frontend + Ollama + Redis-GPU Pipeline', 'white');
     this.log('System', '🔌 WebSocket: Binary QLoRA streaming with real-time compression', 'magenta');
+    this.log('System', '⚡ Redis-GPU: Legal AI pipeline with RTX 3060 Ti acceleration', 'blue');
     
     try {
       // Check if Docker Desktop is running first
@@ -432,23 +550,37 @@ class DevFullManager {
       await new Promise(resolve => setTimeout(resolve, 1500)); // Wait for PostgreSQL
       
       await this.startRedis();
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for Redis
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for Redis to be fully ready
       
       await this.startCUDAService();
       await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for CUDA
       
       await this.startOllama();
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for Ollama
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for Ollama
+      
+      // Start Redis-GPU Pipeline Bridge
+      await this.startRedisGPUBridge();
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Wait for bridge to connect
+      
+      // Start GPU Cluster in background (non-blocking)
+      this.startGPUCluster(); // Don't await - runs continuously
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Give it time to initialize
       
       await this.startFrontend();
       
       this.log('System', '✅ All services started successfully!', 'green');
-      this.log('System', '🌐 Frontend available at: http://localhost:' + this.discoveredPorts.frontend, 'cyan');
+      this.log('System', '', 'white');
+      this.log('System', '🌐 Frontend Services:', 'cyan');
+      this.log('System', '🌐 Frontend: http://localhost:' + this.discoveredPorts.frontend, 'cyan');
       this.log('System', '🧪 pgvector test: http://localhost:' + this.discoveredPorts.frontend + '/dev/pgvector-test', 'cyan');
       this.log('System', '🔌 WebSocket API: ws://localhost:' + this.discoveredPorts.frontend + '/websocket', 'magenta');
       this.log('System', '⚡ Binary QLoRA: http://localhost:' + this.discoveredPorts.frontend + '/api/ai/qlora-topology', 'yellow');
+      this.log('System', '', 'white');
+      this.log('System', '🤖 AI Services:', 'yellow');
       this.log('System', '🤖 Ollama API: http://localhost:' + this.discoveredPorts.ollama, 'yellow');
       this.log('System', '🎯 CUDA Service: http://localhost:' + this.discoveredPorts.cuda, 'magenta');
+      this.log('System', '🔗 Redis-GPU Bridge: Active (job queue processing)', 'blue');
+      this.log('System', '⚡ GPU Cluster: Legal AI pipeline running', 'magenta');
       this.log('System', '', 'white');
       this.log('System', '🐳 Docker Services:', 'cyan');
       this.log('System', '🐘 PostgreSQL: http://localhost:5433 (legal-ai-postgres)', 'blue');
@@ -456,6 +588,12 @@ class DevFullManager {
       this.log('System', '🐰 RabbitMQ: http://localhost:15672 (legal-ai-rabbitmq)', 'yellow');
       this.log('System', '📦 MinIO: http://localhost:9001 (legal-ai-minio)', 'green');
       this.log('System', '🔍 Qdrant: http://localhost:6333 (legal-ai-qdrant)', 'magenta');
+      this.log('System', '', 'white');
+      this.log('System', '🎯 Legal AI Pipeline Features:', 'green');
+      this.log('System', '📄 Legal Document Embeddings (GPU-accelerated)', 'green');
+      this.log('System', '⚖️  Case Similarity Analysis (pgvector)', 'green');
+      this.log('System', '📁 Evidence Processing (Gemma3-legal)', 'green');
+      this.log('System', '💬 Chat Session Persistence (Redis cache)', 'green');
       
       // Setup graceful shutdown
       this.setupGracefulShutdown();
