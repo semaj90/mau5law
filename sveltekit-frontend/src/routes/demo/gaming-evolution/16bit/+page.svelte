@@ -1,23 +1,21 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from 'bits-ui';
-  import { Badge } from 'bits-ui';
-  import { Card } from 'bits-ui';
-  import { Dialog } from 'bits-ui';
-  import { Checkbox } from 'bits-ui';
-  import { Select } from 'bits-ui';
-  import { Tabs } from 'bits-ui';
-  import { Toast } from 'bits-ui';
-  import { Popover } from 'bits-ui';
-  import { Tooltip } from 'bits-ui';
+  import { Button } from '$lib/components/ui/button/index.js';
+  import { Badge } from '$lib/components/ui/badge/index.js';
+  import * as Card from '$lib/components/ui/Card/index.js';
+  import * as Dialog from '$lib/components/ui/dialog/index.js';
+  import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+  import * as Select from '$lib/components/ui/select/index.js';
+  import * as Tabs from '$lib/components/ui/tabs/index.js';
+  import { toast } from 'svelte-sonner';
 
   // SNES-era state management
-  let dialogOpen = $state(false);
-  let toastOpen = $state(false);
-  let popoverOpen = $state(false);
-  let selectedValue = $state('super-mario-world');
-  let checked = $state(false);
-  let activeTab = $state('graphics');
+  let dialogOpen = false;
+  let toastOpen = false;
+  let popoverOpen = false;
+  let selectedValue = 'super-mario-world';
+  let checked = false;
+  let activeTab = 'graphics';
 
   // SNES color palette showcase
   const snesColors = [
@@ -27,8 +25,8 @@
   ];
 
   // Mode 7 transformation matrix simulation
-  let mode7Rotation = $state(0);
-  let mode7Scale = $state(1);
+  let mode7Rotation = 0;
+  let mode7Scale = 1;
 
   onMount(() => {
     // Animate mode 7 demo
@@ -71,16 +69,16 @@
 
     <!-- Technical Analysis Panel -->
     <section class="analysis-panel">
-      <Card.Root class="snes-card">
-        <Card.Header>
-          <Card.Title class="snes-title">
+      <Card.Card class="snes-card">
+        <Card.CardHeader>
+          <Card.CardTitle class="snes-title">
             🎮 16-bit SNES Era Analysis
-          </Card.Title>
-          <Card.Description class="snes-subtitle">
+          </Card.CardTitle>
+          <Card.CardDescription class="snes-subtitle">
             Super Nintendo Entertainment System Visual Characteristics
-          </Card.Description>
-        </Card.Header>
-        <Card.Content class="technical-specs">
+          </Card.CardDescription>
+        </Card.CardHeader>
+        <Card.CardContent class="technical-specs">
 
           <div class="spec-grid">
             <div class="spec-item">
@@ -121,22 +119,22 @@
             </div>
           </div>
 
-        </Card.Content>
-      </Card.Root>
+        </Card.CardContent>
+      </Card.Card>
     </section>
 
     <!-- Interactive Components Panel -->
     <section class="components-panel">
-      <Card.Root class="snes-card">
-        <Card.Header>
-          <Card.Title class="snes-title">
+      <Card.Card class="snes-card">
+        <Card.CardHeader>
+          <Card.CardTitle class="snes-title">
             🕹️ 16-bit UI Components
-          </Card.Title>
-          <Card.Description class="snes-subtitle">
+          </Card.CardTitle>
+          <Card.CardDescription class="snes-subtitle">
             bits-ui Components with SNES Aesthetics
-          </Card.Description>
-        </Card.Header>
-        <Card.Content class="components-grid">
+          </Card.CardDescription>
+        </Card.CardHeader>
+        <Card.CardContent class="components-grid">
 
           <!-- Buttons Section -->
           <div class="component-section">
@@ -224,7 +222,7 @@
               <div class="settings-grid">
                 <div class="setting-item">
                   <label>Transparency Effects</label>
-                  <Checkbox.Root class="snes-checkbox" bind:checked>
+                  <Checkbox.Root class="snes-checkbox" bind:checked={checked}>
                     <Checkbox.Indicator class="snes-checkbox-indicator">✓</Checkbox.Indicator>
                   </Checkbox.Root>
                 </div>

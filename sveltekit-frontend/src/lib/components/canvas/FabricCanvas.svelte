@@ -2,11 +2,11 @@
 
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { 
-    Upload, Move, RotateCcw, Trash2, ZoomIn, ZoomOut, 
-    Save, Download, Image as ImageIcon, FileText 
+  import { Badge } from '$lib/components/ui/badge';
+  import Card from '$lib/components/ui/card';
+  import {
+    Upload, Move, RotateCcw, Trash2, ZoomIn, ZoomOut,
+    Save, Download, Image as ImageIcon, FileText
   } from 'lucide-svelte';
 
   interface Props {
@@ -52,7 +52,7 @@ let evidenceItems = $state<EvidenceItem[] >([]);
   onMount(async () => {
     // Dynamically import Fabric.js to avoid SSR issues
     const fabric = await import('fabric');
-    
+
     fabricCanvas = new fabric.Canvas(canvasElement, {
       width,
       height,
@@ -87,10 +87,10 @@ let evidenceItems = $state<EvidenceItem[] >([]);
       const delta = opt.e.deltaY;
       let zoom = fabricCanvas.getZoom();
       zoom *= 0.999 ** delta;
-      
+
       if (zoom > 20) zoom = 20;
       if (zoom < 0.01) zoom = 0.01;
-      
+
       fabricCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
       zoomLevel = zoom;
       opt.e.preventDefault();
@@ -100,14 +100,14 @@ let evidenceItems = $state<EvidenceItem[] >([]);
 
   async function loadCanvasData() {
     if (!caseId) return;
-    
+
     try {
       isLoading = true;
       // Load evidence items for this case
       const response = await fetch(`/api/cases/${caseId}/evidence`);
       const evidence = await response.json();
       evidenceItems = evidence;
-      
+
       // Add evidence to canvas
       for (const item of evidenceItems) {
         await addEvidenceToCanvas(item);
@@ -125,7 +125,7 @@ let evidenceItems = $state<EvidenceItem[] >([]);
     try {
       if (evidence.type === 'image' && evidence.url) {
         const fabric = await import('fabric');
-        
+
         fabric.Image.fromURL(evidence.url, (img: any) => {
           img.set({
             left: evidence.x,
@@ -136,13 +136,13 @@ let evidenceItems = $state<EvidenceItem[] >([]);
             evidenceId: evidence.id,
             evidenceType: evidence.type
           });
-          
+
           fabricCanvas.add(img);
           fabricCanvas.renderAll();
         });
       } else if (evidence.type === 'document') {
         const fabric = await import('fabric');
-        
+
         const rect = new fabric.Rect({
           left: evidence.x,
           top: evidence.y,
@@ -184,36 +184,46 @@ let evidenceItems = $state<EvidenceItem[] >([]);
   async function handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement;
     const files = input.files;
-    
+
     if (!files || files.length === 0) return;
-    
+
     for (const file of Array.from(files)) {
       await uploadEvidence(file);
     }
-    
+
     input.value = ''; // Reset input
   }
 
   async function uploadEvidence(file: File) {
     try {
       isLoading = true;
-      
+
       // Upload file
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('caseId', caseId || '');
-      
-      const uploadResponse = await fetch('/api/evidence/upload', {
+      formData.append('caseId', caseId || 'demo-case');
+
+      // Try production endpoint first, fallback to demo endpoint
+      let uploadResponse = await fetch('/api/evidence/upload', {
         method: 'POST',
         body: formData
       });
-      
+
+      // If upload fails (e.g., authentication required), try demo endpoint
+      if (!uploadResponse.ok) {
+        console.log('🔄 Production upload failed, trying demo endpoint...');
+        uploadResponse = await fetch('/api/evidence/demo', {
+          method: 'POST',
+          body: formData
+        });
+      }
+
       if (!uploadResponse.ok) {
         throw new Error('Upload failed');
       }
-      
+
       const uploadResult = await uploadResponse.json();
-      
+
       // Create evidence item
       const evidence: EvidenceItem = {
         id: uploadResult.id,
@@ -228,10 +238,10 @@ let evidenceItems = $state<EvidenceItem[] >([]);
           uploadDate: new Date().toISOString()
         }
       };
-      
+
       evidenceItems = [...evidenceItems, evidence];
       await addEvidenceToCanvas(evidence);
-      
+
     } catch (error) {
       console.error('Failed to upload evidence:', error);
     } finally {
@@ -263,17 +273,17 @@ let evidenceItems = $state<EvidenceItem[] >([]);
 
   function deleteSelected() {
     if (!fabricCanvas || !selectedObject) return;
-    
+
     const evidenceId = selectedObject.evidenceId;
-    
+
     fabricCanvas.remove(selectedObject);
     fabricCanvas.renderAll();
-    
+
     if (evidenceId) {
       evidenceItems = evidenceItems.filter(item => item.id !== evidenceId);
       onDelete?.({ objectId: evidenceId });
     }
-    
+
     selectedObject = null;
   }
 
@@ -299,7 +309,7 @@ let evidenceItems = $state<EvidenceItem[] >([]);
 
   function saveCanvas() {
     if (!fabricCanvas) return;
-    
+
     const objects = fabricCanvas.getObjects();
     updateCanvasObjects();
     onSave?.({ objects: canvasObjects });
@@ -323,13 +333,13 @@ let evidenceItems = $state<EvidenceItem[] >([]);
 
   function exportCanvas() {
     if (!fabricCanvas) return;
-    
+
     const dataURL = fabricCanvas.toDataURL({
       format: 'png',
       quality: 1,
       multiplier: 2
     });
-    
+
     // Create download link
     const link = document.createElement('a');
     link.download = `case-${caseId || 'canvas'}-${Date.now()}.png`;
@@ -341,8 +351,8 @@ let evidenceItems = $state<EvidenceItem[] >([]);
 <div class="fabric-canvas-container">
   <!-- Toolbar -->
   <Card class="mb-4">
-    <CardHeader class="pb-3">
-      <CardTitle class="flex items-center justify-between">
+    <div class="p-4 pb-3">
+      <div class="flex items-center justify-between font-semibold text-lg">
         <div class="flex items-center gap-2">
           <ImageIcon class="h-5 w-5" />
           Evidence Canvas
@@ -353,9 +363,9 @@ let evidenceItems = $state<EvidenceItem[] >([]);
         <div class="flex items-center gap-2 text-sm text-gray-600">
           Zoom: {Math.round(zoomLevel * 100)}%
         </div>
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </div>
+    </div>
+    <div class="p-4">
       <div class="flex flex-wrap gap-2">
         <!-- File Upload -->
         {#if !readOnly}
@@ -365,7 +375,7 @@ let evidenceItems = $state<EvidenceItem[] >([]);
               multiple
               accept="image/*,.pdf,.doc,.docx,.txt"
               class="hidden"
-              change={handleFileUpload}
+              onchange={handleFileUpload}
               disabled={isLoading}
             />
             <Button variant="outline" disabled={isLoading}>
@@ -377,26 +387,26 @@ let evidenceItems = $state<EvidenceItem[] >([]);
 
         <!-- Add Annotation -->
         {#if !readOnly}
-          <Button variant="outline" on:on:click={addAnnotation}>
+          <Button variant="outline" onclick={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
           </Button>
         {/if}
 
         <!-- Zoom Controls -->
-        <Button variant="outline" on:on:click={zoomIn}>
+        <Button variant="outline" onclick={zoomIn}>
           <ZoomIn class="h-4 w-4" />
         </Button>
-        <Button variant="outline" on:on:click={zoomOut}>
+        <Button variant="outline" onclick={zoomOut}>
           <ZoomOut class="h-4 w-4" />
         </Button>
-        <Button variant="outline" on:on:click={resetZoom}>
+        <Button variant="outline" onclick={resetZoom}>
           <RotateCcw class="h-4 w-4" />
         </Button>
 
         <!-- Object Controls -->
         {#if selectedObject && !readOnly}
-          <Button variant="destructive" on:on:click={deleteSelected}>
+          <Button variant="destructive" onclick={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
           </Button>
@@ -404,18 +414,18 @@ let evidenceItems = $state<EvidenceItem[] >([]);
 
         <!-- Save & Export -->
         {#if !readOnly}
-          <Button variant="default" on:on:click={saveCanvas}>
+          <Button variant="default" onclick={saveCanvas}>
             <Save class="h-4 w-4 mr-2" />
             Save
           </Button>
         {/if}
-        
-        <Button variant="outline" on:on:click={exportCanvas}>
+
+        <Button variant="outline" onclick={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
         </Button>
       </div>
-    </CardContent>
+    </div>
   </Card>
 
   <!-- Canvas -->
@@ -424,7 +434,7 @@ let evidenceItems = $state<EvidenceItem[] >([]);
       bind:this={canvasElement}
       class="block"
 ></canvas>
-    
+
     {#if isLoading}
       <div class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
         <div class="text-center">
@@ -438,10 +448,8 @@ let evidenceItems = $state<EvidenceItem[] >([]);
   <!-- Object Properties Panel -->
   {#if selectedObject}
     <Card class="mt-4">
-      <CardHeader>
-        <CardTitle class="text-lg">Selected Object</CardTitle>
-      </CardHeader>
-      <CardContent>
+      <div class="p-4">
+        <h3 class="text-lg font-semibold mb-4">Selected Object</h3>
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div>
             <label class="font-medium">Type:</label>
@@ -456,7 +464,7 @@ let evidenceItems = $state<EvidenceItem[] >([]);
           <div>
             <label class="font-medium">Size:</label>
             <p class="text-gray-600">
-              {Math.round(selectedObject.width * selectedObject.scaleX)} × 
+              {Math.round(selectedObject.width * selectedObject.scaleX)} ×
               {Math.round(selectedObject.height * selectedObject.scaleY)}
             </p>
           </div>
@@ -471,7 +479,7 @@ let evidenceItems = $state<EvidenceItem[] >([]);
             </div>
           {/if}
         </div>
-      </CardContent>
+      </div>
     </Card>
   {/if}
 </div>
@@ -480,7 +488,7 @@ let evidenceItems = $state<EvidenceItem[] >([]);
   .fabric-canvas-container {
     width: 100%;
   }
-  
+
   .canvas-wrapper {
     display: inline-block;
     background: white;

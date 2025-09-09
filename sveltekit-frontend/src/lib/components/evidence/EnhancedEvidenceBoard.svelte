@@ -4,7 +4,7 @@ Connects to Ollama legal model, CUDA services, and MinIO storage
 Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 -->
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { goto } from '$app/navigation';
 
   // Types
@@ -25,9 +25,15 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       legalRelevance?: string;
       keyFindings?: string[];
       recommendations?: string[];
+      storage?: {
+        bucket?: string;
+        key?: string;
+        url?: string;
+      };
       unifiedInsights?: any;
     };
     position: { x: number; y: number };
+  previewUrl?: string;
   }
 
   interface SearchSuggestion {
@@ -46,6 +52,10 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   let isUploading = $state(false);
   let uploadProgress = $state(0);
   let dragActive = $state(false);
+  let showToast = $state(false);
+  let toastMessage = $state('');
+  let showDeleteModal = $state(false);
+  let pendingDeleteId = $state<string | null>(null);
   let searchSuggestions = $state<SearchSuggestion[]>([]);
   let showSuggestions = $state(false);
   let processingStatus = $state<'idle' | 'processing' | 'complete'>('idle');
@@ -91,6 +101,17 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   await loadBuckets();
   await checkServiceStatus();
   startRealTimeUpdates();
+  // fetch current user info for namespacing uploads
+  try {
+    const me = await fetch('/api/v1/storage/me', { credentials: 'include' });
+    if (me.ok) {
+      const j = await me.json();
+      // store current user id in a local variable for signed url namespacing
+      (window as any).__CURRENT_USER_ID__ = j.userId || (window as any).__CURRENT_USER_ID__;
+    }
+  } catch (e) {
+    // ignore
+  }
   });
 
   // Service health checks
@@ -294,6 +315,11 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           }
         };
 
+        // Add preview URL for images
+        if (file.type.startsWith('image/')) {
+          (newEvidence as any).previewUrl = URL.createObjectURL(file);
+        }
+
         evidenceItems = [...evidenceItems, newEvidence];
 
         // Upload file to MinIO
@@ -303,17 +329,85 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         formData.append('bucket', currentBucket);
         formData.append('useMinIO', uploadToMinIO.toString());
 
-        // In production, this would upload to actual storage
-        // For demo, we'll simulate upload and trigger AI analysis
-        setTimeout(async () => {
-          // Update status to processing
-          evidenceItems = evidenceItems.map(item =>
-            item.id === evidenceId ? { ...item, status: 'processing' } : item
-          );
+        // Upload to MinIO if configured, using signed URL (recommended)
+        if (uploadToMinIO) {
+            try {
+            // Request signed URL (server will enforce session and namespace)
+            const keyCandidate = `${(window as any).__CURRENT_USER_ID__ || 'anon'}/${file.name}`;
+            const signedResp = await fetch('/api/v1/storage/signed-url', {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ key: keyCandidate, bucket: currentBucket })
+            });
 
-          // Trigger AI analysis
-          await analyzeEvidence(evidenceId, file);
-        }, 1000);
+            if (signedResp.ok) {
+              const signedJson = await signedResp.json();
+              const uploadUrl = signedJson.url;
+              const namespacedKey = signedJson.key;
+
+              // Upload directly to MinIO via PUT
+              const putResp = await fetch(uploadUrl, { method: 'PUT', body: file });
+              if (putResp.ok) {
+                // Update status to processing and store storage metadata
+                evidenceItems = evidenceItems.map(item =>
+                  item.id === evidenceId ? ({
+                    ...item,
+                    status: 'processing',
+                    aiAnalysis: {
+                      ...(item.aiAnalysis || {}),
+                      storage: { bucket: signedJson.bucket || currentBucket, key: namespacedKey, url: signedJson.url }
+                    }
+                  } as EvidenceItem) : item
+                );
+
+                toastMessage = `Uploaded ${file.name} → ${signedJson.bucket}/${namespacedKey}`;
+                showToast = true;
+                setTimeout(() => { showToast = false; }, 4000);
+
+                // Trigger AI analysis
+                await analyzeEvidence(evidenceId, file);
+              } else {
+                console.error('Direct PUT failed:', await putResp.text());
+                evidenceItems = evidenceItems.map(item =>
+                  item.id === evidenceId ? { ...item, status: 'error' } : item
+                );
+              }
+            } else {
+              // Signed URL request failed - fall back to server upload
+              console.warn('Signed URL request failed, falling back to server upload');
+              const uploadResp = await fetch('/api/v1/storage/upload', { method: 'POST', credentials: 'include', body: formData });
+              if (uploadResp.ok) {
+                const uploadJson = await uploadResp.json();
+                evidenceItems = evidenceItems.map(item =>
+                  item.id === evidenceId ? ({
+                    ...item,
+                    status: 'processing',
+                    aiAnalysis: { ...(item.aiAnalysis || {}), storage: { bucket: uploadJson.bucket, key: uploadJson.key, url: uploadJson.url } }
+                  } as EvidenceItem) : item
+                );
+                await analyzeEvidence(evidenceId, file);
+              } else {
+                evidenceItems = evidenceItems.map(item =>
+                  item.id === evidenceId ? { ...item, status: 'error' } : item
+                );
+              }
+            }
+          } catch (err) {
+            console.error('Upload exception:', err);
+            evidenceItems = evidenceItems.map(item =>
+              item.id === evidenceId ? { ...item, status: 'error' } : item
+            );
+          }
+        } else {
+          // Fallback/demo mode: simulate upload and trigger AI analysis
+          setTimeout(async () => {
+            evidenceItems = evidenceItems.map(item =>
+              item.id === evidenceId ? { ...item, status: 'processing' } : item
+            );
+            await analyzeEvidence(evidenceId, file);
+          }, 1000);
+        }
 
       } catch (error) {
         console.error('File upload failed:', file.name, error);
@@ -394,6 +488,80 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     };
     return icons[type];
   }
+
+  // Revoke a preview URL if present
+  function revokePreview(url?: string) {
+    try {
+      if (url && typeof URL !== 'undefined' && (URL as any).revokeObjectURL) {
+        (URL as any).revokeObjectURL(url);
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  // Remove evidence and revoke any preview URL
+  function removeEvidence(id: string) {
+    // open confirmation modal before deleting
+    pendingDeleteId = id;
+    showDeleteModal = true;
+  }
+
+  async function confirmDelete() {
+    const id = pendingDeleteId;
+    if (!id) return;
+
+    const item = evidenceItems.find(it => it.id === id);
+
+    let remoteOk = true;
+    if (item?.aiAnalysis?.storage?.bucket && item?.aiAnalysis?.storage?.key) {
+      try {
+        const resp = await fetch('/api/v1/storage/object', {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json', 'x-api-key': (window as any).__MINIO_API_KEY__ || '' },
+          body: JSON.stringify({ bucket: item.aiAnalysis.storage.bucket, key: item.aiAnalysis.storage.key })
+        });
+
+        const txt = await resp.text();
+        if (!resp.ok) {
+          remoteOk = false;
+          console.warn('Remote delete failed:', txt);
+          toastMessage = `Remote delete failed: ${txt}`;
+          showToast = true;
+          setTimeout(() => { showToast = false; }, 4000);
+        }
+      } catch (err) {
+        remoteOk = false;
+        console.warn('Remote delete exception:', err);
+        toastMessage = `Remote delete exception`;
+        showToast = true;
+        setTimeout(() => { showToast = false; }, 4000);
+      }
+    }
+
+    // Only remove locally if remote deletion succeeded (or there was nothing remote)
+    if (remoteOk) {
+      if (item && item.previewUrl) revokePreview(item.previewUrl);
+      evidenceItems = evidenceItems.filter(it => it.id !== id);
+      selectedEvidence = selectedEvidence.filter(sid => sid !== id);
+      pendingDeleteId = null;
+      showDeleteModal = false;
+      filterEvidence();
+    }
+  }
+
+  function cancelDelete() {
+    pendingDeleteId = null;
+    showDeleteModal = false;
+  }
+
+  // Cleanup object URLs when component unmounts
+  onDestroy(() => {
+    evidenceItems.forEach(item => {
+      if (item.previewUrl) revokePreview(item.previewUrl);
+    });
+  });
 
   function getStatusIcon(status: EvidenceItem['status']): string {
     const icons = {
@@ -711,7 +879,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         <div>
           <label for="bucket-select" class="nes-text is-primary text-sm mb-2 block">Storage Bucket</label>
           <div class="nes-select">
-            <select id="bucket-select" bind:value={currentBucket}>
+            <select id="bucket-select" bind:value={currentBucket} onchange={() => { /* selection handled by bind */ }}>
               {#if buckets.length === 0}
                 <option value="legal-documents">📁 Documents</option>
               {:else}
@@ -843,7 +1011,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 {#if buckets.length > 0}
                   <div class="mt-4 flex flex-wrap justify-center gap-2">
                     {#each buckets as b}
-                      <button type="button" class="nes-btn is-primary text-sm" on:click={() => currentBucket = b} title={`Select bucket ${b}`}>
+                      <button type="button" class="nes-btn is-primary text-sm" onclick={() => currentBucket = b} title={`Select bucket ${b}`}>
                         📦 {b}
                       </button>
                     {/each}
@@ -901,10 +1069,19 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                     <span></span>
                   </label>
 
-                <span class="text-2xl">{getFileIcon(evidence.type)}</span>
+                <span class="w-10 h-10 flex items-center justify-center">
+                  {#if evidence.previewUrl}
+                    <img src={evidence.previewUrl} alt={evidence.filename} class="evidence-thumb rounded" />
+                  {:else}
+                    <span class="text-2xl">{getFileIcon(evidence.type)}</span>
+                  {/if}
+                </span>
                   <h4 class="font-medium text-gray-900 truncate text-sm" title={evidence.filename}>
                     {evidence.filename}
                   </h4>
+                  <button type="button" class="ml-2 nes-btn is-error is-small" onclick={() => removeEvidence(evidence.id)} title="Remove evidence">
+                    ✖
+                  </button>
                   <p class="text-xs text-gray-500">
                     {(evidence.size / 1024).toFixed(1)} KB • {new Date(evidence.uploadedAt).toLocaleDateString()}
                   </p>
@@ -960,6 +1137,15 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                   </div>
                 {/if}
 
+                <!-- Storage URL -->
+                {#if evidence.aiAnalysis?.storage?.url}
+                  <div class="mt-2 text-xs">
+                    <a class="text-blue-600 underline" href={evidence.aiAnalysis.storage.url} target="_blank" rel="noopener noreferrer">
+                      View file in storage
+                    </a>
+                  </div>
+                {/if}
+
                 <!-- Processing Status -->
                 {#if evidence.status === 'processing'}
                   <div class="mt-3 flex items-center gap-2 text-xs text-blue-600">
@@ -996,6 +1182,26 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
 </div>
 
+<!-- Toast confirmation -->
+{#if showToast}
+  <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded shadow-lg z-50">
+    {toastMessage}
+  </div>
+{/if}
+
+{#if showDeleteModal}
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+      <h3 class="text-lg font-semibold mb-4">Confirm Delete</h3>
+      <p class="text-sm mb-4">Are you sure you want to permanently delete this evidence item? This will also remove the file from storage if present.</p>
+      <div class="flex justify-end gap-2">
+        <button class="nes-btn" onclick={cancelDelete}>Cancel</button>
+        <button class="nes-btn is-error" onclick={confirmDelete}>Delete</button>
+      </div>
+    </div>
+  </div>
+{/if}
+
 <style>
   .animate-spin {
     animation: spin 1s linear infinite;
@@ -1004,5 +1210,12 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+  }
+
+  .evidence-thumb {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    display: block;
   }
 </style>
