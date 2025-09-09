@@ -2,9 +2,8 @@
 // Extends existing thinking-processor.ts with advanced reasoning pipeline
 
 import { ThinkingProcessor, type ThinkingAnalysis, type AnalysisOptions } from './thinking-processor';
-// Note: Database imports will be handled at runtime to avoid module resolution issues
-// import { db } from '$lib/db/connection';
-// import { aiResponses, grpoFeedback, recommendationScores } from '$lib/db/enhanced-ai-schema';
+import { db } from '$lib/db/connection';
+import { aiResponses, grpoFeedback, recommendationScores } from '$lib/db/enhanced-ai-schema';
 import { eq, desc, and, gte, sql } from 'drizzle-orm';
 
 // Enhanced analysis with GRPO context
@@ -233,7 +232,7 @@ Extract and format as JSON:
 
       const recommendations: RecommendationContext[] = [];
 
-      for (const row of similarResponses.rows) {
+      for (const row of similarResponses) {
         const similarity = 1 - (row.similarity as number); // Convert distance to similarity
         const temporalFactor = this.calculateTemporalScore(
           new Date(row.created_at as string),
@@ -295,16 +294,16 @@ Extract and format as JSON:
         LIMIT 10
       `);
 
-      const previousRatings = feedbackData.rows
-        .map((row) => row.user_rating as number)
+      const previousRatings = feedbackData
+        .map((row: any) => row.user_rating as number)
         .filter(Boolean);
-      const userPreferences = feedbackData.rows
-        .map((row) => row.feedback_text as string)
+      const userPreferences = feedbackData
+        .map((row: any) => row.feedback_text as string)
         .filter(Boolean)
         .slice(0, 5);
 
       // Generate improvement suggestions based on low-rated aspects
-      const improvementSuggestions = this.generateImprovementSuggestions(feedbackData.rows);
+      const improvementSuggestions = this.generateImprovementSuggestions(feedbackData);
 
       return {
         previousRatings,
@@ -512,7 +511,7 @@ export const GRPOUtils = {
       LIMIT ${limit}
     `);
 
-    return recommendations.rows.map((row) => ({
+    return recommendations.map((row: any) => ({
       responseId: row.id as string,
       similarity: 1 - (row.distance as number),
       contextRelevance: (row.confidence as number) || 0.8,
@@ -544,7 +543,7 @@ export const GRPOUtils = {
       LIMIT 10
     `);
 
-    return result.rows.map((row) => ({
+    return result.map((row: any) => ({
       topic: row.topic as string,
       count: parseInt(row.count as string),
       avgRating: parseFloat(row.avg_rating as string),

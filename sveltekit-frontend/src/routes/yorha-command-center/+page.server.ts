@@ -174,12 +174,12 @@ async function getRecentActivity(): Promise<any> {
       .limit(5);
 
     // Transform to activity format
-    return recentCases.map((case_, index) => ({
+    return recentCases.map((case_: typeof cases.$inferSelect, index: number) => ({
       id: index + 1,
       action: `Case ${case_.status === 'open' ? 'Updated' : 'Status Changed'}`,
       target: case_.title,
       time: getRelativeTime(case_.updated_at),
-      type: case_.status === 'open' ? 'success' : 'info'
+      type: case_.status === 'open' ? 'success' : 'info',
     }));
 
   } catch (error: any) {

@@ -1,6 +1,6 @@
 /**
  * LOD (Level of Detail) Caching Engine for 7-bit Compressed LLM Outputs
- * 
+ *
  * Extends the SIMD text tiling system with multi-resolution caching that automatically
  * processes LLM outputs into SVG summaries and vector metadata for enhanced RAG retrieval.
  * Integrates topology-aware predictive analytics for intelligent content prefetching.
@@ -8,7 +8,11 @@
 
 import { simdTextTilingEngine } from './simd-text-tiling-engine.js';
 import { ollamaService } from '$lib/server/ai/ollama-service.js';
-import type { SIMDProcessingResult, SIMDTile } from './simd-text-tiling-engine.js';
+import type { TextEmbeddingResult, CompressedTextTile } from './simd-text-tiling-engine.js';
+
+// Define types that were missing from the export
+type SIMDProcessingResult = TextEmbeddingResult;
+type SIMDTile = CompressedTextTile;
 
 // LOD levels for progressive detail rendering
 type LODLevel = 'glyph' | 'tile' | 'block' | 'section' | 'document';
@@ -17,7 +21,7 @@ interface LODCacheEntry {
   id: string;
   original_text: string;
   lod_level: LODLevel;
-  
+
   // 7-bit compressed representations at different detail levels
   compressed_data: {
     glyph: Uint8Array;      // 7 bytes - single character/symbol level
@@ -26,7 +30,7 @@ interface LODCacheEntry {
     section: Uint8Array;    // 175 bytes - section level (25 tiles)
     document: Uint8Array;   // 875 bytes - full document level (125 tiles)
   };
-  
+
   // SVG summarizations for each LOD level
   svg_summaries: {
     glyph: string;          // Single glyph SVG
@@ -35,7 +39,7 @@ interface LODCacheEntry {
     section: string;        // Medium visualization SVG (256x256)
     document: string;       // Full document map SVG (512x512)
   };
-  
+
   // Vector metadata for enhanced RAG
   vector_metadata: {
     embeddings: Float32Array[];     // Semantic embeddings per LOD level
@@ -44,7 +48,7 @@ interface LODCacheEntry {
     retrieval_scores: number[];     // Predictive relevance scores
     context_anchors: string[];      // Key terms for contextual prompting
   };
-  
+
   // Caching metadata
   cache_metadata: {
     created_at: number;
@@ -78,7 +82,7 @@ class LODCacheEngine {
   private vectorEncoder: VectorMetadataEncoder;
   private topologyAnalyzer: TopologyAwareAnalyzer;
   private predictiveEngine: PredictiveAnalyticsEngine;
-  
+
   private config: LODProcessingConfig = {
     enable_background_processing: true,
     svg_generation_quality: 'balanced',
@@ -93,14 +97,14 @@ class LODCacheEngine {
     if (customConfig) {
       this.config = { ...this.config, ...customConfig };
     }
-    
+
     this.svgProcessor = new SVGSummarizationProcessor(this.config.svg_generation_quality);
     this.vectorEncoder = new VectorMetadataEncoder(this.config.vector_dimensions);
     this.topologyAnalyzer = new TopologyAwareAnalyzer(this.config.topology_awareness_level);
     this.predictiveEngine = new PredictiveAnalyticsEngine();
-    
+
     this.initializeBackgroundWorker();
-    
+
     console.log('🎯 LOD Cache Engine initialized with 7-bit compression + SVG + Vector RAG');
   }
 
@@ -122,29 +126,29 @@ class LODCacheEngine {
     enhanced_rag_context: any;
   }> {
     console.log(`🔄 Processing LLM output: ${text.length} chars for LOD caching...`);
-    
+
     const startTime = Date.now();
     const entryId = this.generateEntryId(text, context);
-    
+
     // Check if already cached with high confidence
     const existingEntry = this.cache.get(entryId);
     if (existingEntry && existingEntry.cache_metadata.prediction_confidence > 0.8) {
       existingEntry.cache_metadata.access_count++;
       existingEntry.cache_metadata.last_accessed = Date.now();
-      
+
       console.log(`✅ Cache hit for ${entryId} (${Date.now() - startTime}ms)`);
       return this.buildRetrievalResponse(existingEntry, context);
     }
 
     // Phase 1: Generate 7-bit compressed representations at all LOD levels
     const compressedData = await this.generateMultiLevelCompression(text);
-    
+
     // Phase 2: Create SVG summaries for each LOD level
     const svgSummaries = await this.generateSVGSummaries(text, compressedData);
-    
+
     // Phase 3: Extract vector metadata and topology features
     const vectorMetadata = await this.extractVectorMetadata(text, context);
-    
+
     // Phase 4: Build complete LOD cache entry
     const cacheEntry: LODCacheEntry = {
       id: entryId,
@@ -162,18 +166,18 @@ class LODCacheEngine {
         compression_stats: this.calculateCompressionStats(text, compressedData)
       }
     };
-    
+
     // Store in cache with intelligent eviction
     await this.storeCacheEntry(cacheEntry);
-    
+
     // Background: Start predictive pre-caching for related content
     if (this.config.enable_background_processing) {
       this.startBackgroundPreprocessing(cacheEntry, context);
     }
-    
+
     const totalTime = Date.now() - startTime;
     console.log(`🎯 LOD processing complete: ${totalTime}ms (7-bit + SVG + Vector + Predictive)`);
-    
+
     return this.buildRetrievalResponse(cacheEntry, context);
   }
 
@@ -202,43 +206,43 @@ class LODCacheEngine {
     predictive_next_queries: string[];
   }> {
     console.log(`🔍 Enhanced RAG retrieval for: "${query}"`);
-    
+
     const searchStartTime = Date.now();
-    
+
     // Phase 1: Vector similarity search across all cache entries
     const vectorMatches = await this.performVectorSearch(query, options);
-    
+
     // Phase 2: Topology-aware filtering for structural relevance
-    const topologyFiltered = options.topology_filtering 
+    const topologyFiltered = options.topology_filtering
       ? await this.applyTopologyFiltering(vectorMatches, query)
       : vectorMatches;
-    
+
     // Phase 3: Build enhanced contextual prompts using compressed glyphs
     const enhancedResults = await Promise.all(
       topologyFiltered.slice(0, options.max_results || 10).map(async (match) => {
         const contextualPrompt = await this.buildContextualPrompt(match.entry, query);
-        const svgVisualization = options.include_svg_context 
+        const svgVisualization = options.include_svg_context
           ? this.selectOptimalSVG(match.entry, options.lod_preference)
           : '';
-        
+
         return {
           entry: match.entry,
           relevance_score: match.relevance_score,
           lod_match: this.determineBestLODForQuery(match.entry, query),
-          contextual_prompt,
+          contextual_prompt: contextualPrompt,
           svg_visualization: svgVisualization,
           vector_similarity: match.vector_similarity
         };
       })
     );
-    
+
     // Phase 4: Generate enhanced context and predictive suggestions
     const enhancedContext = await this.synthesizeEnhancedContext(enhancedResults, query);
     const predictiveQueries = await this.generatePredictiveQueries(enhancedResults, query);
-    
+
     const searchTime = Date.now() - searchStartTime;
     console.log(`🎯 Enhanced RAG complete: ${enhancedResults.length} results in ${searchTime}ms`);
-    
+
     return {
       results: enhancedResults,
       enhanced_context: enhancedContext,
@@ -252,13 +256,13 @@ class LODCacheEngine {
   private async generateMultiLevelCompression(text: string): Promise<LODCacheEntry['compressed_data']> {
     // Leverage existing SIMD engine for tile-level compression
     const simdResult = await simdTextTilingEngine.processText(text, {
-      type: 'lod-multi-level',
+      type: 'general',
       context: 'cache-engine'
     });
-    
+
     // Extract hierarchical text segments
     const segments = this.extractHierarchicalSegments(text);
-    
+
     return {
       glyph: await this.compressToGlyph(segments.glyph),
       tile: simdResult.compressedTiles[0]?.compressedData || new Uint8Array(7),
@@ -272,7 +276,7 @@ class LODCacheEngine {
    * Generate SVG summaries at each LOD level
    */
   private async generateSVGSummaries(
-    text: string, 
+    text: string,
     compressedData: LODCacheEntry['compressed_data']
   ): Promise<LODCacheEntry['svg_summaries']> {
     return {
@@ -288,7 +292,7 @@ class LODCacheEngine {
    * Extract vector metadata for enhanced RAG
    */
   private async extractVectorMetadata(
-    text: string, 
+    text: string,
     context: any
   ): Promise<LODCacheEntry['vector_metadata']> {
     const embeddings = await this.vectorEncoder.generateMultiLevelEmbeddings(text);
@@ -296,7 +300,7 @@ class LODCacheEngine {
     const semanticClusters = await this.vectorEncoder.clusterSemanticContent(embeddings);
     const retrievalScores = await this.predictiveEngine.calculateRetrievalScores(text, context);
     const contextAnchors = await this.extractContextualAnchors(text, embeddings);
-    
+
     return {
       embeddings,
       topology_features: topologyFeatures,
@@ -334,26 +338,26 @@ class LODCacheEngine {
   private async compressTileGroup(tiles: any[]): Promise<Uint8Array> {
     const groupSize = Math.min(tiles.length, 5);
     const compressed = new Uint8Array(7 * groupSize);
-    
+
     for (let i = 0; i < groupSize; i++) {
       if (tiles[i]?.compressedData) {
         compressed.set(tiles[i].compressedData, i * 7);
       }
     }
-    
+
     return compressed;
   }
 
   private async compressFullDocument(simdResult: SIMDProcessingResult): Promise<Uint8Array> {
     const maxTiles = Math.min(simdResult.compressedTiles.length, 125);
     const compressed = new Uint8Array(7 * maxTiles);
-    
+
     for (let i = 0; i < maxTiles; i++) {
       if (simdResult.compressedTiles[i]?.compressedData) {
         compressed.set(simdResult.compressedTiles[i].compressedData, i * 7);
       }
     }
-    
+
     return compressed;
   }
 
@@ -440,7 +444,7 @@ class LODCacheEngine {
     const lengthScore = Math.min(text.length / 1000, 1.0);
     const contextScore = context.query_context ? 0.8 : 0.5;
     const metadataScore = context.search_metadata ? 0.9 : 0.6;
-    
+
     return (lengthScore * 0.3 + contextScore * 0.4 + metadataScore * 0.3);
   }
 
@@ -449,14 +453,14 @@ class LODCacheEngine {
     const recencyScore = 1.0; // New entry gets highest priority
     const contextScore = context.session_id ? 0.8 : 0.5;
     const contentScore = text.includes('legal') || text.includes('contract') ? 0.9 : 0.7;
-    
+
     return Math.min(recencyScore * 0.4 + contextScore * 0.3 + contentScore * 0.3, 1.0);
   }
 
   private calculateCompressionStats(text: string, compressed: LODCacheEntry['compressed_data']) {
     const originalSize = text.length;
     const compressedSize = Object.values(compressed).reduce((sum, data) => sum + data.length, 0);
-    
+
     return {
       original_size: originalSize,
       compressed_size: compressedSize,
@@ -470,21 +474,21 @@ class LODCacheEngine {
     if (this.cache.size >= this.config.max_cache_entries) {
       await this.evictLeastValueableEntry();
     }
-    
+
     this.cache.set(entry.id, entry);
     console.log(`💾 Stored LOD cache entry ${entry.id} (${this.cache.size}/${this.config.max_cache_entries})`);
   }
 
   private async evictLeastValueableEntry(): Promise<void> {
     let leastValuable = { id: '', score: Infinity };
-    
+
     for (const [id, entry] of this.cache.entries()) {
       const valueScore = entry.cache_metadata.retrieval_priority * entry.cache_metadata.prediction_confidence;
       if (valueScore < leastValuable.score) {
         leastValuable = { id, score: valueScore };
       }
     }
-    
+
     if (leastValuable.id) {
       this.cache.delete(leastValuable.id);
       console.log(`🗑️ Evicted LOD cache entry ${leastValuable.id} (score: ${leastValuable.score})`);
@@ -613,7 +617,7 @@ class SVGSummarizationProcessor {
     const char = String.fromCharCode(compressed[0]);
     const complexity = compressed[2];
     const color = `hsl(${(compressed[1] / 127) * 360}, 70%, 50%)`;
-    
+
     return `<svg width="16" height="16" viewBox="0 0 16 16">
       <rect fill="${color}" width="16" height="16" rx="${complexity / 20}"/>
       <text x="8" y="12" text-anchor="middle" font-size="12" fill="white">${char}</text>
@@ -623,7 +627,7 @@ class SVGSummarizationProcessor {
   async generateTileSVG(compressed: Uint8Array, text: string): Promise<string> {
     const hue = (compressed[0] / 127) * 360;
     const words = text.split(' ').slice(0, 3).join(' ');
-    
+
     return `<svg width="32" height="32" viewBox="0 0 32 32">
       <rect fill="hsl(${hue}, 60%, 40%)" width="32" height="32" rx="4"/>
       <foreignObject x="2" y="2" width="28" height="28">
@@ -635,12 +639,12 @@ class SVGSummarizationProcessor {
   async generateBlockSVG(compressed: Uint8Array, text: string): Promise<string> {
     const segments = Math.min(compressed.length / 7, 5);
     let rects = '';
-    
+
     for (let i = 0; i < segments; i++) {
       const hue = (compressed[i * 7] / 127) * 360;
       rects += `<rect x="${i * 12}" y="0" width="10" height="64" fill="hsl(${hue}, 60%, 50%)"/>`;
     }
-    
+
     return `<svg width="64" height="64" viewBox="0 0 64 64">
       ${rects}
       <foreignObject x="0" y="45" width="64" height="19">
@@ -667,14 +671,14 @@ class SVGSummarizationProcessor {
   async generateDocumentSVG(compressed: Uint8Array, text: string): Promise<string> {
     const tiles = Math.min(compressed.length / 7, 25);
     let grid = '';
-    
+
     for (let i = 0; i < tiles; i++) {
       const x = (i % 5) * 100;
       const y = Math.floor(i / 5) * 100;
       const hue = (compressed[i * 7] / 127) * 360;
       grid += `<rect x="${x + 5}" y="${y + 5}" width="90" height="90" fill="hsl(${hue}, 50%, 70%)" rx="5"/>`;
     }
-    
+
     return `<svg width="512" height="512" viewBox="0 0 512 512">
       <rect fill="#f8f9fa" width="512" height="512"/>
       ${grid}
@@ -697,7 +701,7 @@ class VectorMetadataEncoder {
       text.slice(0, 1000), // Section level
       text                 // Document level
     ];
-    
+
     return segments.map(segment => {
       const embedding = new Float32Array(this.dimensions);
       // Simple synthetic embeddings for demonstration
@@ -719,19 +723,19 @@ class TopologyAwareAnalyzer {
 
   async extractStructuralFeatures(text: string): Promise<Float32Array> {
     const features = new Float32Array(64);
-    
+
     // Structural analysis
     features[0] = text.split('.').length;    // Sentence count
     features[1] = text.split('\n').length;   // Paragraph count
     features[2] = text.match(/[A-Z]/g)?.length || 0; // Capital letters
     features[3] = text.match(/[0-9]/g)?.length || 0; // Numbers
     features[4] = text.match(/[(),]/g)?.length || 0; // Punctuation density
-    
+
     // Fill remaining features with derived metrics
     for (let i = 5; i < 64; i++) {
       features[i] = (features[i % 5] + Math.sin(i)) / (i + 1);
     }
-    
+
     return features;
   }
 }
@@ -742,7 +746,7 @@ class PredictiveAnalyticsEngine {
     const baseScore = text.length / 1000;
     const contextBoost = context.query_context ? 0.3 : 0;
     const metadataBoost = context.search_metadata ? 0.2 : 0;
-    
+
     return [
       Math.min(baseScore + contextBoost + metadataBoost, 1.0),
       Math.min(baseScore * 0.8 + contextBoost, 1.0),

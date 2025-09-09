@@ -1,9 +1,7 @@
 /* Golden Ratio CSS Utilities */
 @import './lib/styles/golden-ratio-utilities.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
 
 /* YoRHa-specific global styles */
 @layer base {
@@ -116,7 +114,7 @@
   /* Retro Gaming Effects */
   .nes-pixelated {
     image-rendering: -moz-crisp-edges;
-    image-rendering: -webkit-crisp-edges; 
+    image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
   }

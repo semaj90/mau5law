@@ -43,9 +43,9 @@
     };
   } = $props();
 let dragActive = $state(false);
-let fileInput = $state<HTMLInputElement;
-  let uploadProgress >(writable<Record<string, number>>({}));
-  let processingErrors = writable<Record<string, string>>({});
+let fileInput = $state<HTMLInputElement>();
+let uploadProgress = writable<Record<string, number>>({});
+let processingErrors = writable<Record<string, string>>({});
 
   // Accepted file types
   const acceptedTypes = [
@@ -116,7 +116,9 @@ let fileInput = $state<HTMLInputElement;
       return true;
     });
 
-    formData.uploaded_files = [...formData.uploaded_files, ...validFiles];
+    if (formData) {
+      formData.uploaded_files = [...formData.uploaded_files, ...validFiles];
+    }
 
     // Process files immediately if they're documents
     for (const file of validFiles) {
@@ -127,7 +129,9 @@ let fileInput = $state<HTMLInputElement;
   }
 
   async function processFile(file: File) {
-    formData.processing_status = 'processing';
+    if (formData) {
+      formData.processing_status = 'processing';
+    }
 
     try {
       uploadProgress.update(progress => ({ ...progress, [file.name]: 0 }));

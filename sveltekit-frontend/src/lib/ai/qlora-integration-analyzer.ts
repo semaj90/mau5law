@@ -4,7 +4,7 @@
  * WASM loader, and topology predictor to create optimized distilled RAG models
  */
 
-import type { SoraMoogleIntegration } from '$lib/ai/sora-moogle-production-integration';
+import type { ProductionSoraService } from '$lib/ai/sora-moogle-production-integration';
 import type { SoraGraphTraversal } from '$lib/graph/sora-graph-traversal';
 import { qloraWasmLoader } from '$lib/wasm/qlora-wasm-loader';
 import type { QLoRATopologyPredictor } from '$lib/ai/qlora-topology-predictor';
@@ -102,7 +102,7 @@ interface DistillationPlan {
 }
 
 export class QLoRAIntegrationAnalyzer {
-  private soraMoogle: SoraMoogleIntegration;
+  private soraMoogle: ProductionSoraService;
   private graphTraversal: SoraGraphTraversal;
   private topologyPredictor: QLoRATopologyPredictor;
 
@@ -111,7 +111,7 @@ export class QLoRAIntegrationAnalyzer {
   private analysisHistory: FeedbackAnalysis[] = [];
 
   constructor(
-    soraMoogle: SoraMoogleIntegration,
+    soraMoogle: ProductionSoraService,
     graphTraversal: SoraGraphTraversal,
     topologyPredictor: QLoRATopologyPredictor
   ) {
@@ -135,31 +135,33 @@ export class QLoRAIntegrationAnalyzer {
       corrections?: string[];
     }>
   ): Promise<FeedbackAnalysis> {
-    console.log(`🔍 Analyzing ${feedbackBatch.length} feedback entries for distillation optimization...`);
+    console.log(
+      `🔍 Analyzing ${feedbackBatch.length} feedback entries for distillation optimization...`
+    );
 
     const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     try {
       // 1. Sora-Moogle: Advanced pattern recognition in feedback data
       const behaviorPatterns = await this.soraMoogle.analyzeBehaviorPatterns(
-        feedbackBatch.map(f => ({
+        feedbackBatch.map((f) => ({
           user_id: f.userId,
           interaction_data: f.query,
           outcome_quality: f.feedback === 'thumbs_up' ? 1.0 : 0.0,
           context_features: this.extractContextFeatures(f.context),
-          temporal_sequence: Date.now()
+          temporal_sequence: Date.now(),
         }))
       );
 
       // 2. Graph Traversal: Analyze user journey and decision patterns
       const userJourneyGraphs = await this.graphTraversal.buildUserJourneyGraphs(
-        feedbackBatch.map(f => ({
+        feedbackBatch.map((f) => ({
           node_id: f.userId,
           action_type: f.feedback,
           context: f.context,
           outcome: f.response,
           timestamp: Date.now(),
-          edges: this.identifyRelatedInteractions(f, feedbackBatch)
+          edges: this.identifyRelatedInteractions(f, feedbackBatch),
         }))
       );
 
@@ -168,7 +170,7 @@ export class QLoRAIntegrationAnalyzer {
         feedback_patterns: behaviorPatterns,
         user_journey_data: userJourneyGraphs,
         performance_requirements: this.extractPerformanceRequirements(feedbackBatch),
-        resource_constraints: await this.getCurrentResourceConstraints()
+        resource_constraints: await this.getCurrentResourceConstraints(),
       });
 
       // 4. Integrate insights to create comprehensive analysis
@@ -178,20 +180,21 @@ export class QLoRAIntegrationAnalyzer {
         modelPerformanceInsights: this.extractModelInsights(feedbackBatch, topologyInsights),
         topologyRecommendations: this.generateTopologyRecommendations(topologyInsights),
         distillationPlan: await this.createDistillationPlan(feedbackBatch, topologyInsights),
-        confidence: this.calculateAnalysisConfidence(behaviorPatterns, userJourneyGraphs)
+        confidence: this.calculateAnalysisConfidence(behaviorPatterns, userJourneyGraphs),
       };
 
       // Store analysis for future reference
       this.analysisHistory.push(analysis);
-      
+
       // Update user profiles and model insights
       await this.updateUserProfiles(analysis);
       await this.updateModelInsights(analysis);
 
-      console.log(`✅ Feedback analysis completed with ${analysis.confidence.toFixed(2)} confidence`);
-      
+      console.log(
+        `✅ Feedback analysis completed with ${analysis.confidence.toFixed(2)} confidence`
+      );
+
       return analysis;
-      
     } catch (error) {
       console.error('❌ Feedback analysis failed:', error);
       throw error;
@@ -205,53 +208,63 @@ export class QLoRAIntegrationAnalyzer {
     feedbackBatch: any[],
     topologyInsights: any
   ): Promise<DistillationPlan> {
-    
     // Determine optimal student model size based on user preferences
-    const avgResponseTime = feedbackBatch.reduce((sum, f) => sum + (f.context.responseTime || 1000), 0) / feedbackBatch.length;
-    const speedRequirement = avgResponseTime < 2000 ? 'high' : avgResponseTime < 5000 ? 'medium' : 'low';
-    
+    const avgResponseTime =
+      feedbackBatch.reduce((sum, f) => sum + (f.context.responseTime || 1000), 0) /
+      feedbackBatch.length;
+    const speedRequirement =
+      avgResponseTime < 2000 ? 'high' : avgResponseTime < 5000 ? 'medium' : 'low';
+
     // Calculate domain distribution
-    const domainCounts = feedbackBatch.reduce((counts, f) => {
-      const domain = f.context.legalDomain || 'general';
-      counts[domain] = (counts[domain] || 0) + 1;
-      return counts;
-    }, {} as Record<string, number>);
-    
-    const dominantDomain = Object.entries(domainCounts)
-      .sort(([,a], [,b]) => b - a)[0][0];
-    
+    const domainCounts = feedbackBatch.reduce(
+      (counts, f) => {
+        const domain = f.context.legalDomain || 'general';
+        counts[domain] = (counts[domain] || 0) + 1;
+        return counts;
+      },
+      {} as Record<string, number>
+    );
+
+    const dominantDomain = Object.entries(domainCounts).sort(
+      ([, a], [, b]) => (b as number) - (a as number)
+    )[0][0];
+
     // Determine distillation strategy
-    const positiveRatio = feedbackBatch.filter(f => f.feedback === 'thumbs_up').length / feedbackBatch.length;
-    const distillationStrategy = positiveRatio > 0.8 ? 'response' : 
-                                 positiveRatio > 0.6 ? 'hybrid' : 'knowledge';
-    
+    const positiveRatio =
+      feedbackBatch.filter((f) => f.feedback === 'thumbs_up').length / feedbackBatch.length;
+    const distillationStrategy =
+      positiveRatio > 0.8 ? 'response' : positiveRatio > 0.6 ? 'hybrid' : 'knowledge';
+
     const plan: DistillationPlan = {
       planId: `distill_${dominantDomain}_${Date.now()}`,
       teacherModel: 'gemma3-legal-base',
       studentModel: `gemma3-legal-${dominantDomain}-distilled`,
       distillationStrategy,
       trainingData: {
-        positive_examples: feedbackBatch.filter(f => f.feedback === 'thumbs_up').length,
-        negative_examples: feedbackBatch.filter(f => f.feedback === 'thumbs_down').length,
+        positive_examples: feedbackBatch.filter((f) => f.feedback === 'thumbs_up').length,
+        negative_examples: feedbackBatch.filter((f) => f.feedback === 'thumbs_down').length,
         neutral_examples: 0,
-        domain_coverage: Object.keys(domainCounts)
+        domain_coverage: Object.keys(domainCounts),
       },
       expectedMetrics: {
         size_reduction: this.calculateExpectedSizeReduction(speedRequirement),
         speed_improvement: this.calculateExpectedSpeedImprovement(speedRequirement),
         quality_retention: this.calculateExpectedQualityRetention(positiveRatio),
-        domain_accuracy: new Map(Object.entries(domainCounts).map(([domain, count]) => 
-          [domain, 0.8 + (count / feedbackBatch.length) * 0.15]
-        ))
+        domain_accuracy: new Map(
+          Object.entries(domainCounts).map(([domain, count]) => [
+            domain,
+            0.8 + ((count as number) / feedbackBatch.length) * 0.15,
+          ])
+        ),
       },
       timeline: {
-        data_preparation: 3600000,  // 1 hour
-        model_training: 7200000,    // 2 hours  
-        validation: 1800000,        // 30 minutes
-        deployment: 900000          // 15 minutes
-      }
+        data_preparation: 3600000, // 1 hour
+        model_training: 7200000, // 2 hours
+        validation: 1800000, // 30 minutes
+        deployment: 900000, // 15 minutes
+      },
     };
-    
+
     return plan;
   }
 
@@ -270,32 +283,42 @@ export class QLoRAIntegrationAnalyzer {
 
   private extractContextFeatures(context: any): number[] {
     return [
-      context.complexityLevel === 'basic' ? 0.33 : context.complexityLevel === 'intermediate' ? 0.66 : 1.0,
+      context.complexityLevel === 'basic'
+        ? 0.33
+        : context.complexityLevel === 'intermediate'
+          ? 0.66
+          : 1.0,
       context.confidence || 0.5,
       (context.responseTime || 1000) / 10000,
       context.legalDomain === 'contract' ? 1.0 : 0.0,
       context.legalDomain === 'litigation' ? 1.0 : 0.0,
-      context.legalDomain === 'compliance' ? 1.0 : 0.0
+      context.legalDomain === 'compliance' ? 1.0 : 0.0,
     ];
   }
 
   private identifyRelatedInteractions(feedback: any, batch: any[]): any[] {
-    return batch.filter(f => 
-      f.userId === feedback.userId && 
-      f.context.legalDomain === feedback.context.legalDomain &&
-      Math.abs(Date.now() - (f.timestamp || Date.now())) < 3600000 // Within 1 hour
-    ).map(f => ({ target: f.userId, weight: 1.0 }));
+    return batch
+      .filter(
+        (f) =>
+          f.userId === feedback.userId &&
+          f.context.legalDomain === feedback.context.legalDomain &&
+          Math.abs(Date.now() - (f.timestamp || Date.now())) < 3600000 // Within 1 hour
+      )
+      .map((f) => ({ target: f.userId, weight: 1.0 }));
   }
 
   private extractPerformanceRequirements(feedbackBatch: any[]): any {
-    const avgResponseTime = feedbackBatch.reduce((sum, f) => sum + (f.context.responseTime || 1000), 0) / feedbackBatch.length;
-    const positiveRatio = feedbackBatch.filter(f => f.feedback === 'thumbs_up').length / feedbackBatch.length;
-    
+    const avgResponseTime =
+      feedbackBatch.reduce((sum, f) => sum + (f.context.responseTime || 1000), 0) /
+      feedbackBatch.length;
+    const positiveRatio =
+      feedbackBatch.filter((f) => f.feedback === 'thumbs_up').length / feedbackBatch.length;
+
     return {
       target_latency: Math.min(avgResponseTime * 0.8, 2000),
       minimum_accuracy: Math.max(positiveRatio * 0.95, 0.8),
       memory_constraint: 512,
-      concurrent_requests: 10
+      concurrent_requests: 10,
     };
   }
 
@@ -304,44 +327,55 @@ export class QLoRAIntegrationAnalyzer {
       gpu_memory: 8192,
       cpu_cores: 8,
       ram: 16384,
-      storage: 100000
+      storage: 100000,
     };
   }
 
   private synthesizeUserBehaviorProfile(feedbackBatch: any[], patterns: any): UserBehaviorProfile {
-    const userIds = [...new Set(feedbackBatch.map(f => f.userId))];
+    const userIds = [...new Set(feedbackBatch.map((f) => f.userId))];
     const primaryUser = userIds[0];
-    
-    const userFeedback = feedbackBatch.filter(f => f.userId === primaryUser);
-    const complexityLevels = userFeedback.map(f => f.context.complexityLevel || 'intermediate');
-    const preferredComplexity = this.getMostFrequent(complexityLevels) as 'basic' | 'intermediate' | 'advanced';
-    
+
+    const userFeedback = feedbackBatch.filter((f) => f.userId === primaryUser);
+    const complexityLevels = userFeedback.map((f) => f.context.complexityLevel || 'intermediate');
+    const preferredComplexity = this.getMostFrequent(complexityLevels) as
+      | 'basic'
+      | 'intermediate'
+      | 'advanced';
+
     return {
       userId: primaryUser,
       preferredComplexity,
       dominantDomains: this.extractDominantDomains(userFeedback),
       feedbackPatterns: {
         totalFeedback: userFeedback.length,
-        positiveRatio: userFeedback.filter(f => f.feedback === 'thumbs_up').length / userFeedback.length,
-        avgResponseTime: userFeedback.reduce((sum, f) => sum + (f.context.responseTime || 1000), 0) / userFeedback.length,
-        preferredFeatures: this.extractPreferredFeatures(userFeedback)
+        positiveRatio:
+          userFeedback.filter((f) => f.feedback === 'thumbs_up').length / userFeedback.length,
+        avgResponseTime:
+          userFeedback.reduce((sum, f) => sum + (f.context.responseTime || 1000), 0) /
+          userFeedback.length,
+        preferredFeatures: this.extractPreferredFeatures(userFeedback),
       },
       contextualPreferences: {
         accuracy_weight: 0.4,
         completeness_weight: 0.3,
         clarity_weight: 0.2,
-        speed_weight: 0.1
-      }
+        speed_weight: 0.1,
+      },
     };
   }
 
-  private extractModelInsights(feedbackBatch: any[], topologyInsights: any): ModelPerformanceInsights {
-    const modelIds = [...new Set(feedbackBatch.map(f => f.context.modelUsed || 'default'))];
+  private extractModelInsights(
+    feedbackBatch: any[],
+    topologyInsights: any
+  ): ModelPerformanceInsights {
+    const modelIds = [...new Set(feedbackBatch.map((f) => f.context.modelUsed || 'default'))];
     const primaryModel = modelIds[0];
-    
-    const modelFeedback = feedbackBatch.filter(f => (f.context.modelUsed || 'default') === primaryModel);
+
+    const modelFeedback = feedbackBatch.filter(
+      (f) => (f.context.modelUsed || 'default') === primaryModel
+    );
     const domainPerformance = this.calculateDomainPerformance(modelFeedback);
-    
+
     return {
       modelId: primaryModel,
       domainSpecificPerformance: domainPerformance,
@@ -350,14 +384,14 @@ export class QLoRAIntegrationAnalyzer {
       optimizationOpportunities: {
         parameter_efficiency: 0.7,
         context_utilization: 0.8,
-        response_quality: 0.6
+        response_quality: 0.6,
       },
       recommendedAdjustments: {
         rank: 16,
         alpha: 32,
         target_modules: ['q_proj', 'v_proj', 'k_proj', 'o_proj'],
-        learning_rate: 2e-5
-      }
+        learning_rate: 2e-5,
+      },
     };
   }
 
@@ -367,19 +401,21 @@ export class QLoRAIntegrationAnalyzer {
         layers: 12,
         hidden_size: 768,
         attention_heads: 12,
-        intermediate_size: 3072
+        intermediate_size: 3072,
       },
-      specializationPoints: [{
-        layer_index: 6,
-        module_name: 'attention',
-        specialization_type: 'domain',
-        adaptation_strength: 0.8
-      }],
+      specializationPoints: [
+        {
+          layer_index: 6,
+          module_name: 'attention',
+          specialization_type: 'domain',
+          adaptation_strength: 0.8,
+        },
+      ],
       pruningRecommendations: {
         prune_ratio: 0.3,
         target_components: ['intermediate_layers', 'attention_heads'],
-        expected_speedup: 1.5
-      }
+        expected_speedup: 1.5,
+      },
     };
   }
 
@@ -394,61 +430,75 @@ export class QLoRAIntegrationAnalyzer {
   }
 
   private async updateModelInsights(analysis: FeedbackAnalysis): Promise<void> {
-    this.modelInsights.set(analysis.modelPerformanceInsights.modelId, analysis.modelPerformanceInsights);
+    this.modelInsights.set(
+      analysis.modelPerformanceInsights.modelId,
+      analysis.modelPerformanceInsights
+    );
   }
 
   private getMostFrequent<T>(array: T[]): T {
-    const counts = array.reduce((acc, item) => {
-      acc[item as string] = (acc[item as string] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    
-    return Object.entries(counts).sort(([,a], [,b]) => b - a)[0][0] as T;
+    const counts = array.reduce(
+      (acc, item) => {
+        acc[item as string] = (acc[item as string] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    return Object.entries(counts).sort(([, a], [, b]) => b - a)[0][0] as T;
   }
 
   private extractDominantDomains(feedback: any[]): string[] {
-    const domains = feedback.map(f => f.context.legalDomain || 'general');
-    const domainCounts = domains.reduce((counts, domain) => {
-      counts[domain] = (counts[domain] || 0) + 1;
-      return counts;
-    }, {} as Record<string, number>);
-    
+    const domains = feedback.map((f) => f.context.legalDomain || 'general');
+    const domainCounts = domains.reduce(
+      (counts, domain) => {
+        counts[domain] = (counts[domain] || 0) + 1;
+        return counts;
+      },
+      {} as Record<string, number>
+    );
+
     return Object.entries(domainCounts)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
       .slice(0, 3)
       .map(([domain]) => domain);
   }
 
   private extractPreferredFeatures(feedback: any[]): string[] {
     const positiveFeatures: string[] = [];
-    
-    feedback.filter(f => f.feedback === 'thumbs_up').forEach(f => {
-      if (f.context.responseTime < 2000) positiveFeatures.push('fast_response');
-      if (f.response.length > 500) positiveFeatures.push('detailed_response');
-      if (f.context.confidence > 0.8) positiveFeatures.push('high_confidence');
-    });
-    
+
+    feedback
+      .filter((f) => f.feedback === 'thumbs_up')
+      .forEach((f) => {
+        if (f.context.responseTime < 2000) positiveFeatures.push('fast_response');
+        if (f.response.length > 500) positiveFeatures.push('detailed_response');
+        if (f.context.confidence > 0.8) positiveFeatures.push('high_confidence');
+      });
+
     return [...new Set(positiveFeatures)];
   }
 
   private calculateDomainPerformance(feedback: any[]): Map<string, number> {
     const domainPerformance = new Map<string, number>();
-    
-    const domains = [...new Set(feedback.map(f => f.context.legalDomain || 'general'))];
-    
-    domains.forEach(domain => {
-      const domainFeedback = feedback.filter(f => (f.context.legalDomain || 'general') === domain);
-      const positiveRatio = domainFeedback.filter(f => f.feedback === 'thumbs_up').length / domainFeedback.length;
+
+    const domains = [...new Set(feedback.map((f) => f.context.legalDomain || 'general'))];
+
+    domains.forEach((domain) => {
+      const domainFeedback = feedback.filter(
+        (f) => (f.context.legalDomain || 'general') === domain
+      );
+      const positiveRatio =
+        domainFeedback.filter((f) => f.feedback === 'thumbs_up').length / domainFeedback.length;
       domainPerformance.set(domain, positiveRatio);
     });
-    
+
     return domainPerformance;
   }
 }
 
 // Export singleton with mock dependencies
 export const qloraIntegrationAnalyzer = new QLoRAIntegrationAnalyzer(
-  {} as SoraMoogleIntegration,
-  {} as SoraGraphTraversal, 
+  {} as ProductionSoraService,
+  {} as SoraGraphTraversal,
   {} as QLoRATopologyPredictor
 );

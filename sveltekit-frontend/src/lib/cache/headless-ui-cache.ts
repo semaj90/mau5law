@@ -25,27 +25,27 @@ export interface CacheEntry<T = any> {
 
 export interface CacheStrategy {
   // Memory tiers (fastest to slowest)
-  memory: boolean;        // In-memory Map cache
-  indexeddb: boolean;     // Browser IndexedDB 
-  localStorage: boolean;  // Browser localStorage (limited size)
-  
+  memory: boolean; // In-memory Map cache
+  indexeddb: boolean; // Browser IndexedDB
+  localStorage: boolean; // Browser localStorage (limited size)
+
   // Intelligent eviction
-  lru: boolean;          // Least Recently Used
-  semantic: boolean;     // Semantic similarity-based eviction
-  cost: boolean;         // Evict by regeneration cost
-  
+  lru: boolean; // Least Recently Used
+  semantic: boolean; // Semantic similarity-based eviction
+  cost: boolean; // Evict by regeneration cost
+
   // Sync with server
-  syncWithRedis: boolean;    // Sync with server-side Redis
+  syncWithRedis: boolean; // Sync with server-side Redis
   conflictResolution: 'client' | 'server' | 'merge';
 }
 
 export interface CacheConfig {
-  maxMemorySize: number;      // Max memory cache size (bytes)
-  maxIndexedDBSize: number;   // Max IndexedDB size (bytes) 
+  maxMemorySize: number; // Max memory cache size (bytes)
+  maxIndexedDBSize: number; // Max IndexedDB size (bytes)
   maxLocalStorageSize: number; // Max localStorage size (bytes)
-  defaultTTL: number;         // Default TTL in milliseconds
+  defaultTTL: number; // Default TTL in milliseconds
   embeddingDimensions: number; // For semantic caching
-  syncInterval: number;       // Sync with server interval (ms)
+  syncInterval: number; // Sync with server interval (ms)
   strategy: CacheStrategy;
 }
 
@@ -61,7 +61,7 @@ export class HeadlessUICache {
   constructor(config: Partial<CacheConfig> = {}) {
     this.config = {
       maxMemorySize: 50 * 1024 * 1024, // 50MB
-      maxIndexedDBSize: 500 * 1024 * 1024, // 500MB  
+      maxIndexedDBSize: 500 * 1024 * 1024, // 500MB
       maxLocalStorageSize: 5 * 1024 * 1024, // 5MB
       defaultTTL: 30 * 60 * 1000, // 30 minutes
       embeddingDimensions: 256,
@@ -74,9 +74,9 @@ export class HeadlessUICache {
         semantic: true,
         cost: true,
         syncWithRedis: true,
-        conflictResolution: 'server'
+        conflictResolution: 'server',
       },
-      ...config
+      ...config,
     };
 
     this.initialize();
@@ -119,7 +119,7 @@ export class HeadlessUICache {
 
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
-        
+
         if (!db.objectStoreNames.contains('cache')) {
           const store = db.createObjectStore('cache', { keyPath: 'key' });
           store.createIndex('timestamp', 'timestamp');
@@ -163,7 +163,7 @@ export class HeadlessUICache {
 
     // 3. Semantic similarity search (if query provided)
     if (semanticQuery && this.config.strategy.semantic) {
-      const semanticResult = await this.findSemanticallySimilar<T>(semanticQuery, 0.8);
+      const semanticResult = await this.findSemanticallysimilar<T>(semanticQuery, 0.8);
       if (semanticResult) {
         this.cacheHits++;
         this.updateHitRatio();
@@ -190,8 +190,8 @@ export class HeadlessUICache {
    * Set cached data with optional semantic embedding
    */
   async set<T>(
-    key: string, 
-    data: T, 
+    key: string,
+    data: T,
     ttl?: number,
     source: 'client' | 'server' | 'hybrid' = 'client',
     semanticText?: string
@@ -207,15 +207,15 @@ export class HeadlessUICache {
         hits: 0,
         lastAccess: Date.now(),
         source,
-        computeCost: this.estimateComputeCost(data)
-      }
+        computeCost: this.estimateComputeCost(data),
+      },
     };
 
     // Generate semantic embedding if text provided
     if (semanticText && this.config.strategy.semantic) {
       try {
         entry.embedding = await vectorWasm.generateHashEmbedding(
-          semanticText, 
+          semanticText,
           this.config.embeddingDimensions
         );
       } catch (error) {
@@ -244,7 +244,7 @@ export class HeadlessUICache {
    * Find semantically similar cached entries using WASM vector operations
    */
   private async findSemanticallysimilar<T>(
-    query: string, 
+    query: string,
     threshold: number = 0.7
   ): Promise<CacheEntry<T> | null> {
     if (!vectorWasm.isInitialized()) return null;
@@ -252,7 +252,7 @@ export class HeadlessUICache {
     try {
       // Generate query embedding
       const queryEmbedding = await vectorWasm.generateHashEmbedding(
-        query, 
+        query,
         this.config.embeddingDimensions
       );
 
@@ -263,10 +263,10 @@ export class HeadlessUICache {
       for (const entry of this.memoryCache.values()) {
         if (entry.embedding && this.isValidEntry(entry)) {
           const similarity = await vectorWasm.computeCosineSimilarity(
-            queryEmbedding, 
+            queryEmbedding,
             entry.embedding
           );
-          
+
           if (similarity > threshold && similarity > bestSimilarity) {
             bestSimilarity = similarity;
             bestMatch = entry as CacheEntry<T>;
@@ -294,9 +294,9 @@ export class HeadlessUICache {
     if (currentSize <= this.config.maxMemorySize) return;
 
     const entries = Array.from(this.memoryCache.entries());
-    
+
     // Sort by eviction priority (lower score = higher priority to evict)
-    entries.sort(([,a], [,b]) => {
+    entries.sort(([, a], [, b]) => {
       let scoreA = this.calculateEvictionScore(a);
       let scoreB = this.calculateEvictionScore(b);
       return scoreA - scoreB;
@@ -314,24 +314,24 @@ export class HeadlessUICache {
    */
   private calculateEvictionScore(entry: CacheEntry): number {
     let score = 0;
-    
+
     // Factor in recency (LRU)
     if (this.config.strategy.lru) {
       const ageMs = Date.now() - entry.metadata!.lastAccess;
       score += ageMs / (1000 * 60 * 60); // Hours since last access
     }
-    
-    // Factor in hit frequency  
+
+    // Factor in hit frequency
     score -= entry.metadata!.hits * 10;
-    
+
     // Factor in compute cost (expensive to regenerate = higher score)
     if (this.config.strategy.cost) {
       score += entry.metadata!.computeCost * 5;
     }
-    
+
     // Factor in size (larger = more likely to evict)
-    score += (entry.metadata!.size / 1024); // KB
-    
+    score += entry.metadata!.size / 1024; // KB
+
     return score;
   }
 
@@ -345,17 +345,17 @@ export class HeadlessUICache {
       // Get server cache manifest
       const response = await fetch('/api/cache/manifest', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (!response.ok) return;
 
       const serverManifest = await response.json();
-      
+
       // Compare versions and sync differences
       for (const serverEntry of serverManifest.entries) {
         const localEntry = this.memoryCache.get(serverEntry.key);
-        
+
         if (!localEntry || localEntry.version !== serverEntry.version) {
           // Server has newer version, fetch it
           const serverData = await this.fetchFromServer(serverEntry.key);
@@ -364,7 +364,6 @@ export class HeadlessUICache {
           }
         }
       }
-
     } catch (error) {
       console.error('[HeadlessCache] Server sync failed:', error);
     }
@@ -374,7 +373,7 @@ export class HeadlessUICache {
     try {
       const response = await fetch(`/api/cache/${encodeURIComponent(key)}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (!response.ok) return null;
@@ -402,8 +401,8 @@ export class HeadlessUICache {
           data: entry.data,
           ttl: entry.ttl,
           version: entry.version,
-          source: 'client'
-        })
+          source: 'client',
+        }),
       });
     } catch (error) {
       console.error('[HeadlessCache] Server sync failed:', error);
@@ -412,7 +411,7 @@ export class HeadlessUICache {
 
   private startSyncTimer(): void {
     if (this.syncTimer) clearInterval(this.syncTimer);
-    
+
     this.syncTimer = setInterval(() => {
       this.syncWithServer();
     }, this.config.syncInterval);
@@ -496,7 +495,7 @@ export class HeadlessUICache {
   }
 
   private async searchIndexedDBBySimilarity<T>(
-    queryEmbedding: Float32Array, 
+    queryEmbedding: Float32Array,
     threshold: number
   ): Promise<CacheEntry<T> | null> {
     if (!this.db) return null;
@@ -513,14 +512,14 @@ export class HeadlessUICache {
         const cursor = (event.target as IDBRequest).result;
         if (cursor) {
           const entry: CacheEntry<T> = cursor.value;
-          
+
           if (entry.embedding && this.isValidEntry(entry)) {
             try {
               const similarity = await vectorWasm.computeCosineSimilarity(
-                queryEmbedding, 
+                queryEmbedding,
                 entry.embedding
               );
-              
+
               if (similarity > threshold && similarity > bestSimilarity) {
                 bestSimilarity = similarity;
                 bestMatch = entry;
@@ -529,7 +528,7 @@ export class HeadlessUICache {
               // Skip this entry
             }
           }
-          
+
           cursor.continue();
         } else {
           resolve(bestMatch);
@@ -551,7 +550,7 @@ export class HeadlessUICache {
       memoryEntries: this.memoryCache.size,
       memorySize: this.calculateMemorySize(),
       maxMemorySize: this.config.maxMemorySize,
-      lastSync: this.syncTimer ? 'active' : 'inactive'
+      lastSync: this.syncTimer ? 'active' : 'inactive',
     };
   }
 
@@ -560,7 +559,7 @@ export class HeadlessUICache {
    */
   async clear(): Promise<void> {
     this.memoryCache.clear();
-    
+
     if (this.db) {
       const transaction = this.db.transaction(['cache'], 'readwrite');
       const store = transaction.objectStore('cache');
@@ -576,12 +575,12 @@ export class HeadlessUICache {
       clearInterval(this.syncTimer);
       this.syncTimer = null;
     }
-    
+
     if (this.db) {
       this.db.close();
       this.db = null;
     }
-    
+
     this.memoryCache.clear();
   }
 }
@@ -596,19 +595,19 @@ export function cached(ttl?: number, semanticKey?: string) {
 
     descriptor.value = async function (...args: any[]) {
       const cacheKey = `${target.constructor.name}.${propertyKey}:${JSON.stringify(args)}`;
-      
+
       // Try cache first
       const cached = await headlessUICache.get(cacheKey, semanticKey);
       if (cached !== null) {
         return cached;
       }
-      
+
       // Execute original method
       const result = await originalMethod.apply(this, args);
-      
+
       // Cache the result
       await headlessUICache.set(cacheKey, result, ttl, 'client', semanticKey);
-      
+
       return result;
     };
 

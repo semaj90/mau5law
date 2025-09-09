@@ -20,52 +20,51 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, { 
+      return error(401, {
         message: 'Authentication required',
-        code: 'AUTH_REQUIRED'
+        code: 'AUTH_REQUIRED',
       });
     }
 
     // Validate case ID
     const caseId = UUIDSchema.parse(params.id);
-    
+
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id);
-    
+
     // Get case
     const caseData = await casesService.getById(caseId);
-    
+
     return json({
       success: true,
       data: caseData,
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
-
   } catch (err: any) {
     console.error('Error fetching case:', err);
-    
+
     if (err instanceof z.ZodError) {
       return error(400, {
         message: 'Invalid case ID',
         code: 'INVALID_ID',
-        details: err.errors
+        details: err.errors,
       });
     }
-    
+
     if (err.message.includes('not found') || err.message.includes('access denied')) {
       return error(404, {
         message: 'Case not found',
-        code: 'CASE_NOT_FOUND'
+        code: 'CASE_NOT_FOUND',
       });
     }
-    
+
     return error(500, {
       message: 'Failed to fetch case',
       code: 'FETCH_FAILED',
-      details: err.message
+      details: err.message,
     });
   }
 };
@@ -78,62 +77,61 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, { 
+      return error(401, {
         message: 'Authentication required',
-        code: 'AUTH_REQUIRED'
+        code: 'AUTH_REQUIRED',
       });
     }
 
     // Validate case ID
     const caseId = UUIDSchema.parse(params.id);
-    
+
     // Parse request body
     const body = await request.json();
     const validatedData = UpdateCaseSchema.parse({
       id: caseId,
-      ...body
+      ...body,
     }) as UpdateCaseData;
-    
+
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id);
-    
+
     // Update case
     await casesService.update(validatedData);
-    
+
     // Get updated case details
     const updatedCase = await casesService.getById(caseId);
-    
+
     return json({
       success: true,
       data: updatedCase,
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
-
   } catch (err: any) {
     console.error('Error updating case:', err);
-    
+
     if (err instanceof z.ZodError) {
       return error(400, {
         message: 'Invalid case data',
         code: 'INVALID_DATA',
-        details: err.errors
+        details: err.errors,
       });
     }
-    
+
     if (err.message.includes('not found') || err.message.includes('access denied')) {
       return error(404, {
         message: 'Case not found',
-        code: 'CASE_NOT_FOUND'
+        code: 'CASE_NOT_FOUND',
       });
     }
-    
+
     return error(500, {
       message: 'Failed to update case',
       code: 'UPDATE_FAILED',
-      details: err.message
+      details: err.message,
     });
   }
 };
@@ -146,21 +144,21 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, { 
+      return error(401, {
         message: 'Authentication required',
-        code: 'AUTH_REQUIRED'
+        code: 'AUTH_REQUIRED',
       });
     }
 
     // Validate case ID
     const caseId = UUIDSchema.parse(params.id);
-    
+
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id);
-    
+
     // Delete case
     await casesService.delete(caseId);
-    
+
     return json({
       success: true,
       message: 'Case deleted successfully',
@@ -173,7 +171,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
   } catch (err: any) {
     console.error('Error deleting case:', err);
-    
+
     if (err instanceof z.ZodError) {
       return error(400, {
         message: 'Invalid case ID',
@@ -181,14 +179,14 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         details: err.errors
       });
     }
-    
+
     if (err.message.includes('not found') || err.message.includes('access denied')) {
       return error(404, {
         message: 'Case not found',
-        code: 'CASE_NOT_FOUND'
+        code: 'CASE_NOT_FOUND',
       });
     }
-    
+
     return error(500, {
       message: 'Failed to delete case',
       code: 'DELETE_FAILED',
