@@ -33,6 +33,7 @@ class RedisService {
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 10;
   private reconnectDelay = 1000;
+  private initialized = false;
 
   private config: RedisConfig = {
     host: process.env.REDIS_HOST || 'localhost',
@@ -45,7 +46,7 @@ class RedisService {
     lazyConnect: true,
     keepAlive: 30000,
     family: 4,
-    keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:'
+    keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:',
   };
 
   /**
@@ -53,28 +54,38 @@ class RedisService {
    */
   async initialize(): Promise<boolean> {
     try {
+      // Prevent multiple initialization attempts
+      if (
+        this.initialized ||
+        this.pool?.primary?.status === 'connecting' ||
+        this.pool?.primary?.status === 'connected'
+      ) {
+        console.log('[RedisService] Already initialized or connecting');
+        return this.initialized;
+      }
+
       console.log('[RedisService] Initializing Redis connection pool...');
-      
+
       // Create primary connection for read/write operations
       this.pool = {
         primary: new Redis({
           ...this.config,
           lazyConnect: false,
-          connectionName: 'legal-ai-primary'
+          connectionName: 'legal-ai-primary',
         }),
-        
+
         // Separate connection for pub/sub operations
         subscriber: new Redis({
           ...this.config,
           lazyConnect: false,
-          connectionName: 'legal-ai-subscriber'
+          connectionName: 'legal-ai-subscriber',
         }),
-        
+
         publisher: new Redis({
           ...this.config,
           lazyConnect: false,
-          connectionName: 'legal-ai-publisher'
-        })
+          connectionName: 'legal-ai-publisher',
+        }),
       };
 
       // Set up event handlers
@@ -84,20 +95,20 @@ class RedisService {
 
       // Wait for primary connection
       await this.pool.primary.connect();
-      
+
       // Test Redis Stack modules
       await this.testRedisStackModules();
-      
+
       this.isConnected = true;
+      this.initialized = true;
       this.reconnectAttempts = 0;
-      
+
       console.log('✅ [RedisService] Connection pool initialized successfully');
-      
+
       // Global Redis client for backward compatibility
       (globalThis as any).__REDIS = this.pool.primary;
-      
+
       return true;
-      
     } catch (error) {
       console.error('❌ [RedisService] Failed to initialize:', error);
       this.isConnected = false;
@@ -141,7 +152,9 @@ class RedisService {
    */
   private async handleReconnection(): Promise<void> {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error(`❌ [RedisService] Max reconnection attempts (${this.maxReconnectAttempts}) reached`);
+      console.error(
+        `❌ [RedisService] Max reconnection attempts (${this.maxReconnectAttempts}) reached`
+      );
       return;
     }
 
@@ -165,7 +178,12 @@ class RedisService {
 
     try {
       // Test JSON module
-      await (this.pool.primary as any).sendCommand(['JSON.SET', 'test:json', '$', '{"legal-ai": "ready"}']);
+      await (this.pool.primary as any).sendCommand([
+        'JSON.SET',
+        'test:json',
+        '$',
+        '{"legal-ai": "ready"}',
+      ]);
       await (this.pool.primary as any).sendCommand(['JSON.GET', 'test:json']);
       await this.pool.primary.del('test:json');
       console.log('✅ [RedisService] JSON module available');
@@ -174,11 +192,10 @@ class RedisService {
       await this.pool.primary.setex('test:basic', 60, 'redis-stack-ready');
       const testValue = await this.pool.primary.get('test:basic');
       await this.pool.primary.del('test:basic');
-      
+
       if (testValue === 'redis-stack-ready') {
         console.log('✅ [RedisService] Basic operations working');
       }
-
     } catch (error) {
       console.warn('⚠️ [RedisService] Some Redis Stack modules may not be available:', error);
     }
@@ -224,15 +241,15 @@ class RedisService {
     keyspace?: any;
   } {
     const client = this.pool?.primary;
-    
+
     return {
       connected: this.isConnected,
       status: this.isConnected ? 'connected' : 'disconnected',
       reconnectAttempts: this.reconnectAttempts,
       config: {
         ...this.config,
-        password: this.config.password ? '[REDACTED]' : undefined
-      }
+        password: this.config.password ? '[REDACTED]' : undefined,
+      },
     };
   }
 
@@ -276,13 +293,13 @@ class RedisService {
 
     try {
       const serialized = typeof value === 'string' ? value : JSON.stringify(value);
-      
+
       if (ttlSeconds) {
         await client.setex(key, ttlSeconds, serialized);
       } else {
         await client.set(key, serialized);
       }
-      
+
       return true;
     } catch (error) {
       console.error(`[RedisService] Failed to set ${key}:`, error);
@@ -352,17 +369,17 @@ class RedisService {
    */
   async shutdown(): Promise<void> {
     console.log('[RedisService] Shutting down Redis connections...');
-    
+
     if (this.pool) {
       await Promise.all([
         this.pool.primary.quit(),
         this.pool.subscriber.quit(),
-        this.pool.publisher.quit()
+        this.pool.publisher.quit(),
       ]);
-      
+
       this.pool = null;
     }
-    
+
     this.isConnected = false;
     console.log('✅ [RedisService] Shutdown complete');
   }
@@ -374,9 +391,9 @@ export const redisService = new RedisService();
 // Auto-initialize Redis service
 if (typeof window === 'undefined') {
   console.log('🔧 [RedisService] Starting auto-initialization...');
-  
+
   // Server-side initialization
-  redisService.initialize().catch(error => {
+  redisService.initialize().catch((error) => {
     console.error('❌ [RedisService] Auto-initialization failed:', error);
   });
 }

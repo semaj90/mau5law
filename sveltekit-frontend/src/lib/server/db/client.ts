@@ -6,8 +6,8 @@ const isDev = process.env.NODE_ENV === 'development';
 import * as schema from './schema-postgres';
 
 // Connection strings with role separation
-const RUNTIME_DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
-const ADMIN_DATABASE_URL = process.env.DATABASE_URL_ADMIN || process.env.ADMIN_DATABASE_URL || 'postgresql://postgres:123456@localhost:5432/legal_ai_db';
+const RUNTIME_DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
+const ADMIN_DATABASE_URL = process.env.DATABASE_URL_ADMIN || process.env.ADMIN_DATABASE_URL || 'postgresql://postgres:123456@localhost:5433/legal_ai_db';
 
 // Create connections with role separation
 let runtimeConnectionSingleton: postgres.Sql;

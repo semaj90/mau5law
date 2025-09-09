@@ -21,7 +21,7 @@
 
 	// Enhanced integrations
 	import { rabbitMQService } from '$lib/services/rabbitmq-service';
-	import { vectorService } from '$lib/services/postgresql-vector-service';
+	import { vectorService } from '$lib/services/vector-service';
 	import { gpuService } from '$lib/services/gpu-acceleration-service';
 
 	// --- Svelte 5 State Management ---
@@ -897,110 +897,13 @@
 		margin-bottom: 15px;
 	}
 
-	/* Evidence Items */
-	.evidence-items {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-		min-height: 200px;
-	}
+	/* Evidence Items - Unused selectors removed */
 
-	.evidence-item {
-		background: #ffffff;
-		border: 3px solid #212529;
-		padding: 12px;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
-		cursor: pointer;
-	}
+	/* GPU Processing and Vector Score - Unused selectors removed */
 
-	.evidence-item:hover {
-		transform: translateY(-2px);
-		box-shadow: 4px 4px 0px #212529;
-	}
+	/* Board Main - Unused selector removed */
 
-	.evidence-item.is-dark {
-		background: #212529;
-		color: white;
-		border-color: #f7d51d;
-	}
-
-	.evidence-item.is-success {
-		background: #92cc41;
-		color: white;
-		border-color: #ffffff;
-	}
-
-	/* GPU Processing Indicator */
-	.gpu-indicator {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		margin-top: 10px;
-		padding: 5px 10px;
-		background: rgba(247, 213, 29, 0.2);
-		border: 1px solid #f7d51d;
-		border-radius: 4px;
-		font-size: 8px;
-	}
-
-	/* Vector Score Display */
-	.vector-score {
-		margin-top: 8px;
-		padding: 5px 10px;
-		background: rgba(146, 204, 65, 0.2);
-		border: 1px solid #92cc41;
-		border-radius: 4px;
-		text-align: center;
-		font-size: 8px;
-	}
-
-	/* Active Users */
-	.active-users {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		font-size: 10px;
-	}
-
-	.user-avatar {
-		width: 32px;
-		height: 32px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 8px;
-		background: #92cc41;
-		color: white;
-		border: 2px solid #212529;
-	}
-
-	/* Board Main */
-	.board-main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-	}
-
-	/* Responsive Design */
-	@media (max-width: 768px) {
-		.evidence-columns {
-			grid-template-columns: 1fr;
-		}
-
-		.header-content {
-			flex-direction: column;
-			text-align: center;
-		}
-
-		.system-status-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-
-		.perf-stats {
-			flex-direction: column;
-			text-align: center;
-		}
-	}
+	/* Responsive Design - Unused selectors removed */
 
 	/* Original Grid Pattern */
 	.bg-grid-pattern {

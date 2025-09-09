@@ -4,7 +4,7 @@ test.describe('Legal AI Chat Functionality', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the main page
     await page.goto('http://localhost:5173');
-    
+
     // Wait for initial load and WebAssembly initialization
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000); // Allow WASM to initialize
@@ -20,7 +20,7 @@ test.describe('Legal AI Chat Functionality', () => {
   test('should display GPU loading progress bar', async ({ page }) => {
     // Navigate to GPU demo if available
     const gpuDemoLink = page.locator('a[href*="gpu"], a[href*="demo"]');
-    if (await gpuDemoLink.count() > 0) {
+    if ((await gpuDemoLink.count()) > 0) {
       await gpuDemoLink.first().click();
       await page.waitForLoadState('networkidle');
     }
@@ -31,12 +31,12 @@ test.describe('Legal AI Chat Functionality', () => {
       '[class*="progress"]',
       '[class*="loading"]',
       'text="gpu is loading"',
-      'text="GPU"'
+      'text="GPU"',
     ];
 
     let foundProgress = false;
     for (const selector of progressIndicators) {
-      if (await page.locator(selector).count() > 0) {
+      if ((await page.locator(selector).count()) > 0) {
         await expect(page.locator(selector)).toBeVisible();
         foundProgress = true;
         break;
@@ -55,13 +55,13 @@ test.describe('Legal AI Chat Functionality', () => {
       'input[placeholder*="message"], input[placeholder*="question"]',
       'textarea[placeholder*="message"], textarea[placeholder*="question"]',
       'input[type="text"]',
-      'textarea'
+      'textarea',
     ];
 
     let chatInput;
     for (const selector of inputSelectors) {
       const element = page.locator(selector);
-      if (await element.count() > 0 && await element.isVisible()) {
+      if ((await element.count()) > 0 && (await element.isVisible())) {
         chatInput = element.first();
         break;
       }
@@ -69,8 +69,10 @@ test.describe('Legal AI Chat Functionality', () => {
 
     if (!chatInput) {
       console.log('Chat input not found, checking for button to open chat');
-      const chatButtons = page.locator('button:has-text("Chat"), button:has-text("AI"), [data-testid*="chat"]');
-      if (await chatButtons.count() > 0) {
+      const chatButtons = page.locator(
+        'button:has-text("Chat"), button:has-text("AI"), [data-testid*="chat"]'
+      );
+      if ((await chatButtons.count()) > 0) {
         await chatButtons.first().click();
         await page.waitForTimeout(1000);
         chatInput = page.locator('input, textarea').first();
@@ -79,7 +81,7 @@ test.describe('Legal AI Chat Functionality', () => {
 
     if (chatInput) {
       // Type a test legal question
-      const testQuery = "What are the basic elements of contract formation?";
+      const testQuery = 'What are the basic elements of contract formation?';
       await chatInput.fill(testQuery);
 
       // Find and click send button
@@ -87,13 +89,13 @@ test.describe('Legal AI Chat Functionality', () => {
         '[data-testid="send-button"]',
         'button:has-text("Send")',
         'button[type="submit"]',
-        'button:near(input), button:near(textarea)'
+        'button:near(input), button:near(textarea)',
       ];
 
       let sendButton;
       for (const selector of sendSelectors) {
         const element = page.locator(selector);
-        if (await element.count() > 0 && await element.isVisible()) {
+        if ((await element.count()) > 0 && (await element.isVisible())) {
           sendButton = element.first();
           break;
         }
@@ -110,12 +112,12 @@ test.describe('Legal AI Chat Functionality', () => {
           '[data-testid="ai-response"]',
           '[class*="message"], [class*="response"]',
           'text="contract"', // Should mention contracts in response
-          '[data-testid="chat-messages"] > *'
+          '[data-testid="chat-messages"] > *',
         ];
 
         let foundResponse = false;
         for (const selector of responseSelectors) {
-          if (await page.locator(selector).count() > 0) {
+          if ((await page.locator(selector).count()) > 0) {
             foundResponse = true;
             break;
           }
@@ -133,26 +135,26 @@ test.describe('Legal AI Chat Functionality', () => {
   test('should test GPU inference endpoint directly', async ({ page }) => {
     // Navigate to API testing page or create one
     await page.goto('http://localhost:5173');
-    
+
     // Inject test script to call GPU inference directly
     const inferenceResult = await page.evaluate(async () => {
       try {
         const response = await fetch('http://localhost:8200/inference', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            text: "What is consideration in contract law?",
-            model: "gemma3-legal",
-            config: { temperature: 0.7 }
-          })
+            text: 'What is consideration in contract law?',
+            model: 'gemma3-legal',
+            config: { temperature: 0.7 },
+          }),
         });
-        
+
         if (!response.ok) {
           return { success: false, error: `HTTP ${response.status}` };
         }
-        
+
         const data = await response.json();
         return { success: true, data };
       } catch (error) {
@@ -176,18 +178,18 @@ test.describe('Legal AI Chat Functionality', () => {
       '/api/wasm',
       '/api/gpu-wasm-integration',
       '/api/test-wasm-inference',
-      '/api/ai/webasm-search'
+      '/api/ai/webasm-search',
     ];
 
     for (const endpoint of wasmEndpoints) {
       const response = await page.request.post(`http://localhost:5173${endpoint}`, {
         data: {
           action: 'status',
-          text: 'test query'
+          text: 'test query',
         },
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
 
       if (response.ok()) {
@@ -204,7 +206,7 @@ test.describe('Legal AI Chat Functionality', () => {
     const serviceWorkerInfo = await page.evaluate(() => {
       return {
         hasServiceWorker: 'serviceWorker' in navigator,
-        registrations: navigator.serviceWorker ? navigator.serviceWorker.getRegistrations() : null
+        registrations: navigator.serviceWorker ? navigator.serviceWorker.getRegistrations() : null,
       };
     });
 
@@ -214,7 +216,7 @@ test.describe('Legal AI Chat Functionality', () => {
     const serviceEndpoints = [
       'http://localhost:8300/health', // Generative service worker
       'http://localhost:8301/health', // Indexing service worker
-      'http://localhost:8200/health'  // GPU inference server
+      'http://localhost:8200/health', // GPU inference server
     ];
 
     for (const endpoint of serviceEndpoints) {
@@ -239,7 +241,7 @@ test.describe('Legal AI Chat Functionality', () => {
     });
 
     await page.goto('http://localhost:5173');
-    
+
     // Check if basic content loads without JavaScript
     await expect(page.locator('body')).toBeVisible();
     await expect(page.locator('main, [id*="app"], [class*="app"]')).toBeVisible();
@@ -250,7 +252,7 @@ test.describe('Legal AI Chat Functionality', () => {
 
     // Check if interactive elements work after hydration
     const interactiveElements = page.locator('button, input, a[href]');
-    if (await interactiveElements.count() > 0) {
+    if ((await interactiveElements.count()) > 0) {
       await expect(interactiveElements.first()).toBeVisible();
     }
   });
@@ -258,7 +260,7 @@ test.describe('Legal AI Chat Functionality', () => {
   test('should handle concurrent requests', async ({ page }) => {
     // Test multiple concurrent AI requests
     const promises = [];
-    
+
     for (let i = 0; i < 3; i++) {
       const promise = page.evaluate(async (index) => {
         try {
@@ -267,24 +269,24 @@ test.describe('Legal AI Chat Functionality', () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               message: `Test query ${index}`,
-              model: 'gemma3-legal'
-            })
+              model: 'gemma3-legal',
+            }),
           });
           return { success: response.ok, status: response.status, index };
         } catch (error) {
           return { success: false, error: error.message, index };
         }
       }, i);
-      
+
       promises.push(promise);
     }
 
     const results = await Promise.all(promises);
-    
+
     // At least one request should succeed
-    const successfulRequests = results.filter(r => r.success);
+    const successfulRequests = results.filter((r) => r.success);
     expect(successfulRequests.length).toBeGreaterThan(0);
-    
+
     console.log(`✅ ${successfulRequests.length}/3 concurrent requests succeeded`);
   });
 
@@ -293,7 +295,7 @@ test.describe('Legal AI Chat Functionality', () => {
     const redisHealth = await page.evaluate(async () => {
       try {
         const response = await fetch('/api/health/redis', {
-          method: 'GET'
+          method: 'GET',
         });
         return { success: response.ok, status: response.status };
       } catch (error) {
@@ -313,34 +315,34 @@ test.describe('Legal AI Chat Functionality', () => {
 test.describe('Performance Tests', () => {
   test('should measure page load performance', async ({ page }) => {
     const startTime = Date.now();
-    
+
     await page.goto('http://localhost:5173');
     await page.waitForLoadState('networkidle');
-    
+
     const loadTime = Date.now() - startTime;
-    
+
     // Page should load within 10 seconds
     expect(loadTime).toBeLessThan(10000);
-    
+
     console.log(`✅ Page loaded in ${loadTime}ms`);
   });
 
   test('should measure AI response time', async ({ page }) => {
     await page.goto('http://localhost:5173');
-    
+
     const responseTime = await page.evaluate(async () => {
       const startTime = Date.now();
-      
+
       try {
         const response = await fetch('/api/ai/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            message: "Quick test",
-            model: 'gemma3-legal'
-          })
+            message: 'Quick test',
+            model: 'gemma3-legal',
+          }),
         });
-        
+
         const endTime = Date.now();
         return { success: response.ok, time: endTime - startTime };
       } catch (error) {

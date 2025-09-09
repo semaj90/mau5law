@@ -224,7 +224,7 @@
               <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </a>
           {/each}
-          
+
           <!-- All Routes Button -->
           <a
             href="/all-routes"
@@ -246,6 +246,7 @@
         </div>
       </div>
     </div>
+    </section>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Recent Activity -->

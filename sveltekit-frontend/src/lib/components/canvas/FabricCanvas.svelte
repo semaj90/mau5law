@@ -1,9 +1,9 @@
 <script lang="ts">
 
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Badge } from '$lib/components/ui/badge';
-  import Card from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/Button.svelte';
+  import Badge from '$lib/components/ui/Badge.svelte';
+  import Card from '$lib/components/ui/Card.svelte';
   import {
     Upload, Move, RotateCcw, Trash2, ZoomIn, ZoomOut,
     Save, Download, Image as ImageIcon, FileText
@@ -43,11 +43,28 @@ let zoomLevel = $state(1);
     type: 'image' | 'document' | 'annotation';
     title: string;
     url?: string;
+    urlExpiry?: number; // timestamp when presigned URL expires
     x: number;
     y: number;
     metadata: Record<string, any>;
   }
 let evidenceItems = $state<EvidenceItem[] >([]);
+let minioStatus = $state<'checking' | 'connected' | 'disconnected'>('checking');
+let uploadProgress = $state<Map<string, number>>(new Map());
+
+  // Derived state for better performance
+  let evidenceCount = $derived(evidenceItems.length);
+  let hasSelectedObject = $derived(selectedObject !== null);
+  let hasUploadProgress = $derived(uploadProgress.size > 0);
+  let zoomPercentage = $derived(Math.round(zoomLevel * 100));
+  let minioStatusText = $derived(
+    minioStatus === 'connected' ? 'MinIO' : 
+    minioStatus === 'disconnected' ? 'Demo' : 'Checking...'
+  );
+  let minioStatusColor = $derived(
+    minioStatus === 'connected' ? 'bg-green-500' : 
+    minioStatus === 'disconnected' ? 'bg-red-500' : 'bg-yellow-500 animate-pulse'
+  );
 
   onMount(async () => {
     // Dynamically import Fabric.js to avoid SSR issues
@@ -61,6 +78,7 @@ let evidenceItems = $state<EvidenceItem[] >([]);
     });
 
     setupCanvasEvents();
+    await checkMinIOStatus();
     loadCanvasData();
   });
 
@@ -98,6 +116,15 @@ let evidenceItems = $state<EvidenceItem[] >([]);
     });
   }
 
+  async function checkMinIOStatus() {
+    try {
+      const response = await fetch('/api/v1/minio/upload', { method: 'HEAD' });
+      minioStatus = response.ok ? 'connected' : 'disconnected';
+    } catch {
+      minioStatus = 'disconnected';
+    }
+  }
+
   async function loadCanvasData() {
     if (!caseId) return;
 
@@ -119,14 +146,42 @@ let evidenceItems = $state<EvidenceItem[] >([]);
     }
   }
 
+  async function refreshExpiredUrl(evidence: EvidenceItem): Promise<string> {
+    if (!evidence.urlExpiry || Date.now() < evidence.urlExpiry) {
+      return evidence.url || '';
+    }
+    
+    try {
+      // Refresh presigned URL
+      const response = await fetch(`/api/v1/minio/url-refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bucket: evidence.metadata.bucket,
+          fileName: evidence.metadata.fileName
+        })
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        return result.url;
+      }
+    } catch (error) {
+      console.warn('Failed to refresh URL for:', evidence.id);
+    }
+    
+    return evidence.url || '';
+  }
+
   async function addEvidenceToCanvas(evidence: EvidenceItem) {
     if (!fabricCanvas) return;
 
     try {
       if (evidence.type === 'image' && evidence.url) {
         const fabric = await import('fabric');
+        const imageUrl = await refreshExpiredUrl(evidence);
 
-        fabric.Image.fromURL(evidence.url, (img: any) => {
+        fabric.Image.fromURL(imageUrl, (img: any) => {
           img.set({
             left: evidence.x,
             top: evidence.y,
@@ -187,31 +242,34 @@ let evidenceItems = $state<EvidenceItem[] >([]);
 
     if (!files || files.length === 0) return;
 
-    for (const file of Array.from(files)) {
-      await uploadEvidence(file);
-    }
+    // Upload files in parallel for better performance
+    const uploadPromises = Array.from(files).map(file => uploadEvidence(file));
+    await Promise.allSettled(uploadPromises);
 
     input.value = ''; // Reset input
   }
 
   async function uploadEvidence(file: File) {
+    const fileId = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
+    
     try {
       isLoading = true;
+      uploadProgress.set(fileId, 0);
 
       // Upload file
       const formData = new FormData();
       formData.append('file', file);
       formData.append('caseId', caseId || 'demo-case');
 
-      // Try production endpoint first, fallback to demo endpoint
-      let uploadResponse = await fetch('/api/evidence/upload', {
+      // Try MinIO upload first, fallback to demo endpoint
+      let uploadResponse = await fetch('/api/v1/minio/upload?bucket=evidence-files', {
         method: 'POST',
         body: formData
       });
 
-      // If upload fails (e.g., authentication required), try demo endpoint
+      // If MinIO fails (connection issues), try demo endpoint
       if (!uploadResponse.ok) {
-        console.log('🔄 Production upload failed, trying demo endpoint...');
+        console.log('🔄 MinIO upload failed, trying demo endpoint...');
         uploadResponse = await fetch('/api/evidence/demo', {
           method: 'POST',
           body: formData
@@ -224,28 +282,35 @@ let evidenceItems = $state<EvidenceItem[] >([]);
 
       const uploadResult = await uploadResponse.json();
 
-      // Create evidence item
+      // Create evidence item - handle both MinIO and demo responses
       const evidence: EvidenceItem = {
-        id: uploadResult.id,
+        id: uploadResult.id || uploadResult.fileId,
         type: file.type.startsWith('image/') ? 'image' : 'document',
         title: file.name,
         url: uploadResult.url,
+        urlExpiry: uploadResult.bucket ? Date.now() + (23 * 60 * 60 * 1000) : undefined, // 23hr expiry for MinIO
         x: Math.random() * (width - 200) + 100,
         y: Math.random() * (height - 200) + 100,
         metadata: {
           fileSize: file.size,
           fileType: file.type,
-          uploadDate: new Date().toISOString()
+          uploadDate: new Date().toISOString(),
+          bucket: uploadResult.bucket || 'demo',
+          fileName: uploadResult.fileName || uploadResult.filename
         }
       };
 
       evidenceItems = [...evidenceItems, evidence];
       await addEvidenceToCanvas(evidence);
+      uploadProgress.set(fileId, 100);
 
     } catch (error) {
       console.error('Failed to upload evidence:', error);
+      uploadProgress.delete(fileId);
     } finally {
       isLoading = false;
+      // Clean up progress after 2 seconds
+      setTimeout(() => uploadProgress.delete(fileId), 2000);
     }
   }
 
@@ -356,12 +421,19 @@ let evidenceItems = $state<EvidenceItem[] >([]);
         <div class="flex items-center gap-2">
           <ImageIcon class="h-5 w-5" />
           Evidence Canvas
-          {#if evidenceItems.length > 0}
-            <Badge variant="secondary">{evidenceItems.length} items</Badge>
+          {#if evidenceCount > 0}
+            <Badge variant="secondary">
+              {#snippet children()}{evidenceCount} items{/snippet}
+            </Badge>
           {/if}
         </div>
-        <div class="flex items-center gap-2 text-sm text-gray-600">
-          Zoom: {Math.round(zoomLevel * 100)}%
+        <div class="flex items-center gap-3 text-sm text-gray-600">
+          <!-- MinIO Status Indicator -->
+          <div class="flex items-center gap-1">
+            <div class="w-2 h-2 rounded-full {minioStatusColor}"></div>
+            <span class="text-xs">{minioStatusText}</span>
+          </div>
+          <span>Zoom: {zoomPercentage}%</span>
         </div>
       </div>
     </div>
@@ -405,7 +477,7 @@ let evidenceItems = $state<EvidenceItem[] >([]);
         </Button>
 
         <!-- Object Controls -->
-        {#if selectedObject && !readOnly}
+        {#if hasSelectedObject && !readOnly}
           <Button variant="destructive" onclick={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
@@ -443,6 +515,24 @@ let evidenceItems = $state<EvidenceItem[] >([]);
         </div>
       </div>
     {/if}
+
+    <!-- Upload Progress Indicators -->
+    {#if hasUploadProgress}
+      <div class="absolute top-4 right-4 space-y-2">
+        {#each Array.from(uploadProgress.entries()) as [fileId, progress]}
+          <div class="bg-white rounded-lg shadow-lg p-3 min-w-48">
+            <div class="flex items-center justify-between text-sm mb-1">
+              <span class="text-gray-600">Uploading...</span>
+              <span class="text-blue-600">{progress}%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                   style="width: {progress}%"></div>
+            </div>
+          </div>
+        {/each}
+      </div>
+    {/if}
   </div>
 
   <!-- Object Properties Panel -->
@@ -452,29 +542,29 @@ let evidenceItems = $state<EvidenceItem[] >([]);
         <h3 class="text-lg font-semibold mb-4">Selected Object</h3>
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <label class="font-medium">Type:</label>
+            <span class="font-medium">Type:</span>
             <p class="text-gray-600">{selectedObject.type}</p>
           </div>
           <div>
-            <label class="font-medium">Position:</label>
+            <span class="font-medium">Position:</span>
             <p class="text-gray-600">
               {Math.round(selectedObject.left)}, {Math.round(selectedObject.top)}
             </p>
           </div>
           <div>
-            <label class="font-medium">Size:</label>
+            <span class="font-medium">Size:</span>
             <p class="text-gray-600">
               {Math.round(selectedObject.width * selectedObject.scaleX)} ×
               {Math.round(selectedObject.height * selectedObject.scaleY)}
             </p>
           </div>
           <div>
-            <label class="font-medium">Rotation:</label>
+            <span class="font-medium">Rotation:</span>
             <p class="text-gray-600">{Math.round(selectedObject.angle)}°</p>
           </div>
           {#if selectedObject.evidenceId}
             <div class="col-span-2">
-              <label class="font-medium">Evidence ID:</label>
+              <span class="font-medium">Evidence ID:</span>
               <p class="text-gray-600 font-mono text-xs">{selectedObject.evidenceId}</p>
             </div>
           {/if}

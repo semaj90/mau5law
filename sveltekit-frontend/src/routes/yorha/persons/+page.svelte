@@ -3,9 +3,9 @@
   // $state and $derived are available in runes mode via types, not runtime imports
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Badge } from '$lib/components/ui/badge';
+  import Button from '$lib/components/ui/button/Button.svelte';
+  import Input from '$lib/components/ui/input.svelte';
+  import Badge from '$lib/components/ui/badge.svelte';
   import { Search, Plus, Eye, Edit, Trash2, AlertTriangle, Shield } from 'lucide-svelte';
 
   // Persons of Interest data
@@ -51,9 +51,11 @@
   let searchQuery = $state('');
   let selectedThreatLevel = $state('all');
   let showNewPersonModal = $state(false);
+  let isLoading = $state(false);
+  let error = $state(null);
 
   // Filter persons based on search and threat level
-  let filteredPersons = $derived(() => {
+  let filteredPersons = $derived.by(() => {
     let filtered = persons;
 
     if (searchQuery.trim()) {
@@ -90,6 +92,48 @@
       default: return 'bg-gray-600 text-white';
     }
   }
+
+  // Load persons from API
+  async function loadPersons() {
+    try {
+      isLoading = true;
+      error = null;
+      const response = await fetch('/api/persons-of-interest');
+      if (response.ok) {
+        const data = await response.json();
+        persons = data.persons || persons; // Fallback to mock data
+      }
+    } catch (err) {
+      error = 'Failed to load persons of interest';
+      console.warn('Using mock data due to API error:', err);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  // Add new person
+  async function addPerson(personData: any) {
+    try {
+      const response = await fetch('/api/persons-of-interest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(personData)
+      });
+      
+      if (response.ok) {
+        const newPerson = await response.json();
+        persons = [...persons, newPerson];
+        showNewPersonModal = false;
+      }
+    } catch (err) {
+      error = 'Failed to add person';
+      console.error('Add person failed:', err);
+    }
+  }
+
+  onMount(() => {
+    loadPersons();
+  });
 </script>
 
 <svelte:head>
@@ -170,7 +214,7 @@
       </div>
 
       <div class="header-right">
-  <Button class="header-btn" onclick={() => showNewPersonModal = true}>
+        <Button class="header-btn" onclick={() => showNewPersonModal = true}>
           <Plus class="w-4 h-4" />
           ADD PERSON
         </Button>
@@ -215,10 +259,24 @@
       </div>
     </div>
 
+    <!-- Error State -->
+    {#if error}
+      <div class="error-banner">
+        <AlertTriangle class="w-4 h-4" />
+        {error}
+      </div>
+    {/if}
+
     <!-- Persons Grid -->
     <div class="persons-grid">
-      {#each filteredPersons as person (person.id)}
-        <Card.Root class="person-card">
+      {#if isLoading}
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Loading persons of interest...</div>
+        </div>
+      {:else}
+        {#each filteredPersons as person (person.id)}
+          <Card.Root class="person-card">
           <Card.Header class="person-header">
             <div class="person-photo">
               {#if person.photo}
@@ -290,7 +348,8 @@
             </Button>
           </Card.Footer>
         </Card.Root>
-      {/each}
+        {/each}
+      {/if}
     </div>
 
     {#if filteredPersons.length === 0}
@@ -355,10 +414,10 @@
     </div>
 
     <Dialog.Footer>
-  <Button variant="outline" onclick={() => showNewPersonModal = false}>
+      <Button variant="outline" onclick={() => showNewPersonModal = false}>
         CANCEL
       </Button>
-  <Button onclick={() => showNewPersonModal = false}>
+      <Button onclick={() => showNewPersonModal = false}>
         ADD PERSON
       </Button>
     </Dialog.Footer>
@@ -718,6 +777,49 @@
 
   .empty-subtitle {
     font-size: 12px;
+  }
+
+  /* Error and Loading States */
+  .error-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: #4a1a1a;
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    font-size: 12px;
+    margin: 15px 20px;
+    border-radius: 4px;
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #888;
+  }
+
+  .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #3a3a3a;
+    border-top: 2px solid #d4af37;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .loading-text {
+    font-size: 14px;
+    color: #666;
   }
 
   /* Modal Styles */

@@ -14,7 +14,7 @@ export const WASM_SERVICE_PORTS = {
   RABBITMQ_API: 5177,       // RabbitMQ API port  
   RABBITMQ_BROKER: 5672,    // RabbitMQ message broker
   RABBITMQ_MGMT: 15672,     // RabbitMQ management UI
-  WASM_CACHE: 4005,         // Redis cache for WASM results
+  WASM_CACHE: 6379,         // Redis cache for WASM results
   VECTOR_DB: 6333           // Qdrant vector database
 } as const;
 

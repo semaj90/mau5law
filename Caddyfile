@@ -9,9 +9,9 @@
 
 # Main neural topology platform endpoint (HTTPS + QUIC/HTTP3)
 localhost:443, neuraltopology.local:443 {
-    # Neural Topology Sync APIs (SvelteKit on port 5175)
+    # Neural Topology Sync APIs (SvelteKit on port 5174)
     handle /api/sync/* {
-        reverse_proxy localhost:5173 {
+        reverse_proxy localhost:5174 {
             header_up X-Forwarded-Proto {scheme}
             header_up X-Forwarded-Host {host}
             header_up X-Neural-Topology "enabled"
@@ -20,7 +20,7 @@ localhost:443, neuraltopology.local:443 {
 
     # Frontend and API routes (SvelteKit)
     handle /api/* {
-        reverse_proxy localhost:5173 {
+        reverse_proxy localhost:5174 {
             header_up X-Forwarded-Proto {scheme}
             header_up X-Forwarded-Host {host}
         }
@@ -50,9 +50,9 @@ localhost:443, neuraltopology.local:443 {
         reverse_proxy localhost:8080
     }
 
-    # Static frontend files (Neural Topology SvelteKit on 5175)
+    # Static frontend files (Neural Topology SvelteKit on 5174)
     handle {
-        reverse_proxy localhost:5173 {
+        reverse_proxy localhost:5174 {
             header_up X-Forwarded-Proto {scheme}
             header_up X-Forwarded-Host {host}
             header_up X-Neural-Topology-Frontend "active"

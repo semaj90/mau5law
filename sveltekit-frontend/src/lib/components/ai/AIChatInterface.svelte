@@ -107,14 +107,16 @@ How can I assist you with your legal needs today?`);
 	});
 
 	// Auto-scroll to bottom when new messages arrive
-	$: if (messages.length > 0) {
-		// use tick to wait for DOM update
-		tick().then(() => {
-			if (messagesContainer) {
-				messagesContainer.scrollTop = messagesContainer.scrollHeight;
-			}
-		});
-	}
+	$effect(() => {
+		if (messages.length > 0) {
+			// use tick to wait for DOM update
+			tick().then(() => {
+				if (messagesContainer) {
+					messagesContainer.scrollTop = messagesContainer.scrollHeight;
+				}
+			});
+		}
+	});
 
 	// Add message to chat
 	function addMessage(role: Message['role'], content: string, options: Partial<Message> = {}): Message {

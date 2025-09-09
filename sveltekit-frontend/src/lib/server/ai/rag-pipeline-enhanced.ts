@@ -143,7 +143,7 @@ const createDefaultConfig = (): RAGConfig => ({
   },
   redis: {
   host: (process.env.REDIS_HOST as any) || 'localhost',
-  port: parseInt(process.env.REDIS_PORT || '4005'),
+  port: parseInt(process.env.REDIS_PORT || '6379'),
     db: parseInt(import.meta.env.REDIS_DB || '0'),
     maxRetriesPerRequest: parseInt(import.meta.env.REDIS_MAX_RETRIES || '3'),
     cacheTtl: parseInt(import.meta.env.RAG_CACHE_TTL || '86400'), // 24 hours

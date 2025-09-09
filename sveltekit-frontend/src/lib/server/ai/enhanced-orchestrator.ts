@@ -112,7 +112,7 @@ const services = {
   // Redis Configuration
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '4005'),
+    port: parseInt(process.env.REDIS_PORT || '6379'),
     db: 0,
     keyPrefix: 'legal-ai:',
   },
