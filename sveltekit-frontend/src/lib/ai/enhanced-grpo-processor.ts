@@ -47,41 +47,40 @@ export interface GRPOConfig {
 }
 
 export class EnhancedGRPOProcessor extends ThinkingProcessor {
-  
   private static readonly DEFAULT_CONFIG: GRPOConfig = {
     enableStructuredReasoning: true,
     enableFeedbackLoop: true,
     enableRecommendations: true,
     maxRecommendations: 5,
     temporalDecayDays: 30,
-    semanticSimilarityThreshold: 0.7
+    semanticSimilarityThreshold: 0.7,
   };
 
   /**
    * Enhanced document analysis with GRPO-thinking and recommendations
    */
   static async analyzeDocumentEnhanced(
-    text: string, 
+    text: string,
     options: AnalysisOptions & { config?: Partial<GRPOConfig> } = {}
   ): Promise<GRPOAnalysis> {
     const config = { ...this.DEFAULT_CONFIG, ...options.config };
-    
+
     // Get base thinking analysis
     const baseAnalysis = await super.analyzeDocument(text, {
       ...options,
-      useThinkingStyle: true // Force thinking style for GRPO
+      useThinkingStyle: true, // Force thinking style for GRPO
     });
 
     // Extract and structure reasoning from thinking content
-    const structuredReasoning = config.enableStructuredReasoning 
+    const structuredReasoning = config.enableStructuredReasoning
       ? await this.extractStructuredReasoning(baseAnalysis.thinking)
       : this.getEmptyStructuredReasoning();
 
     // Generate embeddings for similarity search
     const queryEmbedding = await this.generateEmbedding(text);
     const responseEmbedding = await this.generateEmbedding(
-      typeof baseAnalysis.analysis === 'string' 
-        ? baseAnalysis.analysis 
+      typeof baseAnalysis.analysis === 'string'
+        ? baseAnalysis.analysis
         : JSON.stringify(baseAnalysis.analysis)
     );
 
@@ -101,16 +100,17 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
     // Save enhanced analysis to database
     const grpoId = await this.saveGRPOAnalysis({
       query: text,
-      response: typeof baseAnalysis.analysis === 'string' 
-        ? baseAnalysis.analysis 
-        : JSON.stringify(baseAnalysis.analysis),
+      response:
+        typeof baseAnalysis.analysis === 'string'
+          ? baseAnalysis.analysis
+          : JSON.stringify(baseAnalysis.analysis),
       thinkingContent: baseAnalysis.thinking,
       structuredReasoning,
       queryEmbedding,
       responseEmbedding,
       confidence: baseAnalysis.confidence,
       processingTime: baseAnalysis.metadata.processing_time,
-      options
+      options,
     });
 
     return {
@@ -119,14 +119,16 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
       structuredReasoning,
       temporalScore,
       recommendationContext,
-      feedbackLoop
+      feedbackLoop,
     };
   }
 
   /**
    * Extract structured reasoning components from thinking content
    */
-  private static async extractStructuredReasoning(thinkingContent: string): Promise<GRPOAnalysis['structuredReasoning']> {
+  private static async extractStructuredReasoning(
+    thinkingContent: string
+  ): Promise<GRPOAnalysis['structuredReasoning']> {
     if (!thinkingContent) {
       return this.getEmptyStructuredReasoning();
     }
@@ -140,7 +142,7 @@ ${thinkingContent}
 Extract and format as JSON:
 {
   "premises": ["premise 1", "premise 2"],
-  "inferences": ["inference 1", "inference 2"], 
+  "inferences": ["inference 1", "inference 2"],
   "conclusions": ["conclusion 1", "conclusion 2"],
   "legalPrinciples": ["principle 1", "principle 2"],
   "counterArguments": ["counter 1", "counter 2"],
@@ -153,18 +155,23 @@ Extract and format as JSON:
         body: JSON.stringify({
           model: 'gemma3-legal:latest',
           prompt: structurePrompt,
-          stream: false
-        })
+          stream: false,
+        }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        const parsed = this.extractJSON(data.response) as GRPOAnalysis['structuredReasoning'];
-        
+        const parsed = ThinkingProcessor.extractJSON(
+          data.response
+        ) as GRPOAnalysis['structuredReasoning'];
+
         // Validate structure
-        if (parsed && typeof parsed === 'object' && 
-            Array.isArray(parsed.premises) && 
-            Array.isArray(parsed.inferences)) {
+        if (
+          parsed &&
+          typeof parsed === 'object' &&
+          Array.isArray(parsed.premises) &&
+          Array.isArray(parsed.inferences)
+        ) {
           return parsed;
         }
       }
@@ -186,8 +193,8 @@ Extract and format as JSON:
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'nomic-embed-text',
-          prompt: text.slice(0, 2048) // Limit length
-        })
+          prompt: text.slice(0, 2048), // Limit length
+        }),
       });
 
       if (response.ok) {
@@ -197,7 +204,7 @@ Extract and format as JSON:
     } catch (error) {
       console.warn('Failed to generate embedding:', error);
     }
-    
+
     return new Array(768).fill(0); // Fallback zero vector
   }
 
@@ -211,7 +218,7 @@ Extract and format as JSON:
     try {
       // Query database for similar responses using pgvector
       const similarResponses = await db.execute(sql`
-        SELECT 
+        SELECT
           r.id,
           r.response,
           r.confidence,
@@ -228,15 +235,19 @@ Extract and format as JSON:
 
       for (const row of similarResponses.rows) {
         const similarity = 1 - (row.similarity as number); // Convert distance to similarity
-        const temporalFactor = this.calculateTemporalScore(new Date(row.created_at as string), config.temporalDecayDays);
-        
+        const temporalFactor = this.calculateTemporalScore(
+          new Date(row.created_at as string),
+          config.temporalDecayDays
+        );
+
         recommendations.push({
           responseId: row.id as string,
           similarity,
           contextRelevance: (row.confidence as number) || 0.8,
           temporalFactor,
-          finalScore: similarity * 0.6 + temporalFactor * 0.2 + ((row.confidence as number) || 0.8) * 0.2,
-          snippet: (row.response as string).slice(0, 200) + '...'
+          finalScore:
+            similarity * 0.6 + temporalFactor * 0.2 + ((row.confidence as number) || 0.8) * 0.2,
+          snippet: (row.response as string).slice(0, 200) + '...',
         });
       }
 
@@ -253,10 +264,10 @@ Extract and format as JSON:
   private static calculateTemporalScore(createdAt: Date, halfLifeDays: number): number {
     const now = new Date();
     const ageDays = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
-    
+
     // Exponential decay: score = e^(-ln(2) * age / halfLife)
-    const decayFactor = Math.exp(-Math.LN2 * ageDays / halfLifeDays);
-    
+    const decayFactor = Math.exp((-Math.LN2 * ageDays) / halfLifeDays);
+
     return Math.max(0.1, Math.min(1.0, decayFactor)); // Clamp between 0.1 and 1.0
   }
 
@@ -267,9 +278,9 @@ Extract and format as JSON:
     try {
       // Get previous feedback for similar queries
       const queryEmbedding = await this.generateEmbedding(query);
-      
+
       const feedbackData = await db.execute(sql`
-        SELECT 
+        SELECT
           f.user_rating,
           f.feedback_text,
           f.accuracy,
@@ -284,9 +295,11 @@ Extract and format as JSON:
         LIMIT 10
       `);
 
-      const previousRatings = feedbackData.rows.map(row => row.user_rating as number).filter(Boolean);
+      const previousRatings = feedbackData.rows
+        .map((row) => row.user_rating as number)
+        .filter(Boolean);
       const userPreferences = feedbackData.rows
-        .map(row => row.feedback_text as string)
+        .map((row) => row.feedback_text as string)
         .filter(Boolean)
         .slice(0, 5);
 
@@ -296,14 +309,14 @@ Extract and format as JSON:
       return {
         previousRatings,
         userPreferences,
-        improvementSuggestions
+        improvementSuggestions,
       };
     } catch (error) {
       console.warn('Failed to get feedback loop data:', error);
       return {
         previousRatings: [],
         userPreferences: [],
-        improvementSuggestions: []
+        improvementSuggestions: [],
       };
     }
   }
@@ -323,27 +336,30 @@ Extract and format as JSON:
     options: AnalysisOptions;
   }): Promise<string> {
     try {
-      const [result] = await db.insert(aiResponses).values({
-        query: data.query,
-        response: data.response,
-        thinkingContent: data.thinkingContent,
-        thinkingStructured: data.structuredReasoning,
-        reasoningSteps: data.structuredReasoning.premises
-          .concat(data.structuredReasoning.inferences)
-          .concat(data.structuredReasoning.conclusions),
-        queryEmbedding: `[${data.queryEmbedding.join(',')}]`,
-        responseEmbedding: `[${data.responseEmbedding.join(',')}]`,
-        confidence: data.confidence.toString(),
-        processingTime: data.processingTime,
-        legalDomain: data.options.analysisType || 'general',
-        caseType: data.options.documentType || 'unknown',
-        sessionId: data.options.evidenceId,
-        caseId: data.options.caseId,
-        metadata: {
-          useThinkingStyle: data.options.useThinkingStyle,
-          contextDocuments: data.options.contextDocuments || []
-        }
-      }).returning({ id: aiResponses.id });
+      const [result] = await db
+        .insert(aiResponses)
+        .values({
+          query: data.query,
+          response: data.response,
+          thinkingContent: data.thinkingContent,
+          thinkingStructured: data.structuredReasoning,
+          reasoningSteps: data.structuredReasoning.premises
+            .concat(data.structuredReasoning.inferences)
+            .concat(data.structuredReasoning.conclusions),
+          queryEmbedding: `[${data.queryEmbedding.join(',')}]`,
+          responseEmbedding: `[${data.responseEmbedding.join(',')}]`,
+          confidence: data.confidence.toString(),
+          processingTime: data.processingTime,
+          legalDomain: data.options.analysisType || 'general',
+          caseType: data.options.documentType || 'unknown',
+          sessionId: data.options.evidenceId,
+          caseId: data.options.caseId,
+          metadata: {
+            useThinkingStyle: data.options.useThinkingStyle,
+            contextDocuments: data.options.contextDocuments || [],
+          },
+        })
+        .returning({ id: aiResponses.id });
 
       return result.id;
     } catch (error) {
@@ -355,16 +371,19 @@ Extract and format as JSON:
   /**
    * Record user feedback for GRPO learning
    */
-  static async recordFeedback(responseId: string, feedback: {
-    userRating: number;
-    feedbackText?: string;
-    accuracy?: number;
-    clarity?: number;
-    completeness?: number;
-    relevance?: number;
-    userId?: string;
-    userRole?: string;
-  }): Promise<void> {
+  static async recordFeedback(
+    responseId: string,
+    feedback: {
+      userRating: number;
+      feedbackText?: string;
+      accuracy?: number;
+      clarity?: number;
+      completeness?: number;
+      relevance?: number;
+      userId?: string;
+      userRole?: string;
+    }
+  ): Promise<void> {
     try {
       await db.insert(grpoFeedback).values({
         responseId,
@@ -376,12 +395,12 @@ Extract and format as JSON:
         relevance: feedback.relevance,
         userId: feedback.userId,
         userRole: feedback.userRole,
-        feedbackType: 'rating'
+        feedbackType: 'rating',
       });
 
       // Update the response's usage metrics
       await db.execute(sql`
-        UPDATE ai_responses 
+        UPDATE ai_responses
         SET usage_count = COALESCE(usage_count, 0) + 1,
             success_metric = ${feedback.userRating / 5.0}
         WHERE id = ${responseId}
@@ -399,35 +418,50 @@ Extract and format as JSON:
       conclusions: [],
       legalPrinciples: [],
       counterArguments: [],
-      confidenceFactors: []
+      confidenceFactors: [],
     };
   }
 
-  private static fallbackStructureExtraction(thinkingContent: string): GRPOAnalysis['structuredReasoning'] {
-    const lines = thinkingContent.split('\n').filter(line => line.trim());
-    
+  private static fallbackStructureExtraction(
+    thinkingContent: string
+  ): GRPOAnalysis['structuredReasoning'] {
+    const lines = thinkingContent.split('\n').filter((line) => line.trim());
+
     return {
-      premises: lines.filter(line => line.toLowerCase().includes('premise') || line.toLowerCase().includes('given')),
-      inferences: lines.filter(line => line.toLowerCase().includes('therefore') || line.toLowerCase().includes('infer')),
-      conclusions: lines.filter(line => line.toLowerCase().includes('conclude') || line.toLowerCase().includes('conclusion')),
-      legalPrinciples: lines.filter(line => line.toLowerCase().includes('principle') || line.toLowerCase().includes('rule')),
-      counterArguments: lines.filter(line => line.toLowerCase().includes('however') || line.toLowerCase().includes('but')),
-      confidenceFactors: lines.filter(line => line.toLowerCase().includes('confident') || line.toLowerCase().includes('certain'))
+      premises: lines.filter(
+        (line) => line.toLowerCase().includes('premise') || line.toLowerCase().includes('given')
+      ),
+      inferences: lines.filter(
+        (line) => line.toLowerCase().includes('therefore') || line.toLowerCase().includes('infer')
+      ),
+      conclusions: lines.filter(
+        (line) =>
+          line.toLowerCase().includes('conclude') || line.toLowerCase().includes('conclusion')
+      ),
+      legalPrinciples: lines.filter(
+        (line) => line.toLowerCase().includes('principle') || line.toLowerCase().includes('rule')
+      ),
+      counterArguments: lines.filter(
+        (line) => line.toLowerCase().includes('however') || line.toLowerCase().includes('but')
+      ),
+      confidenceFactors: lines.filter(
+        (line) => line.toLowerCase().includes('confident') || line.toLowerCase().includes('certain')
+      ),
     };
   }
 
   private static generateImprovementSuggestions(feedbackRows: any[]): string[] {
     const suggestions: string[] = [];
-    
+
     // Analyze low ratings
-    const lowAccuracy = feedbackRows.some(row => (row.accuracy || 5) < 3);
-    const lowClarity = feedbackRows.some(row => (row.clarity || 5) < 3);
-    const lowCompleteness = feedbackRows.some(row => (row.completeness || 5) < 3);
-    
+    const lowAccuracy = feedbackRows.some((row) => (row.accuracy || 5) < 3);
+    const lowClarity = feedbackRows.some((row) => (row.clarity || 5) < 3);
+    const lowCompleteness = feedbackRows.some((row) => (row.completeness || 5) < 3);
+
     if (lowAccuracy) suggestions.push('Improve legal accuracy with more case law citations');
     if (lowClarity) suggestions.push('Use clearer language and better structure');
     if (lowCompleteness) suggestions.push('Provide more comprehensive analysis');
-    
+
     return suggestions;
   }
 }
@@ -436,20 +470,19 @@ Extract and format as JSON:
  * Utility functions for GRPO processing
  */
 export const GRPOUtils = {
-  
   /**
    * Get personalized recommendations for a user
    */
   async getPersonalizedRecommendations(
-    userId: string, 
-    query: string, 
+    userId: string,
+    query: string,
     limit: number = 5
   ): Promise<RecommendationContext[]> {
     const queryEmbedding = await EnhancedGRPOProcessor['generateEmbedding'](query);
-    
+
     const recommendations = await db.execute(sql`
       WITH user_preferences AS (
-        SELECT 
+        SELECT
           r.legal_domain,
           r.case_type,
           AVG(f.user_rating) as avg_rating
@@ -460,7 +493,7 @@ export const GRPOUtils = {
         HAVING AVG(f.user_rating) >= 4
       ),
       similar_responses AS (
-        SELECT 
+        SELECT
           r.*,
           (r.query_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) as distance
         FROM ai_responses r
@@ -468,40 +501,42 @@ export const GRPOUtils = {
         ORDER BY distance ASC
         LIMIT ${limit * 3}
       )
-      SELECT 
+      SELECT
         sr.*,
         COALESCE(up.avg_rating, 3.0) as user_preference_score
       FROM similar_responses sr
       LEFT JOIN user_preferences up ON sr.legal_domain = up.legal_domain
-      ORDER BY 
-        (1 - sr.distance) * 0.4 + 
+      ORDER BY
+        (1 - sr.distance) * 0.4 +
         COALESCE(up.avg_rating, 3.0) / 5.0 * 0.6 DESC
       LIMIT ${limit}
     `);
 
-    return recommendations.rows.map(row => ({
+    return recommendations.rows.map((row) => ({
       responseId: row.id as string,
       similarity: 1 - (row.distance as number),
       contextRelevance: (row.confidence as number) || 0.8,
       temporalFactor: EnhancedGRPOProcessor['calculateTemporalScore'](
-        new Date(row.created_at as string), 
+        new Date(row.created_at as string),
         30
       ),
       finalScore: (row.user_preference_score as number) || 0.6,
-      snippet: (row.response as string).slice(0, 200) + '...'
+      snippet: (row.response as string).slice(0, 200) + '...',
     }));
   },
 
   /**
    * Get trending legal topics based on recent queries
    */
-  async getTrendingTopics(days: number = 7): Promise<Array<{ topic: string; count: number; avgRating: number }>> {
+  async getTrendingTopics(
+    days: number = 7
+  ): Promise<Array<{ topic: string; count: number; avgRating: number }>> {
     const result = await db.execute(sql`
-      SELECT 
+      SELECT
         legal_domain as topic,
         COUNT(*) as count,
         AVG(COALESCE(success_metric, 0.6)) as avg_rating
-      FROM ai_responses 
+      FROM ai_responses
       WHERE created_at >= NOW() - INTERVAL '${days} days'
         AND legal_domain IS NOT NULL
       GROUP BY legal_domain
@@ -509,10 +544,10 @@ export const GRPOUtils = {
       LIMIT 10
     `);
 
-    return result.rows.map(row => ({
+    return result.rows.map((row) => ({
       topic: row.topic as string,
       count: parseInt(row.count as string),
-      avgRating: parseFloat(row.avg_rating as string)
+      avgRating: parseFloat(row.avg_rating as string),
     }));
-  }
+  },
 };

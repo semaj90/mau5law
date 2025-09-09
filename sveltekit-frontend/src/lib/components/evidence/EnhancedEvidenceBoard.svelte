@@ -6,6 +6,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { goto } from '$app/navigation';
+  import FabricEvidenceCanvas from '../canvas/FabricEvidenceCanvas.svelte';
 
   // Types
   interface EvidenceItem {
@@ -723,6 +724,38 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   const dedup = Array.from(new Map(merged.map(s => [s.text, s])).values());
   searchSuggestions = dedup.slice(0, 10);
   }
+
+  // Fabric.js Canvas Event Handlers
+  function handleEvidenceMove(evidenceId: string, position: { x: number; y: number }) {
+    // Update evidence position in our data
+    evidenceItems = evidenceItems.map(item =>
+      item.id === evidenceId ? { ...item, position } : item
+    );
+    
+    // Optionally save to backend
+    // updateEvidencePosition(evidenceId, position);
+  }
+
+  function handleEvidenceSelect(evidenceId: string | null) {
+    if (evidenceId) {
+      if (!selectedEvidence.includes(evidenceId)) {
+        selectedEvidence = [...selectedEvidence, evidenceId];
+      }
+    }
+    // Optional: update UI based on selection
+  }
+
+  function handleCanvasDropZone(data: { x: number; y: number; files?: File[] }) {
+    if (data.files && data.files.length > 0) {
+      // Handle file drop with specific position
+      uploadFiles(data.files, { x: data.x, y: data.y });
+    } else {
+      // Handle empty area click - could trigger file picker
+      console.log('Canvas drop zone clicked at:', data);
+      // Optional: trigger file picker dialog
+      // triggerFilePicker();
+    }
+  }
 </script>
 
 <svelte:head>
@@ -1036,8 +1069,20 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           </div>
         {/if}
 
-        <!-- Gaming-Style Evidence Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+        <!-- Fabric.js Evidence Canvas -->
+        <div class="evidence-canvas-container">
+          <FabricEvidenceCanvas
+            width={1200}
+            height={600}
+            evidenceItems={filteredEvidence}
+            onEvidenceMove={handleEvidenceMove}
+            onEvidenceSelect={handleEvidenceSelect}
+            onDropZone={handleCanvasDropZone}
+          />
+        </div>
+
+        <!-- Gaming-Style Evidence Cards (Alternative Grid View) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4" style="display: none;">
           {#each filteredEvidence as evidence (evidence.id)}
             <div class="evidence-card nes-container {selectedEvidence.includes(evidence.id) ? 'is-success' : 'with-title'} relative"
                  class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)}
@@ -1217,5 +1262,52 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     height: 40px;
     object-fit: cover;
     display: block;
+  }
+
+  .evidence-canvas-container {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 
+      0 10px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(59, 130, 246, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .evidence-canvas-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4, #10b981);
+    border-radius: 12px 12px 0 0;
+  }
+
+  /* Gaming mode enhancements */
+  .nes-yorha-evidence-board.retro-glow .evidence-canvas-container {
+    box-shadow: 
+      0 0 20px rgba(59, 130, 246, 0.3),
+      0 0 40px rgba(139, 92, 246, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border-color: #3b82f6;
+    animation: canvasGlow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes canvasGlow {
+    0% {
+      box-shadow: 
+        0 0 20px rgba(59, 130, 246, 0.3),
+        0 0 40px rgba(139, 92, 246, 0.2);
+    }
+    100% {
+      box-shadow: 
+        0 0 30px rgba(59, 130, 246, 0.4),
+        0 0 60px rgba(139, 92, 246, 0.3);
+    }
   }
 </style>

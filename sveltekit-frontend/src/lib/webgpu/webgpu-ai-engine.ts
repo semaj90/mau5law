@@ -2,9 +2,19 @@
  * WebGPU AI Engine - Browser-based GPU acceleration
  * Extends API with custom compute shaders for dimensional arrays
  * Creates own optimized library for modular AI experiences
+ * Updated with buffer conversion utilities for proper GPU buffer handling
  */
 
 /// <reference path="../types/webgpu.d.ts" />
+
+import { 
+  WebGPUBufferUtils, 
+  toFloat32Array, 
+  toArrayBuffer, 
+  BufferTypeGuards, 
+  type BufferLike,
+  BufferDebugUtils
+} from '../utils/buffer-conversion.js';
 
 export interface WebGPUCapabilities {
   isSupported: boolean;
@@ -23,9 +33,9 @@ export interface ComputeShaderConfig {
 export interface AIComputeJob {
   id: string;
   type: 'attention' | 't5_inference' | 'dimensional_transform' | 'kernel_splice';
-  inputData: Float32Array;
+  inputData: BufferLike;
   shape: number[];
-  attentionWeights?: Float32Array;
+  attentionWeights?: BufferLike;
   modelParams?: any;
   priority: 'high' | 'medium' | 'low';
   createdAt: number;
@@ -242,9 +252,9 @@ export class WebGPUAIEngine {
    * Process dimensional array with kernel attention
    */
   async processDimensionalArray(
-    data: Float32Array,
+    data: BufferLike,
     shape: number[],
-    attentionWeights: Float32Array,
+    attentionWeights: BufferLike,
     kernelSize = 8
   ): Promise<{
     result: Float32Array;
@@ -310,9 +320,12 @@ export class WebGPUAIEngine {
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
-    // Write data to buffers
-    device.queue.writeBuffer(inputBuffer, 0, data.buffer, data.byteOffset, data.byteLength);
-    device.queue.writeBuffer(attentionBuffer, 0, attentionWeights.buffer, attentionWeights.byteOffset, attentionWeights.byteLength);
+    // Convert input data to Float32Array using buffer utilities and write data to buffers  
+    const dataArray = toFloat32Array(data);
+    const weightsArray = toFloat32Array(attentionWeights);
+    
+    device.queue.writeBuffer(inputBuffer, 0, dataArray.buffer, dataArray.byteOffset, dataArray.byteLength);
+    device.queue.writeBuffer(attentionBuffer, 0, weightsArray.buffer, weightsArray.byteOffset, weightsArray.byteLength);
     device.queue.writeBuffer(paramsBuffer, 0, paramsData);
 
     // Create bind group
@@ -345,7 +358,7 @@ export class WebGPUAIEngine {
     device.queue.submit([commandEncoder.finish()]);
 
     await readBuffer.mapAsync(GPUMapMode.READ);
-    const result = new Float32Array(readBuffer.getMappedRange().slice(0));
+    const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(readBuffer.getMappedRange());
     readBuffer.unmap();
 
     // Cleanup
@@ -374,7 +387,7 @@ export class WebGPUAIEngine {
    * Process T5 transformer inference
    */
   async processT5Inference(
-    tokens: Float32Array,
+    tokens: BufferLike,
     sequenceLength: number,
     hiddenSize: number = 768,
     numHeads: number = 12
@@ -427,8 +440,9 @@ export class WebGPUAIEngine {
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
-    // Write data
-    device.queue.writeBuffer(inputBuffer, 0, tokens.buffer, tokens.byteOffset, tokens.byteLength);
+    // Convert tokens to Float32Array and write data
+    const tokensArray = toFloat32Array(tokens);
+    device.queue.writeBuffer(inputBuffer, 0, tokensArray.buffer, tokensArray.byteOffset, tokensArray.byteLength);
     device.queue.writeBuffer(weightsBuffer, 0, weights);
     device.queue.writeBuffer(paramsBuffer, 0, params);
 
@@ -464,7 +478,7 @@ export class WebGPUAIEngine {
     device.queue.submit([commandEncoder.finish()]);
 
     await readBuffer.mapAsync(GPUMapMode.READ);
-    const result = new Float32Array(readBuffer.getMappedRange().slice(0));
+    const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(readBuffer.getMappedRange());
     readBuffer.unmap();
 
     // Cleanup

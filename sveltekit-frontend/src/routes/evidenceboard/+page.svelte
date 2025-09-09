@@ -1,11 +1,16 @@
 <script lang="ts">
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import * as Card from '$lib/components/ui/card';
   import { onMount } from 'svelte';
 
   let pageLoaded = $state(false);
+  let showWelcome = $state(true);
 
   onMount(() => {
     pageLoaded = true;
+    // Auto-hide welcome after 3 seconds
+    setTimeout(() => showWelcome = false, 3000);
   });
 </script>
 
@@ -14,16 +19,117 @@
   <meta name="description" content="AI-powered evidence management with Ollama integration" />
 </svelte:head>
 
-{#if pageLoaded}
-  <EnhancedEvidenceBoard />
-{:else}
-  <div class="loading-screen">
-    <div class="loading-spinner"></div>
-    <p>Loading Evidence Board...</p>
-  </div>
-{/if}
+<div class="evidence-page-container">
+  {#if showWelcome && pageLoaded}
+    <Card.Root class="welcome-banner animate-fade-in">
+      <Card.Header>
+        <Card.Title>🎯 Evidence Board Ready</Card.Title>
+        <Card.Description>
+          AI-powered evidence management with RTX 3060 Ti acceleration
+        </Card.Description>
+      </Card.Header>
+      <Card.Content>
+        <div class="welcome-stats">
+          <div class="stat">
+            <span class="stat-label">GPU</span>
+            <span class="stat-value">Active</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">WebGPU</span>
+            <span class="stat-value">Ready</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">pgvector</span>
+            <span class="stat-value">Connected</span>
+          </div>
+        </div>
+      </Card.Content>
+      <Card.Footer>
+        <Button 
+          variant="outline" 
+          size="sm"
+          onclick={() => showWelcome = false}
+        >
+          Get Started →
+        </Button>
+      </Card.Footer>
+    </Card.Root>
+  {/if}
+
+  {#if pageLoaded}
+    <EnhancedEvidenceBoard />
+  {:else}
+    <div class="loading-screen">
+      <div class="loading-spinner"></div>
+      <p>Initializing Legal AI Platform...</p>
+      <small>Loading GPU acceleration, vector search, and fabric.js canvas...</small>
+    </div>
+  {/if}
+</div>
 
 <style>
+  .evidence-page-container {
+    min-height: 100vh;
+    position: relative;
+  }
+  
+  .welcome-banner {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 320px;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00ff41;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+  }
+  
+  .animate-fade-in {
+    animation: fadeInSlide 0.5s ease-out;
+  }
+  
+  @keyframes fadeInSlide {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .welcome-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 8px 0;
+  }
+  
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    background: rgba(0, 255, 65, 0.1);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    border-radius: 4px;
+  }
+  
+  .stat-label {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .stat-value {
+    font-size: 12px;
+    font-weight: bold;
+    color: #00ff41;
+    margin-top: 2px;
+  }
+
   .loading-screen {
     display: flex;
     flex-direction: column;

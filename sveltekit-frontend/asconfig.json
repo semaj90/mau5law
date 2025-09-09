@@ -20,6 +20,43 @@
       "converge": true,
       "noAssert": true,
       "runtime": "minimal"
+    },
+    "legal-parser": {
+      "outFile": "static/wasm/legal-parser.wasm",
+      "textFile": "static/wasm/legal-parser.wat",
+      "optimizeLevel": 3,
+      "shrinkLevel": 2,
+      "converge": true,
+      "noAssert": true,
+      "runtime": "stub"
+    },
+    "legal-parser-simd": {
+      "outFile": "static/wasm/legal-parser-simd.wasm",
+      "optimizeLevel": 3,
+      "shrinkLevel": 2,
+      "converge": true,
+      "noAssert": true,
+      "runtime": "stub",
+      "feature": ["simd", "sign-extension", "mutable-globals", "nontrapping-f2i", "bulk-memory"]
+    },
+    "vector-operations": {
+      "outFile": "static/wasm/vector-operations.wasm",
+      "textFile": "static/wasm/vector-operations.wat",
+      "optimizeLevel": 3,
+      "shrinkLevel": 2,
+      "converge": true,
+      "noAssert": true,
+      "runtime": "minimal",
+      "feature": ["simd", "sign-extension", "mutable-globals", "nontrapping-f2i", "bulk-memory"]
+    },
+    "simd-json-parser": {
+      "outFile": "static/wasm/simd-json-parser.wasm",
+      "textFile": "static/wasm/simd-json-parser.wat",
+      "optimizeLevel": 3,
+      "shrinkLevel": 2,
+      "converge": true,
+      "noAssert": true,
+      "runtime": "minimal"
     }
   },
   "options": {
@@ -29,6 +66,7 @@
     "lib": ["ESNext"]
   },
   "include": [
-    "src/wasm/**/*.as"
+    "src/wasm/**/*.as",
+    "src/wasm/**/*.ts"
   ]
 }

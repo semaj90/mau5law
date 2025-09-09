@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import { gemmaEmbedding } from '$lib/services/gemma-embedding.js';
+import { gemmaEmbeddingService } from '$lib/services/gemma-embedding.js';
 import { pgVectorService } from '$lib/server/db/pgvector-service.js';
 import type { RequestHandler } from './$types.js';
 

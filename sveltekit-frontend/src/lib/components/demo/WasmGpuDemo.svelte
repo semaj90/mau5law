@@ -6,6 +6,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { createWasmGpuService, WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
+  import { WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader.js';
+  import { quantizeWithStats, type LegalAIProfile } from '$lib/utils/typed-array-quantization.js';
   
   // Initialize WASM GPU service with RTX 3060 configuration
   const wasmGpu = createWasmGpuService(WasmGpuHelpers.rtx3060Config());
@@ -487,6 +489,47 @@ let testDimensions = $state(384);
         </div>
       </div>
     {/if}
+
+    <!-- Buffer Quantization Integration -->
+    <div class="bg-gradient-to-r from-blue-900 to-purple-900 rounded-lg p-6 border border-blue-700 mt-8">
+      <h3 class="text-xl font-semibold mb-4 text-blue-300">🚀 Advanced Buffer Quantization Available</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <p class="text-blue-100 mb-4">
+            Enhance this WASM GPU system with our advanced buffer quantization technology for up to 4x compression with minimal quality loss.
+          </p>
+          <ul class="text-sm text-blue-200 space-y-2">
+            <li class="flex items-center gap-2">
+              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+              Legal AI optimized profiles (Critical, Standard, Compressed, Storage)
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+              FP16/INT8 quantization with intelligent caching
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+              WebGPU buffer alignment and optimization
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+              Real-time performance monitoring
+            </li>
+          </ul>
+        </div>
+        <div class="flex flex-col justify-center">
+          <a 
+            href="/demo/webgpu-quantization"
+            class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 text-center"
+          >
+            Try Interactive Buffer Quantization Demo
+          </a>
+          <p class="text-xs text-blue-300 mt-2 text-center">
+            Complete with legal document processing scenarios
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

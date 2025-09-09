@@ -29,17 +29,19 @@ export interface AnalysisOptions {
 }
 
 export class ThinkingProcessor {
-  
   /**
    * Analyzes a document using the enhanced API endpoint
    */
-  static async analyzeDocument(text: string, options: AnalysisOptions = {}): Promise<ThinkingAnalysis> {
+  static async analyzeDocument(
+    text: string,
+    options: AnalysisOptions = {}
+  ): Promise<ThinkingAnalysis> {
     // Check if enhanced GRPO should be used
     const enhancedOptions = options as EnhancedThinkingOptions;
     const useGRPO = enhancedOptions.useGRPO || false;
-    
+
     const endpoint = useGRPO ? '/api/ai/enhanced-grpo' : '/api/analyze';
-    
+
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -51,7 +53,7 @@ export class ThinkingProcessor {
         userId: enhancedOptions.userId,
         userRole: enhancedOptions.userRole,
         enableRecommendations: enhancedOptions.enableRecommendations || false,
-        ...options
+        ...options,
       }),
     });
 
@@ -60,7 +62,7 @@ export class ThinkingProcessor {
     }
 
     const result = await response.json();
-    
+
     if (!result.success) {
       throw new Error(result.error || 'Analysis failed');
     }
@@ -77,8 +79,8 @@ export class ThinkingProcessor {
           grpo_enhanced: true,
           recommendations_count: result.analysis.recommendations?.length || 0,
           temporal_score: result.analysis.temporal_score,
-          structured_reasoning: result.analysis.structured_reasoning
-        }
+          structured_reasoning: result.analysis.structured_reasoning,
+        },
       };
     }
 
@@ -88,21 +90,27 @@ export class ThinkingProcessor {
       analysis: result.analysis.analysis || result.analysis,
       confidence: result.metadata.confidence,
       reasoning_steps: result.analysis.reasoning_steps || [],
-      metadata: result.metadata
+      metadata: result.metadata,
     };
   }
 
   /**
    * Analyzes evidence by ID
    */
-  static async analyzeEvidence(evidenceId: string, options: Omit<AnalysisOptions, 'evidenceId'> = {}): Promise<ThinkingAnalysis> {
+  static async analyzeEvidence(
+    evidenceId: string,
+    options: Omit<AnalysisOptions, 'evidenceId'> = {}
+  ): Promise<ThinkingAnalysis> {
     return this.analyzeDocument('', { evidenceId, ...options });
   }
 
   /**
    * Analyzes a case by ID
    */
-  static async analyzeCase(caseId: string, options: Omit<AnalysisOptions, 'caseId'> = {}): Promise<ThinkingAnalysis> {
+  static async analyzeCase(
+    caseId: string,
+    options: Omit<AnalysisOptions, 'caseId'> = {}
+  ): Promise<ThinkingAnalysis> {
     return this.analyzeDocument('', { caseId, ...options });
   }
 
@@ -119,16 +127,16 @@ export class ThinkingProcessor {
         metadata: {
           model_used: 'quick',
           processing_time: 0,
-          thinking_enabled: false
-        }
+          thinking_enabled: false,
+        },
       };
     }
 
     const thinkingMatch = content.match(/<\|thinking\|>([\s\S]*?)<\/\|thinking\|>/);
     const thinking = thinkingMatch ? thinkingMatch[1].trim() : '';
-    
+
     const afterThinking = content.replace(/<\|thinking\|>[\s\S]*?<\/\|thinking\|>/, '').trim();
-    
+
     return {
       thinking,
       analysis: this.extractJSON(afterThinking) || { raw_analysis: afterThinking },
@@ -137,15 +145,15 @@ export class ThinkingProcessor {
       metadata: {
         model_used: 'thinking',
         processing_time: 0,
-        thinking_enabled: true
-      }
+        thinking_enabled: true,
+      },
     };
   }
 
   /**
    * Extracts JSON from text content
    */
-  private static extractJSON(text: string): unknown {
+  protected static extractJSON(text: string): unknown {
     try {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       return jsonMatch ? JSON.parse(jsonMatch[0]) : null;
@@ -159,16 +167,16 @@ export class ThinkingProcessor {
    */
   private static calculateConfidence(thinking: string, analysis: string): number {
     let score = 0.6;
-    
+
     // Boost for detailed thinking
     if (thinking.length > 200) score += 0.2;
     if (thinking.includes('evidence') || thinking.includes('analysis')) score += 0.1;
     if (thinking.includes('legal') || thinking.includes('compliance')) score += 0.1;
-    
+
     // Boost for structured analysis
     if (analysis.includes('confidence') || analysis.includes('recommendations')) score += 0.1;
     if (analysis.includes('key_findings') || analysis.includes('legal_implications')) score += 0.1;
-    
+
     return Math.min(0.95, score);
   }
 
@@ -178,8 +186,11 @@ export class ThinkingProcessor {
   private static extractReasoningSteps(thinking: string): string[] {
     return thinking
       .split('\n')
-      .filter(line => line.trim().match(/^\d+\./) || line.trim().startsWith('-') || line.trim().startsWith('*'))
-      .map(step => step.trim())
+      .filter(
+        (line) =>
+          line.trim().match(/^\d+\./) || line.trim().startsWith('-') || line.trim().startsWith('*')
+      )
+      .map((step) => step.trim())
       .slice(0, 10); // Limit to 10 steps for UI
   }
 
@@ -189,11 +200,11 @@ export class ThinkingProcessor {
   static formatThinkingContent(thinking: string): string {
     // Add markdown-style formatting for better readability
     return thinking
-      .replace(/^(\d+\.\s)/gm, '**$1**')  // Bold numbered steps
-      .replace(/^(-\s)/gm, '• ')          // Convert dashes to bullets
+      .replace(/^(\d+\.\s)/gm, '**$1**') // Bold numbered steps
+      .replace(/^(-\s)/gm, '• ') // Convert dashes to bullets
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Convert markdown bold to HTML
-      .replace(/\n\n/g, '</p><p>')        // Convert double newlines to paragraphs
-      .replace(/^(.*)$/gm, '<p>$1</p>');  // Wrap in paragraphs
+      .replace(/\n\n/g, '</p><p>') // Convert double newlines to paragraphs
+      .replace(/^(.*)$/gm, '<p>$1</p>'); // Wrap in paragraphs
   }
 
   /**
@@ -219,14 +230,18 @@ export class ThinkingProcessor {
   /**
    * Gets analysis history for a document
    */
-  static async getAnalysisHistory(options: { evidenceId?: string; caseId?: string; limit?: number }): Promise<any[]> {
+  static async getAnalysisHistory(options: {
+    evidenceId?: string;
+    caseId?: string;
+    limit?: number;
+  }): Promise<any[]> {
     const params = new URLSearchParams();
     if (options.evidenceId) params.append('evidenceId', options.evidenceId);
     if (options.caseId) params.append('caseId', options.caseId);
     if (options.limit) params.append('limit', options.limit.toString());
 
     const response = await fetch(`/api/analyze?${params}`);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to get analysis history: ${response.statusText}`);
     }
@@ -240,7 +255,6 @@ export class ThinkingProcessor {
  * Utility functions for working with legal document analysis
  */
 export const LegalAnalysisUtils = {
-  
   /**
    * Determines the appropriate analysis type for a document
    */
@@ -278,13 +292,26 @@ export const LegalAnalysisUtils = {
   extractLegalTerms(analysis: any): string[] {
     const text = JSON.stringify(analysis).toLowerCase();
     const legalTerms = [
-      'evidence', 'witness', 'testimony', 'defendant', 'plaintiff', 'motion',
-      'warrant', 'probable cause', 'constitutional', 'admissible', 'hearsay',
-      'chain of custody', 'authentication', 'objection', 'sustained', 'overruled'
+      'evidence',
+      'witness',
+      'testimony',
+      'defendant',
+      'plaintiff',
+      'motion',
+      'warrant',
+      'probable cause',
+      'constitutional',
+      'admissible',
+      'hearsay',
+      'chain of custody',
+      'authentication',
+      'objection',
+      'sustained',
+      'overruled',
     ];
-    
-    return legalTerms.filter(term => text.includes(term));
-  }
+
+    return legalTerms.filter((term) => text.includes(term));
+  },
 };
 
 /**
@@ -318,14 +345,13 @@ export interface DocumentAnalysisResult {
  * Quick analysis shortcuts for common operations
  */
 export const QuickAnalysis = {
-  
   /**
    * Quick evidence classification
    */
   async classifyEvidence(evidenceId: string, useThinking = false): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeEvidence(evidenceId, {
       analysisType: 'classification',
-      useThinkingStyle: useThinking
+      useThinkingStyle: useThinking,
     });
   },
 
@@ -335,7 +361,7 @@ export const QuickAnalysis = {
   async verifyChainOfCustody(evidenceId: string, useThinking = true): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeEvidence(evidenceId, {
       analysisType: 'chain_of_custody',
-      useThinkingStyle: useThinking // Default to thinking style for custody verification
+      useThinkingStyle: useThinking, // Default to thinking style for custody verification
     });
   },
 
@@ -345,7 +371,7 @@ export const QuickAnalysis = {
   async assessCaseStrength(caseId: string, useThinking = true): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeCase(caseId, {
       analysisType: 'reasoning',
-      useThinkingStyle: useThinking
+      useThinkingStyle: useThinking,
     });
   },
 
@@ -356,7 +382,7 @@ export const QuickAnalysis = {
     return ThinkingProcessor.analyzeDocument(text, {
       documentType: 'legal_document',
       analysisType: 'compliance',
-      useThinkingStyle: useThinking
+      useThinkingStyle: useThinking,
     });
-  }
+  },
 };

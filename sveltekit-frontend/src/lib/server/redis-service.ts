@@ -392,12 +392,12 @@ class RedisService {
     }
   }
 
-  async hgetall(key: string): Promise<{[field: string]: string}> {
+  async hgetall(key: string): Promise<{ [field: string]: string }> {
     const client = this.getClient();
     if (!client) return {};
 
     try {
-      return await (client as any).hgetall(key) || {};
+      return (await (client as any).hgetall(key)) || {};
     } catch (error) {
       console.error(`[RedisService] Failed to hgetall ${key}:`, error);
       return {};
@@ -438,6 +438,53 @@ class RedisService {
     } catch (error) {
       console.error(`[RedisService] Failed to create pipeline:`, error);
       return null;
+    }
+  }
+
+  // Redis Streams methods
+  async xAdd(key: string, id: string, fields: Record<string, any>): Promise<string> {
+    const client = this.getClient();
+    if (!client) throw new Error('Redis not connected');
+
+    try {
+      const fieldArray = Object.entries(fields).flat();
+      return await (client as any).xadd(key, id, ...fieldArray);
+    } catch (error) {
+      console.error(`❌ [RedisService] Failed to add to stream ${key}:`, error);
+      throw error;
+    }
+  }
+
+  async xInfoStream(key: string): Promise<any> {
+    const client = this.getClient();
+    if (!client) throw new Error('Redis not connected');
+
+    try {
+      return await (client as any).xinfoStream(key);
+    } catch (error) {
+      console.error(`❌ [RedisService] Failed to get stream info for ${key}:`, error);
+      throw error;
+    }
+  }
+
+  async xRevRange(
+    key: string,
+    end: string,
+    start: string,
+    options?: { COUNT: number }
+  ): Promise<any[]> {
+    const client = this.getClient();
+    if (!client) throw new Error('Redis not connected');
+
+    try {
+      const args = [key, end, start];
+      if (options?.COUNT) {
+        args.push('COUNT', options.COUNT.toString());
+      }
+      return await (client as any).xrevrange(...args);
+    } catch (error) {
+      console.error(`❌ [RedisService] Failed to xrevrange for ${key}:`, error);
+      throw error;
     }
   }
 

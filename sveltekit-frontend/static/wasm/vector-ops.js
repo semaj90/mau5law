@@ -17,13 +17,9 @@ async function instantiate(module, imports = {}) {
   const { exports } = await WebAssembly.instantiate(module, adaptedImports);
   const memory = exports.memory || imports.env.memory;
   const adaptedExports = Object.setPrototypeOf({
-    normalizeVector(vectorPtr, length) {
-      // src/wasm/vector-operations/normalizeVector(usize, i32) => usize
-      return exports.normalizeVector(vectorPtr, length) >>> 0;
-    },
-    batchNormalizeVectors(vectorsPtr, numVectors, vectorLength) {
-      // src/wasm/vector-operations/batchNormalizeVectors(usize, i32, i32) => usize
-      return exports.batchNormalizeVectors(vectorsPtr, numVectors, vectorLength) >>> 0;
+    allocateVectorMemory(length) {
+      // src/wasm/vector-operations/allocateVectorMemory(i32) => usize
+      return exports.allocateVectorMemory(length) >>> 0;
     },
   }, exports);
   function __liftString(pointer) {
@@ -51,10 +47,18 @@ export const {
   dotProduct,
   manhattanDistance,
   normalize,
+  zScoreNormalize,
   computeBatchSimilarity,
-  hashEmbedding,
-  normalizeVector,
   batchNormalizeVectors,
+  hashEmbedding,
+  allocateVectorMemory,
+  freeVectorMemory,
+  dotProductSIMD,
+  cosineSimilaritySIMD,
+  cosineSimJS,
+  dotProductJS,
+  cosineSimSIMDJS,
+  getMemoryStats,
 } = await (async url => instantiate(
   await (async () => {
     const isNodeOrBun = typeof process != "undefined" && process.versions != null && (process.versions.node != null || process.versions.bun != null);

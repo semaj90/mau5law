@@ -1,6 +1,8 @@
 // WebGPU to CUDA Service Worker Bridge
 // Enables GPU acceleration for AI processing tasks using WebGPU as a bridge to CUDA
 
+import { WebGPUBufferUtils, toFloat32Array, toArrayBuffer, BufferTypeGuards, type BufferLike } from '../utils/buffer-conversion.js';
+
 interface WebGPUCudaBridgeMessage {
 	type: 'init' | 'process' | 'status' | 'cleanup';
 	payload?: any;
@@ -10,7 +12,7 @@ interface WebGPUCudaBridgeMessage {
 interface CudaProcessingTask {
 	id: string;
 	type: 'inference' | 'embedding' | 'tensor-ops' | 'image-processing';
-	data: ArrayBuffer | Float32Array;
+	data: BufferLike;
 	config: any;
 	priority: 'low' | 'medium' | 'high' | 'critical';
 }
@@ -187,7 +189,7 @@ class WebGPUCudaBridge {
 		return await this.runOllamaInference(data, config);
 	}
 
-	private async runWebGPUInference(data: ArrayBuffer | Float32Array, config: any): Promise<any> {
+	private async runWebGPUInference(data: BufferLike, config: any): Promise<any> {
 		if (!this.webgpuDevice) {
 			throw new Error('WebGPU device not initialized');
 		}
@@ -229,8 +231,8 @@ class WebGPUCudaBridge {
 			code: computeShaderCode
 		});
 
-		// Convert data to Float32Array if needed
-		const inputArray = data instanceof Float32Array ? data : new Float32Array(data);
+		// Convert data to Float32Array using buffer utilities
+		const inputArray = toFloat32Array(data);
 		const outputArray = new Float32Array(inputArray.length);
 
 		// Create buffers
@@ -322,10 +324,10 @@ class WebGPUCudaBridge {
 		// Submit commands
 		device.queue.submit([commandEncoder.finish()]);
 
-		// Read results
+		// Read results with proper buffer handling
 		await stagingBuffer.mapAsync(GPUMapMode.READ);
 		const resultArrayBuffer = stagingBuffer.getMappedRange();
-		const result = new Float32Array(resultArrayBuffer);
+		const result = WebGPUBufferUtils.createFloat32ArrayFromMappedRange(resultArrayBuffer);
 
 		// Cleanup
 		stagingBuffer.unmap();
@@ -337,7 +339,7 @@ class WebGPUCudaBridge {
 		return Array.from(result);
 	}
 
-	private async runOllamaInference(data: ArrayBuffer | Float32Array, config: any): Promise<any> {
+	private async runOllamaInference(data: BufferLike, config: any): Promise<any> {
 		try {
 			const response = await fetch(`${this.ollamaEndpoint}/api/generate`, {
 				method: 'POST',
@@ -367,7 +369,7 @@ class WebGPUCudaBridge {
 		}
 	}
 
-	private async runCudaMicroservice(data: ArrayBuffer | Float32Array, config: any): Promise<any> {
+	private async runCudaMicroservice(data: BufferLike, config: any): Promise<any> {
 		try {
 			const response = await fetch(`${this.cudaServiceEndpoint}/api/legal/inference`, {
 				method: 'POST',
@@ -471,10 +473,10 @@ class WebGPUCudaBridge {
 		return await this.runCPUTensorOps(data, config);
 	}
 
-	private async runWebGPUTensorOps(data: ArrayBuffer | Float32Array, config: any): Promise<any> {
+	private async runWebGPUTensorOps(data: BufferLike, config: any): Promise<any> {
 		// Implement WebGPU-based tensor operations
 		// This is a simplified implementation
-		const inputArray = data instanceof Float32Array ? data : new Float32Array(data);
+		const inputArray = toFloat32Array(data);
 		
 		switch (config.operation) {
 			case 'multiply':
@@ -490,9 +492,9 @@ class WebGPUCudaBridge {
 		}
 	}
 
-	private async runCPUTensorOps(data: ArrayBuffer | Float32Array, config: any): Promise<any> {
+	private async runCPUTensorOps(data: BufferLike, config: any): Promise<any> {
 		// CPU fallback for tensor operations
-		const inputArray = data instanceof Float32Array ? data : new Float32Array(data);
+		const inputArray = toFloat32Array(data);
 		
 		// Same operations as WebGPU version, but clearly marked as CPU fallback
 		switch (config.operation) {
@@ -520,12 +522,12 @@ class WebGPUCudaBridge {
 		return await this.runCPUImageProcessing(data, config);
 	}
 
-	private async runWebGPUImageProcessing(data: ArrayBuffer | Float32Array, config: any): Promise<any> {
+	private async runWebGPUImageProcessing(data: BufferLike, config: any): Promise<any> {
 		// WebGPU-based image processing (placeholder)
 		return { processed: true, source: 'webgpu' };
 	}
 
-	private async runCPUImageProcessing(data: ArrayBuffer | Float32Array, config: any): Promise<any> {
+	private async runCPUImageProcessing(data: BufferLike, config: any): Promise<any> {
 		// CPU-based image processing (placeholder)
 		return { processed: true, source: 'cpu' };
 	}

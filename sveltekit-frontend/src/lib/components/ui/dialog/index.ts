@@ -1,16 +1,21 @@
-export { default as BitsDialog } from './BitsDialog.svelte';
-export { default as Dialog } from './BitsDialog.svelte';
+// Re-export from enhanced-bits with fallback compatibility
+export { 
+  Dialog,
+  Button as DialogTrigger,
+  CardTitle as DialogTitle,
+  CardDescription as DialogDescription
+} from '$lib/components/ui/enhanced-bits';
 
-// Namespace-friendly subcomponents (so `import * as Dialog` works with `Dialog.Root`, etc.)
-export { default as Root } from './DialogRoot.svelte';
-export { default as Trigger } from './DialogTrigger.svelte';
-export { default as Content } from './DialogContent.svelte';
-export { default as Header } from './DialogHeader.svelte';
-export { default as Title } from './DialogTitle.svelte';
-export { default as Description } from './DialogDescription.svelte';
-export { default as Footer } from './DialogFooter.svelte';
+// Compound component structure for * as Dialog imports
+export { Dialog as Root } from '$lib/components/ui/enhanced-bits';
+export { Button as Trigger } from '$lib/components/ui/enhanced-bits';
+export { Dialog as Content } from '$lib/components/ui/enhanced-bits';
+export { CardHeader as Header } from '$lib/components/ui/enhanced-bits';
+export { CardTitle as Title } from '$lib/components/ui/enhanced-bits';
+export { CardDescription as Description } from '$lib/components/ui/enhanced-bits';
+export { CardFooter as Footer } from '$lib/components/ui/enhanced-bits';
+
+// Legacy exports for backward compatibility
+export { Dialog as BitsDialog } from '$lib/components/ui/enhanced-bits';
 
 export type * from './types';
-
-// Re-export Dialog primitive for advanced usage
-export { Dialog as DialogPrimitive } from 'bits-ui';

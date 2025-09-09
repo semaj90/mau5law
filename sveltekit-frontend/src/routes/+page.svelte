@@ -8,6 +8,8 @@
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import * as Card from '$lib/components/ui/card';
 
   let isLoading = $state(false);
   let systemMetrics = $state({
