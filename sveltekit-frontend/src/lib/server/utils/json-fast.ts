@@ -13,18 +13,32 @@ async function ensureSimd() {
   try {
     // Try common module IDs; if none present, silently fall back
     // These are optional; they won't be bundled unless installed.
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const mod = (await import('simdjson')).default || (await import('simdjson'));
-    if (mod && typeof (mod as any).parse === 'function') {
-      simdParser = { parse: (mod as any).parse };
-      return simdParser;
+    // Only try importing in server environment
+    if (typeof window === 'undefined') {
+      try {
+        const mod = await import('simdjson');
+        const parser = mod.default || mod;
+        if (parser && typeof (parser as any).parse === 'function') {
+          simdParser = { parse: (parser as any).parse };
+          return simdParser;
+        }
+      } catch {
+        // Module not available, continue to fallback
+      }
     }
   } catch {}
   try {
-    const mod2 = await import('node-simdjson');
-    if (mod2 && typeof (mod2 as any).parse === 'function') {
-      simdParser = { parse: (mod2 as any).parse };
-      return simdParser;
+    // Only try importing in server environment
+    if (typeof window === 'undefined') {
+      try {
+        const mod2 = await import('node-simdjson');
+        if (mod2 && typeof (mod2 as any).parse === 'function') {
+          simdParser = { parse: (mod2 as any).parse };
+          return simdParser;
+        }
+      } catch {
+        // Module not available, continue to fallback
+      }
     }
   } catch {}
   simdParser = null;

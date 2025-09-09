@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Generate specialized cache key based on legal search context
-    const cacheKey = generateLegalSearchKey(searchRequest);
+    const cacheKey = await generateLegalSearchKey(searchRequest);
     const embeddingCacheKey = `${searchType}:${query.toLowerCase().trim()}`;
 
     // Check cache first
@@ -216,7 +216,7 @@ export const GET: RequestHandler = async ({ url }) => {
 /**
  * Generate cache key for legal search requests
  */
-function generateLegalSearchKey(request: LegalSearchRequest): string {
+async function generateLegalSearchKey(request: LegalSearchRequest): Promise<string> {
   const keyData = {
     query: request.query.toLowerCase().trim(),
     searchType: request.searchType,

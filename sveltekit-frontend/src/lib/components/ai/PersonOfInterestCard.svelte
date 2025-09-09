@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { $derived } from 'svelte';
 
   interface Props {
     class?: string;
@@ -7,7 +6,7 @@
   }
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/button';
   // import { Avatar } from '$lib/components/ui/Avatar.svelte';
   
   let { person = $bindable() } = $props(); // {
@@ -206,7 +205,7 @@ let showFullDetails = $state(false);
         variant="outline" 
         size="sm" 
         class="flex-1 text-xs"
-        on:on:click={() => showFullDetails = !showFullDetails}
+        onclick={() => showFullDetails = !showFullDetails}
       >
         {showFullDetails ? 'Less' : 'More'} Info
       </Button>

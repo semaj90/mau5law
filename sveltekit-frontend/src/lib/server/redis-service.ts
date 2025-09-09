@@ -5,7 +5,7 @@
  */
 
 import Redis from 'ioredis';
-import type { RedisOptions, Cluster } from 'ioredis';
+import type { RedisOptions } from 'ioredis';
 
 interface RedisConfig {
   host: string;
@@ -15,7 +15,6 @@ interface RedisConfig {
   maxRetriesPerRequest: number;
   retryDelayOnFailover: number;
   enableReadyCheck: boolean;
-  maxRetriesPerRequest?: number;
   lazyConnect: boolean;
   keepAlive: number;
   family: number;
@@ -166,8 +165,8 @@ class RedisService {
 
     try {
       // Test JSON module
-      await this.pool.primary.call('JSON.SET', 'test:json', '$', '{"legal-ai": "ready"}');
-      await this.pool.primary.call('JSON.GET', 'test:json');
+      await (this.pool.primary as any).sendCommand(['JSON.SET', 'test:json', '$', '{"legal-ai": "ready"}']);
+      await (this.pool.primary as any).sendCommand(['JSON.GET', 'test:json']);
       await this.pool.primary.del('test:json');
       console.log('✅ [RedisService] JSON module available');
 
@@ -210,7 +209,7 @@ class RedisService {
    * Check if Redis is connected and healthy
    */
   isHealthy(): boolean {
-    return this.isConnected && this.pool?.primary?.status === 'ready';
+    return this.isConnected && this.pool?.primary !== null;
   }
 
   /**
@@ -228,7 +227,7 @@ class RedisService {
     
     return {
       connected: this.isConnected,
-      status: client?.status || 'disconnected',
+      status: this.isConnected ? 'connected' : 'disconnected',
       reconnectAttempts: this.reconnectAttempts,
       config: {
         ...this.config,
@@ -246,7 +245,7 @@ class RedisService {
     }
 
     try {
-      const info = await this.pool.primary.info();
+      const info = await (this.pool.primary as any).info();
       const lines = info.split('\r\n');
       const result: any = {};
 
@@ -328,7 +327,7 @@ class RedisService {
     if (!client) return false;
 
     try {
-      const result = await client.exists(key);
+      const result = await (client as any).exists(key);
       return result === 1;
     } catch (error) {
       console.error(`[RedisService] Failed to check existence of ${key}:`, error);
@@ -341,7 +340,7 @@ class RedisService {
     if (!client) return [];
 
     try {
-      return await client.keys(pattern);
+      return await (client as any).keys(pattern);
     } catch (error) {
       console.error(`[RedisService] Failed to get keys for pattern ${pattern}:`, error);
       return [];

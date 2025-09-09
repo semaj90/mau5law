@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 
 import { ensureError } from '$lib/utils/ensure-error';
-import { redis } from '$lib/server/cache/redis-service';
+import { redisServiceServiceService } from '$lib/server/redisServiceService-service';
 import { z } from 'zod';
 import { db } from '$lib/server/db/index';
 import { cases } from '$lib/server/db/schema-postgres';
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     
     // Ensure Redis connection
-    await redis.connect();
+    await redisServiceServiceService.connect();
     
     // Create Redis stream event
     const eventData = {
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     
     // Add to Redis stream for worker consumption
     const streamName = 'autotag:requests';
-    const streamId = await redis.xAdd(streamName, '*', eventData);
+    const streamId = await redisServiceService.xAdd(streamName, '*', eventData);
     
     console.log(`🚀 Worker trigger sent to Redis stream: ${streamName}:${streamId}`, {
       type: triggerData.type,
@@ -156,14 +156,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Ensure Redis connection
-    await redis.connect();
+    await redisServiceServiceService.connect();
     const streamName = 'autotag:requests';
     
     // Get stream info
-    const streamInfo = await redis.xInfoStream(streamName).catch(() => null);
+    const streamInfo = await redisServiceService.xInfoStream(streamName).catch(() => null);
     
     // Get recent events (last 10)
-    const recentEvents = await redis.xRevRange(streamName, '+', '-', { COUNT: 10 }).catch(() => []);
+    const recentEvents = await redisServiceService.xRevRange(streamName, '+', '-', { COUNT: 10 }).catch(() => []);
     
     // Parse events
     const events = recentEvents.map((event: any) => ({
@@ -222,15 +222,15 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     // }
     
     // Ensure Redis connection
-    await redis.connect();
+    await redisServiceServiceService.connect();
     const streamName = 'autotag:requests';
     
     // Get current stream info
-    const streamInfo = await redis.xInfoStream(streamName).catch(() => null);
+    const streamInfo = await redisServiceService.xInfoStream(streamName).catch(() => null);
     const deletedCount = streamInfo?.length || 0;
     
     // Delete the entire stream
-    await redis.del(streamName);
+    await redisServiceService.del(streamName);
     
     console.log(`🗑️ Worker event stream cleared: ${deletedCount} events deleted`);
     

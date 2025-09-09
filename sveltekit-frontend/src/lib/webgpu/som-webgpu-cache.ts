@@ -269,7 +269,7 @@ export class WebGPUSOMCache {
   async processNPMCheckErrors(npmOutput: string): Promise<IntelligentTodo[]> {
     // Check cache first
     const cacheKey = this.generateCacheKey(npmOutput);
-    const cached = this.getCachedResult(cacheKey);
+    const cached = this.getLocalCachedTodos(cacheKey);
     if (cached) {
       console.log('📋 Retrieved cached SOM analysis');
       return cached;
@@ -692,7 +692,7 @@ export class WebGPUSOMCache {
     return `som_analysis_${Math.abs(hash)}`;
   }
 
-  private getCachedResult(key: string): IntelligentTodo[] | null {
+  private getLocalCachedTodos(key: string): IntelligentTodo[] | null {
     const cached = this.cacheCollection.findOne({ key });
     if (cached && Date.now() - cached.timestamp < 300000) {
       // 5 minutes
@@ -975,7 +975,8 @@ export class WebGPUSOMCache {
           const cached = await this.getCachedResult(embeddingKey);
           if (!cached) {
             // Generate embedding using WebGPU if available
-            const embedding = await this.computeErrorEmbedding(errorMessage);
+            const embeddings = await this.computeErrorEmbeddingsGPU([{ message: errorMessage, timestamp: Date.now(), level: 'error' } as NPMError]);
+            const embedding = embeddings[0];
             await this.storeResult(embeddingKey, embedding, {
               ttl: 7200, // 2 hours
               priority: 3,
@@ -1008,7 +1009,7 @@ export class WebGPUSOMCache {
       }
       
       // Extract features for SOM training
-      const trainingData = recentErrors.map(error => ({
+      const trainingData = recentErrors.map((error: any) => ({
         features: [
           error.severity === 'critical' ? 1.0 : error.severity === 'high' ? 0.7 : 0.3,
           error.message.length / 1000, // Normalized message length
@@ -1044,7 +1045,7 @@ export class WebGPUSOMCache {
     const clusters = {};
     
     for (const data of trainingData) {
-      const key = data.features.map(f => Math.round(f * 10)).join(',');
+      const key = data.features.map((f: number) => Math.round(f * 10)).join(',');
       if (!clusters[key]) {
         clusters[key] = [];
       }
@@ -1101,5 +1102,5 @@ export async function initializeSOMCache(): Promise<WebGPUSOMCache> {
   return cache;
 }
 
-// Export for use in Svelte components
-// Class is already exported above; no duplicate export
+// Export singleton instance for service worker
+export const somWebGPUCache = new WebGPUSOMCache();

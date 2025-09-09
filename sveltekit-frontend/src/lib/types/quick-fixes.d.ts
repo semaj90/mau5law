@@ -15,7 +15,7 @@ declare module '$lib/server/db/drizzle' {
   export default _default;
 }
 
-declare module '$lib/server/cache/redis-service' {
+declare module '$lib/server/redis-service' {
   const redis: any;
   export { redis };
 }

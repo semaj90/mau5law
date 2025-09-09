@@ -217,7 +217,7 @@
   <div class="mt-6 bg-gray-50 rounded-lg p-4">
     <h3 class="text-sm font-semibold mb-2 text-gray-700">Technical Implementation Notes:</h3>
     <ul class="text-xs text-gray-600 space-y-1">
-      <li>• Uses Svelte 5 with `$state()`, `$effect()`, and `{#snippet}` patterns</li>
+      <li>• Uses Svelte 5 with $state(), $effect(), and snippet patterns</li>
       <li>• Integrates with existing EmbeddingAdapter, EmbeddingCacheMiddleware, and RAG API</li>
       <li>• Supports both enhanced service and fallback API modes for reliability</li>
       <li>• Includes comprehensive error handling and user feedback mechanisms</li>

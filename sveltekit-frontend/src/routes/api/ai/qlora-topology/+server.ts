@@ -1,6 +1,17 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { UnifiedCacheEnhancedOrchestrator } from '$lib/ai/unified-cache-enhanced-orchestrator.js';
+import * as pako from 'pako';
+import { createHash } from 'crypto';
+
+// Redis client for caching (in production, use proper Redis client)
+interface CacheEntry {
+  data: Buffer;
+  timestamp: number;
+  ttl: number;
+}
+
+const cache = new Map<string, CacheEntry>();
 
 interface QLoRATopologyRequest {
   query: string;
@@ -9,6 +20,7 @@ interface QLoRATopologyRequest {
   accuracyTarget?: number;
   useCache?: boolean;
   trainingMode?: boolean;
+  binaryResponse?: boolean; // Request binary-compressed response
 }
 
 interface QLoRATopologyResponse {
@@ -41,6 +53,33 @@ async function getOrchestrator(): Promise<UnifiedCacheEnhancedOrchestrator> {
   return orchestrator;
 }
 
+// Binary cache utilities
+function generateCacheKey(request: QLoRATopologyRequest): string {
+  const hash = createHash('sha256');
+  hash.update(JSON.stringify({
+    query: request.query,
+    context: request.context,
+    topologyType: request.topologyType,
+    accuracyTarget: request.accuracyTarget,
+    trainingMode: request.trainingMode
+  }));
+  return `qlora:${hash.digest('hex').substring(0, 16)}`;
+}
+
+function isExpired(entry: CacheEntry): boolean {
+  return Date.now() > entry.timestamp + entry.ttl;
+}
+
+function compressResponse(data: any): Buffer {
+  const jsonString = JSON.stringify(data);
+  return Buffer.from(pako.gzip(jsonString));
+}
+
+function decompressResponse(buffer: Buffer): any {
+  const decompressed = pako.ungzip(buffer, { to: 'string' });
+  return JSON.parse(decompressed);
+}
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: QLoRATopologyRequest = await request.json();
@@ -50,7 +89,8 @@ export const POST: RequestHandler = async ({ request }) => {
       topologyType = 'general',
       accuracyTarget = 90,
       useCache = true,
-      trainingMode = false
+      trainingMode = false,
+      binaryResponse = false
     } = body;
 
     if (!query) {
@@ -58,19 +98,83 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     const startTime = Date.now();
+    
+    // Check cache first (cache-aside pattern)
+    const cacheKey = generateCacheKey(body);
+    let cacheHit = false;
+    
+    if (useCache) {
+      const cachedEntry = cache.get(cacheKey);
+      if (cachedEntry && !isExpired(cachedEntry)) {
+        console.log(`[QLoRA API] Cache HIT for key: ${cacheKey}`);
+        cacheHit = true;
+        
+        if (binaryResponse) {
+          // Return binary compressed response
+          return new Response(cachedEntry.data, {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/octet-stream',
+              'Content-Encoding': 'gzip',
+              'X-Cache': 'HIT',
+              'X-Processing-Time': `${Date.now() - startTime}ms`
+            }
+          });
+        } else {
+          // Return decompressed JSON
+          const cachedResponse = decompressResponse(cachedEntry.data);
+          cachedResponse.cacheHit = true;
+          cachedResponse.processingTime = Date.now() - startTime;
+          return json(cachedResponse);
+        }
+      } else {
+        console.log(`[QLoRA API] Cache MISS for key: ${cacheKey}`);
+      }
+    }
+
     const orch = await getOrchestrator();
 
-    // Process with unified intelligence
+    // Process with unified intelligence (cache miss - expensive operation)
     const result = await orch.processWithUnifiedIntelligence({
+      requestId: `qlora_${cacheKey}`,
+      operationType: 'qlora_topology_prediction',
       query,
-      context,
-      type: topologyType,
-      options: {
-        useCache,
-        accuracyTarget,
-        enableLearning: trainingMode,
-        webgpuAcceleration: true,
-        realTimeOptimization: true
+      context: {
+        documentContext: {
+          content: query,
+          type: topologyType,
+          metadata: {
+            source: 'api_request',
+            confidence: 1.0
+          }
+        },
+        userSession: {
+          sessionId: 'anonymous',
+          userId: 'anonymous',
+          sessionType: 'api'
+        }
+      },
+      requirements: {
+        responseFormat: 'json',
+        memoryBudget: 1024,
+        maxLatencyMs: 30000
+      },
+      cachePreferences: {
+        enableMultiTierCache: useCache,
+        enableWebGPUCache: true,
+        enableSummarizeCache: true,
+        enableRabbitMQCache: false,
+        cacheStrategy: 'adaptive',
+        maxLatencyMs: 30000,
+        minAccuracyThreshold: accuracyTarget / 100
+      },
+      optimization: {
+        predictiveAccuracy: 0.6,
+        targetAccuracy: accuracyTarget / 100,
+        learningRate: 0.03,
+        useReinforcementLearning: trainingMode,
+        useWebGPUAcceleration: true,
+        useAsyncOrchestration: false
       }
     });
 
@@ -84,7 +188,7 @@ export const POST: RequestHandler = async ({ request }) => {
       prediction: result.prediction,
       accuracy: result.accuracy,
       topology: result.topology,
-      cacheHit: result.cacheHit,
+      cacheHit,
       processingTime,
       metrics: {
         hmmPredictionScore: metrics.hmmAccuracy,
@@ -103,9 +207,35 @@ export const POST: RequestHandler = async ({ request }) => {
       };
     }
 
+    // Store in cache before responding (cache-aside pattern)
+    if (useCache) {
+      const compressedData = compressResponse(response);
+      cache.set(cacheKey, {
+        data: compressedData,
+        timestamp: Date.now(),
+        ttl: 5 * 60 * 1000 // 5 minutes TTL
+      });
+      console.log(`[QLoRA API] Cached response with key: ${cacheKey} (${compressedData.length} bytes)`);
+    }
+
     console.log(`[QLoRA API] Processed query in ${processingTime}ms with ${result.accuracy}% accuracy`);
     
-    return json(response);
+    if (binaryResponse) {
+      // Return binary compressed response
+      const compressedData = compressResponse(response);
+      return new Response(compressedData, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          'Content-Encoding': 'gzip',
+          'X-Cache': 'MISS',
+          'X-Processing-Time': `${processingTime}ms`,
+          'X-Compression-Ratio': `${Math.round((JSON.stringify(response).length / compressedData.length) * 100) / 100}x`
+        }
+      });
+    } else {
+      return json(response);
+    }
 
   } catch (error: any) {
     console.error('[QLoRA API] Error processing request:', error);

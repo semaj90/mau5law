@@ -9,7 +9,7 @@ export default defineConfig({
     dialect: "postgresql",
     dbCredentials: {
         // postgres-js expects a full connection URL
-        url: process.env.DATABASE_URL ?? "postgresql://postgres:123456@localhost:5432/legal_ai_db",
+        url: process.env.DATABASE_URL ?? "postgresql://legal_admin:123456@localhost:5433/legal_ai_db",
     },
     // optional: keep your migrations in a specific folder
     migrations: {

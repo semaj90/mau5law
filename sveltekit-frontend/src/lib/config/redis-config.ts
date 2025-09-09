@@ -14,7 +14,7 @@ const isTest = process.env.NODE_ENV === 'test';
 // Base Redis configuration
 export const REDIS_BASE_CONFIG: RedisOptions = {
   host: process.env.REDIS_HOST || 'localhost',
-  port: parseInt(process.env.REDIS_PORT || '4005'),
+  port: parseInt(process.env.REDIS_PORT || '6379'),
   password: process.env.REDIS_PASSWORD || undefined,
   db: parseInt(process.env.REDIS_DB || '0'),
   
@@ -155,7 +155,7 @@ export function getRedisConfig(service?: keyof typeof SERVICE_CONFIGS): RedisOpt
 // Connection URL builder for external tools
 export function getRedisUrl(database?: number): string {
   const host = process.env.REDIS_HOST || 'localhost';
-  const port = process.env.REDIS_PORT || '4005';
+  const port = process.env.REDIS_PORT || '6379';
   const password = process.env.REDIS_PASSWORD;
   const db = database ?? 0;
   

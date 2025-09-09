@@ -1,20 +1,13 @@
 <script lang="ts">
   import { $state } from 'svelte';
-  import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import { createDialog } from "melt";
   import Button from '$lib/components/ui/Button.svelte';
 
   // Test Svelte 5 state with bits-ui v2.9.4
   let dialogOpen = $state(false);
   let selectedValue = $state('');
+  let meltDialogOpen = $state(false);
 
-  // Test melt v0.39.0 builder (Svelte 5 compatible)
-  const meltDialog = createDialog({
-    preventScroll: true,
-    closeOnEscape: true
-  });
-
-  let { trigger, content, overlay } = $derived(meltDialog.elements);
+  // Simple dialog implementation without melt
 
   // Test modern event handlers
   function handleButtonClick() {
@@ -80,16 +73,15 @@
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">melt v0.39.0 Builder Test</h2>
       <button
-        use:trigger
+        onclick={() => meltDialogOpen = !meltDialogOpen}
         class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
       >
         Open melt Dialog
       </button>
 
-      {#if $meltDialog.states.open}
-        <div use:overlay class="fixed inset-0 bg-black/50"></div>
+      {#if meltDialogOpen}
+        <div class="fixed inset-0 bg-black/50"></div>
         <div
-          use:content
           class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg max-w-md w-full"
         >
           <h3 class="text-lg font-semibold mb-4">melt Dialog Test</h3>

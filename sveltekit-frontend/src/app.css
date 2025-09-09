@@ -113,9 +113,67 @@
     animation: glow 2s ease-in-out infinite alternate;
   }
 
+  /* Retro Gaming Effects */
+  .nes-pixelated {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges; 
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  .nes-scanlines::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 255, 0, 0.1) 2px,
+      rgba(0, 255, 0, 0.1) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .n64-depth {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .retro-border {
+    border: 3px solid;
+    border-image: linear-gradient(45deg, #00ff41, #ffd700, #ff0041, #3cbcfc) 1;
+    position: relative;
+  }
+
+  .retro-border::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #00ff41, #ffd700, #ff0041, #3cbcfc);
+    z-index: -1;
+    border-radius: inherit;
+    animation: retro-glow 2s linear infinite;
+  }
+
   /* Gradient text */
   .gradient-text-primary {
     @apply bg-gradient-to-r from-yorha-primary to-yorha-accent bg-clip-text text-transparent;
+  }
+
+  .gradient-text-retro {
+    background: linear-gradient(45deg, #00ff41, #ffd700, #ff0041, #3cbcfc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 3s ease-in-out infinite;
   }
 
   /* Scan line effect */
@@ -201,6 +259,57 @@
   }
   to {
     box-shadow: 0 0 30px theme(colors.yorha.primary / 40%);
+  }
+}
+
+@keyframes retro-glow {
+  0% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  25% {
+    filter: hue-rotate(90deg) brightness(1.2);
+  }
+  50% {
+    filter: hue-rotate(180deg) brightness(1);
+  }
+  75% {
+    filter: hue-rotate(270deg) brightness(1.2);
+  }
+  100% {
+    filter: hue-rotate(360deg) brightness(1);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pixel-glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
   }
 }
 

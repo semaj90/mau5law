@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js';
  * Central API endpoint that orchestrates all backend services
  */
 
-import { redis } from '$lib/server/cache/redis-service';
+import { redisServiceServiceService } from '$lib/server/redisServiceService-service';
 import { minioService } from '$lib/server/storage/minio-service';
 import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service';
 import { workflowOrchestrator } from '$lib/machines/workflow-machine';
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const healthStatus = {
           status: 'healthy',
           services: {
-            redis: { status: 'healthy', connected: true },
+            redisServiceService: { status: 'healthy', connected: true },
             minio: { status: 'healthy', initialized: true },
             rabbitmq: { status: 'healthy', connected: true },
             postgresql: { status: 'healthy', connected: true },
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         return json(createResponse(true, searchResults, undefined, {
           executionTime: Date.now() - startTime,
-          servicesUsed: ['postgresql', 'redis']
+          servicesUsed: ['postgresql', 'redisServiceService']
         }));
 
       default:
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
         return json(createResponse(true, ragResponse, undefined, {
           executionTime: Date.now() - startTime,
-          servicesUsed: ['postgresql', 'redis', 'rabbitmq']
+          servicesUsed: ['postgresql', 'redisServiceService', 'rabbitmq']
         }));
 
       case 'upload':

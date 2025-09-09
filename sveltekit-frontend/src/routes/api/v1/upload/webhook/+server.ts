@@ -6,12 +6,12 @@ import type { RequestHandler } from './$types.js';
  */
 
 import { json } from '@sveltejs/kit';
-import { redis } from '$lib/server/cache/redis-service';
+import { redisServiceService } from '$lib/server/redisService-service';
 import { minioService } from '$lib/server/storage/minio-service';
 import { db } from '$lib/server/db/client';
 import { evidence, documents } from '$lib/db/schema';
-import crypto from "crypto";
-import { URL } from "url";
+import crypto from 'crypto';
+import { URL } from 'url';
 
 export interface WebhookEvent {
   eventName: string;
@@ -81,9 +81,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       const pathParts = webhookEvent.objectName.split('/');
       const fileName = pathParts[pathParts.length - 1];
       // Look for uploadId in Redis by searching for matching object name
-      const keys = await redis.keys('upload:*');
+      const keys = await redisService.keys('upload:*');
       for (const key of keys) {
-        const data = await redis.get(key);
+        const data = await redisService.get(key);
         if (data) {
           const metadata = JSON.parse(data);
           if (metadata.objectName === webhookEvent.objectName) {
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     } else {
       // Get upload metadata from Redis
       const uploadKey = `upload:${uploadId}`;
-      const data = await redis.get(uploadKey);
+      const data = await redisService.get(uploadKey);
       if (data) {
         uploadMetadata = JSON.parse(data);
       }
@@ -137,10 +137,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
     // Store job in Redis for tracking
     const jobKey = `ingestion:${jobId}`;
-    await redis.setex(jobKey, 86400, JSON.stringify(ingestionJob)); // 24 hours
+    await redisService.setex(jobKey, 86400, JSON.stringify(ingestionJob)); // 24 hours
 
     // Add to ingestion queue
-    await redis.lpush('ingestion:queue', JSON.stringify(ingestionJob));
+    await redisService.lpush('ingestion:queue', JSON.stringify(ingestionJob));
 
     // Update upload status if we have the upload metadata
     if (uploadId && uploadMetadata) {
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       uploadMetadata.status = 'processing';
       uploadMetadata.ingestionJobId = jobId;
       uploadMetadata.webhookReceivedAt = new Date().toISOString();
-      await redis.setex(uploadKey, 3600, JSON.stringify(uploadMetadata));
+      await redisService.setex(uploadKey, 3600, JSON.stringify(uploadMetadata));
     }
 
     // If this is a case-related upload, create evidence entry
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           ...ingestionJob.metadata,
           evidenceId: evidenceEntry.id,
         };
-        await redis.setex(jobKey, 86400, JSON.stringify(ingestionJob));
+        await redisService.setex(jobKey, 86400, JSON.stringify(ingestionJob));
 
         console.log(`📋 Evidence entry created: ${evidenceEntry.id}`);
       } catch (dbError) {
@@ -189,7 +189,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     }
 
     // Publish events
-    await redis.publish(
+    await redisService.publish(
       'upload:completed',
       JSON.stringify({
         uploadId,
@@ -202,7 +202,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       })
     );
 
-    await redis.publish(
+    await redisService.publish(
       'ingestion:job_created',
       JSON.stringify({
         jobId,
@@ -254,8 +254,8 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     const caseId = url.searchParams.get('caseId');
 
     // Get jobs from queue and completed jobs
-    const queuedJobs = await redis.lrange('ingestion:queue', 0, limit - 1);
-    const allJobKeys = await redis.keys('ingestion:*');
+    const queuedJobs = await redisService.lrange('ingestion:queue', 0, limit - 1);
+    const allJobKeys = await redisService.keys('ingestion:*');
 
     const jobs = [];
 
@@ -276,7 +276,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       if (jobs.length >= limit) break;
 
       try {
-        const jobData = await redis.get(jobKey);
+        const jobData = await redisService.get(jobKey);
         if (jobData) {
           const job = JSON.parse(jobData);
           if ((!status || job.status === status) && (!caseId || job.caseId === caseId)) {

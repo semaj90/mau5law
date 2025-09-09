@@ -115,7 +115,7 @@
 
 <style>
 	.gaming-hud {
-		position: fixed
+		position: fixed;
 		top: 0;
 		left: 0;
 		right: 0;
@@ -130,9 +130,9 @@
 	}
 	
 	.hud-top-bar {
-		display: flex
+		display: flex;
 		justify-content: space-between;
-		align-items: center
+		align-items: center;
 		padding: 12px 24px;
 		background: var(--yorha-bg-primary, #0a0a0a);
 		border-bottom: 1px solid var(--yorha-text-muted, #808080);
@@ -140,13 +140,13 @@
 	
 	/* Level Section */
 	.level-section {
-		display: flex
-		align-items: center
+		display: flex;
+		align-items: center;
 		gap: 16px;
 	}
 	
 	.level-badge {
-		display: flex
+		display: flex;
 		align-items: center
 		background: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-bg-primary, #0a0a0a);
