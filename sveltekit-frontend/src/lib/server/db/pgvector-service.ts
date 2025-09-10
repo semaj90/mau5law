@@ -6,7 +6,7 @@
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { cosineDistance, desc, sql, eq } from 'drizzle-orm';
-import { vectorEmbeddings, legalDocuments, qloraTrainingJobs } from './schema-postgres';
+import { contentEmbeddings, legalDocuments, embeddingCache } from './schema-postgres';
 
 // Production PostgreSQL Configuration
 const connectionConfig = {
@@ -88,14 +88,17 @@ export class PgVectorService {
           connectionPool: {
             totalCount: this.pool.totalCount,
             idleCount: this.pool.idleCount,
-            waitingCount: this.pool.waitingCount
-          }
-        }
+            waitingCount: this.pool.waitingCount,
+          },
+        },
       };
     } catch (error) {
       return {
         success: false,
-        details: { error: error.message, connectionConfig: { ...connectionConfig, password: '***' } }
+        details: {
+          error: error.message,
+          connectionConfig: { ...connectionConfig, password: '***' },
+        },
       };
     }
   }
@@ -113,7 +116,9 @@ export class PgVectorService {
     try {
       // Validate embedding dimensions (768 for nomic-embed-text, gemma models vary)
       if (embedding.length !== 768 && embedding.length !== 1536) {
-        throw new Error(`Invalid embedding dimension: expected 768 or 1536, got ${embedding.length}`);
+        throw new Error(
+          `Invalid embedding dimension: expected 768 or 1536, got ${embedding.length}`
+        );
       }
 
       const client = await this.pool.connect();
@@ -128,11 +133,11 @@ export class PgVectorService {
            VALUES ($1, $2, $3, $4, $5::vector, NOW())
            RETURNING id`,
           [
-            metadata.title || 'Untitled', 
-            content, 
-            metadata.type || 'contract', 
+            metadata.title || 'Untitled',
+            content,
+            metadata.type || 'contract',
             JSON.stringify(metadata),
-            embeddingStr
+            embeddingStr,
           ]
         );
 
@@ -142,7 +147,7 @@ export class PgVectorService {
 
         return {
           success: true,
-          id: docId
+          id: docId,
         };
       } catch (error) {
         await client.query('ROLLBACK');
@@ -153,7 +158,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -174,7 +179,9 @@ export class PgVectorService {
   ): Promise<{ success: boolean; results?: any[]; error?: string; metadata?: any }> {
     try {
       if (queryEmbedding.length !== 768 && queryEmbedding.length !== 1536) {
-        throw new Error(`Invalid query embedding dimension: expected 768 or 1536, got ${queryEmbedding.length}`);
+        throw new Error(
+          `Invalid query embedding dimension: expected 768 or 1536, got ${queryEmbedding.length}`
+        );
       }
 
       const {
@@ -182,14 +189,14 @@ export class PgVectorService {
         distanceMetric = 'cosine',
         threshold = 1.0,
         documentType,
-        includeContent = false
+        includeContent = false,
       } = options;
 
       // Choose distance operator based on metric
       const distanceOperator = {
         cosine: '<->',
         euclidean: '<=>',
-        inner_product: '<#>'
+        inner_product: '<#>',
       }[distanceMetric];
 
       const embeddingStr = `[${queryEmbedding.join(',')}]`;
@@ -204,7 +211,7 @@ export class PgVectorService {
           ld.keywords as metadata,
           ld.created_at
         FROM legal_documents ld
-        WHERE ld.embedding IS NOT NULL 
+        WHERE ld.embedding IS NOT NULL
         AND (ld.embedding ${distanceOperator} $1::vector) < $2
       `;
 
@@ -235,8 +242,8 @@ export class PgVectorService {
             totalResults: result.rowCount,
             distanceMetric,
             threshold,
-            query: query.replace(/\$\d+/g, '?')
-          }
+            query: query.replace(/\$\d+/g, '?'),
+          },
         };
       } finally {
         client.release();
@@ -244,7 +251,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -283,8 +290,13 @@ export class PgVectorService {
               `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, created_at)
                VALUES ($1, $2, $3, $4, $5, NOW())
                ON CONFLICT (document_id) DO NOTHING`,
-              [doc.documentId, doc.metadata?.title || 'Batch Insert', doc.content,
-               doc.metadata?.type || 'contract', doc.metadata || {}]
+              [
+                doc.documentId,
+                doc.metadata?.title || 'Batch Insert',
+                doc.content,
+                doc.metadata?.type || 'contract',
+                doc.metadata || {},
+              ]
             );
 
             // Insert embedding
@@ -309,7 +321,7 @@ export class PgVectorService {
         return {
           success: true,
           inserted,
-          errors: errors.length > 0 ? errors : undefined
+          errors: errors.length > 0 ? errors : undefined,
         };
       } catch (error) {
         await client.query('ROLLBACK');
@@ -320,7 +332,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        errors: [error.message]
+        errors: [error.message],
       };
     }
   }
@@ -329,24 +341,26 @@ export class PgVectorService {
    * Create IVFFLAT index for vector similarity search optimization
    * Best Practice: Index creation for production performance
    */
-  async createVectorIndex(options: {
-    lists?: number;
-    metric?: 'cosine' | 'euclidean' | 'inner_product';
-    tableName?: string;
-    columnName?: string;
-  } = {}): Promise<{ success: boolean; details?: any; error?: string }> {
+  async createVectorIndex(
+    options: {
+      lists?: number;
+      metric?: 'cosine' | 'euclidean' | 'inner_product';
+      tableName?: string;
+      columnName?: string;
+    } = {}
+  ): Promise<{ success: boolean; details?: any; error?: string }> {
     try {
       const {
         lists = 100,
         metric = 'cosine',
         tableName = 'vector_embeddings',
-        columnName = 'embedding'
+        columnName = 'embedding',
       } = options;
 
       const metricMapping = {
         cosine: 'vector_cosine_ops',
         euclidean: 'vector_l2_ops',
-        inner_product: 'vector_ip_ops'
+        inner_product: 'vector_ip_ops',
       };
 
       const indexName = `idx_${tableName}_${columnName}_${metric}`;
@@ -382,8 +396,8 @@ export class PgVectorService {
             metric,
             lists,
             creationTime: `${indexTime}ms`,
-            query: indexQuery.trim()
-          }
+            query: indexQuery.trim(),
+          },
         };
       } finally {
         client.release();
@@ -391,7 +405,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -478,9 +492,9 @@ export class PgVectorService {
             connectionPool: {
               total: this.pool.totalCount,
               idle: this.pool.idleCount,
-              waiting: this.pool.waitingCount
-            }
-          }
+              waiting: this.pool.waitingCount,
+            },
+          },
         };
       } finally {
         client.release();
@@ -488,7 +502,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }

@@ -448,7 +448,7 @@
 								class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors {analysisMode === mode.key ? 'bg-yellow-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}"
 								onclick={() => analysisMode = mode.key as any}
 							>
-<svelte:component this={mode.icon} class="w-4 h-4" />
+{#if mode.icon}{@const IconComponent = mode.icon}<IconComponent class="w-4 h-4" />{/if}
 								{mode.label}
 							</button>
 						{/each}
@@ -456,21 +456,21 @@
 				</div>
 
 				<div class="flex items-center gap-2">
-					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => showSessions = true}>
+					<Button class="bits-btn" variant="outline" size="sm" onclick={() => showSessions = true}>
 						<Clock class="h-4 w-4 mr-2" />
 						Sessions ({chatSessions.length})
 					</Button>
-					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => showAdvancedOptions = true}>
+					<Button class="bits-btn" variant="outline" size="sm" onclick={() => showAdvancedOptions = true}>
 						<Zap class="h-4 w-4 mr-2" />
 						Options
 					</Button>
 					{#if analysisMode === 'qlora_topology'}
-						<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => showQLoRAMonitoring = true}>
+						<Button class="bits-btn" variant="outline" size="sm" onclick={() => showQLoRAMonitoring = true}>
 							<Brain class="h-4 w-4 mr-2" />
 							QLoRA Monitor
 						</Button>
 					{/if}
-					<Button class="bits-btn bits-btn" variant="secondary" size="sm" onclick={createNewSession}>
+					<Button class="bits-btn" variant="secondary" size="sm" onclick={createNewSession}>
 						New Chat
 					</Button>
 				</div>
@@ -505,7 +505,7 @@
 				<Card.Root>
 					<Card.Header>
 						<Card.Title class="text-sm font-semibold flex items-center gap-2">
-							<svelte:component this={getAnalysisModeIcon(analysisMode)} class="h-4 w-4" />
+							{#if getAnalysisModeIcon(analysisMode)}{@const IconComponent = getAnalysisModeIcon(analysisMode)}<IconComponent class="h-4 w-4" />{/if}
 							Current Mode
 						</Card.Title>
 					</Card.Header>
@@ -713,7 +713,7 @@
 								onclick={send}
 								disabled={busy || !input.trim()}
 								size="lg"
-								class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold bits-btn bits-btn"
+								class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold bits-btn"
 							>
 								{#if busy}
 									<Loader2 class="w-5 h-5 animate-spin" />
@@ -754,14 +754,14 @@
 						</p>
 					</div>
 					<div class="flex items-center gap-2">
-						<Button class="bits-btn bits-btn"
+						<Button class="bits-btn"
 							variant={currentSessionId === session.id ? 'default' : 'outline'}
 							size="sm"
 							onclick={() => { loadSession(session.id); showSessions = false; }}
 						>
 							{currentSessionId === session.id ? 'Current' : 'Load'}
 						</Button>
-						<Button class="bits-btn bits-btn"
+						<Button class="bits-btn"
 							variant="ghost"
 							size="sm"
 							onclick={() => deleteSession(session.id)}
@@ -774,8 +774,8 @@
 		</div>
 
 		<Dialog.Footer>
-			<Button class="bits-btn bits-btn" variant="outline" onclick={() => showSessions = false}>Close</Button>
-			<Button class="bits-btn bits-btn" onclick={() => { createNewSession(); showSessions = false; }}>New Session</Button>
+			<Button class="bits-btn" variant="outline" onclick={() => showSessions = false}>Close</Button>
+			<Button class="bits-btn" onclick={() => { createNewSession(); showSessions = false; }}>New Session</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
@@ -807,7 +807,7 @@
 		</div>
 
 		<Dialog.Footer>
-			<Button class="bits-btn bits-btn" variant="outline" onclick={() => showAdvancedOptions = false}>Close</Button>
+			<Button class="bits-btn" variant="outline" onclick={() => showAdvancedOptions = false}>Close</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
@@ -825,7 +825,7 @@
 		</div>
 
 		<Dialog.Footer>
-			<Button class="bits-btn bits-btn" variant="outline" onclick={() => showQLoRAMonitoring = false}>Close</Button>
+			<Button class="bits-btn" variant="outline" onclick={() => showQLoRAMonitoring = false}>Close</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>

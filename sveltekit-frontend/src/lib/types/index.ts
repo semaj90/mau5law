@@ -293,7 +293,7 @@ export interface WebSocketMessage {
 }
 
 // --- API Types Re-export ---
-// Export all centralized API types for easy access
+// Export only types that actually exist in api.ts
 
 export type {
   // Core API Response Types
@@ -309,64 +309,7 @@ export type {
   AIAnalysisRequest,
   AIAnalysisResponse,
 
-  // Vector Search & RAG Types
-  VectorSearchRequest as APIVectorSearchRequest,
-  VectorSearchResponse,
-  RAGRequest,
-  RAGResponse,
-
-  // Case Management Types
-  Case,
-  CreateCaseRequest,
-  UpdateCaseRequest,
-  CasesListResponse,
-
-  // Document Types
-  Document,
-  DocumentUploadRequest,
-  DocumentUploadResponse,
-  DocumentSearchRequest,
-  DocumentSearchResponse,
-
-  // Evidence Types
-  Evidence as APIEvidence,
-  CreateEvidenceRequest,
-
-  // User & Auth Types
-  User as APIUser,
-  AuthResponse,
-
-  // Analytics & Metrics Types
-  DashboardStats,
-  AnalyticsRequest,
-  AnalyticsResponse,
-
-  // Cluster & Admin Types
-  ClusterStatus,
-  ScaleRequest,
-  ServiceEvent,
-
-  // Search & Query Types
-  SearchRequest as APISearchRequest,
-  SearchResponse as APISearchResponse,
-
-  // Pagination Types
-  PaginationParams,
-  PaginatedResponse,
-
-  // Error Handling Types
-  ValidationError,
-  ApiValidationError,
-
-  // Request Context Types
-  RequestContext,
-
-  // Type Guards
-  isApiError,
-  isApiResponse,
-  isPaginatedResponse,
-
-  // Enhanced Production Types
+  // Enhanced Production Types that exist
   APIResponse as EnhancedAPIResponse,
   ServiceTier,
   ProtocolEndpoint,
@@ -399,5 +342,5 @@ export type {
   APIErrorResponse,
   ProtocolRouter,
   EnhancedAPIHandler,
-  MultiProtocolRequestOptions
+  MultiProtocolRequestOptions,
 } from './api.ts';

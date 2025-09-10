@@ -7,7 +7,7 @@
   import { AccessControl } from '$lib/auth/roles';
   import type { LayoutData } from './$types';
   import type { Permission } from '$lib/auth/roles';
-  
+
   // Props using Svelte 5 syntax
   let { data }: { data: LayoutData } = $props();
 

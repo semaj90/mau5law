@@ -217,14 +217,14 @@ export class EvidenceCorrelationEngine {
             {
               id: evidenceA.id,
               timestamp: timeA,
-              type: evidenceA.type,
+              type: evidenceA.type || evidenceA.evidenceType || 'unknown',
               description: evidenceA.filename,
               evidenceIds: [evidenceA.id],
             },
             {
               id: evidenceB.id,
               timestamp: timeB,
-              type: evidenceB.type,
+              type: evidenceB.type || evidenceB.evidenceType || 'unknown',
               description: evidenceB.filename,
               evidenceIds: [evidenceB.id],
             },
@@ -506,13 +506,13 @@ export class EvidenceCorrelationEngine {
     const nodes: NetworkNode[] = evidence.map((e) => ({
       id: e.id,
       label: e.filename,
-      type: e.type,
-      size: (e.aiAnalysis?.prosecutionScore || 0.5) * 100,
-      color: this.getNodeColor(e.type),
+      type: e.type || e.evidenceType || 'unknown',
+      size: ((e.aiAnalysis?.relevanceScore || 0.5) as number) * 100,
+      color: this.getNodeColor(e.type || e.evidenceType || 'unknown'),
       metadata: {
         uploadDate: e.uploadedAt,
-        prosecutionScore: e.aiAnalysis?.prosecutionScore,
-        relevantLaws: e.aiAnalysis?.relevantLaws,
+        prosecutionScore: e.aiAnalysis?.relevanceScore,
+        relevantLaws: e.aiAnalysis?.legalImplications,
       },
     }));
 
@@ -550,8 +550,8 @@ export class EvidenceCorrelationEngine {
     entities.push(...nameEntities);
 
     // Extract from AI analysis if available
-    if (evidence.aiAnalysis?.suggestedTags) {
-      entities.push(...evidence.aiAnalysis.suggestedTags);
+    if (evidence.aiAnalysis?.tags && Array.isArray(evidence.aiAnalysis.tags)) {
+      entities.push(...evidence.aiAnalysis.tags);
     }
 
     return [...new Set(entities)]; // Remove duplicates
@@ -599,9 +599,9 @@ export class EvidenceCorrelationEngine {
 
     for (let i = 0; i < evidenceGroup.length; i++) {
       for (let j = i + 1; j < evidenceGroup.length; j++) {
-        const tagsA = evidenceGroup[i].aiAnalysis?.suggestedTags || [];
-        const tagsB = evidenceGroup[j].aiAnalysis?.suggestedTags || [];
-        totalSimilarity += this.calculateJaccardSimilarity(tagsA, tagsB);
+        const tagsA = evidenceGroup[i].aiAnalysis?.tags || [];
+        const tagsB = evidenceGroup[j].aiAnalysis?.tags || [];
+        totalSimilarity += this.calculateJaccardSimilarity(tagsA as string[], tagsB as string[]);
         comparisons++;
       }
     }

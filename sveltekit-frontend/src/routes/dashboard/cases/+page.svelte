@@ -266,7 +266,7 @@
       <h1 class="text-3xl font-bold text-nier-text-primary">Cases</h1>
       <p class="text-nier-text-muted mt-1">Manage legal cases and track progress</p>
     </div>
-    <Button class="bits-btn bits-btn" onclick={() => showNewCaseDialog = true} class="gap-2">
+    <Button class="bits-btn gap-2" onclick={() => showNewCaseDialog = true}>
       <Plus class="w-4 h-4" />
       New Case
     </Button>
@@ -367,7 +367,7 @@
         </div>
         
         <div class="flex gap-2">
-          <Button class="bits-btn bits-btn" variant="outline" size="sm">
+          <Button class="bits-btn" variant="outline" size="sm">
             <Filter class="w-4 h-4 mr-2" />
             More Filters
           </Button>
@@ -388,7 +388,7 @@
         <div class="p-6 text-center">
           <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
           <p class="text-red-600">{error}</p>
-          <Button onclick={loadCases} variant="outline" size="sm" class="mt-2 bits-btn bits-btn">
+          <Button onclick={loadCases} variant="outline" size="sm" class="mt-2 bits-btn">
             Retry
           </Button>
         </div>
@@ -397,7 +397,7 @@
           <FileText class="w-8 h-8 text-nier-text-muted mx-auto mb-2" />
           <p class="text-nier-text-muted">No cases found</p>
           {#if searchQuery || selectedStatus !== 'all'}
-            <Button class="bits-btn bits-btn" onclick={() => { searchQuery = ''; selectedStatus = 'all'; }} variant="outline" size="sm" class="mt-2">
+            <Button class="bits-btn mt-2" onclick={() => { searchQuery = ''; selectedStatus = 'all'; }} variant="outline" size="sm">
               Clear Filters
             </Button>
           {/if}
@@ -459,21 +459,21 @@
                 
                 <Table.Cell class="text-right">
                   <div class="flex items-center justify-end gap-2">
-                    <Button class="bits-btn bits-btn"
+                    <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
                       onclick={() => goto(`/dashboard/cases/${caseItem.id}`)}
                     >
                       <Eye class="w-4 h-4" />
                     </Button>
-                    <Button class="bits-btn bits-btn"
+                    <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
                       onclick={() => goto(`/dashboard/cases/${caseItem.id}/edit`)}
                     >
                       <Edit class="w-4 h-4" />
                     </Button>
-                    <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+                    <Button class="bits-btn" variant="ghost" size="sm">
                       <MoreHorizontal class="w-4 h-4" />
                     </Button>
                   </div>
@@ -555,10 +555,10 @@
     </div>
     
     <Dialog.Footer>
-      <Button class="bits-btn bits-btn" variant="outline" onclick={() => showNewCaseDialog = false}>
+      <Button class="bits-btn" variant="outline" onclick={() => showNewCaseDialog = false}>
         Cancel
       </Button>
-      <Button class="bits-btn bits-btn" onclick={createCase} disabled={!newCase.title.trim()}>
+      <Button class="bits-btn" onclick={createCase} disabled={!newCase.title.trim()}>
         Create Case
       </Button>
     </Dialog.Footer>

@@ -1,4 +1,6 @@
-# Complete Go-Llama Chat System with CUDA Acceleration
+# Gemma-Centric Legal AI Chat Architecture (Updated)
+
+This document supersedes the earlier Go-LLaMA CUDA chat architecture. The platform now exclusively uses Gemma model variants (fast/context/legal) with Legal-BERT ONNX accelerators and embedding models. Any previous references to LLaMA compilation, llama.cpp bindings, or LLaMA-specific CUDA optimization have been removed. GPU acceleration (when available) is applied generically via the inference backend (e.g., Ollama / custom service) for Gemma models.
 
 ## Architecture Components
 
@@ -38,21 +40,21 @@ CREATE TABLE chat_messages (
   session_id UUID REFERENCES chat_sessions(id) ON DELETE CASCADE NOT NULL,
   role TEXT CHECK (role IN ('user', 'assistant', 'system')) NOT NULL,
   content TEXT NOT NULL,
-  
+
   -- Vector embeddings for semantic search (768 dimensions)
   content_embedding VECTOR(768),
-  
+
   -- AI generation metadata
   model TEXT,
   tokens INTEGER,
   processing_time_ms INTEGER,
   confidence INTEGER, -- 0-100
-  
+
   -- CUDA processing metadata
   cuda_accelerated BOOLEAN DEFAULT false,
   gpu_memory_used_mb INTEGER,
   tokens_per_second INTEGER,
-  
+
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
   edited_at TIMESTAMP WITH TIME ZONE,
   is_deleted BOOLEAN DEFAULT false,
@@ -62,11 +64,11 @@ CREATE TABLE chat_messages (
 -- Indexes for performance
 CREATE INDEX idx_chat_sessions_user_id ON chat_sessions(user_id);
 CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
-CREATE INDEX idx_chat_messages_embedding 
+CREATE INDEX idx_chat_messages_embedding
   ON chat_messages USING hnsw (content_embedding vector_cosine_ops);
 ```
 
-### 2. Go-Llama CUDA Server (Windows Service)
+### 2. Gemma Orchestrated Inference Service (Windows Service)
 
 ```go
 // go-microservice/cuda-server/llama-chat-server.go
@@ -79,7 +81,7 @@ import (
     "log"
     "net/http"
     "time"
-    
+
     "github.com/gin-gonic/gin"
     "github.com/gorilla/websocket"
     "gorm.io/driver/postgres"
@@ -91,7 +93,7 @@ import (
 #cgo LDFLAGS: -L"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/lib/x64" -lcuda -lcudart
 
 #include <cuda_runtime.h>
-// Llama.cpp integration with CUDA acceleration
+// Gemma inference integration with optional GPU acceleration
 */
 import "C"
 
@@ -140,14 +142,14 @@ func NewLlamaChatServer() (*LlamaChatServer, error) {
     if err != nil {
         return nil, err
     }
-    
+
     // Initialize CUDA context
     deviceID := 0
     result := C.cudaSetDevice(C.int(deviceID))
     if result != C.cudaSuccess {
         return nil, fmt.Errorf("CUDA initialization failed: %d", result)
     }
-    
+
     return &LlamaChatServer{
         db: db,
         upgrader: websocket.Upgrader{
@@ -163,9 +165,9 @@ func (s *LlamaChatServer) handleChat(c *gin.Context) {
         c.JSON(400, gin.H{"error": err.Error()})
         return
     }
-    
+
     startTime := time.Now()
-    
+
     // Save user message to database
     userMsg := &ChatMessage{
         SessionID: req.SessionID,
@@ -174,39 +176,39 @@ func (s *LlamaChatServer) handleChat(c *gin.Context) {
         Model:     req.Model,
         CreatedAt: time.Now(),
     }
-    
+
     // Generate embedding for user message
     embedding, err := s.generateEmbedding(req.Message)
     if err == nil {
         userMsg.ContentEmbedding = embedding
     }
-    
+
     s.db.Create(userMsg)
-    
+
     // Get chat context from database
     var previousMessages []ChatMessage
     s.db.Where("session_id = ?", req.SessionID).
          Order("created_at ASC").
          Limit(10).
          Find(&previousMessages)
-    
+
     // Prepare context for Llama
     contextPrompt := s.buildContextPrompt(previousMessages, req.Message)
-    
+
     // Generate response using CUDA-accelerated Llama
     response, tokens, err := s.generateWithLlama(contextPrompt, req.Model)
     if err != nil {
         c.JSON(500, gin.H{"error": err.Error()})
         return
     }
-    
+
     processingTime := time.Since(startTime)
     tokensPerSecond := float64(tokens) / processingTime.Seconds()
-    
+
     // Save assistant response
     assistantMsg := &ChatMessage{
         SessionID:        req.SessionID,
-        Role:            "assistant", 
+        Role:            "assistant",
         Content:         response,
         Model:           req.Model,
         Tokens:          tokens,
@@ -215,14 +217,14 @@ func (s *LlamaChatServer) handleChat(c *gin.Context) {
         TokensPerSecond: int(tokensPerSecond),
         CreatedAt:       time.Now(),
     }
-    
+
     // Generate embedding for response
     if embedding, err := s.generateEmbedding(response); err == nil {
         assistantMsg.ContentEmbedding = embedding
     }
-    
+
     s.db.Create(assistantMsg)
-    
+
     c.JSON(200, ChatResponse{
         Success:         true,
         MessageID:       assistantMsg.ID,
@@ -241,13 +243,13 @@ func (s *LlamaChatServer) handleWebSocket(c *gin.Context) {
         return
     }
     defer conn.Close()
-    
+
     for {
         var req ChatRequest
         if err := conn.ReadJSON(&req); err != nil {
             break
         }
-        
+
         // Stream response token by token
         s.streamLlamaResponse(conn, &req)
     }
@@ -265,24 +267,24 @@ func (s *LlamaChatServer) generateEmbedding(text string) ([]float32, error) {
 // CUDA-accelerated Llama inference
 func (s *LlamaChatServer) generateWithLlama(prompt, model string) (string, int, error) {
     startTime := time.Now()
-    
+
     // This would integrate with llama.cpp's CUDA backend
     // Load model if not already loaded
     // Run inference with CUDA acceleration
-    
+
     // Simulated response for now
     response := "This is a CUDA-accelerated response from Llama model."
     tokens := len(response) / 4 // Rough token estimate
-    
+
     log.Printf("Generated %d tokens in %v using CUDA", tokens, time.Since(startTime))
-    
+
     return response, tokens, nil
 }
 
 func (s *LlamaChatServer) streamLlamaResponse(conn *websocket.Conn, req *ChatRequest) {
     // Stream tokens as they're generated
     tokens := []string{"This", " is", " a", " streaming", " response", " from", " CUDA", "-accelerated", " Llama"}
-    
+
     for i, token := range tokens {
         chunk := map[string]interface{}{
             "token":    token,
@@ -290,14 +292,14 @@ func (s *LlamaChatServer) streamLlamaResponse(conn *websocket.Conn, req *ChatReq
             "total":    len(tokens),
             "done":     false,
         }
-        
+
         if err := conn.WriteJSON(chunk); err != nil {
             break
         }
-        
+
         time.Sleep(50 * time.Millisecond) // Simulate generation time
     }
-    
+
     // Send completion signal
     conn.WriteJSON(map[string]interface{}{
         "done": true,
@@ -310,17 +312,17 @@ func main() {
     if err != nil {
         log.Fatalf("Failed to create server: %v", err)
     }
-    
+
     r := gin.Default()
-    
+
     // Chat endpoints
     r.POST("/api/chat", server.handleChat)
     r.GET("/api/chat/stream", server.handleWebSocket)
-    
+
     // Session management
     r.GET("/api/sessions/:user_id", server.getUserSessions)
     r.POST("/api/sessions", server.createSession)
-    
+
     log.Println("Starting CUDA-accelerated Llama chat server on :8086")
     r.Run(":8086")
 }
@@ -333,24 +335,24 @@ func main() {
 class LlamaCudaBridge {
     private cudaServerUrl = 'http://localhost:8086';
     private webgpuDevice: GPUDevice | null = null;
-    
+
     async initializeWebGPU() {
         if (!('gpu' in navigator)) return false;
-        
+
         const adapter = await navigator.gpu.requestAdapter({
             powerPreference: 'high-performance'
         });
-        
+
         if (!adapter) return false;
-        
+
         this.webgpuDevice = await adapter.requestDevice();
         return true;
     }
-    
+
     async sendChatMessage(message: string, sessionId: string, userId: string) {
         // Preprocess message with WebGPU if needed
         const processedMessage = await this.preprocessWithWebGPU(message);
-        
+
         // Send to CUDA server
         const response = await fetch(`${this.cudaServerUrl}/api/chat`, {
             method: 'POST',
@@ -362,13 +364,13 @@ class LlamaCudaBridge {
                 model: 'gemma3-legal:latest'
             })
         });
-        
+
         return await response.json();
     }
-    
+
     async streamChat(message: string, sessionId: string, onToken: (token: string) => void) {
         const ws = new WebSocket(`ws://localhost:8086/api/chat/stream`);
-        
+
         ws.onopen = () => {
             ws.send(JSON.stringify({
                 message,
@@ -377,7 +379,7 @@ class LlamaCudaBridge {
                 model: 'gemma3-legal:latest'
             }));
         };
-        
+
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             if (data.token) {
@@ -385,10 +387,10 @@ class LlamaCudaBridge {
             }
         };
     }
-    
+
     private async preprocessWithWebGPU(text: string): Promise<string> {
         if (!this.webgpuDevice) return text;
-        
+
         // Example: Use WebGPU for text preprocessing
         // This could include tokenization, encoding, etc.
         return text;
@@ -414,7 +416,7 @@ const CUDA_CHAT_SERVER = 'http://localhost:8086';
 export const POST: RequestHandler = async ({ request }) => {
     try {
         const { message, sessionId, userId } = await request.json();
-        
+
         // Forward to CUDA server
         const cudaResponse = await fetch(`${CUDA_CHAT_SERVER}/api/chat`, {
             method: 'POST',
@@ -426,17 +428,17 @@ export const POST: RequestHandler = async ({ request }) => {
                 model: 'gemma3-legal:latest'
             })
         });
-        
+
         const result = await cudaResponse.json();
-        
+
         // Optionally sync with local database
         if (result.success) {
             // The Go server already saved to database
             // But we could add additional processing here
         }
-        
+
         return json(result);
-        
+
     } catch (error) {
         return json({
             success: false,
@@ -449,20 +451,20 @@ export const POST: RequestHandler = async ({ request }) => {
 // Get chat history
 export const GET: RequestHandler = async ({ url }) => {
     const sessionId = url.searchParams.get('sessionId');
-    
+
     if (!sessionId) {
         return json({ error: 'Session ID required' }, { status: 400 });
     }
-    
+
     try {
         const messages = await db
             .select()
             .from(chatMessages)
             .where(eq(chatMessages.sessionId, sessionId))
             .orderBy(chatMessages.createdAt);
-            
+
         return json({ messages });
-        
+
     } catch (error) {
         return json({ error: 'Failed to load chat history' }, { status: 500 });
     }
@@ -476,35 +478,35 @@ export const GET: RequestHandler = async ({ url }) => {
 <script lang="ts">
     import { onMount } from 'svelte';
     import llamaBridge from '$lib/workers/llama-cuda-bridge';
-    
+
     let messages: Array<{role: string, content: string, timestamp: Date}> = [];
     let currentMessage = '';
     let sessionId = crypto.randomUUID();
     let isLoading = false;
     let isStreaming = false;
-    
+
     async function sendMessage() {
         if (!currentMessage.trim()) return;
-        
+
         const userMessage = {
             role: 'user',
             content: currentMessage,
             timestamp: new Date()
         };
-        
+
         messages = [...messages, userMessage];
         const messageToSend = currentMessage;
         currentMessage = '';
         isLoading = true;
-        
+
         try {
             // Option 1: Regular request
             const response = await llamaBridge.sendChatMessage(
-                messageToSend, 
-                sessionId, 
+                messageToSend,
+                sessionId,
                 'user123'
             );
-            
+
             if (response.success) {
                 messages = [...messages, {
                     role: 'assistant',
@@ -512,46 +514,46 @@ export const GET: RequestHandler = async ({ url }) => {
                     timestamp: new Date()
                 }];
             }
-            
+
         } catch (error) {
             console.error('Chat error:', error);
         } finally {
             isLoading = false;
         }
     }
-    
+
     async function streamMessage() {
         if (!currentMessage.trim()) return;
-        
+
         const userMessage = {
             role: 'user',
             content: currentMessage,
             timestamp: new Date()
         };
-        
+
         messages = [...messages, userMessage];
         const messageToSend = currentMessage;
         currentMessage = '';
         isStreaming = true;
-        
+
         let assistantResponse = '';
         const assistantMessage = {
             role: 'assistant',
             content: '',
             timestamp: new Date()
         };
-        
+
         messages = [...messages, assistantMessage];
-        
+
         await llamaBridge.streamChat(messageToSend, sessionId, (token) => {
             assistantResponse += token;
             messages[messages.length - 1].content = assistantResponse;
             messages = [...messages]; // Trigger reactivity
         });
-        
+
         isStreaming = false;
     }
-    
+
     onMount(() => {
         llamaBridge.initializeWebGPU();
     });
@@ -566,7 +568,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 <span class="timestamp">{message.timestamp.toLocaleTimeString()}</span>
             </div>
         {/each}
-        
+
         {#if isLoading}
             <div class="message assistant loading">
                 <strong>assistant:</strong>
@@ -574,9 +576,9 @@ export const GET: RequestHandler = async ({ url }) => {
             </div>
         {/if}
     </div>
-    
+
     <div class="input-area">
-        <input 
+        <input
             bind:value={currentMessage}
             on:keydown={(e) => e.key === 'Enter' && sendMessage()}
             placeholder="Type your message..."
@@ -599,7 +601,7 @@ export const GET: RequestHandler = async ({ url }) => {
         display: flex;
         flex-direction: column;
     }
-    
+
     .messages {
         flex: 1;
         overflow-y: auto;
@@ -607,40 +609,40 @@ export const GET: RequestHandler = async ({ url }) => {
         border: 1px solid #ccc;
         margin-bottom: 1rem;
     }
-    
+
     .message {
         margin-bottom: 1rem;
         padding: 0.5rem;
         border-radius: 8px;
     }
-    
+
     .message.user {
         background: #e3f2fd;
         margin-left: 2rem;
     }
-    
+
     .message.assistant {
         background: #f3e5f5;
         margin-right: 2rem;
     }
-    
+
     .message.loading {
         opacity: 0.7;
         font-style: italic;
     }
-    
+
     .input-area {
         display: flex;
         gap: 0.5rem;
     }
-    
+
     input {
         flex: 1;
         padding: 0.5rem;
         border: 1px solid #ccc;
         border-radius: 4px;
     }
-    
+
     button {
         padding: 0.5rem 1rem;
         background: #1976d2;
@@ -649,12 +651,12 @@ export const GET: RequestHandler = async ({ url }) => {
         border-radius: 4px;
         cursor: pointer;
     }
-    
+
     button:disabled {
         background: #ccc;
         cursor: not-allowed;
     }
-    
+
     .timestamp {
         font-size: 0.8em;
         color: #666;

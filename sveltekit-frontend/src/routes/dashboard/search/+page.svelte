@@ -213,7 +213,7 @@
         <Sparkles class="w-3 h-3 mr-1" />
         pgvector + AI
       </Badge>
-      <Button class="bits-btn bits-btn" variant="outline" size="sm">
+      <Button class="bits-btn" variant="outline" size="sm">
         <Settings class="w-4 h-4 mr-2" />
         Settings
       </Button>
@@ -237,7 +237,7 @@
           <Button 
             onclick={performSearch}
             disabled={loading || !query.trim()}
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2 bits-btn bits-btn"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2 bits-btn"
           >
             {#if loading}
               <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
@@ -282,7 +282,7 @@
                        ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary' 
                        : 'border-nier-border-muted hover:border-nier-accent-warm'}"
             >
-              <svelte:component this={docType.icon} class="w-3 h-3" />
+              {@render docType.icon({ class: "w-3 h-3" })}
               <span class="text-xs">{docType.label}</span>
             </button>
           {/each}
@@ -333,7 +333,7 @@
           <div class="text-center py-8">
             <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
             <p class="text-red-600">{error}</p>
-            <Button onclick={performSearch} variant="outline" size="sm" class="mt-2 bits-btn bits-btn">
+            <Button onclick={performSearch} variant="outline" size="sm" class="mt-2 bits-btn">
               Retry Search
             </Button>
           </div>
@@ -411,11 +411,11 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
-                  <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+                  <Button class="bits-btn" variant="ghost" size="sm">
                     <Eye class="w-4 h-4 mr-1" />
                     View
                   </Button>
-                  <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+                  <Button class="bits-btn" variant="ghost" size="sm">
                     <ChevronRight class="w-4 h-4" />
                   </Button>
                 </div>

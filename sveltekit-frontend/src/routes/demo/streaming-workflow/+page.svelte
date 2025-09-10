@@ -1,18 +1,3 @@
-<script lang="ts" runes>
-  import EvidenceProcessingWorkflow from '$lib/components/evidence/EvidenceProcessingWorkflow.svelte';
-  import { onMount } from 'svelte';
-
-  let sessionId: string | null = null;
-
-  onMount(() => {
-    // no-op
-  });
-</script>
-
-<h1>Streaming Evidence Processing Demo</h1>
-<p>This demo shows multiple sessions and a live workflow UI.</p>
-
-<EvidenceProcessingWorkflow bind:sessionId />
 <script lang="ts">
   /**
    * Streaming Workflow Demo Page
@@ -29,11 +14,9 @@
     Card,
     CardHeader,
     CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import {
+    CardContent,
     Button
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { onMount } from 'svelte';
 
   // Demo state
@@ -267,17 +250,15 @@
             </p>
 
             <div class="space-y-2">
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn w-full justify-start"
                 onclick={() => selectedDemo = 'single'}
-                class="w-full justify-start"
                 variant="outline"
               >
                 🧬 Neural Sprite Workflow
               </Button>
 
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn w-full justify-start"
                 onclick={() => selectedDemo = 'multiple'}
-                class="w-full justify-start"
                 variant="outline"
               >
                 ⚡ Parallel Processing

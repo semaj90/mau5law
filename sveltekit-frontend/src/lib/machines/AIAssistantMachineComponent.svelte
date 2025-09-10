@@ -1,17 +1,25 @@
 <script lang="ts">
   import { useMachine } from '@xstate/svelte';
   import { aiAssistantMachine, type AIAssistantContext } from './aiAssistantMachine.js';
+  import DidYouMeanSuggestions from '$lib/components/recommendations/DidYouMeanSuggestions.svelte';
+  import { IntelligentModelSwitcher } from '$lib/ai/intelligent-model-switcher';
+  import { UserIntentPredictionSystem } from '$lib/ai/user-intent-prediction-system';
+  import { Brain, Zap, Target, Cpu, Activity } from 'lucide-svelte';
   
   interface Props {
     initialContext?: Partial<AIAssistantContext>;
     enableStreamingMode?: boolean;
     preferredProtocol?: 'http' | 'grpc' | 'quic' | 'websocket';
+    userId?: string;
+    enableAIEnhancements?: boolean;
   }
   
   let {
     initialContext = {},
     enableStreamingMode = false,
-    preferredProtocol = 'http'
+    preferredProtocol = 'http',
+    userId = 'anonymous',
+    enableAIEnhancements = true
   }: Props = $props();
 
   // Create machine instance with initial context
@@ -74,13 +82,38 @@
 
   const { state, send } = useMachine(machineWithContext);
   
+  // AI Enhancement Services
+  const modelSwitcher = enableAIEnhancements ? new IntelligentModelSwitcher() : null;
+  const intentPredictionSystem = enableAIEnhancements ? new UserIntentPredictionSystem() : null;
+  
   let queryInput = $state('');
+  let showSuggestions = $state(false);
+  let currentModel = $state('gemma3-legal');
+  let modelSwitchReason = $state<string | null>(null);
+  let userLearningInsights = $state<any>(null);
 
   // Helper functions for interaction
-  function submitQuery() {
+  async function submitQuery() {
     if (queryInput.trim()) {
-      send({ type: 'QUERY', query: queryInput.trim() });
+      const query = queryInput.trim();
+      
+      // Use intelligent model switching if available
+      if (modelSwitcher && enableAIEnhancements) {
+        try {
+          const recommendation = await modelSwitcher.recommendModel(query, userId);
+          if (recommendation.model !== currentModel) {
+            currentModel = recommendation.model;
+            modelSwitchReason = recommendation.reason;
+            console.log(`Model switched to ${currentModel}: ${recommendation.reason}`);
+          }
+        } catch (error) {
+          console.error('Model switching error:', error);
+        }
+      }
+      
+      send({ type: 'QUERY', query, model: currentModel });
       queryInput = '';
+      showSuggestions = false;
     }
   }
 
@@ -91,6 +124,45 @@
   function toggleStreaming() {
     send({ type: 'TOGGLE_STREAMING' });
   }
+
+  // Handle suggestion selection
+  function handleSuggestionSelect(event: CustomEvent) {
+    const { suggestion } = event.detail;
+    queryInput = suggestion.term || suggestion.suggestion || suggestion.text || '';
+    showSuggestions = false;
+  }
+
+  // Handle task selection
+  function handleTaskSelect(event: CustomEvent) {
+    const { task } = event.detail;
+    queryInput = task.task;
+    showSuggestions = false;
+  }
+
+  // Load user insights
+  async function loadUserInsights() {
+    if (intentPredictionSystem && enableAIEnhancements) {
+      try {
+        userLearningInsights = await intentPredictionSystem.getUserLearningInsights(userId);
+      } catch (error) {
+        console.error('Error loading user insights:', error);
+      }
+    }
+  }
+
+  // Load user insights on component mount
+  $effect(() => {
+    loadUserInsights();
+  });
+
+  // Auto-show suggestions when typing
+  $effect(() => {
+    if (queryInput.length >= 2) {
+      showSuggestions = true;
+    } else {
+      showSuggestions = false;
+    }
+  });
 
   // Get status indicators
   let isIdle = $derived(state.value === 'idle');
@@ -104,7 +176,10 @@
   <!-- Machine Status Header -->
   <div class="bg-gray-900 text-white p-4 rounded-lg">
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-2xl font-bold">AI Assistant Machine - XState 5</h1>
+      <h1 class="text-2xl font-bold flex items-center gap-2">
+        <Brain class="w-6 h-6" />
+        AI Assistant Machine - Enhanced
+      </h1>
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
           <div class="w-3 h-3 rounded-full {currentState === 'idle' ? 'bg-green-500' : currentState === 'processing' ? 'bg-yellow-500' : 'bg-red-500'}"></div>
@@ -113,8 +188,45 @@
         <div class="text-sm">
           Protocol: <span class="font-mono text-blue-300">{context.activeProtocol}</span>
         </div>
+        {#if enableAIEnhancements}
+          <div class="flex items-center gap-2 text-sm">
+            <Zap class="w-4 h-4 text-yellow-400" />
+            <span class="text-yellow-300">AI Enhanced</span>
+          </div>
+        {/if}
       </div>
     </div>
+
+    <!-- AI Enhancement Status -->
+    {#if enableAIEnhancements}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="bg-gray-800 p-3 rounded">
+          <div class="font-semibold mb-2 flex items-center gap-2">
+            <Cpu class="w-4 h-4" />
+            Current Model
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-blue-300 font-mono">{currentModel}</span>
+            {#if modelSwitchReason}
+              <span class="text-xs text-gray-400">({modelSwitchReason})</span>
+            {/if}
+          </div>
+        </div>
+        
+        {#if userLearningInsights}
+          <div class="bg-gray-800 p-3 rounded">
+            <div class="font-semibold mb-2 flex items-center gap-2">
+              <Activity class="w-4 h-4" />
+              Learning Profile
+            </div>
+            <div class="text-sm space-y-1">
+              <div>Phase: <span class="text-green-300 capitalize">{userLearningInsights.learningPhase}</span></div>
+              <div>Confidence: <span class="text-blue-300">{Math.round(userLearningInsights.confidenceLevel * 100)}%</span></div>
+            </div>
+          </div>
+        {/if}
+      </div>
+    {/if}
     
     <!-- Service Health Indicators -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -153,27 +265,71 @@
     </div>
   </div>
 
-  <!-- Query Interface -->
+  <!-- Enhanced Query Interface -->
   <div class="bg-white border rounded-lg p-6">
-    <h2 class="text-xl font-semibold mb-4">AI Query Interface</h2>
+    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+      <Target class="w-5 h-5" />
+      AI Query Interface
+      {#if enableAIEnhancements}
+        <span class="text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded-full">Enhanced</span>
+      {/if}
+    </h2>
     
     <div class="space-y-4">
-      <div class="flex gap-2">
-        <input
-          type="text"
-          bind:value={queryInput}
-          placeholder="Enter your legal AI query..."
-          class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          disabled={isProcessing}
-          keydown={(e) => e.key === 'Enter' && submitQuery()}
-        />
-        <button
-          on:onclick={submitQuery}
-          disabled={isProcessing || !queryInput.trim()}
-          class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isProcessing ? 'Processing...' : 'Submit'}
-        </button>
+      <div class="relative">
+        <div class="flex gap-2">
+          <div class="flex-1 relative">
+            <input
+              type="text"
+              bind:value={queryInput}
+              placeholder="Enter your legal AI query... (AI will suggest and learn)"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              disabled={isProcessing}
+              on:keydown={(e) => e.key === 'Enter' && submitQuery()}
+              on:input={() => showSuggestions = queryInput.length >= 2}
+            />
+            
+            <!-- AI Suggestions Dropdown -->
+            {#if showSuggestions && enableAIEnhancements && queryInput.length >= 2}
+              <div class="absolute top-full left-0 right-0 z-50 mt-1">
+                <DidYouMeanSuggestions
+                  bind:query={queryInput}
+                  {userId}
+                  includeTaskSuggestions={true}
+                  includeAI={true}
+                  maxSuggestions={6}
+                  showUserProfile={false}
+                  autoFetch={true}
+                  contextType="legal-ai-assistant"
+                  on:suggestion={handleSuggestionSelect}
+                  on:task={handleTaskSelect}
+                />
+              </div>
+            {/if}
+          </div>
+          <button
+            on:click={submitQuery}
+            disabled={isProcessing || !queryInput.trim()}
+            class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {#if isProcessing}
+              <div class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+              Processing...
+            {:else}
+              <Brain class="w-4 h-4" />
+              Submit
+            {/if}
+          </button>
+        </div>
+        
+        {#if enableAIEnhancements && currentModel && modelSwitchReason}
+          <div class="mt-2 text-sm text-gray-600">
+            <span class="flex items-center gap-1">
+              <Cpu class="w-3 h-3" />
+              Using <span class="font-mono text-blue-600">{currentModel}</span> - {modelSwitchReason}
+            </span>
+          </div>
+        {/if}
       </div>
       
       <div class="flex gap-2">

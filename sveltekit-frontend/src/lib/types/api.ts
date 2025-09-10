@@ -208,6 +208,8 @@ export interface EvidenceItem {
   // Additional fields for compatibility
   type?: string;
   collectedAt?: Date | null;
+  uploadedAt: string | Date;
+  filename: string;
 }
 // Search API Types
 export interface SearchRequest {

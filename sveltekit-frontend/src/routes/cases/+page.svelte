@@ -109,32 +109,30 @@
   const { form: evidenceFormData, enhance: evidenceEnhance } = addEvidenceForm;
 
   // Local vars to bind selects (avoid binding to store-derived expressions)
-  let createFormPriority = '';
-  let createFormStatus = '';
-  let evidenceFormType = '';
+  // Removed duplicate variables - using $derived versions below
 
-  // UI state
-  let createCaseDialogOpen = false;
-  let addEvidenceDialogOpen = false;
-  let deleteEvidenceDialogOpen = false;
-  let evidenceToDelete: any = null;
+  // UI state (Svelte 5 runes)
+  let createCaseDialogOpen = $state(false);
+  let addEvidenceDialogOpen = $state(false);
+  let deleteEvidenceDialogOpen = $state(false);
+  let evidenceToDelete: any = $state(null);
 
-  // Search and filter state
-  let searchQuery = '';
-  let statusFilter: string | 'all' = 'all';
-  let priorityFilter: string | 'all' = 'all';
-  let sortBy = 'createdAt';
-  let sortOrder: 'asc' | 'desc' = 'desc';
+  // Search and filter state (Svelte 5 runes)
+  let searchQuery = $state('');
+  let statusFilter: string | 'all' = $state('all');
+  let priorityFilter: string | 'all' = $state('all');
+  let sortBy = $state('createdAt');
+  let sortOrder: 'asc' | 'desc' = $state('desc');
 
   // Vector search state
-  let useVectorSearch = false;
-  let vectorSearchResults: any[] = [];
-  let isSearching = false;
+  let useVectorSearch = $state(false);
+  let vectorSearchResults: any[] = $state([]);
+  let isSearching = $state(false);
 
   // Feedback integration references
-  let pageFeedback: any;
-  let searchFeedback: any;
-  let caseCreationFeedback: any;
+  let pageFeedback: any = $state(undefined);
+  let searchFeedback: any = $state(undefined);
+  let caseCreationFeedback: any = $state(undefined);
 
   // Sync local select variables from the form stores using Svelte 5 runes
   let createFormPriority = $derived($createFormData?.priority ?? 'medium');
@@ -338,7 +336,7 @@
           Manage cases with AI-powered search and PostgreSQL vector storage
         </p>
       </div>
-  <Button class="bits-btn bits-btn" onclick={() => createCaseDialogOpen = true} class="gap-2">
+  <Button class="bits-btn gap-2" onclick={() => createCaseDialogOpen = true}>
         <Plus class="h-4 w-4" />
         New Case
       </Button>
@@ -404,7 +402,7 @@
             size="sm"
             onclick={performVectorSearch}
             disabled={!searchQuery.trim() || isSearching}
-            class="gap-2 bits-btn bits-btn"
+            class="gap-2 bits-btn"
           >
             {#if isSearching}
               <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
@@ -449,11 +447,11 @@
       <!-- Case Detail View -->
       <div class="space-y-6">
         <div class="flex items-center justify-between">
-          <Button class="bits-btn bits-btn" variant="outline" onclick={() => goto('/cases')}>
+          <Button class="bits-btn" variant="outline" onclick={() => goto('/cases')}>
             ← Back to Cases
           </Button>
           <div class="flex gap-2">
-            <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => addEvidenceDialogOpen = true}>
+            <Button class="bits-btn" variant="outline" size="sm" onclick={() => addEvidenceDialogOpen = true}>
               <Plus class="h-4 w-4 mr-2" />
               Add Evidence
             </Button>
@@ -501,7 +499,7 @@
               <Card.Content class="flex flex-col items-center justify-center py-12">
                 <FileText class="h-12 w-12 text-muted-foreground mb-4" />
                 <p class="text-muted-foreground mb-4">No evidence has been added to this case yet.</p>
-                <Button class="bits-btn bits-btn" onclick={() => addEvidenceDialogOpen = true}>
+                <Button class="bits-btn" onclick={() => addEvidenceDialogOpen = true}>
                   <Plus class="h-4 w-4 mr-2" />
                   Add First Evidence
                 </Button>
@@ -516,10 +514,10 @@
                       <Card.Title class="text-lg">{evidence.title}</Card.Title>
                       <div class="flex gap-2">
                         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{evidence.evidenceType}</span>
-                        <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+                        <Button class="bits-btn" variant="ghost" size="sm">
                           <Edit2 class="h-4 w-4" />
                         </Button>
-                        <Button class="bits-btn bits-btn"
+                        <Button class="bits-btn"
                           variant="ghost"
                           size="sm"
                           onclick={() => confirmDeleteEvidence(evidence)}
@@ -600,7 +598,7 @@
                     <p class="text-muted-foreground mb-4">
                       {searchQuery.trim() ? 'No cases found matching your search.' : 'No cases found.'}
                     </p>
-                    <Button class="bits-btn bits-btn" onclick={() => createCaseDialogOpen = true}>
+                    <Button class="bits-btn" onclick={() => createCaseDialogOpen = true}>
                       <Plus class="h-4 w-4 mr-2" />
                       Create Your First Case
                     </Button>
@@ -713,7 +711,7 @@
 <!-- Create Case Dialog -->
 <Dialog.Root>
   <Dialog.Trigger asChild let:builder>
-    <Button builders={[builder]} class="flex items-center gap-2 bits-btn bits-btn">
+    <Button builders={[builder]} class="flex items-center gap-2 bits-btn">
       <Plus class="h-4 w-4" />
       Create Case
     </Button>
@@ -820,10 +818,10 @@
         </div>
       </div>
       <Dialog.Footer>
-  <Button class="bits-btn bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>
+  <Button class="bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>
           Cancel
         </Button>
-        <Button class="bits-btn bits-btn" type="submit" disabled={!$createFormData.title?.trim()}>
+        <Button class="bits-btn" type="submit" disabled={!$createFormData.title?.trim()}>
           Create Case
         </Button>
       </Dialog.Footer>
@@ -834,7 +832,7 @@
 <!-- Add Evidence Dialog -->
 <Dialog.Root>
   <Dialog.Trigger asChild let:builder>
-    <Button builders={[builder]} variant="outline" class="flex items-center gap-2 bits-btn bits-btn">
+    <Button builders={[builder]} variant="outline" class="flex items-center gap-2 bits-btn">
       <Plus class="h-4 w-4" />
       Add Evidence
     </Button>
@@ -908,10 +906,10 @@
         </div>
       </div>
       <Dialog.Footer>
-  <Button class="bits-btn bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>
+  <Button class="bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>
           Cancel
         </Button>
-        <Button class="bits-btn bits-btn" type="submit" disabled={!$evidenceFormData.title?.trim()}>
+        <Button class="bits-btn" type="submit" disabled={!$evidenceFormData.title?.trim()}>
           Add Evidence
         </Button>
       </Dialog.Footer>
@@ -930,10 +928,10 @@
       </AlertDialog.Description>
     </AlertDialog.Header>
     <AlertDialog.Footer>
-  <Button class="bits-btn bits-btn" variant="outline" onclick={() => deleteEvidenceDialogOpen = false}>
+  <Button class="bits-btn" variant="outline" onclick={() => deleteEvidenceDialogOpen = false}>
         Cancel
       </Button>
-  <Button class="bits-btn bits-btn" variant="destructive" onclick={deleteEvidence}>
+  <Button class="bits-btn" variant="destructive" onclick={deleteEvidence}>
         Delete Evidence
       </Button>
     </AlertDialog.Footer>

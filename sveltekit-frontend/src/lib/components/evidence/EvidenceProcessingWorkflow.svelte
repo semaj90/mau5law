@@ -474,9 +474,8 @@
           {#if currentState.context.portableArtifact}
             <div class="space-y-3">
               <div class="flex items-center justify-center gap-4">
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn px-4 py-2"
                   onclick={() => window.open(currentState.context.portableArtifact.enhancedPngUrl, '_blank')}
-                  class="px-4 py-2"
                 >
                   📦 Download Portable Artifact
                 </Button>
