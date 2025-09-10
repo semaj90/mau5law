@@ -3,6 +3,7 @@
   Interactive canvas for evidence visualization with YoRHa styling
 -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import type { EnhancedNeuralSpriteEngine } from '$lib/engines/neural-sprite-engine-enhanced';
 

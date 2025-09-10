@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { Evidence } from "$lib/types/api";
   import { onDestroy, onMount } from "svelte";
   import { dndzone } from "svelte-dnd-action";
@@ -66,9 +67,9 @@
   let ws: WebSocket | null = null;
 
   // Subscribe to evidence changes
-  $: {
+  // TODO: Convert to $derived: {
     if (viewMode === "canvas") {
-      canvasEvidence = $evidenceStore;
+      canvasEvidence = $evidenceStore
     } else {
       distributeEvidence();
     }

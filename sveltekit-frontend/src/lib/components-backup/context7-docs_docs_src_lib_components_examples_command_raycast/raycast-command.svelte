@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { mode } from "mode-watcher";
 	import "./raycast.css";
 	import { Command } from "bits-ui";

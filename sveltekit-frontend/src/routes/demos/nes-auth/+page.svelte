@@ -3,6 +3,7 @@
   Shows the retro gaming modal in action
 -->
 <script lang="ts">
+</script>
   import NesAuthModal from '$lib/components/auth/NesAuthModal.svelte';
   import { page } from '$app/stores';
   

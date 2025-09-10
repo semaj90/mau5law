@@ -1,7 +1,8 @@
 <script lang="ts">
+</script>
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
 
-  $: isOpen = $uploadModal.isOpen;
+  // TODO: Convert to $derived: isOpen = $uploadModal.isOpen
 
   function closeModal() {
     uploadActions.closeModal();

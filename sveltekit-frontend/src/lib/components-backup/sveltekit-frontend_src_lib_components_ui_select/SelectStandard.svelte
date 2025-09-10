@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Select } from "bits-ui";
   
   interface SelectOption {

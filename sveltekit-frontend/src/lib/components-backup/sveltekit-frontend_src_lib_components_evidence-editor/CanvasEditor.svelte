@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     onnodeUpdate?: (event?: any) => void;
     onnodeSelect?: (event?: any) => void;

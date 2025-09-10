@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader.js';
   import { drizzleCHRROMBridge } from '$lib/services/drizzle-chr-rom-bridge.js';

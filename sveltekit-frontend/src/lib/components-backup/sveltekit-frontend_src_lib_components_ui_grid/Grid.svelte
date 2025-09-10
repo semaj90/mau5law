@@ -1,5 +1,6 @@
 <!-- Grid Item Component -->
 <script lang="ts" context="module">
+</script>
   interface Props {
     columns: number
     gap: "none" | "sm" | "md" | "lg" | "xl" ;
@@ -29,6 +30,7 @@
 
 <!-- Grid Layout Component with svelte-brics inspired design -->
 <script lang="ts">
+</script>
   import { cn } from '$lib/utils';
 
         export const resizable: boolean = false;

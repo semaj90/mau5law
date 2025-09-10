@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { Button } from 'bits-ui';

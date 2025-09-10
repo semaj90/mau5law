@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button as BitsButton } from 'bits-ui';
   import type { HTMLButtonAttributes } from 'svelte/elements';
   import { cn } from '$lib/utils/cn';

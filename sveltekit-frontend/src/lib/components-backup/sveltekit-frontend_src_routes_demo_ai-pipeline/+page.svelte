@@ -1,5 +1,6 @@
 <!-- AI Pipeline Demo -->
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { writable } from 'svelte/store';

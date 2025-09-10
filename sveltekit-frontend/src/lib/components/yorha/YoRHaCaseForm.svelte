@@ -1,5 +1,6 @@
 <!-- Enhanced YoRHa Case Creation Form with Superforms + XState Integration -->
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
   import { createCaseCreationForm, FormStatePersistence, FORM_STORAGE_KEYS } from '$lib/forms/superforms-xstate-integration';
   import { enhancedCaseAPI } from '$lib/api/enhanced-case-api';
@@ -7,7 +8,7 @@
   import { z } from 'zod';
   
   const dispatch = createEventDispatcher<{
-    success: { case: any };
+    success: { caseItem: any };
     error: { message: string };
     close: void;
     stateChange: { state: string; context: any };
@@ -128,7 +129,7 @@ let unsubscribe = $state<(() >(> void) | null = null);
   // Success handler
   function handleFormSuccess(result: any) {
     console.log('🎉 Form submission successful:', result);
-    dispatch('success', { case: result });
+    dispatch('success', { caseItem: result });
     
     // Clear saved draft
     formStatePersistence.clear();

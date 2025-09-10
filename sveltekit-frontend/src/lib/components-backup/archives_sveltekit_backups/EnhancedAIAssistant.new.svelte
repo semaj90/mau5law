@@ -1,5 +1,6 @@
 <!-- Enhanced AI Assistant - Simplified Version -->
 <script lang="ts">
+</script>
   import {
     Brain,
     Loader2,
@@ -238,7 +239,7 @@ I can provide more specific guidance if you share additional details about your 
       <div
         class="mx-auto px-4 max-w-7xl"
         role="document"
-        onclick|stopPropagation
+        onclick
         onkeydown={() => {"
       >
         <div class="mx-auto px-4 max-w-7xl">

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Label, Switch } from "bits-ui";
 </script>
 

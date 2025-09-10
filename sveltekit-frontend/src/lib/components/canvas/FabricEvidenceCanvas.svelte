@@ -4,6 +4,7 @@
   Supports drag-and-drop positioning, evidence visualization, and interactive manipulation
 -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { fabric } from 'fabric';
   

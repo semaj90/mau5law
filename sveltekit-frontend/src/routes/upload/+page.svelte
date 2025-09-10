@@ -1,5 +1,6 @@
 <!-- Document Upload Page with MinIO Integration -->
 <script lang="ts">
+</script>
   import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
@@ -28,8 +29,7 @@
     };
     
     // Store notification in session storage for display
-    sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
-    
+    sessionStorage.setItem('uploadNotification', JSON.stringify(notification);
     // Redirect to document or case view
     if (caseId) {
       goto(`/cases/${caseId}/documents`);
@@ -49,7 +49,7 @@
       message: error
     };
     
-    sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
+    sessionStorage.setItem('uploadNotification', JSON.stringify(notification);
   }
 
   // Recent uploads state
@@ -367,7 +367,7 @@
 
   .help-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr);
     gap: 1.5rem;
   }
 

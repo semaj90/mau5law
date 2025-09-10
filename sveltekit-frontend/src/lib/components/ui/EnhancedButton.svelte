@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { ComponentProps } from 'svelte';
 	import { cva, type VariantProps } from 'class-variance-authority';
 	import { cn } from '$lib/utils';
@@ -19,7 +20,7 @@
 					link: 'text-primary underline-offset-4 hover:underline',
 					legal: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-md',
 					evidence: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-md',
-					case: 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500 shadow-md',
+					caseItem: 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500 shadow-md',
 					yorha: 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black hover:from-yellow-500 hover:to-yellow-700 font-bold uppercase tracking-wider border-2 border-yellow-700 shadow-lg'
 				},
 				size: {

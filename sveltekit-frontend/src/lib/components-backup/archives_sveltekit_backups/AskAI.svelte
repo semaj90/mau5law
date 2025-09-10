@@ -1,5 +1,6 @@
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import {
     AlertCircle,

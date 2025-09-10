@@ -1,5 +1,6 @@
 <!-- Route Status Check - Verify All Routes Work -->
-<script>
+<script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
 let routeTests = $state([
@@ -44,8 +45,7 @@ let isTestingRoutes = $state(false);
     isTestingRoutes = true;
 
     // Reset all to pending
-    routeTests = routeTests.map(test => ({ ...test, status: 'pending', responseTime: null }));
-
+    routeTests = routeTests.map(test => ({ ...test, status: 'pending', responseTime: null });
     // Test each route
     for (let i = 0; i < routeTests.length; i++) {
       const result = await testRoute(routeTests[i]);

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   export let value: string = '';
   export let placeholder: string = '';

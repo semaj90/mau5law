@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	// ================================================================================
 	// WEBGPU + THREE.JS + SERVICE WORKER OPTIMIZATION COMPONENT
 	// ================================================================================
@@ -680,11 +681,11 @@ let initialized = $state(false);
 	// REACTIVE STATEMENTS
 	// ============================================================================
 
-	$: if (canvas && !initialized) {
+	// TODO: Convert to $derived: if (canvas && !initialized) {
 		// Canvas is ready, initialization will happen in onMount
 	}
 
-	let metrics = $derived($performanceMetrics);
+	let metrics = $derived($performanceMetrics)
 </script>
 
 <!-- ============================================================================ -->

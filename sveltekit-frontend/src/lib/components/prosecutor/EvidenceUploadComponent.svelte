@@ -3,6 +3,7 @@ Enhanced Evidence Upload Component for Prosecutors
 Features: MinIO storage, AI analysis, multi-file support, drag-drop
 -->
 <script lang="ts">
+</script>
   import type { Props } from "$lib/types/global";
   import {
     Card,

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { createEventDispatcher } from 'svelte';
 	import { toolbarStore } from "../stores/canvas";
 	
@@ -49,12 +50,12 @@
 	];
 
 	// Reactive toolbar state
-	$: selectedTool = $toolbarStore.selectedTool;
-	$: formatting = $toolbarStore.formatting;
-	$: drawing = $toolbarStore.drawing;
-	$: canUndo = $toolbarStore.canUndo;
-	$: canRedo = $toolbarStore.canRedo;
-	$: zoom = $toolbarStore.zoom;
+	// TODO: Convert to $derived: selectedTool = $toolbarStore.selectedTool
+	// TODO: Convert to $derived: formatting = $toolbarStore.formatting
+	// TODO: Convert to $derived: drawing = $toolbarStore.drawing
+	// TODO: Convert to $derived: canUndo = $toolbarStore.canUndo
+	// TODO: Convert to $derived: canRedo = $toolbarStore.canRedo
+	// TODO: Convert to $derived: zoom = $toolbarStore.zoom
 
 	function selectTool(toolId: string) {
 		toolbarStore.update(state => ({

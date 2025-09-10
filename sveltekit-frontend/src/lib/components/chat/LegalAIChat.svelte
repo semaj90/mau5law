@@ -10,6 +10,7 @@
   - Legal knowledge base integration
 -->
 <script lang="ts">
+</script>
   import { onMount, createEventDispatcher, tick } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Case, Evidence, Citation } from '$lib/server/db/schemas/cases-schema.js';

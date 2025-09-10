@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Svelte 5 runes are used directly without imports
   import { enhance } from '$app/forms';
   // import { Dialog } from 'bits-ui';

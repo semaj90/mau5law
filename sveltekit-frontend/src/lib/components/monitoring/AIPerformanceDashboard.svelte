@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { aiAssistant } from '$lib/stores/ai-assistant.svelte';
   import { pgVectorSearch } from '$lib/services/pgvector-semantic-search';

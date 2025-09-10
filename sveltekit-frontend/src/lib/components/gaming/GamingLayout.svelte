@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { page } from '$app/stores';
 	import GamingHUD from './GamingHUD.svelte';
 	import GamingPanel from './GamingPanel.svelte';

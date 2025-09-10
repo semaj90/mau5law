@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import { avatarStore } from "../stores/avatarStore";
 	
@@ -9,11 +10,11 @@
 	let fileInput: HTMLInputElement;
 	let dragOver = false;
 	
-	$: avatarSize = {
+	// TODO: Convert to $derived: avatarSize = {
 		small: '32px',
 		medium: '48px', 
 		large: '80px'
-	}[size];
+	}[size]
 	
 	onMount(() => {
 		avatarStore.loadAvatar();

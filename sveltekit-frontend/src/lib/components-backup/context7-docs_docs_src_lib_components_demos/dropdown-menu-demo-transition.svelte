@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Avatar, DropdownMenu } from "bits-ui";
 	import Cardholder from "phosphor-svelte/lib/Cardholder";
 	import CaretRight from "phosphor-svelte/lib/CaretRight";

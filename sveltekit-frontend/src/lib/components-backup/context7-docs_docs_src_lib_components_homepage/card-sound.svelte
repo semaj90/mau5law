@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import HomeToolbar from "$lib/components/homepage/home-toolbar.svelte";
 </script>
 

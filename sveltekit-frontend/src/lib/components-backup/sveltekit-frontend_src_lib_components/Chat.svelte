@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount, onDestroy } from 'svelte';
 	import { useMachine } from '@xstate/svelte';
 	import { createMachine, assign } from 'xstate';
@@ -201,8 +202,8 @@
 		send({ type: 'CONNECT' });
 		
 		// Auto-scroll to bottom when messages change
-		$: if ($state.context.messages.length > 0) {
-			setTimeout(scrollToBottom, 100);
+		// TODO: Convert to $derived: if ($state.context.messages.length > 0) {
+			setTimeout(scrollToBottom, 100)
 		}
 	});
 	
@@ -213,10 +214,10 @@
 	});
 	
 	// Reactive statements
-	$: messages = $state.context.messages;
-	$: isLoading = $state.matches('sending') || $state.matches('connecting');
-	$: hasError = $state.matches('error');
-	$: errorMessage = $state.context.error;
+	// TODO: Convert to $derived: messages = $state.context.messages
+	// TODO: Convert to $derived: isLoading = $state.matches('sending') || $state.matches('connecting')
+	// TODO: Convert to $derived: hasError = $state.matches('error')
+	// TODO: Convert to $derived: errorMessage = $state.context.error
 </script>
 
 <div class="chat-container flex flex-col h-full bg-background rounded-lg border">

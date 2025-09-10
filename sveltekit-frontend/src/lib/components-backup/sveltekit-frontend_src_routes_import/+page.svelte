@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { User } from '$lib/types';
   import { browser } from "$app/environment";
   import { Tooltip } from "$lib/components/ui";

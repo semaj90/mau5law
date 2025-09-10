@@ -1,4 +1,5 @@
 <script>
+</script>
   export let title = "System status";
   export let status = "OK"; // e.g. "OK", "WARN", "ERROR"
   export let updatedAt = null; // optional Date or ISO string
@@ -11,9 +12,9 @@
 	return "status-unknown";
   };
 
-  $: formattedUpdatedAt = updatedAt
+  // TODO: Convert to $derived: formattedUpdatedAt = updatedAt
 	? (updatedAt instanceof Date ? updatedAt.toLocaleString() : new Date(updatedAt).toLocaleString())
-	: "";
+	: ""
 </script>
 
 <style>

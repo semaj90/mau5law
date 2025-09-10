@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     ontoolSelected?: (event?: any) => void;
     onformatToggled?: (event?: any) => void;

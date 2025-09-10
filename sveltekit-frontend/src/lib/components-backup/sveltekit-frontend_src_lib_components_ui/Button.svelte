@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Button as BitsButton } from 'bits-ui';
 	import { cva, type VariantProps } from 'class-variance-authority';
 	import { cn } from '$lib/utils/cn';
@@ -16,7 +17,7 @@
 					link: 'text-primary underline-offset-4 hover:underline',
 					legal: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
 					evidence: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500',
-					case: 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500'
+					caseItem: 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500'
 				},
 				size: {
 					default: 'h-10 px-4 py-2',

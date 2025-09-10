@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import { createEventDispatcher } from 'svelte';
   let { score = $bindable() } = $props(); // number = 5; // Current attractiveness score (1-10)

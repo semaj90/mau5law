@@ -1,4 +1,5 @@
 <script context="module">
+</script>
   interface Props {
     message: {
     showSources?: any;
@@ -17,6 +18,7 @@
 
 <!-- AI Chat Message Component -->
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
 

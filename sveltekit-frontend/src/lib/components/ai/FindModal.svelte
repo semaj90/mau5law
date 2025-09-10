@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import { Search, Sparkles, FileText, Users, Calendar, Zap, Brain, Target } from 'lucide-svelte';
   import { createEventDispatcher, onMount } from 'svelte';

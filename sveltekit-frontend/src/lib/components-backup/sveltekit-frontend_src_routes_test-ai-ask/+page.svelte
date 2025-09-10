@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
   import AIChatInterface from "$lib/components/ai/AIChatInterface.svelte";

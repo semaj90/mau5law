@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from '$lib/components/ui/enhanced-bits';
   import * as Card from '$lib/components/ui/card';
   import { onMount } from 'svelte';

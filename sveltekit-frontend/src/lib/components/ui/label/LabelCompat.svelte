@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import Label from '$lib/Label.svelte';
   import type { HTMLAttributes } from 'svelte/elements';

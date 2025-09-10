@@ -1,5 +1,6 @@
 {#snippet default}
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath';
   import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders';

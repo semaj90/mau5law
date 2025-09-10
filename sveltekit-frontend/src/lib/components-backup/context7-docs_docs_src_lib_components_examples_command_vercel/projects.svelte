@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import Item from "./item.svelte";
 </script>
 

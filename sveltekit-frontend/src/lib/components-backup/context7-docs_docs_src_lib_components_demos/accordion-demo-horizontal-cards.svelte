@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Accordion } from "bits-ui";
 
 	let value = $state("item-1");

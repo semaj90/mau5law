@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { browser } from '$app/environment';
 	import {
 	  AlertCircle,
@@ -43,8 +44,8 @@
 	let availableTags: string[] = [];
 
 	// Load available tags
-	$: if (browser) {
-		loadAvailableTags();
+	// TODO: Convert to $derived: if (browser) {
+		loadAvailableTags()
 	}
 
 	async function loadAvailableTags() {
@@ -319,7 +320,7 @@
 			<div class="mx-auto px-4 max-w-7xl">
 				<CloudUpload size={24} />
 				<span>{uploads.length} file{uploads.length !== 1 ? 's' : ''} ready</span>
-				<button type="button" class="mx-auto px-4 max-w-7xl" onclick|stopPropagation={triggerFileSelect}>
+				<button type="button" class="mx-auto px-4 max-w-7xl" onclick={triggerFileSelect}>
 					Add more
 				</button>
 			</div>

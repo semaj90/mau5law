@@ -4,6 +4,7 @@
   Uses Bits UI v2 + GPU orchestrator + Context7 documentation
 -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import * as Card from '$lib/components/ui/card';
   import {

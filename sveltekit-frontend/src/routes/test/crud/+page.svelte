@@ -1,5 +1,6 @@
 <!-- Test CRUD Display with SSR UI -->
-<script>
+<script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { enhance } from '$app/forms';
@@ -107,7 +108,7 @@ let showSystemHealth = $state(false);
         resetForm();
         await update();
       } else if (result.type === 'error') {
-        alert('Error saving case: ' + result.error?.message);
+        alert('Error saving caseItem: ' + result.error?.message);
       }
     };
   };

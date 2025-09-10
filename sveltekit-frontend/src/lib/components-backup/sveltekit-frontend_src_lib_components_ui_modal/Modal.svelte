@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { Snippet } from 'svelte';
 	
 	let { open = false, title, children }: {

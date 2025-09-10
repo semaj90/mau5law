@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import BitsUIDemo from "$lib/components/ui/BitsUIDemo.svelte";
   import { goto } from '$app/navigation';
 </script>

@@ -1,4 +1,5 @@
 <script>
+</script>
   export let variant = 'default';
   export let className = '';
   
@@ -12,7 +13,7 @@
     info: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
   };
   
-  $: variantClass = variants[variant] || variants.default;
+  // TODO: Convert to $derived: variantClass = variants[variant] || variants.default
 </script>
 
 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {variantClass} {className}">

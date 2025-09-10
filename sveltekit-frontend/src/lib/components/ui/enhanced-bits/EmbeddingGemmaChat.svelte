@@ -1,6 +1,7 @@
 <!-- Enhanced AI Chat Assistant with EmbeddingGemma + RAG Integration -->
 <!-- Uses Svelte 5 patterns with bits-ui components -->
 <script lang="ts">
+</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;

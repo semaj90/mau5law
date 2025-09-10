@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { detectiveAnalysisEngine, type EvidenceItem, type ConflictAnalysis, type SearchSuggestion } from '$lib/evidence/detective-analysis-engine.js';
   import { browser } from '$app/environment';

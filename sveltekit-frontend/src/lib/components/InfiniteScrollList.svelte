@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
@@ -38,10 +39,10 @@ let scrollContainer = $state<HTMLElement>();
 let currentPage = $state(0);
 let hasMore = $state(true);
 
-  $: {
+  // TODO: Convert to $derived: {
     // Reset when items change
     if (items !== displayedItems.slice(0, items.length)) {
-      currentPage = 0;
+      currentPage = 0
       displayedItems = [];
       loadMore();
 }}

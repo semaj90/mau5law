@@ -3,6 +3,7 @@
   Tests all gallery functionality including upload, search, and management
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
 
   let apiTests = $state([]);
@@ -152,8 +153,7 @@ let responseData = $state(null);
         testResults = { ...testResults };
 
         // Brief delay between tests
-        await new Promise(resolve => setTimeout(resolve, 100));
-
+        await new Promise(resolve => setTimeout(resolve, 100);
       } catch (error) {
         testResults[test.name] = {
           success: false,
@@ -410,7 +410,7 @@ let responseData = $state(null);
 
   .overview-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 1.5rem;
     margin-bottom: 2rem;
   }
@@ -452,7 +452,7 @@ let responseData = $state(null);
 
   .results-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr);
     gap: 1.5rem;
     margin-bottom: 3rem;
   }
@@ -566,7 +566,7 @@ let responseData = $state(null);
 
   .result-metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr);
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
@@ -658,7 +658,7 @@ let responseData = $state(null);
     }
 
     .overview-grid {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr);
     }
 
     .route-buttons {

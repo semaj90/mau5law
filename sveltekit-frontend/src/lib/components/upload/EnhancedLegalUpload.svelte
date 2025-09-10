@@ -4,6 +4,7 @@
   Preserves OCR + LegalBERT RAG Flow with enhanced UX
 -->
 <script lang="ts">
+</script>
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
   import { fileUploadSchema } from '$lib/schemas/file-upload.js';

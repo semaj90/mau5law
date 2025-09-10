@@ -1,4 +1,5 @@
 <script lang="ts" module>
+</script>
 	import type { TimeValue } from "bits-ui";
 	import type { Time } from "@internationalized/date";
 
@@ -6,6 +7,7 @@
 </script>
 
 <script lang="ts" generics="T extends TimeValue = Time">
+</script>
 	import { TimeField } from "bits-ui";
 
 	let {

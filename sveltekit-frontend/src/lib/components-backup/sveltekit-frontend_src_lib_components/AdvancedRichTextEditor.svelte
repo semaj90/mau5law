@@ -1,5 +1,6 @@
 <!-- Lightweight Rich Text Editor with Enhanced Image Support -->
 <script lang="ts">
+</script>
   interface Props {
     content: any
     placeholder?: any;

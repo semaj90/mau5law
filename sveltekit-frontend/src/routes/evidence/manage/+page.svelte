@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import EvidenceFilesManager from '$lib/components/evidence/EvidenceFilesManager.svelte';
 </script>
 

@@ -1,4 +1,5 @@
 <script>
+</script>
   import { user } from "$lib/stores/user";
   import { Button } from "$lib/components/ui/button";
   import Modal from "$lib/components/ui/Modal.svelte";

@@ -1,5 +1,6 @@
 <!-- EnhancedRAG:Studio UI - Complete RAG Management Dashboard -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import VectorPipelineDemo from '$lib/components/demo/VectorPipelineDemo.svelte';
   import type { PageData } from './$types';
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
   import { onMount } from 'svelte';

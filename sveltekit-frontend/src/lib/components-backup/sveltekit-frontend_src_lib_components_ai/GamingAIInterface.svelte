@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte'
   import { scale, fly, fade } from 'svelte/transition'
   import { spring } from 'svelte/motion'

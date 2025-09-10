@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     Card,
@@ -35,7 +36,7 @@
   // Computed properties using Svelte 5 $derived runes
   let hasFiles = $derived(selectedFiles.length > 0);
   let canProcess = $derived(hasFiles && !isProcessing);
-  let totalEntities = $derived(processedDocuments.reduce((sum, doc) => sum + (doc?.entityCount || 0), 0));
+  let totalEntities = $derived(processedDocuments.reduce((sum, doc) => sum + (doc?.entityCount || 0), 0);
   let averageProsecutionScore = $derived(
     processedDocuments.length > 0
       ? processedDocuments.reduce((sum, doc) => sum + (doc?.prosecutionScore || 0), 0) / processedDocuments.length

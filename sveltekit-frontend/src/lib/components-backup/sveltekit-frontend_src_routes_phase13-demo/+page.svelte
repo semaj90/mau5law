@@ -2,6 +2,7 @@
 <!-- Complete integration of XState, WebGL, Enhanced RAG, and Context7 MCP -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import Card from '$lib/components/ui/Card.svelte';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { Snippet } from "svelte";
 	import { Dialog, type WithoutChild } from "bits-ui";
 	import X from "phosphor-svelte/lib/X";

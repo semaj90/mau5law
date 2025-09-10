@@ -1,5 +1,6 @@
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
+</script>
   import { notifications } from "$lib/stores/notification";
   import type { User } from "$lib/types/user";
   import { createEventDispatcher } from "svelte";
@@ -125,7 +126,7 @@ let errors = $state<Record<string, string> >({});
 
       dispatch(case_ ? "updated" : "created", savedCase);
     } catch (error) {
-      console.error("Error saving case:", error);
+      console.error("Error saving caseItem:", error);
       notifications.add({
         type: "error",
         title: "Save Error",

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { Props } from "$lib/types/global";
 
   let { children }: Props = $props();

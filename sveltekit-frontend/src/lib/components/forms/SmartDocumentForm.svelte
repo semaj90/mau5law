@@ -1,5 +1,6 @@
 <!-- Smart Document Form with OCR Auto-Population -->
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from 'svelte';
 	// Updated to use melt-ui components
 	import Button from '$lib/components/ui/bitsbutton.svelte';

@@ -1,5 +1,6 @@
 <!-- YoRHa Command Center Page -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import YoRHaDetectiveCommandCenter from '$lib/components/yorha/YoRHaDetectiveCommandCenter.svelte';
   import { browser } from '$app/environment';

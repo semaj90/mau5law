@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { cognitiveSmartRouter } from '$lib/ai/cognitive-smart-router';
@@ -107,7 +108,7 @@
     performanceMetrics.update(m => ({
       ...m,
       activeEngines: onlineEngines
-    }));
+    });
   }
 
   async function sendMessage() {
@@ -176,8 +177,7 @@
           ((m.cacheHitRate * m.totalRequests) + 1) / (m.totalRequests + 1) :
           (m.cacheHitRate * m.totalRequests) / (m.totalRequests + 1),
         activeEngines: m.activeEngines
-      }));
-      
+      });
       // Scroll to bottom
       setTimeout(() => {
         if (chatContainer) {

@@ -1,5 +1,6 @@
 <!-- ContextualBVectorChat.svelte - Enhanced AI Chat with BVector Store Integration -->
 <script lang="ts">
+</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { createEnhancedBVectorStore, type EnhancedBVectorStore, type SearchResult } from '$lib/services/enhanced-bvector-store';
   import { ContextualRLValidator, type ValidationResult } from '$lib/ai/contextual-rl-validator';

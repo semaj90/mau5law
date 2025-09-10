@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { BitsDemoProps } from '$lib/types/component-props.js';
 
   // Component library choice - toggle between bits-ui and melt-ui

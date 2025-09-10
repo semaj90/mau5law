@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Badge, Button, Input } from "$lib/components/ui";
   import Fuse from "fuse.js";
   import { createEventDispatcher, onMount } from "svelte";
@@ -199,15 +200,15 @@
   }
 
   // Reactive search
-  $: if (searchQuery) {
-    performSearch();
+  // TODO: Convert to $derived: if (searchQuery) {
+    performSearch()
   } else {
     searchResults = [];
   }
 
   // Auto-generate insights when node changes
-  $: if (selectedNode?.aiTags) {
-    generateInsights();
+  // TODO: Convert to $derived: if (selectedNode?.aiTags) {
+    generateInsights()
   }
 </script>
 

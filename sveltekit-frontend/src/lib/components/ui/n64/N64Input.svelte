@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, createEventDispatcher } from 'svelte';
   
   // Svelte 5 props interface

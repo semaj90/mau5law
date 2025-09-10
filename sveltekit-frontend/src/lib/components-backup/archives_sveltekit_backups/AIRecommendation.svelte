@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { aiHistory } from "$lib/stores/aiHistoryStore";
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
@@ -6,7 +7,7 @@
   let recommendations: unknown[] = [];
   let fuse: Fuse<any>;
 
-  $: history = $aiHistory;
+  // TODO: Convert to $derived: history = $aiHistory
 
   onMount(() => {
     fuse = new Fuse(history, {

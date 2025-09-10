@@ -2,6 +2,7 @@
 <!-- Real-time demonstration of AI-driven development architecture -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     Button
@@ -181,7 +182,7 @@ let feedbackLoop = $state<any >(null);
   function generateHeatmapGradient(weights: Float32Array): string {
     if (!weights || weights.length === 0) return 'rgba(0,0,0,0.1)';
 
-    const maxWeight = Math.max(...Array.from(weights));
+    const maxWeight = Math.max(...Array.from(weights);
     const colors = [];
 
     for (let i = 0; i < Math.min(10, weights.length); i++) {

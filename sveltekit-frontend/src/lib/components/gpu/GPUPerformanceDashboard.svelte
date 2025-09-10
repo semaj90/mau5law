@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { gpuPerformanceOptimizer, type GPUPerformanceMetrics, type PerformanceAlert } from '$lib/services/gpu-performance-optimizer';
   

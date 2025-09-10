@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
@@ -299,7 +300,7 @@
 							<div class="insight-icon">📈</div>
 							<div class="insight-content">
 								<h4>Success Prediction</h4>
-								<p>Johnson case: 94% conviction probability based on evidence.</p>
+								<p>Johnson caseItem: 94% conviction probability based on evidence.</p>
 							</div>
 						</div>
 					</div>
@@ -442,7 +443,7 @@
 					class="btn-primary"
 					on:click={() => {
 						showQuickInput = true;
-						startTypewriter("What's wrong? Describe the situation and I'll help you build the case:");
+						startTypewriter("What's wrong? Describe the situation and I'll help you build the caseItem:");
 					}}
 				>
 					What's Wrong?
@@ -660,7 +661,7 @@
 
 	.cases-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(350px, 1fr);
 		gap: 1.5rem;
 	}
 

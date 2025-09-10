@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import GamingLayout from '$lib/components/gaming/GamingLayout.svelte';
 	import GamingPanel from '$lib/components/gaming/GamingPanel.svelte';
 	import GamingButton from '$lib/components/gaming/GamingButton.svelte';

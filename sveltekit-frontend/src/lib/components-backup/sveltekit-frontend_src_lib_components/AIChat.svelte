@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { useMachine } from '@xstate/svelte';
 	import { onMount } from 'svelte';
 	import { chatMachine } from '$lib/machines/chatMachine';

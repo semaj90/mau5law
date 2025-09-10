@@ -1,5 +1,6 @@
 <!-- Evidence Upload Board Component with AI Analysis -->
 <script lang="ts">
+</script>
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Textarea } from '$lib/components/ui/textarea';

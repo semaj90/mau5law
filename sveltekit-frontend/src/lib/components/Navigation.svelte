@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
 
 	import { page } from '$app/stores';
@@ -73,7 +74,7 @@
 		} else {
 			// Generate URL based on result type
 			const typeRoutes: Record<string, string> = {
-				case: '/cases',
+				caseItem: '/cases',
 				evidence: '/evidence',
 				criminal: '/persons',
 				document: '/documents',

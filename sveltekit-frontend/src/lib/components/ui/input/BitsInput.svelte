@@ -1,5 +1,6 @@
 <!-- Modern Input Component for Legal AI App -->
 <script lang="ts">
+</script>
   import { cn } from '$lib/utils';
   import type { HTMLInputAttributes } from 'svelte/elements';
   

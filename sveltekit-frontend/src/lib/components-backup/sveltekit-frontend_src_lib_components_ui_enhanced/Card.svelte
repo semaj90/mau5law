@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	interface Props extends HTMLAttributes<HTMLDivElement> {

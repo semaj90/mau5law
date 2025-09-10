@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   export let options: { value: string; label: string }[] = [];
   export let selected: string = '';
   export let placeholder: string = 'Select an option';

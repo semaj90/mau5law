@@ -2,6 +2,7 @@
 <!-- Shows real-time updates for document re-embedding and re-ranking -->
 
 <script lang="ts">
+</script>
   import {
     documentUpdateNotifications,
     formatNotificationTime,

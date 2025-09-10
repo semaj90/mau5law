@@ -9,6 +9,7 @@
   5. GPU acceleration for document analysis
 -->
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
@@ -353,8 +354,8 @@ let enableGPUAnalysis = $state(false);
   });
 
   // Reactive loading when documentId changes
-  $: if (documentId && isOpen) {
-    loadDocumentData(documentId);
+  // TODO: Convert to $derived: if (documentId && isOpen) {
+    loadDocumentData(documentId)
   }
 
   // Helper functions

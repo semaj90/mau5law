@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { idleDetectionMachine } from '$lib/machines/idle-detection-rabbitmq-machine.js';
@@ -435,12 +436,12 @@
   });
 
   // Reactive updates
-  $: if (nodeId && mounted) {
-    loadRecommendations();
+  // TODO: Convert to $derived: if (nodeId && mounted) {
+    loadRecommendations()
   }
 
-  $: if ($idleState.matches('idle.generating_prompts')) {
-    console.log('🤖 Self-prompting activated while viewing 3D graph');
+  // TODO: Convert to $derived: if ($idleState.matches('idle.generating_prompts')) {
+    console.log('🤖 Self-prompting activated while viewing 3D graph')
     // Could trigger automatic graph updates or suggestions
   }
 </script>

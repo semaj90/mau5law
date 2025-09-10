@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Toggle } from "bits-ui";
 	import LockKeyOpen from "phosphor-svelte/lib/LockKeyOpen";
 

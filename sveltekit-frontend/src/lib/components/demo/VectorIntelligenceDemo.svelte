@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
   import {

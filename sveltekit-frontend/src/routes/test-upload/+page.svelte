@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import AdvancedFileUpload from "$lib/components/upload/AdvancedFileUpload.svelte";
   // $state runtime rune is provided globally
 

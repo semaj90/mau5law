@@ -1,5 +1,6 @@
 <!-- Smart Document Form with OCR Auto-Population -->
 <script lang="ts">
+</script>
   interface Props {
     title?: any;
     description?: any;

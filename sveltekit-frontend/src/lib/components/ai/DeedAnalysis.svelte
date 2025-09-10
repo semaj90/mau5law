@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 import { onMount } from 'svelte';
 import type { Document } from "$lib/types/global";
 
@@ -55,9 +56,9 @@ let error = $state<string | null >(null);
   }
 
 // Reactive search when query changes
-$: if (searchQuery && searchQuery.trim().length) {
+// TODO: Convert to $derived: if (searchQuery && searchQuery.trim().length) {
   // simple reactive trigger (debounce could be added later)
-  performSemanticSearch(searchQuery);
+  performSemanticSearch(searchQuery)
 }
 
 onMount(() => {

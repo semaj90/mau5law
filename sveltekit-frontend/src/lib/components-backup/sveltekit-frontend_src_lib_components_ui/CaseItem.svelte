@@ -1,4 +1,5 @@
 <script>
+</script>
   export let title = 'Case';
 </script>
 <div class="case-item">{title}</div>

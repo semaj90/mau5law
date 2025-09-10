@@ -3,6 +3,7 @@ Multi-LLM Orchestration Component
 Provides UI for managing multiple AI workers and orchestrating parallel processing
 -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
   import { Badge } from '$lib/components/ui/badge';

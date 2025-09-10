@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Fuse from 'fuse.js';
   import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card/index.js";
   import { Input } from "$lib/components/ui/input/index.js";

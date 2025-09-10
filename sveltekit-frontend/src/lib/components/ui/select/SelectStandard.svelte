@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Select as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
   
   interface SelectOption {

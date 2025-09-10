@@ -1,5 +1,6 @@
 <!-- Productivity AI Integration Demo -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   

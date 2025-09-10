@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import { SoraGraphTraversal, type SoraTraversalPath, type SoraTraversalOptions } from '$lib/ai/sora-graph-traversal.js';
@@ -77,7 +78,7 @@ let reranker = $state<LegalAIReranker | null >(null);
       backgroundColor: '#1a1a1a',
       nodeColors: {
         document: '#4CAF50',
-        case: '#2196F3',
+        caseItem: '#2196F3',
         evidence: '#FF5722',
         entity: '#9C27B0',
         concept: '#FFC107',
@@ -96,7 +97,7 @@ let reranker = $state<LegalAIReranker | null >(null);
       backgroundColor: '#ffffff',
       nodeColors: {
         document: '#2E7D32',
-        case: '#1565C0',
+        caseItem: '#1565C0',
         evidence: '#D32F2F',
         entity: '#7B1FA2',
         concept: '#F57C00',
@@ -115,7 +116,7 @@ let reranker = $state<LegalAIReranker | null >(null);
       backgroundColor: '#0f1419',
       nodeColors: {
         document: '#4a9eff',
-        case: '#ff6b35',
+        caseItem: '#ff6b35',
         evidence: '#f7931e',
         entity: '#c77dff',
         concept: '#06ffa5',
@@ -133,8 +134,8 @@ let reranker = $state<LegalAIReranker | null >(null);
   };
 
   // Reactive statements
-  $: currentTheme = themes[theme];
-  $: traversalConfig = {
+  // TODO: Convert to $derived: currentTheme = themes[theme]
+  // TODO: Convert to $derived: traversalConfig = {
     maxDepth: 5,
     maxNodes: 100,
     scoreThreshold: 0.6,
@@ -148,9 +149,9 @@ let reranker = $state<LegalAIReranker | null >(null);
       discountFactor: 0.95
     },
     ...config
-  } as SoraTraversalOptions;
+  } as SoraTraversalOptions
 
-  $: visualizationConfig = {
+  // TODO: Convert to $derived: visualizationConfig = {
     width,
     height,
     backgroundColor: currentTheme.backgroundColor,
@@ -181,7 +182,7 @@ let reranker = $state<LegalAIReranker | null >(null);
     enableCaching: true,
     qualityLevel: 'high' as const,
     ...config
-  } as MoogleVisualizationConfig;
+  } as MoogleVisualizationConfig
 
   onMount(async () => {
     try {

@@ -1,5 +1,6 @@
 <!-- Real AI File Upload Demo Page with Production System -->
 <script lang="ts">
+</script>
   import EnhancedFileUpload from '$lib/components/ai/EnhancedFileUpload.svelte';
 	import { onMount } from 'svelte';
 	

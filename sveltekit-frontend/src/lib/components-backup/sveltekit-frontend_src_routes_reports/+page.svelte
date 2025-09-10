@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import TauriAPI from "$lib/tauri";
   import type { Report } from "$lib/types/index";
   import { onMount } from "svelte";

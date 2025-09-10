@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { aiHistory } from "$lib/stores/aiHistoryStore";
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
@@ -7,7 +8,7 @@
   let results: unknown[] = [];
   let fuse: Fuse<any>;
 
-  $: history = $aiHistory;
+  // TODO: Convert to $derived: history = $aiHistory
 
   onMount(() => {
     fuse = new Fuse(history, {
@@ -16,7 +17,7 @@
     });
   });
 
-  $: results = query && fuse ? fuse.search(query).map((r) => r.item) : history;
+  // TODO: Convert to $derived: results = query && fuse ? fuse.search(query).map((r) => r.item) : history
 </script>
 
 <div className="${1}">

@@ -1,5 +1,6 @@
 <!-- Ollama Agent Shell - Real-time Terminal Modal with Streaming Support -->
 <script lang="ts">
+</script>
   import { agentShellMachine } from "$lib/machines/agentShellMachine";
   import { cn } from "$lib/utils";
   import { useMachine } from "@xstate/svelte";
@@ -315,12 +316,12 @@ Type /help for commands`,
 
   // Reactive state from XState
   let xstateResponse = $derived($state.context.response)
-  $: if (
+  // TODO: Convert to $derived: if (
     xstateResponse &&
     messages.length > 0 &&
     messages[messages.length - 1].role === "assistant"
   ) {
-    messages[messages.length - 1].content = xstateResponse;
+    messages[messages.length - 1].content = xstateResponse
   }
 </script>
 

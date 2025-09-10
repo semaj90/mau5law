@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from '$lib/components/ui/enhanced-bits';
   import { createAccordion, melt } from 'melt';
   

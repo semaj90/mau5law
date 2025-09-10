@@ -1,5 +1,6 @@
 <!-- Comprehensive Legal Components Demo -->
 <script lang="ts">
+</script>
   import {
     Card,
     CardHeader,
@@ -268,7 +269,7 @@ let toastProvider = $state<any;
   function handleDeadlineChange(date: Date | undefined) {
     selectedDeadline = date;
     if (date) {
-      const daysUntil = Math.ceil((date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+      const daysUntil = Math.ceil((date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24);
       toastProvider?.showLegalDeadlineWarning('Discovery Deadline', daysUntil);
     }
   }

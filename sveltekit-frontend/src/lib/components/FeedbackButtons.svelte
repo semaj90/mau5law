@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   let { sessionId }: string;
   let { query }: string;

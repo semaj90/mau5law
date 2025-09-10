@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import AIButton from "$lib/components/ai/AIButton.svelte";
   export let position:
     | "bottom-right"

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { invalidateAll } from "$app/navigation";
   import { createEventDispatcher } from "svelte";
   import { superForm } from "sveltekit-superforms";

@@ -1,9 +1,11 @@
 <!--
   Enhanced File Upload Component with Superforms and Zod Validation
   Features: Drag & drop, progress tracking, AI processing, validation, preview
-  Cleaned: removed duplicated script/markup and ensured single <script>, template, and <style>.
+  Cleaned: removed duplicated script/markup and ensured single <script>
+</script>, template, and <style>.
 -->
 <script lang="ts">
+</script>
   import { onMount } from "svelte";
   import {
     Button

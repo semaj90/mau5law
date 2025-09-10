@@ -1,5 +1,6 @@
 <!-- Example: Modular Case Management with API Integration -->
 <script lang="ts">
+</script>
   import { ModularDialog } from '../modular-dialog';
   import { ModularCommand } from '../modular-command';
   import { Button } from 'bits-ui';
@@ -81,7 +82,7 @@
       });
       await refreshCaseData();
     } catch (error) {
-      console.error('Failed to update case:', error);
+      console.error('Failed to update caseItem:', error);
     }
   }
 </script>

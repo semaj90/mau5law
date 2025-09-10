@@ -1,5 +1,6 @@
 <!-- LLM Provider Selector with Bits UI v2 and Real-time Status -->
 <script lang="ts">
+</script>
   interface Props {
     selectedProvider: LLMProvider | null ;
     disabled?: any;

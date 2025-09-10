@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   import Dropdown from '$lib/components/+Dropdown.svelte';
   import Checkbox from '$lib/components/+Checkbox.svelte';

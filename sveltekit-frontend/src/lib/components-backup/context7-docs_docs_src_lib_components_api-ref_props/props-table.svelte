@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { PropObj, PropSchema } from "$lib/types/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import Code from "$lib/components/markdown/code.svelte";

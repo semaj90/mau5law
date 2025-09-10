@@ -13,6 +13,7 @@
  */
 
 import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache';
+import { fastStringify, fastParse } from '../utils/fast-json.js';
 import { lokiRedisCache } from '../cache/loki-redis-integration';
 import { searchCacheNeuralEngine } from '../gpu/search-cache-neural-engine';
 import type { LegalDocument } from '../memory/nes-memory-architecture';
@@ -441,7 +442,7 @@ export class QLoRATopologyPredictor {
 
       // Store in cache for quick retrieval
       const cacheKey = `topology_preload:${doc.type}:${doc.complexity.toFixed(1)}`;
-      await lokiRedisCache.set(cacheKey, JSON.stringify(prediction), 3600); // 1 hour TTL
+      await lokiRedisCache.set(cacheKey, fastStringify(prediction), 3600); // 1 hour TTL
     });
 
     // Execute preload tasks with concurrency control
@@ -690,7 +691,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
     for (const docType of documentTypes) {
       const baselineData = await lokiRedisCache.get(`perf_baseline:${docType}`);
       if (baselineData) {
-        this.performanceBaseline.set(docType, JSON.parse(baselineData));
+        this.performanceBaseline.set(docType, fastParse(baselineData));
       }
     }
   }
@@ -820,7 +821,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
     this.ragCache.set(cacheKey, ragEntry);
 
     // Also store in Redis for persistence
-    await lokiRedisCache.set(`topology_rag:${cacheKey}`, JSON.stringify(ragEntry), 86400); // 24 hours
+    await lokiRedisCache.set(`topology_rag:${cacheKey}`, fastStringify(ragEntry), 86400); // 24 hours
   }
 }
 
@@ -1057,13 +1058,13 @@ class LocalLLMConnector {
       const response = await fetch(`${this.baseURL}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: fastStringify({
           model: 'nomic-embed-text',
           prompt: text
         })
       });
 
-      const result = await response.json();
+      const result = await fastParse(await response.text());
       return new Float32Array(result.embedding);
     } catch (error) {
       // Fallback: generate synthetic embedding
@@ -1076,7 +1077,7 @@ class LocalLLMConnector {
       const response = await fetch(`${this.baseURL}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: fastStringify({
           model: 'gemma3-legal:latest',
           prompt: prompt,
           stream: false,
@@ -1088,7 +1089,7 @@ class LocalLLMConnector {
         })
       });
 
-      const result = await response.json();
+      const result = await fastParse(await response.text());
       return result.response || 'No response from LLM';
     } catch (error) {
       return 'LLM query failed: using default recommendations';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from "svelte";
   import { apiFetch } from "$lib/api/clients/api-client";
   import { concurrencyOrchestrator } from '$lib/services/concurrency-orchestrator';

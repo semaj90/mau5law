@@ -9,6 +9,7 @@
   - Detective mode integration
 -->
 <script lang="ts">
+</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
@@ -432,7 +433,7 @@
                       target="_blank" 
                       rel="noopener noreferrer"
                       class="text-blue-600 hover:text-blue-800"
-                      onclick|stopPropagation
+                      onclick
                     >
                       View Source ↗
                     </a>
@@ -443,7 +444,7 @@
                       target="_blank" 
                       rel="noopener noreferrer"
                       class="text-blue-600 hover:text-blue-800"
-                      onclick|stopPropagation
+                      onclick
                     >
                       DOI: {citation.doi} ↗
                     </a>
@@ -456,7 +457,7 @@
             {#if !readonly}
               <div class="flex space-x-2 ml-4">
                 <button
-                  onclick|stopPropagation={() => editCitation(citation)}
+                  onclick={() => editCitation(citation)}
                   class="text-gray-400 hover:text-gray-600 p-1"
                   title="Edit citation"
                 >

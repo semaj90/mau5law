@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import GPULoadingProgress from './GPULoadingProgress.svelte';
 
   interface InferenceResponse {

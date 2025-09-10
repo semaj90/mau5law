@@ -1,5 +1,6 @@
 <!-- Enhanced File Upload Component with Full Stack Integration -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { createMachine, interpret, type ActorRefFrom } from 'xstate';
   import { Upload, Check, X, Loader2, Database, Cpu, Cloud, Zap } from 'lucide-svelte';

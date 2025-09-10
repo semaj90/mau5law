@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
   import { aiComputationMachine } from '$lib/machines/ai-computation-machine';

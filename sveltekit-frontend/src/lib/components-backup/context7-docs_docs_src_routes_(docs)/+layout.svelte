@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { dev } from "$app/environment";
 	import Metadata from "$lib/components/metadata.svelte";
 	import SiteHeader from "$lib/components/site-header.svelte";

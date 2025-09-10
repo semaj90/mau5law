@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Button from "$lib/components/ui/Button.svelte";
   // FIX: Import all necessary parts of the Tooltip component
   import Card from "$lib/components/ui/Card.svelte";
@@ -91,7 +92,7 @@
   function showPromptModal() {
     modals.prompt({
       title: "Add Note",
-      message: "Please enter a note for this case:",
+      message: "Please enter a note for this caseItem:",
       placeholder: "Enter your note here...",
       defaultValue: "",
       onConfirm: (value) => {

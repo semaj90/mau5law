@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount, tick } from 'svelte';
 	import {
 		Loader2, Send, MessageCircle, Bot, User, FileText,
@@ -124,8 +125,7 @@
 						...m,
 						timestamp: new Date(m.timestamp)
 					}))
-				}));
-
+				});
 				// Load the most recent session
 				if (chatSessions.length > 0) {
 					const recent = chatSessions.sort((a, b) => b.updated.getTime() - a.updated.getTime())[0];
@@ -139,7 +139,7 @@
 	}
 
 	function saveChatSessions() {
-		localStorage.setItem('legal-ai-chat-sessions', JSON.stringify(chatSessions));
+		localStorage.setItem('legal-ai-chat-sessions', JSON.stringify(chatSessions);
 	}
 
 	function createNewSession() {
@@ -498,8 +498,8 @@
 								</button>
 							{/each}
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</CardContent>
+				</Card>
 
 				<!-- Current Mode Info -->
 				<Card.Root>
@@ -534,8 +534,8 @@
 								<span class="text-blue-400">Context Search: {enableContextualSearch ? 'On' : 'Off'}</span>
 							</div>
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</CardContent>
+				</Card>
 			</div>
 
 			<!-- Main Chat Area -->
@@ -730,7 +730,7 @@
 							</div>
 						{/if}
 					</div>
-				</Card.Root>
+				</Card>
 			</div>
 		</div>
 	</div>

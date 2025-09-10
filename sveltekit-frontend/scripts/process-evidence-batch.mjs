@@ -154,7 +154,7 @@ async function processPendingEvidence() {
       WHERE (ai_analysis IS NULL OR ai_analysis = '{}' OR ai_analysis = '')
          OR (title_embedding IS NULL)
          OR (ai_tags IS NULL OR ai_tags = '[]')
-      ORDER BY created_at DESC
+      ORDER BY uploaded_at DESC
       LIMIT ${config.batchSize * 2}
     `;
     
@@ -214,16 +214,16 @@ async function processPendingEvidence() {
           await sql`
             UPDATE evidence 
             SET 
-              ai_analysis = ${JSON.stringify({
+              ai_analysis = ${sql`${JSON.stringify({
                 analysis: aiAnalysis,
                 processed_at: new Date().toISOString(),
                 model: config.legalModel,
                 confidence: 0.8
-              })},
-              ai_tags = ${JSON.stringify(aiTags)},
+              })}`},
+              ai_tags = ${sql`${JSON.stringify(aiTags)}`},
               ai_summary = ${aiSummary},
-              title_embedding = ${titleEmbedding ? `${JSON.stringify(titleEmbedding)}::vector` : null},
-              content_embedding = ${contentEmbedding ? `${JSON.stringify(contentEmbedding)}::vector` : null},
+              title_embedding = ${titleEmbedding ? sql`${JSON.stringify(titleEmbedding)}::vector` : null},
+              content_embedding = ${contentEmbedding ? sql`${JSON.stringify(contentEmbedding)}::vector` : null},
               updated_at = NOW()
             WHERE id = ${evidence.id}
           `;
@@ -241,11 +241,11 @@ async function processPendingEvidence() {
             await sql`
               UPDATE evidence 
               SET 
-                ai_analysis = ${JSON.stringify({
+                ai_analysis = ${sql`${JSON.stringify({
                   error: error.message,
                   processed_at: new Date().toISOString(),
                   status: 'failed'
-                })},
+                })}`},
                 updated_at = NOW()
               WHERE id = ${evidence.id}
             `;

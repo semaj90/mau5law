@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Accordion } from "bits-ui";
 	import CaretDown from "phosphor-svelte/lib/CaretDown";
 	import { slide } from "svelte/transition";

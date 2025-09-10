@@ -1,5 +1,6 @@
 <!-- Enhanced ThinkingStyleToggle with Nier Automata + Harvard Crimson Theme -->
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   import { fade, slide, scale } from 'svelte/transition';
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
@@ -27,14 +28,14 @@
     alternatives: false
   };
   
-  $: iconSize = size === 'sm' ? 16 : size === 'md' ? 20 : 24;
-  $: buttonClass = cn(
+  // TODO: Convert to $derived: iconSize = size === 'sm' ? 16 : size === 'md' ? 20 : 24
+  // TODO: Convert to $derived: buttonClass = cn(
     "thinking-toggle",
     size,
     enabled ? 'enabled' : 'disabled',
     loading ? 'loading' : '',
     !premium ? 'premium-required' : ''
-  );
+  )
   
   function handleToggle() {
     if (!premium) {

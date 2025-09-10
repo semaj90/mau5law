@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
 
   let clickCount = $state(0);
@@ -14,8 +15,7 @@
     isLoading = true;
     message = 'Loading...';
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
+    await new Promise(resolve => setTimeout(resolve, 1000);
     message = 'Async operation complete!';
     isLoading = false;
   }

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type {     Snippet     } from 'svelte';
 	import { cva, type VariantProps } from 'class-variance-authority';
 	import { cn } from '$lib/utils';
@@ -13,7 +14,7 @@
 					ghost: 'border-transparent bg-transparent shadow-none',
 					legal: 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950',
 					evidence: 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950',
-					case: 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950',
+					caseItem: 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950',
 					yorha: 'border-yellow-400 bg-black/90 text-yellow-400'
 				},
 				size: {

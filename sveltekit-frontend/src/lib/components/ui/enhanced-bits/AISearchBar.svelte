@@ -1,5 +1,6 @@
 <!-- AI Search Bar: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   import { Input, Button } from './index.js';
   import { Search } from 'lucide-svelte';

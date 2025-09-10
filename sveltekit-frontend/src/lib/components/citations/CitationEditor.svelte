@@ -8,6 +8,7 @@
   - Integration with case management system
 -->
 <script lang="ts">
+</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';

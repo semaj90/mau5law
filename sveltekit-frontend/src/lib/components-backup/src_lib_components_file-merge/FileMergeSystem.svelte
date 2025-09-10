@@ -2,6 +2,7 @@
 <!-- Native Windows Implementation -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { createFileMergeSystem, fileMergeStore, type FileMetadata, type MergeOperation } from '$lib/services/file-merge-system.js';
   import { Button } from '$lib/components/ui/button/index.js';

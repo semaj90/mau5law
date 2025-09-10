@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
@@ -42,7 +43,7 @@ let response = $state<any >(null);
   onMount(async () => {
     if (browser) {
       // Wait for AI store to initialize
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200);
       isPageReady = true;
       // Auto-check health on load
       checkHealthEndpoints();

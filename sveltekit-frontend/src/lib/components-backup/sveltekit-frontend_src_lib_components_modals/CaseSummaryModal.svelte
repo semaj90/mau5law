@@ -1,5 +1,6 @@
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
+</script>
   interface Props {
     onsummaryGenerated?: (event?: any) => void;
   }

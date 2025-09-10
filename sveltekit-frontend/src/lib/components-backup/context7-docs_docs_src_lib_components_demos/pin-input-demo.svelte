@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { PinInput, REGEXP_ONLY_DIGITS, type PinInputRootSnippetProps } from "bits-ui";
 	import { toast } from "svelte-sonner";
 	import { cn } from "$lib/utils/styles.js";

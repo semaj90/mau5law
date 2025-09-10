@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { TimeField } from "bits-ui";
 </script>
 

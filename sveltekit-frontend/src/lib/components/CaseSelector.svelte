@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { user } from "$lib/stores/user";
   import {
     Button

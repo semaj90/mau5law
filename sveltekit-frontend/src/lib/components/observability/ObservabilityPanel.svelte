@@ -1,5 +1,6 @@
 <!-- Observability Panel: Real-time alerts + sustained monitoring dashboard -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import type { ObservabilityState } from '$lib/services/observability-persistence';
   

@@ -1,4 +1,5 @@
 <script>
+</script>
   export let title = 'Detective Dashboard';
 </script>
 

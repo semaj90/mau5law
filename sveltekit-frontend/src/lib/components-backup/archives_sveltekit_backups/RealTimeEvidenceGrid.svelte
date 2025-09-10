@@ -1,5 +1,6 @@
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
+</script>
   import { Button } from "$lib/components/ui/button/index.js";
   import { evidenceStore, type Evidence } from "$lib/stores/evidenceStore";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
@@ -59,16 +60,16 @@
   let totalPages = 0;
 
   // Subscribe to store values
-  $: evidence = $evidenceStore.evidence || [];
-  $: isLoading = $evidenceStore.isLoading || false;
-  $: isConnected = $evidenceStore.isConnected || false;
-  $: error = $evidenceStore.error || null;
+  // TODO: Convert to $derived: evidence = $evidenceStore.evidence || []
+  // TODO: Convert to $derived: isLoading = $evidenceStore.isLoading || false
+  // TODO: Convert to $derived: isConnected = $evidenceStore.isConnected || false
+  // TODO: Convert to $derived: error = $evidenceStore.error || null
 
   // Reactive filtering and sorting
-  $: {
+  // TODO: Convert to $derived: {
     filteredEvidence = evidence
       .filter((item) => {
-        if (caseId && item.caseId !== caseId) return false;
+        if (caseId && item.caseId !== caseId) return false
 
         if (searchQuery) {
           const query = searchQuery.toLowerCase();

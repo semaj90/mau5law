@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- Production-level AI Dropdown using Melt UI with keyboard shortcuts -->
 <script lang="ts">
+</script>
   interface Props {
     disabled?: unknown;
     onReportGenerate: (reportType: string) => void;

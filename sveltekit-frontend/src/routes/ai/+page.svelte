@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { page } from "$app/state";
   import ChatInterface from "$lib/components/ai/ChatInterface.svelte";
   import {
@@ -60,7 +61,7 @@ let selectedConversationId = $state<string | null >(null);
       conv.messages?.some((msg) =>
         msg.content?.toLowerCase().includes(searchQuery.toLowerCase())
       )
-  ));
+  );
 </script>
 
 <svelte:head>

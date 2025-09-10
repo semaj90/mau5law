@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import MobileLink from "./mobile-link.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { navigation } from "$lib/config/index.js";

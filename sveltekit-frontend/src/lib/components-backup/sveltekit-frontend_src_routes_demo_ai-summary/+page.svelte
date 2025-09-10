@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import AISummaryReader from '$lib/components/legal/AISummaryReader.svelte';
   import EvidenceReportSummary from '$lib/components/legal/EvidenceReportSummary.svelte';
   import CaseSynthesisWorkflow from '$lib/components/legal/CaseSynthesisWorkflow.svelte';

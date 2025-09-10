@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { goto } from "$app/navigation";
   import { Button } from "$lib/components/ui/button";
   import Card from "../../../lib/components/ui/Card.svelte";
@@ -68,12 +69,12 @@
   }
 
   // Update form state when formApi is available
-  $: if (formApi) {
+  // TODO: Convert to $derived: if (formApi) {
     // You can access formApi methods here if needed
   }
 
   async function handleSubmit(event: CustomEvent) {
-    const { values, isValid } = event.detail;
+    const { values, isValid } = event.detail
 
     if (!isValid) {
       return;

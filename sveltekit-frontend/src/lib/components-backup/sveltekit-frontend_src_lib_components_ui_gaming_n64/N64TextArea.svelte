@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
 
   export let id: string | undefined = undefined;

@@ -6,6 +6,7 @@
 -->
 
 <script lang="ts">
+</script>
   // Updated to use melt-ui components
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
 

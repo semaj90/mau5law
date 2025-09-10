@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { aiAgentStore, isAIConnected, systemHealth, currentConversation } from '$lib/stores/ai-agent';
   import type { User } from '$lib/types';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import { preventDefault } from 'svelte/legacy';
   interface Props {

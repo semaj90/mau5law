@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
   import N64LoadingRing from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';

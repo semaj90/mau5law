@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { initializeGPUCache, initializePerformanceMonitor, GPUCacheUtils } from '$lib/services/gpu-cache-integration';
   
@@ -394,7 +395,7 @@
   /* GPU Effects */
   .gpu-effects-demo {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 1rem;
     margin-top: 1rem;
   }

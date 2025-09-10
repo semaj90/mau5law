@@ -5,9 +5,9 @@ import {
   documentsTable, 
   evidenceTable, 
   timelineEventsTable,
-  queryCache,
   analyticsEvents,
-  vectorSimilarityView
+  vectorSimilarityView,
+  queryCache
 } from './schema';
 
 // Enhanced PostgreSQL connection with pgvector support
@@ -28,7 +28,6 @@ export const db = drizzle(client, {
     documents: documentsTable,
     evidence: evidenceTable,
     timelineEvents: timelineEventsTable,
-    queryCache,
     analytics: analyticsEvents,
     vectorSimilarity: vectorSimilarityView
   },

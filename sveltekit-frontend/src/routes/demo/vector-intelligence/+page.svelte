@@ -3,6 +3,7 @@ Vector Intelligence Demo Page
 Comprehensive showcase of Phase 4 capabilities
 -->
 <script lang="ts">
+</script>
   import VectorIntelligenceDemo from '$lib/components/vector/VectorIntelligenceDemo.svelte';
   import {
     Card,

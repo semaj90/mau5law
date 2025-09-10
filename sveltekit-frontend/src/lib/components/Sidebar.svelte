@@ -1,9 +1,11 @@
 <script context="module" lang="ts">
+</script>
 // Svelte runes are declared globally in `src/types/svelte-helpers.d.ts`.
 export {};
 </script>
 
 <script lang="ts">
+</script>
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
@@ -24,14 +26,14 @@ export {};
 
   // Svelte store values (auto-unwrapped with $)
   // $sidebarStore and $lokiStore provided by imports
-  $: sidebarOpen = $sidebarStore?.open || isHovered || isPinned;
-  $: evidenceItems = $lokiStore?.evidence ?? [];
-  $: notesItems = $lokiStore?.notes ?? [];
-  $: canvasStates = $lokiStore?.canvasStates ?? [];
+  // TODO: Convert to $derived: sidebarOpen = $sidebarStore?.open || isHovered || isPinned
+  // TODO: Convert to $derived: evidenceItems = $lokiStore?.evidence ?? []
+  // TODO: Convert to $derived: notesItems = $lokiStore?.notes ?? []
+  // TODO: Convert to $derived: canvasStates = $lokiStore?.canvasStates ?? []
 
   // Create Fuse instance when relevant items change
-  $: if (activeTab === "evidence" && evidenceItems.length > 0) {
-    fuse = new Fuse(evidenceItems, { keys: ["fileName", "description", "tags"], threshold: 0.3 });
+  // TODO: Convert to $derived: if (activeTab === "evidence" && evidenceItems.length > 0) {
+    fuse = new Fuse(evidenceItems, { keys: ["fileName", "description", "tags"], threshold: 0.3 })
   } else if (activeTab === "notes" && notesItems.length > 0) {
     fuse = new Fuse(notesItems, { keys: ["title", "content", "tags"], threshold: 0.3 });
   } else {
@@ -39,9 +41,9 @@ export {};
   }
 
   // Compute search results reactively
-  $: searchResults = (() => {
+  // TODO: Convert to $derived: searchResults = (() => {
     if (searchQuery && fuse) {
-      return fuse.search(searchQuery).map((r) => r.item);
+      return fuse.search(searchQuery).map((r) => r.item)
     }
     if (activeTab === "evidence") return evidenceItems;
     if (activeTab === "notes") return notesItems;

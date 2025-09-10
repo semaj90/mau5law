@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   let serviceStatus = $state<any>(null);
   let extractionResult = $state<any>(null);

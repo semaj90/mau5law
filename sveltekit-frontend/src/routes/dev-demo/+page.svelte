@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -131,10 +132,10 @@
           jurisdiction: ''
         };
       } else {
-        console.error('Failed to create case:', result.error);
+        console.error('Failed to create caseItem:', result.error);
       }
     } catch (error) {
-      console.error('Error creating case:', error);
+      console.error('Error creating caseItem:', error);
     }
   }
 

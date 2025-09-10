@@ -1,5 +1,6 @@
 <!-- Data Table Component for Legal AI App -->
 <script lang="ts">
+</script>
   import { cn } from '$lib/utils';
   import { ChevronDown, ChevronUp, Search, Filter, Download } from 'lucide-svelte';
 

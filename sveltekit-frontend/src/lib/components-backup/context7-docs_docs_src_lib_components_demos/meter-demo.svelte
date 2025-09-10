@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Meter, useId } from "bits-ui";
 
 	let value = $state(2000);

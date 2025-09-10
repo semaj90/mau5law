@@ -411,13 +411,13 @@
 
           <div class="mb-4 p-4 bg-gradient-to-r from-emerald-900/20 to-teal-900/20 rounded-lg border border-emerald-500/20">
             <p class="text-emerald-100 text-sm leading-relaxed">
-              <strong>🚀 Advanced Legal AI:</strong> Start a conversation to begin systematic case building. 
-              I'll guide you through our proven "Who, What, Why, How" prosecution methodology with 
+              <strong>🚀 Advanced Legal AI:</strong> Start a conversation to begin systematic case building.
+              I'll guide you through our proven "Who, What, Why, How" prosecution methodology with
               <strong>RAG-powered</strong> legal research integration. Just describe your situation and watch the magic happen!
             </p>
           </div>
 
-          <RAGAssistantChat 
+          <RAGAssistantChat
             userId="demo-user"
             onCaseCreated={(caseId) => {
               console.log('New case created:', caseId);

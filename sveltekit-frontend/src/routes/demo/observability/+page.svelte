@@ -1,5 +1,6 @@
 <!-- Observability Integration Demo -->
-<script>
+<script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { 
@@ -96,8 +97,7 @@
     
     try {
       // Simulate a slow operation
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise(resolve => setTimeout(resolve, 2000);
       // Make an API call to test Server-Timing headers
       const response = await observableFetch('/api/v1/observability/client?action=performance');
       const data = await response.json();

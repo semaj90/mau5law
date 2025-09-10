@@ -100,8 +100,8 @@ async function processEvidenceEmbeddings() {
       await sql`
         UPDATE evidence 
         SET 
-          title_embedding = ${JSON.stringify(titleEmbedding)}::vector,
-          content_embedding = ${JSON.stringify(contentEmbedding)}::vector
+          title_embedding = ${sql`${JSON.stringify(titleEmbedding)}::vector`},
+          content_embedding = ${sql`${JSON.stringify(contentEmbedding)}::vector`}
         WHERE id = ${evidence.id}
       `;
       
@@ -142,7 +142,7 @@ async function processChatEmbeddings() {
       
       await sql`
         UPDATE chat_messages 
-        SET embedding = ${JSON.stringify(embedding)}::vector
+        SET embedding = ${sql`${JSON.stringify(embedding)}::vector`}
         WHERE id = ${message.id}
       `;
       
@@ -188,8 +188,8 @@ async function processCaseEmbeddings() {
         VALUES (
           ${caseDoc.id}, 
           ${caseText}, 
-          ${JSON.stringify(embedding)}::vector,
-          ${JSON.stringify({ source: 'case_summary', model: config.embeddingModel })}
+          ${sql`${JSON.stringify(embedding)}::vector`},
+          ${sql`${JSON.stringify({ source: 'case_summary', model: config.embeddingModel })}`}
         )
       `;
       

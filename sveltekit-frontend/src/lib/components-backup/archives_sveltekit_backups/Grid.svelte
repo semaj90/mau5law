@@ -1,5 +1,6 @@
 <!-- Grid Item Component -->
 <script lang="ts" context="module">
+</script>
   export interface GridItemProps {
     colSpan?: number;
     rowSpan?: number;
@@ -12,6 +13,7 @@
 
 <!-- Grid Layout Component with svelte-brics inspired design -->
 <script lang="ts">
+</script>
   import { cn } from "../../../../lib/utils";
 
   export let columns: number = 12;
@@ -30,9 +32,9 @@
   };
 
   // Responsive breakpoints
-  $: gridClass = responsive
+  // TODO: Convert to $derived: gridClass = responsive
     ? `grid-cols-1 sm:grid-cols-2 md:grid-cols-${Math.min(columns, 6)} lg:grid-cols-${Math.min(columns, 8)} xl:grid-cols-${columns}`
-    : `grid-cols-${columns}`;
+    : `grid-cols-${columns}`
 </script>
 
 <div

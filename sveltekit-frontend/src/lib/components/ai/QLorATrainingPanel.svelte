@@ -1,5 +1,6 @@
 <!-- QLorA Training Panel with Checkbox Toggle -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';

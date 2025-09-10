@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { cn } from "$lib/utils";
 
   let className: string = "";

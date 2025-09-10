@@ -1,5 +1,6 @@
 <!-- Phase 3: Live Agent Integration Demo -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { 
     liveAgentOrchestrator, 
@@ -82,7 +83,7 @@ let result = $state<OrchestrationResult;
       
       switch (requestType) {
         case 'analyze':
-          result >(await quickAnalyze(testInput, selectedAgents));
+          result >(await quickAnalyze(testInput, selectedAgents);
           break;
         case 'summarize':
           result = await quickSummarize(testInput, selectedAgents);

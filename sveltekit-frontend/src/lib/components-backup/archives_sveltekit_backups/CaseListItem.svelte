@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Badge } from "$lib/components/ui/index";
   import type { Case } from "$lib/types/api";
   import { formatDistanceToNow } from "date-fns";
@@ -75,10 +76,10 @@
     }
   }
 
-  $: statusIcon = getStatusIcon(caseData.status);
-  $: formattedDate = formatDistanceToNow(new Date(caseData.openedAt), {
+  // TODO: Convert to $derived: statusIcon = getStatusIcon(caseData.status)
+  // TODO: Convert to $derived: formattedDate = formatDistanceToNow(new Date(caseData.openedAt), {
     addSuffix: true,
-  });
+  })
 </script>
 
 <div

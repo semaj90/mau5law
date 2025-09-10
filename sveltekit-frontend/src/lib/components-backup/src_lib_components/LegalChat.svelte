@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { ollama, MODELS } from '$lib/ai/ollama';
 
@@ -9,6 +10,7 @@
   let isStreaming = $state(false);
   let currentResponse = $state('');
   <script lang="ts">
+</script>
     import { onMount } from 'svelte';
     import { ollama, MODELS } from '$lib/ai/ollama';
 

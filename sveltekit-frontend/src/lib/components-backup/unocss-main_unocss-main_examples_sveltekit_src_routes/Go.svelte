@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { goto } from "$app/navigation"
 
 	let name = ''

@@ -3,6 +3,7 @@
   Showcases: WASM inference + Go chat service + PostgreSQL memory
 -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { wasmLlama } from '$lib/services/webasm-llama-complete';
   import * as Card from '$lib/components/ui/card';
@@ -394,8 +395,8 @@
           </Alert.Description>
         </Alert.Root>
       {/if}
-    </Card.Content>
-  </Card.Root>
+    </CardContent>
+  </Card>
 
   <!-- Configuration Panel -->
   <Card.Root>
@@ -469,8 +470,8 @@
           </div>
         </div>
       </div>
-    </Card.Content>
-  </Card.Root>
+    </CardContent>
+  </Card>
 
   <!-- Chat Interface -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -553,8 +554,8 @@
             {/if}
           </Button>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </Card>
 
     <!-- Information Panel -->
     <Card.Root>
@@ -612,7 +613,7 @@
             significantly faster than Python-based solutions.
           </Alert.Description>
         </Alert.Root>
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </Card>
   </div>
 </div>

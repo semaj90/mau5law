@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { unstable_RatingGroup as RatingGroup } from "bits-ui";
 	import Star from "phosphor-svelte/lib/Star";
 

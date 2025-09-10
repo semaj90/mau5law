@@ -3,6 +3,7 @@
   Tests GPU accelerated authentication, XState integration, and Context7 documentation
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { authStore } from '$lib/stores/auth-store';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
@@ -296,8 +297,8 @@
           {/if}
         </Button>
       </div>
-    </Card.Content>
-  </Card.Root>
+    </CardContent>
+  </Card>
 
   <!-- Main Testing Interface -->
   <Tabs.Root bind:value={currentTab}>
@@ -336,8 +337,8 @@
               enableGPUAuth={true}
               showRegistration={false}
             />
-          </Card.Content>
-        </Card.Root>
+          </CardContent>
+        </Card>
 
         <!-- Registration Testing -->
         <Card.Root>
@@ -364,8 +365,8 @@
               enableGPUValidation={true}
               showLogin={false}
             />
-          </Card.Content>
-        </Card.Root>
+          </CardContent>
+        </Card>
       </div>
 
       <!-- Auth Store Status -->
@@ -395,8 +396,8 @@
               </Badge>
             </div>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </Tabs.Content>
 
     <!-- GPU Testing -->
@@ -457,8 +458,8 @@
               <p>Loading cluster status...</p>
             </div>
           {/if}
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </Tabs.Content>
 
     <!-- Context7 Documentation -->
@@ -500,8 +501,8 @@
               <p>Loading Context7 documentation...</p>
             </div>
           {/if}
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </Tabs.Content>
 
     <!-- Test Results -->
@@ -532,8 +533,8 @@
               </div>
             {/each}
           </div>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </Tabs.Content>
   </Tabs.Root>
 </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { RangeCalendar } from "bits-ui";
 
 	function cn(str: string) {

@@ -3,6 +3,7 @@ Custody Timeline Component
 Displays the chronological chain of custody events with detailed audit trail
 -->
 <script lang="ts">
+</script>
   interface Props {
     events: Array<{;
     currentStage: string

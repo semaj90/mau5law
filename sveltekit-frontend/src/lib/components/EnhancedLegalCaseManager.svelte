@@ -1,5 +1,6 @@
 <!-- Enhanced Legal Case Manager with Production Features -->
 <script lang="ts">
+</script>
   import { onMount, tick } from 'svelte';
     import { page } from '$app/stores';
     import { goto } from '$app/navigation';
@@ -538,7 +539,7 @@ let pageStore = $state<any;
                     });
                 }
             } catch (error) {
-                console.error('Failed to load existing case:', error);
+                console.error('Failed to load existing caseItem:', error);
             }
         }
     });

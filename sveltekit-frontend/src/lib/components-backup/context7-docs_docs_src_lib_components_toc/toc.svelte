@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { TableOfContents } from "$lib/utils/use-toc.svelte.js";
 	import { onMount } from "svelte";
 	import TocTree from "./toc-tree.svelte";

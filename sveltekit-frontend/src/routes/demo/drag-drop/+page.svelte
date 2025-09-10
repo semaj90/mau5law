@@ -3,6 +3,7 @@
   Showcases various drag and drop implementations with gaming aesthetics
 -->
 <script lang="ts">
+</script>
   import SimpleDragDrop from '$lib/components/ui/SimpleDragDrop.svelte';
   import EnhancedMinIODragDrop from '$lib/components/upload/EnhancedMinIODragDrop.svelte';
   
@@ -207,7 +208,8 @@
   <section class="code-section">
     <h2 class="section-title">Usage Example</h2>
     
-    <pre class="code-block"><code>{`<script>
+    <pre class="code-block"><code>{`<script lang="ts">
+</script>
   import SimpleDragDrop from '$lib/components/ui/SimpleDragDrop.svelte';
   
   function handleFiles(files) {
@@ -360,7 +362,7 @@
 
   .file-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr);
     gap: 16px;
   }
 
@@ -408,7 +410,7 @@
   /* Features Grid */
   .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr);
     gap: 24px;
   }
 

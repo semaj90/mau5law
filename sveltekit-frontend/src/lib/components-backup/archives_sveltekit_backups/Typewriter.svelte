@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   export let text: string = '';
   export let speed: number = 50;
   
@@ -6,8 +7,8 @@
   let i = 0;
   let intervalId: NodeJS.Timeout | null = null;
   
-  $: if (text && i === 0) {
-    output = '';
+  // TODO: Convert to $derived: if (text && i === 0) {
+    output = ''
     i = 0;
     
     if (intervalId) {

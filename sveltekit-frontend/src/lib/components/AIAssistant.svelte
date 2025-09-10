@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createMachine, assign } from 'xstate';
   import { useMachine } from '@xstate/svelte';
   // Toast notifications removed - using simple state instead

@@ -1,5 +1,6 @@
 <!-- Demo page for the Legal Document Editor -->
 <script lang="ts">
+</script>
   import LegalDocumentEditor from "$lib/components/editor/LegalDocumentEditor.svelte";
 
   let documentId = $state("doc-1"); // Use sample document ID

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Progress, useId } from "bits-ui";
 	import { onMount } from "svelte";
 

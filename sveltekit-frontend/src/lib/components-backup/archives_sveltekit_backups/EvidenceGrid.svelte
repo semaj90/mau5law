@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from "$lib/components/ui/button";
   import {
     evidenceActions,
@@ -40,7 +41,7 @@
   let selectedItem: Evidence | null = null;
 
   // Reactive values from store
-  $: ({
+  // TODO: Convert to $derived: ({
     items,
     searchQuery,
     sortBy,
@@ -49,7 +50,7 @@
     viewMode,
     isLoading,
     error,
-  } = $evidenceGrid);
+  } = $evidenceGrid)
 
   // Load evidence on mount
   onMount(() => {

@@ -3,6 +3,7 @@
   Using Bits UI v2 + Superforms + XState + MCP GPU Orchestrator
 -->
 <script lang="ts">
+</script>
   // runtime helpers ($props, $state, $derived, $effect) are available in runes mode — do not import them
   import { enhance } from '$app/forms';
   import { page } from '$app/stores';

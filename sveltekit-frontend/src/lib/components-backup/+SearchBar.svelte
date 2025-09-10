@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   import debounce from 'lodash-es/debounce';
 
@@ -13,8 +14,8 @@
     dispatch('search', searchTerm);
   }, 300);
 
-  $: if (value !== undefined) {
-    debouncedSearch(value);
+  // TODO: Convert to $derived: if (value !== undefined) {
+    debouncedSearch(value)
   }
 </script>
 

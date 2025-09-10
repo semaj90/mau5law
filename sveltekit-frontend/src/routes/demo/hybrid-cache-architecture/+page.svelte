@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import LegalDocumentGraphViewer from '$lib/components/visualization/LegalDocumentGraphViewer.svelte';
@@ -44,18 +45,16 @@ let showArchitectureOverview = $state(true);
     try {
       // Check IndexedDB
       const testDoc = await legalDB.documentCache.limit(1).toArray();
-      systemStatus.update(s => ({ ...s, indexedDBReady: true }));
-
+      systemStatus.update(s => ({ ...s, indexedDBReady: true });
       // Check WebGPU support
       const webGPUSupported = 'gpu' in navigator;
-      systemStatus.update(s => ({ ...s, webGPUSupported }));
-
+      systemStatus.update(s => ({ ...s, webGPUSupported });
       // Check API endpoints
       try {
         const response = await fetch('/api/document/test-doc');
-        systemStatus.update(s => ({ ...s, apiEndpointsActive: response.status !== 404 }));
+        systemStatus.update(s => ({ ...s, apiEndpointsActive: response.status !== 404 });
       } catch {
-        systemStatus.update(s => ({ ...s, apiEndpointsActive: false }));
+        systemStatus.update(s => ({ ...s, apiEndpointsActive: false });
       }
 
     } catch (error) {
@@ -137,7 +136,7 @@ let showArchitectureOverview = $state(true);
         totalServerFetches: 0,
         cacheSizeKB: 0,
         totalInteractions: 0
-      }));
+      });
       console.log('🗑️ Cache cleared');
     } catch (error) {
       console.error('Failed to clear cache:', error);
@@ -154,7 +153,7 @@ let showArchitectureOverview = $state(true);
       demoStats.update(stats => ({
         ...stats,
         cacheSizeKB: Math.round(totalSize / 1024)
-      }));
+      });
     } catch (error) {
       console.warn('Failed to calculate cache size:', error);
     }
@@ -439,23 +438,22 @@ let showArchitectureOverview = $state(true);
               demoStats.update(stats => ({
                 ...stats,
                 totalInteractions: stats.totalInteractions + 1
-              }));
-
-              systemStatus.update(s => ({ ...s, graphInitialized: true }));
+              });
+              systemStatus.update(s => ({ ...s, graphInitialized: true });
             }}
             on:cacheHit={(event) => {
               demoStats.update(stats => ({
                 ...stats,
                 totalCacheHits: stats.totalCacheHits + 1,
                 averageCacheTime: (stats.averageCacheTime + event.detail.timing) / 2
-              }));
+              });
             }}
             on:serverFetch={(event) => {
               demoStats.update(stats => ({
                 ...stats,
                 totalServerFetches: stats.totalServerFetches + 1,
                 averageServerTime: (stats.averageServerTime + event.detail.timing) / 2
-              }));
+              });
             }}
           />
         </div>

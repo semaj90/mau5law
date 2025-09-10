@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { cn } from '$lib/utils';

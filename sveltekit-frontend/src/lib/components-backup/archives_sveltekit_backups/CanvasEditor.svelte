@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { browser } from '$app/environment';
   import { autoTaggingMachine } from '$lib/stores/autoTaggingMachine';
   import { useMachine } from '@xstate/svelte';
@@ -8,7 +9,7 @@
   const { snapshot, send } = useMachine(autoTaggingMachine);
   
   // Access state from snapshot
-  $: state = $snapshot;
+  // TODO: Convert to $derived: state = $snapshot
   
   export let caseId: string | null = null;
   export let readOnly = false;

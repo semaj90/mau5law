@@ -11,6 +11,7 @@
   - Integration with YoRHa design system
 -->
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';

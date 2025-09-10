@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from "svelte";
 
   export let columns = 1;
@@ -45,7 +46,7 @@
     }
   }
 
-  $: currentColumns = isExpanded ? expandedColumns : columns;
+  // TODO: Convert to $derived: currentColumns = isExpanded ? expandedColumns : columns
 </script>
 
 <div

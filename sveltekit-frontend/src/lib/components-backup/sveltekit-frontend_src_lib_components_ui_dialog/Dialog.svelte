@@ -1,5 +1,6 @@
 <!-- Enhanced Dialog component with custom implementation -->
 <script lang="ts">
+</script>
   interface Props {
     onclose?: (event?: any) => void;
   }

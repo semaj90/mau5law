@@ -1,5 +1,6 @@
 <!-- EmbeddingGemma Chat Demo Page -->
 <script lang="ts">
+</script>
   import EmbeddingGemmaChat from "$lib/components/ui/enhanced-bits/EmbeddingGemmaChat.svelte";
   import {
     Button

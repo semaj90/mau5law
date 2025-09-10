@@ -1,5 +1,6 @@
 <!-- YoRHa Navigation Sidebar Component -->
 <script lang="ts">
+</script>
   import type { Props } from "$lib/types/global";
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";

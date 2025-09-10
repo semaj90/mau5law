@@ -1,5 +1,6 @@
 <!-- LazyChart.svelte - Lazy loading wrapper for heavy chart components -->
 <script lang="ts">
+</script>
   import LazyLoader from '../LazyLoader.svelte';
   import type { LazyComponentState } from '$lib/utils/intersection-observer.js';
 

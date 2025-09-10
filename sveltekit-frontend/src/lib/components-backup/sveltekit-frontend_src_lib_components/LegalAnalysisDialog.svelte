@@ -1,5 +1,6 @@
 <!-- Legal Case Analysis Dialog - Bits UI Component -->
 <script lang="ts">
+</script>
   import { Dialog } from 'bits-ui/components/dialog';
 import { Select } from 'bits-ui/components/select';
 import { Button } from 'bits-ui/components/button';

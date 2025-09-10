@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { HTMLFormAttributes } from "svelte/elements";
   import type { Snippet } from "svelte";
   import { enhance } from "$app/forms";

@@ -2,6 +2,7 @@
 // Combines Hugerte with Melt UI components for legal document editing
 
 <script lang="ts">
+</script>
   interface Props {
     content?: unknown;
     placeholder?: unknown;

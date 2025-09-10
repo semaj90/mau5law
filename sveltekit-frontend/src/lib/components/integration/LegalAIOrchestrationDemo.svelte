@@ -4,6 +4,7 @@
   Shows complete workflow from user input to AI-powered results
 -->
 <script lang="ts">
+</script>
   import { workflowOrchestrator, workflowStore, currentWorkflowStore, healthStore, isSystemHealthy } from '$lib/services/end-to-end-api-integration.js';
   import type { LegalResearchWorkflowRequest, DocumentProcessingWorkflowRequest, CaseCreationWorkflowRequest } from '$lib/services/end-to-end-api-integration.js';
   import {

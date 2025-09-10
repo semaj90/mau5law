@@ -3,6 +3,7 @@
   Demonstrates the LegalSearchCombobox component with various configurations
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import LegalSearchCombobox from '$lib/components/search/LegalSearchCombobox.svelte';
   import { Search, Zap, Database, Users, FileText, Scale } from 'lucide-svelte';
@@ -50,7 +51,7 @@ let currentDemo = $state(0);
     const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
     if (searchInput) {
       searchInput.value = searchText;
-      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      searchInput.dispatchEvent(new Event('input', { bubbles: true });
     }
     currentDemo = (currentDemo + 1) % demoSearches.length;
   }
@@ -343,7 +344,7 @@ let currentDemo = $state(0);
                   const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
                   if (searchInput) {
                     searchInput.value = searchTerm;
-                    searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    searchInput.dispatchEvent(new Event('input', { bubbles: true });
                   }
                 }}
               >

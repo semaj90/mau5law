@@ -1,5 +1,6 @@
 <!-- Legal AI Command Palette - Global Search Component -->
 <script lang="ts">
+</script>
   import { Command } from 'bits-ui';
   import { Search, FileText, Users, Calendar, Gavel } from 'lucide-svelte';
   import { cn } from '$lib/utils';

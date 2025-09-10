@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { Evidence } from "$lib/data/types";
   import { onMount } from "svelte";
 

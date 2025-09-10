@@ -1,5 +1,6 @@
 <!-- Lazy Loading Demo - Shows how to use the lazy loading system -->
 <script lang="ts">
+</script>
   import { 
     LazyLoader, 
     LazyChart, 
@@ -41,7 +42,7 @@
       title: `${type} Item ${i + 1}`,
       description: `This is a mock ${type} item for demonstration purposes.`,
       timestamp: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString()
-    }));
+    });
   }
 
   const mockDocuments = generateMockContent('Document');
@@ -294,7 +295,8 @@
       
       <div class="code-example">
         <h4>Basic Usage</h4>
-        <pre><code>{`<script>
+        <pre><code>{`<script lang="ts">
+</script>
   import { LazyLoader } from '$lib/components/lazy';
 </script>
 
@@ -310,7 +312,8 @@
 
       <div class="code-example">
         <h4>With State Binding</h4>
-        <pre><code>{`<script>
+        <pre><code>{`<script lang="ts">
+</script>
   let lazyState;
 </script>
 
@@ -417,7 +420,7 @@
 
   .benefits-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr);
     gap: 24px;
   }
 
@@ -522,7 +525,7 @@
 
   .document-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr);
     gap: 16px;
   }
 
@@ -558,7 +561,7 @@
 
   .config-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr);
     gap: 16px;
   }
 

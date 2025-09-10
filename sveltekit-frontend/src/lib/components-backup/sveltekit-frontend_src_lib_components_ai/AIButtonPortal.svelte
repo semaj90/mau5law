@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     position: | "bottom-right";
     show?: any;

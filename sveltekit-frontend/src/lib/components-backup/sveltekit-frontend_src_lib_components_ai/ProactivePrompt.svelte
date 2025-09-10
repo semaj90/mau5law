@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     onaccept?: (event?: any) => void;
     ondismiss?: (event?: any) => void;

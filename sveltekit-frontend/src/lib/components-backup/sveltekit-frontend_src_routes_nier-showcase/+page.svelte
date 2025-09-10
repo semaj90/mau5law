@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import NierThemeShowcase from '$lib/components/NierThemeShowcase.svelte'
   import NierHeader from '$lib/components/NierHeader.svelte'
   import CaseCard from '$lib/components/cases/CaseCard.svelte'
@@ -86,19 +87,19 @@
 
   // Case actions
   const handleViewCase = (id: string) => {
-    console.log('View case:', id)
+    console.log('View caseItem:', id)
   }
 
   const handleEditCase = (id: string) => {
-    console.log('Edit case:', id)
+    console.log('Edit caseItem:', id)
   }
 
   const handleArchiveCase = (id: string) => {
-    console.log('Archive case:', id)
+    console.log('Archive caseItem:', id)
   }
 
   const handleDeleteCase = (id: string) => {
-    console.log('Delete case:', id)
+    console.log('Delete caseItem:', id)
   }
 
   // Apply dark mode class to body

@@ -15,48 +15,14 @@ import CardFooterComponent from "./CardFooter.svelte";
 
 // Standard exports for direct usage
 export { default as Button } from "./Button.svelte";
-export { default as Dialog } from "./Dialog.svelte";
-export { default as Select } from "./Select.svelte";
 export { default as Input } from "./Input.svelte";
-export { default as Card } from "./Card.svelte";
 export { default as CardHeader } from "./CardHeader.svelte";
 export { default as CardTitle } from "./CardTitle.svelte";
 export { default as CardDescription } from "./CardDescription.svelte";
 export { default as CardContent } from "./CardContent.svelte";
 export { default as CardFooter } from "./CardFooter.svelte";
 
-// Compound component exports (for .Root, .Content syntax compatibility)
-export const CompoundButton = Object.assign(ButtonComponent, {
-  Root: ButtonComponent,
-});
-
-export const CompoundDialog = Object.assign(DialogComponent, {
-  Root: DialogComponent,
-  Content: DialogComponent,
-  Trigger: ButtonComponent,
-  Title: CardTitleComponent,
-  Description: CardDescriptionComponent,
-});
-
-export const CompoundCard = Object.assign(CardComponent, {
-  Root: CardComponent,
-  Header: CardHeaderComponent,
-  Title: CardTitleComponent,
-  Description: CardDescriptionComponent,
-  Content: CardContentComponent,
-  Footer: CardFooterComponent,
-});
-
-export const CompoundSelect = Object.assign(SelectComponent, {
-  Root: SelectComponent,
-  Content: SelectComponent,
-  Item: SelectComponent,
-  Trigger: ButtonComponent,
-  Group: SelectComponent,
-  Value: SelectComponent,
-});
-
-// SSR-friendly compound exports - directly re-export for compound syntax usage
+// Compound component exports (primary exports with .Root, .Content syntax)
 export const Card = Object.assign(CardComponent, {
   Root: CardComponent,
   Header: CardHeaderComponent,

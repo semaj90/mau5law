@@ -3,6 +3,7 @@
   Modern Svelte 5 implementation with gaming aesthetics
 -->
 <script lang="ts">
+</script>
   import { Upload, File, X } from 'lucide-svelte';
 
   interface Props {

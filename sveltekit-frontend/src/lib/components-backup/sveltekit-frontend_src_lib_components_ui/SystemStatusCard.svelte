@@ -1,4 +1,5 @@
 <script>
+</script>
   export let status = 'ok';
   export let label = 'System';
 </script>

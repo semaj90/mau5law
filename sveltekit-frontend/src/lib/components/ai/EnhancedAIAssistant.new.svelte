@@ -1,5 +1,6 @@
 <!-- Enhanced AI Assistant - Simplified Version -->
 <script lang="ts">
+</script>
   import {
     Brain,
     Loader2,
@@ -235,7 +236,7 @@ I can provide more specific guidance if you share additional details about your 
       <div
         class="container mx-auto px-4"
         role="document"
-        onclick|stopPropagation
+        onclick
         keydown={(e) => {
           if (e.key === "Escape") {
             showCitationDialog = false;

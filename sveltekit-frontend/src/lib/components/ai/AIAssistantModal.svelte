@@ -5,6 +5,7 @@
     - Backend: expects /api/ai/process-evidence (LangChain, Ollama, pg_vector, Neo4j, Redis, Docker)
   -->
   <script lang="ts">
+</script>
     import { getContext, onMount } from 'svelte';
 
     // UI components (Svelte 5 + melt v0.39.0 compatible)

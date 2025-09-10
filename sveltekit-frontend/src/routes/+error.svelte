@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { dev } from '$app/environment';
 
   interface Props {
@@ -26,11 +27,11 @@
           Something went wrong
         {/if}
       </h2>
-      
+
       {#if error?.message}
         <p class="text-gray-600">{error.message}</p>
       {/if}
-      
+
       {#if dev && error}
         <details class="mt-6 text-left">
           <summary class="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
@@ -41,10 +42,10 @@
           </pre>
         </details>
       {/if}
-      
+
       <div class="mt-8">
-        <a 
-          href="/" 
+        <a
+          href="/"
           class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           Go Home

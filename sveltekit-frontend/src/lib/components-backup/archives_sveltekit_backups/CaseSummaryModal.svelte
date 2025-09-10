@@ -1,5 +1,6 @@
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
+</script>
   import { Button } from "$lib/components/ui/button";
   import { createEventDispatcher } from "svelte";
   import Badge from "../../../lib/components/ui/Badge.svelte";

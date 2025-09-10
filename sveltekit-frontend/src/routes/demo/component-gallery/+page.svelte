@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import {
     Button
@@ -587,7 +588,7 @@
 
   .hero-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr);
     gap: 2rem;
     margin-top: 2rem;
   }
@@ -624,7 +625,7 @@
 
   .controls-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 1.5rem;
   }
 
@@ -648,7 +649,7 @@
 
   .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr);
     gap: 2rem;
   }
 
@@ -701,7 +702,7 @@
 
   .component-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr);
     gap: 2rem;
     margin-bottom: 3rem;
   }
@@ -768,7 +769,7 @@
   /* AI Showcase */
   .ai-showcase {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr);
     gap: 2rem;
   }
 
@@ -920,7 +921,7 @@
 
   .docs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr);
     gap: 2rem;
   }
 

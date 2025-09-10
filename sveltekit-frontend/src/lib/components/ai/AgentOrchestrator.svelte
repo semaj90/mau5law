@@ -3,6 +3,7 @@ Agent Orchestrator Component
 Manages AutoGen and CrewAI multi-agent workflows
 -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import {

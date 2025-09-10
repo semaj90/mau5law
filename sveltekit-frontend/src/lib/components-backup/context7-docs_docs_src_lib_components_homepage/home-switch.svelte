@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { ComponentProps } from "svelte";
 	import { Switch } from "bits-ui";
 	import Play from "phosphor-svelte/lib/Play";

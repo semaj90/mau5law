@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Move, RotateCcw, Trash2 } from 'lucide-svelte';
   import { onDestroy, onMount } from 'svelte';
   

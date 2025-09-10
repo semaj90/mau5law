@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import ProfessionalEditor from '$lib/components/editor/ProfessionalEditor.svelte';
   import { FileText, Zap, Keyboard, Eye, Save, BarChart3 } from 'lucide-svelte';
 
@@ -239,7 +240,7 @@
 
   .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr);
     gap: 1.5rem;
     margin-top: 3rem;
   }
@@ -344,7 +345,7 @@
 
   .instructions-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr);
     gap: 2rem;
   }
 

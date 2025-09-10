@@ -3,6 +3,7 @@
   Tests SuperForms + Enhanced Actions pattern
 -->
 <script lang="ts">
+</script>
   import { enhance } from '$app/forms';
   import { page } from '$app/stores';
   import type { PageData } from './$types';
@@ -19,8 +20,7 @@ let isSubmitting = $state(false);
       formData.append('metadata', JSON.stringify({
         submitTime: new Date().toISOString(),
         userAgent: navigator.userAgent
-      }));
-
+      });
       return async ({ result, update }) => {
         isSubmitting = false;
         

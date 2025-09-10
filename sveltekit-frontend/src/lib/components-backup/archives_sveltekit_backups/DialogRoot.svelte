@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createDialog } from '@melt-ui/svelte';
   import { writable } from 'svelte/store';
   
@@ -8,7 +9,7 @@
   const openWritable = writable(open);
   
   // Keep the writable in sync with the prop
-  $: openWritable.set(open);
+  // TODO: Convert to $derived: openWritable.set(open)
   
   const {
     elements: { trigger, overlay, content, title, description, close },

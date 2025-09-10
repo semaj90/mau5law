@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   
   import { fade } from 'svelte/transition';
 

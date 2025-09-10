@@ -1,4 +1,5 @@
 <script>
+</script>
   // Basic CachePerformanceMonitor component
   let { data = {} } = $props();
 

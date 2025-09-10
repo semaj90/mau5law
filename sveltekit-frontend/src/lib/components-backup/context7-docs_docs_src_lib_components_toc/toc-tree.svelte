@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { cn } from "$lib/utils/styles.js";
 	import type { TableOfContents } from "$lib/utils/use-toc.svelte.js";
 	import Tree from "./toc-tree.svelte";

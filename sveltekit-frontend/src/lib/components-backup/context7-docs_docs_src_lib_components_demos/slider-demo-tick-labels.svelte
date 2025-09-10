@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Slider } from "bits-ui";
 
 	let value = $state([5, 7]);

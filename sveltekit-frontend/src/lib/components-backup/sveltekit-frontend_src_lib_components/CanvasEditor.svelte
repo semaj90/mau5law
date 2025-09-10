@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props { canvasState: CanvasState | null ;,
     reportId: string; evidence: Evidence[] ;,
     citationPoints: CitationPoint[] ;,

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     showPanel?: any;
   }
@@ -465,7 +466,7 @@
   >
     <div
       class="space-y-4"
-      onclick|stopPropagation
+      onclick
       role="document"
     >
       <div class="space-y-4">

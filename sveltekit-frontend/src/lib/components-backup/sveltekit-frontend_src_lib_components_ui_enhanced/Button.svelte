@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { type ButtonVariants, buttonVariants } from './button-variants';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 

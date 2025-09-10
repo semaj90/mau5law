@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Dialog } from 'bits-ui';
   import { Search, Sparkles, FileText, Users, Calendar, Zap, Brain, Target } from 'lucide-svelte';
   import { createEventDispatcher, onMount } from 'svelte';

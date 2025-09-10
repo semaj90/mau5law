@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import CustomAccordion from "./accordion-demo-custom.svelte";
 
 	const items = [

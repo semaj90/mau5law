@@ -5,6 +5,7 @@ https://svelte.dev/e/bind_invalid_expression -->
   Demonstrates real-time AI-powered editing with comprehensive suggestion types
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import EnhancedInlineEditor from '$lib/components/ai/EnhancedInlineEditor.svelte';
   import { inlineSuggestionService, type SuggestionOptions } from '$lib/services/inlineSuggestionService';

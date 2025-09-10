@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
   // System status and metrics
 	let systemHealth = $state<any>(null);

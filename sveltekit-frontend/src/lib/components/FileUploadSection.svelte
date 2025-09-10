@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Use modular components and types
   import {
     Card,

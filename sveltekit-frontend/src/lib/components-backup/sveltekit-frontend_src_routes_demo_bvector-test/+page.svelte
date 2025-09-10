@@ -1,5 +1,6 @@
 <!-- BVector Store Integration Test Interface -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { BVectorIntegrationTestSuite, runBVectorIntegrationTest } from '$lib/tests/bvector-integration-test';
   import type { TestResult, TestConfig } from '$lib/tests/bvector-integration-test';

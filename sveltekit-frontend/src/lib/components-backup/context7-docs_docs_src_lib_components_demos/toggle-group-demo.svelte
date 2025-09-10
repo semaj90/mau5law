@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { ToggleGroup } from "bits-ui";
 	import TextB from "phosphor-svelte/lib/TextB";
 	import TextItalic from "phosphor-svelte/lib/TextItalic";

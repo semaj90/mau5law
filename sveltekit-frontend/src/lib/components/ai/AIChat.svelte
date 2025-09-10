@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { $effect, onMount } from 'svelte';
+</script>
+  import { onMount } from 'svelte';
 
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
   import {

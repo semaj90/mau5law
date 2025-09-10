@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Tooltip } from "bits-ui";
 	import MagicWand from "phosphor-svelte/lib/MagicWand";
 	import { fly } from "svelte/transition";

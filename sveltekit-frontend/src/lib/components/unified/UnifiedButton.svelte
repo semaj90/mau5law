@@ -11,6 +11,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { createButton, melt } from 'melt';
   import { fly, fade } from 'svelte/transition';
   import { spring } from 'svelte/motion';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { ContextMenu } from "bits-ui";
   import type { Snippet } from "svelte";
   import type { WithoutChild } from "bits-ui";

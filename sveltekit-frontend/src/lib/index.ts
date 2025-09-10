@@ -31,8 +31,8 @@ export {
 export * from './components/index';
 
 // ===== FILE UPLOAD SERVICES =====
-export { localStorageFiles } from './services/localStorage-file-fallback.js';
-export { enhancedFileUpload } from './services/enhanced-file-upload.js';
+export { default as localStorageFiles } from './services/localStorage-file-fallback.js';
+export { default as enhancedFileUpload } from './services/enhanced-file-upload.js';
 
 // ===== UTILITIES & TYPES =====
 export { 

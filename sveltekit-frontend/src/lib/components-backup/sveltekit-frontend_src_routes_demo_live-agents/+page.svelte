@@ -1,5 +1,6 @@
 <!-- Phase 3: Live Agent Integration Demo -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { 
     liveAgentOrchestrator, 

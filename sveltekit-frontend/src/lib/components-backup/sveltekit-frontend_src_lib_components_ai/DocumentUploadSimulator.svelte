@@ -1,5 +1,6 @@
 <!-- Document Upload Simulator with AI Processing -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   
   interface DocumentUpload {

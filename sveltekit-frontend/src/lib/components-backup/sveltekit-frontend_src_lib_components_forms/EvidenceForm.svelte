@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     evidence: Evidence | null ;
     data: any

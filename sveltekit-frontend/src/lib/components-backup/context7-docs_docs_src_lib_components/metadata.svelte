@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { page } from "$app/state";
 	import { useSiteConfig, type SiteConfig } from "$lib/utils/use-site-config.svelte.js";
 

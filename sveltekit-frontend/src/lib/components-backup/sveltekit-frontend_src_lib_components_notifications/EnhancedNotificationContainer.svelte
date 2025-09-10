@@ -1,4 +1,5 @@
 mcp<script lang="ts">
+</script>
   interface Props {
     ondismiss?: (event?: any) => void;
     ondismissAll?: (event?: any) => void;

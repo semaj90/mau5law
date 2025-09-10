@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { createActor } from 'xstate';
   import { onMount, onDestroy } from 'svelte';
   import { enhancedCaseManagementMachine, type EnhancedCaseManagementContext } from '../../machines/enhanced-case-machine-with-cognitive-cache';

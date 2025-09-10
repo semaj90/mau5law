@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   
@@ -41,12 +42,12 @@
     };
   });
   
-  $: sizeClasses = {
+  // TODO: Convert to $derived: sizeClasses = {
     sm: 'max-w-md',
     md: 'max-w-lg',
     lg: 'max-w-2xl',
     xl: 'max-w-4xl'
-  }[size];
+  }[size]
 </script>
 
 {#if open}

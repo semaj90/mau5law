@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type {    Snippet    } from 'svelte';
 	import { Dialog as BitsDialog } from 'bits-ui';
 	import { createEventDispatcher } from 'svelte';

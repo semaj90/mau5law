@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { Case } from '$lib/data/types';
 
   export let caseItem: Case;

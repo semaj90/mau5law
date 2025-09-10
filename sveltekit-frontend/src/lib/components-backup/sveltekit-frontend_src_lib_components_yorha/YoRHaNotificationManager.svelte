@@ -1,5 +1,6 @@
 <!-- YoRHa Notification Manager Component -->
 <script lang="ts">
+</script>
   import YoRHaNotification from './YoRHaNotification.svelte';
   import { notificationStore as notificationStoreExport } from '$lib/stores/notifications';
 

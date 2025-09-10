@@ -11,6 +11,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import {
     ollamaIntegrationLayer,
@@ -370,7 +371,7 @@ let stats = $state<any >(null);
             <div class="text-center">
               <div class="flex items-center justify-center mb-2">
                 <Badge variant={badge.variant} class="flex items-center gap-1">
-                  <svelte:component this={badge.icon} class="w-3 h-3" />
+                  <{badge.icon} class="w-3 h-3" />
                   {service.status}
                 </Badge>
               </div>

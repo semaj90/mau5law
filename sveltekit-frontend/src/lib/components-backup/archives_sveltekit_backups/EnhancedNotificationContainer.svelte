@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from "$lib/components/ui/button";
   import { notifications, type Notification } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
@@ -24,11 +25,11 @@
   let enableSounds = true;
 
   // Reactive notifications list
-  $: visibleNotifications = $notifications.notifications.slice(0, maxVisible);
-  $: hiddenCount = Math.max(
+  // TODO: Convert to $derived: visibleNotifications = $notifications.notifications.slice(0, maxVisible)
+  // TODO: Convert to $derived: hiddenCount = Math.max(
     0,
     $notifications.notifications.length - maxVisible
-  );
+  )
 
   onMount(() => {
     // Announce notifications to screen readers

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { goto } from "$app/navigation";
   import { citationStore } from "$lib/stores/citations";
   // import { createPopover, melt } from "melt"; // Removed melt dependency

@@ -1,4 +1,5 @@
 <script>
+</script>
   import ReceivesClassProp from "./ReceivesClassProp.svelte";
 </script>
 

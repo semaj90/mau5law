@@ -1,5 +1,6 @@
 <!-- AI Processing Dashboard - Integration Demo -->
 <script lang="ts">
+</script>
 	import { onMount, onDestroy } from 'svelte';
 	import { Badge } from 'bits-ui';
 	import { Card, CardContent, CardHeader, CardTitle } from 'bits-ui';

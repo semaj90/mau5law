@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props { report: Report | null ;,
     caseId: string; onSave: (report: Report) => void;,
     autoSaveEnabled?: any;

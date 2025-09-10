@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher, getContext } from 'svelte';
   
   interface ContextMenuContext {

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import Editor from '@toast-ui/editor';
   import '@toast-ui/editor/dist/toastui-editor.css';
@@ -195,8 +196,8 @@
   });
 
   // Reactive update when content prop changes
-  $: if (editor && isInitialized && content) {
-    const currentMarkdown = editor.getMarkdown();
+  // TODO: Convert to $derived: if (editor && isInitialized && content) {
+    const currentMarkdown = editor.getMarkdown()
     const newMarkdown = contentToMarkdown(content);
     
     if (currentMarkdown !== newMarkdown) {

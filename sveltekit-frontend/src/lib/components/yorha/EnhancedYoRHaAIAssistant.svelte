@@ -1,5 +1,6 @@
 <!-- Enhanced YoRHa AI Assistant with RAG Integration & Evidence Mode -->
 <script lang="ts">
+</script>
   import type { Props } from "$lib/types/global";
   import { onMount, onDestroy } from 'svelte';
   import { fly, fade, scale } from 'svelte/transition';

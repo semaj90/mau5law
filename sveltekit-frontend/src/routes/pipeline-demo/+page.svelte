@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import LegalAIPipelineDemo from '$lib/components/ai/LegalAIPipelineDemo.svelte';
   import { onMount } from 'svelte';
 

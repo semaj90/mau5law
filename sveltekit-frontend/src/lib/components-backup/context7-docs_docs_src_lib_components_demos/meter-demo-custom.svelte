@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Meter, useId } from "bits-ui";
 	import type { ComponentProps } from "svelte";
 	import DemoContainer from "../demo-container.svelte";

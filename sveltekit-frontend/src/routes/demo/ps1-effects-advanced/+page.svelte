@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import ParallaxDynamic from '$lib/utils/parallaxDynamic.js';
 	import '../../../lib/components/yorha/ps1.css';
@@ -224,8 +225,7 @@
 		addRuntimeBadge('Init', `Initializing ${effectName}...`, 'info');
 		
 		// Simulate initialization delay
-		await new Promise(resolve => setTimeout(resolve, 500));
-		
+		await new Promise(resolve => setTimeout(resolve, 500);
 		switch (effectName) {
 			case 'webgpu':
 				featureFlags['WebGPU Accel'].enabled = true;
@@ -583,7 +583,7 @@
 	
 	.feature-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
 		gap: 12px;
 	}
 	
@@ -908,7 +908,7 @@
 	
 	.capability-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr);
 		gap: 10px;
 		margin-top: 10px;
 		font-size: 12px;

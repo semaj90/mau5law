@@ -9,6 +9,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { enhance } from '$app/forms';
   import type { ActionData } from './$types';
@@ -77,8 +78,8 @@ We recommend that ABC proceed with a breach of contract claim against XYZ Indust
 Additionally, we recommend exploring settlement negotiations before filing suit, as the strength of ABC's position may encourage a favorable resolution without the costs and uncertainties of litigation.`;
 
   // Reactive calculations
-  $: {
-    wordCount = reportText.trim() ? reportText.trim().split(/\s+/).length : 0;
+  // TODO: Convert to $derived: {
+    wordCount = reportText.trim() ? reportText.trim().split(/\s+/).length : 0
     charCount = reportText.length;
     // Estimate processing time based on document length (roughly 1 second per 1000 chars)
     estimatedProcessingTime = Math.ceil(charCount / 1000);
@@ -550,7 +551,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
 
   .options-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr);
     gap: 1rem;
     margin: 1rem 0;
   }
@@ -719,7 +720,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
 
   .metadata-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 1rem;
     margin: 1rem 0;
   }

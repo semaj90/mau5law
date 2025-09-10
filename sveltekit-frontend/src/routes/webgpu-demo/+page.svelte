@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+</script>
   import CacheOptimizerDemo from '$lib/components/webgpu/CacheOptimizerDemo.svelte';
   import { onMount } from 'svelte';
   
@@ -247,7 +248,7 @@
   
   .arch-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr);
     gap: 2rem;
   }
   
@@ -306,7 +307,7 @@
   
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 2rem;
   }
   
@@ -359,7 +360,7 @@
   
   .use-case-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr);
     gap: 2rem;
   }
   

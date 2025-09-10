@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { embedText } from '$lib/ai/tensor-client';
 
   let text = 'A short legal passage about indemnification and liability.';
@@ -35,7 +36,7 @@
       if (!resp.ok) throw new Error(data?.error || 'OCR failed');
       text = data?.text || '';
     } catch (e: any) {
-      alert(e?.message || String(e));
+      alert(e?.message || String(e);
     } finally {
       ocrBusy = false;
     }

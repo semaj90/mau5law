@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import "$lib/styles/command/globals.css";
 	import "$lib/styles/command/icons.css";
 	import "$lib/styles/command/command.css";

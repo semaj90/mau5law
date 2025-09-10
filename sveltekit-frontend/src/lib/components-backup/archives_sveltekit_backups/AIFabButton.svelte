@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { createEventDispatcher } from 'svelte';
 	import { aiStore } from "../stores/canvas";
 	import Dialog from './Dialog.svelte';
@@ -8,8 +9,8 @@
 	const dispatch = createEventDispatcher();
 
 	// Reactive state
-	$: dialogOpen = $aiStore.dialogOpen;
-	$: isGenerating = $aiStore.isGenerating;
+	// TODO: Convert to $derived: dialogOpen = $aiStore.dialogOpen
+	// TODO: Convert to $derived: isGenerating = $aiStore.isGenerating
 
 	function toggleDialog() {
 		aiStore.update(state => ({

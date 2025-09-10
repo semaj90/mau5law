@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { GLYPH_PRESETS, type GlyphEmbedRequest, type SIMDGlyphConfig } from '$lib/api/glyph-embeds-client.js';
   
   interface Props {

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import { createEventDispatcher } from "svelte";
   import { draggable } from '$lib/actions/draggable';
@@ -60,8 +61,8 @@ let aliases = $state<string[] >(poi.aliases || []);
 let tags = $state<string[] >(poi.tags || []);
 
   // Update component state when poi changes
-  $: {
-    name = poi.name || "";
+  // TODO: Convert to $derived: {
+    name = poi.name || ""
     aliases = poi.aliases || [];
     profileData = poi.profileData || { who: "", what: "", why: "", how: "" };
     posX = poi.posX || 100;

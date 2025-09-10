@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     form: ActionData
   }
@@ -35,7 +36,7 @@
       // Redirect to the new case
       await goto(`/cases/${newCase.id}`);
     } catch (error) {
-      console.error("Failed to create case:", error);
+      console.error("Failed to create caseItem:", error);
       notifications.add({
         type: "error",
         title: "Failed to Create Case",

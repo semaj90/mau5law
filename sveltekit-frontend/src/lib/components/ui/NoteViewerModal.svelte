@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Bookmark, BookmarkCheck, Calendar, Edit3, Eye, Tag, User as UserIcon, X } from "lucide-svelte";
   import { marked } from "marked";
   import { fade, fly } from "svelte/transition";
@@ -32,7 +33,7 @@
   let newTag = "";
 
   // Reactive display HTML from html or markdown
-  $: displayHtml = html || (markdown ? marked.parse(markdown) : "");
+  // TODO: Convert to $derived: displayHtml = html || (markdown ? marked.parse(markdown) : "")
 
   async function handleSaveForLater() {
     try {
@@ -262,7 +263,7 @@
         <div class="space-y-4">
           <div class="space-y-4">
             {#if caseId}
-              <span>Associated with case: {caseId}</span>
+              <span>Associated with caseItem: {caseId}</span>
             {:else}
               <span>General note</span>
             {/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { 
@@ -209,7 +210,7 @@
     if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
@@ -264,8 +265,7 @@
       formData.append('type', uploadType);
       formData.append('caseId', uploadCaseId);
       formData.append('tags', uploadTags);
-      formData.append('enableAI', enableAIProcessing.toString());
-
+      formData.append('enableAI', enableAIProcessing.toString();
       const response = await fetch('/api/documents/upload', {
         method: 'POST',
         body: formData
@@ -373,8 +373,8 @@
         </Card.Header>
         <Card.Content>
           <div class="text-2xl font-bold">{documentStats.total}</div>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
       
       <Card.Root>
         <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -383,8 +383,8 @@
         </Card.Header>
         <Card.Content>
           <div class="text-2xl font-bold text-blue-600">{documentStats.processing}</div>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
       
       <Card.Root>
         <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -393,8 +393,8 @@
         </Card.Header>
         <Card.Content>
           <div class="text-2xl font-bold text-green-600">{documentStats.completed}</div>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
       
       <Card.Root>
         <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -403,8 +403,8 @@
         </Card.Header>
         <Card.Content>
           <div class="text-2xl font-bold text-purple-600">{documentStats.withAI}</div>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </div>
 
     <!-- Search and Filters -->
@@ -478,8 +478,8 @@
             <Plus class="h-4 w-4 mr-2" />
             Upload Document
           </Button>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     {:else}
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {#each filteredDocuments as document}
@@ -551,8 +551,8 @@
                   </div>
                 {/if}
               </div>
-            </Card.Content>
-          </Card.Root>
+            </CardContent>
+          </Card>
         {/each}
       </div>
     {/if}

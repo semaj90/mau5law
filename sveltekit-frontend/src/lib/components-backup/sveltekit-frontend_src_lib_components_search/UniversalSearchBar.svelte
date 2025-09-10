@@ -3,6 +3,7 @@
   Modern search interface with AI-powered suggestions and vector search
 -->
 <script lang="ts">
+</script>
   import { Search, Filter, X, Zap, Brain, Database } from 'lucide-svelte';
   import { createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';

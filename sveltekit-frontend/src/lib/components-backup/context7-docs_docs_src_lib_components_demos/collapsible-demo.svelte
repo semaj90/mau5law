@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Collapsible } from "bits-ui";
 	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
 </script>

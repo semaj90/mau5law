@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 // @ts-nocheck
 import { onMount } from 'svelte';
 
@@ -83,12 +84,12 @@ let highlightBox = $state<{
 } | null >(null);
 
 // Reactive effect replacement for $effect
-$: if (open && steps.length > 0) {
-  updateTargetHighlight();
+// TODO: Convert to $derived: if (open && steps.length > 0) {
+  updateTargetHighlight()
 }
 
 // Reactive derived value for current step data
-$: currentStepData = steps[currentStep] || null;
+// TODO: Convert to $derived: currentStepData = steps[currentStep] || null
 
   onMount(() => {
     if (browser) {

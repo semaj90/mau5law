@@ -1,6 +1,7 @@
 <!-- Gemma3LegalChat.svelte -->
 <!-- Complete Gemma3 Legal Model Integration Component for SvelteKit -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { createMachine, createActor } from 'xstate';

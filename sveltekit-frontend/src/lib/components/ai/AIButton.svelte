@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' ;
     size: 'sm' | 'md' | 'lg' ;

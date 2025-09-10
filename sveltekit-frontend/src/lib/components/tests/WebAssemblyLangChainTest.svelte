@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { aiAssistantManager, isProcessing, currentResponse, aiError } from '$lib/stores/aiAssistant.svelte.js';
   import { webAssemblyLangChainBridge } from '$lib/services/webasm-langchain-bridge.js';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter.js';

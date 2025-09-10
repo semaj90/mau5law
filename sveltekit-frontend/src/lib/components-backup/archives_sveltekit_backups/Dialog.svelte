@@ -1,5 +1,6 @@
 <!-- Enhanced Dialog component with custom implementation -->
 <script lang="ts">
+</script>
   import { X } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
   import { quadOut } from "svelte/easing";

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Tooltip, type WithoutChildren, type WithoutChildrenOrChild } from "bits-ui";
 	import MagicWand from "phosphor-svelte/lib/MagicWand";
 

@@ -10,6 +10,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import LegalDocumentGraphViewer from '$lib/components/visualization/LegalDocumentGraphViewer.svelte';
@@ -125,7 +126,7 @@
       demoState.update(state => ({
         ...state,
         databaseStats: stats
-      }));
+      });
     } catch (error) {
       console.warn('[Demo] Failed to update database stats:', error);
     }
@@ -136,8 +137,7 @@
   // ============================================================================
 
   async function generateSampleData(): Promise<void> {
-    demoState.update(state => ({ ...state, isGeneratingData: true }));
-
+    demoState.update(state => ({ ...state, isGeneratingData: true });
     try {
       // Generate sample documents
       const sampleDocs: Omit<DocumentCache, 'id'>[] = [
@@ -327,13 +327,12 @@
         ...state,
         dataGenerated: true,
         currentStep: Math.max(state.currentStep, 2)
-      }));
-
+      });
       console.log('[Demo] Sample data generated successfully');
     } catch (error) {
       console.error('[Demo] Failed to generate sample data:', error);
     } finally {
-      demoState.update(state => ({ ...state, isGeneratingData: false }));
+      demoState.update(state => ({ ...state, isGeneratingData: false });
     }
   }
 
@@ -354,8 +353,7 @@
         ...state,
         searchResults: results,
         currentStep: Math.max(state.currentStep, 5)
-      }));
-
+      });
       console.log('[Demo] Vector search completed:', results.length, 'results');
     } catch (error) {
       console.error('[Demo] Vector search failed:', error);
@@ -379,8 +377,7 @@
       demoState.update(state => ({
         ...state,
         currentStep: Math.max(state.currentStep, 6)
-      }));
-
+      });
       console.log('[Demo] Server synchronization completed');
     } catch (error) {
       console.error('[Demo] Server sync failed:', error);
@@ -391,14 +388,14 @@
     demoState.update(state => ({
       ...state,
       currentStep: Math.min(state.currentStep + 1, state.maxSteps)
-    }));
+    });
   }
 
   function prevStep(): void {
     demoState.update(state => ({
       ...state,
       currentStep: Math.max(state.currentStep - 1, 1)
-    }));
+    });
   }
 </script>
 
@@ -944,7 +941,7 @@
   .stats-grid,
   .status-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
   }

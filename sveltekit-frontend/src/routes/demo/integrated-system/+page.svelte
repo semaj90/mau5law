@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import IntegratedSystemDemo from '$lib/components/demo/IntegratedSystemDemo.svelte';
 </script>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
 
@@ -122,7 +123,7 @@ let statusPollingInterval = $state<number | null >(null);
         throw new Error(result.error || 'Failed to create case');
       }
     } catch (e) {
-      error = `Failed to create case: ${e instanceof Error ? e.message : 'Unknown error'}`;
+      error = `Failed to create caseItem: ${e instanceof Error ? e.message : 'Unknown error'}`;
       console.error('Create case error:', e);
     } finally {
       isLoading = false;
@@ -149,7 +150,7 @@ let statusPollingInterval = $state<number | null >(null);
         throw new Error(result.error || 'Failed to load case');
       }
     } catch (e) {
-      error = `Failed to load case: ${e instanceof Error ? e.message : 'Unknown error'}`;
+      error = `Failed to load caseItem: ${e instanceof Error ? e.message : 'Unknown error'}`;
       console.error('Load case error:', e);
     } finally {
       isLoading = false;
@@ -308,7 +309,7 @@ let statusPollingInterval = $state<number | null >(null);
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 

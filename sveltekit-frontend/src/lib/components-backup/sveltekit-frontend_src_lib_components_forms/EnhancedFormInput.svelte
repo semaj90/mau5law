@@ -3,6 +3,7 @@
   Demonstrates the validation utilities in practice
 -->
 <script lang="ts">
+</script>
   interface Props {
     name: string
     label: string

@@ -1,5 +1,6 @@
 <!-- Enhanced AI Chat Component - Svelte 5 Compatible -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { createDialog } from 'melt-ui';

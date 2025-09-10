@@ -1,4 +1,5 @@
 <script>
+</script>
   export let value = 0;
   export let label = '';
 </script>

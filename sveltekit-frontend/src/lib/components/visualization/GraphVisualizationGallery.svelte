@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { GraphVisualizationEngine, type GraphVisualizationResult, type GraphNode, type GraphEdge } from '$lib/services/graph-visualization-engine';
@@ -50,11 +51,11 @@
   };
 
   // Use provided graph data or sample data
-  $: currentGraphData = graphData || sampleGraphData;
+  // TODO: Convert to $derived: currentGraphData = graphData || sampleGraphData
 
   // Filtered visualizations based on algorithm
-  $: filteredVisualizations = $visualizations.filter(vis => {
-    if (algorithmFilter === 'all') return true;
+  // TODO: Convert to $derived: filteredVisualizations = $visualizations.filter(vis => {
+    if (algorithmFilter === 'all') return true
     return vis.metadata.algorithm === algorithmFilter;
   });
 

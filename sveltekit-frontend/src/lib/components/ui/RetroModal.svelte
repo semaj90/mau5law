@@ -3,6 +3,7 @@
   Demonstrates the perfect marriage of headless functionality with retro styling
 -->
 <script lang="ts">
+</script>
   import { Dialog } from "bits-ui";
   
   interface Props {

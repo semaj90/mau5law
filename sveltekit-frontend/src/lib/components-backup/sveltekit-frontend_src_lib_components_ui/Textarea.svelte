@@ -1,4 +1,5 @@
 <script>
+</script>
   // Basic Textarea component
   let {
     value = $bindable(''),

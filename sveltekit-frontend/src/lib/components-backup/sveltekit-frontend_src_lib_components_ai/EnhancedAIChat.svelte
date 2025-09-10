@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   

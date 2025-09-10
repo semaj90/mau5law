@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import 'uno.css'
 	import { fade, fly } from 'svelte/transition'
 	let showLogo = false
@@ -9,7 +10,7 @@
 	function toggleSpan() {
 		red = !red
 	}
-	$: button = showLogo ? 'Hide logo' : 'Show logo'
+	// TODO: Convert to $derived: button = showLogo ? 'Hide logo' : 'Show logo'
 	$: span = red ? 'Normal' : 'Red'
 </script>
 
@@ -48,7 +49,7 @@
 <style>
 	:root {
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-		Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+		Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
 	}
 </style>
 

@@ -1,4 +1,5 @@
 <script>
+</script>
   interface Props {
     value?: any;
     placeholder?: string;

@@ -1,5 +1,6 @@
 <!-- Legal AI Recommendations Demo - SSR with Svelte 5 + Melt-UI + Bits-UI v2 -->
 <script lang="ts">
+</script>
   import { page } from '$app/stores';
   import FOAFModal from '$lib/components/recommendations/FOAFModal.svelte';
   import DidYouMeanSuggestions from '$lib/components/recommendations/DidYouMeanSuggestions.svelte';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import NeuralTopology3DDemo from '$lib/components/ai/NeuralTopology3DDemo.svelte';
   import { onMount } from 'svelte';
 
@@ -250,7 +251,7 @@
 
   .details-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr);
     gap: 20px;
     margin-bottom: 40px;
   }
@@ -309,7 +310,7 @@
 
   .insights-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr);
     gap: 20px;
     max-width: 800px;
     margin: 0 auto;

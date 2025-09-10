@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, createEventDispatcher, tick } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import type { Snippet } from 'svelte';

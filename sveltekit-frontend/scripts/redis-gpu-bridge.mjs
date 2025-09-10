@@ -1,7 +1,8 @@
 #!/usr/bin/env zx
 
 import { $, chalk } from 'zx';
-import { createClient } from 'redis';
+// Use ioredis directly with compatible connection configuration
+import Redis from 'ioredis';
 
 // Redis-GPU Pipeline Bridge
 // Connects the optimized Redis pipeline with GPU cluster executor for legal AI processing
@@ -24,12 +25,19 @@ console.log(`   Database: ${config.databaseUrl.split('@')[1]}`);
 console.log(`   GPU Enabled: ${config.enableGPU}`);
 console.log(`   Max Concurrency: ${config.maxConcurrency}`);
 
-// Redis connection
+// Redis connection using ioredis (compatible with RedisService)
 let redis;
 try {
-  redis = createClient({ url: config.redisUrl });
-  await redis.connect();
-  console.log(chalk.green('✅ Redis connection established'));
+  redis = new Redis({
+    host: 'localhost',
+    port: 6379,
+    lazyConnect: false,
+    connectionName: 'redis-gpu-bridge',
+    maxRetriesPerRequest: 3,
+    retryDelayOnFailover: 100
+  });
+  
+  console.log(chalk.green('✅ Redis connection established via ioredis'));
 } catch (error) {
   console.log(chalk.red(`❌ Redis connection failed: ${error.message}`));
   process.exit(1);
@@ -61,10 +69,10 @@ async function queueGPUJob(jobType, data, priority = 1) {
     };
     
     // Add to Redis priority queue
-    await redis.zAdd('gpu_cluster_jobs', {
-      score: Date.now() + (priority * 1000000), // Higher priority = processed first
-      value: JSON.stringify(job)
-    });
+    await redis.zadd('gpu_cluster_jobs', 
+      Date.now() + (priority * 1000000), // Higher priority = processed first
+      JSON.stringify(job)
+    );
     
     console.log(chalk.blue(`📦 Queued GPU job: ${jobType} (${jobId})`));
     return jobId;
@@ -90,7 +98,7 @@ async function processGPUJobQueue() {
       }
       
       // Get next job from priority queue
-      const result = await redis.zPopMin('gpu_cluster_jobs', 1);
+      const result = await redis.zpopmin('gpu_cluster_jobs', 1);
       
       if (!result.length) {
         // No jobs available, wait a bit
@@ -119,10 +127,10 @@ async function processGPUJobQueue() {
 async function processJob(job) {
   try {
     // Update job status
-    await redis.hSet(`gpu_job:${job.id}`, {
-      status: 'processing',
-      started_at: new Date().toISOString()
-    });
+    await redis.hset(`gpu_job:${job.id}`, 
+      'status', 'processing',
+      'started_at', new Date().toISOString()
+    );
     
     // Prepare GPU cluster command based on job type
     let gpuCommand;
@@ -198,13 +206,13 @@ async function processJob(job) {
     const duration = Date.now() - startTime;
     
     // Store successful result
-    await redis.hSet(`gpu_job:${job.id}`, {
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      duration_ms: duration,
-      output: result.stdout.slice(0, 10000), // Truncate large outputs
-      success: true
-    });
+    await redis.hset(`gpu_job:${job.id}`, 
+      'status', 'completed',
+      'completed_at', new Date().toISOString(),
+      'duration_ms', duration,
+      'output', result.stdout.slice(0, 10000), // Truncate large outputs
+      'success', 'true'
+    );
     
     // Update Redis pipeline cache with results
     await updatePipelineCache(job, result.stdout);
@@ -217,12 +225,12 @@ async function processJob(job) {
     // Handle job failure
     job.retries = (job.retries || 0) + 1;
     
-    await redis.hSet(`gpu_job:${job.id}`, {
-      status: job.retries >= job.max_retries ? 'failed' : 'retry',
-      error_message: error.message,
-      retries: job.retries,
-      last_attempt: new Date().toISOString()
-    });
+    await redis.hset(`gpu_job:${job.id}`, 
+      'status', job.retries >= job.max_retries ? 'failed' : 'retry',
+      'error_message', error.message,
+      'retries', job.retries.toString(),
+      'last_attempt', new Date().toISOString()
+    );
     
     // Requeue if retries remaining
     if (job.retries < job.max_retries) {
@@ -230,10 +238,10 @@ async function processJob(job) {
       
       // Add delay and requeue
       setTimeout(async () => {
-        await redis.zAdd('gpu_cluster_jobs', {
-          score: Date.now() + 60000, // 1 minute delay
-          value: JSON.stringify(job)
-        });
+        await redis.zadd('gpu_cluster_jobs', 
+          Date.now() + 60000, // 1 minute delay
+          JSON.stringify(job)
+        );
       }, 5000);
     }
   }
@@ -245,7 +253,7 @@ async function updatePipelineCache(job, output) {
     const cacheKey = `gpu_result:${job.type}:${job.id}`;
     
     // Store GPU processing results in Redis for pipeline access
-    await redis.setEx(cacheKey, 3600, JSON.stringify({
+    await redis.setex(cacheKey, 3600, JSON.stringify({
       job_id: job.id,
       job_type: job.type,
       processed_at: new Date().toISOString(),
@@ -277,7 +285,7 @@ async function monitorPipelineIntegration() {
   
   try {
     // Get job queue statistics
-    const totalJobs = await redis.zCard('gpu_cluster_jobs');
+    const totalJobs = await redis.zcard('gpu_cluster_jobs');
     const processingJobs = await redis.keys('gpu_job:*');
     
     // Get pipeline cache statistics
@@ -296,7 +304,7 @@ async function monitorPipelineIntegration() {
     let failedCount = 0;
     
     for (const jobKey of recentJobs.slice(0, 20)) {
-      const status = await redis.hGet(jobKey, 'status');
+      const status = await redis.hget(jobKey, 'status');
       if (status === 'completed') completedCount++;
       if (status === 'failed') failedCount++;
     }
@@ -305,7 +313,8 @@ async function monitorPipelineIntegration() {
     console.log(chalk.red(`   ❌ Recently Failed: ${failedCount}`));
     
     // Performance metrics
-    const memoryUsage = await redis.memory('usage');
+    const memoryInfo = await redis.memory('stats');
+    const memoryUsage = memoryInfo ? memoryInfo.used_memory : 0;
     console.log(chalk.blue(`   💾 Redis Memory: ${Math.round(memoryUsage / 1024 / 1024)}MB`));
     
   } catch (error) {

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
   import EvidenceUploadModal from "$lib/components/modals/EvidenceUploadModal.svelte";
@@ -99,7 +100,7 @@ let evidencePageFeedback = $state<any>(null);
   let evidenceUploadFeedback: any;
 
   // Filtering and selection
-  let selectedEvidence = $state<Set<string>>(new Set());
+  let selectedEvidence = $state<Set<string>>(new Set();
 let selectedType = $state("");
 let selectedStatus = $state("");
 let selectedCollector = $state("");
@@ -119,11 +120,10 @@ let bulkOperationLoading = $state(false);
   let caseId = $derived($page.url.searchParams.get("caseId") || undefined);
 
   // Reactive values from SSR data and store
-  $: ({ isLoading: loading, error } = $evidenceGrid);
+  let ({ isLoading: loading, error } = $derived($evidenceGrid));
   let allEvidence = $derived(data.evidence || []);
-  let filteredEvidence = $derived(filterAndSortEvidence(allEvidence));
-  let visibleEvidence = $derived(getPaginatedEvidence());
-
+  let filteredEvidence = $derived(filterAndSortEvidence(allEvidence);
+  let visibleEvidence = $derived(getPaginatedEvidence();
   onMount(() => {
     // Initialize store with SSR data
     evidenceActions.setItems(data.evidence || []);
@@ -377,7 +377,7 @@ let display = $state("");
     if (selectedEvidence.size === visibleEvidence.length) {
       selectedEvidence.clear();
     } else {
-      visibleEvidence.forEach((e) => selectedEvidence.add(e.id));
+      visibleEvidence.forEach((e) => selectedEvidence.add(e.id);
     }
     selectedEvidence = selectedEvidence;
     showBulkActions = selectedEvidence.size > 0;
@@ -543,8 +543,7 @@ let display = $state("");
         highlight: result.highlight
       },
       metadata: result.metadata
-    }));
-
+    });
     // Update evidence display with search results
     if (convertedEvidence.length > 0) {
       evidenceActions.setSearchResults(convertedEvidence);
@@ -610,7 +609,7 @@ let display = $state("");
   }
 
   // Reactive statements
-  $: if (
+  // TODO: Convert to $derived: if (
     searchQuery ||
     selectedType ||
     selectedStatus ||
@@ -620,7 +619,7 @@ let display = $state("");
     sortBy ||
     sortOrder
   ) {
-    filteredEvidence = filterAndSortEvidence(allEvidence);
+    filteredEvidence = filterAndSortEvidence(allEvidence)
   }
 </script>
 
@@ -997,9 +996,7 @@ let display = $state("");
               <div class="space-y-4">
                 <!-- Header with Icon -->
                 <div class="flex items-center gap-3">
-                  <svelte:component
-                    this={getEvidenceTypeIcon(evidence.evidenceType)}
-                    class="w-8 h-8 text-blue-500 nes-memory-active"
+                  <{getEvidenceTypeIcon(evidence.evidenceType)} class="w-8 h-8 text-blue-500 nes-memory-active"
                   />
                   <div>
                     <h2 class="nes-text-pixelated font-bold text-lg line-clamp-2">
@@ -1110,9 +1107,7 @@ let display = $state("");
                     'Untitled Evidence'}"
                 />
 
-                <svelte:component
-                  this={getEvidenceTypeIcon(evidence.evidenceType)}
-                  class="mx-auto px-4 max-w-7xl"
+                <{getEvidenceTypeIcon(evidence.evidenceType)} class="mx-auto px-4 max-w-7xl"
                 />
 
                 <div class="mx-auto px-4 max-w-7xl">

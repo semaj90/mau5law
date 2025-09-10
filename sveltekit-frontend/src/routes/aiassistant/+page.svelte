@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { $state } from 'svelte';
+</script>
+  // Svelte 5 runes are built-in, no import needed
   // Web Speech API type declarations
   interface SpeechRecognition extends EventTarget {
     continuous: boolean;
@@ -426,7 +427,7 @@
 
   function adjustPanelWidth(panelName: keyof PanelLayout, delta: number) {
     const current = panelLayout[panelName].width;
-    const newWidth = Math.max(15, Math.min(50, current + delta));
+    const newWidth = Math.max(15, Math.min(50, current + delta);
     panelLayout[panelName].width = newWidth;
 
     // Redistribute remaining width

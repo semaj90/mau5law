@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Button } from "bits-ui";
 	import { mode, toggleMode } from "mode-watcher";
 	import { scale } from "svelte/transition";

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { createSOMRAGSystem, type SOMConfig } from '$lib/ai/som-rag-system';
   import { createEnhancedIngestionPipeline, type IngestionStats } from '$lib/ai/enhanced-ingestion-pipeline';

@@ -1,7 +1,8 @@
 <!--
   Minimal Case Creation Test - Testing API integration without UI library dependencies
 -->
-<script lang="ts">let isSubmitting = $state(false);
+<script lang="ts">
+</script>let isSubmitting = $state(false);
 let submitResult = $state('');
 let formData = $state({
     caseNumber: '',

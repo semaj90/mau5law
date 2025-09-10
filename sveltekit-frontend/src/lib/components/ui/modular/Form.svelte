@@ -1,5 +1,6 @@
 <!-- Modular Form Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
+</script>
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
 

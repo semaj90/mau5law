@@ -1,5 +1,6 @@
 <!-- YoRHa Main Interface Page -->
 <script lang="ts">
+</script>
   import { goto } from '$app/navigation';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
@@ -198,7 +199,7 @@ let localResults = $state<any[] >([]);
         relevance: Math.round((item.relevance || Math.random()) * 100),
         status: item.status || 'active',
         metadata: item
-      }));
+      });
       searchResults = searchMode === 'hybrid' ? mergeResults(localResults, remote) : remote;
       activeSection = 'search-results';
     } catch (e) {

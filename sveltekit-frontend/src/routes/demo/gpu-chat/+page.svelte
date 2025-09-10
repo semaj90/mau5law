@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   let messages: { role: 'user' | 'assistant'; content: string }[] = [];
   let userInput = '';
   let isLoading = false;

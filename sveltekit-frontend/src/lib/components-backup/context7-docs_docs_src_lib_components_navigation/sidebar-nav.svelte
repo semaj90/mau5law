@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { ScrollArea } from "bits-ui";
 	import SidebarNavItems from "$lib/components/navigation/sidebar-nav-items.svelte";
 	import SidebarNavMainItems from "$lib/components/navigation/sidebar-nav-main-items.svelte";

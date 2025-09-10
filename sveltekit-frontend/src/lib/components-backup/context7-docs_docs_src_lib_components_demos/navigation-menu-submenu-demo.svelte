@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { NavigationMenu } from "bits-ui";
 	import CaretDown from "phosphor-svelte/lib/CaretDown";
 	import { cn } from "$lib/utils/styles.js";

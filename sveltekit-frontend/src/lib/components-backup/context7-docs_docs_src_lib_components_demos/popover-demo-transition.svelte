@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Popover, Separator, Toggle } from "bits-ui";
 	import ImageSquare from "phosphor-svelte/lib/ImageSquare";
 	import LinkSimpleHorizontalBreak from "phosphor-svelte/lib/LinkSimpleHorizontalBreak";

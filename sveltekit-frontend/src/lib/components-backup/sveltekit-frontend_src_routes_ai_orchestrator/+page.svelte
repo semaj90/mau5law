@@ -3,6 +3,7 @@ Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';

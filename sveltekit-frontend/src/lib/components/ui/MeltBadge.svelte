@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { cva, type VariantProps } from 'class-variance-authority';
 	import { cn } from '$lib/utils';
 
@@ -15,7 +16,7 @@
 					outline: 'text-gray-900 dark:text-gray-50',
 					legal: 'border-transparent bg-blue-500 text-gray-50 hover:bg-blue-500/80',
 					evidence: 'border-transparent bg-red-600 text-gray-50 hover:bg-red-600/80',
-					case: 'border-transparent bg-green-600 text-gray-50 hover:bg-green-600/80',
+					caseItem: 'border-transparent bg-green-600 text-gray-50 hover:bg-green-600/80',
 					yorha: 'border-yellow-400 bg-black/90 text-yellow-400 hover:bg-black'
 				},
 				size: {

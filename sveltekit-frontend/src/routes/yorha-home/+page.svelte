@@ -1,5 +1,6 @@
 <!-- YoRHa Interface Home Page -->
 <script lang="ts">
+</script>
   import { goto } from '$app/navigation';
   import {
     Play,
@@ -94,7 +95,7 @@
           relevance: Math.round(((item && (item.relevance ?? item.score)) ?? Math.random()) * 100),
           status: (item && item.status) || 'active',
           metadata: item
-        }));
+        });
   activeSection = 'search-results';
       }
     } catch (error) {

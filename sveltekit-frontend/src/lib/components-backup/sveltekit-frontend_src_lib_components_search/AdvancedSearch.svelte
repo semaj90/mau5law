@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props { items: Evidence[] ;,
     onResults: (results: Evidence[]) => void;,
     onSelect: (item: Evidence) => void;,

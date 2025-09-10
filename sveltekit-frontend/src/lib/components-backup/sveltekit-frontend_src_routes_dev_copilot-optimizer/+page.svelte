@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { Dialog } from 'bits-ui';
@@ -189,6 +190,7 @@
   async function generateSuggestions() {
     const testCode = `// Test Svelte 5 component
 <script lang="ts">
+</script>
   
   let count = $state(0);
 
@@ -611,6 +613,7 @@
             <h3 class="text-lg font-semibold text-purple-100">Test Context</h3>
             <pre class="p-4 bg-black/40 rounded-lg border border-purple-500/30 text-purple-100 text-sm overflow-x-auto"><code>{`// Test Svelte 5 component
 <script lang="ts">
+</script>
   let { data = [] } = $props();
   let count = $state(0);
 

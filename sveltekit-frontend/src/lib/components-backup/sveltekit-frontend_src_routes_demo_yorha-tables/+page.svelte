@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import YoRHaTable from '$lib/components/yorha/YoRHaTable.svelte';
   import YoRHaDataGrid from '$lib/components/yorha/YoRHaDataGrid.svelte';

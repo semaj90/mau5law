@@ -1,5 +1,6 @@
 
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import { writable, derived } from 'svelte/store';
 	import { Button } from 'bits-ui';

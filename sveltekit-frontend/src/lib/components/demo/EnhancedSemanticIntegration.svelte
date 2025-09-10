@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { writable, derived, get } from 'svelte/store';
@@ -351,12 +352,12 @@ let updateInterval = $state<any;
 	});
 
 	// Reactive statements for automatic updates
-	$: if ($todos.length > 0 && showPageRankGraph) {
-		dispatch('pagerank-updated', generatePageRankGraph($todos));
+	// TODO: Convert to $derived: if ($todos.length > 0 && showPageRankGraph) {
+		dispatch('pagerank-updated', generatePageRankGraph($todos))
 	}
 
-	$: if ($semanticAnalysis && showSOMVisualization) {
-		dispatch('som-updated', generateSOMVisualization($semanticAnalysis));
+	// TODO: Convert to $derived: if ($semanticAnalysis && showSOMVisualization) {
+		dispatch('som-updated', generateSOMVisualization($semanticAnalysis))
 	}
 </script>
 

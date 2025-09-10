@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // AuthGuard component - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
   import { goto } from '$app/navigation';

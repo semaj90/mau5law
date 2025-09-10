@@ -1,5 +1,6 @@
 <!-- Test existing shadcn components -->
 <script lang="ts">
+</script>
   // Test shadcn components that are working
   import { Button } from '$lib/components/ui/button';
 </script>

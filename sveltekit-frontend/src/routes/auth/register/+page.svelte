@@ -3,6 +3,7 @@
   Basic registration without complex UI dependencies
 -->
 <script lang="ts">
+</script>
   import { enhance } from '$app/forms';
   
   interface Props {

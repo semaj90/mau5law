@@ -134,9 +134,9 @@
   }
 
   // Auto-scroll chat
-  $: if ($state.context.messages && chatContainer) {
+  // TODO: Convert to $derived: if ($state.context.messages && chatContainer) {
     setTimeout(() => {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      chatContainer.scrollTop = chatContainer.scrollHeight
     }, 10);
   }
 

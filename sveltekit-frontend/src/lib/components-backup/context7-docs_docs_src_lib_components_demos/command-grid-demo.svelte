@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Command } from "bits-ui";
 	import Sticker from "phosphor-svelte/lib/Sticker";
 	import Smiley from "phosphor-svelte/lib/Smiley";

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import GPUAcceleratedChat from '$lib/components/GPUAcceleratedChat.svelte';
   import { onMount } from 'svelte';
   

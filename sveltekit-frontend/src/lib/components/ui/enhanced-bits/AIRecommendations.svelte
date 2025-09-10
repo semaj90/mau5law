@@ -1,5 +1,6 @@
 <!-- AI Recommendations: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { UiCard as Card, UiCardHeader as CardHeader, UiCardTitle as CardTitle, UiCardContent as CardContent } from '$lib/index.js';
 

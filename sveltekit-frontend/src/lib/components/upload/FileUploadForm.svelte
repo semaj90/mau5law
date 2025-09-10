@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Use modular components
   import {
     Card,
@@ -50,8 +51,8 @@
   let uploadFiles: UploadFile[] = $state([]);
 let uploadProgress = $state(0);
   // Initialize form with caseId if provided
-  $: if (caseId) {
-    $form.caseId = caseId;
+  // TODO: Convert to $derived: if (caseId) {
+    $form.caseId = caseId
   }
 
   // File type icons

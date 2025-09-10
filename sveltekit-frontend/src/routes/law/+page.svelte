@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   
   let laws: any[] = $state([]);
@@ -28,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     law.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     law.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     law.code?.toLowerCase().includes(searchQuery.toLowerCase())
-  ));
+  );
 </script>
 
 <svelte:head>

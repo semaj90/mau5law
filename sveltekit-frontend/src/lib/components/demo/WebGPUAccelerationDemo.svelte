@@ -1,5 +1,6 @@
 <!-- WebGPU Client-Side Acceleration Demo -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
   import {

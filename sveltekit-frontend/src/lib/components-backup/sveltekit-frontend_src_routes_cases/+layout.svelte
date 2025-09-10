@@ -4,6 +4,7 @@ import type { Case } from '$lib/types';
 
 
 <script lang="ts">
+</script>
   interface Props {
     data: LayoutData
   }

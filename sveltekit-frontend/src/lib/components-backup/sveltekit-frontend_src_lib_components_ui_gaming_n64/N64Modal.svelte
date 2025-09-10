@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
 
   export let id: string | undefined = undefined;
@@ -89,7 +90,7 @@
 	  if (e.target === e.currentTarget) close();
 	}}
   >
-	<div class="n64-modal" onclick|stopPropagation>
+	<div class="n64-modal" onclick>
 	  <div class="n64-modal__header">
 		<slot name="header">
 		  <span>{ariaLabel}</span>

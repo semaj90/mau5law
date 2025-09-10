@@ -11,6 +11,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { browser } from '$app/environment';
@@ -313,9 +314,9 @@
   }
   
   // Reactive statement for XState machine state changes
-  $: {
+  // TODO: Convert to $derived: {
     if ($state.matches('streaming')) {
-      isStreaming.set(true);
+      isStreaming.set(true)
     } else if ($state.matches('idle')) {
       isStreaming.set(false);
     }

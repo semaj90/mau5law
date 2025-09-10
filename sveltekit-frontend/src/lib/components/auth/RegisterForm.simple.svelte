@@ -3,6 +3,7 @@
   Basic registration without complex dependencies
 -->
 <script lang="ts">
+</script>
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
   import {

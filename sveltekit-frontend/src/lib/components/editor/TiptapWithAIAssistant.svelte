@@ -1,10 +1,13 @@
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
-` element and/or a single top-level `<script module>` element
+</script>
+` element and/or a single top-level `<script module>
+</script>` element
 https://svelte.dev/e/script_duplicate -->
 <!-- Tiptap Editor with AI Assistant Integration -->
 <!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy, tick } from 'svelte';
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
@@ -628,6 +631,7 @@ let idleTimer = $state<NodeJS.Timeout | null >(null);
 </style>
 
 <script lang="ts">
+</script>
   function formatTime(date: Date): string {
     const now = new Date();
     const diff = now.getTime() - date.getTime();

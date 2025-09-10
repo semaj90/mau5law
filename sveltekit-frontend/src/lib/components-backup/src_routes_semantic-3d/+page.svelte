@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import Enhanced3DSemanticProcessor from '$lib/components/Enhanced3DSemanticProcessor.svelte';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // @ts-nocheck
   import { onMount } from 'svelte';
   let canvasEl: HTMLCanvasElement;

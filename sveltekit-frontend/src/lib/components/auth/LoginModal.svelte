@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { Snippet } from 'svelte';
 
   import Button from '$lib/components/ui/button/Button.svelte';

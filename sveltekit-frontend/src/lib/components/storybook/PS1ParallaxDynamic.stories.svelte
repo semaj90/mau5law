@@ -1,4 +1,5 @@
 <script>
+</script>
 	import { onMount, onDestroy } from 'svelte';
 	import '../yorha/ps1.css';
 	

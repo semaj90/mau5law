@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   
   export let score: number = 5; // Current attractiveness score (1-10)
@@ -41,12 +42,12 @@
     hoveredScore = null;
   }
   
-  $: displayScore = hoveredScore !== null ? hoveredScore : score;
-  $: sizeClasses = {
+  // TODO: Convert to $derived: displayScore = hoveredScore !== null ? hoveredScore : score
+  // TODO: Convert to $derived: sizeClasses = {
     sm: 'w-4 h-4',
     md: 'w-6 h-6', 
     lg: 'w-8 h-8'
-  };
+  }
 </script>
 
 <div class="mx-auto px-4 max-w-7xl">

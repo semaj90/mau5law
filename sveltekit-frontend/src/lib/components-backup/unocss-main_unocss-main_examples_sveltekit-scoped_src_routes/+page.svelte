@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Button from "$lib/Button.svelte";
   import ClsxDemo from "$lib/ClsxDemo.svelte";
   import Counter from "$lib/Counter.svelte";

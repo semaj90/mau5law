@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { Snippet } from "svelte";
 	import { cn } from "$lib/utils/styles.js";
 	import OpenInStackblitz from "./open-in-stackblitz.svelte";

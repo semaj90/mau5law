@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type {     Snippet     } from 'svelte';
   import { useIsMobile, useIsTablet, useIsDesktop, useIsDark } from '$lib/utils/media-query.svelte';
   

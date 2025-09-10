@@ -1,5 +1,6 @@
 <!-- Chain of Custody Tracker for Legal AI App -->
 <script lang="ts">
+</script>
   import { Shield, User, Calendar, MapPin, FileCheck, AlertTriangle, Lock, Unlock } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   export interface CustodyTransfer {

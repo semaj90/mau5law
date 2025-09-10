@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import Typewriter from "$lib/components/Typewriter.svelte";
   import UploadArea from "$lib/components/UploadArea.svelte";
@@ -24,7 +25,7 @@ let heroText = $state("Advanced Legal Case Management");
       const aiSearchInputEl = document.getElementById('aiSearchInput') as HTMLInputElement;
       
       if (aiSearchBtn && aiSearchInputEl) {
-        aiSearchBtn.addEventListener('click', () => handleAiSearch(aiSearchInputEl.value));
+        aiSearchBtn.addEventListener('click', () => handleAiSearch(aiSearchInputEl.value);
         aiSearchInputEl.addEventListener('keypress', (e) => {
           if (e.key === 'Enter') {
             handleAiSearch(aiSearchInputEl.value);

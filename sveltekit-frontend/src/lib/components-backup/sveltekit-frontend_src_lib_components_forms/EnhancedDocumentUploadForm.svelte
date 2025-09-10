@@ -2,6 +2,7 @@
 <!-- Production-ready form with state management, validation, and progress tracking -->
 
 <script lang="ts">
+</script>
   interface Props {
     data: SuperValidated<Infer<typeof DocumentUploadSchema>>;;
     onSuccess: ((result: any) ;
@@ -214,14 +215,14 @@
     stateValue === "failed";
 
   // Ensure default form shape to prevent runtime errors
-  $: if ($formData) {
+  // TODO: Convert to $derived: if ($formData) {
     if (!$formData.aiProcessing) {
       $formData.aiProcessing = {
         generateSummary: true,
         extractEntities: true,
         riskAssessment: true,
         generateRecommendations: false,
-      };
+      }
     }
     if (!$formData.tags) {
       $formData.tags = [];
@@ -339,7 +340,7 @@
             <Button
               variant="ghost"
               size="sm"
-              onclick|stopPropagation={removeFile}
+              onclick={removeFile}
               disabled={$isSubmitting}
             >
               <X size={16} />

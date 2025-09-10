@@ -1,4 +1,5 @@
 <script>
+</script>
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { aiAssistantMachine } from '$lib/machines/aiAssistantMachine.js';

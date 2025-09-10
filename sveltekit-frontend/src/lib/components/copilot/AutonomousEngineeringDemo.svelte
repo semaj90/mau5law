@@ -3,6 +3,7 @@ Autonomous Engineering Demo Component
 Showcases Copilot self-prompting with comprehensive AI orchestration
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import {
     Button

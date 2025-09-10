@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // RoleGuard component - Role-based access control - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
   

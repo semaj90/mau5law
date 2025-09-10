@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Editor } from "@tiptap/core";
   import Image from "@tiptap/extension-image";
   import Placeholder from "@tiptap/extension-placeholder";

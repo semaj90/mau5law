@@ -1,5 +1,6 @@
 <!-- YoRHa Command Center Dashboard Component -->
 <script lang="ts">
+</script>
   // Svelte 5 runes and modern imports
   import { onMount } from 'svelte';
   import { goto } from "$app/navigation";

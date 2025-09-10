@@ -9,6 +9,7 @@
   - Integration with YoRHa theming system
 -->
 <script lang="ts">
+</script>
   import { setContext, onMount, onDestroy } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import { GamingEvolutionManager } from './GamingEvolutionManager.js';

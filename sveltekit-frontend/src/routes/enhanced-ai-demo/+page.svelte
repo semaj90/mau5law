@@ -4,6 +4,7 @@
 <!-- ====================================================================== -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import {
     Button
@@ -38,7 +39,7 @@
   onMount(async () => {
     // Simulate system initialization
     for (let i = 0; i <= 100; i += 20) {
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 300);
     }
     systemInitialized = true;
   });

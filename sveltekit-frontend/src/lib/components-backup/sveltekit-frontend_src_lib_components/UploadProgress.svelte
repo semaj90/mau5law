@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { io, type Socket } from 'socket.io-client';
   import { uploadStore } from '$lib/stores/upload-machine';

@@ -1,5 +1,6 @@
 <!-- Enhanced Legal Document Editor with UnoCSS + Melt UI -->
 <script lang="ts">
+</script>
   interface Props { caseId: string | undefined ;,
     documentId: string | undefined ;,
     documentType: "brief" | "contract" | "motion" | "evidence" ;,

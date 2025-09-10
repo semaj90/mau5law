@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Badge from "$lib/components/ui/Badge.svelte";
   import Button from "$lib/components/ui/button/Button.svelte";
   import {

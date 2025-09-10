@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced/Button.svelte';
   import {
@@ -97,7 +98,7 @@
 
     for (const test of tests) {
       await runTest(test);
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 300);
     }
 
     isRunning = false;

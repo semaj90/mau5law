@@ -3,6 +3,7 @@ Prosecutor Dashboard - Complete Legal AI Workflow
 Features: Case management, evidence upload, AI chat, vector search
 -->
 <script lang="ts">
+</script>
   import type { SearchResults } from "$lib/types/global";
   import {
     Card,
@@ -63,7 +64,7 @@ Features: Case management, evidence upload, AI chat, vector search
     try {
 let response = $state<Response;
         try {
-          response >(await fetch('/api/cases?role=prosecutor'));
+          response >(await fetch('/api/cases?role=prosecutor');
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
           }
@@ -86,7 +87,7 @@ let response = $state<Response;
     try {
 let response = $state<Response;
         try {
-          response >(await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`));
+          response >(await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`);
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
           }
@@ -105,7 +106,7 @@ let response = $state<Response;
     try {
 let response = $state<Response;
         try {
-          response >(await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`));
+          response >(await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`);
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
           }

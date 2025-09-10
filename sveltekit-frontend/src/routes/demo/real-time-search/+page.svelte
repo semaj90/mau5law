@@ -1,541 +1,509 @@
-<!--
-  Real-Time Legal Search Demo Page
-  Showcasing WebSocket/NATS integration with Svelte 5 + bits-ui
--->
-
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
+	import { enhance } from '$app/forms';
+	import type { PageData } from './$types';
+	import { OrchestrationCenter, FlowExplorer, ActivityStream, PerformancePulse } from '$lib/components/ui/enhanced-bits';
+	
+	let { data }: { data: PageData } = $props();
+	
+	let activeTab = $state('search');
+	let searchQuery = $state(data.query);
+	let selectedCategory = $state(data.searchType);
+	let isSearching = $state(false);
+	let searchProgress = $state(0);
+	let liveResults = $state(data.searchResults);
+	let showSuggestions = $state(false);
+	let selectedFilters = $state<Record<string, string>>({});
+	
+	let tabs = $derived([
+		{ id: 'search', label: 'Live Search', count: liveResults.length },
+		{ id: 'categories', label: 'Categories', count: data.searchCategories.length },
+		{ id: 'filters', label: 'Advanced Filters', count: Object.keys(selectedFilters).length },
+		{ id: 'activity', label: 'Recent Activity', count: data.recentQueries.length },
+		{ id: 'analytics', label: 'Search Analytics', count: 4 }
+	]);
 
-  // Real-time search components
-  import RealTimeLegalSearch from '$lib/components/search/RealTimeLegalSearch.svelte';
-  import { useRealTimeSearch } from '$lib/services/real-time-search.js';
+	let searchPerformanceColor = $derived(
+		data.searchStats.search_performance.avg_response_time < 50 ? 'text-green-600' :
+		data.searchStats.search_performance.avg_response_time < 100 ? 'text-yellow-600' : 'text-red-600'
+	);
 
-  // UI Components
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs/index.js';
+	let cacheHitRateColor = $derived(
+		data.searchStats.search_performance.cache_hit_rate > 0.8 ? 'text-green-600' :
+		data.searchStats.search_performance.cache_hit_rate > 0.6 ? 'text-yellow-600' : 'text-red-600'
+	);
 
-  // Icons
-  import {
-    Zap,
-    Wifi,
-    TrendingUp,
-    Activity,
-    Search,
-    Database,
-    MessageSquare,
-    Settings
-  } from 'lucide-svelte';
+	function performSearch(query: string = searchQuery) {
+		if (!query.trim()) return;
+		
+		isSearching = true;
+		searchProgress = 0;
+		
+		// Simulate real-time search with progressive results
+		const interval = setInterval(() => {
+			searchProgress += Math.random() * 20;
+			if (searchProgress >= 100) {
+				searchProgress = 100;
+				isSearching = false;
+				clearInterval(interval);
+				
+				// Update URL and trigger search
+				const params = new URLSearchParams($page.url.searchParams);
+				params.set('query', query);
+				params.set('type', selectedCategory);
+				goto(`?${params.toString()}`, { replaceState: true });
+			}
+		}, 150);
+	}
 
-  // Real-time search service
-  const { state, isReady, hasResults, searchStatus, search } = useRealTimeSearch();
+	function selectSuggestedQuery(suggested: string) {
+		searchQuery = suggested;
+		showSuggestions = false;
+		performSearch(suggested);
+	}
 
-  // Demo state
-  let selectedResult: any = $state(null);
-  let testQueries = $state([
-    'Fourth Amendment search and seizure',
-    'Miranda rights violations',
-    'DNA evidence admissibility',
-    'Constitutional due process',
-    'Criminal liability standards',
-    'Evidence chain of custody',
-    'Federal court precedents',
-    'Search warrant requirements'
-  ]);
+	function formatNumber(num: number): string {
+		return new Intl.NumberFormat().format(num);
+	}
 
-  let demoMetrics = $state({
-    totalSearches: 0,
-    avgResponseTime: 0,
-    realTimeConnections: 0,
-    vectorSimilarityQueries: 0
-  });
+	function formatPercentage(value: number): string {
+		return `${Math.round(value * 100)}%`;
+	}
 
-  // Handle search result selection
-  function handleSearchSelect(event: CustomEvent) {
-    selectedResult = event.detail.result;
-    console.log('🔍 Selected result:', selectedResult);
+	function getRelevanceColor(score: number): string {
+		return score > 0.9 ? 'text-green-600' :
+			   score > 0.8 ? 'text-blue-600' :
+			   score > 0.7 ? 'text-yellow-600' : 'text-red-600';
+	}
 
-    demoMetrics.totalSearches++;
-  }
+	function getConfidenceColor(confidence: number): string {
+		return confidence > 0.9 ? 'text-green-600' :
+			   confidence > 0.8 ? 'text-blue-600' :
+			   confidence > 0.7 ? 'text-yellow-600' : 'text-red-600';
+	}
 
-  // Test specific search
-  async function testSearch(query: string) {
-    console.log('🧪 Testing search:', query);
-    try {
-      await search(query, {
-        categories: ['cases', 'evidence', 'precedents'],
-        vectorSearch: true,
-        streamResults: true,
-        includeAI: true
-      });
-      demoMetrics.vectorSimilarityQueries++;
-    } catch (error) {
-      console.error('❌ Test search failed:', error);
-    }
-  }
+	function getCategoryIcon(category: string): string {
+		const icons: Record<string, string> = {
+			legal_documents: '📄',
+			case_law: '⚖️',
+			statutes: '📚',
+			legal_entities: '🏢',
+			evidence: '🔍'
+		};
+		return icons[category] || '📋';
+	}
 
-  // Component lifecycle
-  onMount(() => {
-    console.log('🚀 Real-Time Search Demo page loaded');
-  });
+	function truncateText(text: string, maxLength: number): string {
+		return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+	}
+
+	function highlightText(text: string, highlights: string[]): string {
+		let result = text;
+		highlights.forEach(highlight => {
+			const regex = new RegExp(highlight, 'gi');
+			result = result.replace(regex, `<mark class="bg-yellow-200 px-1">${highlight}</mark>`);
+		});
+		return result;
+	}
 </script>
 
-<svelte:head>
-  <title>Real-Time Legal Search Demo - YoRHa Legal AI</title>
-  <meta name="description" content="Demonstration of real-time legal search with WebSocket streaming, vector similarity, and AI enhancement" />
-</svelte:head>
+<div class="container mx-auto p-6 space-y-6">
+	<div class="flex justify-between items-center">
+		<div>
+			<h1 class="text-3xl font-bold text-gray-900">Real-Time Legal Search</h1>
+			<p class="text-lg text-gray-600 mt-2">AI-powered semantic search across {formatNumber(data.searchStats.total_indexed)} legal documents</p>
+		</div>
+		
+		<div class="flex items-center gap-4">
+			<div class="text-right">
+				<div class="text-sm text-gray-500">Active Connections</div>
+				<div class="text-2xl font-bold text-blue-600">{data.searchStats.active_connections}</div>
+			</div>
+			<div class="text-right">
+				<div class="text-sm text-gray-500">Response Time</div>
+				<div class="text-2xl font-bold {searchPerformanceColor}">{data.searchStats.search_performance.avg_response_time}ms</div>
+			</div>
+		</div>
+	</div>
 
-<div class="container mx-auto px-4 py-8">
-  <!-- Page Header -->
-  <div class="mb-8 text-center">
-    <h1 class="text-4xl font-bold text-gray-900 mb-4">
-      <span class="flex items-center justify-center gap-2">
-        <Zap class="w-10 h-10 text-blue-500" />
-        Real-Time Legal Search
-      </span>
-    </h1>
-    <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-      Experience the next generation of legal research with real-time WebSocket streaming,
-      vector similarity search, and AI-powered result enhancement.
-    </p>
-  </div>
+	<!-- Search Interface -->
+	<div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+		<div class="flex gap-4 mb-4">
+			<div class="flex-1 relative">
+				<input
+					type="text"
+					bind:value={searchQuery}
+					placeholder="Search legal documents, cases, statutes..."
+					class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+					onkeydown={(e) => {
+						if (e.key === 'Enter') {
+							e.preventDefault();
+							performSearch();
+						}
+					}}
+					onfocus={() => showSuggestions = true}
+					onblur={() => setTimeout(() => showSuggestions = false, 200)}
+				/>
+				
+				{#if showSuggestions && data.suggestedQueries.length > 0}
+					<div class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10 mt-1">
+						{#each data.suggestedQueries as suggestion}
+							<button
+								class="w-full text-left px-4 py-2 hover:bg-gray-50 first:rounded-t-md last:rounded-b-md"
+								onclick={() => selectSuggestedQuery(suggestion)}
+							>
+								{suggestion}
+							</button>
+						{/each}
+					</div>
+				{/if}
+			</div>
+			
+			<select 
+				bind:value={selectedCategory}
+				class="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+			>
+				{#each data.searchCategories as category}
+					<option value={category.id}>{category.name}</option>
+				{/each}
+			</select>
+			
+			<button 
+				class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+				onclick={() => performSearch()}
+				disabled={isSearching}
+			>
+				{isSearching ? 'Searching...' : 'Search'}
+			</button>
+		</div>
 
-  <!-- Connection Status Banner -->
-  <div class="mb-6">
-    {#if $state.connectionStatus === 'connected'}
-      <div class="flex items-center justify-center gap-2 bg-green-50 border border-green-200 rounded-lg p-3">
-        <Wifi class="w-5 h-5 text-green-500" />
-        <span class="text-green-700 font-medium">Real-time connection established</span>
-        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Enhanced RAG Active</span>
-      </div>
-    {:else if $state.connectionStatus === 'connecting'}
-      <div class="flex items-center justify-center gap-2 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-        <Activity class="w-5 h-5 text-yellow-500 animate-pulse" />
-        <span class="text-yellow-700 font-medium">Connecting to real-time services...</span>
-      </div>
-    {:else}
-      <div class="flex items-center justify-center gap-2 bg-blue-50 border border-blue-200 rounded-lg p-3">
-        <Database class="w-5 h-5 text-blue-500" />
-        <span class="text-blue-700 font-medium">Using HTTP fallback mode</span>
-        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Standard Search</span>
-      </div>
-    {/if}
-  </div>
+		{#if isSearching}
+			<div class="bg-blue-50 p-4 rounded-lg">
+				<div class="flex items-center justify-between mb-2">
+					<span class="text-blue-800 font-medium">Searching across {formatNumber(data.searchStats.total_indexed)} documents</span>
+					<span class="text-blue-600">{Math.round(searchProgress)}%</span>
+				</div>
+				<div class="w-full bg-blue-200 rounded-full h-2">
+					<div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: {searchProgress}%"></div>
+				</div>
+			</div>
+		{/if}
+	</div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Main Search Interface -->
-    <div class="lg:col-span-2">
-      <Card class="mb-6">
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
-            <Search class="w-5 h-5" />
-            Legal AI Search Interface
-          </CardTitle>
-          <CardDescription>
-            Search legal cases, evidence, precedents, and statutes with real-time streaming results
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <!-- Real-Time Search Component -->
-          <RealTimeLegalSearch
-            placeholder="Search cases, precedents, evidence, statutes..."
-            categories={['cases', 'evidence', 'precedents', 'statutes', 'documents']}
-            enableRealTime={true}
-            enableVectorSearch={true}
-            enableAI={true}
-            maxResults={15}
-            autoSearch={true}
-            select={handleSearchSelect}
-          />
-        </CardContent>
-      </Card>
+	<OrchestrationCenter>
+		<FlowExplorer {tabs} bind:activeTab>
+			{#snippet tabContent()}
+				{#if activeTab === 'search'}
+					<div class="space-y-6">
+						{#if liveResults.length > 0}
+							<div class="text-sm text-gray-600 mb-4">
+								Found {liveResults.length} results for "{data.query}"
+							</div>
+							
+							{#each liveResults as result}
+								<div class="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+									<div class="flex justify-between items-start mb-3">
+										<div class="flex items-center gap-3">
+											<span class="text-2xl">{getCategoryIcon(result.category)}</span>
+											<div>
+												<h3 class="text-lg font-semibold text-gray-900">{result.title}</h3>
+												<div class="flex items-center gap-4 text-sm text-gray-500">
+													<span class="capitalize">{result.category.replace('_', ' ')}</span>
+													<span>Modified: {new Date(result.last_modified).toLocaleDateString()}</span>
+													{#if result.file_type}
+														<span class="uppercase">{result.file_type}</span>
+													{/if}
+													{#if result.page_count}
+														<span>{result.page_count} pages</span>
+													{/if}
+												</div>
+											</div>
+										</div>
+										
+										<div class="text-right">
+											<div class="text-lg font-bold {getRelevanceColor(result.relevance_score)}">
+												{formatPercentage(result.relevance_score)}
+											</div>
+											<div class="text-sm text-gray-500">relevance</div>
+											<div class="text-sm {getConfidenceColor(result.confidence)} mt-1">
+												{formatPercentage(result.confidence)} confidence
+											</div>
+										</div>
+									</div>
+									
+									<p class="text-gray-700 mb-3">{@html highlightText(truncateText(result.content, 200), result.highlights)}</p>
+									
+									{#if result.highlights.length > 0}
+										<div class="flex flex-wrap gap-2 mb-3">
+											{#each result.highlights as highlight}
+												<span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
+													{highlight}
+												</span>
+											{/each}
+										</div>
+									{/if}
+									
+									{#if result.case_references || result.court || result.jurisdiction}
+										<div class="flex gap-4 text-sm text-gray-600">
+											{#if result.case_references}
+												<span>Cases: {result.case_references.join(', ')}</span>
+											{/if}
+											{#if result.court}
+												<span>Court: {result.court}</span>
+											{/if}
+											{#if result.jurisdiction}
+												<span>Jurisdiction: {result.jurisdiction}</span>
+											{/if}
+											{#if result.citations}
+												<span>Citations: {result.citations}</span>
+											{/if}
+										</div>
+									{/if}
+								</div>
+							{/each}
+						{:else if data.query}
+							<div class="text-center py-12">
+								<div class="text-6xl mb-4">🔍</div>
+								<h3 class="text-xl font-semibold text-gray-900 mb-2">No results found</h3>
+								<p class="text-gray-600 mb-4">Try adjusting your search terms or using different keywords</p>
+								<div class="flex flex-wrap gap-2 justify-center">
+									{#each data.suggestedQueries.slice(0, 4) as suggestion}
+										<button 
+											class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200"
+											onclick={() => selectSuggestedQuery(suggestion)}
+										>
+											{suggestion}
+										</button>
+									{/each}
+								</div>
+							</div>
+						{:else}
+							<div class="text-center py-12">
+								<div class="text-6xl mb-4">⚡</div>
+								<h3 class="text-xl font-semibold text-gray-900 mb-2">Ready for Real-Time Search</h3>
+								<p class="text-gray-600 mb-4">Enter a query above to start searching across millions of legal documents</p>
+								<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+									{#each data.suggestedQueries.slice(0, 8) as suggestion}
+										<button 
+											class="p-3 bg-gray-50 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+											onclick={() => selectSuggestedQuery(suggestion)}
+										>
+											{suggestion}
+										</button>
+									{/each}
+								</div>
+							</div>
+						{/if}
+					</div>
+				{:else if activeTab === 'categories'}
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+						{#each data.searchCategories as category}
+							<div class="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
+								 onclick={() => { selectedCategory = category.id; activeTab = 'search'; }}>
+								<div class="flex items-center gap-4 mb-4">
+									<div class="text-3xl">{category.icon}</div>
+									<div>
+										<h3 class="text-lg font-semibold text-gray-900">{category.name}</h3>
+										<div class="text-sm text-gray-600">{formatNumber(category.count)} documents</div>
+									</div>
+								</div>
+								<p class="text-gray-700 text-sm">{category.description}</p>
+							</div>
+						{/each}
+					</div>
+				{:else if activeTab === 'filters'}
+					<div class="space-y-6">
+						<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+							<div class="bg-white p-6 rounded-lg border border-gray-200">
+								<h4 class="text-lg font-semibold text-gray-900 mb-4">Date Range</h4>
+								<div class="space-y-2">
+									{#each data.searchFilters.date_ranges as range}
+										<label class="flex items-center gap-3">
+											<input 
+												type="radio" 
+												name="dateRange" 
+												value={range.value}
+												bind:group={selectedFilters.dateRange}
+											/>
+											<span class="flex-1">{range.label}</span>
+											<span class="text-sm text-gray-500">{formatNumber(range.count)}</span>
+										</label>
+									{/each}
+								</div>
+							</div>
 
-      <!-- Selected Result Details -->
-      {#if selectedResult}
-        <Card>
-          <CardHeader>
-            <CardTitle>Selected Result Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="space-y-4">
-              <!-- Result Header -->
-              <div class="flex items-start justify-between">
-                <div class="flex-1">
-                  <h3 class="text-lg font-semibold text-gray-900">
-                    {selectedResult.title}
-                  </h3>
-                  <div class="flex items-center gap-2 mt-1">
-                    <Badge variant={selectedResult.realTime ? 'default' : 'secondary'}>
-                      {selectedResult.type}
-                    </Badge>
-                    {#if selectedResult.realTime}
-                      <Badge variant="outline" class="text-blue-600 border-blue-200">
-                        <TrendingUp class="w-3 h-3 mr-1" />
-                        Real-time
-                      </Badge>
-                    {/if}
-                    <span class="text-sm text-gray-500">
-                      Relevance: {(selectedResult.score * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                </div>
-              </div>
+							<div class="bg-white p-6 rounded-lg border border-gray-200">
+								<h4 class="text-lg font-semibold text-gray-900 mb-4">Jurisdiction</h4>
+								<div class="space-y-2">
+									{#each data.searchFilters.jurisdictions as jurisdiction}
+										<label class="flex items-center gap-3">
+											<input 
+												type="radio" 
+												name="jurisdiction" 
+												value={jurisdiction.value}
+												bind:group={selectedFilters.jurisdiction}
+											/>
+											<span class="flex-1">{jurisdiction.label}</span>
+											<span class="text-sm text-gray-500">{formatNumber(jurisdiction.count)}</span>
+										</label>
+									{/each}
+								</div>
+							</div>
 
-              <!-- Content -->
-              <div class="prose prose-sm max-w-none">
-                <p class="text-gray-700">{selectedResult.content}</p>
-              </div>
+							<div class="bg-white p-6 rounded-lg border border-gray-200">
+								<h4 class="text-lg font-semibold text-gray-900 mb-4">Confidence Level</h4>
+								<div class="space-y-2">
+									{#each data.searchFilters.confidence_levels as level}
+										<label class="flex items-center gap-3">
+											<input 
+												type="radio" 
+												name="confidence" 
+												value={level.value}
+												bind:group={selectedFilters.confidence}
+											/>
+											<span class="flex-1">{level.label}</span>
+											<span class="text-sm text-gray-500">{formatNumber(level.count)}</span>
+										</label>
+									{/each}
+								</div>
+							</div>
+						</div>
 
-              <!-- Metadata -->
-              <div class="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <h4 class="font-medium text-gray-900 mb-2">Metadata</h4>
-                  <div class="space-y-1 text-sm text-gray-600">
-                    {#if selectedResult.metadata.jurisdiction}
-                      <div><span class="font-medium">Jurisdiction:</span> {selectedResult.metadata.jurisdiction}</div>
-                    {/if}
-                    {#if selectedResult.metadata.status}
-                      <div><span class="font-medium">Status:</span> {selectedResult.metadata.status}</div>
-                    {/if}
-                    {#if selectedResult.metadata.date}
-                      <div><span class="font-medium">Date:</span> {new Date(selectedResult.metadata.date).toLocaleDateString()}</div>
-                    {/if}
-                  </div>
-                </div>
-                <div>
-                  <h4 class="font-medium text-gray-900 mb-2">Search Details</h4>
-                  <div class="space-y-1 text-sm text-gray-600">
-                    <div><span class="font-medium">Source:</span> {selectedResult.realTime ? 'Real-time stream' : 'Database query'}</div>
-                    {#if selectedResult.similarity}
-                      <div><span class="font-medium">Vector similarity:</span> {(selectedResult.similarity * 100).toFixed(1)}%</div>
-                    {/if}
-                  </div>
-                </div>
-              </div>
+						<div class="flex justify-end gap-4">
+							<button 
+								class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+								onclick={() => selectedFilters = {}}
+							>
+								Clear Filters
+							</button>
+							<button 
+								class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+								onclick={() => { activeTab = 'search'; performSearch(); }}
+							>
+								Apply Filters
+							</button>
+						</div>
+					</div>
+				{:else if activeTab === 'activity'}
+					<ActivityStream>
+						{#snippet streamItems()}
+							{#each data.recentQueries as query}
+								<div class="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
+									<div class="flex-1">
+										<div class="font-medium text-gray-900">"{query.query}"</div>
+										<div class="text-sm text-gray-600">
+											by {query.user} • {formatNumber(query.results)} results
+										</div>
+										<div class="text-xs text-gray-500 mt-1">
+											{new Date(query.timestamp).toLocaleString()}
+										</div>
+									</div>
+									<button 
+										class="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200"
+										onclick={() => selectSuggestedQuery(query.query)}
+									>
+										Rerun
+									</button>
+								</div>
+							{/each}
+						{/snippet}
+					</ActivityStream>
+				{:else if activeTab === 'analytics'}
+					<div class="space-y-6">
+						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+							<div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
+								<div class="text-3xl font-bold text-blue-600">{formatNumber(data.searchStats.total_indexed)}</div>
+								<div class="text-gray-600">Documents Indexed</div>
+							</div>
+							<div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
+								<div class="text-3xl font-bold text-green-600">{data.searchStats.search_performance.queries_per_second}</div>
+								<div class="text-gray-600">Queries/Second</div>
+							</div>
+							<div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
+								<div class="text-3xl font-bold {searchPerformanceColor}">{data.searchStats.search_performance.avg_response_time}ms</div>
+								<div class="text-gray-600">Avg Response</div>
+							</div>
+							<div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
+								<div class="text-3xl font-bold {cacheHitRateColor}">{formatPercentage(data.searchStats.search_performance.cache_hit_rate)}</div>
+								<div class="text-gray-600">Cache Hit Rate</div>
+							</div>
+						</div>
 
-              <!-- Highlights -->
-              {#if selectedResult.highlights && selectedResult.highlights.length > 0}
-                <div>
-                  <h4 class="font-medium text-gray-900 mb-2">Highlights</h4>
-                  <div class="space-y-2">
-                    {#each selectedResult.highlights as highlight}
-                      <div class="p-2 bg-yellow-50 border border-yellow-200 rounded text-sm">
-                        ...{highlight}...
-                      </div>
-                    {/each}
-                  </div>
-                </div>
-              {/if}
-            </div>
-          </CardContent>
-        </Card>
-      {/if}
-    </div>
+						<div class="bg-white p-6 rounded-lg border border-gray-200">
+							<h4 class="text-lg font-semibold text-gray-900 mb-4">Search Categories Distribution</h4>
+							<div class="space-y-3">
+								{#each data.searchCategories as category}
+									<div class="flex items-center gap-4">
+										<div class="text-2xl">{category.icon}</div>
+										<div class="flex-1">
+											<div class="flex justify-between items-center mb-1">
+												<span class="font-medium">{category.name}</span>
+												<span class="text-sm text-gray-600">{formatNumber(category.count)}</span>
+											</div>
+											<div class="w-full bg-gray-200 rounded-full h-2">
+												<div 
+													class="bg-blue-600 h-2 rounded-full" 
+													style="width: {(category.count / data.searchStats.total_indexed) * 100}%"
+												></div>
+											</div>
+										</div>
+									</div>
+								{/each}
+							</div>
+						</div>
 
-    <!-- Sidebar -->
-    <div class="space-y-6">
-      <!-- Quick Test Searches -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
-            <Settings class="w-4 h-4" />
-            Quick Tests
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="space-y-2">
-            {#each testQueries as query}
-              <Button
-                variant="outline"
-                size="sm"
-                class="w-full justify-start text-left h-auto p-2 bits-btn bits-btn"
-                onclick={() => testSearch(query)}
-              >
-                <div class="text-xs truncate">{query}</div>
-              </Button>
-            {/each}
-          </div>
-        </CardContent>
-      </Card>
+						<div class="bg-green-50 p-6 rounded-lg border border-green-200">
+							<h4 class="text-lg font-semibold text-green-900 mb-2">System Status: Optimal</h4>
+							<div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+								<div>
+									<span class="text-green-700 font-medium">Index Freshness:</span>
+									<span class="text-green-600 ml-2">{formatPercentage(data.searchStats.search_performance.index_freshness)}</span>
+								</div>
+								<div>
+									<span class="text-green-700 font-medium">Real-time Updates:</span>
+									<span class="text-green-600 ml-2">{data.searchStats.real_time_updates ? 'Active' : 'Inactive'}</span>
+								</div>
+								<div>
+									<span class="text-green-700 font-medium">Last Updated:</span>
+									<span class="text-green-600 ml-2">{new Date(data.searchStats.last_updated).toLocaleString()}</span>
+								</div>
+								<div>
+									<span class="text-green-700 font-medium">Active Connections:</span>
+									<span class="text-green-600 ml-2">{data.searchStats.active_connections}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				{/if}
+			{/snippet}
+		</FlowExplorer>
 
-      <!-- Real-Time Status -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
-            <Activity class="w-4 h-4" />
-            System Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between">
-              <span>Connection Status:</span>
-              <Badge variant={$state.connectionStatus === 'connected' ? 'default' : 'secondary'}>
-                {$state.connectionStatus}
-              </Badge>
-            </div>
-
-            <div class="flex justify-between">
-              <span>Search Status:</span>
-              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$searchStatus}</span>
-            </div>
-
-            <div class="flex justify-between">
-              <span>Active Results:</span>
-              <span class="font-medium">{$state.results.length}</span>
-            </div>
-
-            {#if $state.searchMetrics.totalQueries > 0}
-              <div class="flex justify-between">
-                <span>Total Queries:</span>
-                <span class="font-medium">{$state.searchMetrics.totalQueries}</span>
-              </div>
-
-              <div class="flex justify-between">
-                <span>Avg Response Time:</span>
-                <span class="font-medium">{$state.searchMetrics.averageResponseTime}ms</span>
-              </div>
-            {/if}
-          </div>
-        </CardContent>
-      </Card>
-
-      <!-- Search Features -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
-            <Zap class="w-4 h-4" />
-            Features Active
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="space-y-2 text-sm">
-            <div class="flex items-center justify-between">
-              <span>Real-time Streaming</span>
-              <div class="w-2 h-2 rounded-full bg-green-400"></div>
-            </div>
-
-            <div class="flex items-center justify-between">
-              <span>Vector Similarity</span>
-              <div class="w-2 h-2 rounded-full bg-blue-400"></div>
-            </div>
-
-            <div class="flex items-center justify-between">
-              <span>AI Enhancement</span>
-              <div class="w-2 h-2 rounded-full bg-purple-400"></div>
-            </div>
-
-            <div class="flex items-center justify-between">
-              <span>WebSocket Connection</span>
-              <div class="w-2 h-2 rounded-full {$state.connectionStatus === 'connected' ? 'bg-green-400' : 'bg-gray-400'}"></div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <!-- API Endpoints -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
-            <MessageSquare class="w-4 h-4" />
-            API Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="space-y-2 text-xs">
-            <div class="flex justify-between items-center">
-              <span>Enhanced RAG (8094)</span>
-              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Active</span>
-            </div>
-
-            <div class="flex justify-between items-center">
-              <span>Upload Service (8093)</span>
-              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Active</span>
-            </div>
-
-            <div class="flex justify-between items-center">
-              <span>WebSocket Stream</span>
-              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$state.connectionStatus === 'connected' ? 'Connected' : 'Pending'}</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  </div>
-
-  <!-- Technical Information -->
-  <div class="mt-12">
-    <Tabs value="overview" class="w-full">
-      <TabsList class="grid w-full grid-cols-4">
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="architecture">Architecture</TabsTrigger>
-        <TabsTrigger value="features">Features</TabsTrigger>
-        <TabsTrigger value="performance">Performance</TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="overview" class="mt-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Real-Time Legal Search Overview</CardTitle>
-            <CardDescription>
-              Advanced legal research platform with streaming results and AI enhancement
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="prose prose-sm max-w-none">
-            <p>
-              This demonstration showcases a production-ready real-time legal search system built with:
-            </p>
-            <ul>
-              <li><strong>Svelte 5</strong> with enhanced reactivity and performance</li>
-              <li><strong>SvelteKit 2</strong> for full-stack application architecture</li>
-              <li><strong>bits-ui v2</strong> for accessible, composable UI components</li>
-              <li><strong>WebSocket streaming</strong> for real-time result delivery</li>
-              <li><strong>Vector similarity search</strong> using enhanced embeddings</li>
-              <li><strong>AI-powered enhancement</strong> with semantic analysis</li>
-            </ul>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent value="architecture" class="mt-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>System Architecture</CardTitle>
-          </CardHeader>
-          <CardContent class="prose prose-sm max-w-none">
-            <h3>Service Integration</h3>
-            <ul>
-              <li><strong>Enhanced RAG Service (8094):</strong> AI processing and vector search</li>
-              <li><strong>Upload Service (8093):</strong> Document processing and metadata</li>
-              <li><strong>WebSocket Streaming:</strong> Real-time result delivery</li>
-              <li><strong>NATS Messaging:</strong> Distributed event system (planned)</li>
-            </ul>
-
-            <h3>Data Flow</h3>
-            <ol>
-              <li>User types query in search interface</li>
-              <li>Debounced search triggers WebSocket message</li>
-              <li>Enhanced RAG service processes query with vector similarity</li>
-              <li>Results stream back in real-time chunks</li>
-              <li>AI enhancement adds semantic analysis to top results</li>
-              <li>UI updates reactively with Svelte 5 stores</li>
-            </ol>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent value="features" class="mt-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Advanced Features</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 class="font-semibold mb-3">Real-Time Features</h4>
-                <ul class="space-y-2 text-sm">
-                  <li class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-green-400"></div>
-                    WebSocket streaming results
-                  </li>
-                  <li class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-blue-400"></div>
-                    Live search suggestions
-                  </li>
-                  <li class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-purple-400"></div>
-                    Progressive result enhancement
-                  </li>
-                  <li class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-yellow-400"></div>
-                    Connection status monitoring
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h4 class="font-semibold mb-3">AI Enhancement</h4>
-                <ul class="space-y-2 text-sm">
-                  <li class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-indigo-400"></div>
-                    Vector similarity scoring
-                  </li>
-                  <li class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-pink-400"></div>
-                    Semantic result analysis
-                  </li>
-                  <li class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-teal-400"></div>
-                    Legal concept extraction
-                  </li>
-                  <li class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-orange-400"></div>
-                    Context-aware suggestions
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent value="performance" class="mt-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Performance Metrics</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div class="text-center p-4 bg-gray-50 rounded-lg">
-                <div class="text-2xl font-bold text-blue-600">
-                  {$state.searchMetrics.totalQueries || 0}
-                </div>
-                <div class="text-sm text-gray-600">Total Queries</div>
-              </div>
-
-              <div class="text-center p-4 bg-gray-50 rounded-lg">
-                <div class="text-2xl font-bold text-green-600">
-                  {$state.searchMetrics.averageResponseTime || 0}ms
-                </div>
-                <div class="text-sm text-gray-600">Avg Response</div>
-              </div>
-
-              <div class="text-center p-4 bg-gray-50 rounded-lg">
-                <div class="text-2xl font-bold text-purple-600">
-                  {$state.results.length}
-                </div>
-                <div class="text-sm text-gray-600">Live Results</div>
-              </div>
-
-              <div class="text-center p-4 bg-gray-50 rounded-lg">
-                <div class="text-2xl font-bold text-orange-600">
-                  {$state.connectionStatus === 'connected' ? '100%' : '0%'}
-                </div>
-                <div class="text-sm text-gray-600">Uptime</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </TabsContent>
-    </Tabs>
-  </div>
+		<PerformancePulse>
+			{#snippet metrics()}
+				<div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+					<div class="bg-white p-4 rounded-lg border border-gray-200 text-center">
+						<div class="text-2xl font-bold text-blue-600">{formatNumber(data.searchStats.total_indexed)}</div>
+						<div class="text-sm text-gray-600">Total Docs</div>
+					</div>
+					<div class="bg-white p-4 rounded-lg border border-gray-200 text-center">
+						<div class="text-2xl font-bold {searchPerformanceColor}">{data.searchStats.search_performance.avg_response_time}ms</div>
+						<div class="text-sm text-gray-600">Response Time</div>
+					</div>
+					<div class="bg-white p-4 rounded-lg border border-gray-200 text-center">
+						<div class="text-2xl font-bold text-green-600">{data.searchStats.search_performance.queries_per_second}</div>
+						<div class="text-sm text-gray-600">QPS</div>
+					</div>
+					<div class="bg-white p-4 rounded-lg border border-gray-200 text-center">
+						<div class="text-2xl font-bold {cacheHitRateColor}">{formatPercentage(data.searchStats.search_performance.cache_hit_rate)}</div>
+						<div class="text-sm text-gray-600">Cache Hit</div>
+					</div>
+					<div class="bg-white p-4 rounded-lg border border-gray-200 text-center">
+						<div class="text-2xl font-bold text-purple-600">{data.searchStats.active_connections}</div>
+						<div class="text-sm text-gray-600">Connections</div>
+					</div>
+				</div>
+			{/snippet}
+		</PerformancePulse>
+	</OrchestrationCenter>
 </div>
-
-<style>
-  :global(.prose ul li) {
-    @apply mb-1;
-  }
-
-  :global(.prose ol li) {
-    @apply mb-1;
-  }
-</style>

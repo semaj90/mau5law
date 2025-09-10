@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from "$lib/components/ui/button";
   import { createDialog, melt } from "@melt-ui/svelte";
   import { createEventDispatcher } from "svelte";
@@ -39,8 +40,8 @@
 
   // This reactive statement ensures that if the parent changes
   // the 'open' prop, our internal store is updated.
-  $: if ($openStore !== open) {
-    $openStore = open;
+  // TODO: Convert to $derived: if ($openStore !== open) {
+    $openStore = open
   }
 </script>
 

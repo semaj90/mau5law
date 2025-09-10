@@ -6,6 +6,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { db, chatHistory, graphNodes } from '../db/dexie-integration';
   import { integratedSearch } from '../storage/integrated-search-engine';

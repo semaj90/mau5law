@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onDestroy, onMount } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fly } from "svelte/transition";

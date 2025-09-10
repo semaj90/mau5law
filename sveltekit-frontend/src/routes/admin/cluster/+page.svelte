@@ -2,6 +2,7 @@
 <!-- Real-time monitoring and control for Node.js cluster architecture -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     Button
@@ -51,11 +52,11 @@ let updateInterval = $state<NodeJS.Timeout | null>(null);
 let eventSource = $state<EventSource | null>(null);
 
   onMount(() => {
-    initializeClusterMonitoring());
+    initializeClusterMonitoring();
   });
 
-  onDestroy(() >(> {
-    if (updateInterval) clearInterval(updateInterval));
+  onDestroy(() => {
+    if (updateInterval) clearInterval(updateInterval);
     if (eventSource) eventSource.close();
   });
 
@@ -67,7 +68,7 @@ let eventSource = $state<EventSource | null>(null);
       // Setup real-time updates via Server-Sent Events
       eventSource = new EventSource('/api/admin/cluster/events');
 
-      eventSource.on:open=() => {
+      eventSource.onopen=() => {
         isConnected = true;
         console.log('🔗 Connected to cluster monitoring');
       };

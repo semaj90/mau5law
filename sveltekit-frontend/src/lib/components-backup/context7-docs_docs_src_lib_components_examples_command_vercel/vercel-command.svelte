@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Command } from "bits-ui";
 	import Home from "./home.svelte";
 	import Projects from "./projects.svelte";

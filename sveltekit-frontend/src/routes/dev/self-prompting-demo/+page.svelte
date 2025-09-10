@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import SelfPromptingDemo from '$lib/components/dev/SelfPromptingDemo.svelte';
 </script>
 

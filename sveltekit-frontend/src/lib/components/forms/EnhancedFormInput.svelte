@@ -3,6 +3,7 @@
   Demonstrates the validation utilities in practice
 -->
 <script lang="ts">
+</script>
   import {
     FormValidator,
     type FormFieldConfig,
@@ -135,8 +136,8 @@ let showPassword = $state<boolean >(false);
   export { focusInput as focus };
 
   // Reactive validation
-  $: if (value !== undefined) {
-    validateField();
+  // TODO: Convert to $derived: if (value !== undefined) {
+    validateField()
 }
 </script>
 

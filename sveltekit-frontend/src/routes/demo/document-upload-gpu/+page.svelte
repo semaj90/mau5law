@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
 
   let pipelineStatus = $state<any>(null);
@@ -60,11 +61,11 @@
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('enable_gpu', String(enableGpu));
-      formData.append('use_tensor_cores', String(useTensorCores));
+      formData.append('enable_gpu', String(enableGpu);
+      formData.append('use_tensor_cores', String(useTensorCores);
       formData.append('quantization', quantization);
-      formData.append('negative_latent_space', String(negativeLatentSpace));
-      formData.append('extract_embeddings', String(extractEmbeddings));
+      formData.append('negative_latent_space', String(negativeLatentSpace);
+      formData.append('extract_embeddings', String(extractEmbeddings);
       formData.append('processing_priority', processingPriority);
 
       const response = await fetch('/api/upload/gpu-process', {
@@ -91,7 +92,7 @@
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>

@@ -1,5 +1,6 @@
 <!-- WebGPU Embedding Visualization - 3D Vector Space with Real-time Updates -->
 <script lang="ts">
+</script>
 import { onMount, onDestroy } from 'svelte';
 import { Play, Pause, RotateCw, ZoomIn, ZoomOut, Layers } from 'lucide-svelte';
 

@@ -1,5 +1,6 @@
 <!-- Production-level AI Dropdown using Melt UI with keyboard shortcuts -->
 <script lang="ts">
+</script>
   interface Props { disabled?: any;
     onReportGenerate: (reportType: string) => void;,
     onSummarize: () ;,

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Combobox, type WithoutChildrenOrChild, mergeProps } from "bits-ui";
 	import ChevronUpDown from "phosphor-svelte/lib/CaretUpDown";
 	type Item = { value: string; label: string };

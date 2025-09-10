@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface TableColumn {
     key: string
     title: string

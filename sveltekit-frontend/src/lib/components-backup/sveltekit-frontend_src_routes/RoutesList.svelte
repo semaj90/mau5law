@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // In a real project, automate this with a Vite plugin or a build script for dynamic route discovery.
   // For now, keep this static or import from a generated file.
   interface Props { routes?: { path: string; label:, string  }[];

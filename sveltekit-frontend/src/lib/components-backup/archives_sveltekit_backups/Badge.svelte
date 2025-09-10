@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   export let variant: 'default' | 'secondary' | 'destructive' | 'outline' = 'default';
   export let size: 'default' | 'sm' | 'lg' = 'default';
   

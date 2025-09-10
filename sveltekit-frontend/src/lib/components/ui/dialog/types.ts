@@ -1,12 +1,12 @@
-import type {     ComponentProps, Snippet     } from 'svelte';
-import type { Dialog } from 'bits-ui';
+import type { ComponentProps, Snippet } from 'svelte';
+import { Dialog } from 'bits-ui';
 
-export interface DialogProps extends ComponentProps<typeof Dialog.Root> {
+export interface DialogProps extends ComponentProps<Dialog.Root> {
   children?: Snippet;
   class?: string;
 }
 
-export interface DialogContentProps extends ComponentProps<typeof Dialog.Content> {
+export interface DialogContentProps extends ComponentProps<Dialog.Content> {
   children?: Snippet;
   class?: string;
 }
@@ -16,12 +16,12 @@ export interface DialogHeaderProps {
   class?: string;
 }
 
-export interface DialogTitleProps extends ComponentProps<typeof Dialog.Title> {
+export interface DialogTitleProps extends ComponentProps<Dialog.Title> {
   children?: Snippet;
   class?: string;
 }
 
-export interface DialogDescriptionProps extends ComponentProps<typeof Dialog.Description> {
+export interface DialogDescriptionProps extends ComponentProps<Dialog.Description> {
   children?: Snippet;
   class?: string;
 }

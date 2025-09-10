@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { melt } from "@melt-ui/svelte";
   import { getContext } from "svelte";
   import { fly } from "svelte/transition";

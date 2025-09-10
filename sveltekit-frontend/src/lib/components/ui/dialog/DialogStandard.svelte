@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Dialog } from "bits-ui";
   import { X } from "lucide-svelte";
   import { fade, fly } from "svelte/transition";

@@ -1,5 +1,6 @@
 <!-- AI Integration Demo - Complete System Showcase -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { prefetchMachine } from '$lib/machines/prefetchMachine';
@@ -182,7 +183,7 @@
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Generated embedding:', data.embedding?.slice(0, 5));
+        console.log('Generated embedding:', data.embedding?.slice(0, 5);
         performanceMetrics.embeddingsGenerated++;
 
         // Cache hit simulation

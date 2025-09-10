@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+</script>
 	import { onMount, onDestroy } from 'svelte';
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -153,10 +154,9 @@
 			sizes.push(doc.projected_3d.confidence * 0.1 + 0.05);
 		});
 		
-		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-		geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
-		
+		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3);
+		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3);
+		geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1);
 		// Custom shader material for better point rendering
 		const material = new THREE.ShaderMaterial({
 			uniforms: {
@@ -293,9 +293,8 @@
 			colors.push(1, 1, 0); // Yellow highlight
 		});
 		
-		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-		
+		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3);
+		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3);
 		const material = new THREE.PointsMaterial({
 			size: 0.2,
 			vertexColors: true,

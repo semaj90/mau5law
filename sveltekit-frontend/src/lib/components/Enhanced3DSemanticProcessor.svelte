@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
   import {

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import type { AIResponse } from '$lib/types/ai';
 	

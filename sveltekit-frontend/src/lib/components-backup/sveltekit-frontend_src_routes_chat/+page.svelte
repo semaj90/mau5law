@@ -1,5 +1,6 @@
 <!-- Enhanced Chat Test Page -->
 <script lang="ts">
+</script>
 	import EnhancedChat from '$lib/components/EnhancedChat.svelte';
 	import { onMount } from 'svelte';
 

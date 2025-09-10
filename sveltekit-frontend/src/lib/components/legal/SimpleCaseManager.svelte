@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { legalPlatformClient, type CaseData, type ApiResponse } from '$lib/services/legal-platform-client';
@@ -213,7 +214,7 @@ let searchTimeout = $state<NodeJS.Timeout;
   }
 
   // Reactive search
-  $: $searchQuery, handleSearch();
+  // TODO: Convert to $derived: $searchQuery, handleSearch()
 </script>
 
 <!-- Main Container -->

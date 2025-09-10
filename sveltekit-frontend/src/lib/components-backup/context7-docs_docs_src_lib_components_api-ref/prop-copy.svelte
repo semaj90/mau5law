@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Popover } from "bits-ui";
 	import Code from "$lib/components/markdown/code.svelte";
 

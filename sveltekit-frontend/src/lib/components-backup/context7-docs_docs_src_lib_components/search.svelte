@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import MagnifyingGlass from "phosphor-svelte/lib/MagnifyingGlass";
 	import { onMount } from "svelte";
 	import { Button, Command, Dialog } from "bits-ui";

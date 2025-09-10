@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import { avatarStore } from "../stores/avatarStore";
 	import Avatar from './Avatar.svelte';

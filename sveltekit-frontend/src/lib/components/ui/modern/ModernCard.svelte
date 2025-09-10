@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Card } from "bits-ui";
   // Tooltip functionality removed for now - can be re-added with bits-ui Tooltip
 

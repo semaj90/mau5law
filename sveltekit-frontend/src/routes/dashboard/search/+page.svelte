@@ -1,22 +1,26 @@
 <!--
-  Vector Search - SvelteKit 2 + pgvector + AI-powered semantic search
-  Advanced legal document search with similarity matching
+  Unified Vector Search - Legal AI Dashboard
+  Enhanced-Bits orchestrated components with Svelte 5 runes
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   
-  // Modern UI Components  
-  import * as Card from '$lib/components/ui/card';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';;
-  import { Badge } from '$lib/components/ui/badge';
+  // Enhanced-Bits orchestrated components
+  import { 
+    Button, 
+    Card, 
+    Input,
+    Badge
+  } from '$lib/components/ui/enhanced-bits';
+  import { 
+    OrchestratedCard,
+    OrchestratedButton,
+    type VectorSearchResult as SearchResult,
+    getConfidenceClass
+  } from '$lib/components/ui/orchestrated';
   import * as Tabs from '$lib/components/ui/tabs';
-  import { Progress } from '$lib/components/ui/progress';
   
   // Icons
   import { 
@@ -26,7 +30,7 @@
     BookOpen, Scale, AlertCircle, CheckCircle
   } from 'lucide-svelte';
   
-  // Types for search results
+  // Enhanced types using orchestrated components
   interface VectorSearchResult {
     id: string;
     document_id: string;
@@ -57,7 +61,7 @@
     suggestions?: string[];
   }
   
-  // State
+  // Svelte 5 runes for reactive state
   let query = $state('');
   let loading = $state(false);
   let results = $state<VectorSearchResult[]>([]);
@@ -65,7 +69,7 @@
   let suggestions = $state<string[]>([]);
   let error = $state<string | null>(null);
   let searchMode = $state<'semantic' | 'keyword' | 'hybrid'>('semantic');
-  let selectedTypes = $state<Set<string>>(new Set());
+  let selectedTypes = $state<Set<string>>(new Set();
   let similarityThreshold = $state(0.7);
   
   // Search suggestions for different legal domains
@@ -220,8 +224,8 @@
     </div>
   </div>
   
-  <!-- Search Interface -->
-  <Card.Root>
+  <!-- Search Interface - Enhanced-Bits orchestrated -->
+  <OrchestratedCard.Analysis>
     <Card.Content class="p-6">
       <div class="space-y-4">
         <!-- Search Input -->
@@ -234,10 +238,10 @@
             class="pl-12 pr-4 py-3 text-lg border-2 border-nier-border-muted focus:border-nier-accent-warm"
             disabled={loading}
           />
-          <Button 
+          <OrchestratedButton.SearchSimilar
             onclick={performSearch}
             disabled={loading || !query.trim()}
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2 bits-btn"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2"
           >
             {#if loading}
               <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
@@ -246,7 +250,7 @@
               <Zap class="w-4 h-4" />
               Search
             {/if}
-          </Button>
+          </OrchestratedButton.SearchSimilar>
         </div>
         
         <!-- Search Mode Tabs -->
@@ -301,12 +305,12 @@
           </div>
         </div>
       </div>
-    </Card.Content>
-  </Card.Root>
+    </CardContent>
+  </OrchestratedCard.Analysis>
   
   <!-- Search Results -->
   {#if searchInfo}
-    <Card.Root>
+    <OrchestratedCard.Evidence>
       <Card.Header>
         <div class="flex items-center justify-between">
           <Card.Title class="flex items-center gap-2">
@@ -423,8 +427,8 @@
             </div>
           {/each}
         {/if}
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </OrchestratedCard.Evidence>
   {/if}
   
   <!-- Search Suggestions -->
@@ -454,8 +458,8 @@
           </button>
         {/each}
       </div>
-    </Card.Content>
-  </Card.Root>
+    </CardContent>
+  </Card>
   
   <!-- Performance Metrics -->
   {#if searchInfo}
@@ -485,7 +489,7 @@
             <div class="font-medium capitalize">{searchMode}</div>
           </div>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </Card>
   {/if}
 </div>

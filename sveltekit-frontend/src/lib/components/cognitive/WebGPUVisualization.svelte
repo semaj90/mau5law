@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { useWebGPUCapability } from '$lib/services/webgpu-capability-service';
   

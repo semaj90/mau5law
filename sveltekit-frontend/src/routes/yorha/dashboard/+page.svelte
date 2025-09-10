@@ -1,5 +1,6 @@
 <!-- YoRHa System Dashboard -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
@@ -33,8 +34,7 @@
   });
 
   let isLoading = $state(!data.initialLoad);
-  let lastUpdate = $state(new Date(data.timestamp));
-
+  let lastUpdate = $state(new Date(data.timestamp);
   // Data update intervals
 let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null);
 let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
@@ -124,7 +124,7 @@ let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
   function generateHistoryData(baseValue: number, points = 30): number[] {
     return Array.from({ length: points }, (_, i) => {
       const variation = (Math.random() - 0.5) * 20;
-      return Math.max(0, Math.min(100, baseValue + variation));
+      return Math.max(0, Math.min(100, baseValue + variation);
     });
   }
 
@@ -281,8 +281,7 @@ let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
           <div class="yorha-metric-header">
             <Database size={24} />
             <h3>DATABASE</h3>
-            <svelte:component this={getStatusIcon(systemMetrics.database.connected ? 'healthy' : 'error')}
-                             size={20}
+            <{getStatusIcon(systemMetrics.database.connected ? 'healthy' : 'error')} size={20}
                              class={getStatusColor(systemMetrics.database.connected ? 'healthy' : 'error')} />
           </div>
           <div class="yorha-metric-stats">
@@ -306,8 +305,7 @@ let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
           <div class="yorha-metric-header">
             <Cpu size={24} />
             <h3>BACKEND</h3>
-            <svelte:component this={getStatusIcon(systemMetrics.backend.healthy ? 'healthy' : 'error')}
-                             size={20}
+            <{getStatusIcon(systemMetrics.backend.healthy ? 'healthy' : 'error')} size={20}
                              class={getStatusColor(systemMetrics.backend.healthy ? 'healthy' : 'error')} />
           </div>
           <div class="yorha-metric-stats">
@@ -331,8 +329,7 @@ let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
           <div class="yorha-metric-header">
             <Monitor size={24} />
             <h3>FRONTEND</h3>
-            <svelte:component this={getStatusIcon('healthy')}
-                             size={20}
+            <{getStatusIcon('healthy')} size={20}
                              class={getStatusColor('healthy')} />
           </div>
           <div class="yorha-metric-stats">
@@ -356,8 +353,7 @@ let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
           <div class="yorha-metric-header">
             <Zap size={24} />
             <h3>HEALTH</h3>
-            <svelte:component this={getStatusIcon('healthy')}
-                             size={20}
+            <{getStatusIcon('healthy')} size={20}
                              class={getStatusColor('healthy')} />
           </div>
           <div class="yorha-metric-stats">

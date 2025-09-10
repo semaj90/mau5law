@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { page } from '$app/state';
   import { BookOpen, Plus, Search, Tag } from 'lucide-svelte';
   import { onMount } from 'svelte';

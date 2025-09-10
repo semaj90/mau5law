@@ -1,5 +1,6 @@
 
 <script lang="ts">
+</script>
   import { page } from '$app/stores';
   import { dev } from '$app/environment';
   

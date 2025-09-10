@@ -2,6 +2,7 @@
   Simple Case Creation Test Page - Testing bits-ui buttons and database integration
 -->
 <script lang="ts">
+</script>
   import { Button } from '$lib/components/ui/enhanced-bits';
   import {
     Input
@@ -188,8 +189,8 @@ let formData = $state({
           </Button>
         </div>
       </form>
-    </Card.Content>
-  </Card.Root>
+    </CardContent>
+  </Card>
 
   <!-- API Test Info -->
   <div class="mt-8 p-6 bg-muted/30 rounded-lg border">

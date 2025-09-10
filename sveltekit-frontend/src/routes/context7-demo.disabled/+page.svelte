@@ -2,6 +2,7 @@
 // Demonstrates production Context7 MCP workflow with Copilot orchestration
 
 <script lang="ts">
+</script>
   import { writable } from 'svelte/store';
   import { copilotOrchestrator } from '$lib/utils/mcp-helpers';
   import { resolveLibraryId, getLibraryDocs, semanticSearch } from '$lib/ai/mcp-helpers';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Simple Case Filters Component - TODO: Enhance with full functionality
   // 
   // 🚀 ENHANCEMENT ROADMAP (See: /ENHANCED_FEATURES_TODO.md)
@@ -37,7 +38,7 @@
   export let sortBy: string = 'createdAt';
   export let sortOrder: 'asc' | 'desc' = 'desc';
   
-  $: {
+  // TODO: Convert to $derived: {
     // TODO: IMPLEMENT ADVANCED FILTERING LOGIC
     // =======================================
     // 1. Debounced search with fuzzy matching
@@ -52,7 +53,7 @@
     //   keys: ['title', 'description', 'tags', 'assignee.name'],
     //   threshold: 0.3,
     //   includeScore: true
-    // });
+    // })
     
     // Simple filtering logic (STUB)
     filteredCases = cases.filter(c => {

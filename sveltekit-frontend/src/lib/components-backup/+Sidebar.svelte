@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Sidebar navigation logic will go here
   // For now, a simple list of items
   const navItems = [

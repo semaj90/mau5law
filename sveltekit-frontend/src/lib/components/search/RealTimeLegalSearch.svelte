@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { derived } from 'svelte/store';
   import { debounce } from 'lodash-es';

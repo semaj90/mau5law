@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { afterUpdate, createEventDispatcher, onMount, tick } from "svelte";
   import { elasticOut, quintOut } from "svelte/easing";
   import { writable } from "svelte/store";

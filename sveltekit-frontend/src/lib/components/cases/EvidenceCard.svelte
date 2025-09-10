@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     onedit?: (event?: any) => void;
     ondelete?: (event?: any) => void;

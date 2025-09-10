@@ -3,6 +3,7 @@
   Quick test to verify editor functionality
 -->
 <script lang="ts">
+</script>
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   
   let editorValue = $state('');

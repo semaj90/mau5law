@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { integratedCacheSystem, type SearchContext } from '$lib/services/integrated-webgpu-cache-system';
   import CachePerformanceMonitor from '$lib/components/dashboard/CachePerformanceMonitor.svelte';
@@ -311,12 +312,12 @@
   }
 
   // Reactive statements
-  $: healthColor = systemMetrics.systemHealth === 'excellent' ? '#28a745' :
+  // TODO: Convert to $derived: healthColor = systemMetrics.systemHealth === 'excellent' ? '#28a745' :
                   systemMetrics.systemHealth === 'good' ? '#ffc107' :
-                  systemMetrics.systemHealth === 'fair' ? '#fd7e14' : '#dc3545';
+                  systemMetrics.systemHealth === 'fair' ? '#fd7e14' : '#dc3545'
 
-  $: webgpuUtilizationColor = (systemMetrics.webgpuUtilization || 0) > 0.8 ? '#dc3545' :
-                             (systemMetrics.webgpuUtilization || 0) > 0.6 ? '#ffc107' : '#28a745';
+  // TODO: Convert to $derived: webgpuUtilizationColor = (systemMetrics.webgpuUtilization || 0) > 0.8 ? '#dc3545' :
+                             (systemMetrics.webgpuUtilization || 0) > 0.6 ? '#ffc107' : '#28a745'
 </script>
 
 <div class="webgpu-demo-container">

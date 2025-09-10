@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from "$lib/components/ui/button";
   import { Textarea } from "$lib/components/ui/textarea/index";
   import {
@@ -359,8 +360,8 @@
   });
 
   // Reactive scroll to bottom when new messages arrive
-  $: if ($currentConversation?.messages) {
-    tick().then(scrollToBottom);
+  // TODO: Convert to $derived: if ($currentConversation?.messages) {
+    tick().then(scrollToBottom)
   }
 </script>
 

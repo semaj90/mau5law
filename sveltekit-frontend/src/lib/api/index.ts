@@ -25,7 +25,7 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   };
 }
 
-export interface LegalDocument {
+export interface ApiLegalDocument {
   id: string;
   caseId: string;
   title: string;
@@ -114,7 +114,7 @@ export interface RegisterData extends LoginCredentials {
 
 export interface DocumentUploadOptions {
   caseId: string;
-  documentType: LegalDocument["documentType"];
+  documentType: ApiLegalDocument["documentType"];
   title?: string;
   jurisdiction?: string;
   metadata?: Record<string, any>;
@@ -161,7 +161,7 @@ export interface VectorSearchResult {
   score: number;
   payload?: Record<string, any>;
   vector?: number[];
-  document?: Partial<LegalDocument>;
+  document?: Partial<ApiLegalDocument>;
 }
 
 export interface EmbeddingRequest {
@@ -221,7 +221,7 @@ export interface LegalCase {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
-  documents: LegalDocument[];
+  documents: ApiLegalDocument[];
   evidence: Evidence[];
   notes: CaseNote[];
   timeline: CaseTimelineEntry[];

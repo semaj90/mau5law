@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
 
 		import type { HTMLInputAttributes } from 'svelte/elements';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     open?: any;
   }
@@ -178,7 +179,7 @@
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
       <div 
         class="bg-nier-surface border border-nier-gray rounded-lg shadow-2xl nier-border-glow"
-        onclick|stopPropagation
+        onclick
         role="dialog"
         tabindex="0"
       >

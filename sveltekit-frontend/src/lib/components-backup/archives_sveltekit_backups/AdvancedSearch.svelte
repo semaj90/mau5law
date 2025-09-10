@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createCombobox, melt } from '@melt-ui/svelte';
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
@@ -48,14 +49,14 @@
   });
   
   // Initialize Fuse when items change
-  $: if (items.length > 0) {
-    fuse = new Fuse(items, fuseOptions);
+  // TODO: Convert to $derived: if (items.length > 0) {
+    fuse = new Fuse(items, fuseOptions)
     allTags = [...new Set(items.flatMap(item => item.tags || []))];
   }
   
   // Perform search when input changes
-  $: if (fuse && searchValue) {
-    const fuseResults = fuse.search(searchValue);
+  // TODO: Convert to $derived: if (fuse && searchValue) {
+    const fuseResults = fuse.search(searchValue)
     searchResults = fuseResults
       .map(result => result.item)
       .slice(0, maxResults);
@@ -64,10 +65,10 @@
   }
   
   // Apply filters
-  $: filteredResults = searchResults.filter(item => {
+  // TODO: Convert to $derived: filteredResults = searchResults.filter(item => {
     // Type filter
     if (selectedTypes.length > 0 && !selectedTypes.includes(item.type)) {
-      return false;
+      return false
     }
     
     // Tag filter
@@ -89,10 +90,10 @@
   });
   
   // Update results when filters change
-  $: onResults(filteredResults);
+  // TODO: Convert to $derived: onResults(filteredResults)
   
   // Sync input value
-  $: searchValue = $inputValue;
+  // TODO: Convert to $derived: searchValue = $inputValue
   
   // Handle item selection
   const handleSelect = (item: Evidence) => {

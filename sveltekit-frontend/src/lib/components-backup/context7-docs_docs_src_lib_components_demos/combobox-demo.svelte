@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Combobox } from "bits-ui";
 	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
 	import Check from "phosphor-svelte/lib/Check";

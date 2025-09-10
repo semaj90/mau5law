@@ -1,5 +1,6 @@
 <!-- Loading Spinner Component -->
 <script lang="ts">
+</script>
   interface Props {
     size: 'sm' | 'md' | 'lg' | 'xl' ;
     color: 'blue' | 'green' | 'red' | 'yellow' | 'gray' | 'white' ;

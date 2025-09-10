@@ -1,5 +1,6 @@
 <!-- Simple Working Chat Component for CUDA AI Backend -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import {
     Button

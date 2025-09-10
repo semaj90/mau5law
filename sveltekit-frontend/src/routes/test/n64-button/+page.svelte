@@ -3,6 +3,7 @@
   Verifies functionality and styling of the gaming UI component
 -->
 <script lang="ts">
+</script>
   import N643DButton from '$lib/components/ui/gaming/n64/N643DButton.svelte';
   import { onMount } from 'svelte';
 
@@ -281,7 +282,7 @@
 
   .button-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr);
     gap: 2rem;
     margin-bottom: 2rem;
   }

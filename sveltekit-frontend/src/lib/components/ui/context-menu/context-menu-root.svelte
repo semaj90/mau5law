@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     onOpenChange?: (open: boolean) => void;
     children: any;

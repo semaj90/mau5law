@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import UploadArea from './UploadArea.svelte';
 
   let uploadComponent: UploadArea

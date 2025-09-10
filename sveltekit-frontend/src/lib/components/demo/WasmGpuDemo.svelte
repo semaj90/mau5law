@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { createWasmGpuService, WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
   import { WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader.js';

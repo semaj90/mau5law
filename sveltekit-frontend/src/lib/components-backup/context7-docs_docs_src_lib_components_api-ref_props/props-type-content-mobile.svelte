@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Popover, Separator } from "bits-ui";
 	import ScrollArea from "$lib/components/scroll-area.svelte";
 	import type { PropSchema } from "$lib/types/index.js";

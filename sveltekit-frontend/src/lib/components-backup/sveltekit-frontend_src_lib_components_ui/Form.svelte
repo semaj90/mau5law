@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from "$lib/components/ui/button";
   import { createFormStore, type FormOptions } from '$lib/stores/form';
   import { notifications } from '$lib/stores/notification';

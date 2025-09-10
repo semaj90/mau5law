@@ -346,7 +346,8 @@
     "imports:validate": "npm run check:ultra-fast && echo '✅ Imports validation complete'",
     "imports:quick-fix": "npm run imports:resolve-all && npm run check:ultra-fast",
     "build-storybook": "storybook build",
-    "check:editor": "node ./scripts/run-svelte-check-editor.mjs"
+    "check:editor": "node ./scripts/run-svelte-check-editor.mjs",
+    "routes:export": "node scripts/export-routes-map.mjs"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.1",

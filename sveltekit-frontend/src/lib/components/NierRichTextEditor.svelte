@@ -2,6 +2,7 @@
 https://svelte.dev/e/component_invalid_directive -->
 <!-- NieR: Automata Themed Rich Text Editor using bits-ui -->
 <script lang="ts">
+</script>
   interface Props {
     content?: unknown;
     placeholder?: unknown;

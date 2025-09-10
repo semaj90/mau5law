@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // @ts-nocheck
   import { Button } from 'bits-ui';
   import { Card } from 'bits-ui';

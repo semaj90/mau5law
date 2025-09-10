@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import GamingLayout from '$lib/components/gaming/GamingLayout.svelte';
   import GamingPanel from '$lib/components/gaming/GamingPanel.svelte';
 	import GamingButton from '$lib/components/gaming/GamingButton.svelte';
@@ -277,7 +278,7 @@
 	/* Control Grid */
 	.control-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(400px, 1fr);
 		gap: 24px;
 		margin-bottom: 32px;
 	}

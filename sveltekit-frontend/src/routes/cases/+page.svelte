@@ -5,12 +5,8 @@
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
+  import Input from '$lib/components/ui/enhanced-bits';
   import { Label } from '$lib/components/ui/label/index.js';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
   import * as Select from '$lib/components/ui/select/index.js';
@@ -31,6 +27,10 @@
   import { cn } from '$lib/utils.js';
   import type { PageData, ActionData } from './$types.js';
   import { get } from 'svelte/store';
+  import HeadlessDialog from '$lib/headless/HeadlessDialog.svelte';
+  // Headless primitives
+  import LoadingButton from '$lib/headless/LoadingButton.svelte';
+  import FormField from '$lib/headless/FormField.svelte';
 
   // Feedback Integration
   import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
@@ -54,7 +54,7 @@
     tags: z.string().optional()
   });
 
-  // Props from load function  
+  // Props from load function
   let { data }: { data: PageData } = $props();
   let form: ActionData | null = null;
 
@@ -62,12 +62,11 @@
   const createCaseForm = superForm(data.createCaseForm, {
     validators: zodClient(createCaseSchema),
     onUpdated: ({ form }) => {
+      isCreatingCase = false;
       if (form.valid) {
         toast.success('Case created successfully');
         createCaseDialogOpen = false;
         invalidateAll();
-
-        // Track successful case creation for feedback
         if (caseCreationFeedback) {
           caseCreationFeedback.markCompleted({
             success: true,
@@ -79,9 +78,8 @@
       }
     },
     onError: ({ result }) => {
+      isCreatingCase = false;
       toast.error(result.error.message || 'Failed to create case');
-
-      // Track failed case creation for feedback
       if (caseCreationFeedback) {
         caseCreationFeedback.markFailed({
           errorType: 'case_creation_error',
@@ -94,13 +92,20 @@
   const addEvidenceForm = superForm(data.addEvidenceForm, {
     validators: zodClient(addEvidenceSchema),
     onUpdated: ({ form }) => {
+      isAddingEvidence = false;
       if (form.valid) {
         toast.success('Evidence added successfully');
         addEvidenceDialogOpen = false;
+        optimisticEvidence = [];
         invalidateAll();
       }
     },
     onError: ({ result }) => {
+      isAddingEvidence = false;
+      // Remove optimistic placeholders
+      if (optimisticEvidence.length) {
+        optimisticEvidence = optimisticEvidence.filter(e => !e.__optimistic);
+      }
       toast.error(result.error.message || 'Failed to add evidence');
     }
   });
@@ -116,6 +121,35 @@
   let addEvidenceDialogOpen = $state(false);
   let deleteEvidenceDialogOpen = $state(false);
   let evidenceToDelete: any = $state(null);
+  // Loading flags
+  let isCreatingCase = $state(false);
+  let isAddingEvidence = $state(false);
+  // Optimistic evidence list
+  let optimisticEvidence: any[] = $state([]);
+  // Focus management
+  let lastDialogTrigger: HTMLElement | null = null; // still used for legacy alert dialog
+
+  function handleCreateCaseSubmit() {
+    isCreatingCase = true;
+  }
+  function handleEvidenceSubmit() {
+    isAddingEvidence = true;
+    const current = get(evidenceFormData) as any;
+    if (current?.title?.trim()) {
+      optimisticEvidence = [
+        ...optimisticEvidence,
+        {
+          id: `temp-${Date.now()}`,
+          title: current.title,
+          description: current.description,
+          collectedAt: new Date().toISOString(),
+          evidenceType: current.evidenceType,
+          tags: current.tags,
+          __optimistic: true
+        }
+      ];
+    }
+  }
 
   // Search and filter state (Svelte 5 runes)
   let searchQuery = $state('');
@@ -336,7 +370,7 @@
           Manage cases with AI-powered search and PostgreSQL vector storage
         </p>
       </div>
-  <Button class="bits-btn gap-2" onclick={() => createCaseDialogOpen = true}>
+  <Button class="bits-btn gap-2" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; createCaseDialogOpen = true; }}>
         <Plus class="h-4 w-4" />
         New Case
       </Button>
@@ -451,7 +485,7 @@
             ← Back to Cases
           </Button>
           <div class="flex gap-2">
-            <Button class="bits-btn" variant="outline" size="sm" onclick={() => addEvidenceDialogOpen = true}>
+            <Button class="bits-btn" variant="outline" size="sm" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
               <Plus class="h-4 w-4 mr-2" />
               Add Evidence
             </Button>
@@ -499,7 +533,7 @@
               <Card.Content class="flex flex-col items-center justify-center py-12">
                 <FileText class="h-12 w-12 text-muted-foreground mb-4" />
                 <p class="text-muted-foreground mb-4">No evidence has been added to this case yet.</p>
-                <Button class="bits-btn" onclick={() => addEvidenceDialogOpen = true}>
+                <Button class="bits-btn" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
                   <Plus class="h-4 w-4 mr-2" />
                   Add First Evidence
                 </Button>
@@ -507,20 +541,26 @@
             </Card.Root>
           {:else}
             <div class="grid gap-4">
-              {#each data.caseEvidence as evidence}
+              <OptimisticList items={data.caseEvidence} optimistic={optimisticEvidence} let:item>
                 <Card.Root>
                   <Card.Header>
                     <div class="flex items-center justify-between">
-                      <Card.Title class="text-lg">{evidence.title}</Card.Title>
+                      <Card.Title class="text-lg">{item.title}</Card.Title>
                       <div class="flex gap-2">
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{evidence.evidenceType}</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{item.evidenceType}</span>
+                        {#if item.__optimistic}
+                          <span class="flex items-center gap-1 text-xs text-muted-foreground animate-pulse">
+                            <div class="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                            pending
+                          </span>
+                        {/if}
                         <Button class="bits-btn" variant="ghost" size="sm">
                           <Edit2 class="h-4 w-4" />
                         </Button>
                         <Button class="bits-btn"
                           variant="ghost"
                           size="sm"
-                          onclick={() => confirmDeleteEvidence(evidence)}
+                          onclick={() => confirmDeleteEvidence(item)}
                         >
                           <Trash2 class="h-4 w-4" />
                         </Button>
@@ -528,16 +568,16 @@
                     </div>
                   </Card.Header>
                   <Card.Content>
-                    <p class="text-sm text-muted-foreground mb-2">{evidence.description}</p>
+                    <p class="text-sm text-muted-foreground mb-2">{item.description}</p>
                     <div class="flex justify-between items-center text-xs text-muted-foreground">
-                      <span>Collected: {new Date(evidence.collectedAt).toLocaleDateString()}</span>
-                      {#if evidence.tags}
-                        <span>Tags: {evidence.tags}</span>
+                      <span>Collected: {new Date(item.collectedAt).toLocaleDateString()}</span>
+                      {#if item.tags}
+                        <span>Tags: {item.tags}</span>
                       {/if}
                     </div>
                   </Card.Content>
                 </Card.Root>
-              {/each}
+              </OptimisticList>
             </div>
           {/if}
         </div>
@@ -709,213 +749,164 @@
 </div>
 
 <!-- Create Case Dialog -->
-<Dialog.Root>
-  <Dialog.Trigger asChild let:builder>
-    <Button builders={[builder]} class="flex items-center gap-2 bits-btn">
-      <Plus class="h-4 w-4" />
-      Create Case
-    </Button>
-  </Dialog.Trigger>
-  <Dialog.Content class="max-w-2xl">
-    <Dialog.Header>
-      <Dialog.Title>Create New Case</Dialog.Title>
-    </Dialog.Header>
-    <form method="post" action="?/createCase" use:enhance={createCaseSubmit} class="space-y-4">
+<HeadlessDialog bind:open={createCaseDialogOpen} ariaLabelledby="create-case-title">
+  <h2 id="create-case-title" class="text-lg font-semibold mb-2">Create New Case</h2>
+  <form method="post" action="?/createCase" use:enhance={createEnhance} onsubmit={handleCreateCaseSubmit} class="space-y-4">
       <div class="grid gap-4">
         <div class="grid gap-2">
           <Label for="case-title">Case Title *</Label>
-          <Input
-            id="case-title"
-            name="title"
-            bind:value={$createFormData.title}
-            placeholder="Enter case title..."
-            required
-          />
+          <FormField name="title" errors={$createCaseForm?.errors?.title}>
+            <Input slot="control"
+              id="case-title"
+              name="title"
+              bind:value={$createFormData.title}
+              placeholder="Enter case title..."
+              required
+            />
+          </FormField>
         </div>
         <div class="grid gap-2">
           <Label for="case-description">Description</Label>
-          <Textarea
-            id="case-description"
-            name="description"
-            bind:value={$createFormData.description}
-            placeholder="Describe the case details..."
-            class="min-h-[100px]"
-          />
+          <FormField name="description" errors={$createCaseForm?.errors?.description}>
+            <Textarea slot="control"
+              id="case-description"
+              name="description"
+              bind:value={$createFormData.description}
+              placeholder="Describe the case details..."
+              class="min-h-[100px]"
+            />
+          </FormField>
         </div>
         <div class="grid gap-2">
           <Label for="case-status">Status</Label>
-          <SelectRoot bind:selected={createFormStatus}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="open">Open</SelectItem>
-              <SelectItem value="investigating">Investigating</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-            </SelectContent>
-          </SelectRoot>
-          <input type="hidden" name="status" value={createFormStatus} />
+          <HeadlessSelectField name="status" selected={$createFormData.status} errors={$createCaseForm?.errors?.status}
+            options={[{value:'open'},{value:'investigating'},{value:'pending'},{value:'closed'}]} placeholder="Select status"
+            onchange={(e) => {
+              const v = e.detail.value;
+              if (createFormData && typeof createFormData.update === 'function') {
+                createFormData.update((c: any) => ({ ...c, status: v }));
+              }
+            }} />
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div class="grid gap-2">
             <Label for="case-priority">Priority</Label>
-            <SelectRoot bind:selected={$createFormData.priority}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="critical">Critical</SelectItem>
-              </SelectContent>
-            </SelectRoot>
-            <input type="hidden" name="priority" value={$createFormData.priority} />
+            <HeadlessSelectField name="priority" selected={$createFormData.priority} errors={$createCaseForm?.errors?.priority}
+              options={[{value:'low'},{value:'medium'},{value:'high'},{value:'critical'}]} placeholder="Select priority"
+              onchange={(e) => {
+                const v = e.detail.value;
+                if (createFormData && typeof createFormData.update === 'function') {
+                  createFormData.update((c: any) => ({ ...c, priority: v }));
+                }
+              }} />
           </div>
-          <div class="grid gap-2">
-            <Label for="case-status">Status</Label>
-            <SelectRoot bind:selected={$createFormData.status}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="open">Open</SelectItem>
-                <SelectItem value="investigating">Investigating</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-              </SelectContent>
-            </SelectRoot>
-            <input type="hidden" name="status" value={$createFormData.status} />
-          </div>
+          <!-- Removed duplicate Status block to avoid confusion -->
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div class="grid gap-2">
             <Label for="case-location">Location</Label>
-            <Input
-              id="case-location"
-              name="location"
-              bind:value={$createFormData.location}
-              placeholder="Case location..."
-            />
+            <FormField name="location" errors={$createCaseForm?.errors?.location}>
+              <Input slot="control"
+                id="case-location"
+                name="location"
+                bind:value={$createFormData.location}
+                placeholder="Case location..."
+              />
+            </FormField>
           </div>
           <div class="grid gap-2">
             <Label for="case-jurisdiction">Jurisdiction</Label>
-            <Input
-              id="case-jurisdiction"
-              name="jurisdiction"
-              bind:value={$createFormData.jurisdiction}
-              placeholder="Legal jurisdiction..."
-            />
+            <FormField name="jurisdiction" errors={$createCaseForm?.errors?.jurisdiction}>
+              <Input slot="control"
+                id="case-jurisdiction"
+                name="jurisdiction"
+                bind:value={$createFormData.jurisdiction}
+                placeholder="Legal jurisdiction..."
+              />
+            </FormField>
           </div>
         </div>
         <div class="grid gap-2">
           <Label for="incident-date">Incident Date</Label>
-          <Input
-            id="incident-date"
-            name="incidentDate"
-            type="datetime-local"
-            bind:value={$createFormData.incidentDate}
-          />
+          <FormField name="incidentDate" errors={$createCaseForm?.errors?.incidentDate}>
+            <Input slot="control"
+              id="incident-date"
+              name="incidentDate"
+              type="datetime-local"
+              bind:value={$createFormData.incidentDate}
+            />
+          </FormField>
         </div>
       </div>
-      <Dialog.Footer>
-  <Button class="bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>
-          Cancel
-        </Button>
-        <Button class="bits-btn" type="submit" disabled={!$createFormData.title?.trim()}>
-          Create Case
-        </Button>
-      </Dialog.Footer>
+      <div class="flex justify-end gap-2">
+        <Button class="bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>Cancel</Button>
+        <LoadingButton class="bits-btn" type="submit" loading={isCreatingCase} disabled={!$createFormData.title?.trim()}>{#if isCreatingCase}Creating...{:else}Create Case{/if}</LoadingButton>
+      </div>
     </form>
-  </Dialog.Content>
-</Dialog.Root>
+    <div aria-live="polite" class="sr-only">{isCreatingCase ? 'Creating case' : ''}</div>
+</HeadlessDialog>
 
 <!-- Add Evidence Dialog -->
-<Dialog.Root>
-  <Dialog.Trigger asChild let:builder>
-    <Button builders={[builder]} variant="outline" class="flex items-center gap-2 bits-btn">
-      <Plus class="h-4 w-4" />
-      Add Evidence
-    </Button>
-  </Dialog.Trigger>
-  <Dialog.Content class="max-w-lg">
-    <Dialog.Header>
-      <Dialog.Title>Add Evidence</Dialog.Title>
-    </Dialog.Header>
-    <form method="post" action="?/addEvidence" use:enhance={addEvidenceSubmit} class="space-y-4">
+<HeadlessDialog bind:open={addEvidenceDialogOpen} ariaLabelledby="add-evidence-title">
+  <h2 id="add-evidence-title" class="text-lg font-semibold mb-2">Add Evidence</h2>
+  <form method="post" action="?/addEvidence" use:enhance={evidenceEnhance} onsubmit={handleEvidenceSubmit} class="space-y-4">
       <div class="grid gap-4">
         <div class="grid gap-2">
           <Label for="evidence-type">Evidence Type</Label>
-          <SelectRoot bind:selected={evidenceFormType}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="document">Document</SelectItem>
-              <SelectItem value="photo">Photo</SelectItem>
-              <SelectItem value="video">Video</SelectItem>
-              <SelectItem value="audio">Audio</SelectItem>
-              <SelectItem value="physical">Physical Evidence</SelectItem>
-              <SelectItem value="digital">Digital Evidence</SelectItem>
-              <SelectItem value="testimony">Testimony</SelectItem>
-            </SelectContent>
-          </SelectRoot>
-          <input type="hidden" name="evidenceType" value={evidenceFormType} />
-            id="evidence-title"
-            name="title"
-            bind:value={$evidenceFormData.title}
-            placeholder="Enter evidence title..."
-            required
-          />
+          <HeadlessSelectField name="evidenceType" selected={$evidenceFormData.evidenceType} errors={$addEvidenceForm?.errors?.evidenceType}
+            options={[{value:'document'},{value:'photo'},{value:'video'},{value:'audio'},{value:'physical'},{value:'digital'},{value:'testimony'}]} placeholder="Select type"
+            onchange={(e) => {
+              const v = e.detail.value;
+              if (evidenceFormData && typeof evidenceFormData.update === 'function') {
+                evidenceFormData.update((c: any) => ({ ...c, evidenceType: v }));
+              }
+            }} />
+        </div>
+        <div class="grid gap-2">
+          <Label for="evidence-title">Title *</Label>
+          <FormField name="title" errors={$addEvidenceForm?.errors?.title}>
+            <Input slot="control"
+              id="evidence-title"
+              name="title"
+              bind:value={$evidenceFormData.title}
+              placeholder="Enter evidence title..."
+              required
+            />
+          </FormField>
         </div>
         <div class="grid gap-2">
           <Label for="evidence-description">Description</Label>
-          <Textarea
-            id="evidence-description"
-            name="description"
-            bind:value={$evidenceFormData.description}
-            placeholder="Describe the evidence..."
-            class="min-h-[80px]"
-          />
+          <FormField name="description" errors={$addEvidenceForm?.errors?.description}>
+            <Textarea slot="control"
+              id="evidence-description"
+              name="description"
+              bind:value={$evidenceFormData.description}
+              placeholder="Describe the evidence..."
+              class="min-h-[80px]"
+            />
+          </FormField>
         </div>
-        <div class="grid gap-2">
-          <Label for="evidence-type">Evidence Type</Label>
-          <SelectRoot bind:selected={$evidenceFormData.evidenceType}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="document">Document</SelectItem>
-              <SelectItem value="photo">Photo</SelectItem>
-              <SelectItem value="video">Video</SelectItem>
-              <SelectItem value="audio">Audio</SelectItem>
-              <SelectItem value="physical">Physical Evidence</SelectItem>
-              <SelectItem value="digital">Digital Evidence</SelectItem>
-              <SelectItem value="testimony">Testimony</SelectItem>
-            </SelectContent>
-          </SelectRoot>
-          <input type="hidden" name="evidenceType" value={$evidenceFormData.evidenceType} />
-        </div>
+        <!-- Removed duplicate Evidence Type block -->
+        <input type="hidden" name="caseId" value={$evidenceFormData.caseId} />
         <div class="grid gap-2">
           <Label for="evidence-tags">Tags</Label>
-          <Input
-            id="evidence-tags"
-            name="tags"
-            bind:value={$evidenceFormData.tags}
-            placeholder="Comma-separated tags..."
-          />
+          <FormField name="tags" errors={$addEvidenceForm?.errors?.tags}>
+            <Input slot="control"
+              id="evidence-tags"
+              name="tags"
+              bind:value={$evidenceFormData.tags}
+              placeholder="Comma-separated tags..."
+            />
+          </FormField>
         </div>
       </div>
-      <Dialog.Footer>
-  <Button class="bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>
-          Cancel
-        </Button>
-        <Button class="bits-btn" type="submit" disabled={!$evidenceFormData.title?.trim()}>
-          Add Evidence
-        </Button>
-      </Dialog.Footer>
+      <div class="flex justify-end gap-2">
+        <Button class="bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>Cancel</Button>
+        <LoadingButton class="bits-btn" type="submit" loading={isAddingEvidence} disabled={!$evidenceFormData.title?.trim()}>{#if isAddingEvidence}Adding...{:else}Add Evidence{/if}</LoadingButton>
+      </div>
     </form>
-  </Dialog.Content>
-</Dialog.Root>
+    <div aria-live="polite" class="sr-only">{isAddingEvidence ? 'Adding evidence' : ''}</div>
+</HeadlessDialog>
 
 <!-- Delete Evidence Confirmation Dialog -->
 <AlertDialog.Root bind:open={deleteEvidenceDialogOpen}>

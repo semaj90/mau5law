@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
 
   type Theme = 'light' | 'dark' | 'system';

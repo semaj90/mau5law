@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
+	"io"
 	"net/http"
 	"os"
 	"strconv"
@@ -12,13 +12,43 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
+	jsoniter "github.com/json-iterator/go"
+	jsonv2 "github.com/go-json-experiment/json"
 	"github.com/rs/cors"
+	"github.com/sirupsen/logrus"
 )
 
 var (
-	rdb *redis.Client
-	ctx = context.Background()
+	// Performance JSON parsers: JSON v2 (experimental) + jsoniter fallback
+	fastjson = jsoniter.ConfigCompatibleWithStandardLibrary
 )
+
+var (
+	rdb    *redis.Client
+	ctx    = context.Background()
+	logger *logrus.Logger
+)
+
+func init() {
+	// Initialize structured logging
+	logger = logrus.New()
+	logger.SetFormatter(&logrus.JSONFormatter{
+		TimestampFormat: time.RFC3339,
+		FieldMap: logrus.FieldMap{
+			logrus.FieldKeyTime:  "timestamp",
+			logrus.FieldKeyLevel: "level",
+			logrus.FieldKeyMsg:   "message",
+		},
+	})
+	logger.SetLevel(logrus.InfoLevel)
+	
+	// Add service context
+	logger = logger.WithFields(logrus.Fields{
+		"service":     "legal-gateway",
+		"version":     "1.0.0",
+		"environment": getEnv("ENVIRONMENT", "development"),
+	}).Logger
+}
 
 // IngestJob represents a document processing job
 type IngestJob struct {
@@ -51,16 +81,16 @@ func main() {
 	redisURL := getEnv("REDIS_URL", "redis://127.0.0.1:6379/0")
 	opt, err := redis.ParseURL(redisURL)
 	if err != nil {
-		log.Fatal("Failed to parse Redis URL:", err)
+		logger.WithField("error", err).Fatal("Failed to parse Redis URL")
 	}
 	rdb = redis.NewClient(opt)
 
 	// Test Redis connection
 	_, err = rdb.Ping(ctx).Result()
 	if err != nil {
-		log.Fatal("Failed to connect to Redis:", err)
+		logger.WithField("error", err).Fatal("Failed to connect to Redis")
 	}
-	log.Println("✅ Connected to Redis")
+	logger.WithField("redis_url", redisURL).Info("Connected to Redis successfully")
 
 	// Setup router
 	r := mux.NewRouter()
@@ -84,13 +114,15 @@ func main() {
 	port := getEnv("PORT", "8080")
 	handler := c.Handler(r)
 	
-	log.Printf("🚀 Legal Gateway API server starting on port %s", port)
-	log.Printf("📡 Redis connected: %s", redisURL)
-	log.Printf("🔗 SSE endpoint: /api/events/subscribe")
-	log.Printf("📥 Ingest endpoint: /api/doc/ingest")
+	logger.WithFields(logrus.Fields{
+		"port":        port,
+		"redis_url":   redisURL,
+		"sse_endpoint": "/api/events/subscribe",
+		"ingest_endpoint": "/api/doc/ingest",
+	}).Info("Legal Gateway API server starting")
 	
 	if err := http.ListenAndServe(":"+port, handler); err != nil {
-		log.Fatal("Server failed to start:", err)
+		logger.WithField("error", err).Fatal("Server failed to start")
 	}
 }
 
@@ -116,19 +148,36 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	json.NewEncoder(w).Encode(health)
+	if data, err := fastjson.Marshal(health); err != nil {
+		logger.WithField("error", err).Error("Failed to marshal health response")
+		http.Error(w, `{"error":"marshal failed"}`, http.StatusInternalServerError)
+	} else {
+		w.Write(data)
+	}
 }
 
 // Document ingestion endpoint
 func ingestHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	// Parse request body
-	var payload json.RawMessage
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+	// Parse request body with SIMD JSON for maximum speed
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		logger.WithField("error", err).Error("Failed to read request body")
+		http.Error(w, `{"error":"read body failed"}`, http.StatusBadRequest)
+		return
+	}
+	
+	// Validate JSON with fast parser
+	var testPayload interface{}
+	if err := fastjson.Unmarshal(bodyBytes, &testPayload); err != nil {
+		logger.WithField("error", err).Error("JSON validation failed - invalid JSON")
 		http.Error(w, `{"error":"invalid json payload"}`, http.StatusBadRequest)
 		return
 	}
+	
+	var payload json.RawMessage
+	payload = json.RawMessage(bodyBytes)
 
 	// Extract case ID from query params or headers
 	caseIDStr := r.URL.Query().Get("case_id")
@@ -149,16 +198,20 @@ func ingestHandler(w http.ResponseWriter, r *http.Request) {
 		Source:  "wasm-parser",
 	}
 
-	// Serialize and enqueue job
-	jobBytes, err := json.Marshal(job)
+	// Serialize and enqueue job with JSON v2 (experimental, fastest)
+	jobBytes, err := jsonv2.Marshal(job)
 	if err != nil {
+		logger.WithField("error", err).Error("Failed to serialize job")
 		http.Error(w, `{"error":"failed to serialize job"}`, http.StatusInternalServerError)
 		return
 	}
 
 	// Push to Redis list for worker processing
 	if err := rdb.RPush(ctx, "ingest:jobs", jobBytes).Err(); err != nil {
-		log.Printf("❌ Redis enqueue error: %v", err)
+		logger.WithFields(logrus.Fields{
+			"error":  err,
+			"job_id": job.ID,
+		}).Error("Redis enqueue failed")
 		http.Error(w, `{"error":"queue error"}`, http.StatusInternalServerError)
 		return
 	}
@@ -181,8 +234,18 @@ func ingestHandler(w http.ResponseWriter, r *http.Request) {
 		"message":   "Document queued for processing",
 	}
 	
-	json.NewEncoder(w).Encode(response)
-	log.Printf("📥 Job queued: %s (case %d)", job.ID, job.CaseID)
+	if responseData, err := jsonv2.Marshal(response); err != nil {
+		logger.WithField("error", err).Error("Failed to marshal response")
+		http.Error(w, `{"error":"marshal failed"}`, http.StatusInternalServerError)
+	} else {
+		w.Write(responseData)
+	}
+	
+	logger.WithFields(logrus.Fields{
+		"job_id":  job.ID,
+		"case_id": job.CaseID,
+		"source":  job.Source,
+	}).Info("Document ingest job queued successfully")
 }
 
 // Server-Sent Events endpoint for real-time updates
@@ -215,7 +278,7 @@ func sseHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "data: {\"message\":\"SSE connection established\",\"timestamp\":\"%s\"}\n\n", time.Now().Format(time.RFC3339))
 	flusher.Flush()
 
-	log.Printf("🔗 SSE client connected: %s", r.RemoteAddr)
+	logger.WithField("client_addr", r.RemoteAddr).Info("SSE client connected")
 
 	// Event loop
 	for {
@@ -227,7 +290,7 @@ func sseHandler(w http.ResponseWriter, r *http.Request) {
 			flusher.Flush()
 			
 		case <-clientGone:
-			log.Printf("🔌 SSE client disconnected: %s", r.RemoteAddr)
+			logger.WithField("client_addr", r.RemoteAddr).Info("SSE client disconnected")
 			return
 			
 		case <-time.After(30 * time.Second):
@@ -262,16 +325,23 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	// Try to parse as JSON, fallback to simple status
+	// Try fast JSON parse, fallback to simple status
 	var statusData interface{}
-	if err := json.Unmarshal([]byte(status), &statusData); err != nil {
+	statusBytes := []byte(status)
+	
+	if err := fastjson.Unmarshal(statusBytes, &statusData); err != nil {
 		statusData = map[string]interface{}{
 			"job_id": jobID,
 			"status": status,
 		}
 	}
 	
-	json.NewEncoder(w).Encode(statusData)
+	if responseData, err := fastjson.Marshal(statusData); err != nil {
+		logger.WithField("error", err).Error("Failed to marshal status response")
+		http.Error(w, `{"error":"marshal failed"}`, http.StatusInternalServerError)
+	} else {
+		w.Write(responseData)
+	}
 }
 
 // Utility functions
@@ -298,6 +368,6 @@ func publishEvent(eventType string, data interface{}) {
 		ID:    fmt.Sprintf("%d", time.Now().UnixNano()),
 	}
 	
-	eventBytes, _ := json.Marshal(event)
+	eventBytes, _ := jsonv2.Marshal(event)
 	rdb.Publish(ctx, "events:ingest", eventBytes)
 }

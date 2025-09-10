@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import Counter from './Counter.svelte'
 	import Go from './Go.svelte'
 </script>

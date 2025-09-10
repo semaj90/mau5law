@@ -1,4 +1,5 @@
 <script>
+</script>
   import { fade, fly } from "svelte/transition";
   import Toggle from "$lib/Toggle.svelte";
   import Button from "$lib/Button.svelte";

@@ -1,5 +1,6 @@
 <!-- Document Upload Page with MinIO Integration -->
 <script lang="ts">
+</script>
   import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';

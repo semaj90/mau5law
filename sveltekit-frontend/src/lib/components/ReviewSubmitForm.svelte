@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import { createEventDispatcher } from 'svelte';
   import { Button } from 'bits-ui';
@@ -193,7 +194,7 @@ let score = $state(0);
   }
 
   // Calculate quality score on component mount and when data changes
-  $: if (allFormData) calculateQualityScore();
+  // TODO: Convert to $derived: if (allFormData) calculateQualityScore()
 </script>
 
 <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>

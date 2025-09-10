@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import WebGPUQuantizationDemo from '$lib/components/demo/WebGPUQuantizationDemo.svelte';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';

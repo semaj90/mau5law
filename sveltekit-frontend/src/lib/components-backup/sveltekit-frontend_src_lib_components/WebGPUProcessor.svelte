@@ -3,6 +3,7 @@
 <!-- Integrates with QUIC streaming and attention tracking -->
 
 <script lang="ts">
+</script>
 	import { onMount, onDestroy } from 'svelte';
 	import { writable, derived } from 'svelte/store';
 	import type { PageData } from './$types';

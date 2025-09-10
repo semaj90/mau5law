@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Calendar } from "bits-ui";
 	import { getLocalTimeZone, today } from "@internationalized/date";
 

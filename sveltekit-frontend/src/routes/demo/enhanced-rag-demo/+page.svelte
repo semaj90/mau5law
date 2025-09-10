@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	
 	// Modern Svelte 5 patterns for Enhanced RAG Demo

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Simple Case Stats Component - TODO: Enhance with full functionality
   //
   // 🚀 ENHANCEMENT ROADMAP (See: /ENHANCED_FEATURES_TODO.md)
@@ -32,7 +33,7 @@
   //   overdueCount: number;
   // }
   
-  $: stats = {
+  // TODO: Convert to $derived: stats = {
     // TODO: IMPLEMENT ADVANCED CALCULATIONS
     // ===================================
     // 1. Resolution time analytics
@@ -47,7 +48,7 @@
     pending: cases.filter(c => c.status === 'pending').length,
     closed: cases.filter(c => c.status === 'closed').length,
     recentlyUpdated: cases.filter(c => {
-      const weekAgo = new Date();
+      const weekAgo = new Date()
       weekAgo.setDate(weekAgo.getDate() - 7);
       return new Date(c.updatedAt) > weekAgo;
     }).length,

@@ -12,6 +12,7 @@
 import { connect, JSONCodec, type NatsConnection } from 'nats';
 import { redisService } from '../redis-service.js';
 import { createHash } from 'crypto';
+import { fastStringify, fastParse } from '../../utils/fast-json.js';
 
 // QUIC Configuration for ultra-low latency
 const QUIC_CONFIG = {
@@ -326,7 +327,7 @@ export class NatsQuicSearchService {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: fastStringify({
           model: model || 'embeddinggemma:latest',
           prompt: query.slice(0, 2048),
         }),
@@ -337,7 +338,7 @@ export class NatsQuicSearchService {
         throw new Error(`Embedding API failed: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = await fastParse(await response.text());
       return data.embedding || null;
     } catch (error) {
       console.error('❌ Embedding generation failed:', error);

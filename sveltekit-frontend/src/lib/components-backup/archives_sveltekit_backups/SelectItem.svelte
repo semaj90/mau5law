@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { getContext } from "svelte";
   import { writable } from "svelte/store";
   import type { SelectContext } from "./types";
@@ -16,7 +17,7 @@
     } as SelectContext);
   const { selected, open, onSelect, onToggle } = context;
 
-  $: isSelected = $selected === value;
+  // TODO: Convert to $derived: isSelected = $selected === value
 
   function handleClick() {
     onSelect(value);

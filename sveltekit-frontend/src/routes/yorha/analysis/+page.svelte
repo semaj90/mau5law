@@ -1,6 +1,7 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
-  import { $state } from 'svelte';
+  // Svelte 5 runes are built-in, no import needed
   import * as Card from '$lib/components/ui/card';
   import {
     Button
@@ -191,8 +192,8 @@
                 <span class="metric-label">Success Rate</span>
               </div>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </CardContent>
+        </Card>
 
         <Card.Root class="metric-card">
           <Card.Header class="metric-header">
@@ -213,8 +214,8 @@
                 <Progress value={(analysisData.evidenceAnalysis.ai_analyzed / analysisData.evidenceAnalysis.total) * 100} class="progress-bar" />
               </div>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </CardContent>
+        </Card>
 
         <Card.Root class="metric-card">
           <Card.Header class="metric-header">
@@ -243,8 +244,8 @@
                 <span class="threat-label">Low</span>
               </div>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </CardContent>
+        </Card>
       </div>
 
       <!-- AI Performance Panel -->
@@ -277,8 +278,8 @@
             <Clock class="w-4 h-4" />
             Last Updated: {analysisData.aiPerformance.last_update}
           </div>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
 
       <!-- Recent Analyses -->
       <Card.Root class="recent-analyses-card">
@@ -320,8 +321,8 @@
               </div>
             {/each}
           </div>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </div>
   </main>
 </div>

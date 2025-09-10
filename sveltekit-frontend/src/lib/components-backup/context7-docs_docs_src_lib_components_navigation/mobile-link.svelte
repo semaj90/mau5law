@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { HTMLAnchorAttributes } from "svelte/elements";
 	import { cn } from "$lib/utils/styles.js";
 

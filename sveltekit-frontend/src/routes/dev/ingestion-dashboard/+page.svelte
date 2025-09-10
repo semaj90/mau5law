@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
 
@@ -58,7 +59,7 @@
       const chunkSize = Math.ceil(words.length / newJob.chunks);
       const chunks = [];
       for (let i = 0; i < words.length; i += chunkSize) {
-        chunks.push(words.slice(i, i + chunkSize).join(' '));
+        chunks.push(words.slice(i, i + chunkSize).join(' ');
       }
 
       const response = await fetch('/api/ingestion/comprehensive', {
@@ -115,7 +116,7 @@
     if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
@@ -154,8 +155,8 @@
   });
 
   // Reactive updates for auto-refresh
-  $: {
-    if (pollInterval) clearInterval(pollInterval);
+  // TODO: Convert to $derived: {
+    if (pollInterval) clearInterval(pollInterval)
     if (autoRefresh && typeof window !== 'undefined') {
       pollInterval = setInterval(fetchDashboardData, refreshRate);
     }

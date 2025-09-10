@@ -4,6 +4,7 @@
   CRT scanning, and other retro visual effects with real-time performance monitoring
 -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { gpuMetricsBatcher } from '$lib/services/gpuMetricsBatcher';
@@ -381,7 +382,7 @@
 
   /* Parallax Effects */
   .parallax-transform[data-depth] {
-    transform: translateZ(calc(var(--depth, 0) * -100px));
+    transform: translateZ(calc(var(--depth, 0) * -100px);
   }
 
   /* CRT Effects */

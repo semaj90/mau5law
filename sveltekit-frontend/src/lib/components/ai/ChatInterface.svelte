@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -357,8 +358,8 @@ let response = `# AI Analysis Results\n\n`;
   });
 
   // Reactive scroll to bottom when new messages arrive
-  $: if ($currentConversation?.messages) {
-    tick().then(scrollToBottom);
+  // TODO: Convert to $derived: if ($currentConversation?.messages) {
+    tick().then(scrollToBottom)
   }
 </script>
 

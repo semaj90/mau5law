@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+</script>
 	import PS1Surface from '../../../stories/PS1Surface.stories.svelte';
 	import PS1ParallaxDynamic from '../../../stories/PS1ParallaxDynamic.stories.svelte';
 	

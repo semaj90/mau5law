@@ -3,6 +3,7 @@
   Demonstrates complete form enhancement pattern with validation
 -->
 <script lang="ts">
+</script>
   import { enhance } from '$app/forms';
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -40,7 +41,7 @@
     enableAutoSave?: boolean;
     enableRealTimeValidation?: boolean;
     onsubmit?: (event: { data: CaseForm }) => void;
-    onsuccess?: (event: { case: any }) => void;
+    onsuccess?: (event: { caseItem: any }) => void;
     onerror?: (event: { message: string }) => void;
     ondraft?: (event: { data: CaseForm }) => void;
   }
@@ -67,7 +68,7 @@
       if (onsubmit) onsubmit({ data: formData as CaseForm });
     },
     onSuccess: (result) => {
-      if (onsuccess) onsuccess({ case: result });
+      if (onsuccess) onsuccess({ caseItem: result });
     },
     onError: (error) => {
       if (onerror) onerror({ message: error });
@@ -100,9 +101,9 @@
   ];
 
   // Enhanced form validation with real-time feedback
-  $: {
+  // TODO: Convert to $derived: {
     if (enableRealTimeValidation && $form) {
-      validationStatus = 'validating';
+      validationStatus = 'validating'
 
       const validationResult = caseFormSchema.safeParse($form);
 
@@ -157,7 +158,7 @@
       return async ({ result, update }) => {
         if (result.type === 'success') {
           // Handle success
-          if (onsuccess) onsuccess({ case: result.data });
+          if (onsuccess) onsuccess({ caseItem: result.data });
 
           // Reset form if not in edit mode
           if (!editMode) {

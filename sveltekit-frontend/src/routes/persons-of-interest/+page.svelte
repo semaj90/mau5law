@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import PersonOfInterestCard from '$lib/components/ai/PersonOfInterestCard.svelte';

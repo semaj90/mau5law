@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { debounce } from "$lib/utils/debounce";
   import { Plus, Tag, X } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
@@ -25,15 +26,15 @@
   let suggestionsContainer: HTMLElement;
   let activeIndex = -1;
 
-  $: filteredSuggestions = availableTags
+  // TODO: Convert to $derived: filteredSuggestions = availableTags
     .filter(
       (tag) =>
         !tags.includes(tag) &&
         tag.toLowerCase().includes(inputValue.toLowerCase())
     )
-    .slice(0, 5);
+    .slice(0, 5)
 
-  $: suggestions = filteredSuggestions;
+  // TODO: Convert to $derived: suggestions = filteredSuggestions
 
   const debouncedSearch = debounce(async (query: string) => {
     dispatch("search", query);

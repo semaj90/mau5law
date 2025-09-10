@@ -3,6 +3,7 @@
   Rich metadata support with type-safe validation
 -->
 <script lang="ts">
+</script>
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
   import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile } from '$lib/schemas/evidence-upload.js';
@@ -119,7 +120,7 @@
     if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>

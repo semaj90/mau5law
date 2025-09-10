@@ -1,5 +1,6 @@
 <!-- Enhanced Legal Document Editor with UnoCSS + Melt UI -->
 <script lang="ts">
+</script>
   import {
     createDialog,
     createDropdownMenu,
@@ -300,12 +301,12 @@
   });
 
   // Reactive statement to trigger auto-save when content changes
-  $: if (content && documentId && !loadingDocument) {
-    scheduleAutoSave();
+  // TODO: Convert to $derived: if (content && documentId && !loadingDocument) {
+    scheduleAutoSave()
   }
 
   // Reactive statement to update save status
-  $: saveStatus = getSaveStatus();
+  // TODO: Convert to $derived: saveStatus = getSaveStatus()
 
   // Function to load document from API
   async function loadDocument() {

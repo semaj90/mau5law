@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Svelte5Examples from '$lib/components/examples/Svelte5Examples.svelte';
   import { useMediaQuery } from '$lib/utils/media-query.svelte';
   

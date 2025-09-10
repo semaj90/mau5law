@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { writable, derived } from 'svelte/store';
@@ -14,7 +15,7 @@
   export let data: LayoutData;
 
   // Sync server data with client store
-  $: if (browser) {
+  // TODO: Convert to $derived: if (browser) {
     casesStore.set({
       cases: data.userCases,
       stats: data.caseStats,
@@ -25,13 +26,13 @@
         sort: data.sortBy,
         order: data.sortOrder
       }
-    });
+    })
   }
 
   // Reactive derived stores for UI state
-  $: activeCaseId = $page.url.searchParams.get('view');
-  $: isModalOpen = $page.url.searchParams.has('view');
-  $: selectedCase = data.userCases.find(c => c.id === activeCaseId);
+  // TODO: Convert to $derived: activeCaseId = $page.url.searchParams.get('view')
+  // TODO: Convert to $derived: isModalOpen = $page.url.searchParams.has('view')
+  // TODO: Convert to $derived: selectedCase = data.userCases.find(c => c.id === activeCaseId)
 
   // Loading state for AJAX operations
   const isLoading = writable(false);

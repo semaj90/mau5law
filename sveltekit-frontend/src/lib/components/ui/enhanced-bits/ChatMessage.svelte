@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     message: { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string }
     analyticsLog?: (event: any) => void;
@@ -44,8 +45,8 @@
   let { message = $bindable() } = $props(); // { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string };
   let { analyticsLog = $bindable() } = $props(); // (event: any) => void = () => {};
 
-  $: if (message && message.content) {
-    analyticsLog({ event: 'chat_message_rendered', role: message.role, timestamp: Date.now() });
+  // TODO: Convert to $derived: if (message && message.content) {
+    analyticsLog({ event: 'chat_message_rendered', role: message.role, timestamp: Date.now() })
   }
 </script>
 

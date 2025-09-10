@@ -2,6 +2,7 @@
      Rename the variable and try again or migrate by hand. -->
 <!-- Enhanced Chat Component with bits-ui, melt-ui, shadcn-svelte integration -->
 <script lang="ts">
+</script>
 
 	import { onMount, onDestroy } from 'svelte';
 	import { useMachine } from '@xstate/svelte';
@@ -252,8 +253,8 @@ let chatContainer = $state<HTMLDivElement;
 	});
 
 	// Auto-scroll when messages update
-	$: if ($state.context.messages.length > 0) {
-		scrollToBottom();
+	// TODO: Convert to $derived: if ($state.context.messages.length > 0) {
+		scrollToBottom()
 	}
 </script>
 

@@ -3,6 +3,7 @@
   Real-time analytics, vector search insights, system monitoring
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   
@@ -58,7 +59,7 @@
       {
         id: 1,
         type: 'case_created',
-        title: 'New case: Smith v. Johnson Contract Dispute',
+        title: 'New caseItem: Smith v. Johnson Contract Dispute',
         timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 min ago
         user: 'Attorney Johnson',
         status: 'active'
@@ -126,8 +127,7 @@
   function formatRelativeTime(date: Date): string {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / (1000 * 60));
-    
+    const minutes = Math.floor(diff / (1000 * 60);
     if (minutes < 1) return 'Just now';
     if (minutes < 60) return `${minutes}m ago`;
     
@@ -212,7 +212,7 @@
       </div>
       <Progress value={(dashboardData.activeCases / dashboardData.totalCases) * 100} class="mt-4" />
       <p class="text-xs text-nier-text-muted mt-2">{dashboardData.activeCases} active cases</p>
-    </Card.Root>
+    </Card>
     
     <!-- Vector Queries -->
     <Card.Root class="p-6">
@@ -230,7 +230,7 @@
       </div>
       <Progress value={dashboardData.searchAccuracy} class="mt-4" />
       <p class="text-xs text-nier-text-muted mt-2">{dashboardData.searchAccuracy}% accuracy rate</p>
-    </Card.Root>
+    </Card>
     
     <!-- AI Processing -->
     <Card.Root class="p-6">
@@ -248,7 +248,7 @@
       </div>
       <Progress value={(dashboardData.aiTasksCompleted / dashboardData.aiTasksToday) * 100} class="mt-4" />
       <p class="text-xs text-nier-text-muted mt-2">{dashboardData.aiAccuracy}% accuracy rate</p>
-    </Card.Root>
+    </Card>
     
     <!-- System Health -->
     <Card.Root class="p-6">
@@ -266,7 +266,7 @@
       </div>
       <Progress value={dashboardData.systemLoad} class="mt-4" />
       <p class="text-xs text-nier-text-muted mt-2">{dashboardData.databaseConnections} DB connections</p>
-    </Card.Root>
+    </Card>
   </div>
   
   <!-- Quick Actions -->
@@ -303,8 +303,8 @@
           </button>
         {/each}
       </div>
-    </Card.Content>
-  </Card.Root>
+    </CardContent>
+  </Card>
   
   <!-- Two Column Layout -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -351,8 +351,8 @@
               <ChevronRight class="w-4 h-4 ml-2" />
             </Button>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </div>
     
     <!-- Popular Search Terms -->
@@ -382,8 +382,8 @@
             </div>
           {/each}
         </div>
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </Card>
   </div>
   
   <!-- Performance Chart Placeholder -->
@@ -405,7 +405,7 @@
           <p class="text-xs text-nier-text-muted mt-1">Integrate Chart.js or D3 for visualization</p>
         </div>
       </div>
-    </Card.Content>
-  </Card.Root>
+    </CardContent>
+  </Card>
 </div>
 

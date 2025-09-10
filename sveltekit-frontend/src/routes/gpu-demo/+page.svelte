@@ -1,5 +1,6 @@
 <!-- GPU Integration Demo for Legal AI Platform -->
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import { gpuServiceClient, isGPUAvailable, getGPUUtilization, processLegalDocument } from '$lib/services/gpu-service-client';
 	import type { GPUStatus, GPUMetrics, WorkerStatus, ServiceRegistry, GPUResult } from '$lib/types/gpu-services';
@@ -43,12 +44,12 @@ let isProcessing = $state(false);
 let metricsInterval = $state<NodeJS.Timeout;
 let statusInterval = $state<NodeJS.Timeout;
 
-	onMount(async () >(> {
-		await loadGPUData());
+	onMount(async () => { {
+		await loadGPUData();
 		startRealtimeUpdates();
 		
-		return () >(> {
-			if (metricsInterval) clearInterval(metricsInterval));
+		return () => { {
+			if (metricsInterval) clearInterval(metricsInterval);
 			if (statusInterval) clearInterval(statusInterval);
 		};
 	});
@@ -207,7 +208,7 @@ let hash = $state(0);
 		}
 		
 		// Normalize
-		const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+		const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
 		if (magnitude > 0) {
 			for (let i = 0; i < embedding.length; i++) {
 				embedding[i] /= magnitude;

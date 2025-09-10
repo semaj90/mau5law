@@ -1,5 +1,6 @@
 <!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save with Loki.js -->
 <script lang="ts">
+</script>
   interface Props {
     caseId: string
     canvasId: string

@@ -1,5 +1,6 @@
 comment Advanced YoRHa Testing Suite
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import {
     TestTube,
@@ -238,7 +239,7 @@ comment Advanced YoRHa Testing Suite
   }
 
   function sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms);
   }
 
   async function runAllTests(): Promise<void> {
@@ -327,7 +328,7 @@ comment Advanced YoRHa Testing Suite
 
   // Reactive stats exposed to template
   let stats = getTestStats();
-  $: stats = getTestStats();
+  let stats = $derived(getTestStats());
 
   // Auto-run tests on mount
   onMount(() => {
@@ -445,7 +446,7 @@ comment Advanced YoRHa Testing Suite
               <div class="yorha-test-item">
                 <div class="yorha-test-item-header">
                   <div class="yorha-test-item-icon {getStatusColor(test.status)}">
-                    <svelte:component this={getStatusIcon(test.status)} size={16} />
+                    <{getStatusIcon(test.status)} size={16} />
                   </div>
                   <span class="yorha-test-item-name">{test.name}</span>
                   {#if test.duration}
