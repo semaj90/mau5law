@@ -30,6 +30,7 @@
   let currentFeedbackTrigger = $state<FeedbackTrigger | null>(null);
   let showFeedback = $state(false);
   let session = $state<any>(null);
+  let mounted = $state(false);
 
   // Create feedback store and set context immediately (must be synchronous)
   const feedbackStore = createFeedbackStore();
@@ -39,6 +40,7 @@
 
   onMount(() => {
     if (!browser) return;
+    mounted = true;
 
     (async () => {
   // Open a single SSE connection to hydrate CHR cache globally
@@ -149,7 +151,7 @@
 </script>
 
 <!-- Modern Startup Toast Notification -->
-{#if showStartupLog && startupStatus}
+{#if mounted && showStartupLog && startupStatus}
   <div class="fixed top-5 right-5 z-50 max-w-sm">
     <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-golden-lg shadow-lg">
       <h3 class="text-nier-accent-warm font-bold text-lg uppercase tracking-wide mb-golden-sm">
@@ -184,14 +186,16 @@
           <h1 class="text-nier-accent-warm font-bold text-2xl tracking-wider uppercase">
         YoRHa Legal AI
           </h1>
-          {#if startupStatus?.initialized}
-        <span class="bg-green-500/20 text-green-400 border-green-500/30 border text-xs px-2 py-1 rounded">
-          🟢 INTEGRATED
-        </span>
-          {:else}
-        <span class="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 border text-xs px-2 py-1 animate-pulse rounded">
-          🟡 LOADING
-        </span>
+          {#if mounted}
+            {#if startupStatus?.initialized}
+              <span class="bg-green-500/20 text-green-400 border-green-500/30 border text-xs px-2 py-1 rounded">
+                🟢 INTEGRATED
+              </span>
+            {:else}
+              <span class="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 border text-xs px-2 py-1 animate-pulse rounded">
+                🟡 LOADING
+              </span>
+            {/if}
           {/if}
         </div>
 
@@ -313,7 +317,7 @@
   </main>
 </div>
 
-{#if currentFeedbackTrigger}
+{#if mounted && currentFeedbackTrigger}
   <FeedbackWidget
     interactionId={currentFeedbackTrigger.interactionId}
     sessionId={store?.userContext?.sessionId || ''}

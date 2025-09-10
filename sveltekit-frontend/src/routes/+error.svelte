@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { dev } from '$app/environment';
 
   interface Props {
