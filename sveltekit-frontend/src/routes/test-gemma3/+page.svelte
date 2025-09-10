@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from "svelte";
   // $state is provided globally via src/types/svelte-helpers.d.ts
 

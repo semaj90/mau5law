@@ -1,5 +1,6 @@
 <!-- Real-time RAG Interface Component -->
 <script lang="ts">
+</script>
   interface Props {
     selectedCaseId?: any;
     documentTypes?: any;

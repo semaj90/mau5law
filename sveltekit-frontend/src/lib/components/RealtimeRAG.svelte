@@ -1,5 +1,6 @@
 <!-- Real-time RAG Interface Component -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { createRealtimeRAGStore, ragQueryMachine, ragQueryServices } from '$lib/stores/realtime-rag.svelte.js';

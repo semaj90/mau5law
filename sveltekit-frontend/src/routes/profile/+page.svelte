@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { page } from "$app/state";
   import Avatar from "$lib/components/Avatar.svelte";
   import { avatarStore } from "$lib/stores/avatarStore";
@@ -226,7 +227,7 @@
 
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 16px;
     margin-top: 16px;
   }

@@ -1,5 +1,6 @@
 
 <script lang="ts">
+</script>
   interface Props {
     onauditResults?: (event?: any) => void;
     onauditError?: (event?: any) => void;

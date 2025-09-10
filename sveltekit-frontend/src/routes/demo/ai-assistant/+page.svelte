@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
   import type { AIResponse } from '$lib/types/ai';
 	
@@ -98,8 +99,7 @@
 			};
 			
 			// Simulate processing delay
-			await new Promise(resolve => setTimeout(resolve, mockResponse.processingTime));
-			
+			await new Promise(resolve => setTimeout(resolve, mockResponse.processingTime);
 			aiResponses = [...aiResponses, {
 				...mockResponse,
 				query,

@@ -3,6 +3,7 @@
   Showcases the complete Evidence Canvas with YoRHa integration
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import UnifiedCanvasIntegration from '$lib/components/canvas/UnifiedCanvasIntegration.svelte';
@@ -171,12 +172,12 @@
       splitView={true}
       syncCanvases={true}
       initialMode={demoMode}
-      on:evidenceUploaded={handleEvidenceUploaded}
-      on:analysisComplete={handleAnalysisComplete}
-      on:drawingUpdated={handleDrawingUpdated}
-      on:canvasSynced={handleCanvasSynced}
-      on:neuralEngineReady={handleNeuralEngineReady}
-      on:canvasExported={handleCanvasExported}
+      onevidenceUploaded={handleEvidenceUploaded}
+      onanalysisComplete={handleAnalysisComplete}
+      ondrawingUpdated={handleDrawingUpdated}
+      oncanvasSynced={handleCanvasSynced}
+      onneuralEngineReady={handleNeuralEngineReady}
+      oncanvasExported={handleCanvasExported}
     />
   </div>
   
@@ -333,7 +334,7 @@
   
   .demo-features {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr);
     gap: 2rem;
     padding: 2rem;
     background: rgba(0, 0, 0, 0.5);

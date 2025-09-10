@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   /**
 	 * Enhanced MCP Integration Demo Page
 	 * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit
@@ -49,7 +50,7 @@
 		try {
 			const mcpResponse = await fetch('http://localhost:40000/health');
 			if (mcpResponse.ok) {
-				integrationStatus.update(status => ({ ...status, mcpServerRunning: true }));
+				integrationStatus.update(status => ({ ...status, mcpServerRunning: true });
 				logMessage('success', 'Context7 MCP Server is online', 'mcp-server');
 			}
 		} catch (error) {
@@ -62,7 +63,7 @@
 			if (clusterResponse.ok) {
 				const data = await clusterResponse.json();
 				if (data.status === 'working') {
-					integrationStatus.update(status => ({ ...status, clusterSystemOnline: true }));
+					integrationStatus.update(status => ({ ...status, clusterSystemOnline: true });
 					logMessage('success', `Cluster system validated - ${data.results.successfulRequests} successful requests`, 'cluster');
 				}
 			}
@@ -76,7 +77,7 @@
 			if (ollamaResponse.ok) {
 				const models = await ollamaResponse.json();
 				if (models.models && models.models.length > 0) {
-					integrationStatus.update(status => ({ ...status, ollamaModelsLoaded: true }));
+					integrationStatus.update(status => ({ ...status, ollamaModelsLoaded: true });
 					logMessage('success', `Ollama models loaded: ${models.models.length} models`, 'ollama');
 				}
 			}
@@ -87,7 +88,7 @@
 		// Check VS Code extension (simulated)
 		const hasVSCodeExtension = Math.random() > 0.3; // Simulate extension check
 		if (hasVSCodeExtension) {
-			integrationStatus.update(status => ({ ...status, vsCodeExtensionActive: true }));
+			integrationStatus.update(status => ({ ...status, vsCodeExtensionActive: true });
 			logMessage('success', 'VS Code Context7 MCP Assistant extension detected', 'vscode');
 		} else {
 			logMessage('info', 'VS Code extension not detected (running in browser)', 'vscode');
@@ -96,7 +97,7 @@
 		// All systems check
 		const allSystemsReady = $integrationStatus.mcpServerRunning && $integrationStatus.clusterSystemOnline;
 		if (allSystemsReady) {
-			integrationStatus.update(status => ({ ...status, contextualAnalysisReady: true }));
+			integrationStatus.update(status => ({ ...status, contextualAnalysisReady: true });
 			logMessage('success', 'Enhanced MCP Integration fully operational!', 'system');
 		}
 	}
@@ -442,7 +443,7 @@ let passedTests = $state(0);
 
 	.status-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr);
 		gap: 1rem;
 	}
 
@@ -502,7 +503,7 @@ let passedTests = $state(0);
 
 	.controls-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
 		gap: 1rem;
 		margin-bottom: 1rem;
 	}
@@ -639,7 +640,7 @@ let passedTests = $state(0);
 
 	.features-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr);
 		gap: 1rem;
 	}
 

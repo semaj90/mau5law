@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
   import CaseForm from '$lib/components/forms/CaseForm.svelte';
   import { getAuthContext } from "$lib/stores/auth";

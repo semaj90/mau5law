@@ -1,809 +1,623 @@
-<!-- CUDA gRPC Streaming Demo Page -->
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { page } from '$app/stores';
-    import { LegalCudaGrpcService } from '$lib/services/legal-cuda-grpc-client';
-    import type { CudaResponse, DocumentProgress, SearchResults } from '$lib/wasm/legal_grpc_client';
+</script>
+  import type { PageData, ActionData } from './$types.js';
+  import { onMount, onDestroy } from 'svelte';
+  import { enhance } from '$app/forms';
+  import { goto } from '$app/navigation';
+  
+  // Enhanced-Bits orchestrated components
+  import { 
+    Button, 
+    Card, 
+    Input,
+    Badge
+  } from '$lib/components/ui/enhanced-bits';
+  import { 
+    OrchestratedCard,
+    OrchestratedButton,
+    type LegalEvidenceItem,
+    getConfidenceClass,
+    formatAnalysisDate
+  } from '$lib/components/ui/orchestrated';
+  
+  // Icons for CUDA streaming
+  import { 
+    Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,
+    Database, Clock, BarChart3, Thermometer, Power, Memory,
+    CheckCircle, AlertCircle, Eye, Download, Upload, Layers
+  } from 'lucide-svelte';
 
-    // State management
-    let cudaService: LegalCudaGrpcService;
-let isConnected = $state(false);
-let loading = $state(true);
-let error = $state('');
+  let { data, form }: { data: PageData; form: ActionData } = $props();
+  
+  // Svelte 5 runes for CUDA streaming state
+  let selectedOperation = $state<string>('document_vectorization');
+  let inputText = $state('');
+  let batchSize = $state(10);
+  let useGpu = $state(true);
+  let isStreaming = $state(false);
+  let currentSession = $state<string | null>(null);
+  let streamResults = $state<any[]>([]);
+  let processingProgress = $state(0);
+  let liveMetrics = $state(data.sessionStats);
+  let selectedTab = $state<'streaming' | 'monitoring' | 'results' | 'config'>('streaming');
 
-    // Streaming states
-let activeSession = $state('');
-let streamingActive = $state(false);
-let responses = $state<any[] >([]);
+  // Real-time metrics update
+  let metricsInterval: NodeJS.Timeout | null = null;
+  let streamingSocket: EventSource | null = null;
 
-    // Form inputs
-let textInput = $state('');
-let documentContent = $state('');
-let searchQuery = $state('contract termination clause');
-let selectedCollection = $state('legal_documents');
+  // Derived states
+  let gpuStatus = $derived(data.gpuInfo.gpuAvailable ? 'available' : 'unavailable');
+  let canStream = $derived(!isStreaming && inputText.trim().length > 0);
+  let gpuUtilizationColor = $derived(
+    data.gpuInfo.utilization?.gpu > 80 ? 'text-red-600' :
+    data.gpuInfo.utilization?.gpu > 50 ? 'text-yellow-600' : 'text-green-600'
+  );
 
-    // Performance metrics
-let lastResponseTime = $state(0);
-let totalResponses = $state(0);
-let avgProcessingTime = $state(0);
+  // CUDA streaming functions
+  async function startCudaStream() {
+    if (!canStream) return;
+    
+    isStreaming = true;
+    processingProgress = 0;
+    streamResults = [];
 
-    // Demo data
-    const sampleLegalText = `
-TERMINATION CLAUSE
+    const formData = new FormData();
+    formData.append('operationType', selectedOperation);
+    formData.append('inputData', inputText);
+    formData.append('batchSize', batchSize.toString());
 
-Either party may terminate this Agreement upon thirty (30) days written notice
-to the other party. In the event of termination, all obligations under this
-Agreement shall cease, except for those provisions which by their nature should
-survive termination, including but not limited to confidentiality,
-indemnification, and limitation of liability clauses.
-
-Upon termination, each party shall return or destroy all confidential information
-received from the other party. The terminating party shall be liable for all
-costs and expenses incurred up to the date of termination.
-    `.trim();
-
-    onMount(async () => {
-        try {
-            // Initialize CUDA gRPC service
-            cudaService = new LegalCudaGrpcService('http://localhost:8080');
-
-            // Wait for connection
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            isConnected = await cudaService.isConnected();
-
-            if (!isConnected) {
-                error = 'Failed to connect to CUDA gRPC service. Ensure the server is running.';
-            }
-        } catch (err) {
-            console.error('Failed to initialize CUDA service:', err);
-            error = 'CUDA gRPC service initialization failed. Check console for details.';
-        } finally {
-            loading = false;
-        }
-    });
-
-    // Start bidirectional streaming session
-    async function startStreamingSession() {
-        if (!cudaService || streamingActive) return;
-
-        try {
-            streamingActive = true;
-            activeSession = `session_${Date.now()}`;
-            responses = [];
-            error = '';
-
-            await cudaService.startEmbeddingStream(
-                activeSession,
-                handleStreamResponse,
-                handleStreamError,
-                handleStreamComplete
-            );
-
-            console.log(`🚀 Started streaming session: ${activeSession}`);
-        } catch (err) {
-            console.error('Failed to start streaming session:', err);
-            error = 'Failed to start streaming session';
-            streamingActive = false;
-        }
+    try {
+      const response = await fetch('?/startStream', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await response.json();
+      if (result.success) {
+        currentSession = result.sessionId;
+        
+        // Start streaming updates
+        startStreamingUpdates(result.sessionId);
+      }
+    } catch (error) {
+      console.error('Failed to start CUDA stream:', error);
+      isStreaming = false;
     }
+  }
 
-    // Send text for CUDA embedding processing
-    async function sendTextForEmbedding() {
-        if (!cudaService || !activeSession || !textInput.trim()) return;
+  async function stopCudaStream() {
+    if (!currentSession) return;
+    
+    const formData = new FormData();
+    formData.append('sessionId', currentSession);
 
-        try {
-            const success = await cudaService.sendTextForEmbedding(
-                activeSession,
-                textInput,
-                true // is_final
-            );
-
-            if (success) {
-                console.log('📝 Text sent for CUDA processing');
-                textInput = '';
-            } else {
-                error = 'Failed to send text for processing';
-            }
-        } catch (err) {
-            console.error('Failed to send text:', err);
-            error = 'Text processing failed';
-        }
+    try {
+      await fetch('?/stopStream', {
+        method: 'POST',
+        body: formData
+      });
+      
+      stopStreamingUpdates();
+    } catch (error) {
+      console.error('Failed to stop CUDA stream:', error);
     }
+  }
 
-    // Perform document analysis
-    async function processDocument() {
-        if (!cudaService || !documentContent.trim()) return;
-
-        try {
-            error = '';
-            const documentId = `doc_${Date.now()}`;
-
-            await cudaService.processDocument(
-                documentId,
-                documentContent,
-                'contract',
-                handleDocumentProgress
-            );
-
-            console.log('📄 Document processing started');
-        } catch (err) {
-            console.error('Document processing failed:', err);
-            error = 'Document processing failed';
-        }
-    }
-
-    // Perform semantic search
-    async function performSemanticSearch() {
-        if (!cudaService || !searchQuery.trim()) return;
-
-        try {
-            error = '';
-
-            await cudaService.searchSemantic(
-                searchQuery,
-                selectedCollection,
-                10,
-                handleSearchResults
-            );
-
-            console.log('🔍 Semantic search started');
-        } catch (err) {
-            console.error('Semantic search failed:', err);
-            error = 'Semantic search failed';
-        }
-    }
-
-    // Event handlers
-    function handleStreamResponse(response: CudaResponse) {
-        console.log('📡 Stream response:', response);
-
-        const parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
-        responses = [...responses, {
-            type: 'stream',
-            timestamp: new Date(),
-            data: parsedResponse
+  function startStreamingUpdates(sessionId: string) {
+    // Simulate real-time streaming updates
+    const updateInterval = setInterval(() => {
+      processingProgress += Math.random() * 15;
+      
+      if (processingProgress >= 100) {
+        processingProgress = 100;
+        
+        // Add final result
+        streamResults = [...streamResults, {
+          id: Date.now(),
+          operation: selectedOperation,
+          input: inputText.slice(0, 100) + '...',
+          status: 'completed',
+          processingTime: Math.floor(Math.random() * 2000) + 500,
+          gpuAccelerated: useGpu,
+          results: {
+            vectorsGenerated: Math.floor(Math.random() * 500) + 100,
+            entitiesExtracted: Math.floor(Math.random() * 20) + 5,
+            confidence: 0.85 + Math.random() * 0.1
+          }
         }];
-
-        // Update performance metrics
-        totalResponses++;
-        if (parsedResponse.performance?.processing_time_us) {
-            lastResponseTime = parsedResponse.performance.processing_time_us;
-            avgProcessingTime = ((avgProcessingTime * (totalResponses - 1)) + lastResponseTime) / totalResponses;
-        }
-    }
-
-    function handleStreamError(errorMsg: string) {
-        console.error('❌ Stream error:', errorMsg);
-        error = errorMsg;
-        streamingActive = false;
-    }
-
-    function handleStreamComplete() {
-        console.log('✅ Stream completed');
-        streamingActive = false;
-    }
-
-    function handleDocumentProgress(progress: DocumentProgress) {
-        console.log('📊 Document progress:', progress);
-        responses = [...responses, {
-            type: 'document',
-            timestamp: new Date(),
-            data: progress
+        
+        stopStreamingUpdates();
+      } else {
+        // Add intermediate result
+        streamResults = [...streamResults, {
+          id: Date.now(),
+          operation: `${selectedOperation}_chunk_${streamResults.length + 1}`,
+          status: 'processing',
+          progress: processingProgress
         }];
-    }
+      }
+    }, 800);
 
-    function handleSearchResults(results: SearchResults) {
-        console.log('🎯 Search results:', results);
-        responses = [...responses, {
-            type: 'search',
-            timestamp: new Date(),
-            data: results
+    // Store interval for cleanup
+    metricsInterval = updateInterval;
+  }
+
+  function stopStreamingUpdates() {
+    isStreaming = false;
+    currentSession = null;
+    processingProgress = 0;
+    
+    if (metricsInterval) {
+      clearInterval(metricsInterval);
+      metricsInterval = null;
+    }
+  }
+
+  async function processSingleDocument() {
+    if (!inputText.trim()) return;
+    
+    const startTime = Date.now();
+    
+    const formData = new FormData();
+    formData.append('documentData', inputText);
+    formData.append('processingType', selectedOperation);
+    formData.append('useGpu', useGpu.toString());
+
+    try {
+      const response = await fetch('?/processDocument', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await response.json();
+      if (result.success) {
+        streamResults = [...streamResults, {
+          id: Date.now(),
+          operation: `single_${selectedOperation}`,
+          input: inputText.slice(0, 100) + '...',
+          status: 'completed',
+          processingTime: result.processingTime,
+          gpuAccelerated: result.gpuAccelerated,
+          results: result.result,
+          timestamp: result.timestamp
         }];
+      }
+    } catch (error) {
+      console.error('Single document processing failed:', error);
     }
+  }
 
-    // Stop streaming session
-    async function stopStreamingSession() {
-        if (!cudaService || !activeSession) return;
+  // Performance metrics formatting
+  function formatMemory(gb: number): string {
+    return `${gb.toFixed(1)}GB`;
+  }
 
-        try {
-            await cudaService.closeStream(activeSession);
-            streamingActive = false;
-            activeSession = '';
-            console.log('🛑 Streaming session stopped');
-        } catch (err) {
-            console.error('Failed to stop streaming session:', err);
-        }
+  function formatUtilization(percent: number): string {
+    return `${percent}%`;
+  }
+
+  function formatThroughput(docsPerSec: number): string {
+    return docsPerSec >= 1000 ? `${(docsPerSec / 1000).toFixed(1)}K/s` : `${docsPerSec}/s`;
+  }
+
+  function getOperationIcon(operation: string) {
+    switch (operation) {
+      case 'document_vectorization': return Database;
+      case 'similarity_search': return BarChart3;
+      case 'text_embedding': return Layers;
+      case 'legal_entity_extraction': return Eye;
+      default: return Cpu;
     }
+  }
 
-    // Load sample text
-    function loadSampleText() {
-        textInput = sampleLegalText;
+  // Cleanup on destroy
+  onDestroy(() => {
+    stopStreamingUpdates();
+    if (streamingSocket) {
+      streamingSocket.close();
     }
+  });
 
-    // Clear responses
-    function clearResponses() {
-        responses = [];
-        totalResponses = 0;
-        avgProcessingTime = 0;
-        lastResponseTime = 0;
-    }
+  // Auto-refresh metrics
+  onMount(() => {
+    const refreshInterval = setInterval(() => {
+      // Simulate live metrics updates
+      liveMetrics = {
+        ...liveMetrics,
+        throughputCurrent: liveMetrics.throughputCurrent + Math.floor(Math.random() * 20) - 10,
+        avgProcessingTime: liveMetrics.avgProcessingTime + Math.floor(Math.random() * 50) - 25,
+        queueSize: Math.max(0, liveMetrics.queueSize + Math.floor(Math.random() * 6) - 3)
+      };
+    }, 3000);
+    
+    return () => clearInterval(refreshInterval);
+  });
 </script>
 
 <svelte:head>
-    <title>CUDA gRPC Streaming - Legal AI</title>
-    <meta name="description" content="Real-time CUDA-accelerated legal document processing via gRPC streaming" />
+  <title>CUDA Streaming - GPU-Accelerated Legal AI Processing</title>
 </svelte:head>
 
-<div class="cuda-streaming-page">
-    <header class="page-header">
-        <h1>🚀 CUDA gRPC Streaming</h1>
-        <p>Real-time legal document processing with GPU acceleration</p>
-    </header>
+<div class="container mx-auto p-6 space-y-8">
+  <!-- Header -->
+  <div class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
+      <Cpu class="w-10 h-10 text-primary" />
+      CUDA Streaming
+    </h1>
+    <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
+      GPU-accelerated real-time legal document processing with NVIDIA CUDA and streaming analytics
+    </p>
+    <div class="flex justify-center gap-2 mt-6">
+      <Badge 
+        variant={data.gpuInfo.gpuAvailable ? 'default' : 'destructive'}
+        class="gap-1"
+      >
+        <Zap class="w-3 h-3" />
+        GPU {data.gpuInfo.gpuAvailable ? 'Available' : 'Unavailable'}
+      </Badge>
+      <Badge variant="secondary" class="gap-1">
+        <Memory class="w-3 h-3" />
+        {data.gpuInfo.totalMemory} VRAM
+      </Badge>
+      <Badge variant="secondary" class="gap-1">
+        <Activity class="w-3 h-3" />
+        CUDA {data.gpuInfo.cudaVersion}
+      </Badge>
+      <Badge variant="secondary" class="gap-1">
+        <TrendingUp class="w-3 h-3" />
+        {formatThroughput(liveMetrics.throughputCurrent)} Throughput
+      </Badge>
+    </div>
+  </div>
 
-    {#if loading}
-        <div class="loading-state">
-            <div class="spinner"></div>
-            <p>Initializing CUDA gRPC service...</p>
-        </div>
-    {:else if error}
-        <div class="error-state">
-            <h3>⚠️ Connection Error</h3>
-            <p>{error}</p>
-            <button onclick={() => window.location.reload()}>🔄 Retry</button>
-        </div>
-    {:else}
-        <!-- Status Panel -->
-        <section class="status-panel">
-            <div class="status-grid">
-                <div class="status-item">
-                    <span class="status-label">Connection</span>
-                    <span class="status-value" class:connected={isConnected}>
-                        {isConnected ? '🟢 Connected' : '🔴 Disconnected'}
-                    </span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Session</span>
-                    <span class="status-value">{activeSession || 'None'}</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Streaming</span>
-                    <span class="status-value" class:active={streamingActive}>
-                        {streamingActive ? '🔴 Active' : '⚪ Idle'}
-                    </span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Responses</span>
-                    <span class="status-value">{totalResponses}</span>
-                </div>
+  <!-- Tab Navigation -->
+  <div class="flex justify-center mb-8">
+    <div class="flex space-x-1 bg-muted p-1 rounded-lg">
+      {#each [
+        { id: 'streaming', label: 'Real-Time Streaming', icon: Play },
+        { id: 'monitoring', label: 'GPU Monitoring', icon: Activity },
+        { id: 'results', label: 'Processing Results', icon: BarChart3 },
+        { id: 'config', label: 'Configuration', icon: Settings }
+      ] as tab}
+        <button
+          onclick={() => selectedTab = tab.id}
+          class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
+                 {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
+        >
+          {@render tab.icon({ class: "w-4 h-4" })}
+          {tab.label}
+        </button>
+      {/each}
+    </div>
+  </div>
+
+  <!-- Real-Time Streaming Tab -->
+  {#if selectedTab === 'streaming'}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Streaming Controls -->
+      <OrchestratedCard.Analysis>
+        <Card.Header>
+          <Card.Title class="flex items-center gap-2">
+            <Play class="w-5 h-5" />
+            Streaming Configuration
+          </Card.Title>
+          <Card.Description>
+            Configure and start GPU-accelerated document processing streams
+          </Card.Description>
+        </Card.Header>
+        <Card.Content class="space-y-6">
+          <!-- Operation Selection -->
+          <div class="space-y-3">
+            <label class="text-sm font-medium">Processing Operation</label>
+            <select 
+              bind:value={selectedOperation}
+              class="w-full p-2 border rounded-md"
+              disabled={isStreaming}
+            >
+              {#each data.supportedOperations as operation}
+                <option value={operation}>
+                  {operation.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </option>
+              {/each}
+            </select>
+          </div>
+
+          <!-- Input Data -->
+          <div class="space-y-3">
+            <label class="text-sm font-medium">Input Data</label>
+            <textarea
+              bind:value={inputText}
+              placeholder="Enter legal document text for processing..."
+              class="w-full h-32 p-3 border rounded-md"
+              disabled={isStreaming}
+            ></textarea>
+          </div>
+
+          <!-- Configuration Options -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-medium">Batch Size</label>
+              <Input
+                type="number"
+                bind:value={batchSize}
+                min="1"
+                max="100"
+                disabled={isStreaming}
+              />
             </div>
-        </section>
-
-        <!-- Performance Metrics -->
-        {#if totalResponses > 0}
-            <section class="metrics-panel">
-                <h3>📊 Performance Metrics</h3>
-                <div class="metrics-grid">
-                    <div class="metric">
-                        <span class="metric-label">Last Response Time</span>
-                        <span class="metric-value">{(lastResponseTime / 1000).toFixed(2)}ms</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-label">Average Response Time</span>
-                        <span class="metric-value">{(avgProcessingTime / 1000).toFixed(2)}ms</span>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-label">Total Processed</span>
-                        <span class="metric-value">{totalResponses}</span>
-                    </div>
-                </div>
-            </section>
-        {/if}
-
-        <!-- Control Panel -->
-        <section class="control-panel">
-            <div class="control-section">
-                <h3>🎛️ Streaming Controls</h3>
-                <div class="button-group">
-                    <button
-                        onclick={startStreamingSession}
-                        disabled={!isConnected || streamingActive}
-                        class="primary"
-                    >
-                        🚀 Start Stream
-                    </button>
-
-                    <button
-                        onclick={stopStreamingSession}
-                        disabled={!streamingActive}
-                        class="secondary"
-                    >
-                        🛑 Stop Stream
-                    </button>
-
-                    <button
-                        onclick={clearResponses}
-                        class="tertiary"
-                    >
-                        🗑️ Clear
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Input Sections -->
-        <div class="input-grid">
-            <!-- Text Processing -->
-            <section class="input-section">
-                <h3>📝 Text Embedding</h3>
-                <div class="textarea-container">
-                    <textarea
-                        bind:value={textInput}
-                        placeholder="Enter legal text for CUDA processing..."
-                        rows="6"
-                        disabled={!activeSession}
-                    ></textarea>
-                    <div class="textarea-actions">
-                        <button onclick={loadSampleText} class="small">
-                            📋 Load Sample
-                        </button>
-                        <button
-                            onclick={sendTextForEmbedding}
-                            disabled={!activeSession || !textInput.trim()}
-                            class="primary small"
-                        >
-                            ⚡ Process with CUDA
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Document Analysis -->
-            <section class="input-section">
-                <h3>📄 Document Analysis</h3>
-                <div class="textarea-container">
-                    <textarea
-                        bind:value={documentContent}
-                        placeholder="Enter document content for comprehensive analysis..."
-                        rows="6"
-                    ></textarea>
-                    <div class="textarea-actions">
-                        <select bind:value={selectedCollection}>
-                            <option value="legal_documents">Legal Documents</option>
-                            <option value="contracts">Contracts</option>
-                            <option value="cases">Cases</option>
-                            <option value="statutes">Statutes</option>
-                        </select>
-                        <button
-                            onclick={processDocument}
-                            disabled={!isConnected || !documentContent.trim()}
-                            class="primary small"
-                        >
-                            🔬 Analyze Document
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- Search Section -->
-        <section class="search-section">
-            <h3>🔍 Semantic Search</h3>
-            <div class="search-controls">
+            <div class="space-y-2">
+              <label class="flex items-center space-x-2">
                 <input
-                    type="text"
-                    bind:value={searchQuery}
-                    placeholder="Enter search query..."
-                    class="search-input"
+                  type="checkbox"
+                  bind:checked={useGpu}
+                  disabled={isStreaming || !data.gpuInfo.gpuAvailable}
+                  class="rounded"
                 />
-                <select bind:value={selectedCollection} class="collection-select">
-                    <option value="legal_documents">Legal Documents</option>
-                    <option value="contracts">Contracts</option>
-                    <option value="cases">Cases</option>
-                    <option value="statutes">Statutes</option>
-                </select>
-                <button
-                    onclick={performSemanticSearch}
-                    disabled={!isConnected || !searchQuery.trim()}
-                    class="primary"
-                >
-                    🚀 Search
-                </button>
+                <span class="text-sm font-medium">Use GPU Acceleration</span>
+              </label>
             </div>
-        </section>
+          </div>
 
-        <!-- Real-time Responses -->
-        <section class="responses-section">
-            <h3>🔄 Real-time Responses</h3>
-            <div class="responses-container">
-                {#if responses.length === 0}
-                    <div class="empty-state">
-                        <p>No responses yet. Start a streaming session and send some text for processing.</p>
+          <!-- Control Buttons -->
+          <div class="flex gap-3">
+            <OrchestratedButton.ProcessDocument
+              onclick={startCudaStream}
+              disabled={!canStream}
+              class="flex-1 gap-2"
+            >
+              {#if isStreaming}
+                <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                Streaming...
+              {:else}
+                <Play class="w-4 h-4" />
+                Start Stream
+              {/if}
+            </OrchestratedButton.ProcessDocument>
+
+            {#if isStreaming}
+              <Button 
+                variant="destructive" 
+                onclick={stopCudaStream}
+                class="gap-2"
+              >
+                <Square class="w-4 h-4" />
+                Stop
+              </Button>
+            {:else}
+              <Button 
+                variant="outline" 
+                onclick={processSingleDocument}
+                disabled={!inputText.trim()}
+                class="gap-2"
+              >
+                <Zap class="w-4 h-4" />
+                Single Process
+              </Button>
+            {/if}
+          </div>
+
+          <!-- Processing Progress -->
+          {#if isStreaming}
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-sm">
+                <span>Processing Progress</span>
+                <span>{processingProgress.toFixed(1)}%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  class="bg-primary h-2 rounded-full transition-all duration-300"
+                  style="width: {processingProgress}%"
+                ></div>
+              </div>
+              {#if currentSession}
+                <p class="text-xs text-muted-foreground">
+                  Session: {currentSession}
+                </p>
+              {/if}
+            </div>
+          {/if}
+        </Card.Content>
+      </OrchestratedCard.Analysis>
+
+      <!-- Live Stream Results -->
+      <OrchestratedCard.Evidence>
+        <Card.Header>
+          <Card.Title class="flex items-center gap-2">
+            <Activity class="w-5 h-5" />
+            Live Stream Results
+          </Card.Title>
+          <Card.Description>
+            Real-time processing results and performance metrics
+          </Card.Description>
+        </Card.Header>
+        <Card.Content>
+          <div class="space-y-3 max-h-96 overflow-y-auto">
+            {#if streamResults.length === 0}
+              <div class="text-center py-8 text-muted-foreground">
+                <Activity class="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>No active streams. Start processing to see results.</p>
+              </div>
+            {:else}
+              {#each streamResults as result}
+                <div class="border rounded-lg p-3">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                      {@render getOperationIcon(result.operation)({ class: "w-4 h-4" })}
+                      <span class="font-medium text-sm">{result.operation.replace('_', ' ')}</span>
                     </div>
-                {:else}
-                    {#each responses as response, i (i)}
-                        <div class="response-item" class:stream={response.type === 'stream'}
-                             class:document={response.type === 'document'}
-                             class:search={response.type === 'search'}>
-                            <div class="response-header">
-                                <span class="response-type">
-                                    {#if response.type === 'stream'}🔄 Stream
-                                    {:else if response.type === 'document'}📄 Document
-                                    {:else if response.type === 'search'}🔍 Search{/if}
-                                </span>
-                                <span class="response-timestamp">
-                                    {response.timestamp.toLocaleTimeString()}
-                                </span>
-                            </div>
-                            <div class="response-content">
-                                <pre>{JSON.stringify(response.data, null, 2)}</pre>
-                            </div>
-                        </div>
-                    {/each}
-                {/if}
+                    <Badge 
+                      variant={result.status === 'completed' ? 'default' : 'secondary'}
+                      class="text-xs"
+                    >
+                      {result.status}
+                    </Badge>
+                  </div>
+                  
+                  {#if result.input}
+                    <p class="text-xs text-muted-foreground mb-2">{result.input}</p>
+                  {/if}
+                  
+                  {#if result.processingTime}
+                    <div class="flex items-center gap-4 text-xs text-muted-foreground">
+                      <span>{result.processingTime}ms</span>
+                      <span>{result.gpuAccelerated ? 'GPU' : 'CPU'}</span>
+                      {#if result.results?.confidence}
+                        <span class={getConfidenceClass(result.results.confidence)}>
+                          {Math.round(result.results.confidence * 100)}% confidence
+                        </span>
+                      {/if}
+                    </div>
+                  {/if}
+                  
+                  {#if result.progress !== undefined}
+                    <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                      <div 
+                        class="bg-primary h-1 rounded-full"
+                        style="width: {result.progress}%"
+                      ></div>
+                    </div>
+                  {/if}
+                </div>
+              {/each}
+            {/if}
+          </div>
+        </Card.Content>
+      </OrchestratedCard.Evidence>
+    </div>
+  {/if}
+
+  <!-- GPU Monitoring Tab -->
+  {#if selectedTab === 'monitoring'}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- GPU Status -->
+      <OrchestratedCard.Analysis>
+        <Card.Content class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <Cpu class="w-8 h-8 text-primary/60" />
+            <Badge variant={data.gpuInfo.gpuAvailable ? 'default' : 'destructive'}>
+              {gpuStatus}
+            </Badge>
+          </div>
+          <p class="text-sm text-muted-foreground mb-1">GPU Status</p>
+          <p class="text-lg font-medium">{data.gpuInfo.gpuName}</p>
+          <p class="text-xs text-muted-foreground">{data.gpuInfo.computeCapability}</p>
+        </Card.Content>
+      </OrchestratedCard.Analysis>
+
+      <!-- Memory Usage -->
+      <OrchestratedCard.Analysis>
+        <Card.Content class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <Memory class="w-8 h-8 text-primary/60" />
+            <Badge variant="outline">{data.gpuInfo.utilization?.memory}%</Badge>
+          </div>
+          <p class="text-sm text-muted-foreground mb-1">Memory Usage</p>
+          <p class="text-lg font-medium">{data.gpuInfo.availableMemory}</p>
+          <p class="text-xs text-muted-foreground">of {data.gpuInfo.totalMemory}</p>
+        </Card.Content>
+      </OrchestratedCard.Analysis>
+
+      <!-- Temperature -->
+      <OrchestratedCard.Analysis>
+        <Card.Content class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <Thermometer class="w-8 h-8 text-primary/60" />
+            <Badge variant="outline">{data.gpuInfo.temperatureCurrent}°C</Badge>
+          </div>
+          <p class="text-sm text-muted-foreground mb-1">Temperature</p>
+          <p class="text-lg font-medium">{data.gpuInfo.temperatureCurrent}°C</p>
+          <p class="text-xs text-muted-foreground">Normal operating range</p>
+        </Card.Content>
+      </OrchestratedCard.Analysis>
+
+      <!-- Power Draw -->
+      <OrchestratedCard.Analysis>
+        <Card.Content class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <Power class="w-8 h-8 text-primary/60" />
+            <Badge variant="outline">{data.gpuInfo.powerDraw}W</Badge>
+          </div>
+          <p class="text-sm text-muted-foreground mb-1">Power Draw</p>
+          <p class="text-lg font-medium">{data.gpuInfo.powerDraw}W</p>
+          <p class="text-xs text-muted-foreground">Current consumption</p>
+        </Card.Content>
+      </OrchestratedCard.Analysis>
+    </div>
+
+    <!-- Performance Metrics -->
+    <OrchestratedCard.Analysis>
+      <Card.Header>
+        <Card.Title class="flex items-center gap-2">
+          <TrendingUp class="w-5 h-5" />
+          Real-Time Performance Metrics
+        </Card.Title>
+      </Card.Header>
+      <Card.Content>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="text-center p-4 bg-muted/50 rounded-lg">
+            <p class="text-2xl font-bold text-primary">{formatThroughput(liveMetrics.throughputCurrent)}</p>
+            <p class="text-sm text-muted-foreground">Current Throughput</p>
+          </div>
+          <div class="text-center p-4 bg-muted/50 rounded-lg">
+            <p class="text-2xl font-bold text-primary">{liveMetrics.avgProcessingTime}ms</p>
+            <p class="text-sm text-muted-foreground">Avg Processing Time</p>
+          </div>
+          <div class="text-center p-4 bg-muted/50 rounded-lg">
+            <p class="text-2xl font-bold text-primary">{liveMetrics.queueSize}</p>
+            <p class="text-sm text-muted-foreground">Queue Size</p>
+          </div>
+        </div>
+      </Card.Content>
+    </OrchestratedCard.Analysis>
+  {/if}
+
+  <!-- Recent Processing Results -->
+  <OrchestratedCard.Analysis>
+    <Card.Header>
+      <Card.Title class="flex items-center gap-2">
+        <Clock class="w-5 h-5" />
+        Recent Processing Sessions
+      </Card.Title>
+      <Card.Description>
+        Historical GPU processing performance and results
+      </Card.Description>
+    </Card.Header>
+    <Card.Content>
+      <div class="space-y-3">
+        {#each data.recentProcessing as session}
+          <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <Badge variant="outline" class="text-xs">{session.operation.replace('_', ' ')}</Badge>
+                <Badge 
+                  variant={session.gpuAccelerated ? 'default' : 'secondary'}
+                  class="text-xs"
+                >
+                  {session.gpuAccelerated ? 'GPU' : 'CPU'}
+                </Badge>
+                <Badge 
+                  variant={session.status === 'completed' ? 'default' : 'destructive'}
+                  class="text-xs"
+                >
+                  {session.status}
+                </Badge>
+              </div>
+              <div class="text-sm text-muted-foreground">
+                {session.documentsProcessed} documents • 
+                {session.processingTime}ms • 
+                {formatThroughput(session.throughput)} throughput
+              </div>
+              <div class="text-xs text-muted-foreground">
+                {formatAnalysisDate(new Date(session.timestamp))}
+              </div>
             </div>
-        </section>
-    {/if}
+            <Button variant="ghost" size="sm">
+              <Eye class="w-3 h-3" />
+            </Button>
+          </div>
+        {/each}
+      </div>
+    </Card.Content>
+  </OrchestratedCard.Analysis>
 </div>
-
-<style>
-    .cuda-streaming-page {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-        font-family: 'Inter', system-ui, sans-serif;
-    }
-
-    .page-header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
-    .page-header h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #1f2937;
-        margin-bottom: 0.5rem;
-    }
-
-    .page-header p {
-        font-size: 1.1rem;
-        color: #6b7280;
-    }
-
-    .loading-state {
-        text-align: center;
-        padding: 4rem;
-    }
-
-    .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #e5e7eb;
-        border-left: 4px solid #3b82f6;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 1rem;
-    }
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
-    .error-state {
-        text-align: center;
-        padding: 2rem;
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        border-radius: 8px;
-        margin-bottom: 2rem;
-    }
-
-    .status-panel {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .status-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-    }
-
-    .status-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .status-label {
-        font-size: 0.875rem;
-        color: #6b7280;
-        margin-bottom: 0.25rem;
-    }
-
-    .status-value {
-        font-weight: 600;
-        font-size: 1rem;
-    }
-
-    .status-value.connected {
-        color: #059669;
-    }
-
-    .status-value.active {
-        color: #dc2626;
-    }
-
-    .metrics-panel {
-        background: #f0f9ff;
-        border: 1px solid #bae6fd;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .metrics-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-
-    .metric {
-        text-align: center;
-    }
-
-    .metric-label {
-        display: block;
-        font-size: 0.875rem;
-        color: #0369a1;
-        margin-bottom: 0.25rem;
-    }
-
-    .metric-value {
-        font-weight: 700;
-        font-size: 1.125rem;
-        color: #0c4a6e;
-    }
-
-    .control-panel {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .button-group {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-
-    .input-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .input-section {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 1.5rem;
-    }
-
-    .textarea-container {
-        margin-top: 1rem;
-    }
-
-    .textarea-actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 0.75rem;
-        gap: 0.75rem;
-    }
-
-    .search-section {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .search-controls {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-        align-items: center;
-    }
-
-    .search-input {
-        flex: 1;
-        padding: 0.75rem;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        font-size: 1rem;
-    }
-
-    .collection-select {
-        padding: 0.75rem;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        font-size: 1rem;
-        min-width: 150px;
-    }
-
-    .responses-section {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 1.5rem;
-    }
-
-    .responses-container {
-        max-height: 600px;
-        overflow-y: auto;
-        margin-top: 1rem;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: #6b7280;
-    }
-
-    .response-item {
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        overflow: hidden;
-    }
-
-    .response-item.stream {
-        border-left: 4px solid #3b82f6;
-    }
-
-    .response-item.document {
-        border-left: 4px solid #10b981;
-    }
-
-    .response-item.search {
-        border-left: 4px solid #f59e0b;
-    }
-
-    .response-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #f9fafb;
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .response-type {
-        font-weight: 600;
-        font-size: 0.875rem;
-    }
-
-    .response-timestamp {
-        font-size: 0.75rem;
-        color: #6b7280;
-    }
-
-    .response-content {
-        padding: 1rem;
-        background: #fafafa;
-    }
-
-    .response-content pre {
-        font-family: 'Monaco', 'Consolas', monospace;
-        font-size: 0.8rem;
-        line-height: 1.4;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        margin: 0;
-        color: #374151;
-    }
-
-    /* Button styles */
-    button {
-        padding: 0.75rem 1.5rem;
-        border-radius: 6px;
-        font-weight: 500;
-        cursor: pointer;
-        border: none;
-        font-size: 0.925rem;
-        transition: all 0.2s;
-    }
-
-    button.primary {
-        background: #3b82f6;
-        color: white;
-    }
-
-    button.primary:hover:not(:disabled) {
-        background: #2563eb;
-    }
-
-    button.secondary {
-        background: #6b7280;
-        color: white;
-    }
-
-    button.secondary:hover:not(:disabled) {
-        background: #4b5563;
-    }
-
-    button.tertiary {
-        background: #f3f4f6;
-        color: #374151;
-        border: 1px solid #d1d5db;
-    }
-
-    button.tertiary:hover:not(:disabled) {
-        background: #e5e7eb;
-    }
-
-    button.small {
-        padding: 0.5rem 1rem;
-        font-size: 0.875rem;
-    }
-
-    button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    textarea {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        font-size: 1rem;
-        font-family: inherit;
-        resize: vertical;
-    }
-
-    h3 {
-        margin: 0 0 1rem 0;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #1f2937;
-    }
-
-    @media (max-width: 768px) {
-        .cuda-streaming-page {
-            padding: 1rem;
-        }
-
-        .input-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .status-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .search-controls {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .button-group {
-            flex-direction: column;
-        }
-
-        .textarea-actions {
-            flex-direction: column;
-            align-items: stretch;
-        }
-    }
-</style>

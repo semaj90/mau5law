@@ -3,6 +3,7 @@
   Comprehensive navigation for all demonstrations and testing interfaces
 -->
 <script lang="ts">
+</script>
   import { goto } from '$app/navigation';
   import * as Card from '$lib/components/ui/card';
   import {
@@ -523,8 +524,8 @@
                         <Play class="h-4 w-4 mr-2" />
                         Launch Demo
                       </Button>
-                    </Card.Content>
-                  </Card.Root>
+                    </CardContent>
+                  </Card>
                 {/each}
               </div>
             {:else}
@@ -565,8 +566,8 @@
                           </div>
                         </div>
                       </div>
-                    </Card.Content>
-                  </Card.Root>
+                    </CardContent>
+                  </Card>
                 {/each}
               </div>
             {/if}

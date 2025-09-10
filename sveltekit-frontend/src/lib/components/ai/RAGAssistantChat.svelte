@@ -4,9 +4,11 @@
 	import { cubicOut } from 'svelte/easing';
 	import { writable } from 'svelte/store';
 
-	// Props
-	export let userId: string = 'demo-user';
-	export let onCaseCreated: (caseId: string) => void = () => {};
+	// Props - Svelte 5 runes (remove legacy export let usage)
+	const { userId = 'demo-user', onCaseCreated = () => {} }: {
+		userId?: string;
+		onCaseCreated?: (caseId: string) => void;
+	} = $props();
 
 	// Chat state
 	let messages = $state([]);
@@ -115,7 +117,7 @@
 	async function typeMessage(content: string, metadata = {}) {
 		isTyping = true;
 		const messageId = crypto.randomUUID();
-		
+
 		messages.push({
 			id: messageId,
 			content: '',
@@ -159,7 +161,7 @@
 		for (let i = 0; i < steps.length; i++) {
 			await new Promise(resolve => setTimeout(resolve, 800));
 			ingestionProgress = ((i + 1) / steps.length) * 100;
-			
+
 			if (i === steps.length - 1) {
 				// Simulate finding relevant context
 				ragContext.push({
@@ -185,7 +187,7 @@
 	async function startWorkflow() {
 		workflowActive = true;
 		currentStep = 0;
-		
+
 		await typeMessage(aiResponses.workflow_start.join(' '));
 		await new Promise(resolve => setTimeout(resolve, 500));
 		await typeMessage(workflowSteps[currentStep].question);
@@ -197,7 +199,7 @@
 
 		// Add user message
 		addMessage(answer, 'user');
-		
+
 		// Store answer
 		workflowData[workflowSteps[currentStep].key] = answer;
 
@@ -222,9 +224,9 @@
 	// Complete workflow and create case
 	async function completeWorkflow() {
 		await typeMessage(aiResponses.case_complete.join(' '));
-		
+
 		isProcessing = true;
-		
+
 		// Create case via API
 		try {
 			const caseData = {
@@ -271,12 +273,12 @@
 		currentMessage = '';
 
 		// Check if user wants to start workflow
-		if (userMessage.toLowerCase().includes('case') || 
+		if (userMessage.toLowerCase().includes('case') ||
 			userMessage.toLowerCase().includes('investigation') ||
 			userMessage.toLowerCase().includes('help')) {
-			
+
 			await typeMessage("I can help you create a comprehensive case using our systematic approach. Would you like to start the 'Who, What, Why, How' workflow?");
-			
+
 			// Auto-start workflow after brief pause
 			setTimeout(() => {
 				startWorkflow();
@@ -365,7 +367,7 @@
 	<!-- Chat Messages -->
 	<div class="chat-container" bind:this={chatContainer}>
 		{#each messages as message (message.id)}
-			<div 
+			<div
 				class="message message-{message.type}"
 				transition:fly={{ y: 20, duration: 300 }}
 			>
@@ -397,23 +399,23 @@
 				<span class="workflow-title">{workflowSteps[currentStep].key.toUpperCase()}</span>
 				<span class="workflow-progress">Step {currentStep + 1} of 6</span>
 			</div>
-			
+
 			<textarea
 				class="workflow-input"
 				placeholder={workflowSteps[currentStep].placeholder}
 				rows="3"
-				on:keydown={(e) => {
+				onkeydown={(e) => {
 					if (e.key === 'Enter' && e.ctrlKey) {
 						handleQuickAnswer(e.target.value);
 						e.target.value = '';
 					}
 				}}
 			></textarea>
-			
+
 			<div class="workflow-actions">
-				<button 
+				<button
 					class="workflow-btn primary"
-					on:click={(e) => {
+					onclick={(e) => {
 						const textarea = e.target.closest('.workflow-interface').querySelector('.workflow-input');
 						handleQuickAnswer(textarea.value);
 						textarea.value = '';
@@ -436,27 +438,27 @@
 					placeholder="Ask me anything about legal cases, or say 'help' to start a new case..."
 					rows="2"
 					class="chat-input"
-					on:keydown={(e) => {
+					onkeydown={(e) => {
 						if (e.key === 'Enter' && !e.shiftKey) {
 							e.preventDefault();
 							handleChatMessage();
 						}
 					}}
 				></textarea>
-				<button 
+				<button
 					class="send-button"
-					on:click={handleChatMessage}
+					onclick={handleChatMessage}
 					disabled={!currentMessage.trim() || isProcessing}
 				>
 					🚀
 				</button>
 			</div>
-			
+
 			<div class="quick-actions">
-				<button class="quick-btn" on:click={startWorkflow}>
+				<button class="quick-btn" onclick={startWorkflow}>
 					📋 Start Case Workflow
 				</button>
-				<button class="quick-btn" on:click={() => handleChatMessage()}>
+				<button class="quick-btn" onclick={() => handleChatMessage()}>
 					🔍 Analyze Evidence
 				</button>
 			</div>

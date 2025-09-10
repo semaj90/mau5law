@@ -1,5 +1,6 @@
 <!-- Rust WASM Bridge Demo Component -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { 
     initRustBridge, 

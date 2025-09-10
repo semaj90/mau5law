@@ -1,5 +1,6 @@
 <!-- Bits-UI Components Demo Page -->
 <script lang="ts">
+</script>
   import BitsUIDemo from '$lib/components/ui/BitsUIDemo.svelte';
   import { page } from '$app/stores';
   

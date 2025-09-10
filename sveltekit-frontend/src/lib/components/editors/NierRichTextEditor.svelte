@@ -1,5 +1,6 @@
 <!-- NieR-themed Rich Text Editor for Legal Investigation Notes -->
 <script lang="ts">
+</script>
 	import { onMount, onDestroy } from 'svelte';
 	import {
     Card,

@@ -1,5 +1,6 @@
 <!-- EvidenceCard.svelte - Fixed for Svelte 5 -->
 <script lang="ts">
+</script>
   // Badge replaced with span - not available in enhanced-bits
   import Button from "$lib/components/ui/button/Button.svelte";
   import {

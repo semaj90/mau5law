@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   // Basic Select wrapper that uses enhanced-bits Select
   import EnhancedSelect from '$lib/enhanced-bits/Select.svelte';

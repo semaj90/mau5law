@@ -1,4 +1,5 @@
 mcp<script lang="ts">
+</script>
 
   import {
     Button

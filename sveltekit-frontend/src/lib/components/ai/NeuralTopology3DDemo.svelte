@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   /**
    * Neural Topology 3D Prediction Demo
    * Comprehensive integration of all four neural topologies:

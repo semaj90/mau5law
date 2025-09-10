@@ -9,6 +9,7 @@
   - Advanced filtering capabilities
 -->
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { Combobox } from 'bits-ui';
   import { Search, FileText, Scale, Shield, Users, Zap, Clock } from 'lucide-svelte';
@@ -72,7 +73,7 @@ let suggestions = $state<string[] >([]);
   
   // Icons for different types
   const typeIcons = {
-    case: Scale,
+    caseItem: Scale,
     evidence: Shield,
     precedent: FileText,
     statute: FileText,
@@ -81,7 +82,7 @@ let suggestions = $state<string[] >([]);
   };
   
   const typeColors = {
-    case: 'text-blue-600',
+    caseItem: 'text-blue-600',
     evidence: 'text-red-600', 
     precedent: 'text-purple-600',
     statute: 'text-green-600',

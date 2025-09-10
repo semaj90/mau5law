@@ -25,7 +25,7 @@ try {
 
 /**
  * Fast JSON body reader for hot SvelteKit API endpoints
- * Uses SIMD JSON parsing when available
+ * Uses SIMD JSON parsing when available, falls back to FastJSON utility
  */
 export async function readBodyFast(request: Request): Promise<any> {
   try {
@@ -35,8 +35,9 @@ export async function readBodyFast(request: Request): Promise<any> {
       // Use SIMD JSON parsing for up to 3x speed improvement
       return parseJSONSIMD(text);
     } else {
-      // Fallback to standard JSON.parse
-      return JSON.parse(text);
+      // Fallback to optimized FastJSON utility with caching and error recovery
+      const { fastParse } = await import('../utils/fast-json');
+      return fastParse(text);
     }
   } catch (error) {
     console.error('❌ Fast JSON parsing failed:', error);
@@ -186,7 +187,9 @@ export async function readBodyFastWithMetrics(request: Request): Promise<any> {
       const parseTime = performance.now() - parseStart;
       simdMetrics.recordSIMDParse(parseTime);
     } else {
-      result = JSON.parse(text);
+      // Use optimized FastJSON with caching and error recovery
+      const { fastParse } = await import('../utils/fast-json');
+      result = fastParse(text);
       const parseTime = performance.now() - parseStart;
       simdMetrics.recordFallbackParse(parseTime);
     }
@@ -201,16 +204,22 @@ export async function readBodyFastWithMetrics(request: Request): Promise<any> {
 /**
  * SIMD-optimized JSON stringify for responses (when available)
  */
-export function stringifyFast(obj: any): string {
-  // For now, use standard JSON.stringify
-  // Future: integrate sonic or other fast JSON encoder
-  return JSON.stringify(obj);
+export async function stringifyFast(obj: any): Promise<string> {
+  try {
+    // Use FastJSON utility with caching for better performance
+    const { fastStringify } = await import('../utils/fast-json');
+    return fastStringify(obj);
+  } catch (error) {
+    // Fallback to standard JSON.stringify
+    console.warn('FastJSON stringify failed, falling back to standard:', error);
+    return JSON.stringify(obj);
+  }
 }
 
 /**
  * RabbitMQ message enhancer with SIMD JSON parsing
  */
-export function enhanceRabbitMQMessage(message: any): any {
+export async function enhanceRabbitMQMessage(message: any): Promise<any> {
   // If message contains JSON strings, parse them with SIMD
   const enhanced = { ...message };
   
@@ -223,7 +232,9 @@ export function enhanceRabbitMQMessage(message: any): any {
         if (parseJSONSIMD && USE_SIMDJSON) {
           enhanced[field] = parseJSONSIMD(enhanced[field]);
         } else {
-          enhanced[field] = JSON.parse(enhanced[field]);
+          // Use FastJSON for better error recovery and caching
+          const { fastParse } = await import('../utils/fast-json');
+          enhanced[field] = fastParse(enhanced[field]);
         }
       } catch (error) {
         // Keep original value if parsing fails
@@ -238,12 +249,12 @@ export function enhanceRabbitMQMessage(message: any): any {
 /**
  * Vector data parser optimized for SIMD
  */
-export function parseVectorData(jsonString: string): {
+export async function parseVectorData(jsonString: string): Promise<{
   embeddings?: number[][];
   similarities?: number[];
   vectors?: number[][];
   metadata?: any;
-} {
+}> {
   const startTime = performance.now();
   
   try {
@@ -255,7 +266,9 @@ export function parseVectorData(jsonString: string): {
       const parseTime = performance.now() - startTime;
       simdMetrics.recordSIMDParse(parseTime);
     } else {
-      data = JSON.parse(jsonString);
+      // Use FastJSON with optimized parsing for vector data
+      const { fastParse } = await import('../utils/fast-json');
+      data = fastParse(jsonString);
       const parseTime = performance.now() - startTime;
       simdMetrics.recordFallbackParse(parseTime);
     }
@@ -270,12 +283,14 @@ export function parseVectorData(jsonString: string): {
 /**
  * Cache entry parser with SIMD optimization
  */
-export function parseCacheEntry(jsonString: string): any {
+export async function parseCacheEntry(jsonString: string): Promise<any> {
   try {
     if (parseJSONSIMD && USE_SIMDJSON) {
       return parseJSONSIMD(jsonString);
     } else {
-      return JSON.parse(jsonString);
+      // Use FastJSON for cache entry parsing with error recovery
+      const { fastParse } = await import('../utils/fast-json');
+      return fastParse(jsonString);
     }
   } catch (error) {
     console.error('❌ Cache entry parsing failed:', error);

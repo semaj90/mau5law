@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Command } from "bits-ui";
 	import {
 		ContactIcon,

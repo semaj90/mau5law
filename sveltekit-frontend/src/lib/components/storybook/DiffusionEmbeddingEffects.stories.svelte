@@ -1,4 +1,5 @@
 <script>
+</script>
 	import { onMount } from 'svelte';
 	import '../yorha/ps1.css';
 	

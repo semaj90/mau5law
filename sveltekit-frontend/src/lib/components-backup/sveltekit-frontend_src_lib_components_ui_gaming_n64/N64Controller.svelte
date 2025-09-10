@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   export let onPress: (button: string) => void = () => {};
 </script>
 

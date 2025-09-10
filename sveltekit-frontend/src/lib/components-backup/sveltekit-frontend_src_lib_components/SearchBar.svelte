@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     onsearch?: (event?: any) => void;
     onsortChanged?: (event?: any) => void;

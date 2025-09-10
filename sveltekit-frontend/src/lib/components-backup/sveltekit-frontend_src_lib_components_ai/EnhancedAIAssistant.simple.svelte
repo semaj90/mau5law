@@ -1,5 +1,6 @@
 <!-- Simplified Enhanced AI Assistant -->
 <script lang="ts">
+</script>
   interface Props {
 
   }

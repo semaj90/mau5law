@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import {
     Button
@@ -229,7 +230,7 @@
   function generateMockEmbedding(): number[] {
     const embedding = [];
     for (let i = 0; i < 1536; i++) {
-      embedding.push(Math.sin(i * 0.1) * Math.cos(i * 0.05));
+      embedding.push(Math.sin(i * 0.1) * Math.cos(i * 0.05);
     }
     return embedding;
   }

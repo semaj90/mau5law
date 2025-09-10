@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import { UiTooltip as Tooltip } from "$lib/components/ui";
   import {
@@ -202,8 +203,7 @@
       const formData = new FormData();
       formData.append("file", importFile);
       formData.append("type", importType);
-      formData.append("overwrite", overwriteExisting.toString());
-
+      formData.append("overwrite", overwriteExisting.toString();
       const response = await fetch("/api/import", {
         method: "POST",
         body: formData,

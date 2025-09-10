@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import Dialog from 'bits-ui/Dialog.svelte';
   import Button from 'bits-ui/Button.svelte';

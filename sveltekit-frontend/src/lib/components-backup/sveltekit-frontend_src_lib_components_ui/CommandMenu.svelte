@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     triggerText?: any;
     placeholder?: any;

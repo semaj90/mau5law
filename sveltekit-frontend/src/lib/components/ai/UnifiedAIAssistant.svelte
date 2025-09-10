@@ -1,6 +1,7 @@
 <!-- Unified AI Assistant Chat Interface -->
 <!-- Integrates Ollama, LLaMA.cpp WebASM, WebGPU acceleration, and Go microservices -->
 <script lang="ts">
+</script>
 	import { onMount, onDestroy, tick } from 'svelte';
 	import {
     Card,
@@ -286,7 +287,7 @@
 		}
 
 		if (caseId) {
-			contextPrompt += `You are working on case: ${caseId}. `;
+			contextPrompt += `You are working on caseItem: ${caseId}. `;
 		}
 
 		if (evidenceContext.length > 0) {

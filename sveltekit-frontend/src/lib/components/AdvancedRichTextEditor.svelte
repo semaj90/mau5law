@@ -1,5 +1,6 @@
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
 
   import { Editor } from "@tiptap/core";

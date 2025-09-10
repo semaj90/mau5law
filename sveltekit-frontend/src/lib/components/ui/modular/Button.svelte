@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { cva, type VariantProps } from 'class-variance-authority'
   import { cn } from '$lib/utils'
   import type { HTMLButtonAttributes } from 'svelte/elements'
@@ -41,7 +42,7 @@
           yorha: 'bg-black/90 text-yellow-400 border-2 border-yellow-400/60 hover:border-yellow-400 hover:bg-black/80 hover:shadow-yellow-400/20 hover:shadow-lg font-mono yorha-shadow',
           legal: 'bg-blue-600 text-white border-2 border-blue-500 hover:bg-blue-700 hover:border-blue-400 shadow-md',
           evidence: 'bg-orange-600 text-white border-2 border-orange-500 hover:bg-orange-700 hover:border-orange-400 shadow-md',
-          case: 'bg-green-600 text-white border-2 border-green-500 hover:bg-green-700 hover:border-green-400 shadow-md',
+          caseItem: 'bg-green-600 text-white border-2 border-green-500 hover:bg-green-700 hover:border-green-400 shadow-md',
           nes: 'nes-btn is-primary' // 🎮 optional NES.css integration
         },
         size: {

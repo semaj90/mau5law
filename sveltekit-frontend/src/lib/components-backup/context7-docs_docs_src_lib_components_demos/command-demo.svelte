@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Command } from "bits-ui";
 	import CalendarBlank from "phosphor-svelte/lib/CalendarBlank";
 	import CodeBlock from "phosphor-svelte/lib/CodeBlock";

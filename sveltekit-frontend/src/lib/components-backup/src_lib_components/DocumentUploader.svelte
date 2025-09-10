@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from 'bits-ui';
   import { Progress } from 'bits-ui';
   import { Badge } from 'bits-ui';

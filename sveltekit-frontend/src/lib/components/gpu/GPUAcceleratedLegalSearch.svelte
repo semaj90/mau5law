@@ -2,6 +2,7 @@
 <!-- Demonstrates RTX 3060 Ti CUDA acceleration for legal document similarity -->
 
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/enhanced-bits';
 	

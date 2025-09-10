@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type {    Snippet    } from 'svelte';
 	import { Select as BitsSelect } from 'bits-ui';
 	import { createEventDispatcher } from 'svelte';

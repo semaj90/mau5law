@@ -7,6 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+</script>
   // $state and $derived are declared globally in src/types/svelte-helpers.d.ts
   import type { AIResponse } from '$lib/types/ai';
   import { onMount, onDestroy } from 'svelte';
@@ -229,7 +230,7 @@ let device = $state<GPUDevice | null >(null);
           if (event.data.type === 'WEBGPU_RESULT') {
             resolve(event.data.data);
           } else if (event.data.type === 'WEBGPU_ERROR') {
-            reject(new Error(event.data.error));
+            reject(new Error(event.data.error);
           }
         };
 
@@ -306,8 +307,7 @@ let device = $state<GPUDevice | null >(null);
       ]);
 
       // Wait for completion (simplified - real implementation would use callbacks)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
+      await new Promise(resolve => setTimeout(resolve, 2000);
       results = [
         {
           id: Date.now(),

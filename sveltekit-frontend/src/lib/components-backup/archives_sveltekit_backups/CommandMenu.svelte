@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { goto } from "$app/navigation";
   import { citationStore } from "$lib/stores/citations";
   import { createPopover, melt } from "@melt-ui/svelte";
@@ -36,10 +37,10 @@
   });
 
   // Get recent citations
-  $: recentCitations = citationStore.getRecentCitations($citationStore, 5);
+  // TODO: Convert to $derived: recentCitations = citationStore.getRecentCitations($citationStore, 5)
 
   // Available commands
-  $: commands = [
+  // TODO: Convert to $derived: commands = [
     {
       id: "search",
       label: "Search Cases",
@@ -104,20 +105,20 @@
       action: () => insertCitation(citation),
       category: "Citations",
     })),
-  ];
+  ]
 
   // Filter commands based on search query
-  $: filteredCommands = commands.filter(
+  // TODO: Convert to $derived: filteredCommands = commands.filter(
     (cmd) =>
       cmd.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
       cmd.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  )
 
   // Group commands by category
-  $: groupedCommands = filteredCommands.reduce(
+  // TODO: Convert to $derived: groupedCommands = filteredCommands.reduce(
     (acc, cmd) => {
       if (!acc[cmd.category]) {
-        acc[cmd.category] = [];
+        acc[cmd.category] = []
 }
       acc[cmd.category].push(cmd);
       return acc;
@@ -203,8 +204,8 @@
     });
 }
   // Reset when closing
-  $: if (!$open) {
-    searchQuery = "";
+  // TODO: Convert to $derived: if (!$open) {
+    searchQuery = ""
     selectedIndex = 0;
 }
 </script>

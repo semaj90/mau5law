@@ -1,9 +1,11 @@
 <script context="module">
+</script>
   import { slide } from "svelte/transition";
 </script>
 
 <!-- AI Chat Message Component -->
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
 

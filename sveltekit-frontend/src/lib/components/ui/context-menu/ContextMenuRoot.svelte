@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { ContextMenu } from 'bits-ui';
   
   interface Props {

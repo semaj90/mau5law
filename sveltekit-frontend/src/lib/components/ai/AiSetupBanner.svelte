@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Identifier 'autoFetch' has already been declared
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+</script>
   // $props is a Svelte rune provided by the compiler/runtime — do not import it.
 
   interface Props {

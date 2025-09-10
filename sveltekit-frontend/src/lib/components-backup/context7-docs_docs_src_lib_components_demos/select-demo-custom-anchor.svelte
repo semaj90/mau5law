@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import DemoContainer from "../demo-container.svelte";
 	import SelectDemoCustom from "./select-demo-custom.svelte";
 

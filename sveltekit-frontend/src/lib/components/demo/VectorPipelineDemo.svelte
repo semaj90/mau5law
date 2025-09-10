@@ -1,5 +1,6 @@
 <!-- Vector Pipeline Demo Component -->
 <script lang="ts">
+</script>
   import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import {
@@ -49,11 +50,11 @@
   }
 
   // Get status indicators (using derived values from Svelte 4 store)
-  $: pipelineStatus = machineState.context?.pipeline || {};
-  $: batchInfo = machineState.context?.batch || {};
-  $: metrics = machineState.context?.metrics || {};
-  $: currentState = typeof machineState.value === 'string' ? machineState.value : 'unknown';
-  $: errors = machineState.context?.errors || [];
+  // TODO: Convert to $derived: pipelineStatus = machineState.context?.pipeline || {}
+  // TODO: Convert to $derived: batchInfo = machineState.context?.batch || {}
+  // TODO: Convert to $derived: metrics = machineState.context?.metrics || {}
+  // TODO: Convert to $derived: currentState = typeof machineState.value === 'string' ? machineState.value : 'unknown'
+  // TODO: Convert to $derived: errors = machineState.context?.errors || []
 
   function getStatusColor(status: boolean): string {
     return status ? 'text-green-600' : 'text-red-600';

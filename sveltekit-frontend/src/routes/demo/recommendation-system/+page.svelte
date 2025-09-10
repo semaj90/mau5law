@@ -1,6 +1,7 @@
 <!-- Recommendation System Demo - Gaming CSS Modals Integration -->
 <script lang="ts">
-  import { $state, $derived } from 'svelte';
+</script>
+  import { } from 'svelte';
   import { onMount, onDestroy } from 'svelte';
   import RecommendationContainer from '$lib/components/ui/gaming/RecommendationContainer.svelte';
   import { recommendationOrchestrator, recommendations } from '$lib/services/recommendation-orchestrator';
@@ -234,8 +235,8 @@
             </button>
           {/each}
         </div>
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </Card>
 
     <!-- Demo Controls -->
     <Card.Root class="control-card">
@@ -281,8 +282,8 @@
             Reset Demo
           </Button>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </Card>
 
     <!-- Activity Status -->
     <Card.Root class="status-card">
@@ -310,8 +311,8 @@
             <span class="status-value">{currentConsole.toUpperCase()}</span>
           </div>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </Card>
 
     <!-- Feature Description -->
     <Card.Root class="description-card">
@@ -356,8 +357,8 @@
             </div>
           </div>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </Card>
   </div>
 </div>
 
@@ -416,7 +417,7 @@
 
   .demo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr);
     gap: 2rem;
   }
 
@@ -428,7 +429,7 @@
 
   .console-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr);
     gap: 0.5rem;
   }
 
@@ -465,7 +466,7 @@
 
   .demo-controls {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr);
     gap: 1rem;
     margin-bottom: 1rem;
   }
@@ -480,7 +481,7 @@
 
   .status-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr);
     gap: 1rem;
   }
 

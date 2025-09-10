@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { wasmGraphEngine } from '$lib/wasm/graphEngine';
   import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
@@ -101,9 +102,9 @@
   }
 
   const commonQueries = [
-    'MATCH (case:Case) RETURN case LIMIT 5',
-    'MATCH (evidence:Evidence)-[:BELONGS_TO]->(case:Case) RETURN evidence, case LIMIT 3',
-    'MATCH (person:Person)-[:INVOLVED_IN]->(case:Case) RETURN person, case LIMIT 3',
+    'MATCH (caseItem:Case) RETURN case LIMIT 5',
+    'MATCH (evidence:Evidence)-[:BELONGS_TO]->(caseItem:Case) RETURN evidence, case LIMIT 3',
+    'MATCH (person:Person)-[:INVOLVED_IN]->(caseItem:Case) RETURN person, case LIMIT 3',
     'MATCH (doc:Document)-[:CONTAINS]->(evidence:Evidence) RETURN doc, evidence LIMIT 5'
   ];
 </script>

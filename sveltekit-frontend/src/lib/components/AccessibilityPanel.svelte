@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import {
     Button
@@ -485,7 +486,7 @@ let screenReaderMode = $state(false);
   >
     <div
       class="mx-auto px-4 max-w-7xl"
-      onclick|stopPropagation
+      onclick
       role="document"
     >
       <div class="mx-auto px-4 max-w-7xl">

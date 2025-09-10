@@ -1,5 +1,6 @@
 <!-- YoRHa Advanced Command Interface - Complete 3D System -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import type { 

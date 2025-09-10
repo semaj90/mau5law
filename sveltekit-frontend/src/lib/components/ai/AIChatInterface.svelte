@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount, tick } from 'svelte';
 	import { fade, fly, scale } from 'svelte/transition';
 	import { quintOut, elasticOut } from 'svelte/easing';

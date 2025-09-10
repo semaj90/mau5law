@@ -1,6 +1,7 @@
 <!-- Hybrid Legal Document Analysis Component -->
 <!-- Combines EmbeddingGemma + NES YoRHa 3D + Hybrid Vector APIs -->
 <script lang="ts">
+</script>
   import { onMount, tick } from "svelte";
   import {
     Button

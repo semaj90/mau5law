@@ -10,6 +10,7 @@
   - Enhanced audio capabilities
 -->
 <script lang="ts">
+</script>
   import { Button as BitsButton } from 'bits-ui';
   import { createEventDispatcher } from 'svelte';
   import type { GamingComponentProps } from '../types/gaming-types.js';
@@ -191,10 +192,10 @@ let buttonElement = $state<HTMLButtonElement | null >(null);
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
   };
 
-  $: sizeStyles = getSizeStyles(size);
-  $: variantGradient = getVariantGradient(variant, gradientDirection);
-  $: mode7Transform = enableMode7 && isPressed ? 'perspective(100px) rotateX(5deg) scale(0.95)' : 
-                      enableMode7 && isHovered ? 'perspective(200px) rotateX(-2deg) scale(1.02)' : 'none';
+  // TODO: Convert to $derived: sizeStyles = getSizeStyles(size)
+  // TODO: Convert to $derived: variantGradient = getVariantGradient(variant, gradientDirection)
+  // TODO: Convert to $derived: mode7Transform = enableMode7 && isPressed ? 'perspective(100px) rotateX(5deg) scale(0.95)' : 
+                      enableMode7 && isHovered ? 'perspective(200px) rotateX(-2deg) scale(1.02)' : 'none'
 </script>
 
 <BitsButton.Root

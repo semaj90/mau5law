@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
   import type { Snippet } from 'svelte';

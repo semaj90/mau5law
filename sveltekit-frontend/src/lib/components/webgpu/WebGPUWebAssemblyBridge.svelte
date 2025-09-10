@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { webLlamaService } from '$lib/ai/webasm-llamacpp';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter';

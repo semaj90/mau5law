@@ -1,5 +1,6 @@
 <!-- Modular Data-Driven Dialog Component -->
 <script lang="ts">
+</script>
   import { Dialog } from 'bits-ui';
   import { X, Loader2, AlertCircle, RefreshCw } from 'lucide-svelte';
   import { cn } from '$lib/utils';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { browser } from '$app/environment';
   import { autoTaggingMachine } from '$lib/stores/autoTaggingMachine';
   import { useMachine } from '@xstate/svelte';

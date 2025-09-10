@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Removed rune imports ($props, $effect, $state) - they are provided by the Svelte compiler and must not be imported
   import { onDestroy } from 'svelte';
   import Editor from '@tinymce/tinymce-svelte';

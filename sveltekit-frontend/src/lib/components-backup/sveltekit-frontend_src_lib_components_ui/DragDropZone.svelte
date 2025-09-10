@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { AlertCircle, FileText, Image, Upload } from 'lucide-svelte';
 
   interface Props {

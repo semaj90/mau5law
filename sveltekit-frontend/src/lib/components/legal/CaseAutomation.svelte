@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import Dropdown from '$lib/components/ui/Dropdown.svelte';
   import Checkbox from '$lib/components/ui/Checkbox.svelte';

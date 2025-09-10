@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { createEventDispatcher } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
@@ -44,9 +45,9 @@
 	let inputElement: HTMLInputElement;
 	let isFocused = false;
 
-	$: hasValue = value !== '' && value !== null && value !== undefined;
-	$: showClearButton = clearable && hasValue && !disabled && !readonly;
-	$: hasError = !!error;
+	// TODO: Convert to $derived: hasValue = value !== '' && value !== null && value !== undefined
+	// TODO: Convert to $derived: showClearButton = clearable && hasValue && !disabled && !readonly
+	// TODO: Convert to $derived: hasError = !!error
 
 	// Generate unique ID for accessibility
 	const inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
@@ -80,17 +81,17 @@
 	}
 
 	// Dynamic classes
-	$: containerClasses = 'relative flex flex-col gap-1';
+	// TODO: Convert to $derived: containerClasses = 'relative flex flex-col gap-1'
 
-	$: labelClasses = [
+	// TODO: Convert to $derived: labelClasses = [
 		'text-sm font-medium transition-colors',
 		hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300',
 		required ? "after:content-['*'] after:ml-1 after:text-red-500" : ''
-	].filter(Boolean).join(' ');
+	].filter(Boolean).join(' ')
 
-	$: inputContainerClasses = 'relative flex items-center';
+	// TODO: Convert to $derived: inputContainerClasses = 'relative flex items-center'
 
-	$: inputClasses = [
+	// TODO: Convert to $derived: inputClasses = [
 		'block w-full rounded-md border transition-all duration-200',
 		'focus:outline-none focus:ring-2 focus:ring-offset-1',
 		'disabled:opacity-50 disabled:cursor-not-allowed',
@@ -115,19 +116,19 @@
 		hasError ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 dark:border-red-600 dark:text-red-100' :
 		success ? 'border-green-300 text-green-900 focus:border-green-500 focus:ring-green-500 dark:border-green-600 dark:text-green-100' :
 		'border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-100'
-	].filter(Boolean).join(' ');
+	].filter(Boolean).join(' ')
 
-	$: iconClasses = [
+	// TODO: Convert to $derived: iconClasses = [
 		'absolute flex items-center justify-center pointer-events-none',
 		size === 'sm' ? 'w-8 h-8' : size === 'lg' ? 'w-12 h-12' : 'w-10 h-10',
 		iconPosition === 'left' ? 'left-0' : 'right-0',
 		hasError ? 'text-red-400' : success ? 'text-green-400' : 'text-gray-400'
-	].join(' ');
+	].join(' ')
 
-	$: hintClasses = [
+	// TODO: Convert to $derived: hintClasses = [
 		'text-xs transition-colors',
 		hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'
-	].join(' ');
+	].join(' ')
 </script>
 
 <div class={containerClasses}>

@@ -1,6 +1,7 @@
 <script lang="ts">
+</script>
   export let className: string = '';
-  $: classes = className;
+  // TODO: Convert to $derived: classes = className
 </script>
 
 <div className="${1}">

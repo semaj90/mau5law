@@ -1,5 +1,6 @@
 <!-- YoRHa Detective Modal Component -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import type {     Snippet     } from 'svelte';
 

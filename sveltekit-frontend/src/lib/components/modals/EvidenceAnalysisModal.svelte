@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
+</script>
   interface Evidence {
     id: string;
     content: string;

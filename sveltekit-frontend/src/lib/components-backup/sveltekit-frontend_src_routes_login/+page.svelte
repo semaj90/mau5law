@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { superForm } from 'sveltekit-superforms';
   import type { PageData } from './$types';
 

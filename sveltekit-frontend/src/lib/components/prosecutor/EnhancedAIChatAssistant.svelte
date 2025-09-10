@@ -3,6 +3,7 @@ Enhanced AI Chat Assistant for Prosecutors
 Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 -->
 <script lang="ts">
+</script>
   import type { Props } from "$lib/types/global";
   import {
     Card,

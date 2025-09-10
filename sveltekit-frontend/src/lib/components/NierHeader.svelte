@@ -3,6 +3,7 @@ import type { User } from '$lib/types';
 import type { User } from '$lib/types/user';
 
 <script lang="ts">
+</script>
   interface Props {
     user: User | null ;
   }

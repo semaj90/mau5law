@@ -1,4 +1,5 @@
 <script>
+</script>
   export let open = false;
   export let onClose = () => {};
 </script>

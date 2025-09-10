@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -27,7 +28,7 @@ let filteredCitations = $state<Citation[] >([]);
   ];
 
   // Reactive filtering
-  $: {
+  // TODO: Convert to $derived: {
     filteredCitations = citations.filter((citation) => {
       const matchesSearch =
         searchQuery === "" ||
@@ -36,7 +37,7 @@ let filteredCitations = $state<Citation[] >([]);
         citation.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
         citation.tags.some((tag) =>
           tag.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        )
 
       const matchesCategory =
         selectedCategory === "all" || citation.category === selectedCategory;

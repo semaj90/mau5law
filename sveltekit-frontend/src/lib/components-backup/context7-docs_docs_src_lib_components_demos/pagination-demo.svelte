@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Pagination } from "bits-ui";
 	import CaretLeft from "phosphor-svelte/lib/CaretLeft";
 	import CaretRight from "phosphor-svelte/lib/CaretRight";

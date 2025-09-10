@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   /**
    * Document Ingest Assistant Demo
    * Showcases the complete ingest integration with Go microservice,

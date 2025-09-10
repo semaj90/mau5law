@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from "svelte";
   import CommandMenu from "./CommandMenu.svelte";
 
@@ -109,8 +110,8 @@
   }
 
   // Watch for value changes to auto-resize
-  $: if (value !== undefined) {
-    setTimeout(autoResize, 0);
+  // TODO: Convert to $derived: if (value !== undefined) {
+    setTimeout(autoResize, 0)
   }
 </script>
 

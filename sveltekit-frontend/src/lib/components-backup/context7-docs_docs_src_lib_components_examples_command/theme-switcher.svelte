@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { Component } from "svelte";
 	import { crossfade } from "svelte/transition";
 	import { cubicInOut } from "svelte/easing";

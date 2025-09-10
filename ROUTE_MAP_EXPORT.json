@@ -1,0 +1,4939 @@
+{
+  "generated": "2025-09-10T17:10:08.257Z",
+  "counts": {
+    "config": 295,
+    "fileBased": 294,
+    "api": 13,
+    "configMissingFiles": 0,
+    "filesMissingConfig": 0
+  },
+  "configRoutes": [
+    {
+      "id": "command-center",
+      "label": "Command Center",
+      "route": "/",
+      "category": "main",
+      "status": "active",
+      "tags": [
+        "rag",
+        "ai",
+        "orchestration"
+      ]
+    },
+    {
+      "id": "admin-cluster",
+      "label": "Cluster",
+      "route": "/admin/cluster",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "admin",
+        "management"
+      ]
+    },
+    {
+      "id": "admin-gpu-demo",
+      "label": "Gpu Demo",
+      "route": "/admin/gpu-demo",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "admin",
+        "management"
+      ]
+    },
+    {
+      "id": "admin-users",
+      "label": "Users",
+      "route": "/admin/users",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "admin",
+        "management"
+      ]
+    },
+    {
+      "id": "admin-users--userid",
+      "label": ":user Id",
+      "route": "/admin/users/:userId",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "admin",
+        "management"
+      ]
+    },
+    {
+      "id": "ai",
+      "label": "Ai",
+      "route": "/ai",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "ai-assistant",
+      "label": "AI Assistant",
+      "route": "/ai-assistant",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "ai",
+        "assistant",
+        "legal"
+      ]
+    },
+    {
+      "id": "ai-demo",
+      "label": "AI System Demo",
+      "route": "/ai-demo",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "ai",
+        "demo",
+        "system",
+        "integration"
+      ]
+    },
+    {
+      "id": "ai-summary",
+      "label": "AI Summary Generator",
+      "route": "/ai-summary",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "ai",
+        "summary",
+        "generation"
+      ]
+    },
+    {
+      "id": "ai-test",
+      "label": "AI Testing Suite",
+      "route": "/ai-test",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "ai",
+        "testing",
+        "assistant"
+      ]
+    },
+    {
+      "id": "ai-upload-demo",
+      "label": "Ai Upload Demo",
+      "route": "/ai-upload-demo",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "ai",
+        "intelligence"
+      ]
+    },
+    {
+      "id": "ai-enhanced-mcp",
+      "label": "Enhanced Mcp",
+      "route": "/ai/enhanced-mcp",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "ai",
+        "intelligence"
+      ]
+    },
+    {
+      "id": "ai-modular",
+      "label": "Modular",
+      "route": "/ai/modular",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "ai",
+        "intelligence"
+      ]
+    },
+    {
+      "id": "ai-orchestrator",
+      "label": "Orchestrator",
+      "route": "/ai/orchestrator",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "ai",
+        "intelligence"
+      ]
+    },
+    {
+      "id": "aiassistant",
+      "label": "Aiassistant",
+      "route": "/aiassistant",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "all-routes",
+      "label": "All Routes",
+      "route": "/all-routes",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "assistant",
+      "label": "AI Assistant",
+      "route": "/assistant",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "assistant",
+        "ai",
+        "legal"
+      ]
+    },
+    {
+      "id": "auth",
+      "label": "Auth",
+      "route": "/auth",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "auth-login",
+      "label": "Login",
+      "route": "/auth/login",
+      "category": "auth",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "authentication",
+        "security"
+      ]
+    },
+    {
+      "id": "auth-login-simple",
+      "label": "Simple",
+      "route": "/auth/login/simple",
+      "category": "auth",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "authentication",
+        "security"
+      ]
+    },
+    {
+      "id": "auth-register",
+      "label": "Register",
+      "route": "/auth/register",
+      "category": "auth",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "authentication",
+        "security"
+      ]
+    },
+    {
+      "id": "auth-test",
+      "label": "Test",
+      "route": "/auth/test",
+      "category": "auth",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "authentication",
+        "security"
+      ]
+    },
+    {
+      "id": "authenticated-crud-test",
+      "label": "Authenticated Crud Test",
+      "route": "/authenticated-crud-test",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "bits-uno-demo",
+      "label": "Bits Uno Demo",
+      "route": "/bits-uno-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "brain",
+      "label": "System Brain Graph",
+      "route": "/brain",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "brain",
+        "graph",
+        "visualization"
+      ]
+    },
+    {
+      "id": "cache-demo",
+      "label": "Cache System",
+      "route": "/cache-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "cache",
+        "gpu",
+        "performance"
+      ]
+    },
+    {
+      "id": "cache-redis-admin",
+      "label": "Redis Admin",
+      "route": "/cache/redis-admin",
+      "category": "system",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "cache",
+        "performance"
+      ]
+    },
+    {
+      "id": "canvas-demo",
+      "label": "Canvas Demo",
+      "route": "/canvas-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "cases",
+      "label": "Case Management",
+      "route": "/cases",
+      "category": "main",
+      "status": "active",
+      "tags": [
+        "legal",
+        "cases",
+        "management"
+      ]
+    },
+    {
+      "id": "cases--caseid-rag",
+      "label": "Rag",
+      "route": "/cases/:caseId/rag",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "legal",
+        "cases"
+      ]
+    },
+    {
+      "id": "cases--id",
+      "label": ":id",
+      "route": "/cases/:id",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "legal",
+        "cases"
+      ]
+    },
+    {
+      "id": "cases--id-canvas",
+      "label": "Canvas",
+      "route": "/cases/:id/canvas",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "legal",
+        "cases"
+      ]
+    },
+    {
+      "id": "cases--id-enhanced",
+      "label": "Enhanced",
+      "route": "/cases/:id/enhanced",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "legal",
+        "cases"
+      ]
+    },
+    {
+      "id": "cases-create",
+      "label": "Create",
+      "route": "/cases/create",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "legal",
+        "cases"
+      ]
+    },
+    {
+      "id": "cases-new",
+      "label": "New",
+      "route": "/cases/new",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "legal",
+        "cases"
+      ]
+    },
+    {
+      "id": "chat",
+      "label": "AI Chat Interface",
+      "route": "/chat",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "chat",
+        "ai",
+        "conversation"
+      ]
+    },
+    {
+      "id": "chat-demo",
+      "label": "Chat Demo",
+      "route": "/chat-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "citations",
+      "label": "Citations",
+      "route": "/citations",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "citations",
+        "legal",
+        "management"
+      ]
+    },
+    {
+      "id": "compiler-ai-demo",
+      "label": "Compiler Ai Demo",
+      "route": "/compiler-ai-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "context7",
+      "label": "Context7 Integration",
+      "route": "/context7-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "context7",
+        "mcp",
+        "integration"
+      ]
+    },
+    {
+      "id": "context7-demodisabled",
+      "label": "Context7 Demo.disabled",
+      "route": "/context7-demo.disabled",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "copilot-autonomous",
+      "label": "Autonomous",
+      "route": "/copilot/autonomous",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "crud-dashboard",
+      "label": "Crud Dashboard",
+      "route": "/crud-dashboard",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "cuda-streaming",
+      "label": "Cuda Streaming",
+      "route": "/cuda-streaming",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "dashboard",
+      "label": "System Dashboard",
+      "route": "/dashboard",
+      "category": "main",
+      "status": "active",
+      "tags": [
+        "dashboard",
+        "monitoring",
+        "system"
+      ]
+    },
+    {
+      "id": "dashboard-cases",
+      "label": "Cases",
+      "route": "/dashboard/cases",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "legal",
+        "cases"
+      ]
+    },
+    {
+      "id": "dashboard-search",
+      "label": "Search",
+      "route": "/dashboard/search",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "demo-overview",
+      "label": "Demo Overview",
+      "route": "/demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "demo",
+        "overview",
+        "ai"
+      ]
+    },
+    {
+      "id": "demo-ai-assistant",
+      "label": "AI Assistant Demo",
+      "route": "/demo/ai-assistant",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "ai",
+        "assistant",
+        "demo"
+      ]
+    },
+    {
+      "id": "demo-ai-complete-test",
+      "label": "AI Complete Test",
+      "route": "/demo/ai-complete-test",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "ai",
+        "testing",
+        "complete"
+      ]
+    },
+    {
+      "id": "demo-ai-dashboard",
+      "label": "AI Dashboard",
+      "route": "/demo/ai-dashboard",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "ai",
+        "dashboard",
+        "analytics"
+      ]
+    },
+    {
+      "id": "demo-ai-integration",
+      "label": "AI Integration Demo",
+      "route": "/demo/ai-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "ai",
+        "integration",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-ai-pipeline",
+      "label": "AI Pipeline",
+      "route": "/demo/ai-pipeline",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "ai",
+        "pipeline",
+        "processing"
+      ]
+    },
+    {
+      "id": "demo-ai-summary",
+      "label": "AI Document Summary",
+      "route": "/demo/ai-summary",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "ai",
+        "summary",
+        "documents"
+      ]
+    },
+    {
+      "id": "demo-ai-test",
+      "label": "AI Testing Suite",
+      "route": "/demo/ai-test",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "ai",
+        "testing",
+        "evaluation"
+      ]
+    },
+    {
+      "id": "demo-bits-ui",
+      "label": "Bits Ui",
+      "route": "/demo/bits-ui",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-chat-stream",
+      "label": "Chat Stream",
+      "route": "/demo/chat-stream",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-clean-architecture",
+      "label": "Clean Architecture",
+      "route": "/demo/clean-architecture",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-complete-integration",
+      "label": "Complete Integration",
+      "route": "/demo/complete-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-component-gallery",
+      "label": "Component Gallery",
+      "route": "/demo/component-gallery",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "components",
+        "ui",
+        "gallery"
+      ]
+    },
+    {
+      "id": "demo-crud-integration",
+      "label": "Crud Integration",
+      "route": "/demo/crud-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-cuda-minio-upload",
+      "label": "Cuda Minio Upload",
+      "route": "/demo/cuda-minio-upload",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-cuda-rtx-integration",
+      "label": "Cuda Rtx Integration",
+      "route": "/demo/cuda-rtx-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-cyber-elephant",
+      "label": "Cyber Elephant",
+      "route": "/demo/cyber-elephant",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-document-ai",
+      "label": "Document AI",
+      "route": "/demo/document-ai",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "document",
+        "ai",
+        "analysis"
+      ]
+    },
+    {
+      "id": "demo-document-upload-gpu",
+      "label": "Document Upload Gpu",
+      "route": "/demo/document-upload-gpu",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-drag-drop",
+      "label": "Drag Drop",
+      "route": "/demo/drag-drop",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-editor-test",
+      "label": "Editor Test",
+      "route": "/demo/editor-test",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-embedding-chat",
+      "label": "Embedding Chat",
+      "route": "/demo/embedding-chat",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-enhanced-rag-demo",
+      "label": "Enhanced Rag Demo",
+      "route": "/demo/enhanced-rag-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-enhanced-rag-semantic",
+      "label": "Enhanced RAG Semantic",
+      "route": "/demo/enhanced-rag-semantic",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "rag",
+        "semantic",
+        "enhanced"
+      ]
+    },
+    {
+      "id": "demo-enhanced-semantic-architecture",
+      "label": "Semantic Architecture",
+      "route": "/demo/enhanced-semantic-architecture",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "semantic",
+        "architecture",
+        "advanced"
+      ]
+    },
+    {
+      "id": "demo-full-stack-integration",
+      "label": "Full Stack Integration",
+      "route": "/demo/full-stack-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-gaming-evolution-16bit",
+      "label": "16bit",
+      "route": "/demo/gaming-evolution/16bit",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-gaming-evolution-8bit",
+      "label": "8bit",
+      "route": "/demo/gaming-evolution/8bit",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-gaming-evolution-n64",
+      "label": "N64",
+      "route": "/demo/gaming-evolution/n64",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-glyph-generator",
+      "label": "Glyph Generator",
+      "route": "/demo/glyph-generator",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-gpu-acceleration",
+      "label": "Gpu Acceleration",
+      "route": "/demo/gpu-acceleration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-gpu-assistant",
+      "label": "Gpu Assistant",
+      "route": "/demo/gpu-assistant",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-gpu-cache-integration",
+      "label": "Gpu Cache Integration",
+      "route": "/demo/gpu-cache-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-gpu-chat",
+      "label": "Gpu Chat",
+      "route": "/demo/gpu-chat",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-gpu-inference",
+      "label": "Gpu Inference",
+      "route": "/demo/gpu-inference",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-gpu-legal-ai",
+      "label": "GPU Legal AI",
+      "route": "/demo/gpu-legal-ai",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "gpu",
+        "legal",
+        "ai"
+      ]
+    },
+    {
+      "id": "demo-gpu-legal-ai-lawpdfs",
+      "label": "Lawpdfs",
+      "route": "/demo/gpu-legal-ai/lawpdfs",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-headless-ui-showcase",
+      "label": "Headless Ui Showcase",
+      "route": "/demo/headless-ui-showcase",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-hybrid-cache-architecture",
+      "label": "Hybrid Cache Architecture",
+      "route": "/demo/hybrid-cache-architecture",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-hybrid-legal-analysis",
+      "label": "Hybrid Legal Analysis",
+      "route": "/demo/hybrid-legal-analysis",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-inline-suggestions",
+      "label": "Inline AI Suggestions",
+      "route": "/demo/inline-suggestions",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "ai",
+        "suggestions",
+        "inline"
+      ]
+    },
+    {
+      "id": "demo-instant-search",
+      "label": "Instant Search",
+      "route": "/demo/instant-search",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-integrated-system",
+      "label": "Integrated System",
+      "route": "/demo/integrated-system",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-langextract-ollama",
+      "label": "LangExtract Ollama",
+      "route": "/demo/langextract-ollama",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "language",
+        "extraction",
+        "ollama"
+      ]
+    },
+    {
+      "id": "demo-lazy-loading",
+      "label": "Lazy Loading",
+      "route": "/demo/lazy-loading",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-legal-ai-complete",
+      "label": "Complete Legal AI",
+      "route": "/demo/legal-ai-complete",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "legal",
+        "ai",
+        "complete"
+      ]
+    },
+    {
+      "id": "demo-legal-ai-platform",
+      "label": "Legal Ai Platform",
+      "route": "/demo/legal-ai-platform",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-legal-components",
+      "label": "Legal Components",
+      "route": "/demo/legal-components",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-legal-search",
+      "label": "Legal Search",
+      "route": "/demo/legal-search",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-live-agents",
+      "label": "Live AI Agents",
+      "route": "/demo/live-agents",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "agents",
+        "live",
+        "coordination"
+      ]
+    },
+    {
+      "id": "demo-nes-bits-ui",
+      "label": "Nes Bits Ui",
+      "route": "/demo/nes-bits-ui",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-nes-yorha-3d",
+      "label": "Nes Yorha 3d",
+      "route": "/demo/nes-yorha-3d",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-nes-yorha-hybrid",
+      "label": "Nes Yorha Hybrid",
+      "route": "/demo/nes-yorha-hybrid",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-neural-sprite",
+      "label": "Neural Sprite",
+      "route": "/demo/neural-sprite",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-neural-sprite-engine",
+      "label": "Neural Sprite Engine",
+      "route": "/demo/neural-sprite-engine",
+      "category": "demo",
+      "status": "experimental",
+      "tags": [
+        "neural",
+        "sprite",
+        "engine"
+      ]
+    },
+    {
+      "id": "demo-notes",
+      "label": "AI Note Taking",
+      "route": "/demo/notes",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "notes",
+        "ai",
+        "taking"
+      ]
+    },
+    {
+      "id": "demo-observability",
+      "label": "Observability",
+      "route": "/demo/observability",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-ollama-integration",
+      "label": "Ollama Integration",
+      "route": "/demo/ollama-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-phase14",
+      "label": "Phase14",
+      "route": "/demo/phase14",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-phase5",
+      "label": "Phase 5 Demo",
+      "route": "/demo/phase5",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "phase5",
+        "milestone",
+        "demo"
+      ]
+    },
+    {
+      "id": "demo-productivity-ai-integration",
+      "label": "Productivity Ai Integration",
+      "route": "/demo/productivity-ai-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-professional-editor",
+      "label": "Professional Editor",
+      "route": "/demo/professional-editor",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "editor",
+        "professional",
+        "ai"
+      ]
+    },
+    {
+      "id": "demo-progressive-gaming-ui",
+      "label": "Progressive Gaming Ui",
+      "route": "/demo/progressive-gaming-ui",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-ps1-effects-advanced",
+      "label": "Ps1 Effects Advanced",
+      "route": "/demo/ps1-effects-advanced",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-ps1-stories",
+      "label": "Ps1 Stories",
+      "route": "/demo/ps1-stories",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-rag-integration",
+      "label": "Rag Integration",
+      "route": "/demo/rag-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-real-time-search",
+      "label": "Real Time Search",
+      "route": "/demo/real-time-search",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-recommendation-system",
+      "label": "Recommendation System",
+      "route": "/demo/recommendation-system",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-retro-gpu-metrics",
+      "label": "Retro Gpu Metrics",
+      "route": "/demo/retro-gpu-metrics",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-semantic-3d",
+      "label": "Semantic 3d",
+      "route": "/demo/semantic-3d",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-semantic-search",
+      "label": "Semantic Search",
+      "route": "/demo/semantic-search",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-shader-cache",
+      "label": "Shader Cache",
+      "route": "/demo/shader-cache",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-simd-glyphs",
+      "label": "Simd Glyphs",
+      "route": "/demo/simd-glyphs",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-simple-test",
+      "label": "Simple Test Interface",
+      "route": "/demo/simple-test",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "simple",
+        "test",
+        "interface"
+      ]
+    },
+    {
+      "id": "demo-streaming-workflow",
+      "label": "Streaming Workflow",
+      "route": "/demo/streaming-workflow",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-system-integration",
+      "label": "System Integration",
+      "route": "/demo/system-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-system-summary",
+      "label": "System Summary",
+      "route": "/demo/system-summary",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "system",
+        "summary",
+        "metrics"
+      ]
+    },
+    {
+      "id": "demo-ui-components",
+      "label": "Ui Components",
+      "route": "/demo/ui-components",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-unified-architecture",
+      "label": "Unified Architecture",
+      "route": "/demo/unified-architecture",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "unified",
+        "architecture",
+        "system"
+      ]
+    },
+    {
+      "id": "demo-unified-integration",
+      "label": "Unified Integration",
+      "route": "/demo/unified-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-unified-vector",
+      "label": "Unified Vector",
+      "route": "/demo/unified-vector",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-unocss-svelte5",
+      "label": "UnoCSS + Svelte 5",
+      "route": "/demo/unocss-svelte5",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "unocss",
+        "svelte5",
+        "styling"
+      ]
+    },
+    {
+      "id": "demo-vector-intelligence",
+      "label": "Vector Intelligence",
+      "route": "/demo/vector-intelligence",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "vector",
+        "intelligence",
+        "search"
+      ]
+    },
+    {
+      "id": "demo-vector-pipeline",
+      "label": "Vector Pipeline",
+      "route": "/demo/vector-pipeline",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-vector-search",
+      "label": "Vector Search",
+      "route": "/demo/vector-search",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "vector",
+        "search",
+        "similarity"
+      ]
+    },
+    {
+      "id": "demo-wasm-parser",
+      "label": "Wasm Parser",
+      "route": "/demo/wasm-parser",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-webasm-ai-complete",
+      "label": "Webasm Ai Complete",
+      "route": "/demo/webasm-ai-complete",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-webgpu-acceleration",
+      "label": "WebGPU Acceleration",
+      "route": "/demo/webgpu-acceleration",
+      "category": "demo",
+      "status": "experimental",
+      "tags": [
+        "webgpu",
+        "acceleration",
+        "ai"
+      ]
+    },
+    {
+      "id": "demo-webgpu-graph",
+      "label": "Webgpu Graph",
+      "route": "/demo/webgpu-graph",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-webgpu-quantization",
+      "label": "Webgpu Quantization",
+      "route": "/demo/webgpu-quantization",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-webgpu-webasm-integration",
+      "label": "Webgpu Webasm Integration",
+      "route": "/demo/webgpu-webasm-integration",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-xstate-auth",
+      "label": "Xstate Auth",
+      "route": "/demo/xstate-auth",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "demo-yorha-tables",
+      "label": "YoRHa Tables",
+      "route": "/demo/yorha-tables",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "yorha",
+        "tables",
+        "visualization"
+      ]
+    },
+    {
+      "id": "demos",
+      "label": "Demos",
+      "route": "/demos",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "demos-ingest-assistant",
+      "label": "Ingest Assistant",
+      "route": "/demos/ingest-assistant",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "demos-ingest-simple",
+      "label": "Ingest Simple",
+      "route": "/demos/ingest-simple",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "demos-nes-auth",
+      "label": "Nes Auth",
+      "route": "/demos/nes-auth",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "persons",
+      "label": "Persons of Interest",
+      "route": "/detective",
+      "category": "main",
+      "status": "active",
+      "tags": [
+        "detective",
+        "persons",
+        "tracking"
+      ]
+    },
+    {
+      "id": "detective-canvas",
+      "label": "Canvas",
+      "route": "/detective/canvas",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "dev-demo",
+      "label": "Dev Demo",
+      "route": "/dev-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "dev-ai-setup",
+      "label": "Ai Setup",
+      "route": "/dev/ai-setup",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "ai",
+        "intelligence"
+      ]
+    },
+    {
+      "id": "dev-cache-demo",
+      "label": "Cache Demo",
+      "route": "/dev/cache-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "dev-context7-test",
+      "label": "Context7 Test",
+      "route": "/dev/context7-test",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "context7",
+        "test",
+        "integration"
+      ]
+    },
+    {
+      "id": "dev-copilot-optimizer",
+      "label": "Copilot Optimizer",
+      "route": "/dev/copilot-optimizer",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "copilot",
+        "optimizer",
+        "ai"
+      ]
+    },
+    {
+      "id": "dev-dynamic-routing-test",
+      "label": "Dynamic Routing Test",
+      "route": "/dev/dynamic-routing-test",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "routing",
+        "dynamic",
+        "testing"
+      ]
+    },
+    {
+      "id": "dev-enhanced-processor",
+      "label": "Enhanced Processor",
+      "route": "/dev/enhanced-processor",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "dev-gpu-tiling",
+      "label": "Gpu Tiling",
+      "route": "/dev/gpu-tiling",
+      "category": "system",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "gpu",
+        "performance"
+      ]
+    },
+    {
+      "id": "dev-ingest-status",
+      "label": "Ingest Status",
+      "route": "/dev/ingest-status",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "dev-ingestion-dashboard",
+      "label": "Ingestion Dashboard",
+      "route": "/dev/ingestion-dashboard",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "dev-mcp-tools",
+      "label": "MCP Tools",
+      "route": "/dev/mcp-tools",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "mcp",
+        "tools",
+        "development"
+      ]
+    },
+    {
+      "id": "dev-metrics",
+      "label": "Metrics",
+      "route": "/dev/metrics",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "dev-pgvector-test",
+      "label": "Pgvector Test",
+      "route": "/dev/pgvector-test",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "dev-self-prompting",
+      "label": "Self-Prompting Demo",
+      "route": "/dev/self-prompting-demo",
+      "category": "dev",
+      "status": "experimental",
+      "tags": [
+        "self-prompting",
+        "ai",
+        "demo"
+      ]
+    },
+    {
+      "id": "dev-suggestions",
+      "label": "Suggestions",
+      "route": "/dev/suggestions",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "dev-tensor-demo",
+      "label": "Tensor Demo",
+      "route": "/dev/tensor-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "dev-vector-search",
+      "label": "Vector Search Dev",
+      "route": "/dev/vector-search-demo",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "vector",
+        "search",
+        "development"
+      ]
+    },
+    {
+      "id": "dev-vite-error-demo",
+      "label": "Vite Error Demo",
+      "route": "/dev/vite-error-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "dev-webgpu-diagnostics",
+      "label": "Webgpu Diagnostics",
+      "route": "/dev/webgpu-diagnostics",
+      "category": "system",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "gpu",
+        "performance"
+      ]
+    },
+    {
+      "id": "document-editor-demo",
+      "label": "Document Editor Demo",
+      "route": "/document-editor-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "editor",
+      "label": "Editor",
+      "route": "/editor",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "api-endpoints",
+      "label": "API Endpoints",
+      "route": "/endpoints",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "api",
+        "endpoints",
+        "monitoring"
+      ]
+    },
+    {
+      "id": "enhanced",
+      "label": "Enhanced",
+      "route": "/enhanced",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "enhanced-rag",
+      "label": "Enhanced RAG Demo",
+      "route": "/enhanced-ai-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "rag",
+        "enhanced",
+        "ai"
+      ]
+    },
+    {
+      "id": "enhanced-ai-demo",
+      "label": "Enhanced AI Demo",
+      "route": "/enhanced-ai-demo",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "enhanced",
+        "rag",
+        "studio",
+        "ai"
+      ]
+    },
+    {
+      "id": "evidence",
+      "label": "Evidence Analysis",
+      "route": "/evidence",
+      "category": "main",
+      "status": "active",
+      "tags": [
+        "evidence",
+        "ocr",
+        "analysis"
+      ]
+    },
+    {
+      "id": "evidence-canvas",
+      "label": "Evidence Canvas",
+      "route": "/evidence-canvas",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "evidence",
+        "canvas",
+        "visual"
+      ]
+    },
+    {
+      "id": "evidence-editor",
+      "label": "Evidence Editor",
+      "route": "/evidence-editor",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "evidence",
+        "editor",
+        "processing"
+      ]
+    },
+    {
+      "id": "evidence-analyze",
+      "label": "Analyze",
+      "route": "/evidence/analyze",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "evidence-hash",
+      "label": "Hash",
+      "route": "/evidence/hash",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "evidence-manage",
+      "label": "Manage",
+      "route": "/evidence/manage",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "evidence-realtime",
+      "label": "Realtime",
+      "route": "/evidence/realtime",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "evidence-upload",
+      "label": "Upload",
+      "route": "/evidence/upload",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "evidenceboard",
+      "label": "Evidenceboard",
+      "route": "/evidenceboard",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "examples-svelte5",
+      "label": "Svelte5",
+      "route": "/examples/svelte5",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "data-export",
+      "label": "Data Export",
+      "route": "/export",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "export",
+        "data",
+        "backup"
+      ]
+    },
+    {
+      "id": "frameworks-demo",
+      "label": "Frameworks Demo",
+      "route": "/frameworks-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "gallery",
+      "label": "Media Gallery",
+      "route": "/gallery",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "gallery",
+        "media",
+        "files"
+      ]
+    },
+    {
+      "id": "gaming-demo",
+      "label": "Gaming Interface",
+      "route": "/gaming-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "gaming",
+        "interface",
+        "nier"
+      ]
+    },
+    {
+      "id": "golden-ratio-demo",
+      "label": "Golden Ratio Demo",
+      "route": "/golden-ratio-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "gpu-chat",
+      "label": "GPU Chat",
+      "route": "/gpu-chat",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "gpu",
+        "chat",
+        "acceleration"
+      ]
+    },
+    {
+      "id": "gpu-demo",
+      "label": "GPU Acceleration",
+      "route": "/gpu-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "gpu",
+        "acceleration",
+        "performance"
+      ]
+    },
+    {
+      "id": "graph",
+      "label": "WASM Graph Engine",
+      "route": "/graph",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "wasm",
+        "graph",
+        "engine"
+      ]
+    },
+    {
+      "id": "help",
+      "label": "Help & Documentation",
+      "route": "/help",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "help",
+        "documentation",
+        "support"
+      ]
+    },
+    {
+      "id": "data-import",
+      "label": "Data Import",
+      "route": "/import",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "import",
+        "data",
+        "migration"
+      ]
+    },
+    {
+      "id": "interactive-canvas",
+      "label": "Interactive Canvas",
+      "route": "/interactive-canvas",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "investigation",
+      "label": "Investigation Workspace",
+      "route": "/investigation",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "investigation",
+        "workspace",
+        "legal"
+      ]
+    },
+    {
+      "id": "law",
+      "label": "Law",
+      "route": "/law",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "laws",
+      "label": "Legal Resources",
+      "route": "/laws",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "laws",
+        "resources",
+        "database"
+      ]
+    },
+    {
+      "id": "legal-ai-suite",
+      "label": "Legal AI Suite",
+      "route": "/legal-ai-suite",
+      "category": "main",
+      "status": "active",
+      "tags": [
+        "legal",
+        "ai",
+        "suite",
+        "comprehensive"
+      ]
+    },
+    {
+      "id": "documents",
+      "label": "Document Processing",
+      "route": "/legal/documents",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "documents",
+        "legal",
+        "processing"
+      ]
+    },
+    {
+      "id": "local-ai-demo",
+      "label": "Local Ai Demo",
+      "route": "/local-ai-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "login",
+      "label": "Login",
+      "route": "/login",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "auth",
+        "login",
+        "security"
+      ]
+    },
+    {
+      "id": "logout",
+      "label": "Logout",
+      "route": "/logout",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "memory",
+      "label": "Memory Dashboard",
+      "route": "/memory-dashboard",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "memory",
+        "ai",
+        "context"
+      ]
+    },
+    {
+      "id": "modern-demo",
+      "label": "Modern Demo",
+      "route": "/modern-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "neural-topology-demo",
+      "label": "Neural Topology Demo",
+      "route": "/neural-topology-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "nier-showcase",
+      "label": "Nier Showcase",
+      "route": "/nier-showcase",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "optimization-dashboard",
+      "label": "Optimization Dashboard",
+      "route": "/optimization-dashboard",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "optimization",
+        "performance",
+        "dashboard"
+      ]
+    },
+    {
+      "id": "original-home",
+      "label": "Original Home",
+      "route": "/original-home",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "perf",
+      "label": "Performance Monitoring",
+      "route": "/perf",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "performance",
+        "monitoring",
+        "analytics"
+      ]
+    },
+    {
+      "id": "persons",
+      "label": "Persons",
+      "route": "/persons",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "persons-of-interest",
+      "label": "Persons of Interest",
+      "route": "/persons-of-interest",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "persons",
+        "tracking",
+        "investigation"
+      ]
+    },
+    {
+      "id": "phase13-demo",
+      "label": "Phase13 Demo",
+      "route": "/phase13-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "pipeline-demo",
+      "label": "Pipeline Demo",
+      "route": "/pipeline-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "poi",
+      "label": "Poi",
+      "route": "/poi",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "profile",
+      "label": "User Profile",
+      "route": "/profile",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "profile",
+        "user",
+        "management"
+      ]
+    },
+    {
+      "id": "prosecutor",
+      "label": "Prosecutor Dashboard",
+      "route": "/prosecutor",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "prosecutor",
+        "dashboard",
+        "legal"
+      ]
+    },
+    {
+      "id": "proxy",
+      "label": "Proxy Diagnostics",
+      "route": "/proxy",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "proxy",
+        "diagnostics",
+        "debugging"
+      ]
+    },
+    {
+      "id": "rag",
+      "label": "Rag",
+      "route": "/rag",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "rag-demo",
+      "label": "RAG System",
+      "route": "/rag-demo",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "rag",
+        "ai",
+        "retrieval",
+        "generation"
+      ]
+    },
+    {
+      "id": "recommendations-demo",
+      "label": "Recommendations Demo",
+      "route": "/recommendations-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "register",
+      "label": "Registration",
+      "route": "/register",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "auth",
+        "registration",
+        "onboarding"
+      ]
+    },
+    {
+      "id": "report-builder",
+      "label": "Report Builder",
+      "route": "/report-builder",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "reports",
+        "builder",
+        "automation"
+      ]
+    },
+    {
+      "id": "reports",
+      "label": "Report Generation",
+      "route": "/reports",
+      "category": "main",
+      "status": "active",
+      "tags": [
+        "reports",
+        "generation",
+        "ai"
+      ]
+    },
+    {
+      "id": "routes-index",
+      "label": "Routes Index",
+      "route": "/routes",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "navigation",
+        "index",
+        "routes",
+        "admin",
+        "api"
+      ]
+    },
+    {
+      "id": "saved-citations",
+      "label": "Saved Citations",
+      "route": "/saved-citations",
+      "category": "legal",
+      "status": "active",
+      "tags": [
+        "citations",
+        "saved",
+        "collection"
+      ]
+    },
+    {
+      "id": "search",
+      "label": "Legal Search",
+      "route": "/search",
+      "category": "main",
+      "status": "active",
+      "tags": [
+        "search",
+        "semantic",
+        "legal"
+      ]
+    },
+    {
+      "id": "security",
+      "label": "Security Center",
+      "route": "/security",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "security",
+        "monitoring",
+        "access"
+      ]
+    },
+    {
+      "id": "semantic-search-demo",
+      "label": "Semantic Search",
+      "route": "/semantic-search-demo",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "search",
+        "semantic",
+        "ai",
+        "ssr"
+      ]
+    },
+    {
+      "id": "settings",
+      "label": "System Settings",
+      "route": "/settings",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "settings",
+        "configuration",
+        "system"
+      ]
+    },
+    {
+      "id": "shadersearch",
+      "label": "Shader_search",
+      "route": "/shader_search",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "showcase",
+      "label": "Platform Showcase",
+      "route": "/showcase",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "showcase",
+        "platform",
+        "demo"
+      ]
+    },
+    {
+      "id": "simd-ai-demo",
+      "label": "SIMD AI Demo",
+      "route": "/simd-ai-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "simd",
+        "ai",
+        "performance"
+      ]
+    },
+    {
+      "id": "simple",
+      "label": "Simple",
+      "route": "/simple",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "simple-test",
+      "label": "Simple Test",
+      "route": "/simple-test",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "simple-upload-test",
+      "label": "Simple Upload Test",
+      "route": "/simple-upload-test",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "state-machines",
+      "label": "State Machine Registry",
+      "route": "/state/machines",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "state",
+        "machines",
+        "xstate"
+      ]
+    },
+    {
+      "id": "state-persistence",
+      "label": "Persistence",
+      "route": "/state/persistence",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "state-transitions",
+      "label": "Transitions",
+      "route": "/state/transitions",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "status-monitoring",
+      "label": "Status Monitoring",
+      "route": "/status",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "status",
+        "monitoring",
+        "metrics"
+      ]
+    },
+    {
+      "id": "storage-audits",
+      "label": "Storage Audits",
+      "route": "/storage/admin/audits",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "storage",
+        "audits",
+        "monitoring"
+      ]
+    },
+    {
+      "id": "studio",
+      "label": "Development Studio",
+      "route": "/studio",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "studio",
+        "development",
+        "testing"
+      ]
+    },
+    {
+      "id": "summarize",
+      "label": "Document Summarization",
+      "route": "/summarize",
+      "category": "ai",
+      "status": "active",
+      "tags": [
+        "summarization",
+        "documents",
+        "ai"
+      ]
+    },
+    {
+      "id": "system-status",
+      "label": "System Status",
+      "route": "/system-status",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "status",
+        "monitoring",
+        "health"
+      ]
+    },
+    {
+      "id": "system-health",
+      "label": "System Health",
+      "route": "/system/health",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "health",
+        "diagnostics",
+        "system"
+      ]
+    },
+    {
+      "id": "test-hub",
+      "label": "Test Hub",
+      "route": "/test",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "testing",
+        "hub",
+        "navigation"
+      ]
+    },
+    {
+      "id": "test-ai-ask",
+      "label": "Test Ai Ask",
+      "route": "/test-ai-ask",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-ai-assistant",
+      "label": "Test Ai Assistant",
+      "route": "/test-ai-assistant",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-button",
+      "label": "Test Button",
+      "route": "/test-button",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-buttons",
+      "label": "Test Buttons",
+      "route": "/test-buttons",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-case",
+      "label": "Test Case",
+      "route": "/test-case",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-components",
+      "label": "Test Components",
+      "route": "/test-components",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-crud",
+      "label": "Test Crud",
+      "route": "/test-crud",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-embedding",
+      "label": "Test Embedding",
+      "route": "/test-embedding",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-enhanced-actions",
+      "label": "Test Enhanced Actions",
+      "route": "/test-enhanced-actions",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-enhanced-upload",
+      "label": "Test Enhanced Upload",
+      "route": "/test-enhanced-upload",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-forms",
+      "label": "Test Forms",
+      "route": "/test-forms",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-gemma3",
+      "label": "Test Gemma3",
+      "route": "/test-gemma3",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-gpu-cache",
+      "label": "Test Gpu Cache",
+      "route": "/test-gpu-cache",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-gpu-metrics",
+      "label": "Test Gpu Metrics",
+      "route": "/test-gpu-metrics",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-integration",
+      "label": "Test Integration",
+      "route": "/test-integration",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-simple",
+      "label": "Test Simple",
+      "route": "/test-simple",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-svelte5",
+      "label": "Test Svelte5",
+      "route": "/test-svelte5",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-upload",
+      "label": "Test Upload",
+      "route": "/test-upload",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-xstate",
+      "label": "Test Xstate",
+      "route": "/test-xstate",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-crud",
+      "label": "CRUD Tests",
+      "route": "/test/crud",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "crud",
+        "testing",
+        "operations"
+      ]
+    },
+    {
+      "id": "test-gallery-api",
+      "label": "Gallery Api",
+      "route": "/test/gallery-api",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-integration",
+      "label": "Integration Tests",
+      "route": "/test/integration",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "integration",
+        "testing",
+        "suite"
+      ]
+    },
+    {
+      "id": "test-n64-button",
+      "label": "N64 Button",
+      "route": "/test/n64-button",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-n64-legal-progress",
+      "label": "N64 Legal Progress",
+      "route": "/test/n64-legal-progress",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-status",
+      "label": "Status",
+      "route": "/test/status",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "test-webasm-langchain",
+      "label": "Webasm Langchain",
+      "route": "/test/webasm-langchain",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "text-editor",
+      "label": "Text Editor",
+      "route": "/text-editor",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "ui-demo",
+      "label": "Ui Demo",
+      "route": "/ui-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "upload-system",
+      "label": "Upload System",
+      "route": "/upload",
+      "category": "main",
+      "status": "active",
+      "tags": [
+        "upload",
+        "documents",
+        "processing"
+      ]
+    },
+    {
+      "id": "upload-test",
+      "label": "Upload Test",
+      "route": "/upload-test",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "validation",
+      "label": "System Validation",
+      "route": "/validation",
+      "category": "admin",
+      "status": "active",
+      "tags": [
+        "validation",
+        "integration",
+        "testing"
+      ]
+    },
+    {
+      "id": "w1",
+      "label": "W1",
+      "route": "/w1",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "wasm-gpu-demo",
+      "label": "Wasm Gpu Demo",
+      "route": "/wasm-gpu-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "webgpu-demo",
+      "label": "WebGPU Demo",
+      "route": "/webgpu-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "webgpu",
+        "cache",
+        "optimization"
+      ]
+    },
+    {
+      "id": "webgpu-test",
+      "label": "WebGPU Testing",
+      "route": "/webgpu-test",
+      "category": "dev",
+      "status": "active",
+      "tags": [
+        "webgpu",
+        "testing",
+        "vectors"
+      ]
+    },
+    {
+      "id": "windows-gguf-demo",
+      "label": "Windows Gguf Demo",
+      "route": "/windows-gguf-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "yorha",
+      "label": "Yorha",
+      "route": "/yorha",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "yorha-command-center",
+      "label": "Yorha Command Center",
+      "route": "/yorha-command-center",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "yorha-dashboard",
+      "label": "YoRHa Dashboard",
+      "route": "/yorha-dashboard",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "yorha",
+        "dashboard",
+        "admin"
+      ]
+    },
+    {
+      "id": "yorha-demo",
+      "label": "Yorha Demo",
+      "route": "/yorha-demo",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "auto-generated",
+        "demo",
+        "showcase"
+      ]
+    },
+    {
+      "id": "yorha-home",
+      "label": "Yorha Home",
+      "route": "/yorha-home",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "yorha-simple",
+      "label": "Yorha Simple",
+      "route": "/yorha-simple",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "yorha-terminal",
+      "label": "YoRHa Terminal",
+      "route": "/yorha-terminal",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "yorha",
+        "terminal",
+        "interface"
+      ]
+    },
+    {
+      "id": "yorha-test",
+      "label": "Yorha Test",
+      "route": "/yorha-test",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "yorha-analysis",
+      "label": "YoRHa Analysis",
+      "route": "/yorha/analysis",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "yorha",
+        "analysis",
+        "dashboard"
+      ]
+    },
+    {
+      "id": "yorha-api-test",
+      "label": "Api Test",
+      "route": "/yorha/api-test",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "yorha-components",
+      "label": "Components",
+      "route": "/yorha/components",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "yorha-dashboard",
+      "label": "Dashboard",
+      "route": "/yorha/dashboard",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    },
+    {
+      "id": "detective",
+      "label": "YoRHa Detective Center",
+      "route": "/yorha/detective",
+      "category": "main",
+      "status": "active",
+      "tags": [
+        "detective",
+        "yorha",
+        "cases",
+        "command-center"
+      ]
+    },
+    {
+      "id": "yorha-detective-test",
+      "label": "Test",
+      "route": "/yorha/detective/test",
+      "category": "dev",
+      "status": "development",
+      "tags": [
+        "auto-generated",
+        "testing",
+        "development"
+      ]
+    },
+    {
+      "id": "yorha-persons",
+      "label": "YoRHa Persons",
+      "route": "/yorha/persons",
+      "category": "demo",
+      "status": "active",
+      "tags": [
+        "yorha",
+        "persons",
+        "interest"
+      ]
+    },
+    {
+      "id": "yorha-terminal",
+      "label": "Terminal",
+      "route": "/yorha/terminal",
+      "category": "utilities",
+      "status": "active",
+      "tags": [
+        "auto-generated"
+      ]
+    }
+  ],
+  "fileRoutes": [
+    {
+      "file": "src/routes/+page.svelte",
+      "route": "/",
+      "title": null
+    },
+    {
+      "file": "src/routes/admin/cluster/+page.svelte",
+      "route": "/admin/cluster",
+      "title": null
+    },
+    {
+      "file": "src/routes/admin/gpu-demo/+page.svelte",
+      "route": "/admin/gpu-demo",
+      "title": null
+    },
+    {
+      "file": "src/routes/admin/users/+page.svelte",
+      "route": "/admin/users",
+      "title": null
+    },
+    {
+      "file": "src/routes/admin/users/[userId]/+page.svelte",
+      "route": "/admin/users/:userId",
+      "title": "USER PROFILE"
+    },
+    {
+      "file": "src/routes/ai/+page.svelte",
+      "route": "/ai",
+      "title": "AI Legal Assistant"
+    },
+    {
+      "file": "src/routes/ai-assistant/+page.svelte",
+      "route": "/ai-assistant",
+      "title": "Legal AI Assistant"
+    },
+    {
+      "file": "src/routes/ai-demo/+page.svelte",
+      "route": "/ai-demo",
+      "title": "Legal AI System Demo"
+    },
+    {
+      "file": "src/routes/ai-summary/+page.svelte",
+      "route": "/ai-summary",
+      "title": "AI Summary Generator"
+    },
+    {
+      "file": "src/routes/ai-test/+page.svelte",
+      "route": "/ai-test",
+      "title": "🤖 Enhanced AI Legal Assistant"
+    },
+    {
+      "file": "src/routes/ai-upload-demo/+page.svelte",
+      "route": "/ai-upload-demo",
+      "title": "🚀 Real AI System Demo"
+    },
+    {
+      "file": "src/routes/ai/enhanced-mcp/+page.svelte",
+      "route": "/ai/enhanced-mcp",
+      "title": "🤖 Enhanced MCP Integration Demo"
+    },
+    {
+      "file": "src/routes/ai/modular/+page.svelte",
+      "route": "/ai/modular",
+      "title": "🧠 Modular AI Experience"
+    },
+    {
+      "file": "src/routes/ai/orchestrator/+page.svelte",
+      "route": "/ai/orchestrator",
+      "title": "Multi-LLM Orchestrator"
+    },
+    {
+      "file": "src/routes/aiassistant/+page.svelte",
+      "route": "/aiassistant",
+      "title": "🤖 AI Assistant"
+    },
+    {
+      "file": "src/routes/all-routes/+page.svelte",
+      "route": "/all-routes",
+      "title": "All Routes"
+    },
+    {
+      "file": "src/routes/assistant/+page.svelte",
+      "route": "/assistant",
+      "title": "AI Legal Assistant"
+    },
+    {
+      "file": "src/routes/auth/+page.svelte",
+      "route": "/auth",
+      "title": "Legal AI Platform"
+    },
+    {
+      "file": "src/routes/auth/login/+page.svelte",
+      "route": "/auth/login",
+      "title": "Legal AI Platform"
+    },
+    {
+      "file": "src/routes/auth/login/simple/+page.svelte",
+      "route": "/auth/login/simple",
+      "title": "Legal AI Platform (Simple)"
+    },
+    {
+      "file": "src/routes/auth/register/+page.svelte",
+      "route": "/auth/register",
+      "title": "Legal AI Platform"
+    },
+    {
+      "file": "src/routes/auth/test/+page.svelte",
+      "route": "/auth/test",
+      "title": "Legal AI Authentication Test Suite"
+    },
+    {
+      "file": "src/routes/authenticated-crud-test/+page.svelte",
+      "route": "/authenticated-crud-test",
+      "title": "Authenticated CRUD Operations Test"
+    },
+    {
+      "file": "src/routes/bits-uno-demo/+page.svelte",
+      "route": "/bits-uno-demo",
+      "title": "UI Integration Demo"
+    },
+    {
+      "file": "src/routes/brain/+page.svelte",
+      "route": "/brain",
+      "title": "🧠 System Brain Graph"
+    },
+    {
+      "file": "src/routes/cache-demo/+page.svelte",
+      "route": "/cache-demo",
+      "title": "GPU Cache Demo"
+    },
+    {
+      "file": "src/routes/cache/redis-admin/+page.svelte",
+      "route": "/cache/redis-admin",
+      "title": null
+    },
+    {
+      "file": "src/routes/canvas-demo/+page.svelte",
+      "route": "/canvas-demo",
+      "title": "🎮 Canvas Integration Demo"
+    },
+    {
+      "file": "src/routes/cases/+page.svelte",
+      "route": "/cases",
+      "title": "Legal Cases"
+    },
+    {
+      "file": "src/routes/cases/[caseId]/rag/+page.svelte",
+      "route": "/cases/:caseId/rag",
+      "title": "RAG Analysis: {data.caseData.title}"
+    },
+    {
+      "file": "src/routes/cases/[id]/+page.svelte",
+      "route": "/cases/:id",
+      "title": null
+    },
+    {
+      "file": "src/routes/cases/[id]/canvas/+page.svelte",
+      "route": "/cases/:id/canvas",
+      "title": null
+    },
+    {
+      "file": "src/routes/cases/[id]/enhanced/+page.svelte",
+      "route": "/cases/:id/enhanced",
+      "title": null
+    },
+    {
+      "file": "src/routes/cases/create/+page.svelte",
+      "route": "/cases/create",
+      "title": "{data.editMode ? 'Edit Case' : 'Create New Case'}"
+    },
+    {
+      "file": "src/routes/cases/new/+page.svelte",
+      "route": "/cases/new",
+      "title": "Create New Case"
+    },
+    {
+      "file": "src/routes/chat/+page.svelte",
+      "route": "/chat",
+      "title": "Legal AI Assistant"
+    },
+    {
+      "file": "src/routes/chat-demo/+page.svelte",
+      "route": "/chat-demo",
+      "title": "⚖️ Legal AI Chat Demo"
+    },
+    {
+      "file": "src/routes/citations/+page.svelte",
+      "route": "/citations",
+      "title": "Citations"
+    },
+    {
+      "file": "src/routes/compiler-ai-demo/+page.svelte",
+      "route": "/compiler-ai-demo",
+      "title": null
+    },
+    {
+      "file": "src/routes/context7-demo/+page.svelte",
+      "route": "/context7-demo",
+      "title": "Context7 MCP + Copilot Architecture Demo"
+    },
+    {
+      "file": "src/routes/context7-demo.disabled/+page.svelte",
+      "route": "/context7-demo.disabled",
+      "title": "Context7 MCP + Copilot Architecture Demo"
+    },
+    {
+      "file": "src/routes/copilot/autonomous/+page.svelte",
+      "route": "/copilot/autonomous",
+      "title": "Autonomous Engineering System"
+    },
+    {
+      "file": "src/routes/crud-dashboard/+page.svelte",
+      "route": "/crud-dashboard",
+      "title": "Complete CRUD Dashboard"
+    },
+    {
+      "file": "src/routes/cuda-streaming/+page.svelte",
+      "route": "/cuda-streaming",
+      "title": "🚀 CUDA gRPC Streaming"
+    },
+    {
+      "file": "src/routes/dashboard/+page.svelte",
+      "route": "/dashboard",
+      "title": "Dashboard Overview"
+    },
+    {
+      "file": "src/routes/dashboard/cases/+page.svelte",
+      "route": "/dashboard/cases",
+      "title": "Cases"
+    },
+    {
+      "file": "src/routes/dashboard/search/+page.svelte",
+      "route": "/dashboard/search",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/+page.svelte",
+      "route": "/demo",
+      "title": "Demo Hub"
+    },
+    {
+      "file": "src/routes/demo/ai-assistant/+page.svelte",
+      "route": "/demo/ai-assistant",
+      "title": "🤖 Legal AI Assistant Demo"
+    },
+    {
+      "file": "src/routes/demo/ai-complete-test/+page.svelte",
+      "route": "/demo/ai-complete-test",
+      "title": "🧠 Complete AI System Test"
+    },
+    {
+      "file": "src/routes/demo/ai-dashboard/+page.svelte",
+      "route": "/demo/ai-dashboard",
+      "title": "AI Pipeline Demo Dashboard"
+    },
+    {
+      "file": "src/routes/demo/ai-integration/+page.svelte",
+      "route": "/demo/ai-integration",
+      "title": "🚀 AI Integration System Demo"
+    },
+    {
+      "file": "src/routes/demo/ai-pipeline/+page.svelte",
+      "route": "/demo/ai-pipeline",
+      "title": "🚀 AI Pipeline Demo"
+    },
+    {
+      "file": "src/routes/demo/ai-summary/+page.svelte",
+      "route": "/demo/ai-summary",
+      "title": "AI Summary & Analysis Demo"
+    },
+    {
+      "file": "src/routes/demo/ai-test/+page.svelte",
+      "route": "/demo/ai-test",
+      "title": "🤖 AI Pipeline Testing"
+    },
+    {
+      "file": "src/routes/demo/bits-ui/+page.svelte",
+      "route": "/demo/bits-ui",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/chat-stream/+page.svelte",
+      "route": "/demo/chat-stream",
+      "title": "Chat (Fetch Streaming via Proxy)"
+    },
+    {
+      "file": "src/routes/demo/clean-architecture/+page.svelte",
+      "route": "/demo/clean-architecture",
+      "title": "Clean Architecture Demo"
+    },
+    {
+      "file": "src/routes/demo/complete-integration/+page.svelte",
+      "route": "/demo/complete-integration",
+      "title": "🎮 NES + YoRHa + WebAssembly Integration"
+    },
+    {
+      "file": "src/routes/demo/component-gallery/+page.svelte",
+      "route": "/demo/component-gallery",
+      "title": "Legal Document Analysis"
+    },
+    {
+      "file": "src/routes/demo/crud-integration/+page.svelte",
+      "route": "/demo/crud-integration",
+      "title": "🚀 CRUD Integration Demo"
+    },
+    {
+      "file": "src/routes/demo/cuda-minio-upload/+page.svelte",
+      "route": "/demo/cuda-minio-upload",
+      "title": "🚀 Enhanced MinIO Drag & Drop Demo"
+    },
+    {
+      "file": "src/routes/demo/cuda-rtx-integration/+page.svelte",
+      "route": "/demo/cuda-rtx-integration",
+      "title": "🚀 CUDA RTX Integration Demo"
+    },
+    {
+      "file": "src/routes/demo/cyber-elephant/+page.svelte",
+      "route": "/demo/cyber-elephant",
+      "title": "🐘 Cyber Elephant"
+    },
+    {
+      "file": "src/routes/demo/document-ai/+page.svelte",
+      "route": "/demo/document-ai",
+      "title": "🤖 AI Document Processing Demo"
+    },
+    {
+      "file": "src/routes/demo/document-upload-gpu/+page.svelte",
+      "route": "/demo/document-upload-gpu",
+      "title": "📄 Document Upload with GPU Processing"
+    },
+    {
+      "file": "src/routes/demo/drag-drop/+page.svelte",
+      "route": "/demo/drag-drop",
+      "title": "HTML5 Drag & Drop Demo"
+    },
+    {
+      "file": "src/routes/demo/editor-test/+page.svelte",
+      "route": "/demo/editor-test",
+      "title": "NieR Rich Text Editor Test"
+    },
+    {
+      "file": "src/routes/demo/embedding-chat/+page.svelte",
+      "route": "/demo/embedding-chat",
+      "title": "🧠 EmbeddingGemma AI Chat Assistant"
+    },
+    {
+      "file": "src/routes/demo/enhanced-rag-demo/+page.svelte",
+      "route": "/demo/enhanced-rag-demo",
+      "title": "🚀 Enhanced RAG Demo"
+    },
+    {
+      "file": "src/routes/demo/enhanced-rag-semantic/+page.svelte",
+      "route": "/demo/enhanced-rag-semantic",
+      "title": "Enhanced RAG System with Semantic Analysis"
+    },
+    {
+      "file": "src/routes/demo/enhanced-semantic-architecture/+page.svelte",
+      "route": "/demo/enhanced-semantic-architecture",
+      "title": "🧠 Enhanced Semantic Architecture"
+    },
+    {
+      "file": "src/routes/demo/full-stack-integration/+page.svelte",
+      "route": "/demo/full-stack-integration",
+      "title": "🔧 FULL-STACK INTEGRATION TEST"
+    },
+    {
+      "file": "src/routes/demo/gaming-evolution/16bit/+page.svelte",
+      "route": "/demo/gaming-evolution/16bit",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/gaming-evolution/8bit/+page.svelte",
+      "route": "/demo/gaming-evolution/8bit",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/gaming-evolution/n64/+page.svelte",
+      "route": "/demo/gaming-evolution/n64",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/glyph-generator/+page.svelte",
+      "route": "/demo/glyph-generator",
+      "title": "🎨 Legal Evidence Glyph Generator"
+    },
+    {
+      "file": "src/routes/demo/gpu-acceleration/+page.svelte",
+      "route": "/demo/gpu-acceleration",
+      "title": "🚀 GPU Acceleration Demo"
+    },
+    {
+      "file": "src/routes/demo/gpu-assistant/+page.svelte",
+      "route": "/demo/gpu-assistant",
+      "title": "GPU Assistant Demo"
+    },
+    {
+      "file": "src/routes/demo/gpu-cache-integration/+page.svelte",
+      "route": "/demo/gpu-cache-integration",
+      "title": "GPU Cache Integration Demo"
+    },
+    {
+      "file": "src/routes/demo/gpu-chat/+page.svelte",
+      "route": "/demo/gpu-chat",
+      "title": "GPU Chat Streaming Demo"
+    },
+    {
+      "file": "src/routes/demo/gpu-inference/+page.svelte",
+      "route": "/demo/gpu-inference",
+      "title": "🎮 GPU Inference Engine Demo"
+    },
+    {
+      "file": "src/routes/demo/gpu-legal-ai/+page.svelte",
+      "route": "/demo/gpu-legal-ai",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/gpu-legal-ai/lawpdfs/+page.svelte",
+      "route": "/demo/gpu-legal-ai/lawpdfs",
+      "title": "Legal PDF Processing Pipeline"
+    },
+    {
+      "file": "src/routes/demo/headless-ui-showcase/+page.svelte",
+      "route": "/demo/headless-ui-showcase",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/hybrid-cache-architecture/+page.svelte",
+      "route": "/demo/hybrid-cache-architecture",
+      "title": "🔄 Hybrid Cache-First Architecture Demo"
+    },
+    {
+      "file": "src/routes/demo/hybrid-legal-analysis/+page.svelte",
+      "route": "/demo/hybrid-legal-analysis",
+      "title": "🧠⚡ Hybrid Legal Analysis 3D"
+    },
+    {
+      "file": "src/routes/demo/inline-suggestions/+page.svelte",
+      "route": "/demo/inline-suggestions",
+      "title": "Enhanced Claude Inline Suggestions"
+    },
+    {
+      "file": "src/routes/demo/instant-search/+page.svelte",
+      "route": "/demo/instant-search",
+      "title": "Instant Legal Search Demo"
+    },
+    {
+      "file": "src/routes/demo/integrated-system/+page.svelte",
+      "route": "/demo/integrated-system",
+      "title": "Integrated Legal AI System Demo"
+    },
+    {
+      "file": "src/routes/demo/langextract-ollama/+page.svelte",
+      "route": "/demo/langextract-ollama",
+      "title": "LangExtract + Ollama Integration"
+    },
+    {
+      "file": "src/routes/demo/lazy-loading/+page.svelte",
+      "route": "/demo/lazy-loading",
+      "title": "Lazy Loading System Demo"
+    },
+    {
+      "file": "src/routes/demo/legal-ai-complete/+page.svelte",
+      "route": "/demo/legal-ai-complete",
+      "title": "Legal AI System Demo"
+    },
+    {
+      "file": "src/routes/demo/legal-ai-platform/+page.svelte",
+      "route": "/demo/legal-ai-platform",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/legal-components/+page.svelte",
+      "route": "/demo/legal-components",
+      "title": "Legal Components Demo"
+    },
+    {
+      "file": "src/routes/demo/legal-search/+page.svelte",
+      "route": "/demo/legal-search",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/live-agents/+page.svelte",
+      "route": "/demo/live-agents",
+      "title": "🤖 Live Agent Integration Demo"
+    },
+    {
+      "file": "src/routes/demo/nes-bits-ui/+page.svelte",
+      "route": "/demo/nes-bits-ui",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/nes-yorha-3d/+page.svelte",
+      "route": "/demo/nes-yorha-3d",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/nes-yorha-hybrid/+page.svelte",
+      "route": "/demo/nes-yorha-hybrid",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/neural-sprite/+page.svelte",
+      "route": "/demo/neural-sprite",
+      "title": "Neural Sprite — Demo"
+    },
+    {
+      "file": "src/routes/demo/neural-sprite-engine/+page.svelte",
+      "route": "/demo/neural-sprite-engine",
+      "title": "🎮 NEURAL SPRITE ENGINE v1.0"
+    },
+    {
+      "file": "src/routes/demo/notes/+page.svelte",
+      "route": "/demo/notes",
+      "title": "Rich Text Editor Demo"
+    },
+    {
+      "file": "src/routes/demo/observability/+page.svelte",
+      "route": "/demo/observability",
+      "title": "🔍 OBSERVABILITY INTEGRATION DEMO"
+    },
+    {
+      "file": "src/routes/demo/ollama-integration/+page.svelte",
+      "route": "/demo/ollama-integration",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/phase14/+page.svelte",
+      "route": "/demo/phase14",
+      "title": "Phase 14 Complete Demo System"
+    },
+    {
+      "file": "src/routes/demo/phase5/+page.svelte",
+      "route": "/demo/phase5",
+      "title": "Phase 5 Enhanced Demo"
+    },
+    {
+      "file": "src/routes/demo/productivity-ai-integration/+page.svelte",
+      "route": "/demo/productivity-ai-integration",
+      "title": "🚀 Productivity AI Integration"
+    },
+    {
+      "file": "src/routes/demo/professional-editor/+page.svelte",
+      "route": "/demo/professional-editor",
+      "title": "Professional Document Editor"
+    },
+    {
+      "file": "src/routes/demo/progressive-gaming-ui/+page.svelte",
+      "route": "/demo/progressive-gaming-ui",
+      "title": "🎮 Progressive Gaming UI Evolution"
+    },
+    {
+      "file": "src/routes/demo/ps1-effects-advanced/+page.svelte",
+      "route": "/demo/ps1-effects-advanced",
+      "title": "🎮 PS1 Advanced Effects Demo"
+    },
+    {
+      "file": "src/routes/demo/ps1-stories/+page.svelte",
+      "route": "/demo/ps1-stories",
+      "title": "🎮 PS1 Stories Demo"
+    },
+    {
+      "file": "src/routes/demo/rag-integration/+page.svelte",
+      "route": "/demo/rag-integration",
+      "title": "RAG Integration Demo"
+    },
+    {
+      "file": "src/routes/demo/real-time-search/+page.svelte",
+      "route": "/demo/real-time-search",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/recommendation-system/+page.svelte",
+      "route": "/demo/recommendation-system",
+      "title": "🎮 Legal AI Platform"
+    },
+    {
+      "file": "src/routes/demo/retro-gpu-metrics/+page.svelte",
+      "route": "/demo/retro-gpu-metrics",
+      "title": "🎮 Retro GPU Metrics Demo"
+    },
+    {
+      "file": "src/routes/demo/semantic-3d/+page.svelte",
+      "route": "/demo/semantic-3d",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/semantic-search/+page.svelte",
+      "route": "/demo/semantic-search",
+      "title": "🧠 Enhanced Semantic Search"
+    },
+    {
+      "file": "src/routes/demo/shader-cache/+page.svelte",
+      "route": "/demo/shader-cache",
+      "title": "🎮 GPU Shader Cache Demo"
+    },
+    {
+      "file": "src/routes/demo/simd-glyphs/+page.svelte",
+      "route": "/demo/simd-glyphs",
+      "title": "SIMD Glyph Generator"
+    },
+    {
+      "file": "src/routes/demo/simple-test/+page.svelte",
+      "route": "/demo/simple-test",
+      "title": "🧪 System Testing Dashboard"
+    },
+    {
+      "file": "src/routes/demo/streaming-workflow/+page.svelte",
+      "route": "/demo/streaming-workflow",
+      "title": "🏛️ Streaming Legal Evidence Processing"
+    },
+    {
+      "file": "src/routes/demo/system-integration/+page.svelte",
+      "route": "/demo/system-integration",
+      "title": "🔍 Evidence Processing System"
+    },
+    {
+      "file": "src/routes/demo/system-summary/+page.svelte",
+      "route": "/demo/system-summary",
+      "title": "⚖️ Legal AI System"
+    },
+    {
+      "file": "src/routes/demo/ui-components/+page.svelte",
+      "route": "/demo/ui-components",
+      "title": "Advanced UI Components"
+    },
+    {
+      "file": "src/routes/demo/unified-architecture/+page.svelte",
+      "route": "/demo/unified-architecture",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/unified-integration/+page.svelte",
+      "route": "/demo/unified-integration",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/unified-vector/+page.svelte",
+      "route": "/demo/unified-vector",
+      "title": "UNIFIED VECTOR SYSTEMS"
+    },
+    {
+      "file": "src/routes/demo/unocss-svelte5/+page.svelte",
+      "route": "/demo/unocss-svelte5",
+      "title": "🚀 UnoCSS + Svelte 5 Integration Demo"
+    },
+    {
+      "file": "src/routes/demo/vector-intelligence/+page.svelte",
+      "route": "/demo/vector-intelligence",
+      "title": "Vector Intelligence Demo"
+    },
+    {
+      "file": "src/routes/demo/vector-pipeline/+page.svelte",
+      "route": "/demo/vector-pipeline",
+      "title": "Vector Pipeline Demo"
+    },
+    {
+      "file": "src/routes/demo/vector-search/+page.svelte",
+      "route": "/demo/vector-search",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/wasm-parser/+page.svelte",
+      "route": "/demo/wasm-parser",
+      "title": "🧠 WASM Legal Document Parser"
+    },
+    {
+      "file": "src/routes/demo/webasm-ai-complete/+page.svelte",
+      "route": "/demo/webasm-ai-complete",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/webgpu-acceleration/+page.svelte",
+      "route": "/demo/webgpu-acceleration",
+      "title": null
+    },
+    {
+      "file": "src/routes/demo/webgpu-graph/+page.svelte",
+      "route": "/demo/webgpu-graph",
+      "title": "WebGPU Legal Document Graph Demonstration"
+    },
+    {
+      "file": "src/routes/demo/webgpu-quantization/+page.svelte",
+      "route": "/demo/webgpu-quantization",
+      "title": "Technical Implementation Details"
+    },
+    {
+      "file": "src/routes/demo/webgpu-webasm-integration/+page.svelte",
+      "route": "/demo/webgpu-webasm-integration",
+      "title": "🔗 WebGPU + WebAssembly Integration"
+    },
+    {
+      "file": "src/routes/demo/xstate-auth/+page.svelte",
+      "route": "/demo/xstate-auth",
+      "title": "XState Authentication Flow Demo"
+    },
+    {
+      "file": "src/routes/demo/yorha-tables/+page.svelte",
+      "route": "/demo/yorha-tables",
+      "title": "YoRHa TABLE/GRID SYSTEM"
+    },
+    {
+      "file": "src/routes/demos/+page.svelte",
+      "route": "/demos",
+      "title": null
+    },
+    {
+      "file": "src/routes/demos/ingest-assistant/+page.svelte",
+      "route": "/demos/ingest-assistant",
+      "title": "Document Ingest Assistant"
+    },
+    {
+      "file": "src/routes/demos/ingest-simple/+page.svelte",
+      "route": "/demos/ingest-simple",
+      "title": "Document Ingest Integration - Demo"
+    },
+    {
+      "file": "src/routes/demos/nes-auth/+page.svelte",
+      "route": "/demos/nes-auth",
+      "title": "YoRHa Legal AI Platform"
+    },
+    {
+      "file": "src/routes/detective/+page.svelte",
+      "route": "/detective",
+      "title": "Detective Mode"
+    },
+    {
+      "file": "src/routes/detective/canvas/+page.svelte",
+      "route": "/detective/canvas",
+      "title": "Detective Evidence Canvas"
+    },
+    {
+      "file": "src/routes/dev-demo/+page.svelte",
+      "route": "/dev-demo",
+      "title": "Legal AI Platform Development Demo"
+    },
+    {
+      "file": "src/routes/dev/ai-setup/+page.svelte",
+      "route": "/dev/ai-setup",
+      "title": null
+    },
+    {
+      "file": "src/routes/dev/cache-demo/+page.svelte",
+      "route": "/dev/cache-demo",
+      "title": "Multi-Layer Cache System Demo"
+    },
+    {
+      "file": "src/routes/dev/context7-test/+page.svelte",
+      "route": "/dev/context7-test",
+      "title": "Context7 Integration Test Suite"
+    },
+    {
+      "file": "src/routes/dev/copilot-optimizer/+page.svelte",
+      "route": "/dev/copilot-optimizer",
+      "title": "Copilot Index Optimizer"
+    },
+    {
+      "file": "src/routes/dev/dynamic-routing-test/+page.svelte",
+      "route": "/dev/dynamic-routing-test",
+      "title": "🛣️ Dynamic Routing Test Suite"
+    },
+    {
+      "file": "src/routes/dev/enhanced-processor/+page.svelte",
+      "route": "/dev/enhanced-processor",
+      "title": null
+    },
+    {
+      "file": "src/routes/dev/gpu-tiling/+page.svelte",
+      "route": "/dev/gpu-tiling",
+      "title": "GPU Tiling + SIMD Demo (OCR → Embedding)"
+    },
+    {
+      "file": "src/routes/dev/ingest-status/+page.svelte",
+      "route": "/dev/ingest-status",
+      "title": null
+    },
+    {
+      "file": "src/routes/dev/ingestion-dashboard/+page.svelte",
+      "route": "/dev/ingestion-dashboard",
+      "title": "Ingestion Dashboard"
+    },
+    {
+      "file": "src/routes/dev/mcp-tools/+page.svelte",
+      "route": "/dev/mcp-tools",
+      "title": "Context7 MCP Tools Integration"
+    },
+    {
+      "file": "src/routes/dev/metrics/+page.svelte",
+      "route": "/dev/metrics",
+      "title": "Development Metrics"
+    },
+    {
+      "file": "src/routes/dev/pgvector-test/+page.svelte",
+      "route": "/dev/pgvector-test",
+      "title": "🧠 pgvector Integration Dashboard"
+    },
+    {
+      "file": "src/routes/dev/self-prompting-demo/+page.svelte",
+      "route": "/dev/self-prompting-demo",
+      "title": "Self-Prompting Agent Orchestration"
+    },
+    {
+      "file": "src/routes/dev/suggestions/+page.svelte",
+      "route": "/dev/suggestions",
+      "title": "Svelte Suggestions"
+    },
+    {
+      "file": "src/routes/dev/tensor-demo/+page.svelte",
+      "route": "/dev/tensor-demo",
+      "title": "Tensor Demo"
+    },
+    {
+      "file": "src/routes/dev/vector-search-demo/+page.svelte",
+      "route": "/dev/vector-search-demo",
+      "title": "Vector Search Demo"
+    },
+    {
+      "file": "src/routes/dev/vite-error-demo/+page.svelte",
+      "route": "/dev/vite-error-demo",
+      "title": "🔧 Vite Error Logger Demo"
+    },
+    {
+      "file": "src/routes/dev/webgpu-diagnostics/+page.svelte",
+      "route": "/dev/webgpu-diagnostics",
+      "title": "WebGPU Diagnostics"
+    },
+    {
+      "file": "src/routes/document-editor-demo/+page.svelte",
+      "route": "/document-editor-demo",
+      "title": "Legal Document Editor Demo"
+    },
+    {
+      "file": "src/routes/editor/+page.svelte",
+      "route": "/editor",
+      "title": null
+    },
+    {
+      "file": "src/routes/endpoints/+page.svelte",
+      "route": "/endpoints",
+      "title": "Endpoints & Status"
+    },
+    {
+      "file": "src/routes/enhanced/+page.svelte",
+      "route": "/enhanced",
+      "title": "Enhanced Vector Search"
+    },
+    {
+      "file": "src/routes/enhanced-ai-demo/+page.svelte",
+      "route": "/enhanced-ai-demo",
+      "title": "Enhanced RAG Studio"
+    },
+    {
+      "file": "src/routes/evidence/+page.svelte",
+      "route": "/evidence",
+      "title": "Evidence Management"
+    },
+    {
+      "file": "src/routes/evidence-canvas/+page.svelte",
+      "route": "/evidence-canvas",
+      "title": "Evidence Canvas"
+    },
+    {
+      "file": "src/routes/evidence-editor/+page.svelte",
+      "route": "/evidence-editor",
+      "title": "Visual Evidence Editor"
+    },
+    {
+      "file": "src/routes/evidence/analyze/+page.svelte",
+      "route": "/evidence/analyze",
+      "title": "Evidence Analysis Pipeline"
+    },
+    {
+      "file": "src/routes/evidence/hash/+page.svelte",
+      "route": "/evidence/hash",
+      "title": "🔐 Evidence Hash Verification"
+    },
+    {
+      "file": "src/routes/evidence/manage/+page.svelte",
+      "route": "/evidence/manage",
+      "title": "Evidence Management"
+    },
+    {
+      "file": "src/routes/evidence/realtime/+page.svelte",
+      "route": "/evidence/realtime",
+      "title": "Real-time Evidence Management"
+    },
+    {
+      "file": "src/routes/evidence/upload/+page.svelte",
+      "route": "/evidence/upload",
+      "title": "📁 Upload Evidence"
+    },
+    {
+      "file": "src/routes/evidenceboard/+page.svelte",
+      "route": "/evidenceboard",
+      "title": null
+    },
+    {
+      "file": "src/routes/examples/svelte5/+page.svelte",
+      "route": "/examples/svelte5",
+      "title": "🚀 Svelte 5 Features"
+    },
+    {
+      "file": "src/routes/export/+page.svelte",
+      "route": "/export",
+      "title": "Data Export"
+    },
+    {
+      "file": "src/routes/frameworks-demo/+page.svelte",
+      "route": "/frameworks-demo",
+      "title": "Legal AI Demo"
+    },
+    {
+      "file": "src/routes/gallery/+page.svelte",
+      "route": "/gallery",
+      "title": "📁 Media Gallery"
+    },
+    {
+      "file": "src/routes/gaming-demo/+page.svelte",
+      "route": "/gaming-demo",
+      "title": "Mission Control Dashboard"
+    },
+    {
+      "file": "src/routes/golden-ratio-demo/+page.svelte",
+      "route": "/golden-ratio-demo",
+      "title": "Golden Ratio Grid System Demo"
+    },
+    {
+      "file": "src/routes/gpu-chat/+page.svelte",
+      "route": "/gpu-chat",
+      "title": null
+    },
+    {
+      "file": "src/routes/gpu-demo/+page.svelte",
+      "route": "/gpu-demo",
+      "title": "GPU Integration Demo"
+    },
+    {
+      "file": "src/routes/graph/+page.svelte",
+      "route": "/graph",
+      "title": "WASM Graph Engine"
+    },
+    {
+      "file": "src/routes/help/+page.svelte",
+      "route": "/help",
+      "title": null
+    },
+    {
+      "file": "src/routes/import/+page.svelte",
+      "route": "/import",
+      "title": null
+    },
+    {
+      "file": "src/routes/interactive-canvas/+page.svelte",
+      "route": "/interactive-canvas",
+      "title": null
+    },
+    {
+      "file": "src/routes/investigation/+page.svelte",
+      "route": "/investigation",
+      "title": "🔍 Legal Investigation Workspace"
+    },
+    {
+      "file": "src/routes/law/+page.svelte",
+      "route": "/law",
+      "title": "Law Database"
+    },
+    {
+      "file": "src/routes/laws/+page.svelte",
+      "route": "/laws",
+      "title": "Legal Resources"
+    },
+    {
+      "file": "src/routes/legal-ai-suite/+page.svelte",
+      "route": "/legal-ai-suite",
+      "title": "⚖️ Legal AI Suite"
+    },
+    {
+      "file": "src/routes/legal/documents/+page.svelte",
+      "route": "/legal/documents",
+      "title": "Legal Documents"
+    },
+    {
+      "file": "src/routes/local-ai-demo/+page.svelte",
+      "route": "/local-ai-demo",
+      "title": "Enhanced RAG System Demo"
+    },
+    {
+      "file": "src/routes/login/+page.svelte",
+      "route": "/login",
+      "title": null
+    },
+    {
+      "file": "src/routes/logout/+page.svelte",
+      "route": "/logout",
+      "title": null
+    },
+    {
+      "file": "src/routes/memory-dashboard/+page.svelte",
+      "route": "/memory-dashboard",
+      "title": "Memory Optimization Dashboard"
+    },
+    {
+      "file": "src/routes/modern-demo/+page.svelte",
+      "route": "/modern-demo",
+      "title": null
+    },
+    {
+      "file": "src/routes/neural-topology-demo/+page.svelte",
+      "route": "/neural-topology-demo",
+      "title": "{pageTitle}"
+    },
+    {
+      "file": "src/routes/nier-showcase/+page.svelte",
+      "route": "/nier-showcase",
+      "title": "YoRHa Legal Division"
+    },
+    {
+      "file": "src/routes/optimization-dashboard/+page.svelte",
+      "route": "/optimization-dashboard",
+      "title": "🧠 Advanced Optimization Dashboard"
+    },
+    {
+      "file": "src/routes/original-home/+page.svelte",
+      "route": "/original-home",
+      "title": null
+    },
+    {
+      "file": "src/routes/perf/+page.svelte",
+      "route": "/perf",
+      "title": null
+    },
+    {
+      "file": "src/routes/persons/+page.svelte",
+      "route": "/persons",
+      "title": "Persons of Interest"
+    },
+    {
+      "file": "src/routes/persons-of-interest/+page.svelte",
+      "route": "/persons-of-interest",
+      "title": "👥 Persons of Interest"
+    },
+    {
+      "file": "src/routes/phase13-demo/+page.svelte",
+      "route": "/phase13-demo",
+      "title": "🚀 Phase 13 Enhanced Features Demo"
+    },
+    {
+      "file": "src/routes/pipeline-demo/+page.svelte",
+      "route": "/pipeline-demo",
+      "title": "{pageTitle}"
+    },
+    {
+      "file": "src/routes/poi/+page.svelte",
+      "route": "/poi",
+      "title": null
+    },
+    {
+      "file": "src/routes/profile/+page.svelte",
+      "route": "/profile",
+      "title": "Profile Settings"
+    },
+    {
+      "file": "src/routes/prosecutor/+page.svelte",
+      "route": "/prosecutor",
+      "title": "Prosecutor Dashboard"
+    },
+    {
+      "file": "src/routes/proxy/+page.svelte",
+      "route": "/proxy",
+      "title": "Proxy Diagnostic"
+    },
+    {
+      "file": "src/routes/rag/+page.svelte",
+      "route": "/rag",
+      "title": null
+    },
+    {
+      "file": "src/routes/rag-demo/+page.svelte",
+      "route": "/rag-demo",
+      "title": "RAG System Demo"
+    },
+    {
+      "file": "src/routes/recommendations-demo/+page.svelte",
+      "route": "/recommendations-demo",
+      "title": null
+    },
+    {
+      "file": "src/routes/register/+page.svelte",
+      "route": "/register",
+      "title": null
+    },
+    {
+      "file": "src/routes/report-builder/+page.svelte",
+      "route": "/report-builder",
+      "title": "📝 Report Builder"
+    },
+    {
+      "file": "src/routes/reports/+page.svelte",
+      "route": "/reports",
+      "title": "Reports"
+    },
+    {
+      "file": "src/routes/routes/+page.svelte",
+      "route": "/routes",
+      "title": null
+    },
+    {
+      "file": "src/routes/saved-citations/+page.svelte",
+      "route": "/saved-citations",
+      "title": "Saved Citations"
+    },
+    {
+      "file": "src/routes/search/+page.svelte",
+      "route": "/search",
+      "title": null
+    },
+    {
+      "file": "src/routes/security/+page.svelte",
+      "route": "/security",
+      "title": null
+    },
+    {
+      "file": "src/routes/semantic-search-demo/+page.svelte",
+      "route": "/semantic-search-demo",
+      "title": "Semantic Search Demo (SSR + Hydration + Debounce)"
+    },
+    {
+      "file": "src/routes/settings/+page.svelte",
+      "route": "/settings",
+      "title": null
+    },
+    {
+      "file": "src/routes/shader_search/+page.svelte",
+      "route": "/shader_search",
+      "title": "🔍 WebGPU Shader Search"
+    },
+    {
+      "file": "src/routes/showcase/+page.svelte",
+      "route": "/showcase",
+      "title": "Enhanced Legal AI Showcase"
+    },
+    {
+      "file": "src/routes/simd-ai-demo/+page.svelte",
+      "route": "/simd-ai-demo",
+      "title": "🧬 SIMD AI Demo Platform"
+    },
+    {
+      "file": "src/routes/simple/+page.svelte",
+      "route": "/simple",
+      "title": "Simple Navigation Test"
+    },
+    {
+      "file": "src/routes/simple-test/+page.svelte",
+      "route": "/simple-test",
+      "title": "Simple Test Case Creation"
+    },
+    {
+      "file": "src/routes/simple-upload-test/+page.svelte",
+      "route": "/simple-upload-test",
+      "title": "Simple RAG Upload Test"
+    },
+    {
+      "file": "src/routes/state/machines/+page.svelte",
+      "route": "/state/machines",
+      "title": "🔄 State Machine Registry"
+    },
+    {
+      "file": "src/routes/state/persistence/+page.svelte",
+      "route": "/state/persistence",
+      "title": "💾 State Persistence Manager"
+    },
+    {
+      "file": "src/routes/state/transitions/+page.svelte",
+      "route": "/state/transitions",
+      "title": "🔄 Transition Monitor"
+    },
+    {
+      "file": "src/routes/status/+page.svelte",
+      "route": "/status",
+      "title": "🎯 System Status"
+    },
+    {
+      "file": "src/routes/storage/admin/audits/+page.svelte",
+      "route": "/storage/admin/audits",
+      "title": "Storage Audit Logs"
+    },
+    {
+      "file": "src/routes/studio/+page.svelte",
+      "route": "/studio",
+      "title": null
+    },
+    {
+      "file": "src/routes/summarize/+page.svelte",
+      "route": "/summarize",
+      "title": "🏛️ Legal Document Summarization"
+    },
+    {
+      "file": "src/routes/system-status/+page.svelte",
+      "route": "/system-status",
+      "title": "🎯 Legal AI Platform System Status"
+    },
+    {
+      "file": "src/routes/system/health/+page.svelte",
+      "route": "/system/health",
+      "title": "System Health Dashboard"
+    },
+    {
+      "file": "src/routes/test/+page.svelte",
+      "route": "/test",
+      "title": "🧪 Test Navigation Hub"
+    },
+    {
+      "file": "src/routes/test-ai-ask/+page.svelte",
+      "route": "/test-ai-ask",
+      "title": "🤖 Gemma3 Q4_K_M Integration Test"
+    },
+    {
+      "file": "src/routes/test-ai-assistant/+page.svelte",
+      "route": "/test-ai-assistant",
+      "title": "AI Assistant Integration Test"
+    },
+    {
+      "file": "src/routes/test-button/+page.svelte",
+      "route": "/test-button",
+      "title": "Button Test Page"
+    },
+    {
+      "file": "src/routes/test-buttons/+page.svelte",
+      "route": "/test-buttons",
+      "title": "Button Event Test Page"
+    },
+    {
+      "file": "src/routes/test-case/+page.svelte",
+      "route": "/test-case",
+      "title": "Test Case Creation"
+    },
+    {
+      "file": "src/routes/test-components/+page.svelte",
+      "route": "/test-components",
+      "title": "Testing Existing Shadcn Button"
+    },
+    {
+      "file": "src/routes/test-crud/+page.svelte",
+      "route": "/test-crud",
+      "title": "SvelteKit CRUD Operations Test"
+    },
+    {
+      "file": "src/routes/test-embedding/+page.svelte",
+      "route": "/test-embedding",
+      "title": "Embedding Workflow Test"
+    },
+    {
+      "file": "src/routes/test-enhanced-actions/+page.svelte",
+      "route": "/test-enhanced-actions",
+      "title": "Enhanced Actions Test"
+    },
+    {
+      "file": "src/routes/test-enhanced-upload/+page.svelte",
+      "route": "/test-enhanced-upload",
+      "title": "🚀 Enhanced Legal Upload Test"
+    },
+    {
+      "file": "src/routes/test-forms/+page.svelte",
+      "route": "/test-forms",
+      "title": "SuperForms + Zod + Enhanced Actions Test"
+    },
+    {
+      "file": "src/routes/test-gemma3/+page.svelte",
+      "route": "/test-gemma3",
+      "title": "🤖 Gemma3 Local LLM Test"
+    },
+    {
+      "file": "src/routes/test-gpu-cache/+page.svelte",
+      "route": "/test-gpu-cache",
+      "title": "🎮 N64 + YoRHa UI + NES.css + GPU Cache"
+    },
+    {
+      "file": "src/routes/test-gpu-metrics/+page.svelte",
+      "route": "/test-gpu-metrics",
+      "title": "🚀 GPU Metrics & Redis Test Dashboard"
+    },
+    {
+      "file": "src/routes/test-integration/+page.svelte",
+      "route": "/test-integration",
+      "title": "🤖 Gemma3 Legal AI Integration Test"
+    },
+    {
+      "file": "src/routes/test-simple/+page.svelte",
+      "route": "/test-simple",
+      "title": "{message}"
+    },
+    {
+      "file": "src/routes/test-svelte5/+page.svelte",
+      "route": "/test-svelte5",
+      "title": "Svelte 5 + bits-ui v2.9.4 + melt v0.39.0 Test"
+    },
+    {
+      "file": "src/routes/test-upload/+page.svelte",
+      "route": "/test-upload",
+      "title": "File Upload Test"
+    },
+    {
+      "file": "src/routes/test-xstate/+page.svelte",
+      "route": "/test-xstate",
+      "title": "XState Legal Case Machine Test"
+    },
+    {
+      "file": "src/routes/test/crud/+page.svelte",
+      "route": "/test/crud",
+      "title": "CRUD Test Dashboard"
+    },
+    {
+      "file": "src/routes/test/gallery-api/+page.svelte",
+      "route": "/test/gallery-api",
+      "title": "🧪 Gallery API Test Suite"
+    },
+    {
+      "file": "src/routes/test/integration/+page.svelte",
+      "route": "/test/integration",
+      "title": "🧪 Integration Test Suite"
+    },
+    {
+      "file": "src/routes/test/n64-button/+page.svelte",
+      "route": "/test/n64-button",
+      "title": "N64 3D Button Component Test"
+    },
+    {
+      "file": "src/routes/test/n64-legal-progress/+page.svelte",
+      "route": "/test/n64-legal-progress",
+      "title": null
+    },
+    {
+      "file": "src/routes/test/status/+page.svelte",
+      "route": "/test/status",
+      "title": "🛣️ Route Status Check"
+    },
+    {
+      "file": "src/routes/test/webasm-langchain/+page.svelte",
+      "route": "/test/webasm-langchain",
+      "title": null
+    },
+    {
+      "file": "src/routes/text-editor/+page.svelte",
+      "route": "/text-editor",
+      "title": "Text Editor"
+    },
+    {
+      "file": "src/routes/ui-demo/+page.svelte",
+      "route": "/ui-demo",
+      "title": "🏛️ Legal Case Management System"
+    },
+    {
+      "file": "src/routes/upload/+page.svelte",
+      "route": "/upload",
+      "title": "Upload Document"
+    },
+    {
+      "file": "src/routes/upload-test/+page.svelte",
+      "route": "/upload-test",
+      "title": "Enhanced File Upload Test"
+    },
+    {
+      "file": "src/routes/validation/+page.svelte",
+      "route": "/validation",
+      "title": "🏗️ Legal AI Platform Integration Validation"
+    },
+    {
+      "file": "src/routes/w1/+page.svelte",
+      "route": "/w1",
+      "title": "⚖️ Legal AI Platform"
+    },
+    {
+      "file": "src/routes/wasm-gpu-demo/+page.svelte",
+      "route": "/wasm-gpu-demo",
+      "title": "WebGPU Not Supported"
+    },
+    {
+      "file": "src/routes/webgpu-demo/+page.svelte",
+      "route": "/webgpu-demo",
+      "title": "🚀 WebGPU Redis Cache Optimizer"
+    },
+    {
+      "file": "src/routes/webgpu-test/+page.svelte",
+      "route": "/webgpu-test",
+      "title": "🔥 WebGPU Vector Similarity Test"
+    },
+    {
+      "file": "src/routes/windows-gguf-demo/+page.svelte",
+      "route": "/windows-gguf-demo",
+      "title": "Windows-Native GGUF Runtime"
+    },
+    {
+      "file": "src/routes/yorha/+page.svelte",
+      "route": "/yorha",
+      "title": "YoRHa COMMAND CENTER"
+    },
+    {
+      "file": "src/routes/yorha-command-center/+page.svelte",
+      "route": "/yorha-command-center",
+      "title": null
+    },
+    {
+      "file": "src/routes/yorha-dashboard/+page.svelte",
+      "route": "/yorha-dashboard",
+      "title": "YoRHa Legal AI Command Center"
+    },
+    {
+      "file": "src/routes/yorha-demo/+page.svelte",
+      "route": "/yorha-demo",
+      "title": "YoRHa Legal AI Demonstration"
+    },
+    {
+      "file": "src/routes/yorha-home/+page.svelte",
+      "route": "/yorha-home",
+      "title": "YoRHa Command Interface"
+    },
+    {
+      "file": "src/routes/yorha-simple/+page.svelte",
+      "route": "/yorha-simple",
+      "title": null
+    },
+    {
+      "file": "src/routes/yorha-terminal/+page.svelte",
+      "route": "/yorha-terminal",
+      "title": "YoRHa Legal AI Terminal"
+    },
+    {
+      "file": "src/routes/yorha-test/+page.svelte",
+      "route": "/yorha-test",
+      "title": null
+    },
+    {
+      "file": "src/routes/yorha/analysis/+page.svelte",
+      "route": "/yorha/analysis",
+      "title": "ANALYSIS"
+    },
+    {
+      "file": "src/routes/yorha/api-test/+page.svelte",
+      "route": "/yorha/api-test",
+      "title": "YoRHa API Testing Interface"
+    },
+    {
+      "file": "src/routes/yorha/components/+page.svelte",
+      "route": "/yorha/components",
+      "title": "3D COMPONENT GALLERY"
+    },
+    {
+      "file": "src/routes/yorha/dashboard/+page.svelte",
+      "route": "/yorha/dashboard",
+      "title": "SYSTEM DASHBOARD"
+    },
+    {
+      "file": "src/routes/yorha/detective/+page.svelte",
+      "route": "/yorha/detective",
+      "title": "YoRHa Detective Command Center"
+    },
+    {
+      "file": "src/routes/yorha/detective/test/+page.svelte",
+      "route": "/yorha/detective/test",
+      "title": "YoRHa Detective API Test"
+    },
+    {
+      "file": "src/routes/yorha/persons/+page.svelte",
+      "route": "/yorha/persons",
+      "title": "PERSONS OF INTEREST"
+    },
+    {
+      "file": "src/routes/yorha/terminal/+page.svelte",
+      "route": "/yorha/terminal",
+      "title": "YORHA TERMINAL"
+    }
+  ],
+  "apiEndpoints": [
+    "/api/health",
+    "/api/routes",
+    "/api/services",
+    "/api/v1/ai/summary",
+    "/api/v1/cluster",
+    "/api/v1/gpu/index",
+    "/api/v1/lb",
+    "/api/v1/legal",
+    "/api/v1/quic",
+    "/api/v1/rag",
+    "/api/v1/recommendations",
+    "/api/v1/state",
+    "/api/v1/upload"
+  ],
+  "configMissingFiles": [],
+  "filesMissingConfig": []
+}

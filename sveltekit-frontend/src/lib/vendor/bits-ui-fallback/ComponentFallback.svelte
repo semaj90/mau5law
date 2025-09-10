@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface ComponentFallbackProps {
     class?: string;
     id?: string;
@@ -28,13 +29,13 @@
   }: ComponentFallbackProps = $props();
 
   // Generate fallback classes based on common patterns
-  $: fallbackClasses = [
+  // TODO: Convert to $derived: fallbackClasses = [
     class,
     variant && `variant-${variant}`,
     size && `size-${size}`,
     disabled && 'disabled',
     'bits-ui-fallback'
-  ].filter(Boolean).join(' ');
+  ].filter(Boolean).join(' ')
 </script>
 
 <div

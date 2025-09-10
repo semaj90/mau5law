@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
@@ -19,17 +20,17 @@
   let fuse: Fuse<any>;
 
   // Reactive data
-  $: sidebarOpen = $sidebarStore.open || isHovered || isPinned;
-  $: evidenceItems = $lokiStore.evidence || [];
-  $: notesItems = $lokiStore.notes || [];
-  $: canvasStates = $lokiStore.canvasStates || [];
+  // TODO: Convert to $derived: sidebarOpen = $sidebarStore.open || isHovered || isPinned
+  // TODO: Convert to $derived: evidenceItems = $lokiStore.evidence || []
+  // TODO: Convert to $derived: notesItems = $lokiStore.notes || []
+  // TODO: Convert to $derived: canvasStates = $lokiStore.canvasStates || []
 
   // Initialize Fuse search
-  $: if (activeTab === "evidence" && evidenceItems.length > 0) {
+  // TODO: Convert to $derived: if (activeTab === "evidence" && evidenceItems.length > 0) {
     fuse = new Fuse(evidenceItems, {
       keys: ["fileName", "description", "tags"],
       threshold: 0.3,
-    });
+    })
   } else if (activeTab === "notes" && notesItems.length > 0) {
     fuse = new Fuse(notesItems, {
       keys: ["title", "content", "tags"],
@@ -37,12 +38,12 @@
     });
 }
   // Search results
-  $: searchResults =
+  // TODO: Convert to $derived: searchResults =
     searchQuery && fuse
       ? fuse.search(searchQuery).map((result) => result.item)
       : activeTab === "evidence"
         ? evidenceItems
-        : notesItems;
+        : notesItems
 
   onMount(() => {
     // Initialize Loki store

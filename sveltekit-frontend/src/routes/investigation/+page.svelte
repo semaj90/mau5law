@@ -3,6 +3,7 @@
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
@@ -428,8 +429,8 @@
                   on:analysisComplete={handleAnalysisComplete}
                   on:detectiveInsights={handleDetectiveInsights}
                 />
-              </Card.Content>
-            </Card.Root>
+              </CardContent>
+            </Card>
           </div>
 
           <div class="evidence-sidebar">
@@ -482,8 +483,8 @@
                     </div>
                   {/if}
                 </div>
-              </Card.Content>
-            </Card.Root>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </Tabs.Content>
@@ -502,8 +503,8 @@
               bind:content={investigationNotes}
               placeholder="Document your investigation findings, observations, and analysis..."
             />
-          </Card.Content>
-        </Card.Root>
+          </CardContent>
+        </Card>
       </Tabs.Content>
 
       <!-- AI Assistant Tab -->
@@ -526,8 +527,8 @@
               onresponse={() => console.log('AI response received')}
               oncitation={() => console.log('Citation requested')}
             />
-          </Card.Content>
-        </Card.Root>
+          </CardContent>
+        </Card>
       </Tabs.Content>
 
             <div class="chat-input">
@@ -541,8 +542,8 @@
                 <MessageSquare class="w-4 h-4" />
               </Button>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </CardContent>
+        </Card>
       </Tabs.Content>
 
       <!-- Citations Tab -->
@@ -559,8 +560,8 @@
               caseId={currentCase?.id || 'demo-case'}
               readonly={false}
             />
-          </Card.Content>
-        </Card.Root>
+          </CardContent>
+        </Card>
       </Tabs.Content>
 
                 {#if citations.length === 0}
@@ -571,8 +572,8 @@
                 {/if}
               </div>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </CardContent>
+        </Card>
       </Tabs.Content>
     </Tabs.Root>
   </div>

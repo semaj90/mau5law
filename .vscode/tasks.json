@@ -202,6 +202,156 @@
 				"$tsc"
 			],
 			"group": "test"
+		},
+		{
+			"label": "🔴 Start Redis Error Logger",
+			"type": "shell",
+			"command": "go",
+			"args": ["run", "simd-redis-vite-server.go"],
+			"options": {
+				"cwd": "${workspaceFolder}/go-microservice"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": [],
+			"detail": "Starts Redis-based Vite error logging server with MCP Context7 auto-solve on port 8080",
+			"icon": {
+				"id": "server-process",
+				"color": "terminal.ansiRed"
+			}
+		},
+		{
+			"label": "🌐 Start SvelteKit Dev (via Error Logger)",
+			"type": "shell",
+			"command": "npm",
+			"args": ["run", "dev"],
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": [
+				"$tsc",
+				"$eslint-compact"
+			],
+			"dependsOn": "🔴 Start Redis Error Logger",
+			"detail": "Starts SvelteKit development server (access via localhost:8080 for error logging)"
+		},
+		{
+			"label": "🧪 Test Error Logger",
+			"type": "shell",
+			"command": "node",
+			"args": ["test-error-logger.js"],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"problemMatcher": [],
+			"detail": "Tests Redis error logging with 4 simulated Vite errors and auto-solve"
+		},
+		{
+			"label": "📁 View Error Logs",
+			"type": "shell",
+			"command": "code",
+			"args": ["logs/claude-pickup/"],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"presentation": {
+				"echo": false,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": [],
+			"detail": "Opens the claude-pickup directory to view auto-generated error logs"
+		},
+		{
+			"label": "🔧 Check Redis Connection",
+			"type": "shell",
+			"command": "docker",
+			"args": ["exec", "legal-ai-redis", "redis-cli", "ping"],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"problemMatcher": [],
+			"detail": "Tests Redis connection in Docker container"
+		},
+		{
+			"label": "🚀 Start Full Development Stack",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"🔧 Check Redis Connection",
+				"🔴 Start Redis Error Logger"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			},
+			"detail": "Starts complete development environment: Redis → Error Logger → SvelteKit (use localhost:8080)"
+		},
+		{
+			"label": "🗑️ Clean Error Logs",
+			"type": "shell",
+			"command": "powershell",
+			"args": ["-Command", "Remove-Item logs/claude-pickup/*.json, logs/claude-pickup/*.md -ErrorAction SilentlyContinue"],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"problemMatcher": [],
+			"detail": "Cleans up auto-generated error log files (keeps README.md)"
 		}
 	]
 }

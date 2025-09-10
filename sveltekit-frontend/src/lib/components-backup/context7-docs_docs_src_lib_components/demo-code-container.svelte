@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { type Snippet, untrack } from "svelte";
 	import { Collapsible, ScrollArea, Tabs } from "bits-ui";
 	import DemoCodeTabs from "./demo-code-tabs.svelte";

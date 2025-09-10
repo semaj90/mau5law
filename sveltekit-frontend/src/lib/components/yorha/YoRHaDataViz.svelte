@@ -1,5 +1,6 @@
 <!-- YoRHa Data Visualization Component -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
 
   interface DataPoint {

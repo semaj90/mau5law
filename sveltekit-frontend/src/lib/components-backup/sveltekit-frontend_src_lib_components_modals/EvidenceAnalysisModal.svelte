@@ -1,5 +1,6 @@
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
+</script>
   interface Props {
     onevidenceUpdated?: (event?: any) => void;
     onsaveAnalysis?: (event?: any) => void;

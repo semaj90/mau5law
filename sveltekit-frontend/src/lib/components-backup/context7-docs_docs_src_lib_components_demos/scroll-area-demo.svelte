@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { ScrollArea } from "bits-ui";
 </script>
 

@@ -2,6 +2,7 @@
 <!-- Real-time monitoring and control for Node.js cluster architecture -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import Card from '$lib/components/ui/Card.svelte';

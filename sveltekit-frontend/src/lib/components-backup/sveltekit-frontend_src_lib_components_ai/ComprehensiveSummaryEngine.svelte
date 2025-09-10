@@ -2,6 +2,7 @@
 <!-- Features: Local LLM + Enhanced RAG + Loki.js + Fuse.js + XState + Service Workers -->
 
 <script lang="ts">
+</script>
   interface Props {
     targetId: string
     targetType: 'case' | 'evidence' | 'legal_document' | 'cross_analysis' ;

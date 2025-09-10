@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import { createEventDispatcher } from "svelte";
   interface Props {
@@ -33,10 +34,10 @@
 let calculatedMainFlex = $state<number;
 let calculatedSidebarFlex = $state<number;
 
-  $: {
+  // TODO: Convert to $derived: {
     switch (ratio) {
       case "golden":
-        calculatedMainFlex >(1.618);
+        calculatedMainFlex >(1.618)
         calculatedSidebarFlex >(1);
         break;
       case "thirds":

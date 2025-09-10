@@ -1,5 +1,6 @@
 <!-- Modular Dialog Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
+</script>
   import { Dialog as DialogPrimitive } from 'bits-ui';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';

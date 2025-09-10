@@ -1,6 +1,7 @@
 <script lang="ts">
+</script>
   import debounce from 'lodash-es/debounce';
-  import { $bindable } from 'svelte';
+  import { } from 'svelte';
 
   interface Props {
     placeholder?: string;

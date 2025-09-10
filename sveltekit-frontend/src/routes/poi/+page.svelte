@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -36,8 +37,7 @@ let persons = $state([
     person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     person.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
     person.status.toLowerCase().includes(searchQuery.toLowerCase())
-  ));
-
+  );
   onMount(() => {
     // Load persons data
     console.log('Loading persons data...');

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
     import { onMount, onDestroy, createEventDispatcher } from 'svelte';
     import createParallax from './parallaxDynamic.js';
 

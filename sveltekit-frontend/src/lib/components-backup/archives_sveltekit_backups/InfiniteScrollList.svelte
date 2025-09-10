@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade, slide } from "svelte/transition";
@@ -26,10 +27,10 @@
   let currentPage = 0;
   let hasMore = true;
 
-  $: {
+  // TODO: Convert to $derived: {
     // Reset when items change
     if (items !== displayedItems.slice(0, items.length)) {
-      currentPage = 0;
+      currentPage = 0
       displayedItems = [];
       loadMore();
 }}

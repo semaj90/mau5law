@@ -2,6 +2,7 @@
 <!-- Real-time demonstration of AI-driven development architecture -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import Card from '$lib/components/ui/Card.svelte';

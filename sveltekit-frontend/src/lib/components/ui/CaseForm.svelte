@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import { goto } from "$app/navigation";
   import {
@@ -70,11 +71,11 @@ let isFormDirty = $state(false);
     console.log("Form values changed:", values);
 }
   // Update form state when formApi is available
-  $: if (formApi) {
+  // TODO: Convert to $derived: if (formApi) {
     // You can access formApi methods here if needed
 }
   async function handleSubmit(event: CustomEvent) {
-    const { values, isValid } = event.detail;
+    const { values, isValid } = event.detail
 
     if (!isValid) {
       return;

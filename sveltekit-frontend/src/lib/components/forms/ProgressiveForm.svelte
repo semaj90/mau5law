@@ -1,5 +1,6 @@
 <!-- ProgressiveForm.svelte - Example of properly progressive enhanced form -->
 <script lang="ts">
+</script>
   import { enhance } from '$app/forms';
   import { createProgressiveForm, type ProgressiveEnhancementConfig } from '$lib/utils/progressive-enhancement-audit.js';
   import type { SubmitFunction } from '@sveltejs/kit';

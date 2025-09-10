@@ -10,6 +10,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { caseManagementService } from '$lib/services/case-management-service.js';
@@ -160,11 +161,11 @@
   }
 
   // Filter evidence based on search and type
-  $: filteredEvidence = $evidenceItems.filter(evidence => {
+  // TODO: Convert to $derived: filteredEvidence = $evidenceItems.filter(evidence => {
     const matchesSearch = !searchQuery || 
       evidence.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       evidence.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      evidence.evidenceNumber.toLowerCase().includes(searchQuery.toLowerCase());
+      evidence.evidenceNumber.toLowerCase().includes(searchQuery.toLowerCase())
     
     const matchesType = filterType === 'all' || evidence.evidenceType === filterType;
     
@@ -337,8 +338,8 @@
   }
 
   // Reactive updates for network view
-  $: if (viewMode === 'network' && canvas) {
-    setTimeout(() => renderNetworkView(), 100);
+  // TODO: Convert to $derived: if (viewMode === 'network' && canvas) {
+    setTimeout(() => renderNetworkView(), 100)
   }
 </script>
 

@@ -1,7 +1,8 @@
 <script lang="ts">
+</script>
 
 	import { createEventDispatcher } from 'svelte';
-  import { $derived } from 'svelte';
+  import { } from 'svelte';
 	import { aiStore } from "../stores/canvas";
 	import Dialog from './Dialog.svelte';
 

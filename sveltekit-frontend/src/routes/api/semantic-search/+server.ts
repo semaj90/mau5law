@@ -12,6 +12,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db, evidence, cases, legalDocuments, evidenceVectors, caseEmbeddings, embeddingCache } from '$lib/server/db/client.js';
 import { sql, eq } from 'drizzle-orm';
+import { fastStringify, fastParse } from '$lib/utils/fast-json';
 
 const EmbeddingSearchCache = new Map();
 const SEARCH_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
@@ -21,14 +22,14 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: fastStringify({
         model: 'embeddinggemma:latest',
         prompt: text
       })
     });
     
     if (!response.ok) throw new Error(`Ollama embedding failed: ${response.statusText}`);
-    const result = await response.json();
+    const result = await fastParse(await response.text());
     return result.embedding;
   } catch (error) {
     console.error('GemmaEmbeddingService error:', error);

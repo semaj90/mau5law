@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
   import { Card } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';

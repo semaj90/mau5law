@@ -3,6 +3,7 @@
   Displays security events, system health, and security metrics
 -->
 <script lang="ts">
+</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;

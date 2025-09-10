@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import CommandMenu from "./CommandMenu.svelte";
 
   interface Props { value?: string;

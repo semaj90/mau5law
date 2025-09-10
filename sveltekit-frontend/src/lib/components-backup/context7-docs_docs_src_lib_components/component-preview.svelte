@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Tabs } from "bits-ui";
 	import { cubicInOut } from "svelte/easing";
 	import { crossfade } from "svelte/transition";

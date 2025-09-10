@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import type { Snippet } from 'svelte';
   

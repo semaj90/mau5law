@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   let message = "SvelteKit 2 + Svelte 5 Test Page";
   let count = $state(0);
   

@@ -1,5 +1,6 @@
 <!-- Combobox Component for Legal AI App -->
 <script lang="ts">
+</script>
   import { Combobox } from 'bits-ui';
   import { Check, ChevronDown, Search, X } from 'lucide-svelte';
   import { cn } from '$lib/utils';

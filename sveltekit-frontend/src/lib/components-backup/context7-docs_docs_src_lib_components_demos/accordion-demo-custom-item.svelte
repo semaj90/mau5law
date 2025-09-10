@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Accordion, type WithoutChildrenOrChild } from "bits-ui";
 	import CaretDown from "phosphor-svelte/lib/CaretDown";
 

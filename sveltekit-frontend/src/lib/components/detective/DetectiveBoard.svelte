@@ -1,5 +1,6 @@
 <!-- Detective Board - Enhanced 3-Column Grid with NES.css, RabbitMQ & GPU Integration -->
 <script lang="ts">
+</script>
 	// Badge replaced with span - not available in enhanced-bits
 	import Button from '$lib/components/ui/button/Button.svelte';
 	import {

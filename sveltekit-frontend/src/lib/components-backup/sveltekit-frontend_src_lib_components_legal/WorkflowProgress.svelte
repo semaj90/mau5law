@@ -3,6 +3,7 @@ Workflow Progress Component
 Visual progress indicator for the Evidence Chain of Custody workflow
 -->
 <script lang="ts">
+</script>
   interface Props {
     progress: number
     stage: string

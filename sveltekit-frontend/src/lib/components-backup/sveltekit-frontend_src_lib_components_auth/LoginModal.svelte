@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     onsuccess?: (event?: any) => void;
     onclose?: (event?: any) => void;

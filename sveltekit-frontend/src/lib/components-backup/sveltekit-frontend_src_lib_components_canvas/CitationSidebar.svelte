@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     oncitationSelected?: (event?: any) => void;
     ondeleteCitation?: (event?: any) => void;

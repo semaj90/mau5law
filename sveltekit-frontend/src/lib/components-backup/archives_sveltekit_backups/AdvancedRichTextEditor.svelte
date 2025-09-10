@@ -1,5 +1,6 @@
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
+</script>
   import { Editor } from "@tiptap/core";
   import Color from "@tiptap/extension-color";
   import FontFamily from "@tiptap/extension-font-family";
@@ -429,7 +430,7 @@
   }
 
   // Reactive statements
-  $: state = get(editorState);
+  // TODO: Convert to $derived: state = get(editorState)
 
   // Exported functions for parent component access
   export function setContent(content: string) {

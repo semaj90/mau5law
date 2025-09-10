@@ -2,6 +2,7 @@ import type { Case } from '$lib/types';
 
 
 <script lang="ts">
+</script>
   interface Props {
     onclick?: (event?: any) => void;
     onstatusChange?: (event?: any) => void;

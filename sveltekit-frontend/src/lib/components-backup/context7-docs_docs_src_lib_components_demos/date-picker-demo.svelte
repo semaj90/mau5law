@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { DatePicker } from "bits-ui";
 	import CalendarBlank from "phosphor-svelte/lib/CalendarBlank";
 	import CaretLeft from "phosphor-svelte/lib/CaretLeft";

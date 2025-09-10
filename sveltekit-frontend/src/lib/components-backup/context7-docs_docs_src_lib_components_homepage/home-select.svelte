@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Select } from "bits-ui";
 	import Check from "phosphor-svelte/lib/Check";
 	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";

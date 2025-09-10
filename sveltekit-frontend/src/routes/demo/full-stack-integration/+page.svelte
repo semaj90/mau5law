@@ -1,5 +1,6 @@
 <!-- Full-Stack Integration Test Page -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import BitsDemo from '$lib/components/BitsDemo.svelte';

@@ -3,6 +3,7 @@
   Demonstrates the validation utilities in practice
 -->
 <script lang="ts">
+</script>
   import {
     FormValidator,
     type FormFieldConfig,
@@ -57,12 +58,12 @@
   let inputElement: HTMLInputElement | HTMLTextAreaElement;
 
   // Computed properties
-  $: inputType = type === "password" && showPassword ? "text" : type;
-  $: hasErrors = errors.length > 0;
-  $: hasWarnings = warnings.length > 0;
-  $: showErrorState = showValidation && isDirty && hasErrors;
-  $: showSuccessState =
-    showValidation && isDirty && isValid && !hasErrors && value.trim() !== "";
+  // TODO: Convert to $derived: inputType = type === "password" && showPassword ? "text" : type
+  // TODO: Convert to $derived: hasErrors = errors.length > 0
+  // TODO: Convert to $derived: hasWarnings = warnings.length > 0
+  // TODO: Convert to $derived: showErrorState = showValidation && isDirty && hasErrors
+  // TODO: Convert to $derived: showSuccessState =
+    showValidation && isDirty && isValid && !hasErrors && value.trim() !== ""
 
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement | HTMLTextAreaElement;
@@ -146,8 +147,8 @@
   export { focusInput as focus };
 
   // Reactive validation
-  $: if (value !== undefined) {
-    validateField();
+  // TODO: Convert to $derived: if (value !== undefined) {
+    validateField()
   }
 </script>
 

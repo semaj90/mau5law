@@ -1,5 +1,6 @@
 <!-- Keyboard Shortcut Provider - Initialize shortcuts system -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { initializeKeyboardShortcuts, registerShortcut } from '$lib/utils/keyboard-shortcuts';
   import { goto } from '$app/navigation';

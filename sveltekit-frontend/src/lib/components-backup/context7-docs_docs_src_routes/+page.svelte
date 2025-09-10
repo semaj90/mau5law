@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import "$lib/styles/app.css";
 	import { Button } from "bits-ui";
 	import Sparkle from "phosphor-svelte/lib/Sparkle";

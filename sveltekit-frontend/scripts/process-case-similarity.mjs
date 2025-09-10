@@ -80,11 +80,11 @@ async function findSimilarCases(queryText, excludeCaseId = null) {
           c.status,
           c.case_type,
           ce.content,
-          1 - (ce.embedding <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
+          1 - (ce.embedding <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}) as similarity
         FROM case_embeddings ce
         JOIN cases c ON ce.case_id = c.id
         WHERE ce.case_id != ${excludeCaseId}
-          AND 1 - (ce.embedding <=> ${JSON.stringify(queryEmbedding)}::vector) > ${config.similarityThreshold}
+          AND 1 - (ce.embedding <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}) > ${config.similarityThreshold}
         ORDER BY similarity DESC
         LIMIT ${config.maxResults}
       `;
@@ -97,10 +97,10 @@ async function findSimilarCases(queryText, excludeCaseId = null) {
           c.status,
           c.case_type,
           ce.content,
-          1 - (ce.embedding <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
+          1 - (ce.embedding <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}) as similarity
         FROM case_embeddings ce
         JOIN cases c ON ce.case_id = c.id
-        WHERE 1 - (ce.embedding <=> ${JSON.stringify(queryEmbedding)}::vector) > ${config.similarityThreshold}
+        WHERE 1 - (ce.embedding <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}) > ${config.similarityThreshold}
         ORDER BY similarity DESC
         LIMIT ${config.maxResults}
       `;
@@ -121,7 +121,7 @@ async function analyzeCaseSimilarities() {
   try {
     // Get all cases with embeddings
     const casesWithEmbeddings = await sql`
-      SELECT DISTINCT c.id, c.title, c.description, c.case_type
+      SELECT DISTINCT c.id, c.title, c.description, c.case_type, c.created_at
       FROM cases c
       JOIN case_embeddings ce ON c.id = ce.case_id
       ORDER BY c.created_at DESC
@@ -161,11 +161,11 @@ async function analyzeCaseSimilarities() {
                 ${similar.case_id}, 
                 ${similar.similarity},
                 NOW(),
-                ${JSON.stringify({ 
+                ${sql`${JSON.stringify({ 
                   method: 'pgvector_cosine', 
                   model: config.embeddingModel,
                   threshold: config.similarityThreshold 
-                })}
+                })}`}
               )
               ON CONFLICT (case_id_a, case_id_b) DO UPDATE SET
                 similarity_score = EXCLUDED.similarity_score,
@@ -207,7 +207,7 @@ async function findCasesForEvidence() {
       SELECT id, title, description, ai_summary, case_id
       FROM evidence
       WHERE content_embedding IS NOT NULL
-      ORDER BY created_at DESC
+      ORDER BY uploaded_at DESC
       LIMIT 10
     `;
     

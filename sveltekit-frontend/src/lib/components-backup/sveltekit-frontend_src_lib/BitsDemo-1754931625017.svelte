@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Dialog, Button as BitsButton, Select } from 'bits-ui';
   import { AlertDialog } from 'bits-ui';
   import { fade } from 'svelte/transition';

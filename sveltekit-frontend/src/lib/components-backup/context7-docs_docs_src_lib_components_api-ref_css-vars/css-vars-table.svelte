@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import Code from "$lib/components/markdown/code.svelte";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import type { CSSVarSchema } from "$lib/types/index.js";

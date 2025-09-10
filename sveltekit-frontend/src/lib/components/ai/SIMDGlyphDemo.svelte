@@ -1,4 +1,5 @@
 <script>
+</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import {

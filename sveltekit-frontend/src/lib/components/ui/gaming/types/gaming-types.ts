@@ -25,7 +25,7 @@ export interface N64RenderingOptions {
   shadowMapSize: 256 | 512 | 1024 | 2048;
 }
 
-export type GamingEra = 'nes' | 'snes' | 'n64' | 'ps1' | 'dreamcast' | 'modern';
+export type GamingEra = 'nes' | 'snes' | 'n64' | 'ps1' | 'dreamcast' | 'modern' | '8bit' | '16bit';
 
 export interface NESColorPalette {
   background: string[];
@@ -58,10 +58,15 @@ export interface GamepadState {
 
 export interface GamingThemeState {
   era: GamingEra;
+  currentEra?: GamingEra;
   colorPalette: NESColorPalette | SNESColorPalette;
   soundEnabled: boolean;
   particleEffects: boolean;
   retroShaders: boolean;
+  performanceLevel?: number;
+  availableEras?: GamingEra[];
+  isTransitioning?: boolean;
+  transitionDuration?: number;
 }
 
 export interface RetroEffect {
@@ -87,4 +92,7 @@ export interface ProgressiveGamingConfig {
   adaptiveFrameRate: boolean;
   thermalThrottling: boolean;
   batteryOptimization: boolean;
+  enableAutoEvolution?: boolean;
+  defaultEra?: GamingEra;
+  performanceThreshold?: number;
 }

@@ -112,7 +112,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
   },
   aiSummary: {
     name: 'AI Summary Service',
-    port: 8096,
+    port: 8097,
     protocols: ['http'],
     healthEndpoint: '/health',
     binary: 'ai-enhanced.exe',
@@ -369,8 +369,8 @@ export const API_ROUTES: ProtocolRoute[] = [
     service: 'aiSummary',
     endpoint: '/api/v1/ai/summary',
     protocols: {
-      http: 'http://localhost:8096/api/v1/summary',
-      ws: 'ws://localhost:8096/api/v1/summary/stream'
+      http: 'http://localhost:8097/api/v1/summary',
+      ws: 'ws://localhost:8097/api/v1/summary/stream'
     },
     fallback: ['http'],
     timeout: 45000

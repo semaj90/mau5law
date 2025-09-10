@@ -1,6 +1,7 @@
 
 
 <script lang="ts">
+</script>
   import { createContextMenu, melt } from '@melt-ui/svelte'
   import { fly, scale } from 'svelte/transition'
 import {
@@ -45,7 +46,7 @@ import {
   }
 
   interface Props {
-    case: CaseData
+    caseItem: CaseData
     onView?: (id: string) => void
     onEdit?: (id: string) => void
     onArchive?: (id: string) => void
@@ -53,7 +54,7 @@ import {
   }
 
   let {
-    case: caseData,
+    caseItem: caseData,
     onView = () => {},
     onEdit = () => {},
     onArchive = () => {},

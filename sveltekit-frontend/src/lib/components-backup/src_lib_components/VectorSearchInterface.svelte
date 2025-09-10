@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import * as Button from "$lib/components/ui/button";
   import * as Card from "$lib/components/ui/card";
   import * as Input from "$lib/components/ui/input";
@@ -500,7 +501,7 @@
   >
     <div
       class="bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-hidden"
-      onclick|stopPropagation
+      onclick
     >
       <div class="p-6 border-b flex items-center justify-between">
         <h3 class="text-xl font-semibold text-gray-900">

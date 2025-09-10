@@ -1,5 +1,6 @@
 <!-- Test page for YoRHa Detective functionality -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
 let testResult = $state('');
 let isLoading = $state(false);

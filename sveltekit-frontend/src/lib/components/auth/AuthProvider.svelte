@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // AuthProvider component - Global authentication context - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
   import { browser } from '$app/environment';

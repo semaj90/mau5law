@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import ThemeSwitcher from "$lib/components/examples/command/theme-switcher.svelte";
 	import CommandWrapper from "$lib/components/examples/command/command-wrapper.svelte";
 	import RaycastCommand from "$lib/components/examples/command/raycast/raycast-command.svelte";

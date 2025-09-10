@@ -1,5 +1,6 @@
 <!-- YoRHa Demos Single Page App with ScrollArea -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/bitsbutton.svelte';
@@ -414,7 +415,7 @@ let scrollElement = $state<HTMLElement;
             class="yorha-category-btn {selectedDemo === category.id ? 'active' : ''}"
             onclick={() => scrollToCategory(category.id)}
           >
-            <svelte:component this={category.icon} size={16} />
+            <{category.icon} size={16} />
             {category.title}
           </button>
         {/each}
@@ -468,7 +469,7 @@ let scrollElement = $state<HTMLElement;
         <section id="category-{category.id}" class="yorha-demo-category">
           <div class="yorha-category-header">
             <h2 class="yorha-category-title" style="color: {category.color}">
-              <svelte:component this={category.icon} size={24} />
+              <{category.icon} size={24} />
               {category.title}
             </h2>
             <p class="yorha-category-description">{category.description}</p>

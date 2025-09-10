@@ -1,5 +1,6 @@
 <!-- Enhanced RAG Interface Component for SvelteKit 2 + Svelte 5 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import Fuse from 'fuse.js';
   

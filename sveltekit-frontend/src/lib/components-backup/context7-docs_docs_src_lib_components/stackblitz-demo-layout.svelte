@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount, type Snippet } from "svelte";
 	import { Button } from "bits-ui";
 	import { scale } from "svelte/transition";

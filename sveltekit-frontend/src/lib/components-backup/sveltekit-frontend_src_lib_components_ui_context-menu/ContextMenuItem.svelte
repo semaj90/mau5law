@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Context menu item component
 </script>
 

@@ -1,5 +1,6 @@
 <!-- Simple Upload Test Page -->
 <script lang="ts">
+</script>
   // $state runtime rune is provided globally
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   import { onMount } from 'svelte';
@@ -34,7 +35,7 @@
         searchResults = result.results || [];
         console.log('Search results:', result);
       } else {
-        console.error('Search failed:', await response.text());
+        console.error('Search failed:', await response.text();
       }
     } catch (error) {
       console.error('Search error:', error);

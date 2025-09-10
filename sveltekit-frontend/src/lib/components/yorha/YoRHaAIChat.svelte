@@ -1,5 +1,6 @@
 <!-- YoRHa AI Chat Component with Enhanced RAG Integration -->
 <script lang="ts">
+</script>
 
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';

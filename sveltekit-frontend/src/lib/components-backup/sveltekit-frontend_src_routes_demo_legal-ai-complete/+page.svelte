@@ -7,6 +7,7 @@
   - XState Document Processing Workflows
 -->
 <script lang="ts">
+</script>
   import LegalDocumentProcessor from '$lib/components/legal/LegalDocumentProcessor.svelte';
   import type { LegalDocument } from '$lib/services/legalRAGEngine';
   

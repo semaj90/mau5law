@@ -3,6 +3,7 @@ Enhanced File Upload Component with localStorage Fallback
 Automatically handles server upload with localStorage fallback
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import enhancedFileUpload from '$lib/services/enhanced-file-upload.js';
   import type { UploadResponse } from '$lib/services/enhanced-file-upload.js';

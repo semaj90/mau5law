@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // $props is a built-in rune in Svelte 5, no import needed
 
   interface Props {

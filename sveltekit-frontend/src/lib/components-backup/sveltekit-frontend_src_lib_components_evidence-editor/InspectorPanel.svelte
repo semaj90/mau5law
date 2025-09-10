@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     onaiAnalysisComplete?: (event?: any) => void;
     onautoSaved?: (event?: any) => void;

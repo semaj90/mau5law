@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createDialog, melt } from "@melt-ui/svelte";
   import {
     Bookmark,
@@ -52,11 +53,11 @@
     },
   });
 
-  $: if (isOpen !== $open) {
-    open.set(isOpen);
+  // TODO: Convert to $derived: if (isOpen !== $open) {
+    open.set(isOpen)
 }
   // Parse markdown to HTML for display
-  $: displayHtml = html || (markdown ? marked.parse(markdown) : "");
+  // TODO: Convert to $derived: displayHtml = html || (markdown ? marked.parse(markdown) : "")
 
   async function handleSaveForLater() {
     try {
@@ -301,7 +302,7 @@
         >
           <div class="mx-auto px-4 max-w-7xl">
             {#if caseId}
-              <span>Associated with case: {caseId}</span>
+              <span>Associated with caseItem: {caseId}</span>
             {:else}
               <span>General note</span>
             {/if}

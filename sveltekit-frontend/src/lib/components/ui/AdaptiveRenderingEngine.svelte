@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 /**
  * Adaptive Rendering Engine with Dynamic Upscaling
  * Implements NES → SNES → N64 quality scaling based on system performance

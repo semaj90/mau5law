@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Page data (SvelteKit): receive `data` from the page's load function
   import { goto } from "$app/navigation";
   import EnhancedCaseForm from "$lib/components/forms/EnhancedCaseForm.svelte";
@@ -28,7 +29,7 @@ let caseData = $state({});
       // Redirect to the new case
       await goto(`/cases/${newCase.id}`);
     } catch (error) {
-      console.error("Failed to create case:", error);
+      console.error("Failed to create caseItem:", error);
       notifications.add({
         type: "error",
         title: "Failed to Create Case",

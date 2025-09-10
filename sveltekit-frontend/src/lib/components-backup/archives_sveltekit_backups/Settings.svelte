@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   export let isOpen: boolean;
   export let settings: {
     theme: string;

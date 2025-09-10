@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     class?: string;
     children?: import('svelte').Snippet;
@@ -113,6 +114,7 @@
 
 <!-- Export sub-components for easy use -->
 <script lang="ts" module>
+</script>
   export { BitsDialog as Dialog };
 
   // Re-export commonly used sub-components

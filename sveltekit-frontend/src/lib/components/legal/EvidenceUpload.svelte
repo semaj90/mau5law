@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   import { goTensorService, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client';
   import { fade, fly, scale } from 'svelte/transition';

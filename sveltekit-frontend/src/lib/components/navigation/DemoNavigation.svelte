@@ -1,5 +1,6 @@
 <!-- Demo Navigation Component -->
 <script lang="ts">
+</script>
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   

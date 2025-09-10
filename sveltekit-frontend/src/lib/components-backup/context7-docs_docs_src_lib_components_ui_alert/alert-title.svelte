@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { HTMLAttributes } from "svelte/elements";
 	import type { WithChildren } from "bits-ui";
 	import { cn } from "$lib/utils/styles.js";

@@ -1,5 +1,6 @@
 <!-- Progress Indicator Component -->
 <script lang="ts">
+</script>
   interface Props {
     steps: Array<{
     currentStep: number

@@ -3,6 +3,7 @@
   Features: Drag & drop, progress tracking, AI processing, validation, preview
 -->
 <script lang="ts">
+</script>
   interface Props {
     caseId: string | undefined ;
     multiple?: any;

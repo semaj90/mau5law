@@ -1,6 +1,7 @@
 // Enhanced Evidence Processing Component
 <script lang="ts">
-  import { $bindable } from 'svelte';
+</script>
+  import { } from 'svelte';
 
   import { createActor } from 'xstate';
   import { uploadMachine, getFileProgress, getAllFilesStatus, getOverallProgress } from '$lib/machines/uploadMachine';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   // $state and $derived are available in runes mode via types, not runtime imports
   import * as Dialog from '$lib/components/ui/dialog';
@@ -329,7 +330,7 @@
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseId}</span>
               {/each}
             </div>
-          </Card.Content>
+          </CardContent>
 
           <Card.Footer class="person-actions">
             <Button class="bits-btn" size="sm" variant="outline">
@@ -345,7 +346,7 @@
               Remove
             </Button>
           </Card.Footer>
-        </Card.Root>
+        </Card>
         {/each}
       {/if}
     </div>
@@ -644,7 +645,7 @@
 
   .persons-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr);
     gap: 20px;
     padding: 20px;
     overflow-y: auto;

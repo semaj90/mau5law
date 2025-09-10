@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { createMachine, interpret } from 'xstate';
   import { caseManagementMachine } from '$lib/machines/caseManagementMachine';
@@ -69,7 +70,7 @@
         userId: DEMO_USER_ID
       };
 
-      console.log('🆕 Creating case:', caseData.title);
+      console.log('🆕 Creating caseItem:', caseData.title);
       const response = await fetch('/api/v1/cases', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -90,7 +91,7 @@
       }
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to create case';
-      console.error('❌ Error creating case:', err);
+      console.error('❌ Error creating caseItem:', err);
     } finally {
       isLoading = false;
     }
@@ -132,7 +133,7 @@
         tags: newEvidenceForm.tags.split(',').map(t => t.trim()).filter(Boolean)
       };
 
-      console.log('📋 Adding evidence to case:', selectedCase.id);
+      console.log('📋 Adding evidence to caseItem:', selectedCase.id);
       const response = await fetch(`/api/v1/cases/${selectedCase.id}/evidence`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

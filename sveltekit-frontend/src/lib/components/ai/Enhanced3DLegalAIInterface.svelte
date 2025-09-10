@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { createIdleDetectionService, type IdleDetectionActor } from '$lib/machines/idle-detection-rabbitmq-machine';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from "$lib/components/ui/button";
   import type { Citation } from "$lib/types/api";
   import { Copy, Search, Star, Tag, Trash2 } from "lucide-svelte";
@@ -26,7 +27,7 @@
   ];
 
   // Reactive filtering
-  $: {
+  // TODO: Convert to $derived: {
     filteredCitations = citations.filter((citation) => {
       const matchesSearch =
         searchQuery === "" ||
@@ -35,7 +36,7 @@
         citation.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
         citation.tags.some((tag) =>
           tag.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        )
 
       const matchesCategory =
         selectedCategory === "all" || citation.category === selectedCategory;

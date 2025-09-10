@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     variant?: 'default' | 'secondary' | 'destructive' | 'outline';
     size?: 'default' | 'sm' | 'lg';

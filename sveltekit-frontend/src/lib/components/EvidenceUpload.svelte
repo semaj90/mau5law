@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import {
@@ -34,21 +35,21 @@
   let processingStartTime: Date;
 
   // Reactive state from xState machine
-  $: state = $currentState;
-  $: processing = $isProcessing;
-  $: progress = $processingProgress;
-  $: error = state.context.error;
-  $: processingSteps = state.context.processingSteps;
-  $: completed = state.matches('completed');
-  $: artifactUrl = state.context.artifactUrl;
+  // TODO: Convert to $derived: state = $currentState
+  // TODO: Convert to $derived: processing = $isProcessing
+  // TODO: Convert to $derived: progress = $processingProgress
+  // TODO: Convert to $derived: error = state.context.error
+  // TODO: Convert to $derived: processingSteps = state.context.processingSteps
+  // TODO: Convert to $derived: completed = state.matches('completed')
+  // TODO: Convert to $derived: artifactUrl = state.context.artifactUrl
 
   // Watch for state changes
-  $: if (completed && artifactUrl && onUploadComplete) {
-    onUploadComplete(artifactUrl);
+  // TODO: Convert to $derived: if (completed && artifactUrl && onUploadComplete) {
+    onUploadComplete(artifactUrl)
   }
 
-  $: if (error && onError) {
-    onError(error);
+  // TODO: Convert to $derived: if (error && onError) {
+    onError(error)
   }
 
   // File handling

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	/**
 	 * Enhanced MCP Integration Demo Page
 	 * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit

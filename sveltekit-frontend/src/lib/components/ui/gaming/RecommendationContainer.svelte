@@ -1,5 +1,6 @@
 <!-- Recommendation Container - Bits-UI Integration Under Nav-Bar -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { fly, fade } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';

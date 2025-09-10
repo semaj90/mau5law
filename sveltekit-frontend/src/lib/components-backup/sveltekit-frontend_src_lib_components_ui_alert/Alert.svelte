@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   let {
     variant = 'default',
     class: className = '',

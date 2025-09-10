@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import * as THREE from 'three';
@@ -40,13 +41,13 @@ let linkLines = $state<THREE.Line[] >([]);
     const light = new THREE.DirectionalLight(0xffffff, 0.8);
     light.position.set(4, 6, 5);
     scene.add(light);
-    scene.add(new THREE.AmbientLight(0x404040));
+    scene.add(new THREE.AmbientLight(0x404040);
   }
 
   function buildGraph() {
     // Clear existing
-    Object.values(nodeMeshes).forEach(m => scene.remove(m));
-    linkLines.forEach(l => scene.remove(l));
+    Object.values(nodeMeshes).forEach(m => scene.remove(m);
+    linkLines.forEach(l => scene.remove(l);
     nodeMeshes = {};
     linkLines = [];
 
@@ -56,7 +57,7 @@ let linkLines = $state<THREE.Line[] >([]);
       const mesh = new THREE.Mesh(nodeGeometry, mat);
       // Initial circular placement; slight random Z for depth
       const a = (idx / graphData.nodes.length) * Math.PI * 2;
-      mesh.position.set(Math.cos(a) * radius, (Math.sin(a * 2) * 0.5), Math.sin(a) * radius * 0.5 + (Math.random() - 0.5));
+      mesh.position.set(Math.cos(a) * radius, (Math.sin(a * 2) * 0.5), Math.sin(a) * radius * 0.5 + (Math.random() - 0.5);
       scene.add(mesh);
       nodeMeshes[n.id] = mesh;
     });
@@ -68,7 +69,7 @@ let linkLines = $state<THREE.Line[] >([]);
       if (!from || !to) return;
       const pts = [from.position, to.position];
       const geom = new THREE.BufferGeometry().setFromPoints(pts);
-      const line = new THREE.Line(geom, new THREE.LineBasicMaterial({ color: 0x334155 }));
+      const line = new THREE.Line(geom, new THREE.LineBasicMaterial({ color: 0x334155 });
       scene.add(line);
       linkLines.push(line);
     });

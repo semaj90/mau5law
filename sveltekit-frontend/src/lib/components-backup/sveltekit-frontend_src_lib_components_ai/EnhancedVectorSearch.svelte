@@ -1,5 +1,6 @@
 <!-- Enhanced Vector Search Interface with Ranking, Analytics, and Real-time Results -->
 <script lang="ts">
+</script>
   import {
     Badge,
     Button,

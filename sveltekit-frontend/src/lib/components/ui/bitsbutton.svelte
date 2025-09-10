@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { cva, type VariantProps } from 'class-variance-authority';
 	import { cn } from '$lib/utils';
 	import { createEventDispatcher } from 'svelte';
@@ -28,7 +29,7 @@
 					link: 'text-blue-500 underline-offset-4 hover:underline hover:text-blue-600',
 					legal: 'nes-legal-priority-medium yorha-3d-button',
 					evidence: 'nes-legal-priority-critical yorha-3d-button',
-					case: 'nes-legal-priority-high yorha-3d-button',
+					caseItem: 'nes-legal-priority-high yorha-3d-button',
 					success: 'btn-nes-success',
 					yorha: 'yorha-3d-button bg-black/80 text-yellow-400 border-2 border-yellow-400',
 					neural: 'neural-sprite-active bg-gradient-to-r from-purple-600 to-blue-600 text-white border-2 border-purple-400'
@@ -80,8 +81,8 @@
 		cache: { key: string; action: string };
 	}>();
 
-	$: isDisabled = disabled || loading;
-	$: buttonClass = cn(buttonVariants({ variant, size }), className);
+	// TODO: Convert to $derived: isDisabled = disabled || loading
+	// TODO: Convert to $derived: buttonClass = cn(buttonVariants({ variant, size }), className)
 
 	let isDisabled: boolean;
 	let buttonClass: string;

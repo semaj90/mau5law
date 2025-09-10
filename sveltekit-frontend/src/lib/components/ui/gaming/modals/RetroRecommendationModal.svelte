@@ -1,5 +1,6 @@
 <!-- Retro Gaming Recommendation Modal - Multi-Console CSS Styling -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';

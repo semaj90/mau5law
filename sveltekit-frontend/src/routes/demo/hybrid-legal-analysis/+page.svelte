@@ -1,346 +1,553 @@
-<!-- Enhanced Hybrid Legal Analysis 3D Demo Page -->
 <script lang="ts">
-  import HybridLegalAnalysis3D from "$lib/components/ui/enhanced-bits/HybridLegalAnalysis3D.svelte";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
-  import { notifications } from "$lib/stores/notification";
-  import { Code, FileText, BookOpen, Gavel, Zap, Brain, Activity } from "lucide-svelte";
+</script>
+  import type { PageData, ActionData } from './$types.js';
+  import { onMount } from 'svelte';
+  import { enhance } from '$app/forms';
+  import { goto } from '$app/navigation';
+  
+  // Enhanced-Bits orchestrated components
+  import { 
+    Button, 
+    Card, 
+    Input,
+    Badge
+  } from '$lib/components/ui/enhanced-bits';
+  import { 
+    OrchestratedCard,
+    OrchestratedButton,
+    OrchestratedDialog,
+    type LegalEvidenceItem,
+    getConfidenceClass,
+    getPriorityClass,
+    formatAnalysisDate
+  } from '$lib/components/ui/orchestrated';
+  
+  // Icons for multi-modal analysis
+  import { 
+    Brain, Zap, Eye, BarChart3, Target, Sparkles, Settings,
+    FileText, Scale, Search, Activity, Clock, CheckCircle,
+    AlertTriangle, TrendingUp, Layers, Network, Cpu, Database
+  } from 'lucide-svelte';
 
-  // Sample legal documents for testing
-  const sampleLegalData = [
-    {
-      id: "contract-001",
-      title: "Software Development Agreement - TechCorp",
-      content: "This Software Development Agreement is entered into between TechCorp Inc. and DevPartner LLC for the creation of a comprehensive legal document management system. The project scope includes AI-powered document analysis, vector search capabilities, and compliance monitoring. Total project value: $2.5M over 18 months with milestone-based payments.",
-      type: "contract" as const,
-      priority: "high" as const,
-      tags: ["software", "development", "AI", "compliance"]
-    },
-    {
-      id: "evidence-002", 
-      title: "Email Communication - Project Delays",
-      content: "From: project.manager@techcorp.com. Subject: Critical Project Delays. Dear team, we're experiencing significant delays in the AI module development due to unexpected complexity in the vector embedding system. The PostgreSQL pgvector integration is taking longer than anticipated. We may need to extend the deadline by 3-4 weeks.",
-      type: "evidence" as const,
-      priority: "critical" as const,
-      tags: ["delays", "AI", "technical", "timeline"]
-    },
-    {
-      id: "case-003",
-      title: "Intellectual Property Dispute - VectorAI vs TechCorp",
-      content: "Patent infringement case filed regarding AI vector search technology. VectorAI claims TechCorp's implementation violates Patent US10,123,456 for 'Method and System for Semantic Document Analysis.' TechCorp argues prior art and independent development. Case involves $15M in damages and potential injunctive relief.",
-      type: "case" as const,
-      priority: "critical" as const,
-      tags: ["patent", "infringement", "AI", "vectors"]
-    },
-    {
-      id: "regulation-004",
-      title: "GDPR Compliance Assessment",
-      content: "Data protection impact assessment for the legal AI system. The system processes personal data from legal documents including client information, case details, and sensitive legal communications. Requires explicit consent mechanisms, data anonymization, and right to erasure implementation.",
-      type: "regulation" as const,
-      priority: "high" as const,
-      tags: ["GDPR", "privacy", "compliance", "data"]
-    }
-  ];
+  let { data, form }: { data: PageData; form: ActionData } = $props();
+  
+  // Svelte 5 runes for hybrid analysis state
+  let selectedDocument = $state<any>(null);
+  let selectedAnalysisTypes = $state<Set<string>>(new Set(['semantic_similarity', 'entity_extraction']);
+  let analysisResults = $state<any>(null);
+  let isAnalyzing = $state(false);
+  let comparisonMode = $state(false);
+  let selectedDocuments = $state<Set<string>>(new Set();
+  let visualizationMode = $state<'graph' | 'timeline' | 'heatmap'>('graph');
+  let currentTab = $state<'analysis' | 'comparison' | 'batch' | 'visualization'>('analysis');
 
-  let componentInstance: HybridLegalAnalysis3D;
-  let isLoading = $state(false);
+  // Derived state for analysis capabilities
+  let availableAnalyses = $derived(
+    Object.entries(data.analysisCapabilities).map(([key, capability]) => ({
+      id: key,
+      ...capability
+    }))
+  );
 
-  function loadSampleData() {
-    isLoading = true;
+  // Analysis progress tracking
+  let analysisProgress = $state(0);
+  let processingSteps = $state<string[]>([]);
+
+  // Multi-modal analysis functions
+  async function runHybridAnalysis() {
+    if (!selectedDocument || selectedAnalysisTypes.size === 0) return;
     
+    isAnalyzing = true;
+    analysisProgress = 0;
+    processingSteps = [];
+    analysisResults = null;
+
+    // Simulate progressive analysis steps
+    const steps = Array.from(selectedAnalysisTypes);
+    for (let i = 0; i < steps.length; i++) {
+      processingSteps = [...processingSteps, `Processing ${steps[i]}...`];
+      analysisProgress = ((i + 1) / steps.length) * 100;
+      await new Promise(resolve => setTimeout(resolve, 800);
+    }
+
+    // Submit the actual analysis
+    const formData = new FormData();
+    formData.append('documentId', selectedDocument.id);
+    formData.append('analysisTypes', JSON.stringify(Array.from(selectedAnalysisTypes));
+    formData.append('includeVisualization', 'true');
+
     try {
-      // Simulate loading sample data into the component
-      if (componentInstance) {
-        componentInstance.loadDocuments(sampleLegalData);
-        
-        notifications.add({
-          type: "success",
-          title: "Sample Data Loaded",
-          message: `Loaded ${sampleLegalData.length} legal documents for 3D analysis`,
-        });
+      const response = await fetch('?/analyzeDocument', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await response.json();
+      if (result.success) {
+        analysisResults = result.results;
       }
     } catch (error) {
-      notifications.add({
-        type: "error",
-        title: "Loading Failed",
-        message: `Failed to load sample data: ${error.message}`,
-      });
+      console.error('Analysis failed:', error);
     } finally {
-      isLoading = false;
+      isAnalyzing = false;
+      analysisProgress = 0;
+      processingSteps = [];
     }
   }
 
-  function testEmbeddingGeneration() {
-    isLoading = true;
-    
-    try {
-      if (componentInstance) {
-        componentInstance.generateEmbeddings();
-        
-        notifications.add({
-          type: "info",
-          title: "Embedding Generation Started",
-          message: "Processing documents with EmbeddingGemma model",
-        });
-      }
-    } catch (error) {
-      notifications.add({
-        type: "error",
-        title: "Embedding Generation Failed",
-        message: `Failed to generate embeddings: ${error.message}`,
-      });
-    } finally {
-      isLoading = false;
+  function toggleAnalysisType(analysisType: string) {
+    if (selectedAnalysisTypes.has(analysisType)) {
+      selectedAnalysisTypes.delete(analysisType);
+    } else {
+      selectedAnalysisTypes.add(analysisType);
+    }
+    selectedAnalysisTypes = new Set(selectedAnalysisTypes);
+  }
+
+  function toggleDocumentSelection(documentId: string) {
+    if (selectedDocuments.has(documentId)) {
+      selectedDocuments.delete(documentId);
+    } else {
+      selectedDocuments.add(documentId);
+    }
+    selectedDocuments = new Set(selectedDocuments);
+  }
+
+  function getAnalysisTypeColor(type: string): string {
+    const colorMap = {
+      'semantic_similarity': 'bg-blue-100 text-blue-800',
+      'entity_extraction': 'bg-green-100 text-green-800',
+      'sentiment_analysis': 'bg-purple-100 text-purple-800',
+      'risk_assessment': 'bg-red-100 text-red-800',
+      'precedent_matching': 'bg-orange-100 text-orange-800',
+      'compliance_check': 'bg-yellow-100 text-yellow-800'
+    };
+    return colorMap[type] || 'bg-gray-100 text-gray-800';
+  }
+
+  function getRiskLevelColor(level: string): string {
+    switch (level) {
+      case 'low': return 'text-green-600';
+      case 'medium': return 'text-yellow-600';  
+      case 'high': return 'text-orange-600';
+      case 'critical': return 'text-red-600';
+      default: return 'text-gray-600';
     }
   }
 
-  function run3DVisualization() {
-    isLoading = true;
-    
-    try {
-      if (componentInstance) {
-        componentInstance.start3DVisualization();
-        
-        notifications.add({
-          type: "success",
-          title: "3D Visualization Started",
-          message: "NES YoRHa 3D visualization is now active",
-        });
-      }
-    } catch (error) {
-      notifications.add({
-        type: "error", 
-        title: "3D Visualization Failed",
-        message: `Failed to start visualization: ${error.message}`,
-      });
-    } finally {
-      isLoading = false;
-    }
+  // Format analysis confidence
+  function formatConfidence(confidence: number): string {
+    return `${Math.round(confidence * 100)}%`;
+  }
+
+  // Navigation helper
+  function navigateToDocument(docId: string) {
+    goto(`/documents/${docId}`);
   }
 </script>
 
 <svelte:head>
-  <title>Hybrid Legal Analysis 3D Demo - Advanced AI Platform</title>
-  <meta name="description" content="Demonstration of advanced legal document analysis with 3D visualization, vector embeddings, and NES YoRHa UI integration." />
+  <title>Hybrid Legal Analysis - Multi-Modal AI Processing</title>
 </svelte:head>
 
-<div class="container mx-auto p-6 max-w-7xl">
-  <!-- Header Section -->
-  <div class="mb-8">
-    <h1 class="text-4xl font-bold text-gray-900 mb-3 flex items-center">
-      🧠⚡ Hybrid Legal Analysis 3D
+<div class="container mx-auto p-6 space-y-8">
+  <!-- Header -->
+  <div class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
+      <Layers class="w-10 h-10 text-primary" />
+      Hybrid Legal Analysis
     </h1>
-    <p class="text-xl text-gray-600 mb-6">
-      Advanced legal document analysis with 3D semantic visualization, powered by EmbeddingGemma and NES YoRHa UI
+    <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
+      Multi-modal AI-powered legal document analysis combining semantic search, 
+      entity extraction, risk assessment, and precedent matching
     </p>
-
-    <!-- System Architecture Overview -->
-    <div class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-xl p-6 mb-8">
-      <h2 class="text-2xl font-semibold mb-4 flex items-center">
-        <Code class="w-6 h-6 mr-3" />
-        Advanced Architecture Integration
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-white rounded-lg p-4 shadow-sm">
-          <h3 class="font-semibold text-blue-800 mb-2 flex items-center">
-            <Brain class="w-5 h-5 mr-2" />
-            AI & Embeddings
-          </h3>
-          <ul class="text-sm text-gray-600 space-y-1">
-            <li>• EmbeddingGemma 768D→384D quantization</li>
-            <li>• PostgreSQL pgvector integration</li>
-            <li>• Qdrant vector database fallback</li>
-            <li>• Semantic similarity search</li>
-            <li>• GPU-accelerated processing</li>
-          </ul>
-        </div>
-
-        <div class="bg-white rounded-lg p-4 shadow-sm">
-          <h3 class="font-semibold text-purple-800 mb-2 flex items-center">
-            <Zap class="w-5 h-5 mr-2" />
-            3D Visualization
-          </h3>
-          <ul class="text-sm text-gray-600 space-y-1">
-            <li>• Three.js 3D semantic space</li>
-            <li>• NES.css retro styling</li>
-            <li>• YoRHa UI theme integration</li>
-            <li>• Real-time document clustering</li>
-            <li>• Interactive relationship mapping</li>
-          </ul>
-        </div>
-
-        <div class="bg-white rounded-lg p-4 shadow-sm">
-          <h3 class="font-semibold text-green-800 mb-2 flex items-center">
-            <FileText class="w-5 h-5 mr-2" />
-            Legal AI Features
-          </h3>
-          <ul class="text-sm text-gray-600 space-y-1">
-            <li>• Contract analysis & risk assessment</li>
-            <li>• Evidence classification</li>
-            <li>• Case law relationship mapping</li>
-            <li>• Compliance monitoring</li>
-            <li>• Automated legal recommendations</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Control Panel -->
-    <div class="flex flex-wrap gap-4 mb-8">
-      <Button class="bits-btn"
-        variant="outline"
-        onclick={loadSampleData}
-        disabled={isLoading}
-      >
-        {#snippet children()}
-          <FileText class="w-4 h-4 mr-2" />
-          Load Sample Legal Data
-        {/snippet}
-      </Button>
-
-      <Button class="bits-btn"
-        variant="outline"
-        onclick={testEmbeddingGeneration}
-        disabled={isLoading}
-      >
-        {#snippet children()}
-          <Brain class="w-4 h-4 mr-2" />
-          Generate Embeddings
-        {/snippet}
-      </Button>
-
-      <Button class="bits-btn"
-        variant="outline"
-        onclick={run3DVisualization}
-        disabled={isLoading}
-      >
-        {#snippet children()}
-          <Zap class="w-4 h-4 mr-2" />
-          Start 3D Visualization
-        {/snippet}
-      </Button>
-
-      <div class="ml-auto bg-gray-100 px-4 py-2 rounded-md text-sm">
-        <strong>Status:</strong> 
-        {#if isLoading}
-          <span class="text-orange-600">Processing...</span>
-        {:else}
-          <span class="text-green-600">Ready</span>
-        {/if}
-      </div>
+    <div class="flex justify-center gap-2 mt-6">
+      <Badge variant="secondary" class="gap-1">
+        <Brain class="w-3 h-3" />
+        Multi-Modal AI
+      </Badge>
+      <Badge variant="secondary" class="gap-1">
+        <Network class="w-3 h-3" />
+        Vector Analysis  
+      </Badge>
+      <Badge variant="secondary" class="gap-1">
+        <Cpu class="w-3 h-3" />
+        Real-Time Processing
+      </Badge>
+      <Badge variant="secondary" class="gap-1">
+        <Database class="w-3 h-3" />
+        Legal Intelligence
+      </Badge>
     </div>
   </div>
 
-  <!-- Main Component -->
-  <div class="bg-white rounded-xl shadow-2xl border overflow-hidden">
-    <div class="bg-gradient-to-r from-gray-800 to-gray-900 text-white p-4">
-      <h2 class="text-xl font-semibold flex items-center">
-        <Gavel class="w-5 h-5 mr-2" />
-        Hybrid Legal Analysis 3D Interface
-      </h2>
-      <p class="text-gray-300 text-sm mt-1">
-        Interactive 3D semantic analysis with NES YoRHa theming
-      </p>
-    </div>
-    
-    <div class="p-6">
-      <HybridLegalAnalysis3D 
-        bind:this={componentInstance}
-        caseId="demo-hybrid-analysis"
-        height="700px"
-        enableDebugMode={true}
-        showPerformanceStats={true}
-      />
+  <!-- Analysis Mode Tabs -->
+  <div class="flex justify-center mb-8">
+    <div class="flex space-x-1 bg-muted p-1 rounded-lg">
+      {#each [
+        { id: 'analysis', label: 'Single Analysis', icon: Target },
+        { id: 'comparison', label: 'Document Comparison', icon: BarChart3 },
+        { id: 'batch', label: 'Batch Processing', icon: Layers },
+        { id: 'visualization', label: 'Data Visualization', icon: Eye }
+      ] as tab}
+        <button
+          onclick={() => currentTab = tab.id}
+          class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
+                 {currentTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
+        >
+          {@render tab.icon({ class: "w-4 h-4" })}
+          {tab.label}
+        </button>
+      {/each}
     </div>
   </div>
 
-  <!-- Feature Showcase -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div class="bg-blue-50 rounded-xl p-6">
-      <h3 class="text-xl font-semibold mb-4 flex items-center text-blue-800">
-        <BookOpen class="w-6 h-6 mr-2" />
-        Sample Use Cases
-      </h3>
+  <!-- Single Document Analysis -->
+  {#if currentTab === 'analysis'}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Document Selection -->
+      <OrchestratedCard.CaseFile>
+        <Card.Header>
+          <Card.Title class="flex items-center gap-2">
+            <FileText class="w-5 h-5" />
+            Document Selection
+          </Card.Title>
+          <Card.Description>
+            Choose a document for comprehensive multi-modal analysis
+          </Card.Description>
+        </Card.Header>
+        <Card.Content class="space-y-4">
+          <div class="grid gap-3 max-h-96 overflow-y-auto">
+            {#each data.sampleDocuments as document}
+              <button
+                onclick={() => selectedDocument = document}
+                class="p-4 border rounded-lg text-left transition-all hover:shadow-md 
+                       {selectedDocument?.id === document.id ? 'border-primary bg-primary/5' : 'hover:border-primary/50'}"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-medium">{document.title}</h3>
+                  <div class="flex gap-1">
+                    <Badge variant="outline" class="text-xs capitalize">{document.type}</Badge>
+                    <Badge variant="outline" class="text-xs {getPriorityClass(document.priority)}">
+                      {document.priority}
+                    </Badge>
+                  </div>
+                </div>
+                <p class="text-sm text-muted-foreground line-clamp-2">{document.content}</p>
+                <div class="flex flex-wrap gap-1 mt-2">
+                  {#each document.tags as tag}
+                    <Badge variant="secondary" class="text-xs">{tag}</Badge>
+                  {/each}
+                </div>
+                {#if document.lastAnalyzed}
+                  <p class="text-xs text-muted-foreground mt-2">
+                    Last analyzed: {formatAnalysisDate(new Date(document.lastAnalyzed))}
+                  </p>
+                {/if}
+              </button>
+            {/each}
+          </div>
+        </CardContent>
+      </OrchestratedCard.CaseFile>
+
+      <!-- Analysis Configuration -->
+      <OrchestratedCard.Analysis>
+        <Card.Header>
+          <Card.Title class="flex items-center gap-2">
+            <Settings class="w-5 h-5" />
+            Analysis Configuration
+          </Card.Title>
+          <Card.Description>
+            Select analysis types and run multi-modal processing
+          </Card.Description>
+        </Card.Header>
+        <Card.Content class="space-y-6">
+          <!-- Available Analysis Types -->
+          <div class="space-y-3">
+            <h4 class="font-medium">Analysis Types</h4>
+            <div class="grid gap-3">
+              {#each availableAnalyses as analysis}
+                <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50">
+                  <input
+                    type="checkbox"
+                    checked={selectedAnalysisTypes.has(analysis.id)}
+                    onchange={() => toggleAnalysisType(analysis.id)}
+                    class="rounded border-gray-300"
+                  />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <span class="font-medium">{analysis.name}</span>
+                      <div class="flex gap-2 text-xs text-muted-foreground">
+                        <span>{formatConfidence(analysis.accuracy)} accuracy</span>
+                        <span>{analysis.avgTime}ms avg</span>
+                      </div>
+                    </div>
+                    <p class="text-sm text-muted-foreground">{analysis.description}</p>
+                  </div>
+                </label>
+              {/each}
+            </div>
+          </div>
+
+          <!-- Analysis Controls -->
+          <div class="border-t pt-4">
+            <OrchestratedButton.AnalyzeEvidence
+              onclick={runHybridAnalysis}
+              disabled={!selectedDocument || selectedAnalysisTypes.size === 0 || isAnalyzing}
+              class="w-full gap-2"
+            >
+              {#if isAnalyzing}
+                <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                Analyzing... ({analysisProgress.toFixed(0)}%)
+              {:else}
+                <Brain class="w-4 h-4" />
+                Run Hybrid Analysis
+              {/if}
+            </OrchestratedButton.AnalyzeEvidence>
+
+            {#if isAnalyzing && processingSteps.length > 0}
+              <div class="mt-4 space-y-2">
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    class="bg-primary h-2 rounded-full transition-all duration-300"
+                    style="width: {analysisProgress}%"
+                  ></div>
+                </div>
+                <div class="text-sm text-muted-foreground space-y-1">
+                  {#each processingSteps as step}
+                    <div class="flex items-center gap-2">
+                      <Activity class="w-3 h-3 animate-pulse" />
+                      {step}
+                    </div>
+                  {/each}
+                </div>
+              </div>
+            {/if}
+          </div>
+        </CardContent>
+      </OrchestratedCard.Analysis>
+    </div>
+
+    <!-- Analysis Results -->
+    {#if analysisResults}
+      <OrchestratedCard.AIInsight>
+        <Card.Header>
+          <Card.Title class="flex items-center gap-2">
+            <BarChart3 class="w-5 h-5" />
+            Analysis Results
+          </Card.Title>
+          <Card.Description>
+            Multi-modal analysis completed with {formatConfidence(analysisResults.confidence)} confidence
+          </Card.Description>
+        </Card.Header>
+        <Card.Content class="space-y-6">
+          <!-- Overall Results Summary -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="text-center p-4 bg-muted/50 rounded-lg">
+              <p class="text-2xl font-bold {getConfidenceClass(analysisResults.confidence)}">
+                {formatConfidence(analysisResults.confidence)}
+              </p>
+              <p class="text-sm text-muted-foreground">Overall Confidence</p>
+            </div>
+            <div class="text-center p-4 bg-muted/50 rounded-lg">
+              <p class="text-2xl font-bold text-primary">{selectedAnalysisTypes.size}</p>
+              <p class="text-sm text-muted-foreground">Analysis Types</p>
+            </div>
+            <div class="text-center p-4 bg-muted/50 rounded-lg">
+              <p class="text-2xl font-bold text-primary">{analysisResults.processingSteps?.length || 0}</p>
+              <p class="text-sm text-muted-foreground">Processing Steps</p>
+            </div>
+          </div>
+
+          <!-- Detailed Results by Analysis Type -->
+          <div class="space-y-4">
+            {#each Object.entries(analysisResults.results) as [analysisType, result]}
+              <div class="border rounded-lg p-4">
+                <div class="flex items-center gap-2 mb-3">
+                  <Badge class={getAnalysisTypeColor(analysisType)}>{analysisType.replace('_', ' ')}</Badge>
+                  {#if result.confidence}
+                    <Badge variant="outline">{formatConfidence(result.confidence)} confidence</Badge>
+                  {/if}
+                </div>
+
+                {#if analysisType === 'semantic_similarity' && result.similarDocuments}
+                  <div class="space-y-2">
+                    <h5 class="font-medium">Similar Documents</h5>
+                    {#each result.similarDocuments as doc}
+                      <div class="flex items-center justify-between p-2 bg-muted/30 rounded">
+                        <span class="text-sm">{doc.title}</span>
+                        <Badge variant="outline">{formatConfidence(doc.similarity)} similarity</Badge>
+                      </div>
+                    {/each}
+                  </div>
+                {/if}
+
+                {#if analysisType === 'entity_extraction' && result.entities}
+                  <div class="space-y-2">
+                    <h5 class="font-medium">Extracted Entities ({result.entityCount})</h5>
+                    <div class="flex flex-wrap gap-2">
+                      {#each result.entities as entity}
+                        <Badge variant="secondary" class="gap-1">
+                          {entity.text}
+                          <span class="text-xs opacity-70">({entity.type})</span>
+                        </Badge>
+                      {/each}
+                    </div>
+                  </div>
+                {/if}
+
+                {#if analysisType === 'risk_assessment' && result.riskScore !== undefined}
+                  <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                      <span class="font-medium">Risk Assessment</span>
+                      <Badge class={getRiskLevelColor(result.riskLevel)}>
+                        {result.riskLevel} risk
+                      </Badge>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        class="h-2 rounded-full {result.riskScore > 0.7 ? 'bg-red-500' : result.riskScore > 0.4 ? 'bg-yellow-500' : 'bg-green-500'}"
+                        style="width: {result.riskScore * 100}%"
+                      ></div>
+                    </div>
+                    {#if result.riskFactors}
+                      <div class="space-y-1">
+                        <h6 class="text-sm font-medium">Risk Factors:</h6>
+                        {#each result.riskFactors as factor}
+                          <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                            <AlertTriangle class="w-3 h-3" />
+                            {factor}
+                          </div>
+                        {/each}
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
+              </div>
+            {/each}
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-3 pt-4 border-t">
+            <Button variant="outline" onclick={() => analysisResults = null}>
+              Clear Results
+            </Button>
+            <Button variant="outline" onclick={() => currentTab = 'visualization'}>
+              <Eye class="w-4 h-4 mr-2" />
+              View Visualization
+            </Button>
+            <Button onclick={() => goto('/dashboard/search')}>
+              <Search class="w-4 h-4 mr-2" />
+              Search Similar
+            </Button>
+          </div>
+        </CardContent>
+      </OrchestratedCard.AIInsight>
+    {/if}
+  {/if}
+
+  <!-- Document Comparison Tab -->
+  {#if currentTab === 'comparison'}
+    <OrchestratedCard.Analysis>
+      <Card.Header>
+        <Card.Title class="flex items-center gap-2">
+          <BarChart3 class="w-5 h-5" />
+          Document Comparison
+        </Card.Title>
+        <Card.Description>
+          Compare multiple documents using advanced similarity analysis
+        </Card.Description>
+      </Card.Header>
+      <Card.Content class="space-y-6">
+        <div class="grid gap-3">
+          {#each data.sampleDocuments as document}
+            <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50">
+              <input
+                type="checkbox"
+                checked={selectedDocuments.has(document.id)}
+                onchange={() => toggleDocumentSelection(document.id)}
+                class="rounded border-gray-300"
+              />
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-medium">{document.title}</span>
+                  <Badge variant="outline" class="text-xs capitalize">{document.type}</Badge>
+                </div>
+                <p class="text-sm text-muted-foreground line-clamp-1">{document.content}</p>
+              </div>
+            </label>
+          {/each}
+        </div>
+        
+        <Button 
+          disabled={selectedDocuments.size < 2}
+          class="w-full gap-2"
+        >
+          <BarChart3 class="w-4 h-4" />
+          Compare Selected Documents ({selectedDocuments.size})
+        </Button>
+      </CardContent>
+    </OrchestratedCard.Analysis>
+  {/if}
+
+  <!-- Recent Analyses -->
+  <OrchestratedCard.Analysis>
+    <Card.Header>
+      <Card.Title class="flex items-center gap-2">
+        <Clock class="w-5 h-5" />
+        Recent Hybrid Analyses
+      </Card.Title>
+      <Card.Description>
+        Latest multi-modal analysis results and performance metrics
+      </Card.Description>
+    </Card.Header>
+    <Card.Content>
       <div class="space-y-3">
-        <div class="bg-white rounded-lg p-3 shadow-sm">
-          <strong class="text-blue-700">Contract Risk Analysis:</strong><br />
-          <span class="text-sm text-gray-600">
-            "Analyze all contract clauses and identify potential legal risks with confidence scoring"
-          </span>
-        </div>
-        <div class="bg-white rounded-lg p-3 shadow-sm">
-          <strong class="text-blue-700">Document Similarity:</strong><br />
-          <span class="text-sm text-gray-600">
-            "Find semantically similar clauses across multiple legal documents using 3D clustering"
-          </span>
-        </div>
-        <div class="bg-white rounded-lg p-3 shadow-sm">
-          <strong class="text-blue-700">Evidence Mapping:</strong><br />
-          <span class="text-sm text-gray-600">
-            "Visualize relationships between evidence items and case arguments in 3D space"
-          </span>
-        </div>
+        {#each data.recentAnalyses as analysis}
+          <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <Badge variant="outline" class="text-xs">Doc: {analysis.documentId}</Badge>
+                <div class="flex gap-1">
+                  {#each analysis.analysisTypes as type}
+                    <Badge class={getAnalysisTypeColor(type) + ' text-xs'}>{type}</Badge>
+                  {/each}
+                </div>
+              </div>
+              <div class="text-sm text-muted-foreground">
+                {formatAnalysisDate(new Date(analysis.timestamp))} • 
+                Processed in {analysis.processingTime}ms
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              {#if analysis.results.overallScore}
+                <Badge class={getConfidenceClass(analysis.results.overallScore)}>
+                  {formatConfidence(analysis.results.overallScore)}
+                </Badge>
+              {/if}
+              <Button variant="ghost" size="sm" onclick={() => navigateToDocument(analysis.documentId)}>
+                <Eye class="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
+        {/each}
       </div>
-    </div>
-
-    <div class="bg-green-50 rounded-xl p-6">
-      <h3 class="text-xl font-semibold mb-4 flex items-center text-green-800">
-        <Zap class="w-6 h-6 mr-2" />
-        Technical Capabilities
-      </h3>
-      <div class="space-y-3">
-        <div class="flex items-center text-sm">
-          <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-          <span>EmbeddingGemma model with 768D→384D quantization</span>
-        </div>
-        <div class="flex items-center text-sm">
-          <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-          <span>PostgreSQL pgvector + Qdrant hybrid backend</span>
-        </div>
-        <div class="flex items-center text-sm">
-          <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-          <span>GPU-accelerated vector operations with CUDA</span>
-        </div>
-        <div class="flex items-center text-sm">
-          <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-          <span>Three.js 3D visualization with WebGL optimization</span>
-        </div>
-        <div class="flex items-center text-sm">
-          <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-          <span>NES.css + YoRHa UI retro-futuristic theming</span>
-        </div>
-        <div class="flex items-center text-sm">
-          <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-          <span>Real-time health monitoring and fallback systems</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Technical Implementation Notes -->
-  <div class="mt-8 bg-gray-50 rounded-xl p-6">
-    <h3 class="text-lg font-semibold mb-3 text-gray-800">Implementation Notes</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
-      <div>
-        <h4 class="font-medium text-gray-800 mb-2">Svelte 5 Integration:</h4>
-        <ul class="space-y-1">
-          <li>• Uses <code>$state()</code>, <code>$effect()</code>, and <code>$derived()</code> runes</li>
-          <li>- Modern snippet pattern instead of legacy slots</li>
-          <li>• TypeScript strict mode with comprehensive interfaces</li>
-          <li>• UnoCSS atomic styling with custom shortcuts</li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-medium text-gray-800 mb-2">Backend Integration:</h4>
-        <ul class="space-y-1">
-          <li>• Hybrid embedding API with automatic fallback</li>
-          <li>• PostgreSQL 17 with pgvector extension</li>
-          <li>• Qdrant vector database for distributed search</li>
-          <li>• Redis caching with memory fallback</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+    </CardContent>
+  </OrchestratedCard.Analysis>
 </div>
+
+<style>
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

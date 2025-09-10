@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button, Select, Input, Card } from './index.js';
   import type { SelectOption } from './index.js';
   import type { VectorSearchResult, SemanticEntity } from '$lib/types/ai';

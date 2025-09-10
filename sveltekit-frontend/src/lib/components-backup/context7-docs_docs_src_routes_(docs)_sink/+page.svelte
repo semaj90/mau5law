@@ -2,6 +2,7 @@
 	NOTE: Tailwind v4 does not support web container environments, so animations powered by tailwindcss-animate will not work in this environment.
 -->
 <script lang="ts">
+</script>
 	import { DropdownMenu } from "bits-ui";
 	import CaretRight from "phosphor-svelte/lib/CaretRight";
 	import DotsThree from "phosphor-svelte/lib/DotsThree";

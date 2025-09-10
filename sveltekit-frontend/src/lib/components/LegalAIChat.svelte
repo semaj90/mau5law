@@ -1,5 +1,6 @@
 <!-- Updated AI Chat for GPU Ollama -->
 <script lang="ts">
+</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;

@@ -60,6 +60,8 @@
 		loading?: boolean;
 		loadingText?: string;
 		class?: string;
+		/** React-style compatibility – mapped to class */
+		className?: string;
 		children?: Snippet;
 		onclick?: (event: MouseEvent) => void;
 
@@ -85,7 +87,8 @@
 		target,
 		loading = false,
 		loadingText = 'Loading...',
-		class: className = '',
+		class: classAttr = '',
+		className = '', // accept react-style prop
 		children,
 		onclick,
 
@@ -103,8 +106,14 @@
 		...restProps
 	}: Props = $props();
 
+	// Remove potential className from rest props to avoid invalid DOM attribute
+	if ('className' in restProps) {
+		// @ts-expect-error - cleanup extraneous react prop
+		delete restProps.className;
+	}
+
 	let isDisabled = $derived(disabled || loading);
-	let buttonClass = $derived(cn(buttonVariants({ variant, size }), className));
+	let buttonClass = $derived(cn(buttonVariants({ variant, size }), classAttr, className));
 
 	// Basic button component props
 	type $$Props = Props;

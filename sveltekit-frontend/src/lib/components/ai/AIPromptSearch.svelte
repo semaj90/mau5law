@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { $derived } from 'svelte';
+</script>
+  import { } from 'svelte';
 
   import { aiHistory } from "$lib/stores/aiHistoryStore";
   import Fuse from "fuse.js";

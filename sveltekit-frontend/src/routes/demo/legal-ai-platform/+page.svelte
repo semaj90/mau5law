@@ -1,400 +1,464 @@
-<!-- 
-  Legal AI Platform Demo Page
-  Complete full-stack integration showcase
-  Features: CRUD operations, Go microservices integration, AI processing
--->
-
 <script lang="ts">
+</script>
+  import type { PageData } from './$types.js';
   import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import SimpleCaseManager from '$lib/components/legal/SimpleCaseManager.svelte';
-  import { legalPlatformClient } from '$lib/services/legal-platform-client';
+  import { goto } from '$app/navigation';
+  
+  // Enhanced-Bits orchestrated components
+  import { 
+    Button, 
+    Card, 
+    Input,
+    Badge
+  } from '$lib/components/ui/enhanced-bits';
+  import { 
+    OrchestratedCard,
+    OrchestratedButton,
+    OrchestratedDialog,
+    type LegalEvidenceItem,
+    getConfidenceClass,
+    getPriorityClass,
+    formatAnalysisDate
+  } from '$lib/components/ui/orchestrated';
+  
+  // Icons for the showcase
+  import { 
+    Brain, Database, Search, Zap, Shield, Settings,
+    FileText, Scale, Sparkles, TrendingUp, Clock,
+    CheckCircle, AlertCircle, Eye, ChevronRight,
+    Activity, BarChart3, Cpu, HardDrive
+  } from 'lucide-svelte';
 
-  // Demo state
-  let healthStatus = writable({
-    services: {
-      enhanced_rag: false,
-      upload_service: false,
-      database: false
-    },
-    loading: true,
-    lastCheck: null as Date | null
-  });
+  let { data }: { data: PageData } = $props();
+  
+  // Svelte 5 runes for demo interactions
+  let selectedDemo = $state<string>('overview');
+  let isRunningDemo = $state<boolean>(false);
+  let demoResults = $state<any>(null);
+  let realTimeStats = $state(data.platformStats);
 
-  let demoData = writable({
-    totalCases: 0,
-    aiProcessings: 0,
-    vectorSearches: 0,
-    uploadedFiles: 0
-  });
-
-  // System health check
-  async function checkSystemHealth() {
-    healthStatus.update(status => ({ ...status, loading: true }));
+  // Live demo functions
+  async function runRAGDemo() {
+    isRunningDemo = true;
+    demoResults = null;
     
     try {
-      const response = await legalPlatformClient.healthCheck();
+      const response = await fetch('/api/rag/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: 'Contract breach and damages liability analysis',
+          limit: 5
+        })
+      });
       
-      if (response.success) {
-        healthStatus.update(status => ({
-          services: response.data?.services || status.services,
-          loading: false,
-          lastCheck: new Date()
-        }));
-      } else {
-        console.error('Health check failed:', response.error);
-        healthStatus.update(status => ({ ...status, loading: false }));
-      }
+      const result = await response.json();
+      demoResults = result;
     } catch (error) {
-      console.error('Health check error:', error);
-      healthStatus.update(status => ({ ...status, loading: false }));
-    }
-  }
-
-  // Demo AI chat
-  let chatMessage = writable('');
-  let chatResponse = writable('');
-  let chatLoading = writable(false);
-
-  async function testAIChat() {
-    const message = $chatMessage.trim();
-    if (!message) return;
-
-    chatLoading.set(true);
-    chatResponse.set('');
-    
-    try {
-      const response = await legalPlatformClient.chatWithAI(message);
-      
-      if (response.success) {
-        chatResponse.set(JSON.stringify(response.data, null, 2));
-        demoData.update(data => ({ ...data, aiProcessings: data.aiProcessings + 1 }));
-      } else {
-        chatResponse.set(`Error: ${response.error}`);
-      }
-    } catch (error) {
-      chatResponse.set(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('RAG demo failed:', error);
+      demoResults = { error: 'Demo failed to run' };
     } finally {
-      chatLoading.set(false);
+      isRunningDemo = false;
     }
   }
 
-  // Demo vector search
-  let searchQuery = writable('');
-  let searchResults = writable('');
-  let searchLoading = writable(false);
-
-  async function testVectorSearch() {
-    const query = $searchQuery.trim();
-    if (!query) return;
-
-    searchLoading.set(true);
-    searchResults.set('');
+  async function runVectorSearchDemo() {
+    isRunningDemo = true;
+    demoResults = null;
     
     try {
-      const response = await legalPlatformClient.vectorSearch(query);
+      const response = await fetch('/api/unified/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: 'intellectual property infringement precedents',
+          mode: 'semantic',
+          filters: { limit: 3 }
+        })
+      });
       
-      if (response.success) {
-        searchResults.set(JSON.stringify(response.data, null, 2));
-        demoData.update(data => ({ ...data, vectorSearches: data.vectorSearches + 1 }));
-      } else {
-        searchResults.set(`Error: ${response.error}`);
-      }
+      const result = await response.json();
+      demoResults = result;
     } catch (error) {
-      searchResults.set(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('Vector search demo failed:', error);
+      demoResults = { error: 'Demo failed to run' };
     } finally {
-      searchLoading.set(false);
+      isRunningDemo = false;
     }
   }
 
-  // Initialize demo on mount
-  onMount(async () => {
-    await checkSystemHealth();
+  function navigateToCase(caseId: string) {
+    goto(`/cases/${caseId}`);
+  }
+
+  function navigateToRAG(caseId: string) {
+    goto(`/cases/${caseId}/rag`);
+  }
+
+  // Simulate live updates for the demo
+  onMount(() => {
+    const interval = setInterval(() => {
+      realTimeStats = {
+        ...realTimeStats,
+        totalAnalyses: realTimeStats.totalAnalyses + Math.floor(Math.random() * 3),
+        avgProcessingTime: realTimeStats.avgProcessingTime + Math.floor(Math.random() * 100) - 50
+      };
+    }, 5000);
     
-    // Refresh health check every 30 seconds
-    const healthInterval = setInterval(checkSystemHealth, 30000);
-    
-    return () => clearInterval(healthInterval);
+    return () => clearInterval(interval);
   });
 
-  // Format service status
-  function formatServiceStatus(isHealthy: boolean): string {
-    return isHealthy ? '🟢 Online' : '🔴 Offline';
+  // System health status colors
+  function getHealthColor(status: boolean): string {
+    return status ? 'text-green-600' : 'text-red-600';
+  }
+
+  function getHealthBg(status: boolean): string {
+    return status ? 'bg-green-100' : 'bg-red-100';
   }
 </script>
 
 <svelte:head>
-  <title>Legal AI Platform Demo</title>
-  <meta name="description" content="Complete full-stack legal AI platform demonstration with Go microservices integration">
+  <title>Legal AI Platform - Complete Integration Showcase</title>
 </svelte:head>
 
-<div class="legal-ai-platform-demo bg-gray-50 min-h-screen">
-  <!-- Hero Section -->
-  <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="text-center">
-        <h1 class="text-4xl font-bold sm:text-5xl md:text-6xl">
-          Legal AI Platform
-        </h1>
-        <p class="mt-3 max-w-md mx-auto text-xl sm:text-2xl md:mt-5 md:max-w-3xl">
-          Complete full-stack integration with Go microservices, PostgreSQL + pgvector, and AI processing
-        </p>
-        <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
-          <div class="rounded-md shadow">
-            <button 
-              class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10"
-              onclick={checkSystemHealth}
-            >
-              {$healthStatus.loading ? 'Checking...' : 'Check System Health'}
-            </button>
-          </div>
-        </div>
-      </div>
+<div class="container mx-auto p-6 space-y-8">
+  <!-- Platform Header -->
+  <div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
+      <Brain class="w-10 h-10 text-primary" />
+      Legal AI Platform
+    </h1>
+    <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
+      Complete integration showcase featuring Enhanced-Bits orchestrated components, 
+      Svelte 5 runes, RAG-powered legal analysis, and real-time vector search
+    </p>
+    <div class="flex justify-center gap-2 mt-6">
+      <Badge variant="secondary" class="gap-1">
+        <Sparkles class="w-3 h-3" />
+        Enhanced-Bits UI
+      </Badge>
+      <Badge variant="secondary" class="gap-1">
+        <Zap class="w-3 h-3" />
+        Svelte 5 Runes
+      </Badge>
+      <Badge variant="secondary" class="gap-1">
+        <Database class="w-3 h-3" />
+        pgvector + RAG
+      </Badge>
+      <Badge variant="secondary" class="gap-1">
+        <Shield class="w-3 h-3" />
+        Production Ready
+      </Badge>
     </div>
   </div>
 
-  <!-- System Status Dashboard -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">System Status</h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <!-- Service Status -->
-        <div class="bg-gray-50 rounded-lg p-4">
-          <h3 class="text-sm font-medium text-gray-500 mb-3">Services</h3>
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between">
-              <span>Enhanced RAG:</span>
-              <span>{formatServiceStatus($healthStatus.services.enhanced_rag)}</span>
-            </div>
-            <div class="flex justify-between">
-              <span>Upload Service:</span>
-              <span>{formatServiceStatus($healthStatus.services.upload_service)}</span>
-            </div>
-            <div class="flex justify-between">
-              <span>Database:</span>
-              <span>{formatServiceStatus($healthStatus.services.database)}</span>
-            </div>
-          </div>
+  <!-- Demo Navigation -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    {#each [
+      { id: 'overview', label: 'Platform Overview', icon: Activity },
+      { id: 'rag', label: 'RAG Analysis', icon: Brain },
+      { id: 'search', label: 'Vector Search', icon: Search },
+      { id: 'cases', label: 'Case Management', icon: Scale }
+    ] as tab}
+      <button
+        onclick={() => selectedDemo = tab.id}
+        class="p-4 border rounded-lg text-left transition-all hover:shadow-md {selectedDemo === tab.id ? 'bg-primary/5 border-primary' : 'hover:border-primary/50'}"
+      >
+        <div class="flex items-center gap-3">
+          {@render tab.icon({ class: "w-5 h-5" })}
+          <span class="font-medium">{tab.label}</span>
         </div>
-
-        <!-- Demo Statistics -->
-        <div class="bg-blue-50 rounded-lg p-4">
-          <h3 class="text-sm font-medium text-blue-600 mb-3">Total Cases</h3>
-          <div class="text-2xl font-bold text-blue-900">{$demoData.totalCases}</div>
-        </div>
-
-        <div class="bg-green-50 rounded-lg p-4">
-          <h3 class="text-sm font-medium text-green-600 mb-3">AI Processings</h3>
-          <div class="text-2xl font-bold text-green-900">{$demoData.aiProcessings}</div>
-        </div>
-
-        <div class="bg-purple-50 rounded-lg p-4">
-          <h3 class="text-sm font-medium text-purple-600 mb-3">Vector Searches</h3>
-          <div class="text-2xl font-bold text-purple-900">{$demoData.vectorSearches}</div>
-        </div>
-      </div>
-
-      {#if $healthStatus.lastCheck}
-        <p class="text-sm text-gray-500">
-          Last health check: {$healthStatus.lastCheck.toLocaleString()}
-        </p>
-      {/if}
-    </div>
-
-    <!-- AI Integration Testing -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-      <!-- AI Chat Test -->
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <h3 class="text-xl font-semibold text-gray-900 mb-4">AI Chat Test</h3>
-        <p class="text-gray-600 mb-4">Test the Enhanced RAG service integration:</p>
-        
-        <div class="space-y-4">
-          <div>
-            <label for="chat-input" class="block text-sm font-medium text-gray-700 mb-2">
-              Ask the AI a legal question:
-            </label>
-            <input 
-              type="text"
-              id="chat-input"
-              bind:value={$chatMessage}
-              placeholder="e.g., What are the key elements of a contract?"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              keydown={(e) => e.key === 'Enter' && testAIChat()}
-            />
-          </div>
-          
-          <button 
-            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
-            disabled={$chatLoading}
-            onclick={testAIChat}
-          >
-            {$chatLoading ? 'Processing...' : 'Send to AI'}
-          </button>
-          
-          {#if $chatResponse}
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">AI Response:</label>
-              <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto whitespace-pre-wrap">{$chatResponse}</pre>
-            </div>
-          {/if}
-        </div>
-      </div>
-
-      <!-- Vector Search Test -->
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <h3 class="text-xl font-semibold text-gray-900 mb-4">Vector Search Test</h3>
-        <p class="text-gray-600 mb-4">Test PostgreSQL + pgvector semantic search:</p>
-        
-        <div class="space-y-4">
-          <div>
-            <label for="search-input" class="block text-sm font-medium text-gray-700 mb-2">
-              Search query:
-            </label>
-            <input 
-              type="text"
-              id="search-input"
-              bind:value={$searchQuery}
-              placeholder="e.g., contract disputes"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              keydown={(e) => e.key === 'Enter' && testVectorSearch()}
-            />
-          </div>
-          
-          <button 
-            class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
-            disabled={$searchLoading}
-            onclick={testVectorSearch}
-          >
-            {$searchLoading ? 'Searching...' : 'Vector Search'}
-          </button>
-          
-          {#if $searchResults}
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Search Results:</label>
-              <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto whitespace-pre-wrap max-h-48">{$searchResults}</pre>
-            </div>
-          {/if}
-        </div>
-      </div>
-    </div>
-
-    <!-- Architecture Overview -->
-    <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">Platform Architecture</h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="text-center">
-          <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-            </svg>
-          </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">SvelteKit Frontend</h3>
-          <p class="text-gray-600 text-sm">Svelte 5 + TypeScript with reactive components and modern UI patterns</p>
-        </div>
-
-        <div class="text-center">
-          <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"></path>
-            </svg>
-          </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">Go Microservices</h3>
-          <p class="text-gray-600 text-sm">Enhanced RAG (8094), Upload Service (8093), and multi-protocol API support</p>
-        </div>
-
-        <div class="text-center">
-          <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
-            </svg>
-          </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">Database Layer</h3>
-          <p class="text-gray-600 text-sm">PostgreSQL + pgvector with Drizzle ORM for type-safe operations</p>
-        </div>
-      </div>
-
-      <div class="mt-8 p-4 bg-gray-50 rounded-lg">
-        <h4 class="text-lg font-semibold text-gray-900 mb-2">Key Features Implemented:</h4>
-        <ul class="list-disc list-inside text-gray-600 space-y-1">
-          <li>Complete CRUD operations for cases, evidence, and criminal records</li>
-          <li>Vector similarity search using PostgreSQL + pgvector</li>
-          <li>AI processing through Enhanced RAG Go microservice</li>
-          <li>Multi-protocol API support (REST/HTTP with future gRPC/QUIC)</li>
-          <li>Real-time health monitoring and error handling</li>
-          <li>Type-safe client-server communication</li>
-          <li>Production-ready UI components with Tailwind CSS</li>
-          <li>Scalable microservices architecture</li>
-        </ul>
-      </div>
-    </div>
+      </button>
+    {/each}
   </div>
+
+  <!-- Platform Overview -->
+  {#if selectedDemo === 'overview'}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Statistics Cards -->
+      <OrchestratedCard.Analysis>
+        <Card.Content class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-2xl font-bold text-primary">{realTimeStats.totalCases}</p>
+              <p class="text-sm text-muted-foreground">Total Cases</p>
+            </div>
+            <Scale class="w-8 h-8 text-primary/60" />
+          </div>
+        </CardContent>
+      </OrchestratedCard.Analysis>
+
+      <OrchestratedCard.Analysis>
+        <Card.Content class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-2xl font-bold text-primary">{realTimeStats.totalDocuments}</p>
+              <p class="text-sm text-muted-foreground">Documents</p>
+            </div>
+            <FileText class="w-8 h-8 text-primary/60" />
+          </div>
+        </CardContent>
+      </OrchestratedCard.Analysis>
+
+      <OrchestratedCard.Analysis>
+        <Card.Content class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-2xl font-bold text-primary">{realTimeStats.totalAnalyses}</p>
+              <p class="text-sm text-muted-foreground">AI Analyses</p>
+            </div>
+            <Brain class="w-8 h-8 text-primary/60" />
+          </div>
+        </CardContent>
+      </OrchestratedCard.Analysis>
+
+      <OrchestratedCard.Analysis>
+        <Card.Content class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-2xl font-bold text-primary">{realTimeStats.avgProcessingTime}ms</p>
+              <p class="text-sm text-muted-foreground">Avg Response</p>
+            </div>
+            <Clock class="w-8 h-8 text-primary/60" />
+          </div>
+        </CardContent>
+      </OrchestratedCard.Analysis>
+    </div>
+
+    <!-- System Health -->
+    <OrchestratedCard.Analysis>
+      <Card.Header>
+        <Card.Title class="flex items-center gap-2">
+          <Activity class="w-5 h-5" />
+          System Health
+        </Card.Title>
+        <Card.Description>Real-time status of all platform components</Card.Description>
+      </Card.Header>
+      <Card.Content>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          {#each [
+            { key: 'database', label: 'PostgreSQL', icon: Database },
+            { key: 'redis', label: 'Redis Cache', icon: HardDrive },
+            { key: 'vectorSearch', label: 'pgvector', icon: Search },
+            { key: 'aiModels', label: 'AI Models', icon: Brain },
+            { key: 'gpu', label: 'GPU Accel', icon: Cpu }
+          ] as service}
+            <div class="flex items-center gap-2 p-3 rounded-lg {getHealthBg(data.systemHealth[service.key])}">
+              {@render service.icon({ class: "w-4 h-4" })}
+              <span class="text-sm font-medium">{service.label}</span>
+              {#if data.systemHealth[service.key]}
+                <CheckCircle class="w-4 h-4 {getHealthColor(data.systemHealth[service.key])} ml-auto" />
+              {:else}
+                <AlertCircle class="w-4 h-4 {getHealthColor(data.systemHealth[service.key])} ml-auto" />
+              {/if}
+            </div>
+          {/each}
+        </div>
+      </CardContent>
+    </OrchestratedCard.Analysis>
+  {/if}
+
+  <!-- RAG Demo -->
+  {#if selectedDemo === 'rag'}
+    <OrchestratedCard.AIInsight>
+      <Card.Header>
+        <Card.Title class="flex items-center gap-2">
+          <Brain class="w-5 h-5" />
+          RAG Analysis Demo
+        </Card.Title>
+        <Card.Description>
+          Retrieval-Augmented Generation for legal document analysis
+        </Card.Description>
+      </Card.Header>
+      <Card.Content class="space-y-4">
+        <div class="flex gap-3">
+          <OrchestratedButton.AnalyzeEvidence
+            onclick={runRAGDemo}
+            disabled={isRunningDemo}
+            class="gap-2"
+          >
+            {#if isRunningDemo}
+              <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+              Running Analysis...
+            {:else}
+              <Brain class="w-4 h-4" />
+              Run RAG Demo
+            {/if}
+          </OrchestratedButton.AnalyzeEvidence>
+          
+          <Button variant="outline" onclick={() => goto('/dashboard/search')}>
+            <Search class="w-4 h-4 mr-2" />
+            Open Vector Search
+          </Button>
+        </div>
+
+        {#if demoResults}
+          <div class="p-4 bg-muted/50 rounded-lg">
+            <h4 class="font-medium mb-2">Analysis Result:</h4>
+            <pre class="text-sm overflow-auto">{JSON.stringify(demoResults, null, 2)}</pre>
+          </div>
+        {/if}
+      </CardContent>
+    </OrchestratedCard.AIInsight>
+  {/if}
+
+  <!-- Vector Search Demo -->
+  {#if selectedDemo === 'search'}
+    <OrchestratedCard.Analysis>
+      <Card.Header>
+        <Card.Title class="flex items-center gap-2">
+          <Search class="w-5 h-5" />
+          Vector Search Demo
+        </Card.Title>
+        <Card.Description>
+          Semantic search across legal documents using pgvector
+        </Card.Description>
+      </Card.Header>
+      <Card.Content class="space-y-4">
+        <div class="flex gap-3">
+          <OrchestratedButton.SearchSimilar
+            onclick={runVectorSearchDemo}
+            disabled={isRunningDemo}
+            class="gap-2"
+          >
+            {#if isRunningDemo}
+              <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+              Searching...
+            {:else}
+              <Search class="w-4 h-4" />
+              Run Search Demo
+            {/if}
+          </OrchestratedButton.SearchSimilar>
+          
+          <Button variant="outline" onclick={() => goto('/dashboard/search')}>
+            <Eye class="w-4 h-4 mr-2" />
+            Open Search Dashboard
+          </Button>
+        </div>
+
+        {#if demoResults}
+          <div class="p-4 bg-muted/50 rounded-lg">
+            <h4 class="font-medium mb-2">Search Results:</h4>
+            <pre class="text-sm overflow-auto max-h-96">{JSON.stringify(demoResults, null, 2)}</pre>
+          </div>
+        {/if}
+
+        <!-- Search Performance Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
+          <div class="text-center">
+            <p class="text-2xl font-bold text-primary">{realTimeStats.vectorDimensions}</p>
+            <p class="text-sm text-muted-foreground">Vector Dimensions</p>
+          </div>
+          <div class="text-center">
+            <p class="text-lg font-bold text-primary">{realTimeStats.embeddingModel}</p>
+            <p class="text-sm text-muted-foreground">Embedding Model</p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold text-primary">{Math.round(realTimeStats.avgProcessingTime)}ms</p>
+            <p class="text-sm text-muted-foreground">Avg Response Time</p>
+          </div>
+        </div>
+      </CardContent>
+    </OrchestratedCard.Analysis>
+  {/if}
 
   <!-- Case Management Demo -->
-  <div class="bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Case Management System</h2>
-        <p class="text-xl text-gray-600">Complete CRUD operations with PostgreSQL + Drizzle ORM integration</p>
-      </div>
-      
-      <SimpleCaseManager />
-    </div>
-  </div>
+  {#if selectedDemo === 'cases'}
+    <div class="space-y-6">
+      <OrchestratedCard.CaseFile>
+        <Card.Header>
+          <Card.Title class="flex items-center gap-2">
+            <Scale class="w-5 h-5" />
+            Sample Cases
+          </Card.Title>
+          <Card.Description>
+            Live case management with integrated RAG analysis
+          </Card.Description>
+        </Card.Header>
+        <Card.Content>
+          <div class="grid gap-4">
+            {#each data.sampleCases as case}
+              <div class="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow">
+                <div class="flex-1">
+                  <h3 class="font-medium">{case.title}</h3>
+                  <div class="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                    <span class="capitalize">{case.status}</span>
+                    <span>{case.documentsCount} documents</span>
+                    <span class={getConfidenceClass(case.confidence)}>
+                      {Math.round(case.confidence * 100)}% AI confidence
+                    </span>
+                  </div>
+                </div>
+                <div class="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onclick={() => navigateToCase(case.id)}
+                  >
+                    <Eye class="w-4 h-4 mr-1" />
+                    View
+                  </Button>
+                  <OrchestratedButton.AnalyzeEvidence
+                    size="sm"
+                    onclick={() => navigateToRAG(case.id)}
+                  >
+                    <Brain class="w-4 h-4 mr-1" />
+                    RAG
+                  </OrchestratedButton.AnalyzeEvidence>
+                </div>
+              </div>
+            {/each}
+          </div>
+        </CardContent>
+      </OrchestratedCard.CaseFile>
 
-  <!-- Technology Stack -->
-  <div class="bg-gray-900 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h2 class="text-3xl font-bold text-center mb-8">Technology Stack</h2>
-      
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        <div>
-          <h3 class="text-lg font-semibold mb-2">Frontend</h3>
-          <ul class="text-gray-300 space-y-1">
-            <li>SvelteKit 2</li>
-            <li>Svelte 5</li>
-            <li>TypeScript</li>
-            <li>Tailwind CSS</li>
-          </ul>
-        </div>
-        
-        <div>
-          <h3 class="text-lg font-semibold mb-2">Backend</h3>
-          <ul class="text-gray-300 space-y-1">
-            <li>Go Microservices</li>
-            <li>gRPC/QUIC</li>
-            <li>WebSocket</li>
-            <li>REST APIs</li>
-          </ul>
-        </div>
-        
-        <div>
-          <h3 class="text-lg font-semibold mb-2">Database</h3>
-          <ul class="text-gray-300 space-y-1">
-            <li>PostgreSQL 17</li>
-            <li>pgvector</li>
-            <li>Drizzle ORM</li>
-            <li>Redis Cache</li>
-          </ul>
-        </div>
-        
-        <div>
-          <h3 class="text-lg font-semibold mb-2">AI/ML</h3>
-          <ul class="text-gray-300 space-y-1">
-            <li>Ollama</li>
-            <li>GPU Acceleration</li>
-            <li>Vector Search</li>
-            <li>RAG Pipeline</li>
-          </ul>
-        </div>
-      </div>
+      <!-- Recent Analyses -->
+      <OrchestratedCard.Analysis>
+        <Card.Header>
+          <Card.Title class="flex items-center gap-2">
+            <BarChart3 class="w-5 h-5" />
+            Recent AI Analyses
+          </Card.Title>
+          <Card.Description>Latest RAG queries and their performance metrics</Card.Description>
+        </Card.Header>
+        <Card.Content>
+          <div class="space-y-3">
+            {#each data.recentAnalyses as analysis}
+              <div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                <div class="flex-1">
+                  <p class="font-medium text-sm">{analysis.query}</p>
+                  <p class="text-xs text-muted-foreground">
+                    {formatAnalysisDate(new Date(analysis.timestamp))}
+                  </p>
+                </div>
+                <div class="flex items-center gap-4 text-sm">
+                  <span class={getConfidenceClass(analysis.confidence)}>
+                    {Math.round(analysis.confidence * 100)}%
+                  </span>
+                  <span class="text-muted-foreground">{analysis.responseTime}ms</span>
+                </div>
+              </div>
+            {/each}
+          </div>
+        </CardContent>
+      </OrchestratedCard.Analysis>
     </div>
+  {/if}
+
+  <!-- Platform Actions -->
+  <div class="flex justify-center gap-4 pt-8">
+    <Button onclick={() => goto('/dashboard/search')} class="gap-2">
+      <Search class="w-4 h-4" />
+      Open Search Dashboard
+    </Button>
+    <Button onclick={() => goto('/cases')} variant="outline" class="gap-2">
+      <Scale class="w-4 h-4" />
+      Manage Cases
+    </Button>
+    <Button onclick={() => goto('/auth/login')} variant="outline" class="gap-2">
+      <Shield class="w-4 h-4" />
+      User Authentication
+    </Button>
   </div>
 </div>
-
-<style>
-  .legal-ai-platform-demo {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  }
-</style>

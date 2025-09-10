@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+</script>
   import { onDestroy } from 'svelte';
 
   let file = null;

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import SecurityMonitoringDashboard from "$lib/components/security/SecurityMonitoringDashboard.svelte";
   import { Button } from "$lib/components/ui/button";
   import { ArrowLeft, Shield } from "lucide-svelte";

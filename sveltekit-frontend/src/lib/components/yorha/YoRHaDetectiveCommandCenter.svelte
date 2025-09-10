@@ -1,5 +1,6 @@
 <!-- YoRHa Detective Command Center Component -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -163,7 +164,7 @@
         throw new Error('Failed to create case');
       }
     } catch (error) {
-      console.error('Error creating case:', error);
+      console.error('Error creating caseItem:', error);
       showNotification('Error: Could not save case.', 'error');
     }
   }

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createTooltip, melt } from "@melt-ui/svelte";
   import {
     Download,
@@ -72,7 +73,7 @@
   // Hover state for expansion
   let isHovered = false;
 
-  $: IconComponent = getIcon(evidence.evidenceType || evidence.type);
+  // TODO: Convert to $derived: IconComponent = getIcon(evidence.evidenceType || evidence.type)
 
   function handleMouseEnter() {
     if (expandOnHover) {

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 import * as monaco from 'monaco-editor';
 import { onDestroy, onMount } from 'svelte';
 let editorContainer: HTMLDivElement

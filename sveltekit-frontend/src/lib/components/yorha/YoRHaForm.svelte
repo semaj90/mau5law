@@ -1,5 +1,6 @@
 <!-- YoRHa Form Component with Terminal Styling -->
 <script lang="ts">
+</script>
 
   interface FormField {
     id: string

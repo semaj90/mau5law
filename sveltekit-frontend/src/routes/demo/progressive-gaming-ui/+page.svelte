@@ -10,6 +10,7 @@
   - Real-time evolution
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { ProgressiveGamingProvider } from '$lib/components/ui/gaming/core/ProgressiveGamingProvider.svelte';
   import { useGamingEvolution } from '$lib/components/ui/gaming/core/useGamingEvolution.js';
@@ -449,7 +450,7 @@
 
   .status-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 1rem;
     margin-bottom: 1rem;
   }
@@ -597,7 +598,7 @@
 
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 1rem;
   }
 

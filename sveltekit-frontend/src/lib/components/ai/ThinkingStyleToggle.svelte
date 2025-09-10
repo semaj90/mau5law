@@ -1,5 +1,6 @@
 <!-- Enhanced ThinkingStyleToggle with Nier Automata + Harvard Crimson Theme -->
 <script lang="ts">
+</script>
   let {
     enabled = $bindable(false),
     loading = false,

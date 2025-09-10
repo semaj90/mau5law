@@ -1,4 +1,5 @@
 <script>
+</script>
   export let title = "Detective Interface";
   export let subtitle = "";
 </script>

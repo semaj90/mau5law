@@ -3,6 +3,7 @@
   Combines EvidenceCanvas with YoRHa CanvasBoard for comprehensive evidence visualization
 -->
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';

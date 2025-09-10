@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import SearchInput from './SearchInput.svelte';
 	import { Filter, ArrowUpDown } from 'lucide-svelte';
 

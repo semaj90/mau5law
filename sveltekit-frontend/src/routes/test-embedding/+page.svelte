@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
   import {
     Button

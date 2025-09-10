@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte'
   import * as Select from '$lib/components/ui/select'
   import { fade, fly } from 'svelte/transition'

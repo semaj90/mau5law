@@ -1,5 +1,6 @@
 <!-- AI Chat Interface Component - SSR-safe with proper hydration -->
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import { onDestroy, onMount, tick } from "svelte";
   import { aiStore, conversation, status } from "../../../lib/stores/ai-store";
@@ -49,10 +50,10 @@
   });
 
   // Auto-scroll to bottom when new messages arrive
-  $: if (browser && $conversation.messages.length > 0) {
+  // TODO: Convert to $derived: if (browser && $conversation.messages.length > 0) {
     tick().then(() => {
       if (chatContainer) {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+        chatContainer.scrollTop = chatContainer.scrollHeight
       }
     });
   }

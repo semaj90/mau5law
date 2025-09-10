@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     size: 'small' | 'medium' | 'large' ;
     clickable?: any;

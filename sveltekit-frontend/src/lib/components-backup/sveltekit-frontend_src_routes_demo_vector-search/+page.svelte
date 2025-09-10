@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Badge } from "$lib/components/ui/badge";
   import { Button } from "$lib/components/ui/button";
   import {
@@ -49,7 +50,7 @@
   const typeIcons = {
     document: FileText,
     evidence: Briefcase,
-    case: Scale,
+    caseItem: Scale,
   };
 
   async function performSearch() {

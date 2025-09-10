@@ -1,5 +1,6 @@
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
+</script>
   interface Props {
     oncancel?: (event?: any) => void;
   }
@@ -133,7 +134,7 @@
 
       dispatch(case_ ? "updated" : "created", savedCase);
     } catch (error) {
-      console.error("Error saving case:", error);
+      console.error("Error saving caseItem:", error);
       notifications.add({
         type: "error",
         title: "Save Error",

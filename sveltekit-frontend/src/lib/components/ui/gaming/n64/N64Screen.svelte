@@ -1,4 +1,5 @@
 <script>
+</script>
   import './N64Theme.css';
 
   // Dimensions can be strings like "320px" or "100%"

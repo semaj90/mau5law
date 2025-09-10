@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import Editor from '@toast-ui/editor';
   import '@toast-ui/editor/dist/toastui-editor.css';
@@ -43,14 +44,14 @@
   });
 
   // Reactive statement to update editor content if 'content' prop changes externally
-  $: if (editor && content !== editor.getMarkdown() && !readOnly) {
-    editor.setMarkdown(content);
+  // TODO: Convert to $derived: if (editor && content !== editor.getMarkdown() && !readOnly) {
+    editor.setMarkdown(content)
   }
 
   // Reactive statement to update editor readOnly status
-  $: if (editor) {
+  // TODO: Convert to $derived: if (editor) {
     if (readOnly) {
-      editor.setMarkdown(content); // Ensure content is set before switching to viewer
+      editor.setMarkdown(content) // Ensure content is set before switching to viewer
       editor.changeMode('viewer');
     } else {
       editor.changeMode(initialEditType);

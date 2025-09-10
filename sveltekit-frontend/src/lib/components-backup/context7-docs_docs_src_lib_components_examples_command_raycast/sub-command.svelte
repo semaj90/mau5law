@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Command, Popover } from "bits-ui";
 	import SubItem from "./sub-item.svelte";
 	import { FinderIcon, StarIcon, WindowIcon } from "./icons/index.js";

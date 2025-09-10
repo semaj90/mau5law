@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from 'bits-ui'
   import { createDialog, melt } from '@melt-ui/svelte'
   import { fly, fade } from 'svelte/transition'

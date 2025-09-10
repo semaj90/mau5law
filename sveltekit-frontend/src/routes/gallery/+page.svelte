@@ -3,6 +3,7 @@ Unified Gallery - Main Gallery Route
 Displays all media: evidence, generated images, documents, uploads
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
@@ -784,7 +785,7 @@ let comparison = $state(0);
   }
 
   .gallery-grid.gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr);
   }
 
   .gallery-grid.gallery-list {
@@ -792,7 +793,7 @@ let comparison = $state(0);
   }
 
   .gallery-grid.gallery-masonry {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr);
   }
 
   .gallery-item {
@@ -1076,7 +1077,7 @@ let comparison = $state(0);
     }
 
     .gallery-grid.gallery-grid {
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr);
     }
 
     .modal-content {

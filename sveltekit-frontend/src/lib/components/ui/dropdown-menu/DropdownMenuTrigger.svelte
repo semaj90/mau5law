@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { DropdownMenu } from 'bits-ui';
 
   interface Props {

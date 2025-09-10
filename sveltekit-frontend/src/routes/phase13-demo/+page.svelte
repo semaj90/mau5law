@@ -2,6 +2,7 @@
 <!-- Complete integration of XState, WebGL, Enhanced RAG, and Context7 MCP -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     Button
@@ -294,14 +295,11 @@ let context7Integration = $state<any >(null);
       console.log('🚀 Starting full Phase 13 demo...');
 
       await startWebGLDemo();
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      await new Promise((resolve) => setTimeout(resolve, 1000);
       await startAPICoordination();
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      await new Promise((resolve) => setTimeout(resolve, 1000);
       await performEnhancedRAGSearch();
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      await new Promise((resolve) => setTimeout(resolve, 1000);
       await getContext7Recommendations();
 
       console.log('✅ Full Phase 13 demo completed successfully!');

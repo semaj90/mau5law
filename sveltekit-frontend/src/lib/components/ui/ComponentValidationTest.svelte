@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Dropdown from './Dropdown.svelte';
   import Checkbox from './Checkbox.svelte';
   import SearchBar from './SearchBar.svelte';
@@ -28,7 +29,7 @@
   }
 
   // Computed validation
-  $: isFormValid = selectedCaseType && acceptTerms && searchQuery.length > 0;
+  // TODO: Convert to $derived: isFormValid = selectedCaseType && acceptTerms && searchQuery.length > 0
 </script>
 
 <div class="validation-container">

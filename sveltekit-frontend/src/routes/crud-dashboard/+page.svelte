@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import CRUDDashboard from "$lib/components/CRUDDashboard.svelte";
 </script>
 

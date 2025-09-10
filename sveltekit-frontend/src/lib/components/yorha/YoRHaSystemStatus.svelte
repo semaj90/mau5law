@@ -1,5 +1,6 @@
 <!-- YoRHa System Status Bar Component -->
 <script lang="ts">
+</script>
   import type { SystemStatus } from "$lib/types/global";
   import type { Props } from "$lib/types/global";
   import { onMount, onDestroy } from 'svelte';

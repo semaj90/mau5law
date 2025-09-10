@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import {
     Card,
     CardHeader,
@@ -273,14 +274,14 @@
 
   .button-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: var(--golden-md);
     align-items: start;
   }
 
   .cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr);
     gap: var(--golden-lg);
   }
 
@@ -377,7 +378,7 @@
 
   .layout-demo {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr);
     gap: var(--golden-md);
     margin-top: var(--golden-md);
   }
@@ -415,7 +416,7 @@
     }
 
     .button-grid {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr);
     }
 
     .layout-demo {

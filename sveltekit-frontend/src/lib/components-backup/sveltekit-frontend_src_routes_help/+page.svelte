@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Button } from "$lib/components/ui/button";
   import {
     AlertTriangle,
@@ -454,8 +455,8 @@ Build on previous responses:
         return "text-gray-600";
     }
   }
-  $: {
-    filterArticles();
+  // TODO: Convert to $derived: {
+    filterArticles()
   }
 </script>
 

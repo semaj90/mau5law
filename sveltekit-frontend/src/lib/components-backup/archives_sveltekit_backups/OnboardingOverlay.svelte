@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import { Button } from "$lib/components/ui/button";
   import {
@@ -50,11 +51,11 @@
     height: number;
   } | null = null;
 
-  $: if (open && steps.length > 0) {
-    updateTargetHighlight();
+  // TODO: Convert to $derived: if (open && steps.length > 0) {
+    updateTargetHighlight()
   }
 
-  $: currentStepData = steps[currentStep] || null;
+  // TODO: Convert to $derived: currentStepData = steps[currentStep] || null
 
   onMount(() => {
     if (browser) {

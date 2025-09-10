@@ -10,6 +10,7 @@
   - Optional effects (scanlines, CRT)
 -->
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { NES_COLOR_PALETTE } from '../constants/gaming-constants.js';

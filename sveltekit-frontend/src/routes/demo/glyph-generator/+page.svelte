@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import GlyphGenerator from '$lib/components/glyph/GlyphGenerator.svelte';
   import {
     Card,

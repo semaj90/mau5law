@@ -1,5 +1,6 @@
 <!-- Real-time Evidence Management Demo Page -->
 <script lang="ts">
+</script>
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
   import { Button } from "$lib/components/ui/button";

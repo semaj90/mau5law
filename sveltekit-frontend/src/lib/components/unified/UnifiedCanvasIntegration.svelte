@@ -1,5 +1,6 @@
 <!-- Unified Canvas Integration - Bridge Between Enhanced Evidence Canvas and Detective Board -->
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
 	import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
@@ -50,7 +51,7 @@
 	});
 
 	async function initializeUnifiedSystems() {
-		console.log('🚀 Initializing Unified Canvas Integration for case:', caseId);
+		console.log('🚀 Initializing Unified Canvas Integration for caseItem:', caseId);
 		
 		// Initialize canvas system
 		systemIntegration.canvasActive = true;

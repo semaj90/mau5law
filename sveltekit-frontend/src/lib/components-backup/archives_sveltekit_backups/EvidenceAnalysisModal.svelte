@@ -1,5 +1,6 @@
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import Dialog from '../../../lib/components/ui/dialog/Dialog.svelte';

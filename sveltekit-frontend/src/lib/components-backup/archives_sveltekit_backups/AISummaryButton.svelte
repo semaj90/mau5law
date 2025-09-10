@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from "svelte";
   let summary = "";
   let loading = false;

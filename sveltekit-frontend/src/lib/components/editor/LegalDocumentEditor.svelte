@@ -1,5 +1,6 @@
 <!-- Enhanced Legal Document Editor with UnoCSS + bits-ui -->
 <script lang="ts">
+</script>
   import {
     createDialog,
     createDropdownMenu,
@@ -283,8 +284,8 @@ let hasUnsavedChanges = $state(false);
   });
 
   // Reactive statement to trigger auto-save when content changes
-  $: if (content && documentId && !loadingDocument) {
-    scheduleAutoSave();
+  // TODO: Convert to $derived: if (content && documentId && !loadingDocument) {
+    scheduleAutoSave()
 }
   // Reactive statement to update save status
   let saveStatus = $derived(getSaveStatus());

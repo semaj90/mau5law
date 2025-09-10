@@ -1,5 +1,6 @@
 <!-- Toast Container with NES.css Styling -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { toastService, type Toast } from '$lib/services/toast-service';
   import { CheckCircle, AlertCircle, AlertTriangle, Info, Upload, X, RotateCcw } from 'lucide-svelte';

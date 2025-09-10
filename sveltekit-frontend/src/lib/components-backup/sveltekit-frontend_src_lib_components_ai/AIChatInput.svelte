@@ -1,5 +1,6 @@
 <!-- AI Chat Input Component -->
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import { createEventDispatcher, onMount } from "svelte";
 
@@ -96,9 +97,9 @@
     dispatch("blur");
   }
   // Character count
-  $: characterCount = value.length;
-  $: isNearLimit = characterCount > maxLength * 0.8;
-  $: isAtLimit = characterCount >= maxLength;
+  // TODO: Convert to $derived: characterCount = value.length
+  // TODO: Convert to $derived: isNearLimit = characterCount > maxLength * 0.8
+  // TODO: Convert to $derived: isAtLimit = characterCount >= maxLength
 </script>
 
 <div class="chat-input-wrapper" class:multiline={isMultiline}>

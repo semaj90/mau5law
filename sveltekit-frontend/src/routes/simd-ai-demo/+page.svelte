@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import SIMDAIAssistantDemo from '$lib/components/ai/SIMDAIAssistantDemo.svelte';
   import SIMDTextTilingDemo from '$lib/components/ai/SIMDTextTilingDemo.svelte';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	/** Optimized MinIO Upload Component
 	 *  - Native Windows friendly (no fs dependencies)
 	 *  - Uses Svelte 5 $state stores for local reactive state

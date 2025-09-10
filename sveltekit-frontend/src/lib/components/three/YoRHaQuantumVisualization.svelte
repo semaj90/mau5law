@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import * as THREE from 'three';
   import { YoRHaQuantumEffects3D } from './yorha-ui/components/YoRHaQuantumEffects3D';

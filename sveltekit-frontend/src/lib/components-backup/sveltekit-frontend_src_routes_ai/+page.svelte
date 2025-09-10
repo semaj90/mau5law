@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { page } from "$app/stores";
   import ChatInterface from "$lib/components/ai/ChatInterface.svelte";
   import { Button } from "$lib/components/ui/button";

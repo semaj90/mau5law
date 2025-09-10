@@ -12,6 +12,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { createDialog, melt } from 'melt';
   import { fade, fly, scale } from 'svelte/transition';
   import { cubicInOut } from 'svelte/easing';

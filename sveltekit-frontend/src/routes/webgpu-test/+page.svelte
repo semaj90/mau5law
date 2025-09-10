@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { diagnoseWebGPU, checkBrowserCompatibility } from '$lib/webgpu/webgpu-diagnostics';
   import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
@@ -339,7 +340,7 @@
 
   .result-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr);
     gap: 1rem;
     margin-top: 1rem;
   }
@@ -385,7 +386,7 @@
 
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 1rem;
     margin-top: 1rem;
   }

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte'
   let query = 'contract liability terms'
   let results: any[] = []
@@ -49,6 +50,7 @@
   pre { background: #111; color: #ddd; padding: 8px; border-radius: 4px; }
 </style>
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
 
   interface SearchResult {

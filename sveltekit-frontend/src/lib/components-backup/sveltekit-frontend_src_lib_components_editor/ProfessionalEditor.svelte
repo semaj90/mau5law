@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     onsave?: (event?: any) => void;
   }
@@ -331,7 +332,7 @@
 <!-- Keyboard Shortcuts Modal -->
 {#if showShortcuts}
   <div class="shortcuts-overlay" onclick={() => showShortcuts = false}>
-    <div class="shortcuts-modal yorha-card" onclick|stopPropagation>
+    <div class="shortcuts-modal yorha-card" onclick>
       <h3 class="shortcuts-title gradient-text-primary">
         Keyboard Shortcuts
       </h3>

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- NES-Inspired Neural Sprite Engine Demo -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   // import { fabric } from 'fabric'; // Dynamic import to avoid canvas.node issues
@@ -394,7 +395,7 @@ let currentFrame = $state(0);
     gpuMemoryUsage = Math.min(100, gpuMemoryUsage + Math.random() * 2 - 1);
 
     // Cache efficiency based on load time
-    cacheEfficiency = loadTime < 1 ? 100 : Math.max(60, 100 - (loadTime * 10));
+    cacheEfficiency = loadTime < 1 ? 100 : Math.max(60, 100 - (loadTime * 10);
   }
 
   function stopDemo() {
@@ -417,14 +418,14 @@ let currentFrame = $state(0);
     setInterval(() => {
       // Simulate real-time metrics updates
       if (isPlaying) {
-        gpuMemoryUsage = Math.max(0, Math.min(100, gpuMemoryUsage + (Math.random() - 0.5) * 3));
+        gpuMemoryUsage = Math.max(0, Math.min(100, gpuMemoryUsage + (Math.random() - 0.5) * 3);
       }
     }, 100);
   }
 
   // Reactive statements
   // Reactive statements
-    $: selectedScenario = demoScenarios.find(s => s.id === selectedDemo);
+    let selectedScenario = $derived(demoScenarios.find(s);
 
 <svelte:head>
   <title>Neural Sprite Engine Demo - NES-Inspired AI Graphics</title>

@@ -3,6 +3,7 @@ Collaboration Panel Component
 Real-time collaboration interface for multiple investigators working on evidence custody
 -->
 <script lang="ts">
+</script>
   interface Props {
     collaborationSession: {;
     activeCollaborators: string[];

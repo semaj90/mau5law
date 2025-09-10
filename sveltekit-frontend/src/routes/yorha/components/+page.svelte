@@ -1,5 +1,6 @@
 <!-- YoRHa 3D Components Gallery -->
 <script lang="ts">
+</script>
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
   import { onMount } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
@@ -129,7 +130,7 @@ let canvasContainer = $state<HTMLElement;
 
   function updatePreview() {
     if (!yorhaUI) {
-      console.log('Preview updated for:', selectedComponent, getCurrentConfig());
+      console.log('Preview updated for:', selectedComponent, getCurrentConfig();
       return;
     }
 
@@ -183,7 +184,7 @@ let canvasContainer = $state<HTMLElement;
 
   async function saveConfig() {
     try {
-      await yorhaAPI.updateComponentConfig(`demo-${selectedComponent}`, getCurrentConfig());
+      await yorhaAPI.updateComponentConfig(`demo-${selectedComponent}`, getCurrentConfig();
       console.log('Configuration saved');
     } catch (error) {
       console.error('Failed to save configuration:', error);
@@ -286,7 +287,7 @@ let canvasContainer = $state<HTMLElement;
               class:yorha-component-active={selectedComponent === component.id}
               onclick={() => onComponentChange(component.id)}
             >
-              <svelte:component this={component.icon} size={18} />
+              <{component.icon} size={18} />
               <div class="yorha-component-info">
                 <span class="yorha-component-label">{component.label}</span>
                 <span class="yorha-component-desc">{component.description}</span>
@@ -309,7 +310,7 @@ let canvasContainer = $state<HTMLElement;
               class:yorha-mode-active={previewMode === mode.id}
               onclick={() => previewMode = mode.id}
             >
-              <svelte:component this={mode.icon} size={16} />
+              <{mode.icon} size={16} />
               <span>{mode.label}</span>
             </button>
           {/each}
@@ -518,7 +519,7 @@ let canvasContainer = $state<HTMLElement;
         {#each componentTypes as component}
           {#if component.id === selectedComponent}
             <div class="yorha-info-content">
-              <svelte:component this={component.icon} size={24} />
+              <{component.icon} size={24} />
               <h4>{component.label}</h4>
               <p>{component.description}</p>
             </div>

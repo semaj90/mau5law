@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { cudaService } from '$lib/services/cuda-service';
   import type { CudaHealthStatus, CudaStats } from '$lib/services/cuda-service';

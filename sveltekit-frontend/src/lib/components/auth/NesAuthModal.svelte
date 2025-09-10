@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // NES Auth Modal - Svelte 5 compatible
   interface Props {
     open?: boolean;

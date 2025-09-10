@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { marked } from "marked";
   import { onMount } from "svelte";
 
@@ -80,8 +81,8 @@
   }
 
   // Re-render when markdown changes
-  $: if (isClient && markdown) {
-    renderMarkdown();
+  // TODO: Convert to $derived: if (isClient && markdown) {
+    renderMarkdown()
   }
 </script>
 

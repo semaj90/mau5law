@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { run } from 'svelte/legacy';
   // Badge replaced with span - not available in enhanced-bits
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -77,8 +78,7 @@
         citation.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
         citation.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (citation.notes && citation.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        citation.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-
+        citation.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || citation.category === selectedCategory;
 
       return matchesSearch && matchesCategory;

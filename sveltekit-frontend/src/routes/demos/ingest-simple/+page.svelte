@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   /**
    * Simple Document Ingest Demo
    * Demonstrates the working ingest integration without complex UI dependencies

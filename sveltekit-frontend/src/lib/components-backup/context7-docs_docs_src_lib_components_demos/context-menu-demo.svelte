@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { ContextMenu } from "bits-ui";
 	import CopySimple from "phosphor-svelte/lib/CopySimple";
 	import MouseSimple from "phosphor-svelte/lib/MouseSimple";

@@ -1,5 +1,6 @@
 <!-- Modular API-Integrated Command Palette -->
 <script lang="ts">
+</script>
   import { Command } from 'bits-ui';
   import { Search, FileText, Users, Calendar, Gavel, Loader2 } from 'lucide-svelte';
   import { cn } from '$lib/utils';

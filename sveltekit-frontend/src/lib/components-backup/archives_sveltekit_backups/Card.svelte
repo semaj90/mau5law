@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   import { quintOut } from 'svelte/easing';
   import { fly, scale } from 'svelte/transition';
@@ -30,29 +31,29 @@
   };
 
   // Dynamic classes
-  $: baseClasses = `
+  // TODO: Convert to $derived: baseClasses = `
     relative overflow-hidden rounded-xl border transition-all duration-200 ease-out
     ${interactive ? 'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500' : ''}
     ${selected ? 'ring-2 ring-blue-500 border-blue-300' : ''}
-  `;
+  `
 
-  $: variantClasses = {
+  // TODO: Convert to $derived: variantClasses = {
     default: 'bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-800',
     elevated: 'bg-white border-gray-200 shadow-sm hover:shadow-md dark:bg-gray-900 dark:border-gray-800',
     outlined: 'bg-transparent border-gray-300 dark:border-gray-600',
     filled: 'bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700'
-  }[variant];
+  }[variant]
 
-  $: interactiveClasses = interactive ? 'hover:shadow-lg hover:scale-102 active:scale-98' : '';
+  // TODO: Convert to $derived: interactiveClasses = interactive ? 'hover:shadow-lg hover:scale-102 active:scale-98' : ''
 
-  $: paddingClasses = {
+  // TODO: Convert to $derived: paddingClasses = {
     none: '',
     sm: 'p-3',
     md: 'p-4',
     lg: 'p-6'
-  }[padding];
+  }[padding]
 
-  $: classes = `${baseClasses} ${variantClasses} ${interactiveClasses} ${paddingClasses}`;
+  // TODO: Convert to $derived: classes = `${baseClasses} ${variantClasses} ${interactiveClasses} ${paddingClasses}`
 </script>
 
 <svelte:element

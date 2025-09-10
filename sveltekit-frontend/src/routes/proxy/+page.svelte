@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     data: { message: string; path: string; targetExample: string; now: string };
   }

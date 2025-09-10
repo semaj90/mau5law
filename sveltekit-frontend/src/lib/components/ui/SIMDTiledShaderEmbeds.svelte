@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 /**
  * SIMD Tiled UI Shader Embeds System
  * Revolutionary integration of GPU tiling with UI shader generation

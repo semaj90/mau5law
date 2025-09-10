@@ -6,6 +6,8 @@ import { json } from '@sveltejs/kit';
  */
 import { db } from '$lib/server/database';
 import { documents, embeddings, searchSessions } from '$lib/server/db/schema-postgres';
+import { readBodyFastWithMetrics, parseVectorData } from '$lib/simd/simd-json-integration';
+import { fastStringify, fastParse } from '$lib/utils/fast-json';
 
 import { desc, eq, sql } from 'drizzle-orm';
 
@@ -21,7 +23,7 @@ async function generateQueryEmbedding(
     const resp = await fetchFn(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: query, model: model || 'embeddinggemma:latest', save: false }),
+      body: fastStringify({ text: query, model: model || 'embeddinggemma:latest', save: false }),
       signal: AbortSignal.timeout(30000),
     });
 
@@ -30,7 +32,7 @@ async function generateQueryEmbedding(
       throw new Error(`Embedding API failed: ${resp.status} - ${txt}`);
     }
 
-    const payload = await resp.json();
+    const payload = await fastParse(await resp.text());
     if (!payload?.embedding || !Array.isArray(payload.embedding)) {
       throw new Error('Invalid embedding format received');
     }
@@ -75,14 +77,14 @@ async function vectorSearch(
         legalAnalysis: documents.legalAnalysis,
         createdAt: documents.createdAt,
         similarity:
-          sql<number>`1 - (${embeddings.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`.as(
+          sql<number>`1 - (${embeddings.embedding} <=> ${fastStringify(queryEmbedding)}::vector)`.as(
             'similarity'
           ),
       })
       .from(embeddings)
       .innerJoin(documents, eq(embeddings.documentId, documents.id))
       .where(
-        sql`1 - (${embeddings.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold}`
+        sql`1 - (${embeddings.embedding} <=> ${fastStringify(queryEmbedding)}::vector) > ${threshold}`
       );
 
     if (filters) {
@@ -99,7 +101,7 @@ async function vectorSearch(
 
     const rows = await q
       .orderBy(
-        desc(sql`1 - (${embeddings.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`)
+        desc(sql`1 - (${embeddings.embedding} <=> ${fastStringify(queryEmbedding)}::vector)`)
       )
       .limit(limit);
 
@@ -217,7 +219,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
       model,
       includeMetadata = true,
       includeContent = true,
-    } = await request.json();
+    } = await readBodyFastWithMetrics(request);
 
     if (!query) return json({ error: 'Query is required' }, { status: 400 });
 

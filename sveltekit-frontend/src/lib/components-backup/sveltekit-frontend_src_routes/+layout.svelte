@@ -1,5 +1,6 @@
 
 <script lang="ts">
+</script>
 import '../app.css';
 import '../lib/styles/nier.css';
 import '../lib/styles/theme.css';

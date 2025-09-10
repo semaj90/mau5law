@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount, onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { coordinatorStatus, masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
@@ -324,8 +325,7 @@ let coordinatorData = $state(null);
 		: Array.from(systemStatus.services.entries()).filter(([id]) => {
 			const service = masterServiceCoordinator.services.find(s => s.id === id);
 			return service?.tier === parseInt(selectedTier);
-		}));
-
+		});
 	let filteredServices = $derived(showOnlyIssues 
 		? tierServices.filter(([_, status]) => status.status !== 'healthy')
 		: tierServices);

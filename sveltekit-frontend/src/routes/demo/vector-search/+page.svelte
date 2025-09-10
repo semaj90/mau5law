@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { Badge } from '$lib/components/ui/badge';
   import {
     Button
@@ -50,7 +51,7 @@ let vectorSearchFeedback = $state<any>(null);
   const typeIcons = ({
     document: FileText,
     evidence: Briefcase,
-    case: Scale,
+    caseItem: Scale,
   });
 
   async function performSearch() {

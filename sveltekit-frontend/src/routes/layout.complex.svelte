@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import '../app.css';
 import '../lib/styles/modern-yorha-theme.css';
 import { onMount, setContext } from 'svelte';

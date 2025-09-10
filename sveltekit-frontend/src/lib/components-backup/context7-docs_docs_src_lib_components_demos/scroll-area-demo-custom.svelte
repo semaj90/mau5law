@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { ScrollArea, type WithoutChild } from "bits-ui";
 	import DemoContainer from "../demo-container.svelte";
 	import { cn } from "$lib/utils/styles.js";

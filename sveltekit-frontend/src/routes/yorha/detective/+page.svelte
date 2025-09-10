@@ -1,5 +1,6 @@
 <!-- YoRHa Detective Command Center -->
 <script lang="ts">
+</script>
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
@@ -39,8 +40,7 @@
     evidenceItems: data.systemData.evidenceItems,
     personsOfInterest: data.systemData.personsOfInterest,
     aiQueries: data.systemData.aiQueries
-  }));
-
+  });
   // Handle section navigation
   function navigateToSection(sectionId: string) {
     selectedSection = sectionId;

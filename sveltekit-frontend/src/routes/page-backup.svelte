@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -20,7 +21,7 @@
   let gpuOrchestrator = $state<PhysicsAwareGPUOrchestrator>();
 
   // YoRHa Detective Interface State
-  let currentTime = $state(new Date().toLocaleString());
+  let currentTime = $state(new Date().toLocaleString();
   let activeSection = $state('command-center');
   let isNewCaseModalOpen = $state(false);
   let isDocumentationOpen = $state(false);
@@ -342,7 +343,7 @@ let lastClickTime = $state(0);
 
     // Store in localStorage (browser only)
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('yorha_achievements', JSON.stringify(achievements));
+      localStorage.setItem('yorha_achievements', JSON.stringify(achievements);
     }
   }
 
@@ -402,7 +403,7 @@ let lastClickTime = $state(0);
         showNotification(`Error: ${error.message || 'Failed to create case'}`);
       }
     } catch (error) {
-      console.error('Error creating case:', error);
+      console.error('Error creating caseItem:', error);
       showNotification('Network error occurred');
     } finally {
       newCaseForm.loading = false;

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	// Web Speech API type declarations
 	interface SpeechRecognition extends EventTarget {
 		continuous: boolean

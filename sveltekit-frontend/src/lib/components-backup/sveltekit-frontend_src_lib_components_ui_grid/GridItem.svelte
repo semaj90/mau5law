@@ -1,5 +1,6 @@
 <!-- Grid Item Component -->
 <script lang="ts">
+</script>
   interface Props {
     colSpan: number
     rowSpan: number

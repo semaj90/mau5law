@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import { createEventDispatcher, onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -102,12 +103,12 @@ let customAction = $state('');
   ];
   
   // Watch for node changes and auto-populate form
-  $: if (selectedNode) {
-    autoPopulateForm(selectedNode);
+  // TODO: Convert to $derived: if (selectedNode) {
+    autoPopulateForm(selectedNode)
 }
   // Track changes for auto-save
-  $: if ($formData && selectedNode) {
-    hasUnsavedChanges = true;
+  // TODO: Convert to $derived: if ($formData && selectedNode) {
+    hasUnsavedChanges = true
     scheduleAutoSave();
 }
   onMount(() => {

@@ -1,5 +1,6 @@
 <!-- RAG System Demo Page -->
 <script lang="ts">
+</script>
   import AskAI from "$lib/components/ai/AskAI.svelte";
   import {
     AlertTriangle,

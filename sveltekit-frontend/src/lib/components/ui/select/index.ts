@@ -9,7 +9,6 @@ export const SelectItem = Select.Item;
 export const SelectTrigger = Select.Trigger;
 // Note: Portal and Viewport may not exist in bits-ui Select
 export const SelectGroup = Select.Group;
-;
 // TypeScript interface definition
 export interface SelectOption {
   value: string;

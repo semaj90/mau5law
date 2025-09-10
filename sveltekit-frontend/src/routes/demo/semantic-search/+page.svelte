@@ -1,5 +1,6 @@
 <!-- Enhanced Semantic Search Demo -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
 
@@ -175,7 +176,7 @@
             bind:value={$searchQuery}
             placeholder="Enter your legal document search query..."
             class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            on:keypress={(e) => e.key === 'Enter' && performSearch()}
+            onkeypress={(e) => e.key === 'Enter' && performSearch()}
           />
           <button
             onclick={performSearch}

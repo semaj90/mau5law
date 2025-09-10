@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Button } from "bits-ui";
 	import Search from "./search.svelte";
 	import { Logo } from "$icons/index.js";

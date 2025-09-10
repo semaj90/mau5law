@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import * as THREE from 'three';
   import { NESYoRHaHybrid3D, createNESButton, createNESContainer, createNESProgressBar, NES_YORHA_PALETTE } from '$lib/components/three/yorha-ui/NESYoRHaHybrid3D';
@@ -176,10 +177,9 @@ let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
       // Update all hybrid components
       const deltaTime = 0.016; // ~60fps
 
-      nesButtons.forEach(button => button.update(deltaTime));
-      nesContainers.forEach(container => container.update(deltaTime));
-      nesProgressBars.forEach(bar => bar.update(deltaTime));
-
+      nesButtons.forEach(button => button.update(deltaTime);
+      nesContainers.forEach(container => container.update(deltaTime);
+      nesProgressBars.forEach(bar => bar.update(deltaTime);
       // Gentle rotation for demo purposes
       scene.rotation.y += 0.001;
 

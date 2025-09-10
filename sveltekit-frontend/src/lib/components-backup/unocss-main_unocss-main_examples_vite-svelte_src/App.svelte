@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
     import { fade, fly } from 'svelte/transition'
     import Footer from './Footer.svelte'
     let logo = false
@@ -10,7 +11,7 @@
     function toggleSpan() {
         red = !red
     }
-    $: button = logo ? 'Hide logo' : 'Show logo'
+    // TODO: Convert to $derived: button = logo ? 'Hide logo' : 'Show logo'
     $: span = red ? 'Normal' : 'Red'
     $: console.log(x)
 </script>
@@ -45,7 +46,7 @@
 <style>
   :root {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
   }
 
   main {

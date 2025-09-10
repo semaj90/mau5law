@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
@@ -103,9 +104,8 @@ let popularSearches = $state([
       url.searchParams.set("q", searchQuery);
       if (selectedType) url.searchParams.set("type", selectedType);
       if (selectedCaseId) url.searchParams.set("caseId", selectedCaseId);
-      url.searchParams.set("threshold", threshold.toString());
-      url.searchParams.set("limit", limit.toString());
-
+      url.searchParams.set("threshold", threshold.toString();
+      url.searchParams.set("limit", limit.toString();
       window.history.replaceState({}, "", url);
 
       // Perform search

@@ -1,0 +1,405 @@
+#!/usr/bin/env node
+/** Enhanced Route Map Export Script */
+import fs from 'fs';
+import path from 'path';
+
+const cwd = process.cwd();
+const guessedFrontend = path.basename(cwd) === 'sveltekit-frontend' ? cwd : path.join(cwd, 'sveltekit-frontend');
+const frontendDir = fs.existsSync(path.join(guessedFrontend, 'src')) ? guessedFrontend : path.join(cwd, 'sveltekit-frontend');
+const root = path.basename(frontendDir) === 'sveltekit-frontend' ? path.dirname(frontendDir) : cwd;
+const routesConfigPath = path.join(frontendDir, 'src', 'lib', 'data', 'routes-config.ts');
+const multiProtoConfigPath = path.join(frontendDir, 'src', 'lib', 'config', 'multi-protocol-routes.ts');
+const routesDir = path.join(frontendDir, 'src', 'routes');
+const outputPath = path.join(root, 'ROUTE_MAP_EXPORT.txt');
+const jsonOutputPath = path.join(root, 'ROUTE_MAP_EXPORT.json');
+const extended = process.argv.includes('--extended');
+const scaffoldMissing = process.argv.includes('--scaffold-missing');
+
+// Show help if requested
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Route Map Export Script
+
+USAGE:
+  node scripts/export-routes-map.mjs [OPTIONS]
+
+OPTIONS:
+  --extended           Include extended metadata in JSON output
+  --scaffold-missing   Create stub +page.svelte files for config routes without pages
+  --help, -h          Show this help message
+
+OUTPUTS:
+  ROUTE_MAP_EXPORT.txt    Human-readable route inventory
+  ROUTE_MAP_EXPORT.json   Machine-readable route data
+
+EXAMPLES:
+  node scripts/export-routes-map.mjs                    # Basic export
+  node scripts/export-routes-map.mjs --extended         # With metadata
+  node scripts/export-routes-map.mjs --scaffold-missing # Create stubs + export
+`);
+  process.exit(0);
+}
+
+function safeRead(file) { try { return fs.readFileSync(file,'utf8'); } catch { return ''; } }
+const routesConfigContent = safeRead(routesConfigPath);
+const multiProtoContent = safeRead(multiProtoConfigPath);
+
+const configRouteRegex = /{\s*id:\s*'([^']+)'[\s\S]*?label:\s*'([^']+)'[\s\S]*?route:\s*'([^']+)'[\s\S]*?category:\s*'([^']+)'[\s\S]*?status:\s*'([^']+)'[\s\S]*?tags:\s*\[([^\]]*)\]/g;
+let configMatch; const configRoutes = [];
+while ((configMatch = configRouteRegex.exec(routesConfigContent))) {
+  const [, id, label, route, category, status, rawTags] = configMatch;
+  const tags = rawTags.split(',').map(t => t.trim().replace(/['"`]/g,'')).filter(Boolean);
+  configRoutes.push({ id, label, route, category, status, tags });
+}
+
+function collectPageFiles(startDir) {
+  const files = []; const stack = [startDir];
+  while (stack.length) {
+    const current = stack.pop();
+    let entries = [];
+    try { entries = fs.readdirSync(current, { withFileTypes: true }); } catch { continue; }
+    for (const ent of entries) {
+      const full = path.join(current, ent.name);
+      if (ent.isDirectory()) {
+        if (ent.name === 'node_modules' || ent.name.startsWith('.') || ent.name === '__tests__') continue;
+        stack.push(full); continue;
+      }
+      if (/\+page\.(svelte|ts)$/.test(ent.name)) files.push(full);
+    }
+  }
+  return files;
+}
+
+function normalizeRouteFromFile(file) {
+  let rel = path.relative(routesDir, file).replace(/\\/g,'/');
+
+  // Handle the root +page.svelte case first
+  if (rel === '+page.svelte' || rel === '+page.ts') return '/';
+
+  // Remove the +page.svelte or +page.ts suffix
+  rel = rel.replace(/\/\+page\.(svelte|ts)$/,'');
+
+  // If we're left with empty string, it means we're at root
+  if (rel === '' || rel === '+page') return '/';
+
+  // Add leading slash if needed
+  if (!rel.startsWith('/')) rel = '/' + rel;
+
+  // Handle SvelteKit route conventions
+  rel = rel.replace(/\[\[(.*?)\]\]/g, (_m, inner) => `:${inner}?`); // optional parameters
+  rel = rel.replace(/\[(\.\.\.)?([^\]]+)\]/g, (_m, _dots, name) => `:${name}`); // dynamic parameters
+
+  return rel.replace(/\/+/g,'/');
+};
+import path from 'path';
+
+const cwd = process.cwd();
+const guessedFrontend = path.basename(cwd) === 'sveltekit-frontend' ? cwd : path.join(cwd, 'sveltekit-frontend');
+const frontendDir = fs.existsSync(path.join(guessedFrontend, 'src')) ? guessedFrontend : path.join(cwd, 'sveltekit-frontend');
+const root = path.basename(frontendDir) === 'sveltekit-frontend' ? path.dirname(frontendDir) : cwd;
+const routesConfigPath = path.join(frontendDir, 'src', 'lib', 'data', 'routes-config.ts');
+const multiProtoConfigPath = path.join(frontendDir, 'src', 'lib', 'config', 'multi-protocol-routes.ts');
+const routesDir = path.join(frontendDir, 'src', 'routes');
+const outputPath = path.join(root, 'ROUTE_MAP_EXPORT.txt');
+const jsonOutputPath = path.join(root, 'ROUTE_MAP_EXPORT.json');
+const extended = process.argv.includes('--extended');
+const scaffoldMissing = process.argv.includes('--scaffold-missing');
+
+// Show help if requested
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Route Map Export Script
+
+USAGE:
+  node scripts/export-routes-map.mjs [OPTIONS]
+
+OPTIONS:
+  --extended           Include extended metadata in JSON output
+  --scaffold-missing   Create stub +page.svelte files for config routes without pages
+  --help, -h          Show this help message
+
+OUTPUTS:
+  ROUTE_MAP_EXPORT.txt    Human-readable route inventory
+  ROUTE_MAP_EXPORT.json   Machine-readable route data
+
+EXAMPLES:
+  node scripts/export-routes-map.mjs                    # Basic export
+  node scripts/export-routes-map.mjs --extended         # With metadata
+  node scripts/export-routes-map.mjs --scaffold-missing # Create stubs + export
+`);
+  process.exit(0);
+}
+
+function safeRead(file) { try { return fs.readFileSync(file,'utf8'); } catch { return ''; } }
+const routesConfigContent = safeRead(routesConfigPath);
+const multiProtoContent = safeRead(multiProtoConfigPath);
+
+const configRouteRegex = /{\s*id:\s*'([^']+)'[\s\S]*?label:\s*'([^']+)'[\s\S]*?route:\s*'([^']+)'[\s\S]*?category:\s*'([^']+)'[\s\S]*?status:\s*'([^']+)'[\s\S]*?tags:\s*\[([^\]]*)\]/g;
+let configMatch; const configRoutes = [];
+while ((configMatch = configRouteRegex.exec(routesConfigContent))) {
+  const [, id, label, route, category, status, rawTags] = configMatch;
+  const tags = rawTags.split(',').map(t => t.trim().replace(/['"`]/g,'')).filter(Boolean);
+  configRoutes.push({ id, label, route, category, status, tags });
+}
+
+function collectPageFiles(startDir) {
+  const files = []; const stack = [startDir];
+  while (stack.length) {
+    const current = stack.pop();
+    let entries = [];
+    try { entries = fs.readdirSync(current, { withFileTypes: true }); } catch { continue; }
+    for (const ent of entries) {
+      const full = path.join(current, ent.name);
+      if (ent.isDirectory()) {
+        if (ent.name === 'node_modules' || ent.name.startsWith('.') || ent.name === '__tests__') continue;
+        stack.push(full); continue;
+      }
+      if (/\+page\.(svelte|ts)$/.test(ent.name)) files.push(full);
+    }
+  }
+  return files;
+}
+
+function normalizeRouteFromFile(file) {
+  let rel = path.relative(routesDir, file).replace(/\\/g,'/');
+  rel = rel.replace(/\/\+page\.(svelte|ts)$/,'')
+  if (rel === '' || rel === '+page') return '/';
+  if (!rel.startsWith('/')) rel = '/' + rel;
+  rel = rel.replace(/\[\[(.*?)\]\]/g, (_m, inner) => `:${inner}?`); // optional
+  rel = rel.replace(/\[(\.\.\.)?([^\]]+)\]/g, (_m, _dots, name) => `:${name}`); // dynamic
+  return rel.replace(/\/+/g,'/');
+}
+
+function extractTitle(file) {
+  try {
+    const text = fs.readFileSync(file,'utf8');
+    let m = text.match(/export const metadata[^;]*title:\s*['"`]([^'"`]+)['"`]/);
+    if (m) return m[1].trim();
+    m = text.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+    if (m) return m[1].trim();
+  } catch {}
+  return null;
+}
+
+async function scaffoldMissingPage(routePath, configRoutes) {
+  // Find config entry for this route
+  const config = configRoutes.find(r => r.route === routePath);
+  if (!config) return null;
+
+  // Convert route path to file path
+  let filePath = routePath === '/' ? '' : routePath;
+  if (filePath.startsWith('/')) filePath = filePath.slice(1);
+
+  // Handle dynamic segments - convert :param to [param]
+  filePath = filePath.replace(/:([^/]+)/g, '[$1]');
+
+  const pageDir = path.join(routesDir, filePath);
+  const pageFile = path.join(pageDir, '+page.svelte');
+
+  // Skip if file already exists
+  if (fs.existsSync(pageFile)) return null;
+
+  // Ensure directory exists
+  fs.mkdirSync(pageDir, { recursive: true });
+
+  // Generate page content
+  const pageContent = generatePageTemplate(config);
+
+  // Write the file
+  fs.writeFileSync(pageFile, pageContent, 'utf8');
+
+  return path.relative(frontendDir, pageFile).replace(/\\/g, '/');
+}
+
+function generatePageTemplate(config) {
+  const title = config.label || 'Page';
+  const description = `${config.category} page - ${config.label}`;
+
+  return `<script lang="ts">
+  // Generated stub for ${config.id} (${config.route})
+</script>
+
+<svelte:head>
+  <title>${title} - Legal AI Platform</title>
+  <meta name="description" content="${description}" />
+</svelte:head>
+
+<div class="page-container">
+  <header class="page-header">
+    <h1>${title}</h1>
+    <p>${description}</p>
+  </header>
+
+  <main class="page-content">
+    <div class="stub-notice">
+      <h2>🚧 Page Under Construction</h2>
+      <p>This page is a generated stub for route: <code>${config.route}</code></p>
+      <p>Category: <strong>${config.category}</strong> | Status: <strong>${config.status}</strong></p>
+      ${config.tags.length ? `<p>Tags: ${config.tags.map(t => `<span class="tag">${t}</span>`).join(' ')}</p>` : ''}
+    </div>
+  </main>
+</div>
+
+<style>
+  .page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header p {
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .page-content {
+    display: flex;
+    justify-content: center;
+  }
+
+  .stub-notice {
+    background: #f3f4f6;
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    max-width: 600px;
+  }
+
+  .stub-notice h2 {
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+
+  .stub-notice code {
+    background: #e5e7eb;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .tag {
+    background: #dbeafe;
+    color: #1d4ed8;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    margin: 0 0.25rem;
+  }
+</style>
+`;
+}
+
+const pageFiles = collectPageFiles(routesDir);
+const pageRouteRecords = pageFiles.map(f => ({ file: path.relative(frontendDir, f).replace(/\\/g,'/'), route: normalizeRouteFromFile(f), title: extractTitle(f) }));
+const dedup = new Map();
+for (const rec of pageRouteRecords) if (!dedup.has(rec.route)) dedup.set(rec.route, rec);
+const fileRoutes = [...dedup.values()].sort((a,b)=> a.route.localeCompare(b.route));
+
+const apiEndpointRegex = /endpoint:\s*'([^']+)'/g; let apiMatch; const apiEndpoints = new Set();
+while ((apiMatch = apiEndpointRegex.exec(multiProtoContent))) apiEndpoints.add(apiMatch[1]);
+['/api/health','/api/services','/api/routes'].forEach(e => apiEndpoints.add(e));
+
+const configRouteSet = new Set(configRoutes.map(r => r.route));
+const fileRouteSet = new Set(fileRoutes.map(r => r.route));
+const configNotInFiles = [...configRouteSet].filter(r => !fileRouteSet.has(r));
+const filesNotInConfig = [...fileRouteSet].filter(r => !configRouteSet.has(r));
+
+// Scaffold missing pages if requested
+if (scaffoldMissing && configNotInFiles.length > 0) {
+  console.log(`🔧 Scaffolding ${configNotInFiles.length} missing page(s)...`);
+  for (const routePath of configNotInFiles) {
+    try {
+      const scaffolded = await scaffoldMissingPage(routePath, configRoutes);
+      if (scaffolded) {
+        console.log(`✅ Created: ${scaffolded}`);
+      }
+    } catch (error) {
+      console.error(`❌ Failed to scaffold ${routePath}:`, error.message);
+    }
+  }
+}
+// Aliases for clearer JSON naming
+const configMissingFiles = configNotInFiles;
+const filesMissingConfig = filesNotInConfig;
+
+let out = '';
+out += 'ROUTE MAP EXPORT\n';
+out += 'Generated: ' + new Date().toISOString() + '\n';
+out += '========================================\n\n';
+
+out += 'SECTION 1: CONFIG ROUTES ('+configRoutes.length+')\n';
+for (const r of configRoutes.sort((a,b)=>a.route.localeCompare(b.route))) {
+  out += `- ${r.route}  [id=${r.id}]  label="${r.label}"  category=${r.category}  status=${r.status}  tags=${r.tags.join('|')}` + '\n';
+}
+out += '\n';
+
+out += 'SECTION 2: FILE-BASED PAGE ROUTES ('+fileRoutes.length+')\n';
+if (!fileRoutes.length) {
+  out += '(none discovered – verify script path or glob)\n';
+} else {
+  for (const fr of fileRoutes) {
+    const dynamic = fr.route.includes(':');
+    out += `- ${fr.route}${dynamic ? '  (dynamic)' : ''}` + (fr.title ? `  "${fr.title}"` : '') + '\n';
+  }
+}
+out += '\n';
+
+out += 'SECTION 3: API ENDPOINTS ('+apiEndpoints.size+')\n';
+for (const ep of [...apiEndpoints].sort()) out += `- ${ep}` + '\n';
+out += '\n';
+
+out += 'SECTION 4: DIFFERENCES\n';
+out += 'Config routes missing a file-based page ('+configMissingFiles.length+'):\n';
+configMissingFiles.forEach(r => { out += `  - ${r}\n`; });
+out += 'File-based routes not in config ('+filesMissingConfig.length+'):\n';
+filesMissingConfig.forEach(r => { out += `  - ${r}\n`; });
+out += '\n';
+
+out += 'NOTES:\n';
+out += '- Dynamic routes show parameters as :param (?: indicates optional)\n';
+out += '- Mismatches can indicate missing config entries or deprecated pages.\n';
+out += '- Titles extracted heuristically from metadata or first <h1>.\n';
+
+fs.writeFileSync(outputPath, out, 'utf8');
+
+const jsonData = {
+  generated: new Date().toISOString(),
+  counts: {
+    config: configRoutes.length,
+    fileBased: fileRoutes.length,
+    api: apiEndpoints.size,
+    configMissingFiles: configMissingFiles.length,
+    filesMissingConfig: filesMissingConfig.length
+  },
+  configRoutes,
+  fileRoutes,
+  apiEndpoints: [...apiEndpoints].sort(),
+  configMissingFiles,
+  filesMissingConfig,
+  extended: extended || undefined
+};
+fs.writeFileSync(jsonOutputPath, JSON.stringify(jsonData,null,2),'utf8');
+
+console.log('✅ ROUTE MAP exported to', outputPath);
+console.log('✅ ROUTE MAP JSON exported to', jsonOutputPath);
+
+if (scaffoldMissing) {
+  if (configNotInFiles.length === 0) {
+    console.log('ℹ️ No missing pages to scaffold');
+  } else {
+    console.log(`🔧 Scaffold mode: Created ${configNotInFiles.length} stub page(s)`);
+    console.log('💡 Tip: Re-run without --scaffold-missing to see updated inventory');
+  }
+}

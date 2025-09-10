@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import GoldenRatioGrid from '$lib/components/ui/layout/GoldenRatioGrid.svelte';
   import {
     Button
@@ -316,7 +317,7 @@
 <style>
   /* Component-specific golden ratio styles */
   .border-phi {
-    border-width: calc(1px * var(--golden-ratio));
+    border-width: calc(1px * var(--golden-ratio);
   }
 
   .rounded-phi-sm {

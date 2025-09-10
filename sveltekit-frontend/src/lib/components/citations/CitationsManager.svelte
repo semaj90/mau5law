@@ -1,5 +1,6 @@
 <!-- Citations Manager - Legal Citation System with AI-powered search -->
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import {
     Card,
@@ -69,7 +70,7 @@
 
 	async function loadCitations() {
 		isLoading = true;
-		console.log('📚 Loading citations for case:', caseId);
+		console.log('📚 Loading citations for caseItem:', caseId);
 
 		try {
 			// Load sample citations data

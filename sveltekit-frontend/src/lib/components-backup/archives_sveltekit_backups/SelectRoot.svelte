@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createSelect, melt } from '@melt-ui/svelte';
   import { setContext } from 'svelte';
   

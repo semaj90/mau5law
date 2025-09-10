@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Portal, BitsConfig } from "bits-ui";
 
 	let target: HTMLElement | undefined = $state();

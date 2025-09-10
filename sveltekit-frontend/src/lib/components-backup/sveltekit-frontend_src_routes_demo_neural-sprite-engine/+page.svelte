@@ -1,5 +1,6 @@
 <!-- NES-Inspired Neural Sprite Engine Demo -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { fabric } from 'fabric';
@@ -436,8 +437,8 @@
 
   // Reactive statements
   // keep selectedScenario and predictionList simple and compatible with existing code
-  $: selectedScenario = demoScenarios.find(s => s.id === selectedDemo);
-  $: predictionList = $predictedNextStates;
+  // TODO: Convert to $derived: selectedScenario = demoScenarios.find(s => s.id === selectedDemo)
+  // TODO: Convert to $derived: predictionList = $predictedNextStates
 
   // Run a nearest-neighbor query using interactionManager and highlight results
   async function runNNQuery() {

@@ -3,6 +3,7 @@
   Displays security events, system health, and security metrics
 -->
 <script lang="ts">
+</script>
   import { Button } from "$lib/components/ui/button";
   import { notifications } from "$lib/stores/notification";
   import { getSecurityEvents, type SecurityEvent } from "$lib/utils/security";
@@ -39,17 +40,17 @@
   let loading = false;
 
   // Security metrics
-  $: criticalEvents = securityEvents.filter(
+  // TODO: Convert to $derived: criticalEvents = securityEvents.filter(
     (e) => e.severity === "critical"
-  ).length;
-  $: highEvents = securityEvents.filter((e) => e.severity === "high").length;
-  $: recentEvents = securityEvents.filter(
+  ).length
+  // TODO: Convert to $derived: highEvents = securityEvents.filter((e) => e.severity === "high").length
+  // TODO: Convert to $derived: recentEvents = securityEvents.filter(
     (e) => Date.now() - e.timestamp < 24 * 60 * 60 * 1000
-  ).length;
-  $: loginAttempts = securityEvents.filter((e) => e.type === "login").length;
-  $: accessDeniedEvents = securityEvents.filter(
+  ).length
+  // TODO: Convert to $derived: loginAttempts = securityEvents.filter((e) => e.type === "login").length
+  // TODO: Convert to $derived: accessDeniedEvents = securityEvents.filter(
     (e) => e.type === "access_denied"
-  ).length;
+  ).length
 
   // System status
   const systemHealth = writable({
@@ -227,8 +228,8 @@
   }
 
   // Reactive statements
-  $: if (selectedSeverity || selectedType) {
-    filterEvents();
+  // TODO: Convert to $derived: if (selectedSeverity || selectedType) {
+    filterEvents()
   }
 </script>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { Button } from 'bits-ui';
   import { Badge } from 'bits-ui';
@@ -210,9 +211,9 @@
 
             </div>
 
-          </Card.Content>
-        </Card.Root>
-      </Card.Root>
+          </CardContent>
+        </Card>
+      </Card>
     </section>
 
     <!-- Interactive 3D Components -->
@@ -307,8 +308,8 @@
             </div>
           </div>
 
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </section>
 
     <!-- 3D Game Interface -->
@@ -447,8 +448,8 @@
             </Dialog.Root>
           </div>
 
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </section>
 
   </main>
@@ -717,7 +718,7 @@
 
   .spec-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 1rem;
   }
 
@@ -853,7 +854,7 @@
   }
 
   .slider-range {
-    background: linear-gradient(90deg, var(--n64-blue), var(--n64-purple));
+    background: linear-gradient(90deg, var(--n64-blue), var(--n64-purple);
     height: 100%;
     border-radius: 2px;
   }
@@ -1446,7 +1447,7 @@
 
   .bar-face {
     position: absolute;
-    background: linear-gradient(135deg, var(--n64-blue), var(--n64-purple));
+    background: linear-gradient(135deg, var(--n64-blue), var(--n64-purple);
   }
 
   .bar-front {

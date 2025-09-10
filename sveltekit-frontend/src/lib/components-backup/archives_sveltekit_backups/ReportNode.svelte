@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from "svelte";
   import type { Report } from "../../../lib/data/types";
 // UI Components

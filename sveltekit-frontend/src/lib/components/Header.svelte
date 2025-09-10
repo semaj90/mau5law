@@ -1,9 +1,11 @@
 <script context="module" lang="ts">
+</script>
   // Keep module import for Svelte runes; ambient types are provided globally.
   export {};
 </script>
 
 <script lang="ts">
+</script>
 
   interface Props {
     user: User | null ;

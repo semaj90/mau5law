@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { get, type Unsubscriber } from 'svelte/store';
   import { goto } from '$app/navigation';
@@ -95,7 +96,7 @@ let visibleNavItems = $state<{ path: string; label: string; icon: string; permis
 let currentPath = $state('');
 
   function isActivePath(itemPath: string) {
-    return currentPath === itemPath || (itemPath !== '/admin' && currentPath.startsWith(itemPath + '/'));
+    return currentPath === itemPath || (itemPath !== '/admin' && currentPath.startsWith(itemPath + '/');
   }
 
   function navClass(item: { path: string; label: string; icon: string; permission: Permission }) {

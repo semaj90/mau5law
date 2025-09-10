@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { Search, File, Briefcase, User, Settings, Command } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -14,12 +15,12 @@
   let searchQuery = '';
   let selectedIndex = 0;
   
-  $: filteredItems = searchQuery 
+  // TODO: Convert to $derived: filteredItems = searchQuery 
     ? allItems.filter(item => 
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : allItems;
+    : allItems
   
   const allItems = [
     // Navigation
@@ -96,8 +97,8 @@
     }
   });
   
-  $: if (open && searchInput) {
-    searchInput.focus();
+  // TODO: Convert to $derived: if (open && searchInput) {
+    searchInput.focus()
   }
   
   function handleKeydown(e: KeyboardEvent) {
@@ -142,8 +143,8 @@
     dispatch('close');
   }
   
-  $: if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) {
-    selectedIndex = 0;
+  // TODO: Convert to $derived: if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) {
+    selectedIndex = 0
   }
 </script>
 
@@ -162,7 +163,7 @@
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
       <div 
         class="bg-nier-surface border border-nier-gray rounded-lg shadow-2xl nier-border-glow"
-        onclick|stopPropagation
+        onclick
         role="dialog"
         tabindex="0"
       >

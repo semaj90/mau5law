@@ -1,4 +1,5 @@
 <script>
+</script>
   export let id;
   export let ariaLabel = 'N64 panel';
   export let title = '';

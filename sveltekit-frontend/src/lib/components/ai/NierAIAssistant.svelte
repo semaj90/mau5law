@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     user?: unknown;
     isDarkMode?: boolean;

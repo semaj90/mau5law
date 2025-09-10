@@ -133,7 +133,7 @@ async function processChatEmbeddings() {
             // Update database with embedding
             await sql`
               UPDATE chat_messages 
-              SET embedding = ${JSON.stringify(embedding)}::vector
+              SET embedding = ${sql`${JSON.stringify(embedding)}::vector`}
               WHERE id = ${message.id}
             `;
             

@@ -1,4 +1,5 @@
 <script lang="ts" module>
+</script>
 	export {
 		a,
 		blockquote,
@@ -23,6 +24,7 @@
 </script>
 
 <script lang="ts">
+</script>
 	let { title, description }: { title: string; description: string } = $props();
 </script>
 

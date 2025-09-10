@@ -11,6 +11,7 @@
   - Integration with YoRHa design system
 -->
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount, tick } from 'svelte';
   import { browser } from '$app/environment';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';

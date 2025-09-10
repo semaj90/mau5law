@@ -10,6 +10,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { WebGPULegalDocumentGraph } from '$lib/webgpu/legal-document-graph';
@@ -579,7 +580,7 @@ let touchStart = $state({ x: 0, y: 0 });
   // ============================================================================
 
   // Update graph engine when render state changes
-  $: if (graphEngine && $canInteract) {
+  // TODO: Convert to $derived: if (graphEngine && $canInteract) {
     // Apply render state changes to engine
     // This would need implementation in the engine
   }
@@ -589,7 +590,7 @@ let touchStart = $state({ x: 0, y: 0 });
 <!-- COMPONENT TEMPLATE -->
 <!-- ============================================================================ -->
 
-<div class="legal-graph-viewer {className}" style="width: {width}px; height: {height}px;">
+<div class="legal-graph-viewer {className}" style="width: {width}px height: {height}px;">
   <!-- Loading State -->
   {#if $isLoading}
     <div class="loading-overlay">

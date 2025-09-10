@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { Component } from "svelte";
 	import { Command } from "bits-ui";
 	import {

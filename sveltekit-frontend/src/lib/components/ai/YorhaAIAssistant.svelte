@@ -1,6 +1,7 @@
 <!-- YorhaAI Assistant - Advanced Chat Interface with SvelteKit 5 + Bits UI + Melt UI -->
 <!-- Integrates with go-llama, MCP orchestrator, and tensor transport services -->
 <script lang="ts">
+</script>
   import { onMount, tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import { createDialog } from 'melt';

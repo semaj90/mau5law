@@ -4,6 +4,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
 -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   

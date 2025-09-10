@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { User } from '$lib/types';
   import { onMount, createEventDispatcher } from 'svelte';
   import { Search, File, Briefcase, User as UserIcon, Settings, Command } from "lucide-svelte";
@@ -109,8 +110,8 @@ let selectedIndex = $state(0);
 }
   });
   
-  $: if (open && searchInput) {
-    searchInput.focus();
+  // TODO: Convert to $derived: if (open && searchInput) {
+    searchInput.focus()
 }
   function handleKeydown(e: KeyboardEvent) {
     if (!open) return;
@@ -150,8 +151,8 @@ let selectedIndex = $state(0);
     open = false;
     dispatch('close');
 }
-  $: if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) {
-    selectedIndex = 0;
+  // TODO: Convert to $derived: if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) {
+    selectedIndex = 0
 }
 </script>
 
@@ -170,7 +171,7 @@ let selectedIndex = $state(0);
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
       <div 
         class="bg-nier-surface border border-nier-gray rounded-lg shadow-2xl nier-border-glow"
-        onclick|stopPropagation
+        onclick
         role="dialog"
         tabindex="0"
       >

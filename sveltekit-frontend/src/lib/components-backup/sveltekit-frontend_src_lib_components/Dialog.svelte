@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { aiStore } from "$lib/stores/canvas";
 	import { onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';
@@ -635,5 +636,6 @@
 
 
 <script lang="ts" context="module">
+</script>
   export { default as Dialog } from "./Dialog.svelte";
 </script>

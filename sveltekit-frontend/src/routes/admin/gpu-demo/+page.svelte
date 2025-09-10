@@ -2,6 +2,7 @@
 <!-- Real-time GPU-accelerated legal AI visualizations -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     Button
@@ -87,10 +88,9 @@ let gpuMetricsSub = $state<{ unsubscribe?: () => void } | null>(null);
 let shaderMetricsSub = $state<{ unsubscribe?: () => void } | null>(null);
 
   // Demo data
-let attentionData = $state<Float32Array >(new Float32Array(0));
-let documentData = $state<Float32Array >(new Float32Array(0));
-let timelineData = $state<Float32Array >(new Float32Array(0));
-
+let attentionData = $state<Float32Array >(new Float32Array(0);
+let documentData = $state<Float32Array >(new Float32Array(0);
+let timelineData = $state<Float32Array >(new Float32Array(0);
   onMount(async () => {
     // Create GPU manager then init (shader cache created after GL context is ready)
     gpuManager = createGPUClusterManager();

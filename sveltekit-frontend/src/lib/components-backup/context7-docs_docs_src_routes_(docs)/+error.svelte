@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { page } from "$app/state";
 	import { buttonVariants } from "$lib/styles/buttonVariants.js";
 

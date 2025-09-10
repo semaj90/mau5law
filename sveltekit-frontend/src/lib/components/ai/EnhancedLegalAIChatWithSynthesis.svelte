@@ -3,6 +3,7 @@ Enhanced Legal AI Chat with Input Synthesis and LegalBERT Integration
 Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipeline, and streaming
 -->
 <script lang="ts">
+</script>
   import type { SystemStatus } from "$lib/types/global";
   import type { Props } from "$lib/types/global";
   import { onMount, tick } from 'svelte';
@@ -461,7 +462,7 @@ How can I assist with your legal work today?`);
     const startTime = Date.now();
     
     const enhancedPrompt = `You are an advanced legal AI assistant specialized in ${userRole} work. 
-${caseId ? `Working on case: ${caseId}` : ''}
+${caseId ? `Working on caseItem: ${caseId}` : ''}
 ${context.documentIds?.length ? `Referenced documents: ${context.documentIds.length}` : ''}
 
 User query: "${query}"
@@ -674,7 +675,7 @@ Response:`;
     
     // Enhanced legal prompt for better responses
     const enhancedPrompt = `You are an advanced legal AI assistant specialized in ${userRole} work. 
-${caseId ? `Working on case: ${caseId}` : ''}
+${caseId ? `Working on caseItem: ${caseId}` : ''}
 ${context.documentIds?.length ? `Referenced documents: ${context.documentIds.length}` : ''}
 
 User query: "${query}"

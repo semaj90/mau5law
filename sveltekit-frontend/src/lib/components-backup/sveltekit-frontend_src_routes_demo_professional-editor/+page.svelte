@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import ProfessionalEditor from '$lib/components/editor/ProfessionalEditor.svelte';
   import { FileText, Zap, Keyboard, Eye, Save, BarChart3 } from 'lucide-svelte';
 

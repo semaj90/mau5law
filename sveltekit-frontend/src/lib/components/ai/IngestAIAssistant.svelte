@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   /**
    * Enhanced AI-Powered Document Ingest Assistant
    * Integrates with your existing AI agent store and production architecture

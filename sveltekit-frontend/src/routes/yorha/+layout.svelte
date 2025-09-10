@@ -1,5 +1,6 @@
 <!-- YoRHa Interface Layout -->
 <script lang="ts">
+</script>
   let { children } = $props();
   
   import { page } from '$app/stores';
@@ -118,7 +119,7 @@
   }
 
   function isActivePath(path: string): boolean {
-    return currentPath === path || (path !== '/yorha' && currentPath.startsWith(path));
+    return currentPath === path || (path !== '/yorha' && currentPath.startsWith(path);
   }
 </script>
 

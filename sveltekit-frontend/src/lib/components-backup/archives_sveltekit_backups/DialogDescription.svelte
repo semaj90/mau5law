@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   export let description: unknown;
 </script>
 

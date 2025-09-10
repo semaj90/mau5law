@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { legalDB } from '$lib/db/client-db.js';
@@ -150,8 +151,8 @@ let serverFetchTime = $state(0);
   }
   
   // Reactive updates when documentId changes
-  $: if (documentId && isVisible) {
-    loadDocumentDetails(documentId);
+  // TODO: Convert to $derived: if (documentId && isVisible) {
+    loadDocumentDetails(documentId)
   }
   
   // GPU Analysis toggle

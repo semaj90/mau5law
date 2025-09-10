@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { Snippet  } from 'svelte';
   interface GridColumn { key: string; title: string,
     width?: number;

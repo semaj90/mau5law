@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import type { ShaderSearchResult, ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
@@ -84,7 +85,7 @@
       const operationSet = new Set<string>();
       
       data.shaders.forEach((shader: any) => {
-        shader.metadata.tags?.forEach((tag: string) => tagSet.add(tag));
+        shader.metadata.tags?.forEach((tag: string) => tagSet.add(tag);
         if (shader.metadata.operation) operationSet.add(shader.metadata.operation);
       });
       
@@ -491,7 +492,7 @@
 
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
   }
@@ -722,7 +723,7 @@
 
   .results-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr);
     gap: 1.5rem;
   }
 
@@ -785,7 +786,7 @@
 
   .shader-meta {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr);
     gap: 0.5rem;
     margin-bottom: 1rem;
     font-size: 0.9rem;
@@ -892,7 +893,7 @@
 
   .detail-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 1rem;
   }
 

@@ -1,11 +1,12 @@
 <script>
+</script>
   import { setContext } from 'svelte';
 
   // supported themes: "light" or "dark"
   export let theme = 'light';
 
   // expose theme to descendants via context
-  $: setContext('theme', theme);
+  // TODO: Convert to $derived: setContext('theme', theme)
 </script>
 
 <style>

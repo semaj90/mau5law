@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { createActor } from 'xstate';
   import { evidenceProcessingMachine, type EvidenceProcessingContext } from '$lib/state/evidenceProcessingMachine';

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Simple CardDescription component (shadcn-like) - Svelte 5
   interface Props {
     className?: string;

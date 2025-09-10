@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { goto } from '$app/navigation';
 
   // Use standard Svelte reactive variables instead of a nonexistent $state helper

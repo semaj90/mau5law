@@ -1,5 +1,6 @@
 <!-- Cache System Demo Page -->
 <script lang="ts">
+</script>
   import CacheDemo from '$lib/components/cache/CacheDemo.svelte';
 </script>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // runtime helper $props() is provided by the runes compiler; do not import it.
 
   import { cn } from "$lib/utils";

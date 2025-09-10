@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from "svelte";
   import { X } from "lucide-svelte";
 
@@ -43,7 +44,7 @@
         <button
           class="drawer-close"
           aria-label="Close drawer"
-          onclick|stopPropagation={handleClose}
+          onclick={handleClose}
         >
           <X size="24" />
         </button>

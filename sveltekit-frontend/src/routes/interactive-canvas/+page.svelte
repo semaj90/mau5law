@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     data: PageData;
   }
@@ -79,7 +80,7 @@ let completedUploads = $state<{ [key: string]: { name: string; hash: string; id:
 		event.preventDefault();
 		const files = event.dataTransfer?.files;
 		if (files && files.length > 0) {
-			await processFileUploads(Array.from(files));
+			await processFileUploads(Array.from(files);
 }}
 	function handleDragOver(event: DragEvent) {
 		event.preventDefault();
@@ -132,12 +133,11 @@ let completedUploads = $state<{ [key: string]: { name: string; hash: string; id:
 	async function calculateFileHash(file: File, onProgress?: (progress: number) => void): Promise<string> {
 		const chunkSize = 1024 * 1024; // 1MB chunks
 		const chunks = Math.ceil(file.size / chunkSize);
-		const hash = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
-
+		const hash = await crypto.subtle.digest('SHA-256', await file.arrayBuffer();
 		// Simulate progress for demo (real implementation would process chunks)
 		if (onProgress) {
 			for (let i = 0; i <= 100; i += 10) {
-				await new Promise(resolve => setTimeout(resolve, 10));
+				await new Promise(resolve => setTimeout(resolve, 10);
 				onProgress(i / 100);
 }}
 		return Array.from(new Uint8Array(hash))
@@ -154,7 +154,7 @@ let completedUploads = $state<{ [key: string]: { name: string; hash: string; id:
 		// Simulate upload progress
 		if (onProgress) {
 			for (let i = 0; i <= 100; i += 5) {
-				await new Promise(resolve => setTimeout(resolve, 50));
+				await new Promise(resolve => setTimeout(resolve, 50);
 				onProgress(i / 100);
 }}
 		const response = await fetch('/api/evidence/upload', {

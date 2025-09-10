@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import N64ToastStore from './N64ToastStore';
   import type { N64Toast } from './N64ToastStore';

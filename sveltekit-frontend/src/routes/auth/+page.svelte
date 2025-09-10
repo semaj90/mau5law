@@ -3,6 +3,7 @@
   Combines login and register into seamless experience
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { fade, slide } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
@@ -58,8 +59,8 @@ let formData = $state({
         form.append('department', formData.department);
         form.append('jurisdiction', formData.jurisdiction);
         form.append('badgeNumber', formData.badgeNumber);
-        form.append('agreeToTerms', formData.agreeToTerms.toString());
-        form.append('agreeToPrivacy', formData.agreeToPrivacy.toString());
+        form.append('agreeToTerms', formData.agreeToTerms.toString();
+        form.append('agreeToPrivacy', formData.agreeToPrivacy.toString();
       }
 
       const endpoint = authMode === 'login' ? '/auth/login' : '/auth/register';
@@ -90,14 +91,7 @@ let formData = $state({
 let isFormValid = $state(false);
 
   // Use a reactive statement to compute form validity instead of $derived
-  $: isFormValid = (authMode === 'login')
-    ? Boolean(formData.email && formData.password)
-    : Boolean(
-        formData.email && formData.password && formData.confirmPassword &&
-        formData.firstName && formData.lastName && formData.department &&
-        formData.jurisdiction && formData.agreeToTerms && formData.agreeToPrivacy &&
-        formData.password === formData.confirmPassword
-      );
+  let isFormValid = $derived((authMode);
 </script>
 
 <svelte:head>

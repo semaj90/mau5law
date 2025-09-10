@@ -1,5 +1,6 @@
 <!-- AI Status Indicator Component -->
 <script lang="ts">
+</script>
   export let isReady = false;
   export let isLoading = false;
   export let provider: "local" | "cloud" | "hybrid" | null = null;
@@ -7,42 +8,42 @@
   export let error: string | null = null;
 
   // Status computation
-  $: currentStatus = error
+  // TODO: Convert to $derived: currentStatus = error
     ? "error"
     : isLoading
       ? "loading"
       : isReady
         ? "ready"
-        : "unavailable";
+        : "unavailable"
 
-  $: statusText = {
+  // TODO: Convert to $derived: statusText = {
     ready: "AI Ready",
     loading: "Loading...",
     error: "AI Error",
     unavailable: "AI Unavailable",
-  }[currentStatus];
+  }[currentStatus]
 
-  $: statusColor = {
+  // TODO: Convert to $derived: statusColor = {
     ready: "var(--status-success, #10b981)",
     loading: "var(--status-warning, #f59e0b)",
     error: "var(--status-error, #ef4444)",
     unavailable: "var(--status-muted, #94a3b8)",
-  }[currentStatus];
+  }[currentStatus]
 
   // Provider details
-  $: providerText =
+  // TODO: Convert to $derived: providerText =
     provider === "local"
       ? "Local AI"
       : provider === "cloud"
         ? "Cloud AI"
         : provider === "hybrid"
           ? "Hybrid AI"
-          : "No Provider";
+          : "No Provider"
 
-  $: isErrorState = currentStatus === "error";
-  $: isLoadingState = currentStatus === "loading";
-  $: isReadyState = currentStatus === "ready";
-  $: modelText = model || "No Model";
+  // TODO: Convert to $derived: isErrorState = currentStatus === "error"
+  // TODO: Convert to $derived: isLoadingState = currentStatus === "loading"
+  // TODO: Convert to $derived: isReadyState = currentStatus === "ready"
+  // TODO: Convert to $derived: modelText = model || "No Model"
 </script>
 
 <div

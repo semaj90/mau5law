@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
 	import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
@@ -803,8 +804,8 @@ let dataUrl = $state<string;
 	}
 
 	// Attach drop event to canvas element
-	$: if (canvasElement) {
-		canvasElement.ondragover = (e) => { e.preventDefault(); };
+	// TODO: Convert to $derived: if (canvasElement) {
+		canvasElement.ondragover = (e) => { e.preventDefault() };
 		canvasElement.ondrop = handleDrop;
 	}
 </script>

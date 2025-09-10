@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Button from "$lib/components/ui/Button.svelte";
   import { Dialog as DialogPrimitive } from "bits-ui";
   import {
@@ -30,13 +31,13 @@
   let showCorrections = false;
 
   // Initialize corrections with current AI analysis
-  $: if (evidence && open) {
+  // TODO: Convert to $derived: if (evidence && open) {
     corrections = {
       summary: evidence.aiSummary || "",
       tags: evidence.aiTags || [],
       evidenceType: evidence.evidenceType || "",
       analysis: evidence.aiAnalysis?.analysis || "",
-    };
+    }
   }
 
   function handleValidationChoice(choice: "approve" | "reject") {

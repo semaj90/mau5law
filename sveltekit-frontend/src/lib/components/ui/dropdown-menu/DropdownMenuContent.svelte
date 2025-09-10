@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { melt } from 'melt';
 
   interface Props {

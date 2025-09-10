@@ -4,6 +4,7 @@
   Features: CUDA GPU acceleration, Visual Studio 2022 native performance
 -->
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { writable } from 'svelte/store';
   

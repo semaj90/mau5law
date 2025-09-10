@@ -1,18 +1,16 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-	import { Button } from "$lib/components/ui/enhanced-bits/compound.js";
+  import Button from '$lib/components/ui/enhanced-bits';
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
   import type { OCRResult } from '$lib/services/ocr-processor';
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
 
-  // Outbound component events (parent listeners)
+  // Outbound component events (modern callback props)
   interface DocumentUploadEvents {
     next: { step: 'documents'; data: InternalFormData };
     previous: { step: 'documents' };
     saveDraft: { step: 'documents'; data: InternalFormData };
   }
-  const dispatch = createEventDispatcher<DocumentUploadEvents>();
   // SvelteKit 2 / Svelte 5 helpers (before $props() destructure)
   type ProcessingStatus = 'pending' | 'processing' | 'completed' | 'error';
 
@@ -37,6 +35,9 @@
     maxFiles = 10,
     onUploadComplete,
     onUploadError,
+    onNext,
+    onPrevious,
+    onSaveDraft,
     class: className = '',
     id,
     'data-testid': testId,
@@ -47,6 +48,9 @@
       ocr_results: OCRResult[];
       processing_status: 'pending' | 'processing' | 'completed' | 'error';
     };
+    onNext?: (event: DocumentUploadEvents['next']) => void;
+    onPrevious?: (event: DocumentUploadEvents['previous']) => void;
+    onSaveDraft?: (event: DocumentUploadEvents['saveDraft']) => void;
   } = $props();
 let dragActive = $state(false);
 let fileInput = $state<HTMLInputElement>();
@@ -230,15 +234,15 @@ let processingErrors = writable<Record<string, string>>({});
       return;
     }
 
-  dispatch('next', { step: 'documents', data: formData });
+    onNext?.({ step: 'documents', data: formData });
   }
 
   function handlePrevious() {
-    dispatch('previous', { step: 'documents' });
+    onPrevious?.({ step: 'documents' });
   }
 
   function handleSaveDraft() {
-  dispatch('saveDraft', { step: 'documents', data: formData });
+    onSaveDraft?.({ step: 'documents', data: formData });
   }
 
   function getFileIcon(fileType: string): string {
@@ -340,12 +344,12 @@ let processingErrors = writable<Record<string, string>>({});
                   </div>
                 {/if}
 
-                <Button.Root
-                  on:click={() => removeFile(index)}
+                <Button
+                  onclick={() => removeFile(index)}
                   class="p-1 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
                 >
                   🗑️
-                </Button.Root>
+                </Button>
               </div>
             </div>
 
@@ -426,31 +430,30 @@ let processingErrors = writable<Record<string, string>>({});
 
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 mt-8 border-t border-gray-200">
-    <Button.Root
-      on:click={handlePrevious}
+    <Button
+      onclick={handlePrevious}
       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
     >
       ← Previous
-    </Button.Root>
+    </Button>
 
     <div class="flex space-x-3">
-      <Button.Root
-        on:click={handleSaveDraft}
+      <Button
+        onclick={handleSaveDraft}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
       >
         Save Draft
-      </Button.Root>
+      </Button>
 
-      <Button.Root
-        on:click={handleNext}
+      <Button
+        onclick={handleNext}
         disabled={formData.uploaded_files.length === 0 || formData.processing_status === 'processing'}
         class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"
       >
         Next: Evidence Analysis →
-      </Button.Root>
+      </Button>
     </div>
   </div>
 </div>
 
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 

@@ -3,6 +3,7 @@
   Complete testing of authentication flow with GPU accelerated legal AI features
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import XStateAuthDemo from '$lib/components/auth/XStateAuthDemo.svelte';
@@ -141,7 +142,7 @@
       }
 
       // Small delay between tests for visual effect
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 300);
     }
 
     isRunningTests = false;
@@ -268,8 +269,8 @@
             {/each}
           </div>
         {/if}
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </Card>
 
     <!-- Success Message -->
     {#if allTestsPassed}
@@ -285,8 +286,8 @@
               </p>
             </div>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     {/if}
 
     <!-- Feature Overview -->
@@ -300,8 +301,8 @@
           <p class="text-sm text-muted-foreground">
             Complete state management with auth, session, and AI machines
           </p>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
 
       <Card.Root>
         <Card.Content class="pt-6">
@@ -312,8 +313,8 @@
           <p class="text-sm text-muted-foreground">
             MCP GPU orchestrator for enhanced security analysis
           </p>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
 
       <Card.Root>
         <Card.Content class="pt-6">
@@ -324,8 +325,8 @@
           <p class="text-sm text-muted-foreground">
             Ollama cluster with Context7 documentation enhancement
           </p>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
 
       <Card.Root>
         <Card.Content class="pt-6">
@@ -336,8 +337,8 @@
           <p class="text-sm text-muted-foreground">
             Role-based authentication with legal domain validation
           </p>
-        </Card.Content>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </div>
 
     <!-- Interactive Demo -->
@@ -382,8 +383,8 @@
             working together with XState for predictable state management.
           </p>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </CardContent>
+    </Card>
 
   </div>
 </div>

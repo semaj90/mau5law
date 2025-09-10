@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Slider } from "bits-ui";
 
 	let fontSize = $state(16);

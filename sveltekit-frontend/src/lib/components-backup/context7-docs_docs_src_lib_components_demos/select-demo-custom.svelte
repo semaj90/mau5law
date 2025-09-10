@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Select, type SelectSingleRootProps, type WithoutChildrenOrChild } from "bits-ui";
 	import Check from "phosphor-svelte/lib/Check";
 	import Palette from "phosphor-svelte/lib/Palette";

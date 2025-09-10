@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   let testResults = $state<Array<{
     test: string;
@@ -101,9 +102,8 @@
       const data = await response.json();
       const models = data.models || [];
       
-      const hasGemma = models.some((m: any) => m.name.includes('gemma3-legal'));
-      const hasEmbedding = models.some((m: any) => m.name.includes('nomic-embed-text'));
-      
+      const hasGemma = models.some((m: any) => m.name.includes('gemma3-legal');
+      const hasEmbedding = models.some((m: any) => m.name.includes('nomic-embed-text');
       if (!hasGemma || !hasEmbedding) {
         throw new Error(`Missing models - gemma3-legal: ${hasGemma}, nomic-embed-text: ${hasEmbedding}`);
       }

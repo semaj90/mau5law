@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import Code from "$lib/components/markdown/code.svelte";
 	import { Popover } from "bits-ui";
 	import ScrollArea from "$lib/components/scroll-area.svelte";

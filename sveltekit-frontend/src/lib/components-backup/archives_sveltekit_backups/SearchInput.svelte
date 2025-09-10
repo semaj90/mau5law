@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { createEventDispatcher } from 'svelte';
 	import { Search, X } from 'lucide-svelte';
 

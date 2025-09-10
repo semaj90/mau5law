@@ -1,4 +1,5 @@
 <script>
+</script>
   export let variant = 'default';
   export let className = '';
   
@@ -9,7 +10,7 @@
     filled: 'bg-gray-100 dark:bg-gray-900'
   };
   
-  $: variantClass = variants[variant] || variants.default;
+  // TODO: Convert to $derived: variantClass = variants[variant] || variants.default
 </script>
 
 <div class="rounded-lg p-6 {variantClass} {className}">

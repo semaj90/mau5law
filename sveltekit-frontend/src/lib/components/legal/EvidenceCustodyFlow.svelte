@@ -4,6 +4,7 @@ Main UI component for managing the complete custody workflow with real-time coll
 and AI-powered verification features.
 -->
 <script lang="ts">
+</script>
   interface Props {
     evidenceId: string
     caseId: string

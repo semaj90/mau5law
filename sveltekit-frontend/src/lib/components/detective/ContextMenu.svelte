@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 
 <script lang="ts">
+</script>
   import { onMount, tick } from 'svelte';
 
   interface Props {

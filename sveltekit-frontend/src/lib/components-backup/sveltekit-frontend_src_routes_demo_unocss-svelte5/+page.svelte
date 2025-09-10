@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Button, Card, Input } from '$lib/components/ui/enhanced';
 	import { nierClasses, animationClasses } from '$lib/components/ui/enhanced';
 

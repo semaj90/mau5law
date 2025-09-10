@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from "svelte";
   import { quintOut } from "svelte/easing";
   import { scale } from "svelte/transition";
@@ -25,8 +26,8 @@
 
   const dispatch = createEventDispatcher();
 
-  $: isLoading = loadingKey ? $loading[loadingKey] : false;
-  $: isDisabled = disabled || isLoading;
+  // TODO: Convert to $derived: isLoading = loadingKey ? $loading[loadingKey] : false
+  // TODO: Convert to $derived: isDisabled = disabled || isLoading
 
   const handleClick = (event: MouseEvent) => {
     if (isDisabled) {
@@ -37,15 +38,15 @@
   };
 
   // Dynamic classes using UnoCSS
-  $: baseClasses = `
+  // TODO: Convert to $derived: baseClasses = `
     inline-flex items-center justify-center gap-2 font-medium rounded-lg
     transition-all duration-200 ease-out focus-visible:outline-none
     focus-visible:ring-2 focus-visible:ring-offset-2
     disabled:opacity-50 disabled:cursor-not-allowed
     ${fullWidth ? "w-full" : ""}
-  `;
+  `
 
-  $: variantClasses = {
+  // TODO: Convert to $derived: variantClasses = {
     primary:
       "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500 shadow-sm hover:shadow-md",
     secondary:
@@ -63,17 +64,17 @@
     info: "bg-cyan-600 text-white hover:bg-cyan-700 focus-visible:ring-cyan-500 shadow-sm hover:shadow-md",
     default:
       "bg-gray-900 text-white hover:bg-gray-800 focus-visible:ring-gray-500 shadow-sm hover:shadow-md",
-  }[variant];
+  }[variant]
 
-  $: sizeClasses = {
+  // TODO: Convert to $derived: sizeClasses = {
     xs: "px-2 py-1 text-xs",
     sm: "px-3 py-1.5 text-sm",
     md: "px-4 py-2 text-base",
     lg: "px-6 py-3 text-lg",
     xl: "px-8 py-4 text-xl",
-  }[size];
+  }[size]
 
-  $: classes = `${baseClasses} ${variantClasses} ${sizeClasses}`;
+  // TODO: Convert to $derived: classes = `${baseClasses} ${variantClasses} ${sizeClasses}`
 </script>
 
 {#if href}

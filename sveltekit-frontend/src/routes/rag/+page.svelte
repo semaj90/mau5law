@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import RAGSearchComponent from '$lib/components/RAGSearchComponent.svelte';
 </script>
 

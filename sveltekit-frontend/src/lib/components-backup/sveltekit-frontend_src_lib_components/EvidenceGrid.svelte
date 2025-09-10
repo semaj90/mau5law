@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { Evidence } from '$lib/types';
   import { Button } from "$lib/components/ui/button";
   import {

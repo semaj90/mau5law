@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { tweened } from 'svelte/motion';
   import { cubicInOut } from 'svelte/easing';
   import { slide } from 'svelte/transition';

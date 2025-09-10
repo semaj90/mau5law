@@ -6,6 +6,8 @@ import type { ParallelRequest } from '$lib/services/parallel-orchestration-maste
 import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
 import { analytics } from '$lib/server/database/connection';
 import { dev } from '$app/environment';
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
+import { fastStringify } from '$lib/utils/fast-json';
 import type { RequestHandler } from './$types.js';
 
 // Advanced Chat API with Quantized LLM, GRPMO Thinking, and Contextual Memory
@@ -14,7 +16,7 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
   const clientIP = getClientAddress();
 
   try {
-    const body = await request.json();
+    const body = await readBodyFastWithMetrics(request);
     const {
       action = 'send',
       message,
@@ -188,7 +190,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // Send initial connection message
       controller.enqueue(
         encoder.encode(
-          `data: ${JSON.stringify({
+          `data: ${fastStringify({
             type: 'connected',
             session_id,
             timestamp: Date.now(),

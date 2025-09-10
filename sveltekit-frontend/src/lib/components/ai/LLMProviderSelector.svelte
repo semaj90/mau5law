@@ -1,5 +1,6 @@
 <!-- LLM Provider Selector with Melt UI and Real-time Status -->
 <script lang="ts">
+</script>
   import type { 
     LLMProviderSelectorProps, 
     LLMProvider, 

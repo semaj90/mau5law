@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { onMount } from 'svelte';
 	import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
 	import type { SemanticChunk } from '$lib/ai/frontend-rag-pipeline';

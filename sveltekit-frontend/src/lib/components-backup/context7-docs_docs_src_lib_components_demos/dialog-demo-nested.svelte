@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import DemoContainer from "../demo-container.svelte";
 	import CustomDialog from "./dialog-demo-custom.svelte";
 </script>

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { debounce } from "$lib/utils/debounce";
   import { Plus, Tag, X } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";

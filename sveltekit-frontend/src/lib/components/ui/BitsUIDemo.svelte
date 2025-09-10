@@ -1,5 +1,6 @@
 <!-- Comprehensive Bits-UI Demo for Legal AI App -->
 <script lang="ts">
+</script>
   import BitsDialog from './dialog/BitsDialog.svelte';
   import BitsSelect from './select/BitsSelect.svelte';
   import BitsInput from './input/BitsInput.svelte';
@@ -29,7 +30,7 @@
   ];
 
   function handleCreateCase() {
-    console.log('Creating case:', { caseName, clientName, selectedCaseType });
+    console.log('Creating caseItem:', { caseName, clientName, selectedCaseType });
     showDialog = false;
     // Reset form
     caseName = '';

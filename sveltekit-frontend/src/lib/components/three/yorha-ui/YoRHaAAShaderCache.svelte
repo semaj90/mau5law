@@ -12,6 +12,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import type {
     AntiAliasingConfig,
@@ -738,16 +739,16 @@ let score = $state(0.3);
   });
 
   // Reactive statements
-  $: if (shaderId && enableCache && isInitialized) {
-    initializeShaderCache().catch(console.error);
+  // TODO: Convert to $derived: if (shaderId && enableCache && isInitialized) {
+    initializeShaderCache().catch(console.error)
   }
 
-  $: aaQualityClass = currentAAQuality === 'ultra' ? 'ultra-aa' :
-    currentAAQuality === 'high' ? 'high-aa' : 'standard-aa';
+  // TODO: Convert to $derived: aaQualityClass = currentAAQuality === 'ultra' ? 'ultra-aa' :
+    currentAAQuality === 'high' ? 'high-aa' : 'standard-aa'
 
-  $: aaTypeColor = currentAAType === 'taa' ? '#00ff00' :
+  // TODO: Convert to $derived: aaTypeColor = currentAAType === 'taa' ? '#00ff00' :
     currentAAType === 'smaa' ? '#0088ff' :
-    currentAAType === 'msaa' ? '#ff8800' : '#ffffff';
+    currentAAType === 'msaa' ? '#ff8800' : '#ffffff'
 </script>
 
 <!-- YoRHa Anti-Aliasing Shader Cache Component -->

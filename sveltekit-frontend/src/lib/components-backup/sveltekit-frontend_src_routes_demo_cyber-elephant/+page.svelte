@@ -1,5 +1,6 @@
 <!-- Cyber Elephant - Ancient Psychic Tandem War Elephant -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { fabric } from 'fabric';

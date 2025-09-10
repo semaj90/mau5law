@@ -1,5 +1,6 @@
 <!-- Enhanced AI Assistant - Simplified Version -->
 <script lang="ts">
+</script>
   interface Props {
 
   }
@@ -241,7 +242,7 @@ I can provide more specific guidance if you share additional details about your 
       <div
         class="space-y-4"
         role="document"
-        onclick|stopPropagation
+        onclick
         onkeydown={(e) => {
           if (e.key === "Escape") {
             showCitationDialog = false;

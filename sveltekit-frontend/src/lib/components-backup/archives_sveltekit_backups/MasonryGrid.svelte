@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { dndzone } from 'svelte-dnd-action';
   import { fly } from 'svelte/transition';
@@ -24,7 +25,7 @@
   let isInitialized = false;
   
   // Masonry configuration
-  $: masonryOptions = {
+  // TODO: Convert to $derived: masonryOptions = {
     itemSelector,
     columnWidth,
     gutter,
@@ -34,7 +35,7 @@
     resize,
     initLayout,
     transitionDuration
-  };
+  }
   
   // Initialize Masonry
   onMount(() => {
@@ -47,10 +48,10 @@
   });
   
   // Update layout when items change
-  $: if (masonry && isInitialized) {
+  // TODO: Convert to $derived: if (masonry && isInitialized) {
     setTimeout(() => {
       if (masonry) {
-        masonry.reloadItems();
+        masonry.reloadItems()
         masonry.layout();
       }
     }, 50);

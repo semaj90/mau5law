@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { $derived } from 'svelte';
+</script>
+  import { } from 'svelte';
 
   interface Props {
     class?: string;

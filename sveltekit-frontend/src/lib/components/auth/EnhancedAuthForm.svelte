@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { enhance } from '$app/forms';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import {

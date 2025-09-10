@@ -1,5 +1,6 @@
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
+</script>
   interface Props {
     onevidenceUpdated?: (event?: any) => void;
     onsave?: (event?: any) => void;

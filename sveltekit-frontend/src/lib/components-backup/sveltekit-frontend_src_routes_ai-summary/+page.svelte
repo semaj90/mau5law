@@ -2,6 +2,7 @@
 <!-- File: sveltekit-frontend/src/routes/ai-summary/+page.svelte -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   
   let caseData = null;

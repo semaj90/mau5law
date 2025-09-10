@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { AspectRatio } from "bits-ui";
 </script>
 

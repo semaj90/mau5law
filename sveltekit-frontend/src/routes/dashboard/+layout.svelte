@@ -3,6 +3,7 @@
   Features: Responsive grid, real-time data, vector search integration
 -->
 <script lang="ts">
+</script>
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { onMount, onDestroy } from 'svelte';
@@ -159,7 +160,7 @@
                  hover:bg-nier-bg-tertiary group relative
                  {section.active ? 'bg-nier-accent-warm/10 text-nier-accent-warm border-l-2 border-nier-accent-warm' : 'text-nier-text-secondary'}"
         >
-          <svelte:component this={section.icon} class="w-5 h-5 flex-shrink-0" />
+          <{section.icon} class="w-5 h-5 flex-shrink-0" />
           
           {#if sidebarOpen}
             <span class="flex-1 font-medium">{section.title}</span>
@@ -277,7 +278,7 @@
             </div>
             <Database class="w-5 h-5 text-nier-accent-warm" />
           </div>
-        </Card.Root>
+        </Card>
         
         <Card.Root class="p-3">
           <div class="flex items-center justify-between">
@@ -287,7 +288,7 @@
             </div>
             <Eye class="w-5 h-5 text-nier-accent-cool" />
           </div>
-        </Card.Root>
+        </Card>
         
         <Card.Root class="p-3">
           <div class="flex items-center justify-between">
@@ -297,7 +298,7 @@
             </div>
             <Zap class="w-5 h-5 text-purple-400" />
           </div>
-        </Card.Root>
+        </Card>
         
         <Card.Root class="p-3">
           <div class="flex items-center justify-between">
@@ -307,7 +308,7 @@
             </div>
             <Activity class="w-5 h-5 text-green-400" />
           </div>
-        </Card.Root>
+        </Card>
       </div>
     </header>
     

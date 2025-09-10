@@ -1,5 +1,6 @@
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
+</script>
   // Svelte runes ($state, $derived, etc.) are declared globally in src/types/svelte-helpers.d.ts
 
   import {
@@ -65,10 +66,10 @@ let totalPages = $state(0);
   let error = $derived(() => $evidenceStore.error || null);
 
   // Reactive filtering and sorting
-  $: {
+  // TODO: Convert to $derived: {
     filteredEvidence = evidence
       .filter((item) => {
-        if (caseId && item.caseId !== caseId) return false;
+        if (caseId && item.caseId !== caseId) return false
 
         if (searchQuery) {
           const query = searchQuery.toLowerCase();

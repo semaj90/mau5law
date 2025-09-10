@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import { createCombobox, melt } from 'melt';
   // Global Svelte runes are declared in src/types/svelte-helpers.d.ts
@@ -49,14 +50,14 @@ let dateRange = $state<{ start?: Date; end?: Date } >({});
   });
 
   // Initialize Fuse when items change
-  $: if (items.length > 0) {
-    fuse = new Fuse(items, fuseOptions);
+  // TODO: Convert to $derived: if (items.length > 0) {
+    fuse = new Fuse(items, fuseOptions)
     allTags = [...new Set(items.flatMap(item => item.tags || []))];
   }
 
   // Perform search when input changes
-  $: if (fuse && searchValue) {
-    const fuseResults = fuse.search(searchValue);
+  // TODO: Convert to $derived: if (fuse && searchValue) {
+    const fuseResults = fuse.search(searchValue)
     searchResults = fuseResults
       .map(result => result.item)
       .slice(0, maxResults);
@@ -87,10 +88,10 @@ let dateRange = $state<{ start?: Date; end?: Date } >({});
   }));
 
   // Update results when filters change
-  $: onResults(filteredResults);
+  // TODO: Convert to $derived: onResults(filteredResults)
 
   // Sync input value from combobox state (reactive)
-  $: searchValue = $inputValue;
+  // TODO: Convert to $derived: searchValue = $inputValue
 
   // Handle item selection
   const handleSelect = (item: Evidence) => {

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   // Svelte 5 runes pattern
   let inputText = $state('');
   let result: string | null = $state(null);

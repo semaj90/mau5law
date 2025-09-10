@@ -2,6 +2,7 @@
 <!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy, tick } from 'svelte';
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
@@ -625,6 +626,7 @@
 </style>
 
 <script lang="ts">
+</script>
   function formatTime(date: Date): string {
     const now = new Date();
     const diff = now.getTime() - date.getTime();

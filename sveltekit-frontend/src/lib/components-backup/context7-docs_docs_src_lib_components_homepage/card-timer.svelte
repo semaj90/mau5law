@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import X from "phosphor-svelte/lib/X";
 	import HomeSwitch from "$lib/components/homepage/home-switch.svelte";
 	import HomeSelect from "$lib/components/homepage/home-select.svelte";

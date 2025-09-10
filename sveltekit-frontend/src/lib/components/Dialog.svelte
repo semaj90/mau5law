@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { aiStore } from "$lib/stores/canvas";
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';

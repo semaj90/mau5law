@@ -2,6 +2,7 @@
 // File: AIAssistantButton.svelte
 
 <script lang="ts">
+</script>
   interface Props {
     onresponse?: (event?: any) => void;
     onerror?: (event?: any) => void;

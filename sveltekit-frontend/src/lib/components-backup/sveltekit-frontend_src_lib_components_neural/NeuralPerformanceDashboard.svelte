@@ -2,6 +2,7 @@
 <!-- Integrates with Enhanced Neural Sprite Engine for comprehensive performance tracking -->
 
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived, type Readable } from 'svelte/store';
   import type { EnhancedNeuralSpriteEngine } from '$lib/engines/neural-sprite-engine-enhanced';

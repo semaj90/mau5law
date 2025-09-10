@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
@@ -191,6 +192,7 @@ https://svelte.dev/e/js_parse_error -->
   async function generateSuggestions() {
     const testCode = `// Test Svelte 5 component
 <script lang="ts">
+</script>
   let { data = [] } = $props();
   let count = $state(0);
 
@@ -227,8 +229,7 @@ https://svelte.dev/e/js_parse_error -->
         score: suggestion.confidence,
         explanation: `${suggestion.category} suggestion (Priority: ${suggestion.priority})`,
         context7Pattern: suggestion.context7Pattern,
-      }));
-
+      });
     } catch (error) {
       errorMessage = `Suggestion generation failed: ${error.message}`;
     } finally {
@@ -613,6 +614,7 @@ https://svelte.dev/e/js_parse_error -->
             <h3 class="text-lg font-semibold text-purple-100">Test Context</h3>
             <pre class="p-4 bg-black/40 rounded-lg border border-purple-500/30 text-purple-100 text-sm overflow-x-auto"><code>{`// Test Svelte 5 component
 <script lang="ts">
+</script>
   let { data = [] } = $props();
   let count = $state(0);
 
@@ -835,7 +837,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex gap-2">
           <button
             onclick={() => {
-              localStorage.setItem('copilot-optimization-config', JSON.stringify(optimizationConfig));
+              localStorage.setItem('copilot-optimization-config', JSON.stringify(optimizationConfig);
               alert('Configuration saved!');
             }}
             class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"

@@ -1,12 +1,13 @@
 <script lang="ts">
+</script>
   export let id: string | undefined = undefined;
   export let value: number = 0;
   export let max: number = 100;
   export let indeterminate: boolean = false;
   export let ariaLabel: string | undefined = undefined;
 
-  $: clamped = Math.max(0, Math.min(value, max));
-  $: percent = max > 0 ? (clamped / max) * 100 : 0;
+  // TODO: Convert to $derived: clamped = Math.max(0, Math.min(value, max))
+  // TODO: Convert to $derived: percent = max > 0 ? (clamped / max) * 100 : 0
 </script>
 
 <style>

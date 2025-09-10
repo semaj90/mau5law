@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { page } from '$app/stores';
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';

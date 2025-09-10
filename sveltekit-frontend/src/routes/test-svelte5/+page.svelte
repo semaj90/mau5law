@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { $state } from 'svelte';
+</script>
+  // Svelte 5 runes are built-in, no import needed
   import { Button } from '$lib/components/ui/enhanced-bits';
 
   // Test Svelte 5 state with bits-ui v2.9.4

@@ -11,6 +11,7 @@
   - Performance monitoring and auto-quality adjustment
 -->
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';

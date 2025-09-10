@@ -1,5 +1,6 @@
 <!-- Case Timeline Component for Legal AI App -->
 <script lang="ts">
+</script>
   import { Calendar, FileText, Users, Scale, AlertCircle, CheckCircle } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   export interface TimelineEvent {

@@ -2,6 +2,7 @@
   Simple SuperForms + Zod + Enhanced Actions Test Page
 -->
 <script lang="ts">
+</script>
   import { enhance } from '$app/forms';
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -27,15 +28,14 @@
   const { form, errors, enhance: formEnhance, submitting } = superForm(data, {
     validators: zod(testSchema),
     onSubmit: ({ formData }) => {
-      console.log('Form submitted:', Object.fromEntries(formData));
+      console.log('Form submitted:', Object.fromEntries(formData);
     }
   });
 
   // Enhanced action
   function createEnhancedAction() {
     return enhance(({ formData }) => {
-      console.log('Enhanced action:', Object.fromEntries(formData));
-      
+      console.log('Enhanced action:', Object.fromEntries(formData);
       return async ({ result, update }) => {
         console.log('Result:', result);
         await update();

@@ -1,5 +1,6 @@
 <!-- YoRHa Terminal Interface with AI Commands -->
 <script lang="ts">
+</script>
 	import { onMount } from "svelte";
 	import {
     Button
@@ -23,13 +24,10 @@
 	// Access the global store value reactively via $aiGlobalStore
 	// currentSnapshot will update whenever the store changes
 	let currentSnapshot: any = null;
-	$: currentSnapshot = $aiGlobalStore;
+	let currentSnapshot = $derived($aiGlobalStore);
 
 	// Simple derived status
-	$: aiStatus = (() => {
-		try {
-			if (currentSnapshot && typeof currentSnapshot.matches === "function") {
-				if (currentSnapshot.matches("summarizing")) return "PROCESSING";
+	let aiStatus = $derived((());
 				if (currentSnapshot.matches("failure")) return "ERROR";
 			}
 		} catch {

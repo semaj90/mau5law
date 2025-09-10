@@ -1,5 +1,6 @@
 <!-- N64 Gaming-Style MinIO Upload with Retro Progress Bars -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy } from 'svelte';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
   import { toastService } from '$lib/services/toast-service';

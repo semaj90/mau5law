@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import Fan from "phosphor-svelte/lib/Fan";
 	import { Tabs } from "bits-ui";
 	import HomeSlider from "$lib/components/homepage/home-slider.svelte";

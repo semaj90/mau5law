@@ -3,6 +3,7 @@
   Demonstrates complete form enhancement pattern
 -->
 <script lang="ts">
+</script>
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { enhance } from '$app/forms';
@@ -10,12 +11,10 @@
   import EnhancedCaseFormWithZod from '$lib/components/forms/EnhancedCaseFormWithZod.svelte';
   import { toast } from '$lib/components/ui/toast';
   import { Alert } from '$lib/components/ui/alert';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { ArrowLeft, Save, AlertCircle, CheckCircle } from 'lucide-svelte';
   import type { PageData } from './$types';
-  import type { CaseForm } from '$lib/schemas/forms';
+  { CaseForm } from '$lib/schemas/forms';
 
   let { data = $bindable() } = $props(); // PageData;
 let isSubmitting = $state(false);
@@ -23,8 +22,8 @@ let showSuccess = $state(false);
 let errorMessage = $state('');
 
   // Handle form submission success
-  function handleFormSuccess(event: CustomEvent<{ case: any }>) {
-    const { case: newCase } = event.detail;
+  function handleFormSuccess(event: CustomEvent<{ caseItem: any }>) {
+    const { caseItem: newCase } = event.detail;
 
     showSuccess = true;
     toast.success(`Case ${newCase.caseNumber} created successfully!`);
@@ -71,7 +70,7 @@ let errorMessage = $state('');
   });
 
   // Auto-save functionality
-let autoSaveTimeout = $state<NodeJS.Timeout;
+let autoSaveTimeout = $state<NodeJS.Timeout | undefined>(undefined);
 
   function scheduleAutoSave(formData: CaseForm) {
     clearTimeout(autoSaveTimeout);

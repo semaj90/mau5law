@@ -1,5 +1,6 @@
 {#snippet default}
 <script lang="ts">
+</script>
   import { pipelineManager, type PipelineType, type PipelineResult } from '$lib/services/pipeline-manager';
   import { PipelineVisualizer } from '$lib/services/pipeline-visualizer';
   import { Button } from '$lib/components/ui/enhanced-bits';

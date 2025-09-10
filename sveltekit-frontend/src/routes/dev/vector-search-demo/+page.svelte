@@ -1,6 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">` element and/or a single top-level `<script module>` element
+<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
+</script>` element and/or a single top-level `<script module>
+</script>` element
 https://svelte.dev/e/script_duplicate -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   let query = 'contract liability terms'
   let results: any[] = []
@@ -51,6 +54,7 @@ https://svelte.dev/e/script_duplicate -->
   pre { background: #111; color: #ddd; padding: 8px; border-radius: 4px; }
 </style>
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
 
   interface SearchResult {
@@ -161,10 +165,10 @@ https://svelte.dev/e/script_duplicate -->
         console.log('Index result:', result);
       } else {
         const errorData = await response.json();
-        alert('Indexing failed: ' + (errorData.error || 'Unknown error'));
+        alert('Indexing failed: ' + (errorData.error || 'Unknown error');
       }
     } catch (err) {
-      alert('Indexing error: ' + (err instanceof Error ? err.message : 'Unknown error'));
+      alert('Indexing error: ' + (err instanceof Error ? err.message : 'Unknown error');
     }
   }
 
@@ -515,7 +519,7 @@ https://svelte.dev/e/script_duplicate -->
 
   .metadata-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 0.5rem;
     margin-top: 0.5rem;
   }

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { DateRangeField } from "bits-ui";
 </script>
 

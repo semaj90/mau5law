@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { page } from '$app/stores';
   
   let { data, form } = $props();
@@ -23,9 +24,8 @@
     passwordInput.value = 'demo123456';
     
     // Trigger input events to ensure Svelte recognizes the changes
-    emailInput.dispatchEvent(new Event('input', { bubbles: true }));
-    passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
-    
+    emailInput.dispatchEvent(new Event('input', { bubbles: true });
+    passwordInput.dispatchEvent(new Event('input', { bubbles: true });
     console.log('✅ Demo credentials filled');
   }
   

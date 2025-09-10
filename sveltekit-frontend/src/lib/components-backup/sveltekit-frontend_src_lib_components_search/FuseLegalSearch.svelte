@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Fuse from 'fuse.js';
   import { onMount } from 'svelte';
   import { Input } from "$lib/components/ui/input/index.js";

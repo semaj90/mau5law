@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
   import { wasmGraphEngine } from '$lib/wasm/graphEngine';
@@ -46,7 +47,7 @@
     try {
       // Test graph query with WASM engine
       const result = await wasmGraphEngine.executeQuery(
-        'MATCH (case:Case)-[:HAS_EVIDENCE]->(evidence:Evidence) RETURN case, evidence LIMIT 5'
+        'MATCH (caseItem:Case)-[:HAS_EVIDENCE]->(evidence:Evidence) RETURN case, evidence LIMIT 5'
       );
 
       cacheDemo.results = result;

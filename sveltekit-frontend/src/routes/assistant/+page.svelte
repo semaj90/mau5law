@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
   import EvidenceManager from '$lib/components/evidence/EvidenceManager.svelte';
   import {
@@ -36,7 +37,7 @@
           title: item.title,
           content: `${item.evidence_type} - ${item.mime_type}`,
           uploadedAt: item.uploaded_at
-        }));
+        });
       }
     } catch (error) {
       console.error('Failed to load evidence context:', error);
@@ -68,8 +69,7 @@
         title: result.title,
         content: `${result.evidenceType} - Similarity: ${(result.similarity * 100).toFixed(1)}%`,
         similarity: result.similarity
-      }));
-      
+      });
       // Switch to assistant tab to use the search context
       activeTab = 'assistant';
     }

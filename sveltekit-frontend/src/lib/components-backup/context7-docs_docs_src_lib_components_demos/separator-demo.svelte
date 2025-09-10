@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Separator } from "bits-ui";
 </script>
 

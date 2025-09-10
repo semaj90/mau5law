@@ -4,6 +4,7 @@
   Author: Claude Code Integration
 -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import * as Card from '$lib/components/ui/card';

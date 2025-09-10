@@ -1,5 +1,6 @@
 <!-- YoRHa Advanced API Testing Interface -->
 <script lang="ts">
+</script>
   // Svelte runes are provided globally via src/types/svelte-helpers.d.ts
   import { onMount, onDestroy } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
@@ -363,8 +364,7 @@
       results: [],
       lastRun: null,
       duration: 0
-    }));
-
+    });
     // Subscribe to real-time API events
     startRealTimeMonitoring();
   }
@@ -525,8 +525,7 @@ let responseSize = $state(0);
       testResult.response = responseData;
       testResult.statusCode = response.status;
       testResult.responseSize = responseSize;
-      testResult.headers = Object.fromEntries(response.headers.entries());
-
+      testResult.headers = Object.fromEntries(response.headers.entries();
       // Validation
       if (endpoint.validation) {
         testResult.validation = validateResponse(responseData, endpoint.validation, response.status);
@@ -605,8 +604,7 @@ let responseSize = $state(0);
     testSuites = [...testSuites];
 
     try {
-      const endpoints = apiEndpoints.filter(ep => suite.endpoints.includes(ep.id));
-
+      const endpoints = apiEndpoints.filter(ep => suite.endpoints.includes(ep.id);
       if (suite.parallel) {
         // Run tests in parallel
         const promises = endpoints.map(endpoint => {
@@ -628,12 +626,12 @@ let responseSize = $state(0);
             for (let i = 0; i < suite.iterations; i++) {
               await runApiTest(endpoint);
               // Small delay between iterations
-              await new Promise(resolve => setTimeout(resolve, 100));
+              await new Promise(resolve => setTimeout(resolve, 100);
             }
           } else {
             await runApiTest(endpoint);
             // Small delay between tests
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 500);
           }
         }
       }
@@ -671,7 +669,7 @@ let responseSize = $state(0);
       for (const endpoint of apiEndpoints) {
         await runApiTest(endpoint);
         // Small delay between tests
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 200);
       }
     } finally {
       isRunning = false;
@@ -1014,7 +1012,7 @@ let responseSize = $state(0);
             {#each apiEndpoints as endpoint}
               <div class="flex items-center justify-between p-3 bg-black/30 border border-gray-800 rounded-lg hover:border-gray-700 transition-colors">
                 <div class="flex items-center space-x-3">
-                  <svelte:component this={endpoint.icon} class="w-5 h-5 {getCategoryColor(endpoint.category)}" />
+                  <{endpoint.icon} class="w-5 h-5 {getCategoryColor(endpoint.category)}" />
                   <div>
                     <p class="font-medium text-gray-200">{endpoint.name}</p>
                     <p class="text-sm text-gray-400">{endpoint.method} {endpoint.endpoint}</p>
@@ -1051,7 +1049,7 @@ let responseSize = $state(0);
             <div class="p-4 bg-black/30 border border-gray-800 rounded-lg">
               <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center space-x-3">
-                  <svelte:component this={suite.icon} class="w-5 h-5 text-purple-400" />
+                  <{suite.icon} class="w-5 h-5 text-purple-400" />
                   <div>
                     <h3 class="font-medium text-gray-200">{suite.name}</h3>
                     <p class="text-sm text-gray-400">{suite.description}</p>
@@ -1060,7 +1058,7 @@ let responseSize = $state(0);
 
                 <div class="flex items-center space-x-2">
                   {#if suite.status !== 'pending'}
-                    <svelte:component this={getStatusIcon(suite.status)} class="w-4 h-4 {getStatusColor(suite.status)}" />
+                    <{getStatusIcon(suite.status)} class="w-4 h-4 {getStatusColor(suite.status)}" />
                   {/if}
                   <button
                     class="px-3 py-1 rounded-lg bg-purple-900/20 border border-purple-400/30 hover:bg-purple-400/10 text-purple-400 disabled:opacity-50"
@@ -1151,7 +1149,7 @@ let responseSize = $state(0);
                   <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
                     <td class="py-3 px-4">
                       <div class="flex items-center space-x-2">
-                        <svelte:component this={getStatusIcon(result.status)} class="w-4 h-4 {getStatusColor(result.status)}" />
+                        <{getStatusIcon(result.status)} class="w-4 h-4 {getStatusColor(result.status)}" />
                         <span class="text-sm {getStatusColor(result.status)} capitalize">{result.status}</span>
                       </div>
                     </td>

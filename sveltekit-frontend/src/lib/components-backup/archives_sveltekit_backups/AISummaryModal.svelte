@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { aiService } from "../../../lib/services/aiService";
   import Dialog from '../../../lib/components/ui/dialog/Dialog.svelte';
   import { Button } from "$lib/components/ui/button";
@@ -10,12 +11,12 @@
   let copied = false;
 
   // Use the Svelte store reactively
-  $: summary = $aiService.summary;
-  $: isLoading = $aiService.isLoading;
-  $: error = $aiService.error;
-  $: model = $aiService.model;
-  $: lastSummarizedContent = $aiService.lastSummarizedContent;
-  $: isOpen = isLoading || summary !== null || error !== null;
+  // TODO: Convert to $derived: summary = $aiService.summary
+  // TODO: Convert to $derived: isLoading = $aiService.isLoading
+  // TODO: Convert to $derived: error = $aiService.error
+  // TODO: Convert to $derived: model = $aiService.model
+  // TODO: Convert to $derived: lastSummarizedContent = $aiService.lastSummarizedContent
+  // TODO: Convert to $derived: isOpen = isLoading || summary !== null || error !== null
 
   async function copyToClipboard() {
     if (summary) {

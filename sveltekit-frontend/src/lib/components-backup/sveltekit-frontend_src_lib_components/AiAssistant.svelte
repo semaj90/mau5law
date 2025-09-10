@@ -4,6 +4,7 @@
   Date: 2025-07-20
 -->
 <script lang="ts">
+</script>
   // @ts-nocheck
   /**
    * AiAssistant.svelte
@@ -160,9 +161,9 @@
   let error = '';
   let isLoading = false;
 
-  $: isLoading = state.matches('processing');
-  $: summary = state.context.summary;
-  $: error = state.context.error;
+  // TODO: Convert to $derived: isLoading = state.matches('processing')
+  // TODO: Convert to $derived: summary = state.context.summary
+  // TODO: Convert to $derived: error = state.context.error
 
   function handleProcessEvidence() {
     if (!user) {

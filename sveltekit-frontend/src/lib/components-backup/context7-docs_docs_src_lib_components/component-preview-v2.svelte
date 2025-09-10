@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type { Snippet } from "svelte";
 	import DemoContainer from "./demo-container.svelte";
 	import DemoCodeContainer from "./demo-code-container.svelte";

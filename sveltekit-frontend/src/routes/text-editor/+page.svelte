@@ -3,6 +3,7 @@
   Legal AI Platform - Text Editor
 -->
 <script lang="ts">
+</script>
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   import {
     Card,

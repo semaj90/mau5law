@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { shouldEnableRetroEffects } from './retroPerformanceGuard';
 
@@ -9,7 +10,7 @@
   const dispatch = createEventDispatcher<{ change: { checked: boolean } }>();
 
   let retroEnabled = false;
-  $: thumbX = checked ? 18 : 0;
+  // TODO: Convert to $derived: thumbX = checked ? 18 : 0
 
   onMount(() => {
 	try {

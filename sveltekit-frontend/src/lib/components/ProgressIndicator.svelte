@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   let { currentStep = $bindable() } = $props(); // number;
   let { totalSteps = $bindable() } = $props(); // number;
   let { stepLabels = $bindable() } = $props(); // string[] = [];

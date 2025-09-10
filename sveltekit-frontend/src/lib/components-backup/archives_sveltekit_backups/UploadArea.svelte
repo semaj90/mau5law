@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher } from 'svelte';
   
   export let onUpload: (files: FileList) => void = () => {};
@@ -21,7 +22,7 @@
   export let chunkSize: number = 1024 * 1024; // 1MB chunks for large files (future use)
   
   // Prevent unused export warning - this is for future chunked upload implementation
-  $: void chunkSize;
+  // TODO: Convert to $derived: void chunkSize
   
   interface UploadResult {
     file: File;

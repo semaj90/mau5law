@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { preventDefault } from 'svelte/legacy';
   import {
     Card,
@@ -17,7 +18,7 @@
 
 	const handleSubmit = async () => {
 		loading = true;
-		await new Promise(resolve => setTimeout(resolve, 2000));
+		await new Promise(resolve => setTimeout(resolve, 2000);
 		message = `Hello ${name}! UnoCSS + Svelte 5 integration successful! 🎉`;
 		loading = false;
 	};
@@ -176,6 +177,6 @@
 <style>
 	/* Additional scoped styles for demo */
 	:global(.demo-gradient) {
-		background: linear-gradient(135deg, var(--color-nier-accent-warm), var(--color-nier-accent-cool));
+		background: linear-gradient(135deg, var(--color-nier-accent-warm), var(--color-nier-accent-cool);
 	}
 </style>

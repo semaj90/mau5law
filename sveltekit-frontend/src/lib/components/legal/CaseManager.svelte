@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { UiButton as Button, UiInput as Input, UiLabel as Label, UiCard as Card, UiCardContent as CardContent, UiCardHeader as CardHeader, UiCardTitle as CardTitle, UiBadge as Badge } from '$lib/components/ui';
@@ -211,9 +212,9 @@
   }
 
   // Reactive search
-  $: if ($searchQuery) {
+  // TODO: Convert to $derived: if ($searchQuery) {
     const debounceTimer = setTimeout(() => {
-      searchCases($searchQuery);
+      searchCases($searchQuery)
     }, 300);
     
     return () => clearTimeout(debounceTimer);

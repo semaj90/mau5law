@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { page } from '$app/stores';
 

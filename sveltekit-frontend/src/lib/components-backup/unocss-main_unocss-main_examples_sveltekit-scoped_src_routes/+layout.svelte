@@ -1,4 +1,5 @@
 <script>
+</script>
   import "../app.css";
   import DarkModeToggle from "$lib/DarkModeToggle.svelte";
 </script>

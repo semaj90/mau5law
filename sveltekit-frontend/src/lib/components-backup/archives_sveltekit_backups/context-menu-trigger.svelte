@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
   

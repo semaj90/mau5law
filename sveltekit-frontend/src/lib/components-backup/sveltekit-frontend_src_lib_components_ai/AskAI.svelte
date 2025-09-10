@@ -1,5 +1,6 @@
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
+</script>
   interface Props { caseId: string | undefined ;,
     evidenceIds: string[] ;,
     placeholder?: any;

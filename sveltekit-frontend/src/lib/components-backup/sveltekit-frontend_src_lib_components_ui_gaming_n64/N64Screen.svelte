@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   export let content: string = 'Screen content';
 </script>
 

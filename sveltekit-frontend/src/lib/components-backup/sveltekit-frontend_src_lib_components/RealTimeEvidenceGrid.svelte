@@ -1,5 +1,6 @@
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
+</script>
   interface Props {
     caseId: string | undefined ;
     searchQuery: string

@@ -1,5 +1,6 @@
 <!-- YoRHa Demo Page - Fully Working Integration Demo -->
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import YoRHaDataGrid from '$lib/components/yorha/YoRHaDataGrid.svelte';
   import YoRHaForm from '$lib/components/yorha/YoRHaForm.svelte';
@@ -251,7 +252,7 @@
       case 'analyze':
         if (parts[1]) {
           const docId = parts[1].toUpperCase();
-          const doc = demoData.find(d => d.yorha_id.includes(docId) || d.id.includes(docId));
+          const doc = demoData.find(d => d.yorha_id.includes(docId) || d.id.includes(docId);
           if (doc) {
             performAnalysis(doc);
           } else {
@@ -272,7 +273,7 @@
         if (parts[1] && parts[2]) {
           const docId = parts[1].toUpperCase();
           const classification = parts[2].toUpperCase();
-          const doc = demoData.find(d => d.yorha_id.includes(docId));
+          const doc = demoData.find(d => d.yorha_id.includes(docId);
           if (doc) {
             doc.classification = classification;
             addNotification('success', `Document ${docId} reclassified as ${classification}`);
@@ -785,7 +786,7 @@
 
   .metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
     gap: 8px;
   }
 

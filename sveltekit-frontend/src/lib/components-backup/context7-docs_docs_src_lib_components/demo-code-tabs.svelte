@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Tabs } from "bits-ui";
 	import type { Snippet } from "svelte";
 	import CopySimple from "phosphor-svelte/lib/CopySimple";

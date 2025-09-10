@@ -2,6 +2,7 @@
 // Combines Hugerte with Melt UI components for legal document editing
 
 <script lang="ts">
+</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable, get, type Writable } from 'svelte/store';
 

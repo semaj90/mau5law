@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import AiSetupBanner from '$lib/components/ai/AiSetupBanner.svelte';
 </script>
 

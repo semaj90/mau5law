@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
   import { page } from '$app/stores';
   

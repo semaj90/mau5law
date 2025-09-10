@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
 	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { fade, fly } from 'svelte/transition';
@@ -338,8 +339,8 @@ let phaseIndex = $state(0);
 	}
 
 	// Reactive statements
-	$: if (text && autoStart) {
-		restart();
+	// TODO: Convert to $derived: if (text && autoStart) {
+		restart()
 	}
 
 	// Export functions for external control

@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+</script>
   import GPUCacheIntegrationDemo from '$lib/components/ui/gaming/demo/GPUCacheIntegrationDemo.svelte';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
@@ -219,7 +220,7 @@
 
   .details-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr);
     gap: 2rem;
   }
 
@@ -248,7 +249,7 @@
 
   .chart-bar {
     flex: 1;
-    background: linear-gradient(180deg, var(--gpu-cache-accent-primary), var(--gpu-cache-accent-secondary));
+    background: linear-gradient(180deg, var(--gpu-cache-accent-primary), var(--gpu-cache-accent-secondary);
     border-radius: 2px 2px 0 0;
     position: relative;
     display: flex;

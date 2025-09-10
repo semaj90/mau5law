@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   interface Props {
     progress?: any;
     fileName?: any;

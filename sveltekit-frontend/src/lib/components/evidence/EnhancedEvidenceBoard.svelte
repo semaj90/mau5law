@@ -731,7 +731,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     evidenceItems = evidenceItems.map(item =>
       item.id === evidenceId ? { ...item, position } : item
     );
-    
+
     // Optionally save to backend
     // updateEvidencePosition(evidenceId, position);
   }
@@ -1268,7 +1268,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 
+    box-shadow:
       0 10px 25px -5px rgba(0, 0, 0, 0.1),
       0 10px 10px -5px rgba(0, 0, 0, 0.04),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -1290,7 +1290,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
   /* Gaming mode enhancements */
   .nes-yorha-evidence-board.retro-glow .evidence-canvas-container {
-    box-shadow: 
+    box-shadow:
       0 0 20px rgba(59, 130, 246, 0.3),
       0 0 40px rgba(139, 92, 246, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -1300,12 +1300,12 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
   @keyframes canvasGlow {
     0% {
-      box-shadow: 
+      box-shadow:
         0 0 20px rgba(59, 130, 246, 0.3),
         0 0 40px rgba(139, 92, 246, 0.2);
     }
     100% {
-      box-shadow: 
+      box-shadow:
         0 0 30px rgba(59, 130, 246, 0.4),
         0 0 60px rgba(139, 92, 246, 0.3);
     }

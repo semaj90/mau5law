@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import type { ChatMessage } from "$lib/stores/chatStore";
   import DOMPurify from "dompurify";
   import { Bot, User } from "lucide-svelte";

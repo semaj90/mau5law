@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import Check from "phosphor-svelte/lib/Check";
 	import CopySimple from "phosphor-svelte/lib/CopySimple";
 	import { cn } from "$lib/utils/styles.js";

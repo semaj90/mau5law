@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import { Tooltip, Toolbar, Separator } from "bits-ui";
 	import TextB from "phosphor-svelte/lib/TextB";
 	import TextItalic from "phosphor-svelte/lib/TextItalic";

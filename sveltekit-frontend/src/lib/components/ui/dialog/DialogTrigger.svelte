@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 
   import { Dialog } from 'bits-ui';
   // Props are defined as $props() rune, no import needed

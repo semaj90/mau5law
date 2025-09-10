@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import { 
     legalAIPipeline, 
@@ -177,7 +178,7 @@
   }
 
   // Performance summary derived from metrics
-  $: performanceSummary = legalAIPipeline.getPerformanceSummary();
+  // TODO: Convert to $derived: performanceSummary = legalAIPipeline.getPerformanceSummary()
 </script>
 
 <div class="legal-ai-pipeline-demo">

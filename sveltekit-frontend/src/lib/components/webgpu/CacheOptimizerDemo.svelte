@@ -1,4 +1,5 @@
 <script>
+</script>
   import { onMount } from 'svelte';
   
   let demoResults = $state(null);

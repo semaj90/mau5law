@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import { onMount } from 'svelte';
   import PerfChart from '$lib/components/PerfChart.svelte';
   import { writable } from 'svelte/store';
@@ -109,7 +110,7 @@
   function formatBytes(bytes: number): string {
     if (!bytes) return '0 B';
     const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    const i = Math.floor(Math.log(bytes) / Math.log(1024);
     return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
   }
 
@@ -252,7 +253,7 @@
           if (eventLoopLagSeries.length > 300) eventLoopLagSeries.shift();
         }
         if (data.memory?.heapUsed) {
-          memoryUsageSeries.push(data.memory.heapUsed / (1024 * 1024));
+          memoryUsageSeries.push(data.memory.heapUsed / (1024 * 1024);
           if (memoryUsageSeries.length > 300) memoryUsageSeries.shift();
         }
         return;
@@ -285,7 +286,7 @@
 
     nodeMetrics.set(mockNode);
     eventLoopLagSeries.push(mockNode.eventLoop.lag);
-    memoryUsageSeries.push(mockNode.memory.heapUsed / (1024 * 1024));
+    memoryUsageSeries.push(mockNode.memory.heapUsed / (1024 * 1024);
     if (eventLoopLagSeries.length > 300) eventLoopLagSeries.shift();
     if (memoryUsageSeries.length > 300) memoryUsageSeries.shift();
   }

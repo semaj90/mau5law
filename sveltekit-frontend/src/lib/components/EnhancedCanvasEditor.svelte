@@ -1,5 +1,6 @@
 <!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save with Loki.js -->
 <script lang="ts">
+</script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
 
   import { aiSummarizationService } from "$lib/services/aiSummarizationService";

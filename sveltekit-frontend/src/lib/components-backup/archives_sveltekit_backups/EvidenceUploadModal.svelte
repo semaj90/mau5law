@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
   import Button from "$lib/components/ui/Button.svelte";
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
   import { formatFileSize } from "$lib/utils/file-utils";
@@ -17,12 +18,12 @@
   let fileInput: HTMLInputElement;
   let dragActive = false;
 
-  $: isOpen = $uploadModal.isOpen;
-  $: files = $uploadModal.files || [];
-  $: activeUploads = files.filter(
+  // TODO: Convert to $derived: isOpen = $uploadModal.isOpen
+  // TODO: Convert to $derived: files = $uploadModal.files || []
+  // TODO: Convert to $derived: activeUploads = files.filter(
     (f) => f?.status === "uploading" || f?.status === "processing"
-  );
-  $: completedUploads = files.filter((f) => f?.status === "completed");
+  )
+  // TODO: Convert to $derived: completedUploads = files.filter((f) => f?.status === "completed")
 
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;

@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	// QUIC Tensor Demo - Interactive Testing Interface
 	// Tests did-you-mean suggestions and tensor operations
 	

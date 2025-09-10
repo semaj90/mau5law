@@ -1,4 +1,5 @@
 <script lang="ts">
+</script>
 	import type {    Snippet    } from 'svelte';
 	import { Checkbox as BitsCheckbox } from 'bits-ui';
 	import { createEventDispatcher } from 'svelte';

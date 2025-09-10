@@ -508,14 +508,7 @@ class RedisService {
 // Singleton instance
 export const redisService = new RedisService();
 
-// Auto-initialize Redis service
-if (typeof window === 'undefined') {
-  console.log('🔧 [RedisService] Starting auto-initialization...');
-
-  // Server-side initialization
-  redisService.initialize().catch((error) => {
-    console.error('❌ [RedisService] Auto-initialization failed:', error);
-  });
-}
+// Manual initialization only - prevent connection storms
+// Call redisService.initialize() explicitly where needed
 
 export default redisService;

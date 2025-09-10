@@ -1,4 +1,5 @@
 <script>
+</script>
   export let label = 'Action';
   export let onClick = () => {};
 </script>
