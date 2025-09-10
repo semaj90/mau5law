@@ -299,17 +299,17 @@ let unsubscribeHealth = $state<(() => void) | null>(null);
           </Alert>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button class="bits-btn bits-btn" on:onclick={demonstrateAI} variant="outline">
+            <Button class="bits-btn" on:onclick={demonstrateAI} variant="outline">
               <Brain class="h-4 w-4 mr-2" />
               Test AI Assistant
             </Button>
 
-            <Button class="bits-btn bits-btn" on:onclick={demonstrateUpload} variant="outline">
+            <Button class="bits-btn" on:onclick={demonstrateUpload} variant="outline">
               <Zap class="h-4 w-4 mr-2" />
               Demo File Upload
             </Button>
 
-            <Button class="bits-btn bits-btn" on:onclick={demonstrateSessionActivity} variant="outline">
+            <Button class="bits-btn" on:onclick={demonstrateSessionActivity} variant="outline">
               <Settings class="h-4 w-4 mr-2" />
               Record Activity
             </Button>
@@ -364,10 +364,10 @@ let unsubscribeHealth = $state<(() => void) | null>(null);
             {/if}
 
             <div class="flex gap-2">
-              <Button class="bits-btn bits-btn" on:onclick={() => demoStep = 'dashboard'} variant="outline">
+              <Button class="bits-btn" on:onclick={() => demoStep = 'dashboard'} variant="outline">
                 Back to Dashboard
               </Button>
-              <Button class="bits-btn bits-btn" on:onclick={demonstrateLogout} variant="destructive">
+              <Button class="bits-btn" on:onclick={demonstrateLogout} variant="destructive">
                 <LogOut class="h-4 w-4 mr-2" />
                 Complete Demo
               </Button>

@@ -106,10 +106,10 @@
           N64 Progress Components - Legal AI Integration Test
         </div>
         <div class="flex gap-2">
-          <Button class="bits-btn bits-btn" onclick={startAnimation} disabled={mockData.isProcessing}>
+          <Button class="bits-btn" onclick={startAnimation} disabled={mockData.isProcessing}>
             Start AI Processing
           </Button>
-          <Button class="bits-btn bits-btn" variant="outline" onclick={resetData}>
+          <Button class="bits-btn" variant="outline" onclick={resetData}>
             Reset
           </Button>
         </div>

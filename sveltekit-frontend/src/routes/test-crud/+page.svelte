@@ -226,22 +226,22 @@
     </CardHeader>
     <CardContent>
       <div class="flex flex-wrap gap-3">
-  <Button class="bits-btn bits-btn" onclick={runFullCRUDTest} disabled={isLoading} variant="default">
+  <Button class="bits-btn" onclick={runFullCRUDTest} disabled={isLoading} variant="default">
           {isLoading ? '⏳ Testing...' : '🚀 Run Full CRUD Test'}
         </Button>
-  <Button class="bits-btn bits-btn" onclick={testGETOperations} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn" onclick={testGETOperations} disabled={isLoading} variant="secondary">
           🔍 Test GET
         </Button>
-  <Button class="bits-btn bits-btn" onclick={testPOSTOperation} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn" onclick={testPOSTOperation} disabled={isLoading} variant="secondary">
           📝 Test POST
         </Button>
-  <Button class="bits-btn bits-btn" onclick={() => testPUTOperation()} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn" onclick={() => testPUTOperation()} disabled={isLoading} variant="secondary">
           ✏️ Test PUT
         </Button>
-  <Button class="bits-btn bits-btn" onclick={() => testDELETEOperation()} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn" onclick={() => testDELETEOperation()} disabled={isLoading} variant="secondary">
           🗑️ Test DELETE
         </Button>
-  <Button class="bits-btn bits-btn" onclick={clearResults} variant="ghost">
+  <Button class="bits-btn" onclick={clearResults} variant="ghost">
           🧹 Clear Results
         </Button>
       </div>

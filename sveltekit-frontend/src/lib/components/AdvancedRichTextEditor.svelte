@@ -980,3 +980,4 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
 </style>
 
 <!-- Props migrated to Svelte 5 $props() pattern -->
+

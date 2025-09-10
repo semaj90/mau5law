@@ -38,7 +38,7 @@ export class EmbeddingCacheMiddleware {
   
   constructor(config: EmbeddingCacheConfig = {}) {
     this.config = {
-      redisUrl: config.redisUrl || 'redis://localhost:4005',
+      redisUrl: config.redisUrl || 'redis://localhost:6379',
       pythonWorkerUrl: config.pythonWorkerUrl || 'http://localhost:8000',
       cacheTTL: config.cacheTTL || 86400, // 24 hours
       batchSize: config.batchSize || 128, // RTX 3060 Ti optimized

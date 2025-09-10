@@ -116,7 +116,7 @@ let remoteStatusVisible = $state(false);
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-bold text-green-400">⌨️ Keyboard Shortcuts</h2>
-          <Button class="bits-btn bits-btn" variant="ghost" onclick={() => helpModalVisible = false}>
+          <Button class="bits-btn" variant="ghost" onclick={() => helpModalVisible = false}>
             ✕
           </Button>
         </div>
@@ -178,7 +178,7 @@ let remoteStatusVisible = $state(false);
                           checked={shortcut.enabled}
                           change={() => toggleShortcut(shortcut)}
                         />
-                        <Button class="bits-btn bits-btn"
+                        <Button class="bits-btn"
                           size="sm"
                           variant="outline"
                           onclick={() => executeShortcut(shortcut)}
@@ -200,7 +200,7 @@ let remoteStatusVisible = $state(false);
           <div class="mt-4 p-3 bg-green-900 border border-green-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-green-400">🔗 Connected to remote control</span>
-              <Button class="bits-btn bits-btn" size="sm" variant="outline" onclick={() => remoteStatusVisible = true}>
+              <Button class="bits-btn" size="sm" variant="outline" onclick={() => remoteStatusVisible = true}>
                 View Status
               </Button>
             </div>
@@ -209,7 +209,7 @@ let remoteStatusVisible = $state(false);
           <div class="mt-4 p-3 bg-yellow-900 border border-yellow-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-yellow-400">⚠️ Remote control disconnected</span>
-              <Button class="bits-btn bits-btn" size="sm" variant="outline" onclick={() => keyboardShortcutsService.connectRemote()}>
+              <Button class="bits-btn" size="sm" variant="outline" onclick={() => keyboardShortcutsService.connectRemote()}>
                 Connect
               </Button>
             </div>
@@ -227,7 +227,7 @@ let remoteStatusVisible = $state(false);
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold text-green-400">📡 Remote Control Status</h2>
-          <Button class="bits-btn bits-btn" variant="ghost" onclick={() => remoteStatusVisible = false}>
+          <Button class="bits-btn" variant="ghost" onclick={() => remoteStatusVisible = false}>
             ✕
           </Button>
         </div>
@@ -276,16 +276,16 @@ let remoteStatusVisible = $state(false);
         <!-- Controls -->
         <div class="flex gap-2">
           {#if $isRemoteConnected}
-            <Button class="bits-btn bits-btn" variant="outline" onclick={() => keyboardShortcutsService.disconnectRemote()}>
+            <Button class="bits-btn" variant="outline" onclick={() => keyboardShortcutsService.disconnectRemote()}>
               Disconnect
             </Button>
           {:else}
-            <Button class="bits-btn bits-btn" onclick={() => keyboardShortcutsService.connectRemote()}>
+            <Button class="bits-btn" onclick={() => keyboardShortcutsService.connectRemote()}>
               Reconnect
             </Button>
           {/if}
 
-          <Button class="bits-btn bits-btn" variant="outline" onclick={() => $remoteCommands.length && remoteCommands.set([])}>
+          <Button class="bits-btn" variant="outline" onclick={() => $remoteCommands.length && remoteCommands.set([])}>
             Clear History
           </Button>
         </div>

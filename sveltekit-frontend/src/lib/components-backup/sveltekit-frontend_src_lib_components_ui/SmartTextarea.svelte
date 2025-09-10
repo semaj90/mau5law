@@ -189,3 +189,4 @@
   .smart-textarea-container:hover::after { opacity: 1;
  }
 </style>
+

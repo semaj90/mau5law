@@ -111,21 +111,21 @@
   <!-- Demo Mode Selector -->
   <div class="flex justify-center">
     <div class="flex gap-2 p-1 bg-gray-100 rounded-lg">
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant={selectedDemo === 'single' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'single'}
       >
         Single Workflow
       </Button>
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant={selectedDemo === 'multiple' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'multiple'}
       >
         Multiple Sessions
       </Button>
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant={selectedDemo === 'dashboard' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'dashboard'}
@@ -182,7 +182,7 @@
                 <label for="auto-refresh" class="text-sm font-normal">
                   Auto-refresh
                 </label>
-                <Button class="bits-btn bits-btn" onclick={loadActiveSessions} variant="outline" size="sm">
+                <Button class="bits-btn" onclick={loadActiveSessions} variant="outline" size="sm">
                   Refresh
                 </Button>
               </div>
@@ -221,7 +221,7 @@
                           style="width: {session.progress}%"
                         ></div>
                       </div>
-                      <Button class="bits-btn bits-btn"
+                      <Button class="bits-btn"
                         onclick={() => cancelSession(session.evidenceId)}
                         variant="outline"
                         size="sm"

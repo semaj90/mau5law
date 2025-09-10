@@ -212,7 +212,7 @@
     </div>
     
     <div class="mode-controls">
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant={currentMode === 'evidence' ? 'default' : 'outline'}
         size="sm"
         onclick={() => switchMode('evidence')}
@@ -221,7 +221,7 @@
         📁 Evidence Only
       </Button>
       
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant={currentMode === 'drawing' ? 'default' : 'outline'}
         size="sm" 
         onclick={() => switchMode('drawing')}
@@ -230,7 +230,7 @@
         🎨 Drawing Only
       </Button>
       
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant={currentMode === 'both' ? 'default' : 'outline'}
         size="sm"
         onclick={() => switchMode('both')}

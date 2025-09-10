@@ -113,7 +113,7 @@
         <CardHeader>
           <CardTitle class="text-lg flex items-center justify-between">
             🔍 Tensor Search
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="outline"
               onclick={() => showAdvanced = !showAdvanced}
               class="text-xs px-2 py-1"

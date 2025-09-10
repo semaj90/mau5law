@@ -24,3 +24,4 @@
 		/>
 	</Slider.Root>
 </div>
+

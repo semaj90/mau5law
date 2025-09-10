@@ -12,3 +12,4 @@
 <thead class={cn("[&_tr]:border-b", className)} {...restProps}>
 	{@render children?.()}
 </thead>
+

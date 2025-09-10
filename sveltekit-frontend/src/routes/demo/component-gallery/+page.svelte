@@ -256,12 +256,12 @@
               <div class="button-group">
                 <Button class="yorha-btn-primary bits-btn bits-btn">Primary Action</Button>
                 <Button class="yorha-btn-secondary bits-btn bits-btn">Secondary</Button>
-                <Button class="bits-btn bits-btn" disabled>Disabled</Button>
+                <Button class="bits-btn" disabled>Disabled</Button>
               </div>
               <div class="button-group">
-                <Button class="bits-btn bits-btn" size="sm">Small</Button>
-                <Button class="bits-btn bits-btn" size="md">Medium</Button>
-                <Button class="bits-btn bits-btn" size="lg">Large</Button>
+                <Button class="bits-btn" size="sm">Small</Button>
+                <Button class="bits-btn" size="md">Medium</Button>
+                <Button class="bits-btn" size="lg">Large</Button>
               </div>
             </CardContent>
           </Card>

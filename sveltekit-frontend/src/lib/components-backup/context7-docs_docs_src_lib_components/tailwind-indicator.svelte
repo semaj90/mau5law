@@ -8,3 +8,4 @@
 	<div class="hidden xl:block 2xl:hidden">xl</div>
 	<div class="hidden 2xl:block">2xl</div>
 </div>
+

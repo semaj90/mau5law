@@ -87,7 +87,7 @@ let type = $state('');
         <!-- Add other view-only fields as needed -->
       </div>
       <div class="flex gap-2 mt-2">
-        <Button class="bits-btn bits-btn" on:onclick={handleEdit}>Edit</Button>
+        <Button class="bits-btn" on:onclick={handleEdit}>Edit</Button>
       </div>
     {:else}
       <form class="flex flex-col gap-2" onsubmit|preventDefault={handleSave}>
@@ -97,12 +97,12 @@ let type = $state('');
         <input name="jsonData.type" bind:value={type} placeholder="Type" class="input input-bordered" />
         <div class="flex gap-2 mt-2">
           <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">Save</Button>
-          <Button class="bits-btn bits-btn" variant="outline" on:onclick={handleCancel}>Cancel</Button>
+          <Button class="bits-btn" variant="outline" on:onclick={handleCancel}>Cancel</Button>
         </div>
       </form>
     {/if}
     <div class="mt-4 flex justify-end">
-      <Button class="bits-btn bits-btn" on:onclick={() => (open = false)} variant="ghost">Close</Button>
+      <Button class="bits-btn" on:onclick={() => (open = false)} variant="ghost">Close</Button>
     </div>
   </div>
 </Dialog>
@@ -119,4 +119,5 @@ let type = $state('');
     font-size: 1rem;
   }
 </style>
+
 

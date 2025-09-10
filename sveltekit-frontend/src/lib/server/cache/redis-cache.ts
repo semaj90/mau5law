@@ -1,11 +1,11 @@
 // Lightweight Redis JSON cache helper (ioredis) with safe fallbacks.
-// Standardizes on REDIS_URL or localhost:4005.
+// Standardizes on REDIS_URL or localhost:6379.
 
 let client: any | null = null;
 const pending = new Map<string, Promise<any>>();
 
 function getRedisUrl() {
-  return process.env.REDIS_URL || 'redis://localhost:4005';
+  return process.env.REDIS_URL || 'redis://localhost:6379';
 }
 
 async function ensureClient() {

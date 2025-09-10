@@ -248,7 +248,7 @@ let searchInput = $state<HTMLInputElement>();
         </select>
 
         <!-- Sort direction -->
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="secondary"
           size="sm"
           onclick={() => toggleSort(sortBy)}
@@ -262,7 +262,7 @@ let searchInput = $state<HTMLInputElement>();
         </Button>
 
         <!-- View mode toggle -->
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="secondary"
           size="sm"
           onclick={() => toggleViewMode()}
@@ -284,7 +284,7 @@ let searchInput = $state<HTMLInputElement>();
           {selectedItems.size} item{selectedItems.size !== 1 ? "s" : ""} selected
         </span>
         <div class="flex items-center gap-2">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="secondary"
             size="sm"
             onclick={() => clearSelection()}
@@ -315,7 +315,7 @@ let searchInput = $state<HTMLInputElement>();
     <div class="text-center py-12">
       <div class="text-red-600 dark:text-red-400 mb-2">Error loading evidence</div>
       <p class="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="secondary"
         size="sm"
         onclick={() => evidenceActions.loadEvidence(caseId)}
@@ -534,3 +534,4 @@ let searchInput = $state<HTMLInputElement>();
     overflow: hidden;
 }
 </style>
+

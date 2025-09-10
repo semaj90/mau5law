@@ -55,11 +55,7 @@ class RedisService {
   async initialize(): Promise<boolean> {
     try {
       // Prevent multiple initialization attempts
-      if (
-        this.initialized ||
-        this.pool?.primary?.status === 'connecting' ||
-        this.pool?.primary?.status === 'connected'
-      ) {
+      if (this.initialized || this.pool?.primary?.status === 'connecting' || this.pool?.primary?.status === 'connected') {
         console.log('[RedisService] Already initialized or connecting');
         return this.initialized;
       }

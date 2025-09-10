@@ -404,3 +404,4 @@ import type { User } from '$lib/types/user';
       margin: 0 0.5rem;
 }}
 </style>
+

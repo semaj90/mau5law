@@ -280,7 +280,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     </div>
     
     <div class="flex items-center gap-2">
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         size="sm"
         onclick={refreshStatus}
@@ -290,7 +290,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
         Refresh
       </Button>
       
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         size="sm"
         onclick={() => showSettings = !showSettings}
@@ -299,7 +299,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       </Button>
       
       {#if !isInitialized}
-        <Button class="bits-btn bits-btn" onclick={initializeOrchestrator} disabled={isProcessing}>
+        <Button class="bits-btn" onclick={initializeOrchestrator} disabled={isProcessing}>
           <Play class="h-4 w-4 mr-2" />
           Initialize
         </Button>
@@ -420,7 +420,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             <Activity class="h-5 w-5" />
             Active Tasks ({activeTasks.size})
           </span>
-          <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={clearCompletedTasks}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={clearCompletedTasks}>
             Clear Completed
           </Button>
         </CardTitle>
@@ -444,7 +444,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
               
               <div class="flex items-center gap-2">
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{task.priority}</span>
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => cancelTask(taskId)}

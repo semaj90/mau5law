@@ -279,38 +279,33 @@ class IntelligentModelSwitcher {
       console.log(`🔄 Executing switch: ${fromModel} -> ${toModel}`);
       
       // Use unified orchestrator to perform the switch
-      const switchResult = await unifiedClientLLMOrchestrator.sendWorkerMessage(
-        unifiedClientLLMOrchestrator.activeWorkers.get('llama-rl')!,
+      await (unifiedClientLLMOrchestrator as any).performContextSwitch(
+        fromModel,
+        toModel,
         {
-          type: 'SWITCH_MODEL',
-          data: {
-            targetModel: toModel,
-            userContext
-          }
+          text: userContext || '',
+          type: 'legal-analysis',
+          priority: 'normal'
         }
       );
       
       const switchTime = performance.now() - startTime;
       
-      if (switchResult.success) {
-        // Update performance monitoring
-        this.performanceMonitor.totalSwitches++;
-        this.performanceMonitor.successfulSwitches++;
-        this.performanceMonitor.avgSwitchTime = 
-          (this.performanceMonitor.avgSwitchTime + switchTime) / 2;
-        
-        console.log(`✅ Model switch completed in ${switchTime.toFixed(2)}ms`);
-        return { success: true, switchTime };
-      } else {
-        throw new Error(switchResult.error || 'Switch failed');
-      }
+      // Update performance monitoring
+      this.performanceMonitor.totalSwitches++;
+      this.performanceMonitor.successfulSwitches++;
+      this.performanceMonitor.avgSwitchTime = 
+        (this.performanceMonitor.avgSwitchTime + switchTime) / 2;
       
-    } catch (error) {
+      console.log(`✅ Model switch completed in ${switchTime.toFixed(2)}ms`);
+      return { success: true, switchTime };
+      
+    } catch (error: any) {
       console.error(`❌ Model switch failed: ${fromModel} -> ${toModel}`, error);
       return {
         success: false,
         switchTime: performance.now() - startTime,
-        error: error.message
+        error: error?.message || 'Unknown error'
       };
     }
   }
@@ -550,7 +545,7 @@ class IntelligentModelSwitcher {
     cpuUsage: number;
   }> {
     // Estimated switch costs - would measure actual performance
-    const switchCosts = {
+    const switchCosts: Record<string, { timeMs: number; memoryMB: number; cpuUsage: number }> = {
       'gemma270m->llama-rl': { timeMs: 200, memoryMB: 1024, cpuUsage: 60 },
       'llama-rl->gemma270m': { timeMs: 100, memoryMB: -1024, cpuUsage: 40 },
       'gemma270m->legal-bert': { timeMs: 50, memoryMB: -512, cpuUsage: 20 },

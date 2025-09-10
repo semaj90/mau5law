@@ -1,154 +1,135 @@
+/**
+ * Semantic Search API - pgvector + Gemma Embeddings Integration
+ * 
+ * @module SemanticSearchAPI - pgvector cosine similarity search on PostgreSQL with Gemma embeddings for legal context
+ * @module GemmaEmbeddingService - Generate 768-dimensional vectors using embeddinggemma:latest via Ollama
+ * @module LegalRelevanceReranker - Legal-specific result reranking with keyword boosting and recency scoring
+ * @module VectorSimilaritySearch - Multi-table vector search across evidence, cases, and legal documents
+ * @module EmbeddingSearchCache - In-memory caching for embedding performance (Redis alternative)
+ */
 
-import { json } from "@sveltejs/kit";
-import { db } from "$lib/server/db/pg";
-import { sql } from "drizzle-orm";
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { legalDocuments } from "$lib/server/db/schema-postgres";
-import { nomicEmbeddings } from "$lib/services/nomic-embedding-service";
+import { db, evidence, cases, legalDocuments, evidenceVectors, caseEmbeddings, embeddingCache } from '$lib/server/db/client.js';
+import { sql, eq } from 'drizzle-orm';
 
-// Use Nomic embeddings with 768 dimensions (Nomic's default)
-const EMBEDDING_DIMENSION = 768;
+const EmbeddingSearchCache = new Map();
+const SEARCH_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
-import { enhancedSearchWithNeo4j, type UserContext, type Neo4jPathContext } from "$lib/ai/custom-reranker";
-import { mcpContext72GetLibraryDocs } from "$lib/mcp-context72-get-library-docs";
-import { URL } from "url";
-
-export const POST: RequestHandler = async ({ request }) => {
-  const {
-    query,
-    userContext = {},
-    neo4jContext = {},
-    limit = 10,
-    threshold = 0.3,
-  } = await request.json();
-
-  if (!query) {
-    return json({ error: "Query is required" }, { status: 400 });
-  }
-
+async function generateGemmaEmbedding(text: string): Promise<number[]> {
   try {
-    // Use enhanced reranker with Neo4j context if provided
-    const reranked = await enhancedSearchWithNeo4j(
-      query,
-      userContext as UserContext,
-      neo4jContext as Neo4jPathContext,
-      limit * 2
-    );
-    // Enrich with memory and docs for final scoring
-    const memory = await accessMemoryMCP(query, userContext);
-    const docs = await mcpContext72GetLibraryDocs("svelte", "runes");
-    // Final scoring pass
-    const filteredResults = reranked
-      .map((result) => {
-        let score = result.rerankScore;
-        if (memory.some((m) => m.relatedId === result.id)) score += 1;
-        if (docs && docs.includes(result.intent)) score += 1;
-        return { ...result, finalScore: score };
+    const response = await fetch('http://localhost:11434/api/embeddings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'embeddinggemma:latest',
+        prompt: text
       })
-      .filter((result) => (result.confidence ?? 0) / 100 >= threshold)
-      .sort((a, b) => b.finalScore - a.finalScore)
-      .slice(0, limit)
-      .map((result) => ({
-        id: result.id,
-        title: result.metadata?.title || "",
-        documentType: result.metadata?.documentType || "",
-        content: result.content,
-        similarity: result.confidence / 100,
-        caseId: result.metadata?.caseId || "",
-        rerankScore: result.rerankScore,
-        finalScore: result.finalScore,
-        intent: result.intent,
-        timeOfDay: result.timeOfDay,
-        position: result.position,
-      }));
-
-    // Analytics logging (async, non-blocking)
-    analyticsLog({
-      event: "semantic_search",
-      query,
-      userContext,
-      neo4jContext,
-      results: filteredResults.map((r) => r.id),
-      timestamp: Date.now(),
     });
-
-    return json({
-      success: true,
-      results: filteredResults,
-      total: filteredResults.length,
-      query,
-      options: { limit, threshold },
-    });
-  } catch (error: any) {
-    console.error("Semantic search error:", error);
-    analyticsLog({
-      event: "semantic_search_error",
-      query,
-      error: error.message,
-      timestamp: Date.now(),
-    });
-    return json(
-      { error: "Failed to perform semantic search", success: false },
-      { status: 500 }
-    );
+    
+    if (!response.ok) throw new Error(`Ollama embedding failed: ${response.statusText}`);
+    const result = await response.json();
+    return result.embedding;
+  } catch (error) {
+    console.error('GemmaEmbeddingService error:', error);
+    return new Array(768).fill(0);
   }
-};
+}
+
+function rerankLegalResults(results: any[], query: string): any[] {
+  return results.map(result => {
+    let boost = 0;
+    const content = (result.content || result.title || '').toLowerCase();
+    const queryLower = query.toLowerCase();
+    
+    ['evidence', 'case', 'court', 'legal', 'law', 'precedent'].forEach(keyword => {
+      if (content.includes(keyword) && queryLower.includes(keyword)) boost += 0.1;
+    });
+    
+    if (result.table === 'evidence') boost += 0.15;
+    if (result.table === 'cases') boost += 0.1;
+    
+    return {
+      ...result,
+      legal_relevance_score: Math.min(result.similarity + boost, 1.0)
+    };
+  }).sort((a, b) => b.legal_relevance_score - a.legal_relevance_score);
+}
+
+async function performVectorSearch(embedding: number[], limit: number = 20, threshold: number = 0.7): Promise<any[]> {
+  const embeddingStr = `[${embedding.join(',')}]`;
+  
+  try {
+    const evidenceResults = await db.execute(sql`
+      SELECT ev.id, ev.content, e.title, e.evidence_type, e.created_at, 'evidence' as table_type,
+             1 - (ev.embedding <=> ${embeddingStr}::vector) as similarity
+      FROM evidence_vectors ev JOIN evidence e ON ev.evidence_id = e.id
+      WHERE 1 - (ev.embedding <=> ${embeddingStr}::vector) > ${threshold}
+      ORDER BY ev.embedding <=> ${embeddingStr}::vector LIMIT ${Math.ceil(limit / 2)}
+    `);
+
+    const caseResults = await db.execute(sql`
+      SELECT ce.id, ce.content, c.title, c.case_number, c.created_at, 'cases' as table_type,
+             1 - (ce.embedding <=> ${embeddingStr}::vector) as similarity
+      FROM case_embeddings ce JOIN cases c ON ce.case_id = c.id
+      WHERE 1 - (ce.embedding <=> ${embeddingStr}::vector) > ${threshold}
+      ORDER BY ce.embedding <=> ${embeddingStr}::vector LIMIT ${Math.ceil(limit / 2)}
+    `);
+
+    return [...evidenceResults.rows, ...caseResults.rows]
+      .map(row => ({
+        id: row.id,
+        content: row.content,
+        title: row.title,
+        table: row.table_type,
+        similarity: Number(row.similarity),
+        created_at: row.created_at
+      }))
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, limit);
+  } catch (error) {
+    console.error('VectorSimilaritySearch error:', error);
+    return [];
+  }
+}
 
 export const GET: RequestHandler = async ({ url }) => {
-  const query = url.searchParams.get("q");
-  const limit = parseInt(url.searchParams.get("limit") || "10");
-  const threshold = parseFloat(url.searchParams.get("threshold") || "0.3");
-
-  if (!query) {
-    return json({ error: "Query parameter 'q' is required" }, { status: 400 });
-  }
-
   try {
-    // Generate embedding for the query using Nomic
-    const embeddingResult = await nomicEmbeddings.embed(query);
-    const queryEmbedding = embeddingResult.embedding;
-    const embeddingString = `[${queryEmbedding.join(",")}]`;
+    const query = url.searchParams.get('q');
+    const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+    const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
 
-    // Perform vector similarity search
-    const results = await db
-      .select({
-        id: legalDocuments.id,
-        title: legalDocuments.title,
-        documentType: legalDocuments.documentType,
-        summary: legalDocuments.summary,
-        fullText: legalDocuments.fullText,
-        caseId: legalDocuments.caseId,
-        similarity: sql<number>`1 - (embedding <=> ${embeddingString}::vector)`,
-      })
-      .from(legalDocuments)
-      .where(sql`embedding IS NOT NULL AND is_active = true`)
-      .orderBy(sql`embedding <=> ${embeddingString}::vector`)
-      .limit(limit);
+    if (!query?.trim()) {
+      return json({ success: false, error: 'Query parameter "q" is required' }, { status: 400 });
+    }
 
-    // Filter by similarity threshold
-    const filteredResults = results
-      .filter((result) => result.similarity >= threshold)
-      .map((result) => ({
-        id: result.id,
-        title: result.title,
-        documentType: result.documentType,
-        content: result.summary || result.fullText || "",
-        similarity: result.similarity,
-        caseId: result.caseId,
-      }));
+    const cacheKey = `${query.trim()}:${limit}:${threshold}`;
+    const cached = EmbeddingSearchCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < SEARCH_CACHE_TTL) {
+      return json({ success: true, results: cached.results, cached: true });
+    }
+
+    const startTime = Date.now();
+    const queryEmbedding = await generateGemmaEmbedding(query.trim());
+    const rawResults = await performVectorSearch(queryEmbedding, limit, threshold);
+    const rerankedResults = rerankLegalResults(rawResults, query.trim());
+
+    EmbeddingSearchCache.set(cacheKey, { results: rerankedResults, timestamp: Date.now() });
 
     return json({
       success: true,
-      results: filteredResults,
-      total: filteredResults.length,
-      query,
-      options: { limit, threshold },
+      results: rerankedResults,
+      query: query.trim(),
+      total_results: rerankedResults.length,
+      total_time_ms: Date.now() - startTime,
+      search_metadata: {
+        embedding_model: 'embeddinggemma:latest',
+        reranker: 'legal_relevance_v1',
+        threshold_used: threshold
+      }
     });
-  } catch (error: any) {
-    console.error("Semantic search GET error:", error);
-    return json(
-      { error: "Failed to perform semantic search", success: false },
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error('SemanticSearchHandler error:', error);
+    return json({ success: false, error: 'Semantic search failed' }, { status: 500 });
   }
 };

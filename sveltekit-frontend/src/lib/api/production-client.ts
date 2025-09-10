@@ -225,13 +225,19 @@ export class ProductionAPIClient {
     };
   }
 
-  async getClusterStatus(): Promise<{
+  async getClusterStatus(this: ProductionAPIClient): Promise<{
     health: Awaited<ReturnType<typeof productionServiceRegistry.getClusterHealth>>;
-    metrics: Record<string, ReturnType<typeof this.getRouteMetrics>>;
+    metrics: Record<string, {
+      count: number;
+      avgLatency: number;
+      p95Latency: number;
+      minLatency: number;
+      maxLatency: number;
+    }>;
     activeRoutes: string[];
   }> {
     const health = await productionServiceRegistry.getClusterHealth();
-    const activeRoutes = Array.from(this.requestMetrics.keys());
+    const activeRoutes: string[] = Array.from(this.requestMetrics.keys());
     const metrics = Object.fromEntries(
       activeRoutes.map(route => [route, this.getRouteMetrics(route)])
     );

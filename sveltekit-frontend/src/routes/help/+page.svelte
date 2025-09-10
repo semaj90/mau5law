@@ -623,7 +623,7 @@ Build on previous responses:
                         .substring(0, 200)}...
                     </div>
 
-                    <Button class="bits-btn bits-btn" variant="outline" size="sm">
+                    <Button class="bits-btn" variant="outline" size="sm">
                       <Book class="h-4 w-4 mr-2" />
                       Read Full Article
                       <ArrowRight class="h-4 w-4 ml-2" />
@@ -683,11 +683,11 @@ Build on previous responses:
               help you succeed.
             </p>
             <div class="flex gap-3">
-              <Button class="bits-btn bits-btn" variant="outline" size="sm">
+              <Button class="bits-btn" variant="outline" size="sm">
                 <MessageSquare class="h-4 w-4 mr-2" />
                 Start Live Chat
               </Button>
-              <Button class="bits-btn bits-btn" variant="outline" size="sm">
+              <Button class="bits-btn" variant="outline" size="sm">
                 <ExternalLink class="h-4 w-4 mr-2" />
                 Submit Ticket
               </Button>
@@ -727,3 +727,4 @@ Build on previous responses:
     margin-bottom: 0.5rem;
   }
 </style>
+

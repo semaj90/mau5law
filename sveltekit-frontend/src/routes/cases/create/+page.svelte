@@ -106,7 +106,7 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
   <div class="mb-8">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="ghost"
           size="sm"
           onclick={() => goto('/cases')}
@@ -134,7 +134,7 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
       <!-- Quick Actions -->
       <div class="flex items-center space-x-3">
         {#if !data.editMode}
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             onclick={() => goto('/cases/templates')}
             class="flex items-center space-x-2"

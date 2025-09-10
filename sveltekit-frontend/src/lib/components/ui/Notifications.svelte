@@ -85,7 +85,7 @@
           {#if notification.actions && notification.actions.length > 0}
             <div class="space-y-4">
               {#each notification.actions as action}
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   size="sm"
                   variant={action.variant || "secondary"}
                   on:onclick={() => handleAction(notification, action)}
@@ -135,5 +135,6 @@
       width: 0%;
 }}
 </style>
+
 
 

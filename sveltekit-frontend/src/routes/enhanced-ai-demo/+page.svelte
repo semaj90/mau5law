@@ -177,7 +177,7 @@
               {processingStatus === 'processing' ? 'Analyzing...' : 'Analyze with AI'}
             </Button>
 
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="outline"
               onclick={handleClear}
               disabled={processingStatus === 'processing'}>
@@ -321,3 +321,4 @@
     </Card>
   </main>
 </div>
+

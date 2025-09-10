@@ -65,7 +65,7 @@
         {/if}
       </p>
     </div>
-  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleClear}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={handleClear}>
       Clear Chat
     </Button>
   </div>
@@ -103,7 +103,7 @@
         disabled={$state.matches('loading')}
         class="flex-1"
       />
-      <Button class="bits-btn bits-btn" type="submit" disabled={$state.matches('loading') || !userInput.trim()}>
+      <Button class="bits-btn" type="submit" disabled={$state.matches('loading') || !userInput.trim()}>
         {$state.matches('loading') ? 'Thinking...' : 'Send'}
       </Button>
     </form>
@@ -175,5 +175,6 @@
     }
   }
 </style>
+
 
 

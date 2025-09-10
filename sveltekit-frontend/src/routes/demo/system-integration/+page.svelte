@@ -23,10 +23,77 @@
   import { systemIntegration } from '$lib/services/system-integration.js';
   import { globalGPUCache } from '$lib/services/rag-minio-gpu-som-cache.js';
 
+  // ----------------------
+  // Type Definitions
+  // ----------------------
+  type IntegrationStatus = 'healthy' | 'degraded' | 'critical' | 'initializing';
+
+  interface SystemStats {
+    minioHealth: boolean;
+    postgresHealth: boolean;
+    redisHealth: boolean;
+    context7Health: boolean;
+    totalDocuments: number;
+    cacheHitRate: number; // 0-1 float
+    avgQueryTime: number; // ms
+    integrationStatus: IntegrationStatus;
+  }
+
+  interface CacheStats {
+    l1Size: number;
+    l2Size: number;
+    l3Size: number;
+    hitRate: number; // 0-1
+    totalRequests: number;
+    avgResponseTime: number; // ms
+  }
+
+  interface SOMNode {
+    clusterId: number;
+    docCount: number;
+  }
+
+  interface EvidenceBase {
+    id: string;
+    title: string;
+    position: { x: number; y: number };
+    size: { width: number; height: number };
+  }
+
+  interface DocumentEvidence extends EvidenceBase {
+    type: 'document';
+    content: string;
+    metadata: { pages?: number; signed?: boolean; [k: string]: unknown };
+  }
+
+  interface ImageEvidence extends EvidenceBase {
+    type: 'image';
+    url: string;
+    thumbnail?: string;
+    metadata: { timestamp?: string; [k: string]: unknown };
+  }
+
+  interface NoteEvidence extends EvidenceBase {
+    type: 'note';
+    content: string;
+    metadata: { author?: string; [k: string]: unknown };
+  }
+
+  type EvidenceItem = DocumentEvidence | ImageEvidence | NoteEvidence;
+
+  interface SearchResult {
+    id?: string;
+    title: string;
+    content: string;
+    similarity: number; // 0-1
+    source?: string;
+    url?: string;
+  }
+
   // Demo state management
-  let activeTab = 'overview';
-  let isSystemReady = false;
-  let systemStats = $state({
+  let activeTab = $state<string>('overview');
+  let isSystemReady = $state(false);
+  let systemStats: SystemStats = $state({
     minioHealth: false,
     postgresHealth: false,
     redisHealth: false,
@@ -34,19 +101,19 @@
     totalDocuments: 0,
     cacheHitRate: 0,
     avgQueryTime: 0,
-    integrationStatus: 'initializing' as 'healthy' | 'degraded' | 'critical' | 'initializing'
-  });
+    integrationStatus: 'initializing'
+  } as SystemStats);
 
   // Evidence processing demo
-  let selectedFiles: FileList | null = null;
-  let processingProgress = 0;
-  let searchQuery = '';
-  let searchResults = $state([]);
-  let isSearching = false;
+  let selectedFiles = $state<FileList | null>(null);
+  let processingProgress = $state(0);
+  let searchQuery = $state('');
+  let searchResults: SearchResult[] = $state([] as SearchResult[]);
+  let isSearching = $state(false);
 
   // Canvas demo
-  let canvasComponent: any;
-  let evidenceItems = $state([
+  let canvasComponent = $state<{ addEvidence: (evidence: EvidenceItem) => void } | null>(null);
+  let evidenceItems: EvidenceItem[] = $state([
     {
       id: 'doc-1',
       type: 'document' as const,
@@ -75,18 +142,18 @@
       size: { width: 200, height: 150 },
       metadata: { author: 'Det. Smith' }
     }
-  ]);
+  ] as EvidenceItem[]);
 
   // GPU Cache visualization
-  let somVisualization = $state([]);
-  let cacheStats = $state({
+  let somVisualization: SOMNode[] = $state([] as SOMNode[]);
+  let cacheStats: CacheStats = $state({
     l1Size: 0,
     l2Size: 0,
     l3Size: 0,
     hitRate: 0,
     totalRequests: 0,
     avgResponseTime: 0
-  });
+  } as CacheStats);
 
   onMount(async () => {
     await initializeSystem();
@@ -261,7 +328,7 @@
   /**
    * Add evidence to canvas
    */
-  function addEvidenceToCanvas(evidence: any) {
+  function addEvidenceToCanvas(evidence: EvidenceItem) {
     if (canvasComponent) {
       canvasComponent.addEvidence(evidence);
     }
@@ -1499,3 +1566,4 @@
     }
   }
 </style>
+

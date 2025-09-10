@@ -350,7 +350,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                 </Badge>
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{example.platform}</span>
               </div>
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 size="sm"
                 variant="outline"
                 on:onclick={() => executeExample(example)}
@@ -461,7 +461,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           {/if}
         </Button>
 
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           on:onclick={executeViaAPI}
           disabled={isProcessing || !userPrompt.trim()}
@@ -470,10 +470,10 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
         </Button>
 
         {#if currentResult}
-          <Button class="bits-btn bits-btn" variant="outline" on:onclick={downloadResult}>
+          <Button class="bits-btn" variant="outline" on:onclick={downloadResult}>
             <Download class="h-4 w-4" />
           </Button>
-          <Button class="bits-btn bits-btn" variant="outline" on:onclick={clearResults}>
+          <Button class="bits-btn" variant="outline" on:onclick={clearResults}>
             <RefreshCw class="h-4 w-4" />
           </Button>
         {/if}

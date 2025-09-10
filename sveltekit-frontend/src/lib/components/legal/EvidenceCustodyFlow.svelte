@@ -346,7 +346,7 @@ and AI-powered verification features.
                 <FileCheck class="w-5 h-5 mr-2" />
                 Integrity Verification
               </div>
-              <Button class="bits-btn bits-btn" 
+              <Button class="bits-btn" 
                 variant="outline" 
                 size="sm"
                 onclick={() => showIntegrityDetails = !showIntegrityDetails}
@@ -395,10 +395,10 @@ and AI-powered verification features.
           <CardContent class="space-y-4">
             {#if currentState.value === 'awaitingApproval'}
               <div class="flex space-x-3">
-                <Button class="bits-btn bits-btn" onclick={approveWorkflow} variant="success">
+                <Button class="bits-btn" onclick={approveWorkflow} variant="success">
                   Approve Custody
                 </Button>
-                <Button class="bits-btn bits-btn" onclick={rejectWorkflow} variant="destructive">
+                <Button class="bits-btn" onclick={rejectWorkflow} variant="destructive">
                   Reject Custody
                 </Button>
               </div>
@@ -406,15 +406,15 @@ and AI-powered verification features.
 
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
-                <Button class="bits-btn bits-btn" onclick={() => showTransferDialog = true} variant="outline">
+                <Button class="bits-btn" onclick={() => showTransferDialog = true} variant="outline">
                   Transfer Custody
                 </Button>
                 {#if !activeCollaborators.includes(userId)}
-                  <Button class="bits-btn bits-btn" onclick={joinCollaboration} variant="outline">
+                  <Button class="bits-btn" onclick={joinCollaboration} variant="outline">
                     Join Collaboration
                   </Button>
                 {:else}
-                  <Button class="bits-btn bits-btn" onclick={leaveCollaboration} variant="outline">
+                  <Button class="bits-btn" onclick={leaveCollaboration} variant="outline">
                     Leave Collaboration
                   </Button>
                 {/if}
@@ -423,10 +423,10 @@ and AI-powered verification features.
 
             {#if currentState.value === 'error'}
               <div class="flex space-x-3">
-                <Button class="bits-btn bits-btn" onclick={retryWorkflow}>
+                <Button class="bits-btn" onclick={retryWorkflow}>
                   Retry Workflow
                 </Button>
-                <Button class="bits-btn bits-btn" onclick={cancelWorkflow} variant="destructive">
+                <Button class="bits-btn" onclick={cancelWorkflow} variant="destructive">
                   Cancel Workflow
                 </Button>
               </div>
@@ -479,7 +479,7 @@ and AI-powered verification features.
           >
             Transfer
           </Button>
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             onclick={() => showTransferDialog = false}
             variant="outline"
             class="flex-1"

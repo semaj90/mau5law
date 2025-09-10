@@ -178,7 +178,7 @@
 					{#if builtInModal.actions}
 						<div class="space-y-4">
 							{#each builtInModal.actions as action}
-								<Button class="bits-btn bits-btn"
+								<Button class="bits-btn"
 									variant={action.variant}
 									on:onclick={() => action.action()}
 								>
@@ -226,6 +226,7 @@
 		background-color: #6b7280;
 }
 </style>
+
 
 
 

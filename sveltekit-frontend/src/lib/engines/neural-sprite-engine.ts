@@ -118,6 +118,12 @@ export class NeuralSpriteEngine {
   private matrixLib: MatrixTransformLib;
   private webglContext?: WebGL2RenderingContext;
 
+  // Performance metrics (NES-inspired)
+  private startTime: number = Date.now();
+  private frameCount = 0;
+  private cacheHits = 0;
+  private cacheMisses = 0;
+
   // Stores for reactive Svelte integration
   public currentState = writable<string>("idle");
   public isAnimating = writable<boolean>(false);
@@ -156,15 +162,33 @@ export class NeuralSpriteEngine {
     neuralEfficiency: 0,
   });
 
-  // Performance metrics (NES-inspired)
-  private startTime: number;
-  private frameCount = 0;
-  private cacheHits = 0;
-  private cacheMisses = 0;
 
   constructor(canvas: fabric.Canvas, maxWorkers?: number) {
     this.canvas = canvas;
     this.maxWorkers = maxWorkers || navigator.hardwareConcurrency || 4;
+    this.startTime = Date.now();
+    
+    // Initialize shader cache with defaults
+    this.shaderCache = new ShaderCache(null, {
+      enableNVIDIAOptimizations: false,
+      cacheSize: 50,
+      persistToDisk: false,
+    });
+    
+    // Initialize browser cache with defaults
+    this.browserCache = new BrowserCacheManager({
+      cachePrefix: "neural-sprite-",
+      maxCacheSize: 100 * 1024 * 1024,
+      enableCompression: true,
+      enableServiceWorkerIntegration: false,
+    });
+    
+    // Initialize matrix lib with defaults
+    this.matrixLib = new MatrixTransformLib({
+      enableGPUAcceleration: false,
+      optimizeForCSS: true,
+      cacheTransforms: true,
+    });
 
     this.initializeDatabase();
     this.initializeAIWorker();
@@ -227,36 +251,28 @@ export class NeuralSpriteEngine {
   }
 
   private initializeEnhancedCaching(): void {
-    // Initialize WebGL2 context for shader caching
-    const canvasElement = this.canvas.getElement();
-    this.webglContext = canvasElement.getContext("webgl2", {
-      preserveDrawingBuffer: true,
-      powerPreference: "high-performance", // Prefer dedicated GPU
-      antialias: false, // Disable for performance
-      alpha: false,
-    }) as WebGL2RenderingContext;
+    // Initialize WebGL2 context for shader caching (with error handling)
+    try {
+      const canvasElement = this.canvas.getElement();
+      this.webglContext = canvasElement?.getContext?.("webgl2", {
+        preserveDrawingBuffer: true,
+        powerPreference: "high-performance",
+        antialias: false,
+        alpha: false,
+      }) as WebGL2RenderingContext || undefined;
 
-    // Initialize NVIDIA shader cache (WebGL2 program caching)
-    this.shaderCache = new ShaderCache(this.webglContext, {
-      enableNVIDIAOptimizations: true,
-      cacheSize: 50, // Cache up to 50 compiled shader programs
-      persistToDisk: true, // Use browser storage for shader persistence
-    });
-
-    // Initialize browser cache manager for sprite JSON
-    this.browserCache = new BrowserCacheManager({
-      cachePrefix: "neural-sprite-",
-      maxCacheSize: 100 * 1024 * 1024, // 100MB cache limit
-      enableCompression: true,
-      enableServiceWorkerIntegration: true,
-    });
-
-    // Initialize lightweight matrix transform library (10kb)
-    this.matrixLib = new MatrixTransformLib({
-      enableGPUAcceleration: true,
-      optimizeForCSS: true,
-      cacheTransforms: true,
-    });
+      // Update shader cache with actual context
+      if (this.webglContext) {
+        this.shaderCache = new ShaderCache(this.webglContext, {
+          enableNVIDIAOptimizations: true,
+          cacheSize: 50,
+          persistToDisk: true,
+        });
+      }
+    } catch (error) {
+      console.warn("WebGL2 not available, using fallback caching");
+      this.webglContext = undefined;
+    }
   }
 
   /**

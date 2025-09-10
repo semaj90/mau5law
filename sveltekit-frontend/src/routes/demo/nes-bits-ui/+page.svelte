@@ -317,10 +317,10 @@
         <div class="tooltip-wrapper">
           <button
             class="nes-btn is-warning"
-            on:mouseenter={() => tooltipOpen = true}
-            on:mouseleave={() => tooltipOpen = false}
-            on:focus={() => tooltipOpen = true}
-            on:blur={() => tooltipOpen = false}
+            onmouseenter={() => tooltipOpen = true}
+            onmouseleave={() => tooltipOpen = false}
+            onfocus={() => tooltipOpen = true}
+            onblur={() => tooltipOpen = false}
           >
             Hover for Tooltip
           </button>

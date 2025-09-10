@@ -67,7 +67,7 @@ let copied = $state(false);
       <!-- Summary Content -->
       <div class="space-y-4">
         <div class="space-y-4">
-          <Button class="bits-btn bits-btn" on:onclick={() => copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
+          <Button class="bits-btn" on:onclick={() => copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
             <Copy class="space-y-4" />
             <span class="space-y-4">Copy</span>
           </Button>
@@ -91,7 +91,7 @@ let copied = $state(false);
 
   <Dialog.Footer>
     <Dialog.Close asChild>
-      <Button class="bits-btn bits-btn" on:onclick={() => closeModal()} variant="secondary" aria-label="Close summary modal">
+      <Button class="bits-btn" on:onclick={() => closeModal()} variant="secondary" aria-label="Close summary modal">
         <X class="space-y-4" />
         <span class="space-y-4">Close</span>
       </Button>
@@ -106,3 +106,4 @@ let copied = $state(false);
     max-width: none;
 }
 </style>
+

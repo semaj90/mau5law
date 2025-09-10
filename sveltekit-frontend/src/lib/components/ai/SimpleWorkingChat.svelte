@@ -165,7 +165,7 @@
           {getStatusText()}
         </Badge>
       </CardTitle>
-      <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={clearMessages}>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>
         Clear Chat
       </Button>
     </div>
@@ -232,7 +232,7 @@
         disabled={isLoading || connectionStatus !== 'connected'}
         class="flex-1"
       />
-      <Button class="bits-btn bits-btn" 
+      <Button class="bits-btn" 
         onclick={sendMessage}
         disabled={!inputMessage.trim() || isLoading || connectionStatus !== 'connected'}
       >

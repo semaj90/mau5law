@@ -21,32 +21,49 @@ export class GlobalLokiStore {
       this.redis = redisClient as Redis;
       // Subscribe on a duplicate connection to avoid interference
       const sub = (this.redis as any).duplicate ? (this.redis as any).duplicate() : undefined;
-      if (sub && typeof sub.connect === 'function') {
-        sub.connect().then(() => {
-          sub.subscribe(this.pubChannel, (msg: string) => {
-            try {
-              const payload = JSON.parse(msg);
-              this.applyRemoteUpdate(payload);
-            } catch (_) {}
-          });
-        }).catch(() => {});
-      } else if (sub && typeof sub.subscribe === 'function') {
-        // Older ioredis versions auto-connect
-        sub.subscribe(this.pubChannel);
-        sub.on('message', (_ch: string, msg: string) => {
+        if (sub && typeof (sub as any).connect === 'function') {
+          (sub as any)
+            .connect()
+            .then(() => {
+              try {
+                if (typeof (sub as any).subscribe === 'function') {
+                  (sub as any).subscribe(this.pubChannel);
+                }
+                if (typeof (sub as any).on === 'function') {
+                  (sub as any).on('message', (_ch: string, msg: string) => {
+                    try {
+                      const payload = JSON.parse(msg);
+                      this.applyRemoteUpdate(payload);
+                    } catch (_) {}
+                  });
+                }
+              } catch (_) {}
+            })
+            .catch(() => {});
+        } else if (sub && typeof (sub as any).subscribe === 'function') {
+          // Older ioredis versions auto-connect
           try {
-            const payload = JSON.parse(msg);
-            this.applyRemoteUpdate(payload);
-          } catch (_) {}
-        });
-      }
+            (sub as any).subscribe(this.pubChannel);
+          } catch {}
+          if (typeof (sub as any).on === 'function') {
+            (sub as any).on('message', (_ch: string, msg: string) => {
+              try {
+                const payload = JSON.parse(msg);
+                this.applyRemoteUpdate(payload);
+              } catch (_) {}
+            });
+          }
+        }
     } catch (_) {}
   }
 
   private publish(update: any) {
     try {
       if (this.redis && typeof (this.redis as any).publish === 'function') {
-        (this.redis as any).publish(this.pubChannel, JSON.stringify(update));
+          const r = this.redis as any;
+          if (r && typeof r.publish === 'function') {
+            r.publish(this.pubChannel, JSON.stringify(update));
+          }
       }
     } catch (_) {}
   }

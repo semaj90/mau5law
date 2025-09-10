@@ -16,3 +16,4 @@
 		{/each}
 	{/snippet}
 </RatingGroup.Root>
+

@@ -426,7 +426,7 @@
                       change={handleAvatarChange}
                       class="space-y-4"
                     />
-                    <Button class="bits-btn bits-btn"
+                    <Button class="bits-btn"
                       variant="outline"
                       size="sm"
                       onclick={() =>
@@ -436,7 +436,7 @@
                       Upload
                     </Button>
                     {#if avatarPreview}
-                      <Button class="bits-btn bits-btn"
+                      <Button class="bits-btn"
                         variant="outline"
                         size="sm"
                         onclick={() => clearAvatar()}
@@ -907,7 +907,7 @@
                     </select>
                   </div>
 
-                  <Button class="bits-btn bits-btn" onclick={() => exportUserData()}>
+                  <Button class="bits-btn" onclick={() => exportUserData()}>
                     <Download class="space-y-4" />
                     Export My Data
                   </Button>
@@ -966,7 +966,7 @@
                       This will reset all your preferences to default values.
                       This action cannot be undone.
                     </p>
-                    <Button class="bits-btn bits-btn"
+                    <Button class="bits-btn"
                       variant="outline"
                       onclick={() => resetToDefaults()}
                     >
@@ -987,11 +987,11 @@
               Changes are saved automatically when you update settings
             </div>
             <div class="space-y-4">
-              <Button class="bits-btn bits-btn" variant="outline" onclick={() => loadSettings()}>
+              <Button class="bits-btn" variant="outline" onclick={() => loadSettings()}>
                 <RefreshCw class="space-y-4" />
                 Reset Changes
               </Button>
-              <Button class="bits-btn bits-btn" onclick={() => saveSettings()} disabled={isSaving}>
+              <Button class="bits-btn" onclick={() => saveSettings()} disabled={isSaving}>
                 {#if isSaving}
                   <RefreshCw class="space-y-4" />
                   Saving...
@@ -1007,3 +1007,4 @@
     </div>
   </div>
 </div>
+

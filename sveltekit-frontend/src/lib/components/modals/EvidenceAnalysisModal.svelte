@@ -144,11 +144,11 @@ let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
         </div>
         
         <div class="space-y-4">
-          <Button class="bits-btn bits-btn" variant="secondary" size="sm">
+          <Button class="bits-btn" variant="secondary" size="sm">
             <Download class="space-y-4" />
             Export
           </Button>
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             variant="primary" 
             size="sm" 
             on:onclick={() => analyzeEvidence()}
@@ -285,7 +285,7 @@ let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
                 placeholder="Add tags (comma-separated)"
                 class="space-y-4"
               />
-              <Button class="bits-btn bits-btn" size="sm" on:onclick={() => updateTags()} disabled={!newTags.trim()}>
+              <Button class="bits-btn" size="sm" on:onclick={() => updateTags()} disabled={!newTags.trim()}>
                 Add
               </Button>
             </div>
@@ -313,11 +313,12 @@ let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
   {/if}
 
   <svelte:fragment slot="footer" let:close>
-    <Button class="bits-btn bits-btn" variant="secondary" on:onclick={() => close()}>
+    <Button class="bits-btn" variant="secondary" on:onclick={() => close()}>
       Close
     </Button>
-    <Button class="bits-btn bits-btn" variant="primary" on:onclick={() => onsaveAnalysis?.()}>
+    <Button class="bits-btn" variant="primary" on:onclick={() => onsaveAnalysis?.()}>
       Save Analysis
     </Button>
   </svelte:fragment>
 </Dialog>
+

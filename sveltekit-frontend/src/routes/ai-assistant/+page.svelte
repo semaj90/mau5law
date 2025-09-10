@@ -226,7 +226,7 @@
       {#snippet children()}
         <h2 class="text-xl font-semibold mb-4">Quick Legal Queries</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             onclick={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
@@ -234,7 +234,7 @@
           >
             {#snippet children()}Contract Law{/snippet}
           </Button>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
@@ -242,7 +242,7 @@
           >
             {#snippet children()}Evidence Rules{/snippet}
           </Button>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
@@ -250,7 +250,7 @@
           >
             {#snippet children()}Liability{/snippet}
           </Button>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             onclick={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
@@ -423,7 +423,7 @@
                     Refresh Status
                   {/snippet}
                 </Button>
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => window.open('/api/v1/cluster/health', '_blank')}

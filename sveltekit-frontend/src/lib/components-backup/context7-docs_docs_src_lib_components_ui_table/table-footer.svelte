@@ -12,3 +12,4 @@
 <tfoot class={cn("bg-primary text-primary-foreground font-medium", className)} {...restProps}>
 	{@render children?.()}
 </tfoot>
+

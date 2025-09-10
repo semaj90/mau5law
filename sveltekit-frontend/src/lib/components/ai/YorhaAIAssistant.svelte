@@ -999,3 +999,4 @@ let typingTimeout = $state<number;
 		animation: var(--animation-pulse);
 	}
 </style>
+

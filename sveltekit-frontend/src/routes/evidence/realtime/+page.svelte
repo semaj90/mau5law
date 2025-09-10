@@ -195,13 +195,13 @@
 
         <div class="space-y-4">
           {#if !demoMode}
-            <Button class="bits-btn bits-btn" onclick={() => startDemoMode()}>
+            <Button class="bits-btn" onclick={() => startDemoMode()}>
               <Activity class="space-y-4" />
               Start Demo
             </Button>
           {/if}
 
-          <Button class="bits-btn bits-btn" variant="outline" onclick={() => clearAllEvidence()}>
+          <Button class="bits-btn" variant="outline" onclick={() => clearAllEvidence()}>
             <Database class="space-y-4" />
             Clear All
           </Button>
@@ -538,3 +538,4 @@
     background-color: #f9fafb;
 }
 </style>
+

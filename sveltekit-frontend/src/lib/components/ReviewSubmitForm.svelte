@@ -411,3 +411,4 @@ let score = $state(0);
 </div>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

@@ -1005,3 +1005,4 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
     }
   }
 </style>
+

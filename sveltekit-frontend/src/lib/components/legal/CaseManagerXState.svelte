@@ -132,10 +132,10 @@ let fileInput = $state<HTMLInputElement;
         <h3 class="text-lg font-semibold text-red-800 mb-2">Error</h3>
         <p class="text-red-600 mb-4">{$state.context.error}</p>
         <div class="flex gap-2">
-          <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={handleRetry}>
+          <Button class="bits-btn" variant="outline" size="sm" on:onclick={handleRetry}>
             Retry
           </Button>
-          <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={handleDismissError}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:onclick={handleDismissError}>
             Dismiss
           </Button>
         </div>
@@ -297,7 +297,7 @@ let fileInput = $state<HTMLInputElement;
                   change={onFileChange}
                   class="hidden"
                 />
-                <Button class="bits-btn bits-btn" on:onclick={triggerFileUpload}>
+                <Button class="bits-btn" on:onclick={triggerFileUpload}>
                   Choose Files
                 </Button>
               </div>
@@ -317,8 +317,8 @@ let fileInput = $state<HTMLInputElement;
                             <p class="text-sm text-gray-500">{item.type}</p>
                           </div>
                           <div class="flex gap-2">
-                            <Button class="bits-btn bits-btn" size="sm" variant="outline">View</Button>
-                            <Button class="bits-btn bits-btn" size="sm" on:onclick={() => send({ type: 'SELECT_EVIDENCE', evidence: item })}>
+                            <Button class="bits-btn" size="sm" variant="outline">View</Button>
+                            <Button class="bits-btn" size="sm" on:onclick={() => send({ type: 'SELECT_EVIDENCE', evidence: item })}>
                               Select
                             </Button>
                           </div>
@@ -344,13 +344,13 @@ let fileInput = $state<HTMLInputElement;
               <div class="p-6">
                 <h3 class="text-lg font-semibold mb-4">AI Analysis</h3>
                 <div class="flex gap-3 mb-4">
-                  <Button class="bits-btn bits-btn" 
+                  <Button class="bits-btn" 
                     on:onclick={handleStartAIAnalysis}
                     disabled={!canStartAIAnalysis}
                   >
                     Start AI Analysis
                   </Button>
-                  <Button class="bits-btn bits-btn" 
+                  <Button class="bits-btn" 
                     variant="outline"
                     on:onclick={handleFindSimilarCases}
                   >
@@ -375,7 +375,7 @@ let fileInput = $state<HTMLInputElement;
                             <h5 class="font-medium">{similarCase.title}</h5>
                             <p class="text-sm text-gray-500">Similarity: {similarCase.similarity}%</p>
                           </div>
-                          <Button class="bits-btn bits-btn" size="sm" variant="outline">View</Button>
+                          <Button class="bits-btn" size="sm" variant="outline">View</Button>
                         </div>
                       {/each}
                     </div>
@@ -397,7 +397,7 @@ let fileInput = $state<HTMLInputElement;
                   placeholder="Enter search query..."
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <Button class="bits-btn bits-btn">Search</Button>
+                <Button class="bits-btn">Search</Button>
               </div>
             </div>
           </Card>

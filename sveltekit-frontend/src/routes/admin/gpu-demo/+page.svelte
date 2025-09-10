@@ -645,7 +645,7 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
 
         <!-- Visualization Controls -->
         <div class="grid grid-cols-2 gap-2">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             onclick={() => startVisualization('attentionHeatmap')}
             disabled={!isInitialized}
             variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}
@@ -653,7 +653,7 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
             Attention Heatmap
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             onclick={() => startVisualization('documentNetwork')}
             disabled={!isInitialized}
             variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}
@@ -661,7 +661,7 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
             Document Network
           </Button>
 
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               onclick={() => startVisualization('evidenceTimeline')}
               disabled={!isInitialized}
               variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}
@@ -669,7 +669,7 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
               Evidence Timeline
             </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             onclick={() => startVisualization('textFlow')}
             disabled={!isInitialized}
             variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}
@@ -794,3 +794,4 @@ let timelineData = $state<Float32Array >(new Float32Array(0));
     image-rendering: crisp-edges;
   }
 </style>
+

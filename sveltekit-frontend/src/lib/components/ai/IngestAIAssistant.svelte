@@ -254,7 +254,7 @@ let batchMode = $state(false);
     <Alert variant="destructive" class="mb-4">
       <AlertDescription class="flex items-center justify-between">
         <span>{error.message}</span>
-        <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => dismissError(error.id)}>
+        <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => dismissError(error.id)}>
           ✕
         </Button>
       </AlertDescription>
@@ -310,7 +310,7 @@ let batchMode = $state(false);
           <Label>Document Type</Label>
           <div class="grid grid-cols-2 gap-2">
             {#each documentTypes as type}
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant={selectedDocumentType === type.value ? 'default' : 'outline'}
                 size="sm"
                 on:onclick={() => selectedDocumentType = type.value}
@@ -344,7 +344,7 @@ let batchMode = $state(false);
             {$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
           </Button>
           
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             on:onclick={addToBatch}
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
@@ -381,7 +381,7 @@ let batchMode = $state(false);
                     {doc.type} • {doc.content.length} chars
                   </div>
                 </div>
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   on:onclick={() => removeFromBatch(doc.id)}
@@ -400,7 +400,7 @@ let batchMode = $state(false);
             >
               {$processingStatus === 'batch_processing' ? 'Processing Batch...' : `🔥 Process ${$batchDocuments.length} Documents`}
             </Button>
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="outline"
               on:onclick={() => batchDocuments.set([])}
               disabled={$isProcessing}

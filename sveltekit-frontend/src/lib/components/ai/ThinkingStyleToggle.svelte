@@ -245,10 +245,10 @@ let focusAreas = $state({
       </div>
 
       <div class="config-actions">
-        <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => showConfig = false}>
+        <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => showConfig = false}>
           Cancel
         </Button>
-        <Button class="bits-btn bits-btn" variant="crimson" size="sm">
+        <Button class="bits-btn" variant="crimson" size="sm">
           Save Configuration
         </Button>
       </div>
@@ -267,7 +267,7 @@ let focusAreas = $state({
           <strong>Unlock Advanced AI Reasoning</strong>
           <p>Get step-by-step legal analysis with transparent thinking process</p>
         </div>
-        <Button class="bits-btn bits-btn" variant="gold" size="sm" on:onclick={handleUpgrade}>
+        <Button class="bits-btn" variant="gold" size="sm" on:onclick={handleUpgrade}>
           Upgrade Now
         </Button>
       </div>
@@ -459,4 +459,5 @@ let focusAreas = $state({
     opacity: 0.6;
 }
 </style>
+
 

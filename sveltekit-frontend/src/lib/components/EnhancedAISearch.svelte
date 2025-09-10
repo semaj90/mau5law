@@ -180,7 +180,7 @@
         🤖 Enhanced Legal AI Search
       </h2>
 
-      <Button class="bits-btn bits-btn".Root
+      <Button class="bits-btn".Root
         on:onclick={() => (showAdvanced = !showAdvanced)}
         class="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
       >
@@ -489,3 +489,4 @@
     overflow: hidden;
   }
 </style>
+

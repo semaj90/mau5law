@@ -377,7 +377,6 @@ async function testReinforcementLearning(testResults: any): Promise<any> {
       metrics: {
         cacheHits: metrics.cacheHits,
         cacheMisses: metrics.cacheMisses,
-        reinforcementAccuracy: metrics.reinforcementAccuracy,
         preloadSuccesses: metrics.preloadSuccesses,
       },
       details: `Collected ${Object.keys(metrics).length} performance metrics`,

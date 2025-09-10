@@ -8,5 +8,5 @@
 
 <div class="p-8 bg-slate-900 text-white min-h-screen">
   <h1 class="text-2xl mb-4">Testing Existing Shadcn Button</h1>
-  <Button class="bits-btn bits-btn">Shadcn Button (Working)</Button>
+  <Button class="bits-btn">Shadcn Button (Working)</Button>
 </div>

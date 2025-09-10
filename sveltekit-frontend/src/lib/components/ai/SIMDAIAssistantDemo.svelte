@@ -373,7 +373,7 @@
         <!-- Sample Queries -->
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as sample, index}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               onclick={() => loadSampleQuery(index)}
               variant="outline"
               size="sm"
@@ -383,7 +383,7 @@
               Sample {index + 1}
             </Button>
           {/each}
-          <Button class="bits-btn bits-btn" onclick={clearConversation} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={clearConversation} variant="outline" size="sm">
             Clear All
           </Button>
         </div>
@@ -552,7 +552,7 @@
       <CardHeader>
         <CardTitle class="flex justify-between items-center">
           📝 System Logs
-          <Button class="bits-btn bits-btn" onclick={() => processingLogs = []} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={() => processingLogs = []} variant="outline" size="sm">
             Clear Logs
           </Button>
         </CardTitle>

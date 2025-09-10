@@ -45,12 +45,12 @@
 			<Card elevated class="p-6 space-y-4">
 				<h3 class="text-xl font-semibold">Enhanced Buttons</h3>
 				<div class="space-y-3">
-					<Button class="bits-btn bits-btn" variant="nier">NieR Style</Button>
-					<Button class="bits-btn bits-btn" variant="default" {loading}>
+					<Button class="bits-btn" variant="nier">NieR Style</Button>
+					<Button class="bits-btn" variant="default" {loading}>
 						{loading ? 'Processing...' : 'Default Style'}
 					</Button>
-					<Button class="bits-btn bits-btn" variant="outline" size="sm">Small Outline</Button>
-					<Button class="bits-btn bits-btn" variant="destructive" size="lg">Large Destructive</Button>
+					<Button class="bits-btn" variant="outline" size="sm">Small Outline</Button>
+					<Button class="bits-btn" variant="destructive" size="lg">Large Destructive</Button>
 				</div>
 			</Card>
 
@@ -118,7 +118,7 @@
 							required
 						/>
 					</div>
-					<Button class="bits-btn bits-btn" 
+					<Button class="bits-btn" 
 						type="submit" 
 						variant="nier" 
 						{loading}

@@ -179,7 +179,7 @@
         class="hidden"
       />
 
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         onclick={() => fileInput?.click()}
         class="mt-2"
@@ -201,7 +201,7 @@
           <p class="text-sm text-blue-600 mt-1">Evidence ID: {evidenceId}</p>
         </div>
         <div class="flex gap-2">
-          <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleReset}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
             Change File
           </Button>
           <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
@@ -268,14 +268,14 @@
 
       {#if artifactUrl}
         <div class="flex gap-2 mt-4">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => window.open(artifactUrl, '_blank')}
           >
             Download Artifact
           </Button>
-          <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleReset}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
             Process Another
           </Button>
         </div>
@@ -290,10 +290,10 @@
       <AlertDescription>
         <div class="mb-2">{error}</div>
         <div class="flex gap-2">
-          <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleRetry}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={handleRetry}>
             Retry
           </Button>
-          <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleReset}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
             Reset
           </Button>
         </div>
@@ -335,3 +335,4 @@
     }
   }
 </style>
+

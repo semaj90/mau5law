@@ -263,7 +263,7 @@
         </div>
         
         {#if trainingEnabled}
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             onclick={() => startTraining(selectedFiles)}
             class="w-full bg-green-600 hover:bg-green-700"
             disabled={currentJob?.status === 'running'}
@@ -359,22 +359,22 @@
         <!-- Training Controls -->
         <div class="flex gap-3">
           {#if currentJob.status === 'running'}
-            <Button class="bits-btn bits-btn" onclick={pauseTraining} variant="outline" size="sm">
+            <Button class="bits-btn" onclick={pauseTraining} variant="outline" size="sm">
               ⏸️ Pause
             </Button>
-            <Button class="bits-btn bits-btn" onclick={stopTraining} variant="destructive" size="sm">
+            <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">
               ⏹️ Stop
             </Button>
           {:else if currentJob.status === 'paused'}
-            <Button class="bits-btn bits-btn" onclick={resumeTraining} variant="default" size="sm">
+            <Button class="bits-btn" onclick={resumeTraining} variant="default" size="sm">
               ▶️ Resume
             </Button>
-            <Button class="bits-btn bits-btn" onclick={stopTraining} variant="destructive" size="sm">
+            <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">
               ⏹️ Stop
             </Button>
           {/if}
           
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             onclick={() => showAdvancedConfig = !showAdvancedConfig} 
             variant="ghost" 
             size="sm"

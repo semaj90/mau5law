@@ -226,3 +226,4 @@ let buttonElement = $state<HTMLButtonElement;
 		animation: float 3s linear infinite;
 	}
 </style>
+

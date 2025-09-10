@@ -259,7 +259,7 @@ export class UltimateNeuralTopologyOrchestrator {
       const result: UnifiedProcessingResult = {
         extraction: processingResults.extraction,
         predictions: {
-          nextUserActions: predictions.nextStates.map(state => ({
+          nextUserActions: predictions.nextStates.map((state: any) => ({
             action: state.state.userAction,
             probability: state.probability,
             timeEstimate: state.timeEstimate
@@ -428,7 +428,7 @@ export class UltimateNeuralTopologyOrchestrator {
           hmmSomPredictor: hmmMetrics.currentAccuracy > 80 ? 'healthy' : 'warning',
           qloraService: qloraMetrics.modelPerformance.accuracy > 75 ? 'healthy' : 'warning',
           uiCacheIndex: cacheStats.cacheHitRate > 70 ? 'healthy' : 'warning',
-          simdEngine: simdStats.memoryEfficiency > 50 ? 'healthy' : 'warning',
+          simdEngine: Number(simdStats.memoryEfficiency) > 50 ? 'healthy' : 'warning',
           webgpuOptimizer: this.webgpuDevice ? 'healthy' : 'disabled'
         },
         metrics: this.metrics
@@ -444,7 +444,7 @@ export class UltimateNeuralTopologyOrchestrator {
   private async initializeWebGPU(): Promise<void> {
     if (typeof window !== 'undefined' && 'gpu' in navigator) {
       try {
-        const adapter = await navigator.gpu.requestAdapter({
+        const adapter = await navigator.gpu?.requestAdapter({
           powerPreference: 'high-performance'
         });
         if (adapter) {
@@ -517,7 +517,12 @@ export class UltimateNeuralTopologyOrchestrator {
       cacheHitRate: this.currentState.cacheHitRate
     };
 
-    return this.hmmSomPredictor.calculateOptimalQuality(systemMetrics);
+    const result = this.hmmSomPredictor.calculateOptimalQuality(systemMetrics);
+    return {
+      tier: result.qualityTier || '16-BIT_SNES' as const,
+      targetResolution: result.targetResolution || 256,
+      enableWebGPU: !!this.webgpuDevice
+    };
   }
 
   private async applyQualityOptimizations(quality: any): Promise<void> {
@@ -833,7 +838,14 @@ export class UltimateNeuralTopologyOrchestrator {
    */
   getSystemMetrics(): {
     state: NeuralTopologyState;
-    metrics: typeof this.metrics;
+    metrics: {
+      totalRequests: number;
+      averageAccuracy: number;
+      averageProcessingTime: number;
+      cacheEfficiency: number;
+      neuralOptimizationGain: number;
+      adaptiveQualityChanges: number;
+    };
     isInitialized: boolean;
     queueDepth: number;
   } {

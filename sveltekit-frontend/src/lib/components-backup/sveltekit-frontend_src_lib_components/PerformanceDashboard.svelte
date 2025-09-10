@@ -453,3 +453,4 @@
   .text-red-600 { color: #dc2626; }
   .text-gray-600 { color: #6b7280; }
 </style>
+

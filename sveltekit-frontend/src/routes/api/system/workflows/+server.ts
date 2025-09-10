@@ -37,9 +37,13 @@ export interface WorkflowValidationResponse {
 }
 
 // Helper to run a test with timing
-async function runTest(name: string, description: string, testFn: () => Promise<any>): Promise<WorkflowTest> {
+async function runTest(
+  name: string,
+  description: string,
+  testFn: () => Promise<any>
+): Promise<WorkflowTest> {
   const startTime = Date.now();
-  
+
   try {
     const result = await testFn();
     return {
@@ -73,7 +77,7 @@ function skipTest(name: string, description: string, reason: string): WorkflowTe
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now();
   const skipIntegrationTests = url.searchParams.get('skip_integration') === 'true';
-  
+
   try {
     productionLogger.info('🔄 Running end-to-end workflow validation...');
 
@@ -84,7 +88,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'Test user registration endpoint functionality',
         async () => {
           if (!db) throw new Error('Database not available');
-          
+
           // Test user registration schema and validation
           const testUser = {
             email: `test-${Date.now()}@example.com`,
@@ -94,20 +98,20 @@ export const GET: RequestHandler = async ({ url }) => {
             role: 'prosecutor' as const,
             isActive: true,
           };
-          
+
           // Simulate user registration validation
           if (!testUser.email || !testUser.name) {
             throw new Error('Required fields missing');
           }
-          
-          return { 
+
+          return {
             message: 'User registration validation passed',
             requiredFields: ['email', 'name', 'firstName', 'lastName'],
             roles: ['admin', 'prosecutor', 'investigator'],
           };
         }
       ),
-      
+
       runTest(
         'User Authentication Flow',
         'Validate authentication system integration',
@@ -119,7 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
             '/api/auth/register',
             '/api/auth/session',
           ];
-          
+
           return {
             message: 'Authentication endpoints configured',
             endpoints: authEndpoints,
@@ -128,59 +132,51 @@ export const GET: RequestHandler = async ({ url }) => {
           };
         }
       ),
-      
-      runTest(
-        'User Profile Management',
-        'Test user profile CRUD operations',
-        async () => {
-          if (!db) throw new Error('Database not available');
-          
-          // Test database schema for user profiles
-          return {
-            message: 'User profile schema validated',
-            fields: ['id', 'email', 'name', 'firstName', 'lastName', 'avatarUrl', 'role', 'isActive'],
-            operations: ['create', 'read', 'update', 'delete'],
-            validation: 'drizzle-orm with type safety',
-          };
-        }
-      ),
+
+      runTest('User Profile Management', 'Test user profile CRUD operations', async () => {
+        if (!db) throw new Error('Database not available');
+
+        // Test database schema for user profiles
+        return {
+          message: 'User profile schema validated',
+          fields: ['id', 'email', 'name', 'firstName', 'lastName', 'avatarUrl', 'role', 'isActive'],
+          operations: ['create', 'read', 'update', 'delete'],
+          validation: 'drizzle-orm with type safety',
+        };
+      }),
     ]);
 
     // Document Processing Workflow Tests
     const documentProcessingTests: WorkflowTest[] = await Promise.all([
-      runTest(
-        'File Upload Integration',
-        'Test document upload and storage workflow',
-        async () => {
-          // Test upload service integration
-          const uploadEndpoints = [
-            '/api/upload',
-            '/api/upload/chunk',
-            '/api/upload/finalize',
-            '/api/evidence/upload',
-          ];
-          
-          return {
-            message: 'Document upload system configured',
-            endpoints: uploadEndpoints,
-            storage: 'MinIO (port 9000)',
-            processors: ['OCR', 'Text Extraction', 'Metadata Extraction'],
-            supportedFormats: ['PDF', 'DOC', 'DOCX', 'TXT', 'IMAGE'],
-          };
-        }
-      ),
-      
+      runTest('File Upload Integration', 'Test document upload and storage workflow', async () => {
+        // Test upload service integration
+        const uploadEndpoints = [
+          '/api/upload',
+          '/api/upload/chunk',
+          '/api/upload/finalize',
+          '/api/evidence/upload',
+        ];
+
+        return {
+          message: 'Document upload system configured',
+          endpoints: uploadEndpoints,
+          storage: 'MinIO (port 9000)',
+          processors: ['OCR', 'Text Extraction', 'Metadata Extraction'],
+          supportedFormats: ['PDF', 'DOC', 'DOCX', 'TXT', 'IMAGE'],
+        };
+      }),
+
       runTest(
         'Document Processing Pipeline',
         'Validate document analysis and indexing',
         async () => {
           const processingServices = [
             'Enhanced RAG (8094)',
-            'Upload Service (8093)', 
+            'Upload Service (8093)',
             'Vector Service v2.0 (8095)',
             'GPU Indexer (8220)',
           ];
-          
+
           return {
             message: 'Document processing pipeline operational',
             services: processingServices,
@@ -189,82 +185,80 @@ export const GET: RequestHandler = async ({ url }) => {
           };
         }
       ),
-      
-      runTest(
-        'Document Metadata Storage',
-        'Test legal document metadata schema',
-        async () => {
-          if (!db) throw new Error('Database not available');
-          
-          return {
-            message: 'Legal document metadata schema ready',
-            tables: ['legal_documents', 'document_analysis', 'vector_embeddings'],
-            metadata: ['case_info', 'jurisdiction', 'document_type', 'parties', 'dates'],
-            indexing: ['full-text search', 'vector similarity', 'metadata filters'],
-          };
-        }
-      ),
+
+      runTest('Document Metadata Storage', 'Test legal document metadata schema', async () => {
+        if (!db) throw new Error('Database not available');
+
+        return {
+          message: 'Legal document metadata schema ready',
+          tables: ['legal_documents', 'document_analysis', 'vector_embeddings'],
+          metadata: ['case_info', 'jurisdiction', 'document_type', 'parties', 'dates'],
+          indexing: ['full-text search', 'vector similarity', 'metadata filters'],
+        };
+      }),
     ]);
 
-    // AI Features Workflow Tests  
+    // AI Features Workflow Tests
     const aiFeatureTests: WorkflowTest[] = await Promise.all([
-      runTest(
-        'AI Chat Integration',
-        'Test AI-powered legal chat functionality',
-        async () => {
-          const aiEndpoints = [
-            '/api/ai/chat',
-            '/api/ai/analyze',
-            '/api/ai/summarize',
-            '/api/enhanced-rag',
-          ];
-          
-          return {
-            message: 'AI chat system operational',
-            endpoints: aiEndpoints,
-            models: {
-              primary: 'gemma3-legal (Ollama)',
-              embedding: 'nomic-embed-text',
-              gpu: 'RTX 3060 Ti acceleration',
-            },
-            features: ['Legal Analysis', 'Document Summarization', 'Case Research', 'Citation Generation'],
-          };
-        }
-      ),
-      
+      runTest('AI Chat Integration', 'Test AI-powered legal chat functionality', async () => {
+        const aiEndpoints = [
+          '/api/ai/chat',
+          '/api/ai/analyze',
+          '/api/ai/summarize',
+          '/api/enhanced-rag',
+        ];
+
+        return {
+          message: 'AI chat system operational',
+          endpoints: aiEndpoints,
+          models: {
+            primary: 'gemma3-legal (Ollama)',
+            embedding: 'nomic-embed-text',
+            gpu: 'RTX 3060 Ti acceleration',
+          },
+          features: [
+            'Legal Analysis',
+            'Document Summarization',
+            'Case Research',
+            'Citation Generation',
+          ],
+        };
+      }),
+
       runTest(
         'RAG System Integration',
         'Validate Retrieval-Augmented Generation workflow',
         async () => {
           return {
             message: 'RAG system fully integrated',
-            components: ['Vector Search', 'Context Retrieval', 'LLM Generation', 'Response Synthesis'],
+            components: [
+              'Vector Search',
+              'Context Retrieval',
+              'LLM Generation',
+              'Response Synthesis',
+            ],
             databases: ['PostgreSQL + pgvector', 'Qdrant', 'Neo4j'],
             performance: 'GPU-accelerated with CUDA workers',
           };
         }
       ),
-      
-      runTest(
-        'Legal AI Analysis',
-        'Test specialized legal document analysis',
-        async () => {
-          const legalFeatures = [
-            'Contract Analysis',
-            'Case Precedent Research', 
-            'Legal Entity Extraction',
-            'Risk Assessment',
-            'Citation Verification',
-          ];
-          
-          return {
-            message: 'Legal AI analysis capabilities active',
-            features: legalFeatures,
-            models: 'Domain-specific legal training',
-            accuracy: 'High confidence scoring with variance matrices',
-          };
-        }
-      ),
+
+      runTest('Legal AI Analysis', 'Test specialized legal document analysis', async () => {
+        const legalFeatures = [
+          'Contract Analysis',
+          'Case Precedent Research',
+          'Legal Entity Extraction',
+          'Risk Assessment',
+          'Citation Verification',
+        ];
+
+        return {
+          message: 'Legal AI analysis capabilities active',
+          features: legalFeatures,
+          models: 'Domain-specific legal training',
+          accuracy: 'High confidence scoring with variance matrices',
+        };
+      }),
     ]);
 
     // Vector Search Workflow Tests
@@ -285,7 +279,7 @@ export const GET: RequestHandler = async ({ url }) => {
           };
         }
       ),
-      
+
       runTest(
         'Semantic Search Capabilities',
         'Validate semantic document search functionality',
@@ -296,7 +290,7 @@ export const GET: RequestHandler = async ({ url }) => {
             '/api/search/legal',
             '/api/vector-search',
           ];
-          
+
           return {
             message: 'Semantic search fully functional',
             endpoints: searchEndpoints,
@@ -308,53 +302,59 @@ export const GET: RequestHandler = async ({ url }) => {
     ]);
 
     // Integration Tests (can be skipped for faster execution)
-    const integrationTests: WorkflowTest[] = skipIntegrationTests ? [
-      skipTest('Full System Integration', 'End-to-end system integration test', 'Skipped for performance'),
-      skipTest('Load Testing', 'System performance under load', 'Skipped for performance'),
-      skipTest('Security Testing', 'Authentication and authorization testing', 'Skipped for performance'),
-    ] : await Promise.all([
-      runTest(
-        'Full System Integration',
-        'Test complete user workflow from registration to AI analysis',
-        async () => {
-          // Simulate complete workflow
-          const workflow = [
-            'User registers account',
-            'User logs in successfully',
-            'User uploads legal document',
-            'System processes and analyzes document',
-            'User performs semantic search',
-            'User interacts with AI chat',
-            'System provides legal insights',
-          ];
-          
-          return {
-            message: 'Complete workflow integration validated',
-            steps: workflow,
-            duration: '< 5 seconds end-to-end',
-            reliability: '99.9% uptime target',
-          };
-        }
-      ),
-      
-      runTest(
-        'Performance Benchmarks',
-        'Validate system performance metrics',
-        async () => {
-          return {
-            message: 'Performance benchmarks passed',
-            metrics: {
-              'Document Upload': '< 10MB/s',
-              'AI Response Time': '< 3 seconds',
-              'Vector Search': '< 50ms',
-              'Database Queries': '< 100ms',
-              'GPU Processing': '150+ tokens/second',
-            },
-            architecture: 'Dual-GPU optimized',
-          };
-        }
-      ),
-    ]);
+    const integrationTests: WorkflowTest[] = skipIntegrationTests
+      ? [
+          skipTest(
+            'Full System Integration',
+            'End-to-end system integration test',
+            'Skipped for performance'
+          ),
+          skipTest('Load Testing', 'System performance under load', 'Skipped for performance'),
+          skipTest(
+            'Security Testing',
+            'Authentication and authorization testing',
+            'Skipped for performance'
+          ),
+        ]
+      : await Promise.all([
+          runTest(
+            'Full System Integration',
+            'Test complete user workflow from registration to AI analysis',
+            async () => {
+              // Simulate complete workflow
+              const workflow = [
+                'User registers account',
+                'User logs in successfully',
+                'User uploads legal document',
+                'System processes and analyzes document',
+                'User performs semantic search',
+                'User interacts with AI chat',
+                'System provides legal insights',
+              ];
+
+              return {
+                message: 'Complete workflow integration validated',
+                steps: workflow,
+                duration: '< 5 seconds end-to-end',
+                reliability: '99.9% uptime target',
+              };
+            }
+          ),
+
+          runTest('Performance Benchmarks', 'Validate system performance metrics', async () => {
+            return {
+              message: 'Performance benchmarks passed',
+              metrics: {
+                'Document Upload': '< 10MB/s',
+                'AI Response Time': '< 3 seconds',
+                'Vector Search': '< 50ms',
+                'Database Queries': '< 100ms',
+                'GPU Processing': '150+ tokens/second',
+              },
+              architecture: 'Dual-GPU optimized',
+            };
+          }),
+        ]);
 
     // Calculate overall results
     const allTests = [
@@ -366,9 +366,9 @@ export const GET: RequestHandler = async ({ url }) => {
     ];
 
     const totalTests = allTests.length;
-    const passed = allTests.filter(t => t.status === 'passed').length;
-    const failed = allTests.filter(t => t.status === 'failed').length;
-    const skipped = allTests.filter(t => t.status === 'skipped').length;
+    const passed = allTests.filter((t) => t.status === 'passed').length;
+    const failed = allTests.filter((t) => t.status === 'failed').length;
+    const skipped = allTests.filter((t) => t.status === 'skipped').length;
 
     const score = totalTests > 0 ? Math.round((passed / totalTests) * 100) : 0;
     let overallStatus: 'healthy' | 'degraded' | 'failed' = 'healthy';
@@ -395,13 +395,9 @@ export const GET: RequestHandler = async ({ url }) => {
       processingTime: Date.now() - startTime,
     };
 
-    productionLogger.info(`✅ Workflow validation completed: ${overallStatus} (${score}%)`, {
-      totalTests,
-      passed,
-      failed,
-      skipped,
-      processingTime: Date.now() - startTime,
-    });
+    productionLogger.info(
+      `✅ Workflow validation completed: ${overallStatus} (${score}%) - tests ${passed}/${totalTests} (failed: ${failed}, skipped: ${skipped}) in ${Date.now() - startTime}ms`
+    );
 
     return json(response, {
       status: overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503,
@@ -411,52 +407,61 @@ export const GET: RequestHandler = async ({ url }) => {
         'X-Test-Count': `${passed}/${totalTests}`,
         'X-Processing-Time': `${Date.now() - startTime}ms`,
         'Cache-Control': 'public, max-age=300', // 5-minute cache
-      }
-    });
-
-  } catch (error: any) {
-    productionLogger.error('Workflow validation failed', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      processingTime: Date.now() - startTime,
-    });
-
-    return json({
-      timestamp: new Date().toISOString(),
-      overall: {
-        status: 'failed',
-        score: 0,
-        totalTests: 0,
-        passed: 0,
-        failed: 1,
-        skipped: 0,
       },
-      error: 'Workflow validation failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      processingTime: Date.now() - startTime,
-    }, { status: 500 });
+    });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Unknown workflow validation error';
+    productionLogger.error(`Workflow validation failed: ${msg}`);
+
+    return json(
+      {
+        timestamp: new Date().toISOString(),
+        overall: {
+          status: 'failed',
+          score: 0,
+          totalTests: 0,
+          passed: 0,
+          failed: 1,
+          skipped: 0,
+        },
+        error: 'Workflow validation failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        processingTime: Date.now() - startTime,
+      },
+      { status: 500 }
+    );
   }
 };
 
 // POST endpoint for running specific workflow tests
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
-  
+
   try {
     const { workflow, action } = await request.json();
-    
+
     if (!workflow) {
-      return json({ 
-        success: false, 
-        error: 'Workflow parameter required',
-        availableWorkflows: ['userManagement', 'documentProcessing', 'aiFeatures', 'vectorSearch', 'integration']
-      }, { status: 400 });
+      return json(
+        {
+          success: false,
+          error: 'Workflow parameter required',
+          availableWorkflows: [
+            'userManagement',
+            'documentProcessing',
+            'aiFeatures',
+            'vectorSearch',
+            'integration',
+          ],
+        },
+        { status: 400 }
+      );
     }
 
     switch (action) {
       case 'test_user_flow': {
         // Simulate complete user workflow
         const result = await simulateUserWorkflow();
-        
+
         return json({
           success: true,
           message: 'User workflow simulation completed',
@@ -464,11 +469,11 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime: Date.now() - startTime,
         });
       }
-      
+
       case 'test_document_processing': {
         // Test document processing pipeline
         const result = await testDocumentProcessingPipeline();
-        
+
         return json({
           success: true,
           message: 'Document processing pipeline tested',
@@ -476,21 +481,27 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime: Date.now() - startTime,
         });
       }
-      
+
       default:
-        return json({
-          success: false,
-          error: 'Invalid action',
-          availableActions: ['test_user_flow', 'test_document_processing'],
-        }, { status: 400 });
+        return json(
+          {
+            success: false,
+            error: 'Invalid action',
+            availableActions: ['test_user_flow', 'test_document_processing'],
+          },
+          { status: 400 }
+        );
     }
   } catch (error: any) {
-    return json({
-      success: false,
-      error: 'Workflow test failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      processingTime: Date.now() - startTime,
-    }, { status: 500 });
+    return json(
+      {
+        success: false,
+        error: 'Workflow test failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        processingTime: Date.now() - startTime,
+      },
+      { status: 500 }
+    );
   }
 };
 

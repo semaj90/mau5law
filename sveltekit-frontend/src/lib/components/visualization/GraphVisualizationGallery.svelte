@@ -289,7 +289,7 @@
       </div>
 
       <!-- Generate Button -->
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="legal"
         disabled={$isGenerating}
         onclick={() => generateVisualizationsForAllAlgorithms()}
@@ -344,7 +344,7 @@
 
         <!-- Item Controls -->
         <div class="item-controls">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="evidence"
             size="small"
             onclick={() => regenerateVisualization(visualization.metadata.algorithm)}
@@ -372,7 +372,7 @@
   {#if filteredVisualizations.length === 0 && !$isGenerating}
     <div class="empty-state nes-container is-rounded">
       <p class="nes-text is-disabled">No visualizations generated yet.</p>
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="legal"
         onclick={() => generateVisualizationsForAllAlgorithms()}
       >

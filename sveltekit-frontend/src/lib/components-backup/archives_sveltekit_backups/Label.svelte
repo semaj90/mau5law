@@ -7,3 +7,4 @@
 <label for={for_} className="${1}">
   <slot />
 </label>
+

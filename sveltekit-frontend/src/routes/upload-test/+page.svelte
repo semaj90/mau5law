@@ -158,3 +158,4 @@ let pollActive = $state(true);
   Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
   Add 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->
+

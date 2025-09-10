@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(helpers.desc?.(cases.updatedAt) as any)
           .limit(limit);
 
-        results.cases = caseResults.map((case_) => ({
+        results.cases = caseResults.map((case_: any) => ({
           ...case_,
           similarity: calculateSimilarity(
             searchQuery,
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             ...item,
             similarity: calculateSimilarity(
               searchQuery,
-              item.title + ' ' + (item.description || '')
+              (item.title || '') + ' ' + (item.description || '')
             ),
           })
         );
@@ -132,13 +132,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(helpers.desc?.(legalDocuments.updatedAt) as any)
           .limit(limit);
 
-        results.documents = documentResults.map((doc) => ({
-          ...doc,
-          similarity: calculateSimilarity(
-            searchQuery,
-            doc.title + ' ' + (doc.content || '').substring(0, 500)
-          ),
-        }));
+        results.documents = documentResults.map((doc: any) => ({
+    ...doc,
+    similarity: calculateSimilarity(
+      searchQuery,
+      doc.title + ' ' + (doc.content || '').substring(0, 500)
+    ),
+  }));
 
         totalResults += documentResults.length;
       } catch (error: any) {
@@ -164,11 +164,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(helpers.desc?.(users.updatedAt) as any)
           .limit(limit);
 
-        results.people = userResults.map((person) => ({
+        results.people = userResults.map((person: any) => ({
           ...person,
           similarity: calculateSimilarity(
             searchQuery,
-            person.name + ' ' + person.email + ' ' + (person.department || '')
+            (person.name || '') + ' ' + (person.email || '') + ' ' + (person.department || '')
           ),
         }));
 

@@ -236,7 +236,7 @@ https://svelte.dev/e/js_parse_error -->
             {ragState.isLoading ? 'Searching...' : 'Search'}
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             on:onclick={() => showAdvancedOptions = !showAdvancedOptions}
           >
@@ -263,7 +263,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <div class="flex flex-wrap gap-2">
             {#each intelligentSuggestions as suggestion}
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
                 on:onclick={() => selectSuggestion(suggestion)}
@@ -362,14 +362,14 @@ https://svelte.dev/e/js_parse_error -->
 
             <!-- View Toggle -->
             <div class="flex gap-2">
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant={visualizationMode === 'list' ? 'default' : 'outline'}
                 size="sm"
                 on:onclick={() => visualizationMode = 'list'}
               >
                 List
               </Button>
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant={visualizationMode === 'clusters' ? 'default' : 'outline'}
                 size="sm"
                 on:onclick={() => visualizationMode = 'clusters'}
@@ -377,7 +377,7 @@ https://svelte.dev/e/js_parse_error -->
                 <Target class="h-4 w-4 mr-1" />
                 Clusters
               </Button>
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant={visualizationMode === 'performance' ? 'default' : 'outline'}
                 size="sm"
                 on:onclick={() => visualizationMode = 'performance'}
@@ -562,5 +562,6 @@ https://svelte.dev/e/js_parse_error -->
     animation: pulse-glow 2s infinite;
   }
 </style>
+
 
 

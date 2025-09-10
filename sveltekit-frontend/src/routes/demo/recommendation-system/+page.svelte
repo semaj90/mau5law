@@ -244,28 +244,28 @@
       </Card.Header>
       <Card.Content>
         <div class="demo-controls">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant={isDetectiveMode ? 'default' : 'outline'}
             onclick={toggleDetectiveMode}
           >
             {isDetectiveMode ? 'Exit Detective Mode' : 'Enter Detective Mode'}
           </Button>
           
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             onclick={() => simulateActivity('idle')}
           >
             Simulate Idle State
           </Button>
           
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             onclick={() => simulateActivity('typing')}
           >
             Simulate Typing
           </Button>
           
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="destructive"
             onclick={addCriticalAlert}
           >
@@ -274,10 +274,10 @@
         </div>
         
         <div class="utility-controls">
-          <Button class="bits-btn bits-btn" variant="secondary" onclick={clearRecommendations}>
+          <Button class="bits-btn" variant="secondary" onclick={clearRecommendations}>
             Clear All
           </Button>
-          <Button class="bits-btn bits-btn" variant="secondary" onclick={resetDemo}>
+          <Button class="bits-btn" variant="secondary" onclick={resetDemo}>
             Reset Demo
           </Button>
         </div>

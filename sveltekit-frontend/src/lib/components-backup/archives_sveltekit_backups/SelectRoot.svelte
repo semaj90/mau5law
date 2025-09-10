@@ -29,3 +29,4 @@
 </script>
 
 <slot {trigger} {menu} {option} {selectedLabel} {open} {isSelected} />
+

@@ -420,7 +420,7 @@
                     disabled={isStreaming}
                     class="flex-1"
                   />
-                  <Button class="bits-btn bits-btn" onclick={sendChatMessage} disabled={isStreaming || !currentMessage.trim()}>
+                  <Button class="bits-btn" onclick={sendChatMessage} disabled={isStreaming || !currentMessage.trim()}>
                     {#snippet children()}
                       {isStreaming ? 'Sending...' : 'Send'}
                     {/snippet}

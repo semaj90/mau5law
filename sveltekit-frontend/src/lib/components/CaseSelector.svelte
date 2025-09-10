@@ -17,7 +17,7 @@ let cases = $state([
 }
 </script>
 
-<Button class="bits-btn bits-btn" on:onclick={() => showModal = true}>Select Case</Button>
+<Button class="bits-btn" on:onclick={() => showModal = true}>Select Case</Button>
 
 <Modal bind:open={showModal} title="Select a Case">
   {#snippet description()}
@@ -28,11 +28,12 @@ let cases = $state([
 
   <div class="space-y-4">
     {#each cases as caseItem}
-      <Button class="bits-btn bits-btn" on:onclick={() => selectCase(caseItem.id)} variant="secondary">
+      <Button class="bits-btn" on:onclick={() => selectCase(caseItem.id)} variant="secondary">
         {caseItem.name}
       </Button>
     {/each}
   </div>
 </Modal>
+
 
 

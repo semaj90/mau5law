@@ -393,7 +393,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
   <!-- Tab Navigation -->
   <div class="flex items-center justify-center space-x-1 bg-muted p-1 rounded-lg w-fit mx-auto">
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant={activeTab === 'search' ? 'default' : 'ghost'}
       size="sm"
   onclick={() => activeTab = 'search'}
@@ -402,7 +402,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
       <Search class="h-4 w-4" />
       Search
     </Button>
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant={activeTab === 'recommendations' ? 'default' : 'ghost'}
       size="sm"
   onclick={() => activeTab = 'recommendations'}
@@ -411,7 +411,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
       <Lightbulb class="h-4 w-4" />
       Recommendations
     </Button>
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant={activeTab === 'analysis' ? 'default' : 'ghost'}
       size="sm"
   onclick={() => activeTab = 'analysis'}
@@ -420,7 +420,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
       <BarChart3 class="h-4 w-4" />
       Analysis
     </Button>
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant={activeTab === 'health' ? 'default' : 'ghost'}
       size="sm"
   onclick={() => activeTab = 'health'}
@@ -493,7 +493,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                 Search
               {/if}
             </Button>
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="outline"
               size="sm"
               onclick={() => showAdvancedOptions = !showAdvancedOptions}
@@ -513,7 +513,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                 <Eye class="h-5 w-5" />
                 Search Results ({searchResults.length})
               </span>
-              <Button class="bits-btn bits-btn" variant="outline" size="sm">
+              <Button class="bits-btn" variant="outline" size="sm">
                 <Download class="h-4 w-4" />
               </Button>
             </CardTitle>
@@ -640,10 +640,10 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                 Intelligent Recommendations ({recommendations.length})
               </span>
               <div class="flex items-center gap-2">
-                <Button class="bits-btn bits-btn" variant="outline" size="sm">
+                <Button class="bits-btn" variant="outline" size="sm">
                   <Share class="h-4 w-4" />
                 </Button>
-                <Button class="bits-btn bits-btn" variant="outline" size="sm">
+                <Button class="bits-btn" variant="outline" size="sm">
                   <Download class="h-4 w-4" />
                 </Button>
               </div>
@@ -898,7 +898,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
               <Activity class="h-5 w-5" />
               Vector Intelligence System Health
             </span>
-            <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={loadSystemHealth}>
+            <Button class="bits-btn" variant="outline" size="sm" onclick={loadSystemHealth}>
               <RefreshCw class="h-4 w-4" />
             </Button>
           </CardTitle>
@@ -1010,4 +1010,5 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 <style>
   /* @unocss-include */
 </style>
+
 

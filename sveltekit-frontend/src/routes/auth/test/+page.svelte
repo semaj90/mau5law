@@ -282,7 +282,7 @@
       </div>
 
       <div class="flex gap-2">
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           onclick={runInitialTests}
           disabled={testRunning}
           variant="outline"
@@ -323,7 +323,7 @@
             </Card.Description>
           </Card.Header>
           <Card.Content class="space-y-4">
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               onclick={() => populateTestData('login')}
               variant="outline"
               size="sm"
@@ -351,7 +351,7 @@
             </Card.Description>
           </Card.Header>
           <Card.Content class="space-y-4">
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               onclick={() => populateTestData('register')}
               variant="outline"
               size="sm"

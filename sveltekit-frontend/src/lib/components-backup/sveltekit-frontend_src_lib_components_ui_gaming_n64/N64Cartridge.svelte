@@ -10,3 +10,4 @@
   <strong>{title}</strong>
   <div style="font-size:12px; opacity:0.8">N64 Cartridge Placeholder</div>
 </div>
+

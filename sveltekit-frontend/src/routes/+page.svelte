@@ -10,6 +10,7 @@
   import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import * as Card from '$lib/components/ui/card';
+  import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 
   let isLoading = $state(false);
   let systemMetrics = $state({
@@ -227,6 +228,25 @@
             </a>
           {/each}
 
+          <!-- Live Demo Button -->
+          <a
+            href="/w1"
+            class="group relative overflow-hidden rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 p-6 text-white hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl ring-2 ring-emerald-400/50"
+            aria-label="Live Demo: Experience the full Legal AI Platform"
+          >
+            <div class="relative z-10">
+              <div class="flex items-center justify-between mb-4">
+                <Brain class="w-8 h-8 animate-pulse" />
+                <div class="text-xs opacity-75 font-medium bg-white/20 px-2 py-1 rounded">LIVE</div>
+              </div>
+              <h3 class="font-bold text-lg mb-2">🚀 Live Demo</h3>
+              <p class="text-sm opacity-90">Full AI Assistant with auto case creation</p>
+            </div>
+
+            <!-- Special glow effect -->
+            <div class="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-teal-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+
           <!-- All Routes Button -->
           <a
             href="/all-routes"
@@ -375,6 +395,38 @@
         </div>
       </div>
     </div>
+
+    <!-- AI Assistant RAG Chat Section -->
+    <section aria-label="AI Legal Assistant with RAG Capabilities" class="mt-12">
+      <div class="yorha-3d-panel">
+        <div class="p-6">
+          <div class="flex items-center gap-3 mb-6">
+            <Brain class="w-6 h-6 text-emerald-400" />
+            <h2 class="text-xl font-semibold text-emerald-400 tracking-wide">🤖 AI Legal Assistant</h2>
+            <div class="ml-auto flex items-center gap-2 text-emerald-400">
+              <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+              <span class="text-sm font-medium">RAG + Who/What/Why/How</span>
+            </div>
+          </div>
+
+          <div class="mb-4 p-4 bg-gradient-to-r from-emerald-900/20 to-teal-900/20 rounded-lg border border-emerald-500/20">
+            <p class="text-emerald-100 text-sm leading-relaxed">
+              <strong>🚀 Advanced Legal AI:</strong> Start a conversation to begin systematic case building. 
+              I'll guide you through our proven "Who, What, Why, How" prosecution methodology with 
+              <strong>RAG-powered</strong> legal research integration. Just describe your situation and watch the magic happen!
+            </p>
+          </div>
+
+          <RAGAssistantChat 
+            userId="demo-user"
+            onCaseCreated={(caseId) => {
+              console.log('New case created:', caseId);
+              // Could navigate to case or show success notification
+            }}
+          />
+        </div>
+      </div>
+    </section>
   </div>
 </ProductionLayout>
 

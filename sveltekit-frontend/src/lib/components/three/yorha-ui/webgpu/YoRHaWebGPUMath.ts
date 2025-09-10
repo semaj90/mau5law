@@ -31,7 +31,7 @@ export interface YoRHaComputeResult {
 
 export class YoRHaWebGPUMath {
   private device?: GPUDevice;
-  private adapter?: GPUAdapter;
+  private adapter?: GPUAdapter | null;
   private isInitialized = false;
   private config: WebGPUMathConfig;
   private computePipelines = new Map<string, GPUComputePipeline>();

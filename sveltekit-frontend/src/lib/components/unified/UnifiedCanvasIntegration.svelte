@@ -179,7 +179,7 @@
 				<div class="flex items-center gap-3">
 					<!-- View Mode Switcher -->
 					<div class="flex gap-1 bg-muted rounded-md p-1">
-						<Button class="bits-btn bits-btn"
+						<Button class="bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchViewMode('canvas')}
@@ -188,7 +188,7 @@
 							<Canvas class="w-4 h-4 mr-1" />
 							Canvas
 						</Button>
-						<Button class="bits-btn bits-btn"
+						<Button class="bits-btn"
 							variant={viewMode === 'board' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchViewMode('board')}
@@ -197,7 +197,7 @@
 							<Grid3X3 class="w-4 h-4 mr-1" />
 							Board
 						</Button>
-						<Button class="bits-btn bits-btn"
+						<Button class="bits-btn"
 							variant={viewMode === 'hybrid' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchViewMode('hybrid')}
@@ -248,13 +248,13 @@
 				</div>
 				
 				<div class="flex gap-2">
-					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={syncCanvasToBoard}>
+					<Button class="bits-btn" variant="outline" size="sm" onclick={syncCanvasToBoard}>
 						Sync Canvas → Board
 					</Button>
-					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={syncBoardToCanvas}>
+					<Button class="bits-btn" variant="outline" size="sm" onclick={syncBoardToCanvas}>
 						Sync Board → Canvas
 					</Button>
-					<Button class="bits-btn bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
+					<Button class="bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
 						Analyze All Evidence
 					</Button>
 				</div>

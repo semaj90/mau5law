@@ -332,15 +332,15 @@
           </Card.Content>
 
           <Card.Footer class="person-actions">
-            <Button class="bits-btn bits-btn" size="sm" variant="outline">
+            <Button class="bits-btn" size="sm" variant="outline">
               <Eye class="w-4 h-4" />
               View
             </Button>
-            <Button class="bits-btn bits-btn" size="sm" variant="outline">
+            <Button class="bits-btn" size="sm" variant="outline">
               <Edit class="w-4 h-4" />
               Edit
             </Button>
-            <Button class="bits-btn bits-btn" size="sm" variant="destructive">
+            <Button class="bits-btn" size="sm" variant="destructive">
               <Trash2 class="w-4 h-4" />
               Remove
             </Button>
@@ -412,10 +412,10 @@
     </div>
 
     <Dialog.Footer>
-      <Button class="bits-btn bits-btn" variant="outline" onclick={() => showNewPersonModal = false}>
+      <Button class="bits-btn" variant="outline" onclick={() => showNewPersonModal = false}>
         CANCEL
       </Button>
-      <Button class="bits-btn bits-btn" onclick={() => showNewPersonModal = false}>
+      <Button class="bits-btn" onclick={() => showNewPersonModal = false}>
         ADD PERSON
       </Button>
     </Dialog.Footer>

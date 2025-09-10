@@ -22,6 +22,12 @@ export interface LogContext {
   statusCode?: number;
   component?: string;
   service?: string;
+  // Added optional fields referenced by callers to stop TS2353 noise
+  systemMemory?: string;
+  appMemory?: string;
+  eventLoopDelay?: string | number;
+  serviceHealth?: string | number;
+  processingTime?: number;
 }
 
 export interface LogEntry {
@@ -67,18 +73,18 @@ class WindowsPerformanceMonitor {
     try {
       // Check for Windows-specific GPU info (if nvidia-smi available)
       const gpuInfo = await this.getGPUInfo();
-      
+
       // Get process-specific metrics
       const processMetrics = await this.getProcessMetrics();
-      
+
       return {
         gpu: gpuInfo,
         process: processMetrics,
         platform: {
           osVersion: require('os').release(),
           totalMemory: Math.round(require('os').totalmem() / 1024 / 1024),
-          freeMemory: Math.round(require('os').freemem() / 1024 / 1024)
-        }
+          freeMemory: Math.round(require('os').freemem() / 1024 / 1024),
+        },
       };
     } catch (error: any) {
       return { error: 'Failed to collect Windows metrics' };
@@ -88,12 +94,16 @@ class WindowsPerformanceMonitor {
   private async getGPUInfo(): Promise<any> {
     try {
       const { spawn } = await import('child_process');
-      
+
       return new Promise((resolve) => {
-        const child = spawn('nvidia-smi', [
-          '--query-gpu=memory.total,memory.used,temperature.gpu,utilization.gpu',
-          '--format=csv,noheader,nounits'
-        ], { stdio: 'pipe', shell: true });
+        const child = spawn(
+          'nvidia-smi',
+          [
+            '--query-gpu=memory.total,memory.used,temperature.gpu,utilization.gpu',
+            '--format=csv,noheader,nounits',
+          ],
+          { stdio: 'pipe', shell: true }
+        );
 
         let output = '';
         child.stdout?.on('data', (data) => {
@@ -107,7 +117,7 @@ class WindowsPerformanceMonitor {
               memoryTotal: memTotal,
               memoryUsed: memUsed,
               temperature: temp,
-              utilization: util
+              utilization: util,
             });
           } else {
             resolve(null);
@@ -127,7 +137,7 @@ class WindowsPerformanceMonitor {
     try {
       const memUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
-      
+
       return {
         pid: process.pid,
         uptime: process.uptime(),
@@ -135,12 +145,12 @@ class WindowsPerformanceMonitor {
           rss: Math.round(memUsage.rss / 1024 / 1024), // MB
           heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024), // MB
           heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024), // MB
-          external: Math.round(memUsage.external / 1024 / 1024) // MB
+          external: Math.round(memUsage.external / 1024 / 1024), // MB
         },
         cpuUsage: {
           user: cpuUsage.user,
-          system: cpuUsage.system
-        }
+          system: cpuUsage.system,
+        },
       };
     } catch {
       return null;
@@ -157,7 +167,7 @@ export class ProductionLogger {
     logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
     errorRate: 0,
     averageResponseTime: 0,
-    memoryTrend: []
+    memoryTrend: [],
   };
   private windowsMonitor: WindowsPerformanceMonitor;
   private flushInterval: NodeJS.Timeout | null = null;
@@ -208,14 +218,21 @@ export class ProductionLogger {
     }
   }
 
-  public error(message: string, error?: Error, context?: LogContext, metadata?: Record<string, any>): void {
+  public error(
+    message: string,
+    error?: Error,
+    context?: LogContext,
+    metadata?: Record<string, any>
+  ): void {
     if (this.shouldLog('error')) {
-      const errorInfo = error ? {
-        name: error.name,
-        message: error.message,
-        stack: this.config.includeStack ? error.stack : undefined,
-        code: (error as any).code
-      } : undefined;
+      const errorInfo = error
+        ? {
+            name: error.name,
+            message: error.message,
+            stack: this.config.includeStack ? error.stack : undefined,
+            code: (error as any).code,
+          }
+        : undefined;
 
       this.log('error', message, context, metadata, errorInfo);
     }
@@ -223,59 +240,85 @@ export class ProductionLogger {
 
   // Specialized logging methods
   public apiRequest(
-    method: string, 
-    endpoint: string, 
-    statusCode: number, 
+    method: string,
+    endpoint: string,
+    statusCode: number,
     duration: number,
     context?: Partial<LogContext>
   ): void {
     const level: LogLevel = statusCode >= 500 ? 'error' : statusCode >= 400 ? 'warn' : 'info';
-    
-    this.log(level, `${method} ${endpoint} ${statusCode}`, {
-      ...context,
-      method,
-      endpoint,
-      statusCode,
-      duration
-    }, {
-      responseTime: duration,
-      httpStatus: statusCode
-    });
+
+    this.log(
+      level,
+      `${method} ${endpoint} ${statusCode}`,
+      {
+        ...context,
+        method,
+        endpoint,
+        statusCode,
+        duration,
+      },
+      {
+        responseTime: duration,
+        httpStatus: statusCode,
+      }
+    );
   }
 
   public security(event: string, context?: LogContext, metadata?: Record<string, any>): void {
-    this.log('warn', `Security Event: ${event}`, context, {
-      ...metadata,
-      securityEvent: true,
-      timestamp: new Date().toISOString()
-    }, undefined, ['security']);
+    this.log(
+      'warn',
+      `Security Event: ${event}`,
+      context,
+      {
+        ...metadata,
+        securityEvent: true,
+        timestamp: new Date().toISOString(),
+      },
+      undefined,
+      ['security']
+    );
   }
 
   public performance(operation: string, duration: number, context?: LogContext): void {
     const level: LogLevel = duration > 5000 ? 'warn' : duration > 1000 ? 'info' : 'debug';
-    
-    this.log(level, `Performance: ${operation}`, context, {
-      operation,
-      duration,
-      performanceLog: true
-    }, undefined, ['performance']);
+
+    this.log(
+      level,
+      `Performance: ${operation}`,
+      context,
+      {
+        operation,
+        duration,
+        performanceLog: true,
+      },
+      undefined,
+      ['performance']
+    );
   }
 
   public windowsSpecific(event: string, data?: any, context?: LogContext): void {
     if (typeof process !== 'undefined' && process.platform === 'win32') {
-      this.log('info', `Windows: ${event}`, context, {
-        ...data,
-        windowsEvent: true,
-        platform: process.platform
-      }, undefined, ['windows']);
+      this.log(
+        'info',
+        `Windows: ${event}`,
+        context,
+        {
+          ...data,
+          windowsEvent: true,
+          platform: process.platform,
+        },
+        undefined,
+        ['windows']
+      );
     }
   }
 
   // Core logging implementation
   private log(
-    level: LogLevel, 
-    message: string, 
-    context?: LogContext, 
+    level: LogLevel,
+    message: string,
+    context?: LogContext,
     metadata?: Record<string, any>,
     error?: LogEntry['error'],
     tags: string[] = []
@@ -288,11 +331,13 @@ export class ProductionLogger {
       error,
       metadata,
       tags: tags.length > 0 ? tags : undefined,
-      performance: this.includePerformanceData() ? {
-        memoryUsage: typeof process !== 'undefined' ? process.memoryUsage() : {} as any,
-        timing: Date.now(),
-        cpuUsage: typeof process !== 'undefined' ? process.cpuUsage() : undefined
-      } : undefined
+      performance: this.includePerformanceData()
+        ? {
+            memoryUsage: typeof process !== 'undefined' ? process.memoryUsage() : ({} as any),
+            timing: Date.now(),
+            cpuUsage: typeof process !== 'undefined' ? process.cpuUsage() : undefined,
+          }
+        : undefined,
     };
 
     // Update metrics
@@ -325,7 +370,8 @@ export class ProductionLogger {
     if (entry.context?.duration) {
       const currentAvg = this.metrics.averageResponseTime;
       const newCount = this.metrics.totalLogs;
-      this.metrics.averageResponseTime = (currentAvg * (newCount - 1) + entry.context.duration) / newCount;
+      this.metrics.averageResponseTime =
+        (currentAvg * (newCount - 1) + entry.context.duration) / newCount;
     }
 
     // Update memory trend (keep last 100 entries)
@@ -346,7 +392,7 @@ export class ProductionLogger {
     // File output (buffered)
     if (this.config.outputs.includes('file')) {
       this.logBuffer.push(entry);
-      
+
       // Immediate flush for errors
       if (entry.level === 'error' && this.config.file) {
         this.flushBufferedLogs();
@@ -361,7 +407,7 @@ export class ProductionLogger {
 
   private outputToConsole(entry: LogEntry): void {
     const formattedMessage = this.formatLogEntry(entry, 'console');
-    
+
     switch (entry.level) {
       case 'debug':
         console.debug(formattedMessage);
@@ -387,7 +433,7 @@ export class ProductionLogger {
         entry.timestamp,
         `[${entry.level.toUpperCase().padEnd(5)}]`,
         entry.context?.component ? `[${entry.context.component}]` : '',
-        entry.message
+        entry.message,
       ].filter(Boolean);
 
       let formatted = parts.join(' ');
@@ -398,7 +444,7 @@ export class ProductionLogger {
           .filter(([key]) => key !== 'component')
           .map(([key, value]) => `${key}=${value}`)
           .join(' ');
-        
+
         if (contextStr) {
           formatted += ` | ${contextStr}`;
         }
@@ -436,7 +482,8 @@ export class ProductionLogger {
 
       // Prepare log entries for writing
       const logEntries = this.logBuffer.splice(0); // Remove all entries from buffer
-      const logData = logEntries.map(entry => this.formatLogEntry(entry, 'file')).join('\n') + '\n';
+      const logData =
+        logEntries.map((entry) => this.formatLogEntry(entry, 'file')).join('\n') + '\n';
 
       // Write to log file
       fs.appendFileSync(this.config.file.path, logData, 'utf8');
@@ -445,7 +492,6 @@ export class ProductionLogger {
       if (this.config.file.rotate) {
         await this.handleLogRotation();
       }
-
     } catch (error: any) {
       console.error('Failed to flush logs to file:', error);
       // Re-add entries to buffer for retry
@@ -472,7 +518,7 @@ export class ProductionLogger {
         for (let i = this.config.file.maxFiles - 1; i >= 1; i--) {
           const oldFile = path.join(dirName, `${baseName}.${i}${extension}`);
           const newFile = path.join(dirName, `${baseName}.${i + 1}${extension}`);
-          
+
           if (fs.existsSync(oldFile)) {
             if (i === this.config.file.maxFiles - 1) {
               fs.unlinkSync(oldFile); // Remove oldest
@@ -485,7 +531,6 @@ export class ProductionLogger {
         // Move current file to .1
         const rotatedFile = path.join(dirName, `${baseName}.1${extension}`);
         fs.renameSync(this.config.file.path, rotatedFile);
-
       }
     } catch (error: any) {
       console.error('Log rotation failed:', error);
@@ -493,10 +538,10 @@ export class ProductionLogger {
   }
 
   private parseSize(sizeStr: string): number {
-    const units: Record<string, number> = { 'B': 1, 'K': 1024, 'M': 1024 * 1024, 'G': 1024 * 1024 * 1024 };
+    const units: Record<string, number> = { B: 1, K: 1024, M: 1024 * 1024, G: 1024 * 1024 * 1024 };
     const match = sizeStr.match(/^(\d+)([BKMG]?)$/i);
     if (!match) return 10 * 1024 * 1024; // Default 10MB
-    
+
     const size = parseInt(match[1]);
     const unit = (match[2] || 'B').toUpperCase();
     return size * (units[unit] || 1);
@@ -526,10 +571,9 @@ export class ProductionLogger {
           totalLogs: this.metrics.totalLogs,
           errorRate: Math.round(this.metrics.errorRate * 100) / 100,
           averageResponseTime: Math.round(this.metrics.averageResponseTime),
-          memoryTrendSize: this.metrics.memoryTrend.length
-        }
+          memoryTrendSize: this.metrics.memoryTrend.length,
+        },
       });
-
     } catch (error: any) {
       this.error('Failed to collect logger metrics', error instanceof Error ? error : undefined);
     }
@@ -549,20 +593,23 @@ export class ProductionLogger {
       errorRate: this.metrics.errorRate,
       bufferSize: this.logBuffer.length,
       outputs: this.config.outputs,
-      level: this.config.level
+      level: this.config.level,
     };
 
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
-    
-    if (this.metrics.errorRate > 0.1) { // 10% error rate
+
+    if (this.metrics.errorRate > 0.1) {
+      // 10% error rate
       status = 'degraded';
     }
-    
-    if (this.logBuffer.length > 1000) { // Too many buffered logs
+
+    if (this.logBuffer.length > 1000) {
+      // Too many buffered logs
       status = 'degraded';
     }
-    
-    if (this.metrics.errorRate > 0.5) { // 50% error rate
+
+    if (this.metrics.errorRate > 0.5) {
+      // 50% error rate
       status = 'unhealthy';
     }
 
@@ -576,7 +623,7 @@ export class ProductionLogger {
       logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
       errorRate: 0,
       averageResponseTime: 0,
-      memoryTrend: []
+      memoryTrend: [],
     };
   }
 
@@ -584,7 +631,7 @@ export class ProductionLogger {
     if (this.flushInterval) {
       clearInterval(this.flushInterval);
     }
-    
+
     if (this.metricsInterval) {
       clearInterval(this.metricsInterval);
     }

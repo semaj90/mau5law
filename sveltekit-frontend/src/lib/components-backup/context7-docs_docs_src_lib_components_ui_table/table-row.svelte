@@ -12,3 +12,4 @@
 <tr class={cn("border-b", className)} {...restProps}>
 	{@render children?.()}
 </tr>
+

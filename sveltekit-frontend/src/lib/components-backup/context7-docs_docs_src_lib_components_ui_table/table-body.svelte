@@ -12,3 +12,4 @@
 <tbody class={cn("[&_tr:last-child]:border-0", className)} {...restProps}>
 	{@render children?.()}
 </tbody>
+

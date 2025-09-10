@@ -171,7 +171,7 @@
             oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} />
           <Input {placeholder} bind:value={searchQuery} class="pl-10" />
         </div>
-  <Button class="bits-btn bits-btn" onclick={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
+  <Button class="bits-btn" onclick={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
           {#if isSearching}
             Searching...
           {:else}
@@ -259,16 +259,16 @@
             {/if}
 
             <div class="flex gap-2">
-              <Button class="bits-btn bits-btn" size="sm" variant="outline">
+              <Button class="bits-btn" size="sm" variant="outline">
                 <FileText class="h-3 w-3 mr-1" />
                 AI Summary
               </Button>
-              <Button class="bits-btn bits-btn" size="sm" variant="outline">
+              <Button class="bits-btn" size="sm" variant="outline">
                 <Sparkles class="h-3 w-3 mr-1" />
                 AI Analysis
               </Button>
               {#if result.item.url}
-                <Button class="bits-btn bits-btn" size="sm" variant="outline">
+                <Button class="bits-btn" size="sm" variant="outline">
                   <a
                     href={result.item.url}
                     target="_blank"
@@ -309,7 +309,7 @@
       <CardContent>
         <div class="flex flex-wrap gap-2">
           {#each ['murder', 'contract liability', 'evidence rules', 'robbery', 'constitutional rights', 'family law'] as suggestion}
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
               variant="outline"
               size="sm"
                 onclick={() => {
@@ -338,4 +338,5 @@
     color: rgb(254 240 138);
   }
 </style>
+
 

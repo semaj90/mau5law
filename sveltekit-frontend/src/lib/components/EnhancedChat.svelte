@@ -357,7 +357,7 @@ let chatContainer = $state<HTMLDivElement;
 					<span class="text-sm text-red-700">{$state.context.error}</span>
 				</div>
 				<div class="flex space-x-2">
-					<Button class="bits-btn bits-btn" 
+					<Button class="bits-btn" 
 						size="sm" 
 						variant="outline"
 						on:onclick={() => send({ type: 'RETRY' })}
@@ -365,7 +365,7 @@ let chatContainer = $state<HTMLDivElement;
 					>
 						Retry
 					</Button>
-					<Button class="bits-btn bits-btn" 
+					<Button class="bits-btn" 
 						size="sm" 
 						variant="ghost"
 						on:onclick={() => send({ type: 'CLEAR_ERROR' })}
@@ -459,4 +459,5 @@ let chatContainer = $state<HTMLDivElement;
 		background: #94a3b8;
 	}
 </style>
+
 

@@ -309,7 +309,7 @@
         </div>
         
         <div class="flex items-center gap-4">
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             onclick={() => showGraphView = !showGraphView}
             variant="outline"
             class="flex items-center gap-2"
@@ -317,7 +317,7 @@
             🕸️ {showGraphView ? 'List View' : 'Graph View'}
           </Button>
           
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             onclick={() => showAddModal = true}
             class="flex items-center gap-2"
           >
@@ -447,7 +447,7 @@
               <span class="font-medium text-blue-800">
                 {selectedPersons.length} person{selectedPersons.length !== 1 ? 's' : ''} selected
               </span>
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="outline"
                 size="sm"
                 onclick={() => selectedPersons = []}
@@ -457,9 +457,9 @@
             </div>
             
             <div class="flex gap-2">
-              <Button class="bits-btn bits-btn" size="sm" variant="outline">📊 Analyze Relationships</Button>
-              <Button class="bits-btn bits-btn" size="sm" variant="outline">📋 Generate Report</Button>
-              <Button class="bits-btn bits-btn" size="sm" variant="outline">🏷️ Bulk Tag</Button>
+              <Button class="bits-btn" size="sm" variant="outline">📊 Analyze Relationships</Button>
+              <Button class="bits-btn" size="sm" variant="outline">📋 Generate Report</Button>
+              <Button class="bits-btn" size="sm" variant="outline">🏷️ Bulk Tag</Button>
             </div>
           </div>
         </CardContent>
@@ -483,7 +483,7 @@
               ? 'Try adjusting your search criteria or filters'
               : 'Start by adding persons of interest to your investigation'}
           </p>
-          <Button class="bits-btn bits-btn" onclick={() => showAddModal = true} class="mt-2">
+          <Button class="bits-btn" onclick={() => showAddModal = true} class="mt-2">
             ➕ Add First Person
           </Button>
         </CardContent>
@@ -527,10 +527,10 @@
         <p class="text-gray-600">Person creation form would go here...</p>
         
         <div class="flex gap-2 pt-4">
-          <Button class="bits-btn bits-btn" onclick={() => showAddModal = false} variant="outline">
+          <Button class="bits-btn" onclick={() => showAddModal = false} variant="outline">
             Cancel
           </Button>
-          <Button class="bits-btn bits-btn" onclick={() => showAddModal = false}>
+          <Button class="bits-btn" onclick={() => showAddModal = false}>
             Create Person
           </Button>
         </div>

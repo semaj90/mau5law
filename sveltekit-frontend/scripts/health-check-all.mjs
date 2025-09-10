@@ -21,9 +21,9 @@ const HEALTH_CONFIG = {
     timeout: 5000,
     checkOverallHealth: false  // Don't fail if overall is unhealthy
   },
-  redis4005: {
-    name: 'Redis (Port 4005)', 
-    url: 'http://localhost:4005/ping',  // Direct Redis health check
+  redis6379: {
+    name: 'Redis (Port 6379)', 
+    url: 'http://localhost:6379/ping',  // Direct Redis health check
     critical: false,  // Mark as non-critical since we're running on different port
     timeout: 3000,
     expectText: 'PONG'
@@ -152,7 +152,7 @@ async function checkService(key, config) {
           responseTime,
           critical: config.critical,
           data: fieldData,
-          note: fieldStatus === 'failed' && config.checkField === 'redis' ? 'Redis running on port 4005, health check expecting 6379' : undefined
+          note: fieldStatus === 'failed' && config.checkField === 'redis' ? 'Redis running on port 6379, health check expecting 6379' : undefined
         };
       }
     }

@@ -264,7 +264,7 @@
         </div>
 
         <div class="flex gap-2">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             on:onclick={handleSaveDraft}
@@ -272,7 +272,7 @@
           >
             <Save size={16} />
           </Button>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             on:onclick={handleReset}
@@ -327,7 +327,7 @@
                   "Unknown type"}
               </p>
             </div>
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               onclick|stopPropagation={removeFile}
@@ -345,7 +345,7 @@
             <p class="drop-zone-description">
               Supports PDF, DOCX, TXT, and image files up to 50MB
             </p>
-            <Button class="bits-btn bits-btn" variant="outline" disabled={$isSubmitting}>
+            <Button class="bits-btn" variant="outline" disabled={$isSubmitting}>
               <Upload class="mr-2" size={16} />
               Browse Files
             </Button>
@@ -538,7 +538,7 @@
 
           {#if stateValue === "uploadError" || stateValue === "processingError"}
             <div class="mt-2">
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="outline"
                 size="sm"
                 on:onclick={() => actor.send({ type: "RETRY" })}
@@ -549,7 +549,7 @@
               </Button>
 
               {#if stateValue === "processingError"}
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   on:onclick={() => actor.send({ type: "SKIP_PROCESSING" })}
@@ -592,7 +592,7 @@
       </div>
 
       <div class="flex gap-3">
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           on:onclick={handleReset}
           disabled={$isSubmitting}
@@ -600,7 +600,7 @@
           Reset Form
         </Button>
 
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           type="submit"
           onclick|preventDefault={handleSubmit}
           disabled={!canSubmit}
@@ -673,3 +673,4 @@
 </style>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

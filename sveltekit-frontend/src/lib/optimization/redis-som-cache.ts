@@ -33,7 +33,7 @@ export interface CacheEntry {
 }
 
 class SelfOrganizingMap {
-  private nodes: SOMNode[][];
+  private nodes: SOMNode[][] = [];
   private width: number;
   private height: number;
   private learning_rate: number;

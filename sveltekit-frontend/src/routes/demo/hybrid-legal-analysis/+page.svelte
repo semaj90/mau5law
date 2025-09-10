@@ -189,7 +189,7 @@
 
     <!-- Control Panel -->
     <div class="flex flex-wrap gap-4 mb-8">
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         onclick={loadSampleData}
         disabled={isLoading}
@@ -200,7 +200,7 @@
         {/snippet}
       </Button>
 
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         onclick={testEmbeddingGeneration}
         disabled={isLoading}
@@ -211,7 +211,7 @@
         {/snippet}
       </Button>
 
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         onclick={run3DVisualization}
         disabled={isLoading}

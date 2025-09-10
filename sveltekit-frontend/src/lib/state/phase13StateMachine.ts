@@ -250,7 +250,7 @@ const apiCoordinationService = fromCallback(({ sendBack, receive }) => {
         coordinationActive = true;
         
         // Simulate Redis/NATS connections
-        redisConnections = ["redis://localhost:6379", "redis://localhost:6380"];
+        redisConnections = ["redis://localhost:6379"];
         natsChannels = ["legal.events", "ai.recommendations", "performance.metrics"];
         
         sendBack({ 

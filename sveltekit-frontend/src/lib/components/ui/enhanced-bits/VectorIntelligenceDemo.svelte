@@ -280,7 +280,7 @@
         class="flex-1"
       />
 
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="primary"
         legal
         loading={isSearching}
@@ -297,7 +297,7 @@
       </Button>
 
       {#if searchResults.length > 0}
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           on:onclick={clearResults}
         >
@@ -424,10 +424,10 @@
                 </div>
 
                 <div class="flex gap-2">
-                  <Button class="bits-btn bits-btn" size="sm" variant="outline">
+                  <Button class="bits-btn" size="sm" variant="outline">
                     View Full
                   </Button>
-                  <Button class="bits-btn bits-btn" size="sm" variant="primary">
+                  <Button class="bits-btn" size="sm" variant="primary">
                     Add to Case
                   </Button>
                 </div>
@@ -448,7 +448,7 @@
         Enter a search query to demonstrate advanced semantic analysis and vector similarity matching.
       </p>
       <div class="flex justify-center gap-2">
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           on:onclick={() => searchQuery = 'contract breach non-disclosure agreement'}
         >

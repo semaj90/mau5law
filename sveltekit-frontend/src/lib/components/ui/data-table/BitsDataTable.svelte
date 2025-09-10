@@ -147,13 +147,13 @@
       {/if}
 
       {#if filterable}
-        <Button class="bits-btn bits-btn" variant="outline" size="sm">
+        <Button class="bits-btn" variant="outline" size="sm">
           <Filter class="w-4 h-4" />
         </Button>
       {/if}
 
       {#if exportable}
-        <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={handleExport}>
+        <Button class="bits-btn" variant="outline" size="sm" onclick={handleExport}>
           <Download class="w-4 h-4 mr-2" />
           Export
         </Button>
@@ -256,7 +256,7 @@
 
     {#if totalPages > 1}
       <div class="flex items-center gap-2">
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           size="sm"
           disabled={currentPage === 0}
@@ -269,7 +269,7 @@
           Page {currentPage + 1} of {totalPages}
         </span>
 
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           size="sm"
           disabled={currentPage >= totalPages - 1}

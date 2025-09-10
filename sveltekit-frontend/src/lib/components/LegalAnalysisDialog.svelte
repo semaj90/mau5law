@@ -228,7 +228,7 @@ import { Progress } from 'bits-ui/components/progress';
     </div>
 
     <Dialog.Footer class="border-t border-gray-100 p-6 flex justify-end space-x-3">
-      <Button class="bits-btn bits-btn" 
+      <Button class="bits-btn" 
         variant="outline" 
         on:onclick={() => onOpenChange(false)}
         disabled={loading.analysis}
@@ -284,3 +284,4 @@ import { Progress } from 'bits-ui/components/progress';
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
   }
 </style>
+

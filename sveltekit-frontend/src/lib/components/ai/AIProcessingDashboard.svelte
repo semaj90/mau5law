@@ -302,7 +302,7 @@
 			<!-- Individual Task Buttons -->
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 				{#each demoTasks as task}
-					<Button class="bits-btn bits-btn"
+					<Button class="bits-btn"
 						variant="outline"
 						disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
 						onclick={() => processTask(task)}

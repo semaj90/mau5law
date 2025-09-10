@@ -101,20 +101,20 @@ let selectedDemo = $state('overview');
         <h2 class="text-2xl font-bold">Button Components</h2>
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button class="bits-btn bits-btn" variant="default">Default</Button>
-          <Button class="bits-btn bits-btn" variant="secondary">Secondary</Button>
-          <Button class="bits-btn bits-btn" variant="outline">Outline</Button>
-          <Button class="bits-btn bits-btn" variant="ghost">Ghost</Button>
-          <Button class="bits-btn bits-btn" variant="legal">Legal</Button>
-          <Button class="bits-btn bits-btn" variant="evidence">Evidence</Button>
-          <Button class="bits-btn bits-btn" variant="case">Case</Button>
-          <Button class="bits-btn bits-btn" variant="destructive">Destructive</Button>
+          <Button class="bits-btn" variant="default">Default</Button>
+          <Button class="bits-btn" variant="secondary">Secondary</Button>
+          <Button class="bits-btn" variant="outline">Outline</Button>
+          <Button class="bits-btn" variant="ghost">Ghost</Button>
+          <Button class="bits-btn" variant="legal">Legal</Button>
+          <Button class="bits-btn" variant="evidence">Evidence</Button>
+          <Button class="bits-btn" variant="case">Case</Button>
+          <Button class="bits-btn" variant="destructive">Destructive</Button>
         </div>
         
         <div class="grid grid-cols-3 gap-4">
-          <Button class="bits-btn bits-btn" size="sm">Small</Button>
-          <Button class="bits-btn bits-btn" size="default">Default</Button>
-          <Button class="bits-btn bits-btn" size="lg">Large</Button>
+          <Button class="bits-btn" size="sm">Small</Button>
+          <Button class="bits-btn" size="default">Default</Button>
+          <Button class="bits-btn" size="lg">Large</Button>
         </div>
         
         <div class="bg-muted p-4 rounded-lg">

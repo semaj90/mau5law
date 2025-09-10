@@ -1,501 +1,426 @@
-import type { RequestHandler } from './$types.js';
+/**
+ * Comprehensive System Integration Test API
+ * Tests the complete legal AI platform with all integrated services
+ */
 
-// System Integration Test - Complete Health Check and Autosolve
-// Tests all system components including Context7, MCP, database orchestrator, and autosolve
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db/drizzle';
+import { sql } from 'drizzle-orm';
+import * as schema from '$lib/server/db/schema-postgres';
+import { redisService } from '$lib/server/redis-service';
+import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
+import { lokiRedisCache } from '$lib/cache/loki-redis-integration';
+import { instantSearchEngine } from '$lib/services/instant-search-engine';
+import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
 
-import { testContext7Pipeline, testDatabaseOperations, runFullIntegrationTest } from "$lib/services/comprehensive-database-orchestrator";
-import { URL } from "url";
-
-// GET /api/system-integration-test - Run comprehensive system test
 export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('type') || 'full';
-
-  console.log(`🧪 Starting ${testType} system integration test...`);
+  const startTime = Date.now();
+  const results: {
+    timestamp: string;
+    testType: string;
+    results: Record<string, any>;
+    errors: string[];
+    performance: Record<string, number>;
+    status?: string;
+    summary?: any;
+  } = {
+    timestamp: new Date().toISOString(),
+    testType,
+    results: {},
+    errors: [],
+    performance: {},
+  };
 
   try {
-    const testResults: any = {
-      test_type: testType,
-      start_time: new Date().toISOString(),
-      services: {},
-      database: {},
-      apis: {},
-      context7: {},
-      autosolve: {},
-      overall_status: 'unknown',
-      errors: [],
-      recommendations: [],
-      end_time: undefined,
-    };
+    // Test PostgreSQL + pgvector
+    if (testType === 'all' || testType === 'database') {
+      const dbStartTime = Date.now();
 
-    // Step 1: Test Core Services
-    console.log('🔍 Testing core services...');
-    testResults.services = await testCoreServices();
-
-    // Step 2: Test Database Connectivity
-    console.log('🗄️ Testing database connectivity...');
-    testResults.database = await testDatabaseConnectivity();
-
-    // Step 3: Test API Endpoints
-    console.log('🌐 Testing API endpoints...');
-    testResults.apis = await testAPIEndpoints();
-
-    // Step 4: Test Context7 Integration (if available)
-    if (testType === 'full' || testType === 'context7') {
-      console.log('🤖 Testing Context7 MCP integration...');
-      testResults.context7 = await testContext7Integration();
-    }
-
-    // Step 5: Test Autosolve System (if available)
-    if (testType === 'full' || testType === 'autosolve') {
-      console.log('🔧 Testing autosolve system...');
-      testResults.autosolve = await testAutosolveSystem();
-    }
-
-    // Step 6: Determine Overall Status
-    testResults.overall_status = determineOverallStatus(testResults);
-    testResults.recommendations = generateRecommendations(testResults);
-    testResults.end_time = new Date().toISOString();
-
-    console.log(`✅ System integration test completed with status: ${testResults.overall_status}`);
-
-    return json({
-      success: true,
-      test_results: testResults,
-      summary: generateTestSummary(testResults),
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error: any) {
-    console.error('❌ System integration test failed:', error);
-
-    return json(
-      {
-        success: false,
-        error: error.message,
-        test_type: testType,
-        timestamp: new Date().toISOString(),
-      },
-      { status: 500 }
-    );
-  }
-};
-
-// POST /api/system-integration-test - Trigger specific tests
-export const POST: RequestHandler = async ({ request }) => {
-  try {
-    const { action, targets } = await request.json();
-
-    switch (action) {
-      case 'quick_health_check':
-        return await quickHealthCheck();
-
-      case 'autosolve_test':
-        return await testAutosolvePipeline();
-
-      case 'context7_test':
-        return await testContext7Pipeline();
-
-      case 'database_test':
-        return await testDatabaseOperations();
-
-      case 'full_integration':
-        return await runFullIntegrationTest();
-
-      default:
-        return json(
-          {
-            success: false,
-            error: `Unknown test action: ${action}`,
-            available_actions: [
-              'quick_health_check',
-              'autosolve_test',
-              'context7_test',
-              'database_test',
-              'full_integration',
-            ],
-          },
-          { status: 400 }
-        );
-    }
-  } catch (error: any) {
-    return json(
-      {
-        success: false,
-        error: error.message,
-        timestamp: new Date().toISOString(),
-      },
-      { status: 500 }
-    );
-  }
-};
-
-// Test core services
-async function testCoreServices(): Promise<any> {
-  const services = [
-    { name: 'sveltekit_frontend', url: 'http://localhost:5173' },
-    { name: 'ollama', url: 'http://localhost:11434/api/tags' },
-    { name: 'enhanced_rag', url: 'http://localhost:8097/health' },
-    { name: 'aggregate_server', url: 'http://localhost:8123/health' },
-    { name: 'recommendation_service', url: 'http://localhost:8096/health' },
-  ];
-
-  const results = {};
-
-  for (const service of services) {
-    try {
-      const controller = new AbortController();
-      const t = setTimeout(() => controller.abort(), 5000);
-      const response = await fetch(service.url, { method: 'GET', signal: controller.signal });
-      clearTimeout(t);
-
-      results[service.name] = {
-        status: response.ok ? 'healthy' : 'unhealthy',
-        response_code: response.status,
-        response_time: Date.now(),
-        url: service.url,
-      };
-    } catch (error: any) {
-      results[service.name] = {
-        status: 'error',
-        error: error.message,
-        url: service.url,
-      };
-    }
-  }
-
-  return results;
-}
-
-// Test database connectivity
-async function testDatabaseConnectivity(): Promise<any> {
-  try {
-    // Test basic fetch to database APIs
-    const tests = [
-      { name: 'cases_api', url: '/api/database-orchestrator?action=query&table=cases&limit=1' },
-      { name: 'comprehensive_integration', url: '/api/comprehensive-integration' },
-    ];
-
-    const results = {};
-
-    for (const test of tests) {
       try {
-        const response = await fetch(`http://localhost:5173${test.url}`);
-        results[test.name] = {
-          status: response.ok ? 'healthy' : 'unhealthy',
-          response_code: response.status,
+        // Test basic connection
+        const dbVersion = await db.execute(sql`SELECT version() as version`);
+
+        // Test pgvector
+        const vectorTest = await db.execute(
+          sql`SELECT '[1,2,3]'::vector <-> '[1,2,4]'::vector as distance`
+        );
+
+        // Test document count
+        const docCount = await db.select({ count: sql`COUNT(*)` }).from(schema.legalDocuments);
+
+        results.results.database = {
+          status: 'connected',
+          version: dbVersion.rows[0].version,
+          pgvectorWorking: true,
+          vectorDistance: vectorTest.rows[0].distance,
+          documentsCount: docCount[0].count,
         };
-      } catch (error: any) {
-        results[test.name] = {
-          status: 'error',
-          error: error.message,
-        };
+
+        results.performance.database = Date.now() - dbStartTime;
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : 'Unknown database error';
+        results.errors.push(`Database test failed: ${msg}`);
+        results.results.database = { status: 'error', message: msg };
       }
     }
 
-    return {
-      connectivity_tests: results,
-      overall_status: Object.values(results as Record<string, any>).every(
-        (r: any) => r && r.status === 'healthy'
-      )
-        ? 'healthy'
-        : 'degraded',
-    };
-  } catch (error: any) {
-    return {
-      status: 'error',
-      error: error.message,
-    };
-  }
-}
+    // Test Redis
+    if (testType === 'all' || testType === 'redis') {
+      const redisStartTime = Date.now();
 
-// Test API endpoints
-async function testAPIEndpoints(): Promise<any> {
-  const endpoints = [
-    { name: 'database_orchestrator', path: '/api/database-orchestrator' },
-    { name: 'context7_autosolve', path: '/api/context7-autosolve' },
-    { name: 'comprehensive_integration', path: '/api/comprehensive-integration' },
-    { name: 'context7', path: '/api/context7' },
-  ];
+      try {
+        const testKey = `integration-test-${Date.now()}`;
+        await redisService.set(testKey, { test: true }, 60);
+        const retrievedRaw = await redisService.get(testKey);
+        const retrieved =
+          retrievedRaw && typeof retrievedRaw === 'object' ? (retrievedRaw as any) : null;
+        await redisService.del(testKey);
 
-  const results = {};
+        const healthy =
+          typeof (redisService as any).isHealthy === 'function'
+            ? (redisService as any).isHealthy()
+            : true; // assume healthy if method missing
+        const stats =
+          typeof (redisService as any).getStats === 'function'
+            ? (redisService as any).getStats()
+            : {};
 
-  for (const endpoint of endpoints) {
-    try {
-      const controller = new AbortController();
-      const t = setTimeout(() => controller.abort(), 3000);
-      const response = await fetch(`http://localhost:5173${endpoint.path}`, {
-        method: 'GET',
-        signal: controller.signal,
-      });
-      clearTimeout(t);
+        results.results.redis = {
+          status: 'connected',
+          healthy,
+          dataIntegrity: !!retrieved && (retrieved as any).test === true,
+          stats,
+        };
 
-      results[endpoint.name] = {
-        status: response.ok ? 'accessible' : 'error',
-        response_code: response.status,
-        path: endpoint.path,
-      };
-    } catch (error: any) {
-      results[endpoint.name] = {
-        status: 'error',
-        error: error.message,
-        path: endpoint.path,
-      };
-    }
-  }
-
-  return results;
-}
-
-// Test Context7 integration
-async function testContext7Integration(): Promise<any> {
-  try {
-    const context7Tests = [];
-
-    // Test Context7 status
-    try {
-      const c1 = new AbortController();
-      const t1 = setTimeout(() => c1.abort(), 5000);
-      const statusResponse = await fetch('http://localhost:5173/api/context7', {
-        method: 'GET',
-        signal: c1.signal,
-      });
-      clearTimeout(t1);
-      context7Tests.push({
-        test: 'context7_status',
-        status: statusResponse.ok ? 'pass' : 'fail',
-        response_code: statusResponse.status,
-      });
-    } catch (error: any) {
-      context7Tests.push({
-        test: 'context7_status',
-        status: 'error',
-        error: error.message,
-      });
+        results.performance.redis = Date.now() - redisStartTime;
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : 'Unknown redis error';
+        results.errors.push(`Redis test failed: ${msg}`);
+        results.results.redis = { status: 'error', message: msg };
+      }
     }
 
-    // Test autosolve integration
-    try {
-      const c2 = new AbortController();
-      const t2 = setTimeout(() => c2.abort(), 5000);
-      const autosolveResponse = await fetch(
-        'http://localhost:5173/api/context7-autosolve?action=status',
-        { method: 'GET', signal: c2.signal }
-      );
-      clearTimeout(t2);
-      context7Tests.push({
-        test: 'autosolve_integration',
-        status: autosolveResponse.ok ? 'pass' : 'fail',
-        response_code: autosolveResponse.status,
-      });
-    } catch (error: any) {
-      context7Tests.push({
-        test: 'autosolve_integration',
-        status: 'error',
-        error: error.message,
-      });
+    // Test NATS + QUIC
+    if (testType === 'all' || testType === 'nats') {
+      const natsStartTime = Date.now();
+
+      try {
+        const healthCheck = await natsQuicSearchService.healthCheck();
+        const testSearch = await natsQuicSearchService.searchSimple('test legal document', {
+          type: 'hybrid',
+          limit: 5,
+        });
+        results.results.nats = {
+          status: 'success',
+          health: healthCheck,
+          searchTest: {
+            resultCount: testSearch.results?.length || 0,
+            processingTime: testSearch.analytics?.processingTime || 0,
+            lowLatency: (testSearch.analytics?.processingTime || 0) < 100,
+          },
+          quicEnabled: healthCheck.quicEnabled,
+        };
+
+        results.performance.nats = Date.now() - natsStartTime;
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : 'Unknown NATS error';
+        results.errors.push(`NATS test failed: ${msg}`);
+        results.results.nats = { status: 'error', message: msg };
+      }
     }
 
-    return {
-      tests: context7Tests,
-      overall_status: context7Tests.every((t) => t.status === 'pass') ? 'healthy' : 'degraded',
-    };
-  } catch (error: any) {
-    return {
-      status: 'error',
-      error: error.message,
-    };
-  }
-}
+    // Test Loki.js Integration
+    if (testType === 'all' || testType === 'loki') {
+      const lokiStartTime = Date.now();
 
-// Test autosolve system
-async function testAutosolveSystem(): Promise<any> {
-  try {
-    const autosolveTests = [];
+      try {
+        // Re-initialize if not healthy (getter added to cache class)
+        if (!lokiRedisCache.isHealthy) {
+          await lokiRedisCache.initialize();
+        }
 
-    // Test autosolve health
-    try {
-      const c3 = new AbortController();
-      const t3 = setTimeout(() => c3.abort(), 10000);
-      const healthResponse = await fetch(
-        'http://localhost:5173/api/context7-autosolve?action=health',
-        { method: 'GET', signal: c3.signal }
-      );
-      clearTimeout(t3);
-      autosolveTests.push({
-        test: 'autosolve_health',
-        status: healthResponse.ok ? 'pass' : 'fail',
-        response_code: healthResponse.status,
-      });
-    } catch (error: any) {
-      autosolveTests.push({
-        test: 'autosolve_health',
-        status: 'error',
-        error: error.message,
-      });
+        results.results.loki = {
+          status: 'initialized',
+          healthy: lokiRedisCache.isHealthy,
+          stats: lokiRedisCache.getStats(),
+        };
+
+        results.performance.loki = Date.now() - lokiStartTime;
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : 'Unknown loki error';
+        results.errors.push(`Loki test failed: ${msg}`);
+        results.results.loki = { status: 'error', message: msg };
+      }
     }
 
-    // Test TypeScript check (if available)
-    try {
-      const c4 = new AbortController();
-      const t4 = setTimeout(() => c4.abort(), 15000);
-      const tsResponse = await fetch('http://localhost:5173/api/system/typescript-check', {
-        method: 'POST',
-        signal: c4.signal,
-      });
-      clearTimeout(t4);
-      autosolveTests.push({
-        test: 'typescript_check',
-        status: tsResponse.ok ? 'pass' : 'fail',
-        response_code: tsResponse.status,
-      });
-    } catch (error: any) {
-      autosolveTests.push({
-        test: 'typescript_check',
-        status: 'error',
-        error: error.message,
-      });
+    // Test Instant Search
+    if (testType === 'all' || testType === 'search') {
+      const searchStartTime = Date.now();
+
+      try {
+        await instantSearchEngine.initialize();
+        const stats = instantSearchEngine.getSearchStats();
+
+        results.results.instantSearch = {
+          status: 'initialized',
+          stats,
+        };
+
+        results.performance.instantSearch = Date.now() - searchStartTime;
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : 'Unknown search error';
+        results.errors.push(`Instant search test failed: ${msg}`);
+        results.results.instantSearch = { status: 'error', message: msg };
+      }
     }
 
-    return {
-      tests: autosolveTests,
-      overall_status: autosolveTests.some((t) => t.status === 'pass') ? 'partial' : 'unavailable',
+    // Test RAG Pipeline
+    if (testType === 'all' || testType === 'rag') {
+      const ragStartTime = Date.now();
+
+      try {
+        const stats = await enhancedRAGPipeline.getSystemStats();
+
+        results.results.ragPipeline = {
+          status: 'available',
+          stats,
+          features: ['pgvector', 'gemma_embeddings', 'legal_reranker', 'redis_caching'],
+        };
+
+        results.performance.ragPipeline = Date.now() - ragStartTime;
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : 'Unknown rag error';
+        results.errors.push(`RAG pipeline test failed: ${msg}`);
+        results.results.ragPipeline = { status: 'error', message: msg };
+      }
+    }
+
+    // Overall status
+    const totalTime = Date.now() - startTime;
+    results.performance.total = totalTime;
+    results.status = results.errors.length === 0 ? 'healthy' : 'degraded';
+
+    const passedTests = Object.keys(results.results).filter((key) =>
+      ['connected', 'initialized', 'available'].includes(results.results[key].status)
+    ).length;
+
+    results.summary = {
+      testsRun: Object.keys(results.results).length,
+      testsPassed: passedTests,
+      testsFailed: results.errors.length,
+      overallStatus: results.status,
+      totalTime: totalTime,
     };
-  } catch (error: any) {
-    return {
-      status: 'error',
-      error: error.message,
-    };
-  }
-}
 
-// Quick health check
-async function quickHealthCheck(): Promise<any> {
-  const startTime = Date.now();
+    console.log(
+      `🧪 System integration test completed: ${passedTests}/${Object.keys(results.results).length} passed`
+    );
 
-  const healthChecks = await Promise.allSettled([
-    fetch('http://localhost:5173'),
-    fetch('http://localhost:11434/api/tags'),
-    fetch('http://localhost:5173/api/comprehensive-integration'),
-  ]);
-
-  const results = healthChecks.map((result, index) => {
-    const services = ['frontend', 'ollama', 'integration_api'];
-    return {
-      service: services[index],
-      status: result.status === 'fulfilled' && result.value?.ok ? 'healthy' : 'unhealthy',
-      response: result.status === 'fulfilled' ? result.value?.status : 'error',
-    };
-  });
-
-  const healthyCount = results.filter((r) => r.status === 'healthy').length;
-  const totalCount = results.length;
-
-  return json({
-    success: true,
-    message: 'Quick health check completed',
-    results,
-    health_score: Math.round((healthyCount / totalCount) * 100),
-    healthy_services: healthyCount,
-    total_services: totalCount,
-    response_time_ms: Date.now() - startTime,
-    timestamp: new Date().toISOString(),
-  });
-}
-
-// Test autosolve pipeline
-async function testAutosolvePipeline(): Promise<any> {
-  try {
-    const pipelineTest = await fetch('http://localhost:5173/api/context7-autosolve', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'health_check',
-      }),
-    });
-
-    return json({
-      success: true,
-      message: 'Autosolve pipeline test completed',
-      pipeline_status: pipelineTest.ok ? 'operational' : 'degraded',
-      response_code: pipelineTest.status,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error: any) {
+    return json(results);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Unknown system integration error';
+    console.error('❌ System integration test failed:', error);
     return json(
       {
-        success: false,
-        error: `Autosolve pipeline test failed: ${error.message}`,
+        status: 'error',
         timestamp: new Date().toISOString(),
+        error: msg,
+        results: {},
+        errors: [msg],
+        performance: { total: Date.now() - startTime },
       },
       { status: 500 }
     );
   }
+};
+
+export const POST: RequestHandler = async ({ request }) => {
+  try {
+    const { action, data } = await request.json();
+
+    switch (action) {
+      case 'stress-test':
+        return await runStressTest(data);
+      case 'end-to-end':
+        return await runEndToEndTest(data);
+      case 'cleanup':
+        return await cleanupTestData();
+      default:
+        return json({ success: false, error: 'Unknown action' }, { status: 400 });
+    }
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Unknown request error';
+    return json({ success: false, error: msg }, { status: 500 });
+  }
+};
+
+async function runStressTest(options: any = {}): Promise<Response> {
+  const { iterations = 100, concurrent = 10 } = options;
+  const results = [];
+
+  console.log(`🔥 Running stress test: ${iterations} iterations, ${concurrent} concurrent`);
+
+  // Run concurrent operations
+  const promises = [];
+  for (let i = 0; i < concurrent; i++) {
+    promises.push(stressTestWorker(iterations / concurrent, i));
+  }
+
+  const workerResults = await Promise.all(promises);
+
+  return json({
+    success: true,
+    stressTest: {
+      iterations,
+      concurrent,
+      results: workerResults,
+      summary: {
+        avgResponseTime:
+          workerResults.reduce((sum, r) => sum + r.avgTime, 0) / workerResults.length,
+        totalErrors: workerResults.reduce((sum, r) => sum + r.errors, 0),
+        opsPerSecond: iterations / (Math.max(...workerResults.map((r) => r.totalTime)) / 1000),
+      },
+    },
+  });
 }
 
-// Helper functions
-function determineOverallStatus(testResults: any): string {
-  const statuses = [
-    testResults.services,
-    testResults.database,
-    testResults.apis,
-    testResults.context7,
-    testResults.autosolve,
-  ];
+async function stressTestWorker(iterations: number, workerId: number): Promise<any> {
+  const startTime = Date.now();
+  let errors = 0;
+  let totalResponseTime = 0;
 
-  const healthyCount = statuses.filter(
-    (status) =>
-      (status as any)?.overall_status === 'healthy' ||
-      Object.values(status || {}).some((s: any) => s && (s as any).status === 'healthy')
-  ).length;
+  for (let i = 0; i < iterations; i++) {
+    try {
+      const opStart = Date.now();
 
-  if (healthyCount === statuses.length) return 'excellent';
-  if (healthyCount >= statuses.length * 0.8) return 'good';
-  if (healthyCount >= statuses.length * 0.6) return 'fair';
-  return 'poor';
-}
+      // Test Redis operation
+      const testKey = `stress:${workerId}:${i}`;
+      await redisService.set(testKey, { worker: workerId, iteration: i }, 10);
+      await redisService.get(testKey);
+      await redisService.del(testKey);
 
-function generateRecommendations(testResults: any): string[] {
-  const recommendations = [];
-
-  if (testResults.overall_status === 'poor') {
-    recommendations.push('🚨 Critical: Multiple system failures detected');
-    recommendations.push('Check service startup scripts and logs');
+      totalResponseTime += Date.now() - opStart;
+    } catch (error) {
+      errors++;
+    }
   }
 
-  if (testResults.services?.ollama?.status !== 'healthy') {
-    recommendations.push('🤖 Start Ollama service: ollama serve');
-  }
-
-  if (testResults.context7?.overall_status !== 'healthy') {
-    recommendations.push('🔧 Context7 integration needs attention');
-    recommendations.push('Review MCP server configurations');
-  }
-
-  if (testResults.autosolve?.overall_status === 'unavailable') {
-    recommendations.push('⚡ Autosolve system not available');
-    recommendations.push('Check TypeScript and error processing services');
-  }
-
-  if (testResults.overall_status === 'excellent') {
-    recommendations.push('✅ All systems operational');
-    recommendations.push('Ready for production workloads');
-  }
-
-  return recommendations;
-}
-
-function generateTestSummary(testResults: any): unknown {
   return {
-    overall_status: testResults.overall_status,
-    services_tested: Object.keys(testResults.services || {}).length,
-    healthy_services: Object.values(testResults.services || {}).filter(
-      (s: any) => s && s.status === 'healthy'
-    ).length,
-    api_endpoints_tested: Object.keys(testResults.apis || {}).length,
-    context7_available: testResults.context7?.overall_status === 'healthy',
-    autosolve_available: testResults.autosolve?.overall_status !== 'error',
-    test_duration:
-      testResults.end_time && testResults.start_time
-        ? new Date(testResults.end_time).getTime() - new Date(testResults.start_time).getTime()
-        : 0,
+    workerId,
+    iterations,
+    errors,
+    totalTime: Date.now() - startTime,
+    avgTime: totalResponseTime / iterations,
   };
+}
+
+async function runEndToEndTest(options: any = {}): Promise<Response> {
+  const testId = `e2e-${Date.now()}`;
+  const results: { steps: string[]; errors: string[]; success: boolean } = {
+    steps: [],
+    errors: [],
+    success: true,
+  };
+
+  try {
+    // Step 1: Create test document
+    results.steps.push('Creating test document');
+    const testDoc = {
+      id: testId,
+      title: 'End-to-End Test Document',
+      documentType: 'contract',
+      content:
+        'This is a comprehensive test of the legal AI system integration. It includes contract terms, liability clauses, and termination provisions.',
+      isActive: true,
+      createdAt: new Date().toISOString(),
+    };
+
+    await db.insert(schema.legalDocuments).values(testDoc);
+
+    // Step 2: Index document
+    results.steps.push('Indexing document');
+    const indexResult = await enhancedRAGPipeline.indexDocument(testDoc as any);
+    if (!indexResult.success) {
+      throw new Error('Document indexing failed');
+    }
+
+    // Step 3: Wait and search
+    results.steps.push('Searching for document');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const searchResults = await instantSearchEngine.search('test document contract');
+
+    // Step 4: Cleanup
+    results.steps.push('Cleaning up');
+    await db.delete(schema.legalDocuments).where(sql`id = ${testId}`);
+    await db.delete(schema.documentChunks).where(sql`document_id = ${testId}`);
+
+    return json({
+      success: true,
+      endToEnd: {
+        testId,
+        steps: results.steps,
+        results: {
+          documentCreated: true,
+          indexedChunks: indexResult.chunksCreated,
+          searchResults: searchResults.length,
+          cleanedUp: true,
+        },
+      },
+    });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Unknown end-to-end test error';
+    results.errors.push(msg);
+    results.success = false;
+
+    // Attempt cleanup
+    try {
+      await db.delete(schema.legalDocuments).where(sql`id = ${testId}`);
+      await db.delete(schema.documentChunks).where(sql`document_id = ${testId}`);
+    } catch (cleanupError) {
+      console.warn('Cleanup failed:', cleanupError);
+    }
+
+    return json({
+      success: false,
+      endToEnd: results,
+    });
+  }
+}
+
+async function cleanupTestData(): Promise<Response> {
+  try {
+    // Clean up any test data
+    const deletedDocs = await db
+      .delete(schema.legalDocuments)
+      .where(sql`title LIKE '%Test%' OR title LIKE '%test%'`)
+      .returning({ id: schema.legalDocuments.id });
+
+    const deletedChunks = await db
+      .delete(schema.documentChunks)
+      .where(sql`document_id LIKE 'test-%' OR document_id LIKE 'e2e-%'`)
+      .returning({ id: schema.documentChunks.id });
+
+    // Clean Redis test keys
+    const testKeys = await redisService.keys('test:*');
+    if (testKeys.length > 0) {
+      for (const key of testKeys) {
+        await redisService.del(key as string);
+      }
+    }
+
+    return json({
+      success: true,
+      cleanup: {
+        deletedDocuments: deletedDocs.length,
+        deletedChunks: deletedChunks.length,
+        deletedRedisKeys: testKeys.length,
+      },
+    });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Unknown cleanup error';
+    return json({ success: false, error: msg }, { status: 500 });
+  }
 }

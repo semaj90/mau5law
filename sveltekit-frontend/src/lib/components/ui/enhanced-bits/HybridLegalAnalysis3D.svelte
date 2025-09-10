@@ -636,7 +636,7 @@
         {/snippet}
       </Button>
 
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         onclick={() => enable3DVisualization = !enable3DVisualization}
         class="nes-btn {enable3DVisualization ? 'is-success' : 'is-normal'}"

@@ -214,3 +214,4 @@ async function quickSearch() {
     </div>
   </section>
 </main>
+

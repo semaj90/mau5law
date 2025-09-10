@@ -7,13 +7,7 @@ import type { RequestHandler } from './$types';
 import { qloraTopologyPredictor } from '$lib/ai/qlora-topology-predictor';
 import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service';
 import type { LegalDocument } from '$lib/memory/nes-memory-architecture';
-
-// Simple inline type since UserBehaviorPattern doesn't exist in the module
-interface UserBehaviorPattern {
-  sessionType: string;
-  focusIntensity: number;
-  documentFlow: string[];
-}
+import type { UserBehaviorPattern } from '$lib/ai/qlora-topology-predictor';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -35,15 +29,15 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {},
     };
 
-    // Create user behavior pattern
-    const behavior: UserBehaviorPattern = {
+    // Create user behavior pattern (use satisfies to enforce exact keys & avoid stale interface collisions)
+    const behavior = {
       sessionType: userPattern?.sessionType || 'analysis',
-      focusIntensity: userPattern?.focusIntensity || 0.7,
+      focusIntensity: userPattern?.focusIntensity ?? 0.7,
       documentFlow: [documentType || 'contract'],
-      interactionVelocity: userPattern?.interactionVelocity || 0.5,
-      qualityExpectation: userPattern?.qualityExpectation || 0.8,
-      timeConstraints: userPattern?.timeConstraints || 0.6,
-    };
+      interactionVelocity: userPattern?.interactionVelocity ?? 0.5,
+      qualityExpectation: userPattern?.qualityExpectation ?? 0.8,
+      timeConstraints: userPattern?.timeConstraints ?? 0.6,
+    } satisfies UserBehaviorPattern;
 
     // Performance requirements
     const perfReqs = {

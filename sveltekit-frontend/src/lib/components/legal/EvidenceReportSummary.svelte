@@ -556,3 +556,4 @@ ${report.attachments.map((att) => `• ${att.name} (${att.type})`).join("\n")}
     margin-right: auto
   }
 </style>
+

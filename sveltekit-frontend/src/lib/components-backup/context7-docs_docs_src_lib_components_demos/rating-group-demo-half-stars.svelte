@@ -23,3 +23,4 @@
 		{/each}
 	{/snippet}
 </RatingGroup.Root>
+

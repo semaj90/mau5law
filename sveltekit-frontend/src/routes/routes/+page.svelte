@@ -16,3 +16,4 @@
   <h2>Redirecting to All Routes...</h2>
   <p>If you are not redirected automatically, <a href="/all-routes">click here</a>.</p>
 </div>
+

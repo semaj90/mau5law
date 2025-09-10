@@ -158,7 +158,7 @@ let showSystemHealth = $state(false);
       </div>
 
       <div class="flex flex-wrap gap-2">
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           size="sm"
           onclick={() => showSystemHealth = !showSystemHealth}
@@ -405,7 +405,7 @@ let showSystemHealth = $state(false);
 
                   <!-- Action Buttons -->
                   <div class="flex gap-2">
-                    <Button class="bits-btn bits-btn"
+                    <Button class="bits-btn"
                       variant="outline"
                       size="sm"
                       onclick={() => startEdit(caseItem)}
@@ -414,7 +414,7 @@ let showSystemHealth = $state(false);
                       ✏️ Edit
                     </Button>
 
-                    <Button class="bits-btn bits-btn"
+                    <Button class="bits-btn"
                       variant="destructive"
                       size="sm"
                       onclick={() => confirmDelete(caseItem)}

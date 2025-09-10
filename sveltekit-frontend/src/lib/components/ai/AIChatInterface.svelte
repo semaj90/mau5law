@@ -620,3 +620,4 @@ How can I assist you with your legal needs today?`);
 		animation: scan 3s linear infinite;
 	}
 </style>
+

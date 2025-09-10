@@ -258,19 +258,19 @@ let contextText = $state('');
 
                       {#if message.role === 'assistant' && !message.error}
                         <div class="flex items-center gap-1">
-                          <Button class="bits-btn bits-btn"
+                          <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
                             on:onclick={() => copyToClipboard(message.content)}>
                             <Copy class="h-3 w-3" />
                           </Button>
-                          <Button class="bits-btn bits-btn"
+                          <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
                             on:onclick={() => provideFeedback(message.id, 'positive')}>
                             <ThumbsUp class="h-3 w-3" />
                           </Button>
-                          <Button class="bits-btn bits-btn"
+                          <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
                             on:onclick={() => provideFeedback(message.id, 'negative')}>
@@ -342,14 +342,14 @@ let contextText = $state('');
           keydown={handleKeydown}
           disabled={isLoading}
           class="flex-1" />
-        <Button class="bits-btn bits-btn" on:onclick={sendMessage} disabled={isLoading || !currentMessage.trim()}>
+        <Button class="bits-btn" on:onclick={sendMessage} disabled={isLoading || !currentMessage.trim()}>
           {#if isLoading}
             <Loader2 class="h-4 w-4 animate-spin" />
           {:else}
             <Send class="h-4 w-4" />
           {/if}
         </Button>
-        <Button class="bits-btn bits-btn" variant="outline" on:onclick={clearChat}>
+        <Button class="bits-btn" variant="outline" on:onclick={clearChat}>
           <X class="h-4 w-4" />
         </Button>
       </div>
@@ -374,4 +374,5 @@ let contextText = $state('');
     @apply text-sm leading-relaxed mb-2 last:mb-0;
   }
 </style>
+
 

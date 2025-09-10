@@ -76,8 +76,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     }
 
-    // Ensure Redis connection
-    await redisService.initialize();
+    // Ensure Redis connection (defensive cast to avoid ambient mismatches)
+    await (redisService as any).initialize();
 
     // Create Redis stream event
     const eventData = {
@@ -167,15 +167,15 @@ export const GET: RequestHandler = async ({ url }) => {
     const streamName = 'autotag:requests';
 
     // Get stream info
-    const streamInfo = await redisService.xInfoStream(streamName).catch(() => null);
+    const streamInfo = await (redisService as any).xInfoStream(streamName).catch(() => null);
 
     // Get recent events (last 10)
-    const recentEvents = await redisService
+    const recentEvents = await (redisService as any)
       .xRevRange(streamName, '+', '-', { COUNT: 10 })
       .catch(() => []);
 
     // Parse events
-    const events = recentEvents.map((event: any) => ({
+    const events = (recentEvents as any[]).map((event: any) => ({
       id: event.id,
       timestamp: new Date(parseInt(event.message.timestamp)).toISOString(),
       type: event.message.type,
@@ -240,7 +240,15 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
 
     // Get current stream info
     const streamInfo = await redisService.xInfoStream(streamName).catch(() => null);
-    const deletedCount = streamInfo?.length || 0;
+    // xInfoStream can return various structures; ensure numeric fallback
+    const deletedCount = Array.isArray(streamInfo)
+      ? streamInfo.length
+      : typeof streamInfo === 'object' &&
+          streamInfo !== null &&
+          'length' in (streamInfo as any) &&
+          typeof (streamInfo as any).length === 'number'
+        ? (streamInfo as any).length
+        : 0;
 
     // Delete the entire stream
     await redisService.del(streamName);

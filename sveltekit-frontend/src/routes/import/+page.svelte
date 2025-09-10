@@ -310,13 +310,13 @@
               </div>
               <div class="space-y-4">
                 <Tooltip content="Preview file contents">
-                  <Button class="bits-btn bits-btn" variant="outline" size="sm" disabled={!filePreview}>
+                  <Button class="bits-btn" variant="outline" size="sm" disabled={!filePreview}>
                     <Eye class="space-y-4" />
                     Preview
                   </Button>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
-                  <Button class="bits-btn bits-btn"
+                  <Button class="bits-btn"
                     variant="outline"
                     size="sm"
                     onclick={() => clearImport()}
@@ -336,7 +336,7 @@
                 </p>
                 <p class="space-y-4">or click to browse</p>
               </div>
-              <Button class="bits-btn bits-btn" variant="outline" onclick={() => fileInput?.click()}>
+              <Button class="bits-btn" variant="outline" onclick={() => fileInput?.click()}>
                 Select File
               </Button>
             </div>
@@ -494,7 +494,7 @@
       {#if importFile}
         <div class="space-y-4">
           <div class="space-y-4">
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               onclick={() => performImport()}
               disabled={isImporting}
               class="space-y-4"
@@ -510,7 +510,7 @@
               {/if}
             </Button>
             <Tooltip content="Clear current import and start over">
-              <Button class="bits-btn bits-btn" variant="outline" onclick={() => clearImport()}>
+              <Button class="bits-btn" variant="outline" onclick={() => clearImport()}>
                 <X class="space-y-4" />
                 Cancel
               </Button>
@@ -534,7 +534,7 @@
             <h4 class="space-y-4">Cases</h4>
             <div class="space-y-4">
               <Tooltip content="Download JSON example for cases">
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("cases", "json")}
@@ -543,7 +543,7 @@
                 </Button>
               </Tooltip>
               <Tooltip content="Download CSV example for cases">
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("cases", "csv")}
@@ -558,7 +558,7 @@
             <h4 class="space-y-4">Evidence</h4>
             <div class="space-y-4">
               <Tooltip content="Download JSON example for evidence">
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("evidence", "json")}
@@ -567,7 +567,7 @@
                 </Button>
               </Tooltip>
               <Tooltip content="Download CSV example for evidence">
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("evidence", "csv")}
@@ -627,3 +627,4 @@
   /* @unocss-include */
   /* Custom drag and drop styles */
 </style>
+

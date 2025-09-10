@@ -81,3 +81,4 @@ let caseData = $state({});
     on:cancel={handleCancel}
   />
 </div>
+

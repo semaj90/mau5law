@@ -336,7 +336,7 @@
         </div>
         
         {#if !isInitialized && !isProcessing}
-          <Button class="bits-btn bits-btn" onclick={initializeSystem} size="sm">
+          <Button class="bits-btn" onclick={initializeSystem} size="sm">
             🔄 Initialize System
           </Button>
         {/if}
@@ -426,7 +426,7 @@
                 </div>
               </div>
               
-              <Button class="bits-btn bits-btn" 
+              <Button class="bits-btn" 
                 onclick={() => processDocument(index)}
                 disabled={!isInitialized || isProcessing}
                 size="sm"
@@ -439,14 +439,14 @@
 
         <!-- Batch Operations -->
         <div class="flex gap-2 pt-4 border-t">
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             onclick={batchProcessDocuments}
             disabled={!isInitialized || isProcessing}
           >
             🚀 Batch Process All
           </Button>
           
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             onclick={generateMipmapDemo}
             disabled={!isInitialized || isProcessing}
             variant="outline"

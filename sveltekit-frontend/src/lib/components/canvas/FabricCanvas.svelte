@@ -14,6 +14,8 @@
     height?: number;
     caseId?: string;
     readOnly?: boolean;
+  gridEnabled?: boolean;
+  snapToGrid?: boolean;
     onSave?: (data: { objects: any[] }) => void;
     onDelete?: (data: { objectId: string }) => void;
     onSelect?: (data: { object: any }) => void;
@@ -24,6 +26,8 @@
     height = 600,
     caseId = undefined,
     readOnly = false,
+    gridEnabled = false,
+    snapToGrid = false,
     onSave,
     onDelete,
     onSelect
@@ -66,21 +70,58 @@ let uploadProgress = $state<Map<string, number>>(new Map());
     minioStatus === 'disconnected' ? 'bg-red-500' : 'bg-yellow-500 animate-pulse'
   );
 
-  onMount(async () => {
-    // Dynamically import Fabric.js to avoid SSR issues
-    const fabric = await import('fabric');
+  // Helper to normalize dynamic import of Fabric.js across different bundlers
+  // (module may export a default, a `fabric` named export, or the namespace itself)
+  async function getFabric(): Promise<any> {
+    const mod: any = await import('fabric');
+    return mod.fabric ?? mod.default ?? mod;
+  }
 
-    fabricCanvas = new fabric.Canvas(canvasElement, {
+  onMount(async () => {
+  // Dynamically import Fabric.js to avoid SSR issues
+  const fabric = await getFabric();
+
+  fabricCanvas = new fabric.Canvas(canvasElement, {
       width,
       height,
       backgroundColor: '#f8fafc',
       selection: !readOnly
     });
 
+    if (gridEnabled) {
+      drawGrid(fabric);
+    }
+
     setupCanvasEvents();
     await checkMinIOStatus();
     loadCanvasData();
   });
+
+  function drawGrid(fabric: any) {
+    if (!fabricCanvas) return;
+    const gridSize = 25;
+    const lines: any[] = [];
+    for (let i = 0; i < (width / gridSize); i++) {
+      const distance = i * gridSize;
+      lines.push(new fabric.Line([ distance, 0, distance, height ], { stroke: '#edf2f7', selectable: false, evented: false }));
+    }
+    for (let j = 0; j < (height / gridSize); j++) {
+      const distance = j * gridSize;
+      lines.push(new fabric.Line([ 0, distance, width, distance ], { stroke: '#edf2f7', selectable: false, evented: false }));
+    }
+    lines.forEach(line => fabricCanvas.add(line));
+    fabricCanvas.sendToBack(...lines);
+
+    if (snapToGrid) {
+      fabricCanvas.on('object:moving', (e: any) => {
+        const obj = e.target;
+        obj.set({
+          left: Math.round(obj.left / gridSize) * gridSize,
+          top: Math.round(obj.top / gridSize) * gridSize
+        });
+      });
+    }
+  }
 
   function setupCanvasEvents() {
     if (!fabricCanvas) return;
@@ -178,8 +219,14 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
     try {
       if (evidence.type === 'image' && evidence.url) {
-        const fabric = await import('fabric');
+        const fabric = await getFabric();
         const imageUrl = await refreshExpiredUrl(evidence);
+
+        // runtime guard: some trimmed builds or SSR stubs may not include Image
+        if (!fabric || !fabric.Image || typeof fabric.Image.fromURL !== 'function') {
+          console.warn('Fabric Image API not available; skipping image:', evidence.id);
+          return;
+        }
 
         fabric.Image.fromURL(imageUrl, (img: any) => {
           img.set({
@@ -196,9 +243,15 @@ let uploadProgress = $state<Map<string, number>>(new Map());
           fabricCanvas.renderAll();
         });
       } else if (evidence.type === 'document') {
-        const fabric = await import('fabric');
+        const fabric = await getFabric();
 
-        const rect = new fabric.fabric.Rect({
+        // runtime guard for core fabric shape constructors
+        if (!fabric || !fabric.Rect || !fabric.Text || !fabric.Group) {
+          console.warn('Required Fabric shape constructors missing; skipping document:', evidence.id);
+          return;
+        }
+
+        const rect = new fabric.Rect({
           left: evidence.x,
           top: evidence.y,
           width: 120,
@@ -316,8 +369,14 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
   function addAnnotation() {
     if (!fabricCanvas) return;
+    (async () => {
+      const fabric = await getFabric();
 
-    import('fabric').then(fabric => {
+      if (!fabric || !fabric.IText) {
+        console.warn('Fabric IText not available; annotation disabled');
+        return;
+      }
+
       const text = new fabric.IText('Click to edit annotation', {
         left: width / 2,
         top: height / 2,
@@ -333,7 +392,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
       fabricCanvas.add(text);
       fabricCanvas.setActiveObject(text);
       fabricCanvas.renderAll();
-    });
+    })();
   }
 
   function deleteSelected() {
@@ -448,7 +507,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
               onchange={handleFileUpload}
               disabled={isLoading}
             />
-            <Button class="bits-btn bits-btn" variant="outline" disabled={isLoading}>
+            <Button class="bits-btn" variant="outline" disabled={isLoading}>
               <Upload class="h-4 w-4 mr-2" />
               Upload Evidence
             </Button>
@@ -457,26 +516,26 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
         <!-- Add Annotation -->
         {#if !readOnly}
-          <Button class="bits-btn bits-btn" variant="outline" onclick={addAnnotation}>
+          <Button class="bits-btn" variant="outline" onclick={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
           </Button>
         {/if}
 
         <!-- Zoom Controls -->
-        <Button class="bits-btn bits-btn" variant="outline" onclick={zoomIn}>
+        <Button class="bits-btn" variant="outline" onclick={zoomIn}>
           <ZoomIn class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn bits-btn" variant="outline" onclick={zoomOut}>
+        <Button class="bits-btn" variant="outline" onclick={zoomOut}>
           <ZoomOut class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn bits-btn" variant="outline" onclick={resetZoom}>
+        <Button class="bits-btn" variant="outline" onclick={resetZoom}>
           <RotateCcw class="h-4 w-4" />
         </Button>
 
         <!-- Object Controls -->
         {#if hasSelectedObject && !readOnly}
-          <Button class="bits-btn bits-btn" variant="destructive" onclick={deleteSelected}>
+          <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
           </Button>
@@ -484,13 +543,13 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
         <!-- Save & Export -->
         {#if !readOnly}
-          <Button class="bits-btn bits-btn" variant="default" onclick={saveCanvas}>
+          <Button class="bits-btn" variant="default" onclick={saveCanvas}>
             <Save class="h-4 w-4 mr-2" />
             Save
           </Button>
         {/if}
 
-        <Button class="bits-btn bits-btn" variant="outline" onclick={exportCanvas}>
+        <Button class="bits-btn" variant="outline" onclick={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
         </Button>

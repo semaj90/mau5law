@@ -32,7 +32,7 @@
     <!-- Test modern Button component with Svelte 5 patterns -->
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">Modern Button (Svelte 5)</h2>
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="default"
   onclick={handleButtonClick}
       >

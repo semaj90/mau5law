@@ -376,7 +376,7 @@ let response = `# AI Analysis Results\n\n`;
         />
 
         {#if caseId}
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             on:onclick={quickAnalyzeEvidence}
@@ -567,4 +567,5 @@ let response = `# AI Analysis Results\n\n`;
     font-size: 1rem;
   }
 </style>
+
 

@@ -241,7 +241,7 @@
       
       <div class="flex items-center gap-2">
         {#if showSettings}
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             variant="ghost" 
             size="sm"
             on:onclick={() => showSettingsDialog = true}
@@ -254,7 +254,7 @@
         {/if}
 
         {#if hasConversation}
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             variant="ghost" 
             size="sm"
             on:onclick={() => showExportDialog = true}
@@ -402,7 +402,7 @@
           </Button>
           
           {#if isProcessing()}
-            <Button class="bits-btn bits-btn" 
+            <Button class="bits-btn" 
               variant="outline"
               size="sm"
               on:onclick={stopGeneration}
@@ -484,7 +484,7 @@
               <span class="text-sm">Embeddings</span>
             </div>
           </div>
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             variant="outline" 
             size="sm"
             on:onclick={() => aiAssistantManager.checkClusterHealth()}
@@ -495,14 +495,14 @@
       </div>
 
       <div class="flex justify-between gap-2">
-        <Button class="bits-btn bits-btn" 
+        <Button class="bits-btn" 
           variant="destructive"
           on:onclick={clearConversation}
           disabled={!hasConversation}
         >
           Clear Chat
         </Button>
-        <Button class="bits-btn bits-btn" on:onclick={() => showSettingsDialog = false}>
+        <Button class="bits-btn" on:onclick={() => showSettingsDialog = false}>
           Close
         </Button>
       </div>
@@ -536,13 +536,13 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button class="bits-btn bits-btn" 
+        <Button class="bits-btn" 
           variant="outline"
           on:onclick={() => showExportDialog = false}
         >
           Cancel
         </Button>
-        <Button class="bits-btn bits-btn" on:onclick={() => {
+        <Button class="bits-btn" on:onclick={() => {
           exportConversation();
           showExportDialog = false;
         }}>

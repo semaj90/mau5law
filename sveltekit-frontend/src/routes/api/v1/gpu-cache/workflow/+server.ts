@@ -266,13 +266,13 @@ export const PUT: RequestHandler = async ({ request }) => {
         // Process workflow-specific GPU optimizations
         const webgpuResult = await webgpuRAGService.processQuery(
           `workflow-optimize:${workflowType}`,
-          [{ optimization, workflowType, cacheKeys }]
+          { embeddings: [], context: { optimization, workflowType, cacheKeys } }
         );
 
         results.webgpu.applied++;
         results.webgpu.details.push({
-          optimized: webgpuResult.processed,
-          performance: webgpuResult.performance,
+          optimized: (webgpuResult as any).processed || false,
+          performance: (webgpuResult as any).performance || {}
         });
       } catch (error: any) {
         results.webgpu.failed++;

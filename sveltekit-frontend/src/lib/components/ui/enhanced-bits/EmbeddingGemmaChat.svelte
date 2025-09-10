@@ -466,7 +466,7 @@
     </div>
     
     <div class="flex items-center gap-2">
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         size="sm"
         onclick={() => useAdvancedRAG = !useAdvancedRAG}
@@ -484,7 +484,7 @@
       </Button>
       
       {#if showDocumentAnalysis}
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           size="sm"
           onclick={analyzeDocuments}
@@ -497,7 +497,7 @@
         </Button>
       {/if}
 
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         size="sm"
         onclick={checkServiceHealth}
@@ -513,7 +513,7 @@
         {/snippet}
       </Button>
 
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         size="sm"
         onclick={queueEmbeddingJobs}
@@ -535,7 +535,7 @@
           RAG Context: {selectedDocuments.length > 0 ? selectedDocuments.length : availableDocuments.length} of {availableDocuments.length} documents
         </span>
         <div class="flex gap-2">
-          <Button class="bits-btn bits-btn" variant="outline" size="xs" onclick={addDocument}>
+          <Button class="bits-btn" variant="outline" size="xs" onclick={addDocument}>
             {#snippet children()}
               <FileText class="w-3 h-3 mr-1" />
               Add Doc
@@ -643,7 +643,7 @@
         />
       </div>
 
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="default"
         size="default"
         onclick={sendMessage}

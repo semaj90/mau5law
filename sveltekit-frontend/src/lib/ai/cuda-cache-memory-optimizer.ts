@@ -365,20 +365,18 @@ class CUDACacheMemoryOptimizer {
   private initializeSOM(): void {
     console.log('🧠 Initializing Self-Organizing Map...');
     
-    this.somNeurons = Array(this.somHeight).fill(null).map(() => 
-      Array(this.somWidth).fill(null).map((_, x) => 
-        Array(this.somHeight).fill(null).map((_, y) => ({
-          id: `som_${x}_${y}`,
-          position: [x, y],
-          weights: new Float32Array(this.latentSize).fill(0).map(() => Math.random() * 0.1 - 0.05),
-          learningRate: this.globalLearningRate,
-          lastActivation: 0,
-          activationCount: 0,
-          associatedModel: 'gemma270m', // Default
-          userPatternSignature: ''
-        }))
-      )
-    )[0];
+    this.somNeurons = Array(this.somHeight).fill(null).map((_, y) => 
+      Array(this.somWidth).fill(null).map((_, x) => ({
+        id: `som_${x}_${y}`,
+        position: [x, y] as [number, number],
+        weights: new Float32Array(this.latentSize).fill(0).map(() => Math.random() * 0.1 - 0.05),
+        learningRate: this.globalLearningRate,
+        lastActivation: 0,
+        activationCount: 0,
+        associatedModel: 'gemma270m', // Default
+        userPatternSignature: ''
+      }))
+    );
     
     console.log(`✅ SOM initialized: ${this.somWidth}x${this.somHeight} = ${this.somWidth * this.somHeight} neurons`);
   }

@@ -219,7 +219,7 @@
                 {successfulTests}/{totalTests} Tests Passed
               </Badge>
             {/if}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               onclick={runTests}
               disabled={isRunningTests}
               variant={allTestsPassed ? 'outline' : 'default'}

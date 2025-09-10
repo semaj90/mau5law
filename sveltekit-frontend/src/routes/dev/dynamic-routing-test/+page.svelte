@@ -256,7 +256,7 @@ let currentPath = $state('');
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Quick Navigation</h3>
 
         <div class="space-y-2">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             size="sm"
             variant="ghost"
             onclick={() => navigateToRoute('/')}
@@ -265,7 +265,7 @@ let currentPath = $state('');
             🏠 Home
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             size="sm"
             variant="ghost"
             onclick={() => navigateToRoute('/demo')}
@@ -274,7 +274,7 @@ let currentPath = $state('');
             🎯 Demo Overview
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             size="sm"
             variant="ghost"
             onclick={() => navigateToRoute('/dev/mcp-tools')}
@@ -283,7 +283,7 @@ let currentPath = $state('');
             🔧 MCP Tools
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             size="sm"
             variant="ghost"
             onclick={() => navigateToRoute('/cases')}

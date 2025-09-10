@@ -191,7 +191,7 @@ let fuse = $state<Fuse<any> | null >(null);
           class="flex-1"
         />
         {#if searchQuery}
-          <Button class="bits-btn bits-btn" on:onclick={clearSearch} variant="outline" size="sm">
+          <Button class="bits-btn" on:onclick={clearSearch} variant="outline" size="sm">
             Clear
           </Button>
         {/if}
@@ -264,7 +264,7 @@ let fuse = $state<Fuse<any> | null >(null);
             <Sparkles class="w-4 h-4 mr-2" />
             {isProcessing ? 'Analyzing...' : 'Analyze with AI'}
           </Button>
-          <Button class="bits-btn bits-btn" on:onclick={generateInsights} disabled={isProcessing} variant="outline">
+          <Button class="bits-btn" on:onclick={generateInsights} disabled={isProcessing} variant="outline">
             Generate Insights
           </Button>
         </div>

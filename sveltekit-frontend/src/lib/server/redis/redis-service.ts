@@ -238,6 +238,19 @@ class RedisService {
   public isConnectedToRedis(): boolean {
     return this.isConnected;
   }
+
+  // Align with broader platform expectation of redisService.isHealthy()
+  public isHealthy(): boolean {
+    return this.isConnected;
+  }
+
+  // Provide lightweight stats similar to primary redis-service singleton
+  public getStats() {
+    return {
+      connected: this.isConnected,
+      status: this.isConnected ? 'connected' : 'disconnected',
+    };
+  }
   public async disconnect() {
     if (this.client) await this.client.disconnect();
     if (this.publisher) await this.publisher.disconnect();

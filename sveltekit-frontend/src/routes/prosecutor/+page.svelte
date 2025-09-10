@@ -210,7 +210,7 @@ let response = $state<Response;
       <CardContent>
         <div class="flex flex-wrap gap-2">
           {#each cases as caseItem}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant={selectedCaseId === caseItem.id ? 'default' : 'outline'}
               size="sm"
               onclick={() => selectCase(caseItem.id)}
@@ -220,7 +220,7 @@ let response = $state<Response;
             </Button>
           {/each}
 
-          <Button class="bits-btn bits-btn" variant="outline" size="sm">
+          <Button class="bits-btn" variant="outline" size="sm">
             <Plus class="w-4 h-4 mr-1" />
             New Case
           </Button>
@@ -250,7 +250,7 @@ let response = $state<Response;
                 placeholder="Search evidence, cases, precedents..."
                 class="flex-1"
               />
-              <Button class="bits-btn bits-btn" onclick={performVectorSearch} disabled={!searchQuery.trim()}>
+              <Button class="bits-btn" onclick={performVectorSearch} disabled={!searchQuery.trim()}>
                 <Search class="w-4 h-4" />
               </Button>
             </div>
@@ -329,7 +329,7 @@ let response = $state<Response;
                           {evidence.aiAnalysis.prosecutionRelevance}
                         </Badge>
                       {/if}
-                      <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+                      <Button class="bits-btn" variant="ghost" size="sm">
                         <Eye class="w-4 h-4" />
                       </Button>
                     </div>
@@ -457,4 +457,5 @@ let response = $state<Response;
     font-size: 12px;
   }
 </style>
+
 

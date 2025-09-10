@@ -1,7 +1,7 @@
 /**
  * Gaming Evolution Manager
  * Handles progressive enhancement from 8-bit → 16-bit → N64
- * 
+ *
  * Features:
  * - Performance-based era selection
  * - Smooth transitions between gaming eras
@@ -9,17 +9,17 @@
  * - Memory and CPU optimization
  */
 
-import type { 
-  GamingEra, 
-  GamingThemeState, 
+import type {
+  GamingEra,
+  GamingThemeState,
   ProgressiveGamingConfig,
-  GamepadState 
+  GamepadState,
 } from '../types/gaming-types.js';
 
-import { 
-  GAMING_BREAKPOINTS, 
+import {
+  GAMING_BREAKPOINTS,
   GAMING_ERA_SPECS,
-  N64_TEXTURE_PRESETS 
+  N64_TEXTURE_PRESETS,
 } from '../constants/gaming-constants.js';
 
 interface DeviceCapabilities {
@@ -43,41 +43,43 @@ export class GamingEvolutionManager {
   private listeners: Set<(state: GamingThemeState) => void> = new Set();
 
   private constructor(config: Partial<ProgressiveGamingConfig> = {}) {
-    this.config = {
-      defaultEra: 'auto',
-      enableAutoEvolution: true,
-      performanceThreshold: 16.67, // 60fps in milliseconds
-      
-      nesSettings: {
-        strictPalette: true,
-        enableScanlines: true,
-        pixelScale: 2
-      },
-      
-      snesSettings: {
-        enableGradients: true,
-        enableModeViitColors: true,
-        layerCount: 4
-      },
-      
-      n64Settings: {
-        ...N64_TEXTURE_PRESETS.balanced,
-        enableRealTimeReflections: false,
-        textureQuality: 'standard'
-      },
-      
-      yorhaIntegration: true,
-      bitsUICompatibility: true,
-      ...config
-    };
+  this.config = {
+    defaultEra: 'auto',
+    enableAutoEvolution: true,
+    performanceThreshold: 16.67, // 60fps in milliseconds
 
-    this.currentState = {
-      currentEra: this.config.defaultEra,
-      availableEras: ['8bit', '16bit', 'n64'],
-      isTransitioning: false,
-      transitionDuration: 300,
-      performanceLevel: 'medium'
-    };
+    nesSettings: {
+      strictPalette: true,
+      enableScanlines: true,
+      pixelScale: 2,
+    },
+
+    snesSettings: {
+      enableGradients: true,
+      enableModeViitColors: true,
+      layerCount: 4,
+    },
+
+    n64Settings: {
+      ...N64_TEXTURE_PRESETS.balanced,
+      enableRealTimeReflections: false,
+      textureQuality: 'standard',
+    },
+
+    yorhaIntegration: true,
+    bitsUICompatibility: true,
+    ...config,
+  } as unknown as ProgressiveGamingConfig;
+
+  this.currentState = {
+    currentEra: this.config.defaultEra,
+    availableEras: ['8bit', '16bit', 'n64'],
+    isTransitioning: false,
+    transitionDuration: 300,
+    performanceLevel: 'medium',
+  };
+  // Temporary cast to satisfy differing shape between runtime config and types
+  this.currentState = this.currentState as unknown as GamingThemeState;
 
     this.initialize();
   }
@@ -94,10 +96,10 @@ export class GamingEvolutionManager {
       await this.detectDeviceCapabilities();
       this.setupPerformanceMonitoring();
       this.determineOptimalEra();
-      
+
       // Listen for device changes
       window.addEventListener('resize', () => this.handleDeviceChange());
-      
+
       // Check for memory pressure events
       if ('memory' in performance) {
         this.monitorMemoryPressure();
@@ -130,18 +132,21 @@ export class GamingEvolutionManager {
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl') as WebGLRenderingContext | null;
-      
+
       if (!gl) return 'basic';
-      
+
       const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
       if (!debugInfo) return 'integrated';
-      
+
       const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-      
-      if (typeof renderer === 'string' && (renderer.includes('NVIDIA') || renderer.includes('AMD') || renderer.includes('Radeon'))) {
+
+      if (
+        typeof renderer === 'string' &&
+        (renderer.includes('NVIDIA') || renderer.includes('AMD') || renderer.includes('Radeon'))
+      ) {
         return 'discrete';
       }
-      
+
       return 'integrated';
     } catch {
       return 'unknown';
@@ -152,10 +157,10 @@ export class GamingEvolutionManager {
     if ('connection' in navigator) {
       const connection = (navigator as any).connection;
       const effectiveType = connection.effectiveType;
-      
+
       return effectiveType === '4g' || effectiveType === '5g' ? 'fast' : 'slow';
     }
-    
+
     return 'unknown';
   }
 
@@ -182,16 +187,16 @@ export class GamingEvolutionManager {
     try {
       this.performanceObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        
-        entries.forEach(entry => {
+
+        entries.forEach((entry) => {
           if (entry.entryType === 'measure' || entry.entryType === 'navigation') {
             this.frameMetrics.push(entry.duration);
-            
+
             // Keep only last 60 measurements
             if (this.frameMetrics.length > 60) {
               this.frameMetrics.shift();
             }
-            
+
             this.evaluatePerformance();
           }
         });
@@ -208,7 +213,7 @@ export class GamingEvolutionManager {
       const memory = (performance as any).memory;
       if (memory) {
         const memoryRatio = memory.usedJSHeapSize / memory.jsHeapSizeLimit;
-        
+
         if (memoryRatio > 0.9) {
           // High memory pressure - downgrade era
           this.downgradeEra();
@@ -270,12 +275,12 @@ export class GamingEvolutionManager {
     if (webgpu || (webgl && gpu !== 'basic' && memory >= 4 && cores >= 4)) {
       return 'n64';
     }
-    
+
     // SNES requirements: Moderate specs
     if (memory >= 2 && cores >= 2) {
       return '16bit';
     }
-    
+
     // NES: Universal fallback
     return '8bit';
   }
@@ -335,10 +340,10 @@ export class GamingEvolutionManager {
 
   public subscribe(callback: (state: GamingThemeState) => void): () => void {
     this.listeners.add(callback);
-    
+
     // Immediately call with current state
     callback(this.currentState);
-    
+
     return () => {
       this.listeners.delete(callback);
     };
@@ -362,7 +367,7 @@ export class GamingEvolutionManager {
 
   public updateConfig(updates: Partial<ProgressiveGamingConfig>): void {
     this.config = { ...this.config, ...updates };
-    
+
     if (updates.enableAutoEvolution !== undefined) {
       if (updates.enableAutoEvolution) {
         this.setupPerformanceMonitoring();
@@ -378,7 +383,7 @@ export class GamingEvolutionManager {
       this.performanceObserver.disconnect();
       this.performanceObserver = null;
     }
-    
+
     this.listeners.clear();
     this.frameMetrics = [];
 

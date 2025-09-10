@@ -14,3 +14,4 @@
 	</Switch.Root>
 	<Label.Root for="dnd" class="text-sm font-medium">Do not disturb</Label.Root>
 </div>
+

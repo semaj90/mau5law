@@ -195,7 +195,7 @@ let recentIngests = $state<IngestItem[]>([]);
           is available at <code>$lib/components/ai/IngestAIAssistant.svelte</code>
         </p>
         <div class="space-y-2">
-          <Button class="bits-btn bits-btn" onclick={() => window.open('/api/v1/ingest', '_blank')}>
+          <Button class="bits-btn" onclick={() => window.open('/api/v1/ingest', '_blank')}>
             Test API Directly
           </Button>
         </div>
@@ -303,10 +303,10 @@ let recentIngests = $state<IngestItem[]>([]);
       AI-powered processing and vector semantic search
     </p>
     <div class="flex justify-center space-x-4">
-  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={checkServiceHealth}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={checkServiceHealth}>
         🔄 Refresh Status
       </Button>
-  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={loadRecentIngests}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={loadRecentIngests}>
         📊 Load Recent
       </Button>
     </div>

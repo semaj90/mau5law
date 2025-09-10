@@ -1,6 +1,6 @@
 
 // Type definitions for multi-LLM synthesis and legal AI pipeline
-import type { AuditLogEntry } from '$lib/types/legal';
+// Local AuditLogEntry interface defined below
 
 export interface AIModelOutput {
   content: string;
@@ -213,19 +213,11 @@ export class Context7AgentOrchestrator {
 
       // Log the completion
       this.logAuditEntry({
-        id: `trigger_${Date.now()}_${Math.random().toString(36).substring(2)}`,
-        action: `agent_trigger_${trigger.action}`,
-        entityType: 'SYSTEM',
-        entityId: trigger.todoId || 'unknown',
-        userId: 'system',
-        severity: 'INFO',
-        timestamp: new Date(),
-        details: {
-          step: `agent_trigger_${trigger.action}`,
-          status: "ok",
-          message: `Agent completed ${trigger.action} for ${trigger.todoId}`,
-          agentTriggered: true
-        }
+        timestamp: new Date().toISOString(),
+        step: `agent_trigger_${trigger.action}`,
+        status: "ok",
+        message: `Agent completed ${trigger.action} for ${trigger.todoId}`,
+        agentTriggered: true
       });
 
       return completedTrigger;
@@ -238,19 +230,11 @@ export class Context7AgentOrchestrator {
       this.triggers.set(trigger.todoId, failedTrigger);
 
       this.logAuditEntry({
-        id: `error_${Date.now()}_${Math.random().toString(36).substring(2)}`,
-        action: `agent_trigger_${trigger.action}`,
-        entityType: 'SYSTEM',
-        entityId: trigger.todoId || 'unknown',
-        userId: 'system',
-        severity: 'ERROR',
-        timestamp: new Date(),
-        details: {
-          step: `agent_trigger_${trigger.action}`,
-          status: "error",
-          message: `Agent failed ${trigger.action} for ${trigger.todoId}: ${error}`,
-          agentTriggered: true
-        }
+        timestamp: new Date().toISOString(),
+        step: `agent_trigger_${trigger.action}`,
+        status: "error",
+        message: `Agent failed ${trigger.action} for ${trigger.todoId}: ${error}`,
+        agentTriggered: true
       });
 
       return failedTrigger;

@@ -353,11 +353,11 @@
         </p>
       </div>
       <div class="flex gap-2">
-        <Button class="bits-btn bits-btn" variant="outline" onclick={() => goto('/legal/documents/templates')}>
+        <Button class="bits-btn" variant="outline" onclick={() => goto('/legal/documents/templates')}>
           <FileText class="h-4 w-4 mr-2" />
           Templates
         </Button>
-        <Button class="bits-btn bits-btn" onclick={() => showUploadDialog = true}>
+        <Button class="bits-btn" onclick={() => showUploadDialog = true}>
           <Plus class="h-4 w-4 mr-2" />
           Upload Document
         </Button>
@@ -474,7 +474,7 @@
               : 'Try adjusting your search terms or filters'
             }
           </p>
-          <Button class="bits-btn bits-btn" onclick={() => showUploadDialog = true}>
+          <Button class="bits-btn" onclick={() => showUploadDialog = true}>
             <Plus class="h-4 w-4 mr-2" />
             Upload Document
           </Button>
@@ -504,10 +504,10 @@
                   </div>
                 </div>
                 <div class="flex gap-1">
-                  <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); editDocument(document); }}>
+                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); editDocument(document); }}>
                     <Edit2 class="h-4 w-4" />
                   </Button>
-                  <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); deleteDocument(document); }}>
+                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); deleteDocument(document); }}>
                     <Trash2 class="h-4 w-4" />
                   </Button>
                 </div>
@@ -586,7 +586,7 @@
               <FileText class="h-8 w-8 mx-auto text-green-600" />
               <p class="font-medium">{uploadFile.name}</p>
               <p class="text-sm text-muted-foreground">{formatFileSize(uploadFile.size)}</p>
-              <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => uploadFile = null}>
+              <Button class="bits-btn" variant="outline" size="sm" onclick={() => uploadFile = null}>
                 Remove
               </Button>
             </div>
@@ -666,10 +666,10 @@
     </div>
 
     <Dialog.Footer>
-      <Button class="bits-btn bits-btn" variant="outline" onclick={() => { showUploadDialog = false; resetUploadForm(); }}>
+      <Button class="bits-btn" variant="outline" onclick={() => { showUploadDialog = false; resetUploadForm(); }}>
         Cancel
       </Button>
-      <Button class="bits-btn bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
+      <Button class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
         {#if uploading}
           <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2"></div>
         {:else}
@@ -789,10 +789,10 @@
       </div>
       
       <Dialog.Footer>
-        <Button class="bits-btn bits-btn" variant="outline" onclick={() => showAIAnalysisDialog = false}>
+        <Button class="bits-btn" variant="outline" onclick={() => showAIAnalysisDialog = false}>
           Close
         </Button>
-        <Button class="bits-btn bits-btn" onclick={() => editDocument(selectedDocument)}>
+        <Button class="bits-btn" onclick={() => editDocument(selectedDocument)}>
           <Edit2 class="h-4 w-4 mr-2" />
           Edit Document
         </Button>

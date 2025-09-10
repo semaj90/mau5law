@@ -567,3 +567,4 @@
 		</clipPath>
 	</defs>
 </svg>
+

@@ -190,7 +190,7 @@ let enableSounds = $state(true);
 >
   {#if hiddenCount > 0}
     <div class="container mx-auto px-4">
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="ghost"
         size="sm"
         on:onclick={() => (maxVisible += 5)}
@@ -265,7 +265,7 @@ let enableSounds = $state(true);
                   {#if notification.actions && notification.actions.length > 0}
                     <div class="container mx-auto px-4">
                       {#each notification.actions as action}
-                        <Button class="bits-btn bits-btn"
+                        <Button class="bits-btn"
                           size="sm"
                           variant={action.variant === "primary"
                             ? "default"
@@ -283,7 +283,7 @@ let enableSounds = $state(true);
 
                 <!-- Dismiss button -->
                 <div class="container mx-auto px-4">
-                  <Button class="bits-btn bits-btn"
+                  <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
                     on:onclick={() => dismissNotification(notification.id)}
@@ -304,7 +304,7 @@ let enableSounds = $state(true);
   <!-- Dismiss all button for multiple notifications -->
   {#if visibleNotifications.length > 1}
     <div class="container mx-auto px-4">
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="ghost"
         size="sm"
         on:onclick={() => dismissAll()}
@@ -435,5 +435,6 @@ let enableSounds = $state(true);
     border: 0;
 }
 </style>
+
 
 

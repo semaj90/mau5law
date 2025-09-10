@@ -133,33 +133,33 @@ setInterval(() => {
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now();
   const detailed = url.searchParams.get('detailed') === 'true';
-  
+
   try {
     // System-level metrics
     const totalMemory = os.totalmem();
     const freeMemory = os.freemem();
     const usedMemory = totalMemory - freeMemory;
     const memoryPercentage = (usedMemory / totalMemory) * 100;
-    
+
     // Application-level metrics
     const processMemory = process.memoryUsage();
     const nodeUptime = process.uptime();
-    
+
     // CPU usage simulation (in production, use actual monitoring)
     const cpuUsage = process.cpuUsage();
-    
+
     // Legal AI Platform specific metrics
     const platformMetrics = await gatherPlatformMetrics();
-    
+
     // Performance benchmarks
     const benchmarks = await runPerformanceBenchmarks();
-    
+
     // System alerts
     const alerts = generateSystemAlerts(memoryPercentage, eventLoopDelay, platformMetrics);
 
     const metrics: PerformanceMetrics = {
       timestamp: new Date().toISOString(),
-      
+
       system: {
         uptime: os.uptime(),
         loadAverage: os.loadavg(),
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ url }) => {
           available: '500GB',
         },
       },
-      
+
       application: {
         nodeUptime: Math.floor(nodeUptime),
         memoryUsage: {
@@ -197,7 +197,7 @@ export const GET: RequestHandler = async ({ url }) => {
           duration: Math.round(Math.random() * 10 + 2),
         },
       },
-      
+
       legal_ai_platform: platformMetrics,
       benchmarks,
       alerts,
@@ -220,21 +220,21 @@ export const GET: RequestHandler = async ({ url }) => {
         'X-Service-Health': `${metrics.legal_ai_platform.services.healthy}/${metrics.legal_ai_platform.services.total}`,
         'X-Processing-Time': `${metrics.processingTime}ms`,
         'Cache-Control': 'public, max-age=30', // 30-second cache
-      }
+      },
     });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    productionLogger.error(`Performance metrics collection failed: ${message}`);
 
-  } catch (error: any) {
-    productionLogger.error('Performance metrics collection failed', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      processingTime: Date.now() - startTime,
-    });
-
-    return json({
-      timestamp: new Date().toISOString(),
-      error: 'Performance metrics collection failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      processingTime: Date.now() - startTime,
-    }, { status: 500 });
+    return json(
+      {
+        timestamp: new Date().toISOString(),
+        error: 'Performance metrics collection failed',
+        details: message,
+        processingTime: Date.now() - startTime,
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -294,10 +294,10 @@ async function gatherPlatformMetrics(): Promise<any> {
 // Run performance benchmarks
 async function runPerformanceBenchmarks(): Promise<any> {
   const startTime = Date.now();
-  
+
   // Simulate various performance tests
-  await new Promise(resolve => setTimeout(resolve, 50)); // Simulate work
-  
+  await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate work
+
   return {
     vectorSearch: {
       latency: 42, // ms
@@ -318,7 +318,11 @@ async function runPerformanceBenchmarks(): Promise<any> {
 }
 
 // Generate system alerts based on metrics
-function generateSystemAlerts(memoryPercentage: number, eventLoopDelay: number, platformMetrics: any) {
+function generateSystemAlerts(
+  memoryPercentage: number,
+  eventLoopDelay: number,
+  platformMetrics: any
+) {
   const warnings: string[] = [];
   const critical: string[] = [];
 
@@ -344,7 +348,8 @@ function generateSystemAlerts(memoryPercentage: number, eventLoopDelay: number, 
   }
 
   // Service health alerts
-  const serviceHealthPercentage = (platformMetrics.services.healthy / platformMetrics.services.total) * 100;
+  const serviceHealthPercentage =
+    (platformMetrics.services.healthy / platformMetrics.services.total) * 100;
   if (serviceHealthPercentage < 70) {
     critical.push(`Service health critical: ${serviceHealthPercentage.toFixed(1)}%`);
   } else if (serviceHealthPercentage < 85) {
@@ -352,7 +357,8 @@ function generateSystemAlerts(memoryPercentage: number, eventLoopDelay: number, 
   }
 
   // Database connection alerts
-  const dbConnUsage = (platformMetrics.database.connections.active / platformMetrics.database.connections.max) * 100;
+  const dbConnUsage =
+    (platformMetrics.database.connections.active / platformMetrics.database.connections.max) * 100;
   if (dbConnUsage > 90) {
     critical.push('Database connections near limit');
   } else if (dbConnUsage > 80) {
@@ -374,34 +380,35 @@ function generateSystemAlerts(memoryPercentage: number, eventLoopDelay: number, 
 // Calculate overall performance score
 function calculatePerformanceScore(metrics: PerformanceMetrics): number {
   let score = 100;
-  
+
   // Memory usage penalty
   if (metrics.system.memory.percentage > 90) score -= 20;
   else if (metrics.system.memory.percentage > 80) score -= 10;
   else if (metrics.system.memory.percentage > 70) score -= 5;
-  
+
   // Event loop delay penalty
   if (metrics.application.eventLoop.delay > 100) score -= 15;
   else if (metrics.application.eventLoop.delay > 50) score -= 8;
   else if (metrics.application.eventLoop.delay > 25) score -= 3;
-  
+
   // Service health impact
-  const serviceHealthPercentage = (metrics.legal_ai_platform.services.healthy / metrics.legal_ai_platform.services.total) * 100;
+  const serviceHealthPercentage =
+    (metrics.legal_ai_platform.services.healthy / metrics.legal_ai_platform.services.total) * 100;
   if (serviceHealthPercentage < 70) score -= 30;
   else if (serviceHealthPercentage < 85) score -= 15;
   else if (serviceHealthPercentage < 95) score -= 5;
-  
+
   // GPU performance impact
   if (metrics.legal_ai_platform.gpu.temperature > 85) score -= 10;
   if (metrics.legal_ai_platform.gpu.utilization < 30) score -= 5; // Underutilization
-  
+
   // Database performance impact
   if (metrics.legal_ai_platform.database.queryPerformance.avg > 50) score -= 10;
   if (metrics.legal_ai_platform.database.queryPerformance.slowQueries > 5) score -= 5;
-  
+
   // Cache efficiency impact
   if (metrics.legal_ai_platform.caching.hitRate < 80) score -= 8;
-  
+
   return Math.max(0, Math.round(score));
 }
 
@@ -409,7 +416,7 @@ function calculatePerformanceScore(metrics: PerformanceMetrics): number {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
-    
+
     switch (action) {
       case 'gc': {
         // Trigger garbage collection
@@ -421,25 +428,28 @@ export const POST: RequestHandler = async ({ request }) => {
             memoryAfter: process.memoryUsage(),
           });
         } else {
-          return json({
-            success: false,
-            error: 'Garbage collection not available',
-            suggestion: 'Start Node.js with --expose-gc flag',
-          }, { status: 400 });
+          return json(
+            {
+              success: false,
+              error: 'Garbage collection not available',
+              suggestion: 'Start Node.js with --expose-gc flag',
+            },
+            { status: 400 }
+          );
         }
       }
-      
+
       case 'benchmark': {
         // Run performance benchmarks
         const benchmarks = await runPerformanceBenchmarks();
-        
+
         return json({
           success: true,
           message: 'Performance benchmarks completed',
           data: benchmarks,
         });
       }
-      
+
       case 'clear_cache': {
         // Clear application caches
         return json({
@@ -448,19 +458,25 @@ export const POST: RequestHandler = async ({ request }) => {
           clearedAt: new Date().toISOString(),
         });
       }
-      
+
       default:
-        return json({
-          success: false,
-          error: 'Invalid action',
-          availableActions: ['gc', 'benchmark', 'clear_cache'],
-        }, { status: 400 });
+        return json(
+          {
+            success: false,
+            error: 'Invalid action',
+            availableActions: ['gc', 'benchmark', 'clear_cache'],
+          },
+          { status: 400 }
+        );
     }
   } catch (error: any) {
-    return json({
-      success: false,
-      error: 'Performance action failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
-    }, { status: 500 });
+    return json(
+      {
+        success: false,
+        error: 'Performance action failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
 };

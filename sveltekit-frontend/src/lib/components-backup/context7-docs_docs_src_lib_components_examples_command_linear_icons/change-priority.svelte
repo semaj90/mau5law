@@ -3,3 +3,4 @@
 	<rect x="6" y="5" width="3" height="9" rx="1" />
 	<rect x="11" y="2" width="3" height="12" rx="1" />
 </svg>
+

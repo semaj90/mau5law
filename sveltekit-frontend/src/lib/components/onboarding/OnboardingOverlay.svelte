@@ -305,7 +305,7 @@ $: currentStepData = steps[currentStep] || null;
 
         <div class="w-4 h-4">
           {#if autoProgress}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               on:onclick={() => toggleAutoProgress()}
@@ -322,7 +322,7 @@ $: currentStepData = steps[currentStep] || null;
             </Button>
           {/if}
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             on:onclick={() => closeOnboarding()}
@@ -394,7 +394,7 @@ $: currentStepData = steps[currentStep] || null;
       <div class="w-4 h-4">
         <div class="w-4 h-4">
           {#if allowSkip}
-            <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => skipOnboarding()}>
+            <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
             </Button>
@@ -424,7 +424,7 @@ $: currentStepData = steps[currentStep] || null;
         </div>
 
         <div class="w-4 h-4">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             on:onclick={() => previousStep()}
@@ -434,7 +434,7 @@ $: currentStepData = steps[currentStep] || null;
             Back
           </Button>
 
-          <Button class="bits-btn bits-btn" on:onclick={() => nextStep()} size="sm">
+          <Button class="bits-btn" on:onclick={() => nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="w-4 h-4" />
               Complete
@@ -711,3 +711,4 @@ $: currentStepData = steps[currentStep] || null;
       order: -1;
 }}
 </style>
+

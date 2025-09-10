@@ -456,7 +456,7 @@ let currentPath = $state<any >(null);
       <div
         class="space-y-4"
       >
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant={selectedTool === "select" ? "primary" : "outline"}
           size="sm"
           on:onclick={() => selectTool("select")}
@@ -464,7 +464,7 @@ let currentPath = $state<any >(null);
         >
           <Move class="space-y-4" />
         </Button>
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant={selectedTool === "draw" ? "primary" : "outline"}
           size="sm"
           on:onclick={() => selectTool("draw")}
@@ -472,7 +472,7 @@ let currentPath = $state<any >(null);
         >
           ✏️
         </Button>
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant={selectedTool === "text" ? "primary" : "outline"}
           size="sm"
           on:onclick={() => selectTool("text")}
@@ -487,14 +487,14 @@ let currentPath = $state<any >(null);
         <div
           class="space-y-4"
         >
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             on:onclick={() => addShape("rectangle")}
           >
             <Square class="space-y-4" />
           </Button>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             on:onclick={() => addShape("circle")}
@@ -508,7 +508,7 @@ let currentPath = $state<any >(null);
       <div
         class="space-y-4"
       >
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           size="sm"
           on:onclick={() => undo()}
@@ -516,7 +516,7 @@ let currentPath = $state<any >(null);
         >
           <Undo class="space-y-4" />
         </Button>
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           size="sm"
           on:onclick={() => redo()}
@@ -528,16 +528,16 @@ let currentPath = $state<any >(null);
 
       <!-- Zoom -->
       <div class="space-y-4">
-        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => zoomOut()}>
+        <Button class="bits-btn" variant="outline" size="sm" on:onclick={() => zoomOut()}>
           <ZoomOut class="space-y-4" />
         </Button>
         <span class="space-y-4"
           >{Math.round(zoom * 100)}%</span
         >
-        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => zoomIn()}>
+        <Button class="bits-btn" variant="outline" size="sm" on:onclick={() => zoomIn()}>
           <ZoomIn class="space-y-4" />
         </Button>
-        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => resetZoom()}
+        <Button class="bits-btn" variant="outline" size="sm" on:onclick={() => resetZoom()}
           >Reset</Button
         >
       </div>
@@ -546,15 +546,15 @@ let currentPath = $state<any >(null);
     <!-- Actions -->
     <div class="space-y-4">
       {#if !readonly}
-        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => deleteSelected()}>
+        <Button class="bits-btn" variant="outline" size="sm" on:onclick={() => deleteSelected()}>
           <Trash2 class="space-y-4" />
         </Button>
-        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => saveCanvas()}>
+        <Button class="bits-btn" variant="outline" size="sm" on:onclick={() => saveCanvas()}>
           <Save class="space-y-4" />
           Save
         </Button>
       {/if}
-      <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => exportCanvas()}>
+      <Button class="bits-btn" variant="outline" size="sm" on:onclick={() => exportCanvas()}>
         <Download class="space-y-4" />
         Export
       </Button>
@@ -599,3 +599,4 @@ let currentPath = $state<any >(null);
 <style>
   /* @unocss-include */
 </style>
+

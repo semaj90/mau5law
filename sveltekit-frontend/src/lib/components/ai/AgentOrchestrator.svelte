@@ -432,7 +432,7 @@ let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
         CrewAI {serviceStatus.crewai ? 'Online' : 'Offline'}
       </Badge>
 
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         size="sm"
   onclick={checkServiceStatus}
@@ -540,16 +540,16 @@ let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
         </Button>
 
         {#if isProcessing}
-          <Button class="bits-btn bits-btn" variant="outline" onclick={cancelExecution}>
+          <Button class="bits-btn" variant="outline" onclick={cancelExecution}>
             <Square class="h-4 w-4" />
           </Button>
         {/if}
 
         {#if conversationMessages.length > 0 || executionResults.length > 0}
-          <Button class="bits-btn bits-btn" variant="outline" onclick={clearResults}>
+          <Button class="bits-btn" variant="outline" onclick={clearResults}>
             Clear
           </Button>
-          <Button class="bits-btn bits-btn" variant="outline" onclick={downloadResults}>
+          <Button class="bits-btn" variant="outline" onclick={downloadResults}>
             <Download class="h-4 w-4" />
           </Button>
         {/if}

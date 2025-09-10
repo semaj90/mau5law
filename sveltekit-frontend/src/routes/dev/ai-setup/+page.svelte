@@ -6,3 +6,4 @@
 <p>This dev page shows the validation banner for GPU/Ollama/model readiness.</p>
 
 <AiSetupBanner />
+

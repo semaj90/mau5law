@@ -157,7 +157,7 @@ let formData = $state({
 
         <!-- Submit Button (bits-ui Button) -->
         <div class="flex justify-end space-x-3 pt-6 border-t">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             type="button"
             variant="outline"
             onclick={() => {

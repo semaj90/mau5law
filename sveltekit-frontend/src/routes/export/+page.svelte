@@ -254,14 +254,14 @@
                 Case Filter (Optional)
               </label>
               <div class="space-y-4">
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => selectAllCases()}
                 >
                   Select All
                 </Button>
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => clearCaseSelection()}
@@ -434,3 +434,4 @@
     </div>
   </div>
 </div>
+

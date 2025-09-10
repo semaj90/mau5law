@@ -187,7 +187,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
           <CardContent>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               {#each demoScenarios as scenario}
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => loadScenario(scenario)}
@@ -208,7 +208,7 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
                 <CardTitle>AI-Enhanced Legal Editor</CardTitle>
                 <CardDescription>Start typing to see intelligent suggestions appear</CardDescription>
               </div>
-              <Button class="bits-btn bits-btn" onclick={resetDemo} variant="outline" size="sm">
+              <Button class="bits-btn" onclick={resetDemo} variant="outline" size="sm">
                 Reset Demo
               </Button>
             </div>

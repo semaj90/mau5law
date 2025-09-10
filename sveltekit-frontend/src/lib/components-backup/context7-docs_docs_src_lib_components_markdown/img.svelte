@@ -6,3 +6,4 @@
 </script>
 
 <img {src} {alt} class={cn("rounded-md", className)} {...restProps} />
+

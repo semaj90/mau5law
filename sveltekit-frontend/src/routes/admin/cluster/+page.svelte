@@ -364,7 +364,7 @@ let eventSource = $state<EventSource | null>(null);
           </div>
 
           <div class="flex gap-2">
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               onclick={() => scaleCluster(targetWorkers)}
               disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}
               class="flex-1">
@@ -377,7 +377,7 @@ let eventSource = $state<EventSource | null>(null);
               {/if}
             </Button>
 
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               onclick={() => scaleCluster(clusterHealth.totalWorkers + 1)}
               disabled={isScaling}
               variant="outline"
@@ -385,7 +385,7 @@ let eventSource = $state<EventSource | null>(null);
               +1
             </Button>
 
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               onclick={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               disabled={isScaling || clusterHealth.totalWorkers <= 1}
               variant="outline"
@@ -554,3 +554,4 @@ let eventSource = $state<EventSource | null>(null);
     background: rgba(71, 85, 105, 1);
   }
 </style>
+

@@ -187,26 +187,28 @@ export class SIMDTextTilingEngine {
 
       // Apply SIMD tiling using existing evidence processing engine
       const tilingResult = await simdGPUTilingEngine.processEvidenceWithSIMDTiling(
-        {
-          evidence_id: `text-${Date.now()}`,
-          data: combinedEmbeddings,
-          metadata: {
-            type: 'text_embedding',
-            originalLength: originalText.length,
-            embeddingDimensions: this.config.vectorDimensions
-          }
-        },
+        `text-${Date.now()}`,
+        combinedEmbeddings,
+        Math.ceil(Math.sqrt(combinedEmbeddings.length)),
+        Math.ceil(Math.sqrt(combinedEmbeddings.length)),
         {
           tileSize: this.config.tileSize,
-          compressionRatio: this.config.compressionRatio,
-          enableGPUAcceleration: this.config.enableGPUAcceleration,
-          qualityTier: this.config.qualityTier
+          enableCompression: true,
+          priority: 'medium'
         }
       );
 
-      console.log(`🧮 SIMD tiling applied: ${combinedEmbeddings.length} → ${tilingResult.compressedData.length} (${tilingResult.compressionStats.achievedRatio.toFixed(1)}:1)`);
+      console.log(`🧮 SIMD tiling applied: ${combinedEmbeddings.length} → ${tilingResult.chunks.length} chunks (${tilingResult.tensorCompressionRatio.toFixed(1)}:1)`);
       
-      return tilingResult.compressedData;
+      // Extract compressed data from chunks
+      const compressedData = new Float32Array(tilingResult.chunks.reduce((acc, chunk) => acc + chunk.data.length, 0));
+      let compressedOffset = 0;
+      for (const chunk of tilingResult.chunks) {
+        compressedData.set(chunk.data, compressedOffset);
+        compressedOffset += chunk.data.length;
+      }
+      
+      return compressedData;
 
     } catch (error) {
       console.error('SIMD tiling failed:', error);

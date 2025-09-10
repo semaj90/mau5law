@@ -225,7 +225,7 @@ let filtered = $state([...securityEvents]);
     </div>
 
     <div class="container mx-auto px-4">
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         size="sm"
         onclick={() => loadSecurityEvents()}
@@ -234,11 +234,11 @@ let filtered = $state([...securityEvents]);
         <RefreshCw class={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         Refresh
       </Button>
-      <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => exportEvents()}>
+      <Button class="bits-btn" variant="outline" size="sm" onclick={() => exportEvents()}>
         <Download class="container mx-auto px-4" />
         Export
       </Button>
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         size="sm"
         onclick={() => clearAllEvents()}
@@ -448,7 +448,7 @@ let filtered = $state([...securityEvents]);
                   </div>
                 </div>
 
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => toggleEventDetails(index)}
@@ -464,5 +464,6 @@ let filtered = $state([...securityEvents]);
     </div>
   </div>
 </div>
+
 
 

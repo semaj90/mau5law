@@ -386,7 +386,7 @@
             <div class="flex items-center gap-4 mb-4">
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{embeddings.length} Vectors Loaded</span>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">WebGPU Enabled</span>
-              <Button class="bits-btn bits-btn" onclick={generateDemoEmbeddings} size="sm">
+              <Button class="bits-btn" onclick={generateDemoEmbeddings} size="sm">
                 Regenerate Embeddings
               </Button>
             </div>
@@ -419,7 +419,7 @@
             <div class="flex items-center gap-4 mb-4">
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Model: gemma3-legal</span>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Streaming: Enabled</span>
-              <Button class="bits-btn bits-btn" onclick={openAgentShell} size="sm">
+              <Button class="bits-btn" onclick={openAgentShell} size="sm">
                 <Terminal class="h-4 w-4 mr-2" />
                 Open Agent Shell
               </Button>
@@ -472,7 +472,7 @@
                   </div>
                 {/if}
               </div>
-              <Button class="bits-btn bits-btn" onclick={() => prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
+              <Button class="bits-btn" onclick={() => prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
                 Trigger Prediction
               </Button>
             </div>
@@ -499,13 +499,13 @@
 
             <!-- Control Buttons -->
             <div class="flex gap-4">
-              <Button class="bits-btn bits-btn" onclick={() => prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm" class="bg-green-600 hover:bg-green-700">
+              <Button class="bits-btn" onclick={() => prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm" class="bg-green-600 hover:bg-green-700">
                 Simulate Cache Hit
               </Button>
-              <Button class="bits-btn bits-btn" onclick={() => prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm" class="bg-red-600 hover:bg-red-700">
+              <Button class="bits-btn" onclick={() => prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm" class="bg-red-600 hover:bg-red-700">
                 Simulate Cache Miss
               </Button>
-              <Button class="bits-btn bits-btn" onclick={() => prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
+              <Button class="bits-btn" onclick={() => prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
                 Reset Metrics
               </Button>
             </div>

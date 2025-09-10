@@ -348,7 +348,7 @@ let stats = $state<any >(null);
       <Badge variant={isInitialized ? 'default' : 'secondary'}>
         {isInitialized ? 'Ready' : 'Initializing'}
       </Badge>
-  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={refreshServiceStatus}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={refreshServiceStatus}>
         <Settings class="w-4 h-4" />
       </Button>
     </div>
@@ -530,7 +530,7 @@ let stats = $state<any >(null);
             Test Results ({responses.length})
           </span>
           {#if responses.length > 0}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="outline"
               size="sm"
               onclick={() => responses = []}

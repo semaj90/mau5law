@@ -284,7 +284,7 @@ let searchHistory = $state<string[] >([]);
           <CardHeader>
             <div class="flex items-center justify-between">
               <CardTitle class="text-lg">Recent Searches</CardTitle>
-              <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={clearHistory}>
+              <Button class="bits-btn" variant="ghost" size="sm" on:onclick={clearHistory}>
                 Clear
               </Button>
             </div>
@@ -342,5 +342,6 @@ let searchHistory = $state<string[] >([]);
     overflow: hidden;
   }
 </style>
+
 
 

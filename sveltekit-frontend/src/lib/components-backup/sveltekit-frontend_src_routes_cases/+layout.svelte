@@ -406,3 +406,4 @@ import type { Case } from '$lib/types';
   /* Custom scrollbar for case list */
   /* Removed unused .overflow-y-auto selectors to resolve Svelte warnings */
 </style>
+

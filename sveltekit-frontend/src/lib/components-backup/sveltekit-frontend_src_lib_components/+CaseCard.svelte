@@ -87,3 +87,4 @@
     .selected-pending { background: #fff7ed; color: #92400e; } /* orange-50 / orange-700 */
     .selected-closed { background: #f8fafc; color: #475569; } /* slate-50 / slate-600 */
 </style>
+

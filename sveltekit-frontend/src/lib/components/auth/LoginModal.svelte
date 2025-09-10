@@ -82,14 +82,14 @@
           {#if $message}<div class="text-red-500 text-sm">{$message}</div>{/if}
           
           <div class="flex justify-end gap-2 mt-6">
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               type="button"
               variant="ghost"
               onclick={() => handleOpenChange(false)}
             >
               Cancel
             </Button>
-            <Button class="bits-btn bits-btn" type="submit" disabled={$submitting}>
+            <Button class="bits-btn" type="submit" disabled={$submitting}>
               {#if $submitting}Logging in...{:else}Login{/if}
             </Button>
           </div>
@@ -131,3 +131,4 @@
 </style>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+
