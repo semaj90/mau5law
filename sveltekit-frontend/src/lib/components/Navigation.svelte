@@ -33,11 +33,6 @@
 		{ href: '/persons', label: 'PERSONS', icon: Users },
 		{ href: '/analysis', label: 'ANALYSIS', icon: BarChart3 },
 		{ href: '/search', label: 'SEARCH', icon: Search },
-		{ href: '/mcp', label: 'MCP AI', icon: Brain, submenu: [
-			{ href: '/mcp/demo', label: 'Document Analysis' },
-			{ href: '/mcp/processor', label: 'Legal Processor' },
-			{ href: '/mcp/dashboard', label: 'Server Dashboard' }
-		]},
 		{ href: '/terminal', label: 'TERMINAL', icon: Terminal }
 	];
 
@@ -127,47 +122,17 @@
 
 			<nav class="nes-nav-section">
 				{#each navItems as item}
-					{#if item.submenu}
-						<div class="nav-item-with-submenu">
-							<a
-								href={item.href}
-								onclick={(e: MouseEvent) => handleNavigation(item.href, e)}
-								class={cn(
-									"nes-legal-priority-medium yorha-3d-button",
-									currentPath.startsWith('/mcp') && "nes-legal-priority-high"
-								)}
-							>
-								<item.icon class="w-4 h-4" />
-								<span>{item.label}</span>
-							</a>
-							<div class="submenu">
-								{#each item.submenu as subitem}
-									<a
-										href={subitem.href}
-										onclick={(e: MouseEvent) => handleNavigation(subitem.href, e)}
-										class={cn(
-											"submenu-item",
-											currentPath === subitem.href && "active"
-										)}
-									>
-										{subitem.label}
-									</a>
-								{/each}
-							</div>
-						</div>
-					{:else}
-						<a
-							href={item.href}
-							onclick={(e: MouseEvent) => handleNavigation(item.href, e)}
-							class={cn(
-								"nes-legal-priority-medium yorha-3d-button",
-								currentPath === item.href && "nes-legal-priority-high"
-							)}
-						>
-							<item.icon class="w-4 h-4" />
-							<span>{item.label}</span>
-						</a>
-					{/if}
+											<a
+												href={item.href}
+												onclick={(e: MouseEvent) => handleNavigation(item.href, e)}
+						class={cn(
+							"nes-legal-priority-medium yorha-3d-button",
+							currentPath === item.href && "nes-legal-priority-high"
+						)}
+					>
+						<item.icon class="w-4 h-4" />
+						<span>{item.label}</span>
+					</a>
 				{/each}
 			</nav>
 		</div>
@@ -632,55 +597,6 @@
 		gap: 2px;
 	}
 
-	/* MCP Submenu Styles */
-	.nav-item-with-submenu {
-		position: relative;
-	}
-
-	.nav-item-with-submenu:hover .submenu {
-		opacity: 1;
-		visibility: visible;
-		transform: translateY(0);
-	}
-
-	.submenu {
-		position: absolute;
-		top: 100%;
-		left: 0;
-		min-width: 200px;
-		background: var(--yorha-bg-primary);
-		border: 1px solid var(--yorha-border-primary);
-		border-radius: 0.375rem;
-		padding: var(--golden-xs);
-		opacity: 0;
-		visibility: hidden;
-		transform: translateY(-8px);
-		transition: all 200ms ease;
-		z-index: 1000;
-		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-	}
-
-	.submenu-item {
-		display: block;
-		padding: var(--golden-xs) var(--golden-sm);
-		color: var(--yorha-text-secondary);
-		text-decoration: none;
-		font-size: var(--text-sm);
-		border-radius: 0.25rem;
-		transition: all 150ms ease;
-		white-space: nowrap;
-	}
-
-	.submenu-item:hover {
-		background-color: var(--yorha-bg-hover);
-		color: var(--yorha-text-primary);
-	}
-
-	.submenu-item.active {
-		background-color: var(--yorha-bg-tertiary);
-		color: var(--yorha-accent-gold);
-	}
-
 	@media (max-width: 768px) {
 		.header-title {
 			font-size: var(--text-base);
@@ -688,15 +604,6 @@
 
 		.header-subtitle {
 			display: none;
-		}
-
-		.submenu {
-			position: fixed;
-			top: auto;
-			left: 1rem;
-			right: 1rem;
-			width: auto;
-			min-width: unset;
 		}
 	}
 </style>

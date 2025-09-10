@@ -25,7 +25,7 @@ function log(message, color = 'reset') {
 // Check if Ollama is already running
 async function isOllamaRunning() {
   try {
-    const { stdout } = await execAsync('curl -s http://localhost:11434/api/tags', { timeout: 5000 });
+    const { stdout } = await execAsync('curl -s http://localhost:11435/api/tags', { timeout: 5000 });
     return stdout.includes('models') || stdout.includes('[]');
   } catch (error) {
     return false;
@@ -78,7 +78,7 @@ async function startOllamaGPU() {
         if (!startupComplete) {
           startupComplete = true;
           log('✅ Ollama GPU server started successfully', 'green');
-          log('📍 Server listening on http://localhost:11434', 'blue');
+          log('📍 Server listening on http://localhost:11435', 'blue');
           resolve(true);
         }
       }
@@ -162,7 +162,7 @@ async function testAIChat() {
       stream: false
     };
     
-    const { stdout } = await execAsync(`curl -s -X POST http://localhost:11434/api/generate -H "Content-Type: application/json" -d '${JSON.stringify(testPrompt)}'`, { timeout: 15000 });
+    const { stdout } = await execAsync(`curl -s -X POST http://localhost:11435/api/generate -H "Content-Type: application/json" -d '${JSON.stringify(testPrompt)}'`, { timeout: 15000 });
     
     const response = JSON.parse(stdout);
     if (response.response && response.response.includes('ready')) {

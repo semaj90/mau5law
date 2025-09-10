@@ -1,7 +1,8 @@
 
 // src/lib/server/vector/vectorService.ts (continued)
-import { QdrantClient } from "@qdrant/js-client-rest";
-import { Redis } from "ioredis";
+import { QdrantClient } from '@qdrant/js-client-rest';
+import type { Redis } from 'ioredis';
+import { createRedisInstance } from '$lib/server/redis';
 import { db } from '$lib/server/db';
 import { getRedisConfig } from '$lib/config/redis-config';
 import {
@@ -29,8 +30,9 @@ export interface EmbeddingResult {
 }
 
 export class VectorService {
-  private qdrant: QdrantClient;
-  private redis: Redis;
+  // Using any for qdrant to avoid namespace/type mismatch issues from client lib typings
+  private qdrant: any;
+  private redis: ReturnType<typeof createRedisInstance>;
   private collectionName: string;
 
   constructor() {
@@ -39,15 +41,20 @@ export class VectorService {
       apiKey: import.meta.env.QDRANT_API_KEY,
     });
 
-    this.redis = new Redis({
-      host: (getRedisConfig().host as any) || import.meta.env.REDIS_HOST || 'localhost',
-      port: parseInt(
-        String((getRedisConfig() as any).port ?? import.meta.env.REDIS_PORT ?? '4005')
-      ),
-      password: import.meta.env.REDIS_PASSWORD,
-      db: parseInt(import.meta.env.REDIS_DB || '0'),
-      maxRetriesPerRequest: 3,
-    });
+    try {
+      this.redis = createRedisInstance();
+    } catch {
+      const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
+      this.redis = new RedisCtor({
+        host: (getRedisConfig().host as any) || import.meta.env.REDIS_HOST || 'localhost',
+        port: parseInt(
+          String((getRedisConfig() as any).port ?? import.meta.env.REDIS_PORT ?? '4005')
+        ),
+        password: import.meta.env.REDIS_PASSWORD,
+        db: parseInt(import.meta.env.REDIS_DB || '0'),
+        maxRetriesPerRequest: 3,
+      });
+    }
 
     this.collectionName = import.meta.env.QDRANT_COLLECTION || 'legal_documents';
   }
@@ -56,7 +63,7 @@ export class VectorService {
   async initializeCollection(): Promise<void> {
     try {
       const collections = await this.qdrant.getCollections();
-      const exists = collections.collections.some((c) => c.name === this.collectionName);
+      const exists = collections.collections.some((c: any) => c.name === this.collectionName);
 
       if (!exists) {
         await this.qdrant.createCollection(this.collectionName, {
@@ -126,7 +133,7 @@ export class VectorService {
       } else {
         // Fallback: set then expire
         await this.redis.set(cacheKey, JSON.stringify(embedding));
-        await this.redis.expire(cacheKey, 24 * 60 * 60);
+        await (this.redis as any).expire(cacheKey, 24 * 60 * 60);
       }
 
       // Also store in PostgreSQL for persistence
@@ -256,7 +263,7 @@ export class VectorService {
         await (this.redis as any).setex(cacheKey, 5 * 60, JSON.stringify(results));
       } else {
         await this.redis.set(cacheKey, JSON.stringify(results));
-        await this.redis.expire(cacheKey, 5 * 60);
+        await (this.redis as any).expire(cacheKey, 5 * 60);
       }
 
       return results;
@@ -331,7 +338,7 @@ export class VectorService {
           .limit(limit);
 
         results.push(
-          ...caseResults.map((c) => ({
+          ...caseResults.map((c: any) => ({
             id: c.id,
             score: 0.8, // Default keyword score
             metadata: { type: 'case', title: c.title, case_id: c.id },
@@ -379,7 +386,7 @@ export class VectorService {
           .limit(limit);
 
         results.push(
-          ...criminalResults.map((c) => ({
+          ...criminalResults.map((c: any) => ({
             id: c.id,
             score: 0.8,
             metadata: {

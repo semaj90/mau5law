@@ -20,17 +20,24 @@ export interface ActiveStream {
 const streams = new Map<string, ActiveStream>();
 
 // Optional Redis integration for distributed registry & summary cache
-import Redis from 'ioredis';
-let redis: Redis | null = null;
-const redisUrl = (process as any).env.RAG_REDIS_URL;
-if (redisUrl) {
+import type { Redis } from 'ioredis';
+import { createRedisInstance } from '$lib/server/redis';
+import { getRedisConfig } from '$lib/config/redis-config';
+let redis: ReturnType<typeof createRedisInstance> | null = null;
+(() => {
   try {
-    redis = new Redis(redisUrl);
-    // ioredis connects automatically
+    // Prefer central factory (ensures password + tuning)
+    redis = createRedisInstance();
   } catch {
-    redis = null;
+    try {
+      const cfg: any = getRedisConfig();
+      const envUrl = (process as any).env.RAG_REDIS_URL || process.env.REDIS_URL;
+      if (envUrl) (cfg as any).url = envUrl;
+      const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
+      redis = new RedisCtor(cfg);
+    } catch { redis = null; }
   }
-}
+})();
 
 const SUMMARY_CACHE_PREFIX = 'rag:summary:';
 

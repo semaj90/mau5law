@@ -7,7 +7,8 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import postgres from 'postgres';
-import Redis from 'ioredis';
+import type { Redis } from 'ioredis';
+import { createRedisInstance } from '$lib/server/redis';
 import { vectors, vectorJobs, evidence, reports } from '$lib/server/db/schema-postgres.js';
 import { eq } from 'drizzle-orm';
 
@@ -17,9 +18,13 @@ const sql = postgres(
 );
 const db = drizzle(sql);
 
-const redis = new Redis(
-  import.meta.env.REDIS_URL || `redis://localhost:${(import.meta.env.REDIS_PORT as any) || 4005}`
-);
+let redis: ReturnType<typeof createRedisInstance> | null = null;
+try { redis = createRedisInstance(); } catch {
+  const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
+  redis = new RedisCtor(
+    import.meta.env.REDIS_URL || `redis://localhost:${(import.meta.env.REDIS_PORT as any) || 4005}`
+  );
+}
 
 // Qdrant client (simple HTTP implementation)
 class QdrantClient {
@@ -291,7 +296,7 @@ export const GET: RequestHandler = async () => {
     // Check Redis connection (ioredis)
     let redisOk = false;
     try {
-      const pong = await redis.ping();
+  const pong = await (redis as any)?.ping?.();
       redisOk = pong === 'PONG' || pong === 'pong';
     } catch {}
 

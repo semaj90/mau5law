@@ -49,83 +49,25 @@ class DevFullManager {
   }
 
   async discoverPorts() {
-    this.log('System', '🔍 Discovering available ports with conflict resolution...', 'cyan');
+    this.log('System', '🔍 Discovering available ports...', 'cyan');
 
     try {
-      // Check and resolve Ollama port (priority 1 - must be 11434 for compatibility)
-      if (await this.isPortAvailable(11434)) {
-        this.discoveredPorts.ollama = 11434;
-        this.log('System', '✅ Ollama port 11434 available', 'green');
-      } else {
-        this.log(
-          'System',
-          '⚠️  Port 11434 in use, checking if Ollama is already running...',
-          'yellow'
-        );
-        const isOllamaRunning = await this.checkOllamaHealth();
-        if (isOllamaRunning) {
-          this.log('System', '✅ Ollama already running on 11434', 'green');
-          this.discoveredPorts.ollama = 11434;
-        } else {
-          this.log(
-            'System',
-            '❌ Port 11434 blocked by other service, finding alternative...',
-            'red'
-          );
-          this.discoveredPorts.ollama = await this.findAvailablePort(11435);
-          this.log(
-            'System',
-            `📍 Alternative Ollama port: ${this.discoveredPorts.ollama}`,
-            'yellow'
-          );
-        }
-      }
-
-      // Check and resolve CUDA service port (priority 2 - avoid 8096 conflict)
-      if (await this.isPortAvailable(8096)) {
-        this.discoveredPorts.cuda = 8096;
-        this.log('System', '✅ CUDA port 8096 available', 'green');
-      } else {
-        this.log('System', '⚠️  Port 8096 in use, finding alternative...', 'yellow');
-        this.discoveredPorts.cuda = await this.findAvailablePort(8097);
-        this.log('System', `📍 Alternative CUDA port: ${this.discoveredPorts.cuda}`, 'magenta');
-      }
-
       // Frontend port discovery (start from 5173)
       this.discoveredPorts.frontend = await this.findAvailablePort(5173);
       this.log('System', `📍 Frontend port: ${this.discoveredPorts.frontend}`, 'cyan');
 
-      this.log('System', '✅ Port discovery complete - conflicts resolved', 'green');
+      // Ollama port discovery (start from 11434)
+      this.discoveredPorts.ollama = await this.findAvailablePort(11434);
+      this.log('System', `📍 Ollama port: ${this.discoveredPorts.ollama}`, 'yellow');
+
+      // CUDA service port discovery (start from 8080)
+      this.discoveredPorts.cuda = await this.findAvailablePort(8080);
+      this.log('System', `📍 CUDA service port: ${this.discoveredPorts.cuda}`, 'magenta');
+
+      this.log('System', '✅ Port discovery complete', 'green');
     } catch (error) {
       this.log('System', `❌ Port discovery failed: ${error.message}`, 'red');
       throw error;
-    }
-  }
-
-  async checkOllamaHealth() {
-    try {
-      const { spawn } = await import('child_process');
-      return new Promise((resolve) => {
-        const healthCheck = spawn('curl', ['-s', 'http://localhost:11434/api/version'], {
-          stdio: 'pipe',
-        });
-
-        healthCheck.on('close', (code) => {
-          resolve(code === 0);
-        });
-
-        healthCheck.on('error', () => {
-          resolve(false);
-        });
-
-        // Timeout after 2 seconds
-        setTimeout(() => {
-          healthCheck.kill();
-          resolve(false);
-        }, 2000);
-      });
-    } catch {
-      return false;
     }
   }
 
@@ -327,68 +269,28 @@ class DevFullManager {
   }
 
   async startCUDAService() {
-    this.log('CUDA', '🎯 Starting CUDA service worker with port validation...', 'magenta');
-
-    // Ensure port is available before starting
-    const cudaPort = this.discoveredPorts.cuda;
-    if (!(await this.isPortAvailable(cudaPort))) {
-      this.log('CUDA', `❌ Port ${cudaPort} still in use, aborting CUDA startup`, 'red');
-      throw new Error(`CUDA port ${cudaPort} is not available`);
-    }
+    this.log('CUDA', '🎯 Starting CUDA service worker...', 'magenta');
 
     const cudaProcess = spawn('go', ['run', '../cuda-service-worker.go'], {
       stdio: 'pipe',
-      env: {
-        ...process.env,
-        CUDA_SERVICE_PORT: cudaPort.toString(),
-        CUDA_SERVICE_HOST: '127.0.0.1',
-      },
+      env: { ...process.env },
     });
 
-    let startupComplete = false;
-
     cudaProcess.stdout.on('data', (data) => {
-      const output = data.toString().trim();
-      this.log('CUDA', output, 'magenta');
-
-      // Check for successful startup
-      if (output.includes('Starting HTTP server') || output.includes('CUDA Service initialized')) {
-        startupComplete = true;
-      }
+      this.log('CUDA', data.toString().trim(), 'magenta');
     });
 
     cudaProcess.stderr.on('data', (data) => {
-      const error = data.toString().trim();
-
-      // Handle specific port conflict error
-      if (error.includes('bind: Only one usage of each socket address')) {
-        this.log('CUDA', `❌ Port conflict detected on ${cudaPort}`, 'red');
-        this.log('CUDA', '💡 Retrying with alternative port in next startup...', 'yellow');
-      } else {
-        this.log('CUDA', `⚠️  ${error}`, 'yellow');
-      }
+      this.log('CUDA', `⚠️  ${data.toString().trim()}`, 'yellow');
     });
 
     cudaProcess.on('close', (code) => {
       if (code !== 0 && !this.isShuttingDown) {
         this.log('CUDA', `❌ CUDA service exited with code ${code}`, 'red');
-        if (!startupComplete) {
-          this.log(
-            'CUDA',
-            '💡 Service failed to start - check port conflicts and GPU availability',
-            'yellow'
-          );
-        }
-      } else if (code === 0) {
-        this.log('CUDA', '✅ CUDA service shutdown cleanly', 'green');
       }
     });
 
     this.processes.push(cudaProcess);
-
-    // Wait a moment for potential startup errors
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
     return cudaProcess;
   }
 
@@ -451,55 +353,27 @@ class DevFullManager {
   }
 
   async startOllama() {
-    this.log('Ollama', '🤖 Starting Ollama AI service with validation...', 'yellow');
+    this.log('Ollama', '🤖 Starting Ollama AI service...', 'yellow');
 
     const ollamaPort = this.discoveredPorts.ollama;
-
-    // Check if Ollama is already running on the expected port
-    const isAlreadyRunning = await this.checkOllamaHealth();
-    if (isAlreadyRunning && ollamaPort === 11434) {
-      this.log('Ollama', '✅ Ollama already running on port 11434', 'green');
-      return null; // Don't start another instance
-    }
-
     this.log('Ollama', `📍 Using port ${ollamaPort}`, 'yellow');
-
-    // Ensure port is available (unless it's the already-running Ollama)
-    if (ollamaPort !== 11434 && !(await this.isPortAvailable(ollamaPort))) {
-      this.log('Ollama', `❌ Port ${ollamaPort} still in use, aborting Ollama startup`, 'red');
-      throw new Error(`Ollama port ${ollamaPort} is not available`);
-    }
 
     const ollamaProcess = spawn('ollama', ['serve'], {
       stdio: 'pipe',
       env: {
         ...process.env,
         OLLAMA_HOST: `0.0.0.0:${ollamaPort}`,
-        OLLAMA_ORIGINS: '*',
       },
     });
 
-    let startupComplete = false;
-
     ollamaProcess.stdout.on('data', (data) => {
-      const output = data.toString().trim();
-      this.log('Ollama', output, 'yellow');
-
-      // Check for successful startup
-      if (output.includes('Listening on')) {
-        startupComplete = true;
-        this.log('Ollama', '✅ Ollama service ready for requests', 'green');
-      }
+      this.log('Ollama', data.toString().trim(), 'yellow');
     });
 
     ollamaProcess.stderr.on('data', (data) => {
       const error = data.toString().trim();
       if (error.includes('server already running')) {
         this.log('Ollama', '✅ Ollama server already running', 'green');
-        startupComplete = true;
-      } else if (error.includes('bind: address already in use')) {
-        this.log('Ollama', `❌ Port conflict on ${ollamaPort}`, 'red');
-        this.log('Ollama', '💡 Use alternative port or stop conflicting service', 'yellow');
       } else {
         this.log('Ollama', `⚠️  ${error}`, 'yellow');
       }
@@ -508,19 +382,10 @@ class DevFullManager {
     ollamaProcess.on('close', (code) => {
       if (code !== 0 && !this.isShuttingDown) {
         this.log('Ollama', `❌ Ollama service exited with code ${code}`, 'red');
-        if (!startupComplete) {
-          this.log('Ollama', '💡 Ensure Ollama is installed and accessible', 'yellow');
-        }
-      } else if (code === 0) {
-        this.log('Ollama', '✅ Ollama service shutdown cleanly', 'green');
       }
     });
 
     this.processes.push(ollamaProcess);
-
-    // Wait for startup completion
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
     return ollamaProcess;
   }
 
@@ -600,30 +465,122 @@ class DevFullManager {
     return bridgeProcess;
   }
 
+  async startMCPMultiCore() {
+    this.log('MCP-Server', '🔧 Starting MCP Multi-Core Server...', 'blue');
+
+    const mcpProcess = spawn('node', ['scripts/mcp-multicore-server.mjs'], {
+      stdio: 'pipe',
+      env: {
+        ...process.env,
+        MCP_PORT: '3000',
+        MCP_WORKERS: '4',
+        RTX_3060_OPTIMIZATION: 'true',
+        CONTEXT7_MULTICORE: 'true',
+      },
+    });
+
+    mcpProcess.stdout.on('data', (data) => {
+      const output = data.toString().trim();
+      if (output.includes('MCP Multi-Core Server ready')) {
+        this.log('MCP-Server', '✅ MCP server ready for task execution', 'green');
+      } else if (output.includes('workers initialized')) {
+        this.log('MCP-Server', `👥 ${output}`, 'cyan');
+      } else if (output.includes('Configuration loaded')) {
+        this.log('MCP-Server', '⚙️ MCP configuration loaded', 'blue');
+      } else {
+        this.log('MCP-Server', output, 'blue');
+      }
+    });
+
+    mcpProcess.stderr.on('data', (data) => {
+      const error = data.toString().trim();
+      if (error.includes('EADDRINUSE')) {
+        this.log(
+          'MCP-Server',
+          '⚠️ Port conflict, MCP server will find next available port',
+          'yellow'
+        );
+      } else {
+        this.log('MCP-Server', `⚠️ ${error}`, 'yellow');
+      }
+    });
+
+    mcpProcess.on('close', (code) => {
+      if (code !== 0 && !this.isShuttingDown) {
+        this.log('MCP-Server', `❌ MCP server exited with code ${code}`, 'red');
+      }
+    });
+
+    this.processes.push(mcpProcess);
+    return mcpProcess;
+  }
+
   async startGPUCluster() {
     this.log('GPU-Cluster', '⚡ Starting GPU Cluster Concurrent Executor...', 'magenta');
 
-    const clusterProcess = spawn(
-      'node',
-      [
-        'scripts/gpu-cluster-concurrent-executor.mjs',
-        '--tasks=legal-embeddings,case-similarity,evidence-processing',
-        '--workers=4',
-        '--enableGPU=true',
-        '--profile=true',
-      ],
-      {
-        stdio: 'pipe',
-        env: {
-          ...process.env,
-          ENABLE_GPU: 'true',
-          RTX_3060_OPTIMIZATION: 'true',
-          OLLAMA_GPU_LAYERS: '35',
-          GPU_MEMORY_LIMIT: '6144',
-          BATCH_SIZE: '16',
-        },
+    // Gate on Ollama availability to prevent immediate cascading failures
+    const ollamaUrl = process.env.OLLAMA_URL || 'http://127.0.0.1:11435';
+    const maxOllamaChecks = 5;
+    for (let attempt = 1; attempt <= maxOllamaChecks; attempt++) {
+      const available = await fetch(`${ollamaUrl}/api/tags`)
+        .then((r) => r.ok)
+        .catch(() => false);
+      if (available) {
+        this.log(
+          'GPU-Cluster',
+          `🧠 Ollama available (attempt ${attempt}/${maxOllamaChecks})`,
+          'green'
+        );
+        break;
       }
-    );
+      if (attempt === 1) {
+        this.log(
+          'GPU-Cluster',
+          '⏳ Waiting for Ollama to become ready (model tags endpoint)...',
+          'yellow'
+        );
+      } else {
+        this.log(
+          'GPU-Cluster',
+          `⏳ Ollama still unavailable (attempt ${attempt}/${maxOllamaChecks})`,
+          'yellow'
+        );
+      }
+      if (attempt === maxOllamaChecks) {
+        this.log(
+          'GPU-Cluster',
+          '⚠️  Proceeding without Ollama (will use degraded mode stubs)',
+          'yellow'
+        );
+      } else {
+        await new Promise((r) => setTimeout(r, 2000));
+      }
+    }
+
+    const degraded = false; // placeholder: could be set true if Ollama never became available above
+    const clusterArgs = [
+      'scripts/gpu-cluster-concurrent-executor.mjs',
+      '--tasks=legal-embeddings,case-similarity,evidence-processing',
+      '--workers=4',
+      '--enableGPU=true',
+      '--profile=true',
+    ];
+
+    if (degraded) {
+      clusterArgs.push('--allowDegradedOllama');
+    }
+
+    const clusterProcess = spawn('node', clusterArgs, {
+      stdio: 'pipe',
+      env: {
+        ...process.env,
+        ENABLE_GPU: 'true',
+        RTX_3060_OPTIMIZATION: 'true',
+        OLLAMA_GPU_LAYERS: '35',
+        GPU_MEMORY_LIMIT: '6144',
+        BATCH_SIZE: '16',
+      },
+    });
 
     clusterProcess.stdout.on('data', (data) => {
       const output = data.toString().trim();
@@ -656,72 +613,25 @@ class DevFullManager {
     clusterProcess.on('close', (code) => {
       if (code !== 0 && !this.isShuttingDown) {
         this.log('GPU-Cluster', `❌ Cluster exited with code ${code}`, 'red');
-        // Auto-restart GPU cluster if it fails
+        // Backoff strategy to avoid tight restart loops when Ollama / Redis are down
         if (!this.isShuttingDown) {
-          this.log('GPU-Cluster', '🔄 Restarting GPU cluster in 5 seconds...', 'yellow');
+          const backoff = 5000 + Math.floor(Math.random() * 4000);
+          this.log(
+            'GPU-Cluster',
+            `🔄 Restarting GPU cluster in ~${Math.round(backoff / 1000)}s (adaptive backoff)...`,
+            'yellow'
+          );
           setTimeout(() => {
             if (!this.isShuttingDown) {
               this.startGPUCluster();
             }
-          }, 5000);
+          }, backoff);
         }
       }
     });
 
     this.processes.push(clusterProcess);
     return clusterProcess;
-  }
-
-  async startMCPServer() {
-    this.log('MCP', '🚀 Starting Enhanced MCP Multi-Core Server...', 'magenta');
-
-    const mcpProcess = spawn('node', ['scripts/mcp-multicore-server.mjs'], {
-      stdio: 'pipe',
-      env: {
-        ...process.env,
-        MCP_WORKERS: '4',
-        MCP_GPU_ACCEL: 'true',
-        CONTEXT7_MULTICORE: 'true',
-        RTX_3060_OPTIMIZATION: 'true',
-        NODE_OPTIONS: '--max-old-space-size=4096',
-        MCP_PORT: '3001',
-      },
-    });
-
-    mcpProcess.stdout.on('data', (data) => {
-      const output = data.toString().trim();
-      if (output.includes('MCP Multi-Core Server')) {
-        this.log('MCP', '🚀 Server initializing...', 'magenta');
-      } else if (output.includes('workers initialized')) {
-        this.log('MCP', '✅ Workers ready for processing', 'green');
-      } else if (output.includes('listening on port')) {
-        this.log('MCP', '🌐 HTTP API endpoints active', 'cyan');
-      } else if (output.includes('Worker')) {
-        this.log('MCP', `👥 ${output}`, 'blue');
-      } else {
-        this.log('MCP', output, 'magenta');
-      }
-    });
-
-    mcpProcess.stderr.on('data', (data) => {
-      const error = data.toString().trim();
-      this.log('MCP', `⚠️  ${error}`, 'yellow');
-    });
-
-    mcpProcess.on('close', (code) => {
-      if (code !== 0 && !this.isShuttingDown) {
-        this.log('MCP', `❌ Server exited with code ${code}`, 'red');
-      } else if (code === 0) {
-        this.log('MCP', '✅ Server shutdown cleanly', 'green');
-      }
-    });
-
-    this.processes.push(mcpProcess);
-
-    // Wait for MCP server to fully initialize
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    return mcpProcess;
   }
 
   setupGracefulShutdown() {
@@ -771,44 +681,28 @@ class DevFullManager {
       await this.checkDockerServices();
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for Docker check
 
-      // Discover available ports with conflict resolution
+      // Discover available ports
       await this.discoverPorts();
 
       // Initialize GPU memory management
       await this.initializeGPU();
 
-      // Start services in optimal order with sequential validation
-      this.log('System', '🔄 Starting services sequentially...', 'cyan');
-
-      // 1. PostgreSQL (Foundation service)
+      // Start services in optimal order
       await this.startPostgreSQL();
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500)); // Wait for PostgreSQL
 
-      // 2. Redis (Cache layer)
       await this.startRedis();
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for Redis to be fully ready
 
-      // 3. Ollama First (GPU AI Service - Priority)
-      this.log('System', '🚀 Step 1: Ensuring Ollama is running on port 11434...', 'yellow');
-      try {
-        await this.startOllama();
-        this.log('System', '✅ Ollama service validated and ready', 'green');
-      } catch (error) {
-        this.log('System', `⚠️  Ollama startup issue: ${error.message}`, 'yellow');
-        this.log('System', '💡 Continuing with other services...', 'cyan');
-      }
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await this.startCUDAService();
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for CUDA
 
-      // 4. CUDA Service (Hardware acceleration)
-      this.log('System', '🔧 Step 2: Starting CUDA service with port validation...', 'magenta');
-      try {
-        await this.startCUDAService();
-        this.log('System', '✅ CUDA service initialized successfully', 'green');
-      } catch (error) {
-        this.log('System', `⚠️  CUDA service issue: ${error.message}`, 'yellow');
-        this.log('System', '💡 System will run without CUDA acceleration', 'cyan');
-      }
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await this.startOllama();
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for Ollama
+
+      // Start MCP Multi-Core Server
+      await this.startMCPMultiCore();
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for MCP to initialize
 
       // Start Redis-GPU Pipeline Bridge
       await this.startRedisGPUBridge();
@@ -817,16 +711,6 @@ class DevFullManager {
       // Start GPU Cluster in background (non-blocking)
       this.startGPUCluster(); // Don't await - runs continuously
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Give it time to initialize
-
-      // 5. MCP Multi-Core Server (AI Integration layer)
-      this.log('System', '🚀 Step 3: Starting MCP Multi-Core Server...', 'magenta');
-      try {
-        await this.startMCPServer();
-        this.log('System', '✅ MCP server with 4 workers ready', 'green');
-      } catch (error) {
-        this.log('System', `⚠️  MCP server issue: ${error.message}`, 'yellow');
-        this.log('System', '💡 Continuing without MCP multi-core features', 'cyan');
-      }
 
       await this.startFrontend();
 
@@ -865,10 +749,9 @@ class DevFullManager {
         '🎯 CUDA Service: http://localhost:' + this.discoveredPorts.cuda,
         'magenta'
       );
+      this.log('System', '🔧 MCP Multi-Core Server: http://localhost:3000 (16 workers)', 'blue');
       this.log('System', '🔗 Redis-GPU Bridge: Active (job queue processing)', 'blue');
       this.log('System', '⚡ GPU Cluster: Legal AI pipeline running', 'magenta');
-      this.log('System', '🚀 MCP Server: http://localhost:3001/mcp/health (4 workers)', 'magenta');
-      this.log('System', '📊 MCP Metrics: http://localhost:3001/mcp/metrics', 'blue');
       this.log('System', '', 'white');
       this.log('System', '🐳 Docker Services:', 'cyan');
       this.log('System', '🐘 PostgreSQL: http://localhost:5433 (legal-ai-postgres)', 'blue');

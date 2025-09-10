@@ -22,7 +22,7 @@ class MCPMultiCoreServer {
     this.config = null;
     this.isRunning = false;
     this.workerCount = process.env.MCP_WORKERS ? parseInt(process.env.MCP_WORKERS) : cpus().length;
-    this.port = process.env.MCP_PORT || 3001;
+    this.port = process.env.MCP_PORT || 3000;
   }
 
   log(message, color = 'white') {
@@ -35,9 +35,9 @@ class MCPMultiCoreServer {
       const configPath = './mcp-multicore-config.json';
       const configData = await fs.readFile(configPath, 'utf8');
       this.config = JSON.parse(configData);
-      this.log('✅ Configuration loaded successfully', 'green');
+      this.log(' Configuration loaded successfully', 'green');
     } catch (error) {
-      this.log('⚠️ Using default configuration', 'yellow');
+      this.log('� Using default configuration', 'yellow');
       this.config = {
         mcp: {
           multicore: { enabled: true, workers: this.workerCount },
@@ -49,7 +49,7 @@ class MCPMultiCoreServer {
   }
 
   async initializeWorkers() {
-    this.log(`🚀 Initializing ${this.workerCount} MCP workers...`, 'cyan');
+    this.log(`=� Initializing ${this.workerCount} MCP workers...`, 'cyan');
 
     for (let i = 0; i < this.workerCount; i++) {
       const worker = new Worker(__filename, {
@@ -65,19 +65,19 @@ class MCPMultiCoreServer {
       });
 
       worker.on('error', (error) => {
-        this.log(`❌ Worker ${i} error: ${error.message}`, 'red');
+        this.log(`L Worker ${i} error: ${error.message}`, 'red');
       });
 
       worker.on('exit', (code) => {
         if (code !== 0) {
-          this.log(`⚠️ Worker ${i} exited with code ${code}`, 'yellow');
+          this.log(`� Worker ${i} exited with code ${code}`, 'yellow');
         }
       });
 
       this.workers.push(worker);
     }
 
-    this.log(`✅ ${this.workerCount} workers initialized`, 'green');
+    this.log(` ${this.workerCount} workers initialized`, 'green');
   }
 
   async startHTTPServer() {
@@ -120,30 +120,30 @@ class MCPMultiCoreServer {
     });
 
     server.listen(this.port, () => {
-      this.log(`🌐 MCP Server listening on port ${this.port}`, 'cyan');
-      this.log(`🔗 Health: http://localhost:${this.port}/mcp/health`, 'blue');
-      this.log(`📊 Metrics: http://localhost:${this.port}/mcp/metrics`, 'blue');
-      this.log(`👥 Workers: http://localhost:${this.port}/mcp/workers`, 'blue');
+      this.log(`< MCP Server listening on port ${this.port}`, 'cyan');
+      this.log(`= Health: http://localhost:${this.port}/mcp/health`, 'blue');
+      this.log(`=� Metrics: http://localhost:${this.port}/mcp/metrics`, 'blue');
+      this.log(`=e Workers: http://localhost:${this.port}/mcp/workers`, 'blue');
     });
 
     return server;
   }
 
   async start() {
-    this.log('🚀 Starting Enhanced MCP Multi-Core Server...', 'cyan');
+    this.log('=� Starting Enhanced MCP Multi-Core Server...', 'cyan');
 
     // Display system info
-    this.log(`🖥️ CPU Cores: ${cpus().length}`, 'white');
-    this.log(`⚡ Workers: ${this.workerCount}`, 'yellow');
-    this.log(`🎮 GPU: ${process.env.RTX_3060_OPTIMIZATION ? 'RTX 3060 Ti Enabled' : 'Disabled'}`, 'magenta');
-    this.log(`📚 Context7: ${process.env.CONTEXT7_MULTICORE ? 'Enabled' : 'Disabled'}`, 'green');
+    this.log(`=� CPU Cores: ${cpus().length}`, 'white');
+    this.log(`� Workers: ${this.workerCount}`, 'yellow');
+    this.log(`<� GPU: ${process.env.RTX_3060_OPTIMIZATION ? 'RTX 3060 Ti Enabled' : 'Disabled'}`, 'magenta');
+    this.log(`=� Context7: ${process.env.CONTEXT7_MULTICORE ? 'Enabled' : 'Disabled'}`, 'green');
 
     await this.loadConfig();
     await this.initializeWorkers();
     await this.startHTTPServer();
 
     this.isRunning = true;
-    this.log('✅ MCP Multi-Core Server ready!', 'green');
+    this.log(' MCP Multi-Core Server ready!', 'green');
 
     // Graceful shutdown
     process.on('SIGTERM', () => this.shutdown());
@@ -153,7 +153,7 @@ class MCPMultiCoreServer {
   async shutdown() {
     if (!this.isRunning) return;
 
-    this.log('🔄 Shutting down MCP Server...', 'yellow');
+    this.log('= Shutting down MCP Server...', 'yellow');
 
     // Terminate all workers
     for (const worker of this.workers) {
@@ -161,7 +161,7 @@ class MCPMultiCoreServer {
     }
 
     this.isRunning = false;
-    this.log('✅ MCP Server shutdown complete', 'green');
+    this.log(' MCP Server shutdown complete', 'green');
     process.exit(0);
   }
 }
@@ -186,7 +186,7 @@ if (!isMainThread && workerData?.isWorker) {
 if (isMainThread && !workerData?.isWorker) {
   const server = new MCPMultiCoreServer();
   server.start().catch(error => {
-    console.error('❌ Failed to start MCP server:', error);
+    console.error('L Failed to start MCP server:', error);
     process.exit(1);
   });
 }

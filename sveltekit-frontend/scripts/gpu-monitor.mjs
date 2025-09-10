@@ -85,7 +85,7 @@ async function getNvidiaStats() {
 
 async function checkAiServices() {
     const services = [
-        { name: 'Ollama', url: 'http://localhost:11434/api/version' },
+        { name: 'Ollama', url: 'http://localhost:11435/api/version' },
         { name: 'Frontend', url: 'http://localhost:5173/api/health' },
         { name: 'Enhanced RAG', url: 'http://localhost:8081/health' }
     ];

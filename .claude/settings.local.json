@@ -83,7 +83,15 @@
       "Bash(PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db -c \"\\d legal_documents\")",
       "Bash(GOEXPERIMENT=jsonv2 go build -o legal-api-jsonv2.exe main.go)",
       "Bash(npm install:*)",
-      "Bash(env OLLAMA_URL=http://10.0.0.243:11434 timeout 10 npm run gpu:cluster)"
+      "Bash(env OLLAMA_URL=http://10.0.0.243:11434 timeout 10 npm run gpu:cluster)",
+      "Bash(MCP_PORT=3002 node scripts/mcp-multicore-server.mjs)",
+      "Bash(PGPASSWORD=123456 psql:*)",
+      "Bash(npx vite dev:*)",
+      "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5433/legal_ai_db\" npm run db:migrate)",
+      "Bash(export REDIS_PASSWORD=\"redis\")",
+      "Bash(REDIS_PASSWORD=\"redis\" npm run dev:gpu)",
+      "Bash(REDIS_PASSWORD=\"redis\" npx vite dev --port 5176)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": []

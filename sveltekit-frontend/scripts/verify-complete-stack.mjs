@@ -12,7 +12,7 @@ const SERVICES = [
     { name: 'Redis', url: 'http://localhost:6379', type: 'tcp', port: 6379 },
     { name: 'Qdrant', url: 'http://localhost:6333/collections', type: 'http' },
     { name: 'MinIO', url: 'http://localhost:9000/minio/health/ready', type: 'http' },
-    { name: 'Ollama', url: 'http://localhost:11434/api/version', type: 'http' },
+    { name: 'Ollama', url: 'http://localhost:11435/api/version', type: 'http' },
     { name: 'SvelteKit Frontend', url: 'http://localhost:5173/api/health', type: 'http' },
     { name: 'Enhanced RAG Service', url: 'http://localhost:8081/health', type: 'http' },
     { name: 'Upload Service', url: 'http://localhost:8093/health', type: 'http' },

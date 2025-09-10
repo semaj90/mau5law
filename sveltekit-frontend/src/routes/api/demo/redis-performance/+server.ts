@@ -6,15 +6,10 @@
 
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import Redis from 'ioredis';
+import { createRedisInstance } from '$lib/server/redis';
 
 // Create Redis client directly
-const redis = new Redis({
-  host: 'localhost',
-  port: 6379,
-  retryDelayOnFailover: 100,
-  maxRetriesPerRequest: 3
-});
+let redis = createRedisInstance();
 
 interface PerformanceResult {
   operation: string;

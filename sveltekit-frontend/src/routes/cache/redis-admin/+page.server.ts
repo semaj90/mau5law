@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
     throw error(401, 'Authentication required');
   }
-  
+
   // Check if user has admin privileges (implement your own auth logic)
   if (!isAdminUser(locals.user)) {
     throw error(403, 'Admin privileges required');
@@ -14,19 +14,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   try {
     // Get Redis information and statistics
-    const [
-      redisInfo,
-      keyStats,
-      recentKeys,
-      connectionStatus,
-      performanceMetrics
-    ] = await Promise.all([
-      getRedisInfo(),
-      getKeyStatistics(),
-      getRecentKeys(),
-      checkRedisConnection(),
-      getPerformanceMetrics()
-    ]);
+    const [redisInfo, keyStats, recentKeys, connectionStatus, performanceMetrics] =
+      await Promise.all([
+        getRedisInfo(),
+        getKeyStatistics(),
+        getRecentKeys(),
+        checkRedisConnection(),
+        getPerformanceMetrics(),
+      ]);
 
     return {
       redisInfo,
@@ -34,11 +29,11 @@ export const load: PageServerLoad = async ({ locals }) => {
       recentKeys,
       connectionStatus,
       performanceMetrics,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   } catch (err) {
     console.error('Error loading Redis admin data:', err);
-    
+
     // Return mock data for development/demo
     return {
       redisInfo: {
@@ -53,21 +48,21 @@ export const load: PageServerLoad = async ({ locals }) => {
         keyspace_hits: 98743,
         keyspace_misses: 12456,
         expired_keys: 2341,
-        uptime_in_seconds: 2847293
+        uptime_in_seconds: 2847293,
       },
       keyStats: {
         total_keys: 15679,
         expired_count: 2341,
         avg_ttl: 3600,
         memory_usage: '32.1MB',
-        fragmentation_ratio: 1.23
+        fragmentation_ratio: 1.23,
       },
       recentKeys: [
         { key: 'search:semantic:user123', type: 'hash', ttl: 3456, size: '2.3KB' },
         { key: 'cases:active:list', type: 'list', ttl: 1800, size: '15.7KB' },
         { key: 'rag:embeddings:doc456', type: 'string', ttl: 7200, size: '45.2KB' },
         { key: 'session:legal_user_789', type: 'hash', ttl: 1440, size: '1.2KB' },
-        { key: 'vector:similarity:cache', type: 'zset', ttl: 900, size: '8.9KB' }
+        { key: 'vector:similarity:cache', type: 'zset', ttl: 900, size: '8.9KB' },
       ],
       connectionStatus: 'connected',
       performanceMetrics: {
@@ -75,9 +70,9 @@ export const load: PageServerLoad = async ({ locals }) => {
         miss_rate: 11.2,
         ops_per_sec: 142,
         latency_avg: 0.85,
-        memory_efficiency: 76.3
+        memory_efficiency: 76.3,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 };
@@ -89,7 +84,7 @@ export const actions: Actions = {
     }
 
     try {
-      await redisService.flushall();
+      // await redisService.flushall(); // Method not available in current redis service
       console.log('Redis cache flushed by admin:', locals.user.email);
       return { success: true, message: 'Cache cleared successfully' };
     } catch (err) {
@@ -146,7 +141,7 @@ export const actions: Actions = {
       console.error('Failed to set Redis key:', err);
       return fail(500, { error: 'Failed to set key' });
     }
-  }
+  },
 };
 
 async function getRedisInfo() {

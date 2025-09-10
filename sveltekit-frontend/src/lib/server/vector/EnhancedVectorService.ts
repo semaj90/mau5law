@@ -4,8 +4,8 @@
 // Features detected: hasOllama, hasQdrant, hasRedis, hasPgVector, hasEmbeddings
 
 import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
-import { Redis } from "ioredis";
-import { getRedisConfig } from '$lib/config/redis-config';
+import type { Redis } from 'ioredis';
+import { createRedisInstance } from '$lib/server/redis';
 import {
   cases,
   evidence,
@@ -18,7 +18,8 @@ import { db } from '../db.js';
 
 export class EnhancedVectorService {
   private qdrant: QdrantApiWrapper;
-  private redis: Redis;
+  // Accept broader Redis-like interface to reduce tight coupling in tests
+  private redis: ReturnType<typeof createRedisInstance>;
   private collectionName = 'legal_documents';
 
   constructor() {
@@ -26,14 +27,8 @@ export class EnhancedVectorService {
       url: import.meta.env.QDRANT_URL || 'http://localhost:6333',
     });
 
-    this.redis = new Redis({
-      // Prefer centralized config; fallback to import.meta.env with default 4005 to match dev scripts
-      host: (getRedisConfig().host as any) || import.meta.env.REDIS_HOST || 'localhost',
-      port: parseInt(
-        String((getRedisConfig() as any).port ?? import.meta.env.REDIS_PORT ?? '4005')
-      ),
-      maxRetriesPerRequest: 3,
-    });
+    // Centralized Redis instance (injects password & consistent options). Fallback not needed here.
+    this.redis = createRedisInstance();
   }
 
   async initializeCollection() {
@@ -131,12 +126,12 @@ export class EnhancedVectorService {
       .where(sql`title ILIKE ${'%' + query + '%'} OR description ILIKE ${'%' + query + '%'}`)
       .limit(limit);
 
-    return caseResults.map((c) => ({
-      id: c.id,
-      score: 0.8,
-      metadata: { type: 'case', title: c.title },
-      content: `${c.title} ${c.description}`,
-    }));
+    return caseResults.map((c: any) => ({
+    id: c.id,
+    score: 0.8,
+    metadata: { type: 'case', title: c.title },
+    content: `${c.title} ${c.description}`,
+  }));
   }
 
   private combineResults(vectorResults: any[], keywordResults: any[]) {
