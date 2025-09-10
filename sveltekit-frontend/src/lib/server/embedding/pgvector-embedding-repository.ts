@@ -1,5 +1,5 @@
 
-// PgVector-backed implementation of EmbeddingRepository.
+// PgVector-backed implementation of EmbeddingRepository with Gemma embeddings priority.
 import { db } from '../db/index';
 import { legal_documents, documentChunks } from '../db/schema-postgres';
 import { sql } from 'drizzle-orm';
@@ -9,12 +9,30 @@ import { embedText } from '../ai/embedder';
 import type { EmbeddingRepository, IngestionJobRequest, SimilarityQueryOptions, SimilarityResult, IngestionJobStatus } from './embedding-repository';
 import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue';
 
-const DEFAULT_MODEL = 'nomic-embed-text';
+const DEFAULT_MODEL = 'embeddinggemma:latest';
 
 async function embedContent(text: string, model: string): Promise<number[]> {
-  // embedText handles cache lookups (memory/Redis) and caches results
-  const emb = await embedText(text, model);
-  return Array.isArray(emb) ? emb : (emb && typeof emb === 'object' && 'embedding' in emb ? (emb as any).embedding as number[] : []);
+  // Try Gemma embeddings first, with fallback chain
+  const models = model === DEFAULT_MODEL ? 
+    ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text'] : 
+    [model, 'embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text'];
+  
+  for (const tryModel of models) {
+    try {
+      // embedText handles cache lookups (memory/Redis) and caches results
+      const emb = await embedText(text, tryModel);
+      const embedding = Array.isArray(emb) ? emb : (emb && typeof emb === 'object' && 'embedding' in emb ? (emb as any).embedding as number[] : []);
+      
+      if (embedding.length > 0) {
+        return embedding;
+      }
+    } catch (error) {
+      console.warn(`Embedding with ${tryModel} failed, trying next model:`, error);
+      continue;
+    }
+  }
+  
+  throw new Error(`All embedding models failed for text: ${text.substring(0, 100)}...`);
 }
 
 async function enqueueIngestion(job: IngestionJobRequest): Promise<IngestionJobStatus> {

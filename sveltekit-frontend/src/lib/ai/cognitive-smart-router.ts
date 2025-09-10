@@ -323,7 +323,7 @@ class CognitiveSmartRouter {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3-legal',
+          model: 'gemma3:legal-latest',
           prompt: request.prompt,
           stream: false,
           options: {

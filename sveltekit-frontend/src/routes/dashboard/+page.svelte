@@ -184,7 +184,7 @@
         <Activity class="w-3 h-3 mr-1" />
         System Healthy
       </Badge>
-      <Button class="bits-btn bits-btn" variant="outline" size="sm">
+      <Button class="bits-btn" variant="outline" size="sm">
         <BarChart3 class="w-4 h-4 mr-2" />
         Export Report
       </Button>
@@ -290,7 +290,7 @@
           >
             <div class="flex items-center gap-3 mb-2">
               <div class="w-10 h-10 {action.color} rounded-lg flex items-center justify-center">
-                <svelte:component this={action.icon} class="w-5 h-5 text-white" />
+                {@render action.icon({ class: "w-5 h-5 text-white" })}
               </div>
               <ChevronRight class="w-4 h-4 text-nier-text-muted group-hover:text-nier-accent-warm transition-colors ml-auto" />
             </div>
@@ -325,7 +325,7 @@
             {#each dashboardData.recentActivities as activity (activity.id)}
               <div class="flex items-start gap-4 p-3 rounded-lg hover:bg-nier-bg-tertiary transition-colors">
                 <div class="w-8 h-8 bg-nier-bg-secondary rounded-lg flex items-center justify-center flex-shrink-0">
-                  <svelte:component this={getActivityIcon(activity.type)} class="w-4 h-4 text-nier-text-primary" />
+                  {@render getActivityIcon(activity.type)({ class: "w-4 h-4 text-nier-text-primary" })}
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm font-medium text-nier-text-primary truncate">
@@ -346,7 +346,7 @@
             {/each}
           </div>
           <div class="mt-4 text-center">
-            <Button class="bits-btn bits-btn" variant="outline" size="sm">
+            <Button class="bits-btn" variant="outline" size="sm">
               View All Activity
               <ChevronRight class="w-4 h-4 ml-2" />
             </Button>

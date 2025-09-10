@@ -63,11 +63,10 @@ let persons = $state([
     </div>
 
     <div class="flex flex-wrap gap-2 items-center">
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
         variant="outline"
         size="sm"
   onclick={() => (showFilters = !showFilters)}
-        class={showFilters ? 'bg-blue-50 border-blue-300' : ''}
       >
         <Filter class="w-4 h-4 mr-2" />
         Filters

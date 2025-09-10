@@ -336,10 +336,9 @@
           <!-- Export Button -->
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn space-y-4"
                 onclick={() => exportData()}
                 disabled={exportLoading || (!includeCases && !includeEvidence)}
-                class="space-y-4"
               >
                 {#if exportLoading}
                   <div

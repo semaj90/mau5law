@@ -76,7 +76,7 @@ Your role is to:
 Always maintain objectivity and focus on evidence-based conclusions.`,
       maxTokens: 2048,
       temperature: 0.3,
-      model: "gemma3-legal",
+      model: "gemma3:legal-latest",
     });
 
     // Evidence Specialist - Analyzes evidence admissibility and strength
@@ -93,7 +93,7 @@ Always maintain objectivity and focus on evidence-based conclusions.`,
 Focus on practical admissibility issues and evidentiary strength assessment.`,
       maxTokens: 1536,
       temperature: 0.2,
-      model: "gemma3-legal",
+      model: "gemma3:legal-latest",
     });
 
     // Legal Research Specialist - Finds relevant case law and statutes
@@ -110,7 +110,7 @@ Focus on practical admissibility issues and evidentiary strength assessment.`,
 Provide thorough research with proper citations and relevance scoring.`,
       maxTokens: 1536,
       temperature: 0.25,
-      model: "gemma3-legal",
+      model: "gemma3:legal-latest",
     });
 
     // Strategy Advisor - Develops prosecution strategies
@@ -127,7 +127,7 @@ Provide thorough research with proper citations and relevance scoring.`,
 Always consider ethical obligations and prosecutorial discretion.`,
       maxTokens: 1536,
       temperature: 0.4,
-      model: "gemma3-legal",
+      model: "gemma3:legal-latest",
     });
 
     // Compliance Officer - Ensures procedural compliance
@@ -144,7 +144,7 @@ Always consider ethical obligations and prosecutorial discretion.`,
 Ensure all recommendations comply with legal and ethical standards.`,
       maxTokens: 1024,
       temperature: 0.1,
-      model: "gemma3-legal",
+      model: "gemma3:legal-latest",
     });
   }
 

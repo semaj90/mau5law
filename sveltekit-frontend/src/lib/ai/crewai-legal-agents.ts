@@ -17,7 +17,7 @@ export interface LegalAgent {
   name: string;
   role: string;
   expertise: string[];
-  model: 'claude' | 'gemma3-legal:latest' | 'gpt-4';
+  model: 'claude' | 'gemma3:legal-latest' | 'gpt-4';
   systemPrompt: string;
   maxTokens: number;
   temperature: number;
@@ -60,7 +60,7 @@ export const legalAgents: LegalAgent[] = [
     name: 'Contract Analysis Specialist',
     role: 'Primary Document Reviewer',
     expertise: ['contract-law', 'risk-assessment', 'compliance'],
-    model: 'gemma3-legal:latest',
+    model: 'gemma3:legal-latest',
     systemPrompt: `You are a senior contract analyst with 15+ years experience reviewing legal documents. Analyze contracts for:
     - Key terms and obligations
     - Risk factors and liability exposure
@@ -76,7 +76,7 @@ export const legalAgents: LegalAgent[] = [
     name: 'Regulatory Compliance Auditor',
     role: 'Compliance Verification',
     expertise: ['regulatory-compliance', 'industry-standards', 'legal-requirements'],
-    model: 'gemma3-legal:latest',
+    model: 'gemma3:legal-latest',
     systemPrompt: `You are a compliance auditor specializing in regulatory requirements. Focus on:
     - Regulatory compliance violations
     - Industry standard adherence
@@ -92,7 +92,7 @@ export const legalAgents: LegalAgent[] = [
     name: 'Legal Risk Assessment Specialist',
     role: 'Risk Analysis',
     expertise: ['risk-management', 'liability-analysis', 'litigation-prevention'],
-    model: 'gemma3-legal:latest',
+    model: 'gemma3:legal-latest',
     systemPrompt: `You are a legal risk assessment expert. Evaluate documents for:
     - Potential litigation risks
     - Financial exposure
@@ -175,7 +175,7 @@ export class CrewAILegalReviewSystem {
     try {
       const ollama = new ChatOllama({
         baseUrl: "http://localhost:11434",
-        model: "gemma3-legal:latest",
+        model: "gemma3:legal-latest",
         temperature: agent.temperature,
         maxTokens: agent.maxTokens,
       });
@@ -266,7 +266,7 @@ Please provide your analysis in the following JSON format:
         userId: 'system', // TODO: Get from context
         prompt: `Legal document review: ${task.reviewType}`,
         response: JSON.stringify(responses),
-        model: 'gemma3-legal:latest',
+        model: 'gemma3:legal-latest',
         tokensUsed: Math.floor((task.documentContent.length + responses.reduce((acc, r) => acc + r.reviewSummary.length, 0)) / 4),
         cost: 0, // TODO: Calculate based on token usage
         metadata: {

@@ -3,7 +3,7 @@
  * Manages distributed state across RabbitMQ workers and UI components
  */
 
-import { createMachine, createActor, assign, send, spawn } from 'xstate';
+import { createMachine, createActor, assign } from 'xstate';
 import { writable, derived, type Readable, type Writable } from 'svelte/store';
 import {
   optimizedOrchestrator,
@@ -130,7 +130,12 @@ export interface QueueHealth {
 }
 
 export interface QueueIssue {
-  type: 'high_latency' | 'message_buildup' | 'consumer_unavailable' | 'memory_pressure' | 'dead_letters';
+  type:
+    | 'high_latency'
+    | 'message_buildup'
+    | 'consumer_unavailable'
+    | 'memory_pressure'
+    | 'dead_letters';
   severity: 'low' | 'medium' | 'high' | 'critical';
   description: string;
   suggestedAction: string;
@@ -332,7 +337,7 @@ export type AsyncStateEvent =
   | { type: 'CONNECTION_RESTORED' };
 
 // XState Machine for Async State Management
-const asyncStateMachine = createMachine<AsyncStateContext, AsyncStateEvent>(
+const asyncStateMachine = createMachine(
   {
     id: 'asyncRabbitMQStateManager',
     initial: 'initializing',

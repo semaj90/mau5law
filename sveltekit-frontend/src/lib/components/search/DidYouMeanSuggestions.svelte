@@ -1,669 +1,473 @@
-<!-- 
-  PREDICTIVE TYPING SUGGESTIONS COMPONENT
-  Enhanced with XState predictive analytics and topology-aware glyph compression
-  Real-time user intent prediction with sub-millisecond response times
--->
+<!-- AI-Enhanced "Did You Mean?" Suggestions Component with Intent Prediction -->
 <script lang="ts">
-  import { onMount, createEventDispatcher } from 'svelte';
-  import { createActor } from 'xstate';
-  import { predictiveTypingMachine, type PredictiveTypingContext } from '$lib/machines/predictive-typing-machine.js';
-  import { didYouMeanService, type DidYouMeanQuery, type DidYouMeanSuggestion } from '$lib/services/did-you-mean-quic-graph.js';
-  import { fade, fly } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing';
+  import { createCombobox, melt } from 'melt';
+  import { Check, ChevronDown, Search, FileText, User, Folder, Tag, Brain, Zap, Target } from 'lucide-svelte';
+  import { fly, fade } from 'svelte/transition';
+  
+  interface Suggestion {
+    term?: string;
+    suggestion?: string;
+    text?: string;
+    score?: number;
+    confidence?: number;
+    source?: 'lexical' | 'semantic' | 'ai';
+    enhanced?: boolean;
+    intent?: string;
+    type?: 'spelling' | 'synonym' | 'contextual' | 'task';
+    // Legacy support for existing format
+    label?: string;
+    entityId?: string;
+    description?: string;
+    icon?: string;
+    tags?: string[];
+  }
+
+  interface TaskSuggestion {
+    task: string;
+    confidence: number;
+    estimatedSteps: number;
+    priority: 'low' | 'medium' | 'high';
+    category: string;
+  }
+
+  interface UserProfile {
+    confidenceLevel: number;
+    learningPhase: 'exploration' | 'learning' | 'proficient' | 'expert';
+    preferredIntents: string[];
+  }
 
   interface Props {
     query?: string;
-    userIntent?: 'search' | 'legal_research' | 'case_lookup' | 'document_analysis';
+    placeholder?: string;
+    contextType?: string;
+    userId?: string;
+    includeTaskSuggestions?: boolean;
+    includeAI?: boolean;
     maxSuggestions?: number;
-    showTypos?: boolean;
-    showSemantic?: boolean;
-    threshold?: number;
-    context?: { caseId?: string; practiceArea?: string; jurisdiction?: string };
-    debounceMs?: number;
-    showMetrics?: boolean;
-    enablePredictiveAnalytics?: boolean;
-    sessionId?: string;
-    userId?: string | undefined;
+    showUserProfile?: boolean;
+    onSelect?: (suggestion: Suggestion) => void;
+    onTaskSelect?: (task: TaskSuggestion) => void;
+    onSearch?: (query: string) => void;
   }
 
-  let {
-    query = '',
-    userIntent = 'search',
-    maxSuggestions = 5,
-    showTypos = true,
-    showSemantic = true,
-    threshold = 0.3,
-    context = {},
-    debounceMs = 150,
-    showMetrics = false,
-    enablePredictiveAnalytics = true,
-    sessionId = `session-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    userId = undefined
+  let { 
+    query = $bindable(''), 
+    placeholder = 'Ask anything... AI will suggest and learn', 
+    contextType = 'GENERAL',
+    userId = 'anonymous',
+    includeTaskSuggestions = true,
+    includeAI = true,
+    maxSuggestions = 8,
+    showUserProfile = false,
+    onSelect,
+    onTaskSelect,
+    onSearch 
   }: Props = $props();
 
-  // XState machine for predictive typing
-  let predictiveTypingService: any;
-  let machineContext: PredictiveTypingContext;
-  let machineState: string = 'idle';
+  // Svelte 5 reactive state
+  let suggestions = $state<Suggestion[]>([]);
+  let taskSuggestions = $state<TaskSuggestion[]>([]);
+  let userProfile = $state<UserProfile | null>(null);
+  let loading = $state(false);
+  let error = $state<string | null>(null);
+  let metadata = $state<{ took_ms?: number; cached?: boolean }>({});
+  let debounceTimer = $state<NodeJS.Timeout | null>(null);
 
-  // Legacy fallback state (for compatibility)
-  let suggestions: DidYouMeanSuggestion[] = [];
-  let isLoading = false;
-  let error: string | null = null;
-  let metrics: any = null;
-  let debounceTimer: number;
-  let lastQuery = '';
+  // Melt-UI combobox builder
+  const {
+    elements: { menu, input, option, label },
+    states: { open, inputValue, selected },
+    helpers: { isSelected }
+  } = createCombobox<Suggestion>({
+    forceVisible: true,
+  });
 
-  // Enhanced predictive state
-  let predictiveSuggestions: Array<{
-    text: string;
-    confidence: number;
-    intent: string;
-    topology_score: number;
-    source: 'predictive' | 'legacy';
-  }> = [];
-  let analyticsMetrics = {
-    predictionLatency: 0,
-    cacheHitRate: 0,
-    analyticsAccuracy: 0,
-    userSatisfactionScore: 0.5
-  };
+  // Sync input with query prop
+  $effect(() => {
+    inputValue.set(query);
+  });
 
-  const dispatch = createEventDispatcher<{
-    suggestion: { suggestion: string; originalQuery: string };
-    metricsUpdate: { metrics: any };
-    predictiveInsight: { intent: string; confidence: number };
-  }>();
+  $effect(() => {
+    query = $inputValue;
+  });
 
-  // Initialize XState machine on mount
-  onMount(() => {
-    if (enablePredictiveAnalytics) {
-      initializePredictiveMachine();
+  // Debounced search effect
+  $effect(() => {
+    if (query.length >= 2) {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      
+      debounceTimer = setTimeout(async () => {
+        await performSearch(query);
+      }, 300);
+    } else {
+      suggestions = [];
     }
-    
+
     return () => {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-      if (predictiveTypingService) {
-        predictiveTypingService.stop();
-      }
+      if (debounceTimer) clearTimeout(debounceTimer);
     };
   });
 
-  function initializePredictiveMachine() {
-    try {
-      const machine = predictiveTypingMachine.provide({
-        input: {
-          sessionId,
-          userId,
-          initialConfig: {
-            debounceMs: debounceMs,
-            maxSuggestions: maxSuggestions,
-            confidenceThreshold: threshold,
-            enableRealTimeLearning: true,
-            enableTopologyNavigation: true,
-            enableGlyphCompression: true
-          }
-        }
-      });
-      
-      predictiveTypingService = createActor(machine);
-      
-      // Subscribe to state changes
-      predictiveTypingService.subscribe((state: any) => {
-        machineState = state.value;
-        machineContext = state.context;
-        
-        // Update UI based on machine state
-        updateUIFromMachineState(state);
-      });
-      
-      predictiveTypingService.start();
-      
-      // Start session
-      predictiveTypingService.send({
-        type: 'SESSION_START',
-        sessionData: { sessionId, userId }
-      });
-      
-      console.log('🧠 Predictive typing machine initialized');
-    } catch (error) {
-      console.warn('Failed to initialize predictive machine, falling back to legacy mode:', error);
-      enablePredictiveAnalytics = false;
-    }
-  }
-
-  function updateUIFromMachineState(state: any) {
-    const context = state.context;
-    
-    // Update loading state
-    isLoading = ['analyzingContext', 'generatingPredictions', 'generatingCompletions'].some(
-      stateName => typeof machineState === 'string' ? machineState.includes(stateName) : false
-    );
-    
-    // Update suggestions from predictive analytics
-    if (context.suggestions && context.suggestions.length > 0) {
-      predictiveSuggestions = context.suggestions.map((s: any) => ({
-        ...s,
-        source: 'predictive' as const
-      }));
-    }
-    
-    // Update analytics metrics
-    analyticsMetrics = {
-      predictionLatency: context.predictionLatency || 0,
-      cacheHitRate: context.cacheHitRate || 0,
-      analyticsAccuracy: context.analyticsAccuracy || 0,
-      userSatisfactionScore: context.userSatisfactionScore || 0.5
-    };
-    
-    // Update error state
-    error = context.error;
-    
-    // Dispatch predictive insights
-    if (context.predictiveResults?.user_intent_analysis) {
-      dispatch('predictiveInsight', {
-        intent: context.predictiveResults.user_intent_analysis.primary_intent,
-        confidence: context.predictiveResults.user_intent_analysis.confidence
-      });
-    }
-    
-    // Update metrics
-    if (showMetrics) {
-      const enhancedMetrics = {
-        // Legacy metrics
-        processingTimeMs: analyticsMetrics.predictionLatency,
-        cacheInfo: {
-          cacheHits: Math.floor(analyticsMetrics.cacheHitRate * 10),
-          cacheMisses: Math.floor((1 - analyticsMetrics.cacheHitRate) * 10),
-          quicStreamsUsed: Math.floor(Math.random() * 5) + 1
-        },
-        
-        // Enhanced predictive metrics
-        predictiveMetrics: {
-          machineState: machineState,
-          analyticsAccuracy: analyticsMetrics.analyticsAccuracy,
-          userSatisfactionScore: analyticsMetrics.userSatisfactionScore,
-          glyphContextSize: context.glyphContext?.length || 0,
-          topologyPredictions: context.predictiveResults?.semantic_topology?.nearby_clusters?.length || 0
-        }
-      };
-      
-      dispatch('metricsUpdate', { metrics: enhancedMetrics });
-    }
-  }
-
-  // Reactive statement for query changes with predictive analytics
-  $: if (query !== lastQuery) {
-    handleQueryChange(query);
-    lastQuery = query;
-  } else if (query.trim().length === 0) {
-    clearSuggestions();
-  }
-
-  async function handleQueryChange(newQuery: string) {
-    // Send typing events to predictive machine if enabled
-    if (enablePredictiveAnalytics && predictiveTypingService) {
-      // Determine if this is typing or deleting
-      const isDeleting = newQuery.length < lastQuery.length;
-      const isClearing = newQuery.length === 0 && lastQuery.length > 0;
-      
-      if (isClearing) {
-        predictiveTypingService.send({
-          type: 'CLEAR',
-          timestamp: Date.now()
-        });
-      } else if (isDeleting) {
-        const deleteCount = lastQuery.length - newQuery.length;
-        predictiveTypingService.send({
-          type: 'DELETE',
-          count: deleteCount,
-          timestamp: Date.now()
-        });
-      } else if (newQuery.length > lastQuery.length) {
-        const newCharacters = newQuery.slice(lastQuery.length);
-        // Send each new character as a separate typing event
-        for (const char of newCharacters) {
-          predictiveTypingService.send({
-            type: 'TYPE',
-            character: char,
-            timestamp: Date.now()
-          });
-        }
-      }
-      
-      // The predictive machine handles its own debouncing
+  async function performSearch(searchQuery: string) {
+    if (!searchQuery || searchQuery.length < 2) {
+      suggestions = [];
+      taskSuggestions = [];
+      userProfile = null;
       return;
     }
     
-    // Fallback to legacy behavior
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
-    }
-
-    debounceTimer = setTimeout(async () => {
-      await fetchSuggestions(newQuery);
-    }, debounceMs);
-  }
-
-  function clearSuggestions() {
-    suggestions = [];
-    predictiveSuggestions = [];
+    loading = true;
     error = null;
-    metrics = null;
     
-    if (enablePredictiveAnalytics && predictiveTypingService) {
-      predictiveTypingService.send({
-        type: 'CLEAR',
-        timestamp: Date.now()
-      });
-    }
-  }
-
-  async function fetchSuggestions(searchQuery: string) {
-    if (!searchQuery.trim()) return;
-
-    isLoading = true;
-    error = null;
-
     try {
-      const suggestionQuery: DidYouMeanQuery = {
-        originalQuery: searchQuery,
-        userIntent,
-        context: Object.keys(context).length > 0 ? context : undefined,
-        options: {
-          maxSuggestions,
-          similarityThreshold: threshold,
-          includeTypos: showTypos,
-          includeSemanticSuggestions: showSemantic,
-          graphDepth: 3
-        }
-      };
-
-      const result = await didYouMeanService.generateSuggestions(suggestionQuery);
+      const response = await fetch('/api/suggest/did-you-mean', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: searchQuery,
+          userId,
+          context: contextType,
+          limit: maxSuggestions,
+          includeTaskSuggestions,
+          includeAI
+        })
+      });
       
-      suggestions = result.suggestions;
-      metrics = {
-        processingTimeMs: result.processingTimeMs,
-        cacheInfo: result.cacheInfo,
-        graphContext: result.graphContext
-      };
-
-      dispatch('metricsUpdate', { metrics });
-
-    } catch (err: any) {
-      console.error('Failed to fetch suggestions:', err);
-      error = 'Failed to load suggestions';
-      suggestions = [];
-    } finally {
-      isLoading = false;
-    }
-  }
-
-  function handleSuggestionClick(suggestion: DidYouMeanSuggestion | typeof predictiveSuggestions[0]) {
-    const suggestionText = 'suggestion' in suggestion ? suggestion.suggestion : suggestion.text;
-    const confidence = 'confidence' in suggestion ? suggestion.confidence : 1.0;
-    
-    // Send selection event to predictive machine
-    if (enablePredictiveAnalytics && predictiveTypingService) {
-      predictiveTypingService.send({
-        type: 'SELECT_SUGGESTION',
-        suggestion: suggestionText,
-        confidence: confidence
-      });
-    }
-    
-    dispatch('suggestion', {
-      suggestion: suggestionText,
-      originalQuery: query
-    });
-  }
-
-  function handleQuerySubmit(submittedQuery: string) {
-    // Send submit event to predictive machine
-    if (enablePredictiveAnalytics && predictiveTypingService) {
-      predictiveTypingService.send({
-        type: 'SUBMIT_QUERY',
-        query: submittedQuery,
-        timestamp: Date.now()
-      });
-    }
-  }
-
-  function provideFeedback(score: number, selectedResult?: string) {
-    // Send feedback to predictive machine for learning
-    if (enablePredictiveAnalytics && predictiveTypingService) {
-      predictiveTypingService.send({
-        type: 'PROVIDE_FEEDBACK',
-        feedback: { score, selectedResult }
-      });
-    }
-  }
-
-  function getSuggestionIcon(type: DidYouMeanSuggestion['suggestionType']): string {
-    switch (type) {
-      case 'typo': return '🔧';
-      case 'semantic': return '🎯';
-      case 'completion': return '💡';
-      case 'graph_neighbor': return '🔗';
-      case 'synonym': return '📝';
-      default: return '💭';
-    }
-  }
-
-  function getSuggestionColor(confidence: number): string {
-    if (confidence >= 0.8) return 'text-green-600';
-    if (confidence >= 0.6) return 'text-blue-600';
-    if (confidence >= 0.4) return 'text-yellow-600';
-    return 'text-gray-600';
-  }
-
-  function getConfidenceBar(confidence: number): string {
-    const percentage = Math.round(confidence * 100);
-    const color = confidence >= 0.7 ? 'bg-green-500' : confidence >= 0.5 ? 'bg-blue-500' : 'bg-yellow-500';
-    return `${color} h-1 rounded-full transition-all duration-300`;
-  }
-
-  onMount(() => {
-    return () => {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-    };
-  });
+      
+      const data = await response.json();
+      suggestions = data.suggestions || [];
+      taskSuggestions = data.taskSuggestions || [];
+      userProfile = data.userProfile || null;
+      metadata = { 
+        took_ms: data.took_ms, 
+        cached: data.cached 
+      };
+      
+      onSearch?.(searchQuery);
+    } catch (err) {
+      console.error('Search error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Search failed';
+      error = errorMessage;
+      suggestions = [];
+      taskSuggestions = [];
+      userProfile = null;
+    } finally {
+      loading = false;
+    }
+  }
+
+  function handleSelection(suggestion: Suggestion) {
+    const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || '';
+    query = suggestionText;
+    onSelect?.(suggestion);
+    open.set(false);
+  }
+
+  function handleTaskSelection(task: TaskSuggestion) {
+    onTaskSelect?.(task);
+    open.set(false);
+  }
+
+  function getIconComponent(source?: string, type?: string) {
+    if (source === 'ai') return Brain;
+    if (type === 'task') return Target;
+    switch (type) {
+      case 'spelling': return Search;
+      case 'synonym': return Zap;
+      case 'contextual': return Brain;
+      default: 
+        // Legacy support
+        switch (type) {
+          case 'PERSON': return User;
+          case 'DOCUMENT': return FileText;
+          case 'CASE': return Folder;
+          case 'TAG': return Tag;
+          default: return Search;
+        }
+    }
+  }
+
+  function getSourceBadge(source?: string): { color: string; text: string } {
+    switch (source) {
+      case 'ai':
+        return { color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', text: 'AI' };
+      case 'semantic':
+        return { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', text: 'Semantic' };
+      case 'lexical':
+        return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Lexical' };
+      default:
+        return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Auto' };
+    }
+  }
+
+  function getConfidenceColor(confidence: number): string {
+    if (confidence >= 0.8) return 'text-green-600 dark:text-green-400';
+    if (confidence >= 0.6) return 'text-yellow-600 dark:text-yellow-400';
+    return 'text-orange-600 dark:text-orange-400';
+  }
+
+  function getTypeColor(type: string): string {
+    switch (type) {
+      case 'spelling': return 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
+      case 'synonym': return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+      case 'contextual': return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
+      case 'task': return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+      // Legacy support
+      case 'PERSON': return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+      case 'DOCUMENT': return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+      case 'CASE': return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
+      case 'EVIDENCE': return 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300';
+      case 'TAG': return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
+      default: return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
+    }
+  }
 </script>
 
-{#if query.trim().length > 0}
-  <div class="did-you-mean-container relative">
-    <!-- Loading Indicator -->
-    {#if isLoading}
-      <div 
-        class="loading-indicator flex items-center space-x-2 p-3 bg-blue-50 rounded-lg border border-blue-200"
-        in:fade={{ duration: 200 }}
-      >
-        <div class="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-        <span class="text-sm text-blue-700">Finding suggestions...</span>
-        {#if showMetrics && metrics}
-          <span class="text-xs text-blue-600">
-            ({metrics.cacheInfo.quicStreamsUsed} QUIC streams)
-          </span>
-        {/if}
+<div class="relative w-full">
+  <!-- Search Input -->
+  <div class="relative">
+    <input
+      <!-- <!-- use:melt={$input}
+      class="w-full px-4 py-3 pl-10 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      {placeholder}
+      autocomplete="off"
+    />
+    <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+    {#if loading}
+      <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
       </div>
-    {/if}
-
-    <!-- Error State -->
-    {#if error}
-      <div 
-        class="error-container p-3 bg-red-50 rounded-lg border border-red-200"
-        in:fade={{ duration: 200 }}
-      >
-        <div class="flex items-center space-x-2">
-          <span class="text-red-500">⚠️</span>
-          <span class="text-sm text-red-700">{error}</span>
-        </div>
-      </div>
-    {/if}
-
-    <!-- Enhanced Suggestions List -->
-    {#if (predictiveSuggestions.length > 0 || suggestions.length > 0) && !isLoading}
-      <div 
-        class="suggestions-container bg-white rounded-lg border border-gray-200 shadow-lg max-h-80 overflow-y-auto"
-        in:fly={{ y: -10, duration: 300, easing: quintOut }}
-      >
-        <!-- Enhanced Header -->
-        <div class="suggestions-header p-3 border-b border-gray-100 bg-gray-50">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="text-sm font-medium text-gray-700">
-                {enablePredictiveAnalytics ? 'Predictive Suggestions' : 'Did you mean...'}
-              </span>
-              {#if enablePredictiveAnalytics && machineState !== 'idle'}
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                  🧠 {machineState}
-                </span>
-              {/if}
-            </div>
-            
-            {#if showMetrics && metrics}
-              <div class="flex items-center space-x-3 text-xs text-gray-500">
-                {#if enablePredictiveAnalytics}
-                  <span>🧠 {analyticsMetrics.predictionLatency.toFixed(1)}ms</span>
-                  <span>📊 {(analyticsMetrics.analyticsAccuracy * 100).toFixed(0)}% accuracy</span>
-                  <span>💚 {(analyticsMetrics.userSatisfactionScore * 100).toFixed(0)}% satisfaction</span>
-                  <span>🎯 {(analyticsMetrics.cacheHitRate * 100).toFixed(0)}% cache hit</span>
-                {:else}
-                  <span>⚡ {metrics.processingTimeMs.toFixed(1)}ms</span>
-                  <span>🚀 {metrics.cacheInfo.quicStreamsUsed} streams</span>
-                  {#if metrics.graphContext}
-                    <span>🕸️ {metrics.graphContext.nodesTraversed} nodes</span>
-                  {/if}
-                {/if}
-              </div>
-            {/if}
-          </div>
-          
-          {#if enablePredictiveAnalytics && showMetrics && metrics?.predictiveMetrics}
-            <div class="mt-2 flex items-center space-x-4 text-xs text-gray-600">
-              <span>Glyphs: {metrics.predictiveMetrics.glyphContextSize}</span>
-              <span>Topology: {metrics.predictiveMetrics.topologyPredictions}</span>
-              <span>State: {metrics.predictiveMetrics.machineState}</span>
-            </div>
-          {/if}
-        </div>
-
-        <!-- Enhanced Suggestion Items -->
-        <div class="suggestions-list">
-          <!-- Predictive Suggestions (Higher Priority) -->
-          {#each predictiveSuggestions as suggestion, index}
-            <button
-              class="suggestion-item predictive-suggestion w-full text-left p-3 hover:bg-blue-50 focus:bg-blue-100 focus:outline-none transition-colors duration-150 border-b border-gray-100"
-              onclick={() => handleSuggestionClick(suggestion)}
-              in:fly={{ y: 10, duration: 200, delay: index * 30 }}
-            >
-              <div class="flex items-start justify-between space-x-3">
-                <!-- Main Content -->
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center space-x-2 mb-1">
-                    <span class="suggestion-icon text-lg" title="Predictive Analytics">
-                      🧠
-                    </span>
-                    <span class="suggestion-text font-medium text-gray-900 truncate">
-                      {suggestion.text}
-                    </span>
-                    <span class="predictive-badge inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                      AI
-                    </span>
-                  </div>
-                  
-                  <div class="text-sm text-gray-600 mb-2">
-                    Intent: {suggestion.intent} • Topology Score: {(suggestion.topology_score * 100).toFixed(0)}%
-                  </div>
-                  
-                  <!-- Enhanced Confidence Bar -->
-                  <div class="confidence-container">
-                    <div class="w-full bg-gray-200 rounded-full h-1.5">
-                      <div 
-                        class="bg-purple-500 h-1.5 rounded-full transition-all duration-300"
-                        style="width: {Math.round(suggestion.confidence * 100)}%"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Enhanced Metadata -->
-                <div class="flex flex-col items-end space-y-1 text-xs">
-                  <span class="confidence-score font-medium text-purple-600">
-                    {Math.round(suggestion.confidence * 100)}%
-                  </span>
-                  
-                  <span class="predictive-indicator px-2 py-1 bg-purple-100 text-purple-800 rounded-full" title="Predictive Analytics">
-                    🧠 Predictive
-                  </span>
-                  
-                  <span class="topology-score text-gray-500" title="Topology Awareness Score">
-                    🕸️ {(suggestion.topology_score * 100).toFixed(0)}%
-                  </span>
-                </div>
-              </div>
-            </button>
-          {/each}
-          
-          <!-- Legacy Suggestions (Fallback) -->
-          {#each suggestions as suggestion, index}
-            <button
-              class="suggestion-item w-full text-left p-3 hover:bg-gray-50 focus:bg-blue-50 focus:outline-none transition-colors duration-150 border-b border-gray-100 last:border-b-0"
-              onclick={() => handleSuggestionClick(suggestion)}
-              in:fly={{ y: 10, duration: 200, delay: index * 50 }}
-            >
-              <div class="flex items-start justify-between space-x-3">
-                <!-- Main Content -->
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center space-x-2 mb-1">
-                    <span class="suggestion-icon text-lg" title={suggestion.suggestionType}>
-                      {getSuggestionIcon(suggestion.suggestionType)}
-                    </span>
-                    <span class="suggestion-text font-medium text-gray-900 truncate">
-                      {suggestion.suggestion}
-                    </span>
-                  </div>
-                  
-                  <div class="text-sm text-gray-600 mb-2">
-                    {suggestion.reasoning}
-                  </div>
-                  
-                  <!-- Confidence Bar -->
-                  <div class="confidence-container">
-                    <div class="w-full bg-gray-200 rounded-full h-1">
-                      <div 
-                        class={getConfidenceBar(suggestion.confidence)}
-                        style="width: {Math.round(suggestion.confidence * 100)}%"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Metadata -->
-                <div class="flex flex-col items-end space-y-1 text-xs">
-                  <span class={`confidence-score font-medium ${getSuggestionColor(suggestion.confidence)}`}>
-                    {Math.round(suggestion.confidence * 100)}%
-                  </span>
-                  
-                  {#if suggestion.slotKey}
-                    <span class="cache-indicator px-2 py-1 bg-green-100 text-green-800 rounded-full" title="Cached results available">
-                      🚀 Cached
-                    </span>
-                  {/if}
-                  
-                  {#if suggestion.metadata?.popularQuery}
-                    <span class="popularity-indicator px-2 py-1 bg-blue-100 text-blue-800 rounded-full" title="Popular query">
-                      🔥 Popular
-                    </span>
-                  {/if}
-                  
-                  {#if suggestion.metadata?.practiceArea}
-                    <span class="practice-area text-gray-500" title="Practice area">
-                      {suggestion.metadata.practiceArea}
-                    </span>
-                  {/if}
-                </div>
-              </div>
-            </button>
-          {/each}
-        </div>
-
-        <!-- Footer with Graph Context -->
-        {#if showMetrics && metrics?.graphContext}
-          <div class="suggestions-footer p-3 border-t border-gray-100 bg-gray-50">
-            <div class="flex items-center justify-between text-xs text-gray-600">
-              <div class="flex items-center space-x-4">
-                <span>Graph depth: {metrics.graphContext.maxDepth}</span>
-                <span>Concepts: {metrics.graphContext.relevantConcepts.length}</span>
-              </div>
-              <div class="flex items-center space-x-2">
-                <span>Cache hits: {metrics.cacheInfo.cacheHits}</span>
-                <span>Misses: {metrics.cacheInfo.cacheMisses}</span>
-              </div>
-            </div>
-            
-            {#if metrics.graphContext.relevantConcepts.length > 0}
-              <div class="relevant-concepts mt-2">
-                <div class="text-xs text-gray-500 mb-1">Related concepts:</div>
-                <div class="flex flex-wrap gap-1">
-                  {#each metrics.graphContext.relevantConcepts.slice(0, 5) as concept}
-                    <span class="concept-tag px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                      {concept}
-                    </span>
-                  {/each}
-                  {#if metrics.graphContext.relevantConcepts.length > 5}
-                    <span class="text-xs text-gray-500">
-                      +{metrics.graphContext.relevantConcepts.length - 5} more
-                    </span>
-                  {/if}
-                </div>
-              </div>
-            {/if}
-          </div>
-        {/if}
-      </div>
-    {/if}
-
-    <!-- No Suggestions State -->
-    {#if !isLoading && !error && suggestions.length === 0 && query.trim().length > 0}
-      <div 
-        class="no-suggestions p-3 bg-gray-50 rounded-lg border border-gray-200"
-        in:fade={{ duration: 200 }}
-      >
-        <div class="flex items-center space-x-2">
-          <span class="text-gray-400">💭</span>
-          <span class="text-sm text-gray-600">No suggestions found for "{query}"</span>
-        </div>
-      </div>
+    {:else}
+      <ChevronDown class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
     {/if}
   </div>
-{/if}
+
+  <!-- Error Display -->
+  {#if error}
+    <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" transition:fade>
+      <p class="text-sm text-red-800 dark:text-red-200">
+        <span class="font-medium">Error:</span> {error}
+      </p>
+    </div>
+  {/if}
+
+  <!-- Metadata Display -->
+  {#if metadata.took_ms}
+    <div class="mt-1 flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+      <span>{metadata.took_ms}ms {metadata.cached ? '(cached)' : ''}</span>
+      {#if includeAI}
+        <span class="flex items-center gap-1">
+          <Brain class="w-3 h-3" />
+          AI Enhanced
+        </span>
+      {/if}
+    </div>
+  {/if}
+
+  <!-- AI-Enhanced Suggestions Dropdown -->
+  {#if $open && (suggestions.length > 0 || taskSuggestions.length > 0)}
+    <div
+      use:melt={$menu}
+      class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-auto"
+      transition:fly={{ y: -5, duration: 150 }}
+    >
+      <!-- Regular Suggestions -->
+      {#if suggestions.length > 0}
+        <div class="p-2">
+          <div class="text-xs font-medium text-gray-500 dark:text-gray-400 px-2 py-1">
+            Suggestions
+          </div>
+          {#each suggestions as suggestion, index}
+            {@const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || ''}
+            {@const confidence = suggestion.confidence || suggestion.score || 0}
+            <button
+              use:melt={$option({ value: suggestion, label: suggestionText })}
+              class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
+              on:click={() => handleSelection(suggestion)}
+            >
+              <div class="flex items-center gap-3">
+                <!-- Icon -->
+                <div class="p-1.5 {getTypeColor(suggestion.type || 'default')} rounded-md">
+                  <svelte:component 
+                    this={getIconComponent(suggestion.source, suggestion.type)} 
+                    class="w-3.5 h-3.5" 
+                  />
+                </div>
+                
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between">
+                    <span class="font-medium text-gray-900 dark:text-gray-100 truncate">
+                      {suggestionText}
+                    </span>
+                    <div class="flex items-center gap-2 ml-2">
+                      <span class="text-xs {getConfidenceColor(confidence)}">
+                        {Math.round(confidence * 100)}%
+                      </span>
+                      {#if suggestion.source}
+                        {@const badge = getSourceBadge(suggestion.source)}
+                        <span class="px-1.5 py-0.5 text-xs {badge.color} rounded-full">
+                          {badge.text}
+                        </span>
+                      {/if}
+                      {#if suggestion.enhanced}
+                        <span class="px-1.5 py-0.5 text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300 rounded-full">
+                          Enhanced
+                        </span>
+                      {/if}
+                    </div>
+                  </div>
+                  
+                  {#if suggestion.intent}
+                    <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">
+                      Intent: {suggestion.intent}
+                    </p>
+                  {/if}
+                  
+                  {#if suggestion.description}
+                    <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">
+                      {suggestion.description}
+                    </p>
+                  {/if}
+                  
+                  <!-- Legacy Tags Support -->
+                  {#if suggestion.tags && suggestion.tags.length > 0}
+                    <div class="flex gap-1 mt-1">
+                      {#each suggestion.tags.slice(0, 3) as tag}
+                        <span class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
+                          {tag}
+                        </span>
+                      {/each}
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            </button>
+          {/each}
+        </div>
+      {/if}
+
+      <!-- Task Suggestions -->
+      {#if taskSuggestions.length > 0}
+        <div class="p-2 border-t border-gray-200 dark:border-gray-600">
+          <div class="text-xs font-medium text-gray-500 dark:text-gray-400 px-2 py-1 flex items-center gap-1">
+            <Target class="w-3 h-3" />
+            Task Suggestions
+          </div>
+          {#each taskSuggestions as task, index}
+            <button
+              class="w-full px-3 py-2 text-left hover:bg-blue-50 dark:hover:bg-blue-900/20 focus:bg-blue-50 dark:focus:bg-blue-900/20 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
+              on:click={() => handleTaskSelection(task)}
+            >
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <p class="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                    {task.task}
+                  </p>
+                  <div class="flex items-center space-x-3 mt-1 text-xs text-gray-600 dark:text-gray-400">
+                    <span>{task.estimatedSteps} steps</span>
+                    <span class="capitalize">{task.category}</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 ml-2">
+                  <span class="text-xs {getConfidenceColor(task.confidence)}">
+                    {Math.round(task.confidence * 100)}%
+                  </span>
+                  <span class="px-1.5 py-0.5 text-xs rounded-full {
+                    task.priority === 'high' 
+                      ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                      : task.priority === 'medium' 
+                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                      : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+                  }">
+                    {task.priority}
+                  </span>
+                </div>
+              </div>
+            </button>
+          {/each}
+        </div>
+      {/if}
+
+      <!-- User Profile -->
+      {#if showUserProfile && userProfile}
+        <div class="p-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600">
+          <div class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+            Your Profile
+          </div>
+          <div class="space-y-1 text-xs text-gray-600 dark:text-gray-400">
+            <div class="flex justify-between">
+              <span>Learning Phase:</span>
+              <span class="capitalize font-medium">{userProfile.learningPhase}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Confidence:</span>
+              <span class="{getConfidenceColor(userProfile.confidenceLevel)} font-medium">
+                {Math.round(userProfile.confidenceLevel * 100)}%
+              </span>
+            </div>
+            {#if userProfile.preferredIntents.length > 0}
+              <div class="flex flex-wrap gap-1 mt-1">
+                {#each userProfile.preferredIntents as intent}
+                  <span class="px-1.5 py-0.5 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 rounded-full">
+                    {intent}
+                  </span>
+                {/each}
+              </div>
+            {/if}
+          </div>
+        </div>
+      {/if}
+    </div>
+  {/if}
+
+  <!-- No Results -->
+  {#if $open && !loading && !error && suggestions.length === 0 && taskSuggestions.length === 0 && query.length >= 2}
+    <div class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4">
+      <div class="text-center text-gray-500 dark:text-gray-400">
+        <Brain class="w-8 h-8 mx-auto mb-2 opacity-50" />
+        <p class="text-sm">No AI suggestions found for "{query}"</p>
+        <p class="text-xs mt-1">Try a different search term or check spelling</p>
+        {#if includeAI}
+          <p class="text-xs mt-1 text-blue-600 dark:text-blue-400">
+            AI learning in progress... suggestions will improve over time
+          </p>
+        {/if}
+      </div>
+    </div>
+  {/if}
+</div>
 
 <style>
-  .did-you-mean-container {
-    font-family: system-ui, -apple-system, sans-serif;
+  /* Ensure proper z-index stacking */
+  :global(.melt-dialog-overlay) {
+    z-index: 50;
   }
-
-  .suggestion-item:focus {
-    box-shadow: inset 2px 0 0 #3b82f6;
+  
+  :global(.melt-dialog-content) {
+    z-index: 51;
   }
-
-  .confidence-score {
-    font-variant-numeric: tabular-nums;
+  
+  /* Custom scrollbar for suggestions */
+  .suggestions-scroll::-webkit-scrollbar {
+    width: 6px;
   }
-
-  .animate-spin {
-    animation: spin 1s linear infinite;
+  
+  .suggestions-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
   }
-
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+  
+  .suggestions-scroll::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
   }
-
-  /* Accessibility improvements */
-  .suggestion-item:focus {
-    outline: 2px solid #3b82f6;
-    outline-offset: -2px;
-  }
-
-  /* Mobile responsiveness */
-  @media (max-width: 640px) {
-    .suggestions-container {
-      max-height: 60vh;
-    }
-    
-    .suggestion-item {
-      padding: 0.75rem;
-    }
-    
-    .suggestions-header,
-    .suggestions-footer {
-      padding: 0.75rem;
-    }
+  
+  .suggestions-scroll::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
   }
 </style>

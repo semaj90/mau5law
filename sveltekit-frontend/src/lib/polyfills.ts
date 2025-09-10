@@ -3,7 +3,7 @@ import path from "path";
 import crypto from "crypto";
 import { URL } from "url";
 // Browser polyfills for Node.js modules and enhanced compatibility
-// This ensures Bits UI, Melt UI, and other dependencies work properly in browser context
+// This ensures Bits UI, and other dependencies work properly in browser context
 
 // Global polyfills for Node.js globals
 declare global {
@@ -20,7 +20,7 @@ declare global {
 // Polyfill process.env for browser
 if (typeof window !== 'undefined') {
   window.global = window.global || globalThis;
-  
+
   if (!window.process) {
     window.process = {
       env: {
@@ -69,7 +69,7 @@ export const pathUtils = {
       .replace(/\/+/g, '/') // Remove double slashes
       .replace(/\/$/g, ''); // Remove trailing slash
   },
-  
+
   resolve: (...parts: string[]) => {
     let resolvedPath = '';
     for (const part of parts) {
@@ -79,19 +79,19 @@ export const pathUtils = {
     }
     return resolvedPath.startsWith('/') ? resolvedPath : `/${resolvedPath}`;
   },
-  
+
   dirname: (path: string) => {
     const lastSlash = path.lastIndexOf('/');
     return lastSlash === -1 ? '.' : path.slice(0, lastSlash);
   },
-  
+
   basename: (path: string, ext?: string) => {
     let base = path.split('/').pop() || '';
     if (ext && base.endsWith(ext)) {
       base = base.slice(0, -ext.length);
     }
     return base;
-  }
+  },
 };
 
 // URL utilities for better compatibility
@@ -99,12 +99,12 @@ export const urlUtils = {
   isAbsolute: (url: string) => {
     return /^https?:\/\//.test(url) || url.startsWith('/');
   },
-  
+
   resolve: (base: string, relative: string) => {
     if (urlUtils.isAbsolute(relative)) return relative;
     return new URL(relative, base).href;
   },
-  
+
   parse: (url: string) => {
     try {
       return new URL(url);
@@ -112,39 +112,39 @@ export const urlUtils = {
       // Fallback for relative URLs
       return new URL(url, window?.location?.href || 'http://localhost/');
     }
-  }
+  },
 };
 
 // Enhanced fetch with timeout and better error handling
 export const enhancedFetch = async (
-  url: string, 
+  url: string,
   options: RequestInit & { timeout?: number } = {}
 ): Promise<Response> => {
   const { timeout = 30000, ...fetchOptions } = options;
-  
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
-  
+
   try {
     const response = await fetch(url, {
       ...fetchOptions,
-      signal: controller.signal
+      signal: controller.signal,
     });
-    
+
     clearTimeout(timeoutId);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    
+
     return response;
   } catch (error: any) {
     clearTimeout(timeoutId);
-    
+
     if (error instanceof DOMException && error.name === 'AbortError') {
       throw new Error(`Request timeout after ${timeout}ms`);
     }
-    
+
     throw error;
   }
 };
@@ -155,7 +155,7 @@ export const debounce = <T extends (...args: any[]) => any>(
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: ReturnType<typeof setTimeout>;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -168,12 +168,12 @@ export const throttle = <T extends (...args: any[]) => any>(
   limit: number
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
-  
+
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 };
@@ -183,7 +183,7 @@ export const storage = {
   get: <T = any>(key: string, defaultValue?: T): T | null => {
     try {
       if (typeof window === 'undefined') return defaultValue || null;
-      
+
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : defaultValue || null;
     } catch (error: any) {
@@ -191,11 +191,11 @@ export const storage = {
       return defaultValue || null;
     }
   },
-  
+
   set: (key: string, value: any): boolean => {
     try {
       if (typeof window === 'undefined') return false;
-      
+
       localStorage.setItem(key, JSON.stringify(value));
       return true;
     } catch (error: any) {
@@ -203,11 +203,11 @@ export const storage = {
       return false;
     }
   },
-  
+
   remove: (key: string): boolean => {
     try {
       if (typeof window === 'undefined') return false;
-      
+
       localStorage.removeItem(key);
       return true;
     } catch (error: any) {
@@ -215,18 +215,18 @@ export const storage = {
       return false;
     }
   },
-  
+
   clear: (): boolean => {
     try {
       if (typeof window === 'undefined') return false;
-      
+
       localStorage.clear();
       return true;
     } catch (error: any) {
       console.warn('Failed to clear localStorage:', error);
       return false;
     }
-  }
+  },
 };
 
 // Initialize polyfills
@@ -235,11 +235,50 @@ if (typeof window !== 'undefined') {
   console.log('Browser polyfills initialized for Legal AI Platform');
 }
 
+// Lightweight WebGPU utilities (safe in non-supporting browsers)
+const webGPU = {
+  isSupported: () =>
+    typeof navigator !== 'undefined' && typeof (navigator as any).gpu !== 'undefined',
+
+  getAdapter: async (options?: GPURequestAdapterOptions) => {
+    if (!webGPU.isSupported()) return null;
+    try {
+      return await (navigator as any).gpu.requestAdapter(options);
+    } catch {
+      return null;
+    }
+  },
+
+  getDevice: async (options?: {
+    adapter?: GPURequestAdapterOptions;
+    device?: GPUDeviceDescriptor;
+  }) => {
+    const adapter = await webGPU.getAdapter(options?.adapter);
+    if (!adapter) return null;
+    try {
+      return await adapter.requestDevice(options?.device);
+    } catch {
+      return null;
+    }
+  },
+
+  ensureDevice: async () => {
+    const device = await webGPU.getDevice();
+    if (!device) throw new Error('WebGPU not supported or device unavailable');
+    return device;
+  },
+};
+
+if (typeof window !== 'undefined') {
+  (window as any).__WEBGPU_SUPPORTED__ = webGPU.isSupported();
+}
+
 export default {
   pathUtils,
   urlUtils,
   enhancedFetch,
   debounce,
   throttle,
-  storage
+  storage,
+  webGPU,
 };

@@ -8,17 +8,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import postgres from 'postgres';
 import { eq, and, sql } from 'drizzle-orm';
 import crypto from "crypto";
-import {
-  legalDocuments,
-  cases,
-  vectorOperations,
-  qdrantCollections,
-  createQdrantPoint,
-  type LegalDocument,
-  type Case,
-  type VectorOperation,
-  type VectorMetadata
-} from './schema-postgres';
+import { legalDocuments, cases, vectorMetadata, type Case } from './schema-postgres';
 
 // ============================================================================
 // CONFIGURATION
@@ -294,10 +284,10 @@ export class QdrantPostgreSQLService {
     // PostgreSQL search
     if (usePostgreSQL) {
       const pgStart = Date.now();
-      
+
       try {
         const pgResults = await this.postgres`
-          SELECT *, 
+          SELECT *,
                  (1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)) as similarity
           FROM legal_documents
           WHERE (1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)) >= ${threshold}
@@ -317,7 +307,6 @@ export class QdrantPostgreSQLService {
             source: 'postgresql',
           });
         }
-
       } catch (error: any) {
         console.error('PostgreSQL search error:', error);
       }
@@ -326,31 +315,36 @@ export class QdrantPostgreSQLService {
     // Qdrant search
     if (useQdrant) {
       const qdrantStart = Date.now();
-      
+
       try {
         const qdrantResults = await this.qdrant.search(collection, {
           vector: queryEmbedding,
           limit,
           score_threshold: threshold,
           with_payload: true,
-          filter: Object.keys(filter).length > 0 ? { must: Object.entries(filter).map(([key, value]) => ({
-            key,
-            match: { value },
-          })) } : undefined,
+          filter:
+            Object.keys(filter).length > 0
+              ? {
+                  must: Object.entries(filter).map(([key, value]) => ({
+                    key,
+                    match: { value },
+                  })),
+                }
+              : undefined,
         });
 
         qdrantTime = Date.now() - qdrantStart;
 
         // Get corresponding PostgreSQL records
-        const qdrantIds = qdrantResults.map(r => r.id.toString());
-        
+        const qdrantIds = qdrantResults.map((r) => r.id.toString());
+
         if (qdrantIds.length > 0) {
           const pgDocuments = await this.db
             .select()
             .from(legalDocuments)
             .where(sql`${legalDocuments.id} = ANY(${qdrantIds})`);
 
-          const docMap = new Map(pgDocuments.map(doc => [doc.id, doc]));
+          const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]));
 
           for (const result of qdrantResults) {
             const document = docMap.get(result.id.toString());
@@ -364,7 +358,6 @@ export class QdrantPostgreSQLService {
             }
           }
         }
-
       } catch (error: any) {
         console.error('Qdrant search error:', error);
       }
@@ -443,7 +436,7 @@ export class QdrantPostgreSQLService {
         }
 
         offset += batchSize;
-        
+
         // Add small delay to prevent overwhelming the services
         await new Promise(resolve => setTimeout(resolve, 100));
       }
@@ -472,7 +465,7 @@ export class QdrantPostgreSQLService {
     let postgresql = false;
     let qdrant = false;
     let collections: string[] = [];
-    
+
     // Check PostgreSQL
     try {
       await this.postgres`SELECT 1`;
@@ -492,26 +485,25 @@ export class QdrantPostgreSQLService {
 
     // Get sync status
     const syncStatus = { totalDocuments: 0, syncedDocuments: 0, pendingSyncs: 0 };
-    
+
     try {
       const totalResult = await this.postgres`
-        SELECT COUNT(*) as count 
-        FROM legal_documents 
+        SELECT COUNT(*) as count
+        FROM legal_documents
         WHERE deleted_at IS NULL AND content_embedding IS NOT NULL
       `;
       syncStatus.totalDocuments = parseInt(totalResult[0].count);
 
       const syncedResult = await this.postgres`
-        SELECT COUNT(*) as count 
-        FROM legal_documents 
-        WHERE deleted_at IS NULL 
-          AND content_embedding IS NOT NULL 
+        SELECT COUNT(*) as count
+        FROM legal_documents
+        WHERE deleted_at IS NULL
+          AND content_embedding IS NOT NULL
           AND last_synced_to_qdrant IS NOT NULL
       `;
       syncStatus.syncedDocuments = parseInt(syncedResult[0].count);
 
       syncStatus.pendingSyncs = syncStatus.totalDocuments - syncStatus.syncedDocuments;
-
     } catch (error: any) {
       console.error('Sync status check failed:', error);
     }
@@ -549,7 +541,8 @@ export const createQdrantService = (
   };
 
   const defaultPostgresConfig: PostgreSQLConfig = {
-    connectionString: import.meta.env.DATABASE_URL || 
+    connectionString:
+      import.meta.env.DATABASE_URL ||
       `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5432'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db'}`,
     ...postgresConfig,
   };
