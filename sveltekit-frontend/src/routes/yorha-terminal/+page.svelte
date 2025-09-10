@@ -1,10 +1,9 @@
 <!-- YoRHa Terminal Interface with AI Commands -->
 <script lang="ts">
-</script>
 	import { onMount } from "svelte";
 	import {
     Button
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
 	import { aiGlobalStore, aiGlobalActions } from "$lib/stores/ai";
 	import type { Writable } from "svelte/store";
 

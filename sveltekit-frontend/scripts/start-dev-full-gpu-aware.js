@@ -18,7 +18,7 @@ class DevFullManager {
     this.discoveredPorts = {
       frontend: null,
       ollama: null,
-      cuda: null
+      cuda: null,
     };
   }
 
@@ -57,15 +57,27 @@ class DevFullManager {
         this.discoveredPorts.ollama = 11434;
         this.log('System', '✅ Ollama port 11434 available', 'green');
       } else {
-        this.log('System', '⚠️  Port 11434 in use, checking if Ollama is already running...', 'yellow');
+        this.log(
+          'System',
+          '⚠️  Port 11434 in use, checking if Ollama is already running...',
+          'yellow'
+        );
         const isOllamaRunning = await this.checkOllamaHealth();
         if (isOllamaRunning) {
           this.log('System', '✅ Ollama already running on 11434', 'green');
           this.discoveredPorts.ollama = 11434;
         } else {
-          this.log('System', '❌ Port 11434 blocked by other service, finding alternative...', 'red');
+          this.log(
+            'System',
+            '❌ Port 11434 blocked by other service, finding alternative...',
+            'red'
+          );
           this.discoveredPorts.ollama = await this.findAvailablePort(11435);
-          this.log('System', `📍 Alternative Ollama port: ${this.discoveredPorts.ollama}`, 'yellow');
+          this.log(
+            'System',
+            `📍 Alternative Ollama port: ${this.discoveredPorts.ollama}`,
+            'yellow'
+          );
         }
       }
 
@@ -84,7 +96,6 @@ class DevFullManager {
       this.log('System', `📍 Frontend port: ${this.discoveredPorts.frontend}`, 'cyan');
 
       this.log('System', '✅ Port discovery complete - conflicts resolved', 'green');
-
     } catch (error) {
       this.log('System', `❌ Port discovery failed: ${error.message}`, 'red');
       throw error;
@@ -96,7 +107,7 @@ class DevFullManager {
       const { spawn } = await import('child_process');
       return new Promise((resolve) => {
         const healthCheck = spawn('curl', ['-s', 'http://localhost:11434/api/version'], {
-          stdio: 'pipe'
+          stdio: 'pipe',
         });
 
         healthCheck.on('close', (code) => {
@@ -138,25 +149,45 @@ class DevFullManager {
 
     try {
       // Check if Docker PostgreSQL is running
-      const testProcess = spawn('docker', ['exec', 'legal-ai-postgres', 'pg_isready', '-h', 'localhost', '-p', '5432'], {
-        stdio: 'pipe'
-      });
+      const testProcess = spawn(
+        'docker',
+        ['exec', 'legal-ai-postgres', 'pg_isready', '-h', 'localhost', '-p', '5432'],
+        {
+          stdio: 'pipe',
+        }
+      );
 
       testProcess.on('close', (code) => {
         if (code === 0) {
           this.log('PostgreSQL', '✅ Docker PostgreSQL (legal-ai-postgres) is running', 'green');
         } else {
-          this.log('PostgreSQL', '⚠️  Docker PostgreSQL not responding, checking container...', 'yellow');
+          this.log(
+            'PostgreSQL',
+            '⚠️  Docker PostgreSQL not responding, checking container...',
+            'yellow'
+          );
           // Check if container is running
-          const checkContainer = spawn('docker', ['ps', '--filter', 'name=legal-ai-postgres', '--format', '{{.Names}}'], {
-            stdio: 'pipe'
-          });
+          const checkContainer = spawn(
+            'docker',
+            ['ps', '--filter', 'name=legal-ai-postgres', '--format', '{{.Names}}'],
+            {
+              stdio: 'pipe',
+            }
+          );
 
           checkContainer.stdout.on('data', (data) => {
             if (data.toString().includes('legal-ai-postgres')) {
-              this.log('PostgreSQL', '✅ Container running, connection will be established', 'green');
+              this.log(
+                'PostgreSQL',
+                '✅ Container running, connection will be established',
+                'green'
+              );
             } else {
-              this.log('PostgreSQL', '⚠️  Container not running, please start Docker stack', 'yellow');
+              this.log(
+                'PostgreSQL',
+                '⚠️  Container not running, please start Docker stack',
+                'yellow'
+              );
             }
           });
         }
@@ -172,7 +203,7 @@ class DevFullManager {
     try {
       // Check if Docker is running using docker info
       const dockerInfoProcess = spawn('docker', ['info'], {
-        stdio: 'pipe'
+        stdio: 'pipe',
       });
 
       return new Promise((resolve) => {
@@ -200,9 +231,11 @@ class DevFullManager {
 
         dockerInfoProcess.stderr.on('data', (data) => {
           const error = data.toString().trim();
-          if (error.includes('docker daemon is not running') ||
-              error.includes('connect: no such file or directory') ||
-              error.includes('cannot connect to the Docker daemon')) {
+          if (
+            error.includes('docker daemon is not running') ||
+            error.includes('connect: no such file or directory') ||
+            error.includes('cannot connect to the Docker daemon')
+          ) {
             // Docker is not running
           }
         });
@@ -221,7 +254,7 @@ class DevFullManager {
 
     const composeProcess = spawn('docker', ['compose', 'up', '-d'], {
       stdio: 'pipe',
-      cwd: projectRoot
+      cwd: projectRoot,
     });
 
     return new Promise((resolve, reject) => {
@@ -260,19 +293,27 @@ class DevFullManager {
       { name: 'Redis', container: 'legal-ai-redis', port: '6379' },
       { name: 'RabbitMQ', container: 'legal-ai-rabbitmq', port: '5672,15672' },
       { name: 'MinIO', container: 'legal-ai-minio', port: '9000-9001' },
-      { name: 'Qdrant', container: 'legal-ai-qdrant', port: '6333-6334' }
+      { name: 'Qdrant', container: 'legal-ai-qdrant', port: '6333-6334' },
     ];
 
     for (const service of services) {
       try {
-        const checkProcess = spawn('docker', ['ps', '--filter', `name=${service.container}`, '--format', '{{.Status}}'], {
-          stdio: 'pipe'
-        });
+        const checkProcess = spawn(
+          'docker',
+          ['ps', '--filter', `name=${service.container}`, '--format', '{{.Status}}'],
+          {
+            stdio: 'pipe',
+          }
+        );
 
         checkProcess.stdout.on('data', (data) => {
           const status = data.toString().trim();
           if (status.includes('Up')) {
-            this.log('Docker', `✅ ${service.name} (${service.container}) → ${service.port}`, 'green');
+            this.log(
+              'Docker',
+              `✅ ${service.name} (${service.container}) → ${service.port}`,
+              'green'
+            );
           } else if (status) {
             this.log('Docker', `⚠️  ${service.name} (${service.container}) → ${status}`, 'yellow');
           } else {
@@ -300,8 +341,8 @@ class DevFullManager {
       env: {
         ...process.env,
         CUDA_SERVICE_PORT: cudaPort.toString(),
-        CUDA_SERVICE_HOST: '127.0.0.1'
-      }
+        CUDA_SERVICE_HOST: '127.0.0.1',
+      },
     });
 
     let startupComplete = false;
@@ -332,7 +373,11 @@ class DevFullManager {
       if (code !== 0 && !this.isShuttingDown) {
         this.log('CUDA', `❌ CUDA service exited with code ${code}`, 'red');
         if (!startupComplete) {
-          this.log('CUDA', '💡 Service failed to start - check port conflicts and GPU availability', 'yellow');
+          this.log(
+            'CUDA',
+            '💡 Service failed to start - check port conflicts and GPU availability',
+            'yellow'
+          );
         }
       } else if (code === 0) {
         this.log('CUDA', '✅ CUDA service shutdown cleanly', 'green');
@@ -342,7 +387,7 @@ class DevFullManager {
     this.processes.push(cudaProcess);
 
     // Wait a moment for potential startup errors
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     return cudaProcess;
   }
@@ -354,16 +399,20 @@ class DevFullManager {
     this.log('Frontend', `🔌 Using port ${frontendPort} for WebSocket integration`, 'magenta');
 
     // Use Node.js directly to run the Vite dev server with proper path quoting
-    const frontendProcess = spawn(`"${process.execPath}"`, ['node_modules/vite/bin/vite.js', 'dev', '--port', frontendPort.toString(), '--host'], {
-      stdio: 'pipe',
-      shell: true,
-      env: {
-        ...process.env,
-        WEBSOCKET_ENABLED: 'true',
-        BINARY_QLORA_WS: 'true',
-        PORT: frontendPort.toString()
+    const frontendProcess = spawn(
+      `"${process.execPath}"`,
+      ['node_modules/vite/bin/vite.js', 'dev', '--port', frontendPort.toString(), '--host'],
+      {
+        stdio: 'pipe',
+        shell: true,
+        env: {
+          ...process.env,
+          WEBSOCKET_ENABLED: 'true',
+          BINARY_QLORA_WS: 'true',
+          PORT: frontendPort.toString(),
+        },
       }
-    });
+    );
 
     frontendProcess.stdout.on('data', (data) => {
       const output = data.toString().trim();
@@ -426,8 +475,8 @@ class DevFullManager {
       env: {
         ...process.env,
         OLLAMA_HOST: `0.0.0.0:${ollamaPort}`,
-        OLLAMA_ORIGINS: '*'
-      }
+        OLLAMA_ORIGINS: '*',
+      },
     });
 
     let startupComplete = false;
@@ -470,7 +519,7 @@ class DevFullManager {
     this.processes.push(ollamaProcess);
 
     // Wait for startup completion
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     return ollamaProcess;
   }
@@ -480,7 +529,7 @@ class DevFullManager {
 
     const redisProcess = spawn('node', ['scripts/start-redis.js'], {
       stdio: 'pipe',
-      env: { ...process.env }
+      env: { ...process.env },
     });
 
     redisProcess.stdout.on('data', (data) => {
@@ -511,8 +560,8 @@ class DevFullManager {
         ...process.env,
         REDIS_URL: 'redis://127.0.0.1:6379',
         ENABLE_GPU: 'true',
-        RTX_3060_OPTIMIZATION: 'true'
-      }
+        RTX_3060_OPTIMIZATION: 'true',
+      },
     });
 
     bridgeProcess.stdout.on('data', (data) => {
@@ -554,23 +603,27 @@ class DevFullManager {
   async startGPUCluster() {
     this.log('GPU-Cluster', '⚡ Starting GPU Cluster Concurrent Executor...', 'magenta');
 
-    const clusterProcess = spawn('node', [
-      'scripts/gpu-cluster-concurrent-executor.mjs',
-      '--tasks=legal-embeddings,case-similarity,evidence-processing',
-      '--workers=4',
-      '--enableGPU=true',
-      '--profile=true'
-    ], {
-      stdio: 'pipe',
-      env: {
-        ...process.env,
-        ENABLE_GPU: 'true',
-        RTX_3060_OPTIMIZATION: 'true',
-        OLLAMA_GPU_LAYERS: '35',
-        GPU_MEMORY_LIMIT: '6144',
-        BATCH_SIZE: '16'
+    const clusterProcess = spawn(
+      'node',
+      [
+        'scripts/gpu-cluster-concurrent-executor.mjs',
+        '--tasks=legal-embeddings,case-similarity,evidence-processing',
+        '--workers=4',
+        '--enableGPU=true',
+        '--profile=true',
+      ],
+      {
+        stdio: 'pipe',
+        env: {
+          ...process.env,
+          ENABLE_GPU: 'true',
+          RTX_3060_OPTIMIZATION: 'true',
+          OLLAMA_GPU_LAYERS: '35',
+          GPU_MEMORY_LIMIT: '6144',
+          BATCH_SIZE: '16',
+        },
       }
-    });
+    );
 
     clusterProcess.stdout.on('data', (data) => {
       const output = data.toString().trim();
@@ -619,6 +672,58 @@ class DevFullManager {
     return clusterProcess;
   }
 
+  async startMCPServer() {
+    this.log('MCP', '🚀 Starting Enhanced MCP Multi-Core Server...', 'magenta');
+
+    const mcpProcess = spawn('node', ['scripts/mcp-multicore-server.mjs'], {
+      stdio: 'pipe',
+      env: {
+        ...process.env,
+        MCP_WORKERS: '4',
+        MCP_GPU_ACCEL: 'true',
+        CONTEXT7_MULTICORE: 'true',
+        RTX_3060_OPTIMIZATION: 'true',
+        NODE_OPTIONS: '--max-old-space-size=4096',
+        MCP_PORT: '3001',
+      },
+    });
+
+    mcpProcess.stdout.on('data', (data) => {
+      const output = data.toString().trim();
+      if (output.includes('MCP Multi-Core Server')) {
+        this.log('MCP', '🚀 Server initializing...', 'magenta');
+      } else if (output.includes('workers initialized')) {
+        this.log('MCP', '✅ Workers ready for processing', 'green');
+      } else if (output.includes('listening on port')) {
+        this.log('MCP', '🌐 HTTP API endpoints active', 'cyan');
+      } else if (output.includes('Worker')) {
+        this.log('MCP', `👥 ${output}`, 'blue');
+      } else {
+        this.log('MCP', output, 'magenta');
+      }
+    });
+
+    mcpProcess.stderr.on('data', (data) => {
+      const error = data.toString().trim();
+      this.log('MCP', `⚠️  ${error}`, 'yellow');
+    });
+
+    mcpProcess.on('close', (code) => {
+      if (code !== 0 && !this.isShuttingDown) {
+        this.log('MCP', `❌ Server exited with code ${code}`, 'red');
+      } else if (code === 0) {
+        this.log('MCP', '✅ Server shutdown cleanly', 'green');
+      }
+    });
+
+    this.processes.push(mcpProcess);
+
+    // Wait for MCP server to fully initialize
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    return mcpProcess;
+  }
+
   setupGracefulShutdown() {
     const shutdown = async (signal) => {
       this.isShuttingDown = true;
@@ -645,8 +750,16 @@ class DevFullManager {
 
   async start() {
     this.log('System', '🚀 Starting Legal AI Full Development Stack...', 'green');
-    this.log('System', '📋 Services: Docker Stack + CUDA + Frontend + Ollama + Redis-GPU Pipeline', 'white');
-    this.log('System', '🔌 WebSocket: Binary QLoRA streaming with real-time compression', 'magenta');
+    this.log(
+      'System',
+      '📋 Services: Docker Stack + CUDA + Frontend + Ollama + Redis-GPU Pipeline',
+      'white'
+    );
+    this.log(
+      'System',
+      '🔌 WebSocket: Binary QLoRA streaming with real-time compression',
+      'magenta'
+    );
     this.log('System', '⚡ Redis-GPU: Legal AI pipeline with RTX 3060 Ti acceleration', 'blue');
 
     try {
@@ -705,6 +818,16 @@ class DevFullManager {
       this.startGPUCluster(); // Don't await - runs continuously
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Give it time to initialize
 
+      // 5. MCP Multi-Core Server (AI Integration layer)
+      this.log('System', '🚀 Step 3: Starting MCP Multi-Core Server...', 'magenta');
+      try {
+        await this.startMCPServer();
+        this.log('System', '✅ MCP server with 4 workers ready', 'green');
+      } catch (error) {
+        this.log('System', `⚠️  MCP server issue: ${error.message}`, 'yellow');
+        this.log('System', '💡 Continuing without MCP multi-core features', 'cyan');
+      }
+
       await this.startFrontend();
 
       this.log('System', '✅ All services started successfully!', 'green');
@@ -744,6 +867,8 @@ class DevFullManager {
       );
       this.log('System', '🔗 Redis-GPU Bridge: Active (job queue processing)', 'blue');
       this.log('System', '⚡ GPU Cluster: Legal AI pipeline running', 'magenta');
+      this.log('System', '🚀 MCP Server: http://localhost:3001/mcp/health (4 workers)', 'magenta');
+      this.log('System', '📊 MCP Metrics: http://localhost:3001/mcp/metrics', 'blue');
       this.log('System', '', 'white');
       this.log('System', '🐳 Docker Services:', 'cyan');
       this.log('System', '🐘 PostgreSQL: http://localhost:5433 (legal-ai-postgres)', 'blue');

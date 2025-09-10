@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-  /**
+	/**
 	 * Enhanced MCP Integration Demo Page
 	 * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit
 	 */
@@ -443,7 +442,7 @@ let passedTests = $state(0);
 
 	.status-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr);
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 		gap: 1rem;
 	}
 

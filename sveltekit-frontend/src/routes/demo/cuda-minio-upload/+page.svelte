@@ -1,6 +1,5 @@
 <!-- Demo page for Enhanced MinIO Drag-and-Drop with CUDA acceleration -->
 <script lang="ts">
-</script>
   import EnhancedMinIODragDrop from '$lib/components/upload/EnhancedMinIODragDrop.svelte';
   import { onMount } from 'svelte';
   

@@ -3,13 +3,12 @@
   Showcases the complete Evidence Canvas with YoRHa integration
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import UnifiedCanvasIntegration from '$lib/components/canvas/UnifiedCanvasIntegration.svelte';
   import {
     Button
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   
   let caseId = 'demo-case-001';
   let unifiedCanvas: any;
@@ -334,7 +333,7 @@
   
   .demo-features {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     padding: 2rem;
     background: rgba(0, 0, 0, 0.5);

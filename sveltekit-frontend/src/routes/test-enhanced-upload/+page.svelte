@@ -3,7 +3,6 @@
   Tests the new Superforms-powered upload component with enhanced processing
 -->
 <script lang="ts">
-</script>
   import EnhancedLegalUpload from '$lib/components/upload/EnhancedLegalUpload.svelte';
   import { onMount } from 'svelte';
   import type { PageData } from './$types.js';
