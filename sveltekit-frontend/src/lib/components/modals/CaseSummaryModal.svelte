@@ -180,7 +180,7 @@ let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" 
           <div class="space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-semibold">Overview</h3>
-              <Button class="bits-btn bits-btn" on:onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
+              <Button class="bits-btn" on:onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
                 <Sparkles class="w-4 h-4 mr-2" /> Regenerate
               </Button>
             </div>
@@ -249,3 +249,4 @@ let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" 
 {/if}
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

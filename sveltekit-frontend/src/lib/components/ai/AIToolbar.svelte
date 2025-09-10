@@ -234,7 +234,7 @@
               {disabled}
               class="pl-10" />
           </div>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             on:onclick={performAISearch}
             disabled={disabled || isAISearching || !aiSearchQuery.trim()}
             size="sm">
@@ -350,13 +350,13 @@
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
-      <Button class="bits-btn bits-btn" variant="outline" on:onclick={clearResults} size="sm">Clear All Results</Button>
+      <Button class="bits-btn" variant="outline" on:onclick={clearResults} size="sm">Clear All Results</Button>
     </div>
   {/if}
 
   <!-- Quick Actions -->
   <div class="flex flex-wrap gap-2 justify-center">
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant="outline"
       size="sm"
       on:onclick={() => {
@@ -367,7 +367,7 @@
       <Bot class="h-3 w-3 mr-1" />
       Murder Laws
     </Button>
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant="outline"
       size="sm"
       on:onclick={() => {
@@ -378,7 +378,7 @@
       <MessageSquare class="h-3 w-3 mr-1" />
       Contract Elements
     </Button>
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant="outline"
       size="sm"
       on:onclick={() => {
@@ -397,4 +397,5 @@
     @apply text-sm leading-relaxed mb-2 last:mb-0;
   }
 </style>
+
 

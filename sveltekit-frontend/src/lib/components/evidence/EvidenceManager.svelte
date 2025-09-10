@@ -360,7 +360,7 @@
             <p class="text-lg mb-2">Drop files here or click to browse</p>
             <p class="text-sm text-gray-600 mb-4">Supports PDFs, images, documents, and more</p>
             
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               onclick={() => fileInput?.click()}
               disabled={loading.upload}
             >
@@ -393,7 +393,7 @@
             class="flex-1 px-3 py-2 border rounded-lg"
             onkeydown={(e) => e.key === 'Enter' && performSemanticSearch()}
           />
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             onclick={performSemanticSearch}
             disabled={loading.search || !searchQuery.trim()}
           >
@@ -405,7 +405,7 @@
           <div class="search-results">
             <div class="flex justify-between items-center mb-4">
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 onclick={() => { showSearchResults = false; searchResults = []; }}
                 variant="outline"
                 class="text-sm"
@@ -524,7 +524,7 @@
         <div class="flex-1">
           <h4 class="font-medium text-red-800">Error</h4>
           <p class="text-red-700 text-sm mt-1">{error}</p>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             onclick={() => { error = ''; }}
             variant="outline"
             class="mt-2 text-sm"

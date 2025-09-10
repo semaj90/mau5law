@@ -346,7 +346,7 @@ let aVal = $state<any, bVal: any;
 
   <!-- Action Buttons -->
   <div class="mx-auto px-4 max-w-7xl">
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant="ghost"
       size="sm"
       on:onclick={() => evidenceStore.undo()}
@@ -356,7 +356,7 @@ let aVal = $state<any, bVal: any;
       <Undo2 class="mx-auto px-4 max-w-7xl" />
     </Button>
 
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant="ghost"
       size="sm"
       on:onclick={() => evidenceStore.redo()}
@@ -366,7 +366,7 @@ let aVal = $state<any, bVal: any;
       <Redo2 class="mx-auto px-4 max-w-7xl" />
     </Button>
 
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant="ghost"
       size="sm"
       on:onclick={() => syncWithServer()}
@@ -444,7 +444,7 @@ let aVal = $state<any, bVal: any;
           <option value="relevance">Relevance</option>
         </select>
 
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="ghost"
           size="sm"
           on:onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
@@ -461,7 +461,7 @@ let aVal = $state<any, bVal: any;
     <!-- Right: View and Actions -->
     <div class="mx-auto px-4 max-w-7xl">
       <!-- View Mode Toggle -->
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="ghost"
         size="sm"
         on:onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
@@ -475,11 +475,11 @@ let aVal = $state<any, bVal: any;
 
       <!-- Selection Actions -->
       {#if selectedEvidence.size > 0}
-        <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => clearSelection()}>
+        <Button class="bits-btn" variant="outline" size="sm" on:onclick={() => clearSelection()}>
           Clear ({selectedEvidence.size})
         </Button>
 
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="danger"
           size="sm"
           on:onclick={() => {
@@ -492,13 +492,13 @@ let aVal = $state<any, bVal: any;
           Delete
         </Button>
       {:else}
-        <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => selectAll()}>
+        <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => selectAll()}>
           Select All
         </Button>
       {/if}
 
       <!-- Add Evidence -->
-      <Button class="bits-btn bits-btn" on:onclick={() => createEvidence()}>
+      <Button class="bits-btn" on:onclick={() => createEvidence()}>
         <span class="mx-auto px-4 max-w-7xl">+</span>
         Add Evidence
       </Button>
@@ -529,7 +529,7 @@ let aVal = $state<any, bVal: any;
             ? "No evidence matches your current filters."
             : "No evidence has been added yet."}
         </p>
-        <Button class="bits-btn bits-btn" on:onclick={() => createEvidence()}>Add First Evidence</Button>
+        <Button class="bits-btn" on:onclick={() => createEvidence()}>Add First Evidence</Button>
       </div>
     </div>
   {:else}
@@ -566,7 +566,7 @@ let aVal = $state<any, bVal: any;
                   </span>
                 {/if}
 
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   on:onclick={() => (editingEvidence = item.id)}
@@ -574,7 +574,7 @@ let aVal = $state<any, bVal: any;
                   <Eye class="mx-auto px-4 max-w-7xl" />
                 </Button>
 
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   on:onclick={() => deleteEvidence(item.id)}
@@ -599,7 +599,7 @@ let aVal = $state<any, bVal: any;
                   placeholder="Description"
                 ></textarea>
                 <div class="mx-auto px-4 max-w-7xl">
-                  <Button class="bits-btn bits-btn"
+                  <Button class="bits-btn"
                     size="sm"
                     on:onclick={() =>
                       updateEvidence(item.id, {
@@ -609,7 +609,7 @@ let aVal = $state<any, bVal: any;
                   >
                     Save
                   </Button>
-                  <Button class="bits-btn bits-btn"
+                  <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
                     on:onclick={() => (editingEvidence = null)}
@@ -751,14 +751,14 @@ let aVal = $state<any, bVal: any;
                   class="mx-auto px-4 max-w-7xl"
                 >
                   <div class="mx-auto px-4 max-w-7xl">
-                    <Button class="bits-btn bits-btn"
+                    <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
                       on:onclick={() => (editingEvidence = item.id)}
                     >
                       <Eye class="mx-auto px-4 max-w-7xl" />
                     </Button>
-                    <Button class="bits-btn bits-btn"
+                    <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
                       on:onclick={() => deleteEvidence(item.id)}
@@ -785,7 +785,7 @@ let aVal = $state<any, bVal: any;
         </div>
 
         <div class="mx-auto px-4 max-w-7xl">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             disabled={currentPage === 0}
@@ -798,7 +798,7 @@ let aVal = $state<any, bVal: any;
             Page {currentPage + 1} of {totalPages}
           </span>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             disabled={currentPage >= totalPages - 1}
@@ -831,3 +831,4 @@ let aVal = $state<any, bVal: any;
 </style>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

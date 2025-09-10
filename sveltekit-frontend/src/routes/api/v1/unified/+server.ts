@@ -5,7 +5,9 @@ import type { RequestHandler } from './$types.js';
  * Central API endpoint that orchestrates all backend services
  */
 
-import { redisServiceServiceService } from '$lib/server/redisServiceService-service';
+// NOTE: Previous code referenced a non-existent "redisServiceServiceService" due to a copy/paste/rename error.
+// We standardize on the primary redisService singleton.
+import { redisService } from '$lib/server/redis-service';
 import { minioService } from '$lib/server/storage/minio-service';
 import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service';
 import { workflowOrchestrator } from '$lib/machines/workflow-machine';
@@ -57,14 +59,20 @@ export const GET: RequestHandler = async ({ url }) => {
         const healthStatus = {
           status: 'healthy',
           services: {
-            redisServiceService: { status: 'healthy', connected: true },
+            redis: {
+              status: redisService.isHealthy() ? 'healthy' : 'unhealthy',
+              connected: redisService.isHealthy(),
+            },
             minio: { status: 'healthy', initialized: true },
             rabbitmq: { status: 'healthy', connected: true },
             postgresql: { status: 'healthy', connected: true },
-            xstate: { status: 'healthy', workflows: workflowOrchestrator.getActiveWorkflowsCount() }
+            xstate: {
+              status: 'healthy',
+              workflows: workflowOrchestrator.getActiveWorkflowsCount(),
+            },
           },
           uptime: process.uptime(),
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
         return json(createResponse(true, healthStatus, undefined, {
@@ -88,10 +96,12 @@ export const GET: RequestHandler = async ({ url }) => {
           total: 2
         };
 
-        return json(createResponse(true, searchResults, undefined, {
-          executionTime: Date.now() - startTime,
-          servicesUsed: ['postgresql', 'redisServiceService']
-        }));
+        return json(
+          createResponse(true, searchResults, undefined, {
+            executionTime: Date.now() - startTime,
+            servicesUsed: ['postgresql', 'redis'],
+          })
+        );
 
       default:
         return json(createResponse(false, null, `Unknown action: ${action}`));
@@ -125,10 +135,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
           caseId
         };
 
-        return json(createResponse(true, ragResponse, undefined, {
-          executionTime: Date.now() - startTime,
-          servicesUsed: ['postgresql', 'redisServiceService', 'rabbitmq']
-        }));
+        return json(
+          createResponse(true, ragResponse, undefined, {
+            executionTime: Date.now() - startTime,
+            servicesUsed: ['postgresql', 'redis', 'rabbitmq'],
+          })
+        );
 
       case 'upload':
         const uploadResult = {

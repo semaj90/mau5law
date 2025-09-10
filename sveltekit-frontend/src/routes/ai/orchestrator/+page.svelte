@@ -343,7 +343,7 @@ Showcases the service worker-based AI orchestration system
               {/if}
             </Button>
 
-            <Button class="bits-btn bits-btn" variant="outline" onclick={clearResults}>
+            <Button class="bits-btn" variant="outline" onclick={clearResults}>
               <RotateCcw class="h-4 w-4" />
             </Button>
           </div>
@@ -359,7 +359,7 @@ Showcases the service worker-based AI orchestration system
               Task Results ({demoResults.length})
             </span>
             {#if demoResults.length > 0}
-              <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={clearResults}>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
                 Clear
               </Button>
             {/if}

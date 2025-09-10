@@ -66,7 +66,7 @@
 </script>
 
 <!-- Wrap in Bits-UI if desired:
-<Button class="bits-btn bits-btn"Primitive.Root asChild> -->
+<Button class="bits-btn"Primitive.Root asChild> -->
 <button
   class={buttonClass}
   disabled={isDisabled}
@@ -107,3 +107,4 @@
     transform: translateY(0);
   }
 </style>
+

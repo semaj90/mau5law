@@ -195,7 +195,7 @@ Timestamp: ${new Date().toISOString()}`;
           <div class="mx-auto px-4 max-w-7xl">
             <div class="mx-auto px-4 max-w-7xl">
               <span class="mx-auto px-4 max-w-7xl">Technical Details</span>
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
                 on:onclick={() => copyErrorDetails()}
@@ -233,7 +233,7 @@ Timestamp: ${new Date().toISOString()}`;
         {/if}
 
         {#if currentError.showDetails}
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             size="sm"
             variant="ghost"
             on:onclick={() => (showDetails = !showDetails)}
@@ -247,7 +247,7 @@ Timestamp: ${new Date().toISOString()}`;
           </Button>
         {/if}
 
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           size="sm"
           variant="ghost"
           on:onclick={() => clearError()}
@@ -289,7 +289,7 @@ Timestamp: ${new Date().toISOString()}`;
               <div class="mx-auto px-4 max-w-7xl">
                 <div class="mx-auto px-4 max-w-7xl">
                   <h4 class="mx-auto px-4 max-w-7xl">Technical Details</h4>
-                  <Button class="bits-btn bits-btn"
+                  <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
                     on:onclick={() => copyErrorDetails()}
@@ -312,7 +312,7 @@ Timestamp: ${new Date().toISOString()}`;
 
         <div class="mx-auto px-4 max-w-7xl">
           {#if currentError.severity === "critical" || currentError.severity === "error"}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="outline"
               size="sm"
               on:onclick={() => reportError()}
@@ -324,7 +324,7 @@ Timestamp: ${new Date().toISOString()}`;
           {/if}
 
           {#if currentError.showDetails}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="outline"
               size="sm"
               on:onclick={() => (showDetails = !showDetails)}
@@ -356,7 +356,7 @@ Timestamp: ${new Date().toISOString()}`;
             </Button>
           {/if}
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant={currentError.canRetry ? "outline" : "default"}
             on:onclick={() => clearError()}
           >
@@ -369,3 +369,4 @@ Timestamp: ${new Date().toISOString()}`;
 {/if}
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

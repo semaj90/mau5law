@@ -138,3 +138,4 @@ let linkLines = $state<THREE.Line[] >([]);
 <style>
   :global(body) { font-family: system-ui, sans-serif; }
 </style>
+

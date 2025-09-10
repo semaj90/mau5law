@@ -68,3 +68,4 @@ let interval = $state<any;
   .alerts-panel [data-severity="info"] { border-color: #3b82f6; }
   .sustained-breach { background:#dc2626; color:#fff; }
 </style>
+

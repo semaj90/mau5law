@@ -209,7 +209,7 @@
       <div class="flex flex-wrap gap-2">
         <span class="text-sm text-muted-foreground">Try:</span>
         {#each ["property ownership transfer", "contract liability clauses", "employment agreements", "intellectual property rights"] as example}
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => { query = example; }}
@@ -349,7 +349,7 @@
           </p>
         </div>
         <div class="flex justify-center">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             onclick={() => { results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 }; }}
           >
@@ -368,7 +368,7 @@
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           {selectedResult.title}
-          <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={() => selectedResult = null}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => selectedResult = null}>
             ×
           </Button>
         </CardTitle>

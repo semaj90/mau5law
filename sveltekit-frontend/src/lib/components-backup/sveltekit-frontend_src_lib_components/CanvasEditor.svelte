@@ -899,3 +899,4 @@
 		.citation-panel {
 			display: none }}
 </style>
+

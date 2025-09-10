@@ -272,7 +272,7 @@
             </div>
           </div>
           
-          <Button class="bits-btn bits-btn" onclick={runSystemBenchmark} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={runSystemBenchmark} variant="outline" size="sm">
             🧪 Run Benchmark
           </Button>
         </div>

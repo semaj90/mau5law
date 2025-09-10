@@ -12,15 +12,44 @@
    */
 
   import { createActor } from 'xstate';
-  import { evidenceProcessingMachine, type EvidenceProcessingContext, getProcessingProgress, getCurrentStep } from '$lib/state/evidence-processing-machine.js';
+  import { evidenceProcessingMachine, type EvidenceProcessingContext, getProcessingProgress, getCurrentStep } from '$lib/state/evidence-processing-machine.ts';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import Button from '$lib/components/ui/button';
+  } from '$lib/ui/card.svelte';
+  import Button from '$lib/ui/button.svelte';
   import { onMount, onDestroy } from 'svelte';
+
+  // Explicit actor snapshot typing to satisfy accesses to currentState.context / matches
+  interface StreamingUpdate {
+    step: string;
+    status: 'pending' | 'in_progress' | 'completed' | 'error';
+    progress?: number;
+    message?: string;
+  }
+
+  interface PortableArtifactInfo {
+    enhancedPngUrl: string;
+    compressionRatio?: number;
+  }
+
+  interface MinioStorageInfo {
+    storageUrl: string;
+  }
+
+  interface EvidenceActorState {
+    context: EvidenceProcessingContext & {
+      streamingUpdates?: StreamingUpdate[];
+      errors: string[];
+      portableArtifact?: PortableArtifactInfo;
+      minioStorage?: MinioStorageInfo;
+      processingTimeMs?: number;
+    };
+    value: string;
+    matches: (state: string) => boolean;
+  }
 
   interface Props {
     evidenceId?: string;
@@ -44,7 +73,15 @@
 
   // xState actor for client-side state management
   let actor = $state(createActor(evidenceProcessingMachine));
-  let currentState = $state(actor.getSnapshot());
+  let currentState = $state<EvidenceActorState>({
+    ...actor.getSnapshot(),
+    context: {
+      ...actor.getSnapshot().context,
+      streamingUpdates: [],
+      errors: [],
+      processingTimeMs: 0
+    }
+  } as unknown as EvidenceActorState);
   let eventSource: EventSource | null = $state(null);
 
   // UI state
@@ -57,9 +94,21 @@
     target_compression_ratio: 50
   });
 
-  // Reactive values
-  let progress = $derived(getProcessingProgress(currentState.context));
-  let currentStep = $derived(getCurrentStep(currentState.context));
+  // Reactive values with safe fallbacks
+  let progress = $derived(() => {
+    try {
+      return getProcessingProgress(currentState.context) || 0;
+    } catch (e) {
+      return 0;
+    }
+  });
+  let currentStep = $derived(() => {
+    try {
+      return getCurrentStep(currentState.context) || 'idle';
+    } catch (e) {
+      return 'idle';
+    }
+  });
   let isProcessing = $derived(
     currentState.matches('uploading') ||
     currentState.matches('analyzing') ||
@@ -77,18 +126,20 @@
     actor.start();
 
     // Subscribe to state changes
-    const subscription = actor.subscribe((state) => {
+    const subscription = actor.subscribe((state: any) => {
+      // Cast to typed snapshot shape
+      const typed = state as EvidenceActorState;
       currentState = state;
 
       // Handle completion
-      if (state.matches('completed')) {
-        onCompleted?.(state.context);
+      if (typed.matches('completed')) {
+        onCompleted?.(typed.context);
         disconnectStream();
       }
 
       // Handle errors
-      if (state.matches('error')) {
-        onError?.(state.context.errors.join(', '));
+      if (typed.matches('error')) {
+        onError?.(typed.context.errors.join(', '));
       }
     });
 
@@ -306,7 +357,7 @@
         </div>
 
         {#if !isProcessing && !isCompleted}
-          <Button class="bits-btn bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
             Change File
           </Button>
         {/if}
@@ -403,7 +454,7 @@
 
         <!-- Current Step Display -->
         <div class="space-y-2">
-          {#each currentState.context.streamingUpdates as update}
+          {#each (currentState.context.streamingUpdates || []) as update}
             <div class="flex items-center justify-between text-sm">
               <div class="flex items-center gap-2">
                 {#if update.status === 'completed'}
@@ -429,7 +480,7 @@
 
         {#if canCancel}
           <div class="flex justify-center">
-            <Button class="bits-btn bits-btn" onclick={cancelProcessing} variant="outline">
+            <Button class="bits-btn" onclick={cancelProcessing} variant="outline">
               Cancel Processing
             </Button>
           </div>
@@ -445,15 +496,15 @@
           <h3 class="font-medium text-red-800">Processing Error</h3>
         </div>
         <div class="space-y-1">
-          {#each currentState.context.errors as error}
+          {#each (currentState.context.errors || []) as error}
             <p class="text-sm text-red-700">{error}</p>
           {/each}
         </div>
         <div class="flex gap-2 mt-3">
-          <Button class="bits-btn bits-btn" onclick={retryProcessing} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={retryProcessing} variant="outline" size="sm">
             Retry
           </Button>
-          <Button class="bits-btn bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
             Reset
           </Button>
         </div>
@@ -467,7 +518,7 @@
           <div class="text-4xl">🎉</div>
           <h3 class="text-lg font-medium text-green-800">Processing Complete!</h3>
           <p class="text-sm text-green-700">
-            Evidence processed successfully in {Math.round(currentState.context.processingTimeMs / 1000)}s
+            Evidence processed successfully in {Math.round((currentState.context.processingTimeMs || 0) / 1000)}s
           </p>
 
           <!-- Results Display -->
@@ -475,14 +526,14 @@
             <div class="space-y-3">
               <div class="flex items-center justify-center gap-4">
                 <Button class="bits-btn px-4 py-2"
-                  onclick={() => window.open(currentState.context.portableArtifact.enhancedPngUrl, '_blank')}
+                  onclick={() => window.open(currentState.context.portableArtifact?.enhancedPngUrl, '_blank')}
                 >
                   📦 Download Portable Artifact
                 </Button>
 
                 {#if currentState.context.minioStorage}
-                  <Button class="bits-btn bits-btn"
-                    onclick={() => window.open(currentState.context.minioStorage.storageUrl, '_blank')}
+                  <Button class="bits-btn"
+                    onclick={() => window.open(currentState.context.minioStorage?.storageUrl, '_blank')}
                     variant="outline"
                   >
                     🗄️ View in Archive
@@ -491,7 +542,7 @@
               </div>
 
               <!-- Neural Sprite Results -->
-              {#if currentState.context.portableArtifact.compressionRatio}
+              {#if currentState.context.portableArtifact?.compressionRatio}
                 <div class="text-sm text-gray-600">
                   Neural Sprite Compression: {currentState.context.portableArtifact.compressionRatio}:1 ratio
                 </div>
@@ -499,7 +550,7 @@
             </div>
           {/if}
 
-          <Button class="bits-btn bits-btn" onclick={resetWorkflow} variant="outline">
+          <Button class="bits-btn" onclick={resetWorkflow} variant="outline">
             Process Another Evidence
           </Button>
         </div>
@@ -513,7 +564,7 @@
           <span class="text-2xl">⏸️</span>
           <h3 class="font-medium text-yellow-800">Processing Cancelled</h3>
           <p class="text-sm text-yellow-700">Workflow was cancelled by user</p>
-          <Button class="bits-btn bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
             Start New Workflow
           </Button>
         </div>

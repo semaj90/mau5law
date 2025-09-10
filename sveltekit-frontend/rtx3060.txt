@@ -108,7 +108,7 @@ RTX Enhanced System Startup (scripts/rtx-enhanced-system-startup.mjs)
 Frontend (SvelteKit):     http://localhost:5173  ✅
 MCP Context7 Server:      http://localhost:8777  ✅
 PostgreSQL Database:      postgresql://localhost:5432  ✅
-Redis Cache:              redis://localhost:4005  ✅
+Redis Cache:              redis://localhost:6379  ✅
 
 # Concurrency Settings
 Max Parallel Services:    8 (matches CPU cores)

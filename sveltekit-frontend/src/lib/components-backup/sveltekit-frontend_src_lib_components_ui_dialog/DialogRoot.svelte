@@ -37,3 +37,4 @@
 {#if children}
   {@render children({ trigger, overlay, content, title, description, close, openState })}
 {/if}
+

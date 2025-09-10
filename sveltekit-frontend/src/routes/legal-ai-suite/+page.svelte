@@ -639,3 +639,4 @@ let loggingInterval = $state<number | null >(null);
     background: #a8a8a8;
   }
 </style>
+

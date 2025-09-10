@@ -133,7 +133,7 @@ let showCorrections = $state(false);
           </DialogPrimitive.Description>
         </div>
         <DialogPrimitive.Close let:builder>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             {...builder}
             variant="ghost"
             size="sm"
@@ -331,7 +331,7 @@ let showCorrections = $state(false);
                     keydown={(e) =>
                       e.key === "Enter" && (e.preventDefault(), addTag())}
                   />
-                  <Button class="bits-btn bits-btn"
+                  <Button class="bits-btn"
                     type="button"
                     variant="secondary"
                     size="sm"
@@ -347,7 +347,7 @@ let showCorrections = $state(false);
 
         <!-- Footer -->
         <div class="space-y-4">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             on:onclick={() => closeModal()}
             disabled={isSubmitting}
@@ -355,7 +355,7 @@ let showCorrections = $state(false);
             Cancel
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             on:onclick={() => submitValidation()}
             disabled={!validationChoice || isSubmitting}
             class="space-y-4"
@@ -375,3 +375,4 @@ let showCorrections = $state(false);
     </div>
   </DialogPrimitive.Content>
 </DialogPrimitive.Root>
+

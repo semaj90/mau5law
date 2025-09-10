@@ -130,7 +130,7 @@ async function makeServiceRequest(
   if ('tier' in serviceConfig && serviceConfig.tier === 'ULTRA_FAST' && 'quic' in serviceConfig) {
     // Attempt QUIC first for ultra-fast services
     baseUrl = `http://${serviceConfig.quic}`;
-  } else if ('grpc' in serviceConfig && serviceConfig.tier === 'HIGH_PERF') {
+  } else if ('grpc' in serviceConfig && 'tier' in serviceConfig && serviceConfig.tier === 'HIGH_PERF') {
     // Use gRPC for high-performance services
     baseUrl = `http://${serviceConfig.grpc}`;
   } else if ('http' in serviceConfig) {
@@ -227,7 +227,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
         processingTimeMs: Date.now() - started
       }
-    } satisfies APIResponse, { status: 500 });
+    } satisfies APIResponse<any>, { status: 500 });
   }
 };
 

@@ -32,3 +32,4 @@
 <div class="theme-provider {theme}">
   <slot />
 </div>
+

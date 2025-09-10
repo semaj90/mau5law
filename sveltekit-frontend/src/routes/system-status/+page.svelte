@@ -170,21 +170,21 @@
         <CardContent>
           {#snippet children()}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Button class="bits-btn bits-btn" onclick={runAllTests} disabled={isRunning} variant="default">
+              <Button class="bits-btn" onclick={runAllTests} disabled={isRunning} variant="default">
                 {#snippet children()}
                   {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
                 {/snippet}
               </Button>
 
-              <Button class="bits-btn bits-btn" onclick={createDevSession} variant="outline">
+              <Button class="bits-btn" onclick={createDevSession} variant="outline">
                 {#snippet children()}🔑 Create Dev Session{/snippet}
               </Button>
 
-              <Button class="bits-btn bits-btn" onclick={checkAuthStatus} variant="outline">
+              <Button class="bits-btn" onclick={checkAuthStatus} variant="outline">
                 {#snippet children()}👤 Check Auth Status{/snippet}
               </Button>
 
-              <Button class="bits-btn bits-btn" onclick={clearSession} variant="destructive">
+              <Button class="bits-btn" onclick={clearSession} variant="destructive">
                 {#snippet children()}🚪 Clear Session{/snippet}
               </Button>
             </div>

@@ -89,7 +89,7 @@ let isTestingRoutes = $state(false);
   </div>
 
   <div class="flex justify-center gap-4">
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       onclick={runAllRouteTests}
       disabled={isTestingRoutes}
       variant="default"
@@ -97,7 +97,7 @@ let isTestingRoutes = $state(false);
       {isTestingRoutes ? '🔄 Testing...' : '🚀 Test All Routes'}
     </Button>
 
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       onclick={() => window.location.href = '/test'}
       variant="outline"
     >

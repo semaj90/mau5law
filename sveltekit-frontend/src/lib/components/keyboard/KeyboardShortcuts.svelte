@@ -551,7 +551,7 @@
             spellcheck="false"
             aria-label="Command search"
           />
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             on:onclick={() => (open = false)}
@@ -867,3 +867,4 @@
       transition: none;
 }}
 </style>
+

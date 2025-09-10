@@ -324,7 +324,7 @@
             <div class="flex items-center justify-between">
               <CardTitle>💬 AI Assistant Chat</CardTitle>
               <div class="flex gap-2">
-                <Button class="bits-btn bits-btn" 
+                <Button class="bits-btn" 
                   variant="outline" 
                   size="sm"
                   onclick={clearChat}
@@ -398,28 +398,28 @@
                   <p class="text-lg mb-2">👋 Welcome to the GPU Inference Demo!</p>
                   <p>Ask me anything about legal analysis, contracts, or test the AI engines.</p>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 max-w-md mx-auto">
-                    <Button class="bits-btn bits-btn" 
+                    <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
                       onclick={() => currentInput = "Analyze the key elements of a valid contract"}
                     >
                       📝 Contract Analysis
                     </Button>
-                    <Button class="bits-btn bits-btn" 
+                    <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
                       onclick={() => currentInput = "What are common legal risks in mergers?"}
                     >
                       ⚖️ Legal Risks
                     </Button>
-                    <Button class="bits-btn bits-btn" 
+                    <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
                       onclick={() => currentInput = "Test GPU performance with vector embeddings"}
                     >
                       🎮 GPU Test
                     </Button>
-                    <Button class="bits-btn bits-btn" 
+                    <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
                       onclick={() => currentInput = "Compare different AI engines"}

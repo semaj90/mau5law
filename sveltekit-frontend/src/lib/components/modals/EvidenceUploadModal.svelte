@@ -66,7 +66,7 @@ let dragActive = $state(false);
           <Upload class="container mx-auto px-4" />
           <h2 class="container mx-auto px-4">Upload Evidence</h2>
         </div>
-        <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => closeModal()}>
+        <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => closeModal()}>
           <X class="container mx-auto px-4" />
         </Button>
       </div>
@@ -94,7 +94,7 @@ let dragActive = $state(false);
           <p id="evidence-dropzone-instructions" class="container mx-auto px-4">
             Support for images, documents, audio, and video files
           </p>
-          <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => fileInput?.click()}>
+          <Button class="bits-btn" variant="outline" on:onclick={() => fileInput?.click()}>
             Choose Files
           </Button>
           <input
@@ -166,7 +166,7 @@ let dragActive = $state(false);
                     </div>
 
                     <div class="container mx-auto px-4">
-                      <Button class="bits-btn bits-btn"
+                      <Button class="bits-btn"
                         variant="ghost"
                         size="sm"
                         on:onclick={() => removeFile(file.id)}
@@ -199,12 +199,12 @@ let dragActive = $state(false);
         </div>
 
         <div class="container mx-auto px-4">
-          <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => closeModal()}>
+          <Button class="bits-btn" variant="outline" on:onclick={() => closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
           </Button>
 
           {#if completedUploads.length > 0}
-            <Button class="bits-btn bits-btn" on:onclick={() => dispatch("viewEvidence", completedUploads)}>
+            <Button class="bits-btn" on:onclick={() => dispatch("viewEvidence", completedUploads)}>
               View Evidence
             </Button>
           {/if}
@@ -213,5 +213,6 @@ let dragActive = $state(false);
     </div>
   </div>
 {/if}
+
 
 

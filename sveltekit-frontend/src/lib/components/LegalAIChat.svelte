@@ -69,9 +69,10 @@
     </div>
     <div class="flex space-x-2">
       <Input bind:value={input} placeholder="Legal question..." keydown={(e) => e.key === 'Enter' && sendMessage()} />
-      <Button class="bits-btn bits-btn" on:onclick={sendMessage} disabled={isLoading}>Send</Button>
+      <Button class="bits-btn" on:onclick={sendMessage} disabled={isLoading}>Send</Button>
     </div>
   </CardContent>
 </Card>
+
 
 

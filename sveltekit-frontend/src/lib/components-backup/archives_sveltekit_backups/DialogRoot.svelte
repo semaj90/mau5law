@@ -26,3 +26,4 @@
 </script>
 
 <slot {trigger} {overlay} {content} {title} {description} {close} {openState} />
+

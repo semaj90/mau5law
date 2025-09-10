@@ -445,7 +445,7 @@ let suggestionLoading = $state<Record<string, boolean> >({});
 					</div>
 
 					<div class="flex items-center space-x-3">
-						<Button class="bits-btn bits-btn"
+						<Button class="bits-btn"
 							variant="outline"
 							on:onclick={() => {
 								populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
@@ -475,7 +475,7 @@ let suggestionLoading = $state<Record<string, boolean> >({});
 				<CardTitle class="flex items-center space-x-2">
 					<span>🔍</span>
 					<span>Extracted Data</span>
-					<Button class="bits-btn bits-btn"
+					<Button class="bits-btn"
 						variant="ghost"
 						size="sm"
 						on:onclick={() => showPreview = !showPreview}
@@ -522,3 +522,4 @@ let suggestionLoading = $state<Record<string, boolean> >({});
 	}
 </style>
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

@@ -1005,3 +1005,4 @@ let extractedText = $state('');
 </style>
 
 <!-- SimpleFileUpload component - Svelte 5 compatible -->
+

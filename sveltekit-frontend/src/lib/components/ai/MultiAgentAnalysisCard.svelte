@@ -230,7 +230,7 @@ let showDetails = $state(false);
 
     <!-- Action Buttons -->
     <div class="flex items-center gap-3 pt-4 border-t">
-      <Button class="bits-btn bits-btn" 
+      <Button class="bits-btn" 
         variant="outline" 
         size="sm"
         on:onclick={() => showDetails = !showDetails}
@@ -238,15 +238,15 @@ let showDetails = $state(false);
         {showDetails ? 'Hide' : 'Show'} Full Analysis
       </Button>
       
-      <Button class="bits-btn bits-btn" variant="outline" size="sm">
+      <Button class="bits-btn" variant="outline" size="sm">
         📊 View Timeline
       </Button>
       
-      <Button class="bits-btn bits-btn" variant="outline" size="sm">
+      <Button class="bits-btn" variant="outline" size="sm">
         🕸️ Relationship Graph  
       </Button>
       
-      <Button class="bits-btn bits-btn" size="sm">
+      <Button class="bits-btn" size="sm">
         📝 Generate Report
       </Button>
     </div>

@@ -48,22 +48,34 @@ export class GlobalLokiStore {
     if (this.redis) {
       try {
         // Create subscriber connection (Redis clients can't pub/sub on same connection)
-        this.subscriber = this.redis.duplicate();
-        await this.subscriber.connect();
+        this.subscriber = (this.redis as any).duplicate
+          ? (this.redis as any).duplicate()
+          : undefined;
+        if (this.subscriber && typeof (this.subscriber as any).connect === 'function') {
+          try {
+            await (this.subscriber as any).connect();
+          } catch {}
+        }
 
-        // Subscribe to job updates from other workers
-        await this.subscriber.subscribe(this.pubsubChannel);
+        // Subscribe to job updates from other workers (defensive)
+        if (this.subscriber && typeof (this.subscriber as any).subscribe === 'function') {
+          try {
+            await (this.subscriber as any).subscribe(this.pubsubChannel);
+          } catch {}
+        }
 
-        this.subscriber.on('message', (channel: string, message: string) => {
-          if (channel === this.pubsubChannel) {
-            try {
-              const update = JSON.parse(message) as JobState;
-              this.applyRemoteUpdate(update);
-            } catch (e) {
-              console.warn('Failed to parse Redis job update:', e);
+        if (this.subscriber && typeof (this.subscriber as any).on === 'function') {
+          (this.subscriber as any).on('message', (channel: string, message: string) => {
+            if (channel === this.pubsubChannel) {
+              try {
+                const update = JSON.parse(message) as JobState;
+                this.applyRemoteUpdate(update);
+              } catch (e) {
+                console.warn('Failed to parse Redis job update:', e);
+              }
             }
-          }
-        });
+          });
+        }
 
         console.log('✅ GlobalLokiStore wired to Redis with pub/sub');
       } catch (error) {
@@ -287,7 +299,10 @@ export class GlobalLokiStore {
     if (!this.redis) return;
 
     try {
-      await this.redis.publish(this.pubsubChannel, JSON.stringify(job));
+      const r = this.redis as any;
+      if (typeof r.publish === 'function') {
+        await r.publish(this.pubsubChannel, JSON.stringify(job));
+      }
     } catch (e) {
       console.warn('Failed to broadcast job update to Redis:', e);
     }
@@ -299,7 +314,8 @@ export class GlobalLokiStore {
   async shutdown(): Promise<void> {
     if (this.subscriber) {
       try {
-        await this.subscriber.disconnect();
+        const s = this.subscriber as any;
+        if (typeof s.disconnect === 'function') await s.disconnect();
       } catch (e) {
         console.warn('Error disconnecting Redis subscriber:', e);
       }

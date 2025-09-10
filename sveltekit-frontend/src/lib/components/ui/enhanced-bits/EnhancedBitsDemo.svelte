@@ -149,10 +149,10 @@
           <div class="yorha-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Standard Variants</h3>
             <div class="space-y-3">
-              <Button class="bits-btn bits-btn" variant="default">Default Button</Button>
-              <Button class="bits-btn bits-btn" variant="primary">Primary Action</Button>
-              <Button class="bits-btn bits-btn" variant="yorha" legal>YoRHa Legal</Button>
-              <Button class="bits-btn bits-btn" variant="outline">Outline Style</Button>
+              <Button class="bits-btn" variant="default">Default Button</Button>
+              <Button class="bits-btn" variant="primary">Primary Action</Button>
+              <Button class="bits-btn" variant="yorha" legal>YoRHa Legal</Button>
+              <Button class="bits-btn" variant="outline">Outline Style</Button>
             </div>
           </div>
 
@@ -160,16 +160,16 @@
           <div class="yorha-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Legal AI Variants</h3>
             <div class="space-y-3">
-              <Button class="bits-btn bits-btn" variant="crimson" confidence="high" legal>
+              <Button class="bits-btn" variant="crimson" confidence="high" legal>
                 Critical Evidence
               </Button>
-              <Button class="bits-btn bits-btn" variant="gold" confidence="medium" legal>
+              <Button class="bits-btn" variant="gold" confidence="medium" legal>
                 Case Analysis
               </Button>
-              <Button class="bits-btn bits-btn" variant="primary" confidence="low" legal>
+              <Button class="bits-btn" variant="primary" confidence="low" legal>
                 Review Required
               </Button>
-              <Button class="bits-btn bits-btn" variant="outline" loading legal>
+              <Button class="bits-btn" variant="outline" loading legal>
                 Processing...
               </Button>
             </div>
@@ -179,17 +179,17 @@
           <div class="yorha-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Priority Actions</h3>
             <div class="space-y-3">
-              <Button class="bits-btn bits-btn" priority="critical" legal>
+              <Button class="bits-btn" priority="critical" legal>
                 <AlertTriangle class="w-4 h-4 mr-2" />
                 Critical Alert
               </Button>
-              <Button class="bits-btn bits-btn" priority="high" variant="outline">
+              <Button class="bits-btn" priority="high" variant="outline">
                 High Priority
               </Button>
-              <Button class="bits-btn bits-btn" priority="medium" variant="secondary">
+              <Button class="bits-btn" priority="medium" variant="secondary">
                 Medium Priority
               </Button>
-              <Button class="bits-btn bits-btn" priority="low" variant="ghost">
+              <Button class="bits-btn" priority="low" variant="ghost">
                 Low Priority
               </Button>
             </div>
@@ -288,15 +288,15 @@
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Button class="bits-btn bits-btn" variant="yorha" legal onclick={() => dialogOpen = true}>
+          <Button class="bits-btn" variant="yorha" legal onclick={() => dialogOpen = true}>
             Case Management
           </Button>
 
-          <Button class="bits-btn bits-btn" variant="primary" legal onclick={() => evidenceDialogOpen = true}>
+          <Button class="bits-btn" variant="primary" legal onclick={() => evidenceDialogOpen = true}>
             Evidence Upload
           </Button>
 
-          <Button class="bits-btn bits-btn" variant="outline" legal onclick={runAIAnalysis} loading={aiAnalysisLoading}>
+          <Button class="bits-btn" variant="outline" legal onclick={runAIAnalysis} loading={aiAnalysisLoading}>
             {#if aiAnalysisLoading}
               Running AI Analysis...
             {:else}
@@ -361,10 +361,10 @@
               </div>
 
               <div class="bits-dialog-footer">
-                <Button class="bits-btn bits-btn" variant="outline" onclick={() => dialogOpen = false}>
+                <Button class="bits-btn" variant="outline" onclick={() => dialogOpen = false}>
                   Cancel
                 </Button>
-                <Button class="bits-btn bits-btn" variant="primary" legal>
+                <Button class="bits-btn" variant="primary" legal>
                   Create Case
                 </Button>
               </div>
@@ -418,10 +418,10 @@
               </div>
 
               <div class="bits-dialog-footer">
-                <Button class="bits-btn bits-btn" variant="outline" onclick={() => evidenceDialogOpen = false}>
+                <Button class="bits-btn" variant="outline" onclick={() => evidenceDialogOpen = false}>
                   Cancel
                 </Button>
-                <Button class="bits-btn bits-btn" variant="primary" legal onclick={uploadEvidence} disabled={evidenceUploadProgress > 0}>
+                <Button class="bits-btn" variant="primary" legal onclick={uploadEvidence} disabled={evidenceUploadProgress > 0}>
                   Upload Evidence
                 </Button>
               </div>
@@ -518,13 +518,13 @@
               </div>
 
               <div class="flex gap-2">
-                <Button class="bits-btn bits-btn" size="sm" variant="primary">
+                <Button class="bits-btn" size="sm" variant="primary">
                   Accept Analysis
                 </Button>
-                <Button class="bits-btn bits-btn" size="sm" variant="outline">
+                <Button class="bits-btn" size="sm" variant="outline">
                   Request Review
                 </Button>
-                <Button class="bits-btn bits-btn" size="sm" variant="ghost">
+                <Button class="bits-btn" size="sm" variant="ghost">
                   Generate Report
                 </Button>
               </div>

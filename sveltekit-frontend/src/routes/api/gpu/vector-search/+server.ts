@@ -1,22 +1,23 @@
 /*
  * SvelteKit API Route: GPU-Accelerated Vector Search
- * 
+ *
  * Exposes RTX 3060 Ti CUDA vector search to the frontend
  * Integrated with NES memory architecture and legal AI processing
  */
 
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { 
-  cudaVectorService, 
-  type CUDAVectorRequest, 
+import {
+  cudaVectorService,
+  type CUDAVectorRequest,
   formatLegalSearchResults,
   createLegalSearchContext,
   cacheVectorResults,
-  getCachedVectorResults
+  getCachedVectorResults,
 } from '$lib/services/cuda-vector-integration';
 import { createHash } from 'node:crypto';
 import { dev } from '$app/environment';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 
 // Request validation schema
 interface VectorSearchAPIRequest {
@@ -110,13 +111,10 @@ function generateCacheKey(request: VectorSearchAPIRequest): string {
     query_vectors: request.query_vectors,
     database_vectors: request.database_vectors,
     config: request.search_config,
-    legal_context: request.legal_context
+    legal_context: request.legal_context,
   };
-  
-  return createHash('sha256')
-    .update(JSON.stringify(cacheData))
-    .digest('hex')
-    .substring(0, 16);
+
+  return createHash('sha256').update(JSON.stringify(cacheData)).digest('hex').substring(0, 16);
 }
 
 // POST /api/gpu/vector-search
@@ -134,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
         query_count: validatedRequest.query_vectors.length,
         vector_dim: validatedRequest.query_vectors[0]?.length,
         database_count: validatedRequest.database_vectors?.length,
-        legal_context: validatedRequest.legal_context
+        legal_context: validatedRequest.legal_context,
       });
     }
 
@@ -146,7 +144,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (useCache) {
       cacheKey = generateCacheKey(validatedRequest);
       cachedResult = await getCachedVectorResults(cacheKey);
-      
+
       if (cachedResult) {
         const response: VectorSearchAPIResponse = {
           success: true,
@@ -155,19 +153,19 @@ export const POST: RequestHandler = async ({ request }) => {
             processing_time_ms: Date.now() - startTime,
             gpu_metrics: cachedResult.gpu_metrics,
             legal_insights: cachedResult.legal_insights,
-            neural_sprites: cachedResult.results.map(r => r.neural_sprite_data).filter(Boolean),
+            neural_sprites: cachedResult.results.map((r) => r.neural_sprite_data).filter(Boolean),
             cache_info: {
               hit: true,
               key: cacheKey,
-              ttl: validatedRequest.cache_options?.cache_ttl
-            }
+              ttl: validatedRequest.cache_options?.cache_ttl,
+            },
           },
           metadata: {
             timestamp: Date.now(),
             service_version: '1.0.0',
             gpu_available: true,
-            request_id: requestId
-          }
+            request_id: requestId,
+          },
         };
 
         if (dev) {
@@ -181,10 +179,13 @@ export const POST: RequestHandler = async ({ request }) => {
     // Check GPU service health
     const isGPUHealthy = await cudaVectorService.checkHealth();
     if (!isGPUHealthy) {
-      throw error(503, {
-        message: 'GPU vector search service is unavailable',
-        code: 'GPU_SERVICE_DOWN'
-      });
+      throw error(
+        503,
+        makeHttpErrorPayload({
+          message: 'GPU vector search service is unavailable',
+          code: 'GPU_SERVICE_DOWN',
+        })
+      );
     }
 
     // Prepare CUDA request
@@ -194,15 +195,18 @@ export const POST: RequestHandler = async ({ request }) => {
       metric_type: validatedRequest.search_config?.metric_type || 'cosine',
       threshold: validatedRequest.search_config?.threshold || 0.5,
       top_k: validatedRequest.search_config?.top_k || 10,
-      batch_size: validatedRequest.search_config?.batch_size || validatedRequest.query_vectors.length,
+      batch_size:
+        validatedRequest.search_config?.batch_size || validatedRequest.query_vectors.length,
       legal_context: createLegalSearchContext(
         validatedRequest.legal_context?.case_id,
         validatedRequest.legal_context?.document_type,
         validatedRequest.legal_context?.jurisdiction,
         {
-          practice_areas: validatedRequest.legal_context?.practice_area ? [validatedRequest.legal_context.practice_area] : undefined
+          practice_areas: validatedRequest.legal_context?.practice_area
+            ? [validatedRequest.legal_context.practice_area]
+            : undefined,
         }
-      )
+      ),
     };
 
     // Execute GPU vector search
@@ -221,49 +225,51 @@ export const POST: RequestHandler = async ({ request }) => {
         processing_time_ms: cudaResponse.processing_time_ms,
         gpu_metrics: cudaResponse.gpu_metrics,
         legal_insights: cudaResponse.legal_insights,
-        neural_sprites: cudaResponse.results
-          .map(r => r.neural_sprite_data)
-          .filter(Boolean),
+        neural_sprites: cudaResponse.results.map((r) => r.neural_sprite_data).filter(Boolean),
         cache_info: {
           hit: false,
           key: useCache ? cacheKey : undefined,
-          ttl: validatedRequest.cache_options?.cache_ttl
-        }
+          ttl: validatedRequest.cache_options?.cache_ttl,
+        },
       },
       metadata: {
         timestamp: Date.now(),
         service_version: '1.0.0',
         gpu_available: true,
-        request_id: requestId
-      }
+        request_id: requestId,
+      },
     };
 
     if (dev) {
       console.log(`✅ GPU Vector Search completed for request ${requestId}:`, {
         processing_time_ms: response.data!.processing_time_ms,
         results_count: response.data!.results.length,
-        gpu_utilization: (response.data!.gpu_metrics.memory_used_mb / response.data!.gpu_metrics.total_memory_mb * 100).toFixed(2) + '%'
+        gpu_utilization:
+          (
+            (response.data!.gpu_metrics.memory_used_mb /
+              response.data!.gpu_metrics.total_memory_mb) *
+            100
+          ).toFixed(2) + '%',
       });
     }
 
     return json(response);
-
   } catch (err) {
-    console.error(`❌ GPU Vector Search error for request ${requestId}:`, err);
+    console.error(`74c GPU Vector Search error for request ${requestId}:`, err);
 
     const errorResponse: VectorSearchAPIResponse = {
       success: false,
       error: {
         message: err instanceof Error ? err.message : 'Unknown error occurred',
         code: err instanceof Error && 'code' in err ? (err as any).code : 'INTERNAL_ERROR',
-        details: dev ? (err instanceof Error ? err.stack : String(err)) : undefined
+        details: dev ? (err instanceof Error ? err.stack : String(err)) : undefined,
       },
       metadata: {
         timestamp: Date.now(),
         service_version: '1.0.0',
         gpu_available: false,
-        request_id: requestId
-      }
+        request_id: requestId,
+      },
     };
 
     // Return appropriate HTTP status
@@ -297,8 +303,8 @@ export const GET: RequestHandler = async () => {
         endpoints: {
           search: 'POST /api/gpu/vector-search',
           status: 'GET /api/gpu/vector-search',
-          metrics: 'GET /api/gpu/metrics'
-        }
+          metrics: 'GET /api/gpu/metrics',
+        },
       },
       features: {
         cuda_acceleration: true,
@@ -308,37 +314,39 @@ export const GET: RequestHandler = async () => {
         neural_sprite_visualization: true,
         multi_metric_search: true,
         top_k_results: true,
-        batch_processing: true
+        batch_processing: true,
       },
       limitations: {
         max_batch_size: 32,
         max_vector_dimension: 1536,
         max_database_vectors: 100000,
-        request_timeout_ms: 30000
+        request_timeout_ms: 30000,
       },
       metadata: {
         timestamp: Date.now(),
-        request_id: requestId
-      }
+        request_id: requestId,
+      },
     };
 
     return json(response);
-
   } catch (err) {
     console.error(`GPU Vector Search status check failed for request ${requestId}:`, err);
-    
-    return json({
-      status: 'error',
-      gpu_available: false,
-      error: {
-        message: 'Failed to check GPU service status',
-        code: 'STATUS_CHECK_FAILED'
+
+    return json(
+      {
+        status: 'error',
+        gpu_available: false,
+        error: {
+          message: 'Failed to check GPU service status',
+          code: 'STATUS_CHECK_FAILED',
+        },
+        metadata: {
+          timestamp: Date.now(),
+          request_id: requestId,
+        },
       },
-      metadata: {
-        timestamp: Date.now(),
-        request_id: requestId
-      }
-    }, { status: 500 });
+      { status: 500 }
+    );
   }
 };
 

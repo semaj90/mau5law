@@ -7,3 +7,4 @@
 </style>
 
 <div class="screen">{content}</div>
+

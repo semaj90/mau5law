@@ -415,3 +415,4 @@ let showDetails = $state(false);
   }
 </style>
 
+

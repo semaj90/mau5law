@@ -62,8 +62,9 @@
     legal
     aiAssisted
   />
-  <Button class="bits-btn bits-btn" variant="yorha" on:onclick={handleSearch} loading={loading} legal>
+  <Button class="bits-btn" variant="yorha" on:onclick={handleSearch} loading={loading} legal>
     <Search class="w-4 h-4 mr-1" />
     Search
   </Button>
 </div>
+

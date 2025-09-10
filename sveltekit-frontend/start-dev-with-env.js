@@ -10,9 +10,9 @@ env.VITE_DATABASE_URL = "postgresql://postgres:123456@localhost:5432/legal_ai_db
 env.DEV_DATABASE_URL = "postgresql://postgres:123456@localhost:5432/legal_ai_db";
 
 // Redis configuration
-env.REDIS_URL = "redis://localhost:4005";
+env.REDIS_URL = "redis://localhost:6379";
 env.REDIS_HOST = "localhost";
-env.REDIS_PORT = "4005";
+env.REDIS_PORT = "6379";
 
 // Other environment variables
 env.NODE_ENV = "development";

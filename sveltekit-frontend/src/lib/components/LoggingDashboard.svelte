@@ -166,10 +166,10 @@
         </h2>
 
         <div class="flex items-center gap-2">
-          <Button class="bits-btn bits-btn" size="sm" variant="outline" onclick={exportLogs}>
+          <Button class="bits-btn" size="sm" variant="outline" onclick={exportLogs}>
             📤 Export
           </Button>
-          <Button class="bits-btn bits-btn" size="sm" variant="outline" onclick={clearLogs}>
+          <Button class="bits-btn" size="sm" variant="outline" onclick={clearLogs}>
             🗑️ Clear
           </Button>
         </div>
@@ -305,7 +305,7 @@
 
                 <!-- Actions -->
                 <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={(e) => { e.stopPropagation(); selectEntry(entry); }}>
+                  <Button class="bits-btn" size="sm" variant="ghost" onclick={(e) => { e.stopPropagation(); selectEntry(entry); }}>
                     👁️
                   </Button>
                 </div>
@@ -327,7 +327,7 @@
           <h3 class="text-xl font-bold text-green-400 flex items-center gap-2">
             {getLevelIcon(selectedEntry.level)} Log Entry Details
           </h3>
-          <Button class="bits-btn bits-btn" variant="ghost" onclick={() => showDetails = false}>
+          <Button class="bits-btn" variant="ghost" onclick={() => showDetails = false}>
             ✕
           </Button>
         </div>
@@ -448,13 +448,13 @@
 
         <!-- Actions -->
         <div class="flex gap-2 mt-6">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             onclick={() => navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
           >
             📋 Copy JSON
           </Button>
-          <Button class="bits-btn bits-btn" variant="outline" onclick={() => showDetails = false}>
+          <Button class="bits-btn" variant="outline" onclick={() => showDetails = false}>
             Close
           </Button>
         </div>

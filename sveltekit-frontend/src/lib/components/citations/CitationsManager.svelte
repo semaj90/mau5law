@@ -347,12 +347,12 @@
 				
 				<div class="flex items-center gap-2">
 					{#if !readonly}
-						<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={showAddCitationForm}>
+						<Button class="bits-btn" variant="outline" size="sm" onclick={showAddCitationForm}>
 							<Plus class="w-4 h-4 mr-1" />
 							Add Citation
 						</Button>
 					{/if}
-					<Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={exportCitations}>
+					<Button class="bits-btn" variant="outline" size="sm" onclick={exportCitations}>
 						<Download class="w-4 h-4 mr-1" />
 						Export
 					</Button>
@@ -380,7 +380,7 @@
 				
 				<!-- Sort Options -->
 				<div class="flex gap-2">
-					<Button class="bits-btn bits-btn"
+					<Button class="bits-btn"
 						variant={sortBy === 'date' ? 'default' : 'outline'}
 						size="sm"
 						onclick={() => changeSortBy('date')}
@@ -388,7 +388,7 @@
 						<Calendar class="w-4 h-4 mr-1" />
 						Date
 					</Button>
-					<Button class="bits-btn bits-btn"
+					<Button class="bits-btn"
 						variant={sortBy === 'title' ? 'default' : 'outline'}
 						size="sm"
 						onclick={() => changeSortBy('title')}
@@ -396,7 +396,7 @@
 						<SortAsc class="w-4 h-4 mr-1" />
 						Title
 					</Button>
-					<Button class="bits-btn bits-btn"
+					<Button class="bits-btn"
 						variant={sortBy === 'relevance' ? 'default' : 'outline'}
 						size="sm"
 						onclick={() => changeSortBy('relevance')}
@@ -499,7 +499,7 @@
 								</div>
 								
 								<div class="flex items-center gap-1">
-									<Button class="bits-btn bits-btn"
+									<Button class="bits-btn"
 										variant="ghost"
 										size="sm"
 										onclick={() => viewCitationDetails(citation)}
@@ -508,7 +508,7 @@
 										<Eye class="w-4 h-4" />
 									</Button>
 									{#if citation.url}
-										<Button class="bits-btn bits-btn"
+										<Button class="bits-btn"
 											variant="ghost"
 											size="sm"
 											onclick={() => window.open(citation.url, '_blank')}
@@ -518,7 +518,7 @@
 										</Button>
 									{/if}
 									{#if !readonly}
-										<Button class="bits-btn bits-btn"
+										<Button class="bits-btn"
 											variant="ghost"
 											size="sm"
 											onclick={() => deleteCitation(citation.id)}
@@ -597,10 +597,10 @@
 				</div>
 				
 				<div class="flex justify-end gap-2 pt-4">
-					<Button class="bits-btn bits-btn" variant="outline" onclick={hideAddCitationForm}>
+					<Button class="bits-btn" variant="outline" onclick={hideAddCitationForm}>
 						Cancel
 					</Button>
-					<Button class="bits-btn bits-btn" onclick={saveCitation}>
+					<Button class="bits-btn" onclick={saveCitation}>
 						Save Citation
 					</Button>
 				</div>
@@ -662,12 +662,12 @@
 					</div>
 					<div class="flex gap-2">
 						{#if selectedCitation.url}
-							<Button class="bits-btn bits-btn" variant="outline" onclick={() => window.open(selectedCitation.url, '_blank')}>
+							<Button class="bits-btn" variant="outline" onclick={() => window.open(selectedCitation.url, '_blank')}>
 								<ExternalLink class="w-4 h-4 mr-1" />
 								Open Link
 							</Button>
 						{/if}
-						<Button class="bits-btn bits-btn" onclick={hideDetailModal}>
+						<Button class="bits-btn" onclick={hideDetailModal}>
 							Close
 						</Button>
 					</div>

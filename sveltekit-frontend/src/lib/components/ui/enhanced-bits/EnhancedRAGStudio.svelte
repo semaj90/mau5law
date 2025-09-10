@@ -276,7 +276,7 @@ let logsInterval = $state<number | null >(null);
 
   <!-- Navigation Tabs -->
   <div class="flex gap-2 mb-6">
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant={activeTab === 'search' ? 'default' : 'outline'}
       onclick={() => activeTab = 'search'}
       class="flex items-center gap-2"
@@ -284,7 +284,7 @@ let logsInterval = $state<number | null >(null);
       <Search class="w-4 h-4" />
       Search
     </Button>
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant={activeTab === 'upload' ? 'default' : 'outline'}
       onclick={() => activeTab = 'upload'}
       class="flex items-center gap-2"
@@ -292,7 +292,7 @@ let logsInterval = $state<number | null >(null);
       <Upload class="w-4 h-4" />
       Upload
     </Button>
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant={activeTab === 'crawl' ? 'default' : 'outline'}
       onclick={() => activeTab = 'crawl'}
       class="flex items-center gap-2"
@@ -300,7 +300,7 @@ let logsInterval = $state<number | null >(null);
       <Globe class="w-4 h-4" />
       Crawl
     </Button>
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant={activeTab === 'logs' ? 'default' : 'outline'}
       onclick={() => activeTab = 'logs'}
       class="flex items-center gap-2"
@@ -308,7 +308,7 @@ let logsInterval = $state<number | null >(null);
       <FileText class="w-4 h-4" />
       Logs
     </Button>
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant={activeTab === 'settings' ? 'default' : 'outline'}
       onclick={() => activeTab = 'settings'}
       class="flex items-center gap-2"
@@ -337,7 +337,7 @@ let logsInterval = $state<number | null >(null);
                 class="flex-1"
                 keydown={(e) => e.key === 'Enter' && handleSearch()}
               />
-              <Button class="bits-btn bits-btn" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
+              <Button class="bits-btn" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
                 {#if isLoading}
                   <RefreshCw class="w-4 h-4 animate-spin" />
                 {:else}
@@ -363,14 +363,14 @@ let logsInterval = $state<number | null >(null);
                         </div>
                       </div>
                       <div class="flex gap-1 ml-4">
-                        <Button class="bits-btn bits-btn"
+                        <Button class="bits-btn"
                           size="sm"
                           variant="outline"
                           onclick={() => submitFeedback(result.id, 1)}
                         >
                           👍
                         </Button>
-                        <Button class="bits-btn bits-btn"
+                        <Button class="bits-btn"
                           size="sm"
                           variant="outline"
                           onclick={() => submitFeedback(result.id, -1)}
@@ -404,7 +404,7 @@ let logsInterval = $state<number | null >(null);
                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
             </div>
-            <Button class="bits-btn bits-btn" onclick={handleUpload} disabled={isLoading || !uploadFile}>
+            <Button class="bits-btn" onclick={handleUpload} disabled={isLoading || !uploadFile}>
               {#if isLoading}
                 <RefreshCw class="w-4 h-4 animate-spin mr-2" />
               {:else}
@@ -432,7 +432,7 @@ let logsInterval = $state<number | null >(null);
                 type="url"
               />
             </div>
-            <Button class="bits-btn bits-btn" onclick={handleCrawl} disabled={isLoading || !crawlUrl.trim()}>
+            <Button class="bits-btn" onclick={handleCrawl} disabled={isLoading || !crawlUrl.trim()}>
               {#if isLoading}
                 <RefreshCw class="w-4 h-4 animate-spin mr-2" />
               {:else}
@@ -491,7 +491,7 @@ let logsInterval = $state<number | null >(null);
               <label class="block text-sm font-medium mb-2">Cache TTL (seconds)</label>
               <Input type="number" min="60" max="86400" value="7200" />
             </div>
-            <Button class="bits-btn bits-btn">Save Settings</Button>
+            <Button class="bits-btn">Save Settings</Button>
           </CardContent>
         </Card>
       {/if}
@@ -600,3 +600,4 @@ let logsInterval = $state<number | null >(null);
     background: #a8a8a8;
   }
 </style>
+

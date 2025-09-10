@@ -64,3 +64,4 @@
     @apply flex items-center justify-center text-nier-text-muted hover:text-nier-white;
   }
 </style>
+

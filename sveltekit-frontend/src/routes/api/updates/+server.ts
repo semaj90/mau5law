@@ -16,21 +16,23 @@ class SSEConnectionManager {
     if (this.isInitialized) return;
 
     try {
-      this.redisSubscriber = createClient({
-        url: import.meta.env.REDIS_URL || "redis://localhost:6379",
+      // createClient may be undefined in some runtimes; cast pragmatically
+      // to any to avoid TS invocation errors during triage
+      this.redisSubscriber = (createClient as any)({
+        url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
       });
 
       await this.redisSubscriber.connect();
 
       // Subscribe to all update channels
       const channels = [
-        "evidence_update",
-        "case_update",
-        "poi_update",
-        "report_update",
-        "citation_update",
-        "canvas_update",
-        "user_activity",
+        'evidence_update',
+        'case_update',
+        'poi_update',
+        'report_update',
+        'citation_update',
+        'canvas_update',
+        'user_activity',
       ];
 
       for (const channel of channels) {
@@ -39,7 +41,7 @@ class SSEConnectionManager {
         });
       }
       this.isInitialized = true;
-      console.log("✅ SSE Redis subscriber initialized");
+      console.log('✅ SSE Redis subscriber initialized');
     } catch (error: any) {
       console.error("❌ SSE Redis connection failed:", error);
     }

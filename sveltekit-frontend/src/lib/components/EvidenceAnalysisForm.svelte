@@ -301,7 +301,7 @@ let isAnalyzing = $state(false);
                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getConfidenceColor(entity.confidence)}">
                   {Math.round(entity.confidence * 100)}%
                 </span>
-                <Button class="bits-btn bits-btn".Root
+                <Button class="bits-btn".Root
                   on:onclick={() => removeEntity(index)}
                   class="p-1 text-red-600 hover:text-red-800 focus:outline-none"
                 >
@@ -341,7 +341,7 @@ let isAnalyzing = $state(false);
                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               ></textarea>
             </div>
-            <Button class="bits-btn bits-btn".Root
+            <Button class="bits-btn".Root
               on:onclick={() => removeKeyFact(index)}
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none"
             >
@@ -380,7 +380,7 @@ let isAnalyzing = $state(false);
                 <option value={category}>{category}</option>
               {/each}
             </select>
-            <Button class="bits-btn bits-btn".Root
+            <Button class="bits-btn".Root
               on:onclick={() => removeLegalIssue(index)}
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none"
             >
@@ -446,3 +446,4 @@ let isAnalyzing = $state(false);
 </div>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

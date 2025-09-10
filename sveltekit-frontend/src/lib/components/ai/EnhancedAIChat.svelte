@@ -318,7 +318,7 @@
             </Tooltip.Root>
           {/if}
           
-          <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={clearChat}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat}>
             Clear
           </Button>
         </div>
@@ -449,7 +449,7 @@
         </div>
         
         <Dialog.Footer>
-          <Button class="bits-btn bits-btn" variant="outline" onclick={() => ($open = false)}>
+          <Button class="bits-btn" variant="outline" onclick={() => ($open = false)}>
             Close
           </Button>
         </Dialog.Footer>

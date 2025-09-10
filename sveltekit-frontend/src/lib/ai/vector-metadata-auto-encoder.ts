@@ -8,7 +8,7 @@
  */
 
 import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js';
-import type { SIMDProcessingResult } from './simd-text-tiling-engine.js';
+import type { SIMDProcessingResult } from '../evidence/simd-gpu-tiling-engine.js';
 
 // Vector encoding configurations for different use cases
 interface VectorEncodingConfig {

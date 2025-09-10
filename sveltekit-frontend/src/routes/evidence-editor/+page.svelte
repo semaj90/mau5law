@@ -35,7 +35,7 @@
       </div>
 
       <div class="space-y-4">
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       onclick={toggleReadOnly}
           variant={readOnly ? "default" : "outline"}
           size="sm"
@@ -91,3 +91,4 @@
     overflow: hidden;
 }
 </style>
+

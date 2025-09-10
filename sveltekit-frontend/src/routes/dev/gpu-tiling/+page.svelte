@@ -87,3 +87,4 @@
   .inputs .text textarea { width: 100%; }
   .actions { display: flex; gap: .75rem; align-items: center; }
 </style>
+

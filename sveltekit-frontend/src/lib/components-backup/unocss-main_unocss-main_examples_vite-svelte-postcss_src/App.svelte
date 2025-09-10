@@ -27,3 +27,4 @@
   color: theme('colors.red.200');
 }
 </style>
+

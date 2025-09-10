@@ -1366,3 +1366,4 @@ let filename = $state<string;
 </style>
 
 <!-- Props migrated to Svelte 5 $props() pattern -->
+

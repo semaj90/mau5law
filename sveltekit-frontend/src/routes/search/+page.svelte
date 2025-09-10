@@ -240,7 +240,7 @@ let popularSearches = $state([
 
           <!-- Search Actions -->
           <div class="space-y-4">
-            <Button class="bits-btn bits-btn" type="submit" disabled={isSearching || !searchQuery.trim()}>
+            <Button class="bits-btn" type="submit" disabled={isSearching || !searchQuery.trim()}>
               {#if isSearching}
                 <Loader2 class="space-y-4" />
                 Searching...
@@ -251,7 +251,7 @@ let popularSearches = $state([
             </Button>
 
             <Tooltip content="Show/hide advanced search filters">
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="outline"
                 type="button"
                 onclick={() => (showAdvancedFilters = !showAdvancedFilters)}
@@ -263,7 +263,7 @@ let popularSearches = $state([
 
             {#if selectedType || selectedCaseId || threshold !== 0.7 || limit !== 20}
               <Tooltip content="Clear all filters">
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   type="button"
                   onclick={() => clearFilters()}
@@ -563,3 +563,4 @@ let popularSearches = $state([
     overflow: hidden;
 }
 </style>
+

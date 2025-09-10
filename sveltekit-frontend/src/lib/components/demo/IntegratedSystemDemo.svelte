@@ -363,13 +363,13 @@ let servicesHealthy = $state(false);
             <div class="space-y-2">
               <h4 class="font-semibold">🎯 Demo Actions:</h4>
               <div class="space-y-2">
-                <Button class="bits-btn bits-btn" on:onclick={demoLogin} disabled={authenticatedUser !== null}>
+                <Button class="bits-btn" on:onclick={demoLogin} disabled={authenticatedUser !== null}>
                   Demo Login
                 </Button>
-                <Button class="bits-btn bits-btn" on:onclick={demoAIInteraction} disabled={!authenticatedUser}>
+                <Button class="bits-btn" on:onclick={demoAIInteraction} disabled={!authenticatedUser}>
                   Test AI Assistant
                 </Button>
-                <Button class="bits-btn bits-btn" on:onclick={demoLogout} disabled={!authenticatedUser} variant="outline">
+                <Button class="bits-btn" on:onclick={demoLogout} disabled={!authenticatedUser} variant="outline">
                   Demo Logout
                 </Button>
               </div>
@@ -391,7 +391,7 @@ let servicesHealthy = $state(false);
               <p class="text-gray-600">
                 Demonstrate the modern authentication system with Svelte 5 runes and XState integration.
               </p>
-              <Button class="bits-btn bits-btn" on:onclick={() => showAuthDialog = true}>
+              <Button class="bits-btn" on:onclick={() => showAuthDialog = true}>
                 Open Authentication Dialog
               </Button>
             </div>
@@ -405,7 +405,7 @@ let servicesHealthy = $state(false);
                   <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}</p>
                 </div>
               </div>
-              <Button class="bits-btn bits-btn" on:onclick={demoLogout} variant="outline">
+              <Button class="bits-btn" on:onclick={demoLogout} variant="outline">
                 Logout
               </Button>
             </div>
@@ -444,13 +444,13 @@ let servicesHealthy = $state(false);
               </div>
               
               <div class="flex gap-2">
-                <Button class="bits-btn bits-btn" 
+                <Button class="bits-btn" 
                   on:onclick={() => sessionManager.performSecurityCheck()} 
                   size="sm"
                 >
                   Security Check
                 </Button>
-                <Button class="bits-btn bits-btn" 
+                <Button class="bits-btn" 
                   on:onclick={() => sessionManager.refreshSession()} 
                   size="sm" 
                   variant="outline"
@@ -518,7 +518,7 @@ let servicesHealthy = $state(false);
               </div>
             </div>
             
-            <Button class="bits-btn bits-btn" on:onclick={checkSystemHealth}>
+            <Button class="bits-btn" on:onclick={checkSystemHealth}>
               Refresh System Health
             </Button>
           </div>

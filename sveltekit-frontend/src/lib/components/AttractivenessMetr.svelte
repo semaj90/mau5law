@@ -128,3 +128,4 @@ let hoveredScore = $state<number | null >(null);
 </style>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

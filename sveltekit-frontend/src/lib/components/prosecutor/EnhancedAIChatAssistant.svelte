@@ -292,7 +292,7 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
         </h4>
         <div class="flex flex-wrap gap-2">
           {#each selfPromptSuggestions as suggestion}
-            <Button class="bits-btn bits-btn" 
+            <Button class="bits-btn" 
               variant="outline" 
               size="sm"
               on:onclick={() => useSelfPrompt(suggestion)}
@@ -399,7 +399,7 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
             disabled={isTyping}
           />
         </div>
-        <Button class="bits-btn bits-btn" 
+        <Button class="bits-btn" 
           on:onclick={sendMessage}
           disabled={isTyping || !currentMessage.trim()}
         >
@@ -469,4 +469,5 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 </style>
+
 

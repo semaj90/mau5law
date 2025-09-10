@@ -665,7 +665,7 @@ let display = $state("");
         </div>
 
         <Tooltip content="Refresh evidence list">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => refreshEvidence()}
@@ -679,7 +679,7 @@ let display = $state("");
         </Tooltip>
 
         <Tooltip content="Toggle filters">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => (showFilters = !showFilters)}
@@ -693,7 +693,7 @@ let display = $state("");
         </Tooltip>
 
         <Tooltip content="Toggle view mode">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
@@ -709,7 +709,7 @@ let display = $state("");
         </Tooltip>
 
         <Tooltip content="Advanced file upload">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => handleAdvancedUpload()}
@@ -721,7 +721,7 @@ let display = $state("");
         </Tooltip>
 
         <Tooltip content="Standard evidence upload">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="evidence"
             onclick={() => openUploadModal()}
           >
@@ -759,7 +759,7 @@ let display = $state("");
           <option value="collectedBy">Collector</option>
         </select>
 
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           variant="outline"
           size="sm"
           onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
@@ -797,7 +797,7 @@ let display = $state("");
         </div>
 
         <div class="mx-auto px-4 max-w-7xl">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => bulkOperation("analyze")}
@@ -813,7 +813,7 @@ let display = $state("");
             {/if}
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => bulkOperation("verify")}
@@ -824,7 +824,7 @@ let display = $state("");
             Verify
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => bulkOperation("archive")}
@@ -835,7 +835,7 @@ let display = $state("");
             Archive
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => bulkOperation("export")}
@@ -846,7 +846,7 @@ let display = $state("");
             Export
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => bulkOperation("delete")}
@@ -857,7 +857,7 @@ let display = $state("");
             Delete
           </Button>
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => {
@@ -887,7 +887,7 @@ let display = $state("");
         <h3 class="mx-auto px-4 max-w-7xl">Error Loading Evidence</h3>
         <div class="mx-auto px-4 max-w-7xl">{error}</div>
       </div>
-  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={() => refreshEvidence()}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={() => refreshEvidence()}>
         <RefreshCw class="mx-auto px-4 max-w-7xl" />
         Retry
       </Button>
@@ -917,11 +917,11 @@ let display = $state("");
       </p>
       {#if !searchQuery && !selectedType && !selectedStatus && !selectedCollector && !dateFrom && !dateTo}
         <div class="mx-auto px-4 max-w-7xl">
-          <Button class="bits-btn bits-btn" onclick={() => openUploadModal()} class="mx-auto px-4 max-w-7xl">
+          <Button class="bits-btn" onclick={() => openUploadModal()} class="mx-auto px-4 max-w-7xl">
             <Plus class="mx-auto px-4 max-w-7xl" />
             Upload Evidence
           </Button>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             onclick={() => handleAdvancedUpload()}
             class="mx-auto px-4 max-w-7xl"
@@ -944,7 +944,7 @@ let display = $state("");
         </span>
 
         {#if visibleEvidence.length > 0}
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={() => selectAllEvidence()}
@@ -1064,7 +1064,7 @@ let display = $state("");
 
               <!-- Enhanced Actions with AI Analysis -->
               <div class="flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   size="sm"
                   variant={thinkingStyleEnabled ? "neural" : "yorha"}
                   onclick={() => analyzeEvidence(evidence)}
@@ -1175,7 +1175,7 @@ let display = $state("");
                 </div>
 
                 <div class="mx-auto px-4 max-w-7xl">
-                  <Button class="bits-btn bits-btn"
+                  <Button class="bits-btn"
                     size="sm"
                     variant="outline"
                     onclick={() => analyzeEvidence(evidence)}
@@ -1195,7 +1195,7 @@ let display = $state("");
                   </Button>
 
                   <a href="/evidence/{evidence.id}" class="mx-auto px-4 max-w-7xl">
-                    <Button class="bits-btn bits-btn" size="sm" variant="outline">
+                    <Button class="bits-btn" size="sm" variant="outline">
                       <Eye class="mx-auto px-4 max-w-7xl" />
                       View
                     </Button>
@@ -1203,7 +1203,7 @@ let display = $state("");
 
                   <div class="mx-auto px-4 max-w-7xl">
                     <Tooltip content="More actions">
-                      <Button class="bits-btn bits-btn"
+                      <Button class="bits-btn"
                         variant="ghost"
                         size="sm"
                         tabindex={0}
@@ -1320,7 +1320,7 @@ let display = $state("");
           {/if}
           - {analysisModal.evidence.title}
         </h3>
-  <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick={closeAnalysisModal}>
+  <Button class="bits-btn" variant="ghost" size="sm" onclick={closeAnalysisModal}>
           ✕
         </Button>
       </div>
@@ -1343,8 +1343,8 @@ let display = $state("");
       </div>
 
       <div class="mx-auto px-4 max-w-7xl">
-  <Button class="bits-btn bits-btn" variant="outline" onclick={closeAnalysisModal}>Close</Button>
-  <Button class="bits-btn bits-btn" onclick={() => {
+  <Button class="bits-btn" variant="outline" onclick={closeAnalysisModal}>Close</Button>
+  <Button class="bits-btn" onclick={() => {
           // Save analysis or perform other actions
           closeAnalysisModal();
         }}>Save Analysis</Button>
@@ -1429,3 +1429,4 @@ let display = $state("");
   context={{ component: 'EvidenceUpload' }}
   let:feedback
 />
+

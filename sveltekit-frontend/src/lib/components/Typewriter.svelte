@@ -59,3 +59,4 @@ let intervalId = $state<NodeJS.Timeout | null >(null);
       border-color: transparent; 
 }}
 </style>
+

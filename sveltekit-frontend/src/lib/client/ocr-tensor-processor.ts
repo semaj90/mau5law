@@ -6,6 +6,7 @@
 
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
 import { browser } from '$app/environment';
+import { PREDICTIVE_UI_ANALYTICS, ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from '$lib/components/ui/gaming/constants/gaming-constants.js';
 
 // OCR.js types (install via: npm install ocr-js @types/ocr-js)
 declare global {
@@ -47,9 +48,15 @@ export class OCRTensorProcessor {
   private worker?: Worker;
   private ocrInitialized = false;
   private webgpuDevice?: GPUDevice;
+  private currentLODLevel: 'high' | 'medium' | 'low' = 'medium';
+  private memoryPressure = 0;
+  private processingComplexity = 0;
 
   async initialize(): Promise<void> {
     if (!browser) return;
+
+    // Initialize LOD optimization based on gaming memory architecture
+    await this.initializeLODOptimization();
 
     // Initialize OCR.js
     await this.initializeOCR();
@@ -60,7 +67,43 @@ export class OCRTensorProcessor {
     // Initialize Service Worker for SIMD parsing
     await this.initializeServiceWorker();
     
-    console.log('✅ OCR Tensor Processor initialized');
+    console.log('✅ OCR Tensor Processor initialized with Gemma 270MB + Gaming LOD');
+  }
+
+  private async initializeLODOptimization(): Promise<void> {
+    // Monitor memory pressure using gaming era specs
+    this.updateMemoryPressure();
+    
+    // Set initial LOD level based on device capabilities
+    const memoryInfo = (performance as any).memory;
+    if (memoryInfo) {
+      const usedMemoryMB = memoryInfo.usedJSHeapSize / (1024 * 1024);
+      const totalMemoryMB = memoryInfo.totalJSHeapSize / (1024 * 1024);
+      
+      if (totalMemoryMB < GAMING_ERA_SPECS.n64.memoryMB) {
+        this.currentLODLevel = 'low';  // Use 8-bit NES level optimization
+      } else if (totalMemoryMB < 512) {
+        this.currentLODLevel = 'medium'; // Use 16-bit SNES level optimization
+      } else {
+        this.currentLODLevel = 'high';   // Use N64 level optimization
+      }
+    }
+
+    console.log(`🎮 LOD Level set to: ${this.currentLODLevel}`);
+  }
+
+  private updateMemoryPressure(): void {
+    const memoryInfo = (performance as any).memory;
+    if (memoryInfo) {
+      this.memoryPressure = memoryInfo.usedJSHeapSize / memoryInfo.totalJSHeapSize;
+      
+      // Adapt LOD based on memory pressure using gaming thresholds
+      if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.thresholds.criticalMemory) {
+        this.currentLODLevel = 'low';
+      } else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.thresholds.lowMemory) {
+        this.currentLODLevel = 'medium';
+      }
+    }
   }
 
   private async initializeOCR(): Promise<void> {
@@ -159,11 +202,18 @@ export class OCRTensorProcessor {
       throw new Error('OCR.js not initialized');
     }
 
+    // Update memory pressure before processing
+    this.updateMemoryPressure();
+
     try {
       const { recognize } = window.Tesseract;
       
+      // Apply LOD-based OCR optimization
+      const ocrOptions = this.getOCROptionsForLOD();
+      
       const result = await recognize(imageData, options.language || 'eng', {
-        logger: (m: any) => console.log('OCR:', m)
+        logger: (m: any) => console.log(`OCR [${this.currentLODLevel}]:`, m),
+        ...ocrOptions
       });
 
       const ocrResult: OCRResult = {
@@ -190,20 +240,147 @@ export class OCRTensorProcessor {
     }
   }
 
+  private getOCROptionsForLOD(): any {
+    // Use gaming memory architecture to optimize OCR based on current LOD level
+    switch (this.currentLODLevel) {
+      case 'low':
+        // 8-bit NES level optimization
+        return {
+          psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8,
+          oem: 1, // Original tesseract only
+          tessjs_create_pdf: false,
+          tessjs_create_hocr: false,
+          tessjs_create_tsv: false
+        };
+        
+      case 'medium':
+        // 16-bit SNES level optimization  
+        return {
+          psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8,
+          oem: 2, // LSTM + Original tesseract
+          tessjs_create_pdf: false,
+          tessjs_create_hocr: true,
+          tessjs_create_tsv: false
+        };
+        
+      case 'high':
+        // N64 level optimization with DNN LOD system
+        return {
+          psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13,
+          oem: 3, // Default tesseract (best quality)
+          tessjs_create_pdf: true,
+          tessjs_create_hocr: true,
+          tessjs_create_tsv: true
+        };
+        
+      default:
+        return {};
+    }
+  }
+
+  private async selectOptimalModel(): Promise<{
+    model: string;
+    fallback: string[];
+    useCrewAI: boolean;
+    parallelism: number;
+    cacheSize: number;
+  }> {
+    try {
+      // Check Ollama GPU memory availability and status
+      const ollamaStatus = await fetch('/api/ai/status', { 
+        signal: AbortSignal.timeout(3000) 
+      });
+      const statusData = await ollamaStatus.json();
+      
+      // Smart fallback to Gemma 270MB for OOM prevention and better UX
+      const isGPUBusy = statusData.gpu_busy || statusData.models_loading > 0;
+      const isGPURecognized = statusData.gpu_detected && statusData.gpu_memory_total > 0;
+      const availableMemory = statusData.gpu_memory_available || 0;
+      
+      // Prioritize Gemma 270MB when GPU isn't recognized or is busy
+      if (!isGPURecognized || isGPUBusy || availableMemory < 512) {
+        console.log('🎮 GPU not recognized/busy, using Gemma 270MB for optimal UX');
+        return {
+          model: 'gemma:270m',                // Gemma 270MB fits in cache + parallelism
+          fallback: ['nomic-embed-text', 'client-autogen'],
+          useCrewAI: false,
+          parallelism: 4,                     // 4 parallel requests to prevent OOM
+          cacheSize: 128                      // 128MB cache for fast responses
+        };
+      }
+      
+      // Determine model based on available GPU memory
+      if (availableMemory > 2048) { // 2GB+ GPU memory
+        return {
+          model: 'gemma3:legal-latest',       // Primary: Gemma 3 legal for best quality
+          fallback: ['gemma:270m', 'nomic-embed-text'],
+          useCrewAI: false,
+          parallelism: 8,                     // High parallelism for powerful GPU
+          cacheSize: 512                      // Large cache for complex models
+        };
+      } else if (availableMemory > 1024) { // 1GB+ GPU memory
+        return {
+          model: 'gemma:270m',                // Gemma 270MB optimal for this range
+          fallback: ['nomic-embed-text'],
+          useCrewAI: false,
+          parallelism: 6,                     // Balanced parallelism
+          cacheSize: 256                      // Medium cache size
+        };
+      } else if (availableMemory > 512) { // 512MB+ GPU memory
+        return {
+          model: 'gemma:270m',                // Still use 270MB - it fits with cache
+          fallback: ['nomic-embed-text', 'client-autogen'],
+          useCrewAI: false,
+          parallelism: 3,                     // Conservative parallelism
+          cacheSize: 128                      // Smaller cache to prevent OOM
+        };
+      } else {
+        // Very low GPU memory - use lightweight model with CrewAI fallback
+        return {
+          model: 'nomic-embed-text',          // Lightweight model
+          fallback: ['client-autogen'],
+          useCrewAI: true,
+          parallelism: 2,                     // Minimal parallelism
+          cacheSize: 64                       // Small cache
+        };
+      }
+    } catch (error) {
+      console.warn('Failed to check Ollama status, using Gemma 270MB fallback:', error);
+      // Always fallback to Gemma 270MB - reliable and fits in memory
+      return {
+        model: 'gemma:270m',                  // Safe default - fits in cache with parallelism
+        fallback: ['nomic-embed-text', 'client-autogen'],
+        useCrewAI: true,
+        parallelism: 4,                       // Safe parallelism level
+        cacheSize: 128                        // Safe cache size for 270MB model
+      };
+    }
+  }
+
   private async generateEmbeddings(text: string): Promise<{
     embeddings: Float32Array;
     fromCache: boolean;
     model: string;
   }> {
     try {
-      // Call Node API for embedding generation
-      const response = await fetch('/api/embeddings', {
+      // Intelligent model selection based on Ollama GPU memory and system state
+      const modelConfig = await this.selectOptimalModel();
+      
+      const response = await fetch('/api/ai/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text,
-          model: 'nomic-text',
-          source: 'ocr'
+          model: modelConfig.model,
+          source: 'ocr',
+          save: false,
+          fallback: modelConfig.fallback,
+          crewai_enabled: modelConfig.useCrewAI,
+          // OOM prevention and UX optimization
+          parallelism: modelConfig.parallelism,
+          cache_size_mb: modelConfig.cacheSize,
+          prevent_oom: true,
+          gpu_fallback_strategy: 'gemma270m'  // Always fallback to 270MB for stability
         })
       });
 
@@ -319,7 +496,7 @@ export class OCRTensorProcessor {
   }
 
   /**
-   * Batch process multiple images
+   * Asynchronous batch processing with intelligent scheduling
    */
   async batchProcessImages(
     images: Array<ImageData | HTMLCanvasElement | File>,
@@ -327,23 +504,170 @@ export class OCRTensorProcessor {
   ): Promise<ProcessingResult[]> {
     const results: ProcessingResult[] = [];
     
-    // Process in chunks to avoid overwhelming the system
-    const chunkSize = 3;
+    // Adaptive chunk size based on LOD level and memory pressure
+    const chunkSize = this.getOptimalChunkSize();
     
-    for (let i = 0; i < images.length; i += chunkSize) {
-      const chunk = images.slice(i, i + chunkSize);
+    // Create processing queue with priority scheduling
+    const processingQueue: Array<{
+      image: ImageData | HTMLCanvasElement | File;
+      priority: number;
+      options: any;
+    }> = images.map((image, index) => ({
+      image,
+      priority: this.calculateProcessingPriority(image, index),
+      options
+    }));
+
+    // Sort by priority (higher priority first)
+    processingQueue.sort((a, b) => b.priority - a.priority);
+
+    // Process asynchronously with Web Workers when available
+    for (let i = 0; i < processingQueue.length; i += chunkSize) {
+      const chunk = processingQueue.slice(i, i + chunkSize);
       
-      const chunkResults = await Promise.all(
-        chunk.map(image => this.processImage(image, options))
-      );
+      // Asynchronous processing with Promise.allSettled for error resilience
+      const chunkPromises = chunk.map(async (item) => {
+        try {
+          return await this.processImageAsync(item.image, item.options);
+        } catch (error) {
+          console.warn(`Failed to process image ${i}:`, error);
+          return null;
+        }
+      });
+
+      const chunkResults = await Promise.allSettled(chunkPromises);
       
-      results.push(...chunkResults);
+      // Extract successful results
+      const successfulResults = chunkResults
+        .filter((result): result is PromiseFulfilledResult<ProcessingResult | null> => 
+          result.status === 'fulfilled' && result.value !== null)
+        .map(result => result.value!);
+
+      results.push(...successfulResults);
       
-      // Small delay between chunks
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Adaptive delay based on memory pressure and system load
+      const delay = this.calculateAdaptiveDelay();
+      if (delay > 0) {
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+
+      // Update memory pressure after each chunk
+      this.updateMemoryPressure();
     }
     
     return results;
+  }
+
+  /**
+   * Asynchronous single image processing with Web Workers
+   */
+  private async processImageAsync(
+    imageData: ImageData | HTMLCanvasElement | File,
+    options: any = {}
+  ): Promise<ProcessingResult> {
+    // Try Web Worker processing for better performance
+    if (this.worker && 'transferControlToOffscreen' in HTMLCanvasElement.prototype) {
+      try {
+        return await this.processImageInWorker(imageData, options);
+      } catch (error) {
+        console.warn('Web Worker processing failed, falling back to main thread:', error);
+      }
+    }
+
+    // Fallback to main thread processing
+    return await this.processImage(imageData, options);
+  }
+
+  /**
+   * Process image in Web Worker for non-blocking execution
+   */
+  private async processImageInWorker(
+    imageData: ImageData | HTMLCanvasElement | File,
+    options: any
+  ): Promise<ProcessingResult> {
+    return new Promise((resolve, reject) => {
+      if (!this.worker) {
+        reject(new Error('Web Worker not available'));
+        return;
+      }
+
+      const messageHandler = (event: MessageEvent) => {
+        if (event.data.type === 'ocr-result') {
+          this.worker!.removeEventListener('message', messageHandler);
+          resolve(event.data.result);
+        } else if (event.data.type === 'ocr-error') {
+          this.worker!.removeEventListener('message', messageHandler);
+          reject(new Error(event.data.error));
+        }
+      };
+
+      this.worker.addEventListener('message', messageHandler);
+      
+      // Send processing task to worker
+      this.worker.postMessage({
+        type: 'process-ocr',
+        imageData,
+        options,
+        lodLevel: this.currentLODLevel,
+        memoryPressure: this.memoryPressure
+      });
+
+      // Timeout after 30 seconds
+      setTimeout(() => {
+        this.worker!.removeEventListener('message', messageHandler);
+        reject(new Error('OCR processing timeout'));
+      }, 30000);
+    });
+  }
+
+  private getOptimalChunkSize(): number {
+    // Adaptive chunk size based on gaming memory architecture
+    switch (this.currentLODLevel) {
+      case 'low':
+        return GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 1 : 2;
+      case 'medium':
+        return GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 3 : 4;
+      case 'high':
+        return GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 6 : 8;
+      default:
+        return 3;
+    }
+  }
+
+  private calculateProcessingPriority(
+    image: ImageData | HTMLCanvasElement | File,
+    index: number
+  ): number {
+    let priority = 1.0;
+
+    // Boost priority for legal documents (larger files typically)
+    if (image instanceof File) {
+      if (image.size > 1024 * 1024) priority += 0.5; // Large files (>1MB)
+      if (image.type.includes('pdf')) priority += 0.3; // PDF documents
+      if (image.name.toLowerCase().includes('legal')) priority += 0.4; // Legal documents
+    }
+
+    // Process smaller images first for better user experience
+    if (image instanceof ImageData) {
+      const pixels = image.width * image.height;
+      if (pixels < 300000) priority += 0.2; // Small images (<300K pixels)
+    }
+
+    // Slight preference for earlier items in the queue
+    priority += (1.0 / (index + 1)) * 0.1;
+
+    return priority;
+  }
+
+  private calculateAdaptiveDelay(): number {
+    // Calculate delay based on memory pressure and system load
+    if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.thresholds.criticalMemory) {
+      return 1000; // 1 second delay under critical memory pressure
+    } else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.thresholds.lowMemory) {
+      return 500;  // 500ms delay under moderate memory pressure
+    } else {
+      return 100;  // 100ms delay under normal conditions
+    }
   }
 
   /**

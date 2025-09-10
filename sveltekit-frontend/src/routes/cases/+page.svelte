@@ -972,3 +972,4 @@
 />
 
 <!-- Tailwind CSS will handle all styling through bits-ui components -->
+

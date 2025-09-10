@@ -387,3 +387,4 @@
 </style>
 
 <!-- Svelte 5 migration completed - modern patterns applied -->
+

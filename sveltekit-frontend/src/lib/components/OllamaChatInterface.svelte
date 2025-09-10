@@ -320,7 +320,7 @@
           </select>
 
           <!-- Settings Toggle -->
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={() => (showSettings = !showSettings)}
@@ -329,7 +329,7 @@
           </Button>
 
           <!-- Health Check -->
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={checkOllamaHealth}
@@ -456,7 +456,7 @@
             {#if msg.suggestions && msg.suggestions.length > 0}
               <div class="mt-3 flex flex-wrap gap-2">
                 {#each msg.suggestions as suggestion}
-                  <Button class="bits-btn bits-btn"
+                  <Button class="bits-btn"
                     variant="outline"
                     size="sm"
                     onclick={() => selectSuggestion(suggestion)}
@@ -522,7 +522,7 @@
     </Button>
 
     <!-- Additional Actions -->
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant="outline"
       onclick={clearChat}
       disabled={chatHistory.length === 0}
@@ -530,7 +530,7 @@
       Clear
     </Button>
 
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
       variant="outline"
       onclick={exportChat}
       disabled={chatHistory.length === 0}
@@ -584,3 +584,4 @@
     background-color: #9ca3af;
   }
 </style>
+

@@ -399,7 +399,7 @@
         </div>
         <div class="flex items-center gap-3">
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{productionDemos} Production Ready</span>
-          <Button class="bits-btn bits-btn" onclick={() => goto('/')} variant="outline">
+          <Button class="bits-btn" onclick={() => goto('/')} variant="outline">
             <ChevronRight class="h-4 w-4 mr-2 rotate-180" />
             Back to Home
           </Button>
@@ -432,14 +432,14 @@
         </div>
 
         <div class="flex items-center border rounded-lg p-1">
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant={viewMode === 'grid' ? 'default' : 'ghost'}
             size="sm"
             onclick={() => viewMode = 'grid'}
           >
             <Grid class="h-4 w-4" />
           </Button>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant={viewMode === 'list' ? 'default' : 'ghost'}
             size="sm"
             onclick={() => viewMode = 'list'}
@@ -515,7 +515,7 @@
                         {/if}
                       </div>
 
-                      <Button class="bits-btn bits-btn"
+                      <Button class="bits-btn"
                         onclick={() => navigateToDemo(demo.path)}
                         class="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
                         variant="outline"
@@ -554,7 +554,7 @@
                                 </div>
                               </div>
                             </div>
-                            <Button class="bits-btn bits-btn"
+                            <Button class="bits-btn"
                               onclick={() => navigateToDemo(demo.path)}
                               variant="outline"
                               size="sm"

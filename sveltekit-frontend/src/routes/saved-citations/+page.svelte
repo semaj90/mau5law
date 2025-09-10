@@ -221,7 +221,7 @@
     </div>
 
     <div class="space-y-4">
-  <Button class="bits-btn bits-btn" onclick={() => (showAddDialog = true)}>
+  <Button class="bits-btn" onclick={() => (showAddDialog = true)}>
         <Plus class="space-y-4" />
         Add Citation
       </Button>
@@ -239,7 +239,7 @@
             <DropdownMenuRoot>
               {#snippet children({ trigger, menu })}
                 <DropdownMenuTrigger {trigger}>
-                  <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+                  <Button class="bits-btn" variant="ghost" size="sm">
                     <MoreVertical class="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -319,7 +319,7 @@
           {#if searchQuery || selectedCategory !== 'all'}
             <h3 class="space-y-4">No citations found</h3>
             <p class="space-y-4">No citations match your current search criteria.</p>
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="secondary"
               onclick={() => {
                 searchQuery = '';
@@ -333,7 +333,7 @@
               You haven't saved any citations yet. Start by adding citations from reports or create
               new ones.
             </p>
-            <Button class="bits-btn bits-btn" onclick={() => (showAddDialog = true)}>
+            <Button class="bits-btn" onclick={() => (showAddDialog = true)}>
               <Plus class="space-y-4" />
               Add your first citation
             </Button>
@@ -399,8 +399,8 @@
     </div>
 
     <DialogFooter>
-  <Button class="bits-btn bits-btn" variant="secondary" onclick={() => (showAddDialog = false)}>Cancel</Button>
-  <Button class="bits-btn bits-btn" onclick={() => saveCitation()} disabled={!newCitation.title || !newCitation.content}>
+  <Button class="bits-btn" variant="secondary" onclick={() => (showAddDialog = false)}>Cancel</Button>
+  <Button class="bits-btn" onclick={() => saveCitation()} disabled={!newCitation.title || !newCitation.content}>
         Save Citation
       </Button>
     </DialogFooter>
@@ -454,8 +454,8 @@
       </div>
 
       <DialogFooter>
-  <Button class="bits-btn bits-btn" variant="secondary" onclick={() => (editingCitation = null)}>Cancel</Button>
-  <Button class="bits-btn bits-btn" onclick={() => updateCitation()}>Update Citation</Button>
+  <Button class="bits-btn" variant="secondary" onclick={() => (editingCitation = null)}>Cancel</Button>
+  <Button class="bits-btn" onclick={() => updateCitation()}>Update Citation</Button>
       </DialogFooter>
     </DialogContent>
   </DialogRoot>
@@ -464,3 +464,4 @@
 <style>
   /* @unocss-include */
 </style>
+

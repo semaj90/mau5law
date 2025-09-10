@@ -334,7 +334,7 @@
 
       <!-- Advanced Options -->
       <div class="border-t pt-6">
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           type="button"
           variant="ghost"
           onclick={() => showAdvanced = !showAdvanced}
@@ -471,7 +471,7 @@
                         <p class="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
                       </div>
                     </div>
-                    <Button class="bits-btn bits-btn"
+                    <Button class="bits-btn"
                       type="button"
                       variant="ghost"
                       size="sm"
@@ -491,14 +491,14 @@
       <div class="flex items-center justify-between pt-6 border-t">
         <div class="flex items-center space-x-4">
           {#if enableAutoSave && !editMode}
-            <Button class="bits-btn bits-btn" type="button" variant="outline" onclick={() => { if (ondraft) ondraft({ data: $form }); }}>
+            <Button class="bits-btn" type="button" variant="outline" onclick={() => { if (ondraft) ondraft({ data: $form }); }}>
               Save as Draft
             </Button>
           {/if}
         </div>
 
         <div class="flex items-center space-x-3">
-          <Button class="bits-btn bits-btn" type="button" variant="outline">
+          <Button class="bits-btn" type="button" variant="outline">
             Cancel
           </Button>
 
@@ -526,7 +526,7 @@
     <h2 class="text-lg font-semibold text-red-800 mb-2">Form Error</h2>
     <p class="text-red-700 mb-4">The case form encountered an error:</p>
     <p class="text-red-600 font-mono text-sm mb-4 bg-red-100 p-2 rounded">{componentError.message}</p>
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
   onclick={() => { componentError = null; }}
       variant="outline"
       class="border-red-300 text-red-700 hover:bg-red-50"

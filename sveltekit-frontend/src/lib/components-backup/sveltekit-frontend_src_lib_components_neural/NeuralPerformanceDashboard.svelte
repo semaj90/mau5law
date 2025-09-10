@@ -414,3 +414,4 @@
     animation: pulse 2s infinite;
   }
 </style>
+

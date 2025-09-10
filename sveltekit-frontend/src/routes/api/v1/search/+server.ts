@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import { orchestrator } from '$lib/services/unified-legal-orchestrator';
 import { qdrant } from '$lib/server/vector/qdrant-manager';
 import { db, vectorSearch } from '$lib/server/database/connection';
-import { rabbitmq } from '$lib/server/queue/rabbitmq-manager';
+import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
 import type { RequestHandler } from './$types.js';
 
 // Unified Search API with hybrid vector + text + filtered search
@@ -69,8 +69,8 @@ export const POST: RequestHandler = async ({ request }) => {
       finalResults = await performHybridSearch(query, queryEmbedding, filters, limit, threshold, collections);
     }
 
-    // Track search analytics
-    await rabbitmq.publishAnalyticsEvent({
+    // Track search analytics via NATS
+    await natsQuicSearchService.publishAnalytics({
       event_type: 'search_request',
       event_data: {
         query,
@@ -251,8 +251,6 @@ async function performTextSearch(query: string, filters: any, limit: number): Pr
     const { documentsTable } = await import('$lib/server/database/schema');
     const { ilike, and, eq } = await import('drizzle-orm');
     
-    let searchQuery = db.select().from(documentsTable);
-    
     const conditions = [];
     
     // Add text search condition
@@ -266,9 +264,7 @@ async function performTextSearch(query: string, filters: any, limit: number): Pr
       // Add more filter conditions as needed
     }
     
-    if (conditions.length > 0) {
-      searchQuery = searchQuery.where(and(...conditions));
-    }
+    const searchQuery = db.select().from(documentsTable).where(and(...conditions));
     
     const results = await searchQuery.limit(limit);
     

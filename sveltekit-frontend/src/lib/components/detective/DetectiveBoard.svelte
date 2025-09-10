@@ -430,7 +430,7 @@
 				<div class="flex items-center gap-4">
 					<!-- View Mode Switcher -->
 					<div class="flex gap-2">
-						<Button class="bits-btn bits-btn"
+						<Button class="bits-btn"
 							variant={viewMode === 'columns' ? 'default' : 'outline'}
 							size="sm"
 							onclick={() => switchViewMode('columns')}
@@ -438,7 +438,7 @@
 							<span class="mr-2">📋</span>
 							Columns
 						</Button>
-						<Button class="bits-btn bits-btn"
+						<Button class="bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'outline'}
 							size="sm"
 							onclick={() => switchViewMode('canvas')}
@@ -471,7 +471,7 @@
 						</div>
 					{/if}
 
-					<Button class="bits-btn bits-btn" size="sm">
+					<Button class="bits-btn" size="sm">
 						<span class="mr-2">➕</span>
 						New Case
 					</Button>
@@ -668,10 +668,10 @@
 					}}
 				/>
 				<div class="flex gap-2">
-					<Button class="bits-btn bits-btn" onclick={runFindSearch} disabled={findModal.loading}>
+					<Button class="bits-btn" onclick={runFindSearch} disabled={findModal.loading}>
 						{#if findModal.loading}Searching...{:else}Search{/if}
 					</Button>
-					<Button class="bits-btn bits-btn" variant="outline" onclick={closeFindModal}>Close</Button>
+					<Button class="bits-btn" variant="outline" onclick={closeFindModal}>Close</Button>
 				</div>
 
 				{#if findModal.error}

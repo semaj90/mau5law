@@ -49,7 +49,7 @@
         <span class="user-role">{authStore.user.role}</span>
       </div>
     {/if}
-    <Button class="bits-btn bits-btn" 
+    <Button class="bits-btn" 
       {variant} 
       {size}
       onclick={handleLogout}

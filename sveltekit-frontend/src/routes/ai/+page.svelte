@@ -113,7 +113,7 @@ let selectedConversationId = $state<string | null >(null);
                 <Clock class="space-y-4" />
                 Chat History
               </h2>
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="outline"
                 size="sm"
                 on:onclick={() => startNewChat()}
@@ -180,7 +180,7 @@ let selectedConversationId = $state<string | null >(null);
           >
             <div class="space-y-4">
               {#if !showHistory}
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   on:onclick={() => showHistoryPanel()}
@@ -204,7 +204,7 @@ let selectedConversationId = $state<string | null >(null);
 
             <div class="space-y-4">
               {#if $chatStore.currentConversation}
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   on:onclick={() => chatActions.saveToStorage()}
@@ -214,7 +214,7 @@ let selectedConversationId = $state<string | null >(null);
                 </Button>
               {/if}
 
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="outline"
                 size="sm"
                 on:onclick={() => startNewChat()}
@@ -264,3 +264,4 @@ let selectedConversationId = $state<string | null >(null);
     </div>
   </div>
 </div>
+

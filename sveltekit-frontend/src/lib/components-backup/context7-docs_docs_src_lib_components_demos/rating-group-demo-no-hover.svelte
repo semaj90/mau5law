@@ -30,3 +30,4 @@
 		Rating: {value} out of 5 stars
 	</p>
 </div>
+

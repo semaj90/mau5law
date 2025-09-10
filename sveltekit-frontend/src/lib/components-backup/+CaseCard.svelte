@@ -15,3 +15,4 @@
     <a href="/case/{caseItem.id}" class="btn btn-outline-primary mt-auto" aria-label="View details for {caseItem.title}">View Details &rarr;</a>
   </div>
 </div>
+

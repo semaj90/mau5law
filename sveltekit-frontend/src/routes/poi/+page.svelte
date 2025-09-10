@@ -72,7 +72,7 @@ let persons = $state([
         Filters
       </Button>
 
-    <Button class="bits-btn bits-btn"
+    <Button class="bits-btn"
         variant="outline"
         size="sm"
   onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
@@ -84,7 +84,7 @@ let persons = $state([
         {/if}
       </Button>
 
-      <Button class="bits-btn bits-btn">
+      <Button class="bits-btn">
         <Plus class="w-4 h-4 mr-2" />
         Add Person
       </Button>
@@ -156,7 +156,7 @@ let persons = $state([
         {searchQuery ? 'Try adjusting your search criteria' : 'Add persons to get started'}
       </p>
       {#if !searchQuery}
-        <Button class="bits-btn bits-btn">
+        <Button class="bits-btn">
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
         </Button>
@@ -227,11 +227,11 @@ let persons = $state([
             </div>
 
             <div class="flex gap-2">
-              <Button class="bits-btn bits-btn" size="sm">
+              <Button class="bits-btn" size="sm">
                 <Eye class="w-3 h-3 mr-1" />
                 View
               </Button>
-              <Button class="bits-btn bits-btn" variant="outline" size="sm">
+              <Button class="bits-btn" variant="outline" size="sm">
                 <Edit class="w-3 h-3 mr-1" />
                 Edit
               </Button>

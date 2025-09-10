@@ -21,7 +21,8 @@
 
 <div class="evidence-page-container">
   {#if showWelcome && pageLoaded}
-    <Card.Root class="welcome-banner animate-fade-in">
+    <div class="welcome-banner animate-fade-in">
+      <Card.Root>
       <Card.Header>
         <Card.Title>🎯 Evidence Board Ready</Card.Title>
         <Card.Description>
@@ -45,15 +46,16 @@
         </div>
       </Card.Content>
       <Card.Footer>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           onclick={() => showWelcome = false}
         >
           Get Started →
         </Button>
       </Card.Footer>
-    </Card.Root>
+      </Card.Root>
+    </div>
   {/if}
 
   {#if pageLoaded}
@@ -72,7 +74,7 @@
     min-height: 100vh;
     position: relative;
   }
-  
+
   .welcome-banner {
     position: fixed;
     top: 20px;
@@ -83,11 +85,11 @@
     border: 2px solid #00ff41;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
-  
+
   .animate-fade-in {
     animation: fadeInSlide 0.5s ease-out;
   }
-  
+
   @keyframes fadeInSlide {
     from {
       opacity: 0;
@@ -98,14 +100,14 @@
       transform: translateX(0);
     }
   }
-  
+
   .welcome-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     margin: 8px 0;
   }
-  
+
   .stat {
     display: flex;
     flex-direction: column;
@@ -115,14 +117,14 @@
     border: 1px solid rgba(0, 255, 65, 0.3);
     border-radius: 4px;
   }
-  
+
   .stat-label {
     font-size: 10px;
     color: #888;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-  
+
   .stat-value {
     font-size: 12px;
     font-weight: bold;
@@ -155,3 +157,4 @@
     100% { transform: rotate(360deg); }
   }
 </style>
+

@@ -123,7 +123,7 @@
         🚀 Run Demo Scenario
       </Button>
       
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         size="sm"
         onclick={() => showEventLog = !showEventLog}

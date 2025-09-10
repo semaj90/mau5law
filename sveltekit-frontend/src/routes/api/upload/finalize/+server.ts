@@ -1,22 +1,23 @@
 
 import { error, json } from "@sveltejs/kit";
-import { mkdir, rename } from "drizzle-orm";
+import { mkdir, rename } from 'fs/promises';
 import { tmpdir } from "os";
+import { join } from 'path';
 import type { RequestHandler } from './$types';
 
 
 const UPLOAD_DIR = join(tmpdir(), "chunked-uploads");
 
 // Assembles the final file from chunks
-export async function POST({ request }): Promise<any> {
+export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { fileId, filename } = await request.json();
+    const { fileId, filename } = await (request as any).json();
 
     if (!fileId || !filename) {
-      throw error(400, "Invalid finalization data.");
+      throw error(400, 'Invalid finalization data.');
     }
     const tempFilePath = join(UPLOAD_DIR, fileId);
-    const finalDirPath = "./uploads";
+    const finalDirPath = './uploads';
     const finalFilePath = join(finalDirPath, filename);
 
     await mkdir(finalDirPath, { recursive: true });
@@ -25,6 +26,6 @@ export async function POST({ request }): Promise<any> {
     return json({ url: `/${finalFilePath}` });
   } catch (err: any) {
     console.error(err);
-    throw error(500, "Failed to finalize upload.");
+    throw error(500, 'Failed to finalize upload.');
   }
-}
+};

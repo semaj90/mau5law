@@ -241,3 +241,4 @@ Compact searchable component for embedding in other interfaces
     overflow: hidden
   }
 </style>
+

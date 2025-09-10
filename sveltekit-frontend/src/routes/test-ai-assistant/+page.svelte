@@ -187,7 +187,7 @@
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">Test Controls</h2>
           <div class="flex gap-3">
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="outline"
               onclick={runAllTests}
               disabled={isRunning}
@@ -196,7 +196,7 @@
                 {isRunning ? 'Running Tests...' : 'Run All Tests'}
               {/snippet}
             </Button>
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="default"
               onclick={testSSEStream}
               disabled={isRunning}

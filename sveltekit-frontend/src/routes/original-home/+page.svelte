@@ -240,3 +240,4 @@ let heroText = $state("Advanced Legal Case Management");
     overflow: hidden;
 }
 </style>
+

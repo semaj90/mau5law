@@ -385,18 +385,18 @@ let fullContent = $state('');
           </div>
 
           <!-- Action Buttons -->
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             on:onclick={downloadConversation}
             disabled={messages.length <= 1}>
             <Download class="h-4 w-4" />
           </Button>
-          <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={clearMessages} disabled={messages.length <= 1}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:onclick={clearMessages} disabled={messages.length <= 1}>
             <Trash2 class="h-4 w-4" />
           </Button>
           <Dialog.Close>
-            <Button class="bits-btn bits-btn" variant="ghost" size="sm">✕</Button>
+            <Button class="bits-btn" variant="ghost" size="sm">✕</Button>
           </Dialog.Close>
         </div>
       </div>
@@ -522,4 +522,5 @@ let fullContent = $state('');
     opacity: 0.8;
   }
 </style>
+
 

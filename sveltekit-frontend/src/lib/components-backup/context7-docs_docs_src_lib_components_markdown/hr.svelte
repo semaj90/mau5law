@@ -6,3 +6,4 @@
 </script>
 
 <hr class={cn("my-4 md:my-8", className)} {...restProps} />
+

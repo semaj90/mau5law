@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
 
 {#if show}
   <div class="space-y-4" data-position={position}>
-    <Button class="bits-btn bits-btn" />
+    <Button class="bits-btn" />
   </div>
 {/if}
 
@@ -45,3 +45,4 @@ https://svelte.dev/e/js_parse_error -->
     top: 1.5rem;
 }
 </style>
+

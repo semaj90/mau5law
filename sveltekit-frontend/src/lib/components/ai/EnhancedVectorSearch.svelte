@@ -486,7 +486,7 @@ let comparison = $state(0);
       </div>
 
       <div class="search-actions">
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           on:onclick={() => performSearch()}
           disabled={$isSearching || !$searchQuery.trim()}
           class="search-button"
@@ -501,7 +501,7 @@ let comparison = $state(0);
         </Button>
 
         {#if enableFilters}
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             on:onclick={() => showFilters.update((s) => !s)}
             class="filter-button"
@@ -517,7 +517,7 @@ let comparison = $state(0);
         {/if}
 
         {#if enableAnalytics}
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             on:onclick={() => showAnalytics.update((s) => !s)}
           >
@@ -534,7 +534,7 @@ let comparison = $state(0);
         <p class="history-label">Recent searches:</p>
         <div class="history-tags">
           {#each $searchHistory.slice(0, 5) as historyItem}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               on:onclick={() => {
@@ -558,7 +558,7 @@ let comparison = $state(0);
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           <span>Advanced Filters</span>
-          <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={resetFilters}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:onclick={resetFilters}>
             Reset
           </Button>
         </CardTitle>
@@ -752,15 +752,15 @@ let comparison = $state(0);
 
               <!-- Result Actions -->
               <div class="result-actions">
-                <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+                <Button class="bits-btn" variant="ghost" size="sm">
                   <Eye class="mr-1" size={14} />
                   View
                 </Button>
-                <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+                <Button class="bits-btn" variant="ghost" size="sm">
                   <Download class="mr-1" size={14} />
                   Download
                 </Button>
-                <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+                <Button class="bits-btn" variant="ghost" size="sm">
                   <Share2 class="mr-1" size={14} />
                   Share
                 </Button>
@@ -779,7 +779,7 @@ let comparison = $state(0);
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button class="bits-btn bits-btn" variant="outline" on:onclick={resetFilters}>Reset Filters</Button>
+        <Button class="bits-btn" variant="outline" on:onclick={resetFilters}>Reset Filters</Button>
       </div>
     </div>
   {/if}
@@ -1380,4 +1380,5 @@ let comparison = $state(0);
     color: var(--muted-foreground);
   }
 </style>
+
 

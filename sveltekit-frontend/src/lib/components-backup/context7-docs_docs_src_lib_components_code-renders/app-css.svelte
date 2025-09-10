@@ -307,3 +307,4 @@
 <span data-line=""><span style="--shiki-dark:#8D8F9E;--shiki-light:#9A9A9A">	}</span></span>
 <span data-line=""><span style="--shiki-dark:#DEE0EF;--shiki-light:#404040">}</span></span></code><!----><!---->
 </pre><!----></figure>`}
+

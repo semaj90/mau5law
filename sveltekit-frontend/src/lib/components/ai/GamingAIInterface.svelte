@@ -560,3 +560,4 @@ let isTyping = $state(false);
     100% { top: 100%; opacity: 1; }
   }
 </style>
+

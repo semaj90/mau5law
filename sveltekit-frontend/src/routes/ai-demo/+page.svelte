@@ -213,10 +213,10 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </div>
 
         <div class="mt-4 flex gap-2">
-          <Button class="bits-btn bits-btn" onclick={testGeneration} variant="outline">
+          <Button class="bits-btn" onclick={testGeneration} variant="outline">
             Test Generation
           </Button>
-          <Button class="bits-btn bits-btn" onclick={checkOllamaHealth} variant="outline">
+          <Button class="bits-btn" onclick={checkOllamaHealth} variant="outline">
             Refresh Status
           </Button>
         </div>
@@ -288,3 +288,4 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     font-family: "Inter", system-ui, sans-serif;
   }
 </style>
+

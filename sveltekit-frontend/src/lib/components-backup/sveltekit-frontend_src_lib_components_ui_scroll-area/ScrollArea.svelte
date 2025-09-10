@@ -21,3 +21,4 @@
 	<ScrollAreaPrimitive.Scrollbar orientation="horizontal" />
 	<ScrollAreaPrimitive.Corner />
 </ScrollAreaPrimitive.Root>
+

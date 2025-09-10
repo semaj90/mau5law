@@ -4,8 +4,13 @@
 // ======================================================================
 
 import { json, error } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import type { RequestHandler } from './$types';
-import { canonicalResultCache, type CanonicalResult, type RankingSet } from '$lib/services/canonical-result-cache.js';
+import {
+  canonicalResultCache,
+  type CanonicalResult,
+  type RankingSet,
+} from '$lib/services/canonical-result-cache.js';
 import { enhancedRAGService } from '$lib/services/enhanced-rag-service.js';
 
 // GET /api/v1/cache/ranking?key=X&metadata=true&limit=10
@@ -20,10 +25,13 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
     // Validate slot key
     if (!slotKey || slotKey.length !== 1) {
-      throw error(400, {
-        message: 'Invalid or missing slot key - must be single character',
-        code: 'INVALID_SLOT_KEY'
-      });
+      throw error(
+        400,
+        makeHttpErrorPayload({
+          message: 'Invalid or missing slot key - must be single character',
+          code: 'INVALID_SLOT_KEY',
+        })
+      );
     }
 
     // Check if client prefers binary response
@@ -36,12 +44,15 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
     if (!rankingSet) {
       // Cache miss - return 404 with metrics
-      throw error(404, {
-        message: 'Ranking set not found for slot key',
-        code: 'CACHE_MISS',
-        slotKey,
-        latencyMs: latency
-      });
+      throw error(
+        404,
+        makeHttpErrorPayload({
+          message: 'Ranking set not found for slot key',
+          code: 'CACHE_MISS',
+          slotKey,
+          latencyMs: latency,
+        })
+      );
     }
 
     // Apply result limit if specified
@@ -54,29 +65,37 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const responseData = {
       ...rankingSet,
       results,
-      metadata: includeMetadata ? {
-        slotKey,
-        cacheHit: true,
-        latencyMs: latency,
-        compressionRatio: undefined, // Will be calculated if binary
-        resultCount: results.length,
-        totalResultCount: rankingSet.results.length,
-        truncated: limit ? results.length < rankingSet.results.length : false
-      } : undefined
+      metadata: includeMetadata
+        ? {
+            slotKey,
+            cacheHit: true,
+            latencyMs: latency,
+            compressionRatio: undefined, // Will be calculated if binary
+            resultCount: results.length,
+            totalResultCount: rankingSet.results.length,
+            truncated: limit ? results.length < rankingSet.results.length : false,
+          }
+        : undefined,
     };
 
     // Return binary response if requested
     if (preferBinary) {
       const binaryData = await packRankingSetToBinary(responseData as RankingSet);
-      return new Response(binaryData, {
+      // Normalize to ArrayBuffer to avoid SharedArrayBuffer typing issues, then wrap in a Blob
+      const arrayBuffer =
+        binaryData.buffer instanceof ArrayBuffer
+          ? binaryData.buffer
+          : Uint8Array.from(binaryData).buffer;
+      const body = new Blob([arrayBuffer]);
+      return new Response(body, {
         status: 200,
         headers: {
           'Content-Type': 'application/octet-stream',
           'X-Cache-Status': 'hit',
           'X-Latency-Ms': latency.toString(),
           'X-Result-Count': results.length.toString(),
-          'Cache-Control': 'max-age=30, public'
-        }
+          'Cache-Control': 'max-age=30, public',
+        },
       });
     }
 
@@ -87,13 +106,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'X-Cache-Status': 'hit',
         'X-Latency-Ms': latency.toString(),
         'X-Result-Count': results.length.toString(),
-        'Cache-Control': 'max-age=30, public'
-      }
+        'Cache-Control': 'max-age=30, public',
+      },
     });
-
   } catch (err) {
     const latency = performance.now() - startTime;
-    
+
     if (err && typeof err === 'object' && 'status' in err) {
       // SvelteKit error - re-throw
       throw err;
@@ -101,11 +119,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
     // Unexpected error
     console.error('Cache ranking retrieval failed:', err);
-    throw error(500, {
-      message: 'Internal cache error',
-      code: 'CACHE_ERROR',
-      latencyMs: latency
-    });
+    throw error(
+      500,
+      makeHttpErrorPayload({
+        message: 'Internal cache error',
+        code: 'CACHE_ERROR',
+        latencyMs: latency,
+      })
+    );
   }
 };
 
@@ -115,22 +136,28 @@ export const POST: RequestHandler = async ({ request }) => {
 
   try {
     const body = await request.json();
-    
+
     // Validate required fields
     if (!body.query || !Array.isArray(body.results)) {
-      throw error(400, {
-        message: 'Missing required fields: query and results array',
-        code: 'INVALID_REQUEST_BODY'
-      });
+      throw error(
+        400,
+        makeHttpErrorPayload({
+          message: 'Missing required fields: query and results array',
+          code: 'INVALID_REQUEST_BODY',
+        })
+      );
     }
 
     // Validate results format
     const results: CanonicalResult[] = body.results.map((result: any, index: number) => {
       if (!result.docId || typeof result.score !== 'number') {
-        throw error(400, {
-          message: `Invalid result at index ${index}: missing docId or score`,
-          code: 'INVALID_RESULT_FORMAT'
-        });
+        throw error(
+          400,
+          makeHttpErrorPayload({
+            message: `Invalid result at index ${index}: missing docId or score`,
+            code: 'INVALID_RESULT_FORMAT',
+          })
+        );
       }
 
       return {
@@ -139,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
         flags: result.flags || 0,
         summaryHash: result.summaryHash || '',
         targetUrlId: result.targetUrlId,
-        metadata: result.metadata
+        metadata: result.metadata,
       };
     });
 
@@ -149,7 +176,7 @@ export const POST: RequestHandler = async ({ request }) => {
       query: body.query,
       totalResults: body.totalResults || results.length,
       timestamp: Date.now(),
-      version: body.version || 1
+      version: body.version || 1,
     };
 
     // Store in cache and get slot key
@@ -157,37 +184,42 @@ export const POST: RequestHandler = async ({ request }) => {
     const latency = performance.now() - startTime;
 
     // Return slot key and metadata
-    return json({
-      success: true,
-      slotKey,
-      metadata: {
-        resultCount: results.length,
-        latencyMs: latency,
-        cacheUtilization: canonicalResultCache.getSlotTableStatus().utilization,
-        expiresAt: Date.now() + (30 * 1000) // 30 seconds TTL
+    return json(
+      {
+        success: true,
+        slotKey,
+        metadata: {
+          resultCount: results.length,
+          latencyMs: latency,
+          cacheUtilization: canonicalResultCache.getSlotTableStatus().utilization,
+          expiresAt: Date.now() + 30 * 1000, // 30 seconds TTL
+        },
+      },
+      {
+        status: 201,
+        headers: {
+          'X-Slot-Key': slotKey,
+          'X-Latency-Ms': latency.toString(),
+          'X-Result-Count': results.length.toString(),
+        },
       }
-    }, {
-      status: 201,
-      headers: {
-        'X-Slot-Key': slotKey,
-        'X-Latency-Ms': latency.toString(),
-        'X-Result-Count': results.length.toString()
-      }
-    });
-
+    );
   } catch (err) {
     const latency = performance.now() - startTime;
-    
+
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
     }
 
     console.error('Cache ranking storage failed:', err);
-    throw error(500, {
-      message: 'Failed to store ranking set',
-      code: 'STORAGE_ERROR',
-      latencyMs: latency
-    });
+    throw error(
+      500,
+      makeHttpErrorPayload({
+        message: 'Failed to store ranking set',
+        code: 'STORAGE_ERROR',
+        latencyMs: latency,
+      })
+    );
   }
 };
 
@@ -197,13 +229,16 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
   try {
     const slotKey = url.searchParams.get('key');
-    
+
     if (slotKey) {
       // Clear specific slot (if we implement single slot clearing)
-      throw error(501, {
-        message: 'Single slot clearing not yet implemented',
-        code: 'NOT_IMPLEMENTED'
-      });
+      throw error(
+        501,
+        makeHttpErrorPayload({
+          message: 'Single slot clearing not yet implemented',
+          code: 'NOT_IMPLEMENTED',
+        })
+      );
     } else {
       // Clear entire cache
       await canonicalResultCache.clear();
@@ -212,23 +247,25 @@ export const DELETE: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         message: 'Cache cleared successfully',
-        latencyMs: latency
+        latencyMs: latency,
       });
     }
-
   } catch (err) {
     const latency = performance.now() - startTime;
-    
+
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
     }
 
     console.error('Cache clear failed:', err);
-    throw error(500, {
-      message: 'Failed to clear cache',
-      code: 'CLEAR_ERROR',
-      latencyMs: latency
-    });
+    throw error(
+      500,
+      makeHttpErrorPayload({
+        message: 'Failed to clear cache',
+        code: 'CLEAR_ERROR',
+        latencyMs: latency,
+      })
+    );
   }
 };
 
@@ -239,10 +276,10 @@ async function packRankingSetToBinary(rankingSet: RankingSet): Promise<Uint8Arra
   const jsonString = JSON.stringify(rankingSet);
   const encoder = new TextEncoder();
   const jsonBytes = encoder.encode(jsonString);
-  
+
   // Simple compression simulation (gzip would be used in production)
   const compressionRatio = 0.6; // Assume 40% compression
   const mockCompressedSize = Math.floor(jsonBytes.length * compressionRatio);
-  
+
   return jsonBytes.slice(0, mockCompressedSize);
 }

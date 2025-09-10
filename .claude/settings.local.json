@@ -57,7 +57,13 @@
       "Bash(echo:*)",
       "Bash(npm run check:*)",
       "Bash(PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db -c \"\\dt\")",
-      "Bash(export PGPASSWORD=123456)"
+      "Bash(export PGPASSWORD=123456)",
+      "Bash(PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db -f \"src/lib/server/db/migrations/003_deploy_enhanced_legal_schema.sql\")",
+      "Bash(PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db -c \"\\d cases\")",
+      "Bash(PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db -f \"src/lib/server/db/migrations/004_add_missing_api_tables.sql\")",
+      "Bash(redis-cli:*)",
+      "Bash(pkill:*)",
+      "Bash(npx svelte-check:*)"
     ],
     "deny": [],
     "ask": []

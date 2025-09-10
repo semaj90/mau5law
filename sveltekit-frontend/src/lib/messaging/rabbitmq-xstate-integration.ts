@@ -355,28 +355,41 @@ export class RabbitMQXStateIntegration {
         // Browser environment - use WebSocket STOMP client
         const StompJS = await import('@stomp/stompjs');
 
-        this.connection = new StompJS.Client({
-          brokerURL: `${this.config.ssl ? 'wss' : 'ws'}://${this.config.host}:${this.config.port}/ws`,
-          connectHeaders: {
-            login: this.config.username,
-            passcode: this.config.password,
-            'heart-beat': `${this.config.heartbeat * 1000},${this.config.heartbeat * 1000}`
-          },
-          debug: (str) => console.log('RabbitMQ STOMP:', str),
-          onConnect: (frame) => {
-            console.log('✅ Connected to RabbitMQ via WebSocket STOMP');
-            this.setupQueues();
-          },
-          onStompError: (frame) => {
-            console.error('❌ RabbitMQ STOMP error:', frame);
-          },
-          onWebSocketClose: (event: any) => {
-            console.log('🔌 RabbitMQ WebSocket closed:', event);
+        // Defensive: StompJS may export default or named Client
+        const StompClient: any =
+          (StompJS as any).Client ?? (StompJS as any).default ?? (StompJS as any);
+
+        try {
+          this.connection = new StompClient({
+            brokerURL: `${this.config.ssl ? 'wss' : 'ws'}://${this.config.host}:${this.config.port}/ws`,
+            connectHeaders: {
+              login: this.config.username,
+              passcode: this.config.password,
+              'heart-beat': `${this.config.heartbeat * 1000},${this.config.heartbeat * 1000}`,
+            },
+            debug: (str: string) => console.log('RabbitMQ STOMP:', str),
+            onConnect: (frame: any) => {
+              console.log('✅ Connected to RabbitMQ via WebSocket STOMP');
+              try {
+                this.setupQueues();
+              } catch (e) {
+                console.error('setupQueues error:', e);
+              }
+            },
+            onStompError: (frame: any) => {
+              console.error('❌ RabbitMQ STOMP error:', frame);
+            },
+            onWebSocketClose: (event: any) => {
+              console.log('🔌 RabbitMQ WebSocket closed:', event);
+            },
+          });
+
+          if (typeof this.connection.activate === 'function') {
+            this.connection.activate();
           }
-        });
-
-        this.connection.activate();
-
+        } catch (err) {
+          console.error('Failed to initialize STOMP client defensively:', err);
+        }
       } else {
         // Server environment - use amqplib
         const amqp = await import('amqplib');
@@ -403,11 +416,20 @@ export class RabbitMQXStateIntegration {
    */
   private static async setupQueues(): Promise<void> {
     if (browser && this.connection) {
-      // Browser STOMP setup
+      // Browser STOMP setup (defensive)
+      const conn: any = this.connection;
       for (const queueName of Object.values(this.queues)) {
-        this.connection.subscribe(`/queue/${queueName}`, (message) => {
-          this.handleMessage(JSON.parse(message.body), queueName);
-        });
+        if (typeof conn.subscribe === 'function') {
+          conn.subscribe(`/queue/${queueName}`, (message: any) => {
+            try {
+              const body = message?.body ?? message?.binaryBody ?? null;
+              if (!body) return;
+              this.handleMessage(JSON.parse(body), queueName);
+            } catch (err) {
+              console.error('Failed to handle STOMP message:', err);
+            }
+          });
+        }
       }
     } else if (this.channel) {
       // Server AMQP setup
@@ -421,10 +443,18 @@ export class RabbitMQXStateIntegration {
         });
 
         await this.channel.consume(queueName, (msg) => {
-          if (msg) {
-            const message = JSON.parse(msg.content.toString());
+          try {
+            if (!msg) return;
+            const content = msg.content?.toString?.() ?? null;
+            if (!content) return;
+            const message = JSON.parse(content);
             this.handleMessage(message, queueName);
-            this.channel.ack(msg);
+            if (typeof this.channel?.ack === 'function') this.channel.ack(msg);
+          } catch (err) {
+            console.error('Failed to consume AMQP message:', err);
+            try {
+              if (typeof this.channel?.nack === 'function') this.channel.nack?.(msg);
+            } catch (e) {}
           }
         });
       }

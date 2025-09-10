@@ -315,7 +315,7 @@ let response = $state<Response;
           class="hidden"
           id="file-input"
         />
-        <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => document.getElementById('file-input')?.click()}>
+        <Button class="bits-btn" variant="outline" on:onclick={() => document.getElementById('file-input')?.click()}>
           Select Files
         </Button>
       {:else}
@@ -341,7 +341,7 @@ let response = $state<Response;
                     AI Analysis
                   </Badge>
                 {/if}
-                <Button class="bits-btn bits-btn" 
+                <Button class="bits-btn" 
                   variant="ghost" 
                   size="sm"
                   on:onclick={() => removeFile(index)}
@@ -361,14 +361,14 @@ let response = $state<Response;
               class="hidden"
               id="add-more-files"
             />
-            <Button class="bits-btn bits-btn" 
+            <Button class="bits-btn" 
               variant="outline" 
               on:onclick={() => document.getElementById('add-more-files')?.click()}
               disabled={selectedFiles.length >= maxFiles}
             >
               Add More Files
             </Button>
-            <Button class="bits-btn bits-btn" on:onclick={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
+            <Button class="bits-btn" on:onclick={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
               {#if uploading}
                 Processing...
               {:else}
@@ -435,7 +435,7 @@ let response = $state<Response;
         {/each}
 
         <div class="flex justify-center mt-4">
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             variant="outline" 
             on:onclick={() => {
               uploadResults = [];
@@ -478,4 +478,5 @@ let response = $state<Response;
     background-color: #eff6ff;
   }
 </style>
+
 

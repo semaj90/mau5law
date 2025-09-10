@@ -340,8 +340,8 @@
       </div>
 
     <div class="flex gap-2">
-  <Button class="bits-btn bits-btn" variant="outline" onclick={resetForm} disabled={analyzing}>Reset</Button>
-  <Button class="bits-btn bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+  <Button class="bits-btn" variant="outline" onclick={resetForm} disabled={analyzing}>Reset</Button>
+  <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
         </Button>
       </div>
@@ -486,8 +486,8 @@
         </div>
 
         <DialogFooter>
-          <Button class="bits-btn bits-btn" variant="outline" onclick={() => (showResults = false)}>Close</Button>
-          <Button class="bits-btn bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
+          <Button class="bits-btn" variant="outline" onclick={() => (showResults = false)}>Close</Button>
+          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -510,3 +510,4 @@
     animation: pulse-glow 2s infinite;
   }
 </style>
+

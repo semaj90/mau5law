@@ -725,7 +725,13 @@ export class UnifiedCacheEnhancedOrchestrator {
     return {
       requestId: request.requestId,
       success: false,
-      results: {},
+      results: {
+        qloraConfig: null,
+        renderOptimization: null,
+        semanticAnalysis: null,
+        graphSynthesis: null,
+        extractionResults: null
+      },
       performance: {
         accuracy: 0,
         latency: processingTime,

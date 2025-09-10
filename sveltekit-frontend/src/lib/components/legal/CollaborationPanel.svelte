@@ -336,7 +336,7 @@ Real-time collaboration interface for multiple investigators working on evidence
             <MapPin class="w-4 h-4 mr-2" />
             Annotations ({collaborationSession.annotations.length})
           </div>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => showAnnotationInput = !showAnnotationInput}
@@ -354,10 +354,10 @@ Real-time collaboration interface for multiple investigators working on evidence
               class="mb-3"
             />
             <div class="flex space-x-2">
-              <Button class="bits-btn bits-btn" onclick={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
+              <Button class="bits-btn" onclick={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
                 Add Annotation
               </Button>
-              <Button class="bits-btn bits-btn" onclick={() => showAnnotationInput = false} variant="outline" size="sm">
+              <Button class="bits-btn" onclick={() => showAnnotationInput = false} variant="outline" size="sm">
                 Cancel
               </Button>
             </div>

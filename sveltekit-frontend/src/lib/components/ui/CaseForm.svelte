@@ -320,7 +320,7 @@ let isFormDirty = $state(false);
                     blur={() => formApi.touchField("tags")}
                   />
                 </div>
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   type="button"
                   variant="secondary"
                   size="md"
@@ -371,5 +371,6 @@ let isFormDirty = $state(false);
     font-size: 0.75rem;
 }
 </style>
+
 
 

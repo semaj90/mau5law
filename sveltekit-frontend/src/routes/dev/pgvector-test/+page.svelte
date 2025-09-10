@@ -356,13 +356,13 @@
         </CardHeader>
         <CardContent>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Button class="bits-btn bits-btn" onclick={() => seedDatabase(10)} disabled={isLoading}>
+            <Button class="bits-btn" onclick={() => seedDatabase(10)} disabled={isLoading}>
               Seed 10 Documents
             </Button>
-            <Button class="bits-btn bits-btn" onclick={() => seedDatabase(50)} disabled={isLoading}>
+            <Button class="bits-btn" onclick={() => seedDatabase(50)} disabled={isLoading}>
               Seed 50 Documents
             </Button>
-            <Button class="bits-btn bits-btn" onclick={() => createIndex(100, 'cosine')} disabled={isLoading}>
+            <Button class="bits-btn" onclick={() => createIndex(100, 'cosine')} disabled={isLoading}>
               Create IVFFLAT Index
             </Button>
           </div>
@@ -391,7 +391,7 @@
               />
             </div>
             <div class="flex items-end">
-              <Button class="bits-btn bits-btn" onclick={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
+              <Button class="bits-btn" onclick={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
                 {isLoading ? 'Searching...' : 'Search'}
               </Button>
             </div>
@@ -469,16 +469,16 @@
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="grid grid-cols-2 gap-2">
-              <Button class="bits-btn bits-btn" onclick={() => createIndex(50, 'cosine')} disabled={isLoading} size="sm">
+              <Button class="bits-btn" onclick={() => createIndex(50, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (50 lists)
               </Button>
-              <Button class="bits-btn bits-btn" onclick={() => createIndex(100, 'cosine')} disabled={isLoading} size="sm">
+              <Button class="bits-btn" onclick={() => createIndex(100, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (100 lists)
               </Button>
-              <Button class="bits-btn bits-btn" onclick={() => createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
+              <Button class="bits-btn" onclick={() => createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
                 Euclidean
               </Button>
-              <Button class="bits-btn bits-btn" onclick={() => createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
+              <Button class="bits-btn" onclick={() => createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
                 Inner Product
               </Button>
             </div>
@@ -587,3 +587,4 @@
     overflow: hidden;
   }
 </style>
+

@@ -311,7 +311,7 @@
           </div>
           
           <div class="flex justify-end space-x-2 pt-4">
-            <Button class="bits-btn bits-btn" 
+            <Button class="bits-btn" 
               type="button" 
               variant="outline"
               on:onclick={() => isCreateDialogOpen.set(false)}
@@ -402,14 +402,14 @@
             </p>
             
             <div class="flex space-x-2">
-              <Button class="bits-btn bits-btn" 
+              <Button class="bits-btn" 
                 size="sm" 
                 variant="outline"
                 on:onclick={() => openEditDialog(caseData)}
               >
                 Edit
               </Button>
-              <Button class="bits-btn bits-btn" 
+              <Button class="bits-btn" 
                 size="sm" 
                 variant="destructive"
                 on:onclick={() => deleteCase(caseData.id!)}
@@ -523,7 +523,7 @@
         </div>
         
         <div class="flex justify-end space-x-2 pt-4">
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             type="button" 
             variant="outline"
             on:onclick={() => isEditDialogOpen.set(false)}

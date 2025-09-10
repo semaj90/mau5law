@@ -563,7 +563,7 @@ let dropZone = $state<HTMLDivElement;
 
                 <div class="action-buttons">
                   {#if showMetadataForm && file.status === "pending"}
-                    <Button class="bits-btn bits-btn"
+                    <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
                       on:onclick={() => openMetadataDialog(file)}
@@ -572,7 +572,7 @@ let dropZone = $state<HTMLDivElement;
                     </Button>
                   {/if}
 
-                  <Button class="bits-btn bits-btn"
+                  <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
                     on:onclick={() => removeFile(file.id)}
@@ -591,7 +591,7 @@ let dropZone = $state<HTMLDivElement;
 
     <!-- Upload Actions -->
     <div class="upload-actions mt-6">
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         on:onclick={uploadFiles}
         disabled={$isProcessing || $files.every((f) => f.status !== "pending")}
         class="mr-4"
@@ -606,7 +606,7 @@ let dropZone = $state<HTMLDivElement;
         {/if}
       </Button>
 
-      <Button class="bits-btn bits-btn"
+      <Button class="bits-btn"
         variant="outline"
         on:onclick={() => files.set([])}
         disabled={$isProcessing}
@@ -687,10 +687,10 @@ let dropZone = $state<HTMLDivElement;
           </div>
 
           <div class="dialog-actions">
-            <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => showMetadata.set(false)}>
+            <Button class="bits-btn" variant="outline" on:onclick={() => showMetadata.set(false)}>
               Cancel
             </Button>
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               on:onclick={() => {
                 if ($selectedFile) {
                   updateFileMetadata($selectedFile.id, $selectedFile.metadata);
@@ -804,4 +804,5 @@ let dropZone = $state<HTMLDivElement;
     @apply flex justify-end space-x-2 mt-6;
   }
 </style>
+
 

@@ -491,7 +491,7 @@ let screenReaderMode = $state(false);
       <div class="mx-auto px-4 max-w-7xl">
         <div class="mx-auto px-4 max-w-7xl">
           <h2 id="accessibility-panel-title" class="mx-auto px-4 max-w-7xl">Accessibility Panel</h2>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={() => (showPanel = false)}
@@ -562,7 +562,7 @@ let screenReaderMode = $state(false);
         <div class="mx-auto px-4 max-w-7xl">
           <div class="mx-auto px-4 max-w-7xl">
             <h3 class="mx-auto px-4 max-w-7xl">Accessibility Audit</h3>
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               size="sm"
               onclick={() => runAccessibilityAudit()}
               disabled={isAuditing}
@@ -703,3 +703,4 @@ let screenReaderMode = $state(false);
 </style>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

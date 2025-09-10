@@ -583,13 +583,13 @@ let unitIndex = $state(0);
       </div>
 
       <div class="container mx-auto px-4">
-        <Button class="bits-btn bits-btn" {disabled}>
+        <Button class="bits-btn" {disabled}>
           <Paperclip class="container mx-auto px-4" />
           Choose Files
         </Button>
 
         {#if enableCameraCapture}
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="secondary"
             on:onclick={handleCameraCaptureClick}
             {disabled}
@@ -636,7 +636,7 @@ let unitIndex = $state(0);
 
         <div class="container mx-auto px-4">
           {#if !autoUpload && files.some((f) => f.status === "pending")}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               size="sm"
               on:onclick={() => uploadFiles()}
               disabled={isUploading}
@@ -650,7 +650,7 @@ let unitIndex = $state(0);
             </Button>
           {/if}
 
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             on:onclick={() => (files = [])}
@@ -724,7 +724,7 @@ let unitIndex = $state(0);
             <!-- Actions -->
             <div class="container mx-auto px-4">
               {#if file.status === "success" && file.url}
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   on:onclick={() => window.open(file.url, "_blank")}
@@ -735,7 +735,7 @@ let unitIndex = $state(0);
               {/if}
 
               {#if file.status === "error"}
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   on:onclick={() => retryUpload(file.id)}
@@ -745,7 +745,7 @@ let unitIndex = $state(0);
                 </Button>
               {/if}
 
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
                 on:onclick={() => removeFile(file.id)}
@@ -978,3 +978,4 @@ let unitIndex = $state(0);
 </style>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

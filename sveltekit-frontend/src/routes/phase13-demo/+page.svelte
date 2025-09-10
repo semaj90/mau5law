@@ -495,7 +495,7 @@ let context7Integration = $state<any >(null);
                 <span class="text-xs text-gray-400">
                   PageRank: {result.pageRankBoost?.toFixed(3) || '0.000'}
                 </span>
-                <Button class="bits-btn bits-btn"
+                <Button class="bits-btn"
                   size="sm"
                   onclick={() => submitPositiveFeedback(index)}
                   class="text-xs bg-green-600 hover:bg-green-700">
@@ -574,3 +574,4 @@ let context7Integration = $state<any >(null);
       sans-serif;
   }
 </style>
+

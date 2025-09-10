@@ -411,7 +411,7 @@
         <div class="space-y-2">
           <Label for="method">Inference Method</Label>
           <div class="flex gap-2">
-            <Button class="bits-btn bits-btn" 
+            <Button class="bits-btn" 
               variant={useWebAssembly ? "default" : "outline"} 
               size="sm"
               onclick={() => useWebAssembly = true}
@@ -419,7 +419,7 @@
               <Cpu class="h-3 w-3 mr-1" />
               WASM
             </Button>
-            <Button class="bits-btn bits-btn" 
+            <Button class="bits-btn" 
               variant={!useWebAssembly ? "default" : "outline"} 
               size="sm"
               onclick={() => useWebAssembly = false}
@@ -484,7 +484,7 @@
           </Card.Title>
           <div class="flex gap-2">
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{chatHistory.length} messages</span>
-            <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={clearChat}>
+            <Button class="bits-btn" variant="outline" size="sm" onclick={clearChat}>
               Clear Chat
             </Button>
           </div>

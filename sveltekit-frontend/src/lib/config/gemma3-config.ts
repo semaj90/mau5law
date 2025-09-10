@@ -171,7 +171,7 @@ export function getSystemPromptForContext(
 }
 
 export function getInferenceSettings(
-  priorityLevel: "quick" | "balanced" | "creative" | "precise" = "balanced",
+  priorityLevel: "quick_response" | "balanced" | "creative" | "precise" = "balanced",
 ) {
   return GEMMA3_INFERENCE_SETTINGS[priorityLevel];
 }

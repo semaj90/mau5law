@@ -90,25 +90,25 @@
 
       <!-- Control Buttons -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <Button class="bits-btn bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
+        <Button class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
           Submit Single Job
         </Button>
-        <Button class="bits-btn bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
+        <Button class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
           Submit Batch
         </Button>
-        <Button class="bits-btn bits-btn" onclick={runHealthCheck} variant="outline">
+        <Button class="bits-btn" onclick={runHealthCheck} variant="outline">
           Health Check
         </Button>
-        <Button class="bits-btn bits-btn" onclick={resetPipeline} variant="destructive">
+        <Button class="bits-btn" onclick={resetPipeline} variant="destructive">
           Reset Pipeline
         </Button>
-        <Button class="bits-btn bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>
+        <Button class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>
           Enable WebGPU
         </Button>
-        <Button class="bits-btn bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>
+        <Button class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>
           Disable WebGPU
         </Button>
-        <Button class="bits-btn bits-btn" onclick={retryFailedJobs} disabled={!batchInfo?.failedJobs || batchInfo.failedJobs === 0}>
+        <Button class="bits-btn" onclick={retryFailedJobs} disabled={!batchInfo?.failedJobs || batchInfo.failedJobs === 0}>
           Retry Failed
         </Button>
       </div>
@@ -284,7 +284,7 @@
           <p class="text-sm text-gray-600 mb-4">
             Test connectivity to backend services that the vector pipeline depends on:
           </p>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             onclick={async () => {
               try {
                 const response = await fetch('http://localhost:8094/api/health');
@@ -299,7 +299,7 @@
           >
             Test Enhanced RAG (8094)
           </Button>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             onclick={async () => {
               try {
                 const response = await fetch('http://localhost:6333/health');

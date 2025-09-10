@@ -241,7 +241,7 @@
         </div>
         
         <div class="flex items-end">
-          <Button class="bits-btn bits-btn" 
+          <Button class="bits-btn" 
             onclick={() => generateSIMDGlyph(demoPrompts[Math.floor(Math.random() * demoPrompts.length)])}
             disabled={isGenerating}
             class="w-full"
@@ -253,13 +253,13 @@
       
       <!-- Batch Actions -->
       <div class="flex gap-2">
-        <Button class="bits-btn bits-btn" onclick={generateBatchDemo} disabled={isGenerating} variant="outline">
+        <Button class="bits-btn" onclick={generateBatchDemo} disabled={isGenerating} variant="outline">
           🚀 Batch Demo
         </Button>
-        <Button class="bits-btn bits-btn" onclick={testCompressionLevels} disabled={isGenerating} variant="outline">
+        <Button class="bits-btn" onclick={testCompressionLevels} disabled={isGenerating} variant="outline">
           📊 Test Compression
         </Button>
-        <Button class="bits-btn bits-btn" onclick={() => results = []} variant="outline">
+        <Button class="bits-btn" onclick={() => results = []} variant="outline">
           🗑️ Clear Results
         </Button>
       </div>
@@ -362,7 +362,7 @@
               <div class="bg-gray-800 text-gray-100 p-3 rounded-lg text-xs font-mono overflow-x-auto">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-yellow-400">Generated {result.metadata.shader_format.toUpperCase()} Shader</span>
-                  <Button class="bits-btn bits-btn" 
+                  <Button class="bits-btn" 
                     onclick={() => downloadShaderCode(result)}
                     size="sm"
                     variant="outline"
@@ -405,7 +405,7 @@
         <div class="text-6xl mb-4">🎨</div>
         <h3 class="text-lg font-medium mb-2">No SIMD Glyphs Generated Yet</h3>
         <p class="mb-4">Generate your first SIMD-optimized legal evidence glyph with GPU acceleration!</p>
-        <Button class="bits-btn bits-btn" 
+        <Button class="bits-btn" 
           onclick={() => generateSIMDGlyph(demoPrompts[0])}
           disabled={isGenerating}
         >

@@ -1,12 +1,18 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  	import { Button, Card } from "$lib/components/ui/enhanced-bits/compound.js";
+	import { Button } from "$lib/components/ui/enhanced-bits/compound.js";
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
   import type { OCRResult } from '$lib/services/ocr-processor';
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
 
-  const dispatch = createEventDispatcher();
+  // Outbound component events (parent listeners)
+  interface DocumentUploadEvents {
+    next: { step: 'documents'; data: InternalFormData };
+    previous: { step: 'documents' };
+    saveDraft: { step: 'documents'; data: InternalFormData };
+  }
+  const dispatch = createEventDispatcher<DocumentUploadEvents>();
   // SvelteKit 2 / Svelte 5 helpers (before $props() destructure)
   type ProcessingStatus = 'pending' | 'processing' | 'completed' | 'error';
 
@@ -34,7 +40,7 @@
     class: className = '',
     id,
     'data-testid': testId,
-    formData = $bindable()
+    formData = $bindable(createDefaultFormData())
   }: DocumentUploadFormProps & {
     formData?: {
       uploaded_files: File[];
@@ -47,17 +53,14 @@ let fileInput = $state<HTMLInputElement>();
 let uploadProgress = writable<Record<string, number>>({});
 let processingErrors = writable<Record<string, string>>({});
 
-  // Accepted file types
-  const acceptedTypes = [
+  // Accepted file types (combine user allowedTypes with a canonical set; de-dupe)
+  const canonicalTypes = [
     'application/pdf',
-    'image/jpeg',
-    'image/jpg',
-    'image/png',
-    'image/tiff',
-    'image/bmp',
+    'image/jpeg', 'image/jpg', 'image/png', 'image/tiff', 'image/bmp',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ];
+  const acceptedTypes: string[] = Array.from(new Set([ ...canonicalTypes, ...allowedTypes ]));
 
   function isValidFileType(file: File): boolean {
     return acceptedTypes.includes(file.type);
@@ -98,6 +101,23 @@ let processingErrors = writable<Record<string, string>>({});
   }
 
   async function handleFileSelection(files: File[]) {
+    if (files.length === 0) return;
+
+    // Enforce maxFiles before adding new ones
+    const remainingSlots = maxFiles - formData.uploaded_files.length;
+    if (remainingSlots <= 0) {
+      return;
+    }
+
+    const slice = files.slice(0, remainingSlots);
+    const rejectedForOverflow = files.length - slice.length;
+    if (rejectedForOverflow > 0) {
+      // mark overflow as errors
+      for (const f of files.slice(slice.length)) {
+        processingErrors.update(errors => ({ ...errors, [f.name]: `Exceeded maximum file limit (${maxFiles})` }));
+      }
+    }
+
     const validFiles = files.filter(file => {
       if (!isValidFileType(file)) {
         processingErrors.update(errors => ({
@@ -106,10 +126,10 @@ let processingErrors = writable<Record<string, string>>({});
         }));
         return false;
       }
-      if (file.size > 50 * 1024 * 1024) { // 50MB limit
+      if (file.size > maxFileSize) {
         processingErrors.update(errors => ({
           ...errors,
-          [file.name]: 'File size exceeds 50MB limit'
+          [file.name]: `File size exceeds limit (${formatFileSize(maxFileSize)} max)`
         }));
         return false;
       }
@@ -136,16 +156,11 @@ let processingErrors = writable<Record<string, string>>({});
     try {
       uploadProgress.update(progress => ({ ...progress, [file.name]: 0 }));
 
-      // Simulate progress updates
-      const progressInterval = setInterval(() => {
-        uploadProgress.update(progress => {
-          const current = progress[file.name] || 0;
-          if (current < 90) {
-            return { ...progress, [file.name]: current + 10 };
-          }
-          return progress;
-        });
-      }, 200);
+      // Simulate progress updates (non-leaky loop)
+      for (let p = 10; p <= 90; p += 10) {
+        await new Promise(r => setTimeout(r, 150));
+        uploadProgress.update(progress => ({ ...progress, [file.name]: p }));
+      }
 
       // Create mock OCR result for File object (browser environment)
       const ocrResult: OCRResult = {
@@ -162,7 +177,6 @@ let processingErrors = writable<Record<string, string>>({});
         processing_time: 100
       };
 
-      clearInterval(progressInterval);
       uploadProgress.update(progress => ({ ...progress, [file.name]: 100 }));
 
       formData.ocr_results = [...formData.ocr_results, ocrResult];
@@ -189,6 +203,7 @@ let processingErrors = writable<Record<string, string>>({});
 
     if (processedCount === totalDocuments) {
       formData.processing_status = 'completed';
+      onUploadComplete?.({ caseId, files: formData.uploaded_files, ocr_results: formData.ocr_results });
     }
   }
 
@@ -215,7 +230,7 @@ let processingErrors = writable<Record<string, string>>({});
       return;
     }
 
-    dispatch('next', { step: 'documents', data: formData });
+  dispatch('next', { step: 'documents', data: formData });
   }
 
   function handlePrevious() {
@@ -223,7 +238,7 @@ let processingErrors = writable<Record<string, string>>({});
   }
 
   function handleSaveDraft() {
-    dispatch('saveDraft', { step: 'documents', data: formData });
+  dispatch('saveDraft', { step: 'documents', data: formData });
   }
 
   function getFileIcon(fileType: string): string {
@@ -262,17 +277,17 @@ let processingErrors = writable<Record<string, string>>({});
     ondrop={handleDrop}
     role="button"
     tabindex="0"
-    on:onclick={() => fileInput.click()}
-    keydown={(e) => e.key === 'Enter' && fileInput.click()}
+    onclick={() => fileInput.click()}
+    onkeydown={(e) => e.key === 'Enter' && fileInput.click()}
   >
     <div class="space-y-4">
-      <div class="text-4xl">📁</div>
+    <div class="text-4xl">📁</div>
       <div>
         <p class="text-lg font-medium text-gray-700">
           Drag and drop files here, or <span class="text-blue-600 underline">browse</span>
         </p>
         <p class="text-sm text-gray-500 mt-2">
-          Supports: PDF, DOCX, DOC, JPEG, PNG, TIFF, BMP (max 50MB each)
+      Supports: {acceptedTypes.map(t => t.split('/')[1]).slice(0,7).join(', ')} (max {formatFileSize(maxFileSize)} each)
         </p>
       </div>
     </div>
@@ -283,7 +298,7 @@ let processingErrors = writable<Record<string, string>>({});
     type="file"
     multiple
     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.tiff,.bmp"
-    change={handleFileInputChange}
+    onchange={handleFileInputChange}
     class="hidden"
   />
 
@@ -438,3 +453,4 @@ let processingErrors = writable<Record<string, string>>({});
 </div>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

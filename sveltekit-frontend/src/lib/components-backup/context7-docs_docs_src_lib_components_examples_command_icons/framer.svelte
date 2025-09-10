@@ -4,3 +4,4 @@
 		fill="var(--highContrast)"
 	/>
 </svg>
+

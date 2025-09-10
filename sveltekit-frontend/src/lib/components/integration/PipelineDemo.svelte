@@ -242,7 +242,7 @@
 
       <!-- Advanced Controls -->
       <div class="flex flex-wrap gap-2">
-        <Button class="bits-btn bits-btn" 
+        <Button class="bits-btn" 
           onclick={autoExecutePipeline}
           disabled={isProcessing}
           variant="outline"
@@ -250,7 +250,7 @@
           🧠 Auto-Select Optimal
         </Button>
         
-        <Button class="bits-btn bits-btn" 
+        <Button class="bits-btn" 
           onclick={batchProcess}
           disabled={isProcessing}
           variant="outline"
@@ -258,21 +258,21 @@
           📦 Batch Process
         </Button>
         
-        <Button class="bits-btn bits-btn" 
+        <Button class="bits-btn" 
           onclick={checkSystemHealth}
           variant="outline"
         >
           🏥 Health Check
         </Button>
         
-        <Button class="bits-btn bits-btn" 
+        <Button class="bits-btn" 
           onclick={generateReport}
           variant="outline"
         >
           📈 Performance Report
         </Button>
         
-        <Button class="bits-btn bits-btn" 
+        <Button class="bits-btn" 
           onclick={cleanup}
           variant="destructive"
         >
@@ -296,7 +296,7 @@
           placeholder="Search across all pipelines..."
           onkeypress={(e) => e.key === 'Enter' && searchPipelines()}
         />
-        <Button class="bits-btn bits-btn" onclick={searchPipelines}>
+        <Button class="bits-btn" onclick={searchPipelines}>
           🔍 Search
         </Button>
       </div>

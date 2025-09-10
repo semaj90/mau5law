@@ -9,11 +9,11 @@
  */
 
 import Loki from 'lokijs';
-import { redisService } from '$lib/server';
+import { redisService } from '$lib/server/redis-service.js';
 import { nesMemory, type LegalDocument } from '../memory/nes-memory-architecture.js';
 import { EventEmitter } from 'events';
-import type { Redis as IORedisClient } from 'ioredis';
-import crypto from "crypto";
+import type Redis from 'ioredis';
+import crypto from 'crypto';
 
 // Cache configuration optimized for legal AI workloads
 const CACHE_CONFIG = {
@@ -97,8 +97,8 @@ export interface CacheStats {
 
 export class LokiRedisCache extends EventEmitter {
   private loki: Loki | null = null;
-  private redis: IORedisClient | null = null;
-  private subscriber: IORedisClient | null = null;
+  private redis: Redis | null = null;
+  private subscriber: Redis | null = null;
 
   // Loki collections by document type
   private collections: Map<string, Collection<CachedDocument>> = new Map();
@@ -113,6 +113,10 @@ export class LokiRedisCache extends EventEmitter {
 
   private responseTimeTracker: number[] = [];
   private isInitialized = false;
+  // Expose health status via getter to align with integration tests
+  public get isHealthy(): boolean {
+    return this.isInitialized === true;
+  }
 
   async initialize(): Promise<void> {
     try {
@@ -198,26 +202,48 @@ export class LokiRedisCache extends EventEmitter {
   private async setupSynchronization(): Promise<void> {
     if (!this.subscriber) return;
 
-    // Subscribe to document change events
-    await this.subscriber.psubscribe('legal_ai:document:*');
-    this.subscriber.on('pmessage', (pattern: string, channel: string, message: string) => {
-      this.handleRedisMessage(message, channel);
-    });
+    // Defensive access to subscriber (some Redis clients expose different shapes)
+    const sub: any = this.subscriber;
 
-    // Subscribe to search invalidation events
-    await this.subscriber.subscribe('legal_ai:search:invalidate');
-    this.subscriber.on('message', (channel: string, message: string) => {
-      if (channel === 'legal_ai:search:invalidate') {
-        this.invalidateSearchCache(JSON.parse(message) as any);
+    try {
+      if (typeof sub.psubscribe === 'function') {
+        await sub.psubscribe('legal_ai:document:*');
+        if (typeof sub.on === 'function') {
+          sub.on('pmessage', (pattern: string, channel: string, message: string) => {
+            try {
+              this.handleRedisMessage(message, channel);
+            } catch (err) {
+              console.error('Error in pmessage handler:', err);
+            }
+          });
+        }
       }
-    });
+
+      if (typeof sub.subscribe === 'function') {
+        await sub.subscribe('legal_ai:search:invalidate');
+        if (typeof sub.on === 'function') {
+          sub.on('message', (channel: string, message: string) => {
+            try {
+              if (channel === 'legal_ai:search:invalidate') {
+                this.invalidateSearchCache(JSON.parse(message) as any);
+              }
+            } catch (err) {
+              console.error('Error handling search invalidate message:', err);
+            }
+          });
+        }
+      }
+    } catch (err: any) {
+      console.error('Failed to setup Redis subscriber handlers:', err);
+    }
   }
 
   private handleRedisMessage(message: string, channel: string): void {
     try {
-      const data = JSON.parse(message) as any;
+      const data: any = JSON.parse(message);
+      if (!data || !data.operation) return;
       const documentId = data.documentId;
-      const operation = data.operation; // 'update' | 'delete' | 'create'
+      const operation = data.operation as string; // 'update' | 'delete' | 'create'
 
       // Update local Loki cache based on Redis changes
       switch (operation) {
@@ -229,6 +255,9 @@ export class LokiRedisCache extends EventEmitter {
           break;
         case 'create':
           this.addLocalDocument(data.document);
+          break;
+        default:
+          // ignore unknown operations
           break;
       }
 
@@ -303,19 +332,24 @@ export class LokiRedisCache extends EventEmitter {
       document,
       data: data ? Array.from(new Uint8Array(data)) : null,
     });
+    const r: any = this.redis;
+    try {
+      if (typeof r.setex === 'function') {
+        await r.setex(key, CACHE_CONFIG.redis.ttl.documents, value);
+      } else if (typeof r.set === 'function') {
+        await r.set(key, value);
+      }
+      this.stats.redis.operations++;
 
-    await this.redis.setex(key, CACHE_CONFIG.redis.ttl.documents, value);
-    this.stats.redis.operations++;
-
-    // Publish change event
-    await this.redis.publish(
-      `legal_ai:document:${document.type}`,
-      JSON.stringify({
-        documentId: document.id,
-        operation: 'create',
-        document,
-      })
-    );
+      if (typeof r.publish === 'function') {
+        await r.publish(
+          `legal_ai:document:${document.type}`,
+          JSON.stringify({ documentId: document.id, operation: 'create', document })
+        );
+      }
+    } catch (err: any) {
+      console.error('Redis store/publish error:', err);
+    }
   }
 
   private shouldUseNESMemory(document: CachedDocument): boolean {
@@ -606,7 +640,7 @@ export class LokiRedisCache extends EventEmitter {
 
     try {
       const key = `${CACHE_CONFIG.redis.keyPrefix}${cacheKey}`;
-      await this.redis.setex(key, CACHE_CONFIG.redis.ttl.searches, JSON.stringify(results));
+      await this.redis?.setex(key, CACHE_CONFIG.redis.ttl.searches, JSON.stringify(results));
     } catch (error: any) {
       console.error('❌ Search cache storage failed:', error);
     }
@@ -781,9 +815,9 @@ export class LokiRedisCache extends EventEmitter {
     try {
       const fullKey = `${CACHE_CONFIG.redis.keyPrefix}${key}`;
       if (ttl) {
-        await this.redis.setex(fullKey, ttl, value);
+        await this.redis?.setex(fullKey, ttl, value);
       } else {
-        await this.redis.set(fullKey, value);
+        await this.redis?.set(fullKey, value);
       }
       this.stats.redis.operations++;
     } catch (error: any) {

@@ -103,7 +103,7 @@ let filteredCitations = $state<Citation[] >([]);
           <div class="container mx-auto px-4">
             <h3 class="container mx-auto px-4">{citation.title}</h3>
             <div class="container mx-auto px-4">
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
                 on:onclick={() => toggleFavorite(citation)}
@@ -112,7 +112,7 @@ let filteredCitations = $state<Citation[] >([]);
                 <Star class="container mx-auto px-4" />
               </Button>
 
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
                 on:onclick={() => copyCitation(citation)}
@@ -121,7 +121,7 @@ let filteredCitations = $state<Citation[] >([]);
                 <Copy class="container mx-auto px-4" />
               </Button>
 
-              <Button class="bits-btn bits-btn"
+              <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
                 on:onclick={() => deleteCitation(citation)}
@@ -191,7 +191,7 @@ let filteredCitations = $state<Citation[] >([]);
       <div class="container mx-auto px-4">
         {#if searchQuery || selectedCategory !== "all"}
           <p class="container mx-auto px-4">No citations match your search criteria.</p>
-          <Button class="bits-btn bits-btn"
+          <Button class="bits-btn"
             variant="secondary"
             size="sm"
             on:onclick={() => {
@@ -410,3 +410,4 @@ let filteredCitations = $state<Citation[] >([]);
 </style>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

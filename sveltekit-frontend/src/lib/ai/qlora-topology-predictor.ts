@@ -260,13 +260,7 @@ export class QLoRATopologyPredictor {
     });
 
     // Enhanced SOM for pattern clustering
-    this.som = new WebGPUSOMCache({
-      maxNodes: options.cacheSize || 15000,
-      dimensions: 512,          // Reduced for faster computation
-      learningRate: options.learningRate || 0.03,
-      neighborhoodRadius: 2.5,
-      decayRate: 0.998
-    });
+    this.som = new WebGPUSOMCache();
 
     this.ragCache = new Map();
     this.stateHistory = new Map();

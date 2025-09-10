@@ -12,3 +12,4 @@
 <p class={cn("not-first:mt-6 leading-7", className)} {...restProps}>
 	{@render children?.()}
 </p>
+

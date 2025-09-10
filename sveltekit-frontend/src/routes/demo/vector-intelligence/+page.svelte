@@ -36,7 +36,7 @@ Comprehensive showcase of Phase 4 capabilities
     <div class="max-w-7xl mx-auto px-6 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <Button class="bits-btn bits-btn" variant="ghost" size="sm" onclick="history.back()">
+          <Button class="bits-btn" variant="ghost" size="sm" onclick="history.back()">
             <ArrowLeft class="h-4 w-4 mr-2" />
             Back
           </Button>
@@ -52,11 +52,11 @@ Comprehensive showcase of Phase 4 capabilities
             <Zap class="h-3 w-3" />
             Phase 4 Complete
           </Badge>
-          <Button class="bits-btn bits-btn" variant="outline" size="sm">
+          <Button class="bits-btn" variant="outline" size="sm">
             <BookOpen class="h-4 w-4 mr-2" />
             Documentation
           </Button>
-          <Button class="bits-btn bits-btn" variant="outline" size="sm">
+          <Button class="bits-btn" variant="outline" size="sm">
             <Github class="h-4 w-4 mr-2" />
             Source Code
           </Button>

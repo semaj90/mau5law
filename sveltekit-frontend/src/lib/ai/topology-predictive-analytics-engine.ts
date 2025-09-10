@@ -175,7 +175,7 @@ interface NeuralTopologyNetwork {
 
 class TopologyPredictiveAnalyticsEngine {
   private config: PredictiveAnalyticsConfig;
-  private neuralNetwork: NeuralTopologyNetwork;
+  private neuralNetwork!: NeuralTopologyNetwork;
   private topologyGraph: Map<string, TopologyRelationship[]> = new Map();
   private userInteractionHistory: UserInteractionPattern[] = [];
   private predictionCache: Map<string, PredictiveAnalyticsResult> = new Map();

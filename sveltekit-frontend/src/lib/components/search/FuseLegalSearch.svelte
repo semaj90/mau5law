@@ -201,16 +201,16 @@
           {#if showAIActions}
             <Card.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
-                <Button class="bits-btn bits-btn" size="sm" on:onclick={() => handleAIAction(law, 'summary')}>
+                <Button class="bits-btn" size="sm" on:onclick={() => handleAIAction(law, 'summary')}>
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
                 </Button>
-                <Button class="bits-btn bits-btn" variant="outline" size="sm" on:onclick={() => handleAIAction(law, 'chat')}>
+                <Button class="bits-btn" variant="outline" size="sm" on:onclick={() => handleAIAction(law, 'chat')}>
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI
                 </Button>
                 {#if law.fullTextUrl}
-                  <Button class="bits-btn bits-btn" variant="outline" size="sm" asChild>
+                  <Button class="bits-btn" variant="outline" size="sm" asChild>
                     <a href={law.fullTextUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink class="h-3 w-3 mr-1" />
                       Full Text
@@ -250,4 +250,5 @@
     color: theme(colors.yellow.100);
   }
 </style>
+
 

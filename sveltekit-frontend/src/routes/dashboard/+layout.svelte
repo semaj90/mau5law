@@ -257,11 +257,11 @@
             {/if}
           </Button>
           
-          <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+          <Button class="bits-btn" variant="ghost" size="sm">
             <Settings class="w-5 h-5" />
           </Button>
           
-          <Button class="bits-btn bits-btn" variant="ghost" size="sm">
+          <Button class="bits-btn" variant="ghost" size="sm">
             <User class="w-5 h-5" />
           </Button>
         </div>

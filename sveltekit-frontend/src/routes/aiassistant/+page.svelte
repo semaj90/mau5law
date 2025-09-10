@@ -473,11 +473,11 @@
       </div>
 
       <div class="flex items-center space-x-2">
-  <Button class="bits-btn bits-btn" variant="outline" size="sm" onclick={exportChatHistory}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={exportChatHistory}>
           <Download class="h-4 w-4 mr-1" />
           Export
         </Button>
-        <Button class="bits-btn bits-btn" variant="outline" size="sm">
+        <Button class="bits-btn" variant="outline" size="sm">
           <Settings class="h-4 w-4" />
         </Button>
       </div>
@@ -496,10 +496,10 @@
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Reports</h3>
             <div class="flex items-center space-x-1">
-              <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={() => adjustPanelWidth('reports', -5)}>
+              <Button class="bits-btn" size="sm" variant="ghost" onclick={() => adjustPanelWidth('reports', -5)}>
                 <Minimize class="h-3 w-3" />
               </Button>
-              <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('reports')}>
+              <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('reports')}>
                 <Minimize class="h-3 w-3" />
               </Button>
             </div>
@@ -544,7 +544,7 @@
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Summaries</h3>
-            <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('summaries')}>
+            <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('summaries')}>
               <Minimize class="h-3 w-3" />
             </Button>
           </div>
@@ -572,7 +572,7 @@
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Citations</h3>
-            <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('citations')}>
+            <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('citations')}>
               <Minimize class="h-3 w-3" />
             </Button>
           </div>
@@ -617,7 +617,7 @@
               </span>
             </div>
           </div>
-          <Button class="bits-btn bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('chat')}>
+          <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('chat')}>
             <Expand class="h-3 w-3" />
           </Button>
         </div>
@@ -738,7 +738,7 @@
               </Button>
             {/if}
 
-            <Button class="bits-btn bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
+            <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
               <Send class="h-4 w-4" />
             </Button>
           </div>
@@ -757,3 +757,4 @@
     overflow: hidden;
   }
 </style>
+

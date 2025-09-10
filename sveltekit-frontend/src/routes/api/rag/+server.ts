@@ -51,16 +51,10 @@ async function forwardToRAGBackend(
       const errorText = await response.text().catch(() => "Unknown error");
 
       // Log failed API call
-      await librarySyncService.logAgentCall({
-        id: crypto.randomUUID(),
-        timestamp: new Date(),
-        agentType: "rag",
-        operation: `${options.method || "GET"} ${endpoint}`,
-        input: { endpoint, options: { ...options, signal: undefined } },
-        output: { error: errorText, status: response.status },
-        duration,
-        success: false,
-        error: `HTTP ${response.status}: ${errorText}`,
+      console.error(`RAG Backend API call failed [${duration}ms]:`, {
+        endpoint,
+        status: response.status,
+        error: errorText
       });
 
       throw new Error(`RAG Backend Error (${response.status}): ${errorText}`);
@@ -69,15 +63,9 @@ async function forwardToRAGBackend(
     const result = await response.json();
 
     // Log successful API call
-    await librarySyncService.logAgentCall({
-      id: crypto.randomUUID(),
-      timestamp: new Date(),
-      agentType: "rag",
-      operation: `${options.method || "GET"} ${endpoint}`,
-      input: { endpoint, options: { ...options, signal: undefined } },
-      output: { success: true, resultKeys: Object.keys(result) },
-      duration,
-      success: true,
+    console.log(`RAG Backend API call succeeded [${duration}ms]:`, {
+      endpoint,
+      resultKeys: Object.keys(result)
     });
 
     return result;
@@ -86,16 +74,9 @@ async function forwardToRAGBackend(
     const duration = Date.now() - startTime;
 
     // Log error
-    await librarySyncService.logAgentCall({
-      id: crypto.randomUUID(),
-      timestamp: new Date(),
-      agentType: "rag",
-      operation: `${options.method || "GET"} ${endpoint}`,
-      input: { endpoint, options: { ...options, signal: undefined } },
-      output: { error: err.message },
-      duration,
-      success: false,
-      error: err.message,
+    console.error(`RAG Backend API call error [${duration}ms]:`, {
+      endpoint,
+      error: err.message
     });
 
     if (err.name === "AbortError") {
@@ -161,7 +142,7 @@ async function handleQueueSummarize(request: Request): Promise<any> {
 // Archived: handleCrawl moved to archived-handlers.ts
 
 /*
- * Handle enhanced search (vector/hybrid/chunk)
+ * Handle enhanced search (vector/hybrid/chunk) with local fallback
  */
 async function handleSearch(request: Request): Promise<any> {
   try {
@@ -173,36 +154,88 @@ async function handleSearch(request: Request): Promise<any> {
       limit = 10,
       threshold = 0.7,
       includeContent = true,
+      dateRange,
+      confidenceMin,
+      model,
+      includeMetadata = true,
     } = await request.json();
 
     if (!query) {
       throw error(400, "Query is required");
     }
 
-    const result = await forwardToRAGBackend("/api/v1/rag/search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    // Try Enhanced RAG Backend first
+    try {
+      console.log('Attempting search via Enhanced RAG Backend...');
+      const result = await forwardToRAGBackend("/api/v1/rag/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query,
+          searchType,
+          caseId,
+          documentTypes,
+          limit,
+          threshold,
+          includeContent,
+          dateRange,
+          confidenceMin,
+          model,
+          includeMetadata,
+        }),
+      });
+
+      return json({
+        success: true,
         query,
         searchType,
-        caseId,
-        documentTypes,
-        limit,
-        threshold,
-        includeContent,
-      }),
-    });
+        results: result.results,
+        metadata: result.metadata,
+        total: result.total || result.results?.length || 0,
+        source: 'rag-backend'
+      });
+    } catch (backendError: any) {
+      console.warn('RAG Backend search failed, falling back to local search:', backendError.message);
+      
+      // Fallback to local search API
+      const localSearchResponse = await fetch(new URL('/api/rag/search', request.url), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query,
+          searchType,
+          caseId,
+          documentTypes,
+          limit,
+          threshold,
+          dateRange,
+          confidenceMin,
+          model,
+          includeMetadata,
+          includeContent
+        })
+      });
 
-    return json({
-      success: true,
-      query,
-      searchType,
-      results: result.results,
-      metadata: result.metadata,
-      total: result.total || result.results?.length || 0,
-    });
+      if (!localSearchResponse.ok) {
+        throw new Error(`Local search also failed: ${localSearchResponse.status}`);
+      }
+
+      const localResult = await localSearchResponse.json();
+      
+      return json({
+        success: true,
+        query,
+        searchType,
+        results: localResult.results,
+        analytics: localResult.analytics,
+        total: localResult.analytics?.totalResults || 0,
+        source: 'local-search',
+        fallback: true,
+        warning: 'Used local search due to backend unavailability'
+      });
+    }
   } catch (err: any) {
-    console.error("Search error:", err);
+    console.error("All search methods failed:", err);
     throw error(500, `Search failed: ${err.message}`);
   }
 }
@@ -365,28 +398,60 @@ export const GET: RequestHandler = async ({ url }) => {
         const query = url.searchParams.get("query");
         const searchType = url.searchParams.get("searchType") || "hybrid";
         const limit = parseInt(url.searchParams.get("limit") || "10");
+        const threshold = parseFloat(url.searchParams.get("threshold") || "0.7");
 
         if (!query) {
           throw error(400, "Query parameter is required");
         }
 
-        const searchResult = await forwardToRAGBackend("/api/v1/rag/search", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            query,
-            searchType,
-            limit,
-            includeContent: true,
-          }),
-        });
+        // Try Enhanced RAG Backend first, fallback to local search
+        try {
+          const searchResult = await forwardToRAGBackend("/api/v1/rag/search", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query,
+              searchType,
+              limit,
+              threshold,
+              includeContent: true,
+            }),
+          });
 
-        return json({
-          success: true,
-          query,
-          results: searchResult.results,
-          total: searchResult.total,
-        });
+          return json({
+            success: true,
+            query,
+            results: searchResult.results,
+            total: searchResult.total,
+            source: 'rag-backend'
+          });
+        } catch (backendError: any) {
+          console.warn('RAG Backend GET search failed, using local search:', backendError.message);
+          
+          // Fallback to local search API
+          const localSearchUrl = new URL('/api/rag/search', url.origin);
+          localSearchUrl.searchParams.set('action', 'search');
+          localSearchUrl.searchParams.set('query', query);
+          localSearchUrl.searchParams.set('searchType', searchType);
+          localSearchUrl.searchParams.set('limit', limit.toString());
+          
+          const localResponse = await fetch(localSearchUrl, { method: 'GET' });
+          
+          if (!localResponse.ok) {
+            throw new Error(`Local search failed: ${localResponse.status}`);
+          }
+          
+          const localResult = await localResponse.json();
+          
+          return json({
+            success: true,
+            query,
+            results: localResult.results,
+            total: localResult.results?.length || 0,
+            source: 'local-search',
+            fallback: true
+          });
+        }
       }
 
       default:

@@ -371,7 +371,7 @@ let tagInput = $state("");
                 {/if}
               </div>
 
-              <Button class="bits-btn bits-btn" variant="ghost" size="sm" on:onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
+              <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
                 <X class="h-4 w-4" />
               </Button>
             </div>
@@ -427,7 +427,7 @@ let tagInput = $state("");
           <Label for="tags">Tags</Label>
           <div class="flex gap-2">
             <Input bind:value={tagInput} placeholder="Add a tag" disabled={isUploading} keydown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())} />
-            <Button class="bits-btn bits-btn" type="button" variant="outline" on:onclick={addTag} disabled={isUploading}>Add</Button>
+            <Button class="bits-btn" type="button" variant="outline" on:onclick={addTag} disabled={isUploading}>Add</Button>
           </div>
 
           {#if formState.tags.length > 0}
@@ -480,9 +480,9 @@ let tagInput = $state("");
       </p>
 
       <div class="flex gap-2">
-        <Button class="bits-btn bits-btn" variant="outline" on:onclick={() => oncancel?.()} disabled={isUploading}>Cancel</Button>
+        <Button class="bits-btn" variant="outline" on:onclick={() => oncancel?.()} disabled={isUploading}>Cancel</Button>
 
-        <Button class="bits-btn bits-btn" on:onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
+        <Button class="bits-btn" on:onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
           {#if isUploading}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />Uploading...
           {:else}
@@ -512,3 +512,4 @@ let tagInput = $state("");
   /* Minimal local styles; utilities provided by UnoCSS or your CSS framework. */
   .hidden { display: none; }
 </style>
+

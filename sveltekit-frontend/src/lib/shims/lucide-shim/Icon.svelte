@@ -12,3 +12,4 @@
   <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
   <text x="12" y="16" text-anchor="middle" font-size="8">{name}</text>
 </svg>
+

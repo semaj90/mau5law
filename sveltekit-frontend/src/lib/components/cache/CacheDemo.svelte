@@ -435,22 +435,22 @@
             </div>
 
             <div class="flex flex-wrap gap-2">
-              <Button class="bits-btn bits-btn" on:onclick={setCacheValue} disabled={$isLoading}>
+              <Button class="bits-btn" on:onclick={setCacheValue} disabled={$isLoading}>
                 <Database class="mr-2" size={16} />
                 Set Value
               </Button>
               
-              <Button class="bits-btn bits-btn" variant="outline" on:onclick={getCacheValue} disabled={$isLoading}>
+              <Button class="bits-btn" variant="outline" on:onclick={getCacheValue} disabled={$isLoading}>
                 <RefreshCw class="mr-2" size={16} />
                 Get Value
               </Button>
               
-              <Button class="bits-btn bits-btn" variant="destructive" on:onclick={deleteCacheValue} disabled={$isLoading}>
+              <Button class="bits-btn" variant="destructive" on:onclick={deleteCacheValue} disabled={$isLoading}>
                 <Trash2 class="mr-2" size={16} />
                 Delete
               </Button>
               
-              <Button class="bits-btn bits-btn" variant="destructive" on:onclick={clearCache} disabled={$isLoading}>
+              <Button class="bits-btn" variant="destructive" on:onclick={clearCache} disabled={$isLoading}>
                 <XCircle class="mr-2" size={16} />
                 Clear All
               </Button>
@@ -463,7 +463,7 @@
           <CardHeader>
             <CardTitle class="flex items-center justify-between">
               Test Results
-              <Button class="bits-btn bits-btn" 
+              <Button class="bits-btn" 
                 variant="ghost" 
                 size="sm" 
                 on:onclick={() => testResults.set([])}
@@ -775,4 +775,5 @@
     @apply max-w-7xl mx-auto p-4;
   }
 </style>
+
 

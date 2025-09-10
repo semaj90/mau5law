@@ -162,7 +162,7 @@ The agreement is valid for 5 years with automatic renewal options.`);
           Test Embedding API
         </Button>
 
-        <Button class="bits-btn bits-btn"
+        <Button class="bits-btn"
           onclick={testEmbeddingService}
           variant="outline"
         >

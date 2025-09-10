@@ -42,7 +42,7 @@
         <h3 class="text-phi-lg font-semibold mb-phi-md">Grid Variant</h3>
         <div class="flex gap-phi-sm flex-wrap">
           {#each variants as variant}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant={currentVariant === variant ? 'primary' : 'outline'}
               size="sm"
               onclick={() => currentVariant = variant}
@@ -58,7 +58,7 @@
         <h3 class="text-phi-lg font-semibold mb-phi-md">Golden Direction</h3>
         <div class="flex gap-phi-sm flex-wrap">
           {#each directions as direction}
-            <Button class="bits-btn bits-btn"
+            <Button class="bits-btn"
               variant={currentDirection === direction ? 'primary' : 'outline'}
               size="sm"
               onclick={() => currentDirection = direction}
