@@ -17,6 +17,7 @@
     "dev:debug:win": "set DEBUG=vite:*,kit:* && vite dev",
     "dev:debug:routing": "cross-env DEBUG=kit:router,kit:adapter vite dev",
     "dev:full": "node scripts/start-dev-full-gpu-aware.js && npm run postgres:test",
+    "dev:full:stable": "node scripts/start-dev-full-gpu-aware.js",
     "dev:full:redis-gpu": "node scripts/start-dev-full-gpu-aware.js",
     "dev:full:legacy": "node scripts/enhanced-system-startup.mjs",
     "dev:full:enhanced": "node scripts/start-dev-full-enhanced.js",
