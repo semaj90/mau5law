@@ -1,6 +1,5 @@
 <!-- WebGPU Acceleration Demo Page -->
 <script lang="ts">
-</script>
     import WebGPUAccelerationDemo from '$lib/components/demo/WebGPUAccelerationDemo.svelte';
 </script>
 

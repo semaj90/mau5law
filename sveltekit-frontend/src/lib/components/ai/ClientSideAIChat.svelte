@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter';
   import {

@@ -1,6 +1,5 @@
 <!-- YoRHa Interface Home Page -->
 <script lang="ts">
-</script>
   import { goto } from '$app/navigation';
   import {
     Play,

@@ -1,12 +1,6 @@
 <!-- Simplified YoRHa Interface -->
 <!-- Svelte runes are declared globally in src/types/svelte-helpers.d.ts -->
 <script lang="ts">
-</script>
-  export {};
-</script>
-
-<script lang="ts">
-</script>
   import { goto } from '$app/navigation';
   import {
     Terminal,
@@ -36,7 +30,7 @@
 
   let loading = $state(false);
   let error = $state<string | null>(null);
-  let lastUpdated = $state<Date>(new Date();
+  let lastUpdated = $state<Date>(new Date());
   // (Removed metricsStore to avoid stale capture; can reintroduce if reactive subscriptions needed)
 
   function navigateTo(path: string) {

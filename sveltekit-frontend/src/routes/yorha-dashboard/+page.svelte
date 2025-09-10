@@ -1,6 +1,5 @@
 <!-- YoRHa Legal AI Dashboard - Complete Integration -->
 <script lang="ts">
-</script>
   // Using Svelte 5 runes ($state/$derived) without importing $derived at runtime
   import { onMount } from 'svelte';
   import YoRHaDataGrid from '$lib/components/yorha/YoRHaDataGrid.svelte';

@@ -1,6 +1,5 @@
 <!-- YoRHa Demo Page - Fully Working Integration Demo -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import YoRHaDataGrid from '$lib/components/yorha/YoRHaDataGrid.svelte';
   import YoRHaForm from '$lib/components/yorha/YoRHaForm.svelte';
@@ -786,7 +785,7 @@
 
   .metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 8px;
   }
 

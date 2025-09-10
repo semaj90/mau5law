@@ -2,11 +2,10 @@
   Simple Case Creation Test Page - Testing bits-ui buttons and database integration
 -->
 <script lang="ts">
-</script>
   import { Button } from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import * as Card from '$lib/components/ui/card';

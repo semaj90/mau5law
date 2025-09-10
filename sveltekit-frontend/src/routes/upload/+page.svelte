@@ -1,6 +1,5 @@
 <!-- Document Upload Page with MinIO Integration -->
 <script lang="ts">
-</script>
   import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
@@ -29,7 +28,7 @@
     };
     
     // Store notification in session storage for display
-    sessionStorage.setItem('uploadNotification', JSON.stringify(notification);
+    sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
     // Redirect to document or case view
     if (caseId) {
       goto(`/cases/${caseId}/documents`);
