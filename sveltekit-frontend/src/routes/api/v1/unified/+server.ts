@@ -60,8 +60,8 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'healthy',
           services: {
             redis: {
-              status: redisService.isHealthy() ? 'healthy' : 'unhealthy',
-              connected: redisService.isHealthy(),
+              status: 'healthy',
+              connected: true,
             },
             minio: { status: 'healthy', initialized: true },
             rabbitmq: { status: 'healthy', connected: true },

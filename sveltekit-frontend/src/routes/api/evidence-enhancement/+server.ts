@@ -94,7 +94,7 @@ const EvidenceEnhancementResponseSchema = z.object({
 
 // Initialize connections
 let db: Pool | null = null;
-let redis: Redis | null = null;
+let redis: any = null;
 
 function getDB() {
     if (!db) {
@@ -103,11 +103,17 @@ function getDB() {
     return db;
 }
 
-function getRedis() {
-    if (!redis) {
-        redis = new Redis(CONFIG.redis.url);
-    }
-    return redis;
+async function getRedis() {
+        if (!redis) {
+                try {
+                    const { createRedisInstance } = await import('$lib/server/redis');
+                    redis = createRedisInstance();
+                } catch {
+                    const RedisCtor = (await import('ioredis')).default;
+                    redis = new RedisCtor(CONFIG.redis.url);
+                }
+        }
+        return redis;
 }
 
 export const POST: RequestHandler = async ({ request }) => {

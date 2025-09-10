@@ -2,8 +2,22 @@
 // This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.
 export async function createClient(opts?: any) {
   const url = typeof opts === 'string' ? opts : opts?.url || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+  const password = opts?.password || process.env.REDIS_PASSWORD;
   const { default: IORedis } = await import('ioredis');
-  const client = new IORedis(url);
+  const client = new IORedis(url, password ? { password } : {});
+
+  // Attach minimal NOAUTH graceful handling to reduce noisy loops
+  client.on('error', (err: any) => {
+    if (String(err?.message || '').includes('NOAUTH')) {
+      // Provide a single concise log; downstream callers can decide to fallback to memory
+      if (!(globalThis as any).__redisNoAuthWarned) {
+        console.warn(
+          '[redis-shim] NOAUTH Authentication required — continuing with limited capabilities. Set REDIS_PASSWORD to enable auth.'
+        );
+        (globalThis as any).__redisNoAuthWarned = true;
+      }
+    }
+  });
 
   // normalize a minimal surface area expected by code that uses node-redis
   return {

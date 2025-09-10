@@ -1,919 +1,996 @@
 {
 	"version": "2.0.0",
 	"tasks": [
-    {
-      "label": "⚡ Batch Fix: Event Handler Deprecations",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "${workspaceFolder}/scripts/fix-event-handlers.ps1"
-      ],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared"
-      },
-      "detail": "Batch replace on:click → onclick, on:change → onchange across codebase"
-    },
-    {
-      "label": "⚡ Batch Fix: Priority 1 Parse Errors",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-Command",
-        "Write-Host '🚨 Fixing critical parse errors in CommandMenu, Checkbox, context-menu components...' -ForegroundColor Yellow;",
-        "Write-Host '✅ Parse errors fixed - compilation should now succeed' -ForegroundColor Green"
-      ],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "new"
-      },
-      "detail": "Fix critical TypeScript parse errors (2828 → <100 errors)"
-    },
-    {
-      "label": "⚡ QUIC: Start Protocol Services",
-      "type": "shell",
-      "command": "powershell",
-      "args": ["-NoProfile", "-Command", "cd quic-services; ./start-quic.bat"],
-      "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      },
-      "detail": "Start QUIC protocol services for ultra-low latency"
-    },
-    {
-      "label": "✅ TypeScript Check - Fixed Barrel Exports",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck"],
-      "options": {
-        "cwd": "${workspaceFolder}/sveltekit-frontend",
-        "env": {
-          "NODE_OPTIONS": "--max-old-space-size=3072"
-        }
-      },
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared"
-      },
-      "detail": "TypeScript barrel export verification"
-    },
-    {
-      "label": "🌐 Node: Start Cluster Manager",
-      "type": "shell",
-      "command": "powershell",
-      "args": ["-NoProfile", "-Command", "cd node-cluster; ./start-cluster.bat"],
-      "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      },
-      "detail": "Start Node.js cluster manager for scalable services"
-    },
-    {
-      "label": "🏗️ Go-Kratos: Build & Run",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-Command",
-        "cd go-services; go mod tidy; go build -o ./bin/kratos-server.exe ./cmd/kratos-server; Start-Process -NoNewWindow -FilePath './bin/kratos-server.exe'"
-      ],
-      "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
-      },
-      "detail": "Build and run Go-Kratos legal AI server"
-    },
-    {
-      "label": "🧠 Autosolve EventLoop: Start Multi-Core Solver",
-      "type": "shell",
-      "command": "node",
-      "args": ["vscode-auto-solver/core/multi-core-solver.js"],
-      "options": {
-        "env": {
-          "ENABLE_CLUSTERING": "true",
-          "ENABLE_GPU": "true",
-          "VS_CODE_DEBUG": "true",
-          "SEMANTIC_BATCH_SIZE": "64",
-          "NODE_OPTIONS": "--max-old-space-size=3072"
-        }
-      },
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared"
-      },
-      "detail": "Launch multi-core semantic autosolve event loop with GPU acceleration"
-    },
-    {
-      "label": "AI: GPU Analyze (vLLM chat test)",
-      "type": "shell",
-      "command": "curl",
-      "args": [
-        "-sS",
-        "-X",
-        "POST",
-        "-H",
-        "Content-Type: application/json",
-        "-d",
-        "{\"model\":\"mistralai/Mistral-7B-Instruct-v0.3\",\"messages\":[{\"role\":\"user\",\"content\":\"Summarize the legal implications of breach of contract in one paragraph.\"}]}",
-        "http://localhost:8000/v1/chat/completions"
-      ],
-      "group": "test",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      },
-      "detail": "Sanity check: GPU-accelerated model responds via vLLM"
-    },
-    {
-      "label": "🚀 Full Stack: Start All Services",
-      "type": "shell",
-      "command": "echo",
-      "args": ["Starting all Legal AI orchestration services..."],
-      "group": "build",
-      "dependsOrder": "parallel",
-      "dependsOn": [
-        "🏗️ Go-Kratos: Build & Run",
-        "🚀 NATS: Start Message Queue",
-        "🌐 Node: Start Cluster Manager",
-        "⚡ QUIC: Start Protocol Services"
-      ],
-      "detail": "Orchestrated startup of all microservice components"
-    },
-    {
-      "label": "🚀 NATS: Start Message Queue",
-      "type": "shell",
-      "command": "powershell",
-      "args": ["-NoProfile", "-Command", "cd message-queue/nats; ./start-nats.bat"],
-      "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      },
-      "detail": "Start NATS server for inter-service messaging"
-    },
-    {
-      "label": "📊 Perf Monitor: Build Binary",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-Command",
-        "cd go-microservice; if (!(Test-Path bin)) { New-Item -ItemType Directory -Path bin | Out-Null }; go build -o ./bin/perf-monitor.exe ./cmd/perf-monitor; Write-Host '✅ perf-monitor.exe built to go-microservice/bin' -ForegroundColor Green"
-      ],
-      "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      },
-      "detail": "Build Go performance monitoring service binary"
-    },
-    {
-      "label": "📊 Perf Monitor: Run (Dev)",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-Command",
-        "cd go-microservice; if (!(Test-Path bin/perf-monitor.exe)) { go build -o ./bin/perf-monitor.exe ./cmd/perf-monitor }; Start-Process -NoNewWindow -FilePath 'bin/perf-monitor.exe'; Write-Host '🚀 perf-monitor started on :8098' -ForegroundColor Cyan"
-      ],
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      },
-      "detail": "Run performance monitor service locally"
-    },
-    {
-      "label": "📊 Perf Monitor: Collector",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-Command",
-        "cd windows-service; ./perf-monitor-collector.bat"
-      ],
-      "group": "test",
-      "isBackground": true,
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      },
-      "detail": "Continuously collect runtime metrics snapshots"
-    },
-    {
-      "label": "Dev: Start (dev)",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "dev"],
-      "group": "build",
-      "isBackground": true,
-      "options": {
-        "env": {
-          "NODE_OPTIONS": "--max-old-space-size=3072"
-        }
-      },
-      "problemMatcher": "$tsc",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "new",
-        "showReuseMessage": true,
-        "clear": false
-      }
-    },
-    {
-      "label": "Check with High Memory",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "check"],
-      "group": "test",
-      "options": {
-        "env": {
-          "NODE_OPTIONS": "--max-old-space-size=3072"
-        }
-      },
-      "problemMatcher": "$tsc",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "new"
-      }
-    },
-    {
-      "label": "Monitor Ollama Status",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-Command",
-        "while($true) { try { $response = Invoke-RestMethod -Uri 'http://localhost:11434/api/tags' -Method GET -TimeoutSec 5; Write-Host \"[$(Get-Date -Format 'HH:mm:ss')] Ollama Status: OK - Models: $($response.models.Count)\" -ForegroundColor Green } catch { Write-Host \"[$(Get-Date -Format 'HH:mm:ss')] Ollama Status: OFFLINE\" -ForegroundColor Red }; Start-Sleep -Seconds 30 }"
-      ],
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "new",
-        "showReuseMessage": true,
-        "clear": false
-      }
-    },
-    {
-      "label": "Dev: Full Stack (dev:full)",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "dev:full"],
-      "group": "build",
-      "isBackground": true,
-      "options": {
-        "env": {
-          "NODE_OPTIONS": "--max-old-space-size=3072"
-        }
-      },
-      "problemMatcher": "$tsc",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "new",
-        "showReuseMessage": true,
-        "clear": false
-      }
-    },
-    {
-      "label": "Dev with Memory Monitoring",
-      "dependsOrder": "sequence",
-      "dependsOn": [
-        "Dev: Start (dev)",
-        "Check with High Memory",
-        "Monitor Ollama Status",
-        "Dev: Full Stack (dev:full)"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "new"
-      }
-    },
-    {
-      "label": "🚀 Start All - Native Quickstart with MinIO",
-      "type": "shell",
-      "command": "${workspaceFolder}/QUICK-START-NATIVE.bat",
-      "group": {
-        "kind": "build",
-        "isDefault": false
-      },
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "new"
-      },
-      "problemMatcher": [],
-      "detail": "Complete native Windows quickstart with all services including MinIO"
-    },
-    {
-      "label": "Dev: Start on alternate port 5177",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "dev"],
-      "isBackground": true,
-      "problemMatcher": ["$tsc"],
-      "group": "build"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Check (app only)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Check (app only) - re-run",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Check (post-fix)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Recheck",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Recheck 2",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Recheck 2 (retry)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Recheck 3 (GPU demo fixes)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Recheck 4 (cleanup)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Recheck 5 (after GPU metrics fix)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Snapshot",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Snapshot (delta)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Snapshot (delta 2)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Snapshot (delta 3 after patches)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Snapshot (delta 3b)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Snapshot (delta 4)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Snapshot (delta 5)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "TypeScript: Ultra-Fast Snapshot (delta 6)",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "tsconfig.check.json"],
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "🔧 PostgreSQL 17 - Start Database Server",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-Command",
-        "Write-Host '🚀 Starting PostgreSQL 17 Server...' -ForegroundColor Green; $env:PGPASSWORD='123456'; & 'C:\\Program Files\\PostgreSQL\\17\\bin\\pg_ctl.exe' start -D 'C:\\Program Files\\PostgreSQL\\17\\data' -l 'C:\\Program Files\\PostgreSQL\\17\\data\\postgresql.log'; Write-Host '✅ PostgreSQL 17 started on port 5432' -ForegroundColor Cyan"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "detail": "Start PostgreSQL 17 database server (Port: 5432)"
-    },
-    {
-      "label": "🔴 Redis Server - Start Cache Database",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-Command",
-        "Write-Host '🚀 Starting Redis Server on port 4005...' -ForegroundColor Red; cd '${workspaceFolder}'; ./redis-latest/redis-server.exe --port 4005; Write-Host '✅ Redis Server started successfully' -ForegroundColor Cyan"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "detail": "Start Redis cache server (Port: 4005)"
-    },
-    {
-      "label": "🗄️ MinIO Object Storage - Start File Server",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-Command",
-        "Write-Host '🚀 Starting MinIO Object Storage...' -ForegroundColor Magenta; cd '${workspaceFolder}'; ./minio.exe server --address :4002 --console-address :4003; Write-Host '✅ MinIO started - API: 4002, Console: 4003' -ForegroundColor Cyan"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "detail": "Start MinIO object storage (API: 4002, Console: 4003)"
-    },
-    {
-      "label": "⚡ SvelteKit Dev Server - Start Frontend",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "dev:full"],
-      "options": {
-        "cwd": "${workspaceFolder}/sveltekit-frontend",
-        "env": {
-          "NODE_OPTIONS": "--max-old-space-size=3072",
-          "DATABASE_URL": "postgresql://postgres:123456@localhost:5432/legal_ai_db",
-          "REDIS_URL": "redis://127.0.0.1:4005"
-        }
-      },
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "problemMatcher": "$tsc",
-      "detail": "Start SvelteKit development server with full stack (PostgreSQL + pgvector + Redis)"
-    },
-    {
-      "label": "🌐 Context7 MCP Server - Start AI Integration",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-Command",
-        "Write-Host '🚀 Starting Context7 MCP Server with MinIO integration...' -ForegroundColor Blue; cd '${workspaceFolder}'; Write-Host '✅ Context7 MCP Server running with legal AI + MinIO integration' -ForegroundColor Cyan; Write-Host '📝 Features: Legal AI + MinIO + Context7 documentation access' -ForegroundColor Yellow"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "detail": "Context7 MCP Server with MinIO integration and legal AI features"
-    },
-    {
-      "label": "🔋 CUDA Vector Search - Start GPU Service",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-Command",
-        "Write-Host '🚀 Starting CUDA Vector Search Service...' -ForegroundColor Yellow; cd '${workspaceFolder}/go-microservice'; if (!(Test-Path 'BUILD-CUDA-VECTOR-SEARCH.bat')) { Write-Host '⚠️ CUDA build script not found - create manually' -ForegroundColor Yellow } else { ./BUILD-CUDA-VECTOR-SEARCH.bat }; Write-Host '✅ CUDA Vector Search ready on port 8095' -ForegroundColor Cyan"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}/go-microservice"
-      },
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "detail": "Start CUDA-accelerated vector search service (Port: 8095)"
-    },
-    {
-      "label": "🚀 Legal AI Platform - Start All Services",
-      "dependsOrder": "sequence",
-      "dependsOn": [
-        "🔧 PostgreSQL 17 - Start Database Server",
-        "🔴 Redis Server - Start Cache Database",
-        "🗄️ MinIO Object Storage - Start File Server",
-        "🌐 Context7 MCP Server - Start AI Integration",
-        "🔋 CUDA Vector Search - Start GPU Service",
-        "⚡ SvelteKit Dev Server - Start Frontend"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared"
-      },
-      "detail": "🎯 Complete YoRHa Legal AI Platform startup - PostgreSQL 17 + Redis + MinIO + CUDA + SvelteKit"
-    },
-    {
-      "label": "📊 Service Status - Check All Services",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-Command",
-        "Write-Host '📊 Checking Legal AI Platform Service Status...' -ForegroundColor White; Write-Host ''; Write-Host '🔧 PostgreSQL 17:' -ForegroundColor Green -NoNewline; try { & 'C:\\Program Files\\PostgreSQL\\17\\bin\\pg_ctl.exe' status -D 'C:\\Program Files\\PostgreSQL\\17\\data' | Out-Null; Write-Host ' ✅ RUNNING' -ForegroundColor Cyan } catch { Write-Host ' ❌ OFFLINE' -ForegroundColor Red }; Write-Host '🔴 Redis (4005):' -ForegroundColor Red -NoNewline; try { $redis = Test-NetConnection -ComputerName localhost -Port 4005 -WarningAction SilentlyContinue; if ($redis.TcpTestSucceeded) { Write-Host ' ✅ RUNNING' -ForegroundColor Cyan } else { Write-Host ' ❌ OFFLINE' -ForegroundColor Red } } catch { Write-Host ' ❌ OFFLINE' -ForegroundColor Red }; Write-Host '🗄️ MinIO (4002):' -ForegroundColor Magenta -NoNewline; try { $minio = Test-NetConnection -ComputerName localhost -Port 4002 -WarningAction SilentlyContinue; if ($minio.TcpTestSucceeded) { Write-Host ' ✅ RUNNING' -ForegroundColor Cyan } else { Write-Host ' ❌ OFFLINE' -ForegroundColor Red } } catch { Write-Host ' ❌ OFFLINE' -ForegroundColor Red }; Write-Host '⚡ SvelteKit Dev:' -ForegroundColor Blue -NoNewline; try { $svelte = Test-NetConnection -ComputerName localhost -Port 5173 -WarningAction SilentlyContinue; if ($svelte.TcpTestSucceeded) { Write-Host ' ✅ RUNNING' -ForegroundColor Cyan } else { Write-Host ' ❌ OFFLINE' -ForegroundColor Red } } catch { Write-Host ' ❌ OFFLINE' -ForegroundColor Red }; Write-Host ''; Write-Host '🎯 Legal AI Platform Status Complete' -ForegroundColor White"
-      ],
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared"
-      },
-      "detail": "Check status of all Legal AI Platform services"
-    },
-    {
-      "label": "🛑 Stop All Services - Graceful Shutdown",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-Command",
-        "Write-Host '🛑 Stopping all Legal AI Platform services...' -ForegroundColor Yellow; Write-Host ''; Write-Host '🔧 Stopping PostgreSQL...' -ForegroundColor Green; try { $env:PGPASSWORD='123456'; & 'C:\\Program Files\\PostgreSQL\\17\\bin\\pg_ctl.exe' stop -D 'C:\\Program Files\\PostgreSQL\\17\\data' -m fast } catch { Write-Host 'PostgreSQL stop failed' -ForegroundColor Red }; Write-Host '🔴 Stopping Redis...' -ForegroundColor Red; Get-Process | Where-Object {$_.ProcessName -like '*redis*'} | Stop-Process -Force; Write-Host '🗄️ Stopping MinIO...' -ForegroundColor Magenta; Get-Process | Where-Object {$_.ProcessName -like '*minio*'} | Stop-Process -Force; Write-Host '⚡ Stopping SvelteKit...' -ForegroundColor Blue; Get-Process | Where-Object {$_.ProcessName -like '*node*' -and $_.CommandLine -like '*vite*'} | Stop-Process -Force; Write-Host ''; Write-Host '✅ All services stopped gracefully' -ForegroundColor Cyan"
-      ],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared"
-      },
-      "detail": "Gracefully stop all Legal AI Platform services"
-    },
-    {
-      "label": "🔍 Test Unified API Health",
-      "type": "shell",
-      "command": "curl",
-      "args": ["-s", "http://localhost:5173/api/unified/health"],
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "new"
-      },
-      "options": {
-        "cwd": "${workspaceFolder}/sveltekit-frontend"
-      },
-      "problemMatcher": [],
-      "detail": "Check health status of all unified services (PostgreSQL, Redis, MinIO, Qdrant, Neo4j)"
-    },
-    {
-      "label": "📤 Test Unified Upload API",
-      "type": "shell",
-      "command": "curl",
-      "args": [
-        "-X",
-        "POST",
-        "-F",
-        "files=@README.md",
-        "-F",
-        "caseId=test-case-unified-001",
-        "-F",
-        "documentType=evidence",
-        "http://localhost:5173/api/unified/upload"
-      ],
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "new"
-      },
-      "options": {
-        "cwd": "${workspaceFolder}/sveltekit-frontend"
-      },
-      "problemMatcher": [],
-      "detail": "Test document upload through unified API (MinIO + Qdrant + PostgreSQL + Redis)"
-    },
-    {
-      "label": "🔍 Test Unified Search API",
-      "type": "shell",
-      "command": "curl",
-      "args": [
-        "-X",
-        "POST",
-        "-H",
-        "Content-Type: application/json",
-        "-d",
-        "{\"query\": \"legal documents\", \"limit\": 5, \"useRecommendations\": true}",
-        "http://localhost:5173/api/unified/search"
-      ],
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "new"
-      },
-      "options": {
-        "cwd": "${workspaceFolder}/sveltekit-frontend"
-      },
-      "problemMatcher": [],
-      "detail": "Test unified search across all document types with Neo4j recommendations"
-    },
-    {
-      "label": "🚀 Start Unified Legal AI System",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "dev:unified"],
-      "group": {
-        "kind": "build",
-        "isDefault": false
-      },
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "new",
-        "showReuseMessage": true,
-        "clear": false,
-        "group": "unified-system"
-      },
-      "options": {
-        "cwd": "${workspaceFolder}/sveltekit-frontend"
-      },
-      "problemMatcher": [],
-      "runOptions": {
-        "runOn": "default"
-      },
-      "detail": "Start complete unified system: Redis + PostgreSQL + MinIO + Qdrant + Neo4j + SvelteKit"
-    },
-    {
-      "label": "sveltekit-frontend: tsc --noEmit",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "--noEmit", "--skipLibCheck"],
-      "isBackground": false,
-      "problemMatcher": ["$tsc"],
-      "group": "test"
-    },
-    {
-      "label": "🚀 MCP Multi-Core Server - Enhanced",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-Command",
-        "Write-Host '🚀 Starting Enhanced MCP Multi-Core Server...' -ForegroundColor Cyan; $env:MCP_MULTICORE='true'; $env:MCP_WORKERS='4'; $env:MCP_GPU_ACCEL='true'; $env:CONTEXT7_MULTICORE='true'; Write-Host '⚡ Multi-Core Configuration:' -ForegroundColor Yellow; Write-Host '   - Workers: 4' -ForegroundColor White; Write-Host '   - GPU Acceleration: Enabled' -ForegroundColor Green; Write-Host '   - Context7 Integration: Active' -ForegroundColor Cyan; Write-Host '✅ MCP Server ready with multi-core processing' -ForegroundColor Green"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}",
-        "env": {
-          "MCP_MULTICORE": "true",
-          "MCP_WORKERS": "4",
-          "MCP_GPU_ACCEL": "true",
-          "CONTEXT7_MULTICORE": "true",
-          "NODE_OPTIONS": "--max-old-space-size=4096"
-        }
-      },
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "detail": "Enhanced MCP Server with multi-core processing and GPU acceleration"
-    },
-    {
-      "label": "🎯 MCP Context7 Multi-Core Integration",
-      "type": "shell",
-      "command": "node",
-      "args": [
-        "-e",
-        "console.log('🚀 MCP Context7 Multi-Core Integration Starting...'); const workers = require('worker_threads'); const os = require('os'); console.log(`⚡ CPU Cores: ${os.cpus().length}`); console.log('✅ Context7 MCP ready with parallel processing'); process.env.CONTEXT7_MULTICORE = 'true'; process.env.MCP_PARALLEL_DOCS = 'true'; console.log('🎯 Enhanced performance mode activated');"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}",
-        "env": {
-          "CONTEXT7_MULTICORE": "true",
-          "MCP_PARALLEL_DOCS": "true",
-          "MCP_CONCURRENT_REQUESTS": "8",
-          "NODE_OPTIONS": "--max-old-space-size=6144"
-        }
-      },
-      "group": "build",
-      "isBackground": false,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared"
-      },
-      "detail": "Context7 MCP server with parallel document processing"
-    },
-    {
-      "label": "⚡ MCP GPU-Accelerated Multi-Core",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-NoProfile",
-        "-Command",
-        "Write-Host '⚡ Starting GPU-Accelerated MCP Multi-Core Server...' -ForegroundColor Magenta; $cores = (Get-WmiObject -Class Win32_Processor).NumberOfCores; Write-Host \"🖥️ CPU Cores detected: $cores\" -ForegroundColor Cyan; Write-Host '🎮 GPU: RTX 3060 Ti acceleration enabled' -ForegroundColor Yellow; $env:MCP_GPU_WORKERS=$cores; $env:RTX_3060_OPTIMIZATION='true'; Write-Host '🚀 Multi-core MCP server with GPU optimization ready' -ForegroundColor Green"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}",
-        "env": {
-          "MCP_GPU_WORKERS": "auto",
-          "RTX_3060_OPTIMIZATION": "true",
-          "CUDA_VISIBLE_DEVICES": "0",
-          "MCP_BATCH_SIZE": "32",
-          "NODE_OPTIONS": "--max-old-space-size=8192"
-        }
-      },
-      "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": true
-      },
-      "problemMatcher": [],
-      "detail": "MCP server with GPU acceleration and automatic core detection"
-    },
-    {
-      "label": "🔄 MCP Multi-Core Task Runner",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "mcp:multicore"],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "isBackground": false,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared"
-      },
-      "detail": "Run MCP multi-core via npm script"
-    }
-  ]
+		{
+			"label": "⚡ Batch Fix: Event Handler Deprecations",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/fix-event-handlers.ps1"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Batch replace on:click → onclick, on:change → onchange across codebase"
+		},
+		{
+			"label": "⚡ Batch Fix: Priority 1 Parse Errors",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Write-Host '🚨 Fixing critical parse errors in CommandMenu, Checkbox, context-menu components...' -ForegroundColor Yellow;",
+				"Write-Host '✅ Parse errors fixed - compilation should now succeed' -ForegroundColor Green"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"detail": "Fix critical TypeScript parse errors (2828 → <100 errors)"
+		},
+		{
+			"label": "⚡ QUIC: Start Protocol Services",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"cd quic-services; ./start-quic.bat"
+			],
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Start QUIC protocol services for ultra-low latency"
+		},
+		{
+			"label": "✅ TypeScript Check - Fixed Barrel Exports",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend",
+				"env": {
+					"NODE_OPTIONS": "--max-old-space-size=3072"
+				}
+			},
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "TypeScript barrel export verification"
+		},
+		{
+			"label": "🌐 Node: Start Cluster Manager",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"cd node-cluster; ./start-cluster.bat"
+			],
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Start Node.js cluster manager for scalable services"
+		},
+		{
+			"label": "🏗️ Go-Kratos: Build & Run",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"cd go-services; go mod tidy; go build -o ./bin/kratos-server.exe ./cmd/kratos-server; Start-Process -NoNewWindow -FilePath './bin/kratos-server.exe'"
+			],
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"detail": "Build and run Go-Kratos legal AI server"
+		},
+		{
+			"label": "🧠 Autosolve EventLoop: Start Multi-Core Solver",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"vscode-auto-solver/core/multi-core-solver.js"
+			],
+			"options": {
+				"env": {
+					"ENABLE_CLUSTERING": "true",
+					"ENABLE_GPU": "true",
+					"VS_CODE_DEBUG": "true",
+					"SEMANTIC_BATCH_SIZE": "64",
+					"NODE_OPTIONS": "--max-old-space-size=3072"
+				}
+			},
+			"group": "build",
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"detail": "Launch multi-core semantic autosolve event loop with GPU acceleration"
+		},
+		{
+			"label": "AI: GPU Analyze (vLLM chat test)",
+			"type": "shell",
+			"command": "curl",
+			"args": [
+				"-sS",
+				"-X",
+				"POST",
+				"-H",
+				"Content-Type: application/json",
+				"-d",
+				"{\"model\":\"mistralai/Mistral-7B-Instruct-v0.3\",\"messages\":[{\"role\":\"user\",\"content\":\"Summarize the legal implications of breach of contract in one paragraph.\"}]}",
+				"http://localhost:8000/v1/chat/completions"
+			],
+			"group": "test",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Sanity check: GPU-accelerated model responds via vLLM"
+		},
+		{
+			"label": "🚀 Full Stack: Start All Services",
+			"type": "shell",
+			"command": "echo",
+			"args": [
+				"Starting all Legal AI orchestration services..."
+			],
+			"group": "build",
+			"dependsOrder": "parallel",
+			"dependsOn": [
+				"🏗️ Go-Kratos: Build & Run",
+				"🚀 NATS: Start Message Queue",
+				"🌐 Node: Start Cluster Manager",
+				"⚡ QUIC: Start Protocol Services"
+			],
+			"detail": "Orchestrated startup of all microservice components"
+		},
+		{
+			"label": "🚀 NATS: Start Message Queue",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"cd message-queue/nats; ./start-nats.bat"
+			],
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Start NATS server for inter-service messaging"
+		},
+		{
+			"label": "📊 Perf Monitor: Build Binary",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"cd go-microservice; if (!(Test-Path bin)) { New-Item -ItemType Directory -Path bin | Out-Null }; go build -o ./bin/perf-monitor.exe ./cmd/perf-monitor; Write-Host '✅ perf-monitor.exe built to go-microservice/bin' -ForegroundColor Green"
+			],
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Build Go performance monitoring service binary"
+		},
+		{
+			"label": "📊 Perf Monitor: Run (Dev)",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"cd go-microservice; if (!(Test-Path bin/perf-monitor.exe)) { go build -o ./bin/perf-monitor.exe ./cmd/perf-monitor }; Start-Process -NoNewWindow -FilePath 'bin/perf-monitor.exe'; Write-Host '🚀 perf-monitor started on :8098' -ForegroundColor Cyan"
+			],
+			"group": "build",
+			"isBackground": true,
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Run performance monitor service locally"
+		},
+		{
+			"label": "📊 Perf Monitor: Collector",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"cd windows-service; ./perf-monitor-collector.bat"
+			],
+			"group": "test",
+			"isBackground": true,
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Continuously collect runtime metrics snapshots"
+		},
+		{
+			"label": "Dev: Start (dev)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev"
+			],
+			"group": "build",
+			"isBackground": true,
+			"options": {
+				"env": {
+					"NODE_OPTIONS": "--max-old-space-size=3072"
+				}
+			},
+			"problemMatcher": "$tsc",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "Check with High Memory",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"check"
+			],
+			"group": "test",
+			"options": {
+				"env": {
+					"NODE_OPTIONS": "--max-old-space-size=3072"
+				}
+			},
+			"problemMatcher": "$tsc",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Monitor Ollama Status",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"while($true) { try { $response = Invoke-RestMethod -Uri 'http://localhost:11434/api/tags' -Method GET -TimeoutSec 5; Write-Host \"[$(Get-Date -Format 'HH:mm:ss')] Ollama Status: OK - Models: $($response.models.Count)\" -ForegroundColor Green } catch { Write-Host \"[$(Get-Date -Format 'HH:mm:ss')] Ollama Status: OFFLINE\" -ForegroundColor Red }; Start-Sleep -Seconds 30 }"
+			],
+			"group": "build",
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "Dev: Full Stack (dev:full)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev:full"
+			],
+			"group": "build",
+			"isBackground": true,
+			"options": {
+				"env": {
+					"NODE_OPTIONS": "--max-old-space-size=3072"
+				}
+			},
+			"problemMatcher": "$tsc",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "Dev with Memory Monitoring",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"Dev: Start (dev)",
+				"Check with High Memory",
+				"Monitor Ollama Status",
+				"Dev: Full Stack (dev:full)"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new"
+			}
+		},
+		{
+			"label": "🚀 Start All - Native Quickstart with MinIO",
+			"type": "shell",
+			"command": "${workspaceFolder}/QUICK-START-NATIVE.bat",
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"problemMatcher": [],
+			"detail": "Complete native Windows quickstart with all services including MinIO"
+		},
+		{
+			"label": "Dev: Start on alternate port 5177",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev"
+			],
+			"isBackground": true,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Check (app only)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Check (app only) - re-run",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Check (post-fix)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Recheck",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Recheck 2",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Recheck 2 (retry)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Recheck 3 (GPU demo fixes)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Recheck 4 (cleanup)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Recheck 5 (after GPU metrics fix)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Snapshot",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Snapshot (delta)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Snapshot (delta 2)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Snapshot (delta 3 after patches)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Snapshot (delta 3b)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Snapshot (delta 4)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Snapshot (delta 5)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "TypeScript: Ultra-Fast Snapshot (delta 6)",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck",
+				"-p",
+				"tsconfig.check.json"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "🔧 PostgreSQL 17 - Start Database Server",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Write-Host '🚀 Starting PostgreSQL 17 Server...' -ForegroundColor Green; $env:PGPASSWORD='123456'; & 'C:\\Program Files\\PostgreSQL\\17\\bin\\pg_ctl.exe' start -D 'C:\\Program Files\\PostgreSQL\\17\\data' -l 'C:\\Program Files\\PostgreSQL\\17\\data\\postgresql.log'; Write-Host '✅ PostgreSQL 17 started on port 5432' -ForegroundColor Cyan"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"detail": "Start PostgreSQL 17 database server (Port: 5432)"
+		},
+		{
+			"label": "🔴 Redis Server - Start Cache Database",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Write-Host '🚀 Starting Redis Server on port 4005...' -ForegroundColor Red; cd '${workspaceFolder}'; ./redis-latest/redis-server.exe --port 4005; Write-Host '✅ Redis Server started successfully' -ForegroundColor Cyan"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"detail": "Start Redis cache server (Port: 4005)"
+		},
+		{
+			"label": "🗄️ MinIO Object Storage - Start File Server",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Write-Host '🚀 Starting MinIO Object Storage...' -ForegroundColor Magenta; cd '${workspaceFolder}'; ./minio.exe server --address :4002 --console-address :4003; Write-Host '✅ MinIO started - API: 4002, Console: 4003' -ForegroundColor Cyan"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"detail": "Start MinIO object storage (API: 4002, Console: 4003)"
+		},
+		{
+			"label": "⚡ SvelteKit Dev Server - Start Frontend",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev:full"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend",
+				"env": {
+					"NODE_OPTIONS": "--max-old-space-size=3072",
+					"DATABASE_URL": "postgresql://postgres:123456@localhost:5432/legal_ai_db",
+					"REDIS_URL": "redis://127.0.0.1:4005"
+				}
+			},
+			"group": "build",
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"problemMatcher": "$tsc",
+			"detail": "Start SvelteKit development server with full stack (PostgreSQL + pgvector + Redis)"
+		},
+		{
+			"label": "🌐 Context7 MCP Server - Start AI Integration",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Write-Host '🚀 Starting Context7 MCP Server with MinIO integration...' -ForegroundColor Blue; cd '${workspaceFolder}'; Write-Host '✅ Context7 MCP Server running with legal AI + MinIO integration' -ForegroundColor Cyan; Write-Host '📝 Features: Legal AI + MinIO + Context7 documentation access' -ForegroundColor Yellow"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"detail": "Context7 MCP Server with MinIO integration and legal AI features"
+		},
+		{
+			"label": "🔋 CUDA Vector Search - Start GPU Service",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Write-Host '🚀 Starting CUDA Vector Search Service...' -ForegroundColor Yellow; cd '${workspaceFolder}/go-microservice'; if (!(Test-Path 'BUILD-CUDA-VECTOR-SEARCH.bat')) { Write-Host '⚠️ CUDA build script not found - create manually' -ForegroundColor Yellow } else { ./BUILD-CUDA-VECTOR-SEARCH.bat }; Write-Host '✅ CUDA Vector Search ready on port 8095' -ForegroundColor Cyan"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/go-microservice"
+			},
+			"group": "build",
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"detail": "Start CUDA-accelerated vector search service (Port: 8095)"
+		},
+		{
+			"label": "🚀 Legal AI Platform - Start All Services",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"🔧 PostgreSQL 17 - Start Database Server",
+				"🔴 Redis Server - Start Cache Database",
+				"🗄️ MinIO Object Storage - Start File Server",
+				"🌐 Context7 MCP Server - Start AI Integration",
+				"🔋 CUDA Vector Search - Start GPU Service",
+				"⚡ SvelteKit Dev Server - Start Frontend"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "🎯 Complete YoRHa Legal AI Platform startup - PostgreSQL 17 + Redis + MinIO + CUDA + SvelteKit"
+		},
+		{
+			"label": "📊 Service Status - Check All Services",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Write-Host '📊 Checking Legal AI Platform Service Status...' -ForegroundColor White; Write-Host ''; Write-Host '🔧 PostgreSQL 17:' -ForegroundColor Green -NoNewline; try { & 'C:\\Program Files\\PostgreSQL\\17\\bin\\pg_ctl.exe' status -D 'C:\\Program Files\\PostgreSQL\\17\\data' | Out-Null; Write-Host ' ✅ RUNNING' -ForegroundColor Cyan } catch { Write-Host ' ❌ OFFLINE' -ForegroundColor Red }; Write-Host '🔴 Redis (4005):' -ForegroundColor Red -NoNewline; try { $redis = Test-NetConnection -ComputerName localhost -Port 4005 -WarningAction SilentlyContinue; if ($redis.TcpTestSucceeded) { Write-Host ' ✅ RUNNING' -ForegroundColor Cyan } else { Write-Host ' ❌ OFFLINE' -ForegroundColor Red } } catch { Write-Host ' ❌ OFFLINE' -ForegroundColor Red }; Write-Host '🗄️ MinIO (4002):' -ForegroundColor Magenta -NoNewline; try { $minio = Test-NetConnection -ComputerName localhost -Port 4002 -WarningAction SilentlyContinue; if ($minio.TcpTestSucceeded) { Write-Host ' ✅ RUNNING' -ForegroundColor Cyan } else { Write-Host ' ❌ OFFLINE' -ForegroundColor Red } } catch { Write-Host ' ❌ OFFLINE' -ForegroundColor Red }; Write-Host '⚡ SvelteKit Dev:' -ForegroundColor Blue -NoNewline; try { $svelte = Test-NetConnection -ComputerName localhost -Port 5173 -WarningAction SilentlyContinue; if ($svelte.TcpTestSucceeded) { Write-Host ' ✅ RUNNING' -ForegroundColor Cyan } else { Write-Host ' ❌ OFFLINE' -ForegroundColor Red } } catch { Write-Host ' ❌ OFFLINE' -ForegroundColor Red }; Write-Host ''; Write-Host '🎯 Legal AI Platform Status Complete' -ForegroundColor White"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Check status of all Legal AI Platform services"
+		},
+		{
+			"label": "🛑 Stop All Services - Graceful Shutdown",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Write-Host '🛑 Stopping all Legal AI Platform services...' -ForegroundColor Yellow; Write-Host ''; Write-Host '🔧 Stopping PostgreSQL...' -ForegroundColor Green; try { $env:PGPASSWORD='123456'; & 'C:\\Program Files\\PostgreSQL\\17\\bin\\pg_ctl.exe' stop -D 'C:\\Program Files\\PostgreSQL\\17\\data' -m fast } catch { Write-Host 'PostgreSQL stop failed' -ForegroundColor Red }; Write-Host '🔴 Stopping Redis...' -ForegroundColor Red; Get-Process | Where-Object {$_.ProcessName -like '*redis*'} | Stop-Process -Force; Write-Host '🗄️ Stopping MinIO...' -ForegroundColor Magenta; Get-Process | Where-Object {$_.ProcessName -like '*minio*'} | Stop-Process -Force; Write-Host '⚡ Stopping SvelteKit...' -ForegroundColor Blue; Get-Process | Where-Object {$_.ProcessName -like '*node*' -and $_.CommandLine -like '*vite*'} | Stop-Process -Force; Write-Host ''; Write-Host '✅ All services stopped gracefully' -ForegroundColor Cyan"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Gracefully stop all Legal AI Platform services"
+		},
+		{
+			"label": "🔍 Test Unified API Health",
+			"type": "shell",
+			"command": "curl",
+			"args": [
+				"-s",
+				"http://localhost:5173/api/unified/health"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"detail": "Check health status of all unified services (PostgreSQL, Redis, MinIO, Qdrant, Neo4j)"
+		},
+		{
+			"label": "📤 Test Unified Upload API",
+			"type": "shell",
+			"command": "curl",
+			"args": [
+				"-X",
+				"POST",
+				"-F",
+				"files=@README.md",
+				"-F",
+				"caseId=test-case-unified-001",
+				"-F",
+				"documentType=evidence",
+				"http://localhost:5173/api/unified/upload"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"detail": "Test document upload through unified API (MinIO + Qdrant + PostgreSQL + Redis)"
+		},
+		{
+			"label": "🔍 Test Unified Search API",
+			"type": "shell",
+			"command": "curl",
+			"args": [
+				"-X",
+				"POST",
+				"-H",
+				"Content-Type: application/json",
+				"-d",
+				"{\"query\": \"legal documents\", \"limit\": 5, \"useRecommendations\": true}",
+				"http://localhost:5173/api/unified/search"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"detail": "Test unified search across all document types with Neo4j recommendations"
+		},
+		{
+			"label": "🚀 Start Unified Legal AI System",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev:unified"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false,
+				"group": "unified-system"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"runOptions": {
+				"runOn": "default"
+			},
+			"detail": "Start complete unified system: Redis + PostgreSQL + MinIO + Qdrant + Neo4j + SvelteKit"
+		},
+		{
+			"label": "sveltekit-frontend: tsc --noEmit",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsc",
+				"--noEmit",
+				"--skipLibCheck"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc - stylish"
+			],
+			"group": "test"
+		}
+	]
 }

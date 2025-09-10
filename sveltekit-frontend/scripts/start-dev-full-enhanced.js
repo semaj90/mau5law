@@ -128,7 +128,7 @@ async function main() {
     // 3. Start Ollama GPU
     try {
       log('🦙 Checking Ollama status...', 'yellow', '🦙');
-      const ollamaRunning = await execAsync('curl -s http://localhost:11434/api/tags', { timeout: 3000 });
+      const ollamaRunning = await execAsync('curl -s http://localhost:11435/api/tags', { timeout: 3000 });
       
       if (ollamaRunning.stdout.includes('models')) {
         log('✅ Ollama already running with GPU acceleration', 'green', '✅');
@@ -183,7 +183,7 @@ async function main() {
     log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'green', '');
     log('🌐 Frontend: http://localhost:5173', 'cyan', '🌐');
     log('🐘 PostgreSQL: localhost:5432 (legal_ai_db)', 'blue', '🐘');
-    log('🦙 Ollama AI: http://localhost:11434', 'yellow', '🦙');
+    log('🦙 Ollama AI: http://localhost:11435', 'yellow', '🦙');
     log('📊 Health Check: http://localhost:5173/api/test/mock-sync', 'magenta', '📊');
     log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'green', '');
     

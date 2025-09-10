@@ -8,7 +8,9 @@ const db = {
   execute: async (query: any) => [] as any[]
 };
 import { sql } from "drizzle-orm";
-import Redis from "ioredis";
+import type { Redis } from 'ioredis';
+import { getRedisConfig } from '$lib/config/redis-config';
+import { createRedisInstance } from '$lib/server/redis';
 
 // 1. Database Query Optimization
 export class OptimizedQueries {
@@ -18,14 +20,14 @@ export class OptimizedQueries {
 
     const result = await db.execute(sql`
       WITH case_data AS (
-        SELECT 
+        SELECT
           c.*,
           COUNT(*) OVER() as total_count,
           ROW_NUMBER() OVER(ORDER BY c.updated_at DESC) as row_num
-        FROM cases c 
+        FROM cases c
         WHERE c.user_id = ${userId}
       )
-      SELECT * FROM case_data 
+      SELECT * FROM case_data
       WHERE row_num > ${offset} AND row_num <= ${offset + limit}
     `);
 
@@ -37,15 +39,11 @@ export class OptimizedQueries {
   }
 
   // Efficient evidence search with vector similarity
-  static async searchEvidenceOptimized(
-    query: string,
-    caseId?: string,
-    limit = 10,
-  ) {
+  static async searchEvidenceOptimized(query: string, caseId?: string, limit = 10) {
     const embedding = await generateEmbedding(query);
 
     return db.execute(sql`
-      SELECT 
+      SELECT
         e.*,
         1 - (e.embedding <=> ${embedding}) as similarity_score
       FROM evidence e
@@ -58,10 +56,20 @@ export class OptimizedQueries {
 
 // 2. Redis Caching Layer
 export class CacheService {
-  private redis: Redis;
+  private redis: ReturnType<typeof createRedisInstance>;
 
   constructor() {
-    this.redis = new Redis(import.meta.env.REDIS_URL || "redis://localhost:6379");
+    // Centralized configuration ensures password + tuning flags applied consistently
+    try {
+      this.redis = createRedisInstance();
+    } catch {
+      // Fallback (edge SSR building context) — still pull base config
+      const cfg: any = getRedisConfig();
+      (cfg as any).url =
+        process.env.REDIS_URL || import.meta.env.REDIS_URL || 'redis://localhost:6379';
+      const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
+      this.redis = new RedisCtor(cfg);
+    }
   }
 
   async cacheCase(caseId: string, caseData: any, ttl = 3600) {

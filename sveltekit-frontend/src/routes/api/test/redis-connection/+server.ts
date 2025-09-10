@@ -11,16 +11,20 @@ export const GET: RequestHandler = async () => {
   
   try {
     // Test basic Redis connection
-    const Redis = (await import('ioredis')).default;
-    
-    redis = new Redis({
-      host: 'localhost',
-      port: 6379,
-      connectTimeout: 5000,
-      retryDelayOnFailover: 100,
-      maxRetriesPerRequest: 3,
-      lazyConnect: false
-    });
+    const { createRedisInstance } = await import('$lib/server/redis');
+    try {
+      redis = createRedisInstance();
+    } catch {
+      const RedisCtor = (await import('ioredis')).default;
+      redis = new RedisCtor({
+        host: 'localhost',
+        port: 6379,
+        connectTimeout: 5000,
+        retryDelayOnFailover: 100,
+        maxRetriesPerRequest: 3,
+        lazyConnect: false
+      });
+    }
 
     // Wait for connection to be ready
     await new Promise((resolve, reject) => {

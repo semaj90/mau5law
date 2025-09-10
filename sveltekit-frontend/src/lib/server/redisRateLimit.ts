@@ -1,11 +1,12 @@
 import Redis from 'ioredis';
 import { getRedisConfig, createServiceConfig, KEY_PATTERNS, LUA_SCRIPTS } from '$lib/config/redis-config';
+import { createRedisInstance } from '$lib/server/redis';
 
 export interface RedisRateLimitOptions {
-  limit: number;           // max requests per window
-  windowSec: number;       // window size seconds
-  key: string;             // unique key (user id scoped)
-  redis?: Redis;           // optional external client
+  limit: number; // max requests per window
+  windowSec: number; // window size seconds
+  key: string; // unique key (user id scoped)
+  redis?: Redis; // optional external client
 }
 
 const singleton = { client: null as Redis | null };
@@ -15,7 +16,11 @@ function getClient(): Redis {
 
   // Use centralized Redis configuration for rate limiting
   const config = createServiceConfig('RATE_LIMIT');
-  singleton.client = new Redis(config);
+  try {
+    singleton.client = createRedisInstance();
+  } catch {
+    singleton.client = new Redis(config as any);
+  }
 
   singleton.client.on('error', (e: any) => {
     console.error('[redisRateLimit] Redis error:', e.message);

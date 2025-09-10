@@ -133,11 +133,17 @@ export const db = drizzle(pgConnection, {
 
 // ===== REDIS CONNECTION =====
 
-const redis = new Redis({
-  ...services.redis,
-  maxRetriesPerRequest: 3,
-  retryStrategy: (times: number) => Math.min(times * 50, 2000),
-});
+import { createRedisInstance } from '$lib/server/redis';
+let redis: any;
+try { redis = createRedisInstance(); }
+catch {
+  const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
+  redis = new RedisCtor({
+    ...services.redis,
+    maxRetriesPerRequest: 3,
+    retryStrategy: (times: number) => Math.min(times * 50, 2000),
+  });
+}
 
 // ===== UTILITY FUNCTIONS =====
 
@@ -213,7 +219,7 @@ QUERY: ${input.query}
   if (input.legalBertAnalysis) {
     prompt += `LEGAL ANALYSIS:
 - Identified Entities: ${input.legalBertAnalysis.entities.map((e: any) => e.text).join(', ')}
-- Legal Concepts: ${input.legalBertAnalysis.concepts.map((c) => c.concept).join(', ')}
+  - Legal Concepts: ${input.legalBertAnalysis.concepts.map((c: any) => c.concept).join(', ')}
 - Complexity Score: ${input.legalBertAnalysis.complexity.legalComplexity}
 - Jurisdiction: ${input.legalBertAnalysis.jurisdiction || 'General'}
 
@@ -224,7 +230,7 @@ QUERY: ${input.query}
   if (input.rankedResults?.length > 0) {
     prompt += `RELEVANT LEGAL SOURCES:
 `;
-    input.rankedResults.slice(0, 5).forEach((source, i) => {
+  input.rankedResults.slice(0, 5).forEach((source: any, i: number) => {
       const title = source.metadata?.title || `Document ${i + 1}`;
       const content = source.pageContent || source.content || source.text || '';
       const relevance = source.crossEncoderScore || source.score || 0;
@@ -894,12 +900,12 @@ export class EnhancedAISynthesisOrchestrator {
 
       actions: {
         recordStartTime: ({ context }) => {
-          context.performance.startTime = Date.now();
+          context.performance.startTime = Date.now() as any;
         },
 
         recordEndTime: ({ context }) => {
-          context.performance.endTime = Date.now();
-          const duration = context.performance.endTime - context.performance.startTime;
+          context.performance.endTime = Date.now() as any;
+          const duration = (context.performance.endTime as any) - (context.performance.startTime as any);
           logger.info(`[Performance] Total processing time: ${duration}ms`);
         },
 
@@ -983,7 +989,7 @@ export class EnhancedAISynthesisOrchestrator {
 
     // XState v5 uses createActor instead of interpret
     this.service = createActor(this.machine);
-    this.service.subscribe((snapshot) => {
+  this.service.subscribe((snapshot: any) => {
       logger.debug(`[State] ${JSON.stringify(snapshot.value || snapshot.status)}`);
     });
     this.service.start();
@@ -1009,7 +1015,7 @@ export class EnhancedAISynthesisOrchestrator {
       const { models } = await response.json();
 
       const hasGemma3Legal = models?.some(
-        (m) =>
+  (m: any) =>
           m.name === 'gemma3-legal:latest' || (m.name.includes('gemma') && m.name.includes('legal'))
       );
 
@@ -1079,7 +1085,7 @@ TEMPLATE """{{ if .System }}<|system|>
       const { models } = await response.json();
 
       const hasNomicEmbed = models?.some(
-        (m) => m.name === 'nomic-embed-text' || m.name === 'nomic-embed-text:latest'
+  (m: any) => m.name === 'nomic-embed-text' || m.name === 'nomic-embed-text:latest'
       );
 
       if (!hasNomicEmbed) {
@@ -1311,7 +1317,7 @@ TEMPLATE """{{ if .System }}<|system|>
     };
 
     const stateString = typeof state === 'object' ? JSON.stringify(state) : state;
-    return stages[stateString] || 0;
+  return (stages as any)[stateString] || 0;
   }
 
   // Health check

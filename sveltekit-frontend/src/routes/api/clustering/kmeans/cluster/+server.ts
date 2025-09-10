@@ -9,17 +9,22 @@ import type { RequestHandler } from './$types.js';
 
 import { json } from "@sveltejs/kit";
 import { LegalKMeansClusterer } from "$lib/services/kmeans-clustering";
-import { Redis } from "ioredis";
+import type { Redis } from 'ioredis';
+import { createRedisInstance } from '$lib/server/redis';
 import { db } from "$lib/server/db";
 import { inArray } from "drizzle-orm";
 import { URL } from "url";
 // Optional amqp for message queue integration
 
 // Initialize connections
-const redis = new Redis({
-  host: import.meta.env.REDIS_HOST || "localhost",
-  port: parseInt(import.meta.env.REDIS_PORT || "6379"),
-});
+let redis: ReturnType<typeof createRedisInstance> | null = null;
+try { redis = createRedisInstance(); } catch {
+  const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
+  redis = new RedisCtor({
+    host: import.meta.env.REDIS_HOST || 'localhost',
+    port: parseInt(import.meta.env.REDIS_PORT || '6379'),
+  });
+}
 
 const qdrant = new QdrantClient({
   url: import.meta.env.QDRANT_URL || "http://localhost:6333",

@@ -1,13 +1,14 @@
 /// <reference types="vite/client" />
 import { Server } from 'socket.io';
 import { dev } from "$app/environment";
-import Redis from 'ioredis';
+import type { Redis } from 'ioredis';
+import { createRedisInstance } from '$lib/server/redis';
 import type { RequestHandler } from './$types';
 
 
 // WebSocket server for real-time updates
 let io: Server | null = null;
-let redis: Redis | null = null;
+let redis: ReturnType<typeof createRedisInstance> | null = null;
 
 // Initialize WebSocket server and Redis subscriber
 function initializeWebSocket() {
@@ -23,12 +24,17 @@ function initializeWebSocket() {
   });
 
   // Initialize Redis subscriber for job progress
-  redis = new Redis({
-    host: import.meta.env.REDIS_HOST || 'localhost',
-    port: parseInt(import.meta.env.REDIS_PORT || '6379'),
-    password: import.meta.env.REDIS_PASSWORD,
-    lazyConnect: true,
-  });
+  try {
+    redis = createRedisInstance();
+  } catch {
+    const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
+    redis = new RedisCtor({
+      host: import.meta.env.REDIS_HOST || 'localhost',
+      port: parseInt(import.meta.env.REDIS_PORT || '6379'),
+      password: import.meta.env.REDIS_PASSWORD,
+      lazyConnect: true,
+    });
+  }
 
   // Handle WebSocket connections
   io.on('connection', (socket) => {
@@ -226,7 +232,7 @@ async function getCurrentProgress(uploadId: string): Promise<any> {
 }
 
 // Broadcast progress update to specific rooms
-export function broadcastProgress(
+export function _broadcastProgress(
   uploadId: string,
   caseId: string,
   progress: any
@@ -248,7 +254,7 @@ export function broadcastProgress(
 }
 
 // Broadcast tensor processing results
-export function broadcastTensorResult(jobId: string, result: any) {
+export function _broadcastTensorResult(jobId: string, result: any) {
   if (!io) return;
 
   io.to(`tensor-${jobId}`).emit('tensor-result', {
@@ -259,7 +265,7 @@ export function broadcastTensorResult(jobId: string, result: any) {
 }
 
 // Broadcast search results in real-time
-export function broadcastSearchResults(searchId: string, results: any) {
+export function _broadcastSearchResults(searchId: string, results: any) {
   if (!io) return;
 
   io.to(`search-${searchId}`).emit('search-results', {
@@ -290,7 +296,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // Cleanup function
-export function closeWebSocket() {
+export function _closeWebSocket() {
   if (io) {
     io.close();
     io = null;

@@ -62,7 +62,7 @@ const taskDefinitions = {
     name: 'Legal Document Embeddings',
     cmd: ['node', 'scripts/generate-legal-embeddings.mjs'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
+      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11435',
       OLLAMA_GPU_LAYERS: '35', 
       RTX_3060_OPTIMIZATION: 'true',
       LEGAL_EMBEDDING_MODEL: 'nomic-embed-text',
@@ -74,7 +74,7 @@ const taskDefinitions = {
     name: 'Case Similarity Analysis',
     cmd: ['node', 'scripts/process-case-similarity.mjs'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
+      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11435',
       OLLAMA_GPU_LAYERS: '35',
       RTX_3060_OPTIMIZATION: 'true',
       PGVECTOR_ENABLED: 'true',
@@ -85,7 +85,7 @@ const taskDefinitions = {
     name: 'Legal AI Inference',
     cmd: ['npm', 'run', 'check:typescript'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
+      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11435',
       OLLAMA_GPU_LAYERS: '30', 
       RTX_3060_OPTIMIZATION: 'true',
       LEGAL_MODEL: 'gemma3-legal',
@@ -96,7 +96,7 @@ const taskDefinitions = {
     name: 'Evidence Document Processing',
     cmd: ['node', 'scripts/process-evidence-batch.mjs'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
+      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11435',
       ENABLE_TRAINING: 'true',
       GPU_ACCELERATION: 'true',
       MINIO_ENABLED: 'true',
@@ -107,7 +107,7 @@ const taskDefinitions = {
     name: 'Legal Vector Operations',
     cmd: ['npm', 'run', 'build:wasm'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
+      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11435',
       ENABLE_WASM_GPU: 'true',
       LEGAL_VECTOR_DIM: '384',
       HNSW_ENABLED: 'true'
@@ -117,7 +117,7 @@ const taskDefinitions = {
     name: 'Chat Session Persistence',
     cmd: ['node', 'scripts/persist-chat-embeddings.mjs'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
+      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11435',
       PGVECTOR_ENABLED: 'true',
       EMBEDDING_CACHE: 'true',
       REDIS_ENABLED: 'true'
@@ -127,7 +127,7 @@ const taskDefinitions = {
     name: 'Legal Document SIMD Parser',
     cmd: ['node', 'scripts/simd-legal-parser.mjs'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
+      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11435',
       SIMD_ENABLED: 'true',
       LEGAL_PARSING: 'true',
       PDF_GPU_ACCELERATION: 'true',
@@ -138,7 +138,7 @@ const taskDefinitions = {
     name: 'WebGPU Legal Knowledge SOM',
     cmd: ['npm', 'run', 'check:ultra-fast'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
+      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11435',
       WEBGPU_ENABLED: 'true',
       LEGAL_SOM_CACHE: 'true',
       KNOWLEDGE_GRAPH: 'true'

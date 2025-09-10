@@ -121,7 +121,7 @@ class GPUMemoryManager {
       
       // Ollama GPU optimization
       OLLAMA_GPU_LAYERS: settings.ollamaGPULayers.toString(),
-      OLLAMA_HOST: '0.0.0.0:11434',
+      OLLAMA_HOST: '0.0.0.0:11435',
       OLLAMA_ORIGINS: '*',
       OLLAMA_NUM_PARALLEL: settings.maxConcurrent.toString(),
       
