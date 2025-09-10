@@ -15,7 +15,7 @@ const config = {
     mcp_context7: 8777,
     redis: 4005,
     postgres: 5432,
-    ollama: 11434
+    ollama: 11435
   },
   services: [
     'frontend',
