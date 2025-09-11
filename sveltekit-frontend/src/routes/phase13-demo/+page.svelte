@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Phase 13 Enhanced Features Demo -->
 <!-- Complete integration of XState, WebGL, Enhanced RAG, and Context7 MCP -->

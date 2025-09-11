@@ -6,7 +6,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import {
     Button,
@@ -44,7 +44,7 @@
 
   let {
     caseId = '',
-    userId = $page.data.user?.id || '',
+    userId = page.data.user?.id || '',
     maxFiles = 10,
     allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain', 'application/msword'],
     enableAnalytics = true,

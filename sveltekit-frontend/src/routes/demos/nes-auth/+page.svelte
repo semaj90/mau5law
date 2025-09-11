@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
+https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
   import { Button, Card, Dialog, Input, Label, Alert, AlertDescription } from '$lib/components/ui/enhanced-bits';

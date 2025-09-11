@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here
+https://svelte.dev/e/unexpected_reserved_word -->
 <script lang="ts">
   import Button from "$lib/components/ui/Button.svelte";
   // FIX: Import all necessary parts of the Tooltip component

@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import type { PageData } from './$types';
 
   let { data = $bindable() } = $props(); // PageData;
@@ -44,18 +44,18 @@
   </div>
 
   <!-- Success Message -->
-  {#if $page.form?.success}
+  {#if page.form?.success}
     <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
       <h3 class="text-green-800 font-semibold">Success!</h3>
-      <p class="text-green-700">{$page.form.message}</p>
+      <p class="text-green-700">{page.form.message}</p>
     </div>
   {/if}
 
   <!-- Form Errors -->
-  {#if $page.form?.errors && Object.keys($page.form.errors).length > 0}
+  {#if page.form?.errors && Object.keys(page.form.errors).length > 0}
     <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
       <h3 class="text-red-800 font-semibold">Form Errors:</h3>
-      {#each Object.entries($page.form.errors) as [field, error]}
+      {#each Object.entries(page.form.errors) as [field, error]}
         <p class="text-red-700">• {field}: {error}</p>
       {/each}
     </div>
@@ -80,11 +80,11 @@
         value={data.form.data.title}
         placeholder="Enter a title"
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        class:border-red-500={$page.form?.errors?.title}
+        class:border-red-500={page.form?.errors?.title}
         required
       />
-      {#if $page.form?.errors?.title}
-        <p class="mt-1 text-sm text-red-600">{$page.form.errors.title}</p>
+      {#if page.form?.errors?.title}
+        <p class="mt-1 text-sm text-red-600">{page.form.errors.title}</p>
       {/if}
     </div>
 
@@ -147,7 +147,7 @@
     <h3 class="text-lg font-semibold mb-3">Debug Information</h3>
     <div class="space-y-2 text-sm">
       <div><strong>Form Data:</strong> {JSON.stringify(data.form.data, null, 2)}</div>
-      <div><strong>Page Form:</strong> {JSON.stringify($page.form, null, 2)}</div>
+      <div><strong>Page Form:</strong> {JSON.stringify(page.form, null, 2)}</div>
       <div><strong>Is Submitting:</strong> {isSubmitting}</div>
     </div>
   </div>

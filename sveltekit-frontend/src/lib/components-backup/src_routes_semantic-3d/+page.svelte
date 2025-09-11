@@ -5,7 +5,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import Enhanced3DSemanticProcessor from '$lib/components/Enhanced3DSemanticProcessor.svelte';
   import { Card } from 'bits-ui';
   import { Badge } from 'bits-ui';
@@ -110,7 +110,7 @@
   
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="{$page.url}" />
+  <meta property="og:url" content="{page.url}" />
   <meta property="og:title" content={pageTitle} />
   <meta property="og:description" content={pageDescription} />
 </svelte:head>

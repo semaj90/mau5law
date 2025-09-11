@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: 'case' is a reserved word in JavaScript and cannot be used here
+https://svelte.dev/e/unexpected_reserved_word -->
 <!-- @migration-task Error while migrating Svelte code: 'case' is a reserved word in JavaScript and cannot be used here -->
 <!--
   CRUD Integration Demo - PostgreSQL + Drizzle ORM + MCP + XState

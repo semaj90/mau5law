@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:focus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax
+https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:focus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax -->
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte';

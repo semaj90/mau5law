@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an initialization value
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an initialization value -->
 <script lang="ts">
 

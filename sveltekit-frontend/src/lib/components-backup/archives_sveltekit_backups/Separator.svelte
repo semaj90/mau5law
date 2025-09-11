@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 // Backup of Separator.svelte before any future changes
 // Created on 2025-07-20

@@ -5,7 +5,7 @@
   	 */
   	import { onMount } from 'svelte';
   	import EnhancedMCPIntegration from '$lib/components/ai/EnhancedMCPIntegration.svelte';
-  	import { page } from '$app/stores';
+  	import { page } from '$app/state';
   	import { writable } from 'svelte/store';
   	// Page state
   	const integrationStatus = writable<{

@@ -14,7 +14,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   
   // Headless components from our enhanced architecture
   import { HeadlessDialog } from '$lib/headless';

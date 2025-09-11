@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
@@ -49,7 +49,7 @@
 				clearInterval(interval);
 				
 				// Update URL and trigger search
-				const params = new URLSearchParams($page.url.searchParams);
+				const params = new URLSearchParams(page.url.searchParams);
 				params.set('query', query);
 				params.set('type', selectedCategory);
 				goto(`?${params.toString()}`, { replaceState: true });

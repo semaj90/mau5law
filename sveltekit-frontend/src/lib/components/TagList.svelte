@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import { debounce } from "$lib/utils/debounce";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import IntegrationValidator from '$lib/components/validation/IntegrationValidator.svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   let pageTitle = 'Integration Validation - Legal AI Platform';
 </script>
 

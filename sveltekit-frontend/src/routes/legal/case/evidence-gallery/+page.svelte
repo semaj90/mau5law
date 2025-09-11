@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import * as Card from '$lib/components/ui/card';
   import { Select } from '$lib/components/ui/enhanced-bits';

@@ -1,7 +1,7 @@
 <script lang="ts">
 
 
-  	import { page } from '$app/stores';
+  	import { page } from '$app/state';
   	import { goto } from '$app/navigation';
   	import { browser } from '$app/environment';
   	import { cn } from '$lib/utils';
@@ -35,7 +35,7 @@
   		{ href: '/terminal', label: 'TERMINAL', icon: Terminal }
   	];
 
-  		let currentPath = browser && $page?.url ? $page.url.pathname : '/';
+  		let currentPath = browser && page?.url ? page.url.pathname : '/';
 
   	// Authentication state using the auth store
   	const auth = useAuth();

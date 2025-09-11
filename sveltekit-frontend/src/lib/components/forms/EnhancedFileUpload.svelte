@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token >
+https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token > -->
 <!--
   Enhanced File Upload Component with Superforms and Zod Validation

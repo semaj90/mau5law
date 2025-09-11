@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components
+https://svelte.dev/e/component_invalid_directive -->
 <!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <!--
   Feedback Analytics Dashboard for Legal AI Platform

@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated template
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated template -->
 <!--
   Copilot Index Optimizer - Development Interface
@@ -6,7 +8,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { Dialog } from 'bits-ui';
 
   // Component state

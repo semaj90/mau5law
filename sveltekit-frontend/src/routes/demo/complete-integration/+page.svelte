@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression
+https://svelte.dev/e/tag_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression -->
 <!--
   Complete Integration Demo
@@ -7,7 +9,7 @@
 <script lang="ts">
 </script>
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
   import NES3DLODProcessor from '$lib/components/ui/gaming/effects/NES3DLODProcessor.svelte';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter';

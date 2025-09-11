@@ -1,9 +1,9 @@
 
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { dev } from '$app/environment';
-  // TODO: Convert to $derived: error = $page.error
-  // TODO: Convert to $derived: status = $page.status
+  // TODO: Convert to $derived: error = page.error
+  // TODO: Convert to $derived: status = page.status
 </script>
 
 <svelte:head>

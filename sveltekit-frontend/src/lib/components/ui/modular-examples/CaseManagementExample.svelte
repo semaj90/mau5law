@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `<svelte:window>` does not support non-event attributes or spread attributes
+https://svelte.dev/e/illegal_element_attribute -->
 <!-- Example: Modular Case Management with API Integration -->
 <script lang="ts">
   import { ModularDialog } from '../modular-dialog';

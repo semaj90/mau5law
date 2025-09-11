@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 // Enhanced WYSIWYG Editor with Melt UI Integration
 // Combines Hugerte with Melt UI components for legal document editing

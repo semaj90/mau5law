@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousedown) and new syntaxes for event handling is not allowed. Use only the onmousedown syntax
+https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousedown) and new syntaxes for event handling is not allowed. Use only the onmousedown syntax -->
 <script lang="ts">
   	import { onMount, onDestroy } from 'svelte';

@@ -5,7 +5,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import UnifiedVectorInterface from '$lib/components/unified/UnifiedVectorInterface.svelte';
   import { browser } from '$app/environment';
 

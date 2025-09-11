@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { BookOpen, Plus, Search, Tag } from 'lucide-svelte';
   import { onMount } from 'svelte';
   import DragDropZone from '$lib/components/ui/DragDropZone.svelte';
@@ -130,7 +130,7 @@
       noteType: 'general',
       tags: [],
       userId: 'demo-user',
-      caseId: $page.url.searchParams.get('caseId') || undefined
+      caseId: page.url.searchParams.get('caseId') || undefined
     };
     isCreatingNote = true;
   }

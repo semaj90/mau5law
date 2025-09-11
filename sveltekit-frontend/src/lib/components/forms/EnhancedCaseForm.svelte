@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
+https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">

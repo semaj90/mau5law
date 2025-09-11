@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Missing catch or finally clause
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Missing catch or finally clause -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->

@@ -1,8 +1,10 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'Button' has already been declared
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'Button' has already been declared -->
 <!-- Test CRUD Display with SSR UI -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
 

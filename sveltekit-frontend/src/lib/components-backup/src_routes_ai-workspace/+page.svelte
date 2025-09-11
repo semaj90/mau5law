@@ -1,7 +1,9 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token }
+https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 
 
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { Button } from 'bits-ui';
   import { Card } from 'bits-ui';

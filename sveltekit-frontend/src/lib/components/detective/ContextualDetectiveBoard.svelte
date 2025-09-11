@@ -13,7 +13,7 @@
 
 <script lang="ts">
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import HeadlessTypingListener from '$lib/components/HeadlessTypingListener.svelte';
   import DetectiveWebSocketManager, { type CollaborativeUser } from '$lib/websocket/DetectiveWebSocketManager.js';
   import type { TypingContext, TypingState } from '$lib/machines/userTypingStateMachine.js';

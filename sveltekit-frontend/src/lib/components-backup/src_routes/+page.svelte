@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   // Import all advanced AI components
   import DocumentAnalysis from "$lib/components/DocumentAnalysis.svelte";
   import LegalChat from "$lib/components/LegalChat.svelte";

@@ -1,8 +1,10 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Navigation Sidebar Component -->
 <script lang="ts">
   import type { Props } from "$lib/types/global";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { goto } from "$app/navigation";
   import { onMount } from 'svelte';
   // Props
@@ -48,7 +50,7 @@
   });
 
   function navigateToRoute(route: string) {
-    if (route !== $page.url.pathname) {
+    if (route !== page.url.pathname) {
       goto(route);
     }
   }
@@ -63,7 +65,7 @@
   }
 
   function isRouteActive(route: string): boolean {
-    return $page.url.pathname === route;
+    return page.url.pathname === route;
   }
 
   function getSectionIcon(sectionId: string): string {
@@ -216,7 +218,7 @@
         <div class="flex items-center justify-between">
           <span>Current:</span>
           <span class="text-yorha-accent-warm font-mono text-[10px]">
-            {$page.url.pathname}
+            {page.url.pathname}
           </span>
         </div>
         <div class="flex items-center justify-between">

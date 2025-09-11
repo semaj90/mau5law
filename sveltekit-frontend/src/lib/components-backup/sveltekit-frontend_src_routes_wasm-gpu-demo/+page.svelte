@@ -5,7 +5,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { browser } from '$app/environment';
   import WasmGpuDemo from '$lib/components/demo/WasmGpuDemo.svelte';
   import { WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { OrchestrationCenter, FlowExplorer, ActivityStream, PerformancePulse } from '$lib/components/ui/enhanced-bits';

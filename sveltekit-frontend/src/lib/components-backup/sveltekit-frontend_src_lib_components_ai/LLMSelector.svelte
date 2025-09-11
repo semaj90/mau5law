@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `$selected` is an illegal variable name. To reference a global variable called `$selected`, use `globalThis.$selected`
+https://svelte.dev/e/global_reference_invalid -->
 <!-- @migration-task Error while migrating Svelte code: `$selected` is an illegal variable name. To reference a global variable called `$selected`, use `globalThis.$selected` -->
 <script lang="ts">
   import { onMount } from 'svelte'
