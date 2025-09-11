@@ -149,7 +149,7 @@
             <th class="header-cell">
               <button
                 class="header-button"
-                on:onclick={() => handleSort(column.key)}
+                onclick={() => handleSort(column.key)}
                 disabled={!sortable || !column.sortable}
               >
                 <span class="header-text">{column.title}</span>
@@ -203,7 +203,7 @@
                 'row-even': index % 2 === 0,
                 'row-clickable': selectable
               })}
-              on:onclick={() => handleRowSelect(row.id)}
+              onclick={() => handleRowSelect(row.id)}
             >
               {#if selectable && multiSelect}
                 <td class="select-cell">

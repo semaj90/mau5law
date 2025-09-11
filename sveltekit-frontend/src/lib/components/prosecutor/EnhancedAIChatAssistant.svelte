@@ -282,7 +282,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
             <Button class="bits-btn" 
               variant="outline" 
               size="sm"
-              on:onclick={() => useSelfPrompt(suggestion)}
+              onclick={() => useSelfPrompt(suggestion)}
               disabled={isTyping}
             >
               {suggestion}
@@ -387,7 +387,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           />
         </div>
         <Button class="bits-btn" 
-          on:onclick={sendMessage}
+          onclick={sendMessage}
           disabled={isTyping || !currentMessage.trim()}
         >
           <Send class="w-4 h-4" />

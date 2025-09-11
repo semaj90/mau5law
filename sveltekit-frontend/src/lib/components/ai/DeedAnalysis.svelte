@@ -81,7 +81,7 @@
       class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
     />
     <button
-      on:onclick={() => performSemanticSearch(searchQuery)}
+      onclick={() => performSemanticSearch(searchQuery)}
       disabled={isLoading || !searchQuery.trim()}
       class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
     >
@@ -174,7 +174,7 @@
 
           <div class="mt-3 flex justify-end">
             <button
-              on:onclick={() => selectedDocument = doc}
+              onclick={() => selectedDocument = doc}
               class="text-blue-600 hover:text-blue-800 text-sm font-medium"
             >
               View Details →

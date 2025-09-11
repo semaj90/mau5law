@@ -349,7 +349,7 @@
     >
       <div class="suggestion-header">
         <span class="suggestion-title">AI Suggestions</span>
-        <button class="close-btn" on:onclick={hideSuggestions}>×</button>
+        <button class="close-btn" onclick={hideSuggestions}>×</button>
       </div>
       
       <div class="suggestions-list">
@@ -357,7 +357,7 @@
           <button
             class="suggestion-item"
             class:selected={index === selectedSuggestionIndex}
-            on:onclick={() => applySuggestion(suggestion)}
+            onclick={() => applySuggestion(suggestion)}
           >
             <div class="suggestion-content">
               <div class="suggestion-text">{suggestion.text}</div>

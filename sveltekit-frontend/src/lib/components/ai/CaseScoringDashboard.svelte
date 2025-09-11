@@ -5,22 +5,22 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import * as Card from '$lib/components/ui/card';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
   import * as Dialog from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/enhanced-bits';
-  
+  // Removed Button import; using native <button> elements to avoid event typing issues
+
   // Case scoring state
   let cases = $state<CaseScore[]>([]);
   let selectedCase = $state<CaseScore | null>(null);
   let isLoading = $state(false);
   let scoringInProgress = $state(false);
   let showScoreDetails = $state(false);
-  
+
   // Filters and sorting
   let scoreFilter = $state<'all' | 'high' | 'medium' | 'low'>('all');
   let sortBy = $state<'score' | 'priority' | 'date'>('score');
   let searchQuery = $state('');
-  
+
   interface CaseScore {
     id: string;
     title: string;
@@ -34,7 +34,7 @@
     recommendations: string[];
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
   }
-  
+
   interface ScoreFactor {
     category: string;
     weight: number;
@@ -42,18 +42,18 @@
     description: string;
     confidence: number;
   }
-  
+
   interface ScoringRequest {
     caseId: string;
     evidence?: string[];
     context?: Record<string, any>;
     scoringModel?: 'comprehensive' | 'priority' | 'risk';
   }
-  
+
   onMount(() => {
     loadCaseScores();
   });
-  
+
   async function loadCaseScores() {
     isLoading = true;
     try {
@@ -63,7 +63,7 @@
           'Content-Type': 'application/json'
         }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         cases = data.cases || [];
@@ -76,7 +76,7 @@
       isLoading = false;
     }
   }
-  
+
   async function scoreCase(caseId: string, options: Partial<ScoringRequest> = {}) {
     scoringInProgress = true;
     try {
@@ -85,7 +85,7 @@
         scoringModel: 'comprehensive',
         ...options
       };
-      
+
       const response = await fetch('/api/ai/case-scoring', {
         method: 'POST',
         headers: {
@@ -93,7 +93,7 @@
         },
         body: JSON.stringify(request)
       });
-      
+
       if (response.ok) {
         const result = await response.json();
         // Update case score in the list
@@ -114,14 +114,14 @@
       scoringInProgress = false;
     }
   }
-  
+
   function getScoreColor(score: number): string {
     if (score >= 85) return 'text-red-600';
     if (score >= 70) return 'text-orange-600';
     if (score >= 50) return 'text-yellow-600';
     return 'text-green-600';
   }
-  
+
   function getPriorityBadgeClass(priority: string): string {
     switch (priority) {
       case 'critical': return 'bg-red-100 text-red-800 border-red-200';
@@ -131,10 +131,10 @@
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
-  
+
   let filteredCases = $derived(() => {
     let filtered = cases;
-    
+
     // Apply score filter
     if (scoreFilter !== 'all') {
       filtered = filtered.filter(case_ => {
@@ -146,16 +146,16 @@
         }
       });
     }
-    
+
     // Apply search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(case_ => 
+      filtered = filtered.filter(case_ =>
         case_.title.toLowerCase().includes(query) ||
         case_.description.toLowerCase().includes(query)
       );
     }
-    
+
     // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
@@ -168,10 +168,10 @@
         default: return 0;
       }
     });
-    
+
     return filtered;
   });
-  
+
   function openScoreDetails(caseItem: CaseScore) {
     selectedCase = caseItem;
     showScoreDetails = true;
@@ -189,9 +189,9 @@
       <p class="dashboard-subtitle">AI-powered case analysis and priority scoring</p>
     </div>
     <div class="header-actions">
-      <Button on:click={loadCaseScores} disabled={isLoading}>
+      <button type="button" on:click={loadCaseScores} disabled={isLoading} class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50">
         {isLoading ? 'Loading...' : 'Refresh'}
-      </Button>
+      </button>
     </div>
   </header>
 
@@ -208,7 +208,7 @@
           class="search-input"
         />
       </div>
-      
+
       <div class="filter-group">
         <label for="score-filter">Score Range:</label>
         <select id="score-filter" bind:value={scoreFilter} class="filter-select">
@@ -218,7 +218,7 @@
           <option value="low">Low Risk (0-39)</option>
         </select>
       </div>
-      
+
       <div class="filter-group">
         <label for="sort-by">Sort By:</label>
         <select id="sort-by" bind:value={sortBy} class="filter-select">
@@ -244,10 +244,10 @@
       </div>
     {:else}
       {#each filteredCases as caseItem}
-        <Card.Root class="case-score-card">
-          <Card.Header>
+        <Card class="case-score-card">
+          <CardHeader>
             <div class="case-header">
-              <Card.Title class="case-title">{caseItem.title}</Card.Title>
+              <CardTitle class="case-title">{caseItem.title}</CardTitle>
               <div class="case-badges">
                 <span class="priority-badge {getPriorityBadgeClass(caseItem.priority)}">
                   {caseItem.priority.toUpperCase()}
@@ -257,12 +257,12 @@
                 </span>
               </div>
             </div>
-            <Card.Description class="case-description">
+            <CardDescription class="case-description">
               {caseItem.description}
-            </Card.Description>
-          </Card.Header>
-          
-          <Card.Content>
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent>
             <div class="score-metrics">
               <div class="metric">
                 <span class="metric-label">Risk Score</span>
@@ -277,7 +277,7 @@
                 <span class="metric-value risk-{caseItem.riskLevel}">{caseItem.riskLevel}</span>
               </div>
             </div>
-            
+
             <div class="top-factors">
               <h4>Top Risk Factors:</h4>
               <ul class="factors-list">
@@ -289,23 +289,24 @@
                 {/each}
               </ul>
             </div>
-          </Card.Content>
-          
-          <Card.Footer>
-            <div class="card-actions">
-              <Button variant="outline" size="sm" on:click={() => openScoreDetails(caseItem)}>
-                View Details
-              </Button>
-              <Button 
-                size="sm" 
-                on:click={() => scoreCase(caseItem.id)}
-                disabled={scoringInProgress}
-              >
-                {scoringInProgress ? 'Rescoring...' : 'Rescore'}
-              </Button>
-            </div>
-          </Card.Footer>
-        </Card.Root>
+          </CardContent>
+
+            <CardFooter>
+              <div class="card-actions">
+                <button type="button" on:click={() => openScoreDetails(caseItem)} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
+                  View Details
+                </button>
+                <button
+                  type="button"
+                  on:click={() => scoreCase(caseItem.id)}
+                  disabled={scoringInProgress}
+                  class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
+                >
+                  {scoringInProgress ? 'Rescoring...' : 'Rescore'}
+                </button>
+              </div>
+            </CardFooter>
+        </Card>
       {/each}
     {/if}
   </main>
@@ -319,7 +320,7 @@
       <Dialog.Description>
         Detailed scoring breakdown and recommendations
       </Dialog.Description>
-      
+
       <div class="score-details-content">
         <!-- Overall Score -->
         <section class="score-overview">
@@ -333,7 +334,7 @@
             </div>
           </div>
         </section>
-        
+
         <!-- Scoring Factors -->
         <section class="scoring-factors">
           <h3>Scoring Factors</h3>
@@ -353,7 +354,7 @@
             {/each}
           </div>
         </section>
-        
+
         <!-- Recommendations -->
         <section class="recommendations">
           <h3>AI Recommendations</h3>
@@ -364,14 +365,13 @@
           </ul>
         </section>
       </div>
-      
       <div class="dialog-actions">
-        <Button variant="outline" on:click={() => showScoreDetails = false}>
+        <button type="button" onclick={() => showScoreDetails = false} class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50">
           Close
-        </Button>
-        <Button on:click={() => scoreCase(selectedCase.id)}>
+        </button>
+        <button type="button" onclick={() => scoreCase(selectedCase.id)} class="px-3 py-2 rounded bg-blue-600 text-white">
           Rescore Case
-        </Button>
+        </button>
       </div>
     {/if}
   </Dialog.Content>

@@ -21,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
       <p class="space-y-4">Modal is working!</p>
       <button
         class="space-y-4"
-        on:onclick={() => closeModal()}
+        onclick={() => closeModal()}
       >
         Close
       </button>

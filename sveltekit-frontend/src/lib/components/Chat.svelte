@@ -318,7 +318,7 @@
     <p>The chat component encountered an error:</p>
     <p class="error-message">{componentError.message}</p>
     <button 
-      on:onclick={() => { componentError = null; }}
+      onclick={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -329,7 +329,7 @@
   <div
     class="chat-overlay"
     transitifade={{ duration: 200 }}
-    on:onclick={(e) => { if (e.target === e.currentTarget) closeChat(); }}
+    onclick={(e) => { if (e.target === e.currentTarget) closeChat(); }}
     onkeydown={(e) => e.key === "Escape" && closeChat()}
     role="dialog"
     aria-modal="true"
@@ -356,7 +356,7 @@
             <button
               class="mode-button"
               class:active={showModeSelector}
-              on:onclick={() => (showModeSelector = !showModeSelector)}
+              onclick={() => (showModeSelector = !showModeSelector)}
               title="Select AI mode"
               aria-label="Select AI mode"
               aria-expanded={showModeSelector}
@@ -378,7 +378,7 @@
                   <button
                     class="mode-option"
                     class:selected={mode.id === selectedMode}
-                    on:onclick={() => {
+                    onclick={() => {
                       selectedMode = mode.id;
                       showModeSelector = false;
                     }}
@@ -400,7 +400,7 @@
         <div class="header-actions">
           <button
             class="header-action"
-            on:onclick={() => clearConversation()}
+            onclick={() => clearConversation()}
             title="Clear conversation"
             disabled={isGenerating}
             aria-label="Clear conversation"
@@ -409,7 +409,7 @@
           </button>
           <button
             class="header-action"
-            on:onclick={() => closeChat()}
+            onclick={() => closeChat()}
             title="Close chat"
             aria-label="Close chat"
           >
@@ -470,7 +470,7 @@
                     {#each message.actions as action}
                       <button
                         class="action-button"
-                        on:onclick={() => handleActionClick(action)}
+                        onclick={() => handleActionClick(action)}
                         title={action.text}
                         aria-label="Action: {action.text}"
                       >
@@ -507,7 +507,7 @@
             {#each quickActions as action}
               <button
                 class="quick-action"
-                on:onclick={() => handleQuickAction(action.text)}
+                onclick={() => handleQuickAction(action.text)}
                 disabled={isGenerating}
                 aria-label="Quick action: {action.text}"
               >
@@ -537,7 +537,7 @@
             class="send-button"
             class:sending={isGenerating}
             disabled={!currentMessage.trim() || isGenerating}
-            on:onclick={() => sendMessage()}
+            onclick={() => sendMessage()}
             title="Send message"
             aria-label="Send message"
           >

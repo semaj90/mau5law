@@ -107,7 +107,7 @@
     
     {#if onAddEvent && interactive}
       <button
-        on:onclick={onAddEvent}
+        onclick={onAddEvent}
         class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded-md hover:bg-yorha-primary/20 transition-colors"
       >
         <Calendar class="w-4 h-4" />
@@ -124,7 +124,7 @@
         <p>No timeline events recorded</p>
         {#if onAddEvent}
           <button
-            on:onclick={onAddEvent}
+            onclick={onAddEvent}
             class="mt-2 text-yorha-primary hover:text-yorha-accent transition-colors"
           >
             Add the first event
@@ -147,7 +147,7 @@
               interactive && 'cursor-pointer group',
               compactMode && 'gap-3'
             )}
-            on:onclick={() => interactive && onEventClick?.(event)}
+            onclick={() => interactive && onEventClick?.(event)}
           >
             <!-- Timeline Node -->
             <div class={cn(

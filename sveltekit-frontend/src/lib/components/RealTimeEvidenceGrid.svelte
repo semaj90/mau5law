@@ -351,7 +351,7 @@
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
-      on:onclick={() => evidenceStore.undo()}
+      onclick={() => evidenceStore.undo()}
       disabled={!evidenceStore.canUndo()}
       title="Undo (Ctrl+Z)"
     >
@@ -361,7 +361,7 @@
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
-      on:onclick={() => evidenceStore.redo()}
+      onclick={() => evidenceStore.redo()}
       disabled={!evidenceStore.canRedo()}
       title="Redo (Ctrl+Y)"
     >
@@ -371,7 +371,7 @@
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
-      on:onclick={() => syncWithServer()}
+      onclick={() => syncWithServer()}
       disabled={isLoading}
       title="Sync with server"
     >
@@ -390,7 +390,7 @@
       <div class="mx-auto px-4 max-w-7xl">
         <button
           class="mx-auto px-4 max-w-7xl"
-          on:onclick={() => (error = null)}
+          onclick={() => (error = null)}
         >
           <span class="mx-auto px-4 max-w-7xl">Dismiss</span>
           ✕
@@ -449,7 +449,7 @@
         <Button class="bits-btn"
           variant="ghost"
           size="sm"
-          on:onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
+          onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
         >
           {#if sortOrder === "asc"}
             <SortAsc class="mx-auto px-4 max-w-7xl" />
@@ -466,7 +466,7 @@
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        on:onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
+        onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
       >
         {#if viewMode === "grid"}
           <List class="mx-auto px-4 max-w-7xl" />
@@ -477,14 +477,14 @@
 
       <!-- Selection Actions -->
       {#if selectedEvidence.size > 0}
-        <Button class="bits-btn" variant="outline" size="sm" on:onclick={() => clearSelection()}>
+        <Button class="bits-btn" variant="outline" size="sm" onclick={() => clearSelection()}>
           Clear ({selectedEvidence.size})
         </Button>
 
         <Button class="bits-btn"
           variant="danger"
           size="sm"
-          on:onclick={() => {
+          onclick={() => {
             if (confirm(`Delete ${selectedEvidence.size} selected items?`)) {
               selectedEvidence.forEach((id) => deleteEvidence(id));
             }
@@ -494,13 +494,13 @@
           Delete
         </Button>
       {:else}
-        <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => selectAll()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => selectAll()}>
           Select All
         </Button>
       {/if}
 
       <!-- Add Evidence -->
-      <Button class="bits-btn" on:onclick={() => createEvidence()}>
+      <Button class="bits-btn" onclick={() => createEvidence()}>
         <span class="mx-auto px-4 max-w-7xl">+</span>
         Add Evidence
       </Button>
@@ -531,7 +531,7 @@
             ? "No evidence matches your current filters."
             : "No evidence has been added yet."}
         </p>
-        <Button class="bits-btn" on:onclick={() => createEvidence()}>Add First Evidence</Button>
+        <Button class="bits-btn" onclick={() => createEvidence()}>Add First Evidence</Button>
       </div>
     </div>
   {:else}
@@ -571,7 +571,7 @@
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:onclick={() => (editingEvidence = item.id)}
+                  onclick={() => (editingEvidence = item.id)}
                 >
                   <Eye class="mx-auto px-4 max-w-7xl" />
                 </Button>
@@ -579,7 +579,7 @@
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:onclick={() => deleteEvidence(item.id)}
+                  onclick={() => deleteEvidence(item.id)}
                 >
                   <Trash2 class="mx-auto px-4 max-w-7xl" />
                 </Button>
@@ -603,7 +603,7 @@
                 <div class="mx-auto px-4 max-w-7xl">
                   <Button class="bits-btn"
                     size="sm"
-                    on:onclick={() =>
+                    onclick={() =>
                       updateEvidence(item.id, {
                         title: item.title,
                         description: item.description,
@@ -614,7 +614,7 @@
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:onclick={() => (editingEvidence = null)}
+                    onclick={() => (editingEvidence = null)}
                   >
                     Cancel
                   </Button>
@@ -756,14 +756,14 @@
                     <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      on:onclick={() => (editingEvidence = item.id)}
+                      onclick={() => (editingEvidence = item.id)}
                     >
                       <Eye class="mx-auto px-4 max-w-7xl" />
                     </Button>
                     <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      on:onclick={() => deleteEvidence(item.id)}
+                      onclick={() => deleteEvidence(item.id)}
                     >
                       <Trash2 class="mx-auto px-4 max-w-7xl" />
                     </Button>
@@ -791,7 +791,7 @@
             variant="outline"
             size="sm"
             disabled={currentPage === 0}
-            on:onclick={() => currentPage--}
+            onclick={() => currentPage--}
           >
             Previous
           </Button>
@@ -804,7 +804,7 @@
             variant="outline"
             size="sm"
             disabled={currentPage >= totalPages - 1}
-            on:onclick={() => currentPage++}
+            onclick={() => currentPage++}
           >
             Next
           </Button>

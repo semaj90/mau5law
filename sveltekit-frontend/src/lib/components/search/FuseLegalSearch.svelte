@@ -201,11 +201,11 @@
           {#if showAIActions}
             <Card.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
-                <Button class="bits-btn" size="sm" on:onclick={() => handleAIAction(law, 'summary')}>
+                <Button class="bits-btn" size="sm" onclick={() => handleAIAction(law, 'summary')}>
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
                 </Button>
-                <Button class="bits-btn" variant="outline" size="sm" on:onclick={() => handleAIAction(law, 'chat')}>
+                <Button class="bits-btn" variant="outline" size="sm" onclick={() => handleAIAction(law, 'chat')}>
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI
                 </Button>

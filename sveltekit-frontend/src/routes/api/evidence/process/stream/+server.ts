@@ -1,128 +1,3 @@
-import type { RequestHandler } from '@sveltejs/kit';
-
-type Listener = (payload: string) => void;
-
-interface Session {
-  id: string;
-  listeners: Set<Listener>;
-  closed: boolean;
-}
-
-const sessions = new Map<string, Session>();
-
-function makeSession(id: string): Session {
-  const s: Session = { id, listeners: new Set(), closed: false };
-  sessions.set(id, s);
-  return s;
-}
-
-function getSession(id: string) {
-  return sessions.get(id) ?? makeSession(id);
-}
-
-function sendToSession(id: string, obj: unknown) {
-  const s = sessions.get(id);
-  if (!s) return;
-  const payload = JSON.stringify(obj);
-  for (const l of s.listeners) l(payload);
-}
-
-function simulateProcessing(sessionId: string, files: { name: string }[]) {
-  // Simulate progress events per-file and a final 'done' event.
-  const total = files.length || 1;
-  files.forEach((file, idx) => {
-    let progress = 0;
-    const key = `${file.name}-${Date.now()}-${idx}`;
-    const iv = setInterval(
-      () => {
-        progress += Math.floor(Math.random() * 15) + 5;
-        if (progress >= 100) progress = 100;
-        sendToSession(sessionId, { type: 'progress', file: file.name, id: key, progress });
-        if (progress >= 100) {
-          clearInterval(iv);
-          sendToSession(sessionId, { type: 'file:complete', file: file.name, id: key });
-          // small delay then possibly emit overall progress
-          setTimeout(() => {
-            sendToSession(sessionId, { type: 'info', message: `Completed ${file.name}` });
-            if (idx === total - 1) {
-              sendToSession(sessionId, { type: 'done', message: 'All files processed', sessionId });
-            }
-          }, 200);
-        }
-      },
-      300 + Math.random() * 400
-    );
-  });
-}
-
-export const POST: RequestHandler = async ({ request }) => {
-  // Start a processing session. Accepts JSON: { files: [{name}], sessionId?: string }
-  const body = await request.json().catch(() => ({}));
-  const files = Array.isArray(body.files) ? body.files : [];
-  const sessionId =
-    typeof body.sessionId === 'string' && body.sessionId.length
-      ? body.sessionId
-      : `sess_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-
-  // ensure session exists and start simulation
-  getSession(sessionId);
-  setTimeout(() => simulateProcessing(sessionId, files), 50);
-
-  return new Response(JSON.stringify({ sessionId }), {
-    status: 201,
-    headers: { 'content-type': 'application/json' },
-  });
-};
-
-export const GET: RequestHandler = async ({ url }) => {
-  const sessionId = url.searchParams.get('sessionId');
-  if (!sessionId) {
-    return new Response(JSON.stringify({ error: 'sessionId query required' }), { status: 400 });
-  }
-
-  const session = getSession(sessionId);
-
-  const encoder = new TextEncoder();
-
-  const stream = new ReadableStream({
-    start(controller) {
-      function listener(payload: string) {
-        // SSE data: line-delimited with double-newline
-        controller.enqueue(encoder.encode(`data: ${payload}\n\n`));
-      }
-
-      session.listeners.add(listener);
-
-      // initial welcome event
-      controller.enqueue(
-        encoder.encode(`data: ${JSON.stringify({ type: 'connected', sessionId })}\n\n`)
-      );
-
-      // When the client disconnects, remove the listener.
-      (controller as any).onCancel = () => {
-        session.listeners.delete(listener);
-      };
-    },
-    cancel() {
-      // noop
-    },
-  });
-
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/event-stream;charset=utf-8',
-      'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive',
-    },
-  });
-};
-/*
- * SvelteKit Streaming API for Real-time Legal Evidence Processing
- *
- * Provides Server-Sent Events (SSE) for streaming workflow updates
- * Integrates with xState evidence processing machine for orchestrated workflows
- */
-
 import type { RequestHandler } from './$types';
 import { createActor } from 'xstate';
 import {
@@ -130,137 +5,57 @@ import {
   type EvidenceProcessingContext,
 } from '$lib/state/evidence-processing-machine.js';
 
-// Active processing sessions
-const activeSessions = new Map<
-  string,
-  {
-    actor: any;
-    controller: ReadableStreamDefaultController;
-    startTime: number;
-  }
->();
-
+// Active processing sessions (no longer store controllers; GET opens SSE connections on demand)
+const activeSessions = new Map<string, { actor: any; startTime: number }>();
+// POST starts or updates a processing session (no SSE here)
 export const POST: RequestHandler = async ({ request }) => {
-  const body = await request.json();
-  const { evidenceId, file, neuralSpriteConfig } = body;
+  const body = await request.json().catch(() => ({}));
+  let { evidenceId, file, neuralSpriteConfig } = body;
+  if (!evidenceId) evidenceId = `evidence_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
-  if (!evidenceId) {
-    return new Response(JSON.stringify({ error: 'evidenceId is required' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
+  let session = activeSessions.get(evidenceId);
+  if (!session) {
+    const actor = createActor(evidenceProcessingMachine, {
+      input: {
+        evidenceId,
+        uploadProgress: 0,
+        errors: [],
+        processingTimeMs: 0,
+        streamingUpdates: [],
+      },
     });
+    actor.start();
+    session = { actor, startTime: Date.now() };
+    activeSessions.set(evidenceId, session);
   }
 
-  // Create streaming response
-  const stream = new ReadableStream({
-    start(controller) {
-      // Create xState actor for this processing session
-      const actor = createActor(evidenceProcessingMachine, {
-        input: {
-          evidenceId,
-          uploadProgress: 0,
-          errors: [],
-          processingTimeMs: 0,
-          streamingUpdates: [],
-        },
+  // If file provided, send event (can support multiple POSTs)
+  if (file) {
+    try {
+      const mockFile = new File([new Uint8Array(1024)], file.name || 'document.pdf', {
+        type: file.type || 'application/pdf',
       });
-
-      // Store session for potential cancellation
-      activeSessions.set(evidenceId, {
-        actor,
-        controller,
-        startTime: Date.now(),
+      session.actor.send({ type: 'UPLOAD_FILE', file: mockFile, evidenceId });
+    } catch (e) {
+      return new Response(JSON.stringify({ error: 'Failed to stage file', details: String(e) }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
       });
+    }
+  }
 
-      // Subscribe to state changes for streaming updates
-      actor.subscribe((state) => {
-        const updateData = {
-          evidenceId,
-          currentState: state.value,
-          context: state.context,
-          timestamp: Date.now(),
-          canTransition: getAvailableTransitions(state),
-          progress: getOverallProgress(state.context),
-          currentStep: getCurrentStepInfo(state.context),
-        };
+  if (neuralSpriteConfig) {
+    session.actor.send({ type: 'CONFIGURE_NEURAL_SPRITE', config: neuralSpriteConfig });
+  }
 
-        // Send SSE update
-        try {
-          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(updateData)}\n\n`));
-        } catch (error) {
-          console.error('Failed to send SSE update:', error);
-          controller.close();
-          activeSessions.delete(evidenceId);
-        }
-
-        // Handle final states
-        if (state.matches('completed') || state.matches('error') || state.matches('cancelled')) {
-          setTimeout(() => {
-            controller.close();
-            activeSessions.delete(evidenceId);
-          }, 1000);
-        }
-      });
-
-      // Start the processing workflow
-      actor.start();
-
-      // Simulate file upload (in real app, handle multipart upload)
-      if (file) {
-        const mockFile = new File([new Uint8Array(1024)], file.name || 'document.pdf', {
-          type: file.type || 'application/pdf',
-        });
-
-        actor.send({
-          type: 'UPLOAD_FILE',
-          file: mockFile,
-          evidenceId,
-        });
-
-        // Configure Neural Sprite if provided
-        if (neuralSpriteConfig) {
-          setTimeout(() => {
-            actor.send({
-              type: 'CONFIGURE_NEURAL_SPRITE',
-              config: neuralSpriteConfig,
-            });
-          }, 500);
-        }
-      }
-
-      // Send initial connection confirmation
-      controller.enqueue(
-        new TextEncoder().encode(
-          `data: ${JSON.stringify({
-            type: 'connection_established',
-            evidenceId,
-            message: 'Real-time processing stream connected',
-            timestamp: Date.now(),
-          })}\n\n`
-        )
-      );
-    },
-
-    cancel() {
-      // Cleanup on client disconnect
-      const session = activeSessions.get(evidenceId);
-      if (session) {
-        session.actor.send({ type: 'CANCEL_PROCESSING' });
-        session.actor.stop();
-        activeSessions.delete(evidenceId);
-      }
-    },
-  });
-
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      Connection: 'keep-alive',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control',
-    },
-  });
+  return new Response(
+    JSON.stringify({
+      evidenceId,
+      status: 'started',
+      streamingEndpoint: `/api/evidence/process/stream?evidenceId=${encodeURIComponent(evidenceId)}`,
+    }),
+    { headers: { 'Content-Type': 'application/json' } }
+  );
 };
 
 // Control endpoint for sending events to active sessions
@@ -302,61 +97,71 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
 };
 
-// Get session status
+// GET opens SSE stream for a given evidenceId
 export const GET: RequestHandler = async ({ url }) => {
   const evidenceId = url.searchParams.get('evidenceId');
-
-  if (evidenceId) {
-    const session = activeSessions.get(evidenceId);
-    if (session) {
-      const currentState = session.actor.getSnapshot();
-      return new Response(
-        JSON.stringify({
-          evidenceId,
-          status: 'active',
-          currentState: currentState.value,
-          progress: getOverallProgress(currentState.context),
-          duration: Date.now() - session.startTime,
-          context: currentState.context,
-        }),
-        {
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-    } else {
-      return new Response(
-        JSON.stringify({
-          evidenceId,
-          status: 'not_found',
-        }),
-        {
-          status: 404,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-    }
+  if (!evidenceId) {
+    return new Response(JSON.stringify({ error: 'evidenceId query param is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  const session = activeSessions.get(evidenceId);
+  if (!session) {
+    return new Response(JSON.stringify({ error: 'No active session for evidenceId' }), {
+      status: 404,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
-  // List all active sessions
-  const sessions = Array.from(activeSessions.entries()).map(([id, session]) => {
-    const snapshot = session.actor.getSnapshot();
-    return {
-      evidenceId: id,
-      currentState: snapshot.value,
-      progress: getOverallProgress(snapshot.context),
-      duration: Date.now() - session.startTime,
-    };
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    start(controller) {
+      const send = (obj: unknown) =>
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
+
+      // initial event
+      send({ type: 'connection_established', evidenceId, timestamp: Date.now() });
+
+      const sub = session.actor.subscribe((state: any) => {
+        const update = {
+          evidenceId,
+          currentState: state.value,
+          context: state.context,
+          timestamp: Date.now(),
+          progress: getOverallProgress(state.context),
+          currentStep: getCurrentStepInfo(state.context),
+        };
+        try {
+          send(update);
+        } catch (e) {
+          controller.close();
+        }
+        if (state.matches('completed') || state.matches('error') || state.matches('cancelled')) {
+          setTimeout(() => {
+            send({ type: 'session_complete', evidenceId });
+            controller.close();
+          }, 800);
+        }
+      });
+
+      (controller as any).onCancel = () => {
+        sub.unsubscribe?.();
+      };
+    },
+    cancel() {
+      // subscription cleaned in onCancel
+    },
   });
 
-  return new Response(
-    JSON.stringify({
-      activeSessions: sessions.length,
-      sessions,
-    }),
-    {
-      headers: { 'Content-Type': 'application/json' },
-    }
-  );
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
 };
 
 // Delete/cancel session
@@ -374,7 +179,6 @@ export const DELETE: RequestHandler = async ({ url }) => {
   if (session) {
     session.actor.send({ type: 'CANCEL_PROCESSING' });
     session.actor.stop();
-    session.controller.close();
     activeSessions.delete(evidenceId);
 
     return new Response(

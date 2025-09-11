@@ -20,7 +20,8 @@
     CardContent
   } from '$lib/ui/card.svelte';
   import Button from '$lib/ui/button.svelte';
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import type { IFrame } from '@stomp/stompjs';
 
   // Explicit actor snapshot typing to satisfy accesses to currentState.context / matches
   interface StreamingUpdate {
@@ -51,75 +52,166 @@
     matches: (state: string) => boolean;
   }
 
-  interface Props {
-    evidenceId?: string;
-    autoStart?: boolean;
-    neuralSpriteEnabled?: boolean;
-    onCompleted?: (result: any) => void;
-    onError?: (error: string) => void;
-    sessionId?: string | null;
-    endpoint?: string;
-  }
+  // Classic props
+  export let evidenceId: string = `evidence_${Date.now()}`;
+  export let autoStart: boolean = false;
+  export let neuralSpriteEnabled: boolean = true;
+  export let onCompleted: ((result: any) => void) | undefined;
+  export let onError: ((error: string) => void) | undefined;
+  export let sessionId: string | null = null; // reserved for future server correlation
+  export let endpoint: string = '/api/evidence/process/stream';
 
-  let {
-    evidenceId = `evidence_${Date.now()}`,
-    autoStart = false,
-    neuralSpriteEnabled = true,
-    onCompleted,
-    onError,
-    sessionId = null,
-    endpoint = '/api/evidence/process/stream'
-  } = $props<Props>();
+  const dispatch = createEventDispatcher();
 
   // xState actor for client-side state management
-  let actor = $state(createActor(evidenceProcessingMachine));
-  let currentState = $state<EvidenceActorState>({
-    ...actor.getSnapshot(),
+  const actor = createActor(evidenceProcessingMachine);
+
+  // Prepare initial snapshot with safe context access (cast due to generic inference limits)
+  const initialSnapshot = actor.getSnapshot() as any;
+
+  // Local snapshot (augmented)
+  let currentState: EvidenceActorState = {
+    ...initialSnapshot,
     context: {
-      ...actor.getSnapshot().context,
+      ...initialSnapshot.context,
       streamingUpdates: [],
       errors: [],
       processingTimeMs: 0
     }
-  } as unknown as EvidenceActorState);
-  let eventSource: EventSource | null = $state(null);
+  } as EvidenceActorState;
+
+  // SSE (existing path)
+  let eventSource: EventSource | null = null;
+
+  // ---- RabbitMQ (optional real-time transport) ------------------
+  // Requires: npm i @stomp/stompjs and RabbitMQ Web STOMP plugin enabled
+  interface RabbitMQConfig {
+    url: string;
+    exchange: string;
+    routingKey: string;
+    queue?: string;
+  }
+
+  // Enable if runtime provides a WS URL or endpoint hints at amqp
+  let useRabbitMQ = !!import.meta.env?.VITE_RABBITMQ_WS_URL || endpoint?.startsWith('amqp');
+  let rabbitConfig: RabbitMQConfig = {
+    url: import.meta.env.VITE_RABBITMQ_WS_URL || 'ws://localhost:15674/ws',
+    exchange: 'evidence.processing',
+    routingKey: evidenceId
+  };
+
+  let rabbitClient: any = null;
+  let rabbitSubscription: any = null;
+
+  async function connectRabbitMQ() {
+    if (!useRabbitMQ || typeof window === 'undefined') return;
+    try {
+      const { Client } = await import('@stomp/stompjs');
+      rabbitClient = new Client({
+        brokerURL: rabbitConfig.url,
+        reconnectDelay: 4000,
+        heartbeatIncoming: 10000,
+        heartbeatOutgoing: 10000,
+        debug: () => {}
+      });
+
+      rabbitClient.onConnect = () => {
+        const destination = `/exchange/${rabbitConfig.exchange}/${rabbitConfig.routingKey}`;
+        rabbitSubscription = rabbitClient.subscribe(destination, (msg: any) => {
+          try {
+            const data = JSON.parse(msg.body);
+            if (data.currentState && data.context) {
+              updateClientFromServer(data);
+            } else if (data.type === 'streaming_update') {
+              currentState.context.streamingUpdates = [
+                ...(currentState.context.streamingUpdates || []),
+                data.payload
+              ];
+            } else if (data.type === 'error') {
+              actor.send({ type: 'ANALYSIS_ERROR', error: data.message || 'RabbitMQ error' });
+            }
+          } catch (e) {
+            console.error('RabbitMQ message parse error', e);
+          }
+        });
+      };
+
+      rabbitClient.onStompError = (frame: IFrame) => {
+        actor.send({
+          type: 'ANALYSIS_ERROR',
+          error: frame.headers['message'] || 'RabbitMQ STOMP error'
+        });
+      };
+
+      rabbitClient.onWebSocketClose = () => {
+        if (!eventSource) {
+          console.warn('RabbitMQ closed, falling back to SSE');
+          useRabbitMQ = false;
+        }
+      };
+
+      rabbitClient.activate();
+    } catch (e) {
+      console.warn('RabbitMQ unavailable, using SSE only:', e);
+      useRabbitMQ = false;
+    }
+  }
+
+  function disconnectRabbitMQ() {
+    try {
+      rabbitSubscription?.unsubscribe();
+      rabbitClient?.deactivate();
+    } catch {}
+    rabbitSubscription = null;
+    rabbitClient = null;
+  }
+
+  // Kick off RabbitMQ connection early (non-blocking)
+  if (typeof window !== 'undefined') {
+    queueMicrotask(connectRabbitMQ);
+    window.addEventListener('beforeunload', disconnectRabbitMQ);
+  }
 
   // UI state
-  let dragOver = $state(false);
-  let selectedFile: File | null = $state(null);
-  let neuralSpriteConfig = $state({
+  let dragOver = false;
+  let selectedFile: File | null = null;
+  let neuralSpriteConfig = {
     enable_compression: neuralSpriteEnabled,
     predictive_frames: 3,
     ui_layout_compression: false,
     target_compression_ratio: 50
-  });
+  };
 
   // Reactive values with safe fallbacks
-  let progress = $derived(() => {
+  // Derived replacements
+  let progress = 0;
+  let currentStep: string = 'idle';
+  let isProcessing = false;
+  let canCancel = false;
+  let hasError = false;
+  let isCompleted = false;
+  let isCancelled = false;
+
+  function recomputeDerived() {
     try {
-      return getProcessingProgress(currentState.context) || 0;
-    } catch (e) {
-      return 0;
-    }
-  });
-  let currentStep = $derived(() => {
+      progress = getProcessingProgress(currentState.context) || 0;
+    } catch { progress = 0; }
     try {
-      return getCurrentStep(currentState.context) || 'idle';
-    } catch (e) {
-      return 'idle';
-    }
-  });
-  let isProcessing = $derived(
-    currentState.matches('uploading') ||
-    currentState.matches('analyzing') ||
-    currentState.matches('generatingGlyph') ||
-    currentState.matches('embeddingPNG') ||
-    currentState.matches('storingInMinIO')
-  );
-  let canCancel = $derived(isProcessing);
-  let hasError = $derived(currentState.matches('error'));
-  let isCompleted = $derived(currentState.matches('completed'));
-  let isCancelled = $derived(currentState.matches('cancelled'));
+      currentStep = getCurrentStep(currentState.context) || 'idle';
+    } catch { currentStep = 'idle'; }
+    isProcessing =
+      currentState.matches('uploading') ||
+      currentState.matches('analyzing') ||
+      currentState.matches('generatingGlyph') ||
+      currentState.matches('embeddingPNG') ||
+      currentState.matches('storingInMinIO');
+    canCancel = isProcessing;
+    hasError = currentState.matches('error');
+    isCompleted = currentState.matches('completed');
+    isCancelled = currentState.matches('cancelled');
+  }
+  // Initial compute
+  recomputeDerived();
 
   // Initialize actor subscription
   onMount(() => {
@@ -127,19 +219,18 @@
 
     // Subscribe to state changes
     const subscription = actor.subscribe((state: any) => {
-      // Cast to typed snapshot shape
-      const typed = state as EvidenceActorState;
-      currentState = state;
+      currentState = state as EvidenceActorState;
+      recomputeDerived();
 
-      // Handle completion
-      if (typed.matches('completed')) {
-        onCompleted?.(typed.context);
+      if (currentState.matches('completed')) {
+        onCompleted?.(currentState.context);
+        dispatch('completed', currentState.context);
         disconnectStream();
       }
-
-      // Handle errors
-      if (typed.matches('error')) {
-        onError?.(typed.context.errors.join(', '));
+      if (currentState.matches('error')) {
+        const msg = currentState.context.errors.join(', ');
+        onError?.(msg);
+        dispatch('error', msg);
       }
     });
 
@@ -223,27 +314,28 @@
             console.log('🔗 Streaming connection established for', evidenceId);
             return;
           }
-
-          // Update client state based on server state
-          if (data.currentState && data.context) {
+            // Update client state based on server state
+            if (data.currentState && data.context) {
             updateClientFromServer(data);
+            }
+          } catch (err) {
+            const e = err instanceof Error ? err : new Error(String(err));
+            console.error('Failed to parse SSE data:', e);
           }
-        } catch (error) {
-          console.error('Failed to parse SSE data:', error);
+          };
+
+          eventSource.onerror = (ev: Event) => {
+          console.error('SSE connection error:', ev);
+          actor.send({ type: 'ANALYSIS_ERROR', error: 'Connection lost' });
+          disconnectStream();
+          };
+
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          console.error('Failed to start processing:', err);
+          actor.send({ type: 'ANALYSIS_ERROR', error: message });
         }
-      };
-
-      eventSource.onerror = (error) => {
-        console.error('SSE connection error:', error);
-        actor.send({ type: 'ANALYSIS_ERROR', error: 'Connection lost' });
-        disconnectStream();
-      };
-
-    } catch (error) {
-      console.error('Failed to start processing:', error);
-      actor.send({ type: 'ANALYSIS_ERROR', error: error.message });
-    }
-  }
+        }
 
   function updateClientFromServer(serverData: any) {
     const { currentState: serverState, context: serverContext } = serverData;
@@ -257,6 +349,7 @@
 
       // Update context with server context
       currentState = { ...currentState, context: { ...serverContext } };
+      recomputeDerived();
     }
   }
 

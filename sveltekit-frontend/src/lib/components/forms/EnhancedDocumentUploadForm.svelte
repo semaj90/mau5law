@@ -268,7 +268,7 @@
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:onclick={handleSaveDraft}
+            onclick={handleSaveDraft}
             disabled={$isSubmitting}
           >
             <Save size={16} />
@@ -276,7 +276,7 @@
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:onclick={handleReset}
+            onclick={handleReset}
             disabled={$isSubmitting}
           >
             <RotateCcw size={16} />
@@ -541,7 +541,7 @@
               <Button class="bits-btn"
                 variant="outline"
                 size="sm"
-                on:onclick={() => actor.send({ type: "RETRY" })}
+                onclick={() => actor.send({ type: "RETRY" })}
                 disabled={contextValue.retryCount >= contextValue.maxRetries}
               >
                 Retry ({contextValue.maxRetries - contextValue.retryCount} attempts
@@ -552,7 +552,7 @@
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:onclick={() => actor.send({ type: "SKIP_PROCESSING" })}
+                  onclick={() => actor.send({ type: "SKIP_PROCESSING" })}
                   class="ml-2"
                 >
                   Skip AI Processing
@@ -594,7 +594,7 @@
       <div class="flex gap-3">
         <Button class="bits-btn"
           variant="outline"
-          on:onclick={handleReset}
+          onclick={handleReset}
           disabled={$isSubmitting}
         >
           Reset Form

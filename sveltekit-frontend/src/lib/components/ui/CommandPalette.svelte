@@ -149,7 +149,7 @@
   <!-- Backdrop -->
   <div 
     class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-    on:onclick={close}
+    onclick={close}
     role="button"
     tabindex="0"
     keydown={(e) => e.key === 'Enter' && close()}
@@ -208,7 +208,7 @@
                         ? "bg-harvard-crimson text-white shadow-nier-glow"
                         : "hover:bg-nier-surface-light text-foreground"
                     )}
-                    on:onclick={() => selectItem(item)}
+                    onclick={() => selectItem(item)}
                     on:mouseenter={() => selectedIndex = globalIndex}
                   >
                     <div class="flex items-center">

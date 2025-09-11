@@ -214,7 +214,7 @@
     <Alert variant="destructive" class="mb-4">
       <AlertDescription class="flex items-center justify-between">
         <span>{error.message}</span>
-        <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => dismissError(error.id)}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => dismissError(error.id)}>
           ✕
         </Button>
       </AlertDescription>
@@ -297,7 +297,7 @@
         
         <div class="flex space-x-2">
           <Button
-            on:onclick={ingestDocument}
+            onclick={ingestDocument}
             disabled={!$canIngest || $isProcessing}
             class="flex-1 bits-btn bits-btn"
           >
@@ -306,7 +306,7 @@
           
           <Button class="bits-btn"
             variant="outline"
-            on:onclick={addToBatch}
+            onclick={addToBatch}
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
           >
             ➕ Add to Batch
@@ -344,7 +344,7 @@
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:onclick={() => removeFromBatch(doc.id)}
+                  onclick={() => removeFromBatch(doc.id)}
                 >
                   ✕
                 </Button>
@@ -354,7 +354,7 @@
           
           <div class="space-y-2">
             <Button
-              on:onclick={processBatch}
+              onclick={processBatch}
               disabled={$isProcessing}
               class="w-full bits-btn bits-btn"
             >
@@ -362,7 +362,7 @@
             </Button>
             <Button class="bits-btn"
               variant="outline"
-              on:onclick={() => batchDocuments.set([])}
+              onclick={() => batchDocuments.set([])}
               disabled={$isProcessing}
               size="sm"
               class="w-full"

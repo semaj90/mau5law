@@ -180,7 +180,7 @@
           <div class="space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-semibold">Overview</h3>
-              <Button class="bits-btn" on:onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
+              <Button class="bits-btn" onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
                 <Sparkles class="w-4 h-4 mr-2" /> Regenerate
               </Button>
             </div>
@@ -238,7 +238,7 @@
           <div class="flex flex-col items-center justify-center h-48 text-muted-foreground">
             <Brain class="w-16 h-16 mb-4 opacity-50" />
             <p>No AI summary available for this case.</p>
-            <Button on:onclick={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn bits-btn">
+            <Button onclick={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn bits-btn">
               <Sparkles class="w-4 h-4 mr-2" /> Generate Summary
             </Button>
           </div>

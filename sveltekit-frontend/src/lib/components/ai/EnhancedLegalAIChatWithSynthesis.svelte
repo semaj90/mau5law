@@ -1212,7 +1212,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
           </div>
 
           <!-- Settings Toggle -->
-          <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => (showSettings = !showSettings)}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showSettings = !showSettings)}>
             <Settings class="w-4 h-4" />
           </Button>
         </div>
@@ -1456,7 +1456,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
           <!-- Message Actions -->
           <div class="flex-shrink-0 flex flex-col gap-1">
-            <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => copyToClipboard(message.content)}>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={() => copyToClipboard(message.content)}>
               <FileText class="w-3 h-3" />
             </Button>
           </div>
@@ -1483,7 +1483,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       keydown={handleKeyDown}
       disabled={isProcessing}
       class="flex-1" />
-    <Button class="bits-btn" on:onclick={sendMessage} disabled={!currentInput.trim() || isProcessing}>
+    <Button class="bits-btn" onclick={sendMessage} disabled={!currentInput.trim() || isProcessing}>
       {#if isProcessing}
         <Loader2 class="w-4 h-4 animate-spin" />
       {:else}
@@ -1498,7 +1498,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           Detailed Analysis
-          <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => (showAdvancedAnalysis = false)}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showAdvancedAnalysis = false)}>
             ×
           </Button>
         </CardTitle>

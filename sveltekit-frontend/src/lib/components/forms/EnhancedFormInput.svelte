@@ -219,7 +219,7 @@
         <button
           type="button"
           class="container mx-auto px-4"
-          on:onclick={() => togglePasswordVisibility()}
+          onclick={() => togglePasswordVisibility()}
           aria-label={showPassword ? "Hide password" : "Show password"}
           tabindex={-1}
         >

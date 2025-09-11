@@ -159,7 +159,7 @@
   {formtarget}
   {name}
   {value}
-  on:onclick={handleClick}
+  onclick={handleClick}
   on:on:mouseenter={handleHover}
   on:focus={handleFocus}
   class="nes-8bit-button nes-btn {nesVariant} {className}"

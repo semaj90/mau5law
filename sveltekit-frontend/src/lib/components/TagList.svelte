@@ -158,7 +158,7 @@
   }
 </script>
 
-<svelte:window on:onclick={handleClickOutside} />
+<svelte:window onclick={handleClickOutside} />
 
 <div class="mx-auto px-4 max-w-7xl" class:readonly>
   <div class="mx-auto px-4 max-w-7xl">
@@ -170,7 +170,7 @@
           <button
             type="button"
             class="mx-auto px-4 max-w-7xl"
-            on:onclick={() => removeTag(tag)}
+            onclick={() => removeTag(tag)}
             aria-label="Remove {tag} tag"
           >
             <X size={12} />
@@ -200,7 +200,7 @@
                 type="button"
                 class="mx-auto px-4 max-w-7xl"
                 class:active={index === activeIndex}
-                on:onclick={() => handleSuggestionClick(suggestion)}
+                onclick={() => handleSuggestionClick(suggestion)}
                 role="option"
                 aria-selected={index === activeIndex}
               >
@@ -217,7 +217,7 @@
       <button
         type="button"
         class="mx-auto px-4 max-w-7xl"
-        on:onclick={() => addTag(inputValue)}
+        onclick={() => addTag(inputValue)}
         aria-label="Add custom tag: {inputValue}"
       >
         <Plus size={14} />

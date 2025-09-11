@@ -106,14 +106,14 @@
       <div class="container mx-auto px-4">
         <button
           class="container mx-auto px-4"
-          on:onclick={() => (showSettings = !showSettings)}
+          onclick={() => (showSettings = !showSettings)}
           title="Settings"
         >
           <Settings class="container mx-auto px-4" />
         </button>
         <button
           class="container mx-auto px-4"
-          on:onclick={() => clearMessages()}
+          onclick={() => clearMessages()}
           title="Clear conversation"
         >
           <Trash2 class="container mx-auto px-4" />
@@ -135,7 +135,7 @@
               {#each message.references as reference}
                 <button
                   class="container mx-auto px-4"
-                  on:onclick={() => handleReferenceClick(reference)}
+                  onclick={() => handleReferenceClick(reference)}
                 >
                   <Quote class="container mx-auto px-4" />
                   <span class="container mx-auto px-4">{reference.title}</span>
@@ -183,7 +183,7 @@
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <h4 class="container mx-auto px-4">AI Assistant Settings</h4>
-        <button class="container mx-auto px-4" on:onclick={() => (showSettings = false)}
+        <button class="container mx-auto px-4" onclick={() => (showSettings = false)}
           >×</button
         >
       </div>
@@ -242,7 +242,7 @@
   {#if showCitationDialog}
     <div
       class="container mx-auto px-4"
-      on:onclick={() => (showCitationDialog = false)}
+      onclick={() => (showCitationDialog = false)}
       keydown={(e) => {
         if (e.key === "Escape") {
           showCitationDialog = false;
@@ -267,12 +267,12 @@
           </div>
 
           <div class="container mx-auto px-4">
-            <button class="container mx-auto px-4" on:onclick={() => insertCitation()}>
+            <button class="container mx-auto px-4" onclick={() => insertCitation()}>
               Insert Citation
             </button>
             <button
               class="container mx-auto px-4"
-              on:onclick={() => navigator.clipboard.writeText(selectedCitation)}
+              onclick={() => navigator.clipboard.writeText(selectedCitation)}
             >
               Copy to Clipboard
             </button>
@@ -282,7 +282,7 @@
         <div class="container mx-auto px-4">
           <button
             class="container mx-auto px-4"
-            on:onclick={() => (showCitationDialog = false)}
+            onclick={() => (showCitationDialog = false)}
           >
             Close
           </button>

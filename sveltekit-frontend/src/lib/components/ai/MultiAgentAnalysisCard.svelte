@@ -231,7 +231,7 @@
       <Button class="bits-btn" 
         variant="outline" 
         size="sm"
-        on:onclick={() => showDetails = !showDetails}
+        onclick={() => showDetails = !showDetails}
       >
         {showDetails ? 'Hide' : 'Show'} Full Analysis
       </Button>

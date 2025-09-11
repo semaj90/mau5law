@@ -503,7 +503,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if enableFilters}
           <Button class="bits-btn"
             variant="outline"
-            on:onclick={() => showFilters.update((s) => !s)}
+            onclick={() => showFilters.update((s) => !s)}
             class="filter-button"
           >
             <Filter class="mr-2" size={16} />
@@ -519,7 +519,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if enableAnalytics}
           <Button class="bits-btn"
             variant="outline"
-            on:onclick={() => showAnalytics.update((s) => !s)}
+            onclick={() => showAnalytics.update((s) => !s)}
           >
             <BarChart3 class="mr-2" size={16} />
             Analytics
@@ -537,7 +537,7 @@ https://svelte.dev/e/js_parse_error -->
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:onclick={() => {
+              onclick={() => {
                 searchQuery.set(historyItem);
                 performSearch(historyItem);
               }}
@@ -558,7 +558,7 @@ https://svelte.dev/e/js_parse_error -->
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           <span>Advanced Filters</span>
-          <Button class="bits-btn" variant="ghost" size="sm" on:onclick={resetFilters}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={resetFilters}>
             Reset
           </Button>
         </CardTitle>
@@ -656,7 +656,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
 
-        <Button on:onclick={applyFilters} class="w-full bits-btn bits-btn">Apply Filters</Button>
+        <Button onclick={applyFilters} class="w-full bits-btn bits-btn">Apply Filters</Button>
       </CardContent>
     </Card>
   {/if}
@@ -693,7 +693,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Results List -->
       <div class="results-list">
         {#each $searchResults as result (result.id)}
-          <Card class="result-item" on:onclick={() => handleResultClick(result)}>
+          <Card class="result-item" onclick={() => handleResultClick(result)}>
             <CardContent class="result-content">
               <!-- Result Header -->
               <div class="result-header">
@@ -779,7 +779,7 @@ https://svelte.dev/e/js_parse_error -->
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button class="bits-btn" variant="outline" on:onclick={resetFilters}>Reset Filters</Button>
+        <Button class="bits-btn" variant="outline" onclick={resetFilters}>Reset Filters</Button>
       </div>
     </div>
   {/if}

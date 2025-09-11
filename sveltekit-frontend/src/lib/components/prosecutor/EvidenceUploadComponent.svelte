@@ -308,7 +308,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           class="hidden"
           id="file-input"
         />
-        <Button class="bits-btn" variant="outline" on:onclick={() => document.getElementById('file-input')?.click()}>
+        <Button class="bits-btn" variant="outline" onclick={() => document.getElementById('file-input')?.click()}>
           Select Files
         </Button>
       {:else}
@@ -337,7 +337,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
                 <Button class="bits-btn" 
                   variant="ghost" 
                   size="sm"
-                  on:onclick={() => removeFile(index)}
+                  onclick={() => removeFile(index)}
                 >
                   <X class="w-4 h-4" />
                 </Button>
@@ -356,12 +356,12 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
             />
             <Button class="bits-btn" 
               variant="outline" 
-              on:onclick={() => document.getElementById('add-more-files')?.click()}
+              onclick={() => document.getElementById('add-more-files')?.click()}
               disabled={selectedFiles.length >= maxFiles}
             >
               Add More Files
             </Button>
-            <Button class="bits-btn" on:onclick={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
+            <Button class="bits-btn" onclick={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
               {#if uploading}
                 Processing...
               {:else}
@@ -430,7 +430,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         <div class="flex justify-center mt-4">
           <Button class="bits-btn" 
             variant="outline" 
-            on:onclick={() => {
+            onclick={() => {
               uploadResults = [];
               selectedFiles = [];
             }}

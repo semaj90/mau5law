@@ -383,13 +383,13 @@
       <div class="container mx-auto px-4">
         <button
           class="container mx-auto px-4"
-          on:onclick={() => (showAiPanel = !showAiPanel)}
+          onclick={() => (showAiPanel = !showAiPanel)}
         >
           AI Assist
         </button>
         <button
           class="container mx-auto px-4"
-          on:onclick={() => saveReport()}
+          onclick={() => saveReport()}
           disabled={!isDirty || isLoading}
         >
           Save
@@ -405,21 +405,21 @@
       <div class="container mx-auto px-4">
         <button
           type="button"
-          on:onclick={() => formatText("bold")}
+          onclick={() => formatText("bold")}
           title="Bold (Ctrl+B)"
         >
           <strong>B</strong>
         </button>
         <button
           type="button"
-          on:onclick={() => formatText("italic")}
+          onclick={() => formatText("italic")}
           title="Italic (Ctrl+I)"
         >
           <em>I</em>
         </button>
         <button
           type="button"
-          on:onclick={() => formatText("underline")}
+          onclick={() => formatText("underline")}
           title="Underline (Ctrl+U)"
         >
           <u>U</u>
@@ -427,7 +427,7 @@
         <div class="container mx-auto px-4"></div>
         <button
           type="button"
-          on:onclick={() => insertCitationPrompt()}
+          onclick={() => insertCitationPrompt()}
           title="Insert Citation (Ctrl+K)"
         >
           📎 Citation
@@ -456,7 +456,7 @@
       <h3>Citations</h3>
       <button
         class="container mx-auto px-4"
-        on:onclick={() => (citationSidebar.style.display = "none")}>×</button
+        onclick={() => (citationSidebar.style.display = "none")}>×</button
       >
     </div>
 
@@ -472,7 +472,7 @@
             <div class="container mx-auto px-4">{citation.source}</div>
             <button
               class="container mx-auto px-4"
-              on:onclick={() => insertCitation(citation)}
+              onclick={() => insertCitation(citation)}
             >
               Add
             </button>
@@ -487,7 +487,7 @@
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <h3>AI Suggestions</h3>
-        <button class="container mx-auto px-4" on:onclick={() => (showAiPanel = false)}
+        <button class="container mx-auto px-4" onclick={() => (showAiPanel = false)}
           >×</button
         >
       </div>
@@ -501,7 +501,7 @@
               <p>{suggestion}</p>
               <button
                 class="container mx-auto px-4"
-                on:onclick={() => insertAiSuggestion(suggestion)}
+                onclick={() => insertAiSuggestion(suggestion)}
               >
                 Use This
               </button>
@@ -523,7 +523,7 @@
           <span class="container mx-auto px-4">[{citation.source}]</span>
           <button
             class="container mx-auto px-4"
-            on:onclick={() => removeCitation(citation.id)}>×</button
+            onclick={() => removeCitation(citation.id)}>×</button
           >
         </div>
       {/each}

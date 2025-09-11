@@ -7,7 +7,7 @@
   }
   let { children,
     disabled = false,
-    on:onclick= () => {}
+    onclick= () => {}
   }: Props = $props();
   interface ContextMenuContext {
     close: () => void;
@@ -26,7 +26,7 @@
   class:disabled
   role="menuitem"
   tabindex={disabled ? -1 : 0}
-  on:onclick={() => handleClick()}
+  onclick={() => handleClick()}
   {disabled}
 >
   {@render children?.()}

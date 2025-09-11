@@ -68,7 +68,7 @@
           <Upload class="container mx-auto px-4" />
           <h2 class="container mx-auto px-4">Upload Evidence</h2>
         </div>
-        <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => closeModal()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => closeModal()}>
           <X class="container mx-auto px-4" />
         </Button>
       </div>
@@ -85,7 +85,7 @@
           ondrop={handleDrop}
           ondragover={handleDragOver}
           ondragleave={handleDragLeave}
-          on:onclick={() => fileInput?.click()}
+          onclick={() => fileInput?.click()}
           keydown={(e) =>
             (e.key === "Enter" || e.key === " ") && fileInput?.click()}
         >
@@ -96,7 +96,7 @@
           <p id="evidence-dropzone-instructions" class="container mx-auto px-4">
             Support for images, documents, audio, and video files
           </p>
-          <Button class="bits-btn" variant="outline" on:onclick={() => fileInput?.click()}>
+          <Button class="bits-btn" variant="outline" onclick={() => fileInput?.click()}>
             Choose Files
           </Button>
           <input
@@ -171,7 +171,7 @@
                       <Button class="bits-btn"
                         variant="ghost"
                         size="sm"
-                        on:onclick={() => removeFile(file.id)}
+                        onclick={() => removeFile(file.id)}
                       >
                         <X class="container mx-auto px-4" />
                       </Button>
@@ -201,12 +201,12 @@
         </div>
 
         <div class="container mx-auto px-4">
-          <Button class="bits-btn" variant="outline" on:onclick={() => closeModal()}>
+          <Button class="bits-btn" variant="outline" onclick={() => closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
           </Button>
 
           {#if completedUploads.length > 0}
-            <Button class="bits-btn" on:onclick={() => dispatch("viewEvidence", completedUploads)}>
+            <Button class="bits-btn" onclick={() => dispatch("viewEvidence", completedUploads)}>
               View Evidence
             </Button>
           {/if}

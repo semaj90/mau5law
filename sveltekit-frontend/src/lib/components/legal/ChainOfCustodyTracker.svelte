@@ -195,7 +195,7 @@
     {#if interactive && onTransferEvidence}
       <div class="mt-3 flex justify-end">
         <button
-          on:onclick={() => onTransferEvidence?.(evidence)}
+          onclick={() => onTransferEvidence?.(evidence)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
         >
           Transfer Custody
@@ -233,7 +233,7 @@
                 'relative flex items-start gap-4',
                 interactive && 'cursor-pointer group'
               )}
-              on:onclick={() => interactive && onViewDetails?.(transfer)}
+              onclick={() => interactive && onViewDetails?.(transfer)}
             >
               <!-- Timeline Node -->
               <div class={cn(
@@ -332,7 +332,7 @@
         {#if !showFullHistory && sortedTransfers.length > 3}
           <div class="text-center mt-4">
             <button 
-              on:onclick={() => showFullHistory = true}
+              onclick={() => showFullHistory = true}
               class="text-sm font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
             >
               Show {sortedTransfers.length - 3} more transfer{sortedTransfers.length - 3 !== 1 ? 's' : ''}

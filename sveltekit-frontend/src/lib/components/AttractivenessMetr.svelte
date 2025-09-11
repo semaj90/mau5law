@@ -63,7 +63,7 @@
         class:active={isActive}
         class:hovered={isHovered}
         disabled={readOnly}
-        on:onclick={() => handleRatingClick(rating)}
+        onclick={() => handleRatingClick(rating)}
         on:mouseenter={() => handleMouseEnter(rating)}
         on:mouseleave={handleMouseLeave}
         aria-label="Rate {rating} out of 10"

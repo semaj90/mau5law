@@ -167,7 +167,7 @@
 {#if showShortcuts}
   <div
     class="mx-auto px-4 max-w-7xl"
-    on:onclick={() => (showShortcuts = false)}
+    onclick={() => (showShortcuts = false)}
     keydown={(e) => e.key === "Escape" && (showShortcuts = false)}
     role="dialog"
     aria-modal="true"
@@ -185,7 +185,7 @@
         </h3>
         <button
           class="mx-auto px-4 max-w-7xl"
-          on:onclick={() => (showShortcuts = false)}
+          onclick={() => (showShortcuts = false)}
           aria-label="Close shortcuts dialog"
         >
           <svg class="mx-auto px-4 max-w-7xl" fill="currentColor" viewBox="0 0 20 20">

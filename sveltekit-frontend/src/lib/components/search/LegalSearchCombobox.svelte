@@ -231,7 +231,7 @@
         <button
           type="button"
           class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-          on:onclick={handleClear}
+          onclick={handleClear}
         >
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -298,7 +298,7 @@
                   <Combobox.Item
                     value={search}
                     class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                    on:onclick={() => {
+                    onclick={() => {
                       inputValue = search;
                       performSearch(search);
                     }}
@@ -321,7 +321,7 @@
                   <Combobox.Item
                     value={suggestion}
                     class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                    on:onclick={() => {
+                    onclick={() => {
                       inputValue = suggestion;
                       performSearch(suggestion);
                     }}
@@ -342,7 +342,7 @@
                 "hover:bg-gray-50 cursor-pointer transition-colors",
                 "data-[highlighted]:bg-blue-50"
               )}
-              on:onclick={() => handleSelect(result)}
+              onclick={() => handleSelect(result)}
             >
               <!-- Type Icon -->
               <div class={cn("flex-shrink-0 mt-1", typeColors[result.type] || 'text-gray-500')}>

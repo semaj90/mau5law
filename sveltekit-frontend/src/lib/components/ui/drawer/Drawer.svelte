@@ -28,7 +28,7 @@
     role="dialog"
     aria-modal="true"
     aria-label={title ? title : "Drawer"}
-    on:onclick={handleBackdropClick}
+    onclick={handleBackdropClick}
   >
     <div class="drawer drawer-{size} drawer-{side}" click|stopPropagation>
       <div class="drawer-header">

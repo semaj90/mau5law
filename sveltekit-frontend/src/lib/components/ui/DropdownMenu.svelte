@@ -24,7 +24,7 @@
         <DropdownMenuItem 
           value={item.value}
           disabled={item.disabled || false}
-          on:onclick={() => item.onClick?.(item.value)}
+          onclick={() => item.onClick?.(item.value)}
         >
           {item.label}
         </DropdownMenuItem>

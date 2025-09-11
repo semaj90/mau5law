@@ -113,7 +113,7 @@ export {};
         <div class="nes-header-actions">
           <button
             class={`nes-legal-priority-medium yorha-3d-button ${isPinned ? "nes-legal-priority-high" : ""}`}
-            on:onclick={togglePin}
+            onclick={togglePin}
             aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar"}
             type="button"
           >
@@ -121,7 +121,7 @@ export {};
           </button>
 
           {#if !isPinned}
-            <button class="nes-legal-priority-low yorha-3d-button" on:onclick={() => (isHovered = false)} aria-label="Close sidebar" type="button">
+            <button class="nes-legal-priority-low yorha-3d-button" onclick={() => (isHovered = false)} aria-label="Close sidebar" type="button">
               <X size={16} />
             </button>
           {/if}
@@ -134,13 +134,13 @@ export {};
 
       <div class="nes-tabs-container yorha-3d-panel">
         <div class="nes-tab-list">
-          <button class="nes-tab-trigger nes-legal-priority-medium" class:active={activeTab === "evidence"} on:onclick={() => handleTabChange("evidence")} type="button">
+          <button class="nes-tab-trigger nes-legal-priority-medium" class:active={activeTab === "evidence"} onclick={() => handleTabChange("evidence")} type="button">
             <Folder size={16} /> EVIDENCE
           </button>
-          <button class="nes-tab-trigger nes-legal-priority-medium" class:active={activeTab === "notes"} on:onclick={() => handleTabChange("notes")} type="button">
+          <button class="nes-tab-trigger nes-legal-priority-medium" class:active={activeTab === "notes"} onclick={() => handleTabChange("notes")} type="button">
             <FileText size={16} /> NOTES
           </button>
-          <button class="nes-tab-trigger nes-legal-priority-medium" class:active={activeTab === "canvas"} on:onclick={() => handleTabChange("canvas")} type="button">
+          <button class="nes-tab-trigger nes-legal-priority-medium" class:active={activeTab === "canvas"} onclick={() => handleTabChange("canvas")} type="button">
             <Tag size={16} /> CANVAS
           </button>
         </div>

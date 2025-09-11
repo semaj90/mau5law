@@ -42,7 +42,7 @@
   <!-- Modal Backdrop -->
   <div 
     class="modal-backdrop" 
-    on:onclick={handleBackdrop}
+    onclick={handleBackdrop}
     keydown={handleKeydown}
     role="dialog"
     aria-modal="true"
@@ -54,7 +54,7 @@
       <!-- Header -->
       <div class="modal-header">
         <h2 id="modal-title" class="modal-title">{title}</h2>
-        <button class="modal-close" on:onclick={onClose} aria-label="Close modal">
+        <button class="modal-close" onclick={onClose} aria-label="Close modal">
           &times;
         </button>
       </div>

@@ -229,13 +229,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     <Dialog.Footer class="border-t border-gray-100 p-6 flex justify-end space-x-3">
       <Button class="bits-btn" 
         variant="outline" 
-        on:onclick={() => onOpenChange(false)}
+        onclick={() => onOpenChange(false)}
         disabled={loading.analysis}
       >
         Cancel
       </Button>
       <Button 
-        on:onclick={handleAnalysis}
+        onclick={handleAnalysis}
         disabled={!selectedCaseForAnalysis || loading.analysis || analysisStatus === 'analyzing'}
         class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
       >

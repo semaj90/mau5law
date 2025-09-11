@@ -230,7 +230,7 @@
     <button
       type="button"
       class="space-y-4"
-      on:onclick={() => toggleBold()}
+      onclick={() => toggleBold()}
       title="Bold"
     >
       <Bold class="space-y-4" />
@@ -239,7 +239,7 @@
     <button
       type="button"
       class="space-y-4"
-      on:onclick={() => toggleItalic()}
+      onclick={() => toggleItalic()}
       title="Italic"
     >
       <Italic class="space-y-4" />
@@ -251,7 +251,7 @@
     <button
       type="button"
       class="space-y-4"
-      on:onclick={() => toggleBulletList()}
+      onclick={() => toggleBulletList()}
       title="Bullet List"
     >
       <List class="space-y-4" />
@@ -260,7 +260,7 @@
     <button
       type="button"
       class="space-y-4"
-      on:onclick={() => toggleOrderedList()}
+      onclick={() => toggleOrderedList()}
       title="Numbered List"
     >
       <ListOrdered class="space-y-4" />
@@ -272,7 +272,7 @@
     <button
       type="button"
       class="space-y-4"
-      on:onclick={() => addImage()}
+      onclick={() => addImage()}
       title="Add Image"
     >
       <ImageIcon class="space-y-4" />
@@ -284,7 +284,7 @@
     <button
       type="button"
       class="space-y-4"
-      on:onclick={() => saveContent()}
+      onclick={() => saveContent()}
       title="Save Content"
     >
       <Save class="space-y-4" />
