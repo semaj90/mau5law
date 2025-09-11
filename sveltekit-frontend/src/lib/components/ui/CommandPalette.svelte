@@ -209,7 +209,7 @@
                         : "hover:bg-nier-surface-light text-foreground"
                     )}
                     on:onclick={() => selectItem(item)}
-                    on:on:mouseenter={() => selectedIndex = globalIndex}
+                    on:mouseenter={() => selectedIndex = globalIndex}
                   >
                     <div class="flex items-center">
                       <svelte:component 

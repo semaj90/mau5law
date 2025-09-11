@@ -301,7 +301,7 @@
                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getConfidenceColor(entity.confidence)}">
                   {Math.round(entity.confidence * 100)}%
                 </span>
-                <Button 
+                <Button.Root 
                   onclick={() => removeEntity(index)}
                   class="bits-btn p-1 text-red-600 hover:text-red-800 focus:outline-none"
                 >

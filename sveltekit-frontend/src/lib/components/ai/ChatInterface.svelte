@@ -379,7 +379,7 @@
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:onclick={quickAnalyzeEvidence}
+            onclick={quickAnalyzeEvidence}
             disabled={$isLoading}
           >
             🔍 Quick Analysis

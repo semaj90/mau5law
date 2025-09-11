@@ -1,5 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
 <!-- Production-level AI Dropdown using Melt UI with keyboard shortcuts -->
 <script lang="ts">
   interface Props {
@@ -168,6 +166,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <!-- Trigger Button -->
 <button
+  use:melt={$trigger}
   class="ai-trigger {$open ? 'ai-trigger--active' : ''} {disabled || isGenerating ? 'ai-trigger--disabled' : ''}"
   {disabled}
   aria-label="AI Tools Menu"
@@ -187,9 +186,9 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Dropdown Menu -->
 {#if $open}
   <div
-    
+    use:melt={$menu}
     class="ai-menu"
-    transitifly={{ duration: 150, y: -8 }}
+    transition:fly={{ duration: 150, y: -8 }}
   >
     <!-- Report Generation Section -->
     <div class="ai-menu__section">
@@ -200,10 +199,10 @@ https://svelte.dev/e/js_parse_error -->
 
       {#each reportTypes as reportType}
         <button
-          
+          use:melt={$item}
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === reportType.id}
-          on:onclick={() => handleItemSelect(reportType.id)}
+          onclick={() => handleItemSelect(reportType.id)}
           disabled={disabled || isGenerating}
           data-value={reportType.id}
         >
@@ -226,7 +225,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <!-- Separator -->
-    <div  class="ai-menu__separator"></div>
+    <div use:melt={$separator} class="ai-menu__separator"></div>
 
     <!-- AI Tools Section -->
     <div class="ai-menu__section">
@@ -237,11 +236,11 @@ https://svelte.dev/e/js_parse_error -->
 
       {#each aiTools as tool}
         <button
-          
+          use:melt={$item}
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === tool.id}
           class:ai-menu__item--disabled={tool.requiresContent && !hasContent}
-          on:onclick={() => handleItemSelect(tool.id, tool.requiresContent)}
+          onclick={() => handleItemSelect(tool.id, tool.requiresContent)}
           disabled={disabled ||
             isGenerating ||
             (tool.requiresContent && !hasContent)}
@@ -267,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <!-- Keyboard Shortcuts Help -->
-    <div  class="ai-menu__separator"></div>
+    <div use:melt={$separator} class="ai-menu__separator"></div>
     <div class="ai-menu__footer">
       <Keyboard size={12} />
       <span class="ai-menu__footer-text"

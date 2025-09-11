@@ -115,7 +115,12 @@
       "Bash(for:*)",
       "Bash(do echo \"Processing $file\")",
       "Bash(done)",
-      "WebFetch(domain:eliemichel.github.io)"
+      "WebFetch(domain:eliemichel.github.io)",
+      "Bash(set PATH=C:UsersjamesMusicdeeds-web-appweb-appOllama)",
+      "Bash($env:PATH = \"C:\\Users\\james\\Music\\deeds-web-app\\web-app\\Ollama;$env:PATH\")",
+      "Bash(do if [ -f \"$file\" ])",
+      "Bash(then sed -i 's/on:onclick/onclick/g' \"$file\")",
+      "Bash(fi)"
     ],
     "deny": [],
     "ask": []

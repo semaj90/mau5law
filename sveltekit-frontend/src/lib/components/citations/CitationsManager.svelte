@@ -495,11 +495,11 @@
 								</div>
 								
 								<div class="flex items-center gap-1">
-									<Button class="bits-btn"
+									<Button
 										variant="ghost"
 										size="sm"
 										onclick={() => viewCitationDetails(citation)}
-										class="h-8 w-8 p-0"
+										class="bits-btn h-8 w-8 p-0"
 									>
 										<Eye class="w-4 h-4" />
 									</Button>

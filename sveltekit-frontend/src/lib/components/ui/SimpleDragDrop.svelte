@@ -191,12 +191,10 @@
   class:processing={isProcessing}
   ondragover={handleDragOver}
   ondragleave={handleDragLeave}
-  role="region" aria-label="Drop zone" ondrop={handleDrop}
-  role="button" tabindex="0"
-                onclick={openFileDialog}
-  onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
-  role="button"
+  role="button" ondrop={handleDrop}
   tabindex="0"
+  onclick={openFileDialog}
+  onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
   aria-label="Drag and drop files here or click to select"
 >
   <!-- Drag Overlay -->

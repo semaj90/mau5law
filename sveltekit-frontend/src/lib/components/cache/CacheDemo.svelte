@@ -425,22 +425,22 @@
             </div>
 
             <div class="flex flex-wrap gap-2">
-              <Button class="bits-btn" on:onclick={setCacheValue} disabled={$isLoading}>
+              <Button class="bits-btn" onclick={setCacheValue} disabled={$isLoading}>
                 <Database class="mr-2" size={16} />
                 Set Value
               </Button>
               
-              <Button class="bits-btn" variant="outline" on:onclick={getCacheValue} disabled={$isLoading}>
+              <Button class="bits-btn" variant="outline" onclick={getCacheValue} disabled={$isLoading}>
                 <RefreshCw class="mr-2" size={16} />
                 Get Value
               </Button>
               
-              <Button class="bits-btn" variant="destructive" on:onclick={deleteCacheValue} disabled={$isLoading}>
+              <Button class="bits-btn" variant="destructive" onclick={deleteCacheValue} disabled={$isLoading}>
                 <Trash2 class="mr-2" size={16} />
                 Delete
               </Button>
               
-              <Button class="bits-btn" variant="destructive" on:onclick={clearCache} disabled={$isLoading}>
+              <Button class="bits-btn" variant="destructive" onclick={clearCache} disabled={$isLoading}>
                 <XCircle class="mr-2" size={16} />
                 Clear All
               </Button>
@@ -456,7 +456,7 @@
               <Button class="bits-btn" 
                 variant="ghost" 
                 size="sm" 
-                on:onclick={() => testResults.set([])}
+                onclick={() => testResults.set([])}
               >
                 Clear
               </Button>
@@ -675,7 +675,7 @@
           <CardContent class="space-y-4">
             <div class="space-y-2">
               <Button 
-                on:onclick={runPerformanceTest} 
+                onclick={runPerformanceTest} 
                 disabled={$isLoading}
                 class="w-full bits-btn bits-btn"
               >
@@ -690,7 +690,7 @@
             <div class="space-y-2">
               <Button 
                 variant="outline"
-                on:onclick={testCacheHitMiss} 
+                onclick={testCacheHitMiss} 
                 disabled={$isLoading}
                 class="w-full bits-btn bits-btn"
               >
@@ -705,7 +705,7 @@
             <div class="space-y-2">
               <Button 
                 variant="outline"
-                on:onclick={refreshStats} 
+                onclick={refreshStats} 
                 disabled={$isLoading}
                 class="w-full bits-btn bits-btn"
               >

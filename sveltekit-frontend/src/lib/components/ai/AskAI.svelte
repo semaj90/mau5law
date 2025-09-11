@@ -450,7 +450,7 @@
       <div>
         <button
           type="button"
-          on:onclick={() => (showAdvancedOptions = !showAdvancedOptions)}
+          onclick={() => (showAdvancedOptions = !showAdvancedOptions)}
         >
           Advanced
         </button>
@@ -458,7 +458,7 @@
         {#if conversation.length > 0}
           <button
             type="button"
-            on:onclick={() => clearConversation()}
+            onclick={() => clearConversation()}
           >
             Clear
           </button>
@@ -584,7 +584,7 @@
               <button
                 type="button"
                 aria-label="Listen to AI response"
-                on:onclick={() => speak(message.content)}
+                onclick={() => speak(message.content)}
                 disabled={ttsLoading}
               >
                 {#if ttsLoading}
@@ -605,7 +605,7 @@
                 {#each message.references as reference}
                   <button
                     type="button"
-                    on:onclick={() => handleReferenceClick(reference)}
+                    onclick={() => handleReferenceClick(reference)}
                   >
                     <span>{reference.type.toUpperCase()}:</span>
                     {reference.title}
@@ -663,7 +663,7 @@
             type="button"
             class:text-red-500={isListening}
             aria-label={isListening ? "Stop voice input" : "Start voice input"}
-            on:onclick={() => (isListening ? stopVoiceInput() : startVoiceInput())}
+            onclick={() => (isListening ? stopVoiceInput() : startVoiceInput())}
             disabled={isLoading}
           >
             🎤
@@ -673,7 +673,7 @@
 
       <button
         type="button"
-        on:onclick={() => askAI()}
+        onclick={() => askAI()}
         disabled={!query.trim() || isLoading}
         aria-label="Send question to AI"
       >
@@ -692,7 +692,7 @@
             type="button"
             class="container mx-auto px-4 {isListening ? 'text-red-500' : ''}"
             aria-label={isListening ? "Stop voice input" : "Start voice input"}
-            on:onclick={() => (isListening ? stopVoiceInput() : startVoiceInput())}
+            onclick={() => (isListening ? stopVoiceInput() : startVoiceInput())}
             disabled={isLoading}
           >
             🎤

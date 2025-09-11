@@ -136,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
             {...builder}
             variant="ghost"
             size="sm"
-            on:onclick={() => closeModal()}
+            onclick={() => closeModal()}
           >
             ×
           </Button>
@@ -210,7 +210,7 @@ https://svelte.dev/e/js_parse_error -->
               <Button
                 variant={validationChoice === "approve" ? "default" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
-                on:onclick={() => handleValidationChoice("approve")}
+                onclick={() => handleValidationChoice("approve")}
               >
                 <CheckCircle class="space-y-4" />
                 Yes, it's accurate
@@ -219,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
               <Button
                 variant={validationChoice === "reject" ? "danger" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
-                on:onclick={() => handleValidationChoice("reject")}
+                onclick={() => handleValidationChoice("reject")}
               >
                 <XCircle class="space-y-4" />
                 No, needs correction
@@ -310,7 +310,7 @@ https://svelte.dev/e/js_parse_error -->
                         {tag}
                         <button
                           type="button"
-                          on:onclick={() => removeTag(tag)}
+                          onclick={() => removeTag(tag)}
                           class="space-y-4"
                         >
                           ×
@@ -334,7 +334,7 @@ https://svelte.dev/e/js_parse_error -->
                     type="button"
                     variant="secondary"
                     size="sm"
-                    on:onclick={() => addTag()}
+                    onclick={() => addTag()}
                   >
                     <Tag class="space-y-4" />
                   </Button>
@@ -348,14 +348,14 @@ https://svelte.dev/e/js_parse_error -->
         <div class="space-y-4">
           <Button class="bits-btn"
             variant="ghost"
-            on:onclick={() => closeModal()}
+            onclick={() => closeModal()}
             disabled={isSubmitting}
           >
             Cancel
           </Button>
 
           <Button class="bits-btn"
-            on:onclick={() => submitValidation()}
+            onclick={() => submitValidation()}
             disabled={!validationChoice || isSubmitting}
             class="space-y-4"
           >

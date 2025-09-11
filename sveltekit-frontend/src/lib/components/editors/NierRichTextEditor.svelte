@@ -406,19 +406,19 @@
 				<div class="flex items-center gap-2">
 					<!-- Theme Switcher -->
 					<div class="flex gap-1 bg-muted rounded-md p-1">
-						<Button class="bits-btn"
+						<Button
 							variant={nieRTheme.mode === 'android' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchTheme('android')}
-							class="h-6 px-2 text-xs"
+							class="bits-btn h-6 px-2 text-xs"
 						>
 							2B
 						</Button>
-						<Button class="bits-btn"
+						<Button
 							variant={nieRTheme.mode === 'yorha' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchTheme('yorha')}
-							class="h-6 px-2 text-xs"
+							class="bits-btn h-6 px-2 text-xs"
 						>
 							9S
 						</Button>

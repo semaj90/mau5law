@@ -283,11 +283,11 @@
       </div>
 
       <!-- Generate Button -->
-      <Button class="bits-btn"
+      <Button
         variant="legal"
         disabled={$isGenerating}
         onclick={() => generateVisualizationsForAllAlgorithms()}
-        class="generate-btn"
+        class="bits-btn generate-btn"
       >
         {$isGenerating ? 'Generating...' : 'Generate All'}
       </Button>

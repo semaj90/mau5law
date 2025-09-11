@@ -486,10 +486,10 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="search-actions">
-        <Button class="bits-btn"
-          on:onclick={() => performSearch()}
+        <Button 
+          onclick={() => performSearch()}
           disabled={$isSearching || !$searchQuery.trim()}
-          class="search-button"
+          class="bits-btn search-button"
         >
           {#if $isSearching}
             <Loader2 class="mr-2 animate-spin" size={16} />

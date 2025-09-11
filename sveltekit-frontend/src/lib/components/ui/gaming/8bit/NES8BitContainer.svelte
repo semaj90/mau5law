@@ -136,8 +136,8 @@
     {minHeight ? `--container-min-height: ${minHeight};` : ''}
     {style}
   "
-  on:on:onclick={handleClick}
-  on:on:on:mouseenter={handleHover}
+  on:onclick={handleClick}
+  on:on:mouseenter={handleHover}
   role={onClick ? 'button' : undefined}
   tabindex={onClick && !disabled ? 0 : undefined}
 >

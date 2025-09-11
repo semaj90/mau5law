@@ -185,7 +185,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button 
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" 
-      on:on:onclick={() => { componentError = null; }}
+      on:onclick={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -336,7 +336,7 @@
       {#each quickActions as action}
         <button
           class="action-card border rounded-lg p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(action.color)} {selectedCard === action.id ? 'scale-95' : ''}"
-          on:on:onclick={() => handleQuickAction(action)}
+          on:onclick={() => handleQuickAction(action)}
           role="button"
           tabindex="0"
           aria-label="{action.label} - {action.icon}"
@@ -420,11 +420,11 @@
 <!-- YoRHa Case Creation Modal -->
 {#if showCaseModal}
   <div class="modal-backdrop fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" 
-       on:on:onclick={handleModalBackdropClick}
+       on:onclick={handleModalBackdropClick}
        role="dialog"
        aria-modal="true"
        aria-labelledby="case-modal-title">
-    <div class="modal-content max-w-4xl w-full" on:on:onclick={(e) => e.stopPropagation()}>
+    <div class="modal-content max-w-4xl w-full" on:onclick={(e) => e.stopPropagation()}>
       <YoRHaCaseForm 
         on:success={handleCaseCreationSuccess}
         on:error={handleCaseCreationError}

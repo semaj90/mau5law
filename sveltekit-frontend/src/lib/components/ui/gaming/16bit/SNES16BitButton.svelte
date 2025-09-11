@@ -180,9 +180,9 @@
   {form}
   {name}
   {value}
-  on:on:onclick={handleClick}
-  on:on:on:mouseenter={handleHover}
-  on:on:on:mouseleave={handleUnhover}
+  on:onclick={handleClick}
+  on:on:mouseenter={handleHover}
+  on:on:mouseleave={handleUnhover}
   on:focus={handleFocus}
   class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7 ? 'mode7' : ''} {plasmaEffect ? 'plasma' : ''}"
   style="

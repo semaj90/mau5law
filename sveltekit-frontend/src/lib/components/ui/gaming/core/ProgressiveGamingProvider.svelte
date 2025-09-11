@@ -242,9 +242,9 @@
         </div>
       </div>
       <div class="debug-controls">
-        <button on:on:onclick={() => setEra('8bit')}>8-Bit</button>
-        <button on:on:onclick={() => setEra('16bit')}>16-Bit</button>
-        <button on:on:onclick={() => setEra('n64')}>N64</button>
+        <button on:onclick={() => setEra('8bit')}>8-Bit</button>
+        <button on:onclick={() => setEra('16bit')}>16-Bit</button>
+        <button on:onclick={() => setEra('n64')}>N64</button>
       </div>
     </div>
   {/if}

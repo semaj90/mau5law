@@ -171,9 +171,9 @@
     class:uploading
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
+    ondrop={handleDrop}
     role="button" 
     aria-label="Upload evidence files - drag and drop or click to browse"
-    ondrop={handleDrop}
     tabindex="0"
     onclick={() => document.getElementById('file-input')?.click()}
     onkeydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}

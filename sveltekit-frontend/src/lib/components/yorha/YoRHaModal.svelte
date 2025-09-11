@@ -109,8 +109,7 @@
 {#if open}
   <div
     class="yorha-modal-backdrop {type}"
-    role="button" tabindex="0"
-                onclick={handleBackdropClick}
+    onclick={handleBackdropClick}
     onkeydown={handleKeydown}
     transition:fade={{ duration: 200 }}
     role="dialog"

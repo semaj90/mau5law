@@ -761,7 +761,7 @@
     onmousedown={handleMouseDown}
     on:mousemove={handleMouseMove}
     mouseup={handleMouseUp}
-    on:on:mouseleave={handleMouseUp}
+    on:mouseleave={handleMouseUp}
     wheel={handleWheel}
     on:contextmenu|preventDefault
   ></canvas>

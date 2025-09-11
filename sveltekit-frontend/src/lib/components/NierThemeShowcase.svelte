@@ -43,7 +43,7 @@
         <a href="#" class="nav-item">AI Assistant</a>
         
         <button
-          on:onclick={() => isDarkMode = !isDarkMode}
+          onclick={() => isDarkMode = !isDarkMode}
           class="nier-button-outline px-4 py-2 rounded-lg"
           class:dark={isDarkMode}
         >
@@ -69,7 +69,7 @@
     <div class="flex gap-2 border-b nier-divider">
       {#each ['overview', 'components', 'forms', 'cards'] as tab}
         <button
-          on:onclick={() => activeTab = tab}
+          onclick={() => activeTab = tab}
           class="px-6 py-3 font-medium capitalize nier-transition"
           class:text-harvard-crimson={activeTab === tab}
           class:dark:text-digital-green={activeTab === tab}
@@ -200,34 +200,31 @@
           
           <!-- Melt UI Dialog Example -->
           <button
-            <!--  -->
             class="nier-button-crimson"
-            on:on:onclick={() => showModal = true}
+            onclick={() => showModal = true}
           >
             Open Modal Dialog
           </button>
           
           {#if showModal}
             <div
-              <!--  -->
               class="nier-modal-overlay"
               transitifade={{ duration: 200 }}
 ></div>
             
             <div
-              <!--  -->
               class="nier-modal"
               transitifly={{ y: 20, duration: 300 }}
             >
-              <h2 <!--  --> class="text-2xl font-display nier-heading mb-4">
+              <h2 class="text-2xl font-display nier-heading mb-4">
                 System Alert
               </h2>
-              <p <!--  --> class="text-nier-gray dark:text-nier-silver mb-6">
+              <p class="text-nier-gray dark:text-nier-silver mb-6">
                 This is a NieR: Automata styled modal dialog using Melt UI.
               </p>
               
               <div class="flex gap-4 justify-end">
-                <button <!--  --> class="nier-button-outline px-4 py-2" on:on:onclick={() => showModal = false}>
+                <button class="nier-button-outline px-4 py-2" onclick={() => showModal = false}>
                   Cancel
                 </button>
                 <button class="nier-button-digital px-4 py-2">

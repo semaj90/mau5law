@@ -467,7 +467,7 @@
           {/if}
           
           <button 
-            on:onclick={reanalyzeWithAI}
+            onclick={reanalyzeWithAI}
             disabled={isLoading}
             class="container mx-auto px-4"
           >
@@ -619,7 +619,7 @@
                       {tag}
                       {#if !readOnly}
                         <button 
-                          on:onclick={() => removeCustomTag(tag)}
+                          onclick={() => removeCustomTag(tag)}
                           class="container mx-auto px-4"
                         >×</button>
                       {/if}
@@ -636,7 +636,7 @@
                       class="container mx-auto px-4"
                     />
                     <button 
-                      on:onclick={addCustomTag} 
+                      onclick={addCustomTag} 
                       class="container mx-auto px-4"
                     >Add</button>
                   </div>
@@ -668,7 +668,7 @@
                         👤 {person}
                         {#if !readOnly}
                           <button 
-                            on:onclick={() => removePerson(person)}
+                            onclick={() => removePerson(person)}
                             class="container mx-auto px-4"
                           >×</button>
                         {/if}
@@ -685,7 +685,7 @@
                         class="container mx-auto px-4"
                       />
                       <button 
-                        on:onclick={addCustomPerson} 
+                        onclick={addCustomPerson} 
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
@@ -711,7 +711,7 @@
                         📍 {location}
                         {#if !readOnly}
                           <button 
-                            on:onclick={() => removeLocation(location)}
+                            onclick={() => removeLocation(location)}
                             class="container mx-auto px-4"
                           >×</button>
                         {/if}
@@ -728,7 +728,7 @@
                         class="container mx-auto px-4"
                       />
                       <button 
-                        on:onclick={addCustomLocation} 
+                        onclick={addCustomLocation} 
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
@@ -754,7 +754,7 @@
                         🏢 {org}
                         {#if !readOnly}
                           <button 
-                            on:onclick={() => removeOrganization(org)}
+                            onclick={() => removeOrganization(org)}
                             class="container mx-auto px-4"
                           >×</button>
                         {/if}
@@ -771,7 +771,7 @@
                         class="container mx-auto px-4"
                       />
                       <button 
-                        on:onclick={addCustomOrganization} 
+                        onclick={addCustomOrganization} 
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
@@ -833,7 +833,7 @@
                         ⚡ {action}
                         {#if !readOnly}
                           <button 
-                            on:onclick={() => removeAction(action)}
+                            onclick={() => removeAction(action)}
                             class="container mx-auto px-4"
                           >×</button>
                         {/if}
@@ -850,7 +850,7 @@
                         class="container mx-auto px-4"
                       />
                       <button 
-                        on:onclick={addCustomAction} 
+                        onclick={addCustomAction} 
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
@@ -950,7 +950,7 @@
         {#if !readOnly}
           <div class="container mx-auto px-4">
             <button 
-              on:onclick={handleSave}
+              onclick={handleSave}
               disabled={isSaving || !hasUnsavedChanges}
               class="container mx-auto px-4"
             >

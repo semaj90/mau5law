@@ -84,7 +84,7 @@
   };
 </script>
 
-<div class="container mx-auto px-4" >
+<div class="container mx-auto px-4">
   <!-- Main Menu Bar -->
   <div class="container mx-auto px-4">
     <!-- File Menu -->
@@ -106,7 +106,7 @@
           <button
             
             class="container mx-auto px-4"
-            on:onclick={() => handleSave()}
+            onclick={() => handleSave()}
           >
             <Save size={16} />
             Save Report
@@ -125,7 +125,7 @@
           <button
             
             class="container mx-auto px-4"
-            on:onclick={() => handleExport()}
+            onclick={() => handleExport()}
           >
             <Download size={16} />
             Export
@@ -134,7 +134,7 @@
           <button
             
             class="container mx-auto px-4"
-            on:onclick={() => handlePreview()}
+            onclick={() => handlePreview()}
           >
             <Eye size={16} />
             Preview
@@ -203,7 +203,7 @@
           <button
             
             class="container mx-auto px-4"
-            on:onclick={() => toggleSidebar()}
+            onclick={() => toggleSidebar()}
           >
             <Sidebar size={16} />
             Toggle Sidebar
@@ -212,7 +212,7 @@
           <button
             
             class="container mx-auto px-4"
-            on:onclick={() => toggleLayout()}
+            onclick={() => toggleLayout()}
           >
             <Layout size={16} />
             Switch Layout ({$report.settings.layout})
@@ -220,7 +220,7 @@
           <button
             
             class="container mx-auto px-4"
-            on:onclick={() => toggleFullscreen()}
+            onclick={() => toggleFullscreen()}
           >
             {#if $reportUI.fullscreen}
               <Minimize size={16} />
@@ -242,7 +242,7 @@
       
       class="container mx-auto px-4"
       class:unsaved={$editorState.hasUnsavedChanges}
-      on:onclick={() => handleSave()}
+      onclick={() => handleSave()}
       title="Save Report"
     >
       <Save size={16} />
@@ -253,7 +253,7 @@
     <button
       
       class="container mx-auto px-4"
-      on:onclick={() => toggleSidebar()}
+      onclick={() => toggleSidebar()}
       title="Toggle Sidebar"
     >
       <Sidebar size={16} />
@@ -262,7 +262,7 @@
     <button
       
       class="container mx-auto px-4"
-      on:onclick={() => toggleLayout()}
+      onclick={() => toggleLayout()}
       title="Switch Layout"
     >
       <Layout size={16} />
@@ -273,7 +273,7 @@
     <button
       
       class="container mx-auto px-4"
-      on:onclick={() => handlePreview()}
+      onclick={() => handlePreview()}
       title="Preview Report"
     >
       <Eye size={16} />

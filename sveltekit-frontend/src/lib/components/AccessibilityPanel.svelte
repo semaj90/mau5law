@@ -477,7 +477,7 @@
 {#if showPanel}
   <div
     class="mx-auto px-4 max-w-7xl"
-    on:onclick={() => (showPanel = false)}
+    onclick={() => (showPanel = false)}
     keydown={(e) => e.key === 'Escape' && (showPanel = false)}
     role="dialog"
     aria-modal="true"
@@ -569,10 +569,10 @@
               disabled={isAuditing}
             >
               {#if isAuditing}
-                <div class="mx-auto px-4 max-w-7xl"></div>
+                <div class="inline-block animate-spin"></div>
                 Auditing...
               {:else}
-                <RefreshCw class="mx-auto px-4 max-w-7xl" />
+                <RefreshCw class="w-4 h-4" />
                 Run Audit
               {/if}
             </Button>

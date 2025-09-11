@@ -64,8 +64,8 @@
         class:hovered={isHovered}
         disabled={readOnly}
         on:onclick={() => handleRatingClick(rating)}
-        on:on:mouseenter={() => handleMouseEnter(rating)}
-        on:on:mouseleave={handleMouseLeave}
+        on:mouseenter={() => handleMouseEnter(rating)}
+        on:mouseleave={handleMouseLeave}
         aria-label="Rate {rating} out of 10"
       >
         <svg

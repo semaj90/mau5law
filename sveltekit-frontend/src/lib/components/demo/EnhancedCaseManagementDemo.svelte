@@ -165,7 +165,7 @@
     <Card>
       <CardHeader class="flex flex-row items-center justify-between">
         <CardTitle>Database Health</CardTitle>
-        <Button class="bits-btn" variant="outline" size="sm" on:onclick={refreshHealth}>
+        <Button class="bits-btn" variant="outline" size="sm" onclick={refreshHealth}>
           Refresh
         </Button>
       </CardHeader>
@@ -195,7 +195,7 @@
     <Card>
       <CardHeader class="flex flex-row items-center justify-between">
         <CardTitle>Cache Metrics</CardTitle>
-        <Button class="bits-btn" variant="outline" size="sm" on:onclick={refreshMetrics}>
+        <Button class="bits-btn" variant="outline" size="sm" onclick={refreshMetrics}>
           Refresh
         </Button>
       </CardHeader>
@@ -278,7 +278,7 @@
           </div>
           
           <Button 
-            on:onclick={createCase}
+            onclick={createCase}
             disabled={isLoading || !newCaseData.title || !newCaseData.description}
             class="w-full bits-btn bits-btn"
           >
@@ -306,7 +306,7 @@
           </div>
           
           <Button 
-            on:onclick={searchCases}
+            onclick={searchCases}
             disabled={isLoading || !searchQuery.trim()}
             class="w-full bits-btn bits-btn"
           >
@@ -345,7 +345,7 @@
         <div class="flex flex-wrap gap-2">
           <Button class="bits-btn" 
             variant="outline" 
-            on:onclick={() => loadCase('demo-case-001')}
+            onclick={() => loadCase('demo-case-001')}
             disabled={isLoading}
           >
             Load Case (Standard)
@@ -353,7 +353,7 @@
           
           <Button class="bits-btn" 
             variant="outline" 
-            on:onclick={() => loadCase('demo-case-002', true)}
+            onclick={() => loadCase('demo-case-002', true)}
             disabled={isLoading}
           >
             Load Case (With Prediction)
@@ -361,7 +361,7 @@
           
           <Button class="bits-btn" 
             variant="outline" 
-            on:onclick={() => loadCase('demo-case-003')}
+            onclick={() => loadCase('demo-case-003')}
             disabled={isLoading}
           >
             Load Case (Cache Priority)

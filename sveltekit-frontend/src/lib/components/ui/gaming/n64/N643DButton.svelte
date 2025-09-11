@@ -342,9 +342,9 @@
   {form}
   {name}
   {value}
-  on:on:onclick={handleClick}
-  on:on:on:mouseenter={handleHover}
-  on:on:on:mouseleave={handleUnhover}
+  on:onclick={handleClick}
+  on:on:mouseenter={handleHover}
+  on:on:mouseleave={handleUnhover}
   on:mousemove={handleMouseMove}
   on:focus={handleFocus}
   on:blur={handleBlur}

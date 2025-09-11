@@ -571,7 +571,7 @@
                     <!-- Voice control button -->
                     {#if recognition}
                         <button
-                            on:onclick={toggleVoiceListening}
+                            onclick={toggleVoiceListening}
                             class="p-2 rounded-lg border border-gray-300 dark:border-gray-600
                                    hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
                                    {isListening ? 'bg-red-50 border-red-300 text-red-600' : ''}"
@@ -610,7 +610,7 @@
         {steps}
         currentStep={currentStep}
         validationresults={validationResults}
-        step-on:onclick={(e) => jumpToStep(e.detail)}
+        step-onclick={(e) => jumpToStep(e.detail)}
     />
 
     <!-- Processing queue indicator -->
@@ -665,7 +665,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex space-x-3">
                         <button
-                            on:onclick={previousStep}
+                            onclick={previousStep}
                             disabled={isFirstStep || isProcessing}
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
@@ -679,7 +679,7 @@
                         </button>
 
                         <button
-                            on:onclick={resetCase}
+                            onclick={resetCase}
                             disabled={isProcessing}
                             class="px-4 py-2 border border-red-300 dark:border-red-600
                                    rounded-md shadow-sm text-sm font-medium
@@ -695,7 +695,7 @@
 
                     <div class="flex space-x-3">
                         <button
-                            on:onclick={saveProgress}
+                            onclick={saveProgress}
                             disabled={isProcessing}
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
@@ -710,7 +710,7 @@
 
                         {#if isLastStep}
                             <button
-                                on:onclick={submitCase}
+                                onclick={submitCase}
                                 disabled={isProcessing}
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
@@ -723,7 +723,7 @@
                             </button>
                         {:else}
                             <button
-                                on:onclick={nextStep}
+                                onclick={nextStep}
                                 disabled={isProcessing}
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium

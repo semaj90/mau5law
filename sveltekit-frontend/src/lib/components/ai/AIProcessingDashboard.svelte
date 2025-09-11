@@ -292,11 +292,11 @@
 			<!-- Individual Task Buttons -->
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 				{#each demoTasks as task}
-					<Button class="bits-btn"
+					<Button 
 						variant="outline"
 						disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
 						onclick={() => processTask(task)}
-						class="h-auto p-3 flex flex-col items-start space-y-1"
+						class="bits-btn h-auto p-3 flex flex-col items-start space-y-1"
 					>
 						<div class="flex items-center space-x-2">
 							<div class={`w-3 h-3 rounded-full ${getTaskTypeColor(task.type)}`}></div>

@@ -177,14 +177,14 @@
           disabled={isSearching}
         />
         <ModernButton
-          on:on:onclick={performSearch}
+          on:onclick={performSearch}
           disabled={isSearching || !searchQuery.trim()}
           class="bg-green-600 hover:bg-green-700"
         >
           {isSearching ? '🔍 Searching...' : '🔍 Search'}
         </ModernButton>
         <ModernButton
-          on:on:onclick={ingestDocument}
+          on:onclick={ingestDocument}
           variant="outline"
           class="border-blue-500 text-blue-400"
         >
@@ -221,7 +221,7 @@
         <span class="text-sm text-nier-text-muted">Try:</span>
         {#each searchSuggestions as suggestion}
           <button
-            on:on:onclick={() => { searchQuery = suggestion; }}
+            on:onclick={() => { searchQuery = suggestion; }}
             class="text-xs px-2 py-1 bg-nier-bg-tertiary border border-nier-border-muted rounded hover:bg-nier-bg-primary transition-colors"
           >
             {suggestion}
@@ -309,7 +309,7 @@
       <div class="space-y-2">
         {#each searchHistory as historyItem}
           <button
-            on:on:onclick={() => { searchQuery = historyItem.query; }}
+            on:onclick={() => { searchQuery = historyItem.query; }}
             class="w-full text-left p-3 bg-nier-bg-primary border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
           >
             <div class="flex justify-between items-center">

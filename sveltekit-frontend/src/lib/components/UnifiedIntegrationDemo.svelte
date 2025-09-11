@@ -323,7 +323,7 @@
 
           <!-- Execute Button -->
           <Button 
-            on:onclick={executeOperation}
+            onclick={executeOperation}
             disabled={isLoading || !testInput.trim()}
             class="w-full bits-btn bits-btn"
           >

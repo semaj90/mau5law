@@ -124,7 +124,7 @@
   }
 </script>
 
-<div class="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-xl p-6" class:opacity-0={!isVisible} class:opacity-100={isVisible} class="transition-opacity duration-500">
+<div class="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-xl p-6 transition-opacity duration-500" class:opacity-0={!isVisible} class:opacity-100={isVisible}>
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-xl font-semibold text-white">📊 Real-time System Metrics</h2>
     <div class="flex items-center gap-2">
