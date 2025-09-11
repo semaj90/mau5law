@@ -21,6 +21,7 @@
 	// Workflow state
 	let workflowActive = $state(false);
 	let currentStep = $state(0);
+	let workflowAnswer = $state('');
 	let workflowData = $state({
 		what: '',
 		who: '',
@@ -133,7 +134,11 @@
 		for (let i = 0; i <= content.length; i++) {
 			const messageIndex = messages.findIndex(m => m.id === messageId);
 			if (messageIndex !== -1) {
-				messages[messageIndex].content = content.slice(0, i);
+				messages = messages.map((msg, idx) => 
+					idx === messageIndex 
+						? { ...msg, content: content.slice(0, i) }
+						: msg
+				);
 				await new Promise(resolve => setTimeout(resolve, 30 + Math.random() * 20));
 			}
 		}
@@ -203,7 +208,10 @@
 		addMessage(answer, 'user');
 
 		// Store answer
-		workflowData[workflowSteps[currentStep].key] = answer;
+		workflowData = {
+			...workflowData,
+			[workflowSteps[currentStep].key]: answer
+		};
 
 		// Perform RAG ingestion
 		await performRAGIngestion(answer);
@@ -406,10 +414,12 @@
 				class="workflow-input"
 				placeholder={workflowSteps[currentStep].placeholder}
 				rows="3"
+				bind:value={workflowAnswer}
 				onkeydown={(e) => {
 					if (e.key === 'Enter' && e.ctrlKey) {
-						handleQuickAnswer(e.target.value);
-						e.target.value = '';
+						e.preventDefault();
+						handleQuickAnswer(workflowAnswer);
+						workflowAnswer = '';
 					}
 				}}
 			></textarea>
@@ -417,10 +427,9 @@
 			<div class="workflow-actions">
 				<button
 					class="workflow-btn primary"
-					onclick={(e) => {
-						const textarea = e.target.closest('.workflow-interface').querySelector('.workflow-input');
-						handleQuickAnswer(textarea.value);
-						textarea.value = '';
+					onclick={() => {
+						handleQuickAnswer(workflowAnswer);
+						workflowAnswer = '';
 					}}
 				>
 					Answer & Continue

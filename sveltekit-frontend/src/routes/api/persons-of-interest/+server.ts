@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/db';
-import { personsOfInterest } from '../../../drizzle/schema';
+import { personsOfInterest } from '../../../../drizzle/schema';
 import { eq, like, and, or, desc, asc } from 'drizzle-orm';
 
 

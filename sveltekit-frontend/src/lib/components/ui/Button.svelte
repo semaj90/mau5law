@@ -108,7 +108,6 @@
 
 	// Remove potential className from rest props to avoid invalid DOM attribute
 	if ('className' in restProps) {
-		// @ts-expect-error - cleanup extraneous react prop
 		delete restProps.className;
 	}
 
@@ -137,8 +136,8 @@
 			label: analyticsLabel || (event.target as HTMLElement)?.textContent || '',
 			timestamp: Date.now(),
 			context: xstateContext,
-			variant,
-			size
+			variant: variant || 'default',
+			size: size || 'default'
 		};
 
 		// Store analytics

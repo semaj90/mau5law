@@ -201,11 +201,10 @@
   {#if isMobileMenuOpen}
     <div 
       class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 lg:hidden"
-      role="button" tabindex="0"
-                onclick={toggleMobileMenu}
-      onkeydown={(e) => e.key === 'Escape' && toggleMobileMenu()}
-      role="button"
+      role="button" 
       tabindex="-1"
+      onclick={toggleMobileMenu}
+      onkeydown={(e) => e.key === 'Escape' && toggleMobileMenu()}
     ></div>
   {/if}
 

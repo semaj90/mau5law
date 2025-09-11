@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { HTMLButtonAttributes } from 'svelte/elements';
   import type { ButtonVariant, ButtonSize } from '$lib/types';
-  import type {     Snippet     } from 'svelte';
+  import type { Snippet } from 'svelte';
 
   interface Props extends HTMLButtonAttributes {
     variant?: ButtonVariant;
@@ -23,8 +23,8 @@
     iconPosition = 'left',
     fullWidth = false,
     class: className = '',
-  to = undefined,
-  children,
+    to = undefined,
+    children,
     ...restProps
   }: Props = $props();
 
@@ -32,8 +32,8 @@
     'nier-btn',
     `btn-${variant}`,
     `btn-${size}`,
-    fullWidth && 'w-full',
-    loading && 'btn-loading',
+    fullWidth ? 'w-full' : null,
+    loading ? 'btn-loading' : null,
     className
   ].filter(Boolean).join(' '));
 </script>

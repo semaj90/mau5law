@@ -377,7 +377,7 @@
                 <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
                   {isStreaming ? 'Streaming...' : 'Ready'}
                 </span>
-                <Button variant="outline" size="sm" class="bits-btn bits-btn-outline bits-btn bits-btn" onclick={clearChat} disabled={isStreaming}>
+                <Button variant="outline" size="sm" class="bits-btn bits-btn-outline" onclick={clearChat} disabled={isStreaming}>
                   {#snippet children()}Clear{/snippet}
                 </Button>
               </div>
@@ -438,7 +438,7 @@
                 <Button
                   onclick={sendMessage}
                   disabled={!currentMessage.trim() || isStreaming}
-                  class="px-6 bits-btn bits-btn"
+                  class="px-6 bits-btn"
                 >
                   {#snippet children()}
                     {#if isStreaming}
@@ -647,7 +647,7 @@
                   variant="outline"
                   size="sm"
                   onclick={checkSystemStatus}
-                  class="w-full justify-start bits-btn bits-btn"
+                  class="w-full justify-start bits-btn"
                   fullWidth={true}
                 >
                   {#snippet children()}
