@@ -2,16 +2,16 @@
   Minimal Case Creation Test - Testing API integration without UI library dependencies
 -->
 <script lang="ts">
-</script>let isSubmitting = $state(false);
+let isSubmitting = $state(false);
 let submitResult = $state('');
 let formData = $state({
     caseNumber: '',
     title: '',
     description: '',
     priority: 'medium'
-  });
+});
 
-  async function handleSubmit(event: Event) {
+async function handleSubmit(event: Event) {
     event.preventDefault();
     isSubmitting = true;
     submitResult = '';
@@ -40,10 +40,10 @@ let formData = $state({
     } finally {
       isSubmitting = false;
     }
-  }
+}
 
-  // Test database connectivity
-  async function testDatabaseConnection() {
+// Test database connectivity
+async function testDatabaseConnection() {
     try {
       const response = await fetch('/api/test-case');
       const result = await response.json();
@@ -53,7 +53,7 @@ let formData = $state({
       console.error('❌ Database connection failed:', error);
       submitResult = `❌ Database connection failed`;
     }
-  }
+}
 </script>
 
 <svelte:head>
