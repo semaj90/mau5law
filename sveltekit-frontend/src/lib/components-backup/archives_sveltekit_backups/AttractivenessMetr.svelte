@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   export let score: number = 5; // Current attractiveness score (1-10)

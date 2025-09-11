@@ -7,9 +7,9 @@
   import type { Evidence } from "$lib/stores/report";
   import { onMount } from "svelte";
 
-  let sidebarCollapsed = false;
+  let sidebarCollapsed = $state(false);
   let textareaValue =
-    "Try typing # or pressing Ctrl+K to open the command menu!\n\nThis smart textarea integrates with your citations and commands.";
+    $state("Try typing # or pressing Ctrl+K to open the command menu!\n\nThis smart textarea integrates with your citations and commands.");
 
   // Sample evidence data
   const sampleEvidence = [
@@ -129,145 +129,149 @@
     bind:collapsed={sidebarCollapsed}
     ontoggle={(e) => console.log("Sidebar toggled:", e.detail.collapsed)}
   >
-    <div class="space-y-4" slot="default">
-      <section class="space-y-4">
-        <h2>📝 Smart Textarea with Command Menu</h2>
-        <p>
-          This textarea integrates a command menu system. Try typing <code
-            >#</code
+    {#snippet default()}
+        <div class="space-y-4" >
+        <section class="space-y-4">
+          <h2>📝 Smart Textarea with Command Menu</h2>
+          <p>
+            This textarea integrates a command menu system. Try typing <code
+              >#</code
+            >
+            or pressing
+            <kbd>Ctrl+K</kbd> to open the command menu. You can insert citations, navigate
+            to different parts of the app, or insert common text snippets.
+          </p>
+
+          <SmartTextarea
+            bind:value={textareaValue}
+            placeholder="Type # for commands or Ctrl+K for command menu..."
+            rows={6}
+            oninput={handleTextareaInput}
+            on:commandInsert={handleCommandInsert}
+          />
+        </section>
+
+        <section class="space-y-4">
+          <h2>🎨 Hover-Expanding Grid</h2>
+          <p>
+            This grid starts with 1 column and expands to 3 columns on hover.
+            Perfect for showcasing cards or gallery items with smooth transitions.
+          </p>
+
+          <ExpandGrid
+            columns={1}
+            expandedColumns={3}
+            expandDuration="0.4s"
+            onexpand={handleGridExpand}
           >
-          or pressing
-          <kbd>Ctrl+K</kbd> to open the command menu. You can insert citations, navigate
-          to different parts of the app, or insert common text snippets.
-        </p>
+            {#each sampleEvidence as evidence}
+              <div class="space-y-4">
+                <EvidenceCard
+                  {evidence}
+                  onView={handleEvidenceView}
+                  onEdit={handleEvidenceEdit}
+                  onDelete={handleEvidenceDelete}
+                  onDownload={handleEvidenceDownload}
+                  expandOnHover={true}
+                  compact={false}
+                />
+              </div>
+            {/each}
+          </ExpandGrid>
+        </section>
 
-        <SmartTextarea
-          bind:value={textareaValue}
-          placeholder="Type # for commands or Ctrl+K for command menu..."
-          rows={6}
-          oninput={handleTextareaInput}
-          on:commandInsert={handleCommandInsert}
-        />
-      </section>
+        <section class="space-y-4">
+          <h2>⚡ Fast SvelteKit Navigation</h2>
+          <p>
+            These links use standard <code>&lt;a&gt;</code> tags but SvelteKit automatically
+            intercepts them for fast, SPA-style navigation without page refreshes.
+          </p>
 
-      <section class="space-y-4">
-        <h2>🎨 Hover-Expanding Grid</h2>
-        <p>
-          This grid starts with 1 column and expands to 3 columns on hover.
-          Perfect for showcasing cards or gallery items with smooth transitions.
-        </p>
+          <div class="space-y-4">
+            <a href="/cases" class="space-y-4">📁 Cases</a>
+            <a href="/evidence" class="space-y-4">🔍 Evidence</a>
+            <a href="/search" class="space-y-4">🔎 Search</a>
+            <a href="/ai-assistant" class="space-y-4">🤖 AI Assistant</a>
+            <a href="/reports" class="space-y-4">📊 Reports</a>
+          </div>
+        </section>
 
-        <ExpandGrid
-          columns={1}
-          expandedColumns={3}
-          expandDuration="0.4s"
-          onexpand={handleGridExpand}
-        >
-          {#each sampleEvidence as evidence}
+        <section class="space-y-4">
+          <h2>🎯 Features Demonstrated</h2>
+          <div class="space-y-4">
             <div class="space-y-4">
-              <EvidenceCard
-                {evidence}
-                onView={handleEvidenceView}
-                onEdit={handleEvidenceEdit}
-                onDelete={handleEvidenceDelete}
-                onDownload={handleEvidenceDownload}
-                expandOnHover={true}
-                compact={false}
-              />
+              <h3>Golden Ratio Layout</h3>
+              <p>
+                Sidebar uses the golden ratio (1.618:1) for optimal visual balance
+              </p>
+            </div>
+            <div class="space-y-4">
+              <h3>Command Menu</h3>
+              <p>Slash commands and keyboard shortcuts for power users</p>
+            </div>
+            <div class="space-y-4">
+              <h3>Smart Components</h3>
+              <p>
+                Context-aware interactions with real-time search and filtering
+              </p>
+            </div>
+            <div class="space-y-4">
+              <h3>Responsive Design</h3>
+              <p>Adapts to different screen sizes with mobile-first approach</p>
+            </div>
+          </div>
+        </section>
+      </div>
+      {/snippet}
+
+    {#snippet sidebar()}
+        <div class="space-y-4" >
+        <h3>📋 Citations</h3>
+        <p>Recent citations from your library:</p>
+
+        <div class="space-y-4">
+          {#each citationStore.getRecentCitations($citationStore, 5) as citation}
+            <div class="space-y-4">
+              <div class="space-y-4">{citation.title}</div>
+              <div class="space-y-4">
+                {citation.source || citation.author}
+              </div>
+              <div class="space-y-4">{citation.date}</div>
             </div>
           {/each}
-        </ExpandGrid>
-      </section>
-
-      <section class="space-y-4">
-        <h2>⚡ Fast SvelteKit Navigation</h2>
-        <p>
-          These links use standard <code>&lt;a&gt;</code> tags but SvelteKit automatically
-          intercepts them for fast, SPA-style navigation without page refreshes.
-        </p>
-
-        <div class="space-y-4">
-          <a href="/cases" class="space-y-4">📁 Cases</a>
-          <a href="/evidence" class="space-y-4">🔍 Evidence</a>
-          <a href="/search" class="space-y-4">🔎 Search</a>
-          <a href="/ai-assistant" class="space-y-4">🤖 AI Assistant</a>
-          <a href="/reports" class="space-y-4">📊 Reports</a>
         </div>
-      </section>
 
-      <section class="space-y-4">
-        <h2>🎯 Features Demonstrated</h2>
+        <h3>🔧 Keyboard Shortcuts</h3>
         <div class="space-y-4">
           <div class="space-y-4">
-            <h3>Golden Ratio Layout</h3>
-            <p>
-              Sidebar uses the golden ratio (1.618:1) for optimal visual balance
-            </p>
+            <kbd>Ctrl</kbd> + <kbd>K</kbd>
+            <span>Open command menu</span>
           </div>
           <div class="space-y-4">
-            <h3>Command Menu</h3>
-            <p>Slash commands and keyboard shortcuts for power users</p>
+            <kbd>#</kbd>
+            <span>Trigger command menu</span>
           </div>
           <div class="space-y-4">
-            <h3>Smart Components</h3>
-            <p>
-              Context-aware interactions with real-time search and filtering
-            </p>
+            <kbd>Ctrl</kbd> + <kbd>\</kbd>
+            <span>Toggle sidebar</span>
           </div>
           <div class="space-y-4">
-            <h3>Responsive Design</h3>
-            <p>Adapts to different screen sizes with mobile-first approach</p>
+            <kbd>Ctrl</kbd> + <kbd>1-4</kbd>
+            <span>Switch tabs</span>
           </div>
         </div>
-      </section>
-    </div>
 
-    <div class="space-y-4" slot="sidebar">
-      <h3>📋 Citations</h3>
-      <p>Recent citations from your library:</p>
-
-      <div class="space-y-4">
-        {#each citationStore.getRecentCitations($citationStore, 5) as citation}
-          <div class="space-y-4">
-            <div class="space-y-4">{citation.title}</div>
-            <div class="space-y-4">
-              {citation.source || citation.author}
-            </div>
-            <div class="space-y-4">{citation.date}</div>
-          </div>
-        {/each}
+        <h3>🎨 CSS Features</h3>
+        <ul class="space-y-4">
+          <li>CSS Grid with dynamic columns</li>
+          <li>Flexbox golden ratio layouts</li>
+          <li>Smooth transitions and animations</li>
+          <li>Hover effects and micro-interactions</li>
+          <li>Responsive breakpoints</li>
+          <li>CSS custom properties</li>
+        </ul>
       </div>
-
-      <h3>🔧 Keyboard Shortcuts</h3>
-      <div class="space-y-4">
-        <div class="space-y-4">
-          <kbd>Ctrl</kbd> + <kbd>K</kbd>
-          <span>Open command menu</span>
-        </div>
-        <div class="space-y-4">
-          <kbd>#</kbd>
-          <span>Trigger command menu</span>
-        </div>
-        <div class="space-y-4">
-          <kbd>Ctrl</kbd> + <kbd>\</kbd>
-          <span>Toggle sidebar</span>
-        </div>
-        <div class="space-y-4">
-          <kbd>Ctrl</kbd> + <kbd>1-4</kbd>
-          <span>Switch tabs</span>
-        </div>
-      </div>
-
-      <h3>🎨 CSS Features</h3>
-      <ul class="space-y-4">
-        <li>CSS Grid with dynamic columns</li>
-        <li>Flexbox golden ratio layouts</li>
-        <li>Smooth transitions and animations</li>
-        <li>Hover effects and micro-interactions</li>
-        <li>Responsive breakpoints</li>
-        <li>CSS custom properties</li>
-      </ul>
-    </div>
+      {/snippet}
   </GoldenLayout>
 </div>
 

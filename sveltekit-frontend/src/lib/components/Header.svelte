@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script context="module" lang="ts">
 </script>
   // Keep module import for Svelte runes; ambient types are provided globally.

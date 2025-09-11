@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <!-- EnhancedRAGInterface.svelte - SvelteKit 2.0 Advanced RAG Interface -->

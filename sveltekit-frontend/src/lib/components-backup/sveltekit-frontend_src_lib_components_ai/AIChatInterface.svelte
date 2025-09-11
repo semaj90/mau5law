@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'minimized' has already been declared -->
 <script lang="ts">
   interface Props {
     visible?: any;

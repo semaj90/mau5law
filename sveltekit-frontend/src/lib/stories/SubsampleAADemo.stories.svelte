@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 &lt;script lang="ts"&gt;
 /**
  * RTX 3060 Ti SubsampleAA Demo - Advanced Anti-Aliasing with Tensor Core Acceleration

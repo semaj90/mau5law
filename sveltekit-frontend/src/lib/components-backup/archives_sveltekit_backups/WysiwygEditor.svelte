@@ -6,12 +6,23 @@
   import { writable, get, type Writable } from 'svelte/store';
 
   // Props
-  export let content = '';
-  export let placeholder = 'Start typing your legal document...';
-  export let readonly = false;
-  export let height = '400px';
-  export let enableAI = true;
-  export let enableCitation = true;
+  interface Props {
+    content?: string;
+    placeholder?: string;
+    readonly?: boolean;
+    height?: string;
+    enableAI?: boolean;
+    enableCitation?: boolean;
+  }
+
+  let {
+    content = $bindable(''),
+    placeholder = 'Start typing your legal document...',
+    readonly = false,
+    height = '400px',
+    enableAI = true,
+    enableCitation = true
+  }: Props = $props();
   export const enableCollaboration = false;
 
   // Events
@@ -23,7 +34,7 @@
   }>();
 
   // Stores / editor refs
-  let editorElement: HTMLElement;
+  let editorElement: HTMLElement = $state();
   let hugerte: any;
   let isInitialized = false;
   const wordCount: Writable<number> = writable(0);
@@ -108,18 +119,18 @@
   } = createDialogActions(citeOpenStore);
 
   // AI Assistant state
-  let aiQuery = '';
-  let aiResults = '';
-  let isProcessingAI = false;
-  let selectedText = '';
+  let aiQuery = $state('');
+  let aiResults = $state('');
+  let isProcessingAI = $state(false);
+  let selectedText = $state('');
 
   // Citation state
-  let citationQuery = '';
+  let citationQuery = $state('');
   let citationResults: Array<{
     title: string;
     citation: string;
     relevance: number;
-  }> = [];
+  }> = $state([]);
 
   onMount(async () => {
     await initializeEditor();

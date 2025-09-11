@@ -1,5 +1,9 @@
 <script lang="ts">
-  export let content: string = 'Screen content';
+  interface Props {
+    content?: string;
+  }
+
+  let { content = 'Screen content' }: Props = $props();
 </script>
 
 <style>

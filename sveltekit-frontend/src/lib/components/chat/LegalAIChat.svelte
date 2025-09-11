@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Legal AI Chat Assistant with Ollama/llama.cpp WebAssembly Integration
   

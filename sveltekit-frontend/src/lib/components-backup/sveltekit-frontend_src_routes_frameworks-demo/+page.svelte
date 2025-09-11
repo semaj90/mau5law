@@ -15,7 +15,7 @@
   import { onMount } from "svelte";
 
   // Active tab state and demo data
-  let activeTab = "document-editor";
+  let activeTab = $state("document-editor");
   let sampleContent = `MOTION TO DISMISS
 
   Comes now the Defendant, by and through undersigned counsel, and respectfully moves this Honorable Court to dismiss the Plaintiff's Complaint pursuant to Federal Rule of Civil Procedure 12(b)(6) for failure to state a claim upon which relief can be granted.

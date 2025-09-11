@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';

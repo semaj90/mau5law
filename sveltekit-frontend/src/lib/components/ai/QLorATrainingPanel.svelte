@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- QLorA Training Panel with Checkbox Toggle -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';

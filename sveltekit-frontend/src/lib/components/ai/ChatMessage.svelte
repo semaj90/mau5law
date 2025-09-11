@@ -108,7 +108,7 @@ https://svelte.dev/e/js_parse_error -->
           {@const ToneIcon = getEmotionalToneIcon(emotionalTone)}
           <div class="space-y-4">
             {#if ToneIcon}
-              <svelte:component this={ToneIcon} class="space-y-4" />
+              <ToneIcon class="space-y-4" />
             {/if}
             <span class="space-y-4">{emotionalTone}</span>
           </div>

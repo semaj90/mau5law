@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token > -->
 <!--
   Enhanced File Upload Component with Superforms and Zod Validation
   Features: Drag & drop, progress tracking, AI processing, validation, preview

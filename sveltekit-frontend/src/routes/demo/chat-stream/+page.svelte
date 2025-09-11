@@ -2,11 +2,11 @@
   import { PUBLIC_SHOW_CACHE_META } from '$env/static/public';
   
   type Message = { role: 'user' | 'assistant'; content: string };
-  let messages: Message[] = [];
-  let userInput = '';
-  let isLoading = false;
-  let lastCached: boolean | null = null;
-  let proxyBackend: string | null = null;
+  let messages: Message[] = $state([]);
+  let userInput = $state('');
+  let isLoading = $state(false);
+  let lastCached: boolean | null = $state(null);
+  let proxyBackend: string | null = $state(null);
   const showCacheMeta = String(PUBLIC_SHOW_CACHE_META || '').toLowerCase() === 'true';
 
   async function handleSubmit() {

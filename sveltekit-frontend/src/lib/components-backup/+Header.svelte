@@ -2,8 +2,12 @@
   import { goto } from '$app/navigation';
   import SearchBar from '$lib/components/+SearchBar.svelte';
 
-  export let user: any | undefined; // Made user prop optional
-  export let title: string = 'WardenNet'; // Default title
+  interface Props {
+    user: any | undefined;
+    title?: string;
+  }
+
+  let { user, title = 'WardenNet' }: Props = $props();
 
   // Svelte action for SPA navigation
   function navigate(node: HTMLAnchorElement) {

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import {

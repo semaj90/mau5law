@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
   import { marked } from "marked";
   import { onMount } from "svelte";

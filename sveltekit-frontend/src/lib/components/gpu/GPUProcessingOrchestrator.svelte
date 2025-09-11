@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   GPU Processing Orchestrator - XState-powered document processing interface
   Manages concurrent GPU processing with real-time monitoring for Legal AI Platform

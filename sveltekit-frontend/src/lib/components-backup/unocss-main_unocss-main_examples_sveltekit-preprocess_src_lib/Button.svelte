@@ -1,14 +1,20 @@
-<script lang="ts">
-  export let onclick: () => any;
+<script lang="ts">props.
+  interface Props {
+    onclick: () => any;
+    children?: import('svelte').Snippet;
+    [key: string]: any
+  }
+
+  let { ...props }: Props = $props();
 </script>
 
 <button
-  class="font-semibold {$$props.class}"
-  onclick={onclick}
+  class="font-semibold {props.class}"
+  onclick={props.onclick}
   type="button"
 >
-  <span class="i-logos:svelte-icon" />
-  <slot /></button
+  <span class="i-logos:svelte-icon"></span>
+  {@render props.children?.()}</button
 >
 
 <style>

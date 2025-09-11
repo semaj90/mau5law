@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa 3D Components Gallery -->
 <script lang="ts">
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts

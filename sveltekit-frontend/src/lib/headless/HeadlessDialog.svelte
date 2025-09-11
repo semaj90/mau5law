@@ -13,7 +13,7 @@
     onClose?: () => void;
   }
 
-  let {
+  let { title, children, footer,
     open = $bindable(),
     initialFocus = null,
     restoreFocus = true,
@@ -161,17 +161,17 @@
       >
         <!-- Dialog header -->
         <div class="px-6 pt-6">
-          <slot name="title" />
+          {@render title?.()}
         </div>
 
         <!-- Dialog content -->
         <div class="px-6 py-4">
-          <slot />
+          {@render children?.()}
         </div>
 
         <!-- Dialog footer -->
         <div class="px-6 pb-6">
-          <slot name="footer" />
+          {@render footer?.()}
         </div>
 
         <!-- Close button -->

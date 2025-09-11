@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression -->
 <!--
   Complete Integration Demo
   NES + YoRHa 3D + WebAssembly AI Assistant (Gemma 270MB) + LOD Processor

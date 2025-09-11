@@ -400,59 +400,61 @@
   >
     <Collapsible.Root bind:open={isOpen} class="w-full">
       <!-- Trigger/Header -->
-      <Collapsible.Trigger asChild let:builder>
-        <button 
-          use:builder.action 
-          {...builder}
-          class="container-trigger"
-          onclick={toggleContainer}
-        >
-          <div class="trigger-content">
-            <div class="trigger-left">
-              <span class="trigger-icon">🎯</span>
-              <span class="trigger-title">
-                {enableEnhancedMode && enhancedModeActive ? 'Enhanced AI Recommendations' : 'AI Recommendations'}
-              </span>
-              
-              <!-- Enhanced Mode Status -->
-              {#if enableEnhancedMode && enhancedModeActive}
-                <Badge.Root class="enhanced-badge" variant="outline">
-                  QLoRA
-                </Badge.Root>
-              {/if}
-              
-              <!-- Loading Indicator -->
-              {#if loadingEnhancedRecommendations}
-                <Badge.Root class="loading-badge" variant="outline">
-                  ⚡ Processing
-                </Badge.Root>
-              {/if}
-              
-              <!-- Error Indicator -->
-              {#if recommendationError}
-                <Badge.Root class="error-badge" variant="destructive">
-                  ⚠️ Error
-                </Badge.Root>
-              {/if}
-              
-              {#if criticalCount > 0}
-                <Badge.Root class="critical-badge" variant="destructive">
-                  {criticalCount}
-                </Badge.Root>
-              {/if}
-              {#if highCount > 0}
-                <Badge.Root class="high-badge" variant="secondary">
-                  {highCount}
-                </Badge.Root>
-              {/if}
+      <Collapsible.Trigger asChild >
+        {#snippet children({ builder })}
+                <button 
+            use:builder.action 
+            {...builder}
+            class="container-trigger"
+            onclick={toggleContainer}
+          >
+            <div class="trigger-content">
+              <div class="trigger-left">
+                <span class="trigger-icon">🎯</span>
+                <span class="trigger-title">
+                  {enableEnhancedMode && enhancedModeActive ? 'Enhanced AI Recommendations' : 'AI Recommendations'}
+                </span>
+                
+                <!-- Enhanced Mode Status -->
+                {#if enableEnhancedMode && enhancedModeActive}
+                  <Badge.Root class="enhanced-badge" variant="outline">
+                    QLoRA
+                  </Badge.Root>
+                {/if}
+                
+                <!-- Loading Indicator -->
+                {#if loadingEnhancedRecommendations}
+                  <Badge.Root class="loading-badge" variant="outline">
+                    ⚡ Processing
+                  </Badge.Root>
+                {/if}
+                
+                <!-- Error Indicator -->
+                {#if recommendationError}
+                  <Badge.Root class="error-badge" variant="destructive">
+                    ⚠️ Error
+                  </Badge.Root>
+                {/if}
+                
+                {#if criticalCount > 0}
+                  <Badge.Root class="critical-badge" variant="destructive">
+                    {criticalCount}
+                  </Badge.Root>
+                {/if}
+                {#if highCount > 0}
+                  <Badge.Root class="high-badge" variant="secondary">
+                    {highCount}
+                  </Badge.Root>
+                {/if}
+              </div>
+              <div class="trigger-right">
+                <span class="trigger-count">{recommendations.length}</span>
+                <span class="trigger-arrow" class:rotated={isOpen}>▼</span>
+              </div>
             </div>
-            <div class="trigger-right">
-              <span class="trigger-count">{recommendations.length}</span>
-              <span class="trigger-arrow" class:rotated={isOpen}>▼</span>
-            </div>
-          </div>
-        </button>
-      </Collapsible.Trigger>
+          </button>
+                      {/snippet}
+            </Collapsible.Trigger>
 
       <!-- Collapsible Content -->
       <Collapsible.Content class="collapsible-content">
@@ -486,17 +488,19 @@
                       <!-- RL Feedback Buttons -->
                       <div class="feedback-controls">
                         <Tooltip.Root>
-                          <Tooltip.Trigger asChild let:builder>
-                            <button
-                              use:builder.action
-                              {...builder}
-                              class={getFeedbackButtonClass(rec.id, 'positive', rec.feedback)}
-                              onclick={() => submitFeedback(rec.id, 'positive', rec)}
-                              disabled={feedbackCooldown.has(rec.id) || processingFeedback}
-                            >
-                              👍
-                            </button>
-                          </Tooltip.Trigger>
+                          <Tooltip.Trigger asChild >
+                            {#snippet children({ builder })}
+                                                        <button
+                                use:builder.action
+                                {...builder}
+                                class={getFeedbackButtonClass(rec.id, 'positive', rec.feedback)}
+                                onclick={() => submitFeedback(rec.id, 'positive', rec)}
+                                disabled={feedbackCooldown.has(rec.id) || processingFeedback}
+                              >
+                                👍
+                              </button>
+                                                                                  {/snippet}
+                                                    </Tooltip.Trigger>
                           <Tooltip.Content side="top">
                             <div class="feedback-tooltip">
                               {rec.feedback === 'positive' ? 'Helpful recommendation!' : 'Mark as helpful'}
@@ -505,17 +509,19 @@
                         </Tooltip.Root>
                         
                         <Tooltip.Root>
-                          <Tooltip.Trigger asChild let:builder>
-                            <button
-                              use:builder.action
-                              {...builder}
-                              class={getFeedbackButtonClass(rec.id, 'negative', rec.feedback)}
-                              onclick={() => submitFeedback(rec.id, 'negative', rec)}
-                              disabled={feedbackCooldown.has(rec.id) || processingFeedback}
-                            >
-                              👎
-                            </button>
-                          </Tooltip.Trigger>
+                          <Tooltip.Trigger asChild >
+                            {#snippet children({ builder })}
+                                                        <button
+                                use:builder.action
+                                {...builder}
+                                class={getFeedbackButtonClass(rec.id, 'negative', rec.feedback)}
+                                onclick={() => submitFeedback(rec.id, 'negative', rec)}
+                                disabled={feedbackCooldown.has(rec.id) || processingFeedback}
+                              >
+                                👎
+                              </button>
+                                                                                  {/snippet}
+                                                    </Tooltip.Trigger>
                           <Tooltip.Content side="top">
                             <div class="feedback-tooltip">
                               {rec.feedback === 'negative' ? 'Marked as unhelpful' : 'Mark as unhelpful'}

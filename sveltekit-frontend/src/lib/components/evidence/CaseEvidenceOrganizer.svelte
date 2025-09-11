@@ -691,7 +691,7 @@
           type="button"
           class="mode-button"
           class:active={organizationMode === mode.value}
-          on:click={() => handleModeChange(mode.value)}
+          onclick={() => handleModeChange(mode.value)}
         >
           <span class="mode-icon">{mode.icon}</span>
           <span class="mode-label">{mode.label}</span>
@@ -792,7 +792,7 @@
                 <div 
                   class="evidence-card"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'category')}
+                  onclick={() => selectEvidence(evidence, 'category')}
                 >
                   <div class="evidence-header">
                     <h4>{evidence.title}</h4>
@@ -832,7 +832,7 @@
                 <div 
                   class="timeline-item"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'timeline')}
+                  onclick={() => selectEvidence(evidence, 'timeline')}
                 >
                   <div class="timeline-marker"></div>
                   <div class="timeline-content">
@@ -879,7 +879,7 @@
                 <div 
                   class="evidence-card compact"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'cluster')}
+                  onclick={() => selectEvidence(evidence, 'cluster')}
                 >
                   <h4>{evidence.title}</h4>
                   <span class="evidence-type">{evidence.evidenceType}</span>
@@ -909,7 +909,7 @@
                 <div 
                   class="evidence-card custody"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'custody')}
+                  onclick={() => selectEvidence(evidence, 'custody')}
                 >
                   <div class="evidence-header">
                     <h4>{evidence.title}</h4>

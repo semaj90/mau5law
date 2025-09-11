@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `$derived(...)` can only be used as a variable declaration initializer or a class field -->
 <!-- Grid Item Component -->
 <script lang="ts">
   interface Props {

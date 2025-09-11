@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:change) and new syntaxes for event handling is not allowed. Use only the onchange syntax -->
 <!--
   WebGPU Ranking Cache Demo
   Showcases client-side WebAssembly ranking cache with GPU acceleration

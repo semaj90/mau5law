@@ -9,7 +9,7 @@
 
 
   import { getContext } from "svelte";
-  import { fly } from "svelte/transition";
+  import { fly } from "svelte/transition"; children,
 
   const contextMenu = (getContext("contextMenu") as any) || {
     elements: { menu: { subscribe: () => {} } },
@@ -25,7 +25,7 @@
     class="space-y-4"
     transitionfly={{ duration: 150, y: -10 }}
   >
-    <slot></slot>
+    {@render children?.()}
   </div>
 {/if}
 

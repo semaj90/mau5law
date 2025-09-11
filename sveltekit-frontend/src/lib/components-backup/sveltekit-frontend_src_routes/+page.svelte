@@ -234,16 +234,18 @@
         glitchEffect={glitchEffect}
         className="demo-table"
       >
-        <svelte:fragment slot="actions" let:row>
-          <button
-            class="yorha-action-btn-sm"
-            onclick={() => mockAIAnalysis(row)}
-          >
-            ANALYZE
-          </button>
-          <button class="yorha-action-btn-sm">VIEW</button>
-          <button class="yorha-action-btn-sm">EDIT</button>
-        </svelte:fragment>
+        {#snippet actions({ row })}
+              
+            <button
+              class="yorha-action-btn-sm"
+              onclick={() => mockAIAnalysis(row)}
+            >
+              ANALYZE
+            </button>
+            <button class="yorha-action-btn-sm">VIEW</button>
+            <button class="yorha-action-btn-sm">EDIT</button>
+          
+              {/snippet}
       </YoRHaTable>
     </div>
 
@@ -274,10 +276,12 @@
         bordered={false}
         className="demo-compact-table"
       >
-        <svelte:fragment slot="actions" let:row>
-          <button class="yorha-action-btn-sm">PROCESS</button>
-          <button class="yorha-action-btn-sm">DOWNLOAD</button>
-        </svelte:fragment>
+        {#snippet actions({ row })}
+              
+            <button class="yorha-action-btn-sm">PROCESS</button>
+            <button class="yorha-action-btn-sm">DOWNLOAD</button>
+          
+              {/snippet}
       </YoRHaTable>
     </div>
   {:else}
@@ -303,16 +307,18 @@
         glitchEffect={glitchEffect}
         className="demo-grid"
       >
-        <svelte:fragment slot="actions" let:row>
-          <button
-            class="yorha-action-btn"
-            onclick={() => mockAIAnalysis(row)}
-          >
-            ANALYZE
-          </button>
-          <button class="yorha-action-btn">VIEW</button>
-          <button class="yorha-action-btn yorha-danger">DELETE</button>
-        </svelte:fragment>
+        {#snippet actions({ row })}
+              
+            <button
+              class="yorha-action-btn"
+              onclick={() => mockAIAnalysis(row)}
+            >
+              ANALYZE
+            </button>
+            <button class="yorha-action-btn">VIEW</button>
+            <button class="yorha-action-btn yorha-danger">DELETE</button>
+          
+              {/snippet}
       </YoRHaDataGrid>
     </div>
   {/if}

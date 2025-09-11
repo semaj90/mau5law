@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Citation Rich Text Editor with Legal Citation Formatter
   

@@ -53,13 +53,25 @@
   }
 
   // Classic props
-  export let evidenceId: string = `evidence_${Date.now()}`;
-  export let autoStart: boolean = false;
-  export let neuralSpriteEnabled: boolean = true;
-  export let onCompleted: ((result: any) => void) | undefined;
-  export let onError: ((error: string) => void) | undefined;
-  export let sessionId: string | null = null; // reserved for future server correlation
-  export let endpoint: string = '/api/evidence/process/stream';
+  interface Props {
+    evidenceId?: string;
+    autoStart?: boolean;
+    neuralSpriteEnabled?: boolean;
+    onCompleted: ((result: any) => void) | undefined;
+    onError: ((error: string) => void) | undefined;
+    sessionId?: string | null;
+    endpoint?: string;
+  }
+
+  let {
+    evidenceId = `evidence_${Date.now()}`,
+    autoStart = false,
+    neuralSpriteEnabled = true,
+    onCompleted,
+    onError,
+    sessionId = null,
+    endpoint = '/api/evidence/process/stream'
+  }: Props = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -70,7 +82,7 @@
   const initialSnapshot = actor.getSnapshot() as any;
 
   // Local snapshot (augmented)
-  let currentState: EvidenceActorState = {
+  let currentState: EvidenceActorState = $state({
     ...initialSnapshot,
     context: {
       ...initialSnapshot.context,
@@ -78,7 +90,7 @@
       errors: [],
       processingTimeMs: 0
     }
-  } as EvidenceActorState;
+  } as EvidenceActorState);
 
   // SSE (existing path)
   let eventSource: EventSource | null = null;
@@ -173,24 +185,24 @@
   }
 
   // UI state
-  let dragOver = false;
-  let selectedFile: File | null = null;
-  let neuralSpriteConfig = {
+  let dragOver = $state(false);
+  let selectedFile: File | null = $state(null);
+  let neuralSpriteConfig = $state({
     enable_compression: neuralSpriteEnabled,
     predictive_frames: 3,
     ui_layout_compression: false,
     target_compression_ratio: 50
-  };
+  });
 
   // Reactive values with safe fallbacks
   // Derived replacements
-  let progress = 0;
+  let progress = $state(0);
   let currentStep: string = 'idle';
-  let isProcessing = false;
-  let canCancel = false;
-  let hasError = false;
-  let isCompleted = false;
-  let isCancelled = false;
+  let isProcessing = $state(false);
+  let canCancel = $state(false);
+  let hasError = $state(false);
+  let isCompleted = $state(false);
+  let isCancelled = $state(false);
 
   function recomputeDerived() {
     try {

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!--
   SSR QLoRA Chat Interface - Revolutionary legal AI chat with instant SSR hydration
   

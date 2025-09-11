@@ -8,10 +8,19 @@
   import type { EnhancedPerformanceMetrics } from '$lib/engines/neural-sprite-engine-enhanced';
 
   // Props
-  export let neuralEngine: EnhancedNeuralSpriteEngine | null = null;
-  export let updateInterval: number = 1000;
-  export let maxHistoryPoints: number = 60;
-  export let showAdvancedMetrics: boolean = true;
+  interface Props {
+    neuralEngine?: EnhancedNeuralSpriteEngine | null;
+    updateInterval?: number;
+    maxHistoryPoints?: number;
+    showAdvancedMetrics?: boolean;
+  }
+
+  let {
+    neuralEngine = null,
+    updateInterval = 1000,
+    maxHistoryPoints = 60,
+    showAdvancedMetrics = true
+  }: Props = $props();
 
   // Real-time data stores
   const performanceHistory = writable<EnhancedPerformanceMetrics[]>([]);
@@ -20,9 +29,9 @@
   const connectionStatus = writable<'connected' | 'disconnected' | 'error'>('disconnected');
 
   // Dashboard state
-  let isMonitoring = false;
+  let isMonitoring = $state(false);
   let monitoringInterval: NodeJS.Timeout | null = null;
-  let lastUpdate = Date.now();
+  let lastUpdate = $state(Date.now());
 
   // Derived performance indicators
   const overallGrade = derived([currentMetrics], ([$metrics]) => {

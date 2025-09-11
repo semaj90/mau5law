@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <script lang="ts">
   const { checked: boolean = false, label: string = '', id: string = '' } = $props();
 

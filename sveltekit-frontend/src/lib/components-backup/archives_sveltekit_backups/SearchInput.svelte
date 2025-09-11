@@ -2,15 +2,19 @@
   	import { createEventDispatcher } from 'svelte';
   	import { Search, X } from 'lucide-svelte';
 
-  	export let placeholder = 'Search...';
-  	export let value = '';
-  	export let debounceTime = 300;
+	interface Props {
+		placeholder?: string;
+		value?: string;
+		debounceTime?: number;
+	}
+
+	let { placeholder = 'Search...', value = $bindable(''), debounceTime = 300 }: Props = $props();
 
   	const dispatch = createEventDispatcher();
 
   	let debounceTimer: NodeJS.Timeout;
-  	let inputElement: HTMLInputElement;
-  	let isFocused = false;
+  	let inputElement: HTMLInputElement = $state();
+  	let isFocused = $state(false);
 
   	function handleInput() {
   		clearTimeout(debounceTimer);

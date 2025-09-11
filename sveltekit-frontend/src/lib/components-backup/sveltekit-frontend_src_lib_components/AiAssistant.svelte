@@ -35,8 +35,12 @@
   const getUser = getContext('user');
   const user = typeof getUser === 'function' ? getUser() : undefined;
 
-  export let contextItems: any[] = [];
-  export let caseId: string = '';
+  interface Props {
+    contextItems?: any[];
+    caseId?: string;
+  }
+
+  let { contextItems = [], caseId = '' }: Props = $props();
 
   // --- Client-Side Caching with Loki.js ---
   // Initializes a simple in-memory DB to cache summaries on the client.

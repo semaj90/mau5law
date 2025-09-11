@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Global Feedback Integration Component
   Provides feedback hooks for any component or interaction

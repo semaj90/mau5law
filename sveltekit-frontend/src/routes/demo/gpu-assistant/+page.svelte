@@ -2,11 +2,11 @@
   import { onMount } from 'svelte';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
 
-  let input = '';
+  let input = $state('');
   let sessionId = '';
-  let messages: Array<{ id: string; role: 'user'|'assistant'; content: string; createdAt: string }>= [];
-  let loading = false;
-  let model = 'gemma3-legal';
+  let messages: Array<{ id: string; role: 'user'|'assistant'; content: string; createdAt: string }>= $state([]);
+  let loading = $state(false);
+  let model = $state('gemma3-legal');
 
   async function ensureSession() {
     if (!sessionId) {

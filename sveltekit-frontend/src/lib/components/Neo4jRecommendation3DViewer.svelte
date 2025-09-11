@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Neo4j 3D Recommendation Viewer with QUIC Streaming & Bit-Encoded Vertex Buffers
   Real-time 3D legal knowledge graph with GPU-accelerated rendering and progress animations

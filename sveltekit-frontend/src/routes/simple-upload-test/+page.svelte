@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Simple Upload Test Page -->
 <script lang="ts">
   // $state runtime rune is provided globally

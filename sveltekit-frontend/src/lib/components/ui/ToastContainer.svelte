@@ -61,7 +61,8 @@
       <div class="toast-header">
         <div class="toast-icon">
           {#if getToastIcon(toast.type)}
-            <svelte:component this={getToastIcon(toast.type)} size={16} />
+            {@const SvelteComponent = getToastIcon(toast.type)}
+            <SvelteComponent size={16} />
           {/if}
         </div>
         <div class="toast-title">

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services

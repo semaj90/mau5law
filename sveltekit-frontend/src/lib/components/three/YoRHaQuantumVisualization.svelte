@@ -248,7 +248,7 @@
 </script>
 
 <!-- Svelte 5: use on:resize for window resize listener -->
-<svelte:window on:resize={handleResize} />
+<svelte:window onresize={handleResize} />
 
 <div class="quantum-visualization-container">
   <div class="visualization-header">

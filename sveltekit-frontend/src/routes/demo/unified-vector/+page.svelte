@@ -9,14 +9,14 @@
   import UnifiedVectorInterface from '$lib/components/unified/UnifiedVectorInterface.svelte';
   import { browser } from '$app/environment';
 
-  let showDocumentation = false;
-  let systemStats = {
+  let showDocumentation = $state(false);
+  let systemStats = $state({
     totalComponents: 8,
     activeServices: 0,
     processingCapacity: '100,000+ streams',
     gpuAcceleration: 'RTX 3060 Ti (8GB)',
     compressionRatio: '8:1 QUIC streaming'
-  };
+  });
 
   async function checkSystemStatus() {
     if (!browser) return;

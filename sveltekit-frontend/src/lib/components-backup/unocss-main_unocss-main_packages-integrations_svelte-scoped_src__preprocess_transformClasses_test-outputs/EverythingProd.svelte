@@ -1,9 +1,9 @@
-<div class="uno-uovm2y" />
-<div class:uno-5qhtsr={logo} class="foo bar" />
-<div class:uno-y37ej3={foo} class="uno-4cfcv2" />
+<div class="uno-uovm2y"></div>
+<div class:uno-5qhtsr={logo} class="foo bar"></div>
+<div class:uno-y37ej3={foo} class="uno-4cfcv2"></div>
 
 <div class="uno-rdvmaz foo">
-  <div class="uno-wt89uz" />
+  <div class="uno-wt89uz"></div>
   <Button class="uno-deus5r" />
 </div>
 

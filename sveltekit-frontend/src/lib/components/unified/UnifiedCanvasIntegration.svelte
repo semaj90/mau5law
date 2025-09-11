@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Unified Canvas Integration - Bridge Between Enhanced Evidence Canvas and Detective Board -->
 <script lang="ts">
   	import { onMount } from 'svelte';

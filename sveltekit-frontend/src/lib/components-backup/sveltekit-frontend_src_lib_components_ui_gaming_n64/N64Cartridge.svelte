@@ -1,5 +1,9 @@
 <script lang="ts">
-  export let title: string = 'Unknown Cartridge';
+  interface Props {
+    title?: string;
+  }
+
+  let { title = 'Unknown Cartridge' }: Props = $props();
 </script>
 
 <style>

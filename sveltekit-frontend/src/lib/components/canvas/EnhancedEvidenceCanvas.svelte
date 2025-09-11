@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
   interface Props {

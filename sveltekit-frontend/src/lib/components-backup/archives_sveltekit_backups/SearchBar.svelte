@@ -3,26 +3,35 @@
   	import SearchInput from './SearchInput.svelte';
   	import { Filter, ArrowUpDown } from 'lucide-svelte';
 
-  	export let placeholder = 'Search...';
-  	export let value = '';
-  	export let showFilters = true;
-  	export let sortOptions = [
+	interface Props {
+		placeholder?: string;
+		value?: string;
+		showFilters?: boolean;
+		sortOptions?: any;
+	}
+
+	let {
+		placeholder = 'Search...',
+		value = '',
+		showFilters = true,
+		sortOptions = [
   		{ id: 'relevance', label: 'Relevance' },
   		{ id: 'date', label: 'Date' },
   		{ id: 'name', label: 'Name' },
   		{ id: 'type', label: 'Type' }
-  	];
+  	]
+	}: Props = $props();
 
   	const dispatch = createEventDispatcher();
 
-  	let selectedSort = 'relevance';
-  	let filtersOpen = false;
+  	let selectedSort = $state('relevance');
+  	let filtersOpen = $state(false);
   	// Filter state
-  	let selectedFileTypes: string[] = [];
-  	let dateRange = {
+  	let selectedFileTypes: string[] = $state([]);
+  	let dateRange = $state({
   		from: '',
   		to: ''
-  	};
+  	});
 
   	function handleSearch(event: CustomEvent) {
   		dispatch('search', event.detail);

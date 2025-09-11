@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `$state(...)` can only be used as a variable declaration initializer or a class field -->
 <!--
   Unified Inference Pipeline Demo
   Showcases complete production inference system with Redis caching

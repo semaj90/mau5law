@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'data' has already been declared -->
 <script lang="ts">
   interface Props {
     evidence: Evidence | null ;

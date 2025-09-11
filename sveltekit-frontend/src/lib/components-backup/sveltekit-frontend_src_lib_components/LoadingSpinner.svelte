@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'showMessage' has already been declared -->
 <script lang="ts">
   interface Props {
     size: 'sm' | 'md' | 'lg' ;

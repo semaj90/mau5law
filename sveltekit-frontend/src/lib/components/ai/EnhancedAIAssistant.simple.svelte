@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Simplified Enhanced AI Assistant -->
 <script lang="ts">
   import {

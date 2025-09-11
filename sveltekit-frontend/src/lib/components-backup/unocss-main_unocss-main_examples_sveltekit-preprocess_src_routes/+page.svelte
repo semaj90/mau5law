@@ -16,7 +16,7 @@
     <Button class="mb-2" onclick={() => alert("hello!")}>Hello</Button>
   </div>
 
-  <div class="logo bg-red-100" />
+  <div class="logo bg-red-100"></div>
 </div>
 
 

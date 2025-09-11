@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
   import { notifications } from "$lib/stores/notification";

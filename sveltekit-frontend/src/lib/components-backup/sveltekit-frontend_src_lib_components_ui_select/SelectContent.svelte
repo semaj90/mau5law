@@ -10,7 +10,7 @@
 
   import { getContext } from "svelte";
   import { writable } from "svelte/store";
-  import type { SelectContext } from "./types";
+  import type { SelectContext } from "./types"; children,
 
    // string = "";
 
@@ -27,7 +27,7 @@
 
 {#if $open}
   <div class="space-y-4" role="listbox">
-    <slot></slot>
+    {@render children?.()}
   </div>
 {/if}
 

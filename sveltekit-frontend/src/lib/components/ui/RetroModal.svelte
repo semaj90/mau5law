@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `<slot>` syntax and `{@render ...}` tags in the same component. Migrate towards `{@render ...}` tags completely -->
 <!--
   RetroModal Component - bits-ui + nes.css integration
   Demonstrates the perfect marriage of headless functionality with retro styling

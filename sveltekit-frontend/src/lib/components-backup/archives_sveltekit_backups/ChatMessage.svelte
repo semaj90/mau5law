@@ -4,7 +4,11 @@
   import { Bot } from "lucide-svelte";
   import "./chat-message.css";
 
-  export let message: ChatMessage;
+  interface Props {
+    message: ChatMessage;
+  }
+
+  let { message }: Props = $props();
   const sanitizedContent = DOMPurify.sanitize(message.content);
 </script>
 

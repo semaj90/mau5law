@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated template -->
 <!--
   Copilot Index Optimizer - Development Interface
   Real-time optimization testing and monitoring for GitHub Copilot context enhancement

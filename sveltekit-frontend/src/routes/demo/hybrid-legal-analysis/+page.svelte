@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
 </script>
   import type { PageData, ActionData } from './$types.js';

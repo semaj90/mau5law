@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <!-- NieR: Automata Themed Rich Text Editor using bits-ui -->
 <script lang="ts">
   interface Props {

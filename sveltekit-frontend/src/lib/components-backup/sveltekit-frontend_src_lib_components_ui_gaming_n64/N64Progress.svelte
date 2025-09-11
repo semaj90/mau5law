@@ -1,9 +1,19 @@
 <script lang="ts">
-  export let id: string | undefined = undefined;
-  export let value: number = 0;
-  export let max: number = 100;
-  export let indeterminate: boolean = false;
-  export let ariaLabel: string | undefined = undefined;
+	interface Props {
+		id?: string | undefined;
+		value?: number;
+		max?: number;
+		indeterminate?: boolean;
+		ariaLabel?: string | undefined;
+	}
+
+	let {
+		id = undefined,
+		value = 0,
+		max = 100,
+		indeterminate = false,
+		ariaLabel = undefined
+	}: Props = $props();
 
   // TODO: Convert to $derived: clamped = Math.max(0, Math.min(value, max))
   // TODO: Convert to $derived: percent = max > 0 ? (clamped / max) * 100 : 0
@@ -64,7 +74,7 @@
 >
   <div class="n64-track">
 	{#if indeterminate}
-	  <div class="n64-fill indeterminate" />
+	  <div class="n64-fill indeterminate"></div>
 	{:else}
 	  <div class="n64-fill" style="width: {percent}%;"></div>
 	{/if}

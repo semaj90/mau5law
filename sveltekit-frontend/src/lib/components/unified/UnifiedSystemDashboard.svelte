@@ -42,7 +42,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     };
   });
   let statusInterval: NodeJS.Timeout;
-  let testDocument = {
+  let testDocument = $state({
     id: 'demo_doc_' + Date.now(),
     title: 'Sample Legal Contract Analysis',
     content: `This is a demonstration legal document for testing the unified processing system. 
@@ -60,14 +60,14 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
       estimated_complexity: 'medium'
     },
     createdAt: new Date().toISOString()
-  };
+  });
   // Processing options
-  let processingOptions = {
+  let processingOptions = $state({
     priority: 0.8,
     forceGPU: false,
     batchMode: false,
     query: { query: 'legal contract analysis', keywords: ['contract', 'agreement'] }
-  };
+  });
   onMount(async () => {
     await refreshSystemStatus();
     // Start periodic status updates

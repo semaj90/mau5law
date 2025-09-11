@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:onclick) and new syntaxes for event handling is not allowed. Use only the ononclick syntax -->
 <!--
   Graph Engine Page
   WASM Graph Engine with Neo4j Remote Query Caching

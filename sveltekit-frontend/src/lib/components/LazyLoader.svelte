@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration -->
 <!-- LazyLoader.svelte - Universal lazy loading wrapper component -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';

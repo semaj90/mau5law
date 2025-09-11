@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { citationStore } from "$lib/stores/citations";

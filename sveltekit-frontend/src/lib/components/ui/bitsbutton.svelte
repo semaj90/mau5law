@@ -47,7 +47,7 @@
   	);
 
   	// Props destructuring using Svelte 5 $props() with simplified types
-  	const { variant = 'default', size = 'default', disabled = false, type = 'button', href = undefined, target = undefined, loading = false, loadingText = 'Loading...', className = '', onclick = undefined, id = (typeof globalThis !== 'undefined' && (globalThis.crypto as any)?.randomUUID)
+  	const { children, variant = 'default', size = 'default', disabled = false, type = 'button', href = undefined, target = undefined, loading = false, loadingText = 'Loading...', className = '', onclick = undefined, id = (typeof globalThis !== 'undefined' && (globalThis.crypto as any)?.randomUUID)
   		? (globalThis.crypto as any).randomUUID()
   		: `bits-btn-${Math.random().toString(36).slice(2, 9)}`, analyticsCategory = 'ui', analyticsAction = 'click', analyticsLabel = '', xstateContext = undefined, uiJsonConfig = undefined, searchKeywords = [], cacheKey = undefined, role = 'button', dataTestid = undefined } = $props();
 
@@ -133,7 +133,7 @@
 			</svg>
 			{loadingText}
 		{:else}
-			<slot />
+			{@render children?.()}
 		{/if}
 	</a>
 {:else}
@@ -152,7 +152,7 @@
 			</svg>
 			{loadingText}
 		{:else}
-			<slot />
+			{@render children?.()}
 		{/if}
 	</button>
 {/if}

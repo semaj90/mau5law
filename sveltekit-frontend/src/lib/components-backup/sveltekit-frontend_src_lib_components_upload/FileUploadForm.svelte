@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { Alert, AlertDescription  } from "$lib/components/ui/alert";
   import { Button  } from "$lib/components/ui/button";

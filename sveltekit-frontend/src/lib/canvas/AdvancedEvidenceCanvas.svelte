@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!--
   Advanced Evidence Canvas - Svelte 5 Component
   Canvas-based component for displaying and manipulating evidence data using modern runes

@@ -21,9 +21,11 @@
     Users,
   } from "lucide-svelte";
 
-  export let open: boolean = false;
   // SSR-compatible: all dates as strings
-  export let caseData: {
+
+  interface Props {
+    open?: boolean;
+    caseData?: {
     id: string;
     title: string;
     description: string;
@@ -62,15 +64,25 @@
       daysActive: number;
       completionPercentage: number;
     };
-  } | null = null;
+  } | null;
+    useDrawer?: boolean;
+    trigger?: import('svelte').Snippet;
+    content?: import('svelte').Snippet;
+  }
 
-  export let useDrawer: boolean = false;
+  let {
+    open = $bindable(false),
+    caseData = $bindable(null),
+    useDrawer = false,
+    trigger,
+    content
+  }: Props = $props();
 
   const dispatch = createEventDispatcher();
 
-  let isGeneratingSummary = false;
+  let isGeneratingSummary = $state(false);
   let activeTab: "overview" | "timeline" | "evidence" | "recommendations" =
-    "overview";
+    $state("overview");
 
   async function generateSummary() {
     if (!caseData) return;
@@ -152,13 +164,17 @@
     side="right"
     size="xl"
   >
-    <svelte:fragment slot="trigger">
-      <slot name="trigger" />
-    </svelte:fragment>
+    {#snippet trigger()}
+      
+        {@render trigger?.()}
+      
+      {/snippet}
 
-    <svelte:fragment slot="default">
-      <slot name="content" />
-    </svelte:fragment>
+    {#snippet default()}
+      
+        {@render content?.()}
+      
+      {/snippet}
   </Drawer>
 {:else}
   <Dialog
@@ -167,9 +183,11 @@
     description="Comprehensive AI-powered case analysis"
     size="full"
   >
-    <svelte:fragment slot="trigger">
-      <slot name="trigger" />
-    </svelte:fragment>
+    {#snippet trigger()}
+      
+        {@render trigger?.()}
+      
+      {/snippet}
 
     {#if caseData}
       <div class="mx-auto px-4 max-w-7xl">
@@ -284,7 +302,7 @@
                 class="mx-auto px-4 max-w-7xl"
                 onclick={() => (activeTab = tab.id as typeof activeTab)}
               >
-                <svelte:component this={tab.icon} class="mx-auto px-4 max-w-7xl" />
+                <tab.icon class="mx-auto px-4 max-w-7xl" />
                 {tab.label}
               </button>
             {/each}
@@ -479,15 +497,17 @@
       </div>
     {/if}
 
-    <svelte:fragment slot="footer" let:close>
-      <Button variant="secondary" onclick={() => close()}>Close</Button>
-      <Button
-        variant="primary"
-        onclick={() => dispatch("exportSummary", caseData)}
-      >
-        Export Summary
-      </Button>
-    </svelte:fragment>
+    {#snippet footer({ close })}
+      
+        <Button variant="secondary" onclick={() => close()}>Close</Button>
+        <Button
+          variant="primary"
+          onclick={() => dispatch("exportSummary", caseData)}
+        >
+          Export Summary
+        </Button>
+      
+      {/snippet}
   </Dialog>
 {/if}
 

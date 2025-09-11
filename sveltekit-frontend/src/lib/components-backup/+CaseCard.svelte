@@ -1,7 +1,11 @@
 <script lang="ts">
   import type { Case } from '$lib/data/types';
 
-  export let caseItem: Case;
+  interface Props {
+    caseItem: Case;
+  }
+
+  let { caseItem }: Props = $props();
 
 </script>
 

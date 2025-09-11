@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <!--
 Enhanced Evidence Upload Component for Prosecutors
 Features: MinIO storage, AI analysis, multi-file support, drag-drop

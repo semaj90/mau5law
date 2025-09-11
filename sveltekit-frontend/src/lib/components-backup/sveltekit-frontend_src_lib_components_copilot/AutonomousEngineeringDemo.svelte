@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
 Autonomous Engineering Demo Component
 Showcases Copilot self-prompting with comprehensive AI orchestration

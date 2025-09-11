@@ -1,7 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  let summary = "";
-  let loading = false;
+  interface Props {
+    [key: string]: any
+  }
+
+  let { ...props }: Props = $props();
+  let summary = $state("");
+  let loading = $state(false);
   const dispatch = createEventDispatcher();
 
   async function getSummary(text: string) {
@@ -20,7 +25,7 @@
 
 <button
   class="mx-auto px-4 max-w-7xl"
-  onclick={() => getSummary($$props.text)}
+  onclick={() => getSummary(props.text)}
   disabled={loading}
 >
   {#if loading}

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!-- Hybrid Legal Document Analysis Component -->
 <!-- Combines EmbeddingGemma + NES YoRHa 3D + Hybrid Vector APIs -->
 <script lang="ts">

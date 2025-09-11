@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Retro Gaming Recommendation Modal - Multi-Console CSS Styling -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';

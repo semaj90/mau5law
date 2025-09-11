@@ -7,8 +7,8 @@
   import Prose from "./Prose.svelte";
   import RightToLeftDependent from "./RightToLeftDependent.svelte";
 
-  let red = false;
-  let rtl = true;
+  let red = $state(false);
+  let rtl = $state(true);
 </script>
 
 <div class="p-1em my-2px mx-auto">

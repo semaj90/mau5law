@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 // Enhanced Evidence Processing Component
 <script lang="ts">
   import { , onMount, onDestroy } from 'svelte';

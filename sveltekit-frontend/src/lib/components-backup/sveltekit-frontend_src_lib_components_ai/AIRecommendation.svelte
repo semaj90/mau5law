@@ -3,7 +3,7 @@
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
 
-  let recommendations: any[] = [];
+  let recommendations: any[] = $state([]);
   let fuse: Fuse<any>
 
   // TODO: Convert to $derived: history = $aiHistory

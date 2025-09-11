@@ -16,17 +16,17 @@
   const logs = writable<string[]>([]);
 
   // Form state
-  let selectedOperation: 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest' = 'analyze';
-  let inputText = '';
-  let userId = 'demo_user';
-  let sessionId = `session_${Date.now()}`;
+  let selectedOperation: 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest' = $state('analyze');
+  let inputText = $state('');
+  let userId = $state('demo_user');
+  let sessionId = $state(`session_${Date.now()}`);
   // Options
-  let useWebGPU = true;
-  let useWebAssembly = true;
-  let usePageRank = true;
-  let generateGlyphs = false;
-  let useRecommendations = true;
-  let useNeo4j = true;
+  let useWebGPU = $state(true);
+  let useWebAssembly = $state(true);
+  let usePageRank = $state(true);
+  let generateGlyphs = $state(false);
+  let useRecommendations = $state(true);
+  let useNeo4j = $state(true);
   let cacheResults = true;
 
   // Sample documents for testing

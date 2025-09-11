@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   AiAssistant.svelte
   - Production-ready, context7-compliant, SvelteKit 5, XState, Loki.js, and global store integration

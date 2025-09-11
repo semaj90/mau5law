@@ -600,10 +600,10 @@
               <h5 class="font-medium text-sm">Test Results ({validationResults.filter(r => r.success).length}/{validationResults.length} passed)</h5>
               <div class="max-h-32 overflow-y-auto space-y-1">
                 {#each validationResults as result}
+                  {@const SvelteComponent = getValidationStatusIcon(result)}
                   <div class="flex items-center justify-between p-2 bg-white rounded border text-xs">
                     <div class="flex items-center gap-2">
-                      <svelte:component 
-                        this={getValidationStatusIcon(result)} 
+                      <SvelteComponent 
                         class="w-3 h-3 {result.success ? 'text-green-600' : 'text-red-600'}"
                       />
                       <span class="font-medium">{result.testId.replace(/-/g, ' ')}</span>

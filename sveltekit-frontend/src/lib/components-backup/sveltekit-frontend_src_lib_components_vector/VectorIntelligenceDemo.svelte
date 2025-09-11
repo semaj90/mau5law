@@ -677,10 +677,11 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
           <CardContent class="shadcn-card-content">
             <div class="recommendation-container">
               {#each recommendations as rec}
+                {@const SvelteComponent = getRecommendationIcon(rec.type)}
                 <div class={getRecommendationColor(rec.type)}>
                   <div class="recommendation-header">
                     <div class="flex items-center gap-2">
-                      <svelte:component this={getRecommendationIcon(rec.type)} class="h-4 w-4" />
+                      <SvelteComponent class="h-4 w-4" />
                       <span class="recommendation-title">{rec.title}</span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -774,8 +775,9 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
               {#if semanticAnalysis.entities?.length > 0}
                 <div class="semantic-entity-container">
                   {#each semanticAnalysis.entities as entity}
+                    {@const SvelteComponent_1 = getEntityIcon(entity.type)}
                     <div class={getEntityColor(entity.type)}>
-                      <svelte:component this={getEntityIcon(entity.type)} class="h-3 w-3 mr-1" />
+                      <SvelteComponent_1 class="h-3 w-3 mr-1" />
                       {entity.text}
                       <Badge class="ml-1 text-xs">{Math.round(entity.confidence * 100)}%</Badge>
                     </div>

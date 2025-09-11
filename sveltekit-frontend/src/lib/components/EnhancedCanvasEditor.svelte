@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save with Loki.js -->
 <script lang="ts">
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';

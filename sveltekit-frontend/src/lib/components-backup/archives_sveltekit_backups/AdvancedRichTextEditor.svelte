@@ -46,20 +46,30 @@
   import { onDestroy, onMount } from "svelte";
   import { get, writable } from "svelte/store";
 
-  export let content: unknown = null;
-  export let placeholder = "Start writing your legal report...";
-  export let autosave = true;
-  export let reportId: string = "";
-  export let caseId: string = "";
+  interface Props {
+    content?: unknown;
+    placeholder?: string;
+    autosave?: boolean;
+    reportId?: string;
+    caseId?: string;
+  }
 
-  let editor: Editor | null = null;
-  let editorElement: HTMLElement;
-  let isFullscreen = false;
-  let currentZoom = 100;
-  let showGrid = false;
+  let {
+    content = null,
+    placeholder = "Start writing your legal report...",
+    autosave = true,
+    reportId = "",
+    caseId = ""
+  }: Props = $props();
+
+  let editor: Editor | null = $state(null);
+  let editorElement: HTMLElement = $state();
+  let isFullscreen = $state(false);
+  let currentZoom = $state(100);
+  let showGrid = $state(false);
   let showRuler = true;
-  let wordCount = 0;
-  let characterCount = 0;
+  let wordCount = $state(0);
+  let characterCount = $state(0);
 
   // Editor state stores
   const editorState = writable({

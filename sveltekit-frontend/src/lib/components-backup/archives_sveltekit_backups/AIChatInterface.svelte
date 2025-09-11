@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- AI Chat Interface Component - SSR-safe with proper hydration -->
 <script lang="ts">
   import { browser } from "$app/environment";

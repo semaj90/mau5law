@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
   // Updated to use melt-ui components

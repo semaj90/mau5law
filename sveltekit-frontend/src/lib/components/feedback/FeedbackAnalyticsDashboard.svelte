@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <!--
   Feedback Analytics Dashboard for Legal AI Platform
   Provides comprehensive insights into user feedback and system performance

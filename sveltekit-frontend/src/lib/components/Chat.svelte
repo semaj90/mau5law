@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { afterUpdate, onMount, tick } from "svelte";
   import { elasticOut, quintOut } from "svelte/easing";

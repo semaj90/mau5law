@@ -152,7 +152,7 @@
         `Welcome ${values.name}! Your account has been created.`
       );
   }}
-  let interactiveCardSelected = false;
+  let interactiveCardSelected = $state(false);
 </script>
 
 <svelte:head>
@@ -176,14 +176,16 @@
     <div class="space-y-4">
       <!-- Buttons Demo -->
       <Card variant="elevated" padding="lg">
-        <div slot="header">
-          <h2 class="space-y-4">
-            Button Variants
-          </h2>
-          <p class="space-y-4">
-            Different button styles and states with loading support
-          </p>
-        </div>
+        {#snippet header()}
+                <div >
+            <h2 class="space-y-4">
+              Button Variants
+            </h2>
+            <p class="space-y-4">
+              Different button styles and states with loading support
+            </p>
+          </div>
+              {/snippet}
 
         <div class="space-y-4">
           <div class="space-y-4">
@@ -256,14 +258,16 @@
 
       <!-- Notifications Demo -->
       <Card variant="elevated" padding="lg">
-        <div slot="header">
-          <h2 class="space-y-4">
-            Notification System
-          </h2>
-          <p class="space-y-4">
-            Toast notifications with actions and auto-dismiss
-          </p>
-        </div>
+        {#snippet header()}
+                <div >
+            <h2 class="space-y-4">
+              Notification System
+            </h2>
+            <p class="space-y-4">
+              Toast notifications with actions and auto-dismiss
+            </p>
+          </div>
+              {/snippet}
 
         <div class="space-y-4">
           <Button
@@ -303,14 +307,16 @@
 
       <!-- Modals Demo -->
       <Card variant="elevated" padding="lg">
-        <div slot="header">
-          <h2 class="space-y-4">
-            Modal System
-          </h2>
-          <p class="space-y-4">
-            Confirm dialogs, alerts, and prompts
-          </p>
-        </div>
+        {#snippet header()}
+                <div >
+            <h2 class="space-y-4">
+              Modal System
+            </h2>
+            <p class="space-y-4">
+              Confirm dialogs, alerts, and prompts
+            </p>
+          </div>
+              {/snippet}
 
         <div class="space-y-4">
           <button
@@ -345,14 +351,16 @@
 
       <!-- Interactive Cards Demo -->
       <Card variant="elevated" padding="lg">
-        <div slot="header">
-          <h2 class="space-y-4">
-            Interactive Cards
-          </h2>
-          <p class="space-y-4">
-            Cards with hover effects and selection states
-          </p>
-        </div>
+        {#snippet header()}
+                <div >
+            <h2 class="space-y-4">
+              Interactive Cards
+            </h2>
+            <p class="space-y-4">
+              Cards with hover effects and selection states
+            </p>
+          </div>
+              {/snippet}
 
         <div class="space-y-4">
           <Card
@@ -379,24 +387,28 @@
           </Card>
 
           <Card variant="filled" padding="md">
-            <div slot="header">
-              <h3 class="space-y-4">
-                Card with Slots
-              </h3>
-            </div>
+            {#snippet header()}
+                        <div >
+                <h3 class="space-y-4">
+                  Card with Slots
+                </h3>
+              </div>
+                      {/snippet}
 
             <p class="space-y-4">
               This card demonstrates the header and footer slots.
             </p>
 
-            <div slot="footer">
-              <div
-                class="space-y-4"
-              >
-                <span>Footer content</span>
-                <span>Created today</span>
+            {#snippet footer()}
+                        <div >
+                <div
+                  class="space-y-4"
+                >
+                  <span>Footer content</span>
+                  <span>Created today</span>
+                </div>
               </div>
-            </div>
+                      {/snippet}
           </Card>
 
           <Card variant="elevated" loading padding="md">
@@ -410,14 +422,16 @@
       <!-- Form Demo -->
       <div class="space-y-4">
         <Card variant="elevated" padding="lg">
-          <div slot="header">
-            <h2 class="space-y-4">
-              Advanced Form System
-            </h2>
-            <p class="space-y-4">
-              Forms with validation, error handling, and real-time feedback
-            </p>
-          </div>
+          {#snippet header()}
+                    <div >
+              <h2 class="space-y-4">
+                Advanced Form System
+              </h2>
+              <p class="space-y-4">
+                Forms with validation, error handling, and real-time feedback
+              </p>
+            </div>
+                  {/snippet}
 
           <Form
             options={demoFormOptions}
@@ -427,112 +441,114 @@
             resetText="Clear Form"
             class="space-y-4"
           >
-            <div
-              slot="default"
-              let:form
-              let:formApi
-              let:values
-              let:errors
-              let:isValid
-              let:isDirty
-            >
-              <div class="space-y-4">
-                <h3
-                  class="space-y-4"
-                >
-                  Account Information
-                </h3>
-              </div>
-
-              <Input
-                label="Full Name"
-                placeholder="Enter your full name"
-                required
-                data-icon="${1}"
-                value={values.name || ""}
-                error={errors.name}
-                oninput={(e) =>
-                  formApi.setField(
-                    "name",
-                    (e.target as HTMLInputElement)?.value
-                  )}
-                onblur={() => formApi.touchField("name")}
-              />
-
-              <Input
-                label="Email Address"
-                type="email"
-                placeholder="Enter your email"
-                required
-                data-icon="${1}"
-                value={values.email || ""}
-                error={errors.email}
-                success={values.email && !errors.email}
-                oninput={(e) =>
-                  formApi.setField(
-                    "email",
-                    (e.target as HTMLInputElement)?.value
-                  )}
-                onblur={() => formApi.touchField("email")}
-              />
-
-              <Input
-                label="Password"
-                type="password"
-                placeholder="Create a password"
-                required
-                data-icon="${1}"
-                value={values.password || ""}
-                error={errors.password}
-                hint="Must be at least 8 characters long"
-                oninput={(e) =>
-                  formApi.setField(
-                    "password",
-                    (e.target as HTMLInputElement)?.value
-                  )}
-                onblur={() => formApi.touchField("password")}
-              />
-
-              <Input
-                label="Confirm Password"
-                type="password"
-                placeholder="Confirm your password"
-                required
-                data-icon="${1}"
-                value={values.confirmPassword || ""}
-                error={errors.confirmPassword}
-                oninput={(e) =>
-                  formApi.setField(
-                    "confirmPassword",
-                    (e.target as HTMLInputElement)?.value
-                  )}
-                onblur={() => formApi.touchField("confirmPassword")}
-              />
-
-              <div class="space-y-4">
-                <label
-                  class="space-y-4"
-                >
-                  <input
-                    type="checkbox"
+            {#snippet default({ form, formApi, values, errors, isValid, isDirty })}
+                        <div
+                
+                
+                
+                
+                
+                
+                
+              >
+                <div class="space-y-4">
+                  <h3
                     class="space-y-4"
-                    checked={values.terms || false}
-                    onchange={(e) =>
-                      formApi.setField(
-                        "terms",
-                        (e.target as HTMLInputElement)?.checked
-                      )}
-                    onblur={() => formApi.touchField("terms")}
-                  />
-                  I agree to the terms and conditions *
-                </label>
-                {#if errors.terms}
-                  <p class="space-y-4">
-                    {errors.terms}
-                  </p>
-                {/if}
+                  >
+                    Account Information
+                  </h3>
+                </div>
+
+                <Input
+                  label="Full Name"
+                  placeholder="Enter your full name"
+                  required
+                  data-icon="${1}"
+                  value={values.name || ""}
+                  error={errors.name}
+                  oninput={(e) =>
+                    formApi.setField(
+                      "name",
+                      (e.target as HTMLInputElement)?.value
+                    )}
+                  onblur={() => formApi.touchField("name")}
+                />
+
+                <Input
+                  label="Email Address"
+                  type="email"
+                  placeholder="Enter your email"
+                  required
+                  data-icon="${1}"
+                  value={values.email || ""}
+                  error={errors.email}
+                  success={values.email && !errors.email}
+                  oninput={(e) =>
+                    formApi.setField(
+                      "email",
+                      (e.target as HTMLInputElement)?.value
+                    )}
+                  onblur={() => formApi.touchField("email")}
+                />
+
+                <Input
+                  label="Password"
+                  type="password"
+                  placeholder="Create a password"
+                  required
+                  data-icon="${1}"
+                  value={values.password || ""}
+                  error={errors.password}
+                  hint="Must be at least 8 characters long"
+                  oninput={(e) =>
+                    formApi.setField(
+                      "password",
+                      (e.target as HTMLInputElement)?.value
+                    )}
+                  onblur={() => formApi.touchField("password")}
+                />
+
+                <Input
+                  label="Confirm Password"
+                  type="password"
+                  placeholder="Confirm your password"
+                  required
+                  data-icon="${1}"
+                  value={values.confirmPassword || ""}
+                  error={errors.confirmPassword}
+                  oninput={(e) =>
+                    formApi.setField(
+                      "confirmPassword",
+                      (e.target as HTMLInputElement)?.value
+                    )}
+                  onblur={() => formApi.touchField("confirmPassword")}
+                />
+
+                <div class="space-y-4">
+                  <label
+                    class="space-y-4"
+                  >
+                    <input
+                      type="checkbox"
+                      class="space-y-4"
+                      checked={values.terms || false}
+                      onchange={(e) =>
+                        formApi.setField(
+                          "terms",
+                          (e.target as HTMLInputElement)?.checked
+                        )}
+                      onblur={() => formApi.touchField("terms")}
+                    />
+                    I agree to the terms and conditions *
+                  </label>
+                  {#if errors.terms}
+                    <p class="space-y-4">
+                      {errors.terms}
+                    </p>
+                  {/if}
+                </div>
               </div>
-            </div>
+                      {/snippet}
           </Form>
         </Card>
       </div>
@@ -540,11 +556,13 @@
 
     <!-- Component Features -->
     <Card variant="outlined" padding="lg" class="space-y-4">
-      <div slot="header">
-        <h2 class="space-y-4">
-          🚀 Component Features
-        </h2>
-      </div>
+      {#snippet header()}
+            <div >
+          <h2 class="space-y-4">
+            🚀 Component Features
+          </h2>
+        </div>
+          {/snippet}
 
       <div class="space-y-4">
         <div class="space-y-4">

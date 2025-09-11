@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!--
   pgvector Integration Testing Dashboard
   Best Practices Implementation for Vector Similarity Search

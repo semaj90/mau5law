@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 &lt;script&gt;
   import { onMount } from 'svelte';
   import './PS1StereoscopicEffects.stories.svelte';

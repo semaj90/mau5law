@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'class_' has already been declared -->
 <script lang="ts">
   interface Props {
     value: any

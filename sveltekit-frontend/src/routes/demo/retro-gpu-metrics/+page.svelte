@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression -->
 <!--
   Retro GPU Metrics Integration Demo
   Shows how GPU metrics batcher detects and tracks PS1 effects, parallax transforms,

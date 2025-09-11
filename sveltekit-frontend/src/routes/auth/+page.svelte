@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Unified Authentication Flow - Single Page App UX
   Combines login and register into seamless experience

@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  let report: any = null;
-  let loading = false;
-  let error = '';
-  let storedReports: any[] = [];
+  let report: any = $state(null);
+  let loading = $state(false);
+  let error = $state('');
+  let storedReports: any[] = $state([]);
   async function generateBestPractices() {
     loading = true;
     error = '';

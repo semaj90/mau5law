@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:drop) and new syntaxes for event handling is not allowed. Use only the ondrop syntax -->
 <!--
   N64 Detective UI - Gaming-Style Evidence Analysis Interface
   Integrates with Detective Analysis Engine, NES Memory Architecture,

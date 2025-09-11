@@ -2,9 +2,13 @@
   	import { onMount } from 'svelte';
   	import { avatarStore } from "../stores/avatarStore";
   	import Avatar from './Avatar.svelte';
-  	export let user: unknown = null;
-  	let dropdownOpen = false;
-  	let dropdownElement: HTMLElement;
+	interface Props {
+		user?: unknown;
+	}
+
+	let { user = null }: Props = $props();
+  	let dropdownOpen = $state(false);
+  	let dropdownElement: HTMLElement = $state();
   	onMount(() => {
   		// Close dropdown when clicking outside
   		function handleClickOutside(event: MouseEvent) {

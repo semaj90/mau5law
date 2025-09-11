@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { createBubbler, preventDefault } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import type { Evidence } from "$lib/data/types";
   import { createEventDispatcher } from "svelte";
 
@@ -7,8 +10,8 @@
     error: string;
   }>();
 
-  let dragActive = false;
-  let files: FileList | null = null;
+  let dragActive = $state(false);
+  let files: FileList | null = $state(null);
   let uploadProgress = 0;
 
   function handleDragEnter(e: DragEvent) {
@@ -62,11 +65,11 @@
   role="button"
   tabindex="0"
   aria-label="Evidence upload area. Press Enter or Space to choose files, or drag and drop."
-  on:dragenter={handleDragEnter}
-  on:dragleave={handleDragLeave}
-  on:dragover|preventDefault
-  on:drop={handleDrop}
-  on:keydown={(e) =>
+  ondragenter={handleDragEnter}
+  ondragleave={handleDragLeave}
+  ondragover={preventDefault(bubble('dragover'))}
+  ondrop={handleDrop}
+  onkeydown={(e) =>
     (e.key === "Enter" || e.key === " ") &&
     (e.preventDefault(),
     (
@@ -90,7 +93,7 @@
     <input
       type="file"
       multiple
-      on:change={(e) => {
+      onchange={(e) => {
         files = e.currentTarget.files;
         handleUpload();
       }}

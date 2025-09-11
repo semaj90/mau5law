@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   	import type {     Snippet     } from 'svelte';
   	import { cva, type VariantProps } from 'class-variance-authority';

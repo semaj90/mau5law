@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `export let` in runes mode — use `$props()` instead -->
 <!--
   GPU Processing Orchestrator - XState-powered document processing interface
   Manages concurrent GPU processing with real-time monitoring

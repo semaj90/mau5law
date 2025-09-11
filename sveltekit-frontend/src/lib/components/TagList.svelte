@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import { debounce } from "$lib/utils/debounce";
   import { Plus, Tag, X } from "lucide-svelte";

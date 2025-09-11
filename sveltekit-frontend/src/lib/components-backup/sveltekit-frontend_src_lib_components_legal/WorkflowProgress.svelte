@@ -148,6 +148,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
             {@const status = getStageStatus(stageItem.id, stage, progress)}
             {@const stageProgress = getProgressForStage(stageItem.id, stage, progress)}
             
+            {@const SvelteComponent = getStageIcon(status)}
             <div class="flex flex-col items-center">
               <!-- Stage Circle -->
               <div class={`
@@ -155,8 +156,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
                 ${getStageColor(status)}
                 ${status === 'current' ? 'animate-pulse' : ''}
               `}>
-                <svelte:component 
-                  this={getStageIcon(status)} 
+                <SvelteComponent 
                   class="w-5 h-5"
                 />
               </div>
@@ -190,6 +190,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
         {@const stageProgress = getProgressForStage(stageItem.id, stage, progress)}
         {@const nextStage = workflowStages[index + 1]}
         
+        {@const SvelteComponent_1 = getStageIcon(status)}
         <div class="relative flex items-start space-x-4">
           <!-- Vertical Connector (except for last item) -->
           {#if nextStage}
@@ -209,8 +210,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
             ${getStageColor(status)}
             ${status === 'current' ? 'animate-pulse' : ''}
           `}>
-            <svelte:component 
-              this={getStageIcon(status)} 
+            <SvelteComponent_1 
               class="w-5 h-5"
             />
           </div>

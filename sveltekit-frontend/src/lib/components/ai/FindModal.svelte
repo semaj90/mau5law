@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <script lang="ts">
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import { Search, Sparkles, FileText, Users, Calendar, Zap, Brain, Target } from 'lucide-svelte';

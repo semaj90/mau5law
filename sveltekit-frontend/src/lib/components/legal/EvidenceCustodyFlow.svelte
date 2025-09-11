@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
 Evidence Chain of Custody Flow Component
 Main UI component for managing the complete custody workflow with real-time collaboration

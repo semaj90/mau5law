@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `</Card.Content>` attempted to close an element that was not open -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import {

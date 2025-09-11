@@ -18,14 +18,25 @@
     change: { html: string; markdown: string; json: unknown };
   }>();
 
-  export let content = "";
-  export let placeholder = "Start writing your note...";
-  export let editable = true;
-  export let showToolbar = true;
-  export let autoSave = false;
-  export let autoSaveDelay = 2000;
+  interface Props {
+    content?: string;
+    placeholder?: string;
+    editable?: boolean;
+    showToolbar?: boolean;
+    autoSave?: boolean;
+    autoSaveDelay?: number;
+  }
 
-  let element: HTMLElement;
+  let {
+    content = "",
+    placeholder = "Start writing your note...",
+    editable = true,
+    showToolbar = true,
+    autoSave = false,
+    autoSaveDelay = 2000
+  }: Props = $props();
+
+  let element: HTMLElement = $state();
   let editor: Editor;
   let isReady = false;
   let autoSaveTimer: NodeJS.Timeout;

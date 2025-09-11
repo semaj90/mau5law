@@ -1,4 +1,4 @@
-<span class="uno-5qhtsr" />
+<span class="uno-5qhtsr"></span>
 
 <style>
   :global(.uno-5qhtsr) {

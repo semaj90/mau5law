@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
   const { content: any = null, placeholder = "Start writing your legal report...", autosave = true, reportId: string = "", caseId: string = "" } = $props();

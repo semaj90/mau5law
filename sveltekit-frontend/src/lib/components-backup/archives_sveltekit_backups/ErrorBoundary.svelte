@@ -18,13 +18,17 @@
   } from "lucide-svelte";
   import { onMount } from "svelte";
 
-  export let showInline = false; // Show as inline alert vs modal
-  export let autoHide = true; // Auto-hide non-critical errors
-  export let maxWidth = "max-w-lg"; // Maximum width class
+  interface Props {
+    showInline?: boolean;
+    autoHide?: boolean;
+    maxWidth?: string;
+  }
 
-  let currentError: UserFriendlyError | null = null;
-  let showDetails = false;
-  let retryInProgress = false;
+  let { showInline = false, autoHide = true, maxWidth = "max-w-lg" }: Props = $props();
+
+  let currentError: UserFriendlyError | null = $state(null);
+  let showDetails = $state(false);
+  let retryInProgress = $state(false);
 
   onMount(() => {
     const unsubscribe = errorHandler.subscribe((error) => {

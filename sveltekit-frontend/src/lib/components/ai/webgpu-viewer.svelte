@@ -415,7 +415,7 @@ https://svelte.dev/e/js_parse_error -->
     onmouseup={handleMouseUp}
     onmouseleave={handleMouseUp}
     onwheel={handleWheel}
-  />
+></canvas>
 
   {#if labels.length > 0}
     <div class="labels">

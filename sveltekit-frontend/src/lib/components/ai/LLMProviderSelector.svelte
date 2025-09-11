@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- LLM Provider Selector with Melt UI and Real-time Status -->
 <script lang="ts">
   import type { 

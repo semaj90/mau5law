@@ -1,5 +1,10 @@
-<script lang="ts">
-  export let number: number;
+<script lang="ts">props.
+  interface Props {
+    number: number;
+    [key: string]: any
+  }
+
+  let { ...props }: Props = $props();
 </script>
 
-<div class="{$$props.class}">{number}</div>
+<div class="{props.class}">{props.number}</div>

@@ -655,7 +655,7 @@
       placeholder={batchMode ? "Type message (Shift+Enter to add to batch)..." : "Type your legal question..."}
       class="message-input"
       rows="3"
-    />
+></textarea>
 
     <div class="input-actions">
       {#if batchMode}

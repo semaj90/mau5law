@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token > -->
 <!-- Document Upload Simulator with AI Processing -->
 <script lang="ts">
   import { onMount } from 'svelte';

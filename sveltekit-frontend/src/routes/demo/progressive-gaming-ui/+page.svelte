@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'Button' has already been declared -->
 <!--
   Progressive Gaming UI Demo
   Showcases 8-bit → 16-bit → N64 evolution with infrastructure fixes

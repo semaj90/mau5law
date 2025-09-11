@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected a `#` character immediately following the opening bracket -->
 <script lang="ts">
   interface Props {
     evidence: ExtendedEvidence;

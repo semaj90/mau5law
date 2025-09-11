@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Ollama Agent Shell - Real-time Terminal Modal with Streaming Support -->
 <script lang="ts">
   import { agentShellMachine } from "$lib/machines/agentShellMachine";

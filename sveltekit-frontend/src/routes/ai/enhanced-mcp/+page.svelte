@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
 	/**
 	 * Enhanced MCP Integration Demo Page

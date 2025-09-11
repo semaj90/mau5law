@@ -10,23 +10,23 @@
   }>();
 
   // Automation configuration
-  let selectedAutomationType: string = '';
-  let selectedSource: string = '';
-  let enableAutoProcessing: boolean = false;
-  let enableGPUAcceleration: boolean = true;
-  let batchSize: number = 50;
-  let confidenceThreshold: number = 0.85;
+  let selectedAutomationType: string = $state('');
+  let selectedSource: string = $state('');
+  let enableAutoProcessing: boolean = $state(false);
+  let enableGPUAcceleration: boolean = $state(true);
+  let batchSize: number = $state(50);
+  let confidenceThreshold: number = $state(0.85);
   // State management
-  let loadingAutomationTypes = true;
-  let processing = false;
-  let automationTypeOptions: { value: string; label: string }[] = [];
-  let processingStats = {
+  let loadingAutomationTypes = $state(true);
+  let processing = $state(false);
+  let automationTypeOptions: { value: string; label: string }[] = $state([]);
+  let processingStats = $state({
     documentsProcessed: 0,
     totalDocuments: 0,
     currentBatch: 0,
     totalBatches: 0,
     processingTime: 0
-  };
+  });
 
   // Legal automation types with AI capabilities
   async function fetchAutomationTypes() {
@@ -65,7 +65,7 @@
     { value: 'compliance_check', label: 'Compliance Validation', checked: false }
   ];
 
-  let selectedProcessingOptions = new Set(['entity_extraction', 'document_classification', 'similarity_analysis', 'key_phrase_extraction']);
+  let selectedProcessingOptions = $state(new Set(['entity_extraction', 'document_classification', 'similarity_analysis', 'key_phrase_extraction']));
 
   // Handle automation configuration submission
   const handleSubmit = async () => {

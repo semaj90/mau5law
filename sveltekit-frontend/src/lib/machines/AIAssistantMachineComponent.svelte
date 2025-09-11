@@ -279,8 +279,8 @@
               placeholder="Enter your legal AI query... (AI will suggest and learn)"
               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={isProcessing}
-              on:keydown={(e) => e.key === 'Enter' && submitQuery()}
-              on:input={() => showSuggestions = queryInput.length >= 2}
+              onkeydown={(e) => e.key === 'Enter' && submitQuery()}
+              oninput={() => showSuggestions = queryInput.length >= 2}
             />
             
             <!-- AI Suggestions Dropdown -->
@@ -302,7 +302,7 @@
             {/if}
           </div>
           <button
-            on:click={submitQuery}
+            onclick={submitQuery}
             disabled={isProcessing || !queryInput.trim()}
             class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
@@ -328,13 +328,13 @@
       
       <div class="flex gap-2">
         <button
-          on:onclick={toggleStreaming}
+          ononclick={toggleStreaming}
           class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
         >
           {isStreaming ? 'Disable' : 'Enable'} Streaming
         </button>
         <button
-          on:onclick={clearConversation}
+          ononclick={clearConversation}
           class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
         >
           Clear History

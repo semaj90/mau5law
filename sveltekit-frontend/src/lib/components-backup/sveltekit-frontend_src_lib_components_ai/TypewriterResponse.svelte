@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'speed' has already been declared -->
 <script lang="ts">
   interface Props {
     text: string

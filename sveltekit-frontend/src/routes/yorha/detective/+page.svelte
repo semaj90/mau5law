@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Detective Command Center -->
 <script lang="ts">
   import { goto } from '$app/navigation';

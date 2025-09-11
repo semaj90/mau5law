@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration -->
 <!-- LazyAIAnalysis.svelte - Lazy loading wrapper for AI analysis components -->
 <script lang="ts">
   import LazyLoader from '../LazyLoader.svelte';

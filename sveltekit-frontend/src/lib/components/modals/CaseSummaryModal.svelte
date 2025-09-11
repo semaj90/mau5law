@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
   import {

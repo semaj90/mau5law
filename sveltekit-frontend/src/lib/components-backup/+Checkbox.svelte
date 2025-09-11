@@ -1,7 +1,11 @@
 <script lang="ts">
-  export let checked: boolean = false;
-  export let label: string = '';
-  export let id: string = '';
+  interface Props {
+    checked?: boolean;
+    label?: string;
+    id?: string;
+  }
+
+  let { checked = $bindable(false), label = '', id = $bindable('') }: Props = $props();
 
   // Generate a unique ID if not provided
   if (!id) {

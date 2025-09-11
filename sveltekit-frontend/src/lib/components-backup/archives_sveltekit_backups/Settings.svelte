@@ -1,6 +1,7 @@
 <script lang="ts">
-  export let isOpen: boolean;
-  export let settings: {
+  interface Props {
+    isOpen: boolean;
+    settings: {
     theme: string;
     language: string;
     ttsEngine: string;
@@ -13,6 +14,9 @@
     fontFamily: string;
     fontSize: string;
   };
+  }
+
+  let { isOpen, settings = $bindable() }: Props = $props();
 </script>
 
 {#if isOpen}

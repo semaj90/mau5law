@@ -1,13 +1,18 @@
 <script lang="ts">
   import { getContext, onDestroy, onMount } from 'svelte';
   import type { Writable } from 'svelte/store';
-  export let className: string = '';
+  interface Props {
+    className?: string;
+    children?: import('svelte').Snippet;
+  }
+
+  let { className = '', children }: Props = $props();
   const { isOpen, position, close } = getContext<{
     isOpen: Writable<boolean>;
     position: Writable<{ x: number; y: number }>;
     close: () => void;
   }>('context-menu');
-  let menuElement: HTMLDivElement;
+  let menuElement: HTMLDivElement = $state();
   function handleClickOutside(event: MouseEvent) {
     if (menuElement && !menuElement.contains(event.target as Node)) {
       close();
@@ -36,7 +41,7 @@
     role="menu"
     tabindex={-1}
   >
-    <slot />
+    {@render children?.()}
   </div>
 {/if}
 

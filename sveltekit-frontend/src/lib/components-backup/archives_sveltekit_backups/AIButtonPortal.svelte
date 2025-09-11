@@ -1,12 +1,16 @@
 <script lang="ts">
   import AIButton from "$lib/components/ai/AIButton.svelte";
-  export let position:
+  interface Props {
+    position?: 
     | "bottom-right"
     | "bottom-left"
     | "top-right"
-    | "top-left" = "bottom-right";
-  export let show = true;
-  export let style: string = "";
+    | "top-left";
+    show?: boolean;
+    style?: string;
+  }
+
+  let { position = "bottom-right", show = true, style = "" }: Props = $props();
 </script>
 
 {#if show}

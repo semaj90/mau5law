@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
 Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 /// <reference types="vite/client" />
 <!-- @migration-task Error while migrating Svelte code: Identifier 'caseId' has already been declared
 https://svelte.dev/e/js_parse_error -->

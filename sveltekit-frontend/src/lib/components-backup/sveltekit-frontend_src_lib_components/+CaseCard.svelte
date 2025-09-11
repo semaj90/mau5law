@@ -12,8 +12,12 @@
         tags?: string[];
     }
 
-    export let caseItem: CaseItem = { id: "", title: "" };
-    export let className = "";
+    interface Props {
+        caseItem?: CaseItem;
+        className?: string;
+    }
+
+    let { caseItem = { id: "", title: "" }, className = "" }: Props = $props();
 
     function handleEdit() {
         dispatch("edit", caseItem);

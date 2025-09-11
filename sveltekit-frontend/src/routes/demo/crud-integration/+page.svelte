@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: 'case' is a reserved word in JavaScript and cannot be used here -->
 <!--
   CRUD Integration Demo - PostgreSQL + Drizzle ORM + MCP + XState
   Demonstrates full stack CRUD operations with real database saves

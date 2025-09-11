@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `</section>` attempted to close an element that was not open -->
 <!-- Advanced YoRHa Testing Suite -->
 <script lang="ts">
   import { onMount } from 'svelte';

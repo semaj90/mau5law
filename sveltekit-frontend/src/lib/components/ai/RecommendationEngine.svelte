@@ -296,7 +296,7 @@
       <div class="context-controls">
         <div class="control-group">
           <label for="context-type">Context Type:</label>
-          <select id="context-type" bind:value={contextType} on:change={loadContextData} class="control-select">
+          <select id="context-type" bind:value={contextType} onchange={loadContextData} class="control-select">
             <option value="case">Case</option>
             <option value="evidence">Evidence</option>
             <option value="investigation">Investigation</option>
@@ -311,7 +311,7 @@
             type="text"
             placeholder="Enter case/evidence ID..."
             bind:value={contextId}
-            on:blur={loadContextData}
+            onblur={loadContextData}
             class="control-input"
           />
         </div>

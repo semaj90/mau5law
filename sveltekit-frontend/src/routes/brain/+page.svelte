@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';

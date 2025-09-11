@@ -5,9 +5,9 @@
 
   const dispatch = createEventDispatcher();
 
-  let selectedAutomationType: string = '';
-  let selectedSource: string = '';
-  let enableAutoProcessing: boolean = false;
+  let selectedAutomationType: string = $state('');
+  let selectedSource: string = $state('');
+  let enableAutoProcessing: boolean = $state(false);
 
   const handleSubmit = async () => {
     // In a real application, you would send this data to your backend API
@@ -33,7 +33,7 @@
 
   // Fetch automation type options from API (simulated async fetch)
   import { onMount } from 'svelte';
-  let automationTypeOptions: { value: string; label: string }[] = [];
+  let automationTypeOptions: { value: string; label: string }[] = $state([]);
   let loadingAutomationTypes = true;
 
   async function fetchAutomationTypes() {

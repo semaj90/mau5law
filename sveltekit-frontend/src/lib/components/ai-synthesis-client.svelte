@@ -294,7 +294,7 @@
       placeholder="Enter your legal query..."
       disabled={$processing}
       rows="4"
-    />
+></textarea>
     
     <button 
       onclick={submitQuery}

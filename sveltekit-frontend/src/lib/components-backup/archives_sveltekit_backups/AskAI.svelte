@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
   import { browser } from "$app/environment";

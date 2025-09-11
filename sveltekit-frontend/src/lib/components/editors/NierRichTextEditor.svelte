@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- NieR-themed Rich Text Editor for Legal Investigation Notes -->
 <script lang="ts">
   	import { onMount, onDestroy } from 'svelte';

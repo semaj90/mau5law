@@ -10,14 +10,14 @@
   } from '$lib/components/ui/enhanced-bits';;
 
   // Dialog state
-  let isDialogOpen: boolean = false;
+  let isDialogOpen: boolean = $state(false);
 
   // Bits UI components (imported from your existing library)
-  let selectedValue: string = 'option1';
-  let inputValue: string = '';
-  let isLoading: boolean = false;
-  let progress: number = 0;
-  let notifications: Array<{ id: number; message: string; type: 'success' | 'warning' | 'error' }> = [];
+  let selectedValue: string = $state('option1');
+  let inputValue: string = $state('');
+  let isLoading: boolean = $state(false);
+  let progress: number = $state(0);
+  let notifications: Array<{ id: number; message: string; type: 'success' | 'warning' | 'error' }> = $state([]);
 
   function addNotification(type: 'success' | 'warning' | 'error', message: string) {
     const id = Date.now();

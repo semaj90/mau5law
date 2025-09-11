@@ -25,11 +25,11 @@
   });
 
   // Component state
-  let currentInput = '';
-  let isProcessing = false;
-  let currentSessionId = '';
-  let selectedEngine = 'auto'; // auto, webgpu, ollama, vllm, fastembed
-  let chatContainer;
+  let currentInput = $state('');
+  let isProcessing = $state(false);
+  let currentSessionId = $state('');
+  let selectedEngine = $state('auto'); // auto, webgpu, ollama, vllm, fastembed
+  let chatContainer = $state();
 
   // Engine options
   const engineOptions = [
@@ -418,7 +418,7 @@
               <div class="flex gap-2">
                 <textarea
                   bind:value={currentInput}
-                  on:keypress={handleKeyPress}
+                  onkeypress={handleKeyPress}
                   placeholder="Ask about legal analysis, contracts, or test the AI engines..."
                   class="flex-1 p-3 border rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows="2"

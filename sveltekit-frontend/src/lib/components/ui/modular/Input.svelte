@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Input Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
   import { cva, type VariantProps } from 'class-variance-authority';

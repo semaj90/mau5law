@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Phase 14 Complete Demo System - Performance Monitoring
 

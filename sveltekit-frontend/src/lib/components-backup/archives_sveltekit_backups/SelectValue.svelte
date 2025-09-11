@@ -3,7 +3,13 @@
   import { writable } from "svelte/store";
   import type { SelectContext } from "./types";
 
-  export let class_: string = "";
+  interface Props {
+    class_?: string;
+    children?: import('svelte').Snippet<[any]>;
+    placeholder?: import('svelte').Snippet;
+  }
+
+  let { class_ = "", children, placeholder }: Props = $props();
 
   const context =
     getContext<SelectContext>("select") ||
@@ -18,11 +24,11 @@
 
 <span class="mx-auto px-4 max-w-7xl">
   {#if $selected}
-    <slot value={$selected}>
+    {#if children}{@render children({ value: $selected, })}{:else}
       {$selected}
-    </slot>
+    {/if}
   {:else}
-    <slot name="placeholder">Select an option...</slot>
+    {#if placeholder}{@render placeholder()}{:else}Select an option...{/if}
   {/if}
 </span>
 

@@ -3,7 +3,7 @@
   import Typewriter from "$lib/components/Typewriter.svelte";
   import UploadArea from "$lib/components/UploadArea.svelte";
   import { browser } from '$app/environment';
-  let recentCases: any[] = [];
+  let recentCases: any[] = $state([]);
   let heroText = "Advanced Legal Case Management";
   onMount(async () => {
     // Load recent cases

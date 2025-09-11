@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
 <script>
   const { title = "Detective Interface", subtitle = "" } = $props();
 

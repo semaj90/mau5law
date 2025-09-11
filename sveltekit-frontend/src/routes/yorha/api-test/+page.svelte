@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Advanced API Testing Interface -->
 <script lang="ts">
   // Svelte runes are provided globally via src/types/svelte-helpers.d.ts

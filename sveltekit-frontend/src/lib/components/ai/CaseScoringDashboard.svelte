@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:click) and new syntaxes for event handling is not allowed. Use only the onclick syntax -->
 <!--
   Case Scoring Dashboard
   Integrates with /api/ai/case-scoring API using Enhanced-Bits UI components

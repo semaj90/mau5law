@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- YoRHa Dialog Component - Lightweight Terminal Dialog -->
 <script lang="ts">
   import { createEventDispatcher } from "svelte";

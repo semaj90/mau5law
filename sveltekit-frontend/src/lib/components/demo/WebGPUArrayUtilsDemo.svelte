@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!--
   WebGPU Array Utils Demo Component
   Demonstrates Float32Array vs ArrayBuffer handling and quantization

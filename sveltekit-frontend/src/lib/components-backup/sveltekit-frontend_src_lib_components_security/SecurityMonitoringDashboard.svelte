@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Security Monitoring Dashboard
   Displays security events, system health, and security metrics

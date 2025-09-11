@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Case Manager with Production Features -->
 <script lang="ts">
   import { onMount, tick } from 'svelte';

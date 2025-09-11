@@ -1,8 +1,13 @@
 <script lang="ts">
   import 'uno.css'
   	import { fade, fly } from 'svelte/transition'
-  	let showLogo = false
-  	let red = false
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
+  	let showLogo = $state(false)
+  	let red = $state(false)
   	function toggleLogo() {
   		showLogo = !showLogo
   	}
@@ -10,7 +15,7 @@
   		red = !red
   	}
   	// TODO: Convert to $derived: button = showLogo ? 'Hide logo' : 'Show logo'
-  	$: span = red ? 'Normal' : 'Red'
+  	let span = $derived(red ? 'Normal' : 'Red')
 </script>
 
 <main class="text-center p-1em my-0 mx-auto">
@@ -41,7 +46,7 @@
 
 	<div class="absolute mt-20px bottom-0">absolute</div>
 
-	<slot />
+	{@render children?.()}
 
 </main>
 

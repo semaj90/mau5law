@@ -1040,7 +1040,7 @@
           onclick={() => setTool(tool.id)}
           title={tool.label}
         >
-          <svelte:component this={tool.icon} size="18" />
+          <tool.icon size="18" />
         </button>
       {/each}
     </div>

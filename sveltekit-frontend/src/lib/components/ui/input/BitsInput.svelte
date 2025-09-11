@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modern Input Component for Legal AI App -->
 <script lang="ts">
   import { cn } from '$lib/utils';

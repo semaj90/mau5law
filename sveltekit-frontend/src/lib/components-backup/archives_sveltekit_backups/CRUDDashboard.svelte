@@ -15,43 +15,43 @@
   import { onMount } from "svelte";
 
   // Data stores for all entities
-  let cases: unknown[] = [];
-  let evidence: unknown[] = [];
-  let reports: unknown[] = [];
+  let cases: unknown[] = $state([]);
+  let evidence: unknown[] = $state([]);
+  let reports: unknown[] = $state([]);
   let criminals: unknown[] = [];
-  let activities: unknown[] = [];
+  let activities: unknown[] = $state([]);
   let users_list: unknown[] = [];
 
   // Loading states
-  let loading = {
+  let loading = $state({
     cases: false,
     evidence: false,
     reports: false,
     criminals: false,
     activities: false,
     users: false,
-  };
+  });
 
   // Statistics
-  let stats = {
+  let stats = $state({
     totalCases: 0,
     activeCases: 0,
     totalEvidence: 0,
     totalReports: 0,
     urgentActivities: 0,
     recentActivity: 0,
-  };
+  });
 
   // Search and filter states
-  let searchTerms = {
+  let searchTerms = $state({
     cases: "",
     evidence: "",
     reports: "",
     criminals: "",
     activities: "",
-  };
+  });
 
-  let refreshing = false;
+  let refreshing = $state(false);
 
   // Fetch all data
   async function fetchAllData() {

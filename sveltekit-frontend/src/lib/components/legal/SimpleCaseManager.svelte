@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- 
   Simplified Legal Case Manager Component
   Production-ready CRUD operations for case management

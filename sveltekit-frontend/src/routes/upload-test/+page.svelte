@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference types="vite/client"></reference>
 <!-- Test page for Simple File Upload with RAG integration -->
 <script lang="ts">
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';

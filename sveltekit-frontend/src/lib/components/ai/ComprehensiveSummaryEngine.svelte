@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Comprehensive AI Summary Engine - End-to-End Integration Component -->
 <!-- Features: Local LLM + Enhanced RAG + Loki.js + Fuse.js + XState + Service Workers -->
 

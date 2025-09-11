@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level -->
 <script lang="ts">
   interface Props {
     height?: any;

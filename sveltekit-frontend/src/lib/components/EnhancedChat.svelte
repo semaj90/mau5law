@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: can't migrate `let messageInput = '';` to `$state` because there's a variable named state.
      Rename the variable and try again or migrate by hand. -->
 <!-- Enhanced Chat Component with bits-ui, melt-ui, shadcn-svelte integration -->

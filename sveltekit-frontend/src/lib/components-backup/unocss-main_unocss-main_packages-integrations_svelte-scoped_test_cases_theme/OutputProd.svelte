@@ -1,4 +1,4 @@
-<div class="usp-xjcfo6" />
+<div class="usp-xjcfo6"></div>
 
 <style>
   :global(.usp-xjcfo6) {

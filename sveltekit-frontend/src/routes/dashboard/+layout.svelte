@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression -->
 <!--
   Enhanced Dashboard Layout - Modern SvelteKit 2 + Drizzle ORM + pgvector
   Features: Responsive grid, real-time data, vector search integration

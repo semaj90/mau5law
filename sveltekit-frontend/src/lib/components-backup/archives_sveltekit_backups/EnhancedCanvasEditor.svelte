@@ -34,13 +34,23 @@
   import { onDestroy, onMount } from "svelte";
   import { get, writable } from "svelte/store";
 
-  export let caseId: string;
-  export let canvasId: string = "";
-  export let width = 1200;
-  export let height = 800;
-  export let readOnly = false;
+  interface Props {
+    caseId: string;
+    canvasId?: string;
+    width?: number;
+    height?: number;
+    readOnly?: boolean;
+  }
 
-  let canvasElement: HTMLCanvasElement;
+  let {
+    caseId,
+    canvasId = "",
+    width = 1200,
+    height = 800,
+    readOnly = false
+  }: Props = $props();
+
+  let canvasElement: HTMLCanvasElement = $state();
   let canvas: fabric.Canvas | null = null;
   let lokiDb: Loki | null = null;
   let canvasCollection: Collection<any> | null = null;
@@ -90,8 +100,8 @@
   ];
 
   // Evidence items from store
-  let evidenceItems: unknown[] = [];
-  let searchResults: unknown[] = [];
+  let evidenceItems: unknown[] = $state([]);
+  let searchResults: unknown[] = $state([]);
 
   onMount(() => {
     // Initialize components
@@ -1091,7 +1101,7 @@
           onclick={() => setTool(tool.id)}
           title={tool.label}
         >
-          <svelte:component this={tool.icon} size="18" />
+          <tool.icon size="18" />
         </button>
       {/each}
     </div>

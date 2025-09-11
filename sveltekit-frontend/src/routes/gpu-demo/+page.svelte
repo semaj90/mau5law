@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- GPU Integration Demo for Legal AI Platform -->
 <script lang="ts">
   	import { onMount } from 'svelte';

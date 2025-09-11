@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open -->
 <script lang="ts">
   import { onMount } from 'svelte';
   // $state and $derived are available in runes mode via types, not runtime imports

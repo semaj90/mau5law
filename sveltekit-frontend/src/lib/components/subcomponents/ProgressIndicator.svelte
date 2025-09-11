@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Progress Indicator Component -->
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';

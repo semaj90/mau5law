@@ -1,9 +1,15 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import RoutesList from '../RoutesList.svelte';
   import type { RoutePageData } from './+page.server';
   import { CheckCircle, AlertTriangle, Clock, Target } from 'lucide-svelte';
 
-  export let data: RoutePageData;
+  interface Props {
+    data: RoutePageData;
+  }
+
+  let { data }: Props = $props();
   const inv = data.routeInventory;
 
   // Phase 1-15 Implementation Status
@@ -158,10 +164,12 @@
     }
   ];
 
-  let selectedPhase: number | null = null;
-  let showOnlyIncomplete = false;
-  let filteredPhases: Phase[] = phaseData;
-  $: filteredPhases = showOnlyIncomplete ? phaseData.filter(p => p.status !== 'complete') : phaseData;
+  let selectedPhase: number | null = $state(null);
+  let showOnlyIncomplete = $state(false);
+  let filteredPhases: Phase[] = $state(phaseData);
+  run(() => {
+    filteredPhases = showOnlyIncomplete ? phaseData.filter(p => p.status !== 'complete') : phaseData;
+  });
 
   function getStatusColor(status: PhaseStatus): string {
     switch (status) {
@@ -189,8 +197,8 @@
   }
 
   interface OverallStats { totalPhases: number; completedPhases: number; inProgressPhases: number; avgProgress: number; completionRate: number }
-  let overallStats: OverallStats;
-  $: {
+  let overallStats: OverallStats = $state();
+  run(() => {
     const totalPhases = phaseData.length;
     const completedPhases = phaseData.filter(p => p.status === 'complete').length;
     const inProgressPhases = phaseData.filter(p => p.status === 'in-progress').length;
@@ -202,7 +210,7 @@
       avgProgress: Math.round(avgProgress),
       completionRate: Math.round((completedPhases / totalPhases) * 100)
     };
-  }
+  });
 </script>
 
 <svelte:head>

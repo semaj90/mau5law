@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax -->
 <script lang="ts">
   import { browser } from '$app/environment';
   import { autoTaggingMachine } from '$lib/stores/autoTaggingMachine';

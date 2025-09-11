@@ -3,33 +3,43 @@
   import type { CitationPoint, Report, ReportSection } from "$lib/data/types";
   import { onDestroy, onMount } from "svelte";
 
-  export let report: Report | null = null;
-  export let caseId: string;
-  export let onSave: (report: Report) => Promise<void> = async () => {};
-  export let autoSaveEnabled = true;
-  export let readOnly = false;
+  interface Props {
+    report?: Report | null;
+    caseId: string;
+    onSave?: (report: Report) => Promise<void>;
+    autoSaveEnabled?: boolean;
+    readOnly?: boolean;
+  }
 
-  let editorElement: HTMLDivElement;
-  let citationSidebar: HTMLDivElement;
-  let isDirty = false;
-  let isLoading = false;
+  let {
+    report = $bindable(null),
+    caseId,
+    onSave = async () => {},
+    autoSaveEnabled = true,
+    readOnly = false
+  }: Props = $props();
+
+  let editorElement: HTMLDivElement = $state();
+  let citationSidebar: HTMLDivElement = $state();
+  let isDirty = $state(false);
+  let isLoading = $state(false);
   let autoSaveTimer: NodeJS.Timeout | null = null;
-  let lastSaved: Date | null = null;
-  let wordCount = 0;
-  let characterCount = 0;
-  let estimatedReadTime = 0;
+  let lastSaved: Date | null = $state(null);
+  let wordCount = $state(0);
+  let characterCount = $state(0);
+  let estimatedReadTime = $state(0);
 
   // Report state
-  let title = report?.title || "Untitled Report";
+  let title = $state(report?.title || "Untitled Report");
   let content = report?.content || "";
   let sections: ReportSection[] = [];
-  let selectedCitations: CitationPoint[] = [];
-  let availableCitations: CitationPoint[] = [];
+  let selectedCitations: CitationPoint[] = $state([]);
+  let availableCitations: CitationPoint[] = $state([]);
 
   // AI suggestions state
-  let aiSuggestions: string[] = [];
-  let showAiPanel = false;
-  let isGeneratingAi = false;
+  let aiSuggestions: string[] = $state([]);
+  let showAiPanel = $state(false);
+  let isGeneratingAi = $state(false);
 
   // Selection and cursor state
   let currentSelection: Range | null = null;

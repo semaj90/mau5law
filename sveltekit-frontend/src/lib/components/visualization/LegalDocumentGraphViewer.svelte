@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <!--
   Legal Document Graph Viewer - WebGPU Visualization Component
   

@@ -4,20 +4,24 @@
   import { createToaster, melt } from '@melt-ui/svelte';
   import { flip } from 'svelte/animate';
   import { fly } from 'svelte/transition';
-  export let caseTypes = [
+  interface Props {
+    caseTypes?: any;
+  }
+
+  let { caseTypes = [
     { value: 'criminal', label: 'Criminal Cases' },
     { value: 'civil', label: 'Civil Cases' },
     { value: 'family', label: 'Family Law' },
     { value: 'corporate', label: 'Corporate Law' }
-  ];
+  ] }: Props = $props();
   interface ToastData {
     title?: string;
     description?: string;
     color: string;
   }
 
-  let dialogOpen = false;
-  let alertOpen = false;
+  let dialogOpen = $state(false);
+  let alertOpen = $state(false);
   // Melt-UI Toast/Notification setup
   const {
     elements: { content, title, description, close },

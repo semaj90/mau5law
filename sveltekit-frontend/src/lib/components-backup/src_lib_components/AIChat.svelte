@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:keypress) and new syntaxes for event handling is not allowed. Use only the onkeypress syntax -->
 <script lang="ts">
   // @ts-nocheck
   import { onMount } from "svelte";

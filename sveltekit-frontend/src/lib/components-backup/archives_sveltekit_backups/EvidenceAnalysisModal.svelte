@@ -11,8 +11,9 @@
   // Icons
   import { FileText, Brain, Tag, Scale, Zap, Download, Upload, Sparkles } from 'lucide-svelte';
 
-  export let open: boolean = false;
-  export let evidence: {
+  interface Props {
+    open?: boolean;
+    evidence?: {
     id: string;
     content: string;
     type: string;
@@ -32,12 +33,16 @@
       content: string;
       similarity: number;
     }>;
-  } | null = null;
+  } | null;
+    trigger?: import('svelte').Snippet;
+  }
+
+  let { open = $bindable(false), evidence = $bindable(null), trigger }: Props = $props();
 
   const dispatch = createEventDispatcher();
 
-  let isAnalyzing = false;
-  let newTags: string = '';
+  let isAnalyzing = $state(false);
+  let newTags: string = $state('');
   let analysisMode: 'quick' | 'detailed' | 'legal' = 'detailed';
 
   async function analyzeEvidence() {
@@ -115,9 +120,11 @@
   description="AI-powered legal evidence analysis and tagging"
   size="xl"
 >
-  <svelte:fragment slot="trigger">
-    <slot name="trigger" />
-  </svelte:fragment>
+  {#snippet trigger()}
+  
+      {@render trigger?.()}
+    
+  {/snippet}
 
   {#if evidence}
     <div class="mx-auto px-4 max-w-7xl">
@@ -304,13 +311,15 @@
     </div>
   {/if}
 
-  <svelte:fragment slot="footer" let:close>
-    <Button variant="secondary" onclick={() => close()}>
-      Close
-    </Button>
-    <Button variant="primary" onclick={() => dispatch('saveAnalysis', evidence)}>
-      Save Analysis
-    </Button>
-  </svelte:fragment>
+  {#snippet footer({ close })}
+  
+      <Button variant="secondary" onclick={() => close()}>
+        Close
+      </Button>
+      <Button variant="primary" onclick={() => dispatch('saveAnalysis', evidence)}>
+        Save Analysis
+      </Button>
+    
+  {/snippet}
 </Dialog>
 

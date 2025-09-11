@@ -9,8 +9,8 @@
   import { browser } from '$app/environment';
   import WasmGpuDemo from '$lib/components/demo/WasmGpuDemo.svelte';
   import { WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
-  let webGpuSupported = false;
-  let supportCheckComplete = false;
+  let webGpuSupported = $state(false);
+  let supportCheckComplete = $state(false);
   onMount(async () => {
     if (browser) {
       // Check WebGPU support

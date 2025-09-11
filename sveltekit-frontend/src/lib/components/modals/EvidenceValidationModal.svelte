@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'aiEvent' has already been declared
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">

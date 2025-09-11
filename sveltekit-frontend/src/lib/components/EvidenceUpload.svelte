@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   const { caseId: string, onUploadComplete: ((artifactUrl: string) = > void) | undefined = undefined, onError: ((error: string) = > void) | undefined = undefined, allowedTypes: string[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize: number = 50 * 1024 * 1024 } = $props();
 

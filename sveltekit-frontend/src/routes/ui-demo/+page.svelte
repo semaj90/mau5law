@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   import HeadlessDemo from "$lib/components/HeadlessDemo.svelte";
   // $state is provided globally via src/types/svelte-helpers.d.ts

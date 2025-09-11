@@ -1,4 +1,4 @@
-<div class="mb-1 shadow" />
+<div class="mb-1 shadow"></div>
 
 <style uno-preflights>
   div {

@@ -8,7 +8,7 @@
     status?: string;
     url?: string;
   }
-  let uploadedFiles: UploadedFile[] = [];
+  let uploadedFiles: UploadedFile[] = $state([]);
 
   function handleFilesAdded(event: CustomEvent<{ files: File[] }>) {
     console.log("Files added:", event.detail.files);

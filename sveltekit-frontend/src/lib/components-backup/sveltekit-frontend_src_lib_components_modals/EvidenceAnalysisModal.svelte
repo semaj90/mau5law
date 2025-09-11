@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
   interface Props {

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Form Component with Terminal Styling -->
 <script lang="ts">
 

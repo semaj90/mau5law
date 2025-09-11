@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
@@ -370,37 +371,5 @@
   </div>
 </div>
 
-<style lang="ts">
-  /* Ensure smooth transitions */
-  :global(.case-list-item) {
-    transition: all 0.2s ease;
-  }
-
-  :global(.case-list-item:hover) {
-    background-color: #f9fafb;
-  }
-
-  :global(.case-list-item.active) {
-    background-color: #dbeafe;
-    border-left: 4px solid #3b82f6;
-  }
-
-  /* Custom scrollbar for case list */
-  .overflow-y-auto::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  .overflow-y-auto::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-  
-  .overflow-y-auto::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-  }
-  
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-  }
-</style>
+<style lang="ts">/*$$__STYLE_CONTENT__$$*/</style>
 

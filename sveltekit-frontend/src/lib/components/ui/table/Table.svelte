@@ -1,11 +1,11 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
   
-  let { class: className = "" } = $props();
+  let { children, class: className = "" } = $props();
 </script>
 
 <div class={cn("relative w-full overflow-auto", className)}>
   <table class="w-full caption-bottom text-sm">
-    <slot />
+    {@render children?.()}
   </table>
 </div>

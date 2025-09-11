@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Dialog Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
   import { Dialog as DialogPrimitive } from 'bits-ui';

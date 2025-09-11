@@ -4,16 +4,16 @@
   import { avatarStore } from "$lib/stores/avatarStore";
   import { onMount } from "svelte";
 
-  let user = $page.data.user;
-  let profileForm = {
+  let user = $state($page.data.user);
+  let profileForm = $state({
     name: "",
     email: "",
     firstName: "",
     lastName: "",
-  };
+  });
 
-  let isUpdating = false;
-  let updateMessage = "";
+  let isUpdating = $state(false);
+  let updateMessage = $state("");
 
   onMount(() => {
     if (user) {

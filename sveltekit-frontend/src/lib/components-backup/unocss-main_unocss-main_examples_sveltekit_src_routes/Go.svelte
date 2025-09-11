@@ -1,9 +1,11 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
   	import { goto } from "$app/navigation"
 
-  	let name = ''
+  	let name = $state('')
 
-  	let input: HTMLInputElement;
+  	let input: HTMLInputElement = $state();
 
   	function go() {
   		if (name) {
@@ -14,7 +16,7 @@
   	}
 </script>
 
-<form on:submit|preventDefault={go}>
+<form onsubmit={preventDefault(go)}>
 	<input bind:this={input} bind:value={name} type="text" aria-label="What's your name?" placeholder="What's your name?" />
 	<button type="submit">
 		GO

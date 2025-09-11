@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open -->
 <script lang="ts">
   import { onMount } from 'svelte';
   // Svelte 5 runes are built-in, no import needed

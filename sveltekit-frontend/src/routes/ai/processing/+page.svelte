@@ -415,29 +415,31 @@
       <div class="p-6">
         <OptimisticList 
           items={processingQueue}
-          let:item={job}
-          let:optimistic
+          
+          
         >
-          <div class="p-3 border border-gray-200 rounded-lg mb-3 {optimistic ? 'opacity-50' : ''}">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-medium text-sm">{job.documentId}</span>
-              <span class="px-2 py-1 rounded-full text-xs font-medium {getPriorityColor(job.priority)}">
-                {job.priority}
-              </span>
+          {#snippet children({ item: job, optimistic })}
+                    <div class="p-3 border border-gray-200 rounded-lg mb-3 {optimistic ? 'opacity-50' : ''}">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-medium text-sm">{job.documentId}</span>
+                <span class="px-2 py-1 rounded-full text-xs font-medium {getPriorityColor(job.priority)}">
+                  {job.priority}
+                </span>
+              </div>
+              <div class="text-xs text-gray-500">
+                {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(job.createdAt)}
+              </div>
+              <div class="flex justify-end mt-2">
+                <button 
+                  onclick={() => cancelJob(job.id)}
+                  class="text-xs text-red-600 hover:text-red-800"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-            <div class="text-xs text-gray-500">
-              {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(job.createdAt)}
-            </div>
-            <div class="flex justify-end mt-2">
-              <button 
-                onclick={() => cancelJob(job.id)}
-                class="text-xs text-red-600 hover:text-red-800"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </OptimisticList>
+                            {/snippet}
+                </OptimisticList>
 
         {#if processingQueue.length === 0}
           <div class="text-center py-8 text-gray-500">
