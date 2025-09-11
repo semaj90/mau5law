@@ -263,11 +263,11 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <div class="flex flex-wrap gap-2">
             {#each intelligentSuggestions as suggestion}
-              <Button class="bits-btn"
+              <Button 
+                class="bits-btn h-8 px-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border border-yellow-200"
                 variant="ghost"
                 size="sm"
                 on:onclick={() => selectSuggestion(suggestion)}
-                class="h-8 px-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border border-yellow-200"
               >
                 <Sparkles class="h-3 w-3 mr-1" />
                 {suggestion}

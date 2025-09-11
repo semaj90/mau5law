@@ -14,7 +14,6 @@ import { simdRedisClient } from '$lib/services/simd-redis-client.js';
 import { webgpuTextureStreaming } from '$lib/services/webgpu-texture-streaming.js';
 import { textureStreamer } from '$lib/webgpu/texture-streaming.js';
 import type { embeddingCache } from '$lib/server/embedding-cache-middleware.js';
-import { ensureBufferCompatibility, ensureFloat32Array } from '$lib/utils/buffer-utils';
 
 // GPU Tiling Configuration for RTX 3060 Ti
 const GPU_TILING_CONFIG = {
@@ -371,8 +370,8 @@ export class SIMDGPUTilingEngine {
       label: 'Config-Buffer',
     });
 
-    // Upload data with buffer compatibility fix
-    this.device.queue.writeBuffer(inputBuffer, 0, ensureBufferCompatibility(imageData));
+    // Upload data
+    this.device.queue.writeBuffer(inputBuffer, 0, imageData);
 
     const configData = new Uint32Array([
       tileSize, // tile_width
@@ -589,7 +588,7 @@ export class SIMDGPUTilingEngine {
 
         // Assign embeddings back to tiles
         for (let j = 0; j < batch.length; j++) {
-          batch[j].metadata.embedding = ensureFloat32Array(embeddings[j]);
+          batch[j].metadata.embedding = embeddings[j];
         }
       } catch (error) {
         console.warn(`Failed to generate embeddings for batch ${i / batchSize + 1}:`, error);

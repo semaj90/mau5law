@@ -143,7 +143,7 @@
     <div class="search-input-wrapper">
       <Search size={20} class="search-icon" />
       <input
-        <!-- <!-- use:melt={$input}
+        
         class="search-input"
         type="text"
         {placeholder}
@@ -163,13 +163,13 @@
     <!-- Results dropdown -->
     {#if $open && searchResults.length > 0}
       <div
-        <!-- <!-- use:melt={$menu}
+        
         class="search-results"
         transitifly={{ y: -5, duration: 150 }}
       >
         {#each filteredResults as item (item.id)}
           <button
-            <!-- <!-- use:melt={$option({ value: item.id, label: item.title })}
+            )}
             class="search-result-item"
             class:highlighted={$isSelected(item.id)}
             on:onclick={() => handleSelect(item)}

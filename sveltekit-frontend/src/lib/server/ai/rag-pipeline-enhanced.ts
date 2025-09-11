@@ -35,6 +35,8 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 import type { Document } from '@langchain/core/documents';
 import * as schema from '$lib/server/db/schema-postgres';
 import type { LegalDocument, DocumentChunk, UserAiQuery, AutoTag } from '$lib/types/database';
+import { ollamaConfig } from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from '$lib/config/environment.js';
 
 // ===== CONFIGURATION & CONSTANTS =====
 
@@ -151,7 +153,7 @@ const createDefaultConfig = (): RAGConfig => ({
     lazyConnect: false
   },
   ollama: {
-    baseUrl: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
+    baseUrl: ENV_CONFIG.OLLAMA_URL,
     embeddingModel: import.meta.env.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text:latest',
     llmModel: import.meta.env.OLLAMA_LLM_MODEL || 'gemma3-legal:latest',
     embeddingDimensions: parseInt(import.meta.env.OLLAMA_EMBEDDING_DIMENSIONS || '768'),
@@ -763,7 +765,7 @@ export class EnhancedLegalRAGPipeline {
     try {
       // Initialize embeddings
       this.embeddings = new OllamaEmbeddings({
-        baseUrl: this.config.ollama.baseUrl,
+        baseUrl: ollamaConfig.getBaseUrl(),
         model: this.config.ollama.embeddingModel,
         requestOptions: {
           useMMap: true,
@@ -773,7 +775,7 @@ export class EnhancedLegalRAGPipeline {
 
       // Initialize LLM
       this.llm = new Ollama({
-        baseUrl: this.config.ollama.baseUrl,
+        baseUrl: ollamaConfig.getBaseUrl(),
         model: this.config.ollama.llmModel,
         temperature: this.config.ollama.temperature,
         numCtx: this.config.ollama.numCtx,

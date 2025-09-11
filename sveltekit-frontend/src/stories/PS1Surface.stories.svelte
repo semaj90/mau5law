@@ -206,7 +206,8 @@
 		</div>
 
 		<div class="control-row">
-			<label for="polygon-count">Polygon Count:</label><input id="polygon-count"
+			<label>Polygon Count:</label>
+			<input
 				type="range"
 				bind:value={polygonCount}
 				min="50"
@@ -218,7 +219,8 @@
 		</div>
 
 		<div class="control-row">
-			<label for="vertex-precision">Vertex Precision:</label><input id="vertex-precision"
+			<label>Vertex Precision:</label>
+			<input
 				type="range"
 				bind:value={vertexPrecision}
 				min="1"
@@ -230,7 +232,8 @@
 		</div>
 
 		<div class="control-row">
-			<label for="animation-speed">Animation Speed:</label><input id="animation-speed"
+			<label>Animation Speed:</label>
+			<input
 				type="range"
 				bind:value={animationSpeed}
 				min="0"
@@ -275,9 +278,9 @@
 		</div>
 
 		<div class="button-row">
-			<button class="ps1-button" onclick={resetSurface}>= Regenerate</button>
+			<button class="ps1-button" onclick={resetSurface}>Regenerate</button>
 			<button class="ps1-button" onclick={() => animationSpeed = animationSpeed > 0 ? 0 : 1}>
-				{animationSpeed > 0 ? '�' : '�'} Animation
+				{animationSpeed > 0 ? 'Pause' : 'Resume'} Animation
 			</button>
 		</div>
 
@@ -373,31 +376,31 @@
 	</div>
 
 	<div class="info-panel ps1-terminal">
-		<h4><� PS1 Surface Rendering Features</h4>
+		<h4>PS1 Surface Rendering Features</h4>
 		<p>This demo showcases PlayStation 1 era 3D surface rendering techniques:</p>
 
-		<h5>= Wireframe Mode:</h5>
+		<h5>Wireframe Mode:</h5>
 		<ul>
 			<li>Classic vector-based wireframe rendering</li>
 			<li>No hidden surface removal</li>
 			<li>Pure geometric visualization</li>
 		</ul>
 
-		<h5>=7 Flat Shaded:</h5>
+		<h5>Flat Shaded:</h5>
 		<ul>
 			<li>One color per polygon face</li>
 			<li>No Gouraud or Phong smoothing</li>
 			<li>Sharp polygon edges visible</li>
 		</ul>
 
-		<h5><� Textured Surfaces:</h5>
+		<h5>Textured Surfaces:</h5>
 		<ul>
 			<li>Low-resolution texture mapping</li>
 			<li>Nearest-neighbor filtering (pixelated)</li>
 			<li>UV coordinate precision limitations</li>
 		</ul>
 
-		<h5>� PS1 Technical Limitations:</h5>
+		<h5>PS1 Technical Limitations:</h5>
 		<ul>
 			<li><strong>Fixed-Point Math:</strong> Vertex precision limited to avoid floating-point</li>
 			<li><strong>No Z-Buffer:</strong> Optional depth testing (expensive on PS1)</li>

@@ -42,37 +42,37 @@
         <p class="space-y-4">Modal dialogs with UnoCSS styling</p>
 
         <button
-          use:melt={$dialogTrigger}
+          
           class="space-y-4"
         >
           Open Dialog
         </button>
 
-        <div use:melt={$dialogPortalled}>
+        <div >
           {#if $dialogOpen}
-            <div use:melt={$dialogOverlay} class="space-y-4" in:fade={{ duration: 150 }} out:fade={{ duration: 150 }}></div>
+            <div  class="space-y-4" in:fade={{ duration: 150 }} out:fade={{ duration: 150 }}></div>
             <div
-              use:melt={$dialogContent}
+              
               class="space-y-4"
               in:fade={{ duration: 150 }}
               out:fade={{ duration: 150 }}
             >
-              <h2 use:melt={$dialogTitle} class="space-y-4">
+              <h2  class="space-y-4">
                 UnoCSS Styled Dialog
               </h2>
-              <p use:melt={$dialogDescription} class="space-y-4">
+              <p  class="space-y-4">
                 This dialog showcases Melt UI components styled with UnoCSS utility classes for a modern, responsive design.
               </p>
 
               <div class="space-y-4">
                 <button
-                  use:melt={$dialogClose}
+                  
                   class="space-y-4"
                 >
                   Cancel
                 </button>
                 <button
-                  use:melt={$dialogClose}
+                  
                   class="space-y-4"
                 >
                   Confirm
@@ -92,7 +92,7 @@
         <p class="space-y-4">Context menus and tooltips</p>
 
         <button
-          use:melt={$popoverTrigger}
+          
           class="space-y-4"
         >
           Show Popover
@@ -100,7 +100,7 @@
 
         {#if $popoverOpen}
           <div
-            use:melt={$popoverContent}
+            
             class="space-y-4"
             in:fade={{ duration: 150 }}
             out:fade={{ duration: 150 }}
@@ -135,7 +135,7 @@
         <p class="space-y-4">Navigation and action menus</p>
 
         <button
-          use:melt={$dropdownTrigger}
+          
           class="space-y-4"
         >
           Open Menu
@@ -144,21 +144,21 @@
 
         {#if $dropdownOpen}
           <div
-            use:melt={$dropdownMenu}
+            
             class="space-y-4"
             in:fade={{ duration: 150 }}
             out:fade={{ duration: 150  }}
           >
-            <div use:melt={$dropdownItem} class="space-y-4">
+            <div  class="space-y-4">
               <span class="space-y-4">⚙️</span>
               Settings
             </div>
-            <div use:melt={$dropdownItem} class="space-y-4">
+            <div  class="space-y-4">
               <span class="space-y-4">👤</span>
               Profile
             </div>
-            <div use:melt={$dropdownSeparator} class="space-y-4"></div>
-            <div use:melt={$dropdownItem} class="space-y-4">
+            <div  class="space-y-4"></div>
+            <div  class="space-y-4">
               <span class="space-y-4">🚪</span>
               Sign out
             </div>

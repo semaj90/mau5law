@@ -83,13 +83,13 @@
   };
 </script>
 
-<div class="mx-auto px-4 max-w-7xl" use:melt={$toolbarRoot}>
+<div class="mx-auto px-4 max-w-7xl" >
   <!-- Main Menu Bar -->
   <div class="mx-auto px-4 max-w-7xl">
     <!-- File Menu -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
-        use:melt={$fileTrigger}
+        
         class="mx-auto px-4 max-w-7xl"
         class:active={$fileOpen}
       >
@@ -98,12 +98,12 @@
 
       {#if $fileOpen}
         <div
-          use:melt={$fileMenu}
+          
           class="mx-auto px-4 max-w-7xl"
           transition:fly={{ y: -5, duration: 150 "
         >
           <button
-            use:melt={$fileItem}
+            
             class="mx-auto px-4 max-w-7xl"
             onclick={() => handleSave()}
           >
@@ -111,18 +111,18 @@
             Save Report
             <span class="mx-auto px-4 max-w-7xl">Ctrl+S</span>
           </button>
-          <button use:melt={$fileItem} class="mx-auto px-4 max-w-7xl">
+          <button  class="mx-auto px-4 max-w-7xl">
             <FileText size={16} />
             New Report
             <span class="mx-auto px-4 max-w-7xl">Ctrl+N</span>
           </button>
           <div class="mx-auto px-4 max-w-7xl"></div>
-          <button use:melt={$fileItem} class="mx-auto px-4 max-w-7xl">
+          <button  class="mx-auto px-4 max-w-7xl">
             <Upload size={16} />
             Import
           </button>
           <button
-            use:melt={$fileItem}
+            
             class="mx-auto px-4 max-w-7xl"
             onclick={() => handleExport()}
           >
@@ -131,7 +131,7 @@
           </button>
           <div class="mx-auto px-4 max-w-7xl"></div>
           <button
-            use:melt={$fileItem}
+            
             class="mx-auto px-4 max-w-7xl"
             onclick={() => handlePreview()}
           >
@@ -145,7 +145,7 @@
     <!-- Edit Menu -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
-        use:melt={$editTrigger}
+        
         class="mx-auto px-4 max-w-7xl"
         class:active={$editOpen}
       >
@@ -154,27 +154,27 @@
 
       {#if $editOpen}
         <div
-          use:melt={$editMenu}
+          
           class="mx-auto px-4 max-w-7xl"
           transition:fly={{ y: -5, duration: 150 "
         >
-          <button use:melt={$editItem} class="mx-auto px-4 max-w-7xl">
+          <button  class="mx-auto px-4 max-w-7xl">
             <Undo size={16} />
             Undo
             <span class="mx-auto px-4 max-w-7xl">Ctrl+Z</span>
           </button>
-          <button use:melt={$editItem} class="mx-auto px-4 max-w-7xl">
+          <button  class="mx-auto px-4 max-w-7xl">
             <Redo size={16} />
             Redo
             <span class="mx-auto px-4 max-w-7xl">Ctrl+Y</span>
           </button>
           <div class="mx-auto px-4 max-w-7xl"></div>
-          <button use:melt={$editItem} class="mx-auto px-4 max-w-7xl">
+          <button  class="mx-auto px-4 max-w-7xl">
             <Search size={16} />
             Find
             <span class="mx-auto px-4 max-w-7xl">Ctrl+F</span>
           </button>
-          <button use:melt={$editItem} class="mx-auto px-4 max-w-7xl">
+          <button  class="mx-auto px-4 max-w-7xl">
             <Replace size={16} />
             Replace
             <span class="mx-auto px-4 max-w-7xl">Ctrl+H</span>
@@ -186,7 +186,7 @@
     <!-- View Menu -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
-        use:melt={$viewTrigger}
+        
         class="mx-auto px-4 max-w-7xl"
         class:active={$viewOpen}
       >
@@ -195,12 +195,12 @@
 
       {#if $viewOpen}
         <div
-          use:melt={$viewMenu}
+          
           class="mx-auto px-4 max-w-7xl"
           transition:fly={{ y: -5, duration: 150 "
         >
           <button
-            use:melt={$viewItem}
+            
             class="mx-auto px-4 max-w-7xl"
             onclick={() => toggleSidebar()}
           >
@@ -209,7 +209,7 @@
             <span class="mx-auto px-4 max-w-7xl">Ctrl+B</span>
           </button>
           <button
-            use:melt={$viewItem}
+            
             class="mx-auto px-4 max-w-7xl"
             onclick={() => toggleLayout()}
           >
@@ -217,7 +217,7 @@
             Switch Layout ({$report.settings.layout})
           </button>
           <button
-            use:melt={$viewItem}
+            
             class="mx-auto px-4 max-w-7xl"
             onclick={() => toggleFullscreen()}
           >
@@ -238,7 +238,7 @@
   <!-- Quick Actions -->
   <div class="mx-auto px-4 max-w-7xl">
     <button
-      use:melt={$toolbarButton}
+      
       class="mx-auto px-4 max-w-7xl"
       class:unsaved={$editorState.hasUnsavedChanges}
       onclick={() => handleSave()}
@@ -250,7 +250,7 @@
     <div class="mx-auto px-4 max-w-7xl"></div>
 
     <button
-      use:melt={$toolbarButton}
+      
       class="mx-auto px-4 max-w-7xl"
       onclick={() => toggleSidebar()}
       title="Toggle Sidebar"
@@ -259,7 +259,7 @@
     </button>
 
     <button
-      use:melt={$toolbarButton}
+      
       class="mx-auto px-4 max-w-7xl"
       onclick={() => toggleLayout()}
       title="Switch Layout"
@@ -270,7 +270,7 @@
     <div class="mx-auto px-4 max-w-7xl"></div>
 
     <button
-      use:melt={$toolbarButton}
+      
       class="mx-auto px-4 max-w-7xl"
       onclick={() => handlePreview()}
       title="Preview Report"

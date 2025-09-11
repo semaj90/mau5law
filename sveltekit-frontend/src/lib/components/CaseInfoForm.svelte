@@ -235,7 +235,7 @@
         <Button.Root
           type="button"
           on:onclick={addKeyDate}
-          class="px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn bits-btn"
+          class="px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
         >
           + Add Date
         </Button.Root>
@@ -254,9 +254,9 @@
             placeholder="Event description"
             class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
-          <Button class="bits-btn".Root
+          <Button.Root
             type="button"
-            on:onclick={() => removeKeyDate(index)}
+            onclick={() => removeKeyDate(index)}
             class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none"
           >
             Remove
@@ -274,14 +274,14 @@
       <Button.Root
         type="button"
         on:onclick={handleSaveDraft}
-        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn bits-btn"
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
       >
         Save Draft
       </Button.Root>
 
       <Button.Root
         type="submit"
-        class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn bits-btn"
+        class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
       >
         Next: Upload Documents →
       </Button.Root>

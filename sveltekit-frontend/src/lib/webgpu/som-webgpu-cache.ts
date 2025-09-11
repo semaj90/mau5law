@@ -160,6 +160,134 @@ export class WebGPUSOMCache {
     }
   `;
 
+  // Legal document processing shaders
+  private legalDocumentEmbeddingShader = `
+    @group(0) @binding(0) var<storage, read> document_text: array<u32>; // Encoded legal text
+    @group(0) @binding(1) var<storage, read_write> embeddings: array<f32>;
+    @group(0) @binding(2) var<uniform> config: array<u32, 8>; // [text_length, embedding_dim, legal_weights, case_weights, 0, 0, 0, 0]
+
+    @compute @workgroup_size(64)
+    fn compute_legal_embedding(@builtin(global_invocation_id) id: vec3<u32>) {
+      let embedding_id = id.x;
+      let text_length = config[0];
+      let embedding_dim = config[1];
+      let legal_weight = f32(config[2]) / 100.0; // Boost legal terms
+      let case_weight = f32(config[3]) / 100.0;  // Boost case references
+
+      if (embedding_id >= embedding_dim) { return; }
+
+      var value = 0.0;
+      var legal_term_bonus = 0.0;
+
+      // Legal document embedding with domain-specific weighting
+      for (var i = 0u; i < text_length; i++) {
+        let char_code = document_text[i];
+        let position_weight = 1.0 / (1.0 + f32(i) * 0.05); // Slower decay for legal docs
+        var char_contribution = f32(char_code) / 255.0 * position_weight;
+
+        // Legal term detection (simplified)
+        if (char_code >= 65u && char_code <= 90u) { // Uppercase letters often indicate legal terms
+          char_contribution *= legal_weight;
+        }
+
+        // Case reference detection (numbers)
+        if (char_code >= 48u && char_code <= 57u) { // Numbers for case citations
+          char_contribution *= case_weight;
+        }
+
+        // Advanced hash for legal document clustering
+        let hash1 = (char_code * 23u + i * 47u) % embedding_dim;
+        let hash2 = (char_code * 31u + i * 53u) % embedding_dim;
+        
+        if (hash1 == embedding_id || hash2 == embedding_id) {
+          value += char_contribution;
+        }
+      }
+
+      // Legal document normalization with tanh activation
+      embeddings[embedding_id] = tanh(value * 0.7); // Slightly compressed for legal stability
+    }
+  `;
+
+  private vectorQuantizationShader = `
+    @group(0) @binding(0) var<storage, read> input_vectors: array<f32>;
+    @group(0) @binding(1) var<storage, read_write> quantized_vectors: array<i32>;
+    @group(0) @binding(2) var<uniform> params: array<f32, 8>; // [vector_count, vector_dim, scale_factor, offset, 0, 0, 0, 0]
+
+    @compute @workgroup_size(64)
+    fn quantize_vectors(@builtin(global_invocation_id) id: vec3<u32>) {
+      let vector_id = id.x;
+      let vector_count = u32(params[0]);
+      let vector_dim = u32(params[1]);
+      let scale_factor = params[2];
+      let offset = params[3];
+
+      if (vector_id >= vector_count * vector_dim) { return; }
+
+      let value = input_vectors[vector_id];
+      
+      // Quantize to 8-bit signed integer (-128 to 127)
+      let scaled_value = (value + offset) * scale_factor;
+      let quantized = i32(clamp(scaled_value, -128.0, 127.0));
+      
+      quantized_vectors[vector_id] = quantized;
+    }
+  `;
+
+  private legalSimilarityShader = `
+    @group(0) @binding(0) var<storage, read> query_vector: array<f32>;
+    @group(0) @binding(1) var<storage, read> legal_documents: array<f32>;
+    @group(0) @binding(2) var<storage, read> legal_metadata: array<u32>; // Document types, jurisdictions, etc.
+    @group(0) @binding(3) var<storage, read_write> similarities: array<f32>;
+    @group(0) @binding(4) var<uniform> config: array<u32, 8>; // [vector_dim, num_docs, jurisdiction_boost, doc_type_boost, 0, 0, 0, 0]
+
+    @compute @workgroup_size(64)
+    fn compute_legal_similarity(@builtin(global_invocation_id) id: vec3<u32>) {
+      let doc_id = id.x;
+      let vector_dim = config[0];
+      let num_docs = config[1];
+      let jurisdiction_boost = f32(config[2]) / 100.0;
+      let doc_type_boost = f32(config[3]) / 100.0;
+
+      if (doc_id >= num_docs) { return; }
+
+      var dot_product = 0.0;
+      var query_norm = 0.0;
+      var doc_norm = 0.0;
+
+      // Compute cosine similarity
+      for (var i = 0u; i < vector_dim; i++) {
+        let q_val = query_vector[i];
+        let d_val = legal_documents[doc_id * vector_dim + i];
+
+        dot_product += q_val * d_val;
+        query_norm += q_val * q_val;
+        doc_norm += d_val * d_val;
+      }
+
+      var cosine_sim = dot_product / (sqrt(query_norm) * sqrt(doc_norm));
+
+      // Apply legal domain-specific boosts
+      let doc_metadata = legal_metadata[doc_id];
+      let doc_type = doc_metadata & 0xFFu; // Lower 8 bits for document type
+      let jurisdiction = (doc_metadata >> 8u) & 0xFFu; // Next 8 bits for jurisdiction
+
+      // Boost based on document type relevance
+      if (doc_type == 1u) { // Contracts
+        cosine_sim *= (1.0 + doc_type_boost);
+      } else if (doc_type == 2u) { // Case law
+        cosine_sim *= (1.0 + doc_type_boost * 0.8);
+      }
+
+      // Boost based on jurisdiction relevance
+      if (jurisdiction == 1u) { // Federal
+        cosine_sim *= (1.0 + jurisdiction_boost);
+      }
+
+      similarities[doc_id] = cosine_sim;
+    }
+  `;
+
   constructor() {
     this.lokiDB = new Loki('som-cache.db', {
       autoload: true,
@@ -766,7 +894,7 @@ export class WebGPUSOMCache {
     // Clear Redis cache keys if connected
     if (this.redisConnected && this.redisClient) {
       try {
-        const keys = await (this.redisClient as any).keys(`${this.redisConfig.keyPrefix}*`);
+        const keys = await this.redisClient.keys(`${this.redisConfig.keyPrefix}*`);
         if (keys.length > 0) {
           await this.redisClient.del(...keys);
         }
@@ -992,7 +1120,15 @@ export class WebGPUSOMCache {
           if (!cached) {
             // Generate embedding using WebGPU if available
             const embeddings = await this.computeErrorEmbeddingsGPU([
-              { message: errorMessage, timestamp: Date.now(), level: 'error' } as any,
+              {
+                message: errorMessage,
+                file: '',
+                line: 0,
+                severity: 'medium' as const,
+                category: 'cache',
+                type: 'webgpu-cache-error',
+                timestamp: new Date().toISOString()
+              } satisfies NPMError,
             ]);
             const embedding = embeddings[0];
             await this.storeResult(embeddingKey, embedding, {
@@ -1059,7 +1195,7 @@ export class WebGPUSOMCache {
   private async trainSOM(trainingData: any[]): Promise<any> {
     // This is a simplified implementation
     // In a real system, you would use a proper SOM algorithm
-    const clusters = {};
+    const clusters: Record<string, any[]> = {};
 
     for (const data of trainingData) {
       const key = data.features.map((f: number) => Math.round(f * 10)).join(',');
@@ -1406,6 +1542,390 @@ export class WebGPUSOMCache {
     }
 
     return results.sort((a, b) => b.similarity - a.similarity);
+  }
+
+  /**
+   * Legal document processing methods
+   */
+  async processLegalDocument(documentText: string, metadata: any): Promise<Float32Array> {
+    try {
+      if (!this.device) {
+        return this.computeLegalEmbeddingCPU(documentText, metadata);
+      }
+
+      const textBuffer = new TextEncoder().encode(documentText);
+      const embeddingDim = 768; // Standard legal embedding dimension
+
+      // Create buffers
+      const textDataBuffer = this.device.createBuffer({
+        size: textBuffer.byteLength,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+
+      const embeddingBuffer = this.device.createBuffer({
+        size: embeddingDim * 4,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      });
+
+      const configBuffer = this.device.createBuffer({
+        size: 32, // 8 u32 values
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+
+      // Write data
+      this.device.queue.writeBuffer(textDataBuffer, 0, textBuffer);
+      
+      const config = new Uint32Array([
+        textBuffer.length, 
+        embeddingDim, 
+        metadata.legalWeight || 150, // Boost legal terms by 50%
+        metadata.caseWeight || 120,  // Boost case refs by 20%
+        0, 0, 0, 0
+      ]);
+      this.device.queue.writeBuffer(configBuffer, 0, config);
+
+      // Create and run compute pipeline
+      const shaderModule = this.device.createShaderModule({ 
+        code: this.legalDocumentEmbeddingShader 
+      });
+      const pipeline = this.device.createComputePipeline({
+        layout: 'auto',
+        compute: { module: shaderModule, entryPoint: 'compute_legal_embedding' },
+      });
+
+      const bindGroup = this.device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: { buffer: textDataBuffer } },
+          { binding: 1, resource: { buffer: embeddingBuffer } },
+          { binding: 2, resource: { buffer: configBuffer } },
+        ],
+      });
+
+      const commandEncoder = this.device.createCommandEncoder();
+      const passEncoder = commandEncoder.beginComputePass();
+      passEncoder.setPipeline(pipeline);
+      passEncoder.setBindGroup(0, bindGroup);
+      passEncoder.dispatchWorkgroups(Math.ceil(embeddingDim / 64));
+      passEncoder.end();
+
+      this.device.queue.submit([commandEncoder.finish()]);
+
+      // Read results
+      const resultBuffer = this.device.createBuffer({
+        size: embeddingDim * 4,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      });
+
+      const copyEncoder = this.device.createCommandEncoder();
+      copyEncoder.copyBufferToBuffer(embeddingBuffer, 0, resultBuffer, 0, embeddingDim * 4);
+      this.device.queue.submit([copyEncoder.finish()]);
+
+      await resultBuffer.mapAsync(GPUMapMode.READ);
+      const embedding = new Float32Array(resultBuffer.getMappedRange());
+      const result = new Float32Array(embedding);
+
+      // Clean up
+      resultBuffer.unmap();
+      textDataBuffer.destroy();
+      embeddingBuffer.destroy();
+      configBuffer.destroy();
+      resultBuffer.destroy();
+
+      return result;
+    } catch (error) {
+      console.error('Legal document processing failed:', error);
+      return this.computeLegalEmbeddingCPU(documentText, metadata);
+    }
+  }
+
+  async searchLegalDocuments(
+    queryEmbedding: Float32Array, 
+    documentEmbeddings: Float32Array[], 
+    metadata: any[]
+  ): Promise<Array<{similarity: number, index: number, metadata: any}>> {
+    try {
+      if (!this.device || documentEmbeddings.length === 0) {
+        return this.searchLegalDocumentsCPU(queryEmbedding, documentEmbeddings, metadata);
+      }
+
+      const vectorDim = queryEmbedding.length;
+      const numDocs = documentEmbeddings.length;
+
+      // Create buffers
+      const queryBuffer = this.device.createBuffer({
+        size: vectorDim * 4,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+
+      const docsBuffer = this.device.createBuffer({
+        size: numDocs * vectorDim * 4,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+
+      const metadataBuffer = this.device.createBuffer({
+        size: numDocs * 4,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+
+      const similaritiesBuffer = this.device.createBuffer({
+        size: numDocs * 4,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      });
+
+      const configBuffer = this.device.createBuffer({
+        size: 32,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+
+      // Write data
+      this.device.queue.writeBuffer(queryBuffer, 0, queryEmbedding);
+
+      const docsData = new Float32Array(numDocs * vectorDim);
+      documentEmbeddings.forEach((doc, i) => {
+        for (let j = 0; j < vectorDim; j++) {
+          docsData[i * vectorDim + j] = doc[j] || 0;
+        }
+      });
+      this.device.queue.writeBuffer(docsBuffer, 0, docsData);
+
+      const metadataArray = new Uint32Array(numDocs);
+      metadata.forEach((meta, i) => {
+        let encoded = 0;
+        if (meta.docType === 'contract') encoded |= 1;
+        else if (meta.docType === 'caselaw') encoded |= 2;
+        if (meta.jurisdiction === 'federal') encoded |= (1 << 8);
+        metadataArray[i] = encoded;
+      });
+      this.device.queue.writeBuffer(metadataBuffer, 0, metadataArray);
+
+      const config = new Uint32Array([vectorDim, numDocs, 130, 120, 0, 0, 0, 0]); // Boost values
+      this.device.queue.writeBuffer(configBuffer, 0, config);
+
+      // Run compute
+      const shaderModule = this.device.createShaderModule({ 
+        code: this.legalSimilarityShader 
+      });
+      const pipeline = this.device.createComputePipeline({
+        layout: 'auto',
+        compute: { module: shaderModule, entryPoint: 'compute_legal_similarity' },
+      });
+
+      const bindGroup = this.device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: { buffer: queryBuffer } },
+          { binding: 1, resource: { buffer: docsBuffer } },
+          { binding: 2, resource: { buffer: metadataBuffer } },
+          { binding: 3, resource: { buffer: similaritiesBuffer } },
+          { binding: 4, resource: { buffer: configBuffer } },
+        ],
+      });
+
+      const commandEncoder = this.device.createCommandEncoder();
+      const passEncoder = commandEncoder.beginComputePass();
+      passEncoder.setPipeline(pipeline);
+      passEncoder.setBindGroup(0, bindGroup);
+      passEncoder.dispatchWorkgroups(Math.ceil(numDocs / 64));
+      passEncoder.end();
+
+      this.device.queue.submit([commandEncoder.finish()]);
+
+      // Read results
+      const resultBuffer = this.device.createBuffer({
+        size: numDocs * 4,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      });
+
+      const copyEncoder = this.device.createCommandEncoder();
+      copyEncoder.copyBufferToBuffer(similaritiesBuffer, 0, resultBuffer, 0, numDocs * 4);
+      this.device.queue.submit([copyEncoder.finish()]);
+
+      await resultBuffer.mapAsync(GPUMapMode.READ);
+      const similarities = new Float32Array(resultBuffer.getMappedRange());
+
+      const results = Array.from(similarities)
+        .map((similarity, index) => ({ similarity, index, metadata: metadata[index] }))
+        .filter(result => result.similarity > 0.1)
+        .sort((a, b) => b.similarity - a.similarity);
+
+      // Clean up
+      resultBuffer.unmap();
+      queryBuffer.destroy();
+      docsBuffer.destroy();
+      metadataBuffer.destroy();
+      similaritiesBuffer.destroy();
+      configBuffer.destroy();
+      resultBuffer.destroy();
+
+      return results;
+    } catch (error) {
+      console.error('Legal document search failed:', error);
+      return this.searchLegalDocumentsCPU(queryEmbedding, documentEmbeddings, metadata);
+    }
+  }
+
+  async quantizeVectors(vectors: Float32Array[]): Promise<Int8Array[]> {
+    try {
+      if (!this.device || vectors.length === 0) {
+        return this.quantizeVectorsCPU(vectors);
+      }
+
+      const vectorCount = vectors.length;
+      const vectorDim = vectors[0].length;
+      const totalElements = vectorCount * vectorDim;
+
+      // Create buffers
+      const inputBuffer = this.device.createBuffer({
+        size: totalElements * 4,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      });
+
+      const outputBuffer = this.device.createBuffer({
+        size: totalElements * 4, // Use 4 bytes for i32 output
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      });
+
+      const paramsBuffer = this.device.createBuffer({
+        size: 32,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+
+      // Flatten input vectors and calculate scale/offset
+      const inputData = new Float32Array(totalElements);
+      let min = Infinity, max = -Infinity;
+      
+      vectors.forEach((vector, i) => {
+        for (let j = 0; j < vectorDim; j++) {
+          const val = vector[j];
+          inputData[i * vectorDim + j] = val;
+          min = Math.min(min, val);
+          max = Math.max(max, val);
+        }
+      });
+
+      const scale = 255 / (max - min);
+      const offset = -min;
+
+      this.device.queue.writeBuffer(inputBuffer, 0, inputData);
+      this.device.queue.writeBuffer(paramsBuffer, 0, new Float32Array([
+        vectorCount, vectorDim, scale, offset, 0, 0, 0, 0
+      ]));
+
+      // Run quantization
+      const shaderModule = this.device.createShaderModule({ 
+        code: this.vectorQuantizationShader 
+      });
+      const pipeline = this.device.createComputePipeline({
+        layout: 'auto',
+        compute: { module: shaderModule, entryPoint: 'quantize_vectors' },
+      });
+
+      const bindGroup = this.device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: { buffer: inputBuffer } },
+          { binding: 1, resource: { buffer: outputBuffer } },
+          { binding: 2, resource: { buffer: paramsBuffer } },
+        ],
+      });
+
+      const commandEncoder = this.device.createCommandEncoder();
+      const passEncoder = commandEncoder.beginComputePass();
+      passEncoder.setPipeline(pipeline);
+      passEncoder.setBindGroup(0, bindGroup);
+      passEncoder.dispatchWorkgroups(Math.ceil(totalElements / 64));
+      passEncoder.end();
+
+      this.device.queue.submit([commandEncoder.finish()]);
+
+      // Read results
+      const resultBuffer = this.device.createBuffer({
+        size: totalElements * 4,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      });
+
+      const copyEncoder = this.device.createCommandEncoder();
+      copyEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, totalElements * 4);
+      this.device.queue.submit([copyEncoder.finish()]);
+
+      await resultBuffer.mapAsync(GPUMapMode.READ);
+      const quantizedData = new Int32Array(resultBuffer.getMappedRange());
+
+      // Convert to Int8Array per vector
+      const results: Int8Array[] = [];
+      for (let i = 0; i < vectorCount; i++) {
+        const quantizedVector = new Int8Array(vectorDim);
+        for (let j = 0; j < vectorDim; j++) {
+          quantizedVector[j] = quantizedData[i * vectorDim + j];
+        }
+        results.push(quantizedVector);
+      }
+
+      // Clean up
+      resultBuffer.unmap();
+      inputBuffer.destroy();
+      outputBuffer.destroy();
+      paramsBuffer.destroy();
+      resultBuffer.destroy();
+
+      return results;
+    } catch (error) {
+      console.error('Vector quantization failed:', error);
+      return this.quantizeVectorsCPU(vectors);
+    }
+  }
+
+  // CPU fallback methods
+  private computeLegalEmbeddingCPU(text: string, metadata: any): Float32Array {
+    const embedding = new Float32Array(768);
+    const textBytes = new TextEncoder().encode(text);
+    
+    for (let i = 0; i < 768; i++) {
+      let value = 0;
+      for (let j = 0; j < textBytes.length; j++) {
+        const hash = (textBytes[j] * 23 + j * 47) % 768;
+        if (hash === i) {
+          value += textBytes[j] / 255.0;
+        }
+      }
+      embedding[i] = Math.tanh(value * 0.7);
+    }
+    
+    return embedding;
+  }
+
+  private searchLegalDocumentsCPU(
+    query: Float32Array, 
+    docs: Float32Array[], 
+    metadata: any[]
+  ): Array<{similarity: number, index: number, metadata: any}> {
+    return docs.map((doc, index) => {
+      let dotProduct = 0, queryNorm = 0, docNorm = 0;
+      
+      for (let i = 0; i < query.length; i++) {
+        dotProduct += query[i] * doc[i];
+        queryNorm += query[i] * query[i];
+        docNorm += doc[i] * doc[i];
+      }
+      
+      const similarity = dotProduct / (Math.sqrt(queryNorm) * Math.sqrt(docNorm));
+      return { similarity, index, metadata: metadata[index] };
+    })
+    .filter(result => result.similarity > 0.1)
+    .sort((a, b) => b.similarity - a.similarity);
+  }
+
+  private quantizeVectorsCPU(vectors: Float32Array[]): Int8Array[] {
+    return vectors.map(vector => {
+      const min = Math.min(...vector);
+      const max = Math.max(...vector);
+      const scale = 255 / (max - min);
+      
+      return new Int8Array(vector.map(val => 
+        Math.round((val - min) * scale) - 128
+      ));
+    });
   }
 
   dispose(): void {

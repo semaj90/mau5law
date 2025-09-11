@@ -321,7 +321,6 @@
 
   <!-- Main button -->
   <button
-    <!-- <!-- use:melt={$root}
     class={baseClasses}
     on:onclick={handleClick}
     on:on:mouseenter={handleMouseEnter}

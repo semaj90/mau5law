@@ -47,13 +47,13 @@
   }
 </script>
 
-<button use:melt={$trigger} style="display: none">Open Modal</button>
+<button  style="display: none">Open Modal</button>
 
 {#if $isMeltOpen}
-  <div use:melt={$overlay} class="space-y-4"></div>
-  <div use:melt={$content} class="space-y-4">
-    <h2 use:melt={$title} class="space-y-4">Login</h2>
-    <button use:melt={$close} class="space-y-4">X</button>
+  <div  class="space-y-4"></div>
+  <div  class="space-y-4">
+    <h2  class="space-y-4">Login</h2>
+    <button  class="space-y-4">X</button>
 
     <form class="space-y-4" method="POST" action="?/login" use:enhance>
       <div class="space-y-4">

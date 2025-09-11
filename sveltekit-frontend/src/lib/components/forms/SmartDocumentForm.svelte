@@ -254,10 +254,11 @@
 				<!-- File Drop Zone -->
 				<div
 					class="border-2 border-dashed border-yorha-border rounded-lg p-8 text-center transition-colors duration-200 hover:border-yorha-primary hover:bg-yorha-bg-secondary/50"
-				 class:border-yorha-primary={uploadedFile}
+					class:border-yorha-primary={uploadedFile}
 					ondrop={handleDrop}
-				 role="region" aria-label="Drop zone" ondragover={handleDragOver}
-					role="button"
+					role="button" 
+					aria-label="Drop zone" 
+					ondragover={handleDragOver}
 					tabindex="0"
 				>
 					{#if uploadedFile}
@@ -295,7 +296,7 @@
 					{#if !uploadedFile}
 						<Button
 							variant="outline"
-							class="mt-4 bits-btn bits-btn"
+							class="mt-4 bits-btn"
 							on:onclick={() => fileInput.click()}
 						>
 							Browse Files
@@ -387,8 +388,8 @@
 									bind:value={field.value}
 									placeholder={`Enter ${field.label.toLowerCase()}...`}
 									class="bg-yorha-bg-secondary border-yorha-border text-yorha-text-primary"
-								 class:border-yorha-danger={$formErrors[field.name]}
-								 class:border-yorha-success={field.confidence && field.confidence > 0.8}
+																class:border-yorha-danger={$formErrors[field.name]}
+								class:border-yorha-success={field.confidence && field.confidence > 0.8}
 									input={(e) => handleFieldChange(field.name, e.target.value)}
 								/>
 							{/if}
@@ -409,7 +410,7 @@
 											<Button
 												variant="outline"
 												size="sm"
-												class="text-xs h-6 px-2 bits-btn bits-btn"
+												class="text-xs h-6 px-2 bits-btn"
 												on:onclick={() => applySuggestion(field.name, suggestion)}
 											>
 												{suggestion}
@@ -458,7 +459,7 @@
 						<Button
 							type="submit"
 							disabled={!isFormValid}
-							class="bg-yorha-primary hover:bg-yorha-primary/80 disabled:opacity-50 bits-btn bits-btn"
+							class="bg-yorha-primary hover:bg-yorha-primary/80 disabled:opacity-50 bits-btn"
 						>
 							Submit Form
 						</Button>

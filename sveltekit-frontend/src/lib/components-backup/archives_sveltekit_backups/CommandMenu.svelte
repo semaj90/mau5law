@@ -212,11 +212,11 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <!-- Hidden trigger (we'll open programmatically) -->
-<button use:melt={$trigger} style="display: none;">Trigger</button>
+<button  style="display: none;">Trigger</button>
 
 {#if $open}
   <div
-    use:melt={$content}
+    
     class="mx-auto px-4 max-w-7xl"
     transition:fly={{ y: -10, duration: 150 "
   >

@@ -13,7 +13,7 @@
     value: string;
     label?: string;
   }
-  
+
   interface HeadlessSelectFieldProps {
     name: string;
     value?: string | null;
@@ -53,9 +53,9 @@
 
   // Normalize options to consistent format
   let normalized = $derived(
-    options.map(o => 
-      typeof o === 'string' 
-        ? { value: o, label: o } 
+    options.map(o =>
+      typeof o === 'string'
+        ? { value: o, label: o }
         : { value: o.value, label: o.label ?? o.value }
     )
   );
@@ -68,14 +68,14 @@
       current = value;
     }
   });
-  
+
   // Auto-select first option if enabled
   $effect(() => {
     if (mounted && autoSelectFirst && (current == null || current === '') && normalized.length > 0) {
       updateValue(normalized[0].value);
     }
   });
-  
+
   // Mount effect
   $effect(() => {
     mounted = true;
@@ -87,38 +87,36 @@
   function updateValue(v: string | null) {
     if (current === v) return;
     current = v;
-    
+
     // Update bindable props
     if (value !== undefined) value = v;
-    
+
     // Call onChange callback
     if (onChange) {
       onChange({ name, value: v });
     }
   }
-  
-  function handleValueChange(newValue: string) {
-    updateValue(newValue);
+
+  function handleValueChange(event: CustomEvent<string>) {
+    updateValue(event.detail);
   }
 </script>
 
 <FormField name={name} errors={errors}>
-  {#snippet control({ inputId, fieldName })}
-    <div class={className} {...rest}>
-      <SelectRoot bind:value={current} disabled={disabled} onValueChange={handleValueChange}>
-        <SelectTrigger>
-          <SelectValue placeholder={placeholder} />
-        </SelectTrigger>
-        <SelectContent>
-          {#if emptyOptionLabel}
-            <SelectItem value="">{emptyOptionLabel}</SelectItem>
-          {/if}
-          {#each normalized as opt (opt.value)}
-            <SelectItem value={opt.value}>{opt.label}</SelectItem>
-          {/each}
-        </SelectContent>
-      </SelectRoot>
-      <input type="hidden" name={name} value={current || ''} />
-    </div>
-  {/snippet}
+  <div slot="control" class={className} {...rest}>
+    <SelectRoot bind:value={current} disabled={disabled} onValueChange={handleValueChange}>
+      <SelectTrigger>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        {#if emptyOptionLabel}
+          <SelectItem value="">{emptyOptionLabel}</SelectItem>
+        {/if}
+        {#each normalized as opt (opt.value)}
+          <SelectItem value={opt.value}>{opt.label}</SelectItem>
+        {/each}
+      </SelectContent>
+    </SelectRoot>
+    <input type="hidden" name={name} value={current || ''} />
+  </div>
 </FormField>

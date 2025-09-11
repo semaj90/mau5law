@@ -445,11 +445,10 @@
     class:dragging={$isDragging}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    role="region" aria-label="Drop zone" ondrop={handleDrop}
-    role="button"
+    role="button" aria-label="Drop zone" ondrop={handleDrop}
     tabindex="0"
-    on:onclick={() => fileInput?.click()}
-    keydown={(e) => e.key === "Enter" && fileInput?.click()}
+    onclick={() => fileInput?.click()}
+    onkeydown={(e) => e.key === "Enter" && fileInput?.click()}
   >
     <div class="drop-zone-content">
       <Upload class="drop-zone-icon" size={48} />
@@ -566,7 +565,7 @@
                     <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      on:onclick={() => openMetadataDialog(file)}
+                      onclick={() => openMetadataDialog(file)}
                     >
                       Edit
                     </Button>
@@ -575,7 +574,7 @@
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:onclick={() => removeFile(file.id)}
+                    onclick={() => removeFile(file.id)}
                     disabled={file.status === "uploading" ||
                       file.status === "processing"}
                   >
@@ -592,7 +591,7 @@
     <!-- Upload Actions -->
     <div class="upload-actions mt-6">
       <Button class="bits-btn"
-        on:onclick={uploadFiles}
+        onclick={uploadFiles}
         disabled={$isProcessing || $files.every((f) => f.status !== "pending")}
         class="mr-4"
       >
@@ -608,7 +607,7 @@
 
       <Button class="bits-btn"
         variant="outline"
-        on:onclick={() => files.set([])}
+        onclick={() => files.set([])}
         disabled={$isProcessing}
       >
         Clear All
@@ -687,11 +686,11 @@
           </div>
 
           <div class="dialog-actions">
-            <Button class="bits-btn" variant="outline" on:onclick={() => showMetadata.set(false)}>
+            <Button class="bits-btn" variant="outline" onclick={() => showMetadata.set(false)}>
               Cancel
             </Button>
             <Button class="bits-btn"
-              on:onclick={() => {
+              onclick={() => {
                 if ($selectedFile) {
                   updateFileMetadata($selectedFile.id, $selectedFile.metadata);
                 }

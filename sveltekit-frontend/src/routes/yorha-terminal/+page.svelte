@@ -23,17 +23,13 @@
 	// Access the global store value reactively via $aiGlobalStore
 	// currentSnapshot will update whenever the store changes
 	let currentSnapshot: any = null;
-	let currentSnapshot = $derived($aiGlobalStore);
+	$: currentSnapshot = $aiGlobalStore;
 
 	// Simple derived status
-	let aiStatus = $derived((());
-				if (currentSnapshot.matches("failure")) return "ERROR";
-			}
-		} catch {
-			// ignore
-		}
-		return "READY";
-	})();
+	let aiStatus: string = "READY";
+	$: aiStatus = (currentSnapshot && typeof currentSnapshot.matches === "function" && currentSnapshot.matches("failure"))
+		? "ERROR"
+		: "READY";
 
 	let context7Status: string = "CONNECTED"; // Assuming connected for now
 	let lastAnalysis: any = null;

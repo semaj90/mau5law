@@ -195,11 +195,11 @@
           <div class="mx-auto px-4 max-w-7xl">
             <div class="mx-auto px-4 max-w-7xl">
               <span class="mx-auto px-4 max-w-7xl">Technical Details</span>
-              <Button class="bits-btn"
+              <Button 
+                class="bits-btn mx-auto px-4 max-w-7xl"
                 variant="ghost"
                 size="sm"
-                on:onclick={() => copyErrorDetails()}
-                class="mx-auto px-4 max-w-7xl"
+                onclick={() => copyErrorDetails()}
                 aria-label="Copy error details"
               >
                 <Copy class="mx-auto px-4 max-w-7xl" />
@@ -292,7 +292,7 @@
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:onclick={() => copyErrorDetails()}
+                    onclick={() => copyErrorDetails()}
                     class="mx-auto px-4 max-w-7xl"
                     aria-label="Copy error details"
                   >

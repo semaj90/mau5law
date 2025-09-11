@@ -1,4 +1,24 @@
-// Removed duplicate exports - keeping the more complete versions below
+export async function compressTensorToPNG(tensor: number[][]): Promise<string> {
+  // Placeholder implementation: serialize tensor as JSON and base64 into a data URL.
+  // In production you'd implement proper PNG encoding with embedded chunks.
+  const json = JSON.stringify(tensor);
+  const b64 = Buffer.from(json).toString('base64');
+  return `data:image/png;base64,${b64}`;
+}
+
+export async function decompressPNGtoTensor(dataUrl: string): Promise<number[][] | null> {
+  // Attempt to strip our simple base64 JSON wrapper.
+  const prefix = 'data:image/png;base64,';
+  if (!dataUrl.startsWith(prefix)) return null;
+  const b64 = dataUrl.slice(prefix.length);
+  try {
+    const json = Buffer.from(b64, 'base64').toString('utf8');
+    return JSON.parse(json) as number[][];
+  } catch (err) {
+    return null;
+  }
+}
+export interface UpscaleOptions { ratio?: number }
 
 export async function compressTensorToPNG(tensor: Float32Array | number[], opts: UpscaleOptions = {}) {
   // Lightweight placeholder: quantize floats into uint8 and encode as base64 PNG-compatible payload.
@@ -35,7 +55,6 @@ export async function decompressPNGtoTensor(dataUrl: string) {
 export type UpscaleQuality = 'low' | 'medium' | 'high';
 
 export interface UpscaleOptions {
-  ratio?: number; // for compression
   scale?: number; // e.g. 2 for 2x
   model?: string; // optional model identifier
   quality?: UpscaleQuality;

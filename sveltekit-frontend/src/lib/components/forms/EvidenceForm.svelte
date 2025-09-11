@@ -68,20 +68,20 @@
   <div>
     <Label>Type</Label>
     <button
-      <!-- <!-- use:melt={$trigger}
+      
       aria-label="Select evidence type"
       class="space-y-4"
     >
       <span>{$selectedLabel || "Select a type"}</span>
     </button>
-    <div <!-- <!-- use:melt={$menu} class="space-y-4">
-      <div <!-- <!-- use:melt={$option({ value: "document", label: "Document" })}>
+    <div  class="space-y-4">
+      <div )}>
         Document
       </div>
-      <div <!-- <!-- use:melt={$option({ value: "image", label: "Image" })}>Image</div>
-      <div <!-- <!-- use:melt={$option({ value: "video", label: "Video" })}>Video</div>
-      <div <!-- <!-- use:melt={$option({ value: "audio", label: "Audio" })}>Audio</div>
-      <div <!-- <!-- use:melt={$option({ value: "other", label: "Other" })}>Other</div>
+      <div )}>Image</div>
+      <div )}>Video</div>
+      <div )}>Audio</div>
+      <div )}>Other</div>
     </div>
     <input type="hidden" name="type" bind:value={$form.type} />
     {#if $errors.type}<span class="space-y-4">{$errors.type}</span

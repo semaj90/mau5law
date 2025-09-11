@@ -89,7 +89,7 @@ export interface LegalDocument {
 
 export interface MemoryBank {
   readonly id: number;
-  readonly type: 'RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';
+  readonly type: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';
   readonly startAddress: number;
   readonly endAddress: number;
   readonly size: number;
@@ -607,7 +607,7 @@ export class NESMemoryArchitecture {
       documentCount += bank.documents.size;
 
       switch (bank.type) {
-        case 'RAM':
+        case 'INTERNAL_RAM':
           totalRAM += bank.size;
           usedRAM += bank.used;
           break;
@@ -771,7 +771,7 @@ class PlannerMemoryManager {
     const existing = this.handleByGraphId.get(graphNodeId);
     if (existing !== undefined) return existing;
 
-    let handle: number;
+    let handle: number = -1;
     if (this.freeList.length) {
       handle = this.freeList.pop()!;
     } else if (this.records.length < this.capacity) {
@@ -789,7 +789,7 @@ class PlannerMemoryManager {
         handle = victim;
         break;
       }
-      if (handle === undefined!) {
+      if (handle === -1) {
         // fallback: overwrite last
         handle = (this.lastAllocation + 1) % this.capacity;
         this.free(handle);

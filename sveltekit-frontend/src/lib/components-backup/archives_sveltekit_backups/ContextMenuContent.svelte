@@ -15,7 +15,7 @@
 
 {#if $menu}
   <div
-    use:melt={$menu}
+    
     class="mx-auto px-4 max-w-7xl"
     transition:fly={{ duration: 150, y: -10 "
   >

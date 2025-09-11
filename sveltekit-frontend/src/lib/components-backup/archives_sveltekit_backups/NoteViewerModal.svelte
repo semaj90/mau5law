@@ -139,12 +139,12 @@
 
 {#if isOpen}
   <div
-    use:melt={$overlay}
+    
     class="mx-auto px-4 max-w-7xl"
     transition:fade={{ duration: 150 "
   >
     <div
-      use:melt={$dialogContent}
+      
       class="mx-auto px-4 max-w-7xl"
       transition:fly={{ y: -20, duration: 200 "
     >
@@ -223,7 +223,7 @@
 
           <button
             type="button"
-            use:melt={$close}
+            
             class="mx-auto px-4 max-w-7xl"
           >
             <X class="mx-auto px-4 max-w-7xl" />

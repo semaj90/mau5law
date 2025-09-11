@@ -19,7 +19,7 @@
 </script>
 
 <button
-  use:melt={$item}
+  
   class="mx-auto px-4 max-w-7xl"
   {disabled}
   onclick={() => handleSelect()}

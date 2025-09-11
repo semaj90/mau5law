@@ -87,9 +87,9 @@
   let shaderMetricsSub = $state<{ unsubscribe?: () => void } | null>(null);
 
   // Demo data
-  let attentionData = $state<Float32Array >(new Float32Array(0);
-  let documentData = $state<Float32Array >(new Float32Array(0);
-  let timelineData = $state<Float32Array >(new Float32Array(0);
+  let attentionData = $state<Float32Array>(new Float32Array(0));
+  let documentData = $state<Float32Array>(new Float32Array(0));
+  let timelineData = $state<Float32Array>(new Float32Array(0));
   onMount(async () => {
     // Create GPU manager then init (shader cache created after GL context is ready)
     gpuManager = createGPUClusterManager();
@@ -644,35 +644,31 @@
 
         <!-- Visualization Controls -->
         <div class="grid grid-cols-2 gap-2">
-          <Button class="bits-btn"
+          <Button class="bits-btn text-sm"
             onclick={() => startVisualization('attentionHeatmap')}
             disabled={!isInitialized}
-            variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}
-            class="text-sm">
+            variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}>
             Attention Heatmap
           </Button>
 
-          <Button class="bits-btn"
+          <Button class="bits-btn text-sm"
             onclick={() => startVisualization('documentNetwork')}
             disabled={!isInitialized}
-            variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}
-            class="text-sm">
+            variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}>
             Document Network
           </Button>
 
-            <Button class="bits-btn"
+            <Button class="bits-btn text-sm"
               onclick={() => startVisualization('evidenceTimeline')}
               disabled={!isInitialized}
-              variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}
-              class="text-sm">
+              variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}>
               Evidence Timeline
             </Button>
 
-          <Button class="bits-btn"
+          <Button class="bits-btn text-sm"
             onclick={() => startVisualization('textFlow')}
             disabled={!isInitialized}
-            variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}
-            class="text-sm">
+            variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}>
             Text Flow
           </Button>
         </div>
@@ -680,7 +676,7 @@
         <!-- Render Controls -->
         <div class="flex gap-2">
           {#if isRendering}
-            <Button onclick={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn bits-btn">
+            <Button onclick={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
               Stop Rendering
             </Button>
           {/if}
@@ -689,7 +685,7 @@
             onclick={executeGPUWorkload}
             disabled={!isInitialized}
             variant="outline"
-            class="text-white border-slate-600 hover:bg-slate-700 bits-btn bits-btn">
+            class="text-white border-slate-600 hover:bg-slate-700 bits-btn">
             Execute GPU Workload
           </Button>
         </div>
@@ -783,7 +779,6 @@
       </Card>
     </div>
   </div>
-</div>
 
 <style>
   /* Custom WebGL canvas styling */

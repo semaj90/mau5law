@@ -157,7 +157,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button 
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" 
-      on:on:onclick={() => { componentError = null; }}
+      onclick={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -171,12 +171,12 @@
     class:uploading
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    role="region" aria-label="Drop zone" ondrop={handleDrop}
-    role="button"
-    tabindex="0"
-    on:on:onclick={() => document.getElementById('file-input')?.click()}
-    onkeydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
+    role="button" 
     aria-label="Upload evidence files - drag and drop or click to browse"
+    ondrop={handleDrop}
+    tabindex="0"
+    onclick={() => document.getElementById('file-input')?.click()}
+    onkeydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
   >
     <input
       id="file-input"

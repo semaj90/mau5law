@@ -546,13 +546,13 @@
     class:drag-over={isDragOver}
     class:disabled
     ondrop={handleDrop}
-    role="region" aria-label="Drop zone" ondragover={handleDragOver}
-    ondragleave={handleDragLeave}
-    role="button"
-    tabindex={0}
+    role="button" 
     aria-label="File upload area. Click to select files or drag and drop files here."
-    on:onclick={() => !disabled && fileInput.click()}
-    keydown={(e) => {
+    ondragover={handleDragOver}
+    ondragleave={handleDragLeave}
+    tabindex={0}
+    onclick={() => !disabled && fileInput.click()}
+    onkeydown={(e) => {
       if ((e.key === "Enter" || e.key === " ") && !disabled) {
         e.preventDefault();
         fileInput.click();

@@ -190,7 +190,7 @@
 <div class="llm-provider-selector">
 	<!-- Label -->
 	<label 
-		use:melt={$label}
+		
 		class="block text-sm font-medium text-yorha-text-primary mb-2"
 	>
 		LLM Provider
@@ -198,7 +198,7 @@
 
 	<!-- Select Trigger -->
 	<button
-		use:melt={$trigger}
+		
 		class="flex h-10 w-full items-center justify-between rounded-md border border-yorha-border bg-yorha-bg-secondary px-3 py-2 text-sm placeholder:text-yorha-text-tertiary focus:outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
 		class:opacity-50={disabled}
 		{disabled}
@@ -234,13 +234,13 @@
 	<!-- Dropdown Menu -->
 	{#if $open}
 		<div
-			use:melt={$menu}
+			
 			class="z-50 min-w-[320px] rounded-md border border-yorha-border bg-yorha-bg-primary p-1 shadow-lg focus:outline-none"
 			transitionfly={{ y: -5, duration: 150 }}
 		>
 			{#each $providers as provider (provider.id)}
 				<div
-					use:melt={$option({ value: provider, label: provider.name })}
+					)}
 					class="relative cursor-default select-none rounded-sm px-2 py-2 text-sm outline-none transition-colors duration-150"
 					class:bg-yorha-bg-secondary={$isSelected(provider)}
 					class:text-yorha-text-primary={$isSelected(provider)}

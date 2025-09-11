@@ -200,7 +200,7 @@
           
           <!-- Melt UI Dialog Example -->
           <button
-            use:melt={$trigger}
+            
             class="nier-button-crimson"
           >
             Open Modal Dialog
@@ -208,25 +208,25 @@
           
           {#if $open}
             <div
-              use:melt={$overlay}
+              
               class="nier-modal-overlay"
               transitionfade={{ duration: 200 }}
             />
             
             <div
-              use:melt={$content}
+              
               class="nier-modal"
               transitionfly={{ y: 20, duration: 300 }}
             >
-              <h2 use:melt={$title} class="text-2xl font-display nier-heading mb-4">
+              <h2  class="text-2xl font-display nier-heading mb-4">
                 System Alert
               </h2>
-              <p use:melt={$description} class="text-nier-gray dark:text-nier-silver mb-6">
+              <p  class="text-nier-gray dark:text-nier-silver mb-6">
                 This is a NieR: Automata styled modal dialog using Melt UI.
               </p>
               
               <div class="flex gap-4 justify-end">
-                <button use:melt={$close} class="nier-button-outline px-4 py-2">
+                <button  class="nier-button-outline px-4 py-2">
                   Cancel
                 </button>
                 <button class="nier-button-digital px-4 py-2">

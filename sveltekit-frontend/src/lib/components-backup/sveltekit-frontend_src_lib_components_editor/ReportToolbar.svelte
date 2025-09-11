@@ -82,13 +82,13 @@
   };
 </script>
 
-<div class="space-y-4" use:melt={$toolbarRoot}>
+<div class="space-y-4" >
   <!-- Main Menu Bar -->
   <div class="space-y-4">
     <!-- File Menu -->
     <div class="space-y-4">
       <button
-        use:melt={$fileTrigger}
+        
         class="space-y-4"
         class:active={$fileOpen}
       >
@@ -97,12 +97,12 @@
 
       {#if $fileOpen}
         <div
-          use:melt={$fileMenu}
+          
           class="space-y-4"
           transitionfly={{ y: -5, duration: 150 }}
         >
           <button
-            use:melt={$fileItem}
+            
             class="space-y-4"
             onclick={() => handleSave()}
           >
@@ -110,18 +110,18 @@
             Save Report
             <span class="space-y-4">Ctrl+S</span>
           </button>
-          <button use:melt={$fileItem} class="space-y-4">
+          <button  class="space-y-4">
             <FileText size={16} />
             New Report
             <span class="space-y-4">Ctrl+N</span>
           </button>
           <div class="space-y-4"></div>
-          <button use:melt={$fileItem} class="space-y-4">
+          <button  class="space-y-4">
             <Upload size={16} />
             Import
           </button>
           <button
-            use:melt={$fileItem}
+            
             class="space-y-4"
             onclick={() => handleExport()}
           >
@@ -130,7 +130,7 @@
           </button>
           <div class="space-y-4"></div>
           <button
-            use:melt={$fileItem}
+            
             class="space-y-4"
             onclick={() => handlePreview()}
           >
@@ -144,7 +144,7 @@
     <!-- Edit Menu -->
     <div class="space-y-4">
       <button
-        use:melt={$editTrigger}
+        
         class="space-y-4"
         class:active={$editOpen}
       >
@@ -153,27 +153,27 @@
 
       {#if $editOpen}
         <div
-          use:melt={$editMenu}
+          
           class="space-y-4"
           transitionfly={{ y: -5, duration: 150 "
         >
-          <button use:melt={$editItem} class="space-y-4">
+          <button  class="space-y-4">
             <Undo size={16} />
             Undo
             <span class="space-y-4">Ctrl+Z</span>
           </button>
-          <button use:melt={$editItem} class="space-y-4">
+          <button  class="space-y-4">
             <Redo size={16} />
             Redo
             <span class="space-y-4">Ctrl+Y</span>
           </button>
           <div class="space-y-4"></div>
-          <button use:melt={$editItem} class="space-y-4">
+          <button  class="space-y-4">
             <Search size={16} />
             Find
             <span class="space-y-4">Ctrl+F</span>
           </button>
-          <button use:melt={$editItem} class="space-y-4">
+          <button  class="space-y-4">
             <Replace size={16} />
             Replace
             <span class="space-y-4">Ctrl+H</span>
@@ -185,7 +185,7 @@
     <!-- View Menu -->
     <div class="space-y-4">
       <button
-        use:melt={$viewTrigger}
+        
         class="space-y-4"
         class:active={$viewOpen}
       >
@@ -194,12 +194,12 @@
 
       {#if $viewOpen}
         <div
-          use:melt={$viewMenu}
+          
           class="space-y-4"
           transitionfly={{ y: -5, duration: 150 "
         >
           <button
-            use:melt={$viewItem}
+            
             class="space-y-4"
             onclick={() => toggleSidebar()}
           >
@@ -208,7 +208,7 @@
             <span class="space-y-4">Ctrl+B</span>
           </button>
           <button
-            use:melt={$viewItem}
+            
             class="space-y-4"
             onclick={() => toggleLayout()}
           >
@@ -216,7 +216,7 @@
             Switch Layout ({$report.settings.layout})
           </button>
           <button
-            use:melt={$viewItem}
+            
             class="space-y-4"
             onclick={() => toggleFullscreen()}
           >
@@ -237,7 +237,7 @@
   <!-- Quick Actions -->
   <div class="space-y-4">
     <button
-      use:melt={$toolbarButton}
+      
       class="space-y-4"
       class:unsaved={$editorState.hasUnsavedChanges}
       onclick={() => handleSave()}
@@ -249,7 +249,7 @@
     <div class="space-y-4"></div>
 
     <button
-      use:melt={$toolbarButton}
+      
       class="space-y-4"
       onclick={() => toggleSidebar()}
       title="Toggle Sidebar"
@@ -258,7 +258,7 @@
     </button>
 
     <button
-      use:melt={$toolbarButton}
+      
       class="space-y-4"
       onclick={() => toggleLayout()}
       title="Switch Layout"
@@ -269,7 +269,7 @@
     <div class="space-y-4"></div>
 
     <button
-      use:melt={$toolbarButton}
+      
       class="space-y-4"
       onclick={() => handlePreview()}
       title="Preview Report"

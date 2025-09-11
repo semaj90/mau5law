@@ -355,7 +355,7 @@
           monitorProcessingJob(job.id, file.name);
 
           // Create visual representation on canvas immediately
-          await createEvidenceObject(evidenceFile, position);
+          await createProcessingEvidenceObject(evidenceFile, position);
 
           return evidenceFile;
         } catch (error) {
@@ -779,7 +779,7 @@
   }
 
   // MinIO-WebGPU Evidence Processing Functions
-  async function createEvidenceObject(evidenceFile: any, position: { x: number; y: number }) {
+  async function createProcessingEvidenceObject(evidenceFile: any, position: { x: number; y: number }) {
     if (!fabricCanvas) return;
 
     console.log(`🎨 Creating canvas object for: ${evidenceFile.name}`);

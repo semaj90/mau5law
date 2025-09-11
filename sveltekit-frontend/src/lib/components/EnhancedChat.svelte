@@ -354,11 +354,11 @@
 					<span class="text-sm text-red-700">{$state.context.error}</span>
 				</div>
 				<div class="flex space-x-2">
-					<Button class="bits-btn" 
+					<Button 
+						class="bits-btn text-red-700 border-red-300 hover:bg-red-50" 
 						size="sm" 
 						variant="outline"
-						on:onclick={() => send({ type: 'RETRY' })}
-						class="text-red-700 border-red-300 hover:bg-red-50"
+						onclick={() => send({ type: 'RETRY' })}
 					>
 						Retry
 					</Button>

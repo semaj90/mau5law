@@ -305,7 +305,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
     switch (cmd) {
       case 'analyze':
         if (parts[1]) {
-          performEnhancedAnalysis(parts.slice(1).join(' ');
+          performEnhancedAnalysis(parts.slice(1).join(' '));
         }
         break;
       case 'search':
@@ -366,7 +366,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
     <!-- Controls -->
     <div class="header-controls">
       <div class="search-container">
-  <input type="search" class="search-input" placeholder="Search legal data..." aria-label="Search legal data" bind:value={searchQuery} onchange={() => triggerSearch()} keydown={(e) => e.key === 'Enter' && loadData()} />
+  <input type="search" class="search-input" placeholder="Search legal data..." aria-label="Search legal data" bind:value={searchQuery} onchange={() => triggerSearch()} on:keydown={(e) => e.key === 'Enter' && loadData()} />
         <button class="search-btn" onclick={() => loadData()}>SEARCH</button>
       </div>
 

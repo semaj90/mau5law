@@ -139,20 +139,14 @@
 
   function handleFeedbackError(event: CustomEvent) {
     console.error('❌ Feedback submission failed:', event.detail ?? event);
-    if (browser) {
-      showFeedback = false;
-      currentFeedbackTrigger = null;
-    }
+    showFeedback = false;
+    currentFeedbackTrigger = null;
   }
 
   function handleFeedbackClosed() {
-    if (browser) {
-      showFeedback = false;
-      currentFeedbackTrigger = null;
-      if (store && typeof store.cancelFeedback === 'function') {
-        store.cancelFeedback();
-      }
-    }
+    showFeedback = false;
+    currentFeedbackTrigger = null;
+    store?.cancelFeedback();
   }
 </script>
 

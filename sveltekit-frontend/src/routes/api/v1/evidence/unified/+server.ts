@@ -6,8 +6,8 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { z } from 'zod';
-// import { AdvancedSimilarityEngine } from '../vector/similarity-engine'; // TODO: Implement similarity engine
-// import { LegalStrategyEngine } from '../strategy/strategy-engine'; // TODO: Implement strategy engine
+import { AdvancedSimilarityEngine } from '../vector/similarity-engine';
+import { LegalStrategyEngine } from '../strategy/strategy-engine';
 import { WasmLegalProcessor } from '$lib/wasm/legal-processor';
 import { EvidenceCorrelationEngine } from '$lib/analysis/evidence-correlation';
 
@@ -251,14 +251,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
     if (analysisRequest.analysisScope.vectorSimilarity) {
       const vectorStart = Date.now();
 
-      // TODO: Implement similarity engine
-      const similarityResults = {
-        clusters: [{
-          evidenceIds: analysisRequest.evidenceIds,
-          coherenceScore: 0.8,
-          themes: ['Evidence similarity analysis not yet implemented']
-        }]
-      };
+      const similarityResults = await AdvancedSimilarityEngine.performSimilaritySearch({
+        query: 'comprehensive evidence analysis',
+        evidenceIds: analysisRequest.evidenceIds,
+        algorithms: ['semantic', 'legal', 'temporal', 'contextual'],
+        clustering: true,
+        threshold: analysisRequest.parameters.similarityThreshold,
+      });
 
       // Process similarity results into groups
       const similarityGroups =
@@ -291,28 +290,29 @@ export const POST: RequestHandler = async ({ params, request }) => {
       result.performance.vectorSearchMs = vectorSearchTime;
     }
 
-    // 2. Strategy Analysis - TODO: Implement LegalStrategyEngine
+    // 2. Strategy Analysis
     if (analysisRequest.analysisScope.strategyRecommendations) {
       const strategyStart = Date.now();
 
-      // TODO: Replace with actual LegalStrategyEngine implementation
-      // const strategyResults = await LegalStrategyEngine.generateStrategy({
-      //   evidenceIds: analysisRequest.evidenceIds,
-      //   strategyType: analysisRequest.parameters.strategyType,
-      //   caseContext: analysisRequest.context || {},
-      //   includeRiskAssessment: true,
-      //   generateAlternatives: true,
-      // });
+      const strategyResults = await LegalStrategyEngine.generateStrategy({
+        evidenceIds: analysisRequest.evidenceIds,
+        strategyType: analysisRequest.parameters.strategyType,
+        caseContext: analysisRequest.context || {},
+        includeRiskAssessment: true,
+        generateAlternatives: true,
+      });
 
       result.strategyAnalysis = {
-        primaryStrategy: 'Strategy analysis not yet implemented',
-        alternativeStrategies: [],
+        primaryStrategy: strategyResults.primaryApproach?.name || '',
+        alternativeStrategies: (strategyResults.alternativeApproaches || []).map(
+          (a: any) => a?.name || ''
+        ),
         riskAssessment: {
-          level: 'medium',
-          factors: [],
-          mitigations: [],
+          level: strategyResults.riskAssessment?.overallRisk || 'medium',
+          factors: strategyResults.riskAssessment?.riskFactors || [],
+          mitigations: strategyResults.riskAssessment?.mitigationStrategies || [],
         },
-        outcomeProjections: [],
+        outcomeProjections: strategyResults.outcomeProjections || [],
       };
 
       strategyTime = Date.now() - strategyStart;

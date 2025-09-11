@@ -10,7 +10,8 @@
   let currentView = $state('grid');
   let modalOpen = $state(false);
   let terminalActive = $state(true);
-  let notifications = $state<unknown[]>([]);
+  type Notification = { id: string | number; type: string; message: string };
+  let notifications = $state<Notification[]>([]);
 
   // Sample data for demonstration
   let demoData = $state([
@@ -446,7 +447,7 @@
                           </div>
                           <div class="metric">
                             <span class="metric-label">Action Required:</span>
-                            <span class="metric-value action-{result.yorhaAnalysis.actionRequired.toLowerCase()}">{result.yorhaAnalysis.actionRequired}</span>
+                            <span class="metric-value action-{String(result.yorhaAnalysis.actionRequired).toLowerCase()}">{String(result.yorhaAnalysis.actionRequired)}</span>
                           </div>
                         </div>
                       </div>

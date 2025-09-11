@@ -1,13 +1,15 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { PDFDocument } from 'pdf-lib';
+import { ollamaConfig } from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from '$lib/config/environment.js';
 
 const MINIO_ENDPOINT = 'http://localhost:9000';
 const MINIO_ACCESS_KEY = 'minio';
 const MINIO_SECRET_KEY = 'minio123';
 const MINIO_BUCKET = 'legal-documents';
 const MCP_SERVER_URL = 'http://localhost:3002';
-const OLLAMA_URL = 'http://localhost:11434';
+// Use centralized configuration instead of hardcoded URLs
 
 interface MCPProcessingResult {
 	success: boolean;
@@ -132,7 +134,7 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
 		const embeddings: number[][] = [];
 		
 		for (const chunk of chunks) {
-			const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
+			const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

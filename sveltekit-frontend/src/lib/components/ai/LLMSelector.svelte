@@ -231,13 +231,12 @@
 <!-- LLM Selector Component -->
 <div class="w-full max-w-md">
   <!-- Label -->
-  <label <!-- <!-- <!-- use:melt={$label} --> class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
     AI Model Selection
   </label>
   
   <!-- Trigger Button -->
   <button
-    <!-- <!-- <!-- use:melt={$trigger} -->
     class="flex h-12 w-full items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600 
            bg-white dark:bg-gray-800 px-3 py-2 text-sm 
            hover:bg-gray-50 dark:hover:bg-gray-700 
@@ -275,7 +274,6 @@
   <!-- Dropdown Menu -->
   {#if open}
     <div
-      <!-- <!-- <!-- use:melt={$menu} -->
       class="z-50 mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-700 
              bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5
              max-h-96 overflow-auto"
@@ -287,7 +285,6 @@
           {@const SvelteComponent_2 = getProviderIcon(model.provider)}
           {@const SvelteComponent_3 = getStatusIcon(model.status)}
           <button
-            <!-- <!-- <!-- use:melt={$option({ value: model, label: model.displayName })} -->
             class="flex w-full items-center justify-between px-4 py-3 text-sm
                    hover:bg-gray-100 dark:hover:bg-gray-700
                    focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none

@@ -1,5 +1,18 @@
-import { pgTable, serial, text, timestamp, boolean, json } from 'drizzle-orm/pg-core';
-
+// src/lib/server/schema.ts - Database schema definitions
+import {
+  pgTable,
+  serial,
+  text,
+  timestamp,
+  uuid,
+  integer,
+  decimal,
+  jsonb,
+  json,
+  vector,
+  boolean,
+  index,
+} from 'drizzle-orm/pg-core';
 
 export const storage_files = pgTable('storage_files', {
   id: serial('id').primaryKey(),
@@ -23,19 +36,6 @@ export const storage_audits = pgTable('storage_audits', {
   metadata: json('metadata'),
   created_at: timestamp('created_at').defaultNow().notNull(),
 });
-// src/lib/server/schema.ts - Database schema definitions
-import {
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-  integer,
-  decimal,
-  jsonb,
-  vector,
-  boolean,
-  index,
-} from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 // Evidence processing sessions

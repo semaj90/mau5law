@@ -168,7 +168,7 @@
 	{#if useMelt}
 		<!-- Melt-ui enhanced button -->
 		<button
-			use:melt={$meltButton}
+			
 			{type}
 			disabled={isDisabled}
 			class={buttonClass}

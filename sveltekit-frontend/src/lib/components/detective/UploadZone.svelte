@@ -186,10 +186,10 @@
     class="upload-zone border-2 border-dashed rounded p-6 text-center transition-colors select-none {isDragOver ? 'bg-gray-100 border-gray-400' : 'border-gray-300'}"
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    role="region" aria-label="Drop zone" ondrop={handleDrop}
-    role="button"
+    role="button" 
+    aria-label="Upload Evidence Dropzone" 
+    ondrop={handleDrop}
     tabindex={0}
-    aria-label="Upload Evidence Dropzone"
   onclick={openFileDialog}
   onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
   >

@@ -141,7 +141,7 @@
 </script>
 
 <div
-  use:melt={$trigger}
+  
   class="case-card {currentPriority.class} group relative overflow-hidden"
   role="article"
   aria-label="Case {caseData.id}"
@@ -311,12 +311,12 @@
 <!-- Context Menu -->
 {#if $open}
   <div
-    use:melt={$menu}
+    
     class="nier-panel p-2 min-w-[200px] z-50"
     transitionscale={{ duration: 200, start: 0.95 }}
   >
     <button
-      use:melt={$item}
+      
       onclick={() => onView(caseData.id)}
       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-nier-white/50 dark:hover:bg-nier-black/50 nier-transition w-full text-left"
     >
@@ -325,7 +325,7 @@
     </button>
 
     <button
-      use:melt={$item}
+      
       onclick={() => onEdit(caseData.id)}
       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-nier-white/50 dark:hover:bg-nier-black/50 nier-transition w-full text-left"
     >
@@ -333,10 +333,10 @@
       <span>Edit Case</span>
     </button>
 
-    <div use:melt={$separator} class="h-px bg-nier-light-gray dark:bg-nier-gray/30 my-2"></div>
+    <div  class="h-px bg-nier-light-gray dark:bg-nier-gray/30 my-2"></div>
 
     <button
-      use:melt={$item}
+      
       onclick={() => onArchive(caseData.id)}
       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-nier-amber/10 text-nier-amber nier-transition w-full text-left"
     >
@@ -345,7 +345,7 @@
     </button>
 
     <button
-      use:melt={$item}
+      
       onclick={() => onDelete(caseData.id)}
       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-harvard-crimson/10 text-harvard-crimson nier-transition w-full text-left"
     >

@@ -16,7 +16,7 @@
   const { trigger } = elements;
 </script>
 
-<div <!-- <!-- use:melt={$trigger}>
+<div >
   {@render children?.()}
 </div>
 

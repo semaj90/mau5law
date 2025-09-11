@@ -40,37 +40,37 @@
         <p class="mx-auto px-4 max-w-7xl">Modal dialogs with UnoCSS styling</p>
         
         <button 
-          use:melt={$dialogTrigger}
+          
           class="mx-auto px-4 max-w-7xl"
         >
           Open Dialog
         </button>
         
-        <div use:melt={$dialogPortalled}>
+        <div >
           {#if $dialogOpen}
-            <div use:melt={$dialogOverlay} class="mx-auto px-4 max-w-7xl" in:fade={{ duration: 150 " out:fade={{ duration: 150 "></div>
+            <div  class="mx-auto px-4 max-w-7xl" in:fade={{ duration: 150 " out:fade={{ duration: 150 "></div>
             <div 
-              use:melt={$dialogContent}
+              
               class="mx-auto px-4 max-w-7xl"
               in:fade={{ duration: 150 "
               out:fade={{ duration: 150  }}
             >
-              <h2 use:melt={$dialogTitle} class="mx-auto px-4 max-w-7xl">
+              <h2  class="mx-auto px-4 max-w-7xl">
                 UnoCSS Styled Dialog
               </h2>
-              <p use:melt={$dialogDescription} class="mx-auto px-4 max-w-7xl">
+              <p  class="mx-auto px-4 max-w-7xl">
                 This dialog showcases Melt UI components styled with UnoCSS utility classes for a modern, responsive design.
               </p>
               
               <div class="mx-auto px-4 max-w-7xl">
                 <button 
-                  use:melt={$dialogClose}
+                  
                   class="mx-auto px-4 max-w-7xl"
                 >
                   Cancel
                 </button>
                 <button 
-                  use:melt={$dialogClose}
+                  
                   class="mx-auto px-4 max-w-7xl"
                 >
                   Confirm
@@ -90,7 +90,7 @@
         <p class="mx-auto px-4 max-w-7xl">Context menus and tooltips</p>
         
         <button 
-          use:melt={$popoverTrigger}
+          
           class="mx-auto px-4 max-w-7xl"
         >
           Show Popover
@@ -98,7 +98,7 @@
         
         {#if $popoverOpen}
           <div 
-            use:melt={$popoverContent}
+            
             class="mx-auto px-4 max-w-7xl"
             in:fade={{ duration: 150 "
             out:fade={{ duration: 150  }}
@@ -133,7 +133,7 @@
         <p class="mx-auto px-4 max-w-7xl">Navigation and action menus</p>
         
         <button 
-          use:melt={$dropdownTrigger}
+          
           class="mx-auto px-4 max-w-7xl"
         >
           Open Menu
@@ -142,21 +142,21 @@
         
         {#if $dropdownOpen}
           <div 
-            use:melt={$dropdownMenu}
+            
             class="mx-auto px-4 max-w-7xl"
             in:fade={{ duration: 150 "
             out:fade={{ duration: 150  }}
           >
-            <div use:melt={$dropdownItem} class="mx-auto px-4 max-w-7xl">
+            <div  class="mx-auto px-4 max-w-7xl">
               <span class="mx-auto px-4 max-w-7xl">⚙️</span>
               Settings
             </div>
-            <div use:melt={$dropdownItem} class="mx-auto px-4 max-w-7xl">
+            <div  class="mx-auto px-4 max-w-7xl">
               <span class="mx-auto px-4 max-w-7xl">👤</span>
               Profile
             </div>
-            <div use:melt={$dropdownSeparator} class="mx-auto px-4 max-w-7xl"></div>
-            <div use:melt={$dropdownItem} class="mx-auto px-4 max-w-7xl">
+            <div  class="mx-auto px-4 max-w-7xl"></div>
+            <div  class="mx-auto px-4 max-w-7xl">
               <span class="mx-auto px-4 max-w-7xl">🚪</span>
               Sign out
             </div>

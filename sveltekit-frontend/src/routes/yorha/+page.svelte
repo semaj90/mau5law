@@ -173,7 +173,7 @@
   async function performSemanticSearch(searchTerm: string = 'contract liability') {
     isLoading = true;
     searchResults = [];
-  let localResults = $state<any[] >([]);
+  let localResults: any[] = [];
     if (isLocalIndexReady() && (searchMode === 'local' || searchMode === 'hybrid')) {
       localResults = localSearch(searchTerm, 50);
       if (searchMode === 'local') {
@@ -198,7 +198,7 @@
         relevance: Math.round((item.relevance || Math.random()) * 100),
         status: item.status || 'active',
         metadata: item
-      });
+      }));
       searchResults = searchMode === 'hybrid' ? mergeResults(localResults, remote) : remote;
       activeSection = 'search-results';
     } catch (e) {
@@ -374,7 +374,7 @@
 
   <!-- YoRHa Command Interface (Toggle) -->
   {#if showCommandInterface}
-    <section class="yorha-command-interface" transitislide={{ duration: 300 }}>
+    <section class="yorha-command-interface">
       <YoRHaCommandInterface
         {systemData}
         {legalSession}
@@ -419,7 +419,7 @@
   <section class="yorha-search-box" aria-label="Semantic Search">
     <div class="yorha-search-inner max-w-6xl mx-auto">
       <label for="yorha-search" class="sr-only">Search legal documents</label>
-      <input id="yorha-search" type="search" placeholder="Search legal documents..." class="yorha-search-input" input={(e) => debouncedSearch((e.target as HTMLInputElement).value)} />
+      <input id="yorha-search" type="search" placeholder="Search legal documents..." class="yorha-search-input" on:input={(e) => debouncedSearch((e.target as HTMLInputElement).value)} />
       <div class="yorha-search-meta">
         <fieldset class="yorha-search-modes" aria-label="Search Mode">
           <legend class="sr-only">Search Mode</legend>

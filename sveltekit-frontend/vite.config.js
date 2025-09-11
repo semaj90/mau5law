@@ -60,14 +60,25 @@ export default defineConfig({
 				manualChunks: {
 					'webgpu-ai': ['$lib/webgpu/webgpu-ai-engine'],
 					'cognitive-router': ['$lib/ai/cognitive-smart-router'],
-					'gpu-inference': ['$lib/services/cuda-vector-integration']
+					'gpu-inference': ['$lib/services/cuda-vector-integration'],
+					'wasm-ops': ['$lib/wasm/vector-wasm-wrapper', '$lib/wasm/gpu-wasm-init'],
+					'performance': ['$lib/services/webgpu-wasm-service', '$lib/services/wasm-accelerated-cache-ops']
 				}
 			}
 		}
 	},
 	optimizeDeps: {
-		exclude: ['@webgpu/types']
+		exclude: ['@webgpu/types'],
+		include: ['wasm-feature-detect', 'web-streams-polyfill'],
+		esbuildOptions: {
+			target: 'esnext'
+		}
 	},
+	worker: {
+		format: 'es'
+	},
+	// Enable WASM support in Vite
+	assetsInclude: ['**/*.wasm'],
 	define: {
 		'process.env.NODE_ENV': '"production"',
 		'process.env.DATABASE_URL': '"postgresql://postgres:123456@localhost:5432/legal_ai_db"'

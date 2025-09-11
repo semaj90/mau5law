@@ -1,6 +1,6 @@
 <script lang="ts">
   import { tick } from 'svelte';
-  
+
   interface HeadlessDialogProps {
     open?: boolean;
     initialFocus?: (() => HTMLElement | null) | null;
@@ -12,7 +12,7 @@
     onOpen?: () => void;
     onClose?: () => void;
   }
-  
+
   let {
     open = $bindable(),
     initialFocus = null,
@@ -24,7 +24,7 @@
     onOpen,
     onClose
   }: HeadlessDialogProps = $props();
-  
+
   let container = $state<HTMLElement | null>(null);
   let previousActive = $state<HTMLElement | null>(null);
   let mounted = $state(false);
@@ -43,20 +43,20 @@
       setOpen(false);
     }
   }
-  
+
   function handleTabKey(e: KeyboardEvent) {
     if (!open || !container) return;
     if (e.key !== 'Tab') return;
-    
+
     const focusableElements = container.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
-    
+
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
-    
+
     if (!firstElement) return;
-    
+
     if (e.shiftKey) {
       if (document.activeElement === firstElement) {
         e.preventDefault();
@@ -73,45 +73,45 @@
   async function trapFocus() {
     if (!open || !container || !mounted) return;
     await tick();
-    
-    const target = initialFocus?.() 
-      || container.querySelector<HTMLElement>('[data-autofocus]') 
+
+    const target = initialFocus?.()
+      || container.querySelector<HTMLElement>('[data-autofocus]')
       || container.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-    
+
     target?.focus();
   }
 
   // Handle dialog open/close effects
   $effect(() => {
     if (!mounted) return;
-    
+
     if (open) {
       // Store current focus
       previousActive = document.activeElement as HTMLElement;
-      
+
       // Add event listeners
       document.addEventListener('keydown', handleKey, true);
       document.addEventListener('keydown', handleTabKey, true);
-      
+
       // Prevent body scroll
       document.body.style.overflow = 'hidden';
-      
+
       // Focus management
       trapFocus();
     } else {
       // Remove event listeners
       document.removeEventListener('keydown', handleKey, true);
       document.removeEventListener('keydown', handleTabKey, true);
-      
+
       // Restore body scroll
       document.body.style.overflow = '';
-      
+
       // Restore focus
       if (restoreFocus && previousActive) {
         previousActive.focus();
       }
     }
-    
+
     // Cleanup function
     return () => {
       document.removeEventListener('keydown', handleKey, true);
@@ -119,7 +119,7 @@
       document.body.style.overflow = '';
     };
   });
-  
+
   // Mount effect
   $effect(() => {
     mounted = true;
@@ -134,7 +134,7 @@
       setOpen(false);
     }
   }
-  
+
   function handleContentClick(e: MouseEvent) {
     // Prevent backdrop click when clicking inside dialog content
     e.stopPropagation();
@@ -154,27 +154,26 @@
     style="animation: fadeIn 0.2s ease-out;"
   >
     <div class="flex min-h-full items-center justify-center p-4">
-      <div 
+      <div
         class="relative w-full max-w-lg transform overflow-hidden rounded-lg bg-white shadow-xl transition-all"
-        role="button" tabindex="0"
-                onclick={handleContentClick}
+        onclick={handleContentClick}
         style="animation: slideIn 0.2s ease-out;"
       >
         <!-- Dialog header -->
         <div class="px-6 pt-6">
           <slot name="title" />
         </div>
-        
+
         <!-- Dialog content -->
         <div class="px-6 py-4">
           <slot />
         </div>
-        
+
         <!-- Dialog footer -->
         <div class="px-6 pb-6">
           <slot name="footer" />
         </div>
-        
+
         <!-- Close button -->
         <button
           type="button"
@@ -196,7 +195,7 @@
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  
+
   @keyframes slideIn {
     from {
       opacity: 0;

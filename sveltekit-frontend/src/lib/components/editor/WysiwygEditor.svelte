@@ -327,7 +327,6 @@
   <div class="space-y-4">
     <div class="space-y-4">
       <button
-        <!-- <!-- use:melt={$aiTrigger}
         class="space-y-4"
         disabled={!enableAI}
       >
@@ -335,7 +334,6 @@
       </button>
 
       <button
-        <!-- <!-- use:melt={$citeTrigger}
         class="space-y-4"
         disabled={!enableCitation}
       >
@@ -358,11 +356,11 @@
 </div>
 
 <!-- AI Assistant Dialog -->
-<div <!-- <!-- use:melt={$aiPortalled}>
+<div>
   {#if $aiOpen}
-    <div <!-- <!-- use:melt={$aiOverlay} class="space-y-4"></div>
-    <div <!-- <!-- use:melt={$aiContent} class="space-y-4">
-      <h2 <!-- <!-- use:melt={$aiTitle} class="space-y-4">AI Legal Assistant</h2>
+    <div class="space-y-4"></div>
+    <div class="space-y-4">
+      <h2 class="space-y-4">AI Legal Assistant</h2>
 
       {#if selectedText}
         <div class="space-y-4">
@@ -404,17 +402,17 @@
         {/if}
       </div>
 
-      <button <!-- <!-- use:melt={$aiClose} class="space-y-4">×</button>
+      <button class="space-y-4">×</button>
     </div>
   {/if}
 </div>
 
 <!-- Citation Helper Dialog -->
-<div <!-- <!-- use:melt={$citePortalled}>
+<div>
   {#if $citeOpen}
-    <div <!-- <!-- use:melt={$citeOverlay} class="space-y-4"></div>
-    <div <!-- <!-- use:melt={$citeContent} class="space-y-4">
-      <h2 <!-- <!-- use:melt={$citeTitle} class="space-y-4">Citation Helper</h2>
+    <div class="space-y-4"></div>
+    <div class="space-y-4">
+      <h2 class="space-y-4">Citation Helper</h2>
 
       <div class="space-y-4">
         <label for="cite-query">Search for citations:</label>
@@ -455,7 +453,7 @@
         {/if}
       </div>
 
-      <button <!-- <!-- use:melt={$citeClose} class="space-y-4">×</button>
+      <button class="space-y-4">×</button>
     </div>
   {/if}
 </div>
