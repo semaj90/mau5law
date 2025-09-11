@@ -198,3 +198,34 @@ Matthew Holt began developing Caddy in 2014 while studying computer science at B
 Caddy is a project of [ZeroSSL](https://zerossl.com), a Stack Holdings company.
 
 Debian package repository hosting is graciously provided by [Cloudsmith](https://cloudsmith.com). Cloudsmith is the only fully hosted, cloud-native, universal package management solution, that enables your organization to create, store and share packages in any format, to any place, with total confidence.
+
+## Platform Integration Scaffolds (Added)
+
+This repository includes additional platform building blocks:
+
+| Component | Path | Purpose |
+|-----------|------|---------|
+| Async Task Proto | `proto/tasks.proto` | Defines TaskQueue service & task model |
+| gRPC Server Skeleton | `cmd/grpc-gateway/main.go` | High-perf gRPC base (currently build-tagged off) |
+| Loki Client | `internal/loki/client.go` | Minimal Loki push API client for structured log shipping |
+| Fuse Search Store | `sveltekit-frontend/src/lib/search/fuseStore.ts` | Client-side fuzzy search over indexed items |
+| UnoCSS Config | `uno.config.ts` | Utility-first styling & theme shortcuts |
+
+Enable gRPC scaffold:
+1. Remove `//go:build ignore` from `cmd/grpc-gateway/main.go`.
+2. Generate code: `protoc --go_out=. --go-grpc_out=. proto/tasks.proto`.
+3. Register TaskQueue implementation.
+
+Loki usage example (batch push):
+```go
+cli := loki.New("http://loki:3100", map[string]string{"app":"cognitive","env":"dev"})
+_ = cli.Push(loki.Batch{Entries: []loki.Entry{{Timestamp: time.Now(), Line: "startup complete"}}})
+```
+
+Fuse search consumer (Svelte):
+```ts
+import { searchStore } from '$lib/search/fuseStore';
+$: results = $searchStore.results;
+```
+
+Next steps: add RabbitMQ worker, integrate metrics → tracing bridge, enrich Loki logs with trace IDs.

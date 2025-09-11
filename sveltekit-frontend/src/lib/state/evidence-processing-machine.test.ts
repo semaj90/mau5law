@@ -91,7 +91,7 @@ import {
   getCurrentStep,
   getStepProgress,
 } from './evidence-processing-machine.js';
-import { createTestPNG } from '../services/png-embed-extractor.test.js';
+import { createTestPNG } from '../services/png-embed-extractor.test';
 
 describe('Evidence Processing Machine - Core Functionality', () => {
   let testFile: File;

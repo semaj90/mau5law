@@ -33,7 +33,13 @@ redis.on('connect', () => {
   console.log('[redis] ✅ Connected successfully');
 });
 redis.on('ready', () => {
+  const masked = redisOptions.password
+    ? redisOptions.password.replace(/.(?=.{2})/g, '*')
+    : '(none)';
   console.log('[redis] 🚀 Client ready for operations');
+  console.log(
+    `[redis] config host=${baseConfig.host || 'in-url'} port=${baseConfig.port} db=${baseConfig.db ?? 0} password=${masked}`
+  );
 });
 redis.on('error', (error) => {
   console.error('[redis] ❌ Connection error:', error.message);
@@ -55,6 +61,53 @@ export const createRedisInstance = () => {
   (opts as any).url = url;
   return new Redis(opts as any);
 };
+
+// Thin interface describing only commands we actually use broadly
+export interface RedisBasicCommands {
+  get(key: string): Promise<string | null>;
+  set(key: string, value: string): Promise<'OK' | null>;
+  del(key: string | string[]): Promise<number>;
+  setex?(key: string, seconds: number, value: string): Promise<'OK'>;
+  expire?(key: string, seconds: number): Promise<number>;
+  ping?(): Promise<string>;
+  publish?(channel: string, message: string): Promise<number>;
+  psubscribe?(...patterns: string[]): Promise<number>;
+  subscribe?(...channels: string[]): Promise<number>;
+  on(event: string, listener: (...args: any[]) => void): any;
+  quit(): Promise<'OK'>;
+}
+
+// Multi-client factory for pub/sub correctness
+export interface RedisClientSet {
+  primary: RedisBasicCommands & any;
+  subscriber: RedisBasicCommands & any;
+  publisher: RedisBasicCommands & any;
+  closeAll(): Promise<void>;
+}
+
+export function createRedisClientSet(): RedisClientSet {
+  const primary = createRedisInstance();
+  const subscriber = createRedisInstance();
+  const publisher = createRedisInstance();
+
+  // Basic wiring of error logging
+  [primary, subscriber, publisher].forEach((client, idx) => {
+    client.on('error', (err: any) => {
+      console.error(`[redis-set] client${idx} error:`, err?.message || err);
+    });
+  });
+
+  return {
+    primary,
+    subscriber,
+    publisher,
+    async closeAll() {
+      await Promise.all(
+        [primary.quit(), subscriber.quit(), publisher.quit()].map((p) => p.catch(() => {}))
+      );
+    },
+  };
+}
 
 let legacyClient: Redis | null = null;
 export async function createRedisClient(): Promise<Redis> {

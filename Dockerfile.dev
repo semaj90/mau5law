@@ -1,0 +1,75 @@
+# Multi-stage Development Dockerfile for Legal AI Go Services
+FROM golang:1.25-alpine AS base
+
+# Install Air for hot reloading and other dev tools
+RUN go install github.com/cosmtrek/air@latest && \
+    apk add --no-cache git curl
+
+WORKDIR /app
+
+# Copy go mod files for dependency caching
+COPY go.mod go.sum ./
+RUN go mod download
+
+# ===== LEGAL GATEWAY =====
+FROM base AS legal-gateway
+
+# Copy source code
+COPY legal-gateway/ ./legal-gateway/
+COPY internal/ ./internal/
+
+# Expose port
+EXPOSE 8080
+
+# Default command (can be overridden in docker-compose)
+CMD ["air", "-c", ".air.toml"]
+
+# ===== ENHANCED RAG SERVICE =====
+FROM base AS enhanced-rag
+
+# Copy source code
+COPY go-enhanced-rag-service/ ./go-enhanced-rag-service/
+COPY internal/ ./internal/
+
+# Expose port
+EXPOSE 8094
+
+# Air config for enhanced RAG
+CMD ["air", "-c", ".air-rag.toml"]
+
+# ===== GPU ORCHESTRATOR =====
+FROM base AS gpu-orchestrator
+
+# Copy source code
+COPY go-microservice/ ./go-microservice/
+COPY internal/ ./internal/
+
+# Expose port
+EXPOSE 8095
+
+# Air config for GPU orchestrator
+CMD ["air", "-c", ".air-gpu.toml"]
+
+# ===== UNIFIED RAG SERVICE =====
+FROM base AS unified-rag
+
+# Copy source code
+COPY unified-rag-service/ ./unified-rag-service/
+COPY internal/ ./internal/
+
+# Expose port
+EXPOSE 8096
+
+CMD ["air", "-c", ".air-unified.toml"]
+
+# ===== PRODUCTION BUILD STAGE =====
+FROM alpine:latest AS production
+
+RUN apk --no-cache add ca-certificates tzdata
+WORKDIR /root/
+
+# This will be used for production builds
+# Copy binary from specific build stage as needed
+# COPY --from=legal-gateway /app/tmp/legal-gateway .
+
+CMD ["./legal-gateway"]

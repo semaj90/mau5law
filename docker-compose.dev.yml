@@ -1,0 +1,212 @@
+# Development Docker Compose for Legal AI Platform
+# Integrates with existing LLM orchestrator and provides hot-reload Go services
+version: '3.8'
+
+services:
+  # === DATABASES & INFRASTRUCTURE ===
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: legal-ai-postgres
+    environment:
+      - POSTGRES_DB=legal_ai_db
+      - POSTGRES_USER=legal_admin
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_HOST_AUTH_METHOD=md5
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U legal_admin -d legal_ai_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis/redis-stack:latest
+    container_name: legal-ai-redis
+    ports:
+      - "6379:6379"   # Redis port
+      - "8001:8001"   # RedisInsight port
+    command: >
+      redis-server
+      --appendonly yes
+      --port 6379
+      --loadmodule /opt/redis-stack/lib/redisearch.so
+      --loadmodule /opt/redis-stack/lib/redistimeseries.so 
+      --loadmodule /opt/redis-stack/lib/rejson.so
+      --loadmodule /opt/redis-stack/lib/redisbloom.so
+      --maxmemory 2gb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # === GO MICROSERVICES WITH HOT RELOAD ===
+  legal-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: legal-gateway
+    container_name: legal-gateway-dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/tmp
+      - go_mod_cache:/go/pkg/mod
+    environment:
+      - DATABASE_URL=postgres://legal_admin:123456@postgres:5432/legal_ai_db?sslmode=disable
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - PORT=8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - legal-ai-network
+    command: ["air", "-c", ".air.toml"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  enhanced-rag-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: enhanced-rag
+    container_name: enhanced-rag-dev
+    ports:
+      - "8094:8094"
+    volumes:
+      - .:/app
+      - /app/tmp
+      - go_mod_cache:/go/pkg/mod
+    environment:
+      - DATABASE_URL=postgres://legal_admin:123456@postgres:5432/legal_ai_db?sslmode=disable
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_URL=http://host.docker.internal:11434
+      - PORT=8094
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - legal-ai-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["air", "-c", ".air-rag.toml"]
+
+  gpu-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: gpu-orchestrator
+    container_name: gpu-orchestrator-dev
+    ports:
+      - "8095:8095"
+    volumes:
+      - .:/app
+      - /app/tmp
+      - go_mod_cache:/go/pkg/mod
+    environment:
+      - DATABASE_URL=postgres://legal_admin:123456@postgres:5432/legal_ai_db?sslmode=disable
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_URL=http://host.docker.internal:11434
+      - CUDA_VISIBLE_DEVICES=0
+      - PORT=8095
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - legal-ai-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # Enable GPU access if available
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    command: ["air", "-c", ".air-gpu.toml"]
+
+  # === MCP MULTI-CORE SERVER ===
+  mcp-multicore:
+    build:
+      context: ./sveltekit-frontend
+      dockerfile: Dockerfile.mcp
+    container_name: mcp-multicore-dev
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./sveltekit-frontend:/app
+      - /app/node_modules
+    environment:
+      - MCP_PORT=3002
+      - NODE_ENV=development
+      - WORKER_CORES=4
+    networks:
+      - legal-ai-network
+    command: ["npm", "run", "mcp:dev"]
+
+  # === SUPPORTING SERVICES ===
+  minio:
+    image: minio/minio:latest
+    container_name: legal-ai-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minio
+      - MINIO_ROOT_PASSWORD=minio123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - legal-ai-network
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: legal-ai-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - legal-ai-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+  qdrant_data:
+    driver: local
+  go_mod_cache:
+    driver: local
+
+networks:
+  legal-ai-network:
+    driver: bridge

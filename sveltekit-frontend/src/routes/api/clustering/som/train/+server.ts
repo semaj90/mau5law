@@ -7,20 +7,17 @@ import type { RequestHandler } from './$types';
 
 import { json } from "@sveltejs/kit";
 import { LegalDocumentSOM } from "$lib/services/som-clustering";
-import { Redis } from "ioredis";
-import { legalDocuments } from "$lib/server/db/schema-postgres";
-import { URL } from "url";
+import { createRedisInstance } from '$lib/server/redis';
+import { legalDocuments } from '$lib/server/db/schema-postgres';
+import { URL } from 'url';
 // Optional amqp for message queue integration
 
-// Initialize Redis connection (safe minimal config for dev)
-const redis = new Redis({
-  port: parseInt(import.meta.env.REDIS_PORT || "6379"),
-  host: import.meta.env.REDIS_HOST || '127.0.0.1'
-});
+// Centralized Redis instance
+const redis = createRedisInstance();
 
 export const POST: RequestHandler = async ({ request }) => {
   const body = await request.json().catch(() => ({}));
   // placeholder: enqueue training job
-  await redis.rpush('som:train:queue', JSON.stringify(body));
+  await (redis as any).rpush('som:train:queue', JSON.stringify(body));
   return json({ ok: true });
 };
