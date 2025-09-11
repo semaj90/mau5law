@@ -426,4 +426,4 @@ export function formatMetric(value: number, type: 'percentage' | 'milliseconds' 
 }
 
 // Export performance monitoring utilities
-export { type PerformanceSnapshot, type AlertThreshold };
+// Note: PerformanceSnapshot and AlertThreshold are already exported above

@@ -20,7 +20,6 @@
 
 {#if $menu}
   <div
-    
     class="space-y-4"
     transitifly={{ duration: 150, y: -10 }}
   >

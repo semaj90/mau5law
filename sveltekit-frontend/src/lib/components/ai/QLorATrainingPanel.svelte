@@ -257,9 +257,9 @@
         </div>
         
         {#if trainingEnabled}
-          <Button class="bits-btn" 
+          <Button 
             onclick={() => startTraining(selectedFiles)}
-            class="w-full bg-green-600 hover:bg-green-700"
+            class="bits-btn w-full bg-green-600 hover:bg-green-700"
             disabled={currentJob?.status === 'running'}
           >
             {currentJob?.status === 'running' ? 'Training in Progress...' : 'Start Training'}

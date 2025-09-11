@@ -132,7 +132,7 @@
       <button
         type="button"
         class="container mx-auto px-4"
-        on:onclick={() => copyToClipboard()}
+        onclick={() => copyToClipboard()}
         title="Copy message"
         aria-label="Copy message to clipboard"
       >
@@ -161,7 +161,7 @@
         <button
           type="button"
           class="container mx-auto px-4"
-          on:onclick={() => (isSourcesExpanded = !isSourcesExpanded)}
+          onclick={() => (isSourcesExpanded = !isSourcesExpanded)}
           aria-expanded={isSourcesExpanded}
         >
           <svg
@@ -204,7 +204,7 @@
         <button
           type="button"
           class="container mx-auto px-4"
-          on:onclick={() => (isMetadataExpanded = !isMetadataExpanded)}
+          onclick={() => (isMetadataExpanded = !isMetadataExpanded)}
           aria-expanded={isMetadataExpanded}
         >
           <svg

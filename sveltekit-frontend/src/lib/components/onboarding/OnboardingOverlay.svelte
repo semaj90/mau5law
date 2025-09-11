@@ -266,7 +266,7 @@
       class="w-4 h-4"
       role="button"
       tabindex={0}
-      on:onclick={() => closeOnboarding()}
+      onclick={() => closeOnboarding()}
       keydown={(e: KeyboardEvent) => {
         if (e.key === "Escape") {
           closeOnboarding();
@@ -305,11 +305,11 @@
 
         <div class="w-4 h-4">
           {#if autoProgress}
-            <Button class="bits-btn"
+            <Button 
+              class="bits-btn w-4 h-4"
               variant="ghost"
               size="sm"
-              on:onclick={() => toggleAutoProgress()}
-              class="w-4 h-4"
+              onclick={() => toggleAutoProgress()}
               aria-label={isPlaying
                 ? "Pause auto-progress"
                 : "Play auto-progress"}
@@ -325,7 +325,7 @@
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:onclick={() => closeOnboarding()}
+            onclick={() => closeOnboarding()}
             aria-label="Close onboarding"
           >
             <X class="w-4 h-4" />
@@ -394,7 +394,7 @@
       <div class="w-4 h-4">
         <div class="w-4 h-4">
           {#if allowSkip}
-            <Button class="bits-btn" variant="ghost" size="sm" on:onclick={() => skipOnboarding()}>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={() => skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
             </Button>
@@ -409,7 +409,7 @@
                   class="w-4 h-4"
                   class:active={index === currentStep}
                   class:completed={index < currentStep}
-                  on:onclick={() => goToStep(index)}
+                  onclick={() => goToStep(index)}
                   aria-label={"Go to step " + (index + 1) + ": " + step.title}
                 >
                   {#if index < currentStep}
@@ -427,14 +427,14 @@
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:onclick={() => previousStep()}
+            onclick={() => previousStep()}
             disabled={currentStep === 0}
           >
             <ArrowLeft class="w-4 h-4" />
             Back
           </Button>
 
-          <Button class="bits-btn" on:onclick={() => nextStep()} size="sm">
+          <Button class="bits-btn" onclick={() => nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="w-4 h-4" />
               Complete

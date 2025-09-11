@@ -469,7 +469,7 @@
     <div class="error-overlay">
       <h3>⚠️ Visualization Error</h3>
       <p>{$error}</p>
-      <button on:on:onclick={() => error.set(null)}>Dismiss</button>
+      <button on:onclick={() => error.set(null)}>Dismiss</button>
     </div>
   {/if}
 
@@ -481,7 +481,7 @@
         width={width}
         height={height}
         class="visualization-canvas canvas-2d"
-        on:on:onclick={(e) => handleCanvasClick(e, false)}
+        on:onclick={(e) => handleCanvasClick(e, false)}
       ></canvas>
       
       <!-- 2D Controls -->
@@ -502,7 +502,7 @@
         width={width}
         height={height}
         class="visualization-canvas canvas-3d"
-        on:on:onclick={(e) => handleCanvasClick(e, true)}
+        on:onclick={(e) => handleCanvasClick(e, true)}
       ></canvas>
       
       <!-- 3D Controls -->

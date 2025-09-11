@@ -387,7 +387,7 @@
         ondrop={onDrop}
         ondragover={onDragOver}
         ondragleave={onDragLeave}
-        on:onclick={() => document.getElementById('file-input')?.click()}
+        onclick={() => document.getElementById('file-input')?.click()}
         keydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
       >
         <input
@@ -410,7 +410,7 @@
               <div class="file-details">
                 <div class="file-name">{selectedFile.name}</div>
                 <div class="file-size">{formatFileSize(selectedFile.size)}</div>
-                <button type="button" class="remove-file" on:onclick={removeFile}>
+                <button type="button" class="remove-file" onclick={removeFile}>
                   ✕ Remove
                 </button>
               </div>

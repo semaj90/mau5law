@@ -445,7 +445,9 @@
     class:dragging={$isDragging}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    role="button" aria-label="Drop zone" ondrop={handleDrop}
+    ondrop={handleDrop}
+    role="button" 
+    aria-label="Drop zone" 
     tabindex="0"
     onclick={() => fileInput?.click()}
     onkeydown={(e) => e.key === "Enter" && fileInput?.click()}

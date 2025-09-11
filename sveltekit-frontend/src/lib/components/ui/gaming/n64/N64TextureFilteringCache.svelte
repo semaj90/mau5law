@@ -449,7 +449,7 @@
     <div class="error-overlay">
       <div class="error-icon">⚠️</div>
       <div class="error-message">{errorMessage}</div>
-      <button class="retry-button" on:on:onclick={() => initializeTextureCache()}>
+      <button class="retry-button" on:onclick={() => initializeTextureCache()}>
         RETRY
       </button>
     </div>

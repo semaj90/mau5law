@@ -103,11 +103,11 @@
           <div class="container mx-auto px-4">
             <h3 class="container mx-auto px-4">{citation.title}</h3>
             <div class="container mx-auto px-4">
-              <Button class="bits-btn"
+              <Button
                 variant="ghost"
                 size="sm"
-                on:onclick={() => toggleFavorite(citation)}
-                class="container mx-auto px-4"
+                onclick={() => toggleFavorite(citation)}
+                class="bits-btn container mx-auto px-4"
               >
                 <Star class="container mx-auto px-4" />
               </Button>
@@ -115,18 +115,18 @@
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                on:onclick={() => copyCitation(citation)}
+                onclick={() => copyCitation(citation)}
                 title="Copy citation"
               >
                 <Copy class="container mx-auto px-4" />
               </Button>
 
-              <Button class="bits-btn"
+              <Button
                 variant="ghost"
                 size="sm"
-                on:onclick={() => deleteCitation(citation)}
+                onclick={() => deleteCitation(citation)}
                 title="Delete citation"
-                class="container mx-auto px-4"
+                class="bits-btn container mx-auto px-4"
               >
                 <Trash2 class="container mx-auto px-4" />
               </Button>
@@ -191,13 +191,14 @@
       <div class="container mx-auto px-4">
         {#if searchQuery || selectedCategory !== "all"}
           <p class="container mx-auto px-4">No citations match your search criteria.</p>
-          <Button class="bits-btn"
+          <Button
             variant="secondary"
             size="sm"
-            on:onclick={() => {
+            onclick={() => {
               searchQuery = "";
               selectedCategory = "all";
-            "
+            }}
+            class="bits-btn"
           >
             Clear filters
           </Button>

@@ -190,11 +190,11 @@ mcp<script lang="ts">
 >
   {#if hiddenCount > 0}
     <div class="container mx-auto px-4">
-      <Button class="bits-btn"
+      <Button 
+        class="bits-btn container mx-auto px-4"
         variant="ghost"
         size="sm"
-        on:onclick={() => (maxVisible += 5)}
-        class="container mx-auto px-4"
+        onclick={() => (maxVisible += 5)}
       >
         +{hiddenCount} more notifications
       </Button>
@@ -211,8 +211,8 @@ mcp<script lang="ts">
         role="alert"
         aria-labelledby="notification-title-{notification.id}"
         aria-describedby="notification-message-{notification.id}"
-        on:on:mouseenter={() => pauseTimer(notification)}
-        on:on:mouseleave={() => resumeTimer(notification)}
+        on:mouseenter={() => pauseTimer(notification)}
+        on:mouseleave={() => resumeTimer(notification)}
         focusin={() => pauseTimer(notification)}
         focusout={() => resumeTimer(notification)}
       >
@@ -270,7 +270,7 @@ mcp<script lang="ts">
                           variant={action.variant === "primary"
                             ? "default"
                             : "ghost"}
-                          on:onclick={() =>
+                          onclick={() =>
                             handleNotificationAction(notification, action)}
                           class="container mx-auto px-4"
                         >
@@ -286,7 +286,7 @@ mcp<script lang="ts">
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:onclick={() => dismissNotification(notification.id)}
+                    onclick={() => dismissNotification(notification.id)}
                     class="container mx-auto px-4"
                     aria-label="Dismiss notification"
                   >
@@ -307,7 +307,7 @@ mcp<script lang="ts">
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        on:onclick={() => dismissAll()}
+        onclick={() => dismissAll()}
         class="container mx-auto px-4"
       >
         Clear all ({$notifications.notifications.length})

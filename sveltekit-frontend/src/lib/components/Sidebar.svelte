@@ -99,8 +99,8 @@ export {};
   bind:this={sidebarElement}
   role="complementary"
   aria-label="Content sidebar"
-  on:on:mouseenter={handleMouseEnter}
-  on:on:mouseleave={handleMouseLeave}
+  on:mouseenter={handleMouseEnter}
+  on:mouseleave={handleMouseLeave}
 >
   {#if !sidebarOpen}
     <div class="nes-sidebar-trigger hover-trigger" aria-hidden="true"></div>

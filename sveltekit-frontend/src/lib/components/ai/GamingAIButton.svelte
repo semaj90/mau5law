@@ -158,8 +158,8 @@ https://svelte.dev/e/expected_token -->
     <!-- Main AI Button -->
     <button
       on:onclick={() => isExpanded = !isExpanded}
-      on:on:mouseenter={() => isHovered = true}
-      on:on:mouseleave={() => isHovered = false}
+      onmouseenter={() => isHovered = true}
+      onmouseleave={() => isHovered = false}
       class="relative group p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 
              border-2 border-gray-600/50 rounded-full shadow-2xl
              hover:border-gray-400/70 hover:shadow-blue-500/20 

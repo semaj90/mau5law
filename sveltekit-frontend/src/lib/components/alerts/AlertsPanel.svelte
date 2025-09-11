@@ -36,8 +36,8 @@
           p99 streak: {sustained.sustainedP99Breaches}/{sustained.threshold}
         </span>
       {/if}
-      <button on:onclick={() => autoRefresh = !autoRefresh} class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">{autoRefresh? 'Pause':'Resume'}</button>
-      <button on:onclick={load} class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">Refresh</button>
+      <button onclick={() => autoRefresh = !autoRefresh} class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">{autoRefresh? 'Pause':'Resume'}</button>
+      <button onclick={load} class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">Refresh</button>
     </div>
   </div>
   {#if loading}

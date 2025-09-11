@@ -270,12 +270,12 @@
           <Label>Document Type</Label>
           <div class="grid grid-cols-2 gap-2">
             {#each documentTypes as type}
-              <Button class="bits-btn"
+              <Button 
                 variant={selectedDocumentType === type.value ? 'default' : 'outline'}
                 size="sm"
-                on:onclick={() => selectedDocumentType = type.value}
+                onclick={() => selectedDocumentType = type.value}
                 disabled={$isProcessing}
-                class="justify-start"
+                class="bits-btn justify-start"
               >
                 <span class="mr-2">{type.icon}</span>
                 {type.label}

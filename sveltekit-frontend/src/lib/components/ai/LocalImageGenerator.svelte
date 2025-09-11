@@ -168,7 +168,7 @@ Production-ready with native Windows support
         {#each legalPromptTemplates as template}
           <button 
             class="template-btn nes-btn is-primary"
-            on:on:onclick={() => prompt = template.prompt}
+            onclick={() => prompt = template.prompt}
           >
             {template.name}
           </button>
@@ -249,7 +249,7 @@ Production-ready with native Windows support
     <div class="generate-section">
       <button 
         class="generate-btn nes-btn is-success"
-        on:on:onclick={generateImage}
+        onclick={generateImage}
         disabled={$imageGenerationStore.status.isGenerating || !prompt.trim()}
       >
         {#if $imageGenerationStore.status.isGenerating}
@@ -292,20 +292,20 @@ Production-ready with native Windows support
         <div class="image-actions">
           <button 
             class="nes-btn is-primary"
-            on:on:onclick={() => copyPrompt($imageGenerationStore.currentGeneration!.prompt)}
+            onclick={() => copyPrompt($imageGenerationStore.currentGeneration!.prompt)}
           >
             📋 Copy Prompt
           </button>
           <button 
             class="nes-btn is-warning"
-            on:on:onclick={() => regenerateWithSeed($imageGenerationStore.currentGeneration!)}
+            onclick={() => regenerateWithSeed($imageGenerationStore.currentGeneration!)}
           >
             🔄 Regenerate
           </button>
           {#if caseId}
             <button 
               class="nes-btn is-success"
-              on:on:onclick={() => useImageAsEvidence($imageGenerationStore.currentGeneration!)}
+              onclick={() => useImageAsEvidence($imageGenerationStore.currentGeneration!)}
             >
               📁 Use as Evidence
             </button>
@@ -328,14 +328,14 @@ Production-ready with native Windows support
     <div class="history-header">
       <button 
         class="nes-btn is-normal"
-        on:on:onclick={() => showHistory = !showHistory}
+        onclick={() => showHistory = !showHistory}
       >
         📚 History ({generationHistory.length})
       </button>
       {#if generationHistory.length > 0}
         <button 
           class="nes-btn is-error"
-          on:on:onclick={() => { 
+          onclick={() => { 
             imageGenerationService.clearHistory(); 
             generationHistory = []; 
           }}
@@ -353,7 +353,7 @@ Production-ready with native Windows support
               src={result.imageUrl} 
               alt={result.prompt}
               class="history-thumbnail"
-              on:on:onclick={() => selectedImage = result}
+              onclick={() => selectedImage = result}
             >
             <div class="history-info">
               <p class="history-prompt">{result.prompt.substring(0, 50)}...</p>
@@ -367,11 +367,11 @@ Production-ready with native Windows support
 
   <!-- Selected Image Modal -->
   {#if selectedImage}
-    <div class="modal-overlay" on:on:onclick={() => selectedImage = null}>
-      <div class="modal-content nes-container is-rounded" on:on:onclick={(e) => e.stopPropagation()}>
+    <div class="modal-overlay" onclick={() => selectedImage = null}>
+      <div class="modal-content nes-container is-rounded" onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h4>Generated Image Details</h4>
-          <button class="nes-btn is-error" on:on:onclick={() => selectedImage = null}>×</button>
+          <button class="nes-btn is-error" onclick={() => selectedImage = null}>×</button>
         </div>
         <div class="modal-body">
           <img src={selectedImage.imageUrl} alt={selectedImage.prompt} class="modal-image">
@@ -384,7 +384,7 @@ Production-ready with native Windows support
           <div class="modal-actions">
             <button 
               class="nes-btn is-primary"
-              on:on:onclick={() => {
+              onclick={() => {
                 prompt = selectedImage!.prompt;
                 selectedImage = null;
               }}
@@ -393,14 +393,14 @@ Production-ready with native Windows support
             </button>
             <button 
               class="nes-btn is-warning"
-              on:on:onclick={() => regenerateWithSeed(selectedImage!)}
+              onclick={() => regenerateWithSeed(selectedImage!)}
             >
               Regenerate
             </button>
             {#if caseId}
               <button 
                 class="nes-btn is-success"
-                on:on:onclick={() => {
+                onclick={() => {
                   useImageAsEvidence(selectedImage!);
                   selectedImage = null;
                 }}

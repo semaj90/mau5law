@@ -179,7 +179,7 @@
 	<!-- Select Trigger -->
 	<button
 		class="flex h-10 w-full items-center justify-between rounded-md border border-yorha-border bg-yorha-bg-secondary px-3 py-2 text-sm placeholder:text-yorha-text-tertiary focus:outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
-	 class:opacity-50={disabled}
+		class:opacity-50={disabled}
 		{disabled}
 		aria-label="Select LLM Provider"
 	>

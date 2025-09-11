@@ -68,20 +68,20 @@
   <div>
     <Label>Type</Label>
     <button
-      
+      use:melt={$trigger}
       aria-label="Select evidence type"
-      class="space-y-4"
+      class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
     >
       <span>{$selectedLabel || "Select a type"}</span>
     </button>
-    <div  class="space-y-4">
-      <div )}>
+    <div use:melt={$menu} class="absolute z-50 bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+      <div use:melt={$option({ value: 'Document' })}>
         Document
       </div>
-      <div )}>Image</div>
-      <div )}>Video</div>
-      <div )}>Audio</div>
-      <div )}>Other</div>
+      <div use:melt={$option({ value: 'Image' })}>Image</div>
+      <div use:melt={$option({ value: 'Video' })}>Video</div>
+      <div use:melt={$option({ value: 'Audio' })}>Audio</div>
+      <div use:melt={$option({ value: 'Other' })}>Other</div>
     </div>
     <input type="hidden" name="type" bind:value={$form.type} />
     {#if $errors.type}<span class="space-y-4">{$errors.type}</span
@@ -107,7 +107,7 @@
   </div>
 
   <div class="space-y-4">
-    <Button class="bits-btn" type="button" variant="ghost" on:onclick={() => dispatch("cancel")}
+    <Button class="bits-btn" type="button" variant="ghost" onclick={() => dispatch("cancel")}
       >Cancel</Button
     >
     <Button class="bits-btn" type="submit" disabled={$submitting}>

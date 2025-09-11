@@ -311,11 +311,10 @@
         class="drop-zone"
         class:drag-active={dragActive}
         ondrop={handleDrop}
-        role="region" aria-label="Drop zone" ondragover={handleDragOver}
+        role="button" aria-label="Drop zone" ondragover={handleDragOver}
         ondragleave={handleDragLeave}
-        role="button"
         tabindex="0"
-        on:onclick={() => fileInput?.click()}
+        onclick={() => fileInput?.click()}
         keydown={(e) => e.key === "Enter" && fileInput?.click()}
       >
         {#if selectedFile}

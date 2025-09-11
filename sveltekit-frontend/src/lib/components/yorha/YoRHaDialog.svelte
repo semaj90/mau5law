@@ -126,14 +126,13 @@
 {#if open}
   <div
     class="yorha-dialog-backdrop"
-    role="button" tabindex="0"
-                onclick={handleBackdropClick}
+    onclick={handleBackdropClick}
     onkeydown={handleKeydown}
     transition:fade={{ duration: 150 }}
     role="dialog"
     aria-modal="true"
     aria-labelledby={title ? "dialog-title" : undefined}
-    tabindex="0"
+    tabindex="-1"
   >
     <div
       bind:this={dialogElement}

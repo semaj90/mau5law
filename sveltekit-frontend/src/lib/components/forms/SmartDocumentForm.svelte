@@ -297,7 +297,7 @@
 						<Button
 							variant="outline"
 							class="mt-4 bits-btn"
-							on:onclick={() => fileInput.click()}
+							onclick={() => fileInput.click()}
 						>
 							Browse Files
 						</Button>
@@ -411,7 +411,7 @@
 												variant="outline"
 												size="sm"
 												class="text-xs h-6 px-2 bits-btn"
-												on:onclick={() => applySuggestion(field.name, suggestion)}
+												onclick={() => applySuggestion(field.name, suggestion)}
 											>
 												{suggestion}
 											</Button>
@@ -448,7 +448,7 @@
 					<div class="flex items-center space-x-3">
 						<Button class="bits-btn"
 							variant="outline"
-							on:onclick={() => {
+							onclick={() => {
 								populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
 								formErrors.set({});
 							}}
@@ -479,7 +479,7 @@
 					<Button class="bits-btn"
 						variant="ghost"
 						size="sm"
-						on:onclick={() => showPreview = !showPreview}
+						onclick={() => showPreview = !showPreview}
 					>
 						{showPreview ? 'Hide' : 'Show'}
 					</Button>

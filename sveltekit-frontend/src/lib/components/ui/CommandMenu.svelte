@@ -254,8 +254,8 @@
             <button
               class="command-menu-item"
               class:selected={globalIndex === selectedIndex}
-              on:onclick={() => executeCommand(command)}
-              on:on:mouseenter={() => (selectedIndex = globalIndex)}
+              onclick={() => executeCommand(command)}
+              onmouseenter={() => (selectedIndex = globalIndex)}
             >
               <svelte:component this={command.icon} size={16} />
               <span class="command-menu-item-label">{command.label}</span>

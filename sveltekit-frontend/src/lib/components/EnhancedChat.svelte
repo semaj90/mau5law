@@ -362,11 +362,11 @@
 					>
 						Retry
 					</Button>
-					<Button class="bits-btn" 
+					<Button 
+						class="bits-btn text-red-700 hover:bg-red-50" 
 						size="sm" 
 						variant="ghost"
-						on:onclick={() => send({ type: 'CLEAR_ERROR' })}
-						class="text-red-700 hover:bg-red-50"
+						onclick={() => send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
 					</Button>
@@ -390,7 +390,7 @@
 			</div>
 			<div class="flex flex-col justify-end">
 				<Button
-					on:onclick={handleSend}
+					onclick={handleSend}
 					disabled={!messageInput.trim() || $state.matches('sending')}
 					class={cn(
 						"px-6 py-3 rounded-lg font-medium transition-colors",

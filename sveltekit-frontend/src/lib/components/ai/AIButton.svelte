@@ -129,10 +129,10 @@
 				{loading ? 'animate-pulse' : ''}
 			"
 			{disabled}
-			on:onclick={handleClick}
+			onclick={handleClick}
 			keydown={handleKeydown}
-			on:on:mouseenter={showTooltipHandler}
-			on:on:mouseleave={hideTooltipHandler}
+			onmouseenter={showTooltipHandler}
+			onmouseleave={hideTooltipHandler}
 			onfocus={showTooltipHandler}
 			onblur={hideTooltipHandler}
 			aria-label={tooltip}

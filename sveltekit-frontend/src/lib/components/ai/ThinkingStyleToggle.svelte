@@ -63,8 +63,8 @@
   <!-- Main Toggle Button -->
   <div
     class="toggle-container"
-    on:on:mouseenter={() => showTooltip = true}
-    on:on:mouseleave={() => showTooltip = false}
+    on:mouseenter={() => showTooltip = true}
+    on:mouseleave={() => showTooltip = false}
     role="button"
     tabindex="0"
   >

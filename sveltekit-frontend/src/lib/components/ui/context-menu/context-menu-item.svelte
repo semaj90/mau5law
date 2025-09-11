@@ -7,7 +7,7 @@
   }
   let { children,
     disabled = false,
-    on:on:onclick= () => {}
+    on:onclick= () => {}
   }: Props = $props();
   interface ContextMenuContext {
     close: () => void;

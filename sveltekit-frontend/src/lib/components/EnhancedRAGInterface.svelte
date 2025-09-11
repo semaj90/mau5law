@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <Button
-            on:onclick={handleSearch}
+            onclick={handleSearch}
             disabled={!searchQuery.trim() || ragState.isLoading}
             class="px-6 bits-btn bits-btn"
           >
@@ -238,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <Button class="bits-btn"
             variant="outline"
-            on:onclick={() => showAdvancedOptions = !showAdvancedOptions}
+            onclick={() => showAdvancedOptions = !showAdvancedOptions}
           >
             <Settings class="h-4 w-4" />
           </Button>
@@ -267,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="bits-btn h-8 px-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border border-yellow-200"
                 variant="ghost"
                 size="sm"
-                on:onclick={() => selectSuggestion(suggestion)}
+                onclick={() => selectSuggestion(suggestion)}
               >
                 <Sparkles class="h-3 w-3 mr-1" />
                 {suggestion}
@@ -284,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
             Did you mean:
             {#each ragState.didYouMean as suggestion, i}
               <button
-                on:onclick={() => selectSuggestion(suggestion)}
+                onclick={() => selectSuggestion(suggestion)}
                 class="text-blue-600 hover:text-blue-800 underline ml-1"
               >
                 {suggestion}
@@ -327,7 +327,7 @@ https://svelte.dev/e/js_parse_error -->
               <Button
                 variant="outline"
                 size="sm"
-                on:onclick={handleOptimization}
+                onclick={handleOptimization}
                 class="mt-2 w-full bits-btn bits-btn"
               >
                 <Zap class="h-4 w-4 mr-1" />
@@ -363,14 +363,14 @@ https://svelte.dev/e/js_parse_error -->
               <Button class="bits-btn"
                 variant={visualizationMode === 'list' ? 'default' : 'outline'}
                 size="sm"
-                on:onclick={() => visualizationMode = 'list'}
+                onclick={() => visualizationMode = 'list'}
               >
                 List
               </Button>
               <Button class="bits-btn"
                 variant={visualizationMode === 'clusters' ? 'default' : 'outline'}
                 size="sm"
-                on:onclick={() => visualizationMode = 'clusters'}
+                onclick={() => visualizationMode = 'clusters'}
               >
                 <Target class="h-4 w-4 mr-1" />
                 Clusters
@@ -378,7 +378,7 @@ https://svelte.dev/e/js_parse_error -->
               <Button class="bits-btn"
                 variant={visualizationMode === 'performance' ? 'default' : 'outline'}
                 size="sm"
-                on:onclick={() => visualizationMode = 'performance'}
+                onclick={() => visualizationMode = 'performance'}
               >
                 <BarChart3 class="h-4 w-4 mr-1" />
                 Analytics
@@ -451,7 +451,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {#each clusterVisualization as cluster}
             <Card class="cursor-pointer transition-all {cluster.isSelected ? 'ring-2 ring-blue-500' : ''}"
-                  on:onclick={() => handleClusterSelect(cluster.id)}>
+                  onclick={() => handleClusterSelect(cluster.id)}>
               <CardHeader>
                 <CardTitle class="flex items-center justify-between">
                   <span>Cluster {cluster.id}</span>

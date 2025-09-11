@@ -172,29 +172,29 @@
     </div>
     
     <div class="mode-controls">
-      <Button class="bits-btn"
+      <Button
         variant={currentMode === 'evidence' ? 'default' : 'outline'}
         size="sm"
         onclick={() => switchMode('evidence')}
-        class="mode-btn"
+        class="bits-btn mode-btn"
       >
         📁 Evidence Only
       </Button>
       
-      <Button class="bits-btn"
+      <Button
         variant={currentMode === 'drawing' ? 'default' : 'outline'}
         size="sm" 
         onclick={() => switchMode('drawing')}
-        class="mode-btn"
+        class="bits-btn mode-btn"
       >
         🎨 Drawing Only
       </Button>
       
-      <Button class="bits-btn"
+      <Button
         variant={currentMode === 'both' ? 'default' : 'outline'}
         size="sm"
         onclick={() => switchMode('both')}
-        class="mode-btn"
+        class="bits-btn mode-btn"
       >
         🔄 Both
       </Button>
@@ -204,7 +204,7 @@
         size="sm"
         onclick={syncCanvasBoards}
         disabled={syncInProgress}
-        class="sync-btn bits-btn bits-btn"
+        class="sync-btn bits-btn"
       >
         {syncInProgress ? '🔄 Syncing...' : '🔄 Sync'}
       </Button>
@@ -213,7 +213,7 @@
         variant="outline"
         size="sm"
         onclick={clearAllCanvases}
-        class="clear-btn bits-btn bits-btn"
+        class="clear-btn bits-btn"
       >
         🗑️ Clear
       </Button>

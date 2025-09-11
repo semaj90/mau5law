@@ -334,11 +334,11 @@
 
       <!-- Advanced Options -->
       <div class="border-t pt-6">
-        <Button class="bits-btn"
+        <Button 
           type="button"
           variant="ghost"
           onclick={() => showAdvanced = !showAdvanced}
-          class="mb-4"
+          class="bits-btn mb-4"
         >
           {showAdvanced ? 'Hide' : 'Show'} Advanced Options
         </Button>

@@ -392,10 +392,10 @@
           <div class="search-results">
             <div class="flex justify-between items-center mb-4">
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
-              <Button class="bits-btn"
+              <Button
                 onclick={() => { showSearchResults = false; searchResults = []; }}
                 variant="outline"
-                class="text-sm"
+                class="bits-btn text-sm"
               >
                 Clear Results
               </Button>

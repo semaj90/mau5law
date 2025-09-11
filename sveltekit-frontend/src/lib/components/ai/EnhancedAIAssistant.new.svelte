@@ -87,47 +87,47 @@
 
 <div class="container mx-auto px-4">
   <!-- Header -->
-  <div class="container mx-auto px-4">
-    <div class="container mx-auto px-4">
-      <Brain class="container mx-auto px-4" />
+  <div class="flex justify-between items-center mb-6">
+    <div class="flex items-center gap-3">
+      <Brain class="w-6 h-6 text-blue-600" />
       <h3>Legal AI Assistant</h3>
       {#if caseId}
-        <span class="container mx-auto px-4">Case: {caseId}</span>
+        <span class="text-sm text-gray-600">Case: {caseId}</span>
       {/if}
     </div>
-    <div class="container mx-auto px-4">
+    <div class="flex gap-2">
       <button
-        class="container mx-auto px-4"
-        on:onclick={() => (showSettings = !showSettings)}
+        class="p-2 hover:bg-gray-100 rounded"
+        onclick={() => (showSettings = !showSettings)}
         title="Settings"
       >
-        <Settings class="container mx-auto px-4" />
+        <Settings class="w-4 h-4" />
       </button>
-      <button class="container mx-auto px-4" on:onclick={() => clearMessages()} title="Clear">
-        <Trash2 class="container mx-auto px-4" />
+      <button class="p-2 hover:bg-gray-100 rounded" onclick={() => clearMessages()} title="Clear">
+        <Trash2 class="w-4 h-4" />
       </button>
     </div>
   </div>
 
   <!-- Messages -->
-  <div class="container mx-auto px-4" style="max-height: {maxHeight}">
+  <div class="flex-1 overflow-y-auto mb-4" style="max-height: {maxHeight}">
     {#each messages as message}
-      <div class="container mx-auto px-4">
-        <div class="container mx-auto px-4">
+      <div class="mb-4 p-4 border rounded-lg">
+        <div class="message-content">
           {message.content}
         </div>
 
         {#if message.references && showReferences}
-          <div class="container mx-auto px-4">
+          <div class="mt-2 space-y-2">
             <h4>References:</h4>
             {#each message.references as reference}
               <button
-                class="container mx-auto px-4"
-                on:onclick={() => handleReferenceClick(reference)}
+                class="flex items-center gap-2 p-2 text-left hover:bg-gray-50 rounded"
+                onclick={() => handleReferenceClick(reference)}
               >
-                <Quote class="container mx-auto px-4" />
-                <span class="container mx-auto px-4">{reference.title}</span>
-                <span class="container mx-auto px-4">{reference.citation}</span>
+                <Quote class="w-4 h-4" />
+                <span class="font-medium">{reference.title}</span>
+                <span class="text-sm text-gray-600">{reference.citation}</span>
               </button>
             {/each}
           </div>
@@ -136,9 +136,9 @@
     {/each}
 
     {#if isLoading}
-      <div class="container mx-auto px-4">
-        <div class="container mx-auto px-4">
-          <Loader2 class="container mx-auto px-4" />
+      <div class="flex items-center gap-2 p-4">
+        <div class="flex items-center gap-2">
+          <Loader2 class="w-4 h-4 animate-spin" />
           Analyzing your query...
         </div>
       </div>
@@ -146,20 +146,20 @@
   </div>
 
   <!-- Input -->
-  <form class="container mx-auto px-4" onsubmit|preventDefault={handleSubmit}>
+  <form class="flex gap-2" onsubmit|preventDefault={handleSubmit}>
     <input
       type="text"
       bind:value={query}
       {placeholder}
       disabled={isLoading}
-      class="container mx-auto px-4"
+      class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
     <button
       type="submit"
       disabled={!query.trim() || isLoading}
-      class="container mx-auto px-4"
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
     >
-      <Search class="container mx-auto px-4" />
+      <Search class="w-4 h-4" />
     </button>
   </form>
 
@@ -224,7 +224,7 @@
   <!-- Citation Dialog -->
   {#if showCitationDialog}
     <div
-      class="container mx-auto px-4"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       role="dialog"
       aria-modal="true"
       aria-labelledby="citation-dialog-title"
@@ -233,7 +233,7 @@
       keydown={(e) => e.key === "Escape" && (showCitationDialog = false)}
     >
       <div
-        class="container mx-auto px-4"
+        class="bg-white p-6 rounded-lg w-96 max-w-full"
         role="document"
         onclick
         keydown={(e) => {
@@ -241,34 +241,34 @@
             showCitationDialog = false;
           }
         }}
-        <div class="container mx-auto px-4">
+        <div class="flex items-center gap-2 mb-4">
           <h4 id="citation-dialog-title">
-            <Quote class="container mx-auto px-4" /> Legal Citation
+            <Quote class="w-5 h-5" /> Legal Citation
           </h4>
         </div>
 
-        <div class="container mx-auto px-4">
-          <div class="container mx-auto px-4">
+        <div class="space-y-4">
+          <div class="p-4 bg-gray-50 rounded">
             <p>{selectedCitation}</p>
           </div>
 
-          <div class="container mx-auto px-4">
-            <button class="container mx-auto px-4" on:onclick={() => insertCitation()}>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onclick={() => insertCitation()}>
               Insert Citation
             </button>
             <button
-              class="container mx-auto px-4"
-              on:onclick={() => navigator.clipboard.writeText(selectedCitation)}
+              class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              onclick={() => navigator.clipboard.writeText(selectedCitation)}
             >
               Copy
             </button>
           </div>
         </div>
 
-        <div class="container mx-auto px-4">
+        <div class="flex justify-end mt-4">
           <button
-            class="container mx-auto px-4"
-            on:onclick={() => (showCitationDialog = false)}
+            class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+            onclick={() => (showCitationDialog = false)}
           >
             Close
           </button>

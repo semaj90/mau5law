@@ -410,9 +410,9 @@
     class:bg-gray-50={!dragOver}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
+    ondrop={handleDrop}
     role="button" 
     aria-label="Drop zone" 
-    ondrop={handleDrop}
     tabindex="0"
     onclick={handleClickToSelect}
   >

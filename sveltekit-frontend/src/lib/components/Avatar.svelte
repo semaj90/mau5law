@@ -79,7 +79,7 @@
 	<div 
 		class="mx-auto px-4 max-w-7xl" 
 		style="width: {avatarSize}; height: {avatarSize};"
-		on:onclick={() => handleAvatarClick()}
+		onclick={() => handleAvatarClick()}
 		keydown={(e) => {
 			if (e.key === 'Enter' || e.key === ' ') {
 				e.preventDefault();
@@ -122,7 +122,7 @@
 			<button 
 				type="button" 
 				class="mx-auto px-4 max-w-7xl"
-				on:onclick={() => fileInput?.click()}
+				onclick={() => fileInput?.click()}
 				disabled={$avatarStore.isUploading}
 			>
 				{$avatarStore.isUploading ? 'Uploading...' : 'Change Avatar'}
@@ -132,7 +132,7 @@
 				<button 
 					type="button" 
 					class="mx-auto px-4 max-w-7xl"
-					on:onclick={() => handleRemoveAvatar()}
+					onclick={() => handleRemoveAvatar()}
 				>
 					Remove
 				</button>
@@ -143,7 +143,7 @@
 	{#if $avatarStore.error}
 		<div class="mx-auto px-4 max-w-7xl">
 			{$avatarStore.error}
-			<button type="button" on:onclick={() => avatarStore.clearError()} class="mx-auto px-4 max-w-7xl">×</button>
+			<button type="button" onclick={() => avatarStore.clearError()} class="mx-auto px-4 max-w-7xl">×</button>
 		</div>
 	{/if}
 </div>

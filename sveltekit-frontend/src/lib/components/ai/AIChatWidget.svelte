@@ -261,19 +261,19 @@
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            on:onclick={() => copyToClipboard(message.content)}>
+                            onclick={() => copyToClipboard(message.content)}>
                             <Copy class="h-3 w-3" />
                           </Button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            on:onclick={() => provideFeedback(message.id, 'positive')}>
+                            onclick={() => provideFeedback(message.id, 'positive')}>
                             <ThumbsUp class="h-3 w-3" />
                           </Button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            on:onclick={() => provideFeedback(message.id, 'negative')}>
+                            onclick={() => provideFeedback(message.id, 'negative')}>
                             <ThumbsDown class="h-3 w-3" />
                           </Button>
                         </div>
@@ -290,7 +290,7 @@
                         variant="outline"
                         size="sm"
                         class="text-xs h-auto py-1 px-2 bits-btn bits-btn"
-                        on:onclick={() => handleSuggestionClick(suggestion)}>
+                        onclick={() => handleSuggestionClick(suggestion)}>
                         {suggestion}
                       </Button>
                     {/each}
@@ -342,14 +342,14 @@
           keydown={handleKeydown}
           disabled={isLoading}
           class="flex-1" />
-        <Button class="bits-btn" on:onclick={sendMessage} disabled={isLoading || !currentMessage.trim()}>
+        <Button class="bits-btn" onclick={sendMessage} disabled={isLoading || !currentMessage.trim()}>
           {#if isLoading}
             <Loader2 class="h-4 w-4 animate-spin" />
           {:else}
             <Send class="h-4 w-4" />
           {/if}
         </Button>
-        <Button class="bits-btn" variant="outline" on:onclick={clearChat}>
+        <Button class="bits-btn" variant="outline" onclick={clearChat}>
           <X class="h-4 w-4" />
         </Button>
       </div>

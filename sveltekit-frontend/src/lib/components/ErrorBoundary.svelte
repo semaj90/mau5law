@@ -219,7 +219,7 @@
             size="sm"
             variant="outline"
             class={getButtonClass(currentError.severity)}
-            on:onclick={() => retryAction()}
+            onclick={() => retryAction()}
             disabled={retryInProgress}
             aria-label="Retry action"
           >
@@ -236,7 +236,7 @@
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            on:onclick={() => (showDetails = !showDetails)}
+            onclick={() => (showDetails = !showDetails)}
             aria-label="Toggle error details"
           >
             {#if showDetails}
@@ -250,7 +250,7 @@
         <Button class="bits-btn"
           size="sm"
           variant="ghost"
-          on:onclick={() => clearError()}
+          onclick={() => clearError()}
           aria-label="Dismiss error"
         >
           <X class="mx-auto px-4 max-w-7xl" />
@@ -315,7 +315,7 @@
             <Button class="bits-btn"
               variant="outline"
               size="sm"
-              on:onclick={() => reportError()}
+              onclick={() => reportError()}
               class="mx-auto px-4 max-w-7xl"
             >
               <Bug class="mx-auto px-4 max-w-7xl" />
@@ -327,7 +327,7 @@
             <Button class="bits-btn"
               variant="outline"
               size="sm"
-              on:onclick={() => (showDetails = !showDetails)}
+              onclick={() => (showDetails = !showDetails)}
               class="mx-auto px-4 max-w-7xl"
             >
               {#if showDetails}
@@ -343,7 +343,7 @@
           {#if currentError.canRetry}
             <Button
               class={`gap-2 ${getButtonClass(currentError.severity)}`}
-              on:onclick={() => retryAction()}
+              onclick={() => retryAction()}
               disabled={retryInProgress}
             >
               {#if retryInProgress}
@@ -358,7 +358,7 @@
 
           <Button class="bits-btn"
             variant={currentError.canRetry ? "outline" : "default"}
-            on:onclick={() => clearError()}
+            onclick={() => clearError()}
           >
             {currentError.canRetry ? "Cancel" : "Close"}
           </Button>

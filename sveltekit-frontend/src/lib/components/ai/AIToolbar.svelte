@@ -235,7 +235,7 @@
               class="pl-10" />
           </div>
           <Button class="bits-btn"
-            on:onclick={performAISearch}
+            onclick={performAISearch}
             disabled={disabled || isAISearching || !aiSearchQuery.trim()}
             size="sm">
             {#if isAISearching}
@@ -280,7 +280,7 @@
             rows="2"
             class="resize-none" />
           <Button
-            on:onclick={performAIChat}
+            onclick={performAIChat}
             disabled={disabled || isAIChatting || !aiChatMessage.trim()}
             size="sm"
             class="w-full bits-btn bits-btn">
@@ -322,7 +322,7 @@
             rows="2"
             class="resize-none" />
           <Button
-            on:onclick={performAISummarization}
+            onclick={performAISummarization}
             disabled={disabled || isSummarizing || !summarizeText.trim()}
             size="sm"
             class="w-full bits-btn bits-btn">
@@ -350,7 +350,7 @@
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
-      <Button class="bits-btn" variant="outline" on:onclick={clearResults} size="sm">Clear All Results</Button>
+      <Button class="bits-btn" variant="outline" onclick={clearResults} size="sm">Clear All Results</Button>
     </div>
   {/if}
 
@@ -359,7 +359,7 @@
     <Button class="bits-btn"
       variant="outline"
       size="sm"
-      on:onclick={() => {
+      onclick={() => {
         aiSearchQuery = 'California murder laws';
         performAISearch();
       }}
@@ -370,7 +370,7 @@
     <Button class="bits-btn"
       variant="outline"
       size="sm"
-      on:onclick={() => {
+      onclick={() => {
         aiChatMessage = 'What are the elements of a valid contract?';
         performAIChat();
       }}
@@ -381,7 +381,7 @@
     <Button class="bits-btn"
       variant="outline"
       size="sm"
-      on:onclick={() => {
+      onclick={() => {
         aiSearchQuery = 'evidence admissibility rules';
         performAISearch();
       }}

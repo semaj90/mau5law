@@ -220,8 +220,8 @@
     class={uploadClass}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    role="region" aria-label="Drop zone" ondrop={handleDrop}
-    on:onclick={handleClick}
+    ondrop={handleDrop}
+    onclick={handleClick}
     role="button"
     tabindex="0"
     aria-label="File upload area"
@@ -316,7 +316,7 @@
               <button
                 type="button"
                 class="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                on:onclick={() => removeFile(file.id)}
+                onclick={() => removeFile(file.id)}
                 aria-label="Remove file"
               >
                 <div class="i-lucide-x w-4 h-4" aria-hidden="true"></div>

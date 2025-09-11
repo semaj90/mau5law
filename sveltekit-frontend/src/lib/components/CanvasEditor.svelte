@@ -815,7 +815,7 @@
 					</div>
 					<button
 						class="mx-auto px-4 max-w-7xl"
-						on:onclick={() => addEvidenceMarker(item)}
+						onclick={() => addEvidenceMarker(item)}
 						disabled={readOnly}
 						title="Add evidence marker to canvas"
 					>
@@ -838,7 +838,7 @@
 					</div>
 					<button
 						class="mx-auto px-4 max-w-7xl"
-						on:onclick={() => addCitationMarker(citation)}
+						onclick={() => addCitationMarker(citation)}
 						disabled={readOnly}
 						title="Add citation marker to canvas"
 					>

@@ -206,7 +206,7 @@
           <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
             Change File
           </Button>
-          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
+          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">
             Process Evidence
           </Button>
         </div>

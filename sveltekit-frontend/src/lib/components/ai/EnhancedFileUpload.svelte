@@ -26,7 +26,7 @@
     enableOCR = true,
     enableEmbedding = true,
     enableRAG = true,
-    class = '',
+    class: className = '',
   }: Props = $props();
 
   // State variables
@@ -49,7 +49,7 @@
     try {
       const wsUrl = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/rag/ws/uploads`;
       statusSocket = new WebSocket(wsUrl);
-      statusSocket.on:open=() => console.debug('[UploadWS] connected');
+      statusSocket.onopen = () => console.debug('[UploadWS] connected');
       statusSocket.onmessage = (ev) => {
         try {
           const msg = JSON.parse(ev.data || '{}');
@@ -433,7 +433,7 @@
           placeholder="Search uploaded documents with AI..."
           class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <button
-          on:onclick={handleSearch}
+          onclick={handleSearch}
           disabled={isSearching || !searchQuery.trim()}
           class="px-6 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50 hover:bg-blue-600 flex items-center gap-2">
           {#if isSearching}

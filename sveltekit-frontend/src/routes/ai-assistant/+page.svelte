@@ -29,6 +29,7 @@
   // POI Timeline State
   let poiTimelineData = $state([]);
   let selectedPOI = $state(null);
+  let showPOIDialog = $state(false);
   let timelineLoading = $state(false);
   let showTimeline = $state(false);
   let evidenceReports = $state([]);
@@ -268,10 +269,12 @@
 
   function selectPOI(poi: any) {
     selectedPOI = poi;
+    showPOIDialog = true;
   }
 
   function closePOIDetails() {
     selectedPOI = null;
+    showPOIDialog = false;
   }
 
   onMount(() => {
@@ -657,11 +660,11 @@
                     Refresh Status
                   {/snippet}
                 </Button>
-                <Button class="bits-btn"
+                <Button 
+                  class="bits-btn w-full justify-start"
                   variant="outline"
                   size="sm"
                   onclick={() => window.open('/api/v1/cluster/health', '_blank')}
-                  class="w-full justify-start"
                   fullWidth={true}
                 >
                   {#snippet children()}
@@ -765,7 +768,7 @@
 
 <!-- POI Details Modal -->
 {#if selectedPOI}
-  <Dialog bind:open={!!selectedPOI} legal={true} size="lg">
+  <Dialog bind:open={showPOIDialog} legal={true} size="lg" onOpenChange={(open) => { if (!open) closePOIDetails(); }}>
     {#snippet content()}
       <div class="p-6 max-h-[80vh] overflow-y-auto">
         <!-- Modal Header -->
