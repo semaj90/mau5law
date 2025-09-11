@@ -1,12 +1,13 @@
 <script lang="ts">
   import RoutesList from '../RoutesList.svelte';
   import type { RoutePageData } from './+page.server';
-  import { CheckCircle, AlertTriangle, Clock, Target, Zap, Database, Brain, Shield } from 'lucide-svelte';
-  
-  export let data: RoutePageData;
+  import { CheckCircle, AlertTriangle, Clock, Target } from 'lucide-svelte';
+
+  // Runes mode: access page data via $props instead of `export let`.
+  const { data } = $props<{ data: RoutePageData }>();
 
   const inv = data.routeInventory;
-  
+
   // Phase 1-15 Implementation Status
   let phaseData = [
     {
@@ -20,7 +21,7 @@
     },
     {
       phase: 2,
-      title: "Authentication System", 
+      title: "Authentication System",
       description: "User login, registration, session management",
       status: "complete",
       routes: ["/auth/login", "/auth/register", "/auth/logout"],
@@ -146,16 +147,16 @@
       note: "Neo4j integration deferred as requested"
     }
   ];
-  
+
   let selectedPhase = $state(null);
   let showOnlyIncomplete = $state(false);
-  
+
   // Filter phases based on toggle
   let filteredPhases = $derived(() => {
     if (!showOnlyIncomplete) return phaseData;
     return phaseData.filter(phase => phase.status !== 'complete');
   });
-  
+
   function getStatusColor(status) {
     switch (status) {
       case 'complete': return 'text-green-600 bg-green-100';
@@ -164,7 +165,7 @@
       default: return 'text-gray-600 bg-gray-100';
     }
   }
-  
+
   function getStatusIcon(status) {
     switch (status) {
       case 'complete': return CheckCircle;
@@ -173,21 +174,21 @@
       default: return AlertTriangle;
     }
   }
-  
+
   function getProgressColor(progress) {
     if (progress >= 90) return 'bg-green-500';
     if (progress >= 70) return 'bg-yellow-500';
     if (progress >= 50) return 'bg-blue-500';
     return 'bg-gray-500';
   }
-  
+
   // Overall completion statistics
   let overallStats = $derived(() => {
     const totalPhases = phaseData.length;
     const completedPhases = phaseData.filter(p => p.status === 'complete').length;
     const inProgressPhases = phaseData.filter(p => p.status === 'in-progress').length;
     const avgProgress = phaseData.reduce((sum, p) => sum + p.progress, 0) / totalPhases;
-    
+
     return {
       totalPhases,
       completedPhases,
@@ -207,7 +208,7 @@
   <header class="page-header">
     <h1>Legal AI Platform - Phase Implementation Status</h1>
     <p>Comprehensive tracking of Phase 1-15 implementation progress and route inventory</p>
-    
+
     <!-- Overall Progress Summary -->
     <div class="progress-summary">
       <div class="summary-stats">
@@ -228,7 +229,7 @@
           <div class="stat-label">Routes Built</div>
         </div>
       </div>
-      
+
       <!-- Overall Progress Bar -->
       <div class="overall-progress">
         <div class="progress-bar-container">
@@ -238,7 +239,7 @@
       </div>
     </div>
   </header>
-  
+
   <!-- Phase Implementation Tracker -->
   <section class="phase-tracker">
     <div class="tracker-header">
@@ -250,7 +251,7 @@
         </label>
       </div>
     </div>
-    
+
     <div class="phases-grid">
       {#each filteredPhases as phase}
         <div class="phase-card {phase.status}" class:selected={selectedPhase === phase.phase}>
@@ -268,9 +269,9 @@
               <span class="progress-percentage">{phase.progress}%</span>
             </div>
           </div>
-          
+
           <div class="phase-description">{phase.description}</div>
-          
+
           <div class="phase-status">
             <span class="status-badge {getStatusColor(phase.status)}">
               {phase.status === 'complete' ? 'Complete' : phase.status === 'in-progress' ? 'In Progress' : 'Planned'}
@@ -279,7 +280,7 @@
               <span class="phase-note">{phase.note}</span>
             {/if}
           </div>
-          
+
           {#if selectedPhase === phase.phase}
             <div class="phase-details">
               <div class="features-section">
@@ -293,7 +294,7 @@
                   {/each}
                 </ul>
               </div>
-              
+
               <div class="routes-section">
                 <h4>Key Routes:</h4>
                 <ul class="routes-list">
@@ -382,7 +383,7 @@
     font-size: 1.125rem;
     color: #6b7280;
   }
-  
+
   /* Progress Summary Styles */
   .progress-summary {
     margin-top: 2rem;
@@ -391,14 +392,14 @@
     border-radius: 1rem;
     color: white;
   }
-  
+
   .summary-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
     margin-bottom: 1.5rem;
   }
-  
+
   .stat {
     text-align: center;
     padding: 1rem;
@@ -406,22 +407,22 @@
     border-radius: 0.5rem;
     backdrop-filter: blur(10px);
   }
-  
+
   .stat-value {
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 0.25rem;
   }
-  
+
   .stat-label {
     font-size: 0.875rem;
     opacity: 0.9;
   }
-  
+
   .overall-progress {
     margin-top: 1rem;
   }
-  
+
   .progress-bar-container {
     width: 100%;
     height: 8px;
@@ -430,37 +431,37 @@
     overflow: hidden;
     margin-bottom: 0.5rem;
   }
-  
+
   .progress-bar {
     height: 100%;
     transition: width 0.3s ease;
     border-radius: 4px;
   }
-  
+
   .progress-text {
     font-size: 0.875rem;
     text-align: center;
     opacity: 0.9;
   }
-  
+
   /* Phase Tracker Styles */
   .phase-tracker {
     margin: 3rem 0;
   }
-  
+
   .tracker-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
   }
-  
+
   .tracker-header h2 {
     font-size: 1.75rem;
     color: #1f2937;
     margin: 0;
   }
-  
+
   .toggle {
     display: flex;
     align-items: center;
@@ -468,13 +469,13 @@
     font-size: 0.875rem;
     color: #6b7280;
   }
-  
+
   .phases-grid {
     display: grid;
     gap: 1.5rem;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   }
-  
+
   .phase-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -483,40 +484,40 @@
     transition: all 0.2s ease;
     cursor: pointer;
   }
-  
+
   .phase-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-color: #3b82f6;
   }
-  
+
   .phase-card.selected {
     border-color: #3b82f6;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
   }
-  
+
   .phase-card.complete {
     border-left: 4px solid #10b981;
   }
-  
+
   .phase-card.in-progress {
     border-left: 4px solid #f59e0b;
   }
-  
+
   .phase-card.planned {
     border-left: 4px solid #6b7280;
   }
-  
+
   .phase-header {
     margin-bottom: 1rem;
   }
-  
+
   .phase-number {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
   }
-  
+
   .phase-label {
     font-size: 0.875rem;
     font-weight: 600;
@@ -524,24 +525,24 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  
+
   .status-icon {
     opacity: 0.7;
   }
-  
+
   .phase-title {
     font-size: 1.25rem;
     font-weight: 600;
     color: #1f2937;
     margin-bottom: 0.75rem;
   }
-  
+
   .phase-progress {
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
-  
+
   .progress-bar-small {
     flex: 1;
     height: 6px;
@@ -549,12 +550,12 @@
     border-radius: 3px;
     overflow: hidden;
   }
-  
+
   .progress-fill {
     height: 100%;
     transition: width 0.3s ease;
   }
-  
+
   .progress-percentage {
     font-size: 0.875rem;
     font-weight: 600;
@@ -562,34 +563,34 @@
     min-width: 3rem;
     text-align: right;
   }
-  
+
   .phase-description {
     color: #6b7280;
     font-size: 0.875rem;
     margin-bottom: 1rem;
     line-height: 1.5;
   }
-  
+
   .phase-status {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
   }
-  
+
   .status-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.75rem;
     font-weight: 600;
   }
-  
+
   .phase-note {
     font-size: 0.75rem;
     font-style: italic;
     color: #6b7280;
   }
-  
+
   .phase-details {
     border-top: 1px solid #e5e7eb;
     padding-top: 1rem;
@@ -597,7 +598,7 @@
     display: grid;
     gap: 1.5rem;
   }
-  
+
   .features-section h4,
   .routes-section h4 {
     font-size: 0.875rem;
@@ -607,7 +608,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  
+
   .features-list,
   .routes-list {
     list-style: none;
@@ -616,7 +617,7 @@
     display: grid;
     gap: 0.5rem;
   }
-  
+
   .feature-item {
     display: flex;
     align-items: center;
@@ -624,15 +625,15 @@
     font-size: 0.875rem;
     color: #4b5563;
   }
-  
+
   .feature-icon {
     flex-shrink: 0;
   }
-  
+
   .route-item {
     font-size: 0.875rem;
   }
-  
+
   .route-link {
     color: #3b82f6;
     text-decoration: none;
@@ -642,16 +643,16 @@
     border-radius: 0.375rem;
     transition: all 0.2s ease;
   }
-  
+
   .route-link:hover {
     background: #e5e7eb;
     color: #1d4ed8;
   }
-  
+
   .route-discovery {
     margin: 3rem 0;
   }
-  
+
   .route-discovery h2 {
     font-size: 1.75rem;
     color: #1f2937;
