@@ -9,7 +9,19 @@
   const inv = data.routeInventory;
 
   // Phase 1-15 Implementation Status
-  let phaseData = [
+  type PhaseStatus = 'complete' | 'in-progress' | 'planned';
+  interface Phase {
+    phase: number;
+    title: string;
+    description: string;
+    status: PhaseStatus;
+    routes: string[];
+    completedFeatures: string[];
+    progress: number;
+    note?: string;
+  }
+
+  let phaseData: Phase[] = [
     {
       phase: 1,
       title: "Core SvelteKit Foundation",
@@ -148,8 +160,8 @@
     }
   ];
 
-  let selectedPhase = $state(null);
-  let showOnlyIncomplete = $state(false);
+  let selectedPhase = $state<number | null>(null);
+  let showOnlyIncomplete = $state<boolean>(false);
 
   // Filter phases based on toggle
   let filteredPhases = $derived(() => {
@@ -157,7 +169,7 @@
     return phaseData.filter(phase => phase.status !== 'complete');
   });
 
-  function getStatusColor(status) {
+  function getStatusColor(status: PhaseStatus): string {
     switch (status) {
       case 'complete': return 'text-green-600 bg-green-100';
       case 'in-progress': return 'text-yellow-600 bg-yellow-100';
@@ -166,7 +178,7 @@
     }
   }
 
-  function getStatusIcon(status) {
+  function getStatusIcon(status: PhaseStatus) {
     switch (status) {
       case 'complete': return CheckCircle;
       case 'in-progress': return Clock;
@@ -175,7 +187,7 @@
     }
   }
 
-  function getProgressColor(progress) {
+  function getProgressColor(progress: number): string {
     if (progress >= 90) return 'bg-green-500';
     if (progress >= 70) return 'bg-yellow-500';
     if (progress >= 50) return 'bg-blue-500';
