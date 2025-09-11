@@ -1,9 +1,11 @@
 <script lang="ts">
-  export let options: { value: string; label: string }[] = [];
-  export let selected: string = '';
-  export let placeholder: string = 'Select an option';
-  export let label: string = '';
-  export let id: string = '';
+  const { options: { value: string, selected: string = '', placeholder: string = 'Select an option', label: string = '', id: string = '' } = $props();
+
+   label: string }[] = [];
+  
+  
+  
+  
 </script>
 
 <div class="dropdown-container">

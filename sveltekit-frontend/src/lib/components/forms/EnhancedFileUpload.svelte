@@ -314,7 +314,7 @@
       class:cursor-not-allowed={disabled}
       ondragover={handleDragOver}
       ondragleave={handleDragLeave}
-      ondrop={handleDrop}
+      role="region" aria-label="Drop zone" ondrop={handleDrop}
       on:onclick={openFileDialog}
       keydown={(e: KeyboardEvent) => e.key === "Enter" && openFileDialog()}
       role="button"

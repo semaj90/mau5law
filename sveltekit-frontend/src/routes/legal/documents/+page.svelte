@@ -576,7 +576,7 @@
                  {uploadFile ? 'border-green-500 bg-green-50' : ''}"
           ondragover={handleDragOver}
           ondragleave={handleDragLeave}
-          ondrop={handleDrop}
+          role="region" aria-label="Drop zone" ondrop={handleDrop}
         >
           {#if uploadFile}
             <div class="space-y-2">

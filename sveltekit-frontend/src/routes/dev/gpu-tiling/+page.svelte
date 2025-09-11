@@ -59,13 +59,11 @@
 
   <div class="inputs">
     <div>
-      <label>Pick image for OCR:</label>
-      <input type="file" accept="image/*" onchange={onImageSelected} disabled={ocrBusy}>
+      <label for="pick-image-for-ocr">Pick image for OCR:</label><input id="pick-image-for-ocr" type="file" accept="image/*" onchange={onImageSelected} disabled={ocrBusy}>
       {#if ocrBusy}<span>OCR…</span>{/if}
     </div>
     <div class="text">
-      <label>Text</label>
-      <textarea bind:value={text} rows="6" />
+      <label for="text">Text</label><textarea id="text" bind:value={text} rows="6" />
     </div>
   </div>
 

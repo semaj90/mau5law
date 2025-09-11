@@ -89,16 +89,7 @@
     ...config
   });
   let evolutionManager = $state<GamingEvolutionManager;
-  let unsubscribe = $state<(() >(> void) | null >(null));
-  let debugInfo = $state<any>(null);
-
-  // Set context for child components
-  setContext('gaming-state', gamingState);
-  setContext('gaming-config', gamingConfig);
-  setContext('gaming-manager', () => evolutionManager);
-
-  // Gaming era management functions
-  const setEra = async (era: GamingEra) => {
+  let unsubscribe = $state<(() => {
     if (evolutionManager) {
       await evolutionManager.setEra(era);
     }

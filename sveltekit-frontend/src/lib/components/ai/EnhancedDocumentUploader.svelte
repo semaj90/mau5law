@@ -445,7 +445,7 @@
     class:dragging={$isDragging}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    ondrop={handleDrop}
+    role="region" aria-label="Drop zone" ondrop={handleDrop}
     role="button"
     tabindex="0"
     on:onclick={() => fileInput?.click()}

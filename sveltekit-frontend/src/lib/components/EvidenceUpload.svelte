@@ -1,4 +1,6 @@
 <script lang="ts">
+  const { caseId: string, onUploadComplete: ((artifactUrl: string) = > void) | undefined = undefined, onError: ((error: string) = > void) | undefined = undefined, allowedTypes: string[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize: number = 50 * 1024 * 1024 } = $props();
+
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import {
@@ -20,11 +22,11 @@
   import { Upload, CheckCircle, XCircle, AlertCircle, FileText } from 'lucide-svelte';
 
   // Props
-  export let caseId: string;
-  export let onUploadComplete: ((artifactUrl: string) => void) | undefined = undefined;
-  export let onError: ((error: string) => void) | undefined = undefined;
-  export let allowedTypes: string[] = ['image/png', 'image/jpeg', 'application/pdf'];
-  export let maxFileSize: number = 50 * 1024 * 1024; // 50MB
+  
+  
+  
+  
+   // 50MB
 
   // Component state
   let fileInput: HTMLInputElement;

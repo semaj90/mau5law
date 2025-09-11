@@ -4,7 +4,7 @@
   let editorContainer: HTMLDivElement = $state();
   let editor = $state<monaco.editor.IStandaloneCodeEditor;
 
-  onMount(() >(> {
+  onMount(() => {
   // SSR safety: only run in browser
   if (typeof window !== 'undefined') {
     editor = monaco.editor.create(editorContainer, {

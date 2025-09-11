@@ -90,7 +90,7 @@
         tags: newCitation.tags
           .split(',')
           .map((tag) => tag.trim())
-          .filter((tag) => tag.length > 0),
+          .filter((tag: string) => tag.length > 0),
         id: crypto.randomUUID(),
         isFavorite: false,
         savedAt: new Date(),

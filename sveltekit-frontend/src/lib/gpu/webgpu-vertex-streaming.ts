@@ -4,6 +4,8 @@
  * Achieves true pixel placement with SSR compatibility
  */
 
+import { ensureBufferCompatibility, safeWriteBuffer } from '$lib/utils/buffer-utils';
+
 export interface VertexData {
   position: [number, number, number];
   color: [number, number, number, number];
@@ -396,7 +398,7 @@ export class WebGPUVertexStreamer {
     uniformData[16] = time; // time
     uniformData[17] = this.vertices.length; // vertex count
     
-    this.device.queue.writeBuffer(this.uniformBuffer, 0, uniformData);
+    safeWriteBuffer(this.device, this.uniformBuffer, uniformData);
 
     // Render
     const commandEncoder = this.device.createCommandEncoder();

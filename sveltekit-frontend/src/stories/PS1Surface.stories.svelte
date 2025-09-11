@@ -206,8 +206,7 @@
 		</div>
 
 		<div class="control-row">
-			<label>Polygon Count:</label>
-			<input
+			<label for="polygon-count">Polygon Count:</label><input id="polygon-count"
 				type="range"
 				bind:value={polygonCount}
 				min="50"
@@ -219,8 +218,7 @@
 		</div>
 
 		<div class="control-row">
-			<label>Vertex Precision:</label>
-			<input
+			<label for="vertex-precision">Vertex Precision:</label><input id="vertex-precision"
 				type="range"
 				bind:value={vertexPrecision}
 				min="1"
@@ -232,8 +230,7 @@
 		</div>
 
 		<div class="control-row">
-			<label>Animation Speed:</label>
-			<input
+			<label for="animation-speed">Animation Speed:</label><input id="animation-speed"
 				type="range"
 				bind:value={animationSpeed}
 				min="0"

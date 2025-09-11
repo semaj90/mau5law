@@ -495,8 +495,7 @@
 
         <div class="mt-4">
           <div class="nes-field">
-            <label>Animation Speed</label>
-            <input type="range" class="w-full" min="1" max="100" value="50">
+            <label for="animation-speed">Animation Speed</label><input id="animation-speed" type="range" class="w-full" min="1" max="100" value="50">
           </div>
         </div>
       </div>

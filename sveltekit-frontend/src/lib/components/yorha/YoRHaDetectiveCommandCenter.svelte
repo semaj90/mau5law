@@ -417,8 +417,7 @@
     </div>
     
     <div class="ai-query-section">
-      <label class="ai-query-label">QUERY INPUT</label>
-      <textarea 
+      <label class="ai-query-label" for="query-input">QUERY INPUT</label><textarea id="query-input" 
         class="ai-query-input"
         placeholder="Enter legal query or case analysis request..."
         rows="4"

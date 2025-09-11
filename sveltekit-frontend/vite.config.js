@@ -37,10 +37,14 @@ export default defineConfig({
 			}
 		}
 	],
-	server: {
+			server: {
 		port: 5174,
-		strictPort: true,
-		host: '0.0.0.0'
+		strictPort: false,
+		host: '0.0.0.0',
+		hmr: {
+			port: 5201,
+			host: 'localhost'
+		}
 	},
 	preview: {
 		port: 4173,

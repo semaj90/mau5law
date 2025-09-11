@@ -388,8 +388,7 @@
 		<h3>🎛️ Effect Controls</h3>
 		
 		<div class="control-group">
-			<label>Effect Type:</label>
-			<select bind:value={currentEffect} class="ps1-input">
+			<label for="effect-type">Effect Type:</label><select id="effect-type" bind:value={currentEffect} class="ps1-input">
 				<option value="nomic-diffusion">Nomic Diffusion</option>
 				<option value="semantic-flow">Semantic Flow</option>
 				<option value="embedding-storm">Embedding Storm</option>
@@ -397,8 +396,7 @@
 		</div>
 		
 		<div class="control-group">
-			<label>Intensity: {intensity.toFixed(2)}</label>
-			<input type="range" bind:value={intensity} min="0" max="2" step="0.1" class="ps1-slider">
+			<label for="intensity-intensityt">Intensity: {intensity.toFixed(2)}</label><input id="intensity-intensityt" type="range" bind:value={intensity} min="0" max="2" step="0.1" class="ps1-slider">
 		</div>
 		
 		<div class="feature-flags">

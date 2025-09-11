@@ -26,7 +26,7 @@
   
   <!-- Trigger button with retro styling -->
   <Dialog.Trigger class="nes-btn is-primary">
-    <slot name="trigger">Open Modal</slot>
+    {@render trigger?.()}
   </Dialog.Trigger>
   
   <!-- Portal for proper z-index layering -->
@@ -51,9 +51,7 @@
         
         <!-- Modal body content -->
         <div class="modal-content">
-          <slot>
-            <p class="nes-text">Modal content goes here...</p>
-          </slot>
+          {@render children?.()}
         </div>
         
         <!-- Optional footer -->

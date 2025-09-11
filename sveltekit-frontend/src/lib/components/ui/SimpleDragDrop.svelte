@@ -191,8 +191,9 @@
   class:processing={isProcessing}
   ondragover={handleDragOver}
   ondragleave={handleDragLeave}
-  ondrop={handleDrop}
-  onclick={openFileDialog}
+  role="region" aria-label="Drop zone" ondrop={handleDrop}
+  role="button" tabindex="0"
+                onclick={openFileDialog}
   onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
   role="button"
   tabindex="0"

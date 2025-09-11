@@ -439,7 +439,7 @@ export class WebGPURedisOptimizer {
     try {
       // Check for compressed tensor data
       const metadata = await cache.get(`${key}:meta`);
-      if (metadata?.type === 'compressed_tensor') {
+      if ((metadata as any)?.type === 'compressed_tensor') {
         const compressed = await cache.get(`${key}:data`) as Uint8Array;
         if (compressed) {
           return this.decompressTensor(compressed, metadata.originalLength);

@@ -441,7 +441,8 @@
 
         <div class="yorha-overview-grid">
           {#each allDemos as demo}
-            <div class="yorha-demo-card yorha-demo-card-overview" onclick={() => handleDemoNavigation(demo.path)}>
+            <div class="yorha-demo-card yorha-demo-card-overview" role="button" tabindex="0"
+                onclick={() => handleDemoNavigation(demo.path)}>
               <div class="yorha-demo-header">
                 <h3 class="yorha-demo-title">{demo.title}</h3>
                 <Badge class="{getStatusColor(demo.status)}">
@@ -476,7 +477,8 @@
 
           <div class="yorha-demos-grid">
             {#each category.demos as demo}
-              <div class="yorha-demo-card" onclick={() => handleDemoNavigation(demo.path)}>
+              <div class="yorha-demo-card" role="button" tabindex="0"
+                onclick={() => handleDemoNavigation(demo.path)}>
                 <div class="yorha-demo-header">
                   <h3 class="yorha-demo-title">{demo.title}</h3>
                   <Badge class="{getStatusColor(demo.status)}">

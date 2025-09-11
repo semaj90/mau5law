@@ -546,7 +546,7 @@
     class:drag-over={isDragOver}
     class:disabled
     ondrop={handleDrop}
-    ondragover={handleDragOver}
+    role="region" aria-label="Drop zone" ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     role="button"
     tabindex={0}

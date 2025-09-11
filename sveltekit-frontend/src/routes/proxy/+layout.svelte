@@ -1,6 +1,8 @@
 <script lang="ts">
+  const { children: any } = $props();
+
   // Svelte 5 layout for /proxy subtree.
-  export let children: any;
+  
 </script>
 
 <section class="container mx-auto px-6 py-10">

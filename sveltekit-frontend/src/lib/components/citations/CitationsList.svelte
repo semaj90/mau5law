@@ -9,15 +9,17 @@
   - Detective mode integration
 -->
 <script lang="ts">
+  const { caseId: string, detectiveMode = false, readonly = false } = $props();
+
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
   import CitationEditor from './CitationEditor.svelte';
 
   // Props
-  export let caseId: string;
-  export let detectiveMode = false;
-  export let readonly = false;
+  
+  
+  
 
   // Event dispatcher
   const dispatch = createEventDispatcher<{
@@ -264,8 +266,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
       <!-- Search -->
       <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Search</label>
-        <input
+        <label class="block text-xs font-medium text-gray-700 mb-1" for="search">Search</label><input id="search"
           type="text"
           bind:value={searchQuery}
           onkeydown={(e) => e.key === 'Enter' && handleSearch()}
@@ -276,8 +277,7 @@
 
       <!-- Type Filter -->
       <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Type</label>
-        <select
+        <label class="block text-xs font-medium text-gray-700 mb-1" for="type">Type</label><select id="type"
           bind:value={typeFilter}
           onchange={handleFilterChange}
           class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -290,8 +290,7 @@
 
       <!-- Verified Filter -->
       <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Status</label>
-        <select
+        <label class="block text-xs font-medium text-gray-700 mb-1" for="status">Status</label><select id="status"
           bind:value={verifiedFilter}
           onchange={handleFilterChange}
           class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -355,7 +354,8 @@
       {#each $filteredCitations as citation}
         <div 
           class="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-          onclick={() => selectCitation(citation)}
+          role="button" tabindex="0"
+                onclick={() => selectCitation(citation)}
         >
           <div class="flex justify-between items-start">
             <div class="flex-1">

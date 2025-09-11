@@ -171,7 +171,7 @@
     class:uploading
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    ondrop={handleDrop}
+    role="region" aria-label="Drop zone" ondrop={handleDrop}
     role="button"
     tabindex="0"
     on:on:onclick={() => document.getElementById('file-input')?.click()}

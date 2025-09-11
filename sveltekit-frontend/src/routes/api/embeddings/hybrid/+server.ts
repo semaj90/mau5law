@@ -341,7 +341,7 @@ function generateLocalEmbedding(content: string, model: string): number[] {
     .toLowerCase()
     .replace(/[^\w\s]/g, " ")
     .split(/\s+/)
-    .filter((word) => word.length > 2);
+    .filter((word: string) => word.length > 2);
 
   const wordCount = new Map<string, number>();
   words.forEach((word) => {

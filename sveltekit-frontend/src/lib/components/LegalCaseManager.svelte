@@ -119,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
   // Auto-save functionality
   let autoSaveTimeout = $state<NodeJS.Timeout;
 
-  $effect(() >(> {
+  $effect(() => {
     if ($formData) {
       clearTimeout(autoSaveTimeout));
       autoSaveTimeout = setTimeout(() => {

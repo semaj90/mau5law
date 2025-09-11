@@ -522,8 +522,7 @@
             <h3 class="container mx-auto px-4">Basic Information</h3>
             <div class="container mx-auto px-4">
               <div>
-                <label class="container mx-auto px-4">Title</label>
-                <input
+                <label class="container mx-auto px-4" for="title">Title</label><input id="title"
                   bind:value={$formData.title}
                   placeholder="Enter evidence title"
                   disabled={readOnly}
@@ -532,8 +531,7 @@
               </div>
               
               <div>
-                <label class="container mx-auto px-4">Description</label>
-                <textarea
+                <label class="container mx-auto px-4" for="description">Description</label><textarea id="description"
                   bind:value={$formData.description}
                   placeholder="Enter description or summary"
                   disabled={readOnly}
@@ -544,8 +542,7 @@
               
               <div class="container mx-auto px-4">
                 <div>
-                  <label class="container mx-auto px-4">Evidence Type</label>
-                  <select 
+                  <label class="container mx-auto px-4" for="evidence-type">Evidence Type</label><select id="evidence-type" 
                     bind:value={$formData.evidenceType}
                     disabled={readOnly}
                     class="container mx-auto px-4"
@@ -557,8 +554,7 @@
                 </div>
                 
                 <div>
-                  <label class="container mx-auto px-4">Legal Relevance</label>
-                  <select 
+                  <label class="container mx-auto px-4" for="legal-relevance">Legal Relevance</label><select id="legal-relevance" 
                     bind:value={$formData.legalRelevance}
                     disabled={readOnly}
                     class="container mx-auto px-4"
@@ -572,8 +568,7 @@
               
               <div class="container mx-auto px-4">
                 <div>
-                  <label class="container mx-auto px-4">Confidentiality</label>
-                  <select 
+                  <label class="container mx-auto px-4" for="confidentiality">Confidentiality</label><select id="confidentiality" 
                     bind:value={$formData.confidentialityLevel}
                     disabled={readOnly}
                     class="container mx-auto px-4"
@@ -585,8 +580,7 @@
                 </div>
                 
                 <div>
-                  <label class="container mx-auto px-4">Urgency</label>
-                  <select 
+                  <label class="container mx-auto px-4" for="urgency">Urgency</label><select id="urgency" 
                     bind:value={$formData.urgencyLevel}
                     disabled={readOnly}
                     class="container mx-auto px-4"

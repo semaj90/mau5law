@@ -4,13 +4,15 @@
 -->
 
 <script lang="ts">
+  const { updateInterval: number = 2000, maxHistoryPoints: number = 30, showAdvancedMetrics: boolean = true } = $props();
+
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
 
   // Props
-  export let updateInterval: number = 2000;
-  export let maxHistoryPoints: number = 30;
-  export let showAdvancedMetrics: boolean = true;
+  
+  
+  
 
   // Performance metrics interface
   interface PerformanceMetrics {

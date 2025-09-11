@@ -4,6 +4,17 @@
 -->
 
 <script lang="ts">
+  const { maxFiles = 10, maxFileSize = 100 * 1024 * 1024, acceptedTypes = [
+    'image/*',
+    'application/pdf',
+    'text/plain',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'video/mp4',
+    'audio/mpeg',
+    'audio/wav'
+  ], enableGPUProcessing = true, enableAIAnalysis = true } = $props();
+
   import { createEventDispatcher } from 'svelte';
   import { goTensorService, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client';
   import { fade, fly, scale } from 'svelte/transition';
@@ -36,20 +47,11 @@
   }
 
   // Props
-  export let maxFiles = 10;
-  export let maxFileSize = 100 * 1024 * 1024; // 100MB
-  export let acceptedTypes = [
-    'image/*',
-    'application/pdf',
-    'text/plain',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'video/mp4',
-    'audio/mpeg',
-    'audio/wav'
-  ];
-  export let enableGPUProcessing = true;
-  export let enableAIAnalysis = true;
+  
+   // 100MB
+  
+  
+  
 
   // Event dispatcher
   const dispatch = createEventDispatcher<{

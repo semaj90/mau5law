@@ -1,9 +1,7 @@
 <script lang="ts">
-</script>
   import { cn } from "$lib/utils";
   
-  let className: string = "";
-  export { className as class };
+  let { class: className = "" } = $props();
 </script>
 
 <thead class={cn("[&_tr]:border-b", className)}>

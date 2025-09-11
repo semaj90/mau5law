@@ -185,8 +185,7 @@
         <Card.Content class="space-y-6">
           <!-- Query Input -->
           <div class="space-y-3">
-            <label class="text-sm font-medium">Legal Query</label>
-            <textarea
+            <label class="text-sm font-medium" for="legal-query">Legal Query</label><textarea id="legal-query"
               bind:value={currentQuery}
               placeholder="Enter your legal question or search query..."
               class="w-full h-24 p-3 border rounded-md"

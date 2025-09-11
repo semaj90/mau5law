@@ -220,7 +220,7 @@
     class={uploadClass}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    ondrop={handleDrop}
+    role="region" aria-label="Drop zone" ondrop={handleDrop}
     on:onclick={handleClick}
     role="button"
     tabindex="0"

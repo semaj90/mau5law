@@ -329,35 +329,35 @@
       {#snippet children()}
         <h2 class="text-xl font-semibold mb-4">Quick Legal Queries</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Button class="bits-btn"
+          <Button 
+            class="bits-btn justify-start"
             variant="outline"
             onclick={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
-            class="justify-start"
           >
             {#snippet children()}Contract Law{/snippet}
           </Button>
-          <Button class="bits-btn"
+          <Button 
+            class="bits-btn justify-start"
             variant="outline"
             onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
-            class="justify-start"
           >
             {#snippet children()}Evidence Rules{/snippet}
           </Button>
-          <Button class="bits-btn"
+          <Button 
+            class="bits-btn justify-start"
             variant="outline"
             onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
-            class="justify-start"
           >
             {#snippet children()}Liability{/snippet}
           </Button>
-          <Button class="bits-btn"
+          <Button 
+            class="bits-btn justify-start"
             variant="outline"
             onclick={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
-            class="justify-start"
           >
             {#snippet children()}Tort Law{/snippet}
           </Button>
@@ -657,11 +657,11 @@
                     Refresh Status
                   {/snippet}
                 </Button>
-                <Button class="bits-btn"
+                <Button 
+                  class="bits-btn w-full justify-start"
                   variant="outline"
                   size="sm"
                   onclick={() => window.open('/api/v1/cluster/health', '_blank')}
-                  class="w-full justify-start"
                   fullWidth={true}
                 >
                   {#snippet children()}

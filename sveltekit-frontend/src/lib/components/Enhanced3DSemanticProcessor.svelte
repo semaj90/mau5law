@@ -253,8 +253,7 @@
       <div class="space-y-4">
         <!-- Input -->
         <div>
-          <label class="block text-sm font-medium mb-2">Input Text:</label>
-          <textarea 
+          <label class="block text-sm font-medium mb-2" for="input-text">Input Text:</label><textarea id="input-text" 
             bind:value={inputText}
             class="w-full p-3 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows="4"

@@ -276,42 +276,42 @@ let logsInterval = $state<number | null >(null);
 
   <!-- Navigation Tabs -->
   <div class="flex gap-2 mb-6">
-    <Button class="bits-btn"
+    <Button 
+      class="bits-btn flex items-center gap-2"
       variant={activeTab === 'search' ? 'default' : 'outline'}
       onclick={() => activeTab = 'search'}
-      class="flex items-center gap-2"
     >
       <Search class="w-4 h-4" />
       Search
     </Button>
-    <Button class="bits-btn"
+    <Button 
+      class="bits-btn flex items-center gap-2"
       variant={activeTab === 'upload' ? 'default' : 'outline'}
       onclick={() => activeTab = 'upload'}
-      class="flex items-center gap-2"
     >
       <Upload class="w-4 h-4" />
       Upload
     </Button>
-    <Button class="bits-btn"
+    <Button 
+      class="bits-btn flex items-center gap-2"
       variant={activeTab === 'crawl' ? 'default' : 'outline'}
       onclick={() => activeTab = 'crawl'}
-      class="flex items-center gap-2"
     >
       <Globe class="w-4 h-4" />
       Crawl
     </Button>
-    <Button class="bits-btn"
+    <Button 
+      class="bits-btn flex items-center gap-2"
       variant={activeTab === 'logs' ? 'default' : 'outline'}
       onclick={() => activeTab = 'logs'}
-      class="flex items-center gap-2"
     >
       <FileText class="w-4 h-4" />
       Logs
     </Button>
-    <Button class="bits-btn"
+    <Button 
+      class="bits-btn flex items-center gap-2"
       variant={activeTab === 'settings' ? 'default' : 'outline'}
       onclick={() => activeTab = 'settings'}
-      class="flex items-center gap-2"
     >
       <Settings class="w-4 h-4" />
       Settings
@@ -396,8 +396,7 @@ let logsInterval = $state<number | null >(null);
           </CardHeader>
           <CardContent class="space-y-4">
             <div>
-              <label class="block text-sm font-medium mb-2">Select PDF Document</label>
-              <input
+              <label class="block text-sm font-medium mb-2" for="select-pdf-document">Select PDF Document</label><input id="select-pdf-document"
                 type="file"
                 accept=".pdf"
                 change={(e) => uploadFile = e.target.files?.[0] || null}

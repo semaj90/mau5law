@@ -290,7 +290,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
       class="border-2 border-dashed rounded-lg p-8 text-center transition-colors {dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}"
       ondragover={handleDragOver as any}
       ondragleave={handleDragLeave as any}
-      ondrop={handleDrop as any}
+      role="region" aria-label="Drop zone" ondrop={handleDrop as any}
     >
       {#if selectedFiles.length === 0}
         <Upload class="mx-auto w-12 h-12 text-gray-400 mb-4" />

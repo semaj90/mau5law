@@ -1,4 +1,6 @@
 <script lang="ts">
+  const { userId: string, onCaseCreated: (caseId: string) = > void = () => {} } = $props();
+
 </script>
 	import { onMount } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
@@ -7,8 +9,8 @@
 	import { enhance } from '$app/forms';
 
 	// Props
-	export let userId: string;
-	export let onCaseCreated: (caseId: string) => void = () => {};
+	
+	
 
 	// State
 	let isVisible = $state(false);
@@ -288,8 +290,7 @@
 						<h5>Custom Case</h5>
 						<div class="form-grid">
 							<div class="form-group">
-								<label>Case Title</label>
-								<input 
+								<label for="case-title">Case Title</label><input id="case-title" 
 									type="text" 
 									bind:value={caseTitle}
 									placeholder="Enter case title..."
@@ -298,8 +299,7 @@
 							</div>
 							
 							<div class="form-group">
-								<label>Description</label>
-								<textarea 
+								<label for="description">Description</label><textarea id="description" 
 									bind:value={caseDescription}
 									placeholder="Brief case description..."
 									class="form-textarea"
@@ -309,8 +309,7 @@
 							
 							<div class="form-row">
 								<div class="form-group">
-									<label>Priority</label>
-									<select bind:value={priority} class="form-select">
+									<label for="priority">Priority</label><select id="priority" bind:value={priority} class="form-select">
 										<option value="low">Low</option>
 										<option value="medium">Medium</option>
 										<option value="high">High</option>
@@ -319,8 +318,7 @@
 								</div>
 								
 								<div class="form-group">
-									<label>Category</label>
-									<select bind:value={category} class="form-select">
+									<label for="category">Category</label><select id="category" bind:value={category} class="form-select">
 										<option value="criminal">Criminal</option>
 										<option value="civil">Civil</option>
 										<option value="financial">Financial</option>

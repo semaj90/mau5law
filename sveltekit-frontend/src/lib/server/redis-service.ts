@@ -425,7 +425,7 @@ class RedisService {
     }
   }
 
-  async pipeline(): any {
+  async pipeline(): Promise<any> {
     const client = this.getClient();
     if (!client) return null;
 

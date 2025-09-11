@@ -361,7 +361,8 @@
             {@const IconComponent = getPatchIcon(patch)}
             <div
               class="p-3 rounded-lg bg-slate-700/50 border border-slate-600 cursor-pointer hover:bg-slate-700 transition-colors"
-              onclick={() => (selectedPatch = patch)}
+              role="button" tabindex="0"
+                onclick={() => (selectedPatch = patch)}
               class:ring-2={selectedPatch?.id === patch.id}
               class:ring-green-500={selectedPatch?.id === patch.id}>
               <div class="flex items-start gap-3">

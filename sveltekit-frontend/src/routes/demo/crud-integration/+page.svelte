@@ -253,10 +253,9 @@
         <form onsubmit={createCase}>
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">
+              <label class="block text-sm font-medium text-slate-700 mb-1" for="-case-title-">
                 Case Title *
-              </label>
-              <input 
+              </label><input id="-case-title-" 
                 bind:value={newCaseForm.title}
                 type="text" 
                 required
@@ -266,10 +265,9 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">
+              <label class="block text-sm font-medium text-slate-700 mb-1" for="-description-">
                 Description
-              </label>
-              <textarea 
+              </label><textarea id="-description-" 
                 bind:value={newCaseForm.description}
                 rows="3"
                 class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -279,10 +277,9 @@
             
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">
+                <label class="block text-sm font-medium text-slate-700 mb-1" for="-priority-">
                   Priority
-                </label>
-                <select 
+                </label><select id="-priority-" 
                   bind:value={newCaseForm.priority}
                   class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -293,10 +290,9 @@
               </div>
               
               <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">
+                <label class="block text-sm font-medium text-slate-700 mb-1" for="-status-">
                   Status
-                </label>
-                <select 
+                </label><select id="-status-" 
                   bind:value={newCaseForm.status}
                   class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -421,8 +417,7 @@
             <form onsubmit={addEvidence}>
               <div class="space-y-3">
                 <div>
-                  <label class="block text-xs font-medium text-slate-700 mb-1">Evidence Content *</label>
-                  <textarea 
+                  <label class="block text-xs font-medium text-slate-700 mb-1" for="evidence-content-">Evidence Content *</label><textarea id="evidence-content-" 
                     bind:value={newEvidenceForm.content}
                     rows="3"
                     required
@@ -433,8 +428,7 @@
                 
                 <div class="grid grid-cols-2 gap-2">
                   <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Type</label>
-                    <select 
+                    <label class="block text-xs font-medium text-slate-700 mb-1" for="type">Type</label><select id="type" 
                       bind:value={newEvidenceForm.evidenceType}
                       class="w-full px-2 py-1 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     >
@@ -446,8 +440,7 @@
                   </div>
                   
                   <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Source</label>
-                    <input 
+                    <label class="block text-xs font-medium text-slate-700 mb-1" for="source">Source</label><input id="source" 
                       bind:value={newEvidenceForm.source}
                       type="text" 
                       class="w-full px-2 py-1 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -457,8 +450,7 @@
                 </div>
                 
                 <div>
-                  <label class="block text-xs font-medium text-slate-700 mb-1">Tags (comma-separated)</label>
-                  <input 
+                  <label class="block text-xs font-medium text-slate-700 mb-1" for="tags-commaseparated">Tags (comma-separated)</label><input id="tags-commaseparated" 
                     bind:value={newEvidenceForm.tags}
                     type="text" 
                     class="w-full px-2 py-1 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"

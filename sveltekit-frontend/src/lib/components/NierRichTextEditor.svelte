@@ -21,7 +21,7 @@ https://svelte.dev/e/component_invalid_directive -->
   import { Separator } from "$lib/components/ui/separator";
   let editor = $state<Editor | null >(null);
   let editorElement = $state<HTMLElement;
-  onMount(() >(> {
+  onMount(() => {
     editor = new Editor({
       element: editorElement,
       extensions: [StarterKit],

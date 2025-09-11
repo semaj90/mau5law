@@ -3,9 +3,9 @@
 
 import {
   CompoundButton,
-  CompoundDialog,
-  CompoundCard,
-  CompoundSelect
+  Dialog as CompoundDialog,
+  Card as CompoundCard,
+  Select as CompoundSelect
 } from "./index.js";
 
 // Re-export compound components with compound syntax support

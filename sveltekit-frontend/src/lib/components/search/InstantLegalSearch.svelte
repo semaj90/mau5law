@@ -331,8 +331,7 @@
             <label class="text-sm font-medium mb-2 block">Minimum Scores</label>
             <div class="space-y-3">
               <div>
-                <label class="text-xs text-muted-foreground">Confidence: {selectedFilters.confidenceMin}</label>
-                <input
+                <label class="text-xs text-muted-foreground" for="confidence-selectedf">Confidence: {selectedFilters.confidenceMin}</label><input id="confidence-selectedf"
                   type="range"
                   bind:value={selectedFilters.confidenceMin}
                   min="0"
@@ -342,8 +341,7 @@
                 />
               </div>
               <div>
-                <label class="text-xs text-muted-foreground">Priority: {selectedFilters.priorityMin}</label>
-                <input
+                <label class="text-xs text-muted-foreground" for="priority-selectedfil">Priority: {selectedFilters.priorityMin}</label><input id="priority-selectedfil"
                   type="range"
                   bind:value={selectedFilters.priorityMin}
                   min="0"

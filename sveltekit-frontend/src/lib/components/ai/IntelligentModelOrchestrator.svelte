@@ -139,7 +139,7 @@
 
     } catch (error) {
       console.error('Query processing failed:', error);
-      results.set({ error: error.message });
+      results.set({ error: error instanceof Error ? error.message : String(error) });
     } finally {
       isProcessing = false;
     }

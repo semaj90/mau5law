@@ -559,7 +559,7 @@ export class LegalBERTMiddleware {
 
   private calculateTextComplexity(text: string): LegalBertAnalysisResult['complexity'] {
     const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
-    const words = text.split(/\s+/).filter((w) => w.length > 0);
+    const words = text.split(/\s+/).filter((w: string) => w.length > 0);
     const avgWordsPerSentence = words.length / sentences.length;
 
     // Count complex legal terms

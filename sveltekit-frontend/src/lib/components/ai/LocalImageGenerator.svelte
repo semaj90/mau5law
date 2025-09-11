@@ -153,8 +153,7 @@ Production-ready with native Windows support
   <div class="generation-controls">
     <!-- Prompt Input -->
     <div class="input-group">
-      <label class="nes-text">Prompt:</label>
-      <textarea 
+      <label class="nes-text" for="prompt">Prompt:</label><textarea id="prompt" 
         class="nes-textarea" 
         bind:value={prompt} 
         placeholder="Describe the image you want to generate..."
@@ -218,8 +217,7 @@ Production-ready with native Windows support
     {#if advancedMode}
       <div class="advanced-controls nes-container is-dark">
         <div class="input-group">
-          <label class="nes-text">Negative Prompt:</label>
-          <textarea 
+          <label class="nes-text" for="negative-prompt">Negative Prompt:</label><textarea id="negative-prompt" 
             class="nes-textarea" 
             bind:value={negativePrompt} 
             placeholder="What to avoid in the image..."
@@ -229,24 +227,19 @@ Production-ready with native Windows support
 
         <div class="parameter-row">
           <div class="param-group">
-            <label class="nes-text">Width:</label>
-            <input class="nes-input" type="number" bind:value={width} min="256" max="1024" step="64">
+            <label class="nes-text" for="width">Width:</label><input id="width" class="nes-input" type="number" bind:value={width} min="256" max="1024" step="64">
           </div>
           <div class="param-group">
-            <label class="nes-text">Height:</label>
-            <input class="nes-input" type="number" bind:value={height} min="256" max="1024" step="64">
+            <label class="nes-text" for="height">Height:</label><input id="height" class="nes-input" type="number" bind:value={height} min="256" max="1024" step="64">
           </div>
           <div class="param-group">
-            <label class="nes-text">Steps:</label>
-            <input class="nes-input" type="number" bind:value={steps} min="1" max="100">
+            <label class="nes-text" for="steps">Steps:</label><input id="steps" class="nes-input" type="number" bind:value={steps} min="1" max="100">
           </div>
           <div class="param-group">
-            <label class="nes-text">CFG Scale:</label>
-            <input class="nes-input" type="number" bind:value={cfgScale} min="1" max="30" step="0.5">
+            <label class="nes-text" for="cfg-scale">CFG Scale:</label><input id="cfg-scale" class="nes-input" type="number" bind:value={cfgScale} min="1" max="30" step="0.5">
           </div>
           <div class="param-group">
-            <label class="nes-text">Seed (-1 for random):</label>
-            <input class="nes-input" type="number" bind:value={seed} min="-1" max="999999999">
+            <label class="nes-text" for="seed-1-for-random">Seed (-1 for random):</label><input id="seed-1-for-random" class="nes-input" type="number" bind:value={seed} min="-1" max="999999999">
           </div>
         </div>
       </div>

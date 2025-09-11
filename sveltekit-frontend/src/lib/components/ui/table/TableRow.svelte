@@ -1,9 +1,7 @@
 <script lang="ts">
-</script>
   import { cn } from "$lib/utils";
   
-  let className: string = "";
-  export { className as class };
+  let { class: className = "" } = $props();
 </script>
 
 <tr class={cn("border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted", className)}>

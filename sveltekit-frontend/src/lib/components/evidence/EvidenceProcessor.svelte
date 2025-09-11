@@ -1,11 +1,13 @@
 // Enhanced Evidence Processing Component
 <script lang="ts">
-  import { } from 'svelte';
+  import { , onMount, onDestroy } from 'svelte';
+
+  
 
   import { createActor } from 'xstate';
   import { uploadMachine, getFileProgress, getAllFilesStatus, getOverallProgress } from '$lib/machines/uploadMachine';
   import type { ProgressMsg } from '$lib/types/progress';
-  import { onMount, onDestroy } from 'svelte';
+  
   interface Props {
     evidenceId: string;
     steps?: string[];

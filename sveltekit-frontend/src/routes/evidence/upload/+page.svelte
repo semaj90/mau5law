@@ -249,7 +249,7 @@
               style="padding: 30px; text-align: center; cursor: pointer;"
               ondragover={onDragOver}
               ondragleave={onDragLeave}
-              ondrop={onDrop}
+              role="region" aria-label="Drop zone" ondrop={onDrop}
             >
               {#if selectedFile}
                 <div class="space-y-4">

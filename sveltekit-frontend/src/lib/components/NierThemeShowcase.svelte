@@ -247,10 +247,9 @@
           <div class="space-y-6 max-w-md">
             <!-- Input Field -->
             <div>
-              <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver">
+              <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver" for="-case-title-">
                 Case Title
-              </label>
-              <input
+              </label><input id="-case-title-"
                 type="text"
                 bind:value={inputValue}
                 placeholder="Enter case title..."
@@ -260,10 +259,9 @@
             
             <!-- Select Dropdown -->
             <div>
-              <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver">
+              <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver" for="-status-">
                 Status
-              </label>
-              <select
+              </label><select id="-status-"
                 bind:value={selectedStatus}
                 class="nier-input"
               >
@@ -275,10 +273,9 @@
             
             <!-- Textarea -->
             <div>
-              <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver">
+              <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver" for="-case-description-">
                 Case Description
-              </label>
-              <textarea
+              </label><textarea id="-case-description-"
                 rows="4"
                 placeholder="Describe the case details..."
                 class="nier-input resize-none"

@@ -235,16 +235,16 @@
         Refresh
       </Button>
       <Button class="bits-btn" variant="outline" size="sm" onclick={() => exportEvents()}>
-        <Download class="container mx-auto px-4" />
+        <Download class="h-4 w-4" />
         Export
       </Button>
-      <Button class="bits-btn"
+      <Button 
+        class="bits-btn container mx-auto px-4"
         variant="outline"
         size="sm"
         onclick={() => clearAllEvents()}
-        class="container mx-auto px-4"
       >
-        <Trash2 class="container mx-auto px-4" />
+        <Trash2 class="h-4 w-4" />
         Clear All
       </Button>
     </div>
@@ -448,13 +448,13 @@
                   </div>
                 </div>
 
-                <Button class="bits-btn"
+                <Button 
+                  class="bits-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => toggleEventDetails(index)}
-                  class="container mx-auto px-4"
                 >
-                  <Eye class="container mx-auto px-4" />
+                  <Eye class="h-4 w-4" />
                 </Button>
               </div>
             </div>

@@ -59,8 +59,8 @@ export class UTF8ToFP32Converter {
     '↓': 0.61,  // Down arrow
     '"': 0.59,  // Left double quote
     '"': 0.57,  // Right double quote
-    ''': 0.55,  // Left single quote
-    ''': 0.53,  // Right single quote
+    "'": 0.55,  // Left single quote
+    "'": 0.53,  // Right single quote
     '–': 0.51,  // En dash
     '—': 0.49,  // Em dash
     '…': 0.47,  // Ellipsis

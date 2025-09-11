@@ -311,7 +311,7 @@
         class="drop-zone"
         class:drag-active={dragActive}
         ondrop={handleDrop}
-        ondragover={handleDragOver}
+        role="region" aria-label="Drop zone" ondragover={handleDragOver}
         ondragleave={handleDragLeave}
         role="button"
         tabindex="0"

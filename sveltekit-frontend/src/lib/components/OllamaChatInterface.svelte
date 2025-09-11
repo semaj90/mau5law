@@ -362,8 +362,7 @@
       <CardContent class="pt-0 border-t">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-medium">Temperature</label>
-            <input
+            <label class="text-sm font-medium" for="temperature">Temperature</label><input id="temperature"
               type="range"
               min="0"
               max="1"

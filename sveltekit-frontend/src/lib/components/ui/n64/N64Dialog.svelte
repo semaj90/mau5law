@@ -421,7 +421,8 @@
   <div
     bind:this={backdropElement}
     class={backdropClasses()}
-    onclick={handleBackdropClick}
+    role="button" tabindex="0"
+                onclick={handleBackdropClick}
     transition:fade={{ duration: reducedMotion ? 0 : animationDuration }}
     aria-hidden="true"
   >

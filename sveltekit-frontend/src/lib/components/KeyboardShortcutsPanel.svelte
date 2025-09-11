@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { } from 'svelte';
+  import { onMount, onDestroy,  } from 'svelte';
+
+  
+  
   import {
     shortcuts,
     shortcutCategories,

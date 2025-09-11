@@ -182,10 +182,9 @@
           
           <!-- File Selection -->
           <div class="mb-golden-md">
-            <label class="block text-nier-text-secondary mb-golden-sm font-bold text-sm uppercase">
+            <label class="block text-nier-text-secondary mb-golden-sm font-bold text-sm uppercase" for="-select-document-">
               Select Document
-            </label>
-            <input
+            </label><input id="-select-document-"
               type="file"
               bind:this={fileInput}
               onchange={handleFileSelect}
@@ -250,8 +249,7 @@
               
               <div class="space-y-golden-sm">
                 <div>
-                  <label class="block text-nier-text-secondary text-sm mb-1">Quantization:</label>
-                  <select
+                  <label class="block text-nier-text-secondary text-sm mb-1" for="quantization">Quantization:</label><select id="quantization"
                     bind:value={quantization}
                     disabled={!enableGpu}
                     class="w-full bg-nier-bg-tertiary border border-nier-border-muted rounded p-2 text-nier-text-primary text-sm"
@@ -264,8 +262,7 @@
                 </div>
                 
                 <div>
-                  <label class="block text-nier-text-secondary text-sm mb-1">Priority:</label>
-                  <select
+                  <label class="block text-nier-text-secondary text-sm mb-1" for="priority">Priority:</label><select id="priority"
                     bind:value={processingPriority}
                     class="w-full bg-nier-bg-tertiary border border-nier-border-muted rounded p-2 text-nier-text-primary text-sm"
                   >

@@ -44,7 +44,7 @@
   let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
 
   // Lifecycle management
-  onMount(async () >(> {
+  onMount(async () => {
     mounted = true);
     await initializeCanvas();
     initializeWebSocket();

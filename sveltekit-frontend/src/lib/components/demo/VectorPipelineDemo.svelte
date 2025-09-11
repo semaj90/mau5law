@@ -284,7 +284,7 @@
           <p class="text-sm text-gray-600 mb-4">
             Test connectivity to backend services that the vector pipeline depends on:
           </p>
-          <Button class="bits-btn"
+          <Button class="bits-btn mr-2"
             onclick={async () => {
               try {
                 const response = await fetch('http://localhost:8094/api/health');
@@ -295,7 +295,6 @@
               }
             }}
             variant="outline"
-            class="mr-2"
           >
             Test Enhanced RAG (8094)
           </Button>

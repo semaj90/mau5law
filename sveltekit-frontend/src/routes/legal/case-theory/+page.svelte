@@ -418,6 +418,7 @@
                 class="p-4 border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md mb-3
                        {currentTheory?.id === theory.id ? 'border-purple-500 bg-purple-50' : 'hover:border-gray-300'}
                        {optimistic ? 'opacity-50' : ''}"
+                role="button" tabindex="0"
                 onclick={() => selectTheory(theory)}
               >
                 <div class="flex items-start justify-between mb-2">

@@ -551,7 +551,7 @@ class ParallelCacheOrchestrator {
       setInterval(() => {
         if (performance.memory) {
           this.executionMetrics.resourceUtilization.memoryUsedMB = 
-            performance.memory.usedJSHeapSize / (1024 * 1024);
+            performance.memory?.usedJSHeapSize ? performance.memory.usedJSHeapSize / (1024 * 1024) : 0;
         }
       }, 30000);
     }

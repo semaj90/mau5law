@@ -1335,7 +1335,7 @@
         class:bg-yellow-400/5={uploadInProgress}
         ondragover={handleDragOver}
         ondragleave={handleDragLeave}
-        ondrop={handleDrop}
+        role="region" aria-label="Drop zone" ondrop={handleDrop}
       >
         {#if uploadInProgress}
           <div class="w-full">

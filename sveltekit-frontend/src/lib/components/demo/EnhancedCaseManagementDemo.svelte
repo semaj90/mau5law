@@ -242,8 +242,7 @@
       <CardContent>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-1">Title</label>
-            <input 
+            <label class="block text-sm font-medium mb-1" for="title">Title</label><input id="title" 
               type="text" 
               bind:value={newCaseData.title}
               placeholder="Enter case title..."
@@ -252,8 +251,7 @@
           </div>
           
           <div>
-            <label class="block text-sm font-medium mb-1">Description</label>
-            <textarea 
+            <label class="block text-sm font-medium mb-1" for="description">Description</label><textarea id="description" 
               bind:value={newCaseData.description}
               placeholder="Enter case description..."
               rows="3"
@@ -263,8 +261,7 @@
           
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium mb-1">Priority</label>
-              <select bind:value={newCaseData.priority} class="w-full p-2 border rounded-md">
+              <label class="block text-sm font-medium mb-1" for="priority">Priority</label><select id="priority" bind:value={newCaseData.priority} class="w-full p-2 border rounded-md">
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
@@ -272,8 +269,7 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium mb-1">Status</label>
-              <select bind:value={newCaseData.status} class="w-full p-2 border rounded-md">
+              <label class="block text-sm font-medium mb-1" for="status">Status</label><select id="status" bind:value={newCaseData.status} class="w-full p-2 border rounded-md">
                 <option value="open">Open</option>
                 <option value="active">Active</option>
                 <option value="closed">Closed</option>
@@ -300,8 +296,7 @@
       <CardContent>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-1">Search Query</label>
-            <input 
+            <label class="block text-sm font-medium mb-1" for="search-query">Search Query</label><input id="search-query" 
               type="text" 
               bind:value={searchQuery}
               placeholder="Search with ML-powered cognition..."

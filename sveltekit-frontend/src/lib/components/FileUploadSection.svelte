@@ -270,8 +270,7 @@
     <div class="space-y-4">
       <!-- Summary Type Selection -->
       <div class="space-y-2">
-        <label class="text-sm font-medium">Analysis Type</label>
-        <select 
+        <label class="text-sm font-medium" for="analysis-type">Analysis Type</label><select id="analysis-type" 
           bind:value={summaryType} 
           class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           aria-label="Select analysis type"

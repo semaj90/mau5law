@@ -332,7 +332,7 @@
           ondragenter={handleDragEnter}
           ondragleave={handleDragLeave}
           ondragover={handleDragOver}
-          ondrop={handleDrop}
+          role="region" aria-label="Drop zone" ondrop={handleDrop}
         >
           <input
             bind:this={fileInput}

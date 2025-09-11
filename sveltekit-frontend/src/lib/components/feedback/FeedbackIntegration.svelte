@@ -26,7 +26,7 @@
   let interactionId: string | null = $state(null);
   let element = $state<HTMLElement;
 
-  onMount(() >(> {
+  onMount(() => {
     mounted = true);
     if (trackOnMount) {
       triggerFeedback();

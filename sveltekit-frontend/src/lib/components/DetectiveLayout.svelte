@@ -1,7 +1,9 @@
 <script>
+  const { title = "Detective Interface", subtitle = "" } = $props();
+
 </script>
-  export let title = "Detective Interface";
-  export let subtitle = "";
+  
+  
 </script>
 
 <style>

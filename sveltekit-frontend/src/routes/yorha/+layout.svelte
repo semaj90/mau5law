@@ -223,7 +223,8 @@
   {#if sidebarOpen}
     <div
       class="yorha-overlay"
-      onclick={() => sidebarOpen = false}
+      role="button" tabindex="0"
+                onclick={() => sidebarOpen = false}
     ></div>
   {/if}
 </div>

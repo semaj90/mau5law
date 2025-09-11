@@ -560,7 +560,7 @@ export class WebGPUTensorAccelerator {
     const words = text
       .toLowerCase()
       .split(/\W+/)
-      .filter((w) => w.length > 0);
+      .filter((w: string) => w.length > 0);
     const tokens = words.map((word) => this.getTokenId(word));
     return new Uint32Array(tokens);
   }

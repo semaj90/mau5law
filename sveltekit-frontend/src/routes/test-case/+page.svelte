@@ -188,8 +188,8 @@ let formData = $state({
           </Button>
         </div>
       </form>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 
   <!-- API Test Info -->
   <div class="mt-8 p-6 bg-muted/30 rounded-lg border">

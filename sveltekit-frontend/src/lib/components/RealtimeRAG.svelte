@@ -166,10 +166,9 @@
       <div class="advanced-options mt-4 p-4 bg-gray-50 rounded-lg">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="-max-results-maxresu">
               Max Results: {maxResults}
-            </label>
-            <input
+            </label><input id="-max-results-maxresu"
               type="range"
               bind:value={maxResults}
               min="1"
@@ -179,10 +178,9 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="-confidence-formatco">
               Confidence: {formatConfidence(confidenceThreshold)}
-            </label>
-            <input
+            </label><input id="-confidence-formatco"
               type="range"
               bind:value={confidenceThreshold}
               min="0.1"
@@ -193,10 +191,9 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="-document-types-">
               Document Types
-            </label>
-            <select
+            </label><select id="-document-types-"
               bind:value={selectedDocumentTypes}
               multiple
               class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"

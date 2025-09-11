@@ -544,7 +544,7 @@
 					<div
 						bind:this={canvasContainer}
 						class="relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-auto"
-						ondrop={(e) => handleCanvasDrop(e)}
+					 role="region" aria-label="Drop zone" ondrop={(e) => handleCanvasDrop(e)}
 						ondragover={(e) => e.preventDefault()}
 					>
 						<!-- Grid background -->
@@ -648,7 +648,8 @@
 {#if findModal.show}
 	<div
 		class="fixed z-50 inset-0 bg-black/60 flex items-center justify-center"
-		onclick={(e) => { if (e.target === e.currentTarget) closeFindModal(); }}
+	 role="button" tabindex="0"
+                onclick={(e) => { if (e.target === e.currentTarget) closeFindModal(); }}
 	>
 		<div
 			class="bg-background border border-primary rounded-lg shadow-lg p-6 w-full max-w-lg"

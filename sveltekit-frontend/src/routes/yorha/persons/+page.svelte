@@ -381,8 +381,7 @@
         </div>
 
         <div class="form-field">
-          <label class="form-label">THREAT LEVEL</label>
-          <select class="yorha-select">
+          <label class="form-label" for="threat-level">THREAT LEVEL</label><select id="threat-level" class="yorha-select">
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
@@ -391,8 +390,7 @@
         </div>
 
         <div class="form-field">
-          <label class="form-label">STATUS</label>
-          <select class="yorha-select">
+          <label class="form-label" for="status">STATUS</label><select id="status" class="yorha-select">
             <option value="surveillance">Under Surveillance</option>
             <option value="wanted">Wanted</option>
             <option value="active">Active Investigation</option>
@@ -400,8 +398,7 @@
         </div>
 
         <div class="form-field form-field-full">
-          <label class="form-label">DESCRIPTION</label>
-          <textarea
+          <label class="form-label" for="description">DESCRIPTION</label><textarea id="description"
             placeholder="Physical description, known activities, etc."
             rows="4"
             class="yorha-textarea"

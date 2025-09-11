@@ -246,7 +246,7 @@ https://svelte.dev/e/expected_token -->
     class:border-green-400={isDragging}
     class:bg-green-400={isDragging && 'opacity-10'}
     ondrop={handleDrop}
-    ondragover={(e) => e.preventDefault()}
+    role="region" aria-label="Drop zone" ondragover={(e) => e.preventDefault()}
     on:dragenter={() => isDragging = true}
     on:dragleave={() => isDragging = false}
   >

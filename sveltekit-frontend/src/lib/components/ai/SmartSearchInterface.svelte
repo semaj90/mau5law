@@ -183,8 +183,7 @@
 	<Card class="p-4">
 		<div class="flex flex-wrap gap-4 items-center">
 			<div class="flex items-center gap-2">
-				<label class="text-sm font-medium">Context:</label>
-				<select bind:value={contextMode} class="border rounded px-2 py-1 text-sm">
+				<label class="text-sm font-medium" for="context">Context:</label><select id="context" bind:value={contextMode} class="border rounded px-2 py-1 text-sm">
 					<option value="legal">Legal</option>
 					<option value="technical">Technical</option>
 					<option value="general">General</option>

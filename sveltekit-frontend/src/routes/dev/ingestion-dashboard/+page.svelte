@@ -299,8 +299,7 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Document ID</label>
-            <input 
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="document-id">Document ID</label><input id="document-id" 
               type="text" 
               bind:value={newJob.documentId}
               placeholder="test-doc-001"
@@ -309,8 +308,7 @@
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-            <select bind:value={newJob.priority} class="w-full border rounded px-3 py-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="priority">Priority</label><select id="priority" bind:value={newJob.priority} class="w-full border rounded px-3 py-2">
               <option value="low">Low</option>
               <option value="normal">Normal</option>
               <option value="high">High</option>
@@ -319,8 +317,7 @@
         </div>
         
         <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Text Content</label>
-          <textarea 
+          <label class="block text-sm font-medium text-gray-700 mb-1" for="text-content">Text Content</label><textarea id="text-content" 
             bind:value={newJob.text}
             placeholder="Enter text to be processed and embedded..."
             rows="4"
@@ -329,10 +326,9 @@
         </div>
         
         <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-gray-700 mb-1" for="-chunks-newjobchunks">
             Chunks ({newJob.chunks})
-          </label>
-          <input 
+          </label><input id="-chunks-newjobchunks" 
             type="range" 
             min="1" 
             max="10" 

@@ -76,7 +76,8 @@ import type { Case } from '$lib/types';
   class="space-y-4"
   class:active={isActive}
   class:disabled
-  onclick={handleClick}
+  role="button" tabindex="0"
+                onclick={handleClick}
   onkeydown={(e) => e.key === "Enter" && handleClick()}
   role="button"
   tabindex={0}

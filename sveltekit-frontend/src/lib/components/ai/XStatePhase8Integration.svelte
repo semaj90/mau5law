@@ -325,10 +325,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               </div>
               
               <div class="evidence-type-selector">
-                <label class="block text-sm font-medium text-gray-300 mb-2">
+                <label class="block text-sm font-medium text-gray-300 mb-2" for="-evidence-type-">
                   Evidence Type
-                </label>
-                <select 
+                </label><select id="-evidence-type-" 
                   bind:value={selectedEvidenceType}
                   change={() => send({ type: 'SET_EVIDENCE_TYPE', evidenceType: selectedEvidenceType })}
                   class="yorha-select w-full p-2 bg-gray-800 border border-gray-600 rounded"
@@ -373,10 +372,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
           <div use:accordion.content class="accordion-content p-4 border-l-4 border-yellow-400">
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">
+                <label class="block text-sm font-medium text-gray-300 mb-2" for="-case-title-">
                   Case Title
-                </label>
-                <input 
+                </label><input id="-case-title-" 
                   bind:value={caseTitle}
                   onblur={handleCaseDetailsUpdate}
                   type="text" 
@@ -389,10 +387,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               </div>
               
               <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">
+                <label class="block text-sm font-medium text-gray-300 mb-2" for="-case-description-">
                   Case Description
-                </label>
-                <textarea 
+                </label><textarea id="-case-description-" 
                   bind:value={caseDescription}
                   onblur={handleCaseDetailsUpdate}
                   rows="4"
@@ -405,10 +402,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               </div>
               
               <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">
+                <label class="block text-sm font-medium text-gray-300 mb-2" for="-priority-level-">
                   Priority Level
-                </label>
-                <select 
+                </label><select id="-priority-level-" 
                   bind:value={selectedPriority}
                   change={() => send({ type: 'SET_PRIORITY', priority: selectedPriority })}
                   class="yorha-select w-full p-2 bg-gray-800 border border-gray-600 rounded"

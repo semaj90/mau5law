@@ -44,7 +44,7 @@
           if (attempt < MAX_RETRIES && pollActive) {
         const backoff = Math.min(1000 * 2 ** (attempt - 1), 10000) + Math.random() * 250;
         console.warn(`Status fetch failed (attempt ${attempt}):`, err);
-        await new Promise(r => setTimeout(r, backoff);
+        await new Promise(r => setTimeout(r, backoff));
         return fetchStatus(attempt + 1);
           } else {
         console.error('Giving up fetching system status:', err);
@@ -63,7 +63,7 @@
       // Background polling loop
       (async function poll() {
         while (pollActive) {
-          await new Promise(r => setTimeout(r, POLL_INTERVAL_MS);
+          await new Promise(r => setTimeout(r, POLL_INTERVAL_MS));
           if (document.hidden) continue; // skip while tab hidden
           await fetchStatus(1);
         }

@@ -1,9 +1,11 @@
 <script>
+  const { theme = 'light' } = $props();
+
 </script>
   import { setContext } from 'svelte';
 
   // supported themes: "light" or "dark"
-  export let theme = 'light';
+  
 
   // expose theme to descendants via context
   // TODO: Convert to $derived: setContext('theme', theme)

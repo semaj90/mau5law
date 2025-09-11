@@ -134,7 +134,7 @@ function summarizeText(text: string, maxSentences: number): string | undefined {
     const terms = s
       .toLowerCase()
       .split(/[^a-z0-9]+/)
-      .filter((t) => t.length > 2);
+      .filter((t: string) => t.length > 2);
     const unique = new Set<string>();
     for (const t of terms) {
       unique.add(t);

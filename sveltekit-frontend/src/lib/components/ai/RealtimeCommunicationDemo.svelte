@@ -49,7 +49,7 @@
   let metricsInterval = $state<number;
 
   // Subscribe to stores
-  $effect(() >(> {
+  $effect(() => {
     status = $connectionStatus);
     messageList = $messages.slice(-50); // Keep last 50 messages for display
     streamingList = new Map($streamingResponses);
@@ -388,8 +388,7 @@
         <CardContent>
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"> Message Content </label>
-              <textarea
+              <label class="block text-sm font-medium text-gray-700 mb-2" for="-message-content-"> Message Content </label><textarea id="-message-content-"
                 bind:value={testMessage}
                 rows="3"
                 class="w-full p-2 border border-gray-300 rounded-lg"
@@ -398,8 +397,7 @@
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2"> Message Type </label>
-                <select
+                <label class="block text-sm font-medium text-gray-700 mb-2" for="-message-type-"> Message Type </label><select id="-message-type-"
                   bind:value={selectedMessageType}
                   class="w-full p-2 border border-gray-300 rounded-lg">
                   <option value="ai_response">AI Response</option>
@@ -413,8 +411,7 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2"> Priority </label>
-                <select
+                <label class="block text-sm font-medium text-gray-700 mb-2" for="-priority-"> Priority </label><select id="-priority-"
                   bind:value={selectedPriority}
                   class="w-full p-2 border border-gray-300 rounded-lg">
                   <option value="low">Low</option>
@@ -438,10 +435,9 @@
         <CardContent>
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2" for="-streaming-request-d">
                 Streaming Request Data
-              </label>
-              <textarea
+              </label><textarea id="-streaming-request-d"
                 bind:value={streamingData}
                 rows="3"
                 class="w-full p-2 border border-gray-300 rounded-lg"
@@ -449,8 +445,7 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"> Stream Type </label>
-              <select
+              <label class="block text-sm font-medium text-gray-700 mb-2" for="-stream-type-"> Stream Type </label><select id="-stream-type-"
                 bind:value={streamingRequestType}
                 class="w-full p-2 border border-gray-300 rounded-lg">
                 <option value="ai_chat">AI Chat</option>

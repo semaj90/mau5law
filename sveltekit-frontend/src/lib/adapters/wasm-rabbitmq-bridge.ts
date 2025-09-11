@@ -5,7 +5,7 @@
  */
 
 import { rabbitmqServiceWorker } from '$lib/workers/rabbitmq-service-worker.js';
-import type { MessageHandler } from '$lib/server/messaging/rabbitmq-service.js';
+import type { MessageHandler } from '$lib/server/messaging/rabbitmq-service';
 import { enhanceRabbitMQMessage, parseVectorData } from '$lib/simd/simd-json-integration.js';
 
 // WebAssembly module cache
@@ -46,7 +46,7 @@ export function createWASMHandler(
     tensorCompression?: boolean;
   }
 ): MessageHandler {
-  return async (message, originalMessage) => {
+  return async (message: any, originalMessage: any) => {
     const startTime = performance.now();
     
     try {
@@ -55,7 +55,7 @@ export function createWASMHandler(
       
       // Check if message requires WASM acceleration
       if (shouldUseWASM(simdEnhancedMessage) && wasmReady && wasmModule) {
-        console.log(`🚀 SIMD+WASM-accelerating message: ${simdEnhancedMessage.type || 'unknown'}`);
+        console.log(`🚀 SIMD+WASM-accelerating message: ${(simdEnhancedMessage as any)?.type || 'unknown'}`);
         
         // Enhance message with WASM capabilities
         const enhancedMessage = await enhanceMessageWithWASM(simdEnhancedMessage, wasmOperations);
@@ -283,7 +283,7 @@ export function registerWASMAcceleratedHandlers(worker: typeof rabbitmqServiceWo
   console.log('🔗 Registering WASM-accelerated RabbitMQ handlers...');
   
   // WASM Vector Embedding Handler
-  const vectorEmbeddingHandler = createWASMHandler(async (message) => {
+  const vectorEmbeddingHandler = createWASMHandler(async (message: any) => {
     console.log(`🔤 WASM-accelerated embedding generation: ${message.documentId}`);
     
     // The message is already enhanced with normalized embeddings
@@ -306,7 +306,7 @@ export function registerWASMAcceleratedHandlers(worker: typeof rabbitmqServiceWo
   worker.registerHandler('legal.chunks.embed', vectorEmbeddingHandler);
   
   // WASM Similarity Search Handler
-  const similarityHandler = createWASMHandler(async (message) => {
+  const similarityHandler = createWASMHandler(async (message: any) => {
     console.log(`🔍 WASM-accelerated similarity search: ${message.queryId || 'unknown'}`);
     
     if (message.queryVector && message.candidateVectors) {

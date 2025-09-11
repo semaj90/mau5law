@@ -214,8 +214,7 @@
 
       <!-- Operation Selection -->
       <div class="mb-4">
-        <label class="block text-sm mb-2">OPERATION</label>
-        <select 
+        <label class="block text-sm mb-2" for="operation">OPERATION</label><select id="operation" 
           bind:value={selectedOperation}
           class="w-full bg-black border border-green-400 text-green-400 p-2 text-sm"
         >
@@ -230,8 +229,7 @@
       <!-- Text Input -->
       {#if selectedOperation !== 'ingest'}
         <div class="mb-4">
-          <label class="block text-sm mb-2">INPUT TEXT</label>
-          <textarea
+          <label class="block text-sm mb-2" for="input-text">INPUT TEXT</label><textarea id="input-text"
             bind:value={inputText}
             placeholder="Enter your legal text for analysis..."
             class="w-full bg-black border border-green-400 text-green-400 p-2 text-sm h-24 resize-none"
@@ -242,15 +240,13 @@
       <!-- User Context -->
       <div class="grid grid-cols-2 gap-2 mb-4">
         <div>
-          <label class="block text-xs mb-1">USER ID</label>
-          <input
+          <label class="block text-xs mb-1" for="user-id">USER ID</label><input id="user-id"
             bind:value={userId}
             class="w-full bg-black border border-green-400 text-green-400 p-1 text-xs"
           />
         </div>
         <div>
-          <label class="block text-xs mb-1">SESSION ID</label>
-          <input
+          <label class="block text-xs mb-1" for="session-id">SESSION ID</label><input id="session-id"
             bind:value={sessionId}
             class="w-full bg-black border border-green-400 text-green-400 p-1 text-xs"
           />

@@ -440,19 +440,16 @@
     <div class="advanced-panel" transitislide={{ duration: 300 }}>
       <div class="config-grid">
         <div class="config-group">
-          <label>Chunk Size</label>
-          <input type="number" bind:value={config.chunkSize} min="500" max="5000" step="100" />
+          <label for="chunk-size">Chunk Size</label><input id="chunk-size" type="number" bind:value={config.chunkSize} min="500" max="5000" step="100" />
         </div>
         
         <div class="config-group">
-          <label>Temperature</label>
-          <input type="range" min="0" max="1" step="0.1" bind:value={config.temperature} />
+          <label for="temperature">Temperature</label><input id="temperature" type="range" min="0" max="1" step="0.1" bind:value={config.temperature} />
           <span>{config.temperature}</span>
         </div>
         
         <div class="config-group">
-          <label>Max Tokens</label>
-          <input type="number" bind:value={config.maxTokens} min="100" max="4000" step="100" />
+          <label for="max-tokens">Max Tokens</label><input id="max-tokens" type="number" bind:value={config.maxTokens} min="100" max="4000" step="100" />
         </div>
 
         <div class="config-toggles">

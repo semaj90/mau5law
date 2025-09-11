@@ -1,15 +1,17 @@
 <script>
+  const { width = '560px', height = '420px', variant = 'info', ariaLabel = 'N64 Screen' } = $props();
+
 </script>
   import './N64Theme.css';
 
   // Dimensions can be strings like "320px" or "100%"
-  export let width = '560px';
-  export let height = '420px';
+  
+  
 
   // variant: "info" | "success" | "warning" | "error"
-  export let variant = 'info';
+  
 
-  export let ariaLabel = 'N64 Screen';
+  
 </script>
 
 <div
@@ -19,13 +21,7 @@
   style="width: {width}; height: {height};"
 >
   <div class="screen-content" tabindex="0">
-	<slot>
-	  <!-- default fallback content -->
-	  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-		<rect width="24" height="24" rx="4" fill="rgba(255,255,255,0.04)"></rect>
-		<path d="M6 12h12" stroke="rgba(255,255,255,0.16)" stroke-width="1.5" stroke-linecap="round"></path>
-	  </svg>
-	</slot>
+	{@render children?.()}
   </div>
 </div>
 

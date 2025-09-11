@@ -118,8 +118,10 @@
 
 {#if show}
   <!-- Updated to Svelte 5 event syntax: use onclick/onkeydown instead of onclick etc. -->
-  <div class="feedback-overlay" onclick={close} onkeydown={(e) => e.key === 'Enter' && close()} role="button" tabindex="0">
-    <div class="feedback-widget" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.key === 'Enter' && e.stopPropagation()} role="dialog" aria-labelledby="feedback-title" tabindex="0">
+  <div class="feedback-overlay" role="button" tabindex="0"
+                onclick={close} onkeydown={(e) => e.key === 'Enter' && close()}>
+    <div class="feedback-widget" role="dialog" tabindex="0" aria-labelledby="feedback-title"
+                onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.key === 'Enter' && e.stopPropagation()}>
       {#if !isSubmitted}
         <div class="feedback-header">
           <h3 id="feedback-title" class="feedback-title">

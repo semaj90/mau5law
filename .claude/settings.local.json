@@ -106,7 +106,12 @@
       "Bash(OLLAMA_URL=http://localhost:11434 timeout 30 node scripts/gpu-cluster-concurrent-executor.mjs --workers 2)",
       "Bash(OLLAMA_URL=http://localhost:11434 timeout 45 node scripts/gpu-cluster-concurrent-executor.mjs --workers 4 --tasks legal-embeddings,case-similarity,evidence-processing,vectorization)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "WebSearch",
+      "Bash(OLLAMA_URL=http://localhost:11435 timeout 15 node scripts/generate-legal-embeddings.mjs)",
+      "Bash(OLLAMA_URL=http://localhost:11435 timeout 20 npm run gpu:cluster)",
+      "Read(//c//**)",
+      "Bash(OLLAMA_URL=http://localhost:11434 timeout 30 node scripts/gpu-cluster-concurrent-executor.mjs --workers 4 --tasks legal-embeddings,case-similarity,evidence-processing,vectorization)"
     ],
     "deny": [],
     "ask": []

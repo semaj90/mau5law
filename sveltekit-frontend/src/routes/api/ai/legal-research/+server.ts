@@ -382,6 +382,6 @@ function extractSearchTerms(topic: string): string[] {
   return topic
     .toLowerCase()
     .split(/\s+/)
-    .filter((word) => word.length > 3)
+    .filter((word: string) => word.length > 3)
     .filter((word) => !['the', 'and', 'for', 'with', 'from'].includes(word));
 }

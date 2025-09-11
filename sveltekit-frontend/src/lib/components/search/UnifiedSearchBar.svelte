@@ -453,8 +453,7 @@
       </select>
       
       <div class="flex items-center gap-1">
-        <label class="text-xs text-gray-600">Confidence:</label>
-        <input 
+        <label class="text-xs text-gray-600" for="confidence">Confidence:</label><input id="confidence" 
           type="range" 
           min="0" 
           max="1" 
@@ -473,7 +472,8 @@
       {#each searchResults as result, index}
         <div
           class="px-4 py-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0 {selectedIndex === index ? 'bg-blue-50' : ''}"
-          onclick={() => handleResultClick(result)}
+          role="button" tabindex="0"
+                onclick={() => handleResultClick(result)}
         >
           <div class="flex items-start justify-between gap-3">
             <div class="flex-1 min-w-0">

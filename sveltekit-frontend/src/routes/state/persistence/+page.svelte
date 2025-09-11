@@ -215,7 +215,8 @@
           <div class="states-container">
             {#each persistedStates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as state}
               <div class="state-card {selectedState?.id === state.id ? 'selected' : ''}"
-                   onclick={() => selectedState = selectedState?.id === state.id ? null : state}>
+                   role="button" tabindex="0"
+                onclick={() => selectedState = selectedState?.id === state.id ? null : state}>
                 <div class="state-header">
                   <div class="state-info">
                     <h3 class="state-title">{getMachineDisplayName(state.machineId)}</h3>

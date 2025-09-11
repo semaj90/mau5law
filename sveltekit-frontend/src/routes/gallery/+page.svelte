@@ -318,8 +318,7 @@ Displays all media: evidence, generated images, documents, uploads
     <div class="controls-grid">
       <!-- Search -->
       <div class="control-group">
-        <label class="nes-text">Search:</label>
-        <input
+        <label class="nes-text" for="search">Search:</label><input id="search"
           type="text"
           class="nes-input"
           placeholder="Search titles, descriptions, tags..."
@@ -462,7 +461,8 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="gallery-grid gallery-{viewMode}">
         {#each filteredItems as item}
           <div class="gallery-item nes-container is-rounded">
-            <div class="item-preview" onclick={() => openItem(item)}>
+            <div class="item-preview" role="button" tabindex="0"
+                onclick={() => openItem(item)}>
               {#if item.type === 'image' || item.category === 'images'}
                 <img
                   src={getItemPreview(item)}
@@ -538,8 +538,10 @@ Displays all media: evidence, generated images, documents, uploads
 
   <!-- Upload Modal -->
   {#if showUploadModal}
-  <div class="modal-overlay" onclick={() => showUploadModal = false}>
-  <div class="modal-content nes-container is-rounded" onclick={(e) => e.stopPropagation()}>
+  <div class="modal-overlay" role="button" tabindex="0"
+                onclick={() => showUploadModal = false}>
+  <div class="modal-content nes-container is-rounded" role="button" tabindex="0"
+                onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h3>Upload Files</h3>
           <button class="nes-btn is-error" onclick={() => showUploadModal = false}>×</button>
@@ -583,8 +585,10 @@ Displays all media: evidence, generated images, documents, uploads
 
   <!-- Item Detail Modal -->
   {#if selectedItem}
-  <div class="modal-overlay" onclick={closeModal}>
-  <div class="modal-content detail-modal nes-container is-rounded" onclick={(e) => e.stopPropagation()}>
+  <div class="modal-overlay" role="button" tabindex="0"
+                onclick={closeModal}>
+  <div class="modal-content detail-modal nes-container is-rounded" role="button" tabindex="0"
+                onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h3>{selectedItem.title || 'Gallery Item'}</h3>
           <button class="nes-btn is-error" onclick={closeModal}>×</button>

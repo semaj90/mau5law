@@ -708,8 +708,7 @@ and performance monitoring across N64 and YoRHa gaming components
               </div>
               
               <div class="flex items-center justify-between">
-                <label class="text-sm text-slate-300">Auto-run Scenarios</label>
-                <input
+                <label class="text-sm text-slate-300" for="autorun-scenarios">Auto-run Scenarios</label><input id="autorun-scenarios"
                   type="checkbox"
                   bind:checked={autoRunScenarios}
                   class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500"
@@ -717,8 +716,7 @@ and performance monitoring across N64 and YoRHa gaming components
               </div>
               
               <div class="flex items-center justify-between">
-                <label class="text-sm text-slate-300">WASM Acceleration</label>
-                <input
+                <label class="text-sm text-slate-300" for="wasm-acceleration">WASM Acceleration</label><input id="wasm-acceleration"
                   type="checkbox"
                   bind:checked={enableWasmAcceleration}
                   class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500"
@@ -726,8 +724,7 @@ and performance monitoring across N64 and YoRHa gaming components
               </div>
               
               <div class="flex items-center justify-between">
-                <label class="text-sm text-slate-300">Real-time Metrics</label>
-                <input
+                <label class="text-sm text-slate-300" for="realtime-metrics">Real-time Metrics</label><input id="realtime-metrics"
                   type="checkbox"
                   bind:checked={enableRealTimeMetrics}
                   class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500"
@@ -735,10 +732,9 @@ and performance monitoring across N64 and YoRHa gaming components
               </div>
               
               <div>
-                <label class="block text-sm text-slate-300 mb-2">
+                <label class="block text-sm text-slate-300 mb-2" for="-scenario-interval-s">
                   Scenario Interval: {scenarioInterval}ms
-                </label>
-                <input
+                </label><input id="-scenario-interval-s"
                   type="range"
                   bind:value={scenarioInterval}
                   min="1000"

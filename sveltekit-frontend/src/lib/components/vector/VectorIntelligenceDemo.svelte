@@ -350,7 +350,8 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             Semantic Search
           </h3>
           {#each demoSearchQueries as example}
-            <div class="demo-example-card" onclick={() => loadDemoQuery(example.query)}>
+            <div class="demo-example-card" role="button" tabindex="0"
+                onclick={() => loadDemoQuery(example.query)}>
               <h4 class="font-medium text-sm mb-1">{example.category}</h4>
               <p class="text-xs text-muted-foreground mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded font-mono">{example.query}</p>
@@ -365,7 +366,8 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             AI Recommendations
           </h3>
           {#each demoRecommendationContexts as example}
-            <div class="demo-example-card" onclick={() => loadDemoContext(example.context, example.role)}>
+            <div class="demo-example-card" role="button" tabindex="0"
+                onclick={() => loadDemoContext(example.context, example.role)}>
               <h4 class="font-medium text-sm mb-1">{example.description}</h4>
               <Badge class="bits-badge-outline text-xs mb-2">{example.role}</Badge>
               <p class="text-xs text-muted-foreground">{example.context.substring(0, 80)}...</p>
@@ -380,7 +382,8 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             Document Analysis
           </h3>
           {#each demoAnalysisContent as example}
-            <div class="demo-example-card" onclick={() => loadDemoContent(example.content)}>
+            <div class="demo-example-card" role="button" tabindex="0"
+                onclick={() => loadDemoContent(example.content)}>
               <h4 class="font-medium text-sm mb-1">{example.type}</h4>
               <p class="text-xs text-muted-foreground mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded">{example.content.substring(0, 60)}...</p>
@@ -456,9 +459,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
         </CardHeader>
         <CardContent class="bits-card-content space-y-4" variant="default" legal={true}>
           <div class="space-y-2">
-            <label class="bits-label" for="search-query">Search Query</label>
-            <textarea
-              id="search-query"
+            <label class="bits-label" for="search-query">Search Query</label><textarea id="search-query"
               bind:value={searchQuery}
               placeholder="Enter your legal search query..."
               class="vector-search-input min-h-[80px] w-full p-2 border rounded"
@@ -468,8 +469,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
           {#if showAdvancedOptions}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
-                <label class="bits-label" for="case-type-filter">Case Type Filter</label>
-                <select id="case-type-filter" bind:value={selectedCaseType} class="bits-select-trigger w-full p-2 border rounded">
+                <label class="bits-label" for="case-type-filter">Case Type Filter</label><select id="case-type-filter" bind:value={selectedCaseType} class="bits-select-trigger w-full p-2 border rounded">
                   <option value="criminal">Criminal</option>
                   <option value="civil">Civil</option>
                   <option value="corporate">Corporate</option>
@@ -573,9 +573,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
         </CardHeader>
         <CardContent class="bits-card-content space-y-4" variant="default" legal={true}>
           <div class="space-y-2">
-            <label class="bits-label" for="context-description">Context Description</label>
-            <textarea
-              id="context-description"
+            <label class="bits-label" for="context-description">Context Description</label><textarea id="context-description"
               bind:value={recommendationContext}
               placeholder="Describe your current situation or challenge..."
               class="vector-search-input min-h-[100px] w-full p-2 border rounded"

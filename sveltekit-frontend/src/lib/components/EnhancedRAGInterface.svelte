@@ -301,8 +301,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Optimization Level -->
             <div>
-              <label class="block text-sm font-medium mb-2">Optimization Level</label>
-              <select bind:value={optimizationLevel} class="w-full p-2 border rounded">
+              <label class="block text-sm font-medium mb-2" for="optimization-level">Optimization Level</label><select id="optimization-level" bind:value={optimizationLevel} class="w-full p-2 border rounded">
                 <option value="basic">Basic</option>
                 <option value="enhanced">Enhanced</option>
                 <option value="neural">Neural</option>
@@ -311,8 +310,7 @@ https://svelte.dev/e/js_parse_error -->
 
             <!-- Visualization Mode -->
             <div>
-              <label class="block text-sm font-medium mb-2">View Mode</label>
-              <select bind:value={visualizationMode} class="w-full p-2 border rounded">
+              <label class="block text-sm font-medium mb-2" for="view-mode">View Mode</label><select id="view-mode" bind:value={visualizationMode} class="w-full p-2 border rounded">
                 <option value="list">List View</option>
                 <option value="clusters">Cluster View</option>
                 <option value="neural">Neural View</option>

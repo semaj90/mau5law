@@ -2,6 +2,8 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
 
+  
+
   import { Editor } from "@tiptap/core";
   import Color from "@tiptap/extension-color";
   import FontFamily from "@tiptap/extension-font-family";
@@ -45,7 +47,7 @@
     ZoomIn,
     ZoomOut,
   } from "lucide-svelte";
-  import { onDestroy, onMount } from "svelte";
+  
   import { get, writable } from "svelte/store";
 
   // Svelte 5 props
@@ -146,7 +148,7 @@
   // Auto-save functionality
   let autoSaveTimeout = $state<NodeJS.Timeout;
 
-  onMount(() >(> {
+  onMount(() => {
     initializeEditor());
     setupKeyboardShortcuts();
   });
@@ -245,7 +247,7 @@
   function updateWordCount() {
     if (!editor) return;
     const text = editor.getText();
-    wordCount = text.split(/\s+/).filter((word) => word.length > 0).length;
+    wordCount = text.split(/\s+/).filter((word: string) => word.length > 0).length;
     characterCount = text.length;
   }
 

@@ -143,7 +143,7 @@ export async function generateEnhancedEmbedding(
 
   const isArray = Array.isArray(text);
   const inputs = isArray ? text : [text];
-  const truncatedInputs = inputs.map((t) =>
+  const truncatedInputs = inputs.map((t: string) =>
     t.length > maxTokens ? t.substring(0, maxTokens) : t,
   );
 

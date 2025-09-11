@@ -215,7 +215,7 @@ class VectorPipelineService {
    * Split text into chunks with overlap
    */
   private chunkText(text: string, chunkSize: number, overlap: number): string[] {
-    const words = text.split(/\s+/).filter((word) => word.length > 0);
+    const words = text.split(/\s+/).filter((word: string) => word.length > 0);
 
     if (words.length <= chunkSize) {
       return [text];

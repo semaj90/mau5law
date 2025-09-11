@@ -762,10 +762,9 @@
           </div>
           
           <div class="importance-filter">
-            <label class="nes-label">
+            <label class="nes-label" for="-min-importance-impo">
               Min Importance: {importanceThreshold.toFixed(2)}
-            </label>
-            <input 
+            </label><input id="-min-importance-impo" 
               type="range" 
               class="nes-range"
               min="0" 

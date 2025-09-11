@@ -1,11 +1,13 @@
 <script lang="ts">
+  const { value: string = '', placeholder: string = '', disabled: boolean = false, id: string | undefined, name: string | undefined, className: string = '' } = $props();
+
   import { createEventDispatcher } from 'svelte';
-  export let value: string = '';
-  export let placeholder: string = '';
-  export let disabled: boolean = false;
-  export let id: string | undefined;
-  export let name: string | undefined;
-  export let className: string = '';
+  
+  
+  
+  
+  
+  
 
   const dispatch = createEventDispatcher();
 

@@ -234,7 +234,7 @@
     const words = textContent
       .trim()
       .split(/\s+/)
-      .filter((word) => word.length > 0);
+      .filter((word: string) => word.length > 0);
     wordCount = words.length;
     characterCount = textContent.length;
     estimatedReadTime = Math.ceil(wordCount / 200); // Assume 200 words per minute

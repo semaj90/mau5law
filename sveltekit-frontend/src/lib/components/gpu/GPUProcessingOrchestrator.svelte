@@ -4,14 +4,16 @@
 -->
 
 <script lang="ts">
+  const { documents: DocumentInput[] = [], autoStart: boolean = false, maxConcurrent: number = 5 } = $props();
+
   import { onMount, onDestroy } from 'svelte';
   import { createGPUProcessingActor, type DocumentInput, type ProcessingResult } from '$lib/state/gpu-processing-machine';
   import { fade, fly } from 'svelte/transition';
 
   // Props
-  export let documents: DocumentInput[] = [];
-  export let autoStart: boolean = false;
-  export let maxConcurrent: number = 5;
+  
+  
+  
 
   // XState actor
   const gpuActor = createGPUProcessingActor();

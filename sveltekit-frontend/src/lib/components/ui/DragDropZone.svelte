@@ -123,9 +123,10 @@
   ondragover={handleDragOver}
   ondragleave={handleDragLeave}
   ondrop={handleDrop}
+  role="button" 
+  tabindex="0"
+  aria-label="Drop zone or click to upload files"
   onclick={openFileDialog}
-  role="button"
-  tabindex={0}
   onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && openFileDialog()}
 >
   <input

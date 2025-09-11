@@ -429,7 +429,7 @@ function parseGemmaLegalResponse(response: string): {
       sections.keyTerms = termsMatch[1]
         .split(/[,\n]/)
         .map((term) => term.replace(/^[-•*]\s*/, '').trim())
-        .filter((term) => term.length > 2)
+        .filter((term: string) => term.length > 2)
         .slice(0, 15);
     }
 

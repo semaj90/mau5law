@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount, setContext } from 'svelte';
+
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
   import EvidenceManager from '$lib/components/evidence/EvidenceManager.svelte';
   import {
@@ -8,13 +10,13 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  import { onMount } from 'svelte';
+  
   let caseId = $state('');
   let contextItems = $state([]);
   let evidenceText = $state('');
   let activeTab = $state('assistant');
   // Mock user context
-  import { setContext } from 'svelte';
+  
   const mockUser = {
     id: 'user-123',
     name: 'Legal Assistant User',
@@ -119,8 +121,7 @@
             <CardContent>
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium mb-2">Case ID:</label>
-                  <input 
+                  <label class="block text-sm font-medium mb-2" for="case-id">Case ID:</label><input id="case-id" 
                     bind:value={caseId}
                     class="w-full p-2 border rounded-md"
                     placeholder="Enter case identifier"
@@ -128,8 +129,7 @@
                 </div>
                 
                 <div>
-                  <label class="block text-sm font-medium mb-2">Additional Context:</label>
-                  <textarea 
+                  <label class="block text-sm font-medium mb-2" for="additional-context">Additional Context:</label><textarea id="additional-context" 
                     bind:value={evidenceText}
                     class="w-full p-2 border rounded-md h-24 text-sm"
                     placeholder="Add any additional context for the AI assistant..."

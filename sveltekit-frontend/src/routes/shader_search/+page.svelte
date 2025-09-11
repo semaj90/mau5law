@@ -250,8 +250,7 @@
 
       <div class="filters-row">
         <div class="filter-group">
-          <label>Operation:</label>
-          <select bind:value={selectedOperation}>
+          <label for="operation">Operation:</label><select id="operation" bind:value={selectedOperation}>
             <option value="">All Operations</option>
             {#each availableOperations as operation}
               <option value={operation}>{operation}</option>
@@ -260,8 +259,7 @@
         </div>
 
         <div class="filter-group">
-          <label>Shader Type:</label>
-          <select bind:value={selectedShaderType}>
+          <label for="shader-type">Shader Type:</label><select id="shader-type" bind:value={selectedShaderType}>
             <option value="all">All (WebGPU + WebGL)</option>
             <option value="webgpu">WebGPU Only</option>
             <option value="webgl">WebGL Only</option>
@@ -269,8 +267,7 @@
         </div>
 
         <div class="filter-group">
-          <label>Sort by:</label>
-          <select bind:value={sortBy}>
+          <label for="sort-by">Sort by:</label><select id="sort-by" bind:value={sortBy}>
             <option value="relevance">Relevance</option>
             <option value="performance">Performance</option>
             <option value="usage">Usage Count</option>
@@ -279,8 +276,7 @@
         </div>
 
         <div class="filter-group">
-          <label>Results:</label>
-          <select bind:value={limit}>
+          <label for="results">Results:</label><select id="results" bind:value={limit}>
             <option value={10}>10</option>
             <option value={20}>20</option>
             <option value={50}>50</option>
@@ -354,7 +350,8 @@
     {:else}
       <div class="results-grid">
         {#each searchResults as shader}
-          <div class="shader-card" onclick={() => selectedShader = shader}>
+          <div class="shader-card" role="button" tabindex="0"
+                onclick={() => selectedShader = shader}>
             <div class="shader-header">
               <h3>{shader.id}</h3>
               <div class="shader-badges">
@@ -401,8 +398,10 @@
 
   <!-- Shader Detail Modal -->
   {#if selectedShader}
-    <div class="modal-backdrop" onclick={() => selectedShader = null}>
-      <div class="modal" onclick={(e) => e.stopPropagation()}>
+    <div class="modal-backdrop" role="button" tabindex="0"
+                onclick={() => selectedShader = null}>
+      <div class="modal" role="button" tabindex="0"
+                onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h2>{selectedShader.id}</h2>
           <button onclick={() => selectedShader = null} class="close-button">×</button>

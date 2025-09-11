@@ -385,8 +385,7 @@
         {#if neuralSpriteConfig.enable_compression}
           <div class="space-y-3 ml-6 border-l-2 border-purple-200 pl-4">
             <div class="flex items-center gap-2">
-              <label class="text-sm text-gray-600 w-32">Compression:</label>
-              <input
+              <label class="text-sm text-gray-600 w-32" for="compression">Compression:</label><input id="compression"
                 type="range"
                 min="10"
                 max="100"
@@ -399,8 +398,7 @@
             </div>
 
             <div class="flex items-center gap-2">
-              <label class="text-sm text-gray-600 w-32">Pred. Frames:</label>
-              <input
+              <label class="text-sm text-gray-600 w-32" for="pred-frames">Pred. Frames:</label><input id="pred-frames"
                 type="range"
                 min="0"
                 max="10"

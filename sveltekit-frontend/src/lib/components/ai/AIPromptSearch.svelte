@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { } from 'svelte';
+  import { , onMount } from 'svelte';
+
+  
 
   import { aiHistory } from "$lib/stores/aiHistoryStore";
   import Fuse from "fuse.js";
-  import { onMount } from "svelte";
+  
   let query = $state("");
   let fuse: Fuse<any>;
 
