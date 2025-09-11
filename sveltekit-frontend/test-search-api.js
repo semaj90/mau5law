@@ -65,15 +65,15 @@ async function testSearchAPI() {
       limit: 5,
       threshold: 0.6,
       includeMetadata: true,
-      includeContent: true
+      includeContent: true,
     };
 
     const response = await fetch(`${BASE_URL}/api/rag/search`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(searchRequest)
+      body: JSON.stringify(searchRequest),
     });
-    
+
     const result = await response.json();
     console.log('✅ Advanced search:', result.success ? 'PASSED' : 'FAILED');
     console.log('   Query:', result.query);
@@ -94,15 +94,15 @@ async function testSearchAPI() {
     const searchRequest = {
       query: 'legal document analysis',
       searchType: 'hybrid',
-      limit: 3
+      limit: 3,
     };
 
     const response = await fetch(`${BASE_URL}/api/rag?action=search`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(searchRequest)
+      body: JSON.stringify(searchRequest),
     });
-    
+
     const result = await response.json();
     console.log('✅ RAG endpoint search:', result.success ? 'PASSED' : 'FAILED');
     console.log('   Source:', result.source || 'unknown');

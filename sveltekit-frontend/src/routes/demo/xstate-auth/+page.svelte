@@ -141,7 +141,7 @@
       }
 
       // Small delay between tests for visual effect
-      await new Promise(resolve => setTimeout(resolve, 300);
+      await new Promise(resolve => setTimeout(resolve, 300));
     }
 
     isRunningTests = false;
@@ -268,8 +268,8 @@
             {/each}
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
 
     <!-- Success Message -->
     {#if allTestsPassed}
@@ -285,8 +285,8 @@
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     {/if}
 
     <!-- Feature Overview -->
@@ -300,8 +300,8 @@
           <p class="text-sm text-muted-foreground">
             Complete state management with auth, session, and AI machines
           </p>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
 
       <Card.Root>
         <Card.Content class="pt-6">
@@ -312,8 +312,8 @@
           <p class="text-sm text-muted-foreground">
             MCP GPU orchestrator for enhanced security analysis
           </p>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
 
       <Card.Root>
         <Card.Content class="pt-6">
@@ -324,8 +324,8 @@
           <p class="text-sm text-muted-foreground">
             Ollama cluster with Context7 documentation enhancement
           </p>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
 
       <Card.Root>
         <Card.Content class="pt-6">
@@ -336,8 +336,8 @@
           <p class="text-sm text-muted-foreground">
             Role-based authentication with legal domain validation
           </p>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </div>
 
     <!-- Interactive Demo -->
@@ -382,8 +382,8 @@
             working together with XState for predictable state management.
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
 
   </div>
 </div>

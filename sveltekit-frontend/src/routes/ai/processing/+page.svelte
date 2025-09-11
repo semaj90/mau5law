@@ -177,7 +177,8 @@
     ];
   }
 
-  async function submitProcessingJob() {
+  async function submitProcessingJob(event) {
+    event.preventDefault();
     if (!newJobForm.documentId.trim()) {
       newJobForm.errors = { documentId: ['Document ID is required'] };
       return;
@@ -565,7 +566,7 @@
         <h2 class="text-lg font-semibold text-gray-900">Create Processing Job</h2>
       </div>
       
-      <form onsubmit|preventDefault={submitProcessingJob} class="p-6 space-y-4">
+      <form onsubmit={submitProcessingJob} class="p-6 space-y-4">
         <FormField name="documentId" errors={newJobForm.errors.documentId}>
           <label for="documentId" class="block text-sm font-medium text-gray-700 mb-1">
             Document ID

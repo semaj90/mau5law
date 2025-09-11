@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { PageData, ActionData } from './$types.js';
   import { onMount, onDestroy } from 'svelte';
   import { enhance } from '$app/forms';
@@ -240,7 +239,7 @@
           <p class="text-sm text-muted-foreground mb-1">Redis Server</p>
           <p class="text-lg font-medium capitalize">{data.redisInfo.mode}</p>
           <p class="text-xs text-muted-foreground">Role: {data.redisInfo.role}</p>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Memory Usage -->
@@ -253,7 +252,7 @@
           <p class="text-sm text-muted-foreground mb-1">Memory Usage</p>
           <p class="text-lg font-medium">{data.redisInfo.used_memory}</p>
           <p class="text-xs text-muted-foreground">Peak: {data.redisInfo.used_memory_peak}</p>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Operations -->
@@ -266,7 +265,7 @@
           <p class="text-sm text-muted-foreground mb-1">Operations</p>
           <p class="text-lg font-medium">{data.redisInfo.total_commands_processed.toLocaleString()}</p>
           <p class="text-xs text-muted-foreground">Total processed</p>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Uptime -->
@@ -279,7 +278,7 @@
           <p class="text-sm text-muted-foreground mb-1">Uptime</p>
           <p class="text-lg font-medium">{formatUptime(data.redisInfo.uptime_in_seconds)}</p>
           <p class="text-xs text-muted-foreground">{data.redisInfo.connected_clients} clients</p>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
     </div>
 
@@ -312,7 +311,7 @@
             <p class="text-sm text-muted-foreground">Hit Rate</p>
           </div>
         </div>
-      </CardContent>
+      </Card.Content>
     </OrchestratedCard.Analysis>
   {/if}
 
@@ -373,7 +372,7 @@
               </div>
             {/each}
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Add New Key -->
@@ -412,7 +411,7 @@
               Add Key
             </Button>
           </form>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
     </div>
   {/if}
@@ -443,7 +442,7 @@
               <p class="text-sm text-muted-foreground">Memory Efficiency</p>
             </div>
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
@@ -469,7 +468,7 @@
               <span class="font-medium">{data.keyStats.fragmentation_ratio.toFixed(2)}</span>
             </div>
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
     </div>
   {/if}
@@ -506,7 +505,7 @@
         <div class="text-sm text-muted-foreground">
           <p>Last updated: {new Date(data.timestamp).toLocaleString()}</p>
         </div>
-      </CardContent>
+      </Card.Content>
     </OrchestratedCard.Analysis>
   {/if}
 </div>

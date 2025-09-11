@@ -98,7 +98,7 @@
     performanceMetrics.update(m => ({
       ...m,
       activeEngines: onlineEngines
-    });
+    }));
   }
 
   async function sendMessage() {
@@ -160,7 +160,7 @@
           ((m.cacheHitRate * m.totalRequests) + 1) / (m.totalRequests + 1) :
           (m.cacheHitRate * m.totalRequests) / (m.totalRequests + 1),
         activeEngines: m.activeEngines
-      });
+      }));
       // Scroll to bottom
       setTimeout(() => {
         if (chatContainer) {

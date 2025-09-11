@@ -1,6 +1,5 @@
 <!-- EmbeddingGemma Chat Demo Page -->
 <script lang="ts">
-</script>
   import EmbeddingGemmaChat from "$lib/components/ui/enhanced-bits/EmbeddingGemmaChat.svelte";
   import {
     Button
@@ -33,9 +32,9 @@
     "Securities Fraud Investigation - SEC v. Innovative Investments LLC. Charges include misrepresentation of investment risks, failure to disclose conflicts of interest, and improper use of client funds. Alleged damages to investors: $12M. Defendants deny wrongdoing and claim full disclosure was provided through regulatory filings."
   ];
 
-  let currentDocuments = $state<string[]>([]);
-  let documentType = $state<'contracts' | 'cases' | 'custom'>('contracts');
-  let caseId = $state<string>('demo-case-12345');
+  let currentDocuments: string[] = $state([]);
+  let documentType: 'contracts' | 'cases' | 'custom' = $state('contracts');
+  let caseId: string = $state('demo-case-12345');
 
   function loadSampleDocuments(type: 'contracts' | 'cases') {
     documentType = type;

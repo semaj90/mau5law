@@ -8,6 +8,34 @@ import { randomUUID } from 'node:crypto';
 // Orchestrates multiple GPU workers with concurrent execution
 console.log(chalk.cyan('🚀 GPU Cluster Concurrent Executor v1.0'));
 
+// Dynamic port resolution to prevent conflicts
+function getPortForService(basePort, offset = 0) {
+  return basePort + offset;
+}
+
+// Dynamic Ollama port discovery
+async function discoverOllamaPort() {
+  const possiblePorts = [11437, 11436, 11435, 11434];
+  
+  for (const port of possiblePorts) {
+    try {
+      const response = await fetch(`http://localhost:${port}/api/tags`, {
+        method: 'GET',
+        signal: AbortSignal.timeout(2000)
+      });
+      if (response.ok) {
+        console.log(chalk.green(`✅ Ollama discovered on port ${port}`));
+        return port;
+      }
+    } catch (error) {
+      // Port not available, try next
+    }
+  }
+  
+  console.log(chalk.yellow('⚠️  No Ollama service found, using default port 11437'));
+  return 11437;
+}
+
 const config = {
   workers: argv.workers || 4,
   gpuContexts: argv['gpu-contexts'] || 2, // RTX 3060 Ti can handle 2 concurrent contexts efficiently
@@ -22,7 +50,18 @@ const config = {
   batchSize: argv.batchSize || 16, // Optimal batch size for RTX 3060 Ti
   legalOptimization: argv.legalMode || true,
   embeddingDimensions: argv.embeddingDim || 384, // nomic-embed-text dimensions
-  similarityThreshold: argv.similarity || 0.7
+  similarityThreshold: argv.similarity || 0.7,
+  // Dynamic port configuration (base port + 0-10 range)
+  portConfig: {
+    ollama: getPortForService(11434, 0), // 11434-11444 range
+    postgres: getPortForService(5433, 0), // 5433-5443 range  
+    redis: getPortForService(6379, 0), // 6379-6389 range
+    enhanced_rag: getPortForService(8094, 0), // 8094-8104 range
+    upload_service: getPortForService(8093, 0), // 8093-8103 range
+    neo4j: getPortForService(7474, 0), // 7474-7484 range
+    minio: getPortForService(9000, 0), // 9000-9010 range
+    qdrant: getPortForService(6333, 0) // 6333-6343 range
+  }
 };
 
 console.log(chalk.blue('📋 Legal AI GPU Configuration:'));
@@ -56,13 +95,14 @@ async function checkGPUAvailability() {
   }
 }
 
-// Legal AI Task definitions optimized for RTX 3060 Ti
+// Legal AI Task definitions optimized for RTX 3060 Ti with dynamic ports
 const taskDefinitions = {
   'legal-embeddings': {
     name: 'Legal Document Embeddings',
     cmd: ['node', 'scripts/generate-legal-embeddings.mjs'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11436',
+      OLLAMA_URL: process.env.OLLAMA_URL || `http://localhost:${config.dynamicOllamaPort}`,
+      DATABASE_URL: process.env.DATABASE_URL || `postgresql://legal_admin:123456@localhost:${config.portConfig.postgres}/legal_ai_db`,
       OLLAMA_GPU_LAYERS: '35', 
       RTX_3060_OPTIMIZATION: 'true',
       LEGAL_EMBEDDING_MODEL: 'nomic-embed-text',
@@ -74,7 +114,8 @@ const taskDefinitions = {
     name: 'Case Similarity Analysis',
     cmd: ['node', 'scripts/process-case-similarity.mjs'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11436',
+      OLLAMA_URL: process.env.OLLAMA_URL || `http://localhost:${config.dynamicOllamaPort}`,
+      DATABASE_URL: process.env.DATABASE_URL || `postgresql://legal_admin:123456@localhost:${config.portConfig.postgres}/legal_ai_db`,
       OLLAMA_GPU_LAYERS: '35',
       RTX_3060_OPTIMIZATION: 'true',
       PGVECTOR_ENABLED: 'true',
@@ -85,7 +126,7 @@ const taskDefinitions = {
     name: 'Legal AI Inference',
     cmd: ['npm', 'run', 'check:typescript'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11436',
+      OLLAMA_URL: process.env.OLLAMA_URL || `http://localhost:${config.dynamicOllamaPort}`,
       OLLAMA_GPU_LAYERS: '30', 
       RTX_3060_OPTIMIZATION: 'true',
       LEGAL_MODEL: 'gemma3-legal',
@@ -96,7 +137,9 @@ const taskDefinitions = {
     name: 'Evidence Document Processing',
     cmd: ['node', 'scripts/process-evidence-batch.mjs'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11436',
+      OLLAMA_URL: process.env.OLLAMA_URL || `http://localhost:${config.dynamicOllamaPort}`,
+      DATABASE_URL: process.env.DATABASE_URL || `postgresql://legal_admin:123456@localhost:${config.portConfig.postgres}/legal_ai_db`,
+      MINIO_URL: process.env.MINIO_URL || `http://localhost:${config.portConfig.minio}`,
       ENABLE_TRAINING: 'true',
       GPU_ACCELERATION: 'true',
       MINIO_ENABLED: 'true',
@@ -107,7 +150,8 @@ const taskDefinitions = {
     name: 'Legal Vector Operations',
     cmd: ['npm', 'run', 'build:wasm'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11436',
+      OLLAMA_URL: process.env.OLLAMA_URL || `http://localhost:${config.dynamicOllamaPort}`,
+      QDRANT_URL: process.env.QDRANT_URL || `http://localhost:${config.portConfig.qdrant}`,
       ENABLE_WASM_GPU: 'true',
       LEGAL_VECTOR_DIM: '384',
       HNSW_ENABLED: 'true'
@@ -117,7 +161,9 @@ const taskDefinitions = {
     name: 'Chat Session Persistence',
     cmd: ['node', 'scripts/persist-chat-embeddings.mjs'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11436',
+      OLLAMA_URL: process.env.OLLAMA_URL || `http://localhost:${config.dynamicOllamaPort}`,
+      DATABASE_URL: process.env.DATABASE_URL || `postgresql://legal_admin:123456@localhost:${config.portConfig.postgres}/legal_ai_db`,
+      REDIS_URL: process.env.REDIS_URL || `redis://localhost:${config.portConfig.redis}`,
       PGVECTOR_ENABLED: 'true',
       EMBEDDING_CACHE: 'true',
       REDIS_ENABLED: 'true'
@@ -127,7 +173,8 @@ const taskDefinitions = {
     name: 'Legal Document SIMD Parser',
     cmd: ['node', 'scripts/simd-legal-parser.mjs'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11436',
+      OLLAMA_URL: process.env.OLLAMA_URL || `http://localhost:${config.dynamicOllamaPort}`,
+      NEO4J_URL: process.env.NEO4J_URL || `http://localhost:${config.portConfig.neo4j}`,
       SIMD_ENABLED: 'true',
       LEGAL_PARSING: 'true',
       PDF_GPU_ACCELERATION: 'true',
@@ -138,7 +185,8 @@ const taskDefinitions = {
     name: 'WebGPU Legal Knowledge SOM',
     cmd: ['npm', 'run', 'check:ultra-fast'],
     env: { 
-      OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11436',
+      OLLAMA_URL: process.env.OLLAMA_URL || `http://localhost:${config.dynamicOllamaPort}`,
+      ENHANCED_RAG_URL: process.env.ENHANCED_RAG_URL || `http://localhost:${config.portConfig.enhanced_rag}`,
       WEBGPU_ENABLED: 'true',
       LEGAL_SOM_CACHE: 'true',
       KNOWLEDGE_GRAPH: 'true'
@@ -203,10 +251,10 @@ async function executeWorker(workerId, task) {
 // Store performance metrics in database for tracking
 async function storePerformanceMetrics(results, summary) {
   try {
-    const databaseUrl = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
+    const databaseUrl = process.env.DATABASE_URL || `postgresql://legal_admin:123456@localhost:${config.portConfig.postgres}/legal_ai_db`;
     const sql = postgres(databaseUrl, { 
       host: 'localhost',
-      port: 5433,
+      port: config.portConfig.postgres,
       database: 'legal_ai_db',
       username: 'legal_admin',
       password: '123456',
@@ -315,6 +363,10 @@ async function storePerformanceMetrics(results, summary) {
 async function main() {
   console.log(chalk.cyan('\n🔍 Checking system requirements...'));
   await checkGPUAvailability();
+  
+  // Discover Ollama port dynamically
+  console.log(chalk.cyan('\n🔍 Discovering Ollama service...'));
+  config.dynamicOllamaPort = await discoverOllamaPort();
 
   console.log(chalk.cyan('\n🚀 Starting concurrent execution...'));
   

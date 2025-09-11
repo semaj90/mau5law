@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
@@ -13,7 +12,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
 
   let pageTitle = 'WebGPU + WebAssembly Integration';

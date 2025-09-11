@@ -2,22 +2,46 @@
      Provides upload functionality without UI, perfect for integration with custom interfaces -->
 
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import { minioService, type MinIOFile, type UploadProgress } from '$lib/services/minio-service';
   
-  interface Props {
+  interface ProcessingOptions {
+    extractText?: boolean;
+    generateEmbeddings?: boolean;
+    performAnalysis?: boolean;
+    cacheResults?: boolean;
+  }
+  
+  interface DocumentUploaderProps {
     autoUpload?: boolean;
     maxFiles?: number;
     maxFileSize?: number;
     acceptedTypes?: string[];
     caseId?: string;
     priority?: number;
-    processingOptions?: {
-      extractText?: boolean;
-      generateEmbeddings?: boolean;
-      performAnalysis?: boolean;
-      cacheResults?: boolean;
-    };
+    processingOptions?: ProcessingOptions;
+    onFilesSelected?: (event: { files: FileList }) => void;
+    onUploadStart?: (event: { files: File[] }) => void;
+    onUploadProgress?: (event: { progress: UploadProgress }) => void;
+    onUploadComplete?: (event: { file: MinIOFile }) => void;
+    onUploadError?: (event: { error: string; file?: File }) => void;
+    onAllUploadsComplete?: (event: { files: MinIOFile[] }) => void;
+    children?: import('svelte').Snippet<[{
+      selectFiles: () => void;
+      uploadFiles: (files: FileList | File[]) => Promise<MinIOFile[]>;
+      getUploadStats: () => UploadStats;
+      clearUploads: () => void;
+      isUploading: boolean;
+      uploadQueue: File[];
+      completedUploads: MinIOFile[];
+      uploadProgress: Map<string, UploadProgress>;
+    }]>;
+  }
+  
+  interface UploadStats {
+    isUploading: boolean;
+    queueLength: number;
+    completedCount: number;
+    progressMap: Map<string, UploadProgress>;
   }
   
   let {
@@ -32,27 +56,36 @@
       generateEmbeddings: true,
       performAnalysis: true,
       cacheResults: true
-    }
-  }: Props = $props();
+    },
+    onFilesSelected,
+    onUploadStart,
+    onUploadProgress,
+    onUploadComplete,
+    onUploadError,
+    onAllUploadsComplete,
+    children
+  }: DocumentUploaderProps = $props();
   
-  const dispatch = createEventDispatcher<{
-    'files-selected': { files: FileList };
-    'upload-start': { files: File[] };
-    'upload-progress': { progress: UploadProgress };
-    'upload-complete': { file: MinIOFile };
-    'upload-error': { error: string; file?: File };
-    'all-uploads-complete': { files: MinIOFile[] };
-  }>();
-  
-  // State
+  // State using Svelte 5 runes
   let isUploading = $state(false);
-  let uploadQueue: File[] = $state([]);
-  let completedUploads: MinIOFile[] = $state([]);
+  let uploadQueue = $state<File[]>([]);
+  let completedUploads = $state<MinIOFile[]>([]);
   let uploadProgress = $state(new Map<string, UploadProgress>());
   let currentUploads = $state(new Set<string>());
+  let mounted = $state(false);
   
   // File input reference (headless)
-  let fileInput: HTMLInputElement;
+  let fileInput = $state<HTMLInputElement>();
+  
+  // Mount effect
+  $effect(() => {
+    mounted = true;
+    return () => {
+      mounted = false;
+      // Cleanup any ongoing uploads
+      currentUploads.clear();
+    };
+  });
   
   /**
    * Programmatically trigger file selection
@@ -72,12 +105,7 @@
   /**
    * Get current upload statistics
    */
-  export function getUploadStats(): {
-    isUploading: boolean;
-    queueLength: number;
-    completedCount: number;
-    progressMap: Map<string, UploadProgress>;
-  } {
+  export function getUploadStats(): UploadStats {
     return {
       isUploading,
       queueLength: uploadQueue.length,
@@ -112,7 +140,7 @@
       return;
     }
     
-    dispatch('files-selected', { files });
+    onFilesSelected?.({ files });
     
     if (autoUpload) {
       await processFileUploads(validFiles);
@@ -128,7 +156,7 @@
     for (const file of Array.from(files)) {
       // Check file type
       if (!acceptedTypes.includes(file.type)) {
-        dispatch('upload-error', { 
+        onUploadError?.({ 
           error: `File type ${file.type} not accepted`, 
           file 
         });
@@ -137,7 +165,7 @@
       
       // Check file size
       if (file.size > maxFileSize) {
-        dispatch('upload-error', { 
+        onUploadError?.({ 
           error: `File size ${file.size} exceeds maximum ${maxFileSize}`, 
           file 
         });
@@ -149,7 +177,7 @@
     
     // Check max files limit
     if (validFiles.length > maxFiles) {
-      dispatch('upload-error', { 
+      onUploadError?.({ 
         error: `Too many files selected. Maximum is ${maxFiles}` 
       });
       return validFiles.slice(0, maxFiles);
@@ -168,7 +196,7 @@
     const results: MinIOFile[] = [];
     
     try {
-      dispatch('upload-start', { files });
+      onUploadStart?.({ files });
       
       // Process files sequentially to avoid overwhelming the server
       for (const file of files) {
@@ -189,14 +217,14 @@
           
           const uploadedFile = result[0];
           results.push(uploadedFile);
-          completedUploads.push(uploadedFile);
+          completedUploads = [...completedUploads, uploadedFile];
           
-          dispatch('upload-complete', { file: uploadedFile });
+          onUploadComplete?.({ file: uploadedFile });
           
           unsubscribe();
           
         } catch (error) {
-          dispatch('upload-error', { 
+          onUploadError?.({ 
             error: error instanceof Error ? error.message : 'Upload failed', 
             file 
           });
@@ -205,7 +233,7 @@
         }
       }
       
-      dispatch('all-uploads-complete', { files: results });
+      onAllUploadsComplete?.({ files: results });
       return results;
       
     } finally {
@@ -217,7 +245,7 @@
   function subscribeToProgress(uploadId: string): () => void {
     const handleProgress = (progress: UploadProgress) => {
       uploadProgress.set(uploadId, progress);
-      dispatch('upload-progress', { progress });
+      onUploadProgress?.({ progress });
     };
     
     minioService.onUploadProgress(uploadId, handleProgress);
@@ -256,14 +284,16 @@
   onchange={handleFileSelection}
 />
 
-<!-- Slot for custom UI -->
-<slot 
-  {selectFiles}
-  {uploadFiles}
-  {getUploadStats}
-  {clearUploads}
-  {isUploading}
-  {uploadQueue}
-  {completedUploads}
-  {uploadProgress}
-/>
+<!-- Snippet for custom UI -->
+{#if children && mounted}
+  {@render children({
+    selectFiles,
+    uploadFiles,
+    getUploadStats,
+    clearUploads,
+    isUploading,
+    uploadQueue,
+    completedUploads,
+    uploadProgress
+  })}
+{/if}

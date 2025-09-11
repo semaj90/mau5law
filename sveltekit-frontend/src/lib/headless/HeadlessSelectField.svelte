@@ -1,7 +1,6 @@
 <script lang="ts">
   import * as Select from '$lib/components/ui/select/index.js';
   import FormField from './FormField.svelte';
-  import { createEventDispatcher, onMount } from 'svelte';
 
   // Using custom wrapper and bits-ui re-exports; some may be undefined if not provided
   const SelectRoot = (Select as any).Select || (Select as any).Root || Select.default || (Select as any);
@@ -10,13 +9,31 @@
   const SelectValue = (Select as any).SelectValue || (Select as any).Value || (Select as any).Select?.Value;
   const SelectItem = (Select as any).SelectItem || (Select as any).Item || (Select as any).Select?.Item;
 
-  const dispatch = createEventDispatcher<{ change: { name: string; value: string | null } }>();
+  interface SelectOption {
+    value: string;
+    label?: string;
+  }
+  
+  interface HeadlessSelectFieldProps {
+    name: string;
+    value?: string | null;
+    selected?: string | null;
+    options?: (string | SelectOption)[];
+    placeholder?: string;
+    errors?: string[] | undefined;
+    disabled?: boolean;
+    autoSelectFirst?: boolean;
+    emptyOptionLabel?: string;
+    required?: boolean;
+    description?: string;
+    class?: string;
+    onChange?: (event: { name: string; value: string | null }) => void;
+  }
 
-  // Runes props (read-only)
-  const {
+  let {
     name,
-    value: incomingValue = undefined,
-    selected: incomingSelected = undefined,
+    value = $bindable(),
+    selected,
     options = [],
     placeholder = 'Select option',
     errors = undefined,
@@ -26,37 +43,68 @@
     required = false,
     description = undefined,
     class: className = '',
+    onChange,
     ...rest
-  } = $props();
+  }: HeadlessSelectFieldProps = $props();
 
-  // Internal controlled state mirror (uncontrolled fallback)
-  let current = $state<string | null>(incomingSelected ?? incomingValue ?? null);
+  // Internal state for current selection
+  let current = $state<string | null>(selected ?? value ?? null);
+  let mounted = $state(false);
 
-  $: normalized = options.map(o => typeof o === 'string' ? { value: o, label: o } : { value: o.value, label: o.label ?? o.value });
+  // Normalize options to consistent format
+  let normalized = $derived(
+    options.map(o => 
+      typeof o === 'string' 
+        ? { value: o, label: o } 
+        : { value: o.value, label: o.label ?? o.value }
+    )
+  );
 
-  // Sync down from external props if they change
-  $: if (incomingSelected !== undefined && incomingSelected !== current) {
-    current = incomingSelected;
-  } else if (incomingValue !== undefined && incomingValue !== current) {
-    current = incomingValue;
-  }
-
-  onMount(() => {
-    if (autoSelectFirst && (current == null || current === '') && normalized.length > 0) {
+  // Sync external value changes
+  $effect(() => {
+    if (selected !== undefined && selected !== current) {
+      current = selected;
+    } else if (value !== undefined && value !== current) {
+      current = value;
+    }
+  });
+  
+  // Auto-select first option if enabled
+  $effect(() => {
+    if (mounted && autoSelectFirst && (current == null || current === '') && normalized.length > 0) {
       updateValue(normalized[0].value);
     }
+  });
+  
+  // Mount effect
+  $effect(() => {
+    mounted = true;
+    return () => {
+      mounted = false;
+    };
   });
 
   function updateValue(v: string | null) {
     if (current === v) return;
     current = v;
-    dispatch('change', { name, value: v });
+    
+    // Update bindable props
+    if (value !== undefined) value = v;
+    
+    // Call onChange callback
+    if (onChange) {
+      onChange({ name, value: v });
+    }
+  }
+  
+  function handleValueChange(event: CustomEvent<string>) {
+    updateValue(event.detail);
   }
 </script>
 
 <FormField name={name} errors={errors}>
   <div slot="control" class={className} {...rest}>
-    <SelectRoot bind:value={current} disabled={disabled} on:valueChange={(e: CustomEvent<string>) => updateValue(e.detail)}>
+    <SelectRoot bind:value={current} disabled={disabled} onValueChange={handleValueChange}>
       <SelectTrigger>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

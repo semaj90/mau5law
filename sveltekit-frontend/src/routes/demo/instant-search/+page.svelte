@@ -10,7 +10,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { InstantLegalSearch } from '$lib/components/search';
   import Button from '$lib/components/ui/Button.svelte';
@@ -238,7 +237,7 @@
           <!-- Redis Status -->
           <div class="space-y-2">
             <div class="flex items-center gap-2">
-              <{getStatusIcon(systemHealth.components?.redis?.connected ? 'connected' : 'error')} class="h-4 w-4 {getStatusColor(systemHealth.components?.redis?.connected ? 'connected' : 'error')}" 
+              <svelte:component this={getStatusIcon(systemHealth.components?.redis?.connected ? 'connected' : 'error')} class="h-4 w-4 {getStatusColor(systemHealth.components?.redis?.connected ? 'connected' : 'error')}" 
               />
               <span class="font-medium">Redis Cache</span>
             </div>
@@ -250,7 +249,7 @@
           <!-- Loki Status -->
           <div class="space-y-2">
             <div class="flex items-center gap-2">
-              <{getStatusIcon(systemHealth.components?.loki?.initialized ? 'working' : 'error')} class="h-4 w-4 {getStatusColor(systemHealth.components?.loki?.initialized ? 'working' : 'error')}" 
+              <svelte:component this={getStatusIcon(systemHealth.components?.loki?.initialized ? 'working' : 'error')} class="h-4 w-4 {getStatusColor(systemHealth.components?.loki?.initialized ? 'working' : 'error')}" 
               />
               <span class="font-medium">Loki.js Database</span>
             </div>
@@ -262,7 +261,7 @@
           <!-- Search Engine Status -->
           <div class="space-y-2">
             <div class="flex items-center gap-2">
-              <{getStatusIcon(systemHealth.components?.instantSearch?.available ? 'healthy' : 'error')} class="h-4 w-4 {getStatusColor(systemHealth.components?.instantSearch?.available ? 'healthy' : 'error')}" 
+              <svelte:component this={getStatusIcon(systemHealth.components?.instantSearch?.available ? 'healthy' : 'error')} class="h-4 w-4 {getStatusColor(systemHealth.components?.instantSearch?.available ? 'healthy' : 'error')}" 
               />
               <span class="font-medium">Search Engine</span>
             </div>
@@ -275,7 +274,7 @@
         <!-- Integration Status -->
         <div class="mt-4 p-3 rounded-lg border">
           <div class="flex items-center gap-2 mb-2">
-            <{getStatusIcon(systemHealth.status)} class="h-4 w-4 {getStatusColor(systemHealth.status)}" 
+            <svelte:component this={getStatusIcon(systemHealth.status)} class="h-4 w-4 {getStatusColor(systemHealth.status)}" 
             />
             <span class="font-medium">Full Pipeline Integration</span>
             <Badge class="{systemHealth.status === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
@@ -294,8 +293,8 @@
           <p class="text-muted-foreground">Loading system health...</p>
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 
   <!-- Main Content Tabs -->
   <Tabs.Root value="search" class="w-full">
@@ -326,8 +325,8 @@
             onResultAction={handleResultAction}
             class="w-full"
           />
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
 
       <!-- Performance Metrics -->
       {#if performanceMetrics.totalSearches > 0}
@@ -357,8 +356,8 @@
                 <div class="text-sm text-muted-foreground">Avg Response Time</div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </Card.Content>
+        </Card.Root>
       {/if}
     </Tabs.Content>
 
@@ -391,15 +390,15 @@
               Test All
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
 
       <!-- Test Results -->
       {#if testResults}
         <Card.Root>
           <Card.Header>
             <Card.Title class="flex items-center gap-2">
-              <{getStatusIcon(testResults.status)} class="h-5 w-5 {getStatusColor(testResults.status)}" />
+              <svelte:component this={getStatusIcon(testResults.status)} class="h-5 w-5 {getStatusColor(testResults.status)}" />
               Test Results
               <Badge class="{testResults.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                 {testResults.status}
@@ -433,7 +432,7 @@
                 {#each Object.entries(testResults.results) as [component, result]}
                   <div class="border rounded-lg p-4">
                     <div class="flex items-center gap-2 mb-2">
-                      <{getStatusIcon(result.status)} class="h-4 w-4 {getStatusColor(result.status)}" 
+                      <svelte:component this={getStatusIcon(result.status)} class="h-4 w-4 {getStatusColor(result.status)}" 
                       />
                       <span class="font-medium capitalize">{component}</span>
                       <Badge class="{result.status === 'working' || result.status === 'connected' || result.status === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
@@ -468,8 +467,8 @@
                 </ul>
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </Card.Content>
+        </Card.Root>
       {/if}
     </Tabs.Content>
 
@@ -506,8 +505,8 @@
               {/if}
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
 
       <!-- Benchmark Results -->
       {#if benchmarkResults}
@@ -538,8 +537,8 @@
             <div class="mt-4 text-sm text-muted-foreground">
               Ran {benchmarkResults.iterations} searches across {benchmarkResults.queries} different queries
             </div>
-          </CardContent>
-        </Card>
+          </Card.Content>
+        </Card.Root>
       {/if}
     </Tabs.Content>
 
@@ -597,8 +596,8 @@
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </Tabs.Content>
   </Tabs.Root>
 </div>

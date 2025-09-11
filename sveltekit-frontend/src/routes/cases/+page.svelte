@@ -5,21 +5,17 @@
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import Input from '$lib/components/ui/enhanced-bits';
-  import { Label } from '$lib/components/ui/label/index.js';
+  import {
+    Button,
+    Card,
+    Dialog,
+    Input,
+    Label,
+    Select
+  } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
-  import * as Select from '$lib/components/ui/select/index.js';
-  // Local aliases for template usage
-  const SelectRoot = Select.Root;
-  const SelectTrigger = Select.Trigger;
-  const SelectContent = Select.Content;
-  const SelectValue = Select.Value;
-  const SelectItem = Select.Item;
-  import * as Dialog from '$lib/components/ui/dialog/index.js';
   import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
   import { Badge } from '$lib/components/ui/badge/index.js';
-  import * as Card from '$lib/components/ui/card/index.js';
   import { Separator } from '$lib/components/ui/separator/index.js';
   import * as Tabs from '$lib/components/ui/tabs/index.js';
   import { toast } from 'svelte-sonner';
@@ -371,50 +367,52 @@
         </p>
       </div>
   <Button class="bits-btn gap-2" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; createCaseDialogOpen = true; }}>
-        <Plus class="h-4 w-4" />
-        New Case
+        {#snippet children()}
+          <Plus class="h-4 w-4" />
+          New Case
+        {/snippet}
       </Button>
     </div>
 
     <!-- Stats Overview -->
     {#if data.caseStats}
     <div class="grid gap-4 md:grid-cols-4">
-      <Card.Root>
-        <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Card.Title class="text-sm font-medium">Total Cases</Card.Title>
-          <FileText class="h-4 w-4 text-muted-foreground" />
-        </Card.Header>
-        <Card.Content>
+      <Card class="p-6">
+        {#snippet children()}
+          <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <h3 class="text-sm font-medium">Total Cases</h3>
+            <FileText class="h-4 w-4 text-muted-foreground" />
+          </div>
           <div class="text-2xl font-bold">{data.caseStats.total}</div>
-        </Card.Content>
-      </Card.Root>
-      <Card.Root>
-        <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Card.Title class="text-sm font-medium">Open Cases</Card.Title>
-          <Eye class="h-4 w-4 text-muted-foreground" />
-        </Card.Header>
-        <Card.Content>
+        {/snippet}
+      </Card>
+      <Card class="p-6">
+        {#snippet children()}
+          <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <h3 class="text-sm font-medium">Open Cases</h3>
+            <Eye class="h-4 w-4 text-muted-foreground" />
+          </div>
           <div class="text-2xl font-bold text-blue-600">{data.caseStats.open}</div>
-        </Card.Content>
-      </Card.Root>
-      <Card.Root>
-        <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Card.Title class="text-sm font-medium">High Priority</Card.Title>
-          <AlertCircle class="h-4 w-4 text-red-500" />
-        </Card.Header>
-        <Card.Content>
+        {/snippet}
+      </Card>
+      <Card class="p-6">
+        {#snippet children()}
+          <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <h3 class="text-sm font-medium">High Priority</h3>
+            <AlertCircle class="h-4 w-4 text-red-500" />
+          </div>
           <div class="text-2xl font-bold text-red-600">{data.caseStats.highPriority}</div>
-        </Card.Content>
-      </Card.Root>
-      <Card.Root>
-        <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Card.Title class="text-sm font-medium">Closed Cases</Card.Title>
-          <div class="h-4 w-4 rounded-full bg-gray-500"></div>
-        </Card.Header>
-        <Card.Content>
+        {/snippet}
+      </Card>
+      <Card class="p-6">
+        {#snippet children()}
+          <div class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <h3 class="text-sm font-medium">Closed Cases</h3>
+            <div class="h-4 w-4 rounded-full bg-gray-500"></div>
+          </div>
           <div class="text-2xl font-bold text-gray-600">{data.caseStats.closed}</div>
-        </Card.Content>
-      </Card.Root>
+        {/snippet}
+      </Card>
     </div>
     {/if}
 
@@ -438,40 +436,42 @@
             disabled={!searchQuery.trim() || isSearching}
             class="gap-2 bits-btn"
           >
-            {#if isSearching}
-              <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-            {:else}
-              <Search class="h-4 w-4" />
-            {/if}
-            AI Search
+            {#snippet children()}
+              {#if isSearching}
+                <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+              {:else}
+                <Search class="h-4 w-4" />
+              {/if}
+              AI Search
+            {/snippet}
           </Button>
 
-          <SelectRoot bind:selected={statusFilter}>
-            <SelectTrigger class="w-[140px]">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="open">Open</SelectItem>
-              <SelectItem value="investigating">Investigating</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="closed">Closed</SelectItem>
-              <SelectItem value="archived">Archived</SelectItem>
-            </SelectContent>
-          </SelectRoot>
+          <Select
+            options={[
+              {value: 'all', label: 'All Status'},
+              {value: 'open', label: 'Open'},
+              {value: 'investigating', label: 'Investigating'},
+              {value: 'pending', label: 'Pending'},
+              {value: 'closed', label: 'Closed'},
+              {value: 'archived', label: 'Archived'}
+            ]}
+            bind:selected={statusFilter}
+            placeholder="Status"
+            class="w-[140px]"
+          />
 
-          <SelectRoot bind:selected={priorityFilter}>
-            <SelectTrigger class="w-[140px]">
-              <SelectValue placeholder="Priority" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Priority</SelectItem>
-              <SelectItem value="low">Low</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="high">High</SelectItem>
-              <SelectItem value="critical">Critical</SelectItem>
-            </SelectContent>
-          </SelectRoot>
+          <Select
+            options={[
+              {value: 'all', label: 'All Priority'},
+              {value: 'low', label: 'Low'},
+              {value: 'medium', label: 'Medium'},
+              {value: 'high', label: 'High'},
+              {value: 'critical', label: 'Critical'}
+            ]}
+            bind:selected={priorityFilter}
+            placeholder="Priority"
+            class="w-[140px]"
+          />
         </div>
       </div>
     </div>
@@ -482,92 +482,104 @@
       <div class="space-y-6">
         <div class="flex items-center justify-between">
           <Button class="bits-btn" variant="outline" onclick={() => goto('/cases')}>
-            ← Back to Cases
+            {#snippet children()}
+              ← Back to Cases
+            {/snippet}
           </Button>
           <div class="flex gap-2">
             <Button class="bits-btn" variant="outline" size="sm" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
-              <Plus class="h-4 w-4 mr-2" />
-              Add Evidence
+              {#snippet children()}
+                <Plus class="h-4 w-4 mr-2" />
+                Add Evidence
+              {/snippet}
             </Button>
           </div>
         </div>
 
-        <Card.Root>
-          <Card.Header>
-            <div class="flex items-start justify-between">
-              <div class="space-y-2">
-                <Card.Title class="text-2xl">{data.activeCase.title}</Card.Title>
-                <div class="flex gap-2">
-                  <Badge class={cn(priorityColors[data.activeCase.priority])}>
-                    {data.activeCase.priority}
-                  </Badge>
-                  <Badge class={cn(statusColors[data.activeCase.status])}>
-                    {data.activeCase.status}
-                  </Badge>
-                  {#if data.activeCase.location}
-                    <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">📍 {data.activeCase.location}</span>
-                  {/if}
-                  {#if data.activeCase.jurisdiction}
-                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">⚖️ {data.activeCase.jurisdiction}</span>
-                  {/if}
+        <Card class="p-6">
+          {#snippet children()}
+            <div class="mb-4">
+              <div class="flex items-start justify-between">
+                <div class="space-y-2">
+                  <h2 class="text-2xl font-semibold">{data.activeCase.title}</h2>
+                  <div class="flex gap-2">
+                    <Badge class={cn(priorityColors[data.activeCase.priority])}>
+                      {data.activeCase.priority}
+                    </Badge>
+                    <Badge class={cn(statusColors[data.activeCase.status])}>
+                      {data.activeCase.status}
+                    </Badge>
+                    {#if data.activeCase.location}
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">📍 {data.activeCase.location}</span>
+                    {/if}
+                    {#if data.activeCase.jurisdiction}
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">⚖️ {data.activeCase.jurisdiction}</span>
+                    {/if}
+                  </div>
                 </div>
               </div>
             </div>
-          </Card.Header>
-          <Card.Content>
             <p class="text-muted-foreground mb-4">{data.activeCase.description}</p>
             {#if data.activeCase.incidentDate}
               <div class="text-sm text-muted-foreground">
                 <strong>Incident Date:</strong> {new Date(data.activeCase.incidentDate).toLocaleDateString()}
               </div>
             {/if}
-          </Card.Content>
-        </Card.Root>
+          {/snippet}
+        </Card>
 
         <!-- Evidence Section -->
         <div class="space-y-4">
           <h2 class="text-xl font-semibold">Evidence ({data.caseEvidence.length})</h2>
 
           {#if data.caseEvidence.length === 0}
-            <Card.Root>
-              <Card.Content class="flex flex-col items-center justify-center py-12">
-                <FileText class="h-12 w-12 text-muted-foreground mb-4" />
-                <p class="text-muted-foreground mb-4">No evidence has been added to this case yet.</p>
-                <Button class="bits-btn" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
-                  <Plus class="h-4 w-4 mr-2" />
-                  Add First Evidence
-                </Button>
-              </Card.Content>
-            </Card.Root>
+            <Card class="p-6">
+              {#snippet children()}
+                <div class="flex flex-col items-center justify-center py-12">
+                  <FileText class="h-12 w-12 text-muted-foreground mb-4" />
+                  <p class="text-muted-foreground mb-4">No evidence has been added to this case yet.</p>
+                  <Button class="bits-btn" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
+                    {#snippet children()}
+                      <Plus class="h-4 w-4 mr-2" />
+                      Add First Evidence
+                    {/snippet}
+                  </Button>
+                </div>
+              {/snippet}
+            </Card>
           {:else}
             <div class="grid gap-4">
-              <OptimisticList items={data.caseEvidence} optimistic={optimisticEvidence} let:item>
-                <Card.Root>
-                  <Card.Header>
-                    <div class="flex items-center justify-between">
-                      <Card.Title class="text-lg">{item.title}</Card.Title>
-                      <div class="flex gap-2">
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{item.evidenceType}</span>
-                        {#if item.__optimistic}
-                          <span class="flex items-center gap-1 text-xs text-muted-foreground animate-pulse">
-                            <div class="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                            pending
-                          </span>
-                        {/if}
-                        <Button class="bits-btn" variant="ghost" size="sm">
-                          <Edit2 class="h-4 w-4" />
-                        </Button>
-                        <Button class="bits-btn"
-                          variant="ghost"
-                          size="sm"
-                          onclick={() => confirmDeleteEvidence(item)}
-                        >
-                          <Trash2 class="h-4 w-4" />
-                        </Button>
+              {#each [...data.caseEvidence, ...optimisticEvidence] as item}
+                <Card class="p-6">
+                  {#snippet children()}
+                    <div class="mb-4">
+                      <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold">{item.title}</h3>
+                        <div class="flex gap-2">
+                          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{item.evidenceType}</span>
+                          {#if item.__optimistic}
+                            <span class="flex items-center gap-1 text-xs text-muted-foreground animate-pulse">
+                              <div class="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                              pending
+                            </span>
+                          {/if}
+                          <Button class="bits-btn" variant="ghost" size="sm">
+                            {#snippet children()}
+                              <Edit2 class="h-4 w-4" />
+                            {/snippet}
+                          </Button>
+                          <Button class="bits-btn"
+                            variant="ghost"
+                            size="sm"
+                            onclick={() => confirmDeleteEvidence(item)}
+                          >
+                            {#snippet children()}
+                              <Trash2 class="h-4 w-4" />
+                            {/snippet}
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </Card.Header>
-                  <Card.Content>
                     <p class="text-sm text-muted-foreground mb-2">{item.description}</p>
                     <div class="flex justify-between items-center text-xs text-muted-foreground">
                       <span>Collected: {new Date(item.collectedAt).toLocaleDateString()}</span>
@@ -575,9 +587,9 @@
                         <span>Tags: {item.tags}</span>
                       {/if}
                     </div>
-                  </Card.Content>
-                </Card.Root>
-              </OptimisticList>
+                  {/snippet}
+                </Card>
+              {/each}
             </div>
           {/if}
         </div>
@@ -596,21 +608,21 @@
         <Tabs.Content value="all-cases" class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {#each filteredCases as caseItem}
-              <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" onclick={() => viewCase(caseItem)}>
-                <Card.Header>
-                  <div class="flex items-start justify-between">
-                    <Card.Title class="text-lg line-clamp-2">{caseItem.title}</Card.Title>
-                    <div class="flex flex-col gap-1">
-                      <Badge class={cn(priorityColors[caseItem.priority], 'text-xs')}>
-                        {caseItem.priority}
-                      </Badge>
-                      <Badge class={cn(statusColors[caseItem.status], 'text-xs')}>
-                        {caseItem.status}
-                      </Badge>
+              <Card class="cursor-pointer transition-colors hover:bg-muted/50 p-6" onclick={() => viewCase(caseItem)}>
+                {#snippet children()}
+                  <div class="mb-4">
+                    <div class="flex items-start justify-between">
+                      <h3 class="text-lg font-semibold line-clamp-2">{caseItem.title}</h3>
+                      <div class="flex flex-col gap-1">
+                        <Badge class={cn(priorityColors[caseItem.priority], 'text-xs')}>
+                          {caseItem.priority}
+                        </Badge>
+                        <Badge class={cn(statusColors[caseItem.status], 'text-xs')}>
+                          {caseItem.status}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
-                </Card.Header>
-                <Card.Content>
                   <p class="text-sm text-muted-foreground line-clamp-3 mb-4">
                     {caseItem.description || 'No description provided'}
                   </p>
@@ -628,22 +640,26 @@
                       {/if}
                     </div>
                   </div>
-                </Card.Content>
-              </Card.Root>
+                {/snippet}
+              </Card>
             {:else}
               <div class="col-span-full">
-                <Card.Root>
-                  <Card.Content class="flex flex-col items-center justify-center py-12">
-                    <FileText class="h-12 w-12 text-muted-foreground mb-4" />
-                    <p class="text-muted-foreground mb-4">
-                      {searchQuery.trim() ? 'No cases found matching your search.' : 'No cases found.'}
-                    </p>
-                    <Button class="bits-btn" onclick={() => createCaseDialogOpen = true}>
-                      <Plus class="h-4 w-4 mr-2" />
-                      Create Your First Case
-                    </Button>
-                  </Card.Content>
-                </Card.Root>
+                <Card class="p-6">
+                  {#snippet children()}
+                    <div class="flex flex-col items-center justify-center py-12">
+                      <FileText class="h-12 w-12 text-muted-foreground mb-4" />
+                      <p class="text-muted-foreground mb-4">
+                        {searchQuery.trim() ? 'No cases found matching your search.' : 'No cases found.'}
+                      </p>
+                      <Button class="bits-btn" onclick={() => createCaseDialogOpen = true}>
+                        {#snippet children()}
+                          <Plus class="h-4 w-4 mr-2" />
+                          Create Your First Case
+                        {/snippet}
+                      </Button>
+                    </div>
+                  {/snippet}
+                </Card>
               </div>
             {/each}
           </div>
@@ -653,44 +669,46 @@
           {#if vectorSearchResults.length > 0}
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {#each vectorSearchResults as result}
-                <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" onclick={() => viewCase(result)}>
-                  <Card.Header>
-                    <div class="flex items-start justify-between">
-                      <Card.Title class="text-lg line-clamp-2">{result.title}</Card.Title>
-                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(result.similarity * 100)}% match</span>
+                <Card class="cursor-pointer transition-colors hover:bg-muted/50 p-6" onclick={() => viewCase(result)}>
+                  {#snippet children()}
+                    <div class="mb-4">
+                      <div class="flex items-start justify-between">
+                        <h3 class="text-lg font-semibold line-clamp-2">{result.title}</h3>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(result.similarity * 100)}% match</span>
+                      </div>
                     </div>
-                  </Card.Header>
-                  <Card.Content>
                     <p class="text-sm text-muted-foreground line-clamp-3 mb-2">
                       {result.description || 'No description provided'}
                     </p>
                     <div class="text-xs text-green-600 mb-2">
                       🤖 AI-powered similarity: {(result.similarity * 100).toFixed(1)}%
                     </div>
-                  </Card.Content>
-                </Card.Root>
+                  {/snippet}
+                </Card>
               {/each}
             </div>
           {:else}
-            <Card.Root>
-              <Card.Content class="flex flex-col items-center justify-center py-12">
-                <Search class="h-12 w-12 text-muted-foreground mb-4" />
-                <p class="text-muted-foreground mb-4">Use the AI Search button to find similar cases</p>
-                <p class="text-sm text-muted-foreground text-center max-w-md">
-                  Vector search uses AI to find semantically similar cases based on content, not just keywords.
-                </p>
-              </Card.Content>
-            </Card.Root>
+            <Card class="p-6">
+              {#snippet children()}
+                <div class="flex flex-col items-center justify-center py-12">
+                  <Search class="h-12 w-12 text-muted-foreground mb-4" />
+                  <p class="text-muted-foreground mb-4">Use the AI Search button to find similar cases</p>
+                  <p class="text-sm text-muted-foreground text-center max-w-md">
+                    Vector search uses AI to find semantically similar cases based on content, not just keywords.
+                  </p>
+                </div>
+              {/snippet}
+            </Card>
           {/if}
         </Tabs.Content>
 
         <Tabs.Content value="analytics" class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2">
-            <Card.Root>
-              <Card.Header>
-                <Card.Title>Case Distribution</Card.Title>
-              </Card.Header>
-              <Card.Content>
+            <Card class="p-6">
+              {#snippet children()}
+                <div class="mb-4">
+                  <h3 class="text-lg font-semibold">Case Distribution</h3>
+                </div>
                 <div class="space-y-2">
                   {#if data.caseStats}
                     <div class="flex justify-between">
@@ -711,14 +729,14 @@
                     </div>
                   {/if}
                 </div>
-              </Card.Content>
-            </Card.Root>
+              {/snippet}
+            </Card>
 
-            <Card.Root>
-              <Card.Header>
-                <Card.Title>Priority Breakdown</Card.Title>
-              </Card.Header>
-              <Card.Content>
+            <Card class="p-6">
+              {#snippet children()}
+                <div class="mb-4">
+                  <h3 class="text-lg font-semibold">Priority Breakdown</h3>
+                </div>
                 <div class="space-y-2">
                   {#if data.caseStats}
                     <div class="flex justify-between">
@@ -739,8 +757,8 @@
                     </div>
                   {/if}
                 </div>
-              </Card.Content>
-            </Card.Root>
+              {/snippet}
+            </Card>
           </div>
         </Tabs.Content>
       </Tabs.Root>
@@ -779,26 +797,32 @@
         </div>
         <div class="grid gap-2">
           <Label for="case-status">Status</Label>
-          <HeadlessSelectField name="status" selected={$createFormData.status} errors={$createCaseForm?.errors?.status}
-            options={[{value:'open'},{value:'investigating'},{value:'pending'},{value:'closed'}]} placeholder="Select status"
-            onchange={(e) => {
-              const v = e.detail.value;
-              if (createFormData && typeof createFormData.update === 'function') {
-                createFormData.update((c: any) => ({ ...c, status: v }));
-              }
-            }} />
+          <Select
+            options={[
+              {value: 'open', label: 'Open'},
+              {value: 'investigating', label: 'Investigating'},
+              {value: 'pending', label: 'Pending'},
+              {value: 'closed', label: 'Closed'}
+            ]}
+            bind:selected={$createFormData.status}
+            placeholder="Select status"
+            name="status"
+          />
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div class="grid gap-2">
             <Label for="case-priority">Priority</Label>
-            <HeadlessSelectField name="priority" selected={$createFormData.priority} errors={$createCaseForm?.errors?.priority}
-              options={[{value:'low'},{value:'medium'},{value:'high'},{value:'critical'}]} placeholder="Select priority"
-              onchange={(e) => {
-                const v = e.detail.value;
-                if (createFormData && typeof createFormData.update === 'function') {
-                  createFormData.update((c: any) => ({ ...c, priority: v }));
-                }
-              }} />
+            <Select
+              options={[
+                {value: 'low', label: 'Low'},
+                {value: 'medium', label: 'Medium'},
+                {value: 'high', label: 'High'},
+                {value: 'critical', label: 'Critical'}
+              ]}
+              bind:selected={$createFormData.priority}
+              placeholder="Select priority"
+              name="priority"
+            />
           </div>
           <!-- Removed duplicate Status block to avoid confusion -->
         </div>
@@ -839,8 +863,14 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <Button class="bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>Cancel</Button>
-        <LoadingButton class="bits-btn" type="submit" loading={isCreatingCase} disabled={!$createFormData.title?.trim()}>{#if isCreatingCase}Creating...{:else}Create Case{/if}</LoadingButton>
+        <Button class="bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>
+          {#snippet children()}Cancel{/snippet}
+        </Button>
+        <Button class="bits-btn" type="submit" disabled={isCreatingCase || !$createFormData.title?.trim()}>
+          {#snippet children()}
+            {#if isCreatingCase}Creating...{:else}Create Case{/if}
+          {/snippet}
+        </Button>
       </div>
     </form>
     <div aria-live="polite" class="sr-only">{isCreatingCase ? 'Creating case' : ''}</div>
@@ -853,14 +883,20 @@
       <div class="grid gap-4">
         <div class="grid gap-2">
           <Label for="evidence-type">Evidence Type</Label>
-          <HeadlessSelectField name="evidenceType" selected={$evidenceFormData.evidenceType} errors={$addEvidenceForm?.errors?.evidenceType}
-            options={[{value:'document'},{value:'photo'},{value:'video'},{value:'audio'},{value:'physical'},{value:'digital'},{value:'testimony'}]} placeholder="Select type"
-            onchange={(e) => {
-              const v = e.detail.value;
-              if (evidenceFormData && typeof evidenceFormData.update === 'function') {
-                evidenceFormData.update((c: any) => ({ ...c, evidenceType: v }));
-              }
-            }} />
+          <Select
+            options={[
+              {value: 'document', label: 'Document'},
+              {value: 'photo', label: 'Photo'},
+              {value: 'video', label: 'Video'},
+              {value: 'audio', label: 'Audio'},
+              {value: 'physical', label: 'Physical'},
+              {value: 'digital', label: 'Digital'},
+              {value: 'testimony', label: 'Testimony'}
+            ]}
+            bind:selected={$evidenceFormData.evidenceType}
+            placeholder="Select type"
+            name="evidenceType"
+          />
         </div>
         <div class="grid gap-2">
           <Label for="evidence-title">Title *</Label>
@@ -901,8 +937,14 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <Button class="bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>Cancel</Button>
-        <LoadingButton class="bits-btn" type="submit" loading={isAddingEvidence} disabled={!$evidenceFormData.title?.trim()}>{#if isAddingEvidence}Adding...{:else}Add Evidence{/if}</LoadingButton>
+        <Button class="bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>
+          {#snippet children()}Cancel{/snippet}
+        </Button>
+        <Button class="bits-btn" type="submit" disabled={isAddingEvidence || !$evidenceFormData.title?.trim()}>
+          {#snippet children()}
+            {#if isAddingEvidence}Adding...{:else}Add Evidence{/if}
+          {/snippet}
+        </Button>
       </div>
     </form>
     <div aria-live="polite" class="sr-only">{isAddingEvidence ? 'Adding evidence' : ''}</div>
@@ -919,11 +961,11 @@
       </AlertDialog.Description>
     </AlertDialog.Header>
     <AlertDialog.Footer>
-  <Button class="bits-btn" variant="outline" onclick={() => deleteEvidenceDialogOpen = false}>
-        Cancel
+      <Button class="bits-btn" variant="outline" onclick={() => deleteEvidenceDialogOpen = false}>
+        {#snippet children()}Cancel{/snippet}
       </Button>
-  <Button class="bits-btn" variant="destructive" onclick={deleteEvidence}>
-        Delete Evidence
+      <Button class="bits-btn" variant="destructive" onclick={deleteEvidence}>
+        {#snippet children()}Delete Evidence{/snippet}
       </Button>
     </AlertDialog.Footer>
   </AlertDialog.Content>

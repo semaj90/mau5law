@@ -36,24 +36,24 @@
         --yorha-accent-dark: #00cc33;
         --yorha-danger: #ff0041;
         --yorha-danger-dark: #cc0033;
-        
+
         /* YoRHa Background Colors */
         --yorha-bg-primary: #0a0a0a;
         --yorha-bg-secondary: #1a1a1a;
         --yorha-bg-tertiary: #2a2a2a;
         --yorha-bg-overlay: rgba(0, 0, 0, 0.9);
-        
+
         /* YoRHa Text Colors */
         --yorha-text-primary: #e0e0e0;
         --yorha-text-secondary: #b0b0b0;
         --yorha-text-muted: #808080;
         --yorha-text-accent: #ffd700;
-        
+
         /* YoRHa Terminal Fonts */
         --yorha-font-primary: 'JetBrains Mono', 'Courier New', monospace;
         --yorha-font-secondary: 'Orbitron', 'Arial', sans-serif;
         --yorha-font-ui: 'Rajdhani', 'Arial', sans-serif;
-        
+
         /* Shadcn-compatible theme variables (YoRHa themed) */
         --background: 0 0% 4%;
         --foreground: 0 0% 88%;
@@ -96,7 +96,7 @@
         font-family: var(--yorha-font-ui);
         line-height: 1.6;
       }
-      
+
       /* YoRHa Terminal Grid Background */
       body::before {
         content: '';
@@ -105,7 +105,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-image: 
+        background-image:
           linear-gradient(rgba(255, 215, 0, 0.05) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255, 215, 0, 0.05) 1px, transparent 1px);
         background-size: 24px 24px;
@@ -118,18 +118,18 @@
         width: 12px;
         height: 12px;
       }
-      
+
       ::-webkit-scrollbar-track {
         background: var(--yorha-bg-primary);
         border: 2px solid var(--yorha-bg-tertiary);
       }
-      
+
       ::-webkit-scrollbar-thumb {
         background: linear-gradient(180deg, var(--yorha-secondary) 0%, var(--yorha-secondary-dark) 100%);
         border-radius: 0;
         border: 1px solid var(--yorha-text-muted);
       }
-      
+
       ::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(180deg, var(--yorha-accent) 0%, var(--yorha-accent-dark) 100%);
       }
@@ -142,7 +142,7 @@
         letter-spacing: 2px;
         font-weight: 400;
       }
-      
+
       h1 {
         font-size: 2.5rem;
         font-weight: 700;
@@ -161,7 +161,7 @@
         font-family: var(--yorha-font-primary);
         transition: all 0.2s ease;
       }
-      
+
       input:focus, textarea:focus, select:focus {
         border-color: var(--yorha-secondary);
         box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
@@ -176,7 +176,7 @@
         transition: all 0.2s ease;
         border-bottom: 1px solid transparent;
       }
-      
+
       a:hover {
         color: var(--yorha-accent);
         text-shadow: 0 0 4px currentColor;
@@ -184,7 +184,7 @@
       }
     </style>
 
-    
+
 	<style data-sveltekit>/* Golden Ratio CSS Utilities */
 /**
  * Golden Ratio CSS Utilities
@@ -194,7 +194,7 @@
 :root {
   /* Golden Ratio Constants */
   --golden-ratio: 1.618033988749;
-  --inverse-golden-ratio: 0.618033988749; /* 1/φ */ 
+  --inverse-golden-ratio: 0.618033988749; /* 1/φ */
   --golden-ratio-squared: 2.618033988749; /* φ² */
   --golden-ratio-cubed: 4.236067977499; /* φ³ */
 
@@ -232,7 +232,7 @@
   --color-phi-primary-hue: 210; /* Blue base */
   --color-phi-secondary-hue: calc(var(--color-phi-primary-hue) + (360 / var(--golden-ratio))); /* ~432.16 → 72.16 */
   --color-phi-tertiary-hue: calc(var(--color-phi-primary-hue) - (360 / var(--golden-ratio))); /* ~-12.16 → 347.84 */
-  
+
   /* Legal AI Golden Ratio Colors */
   --color-nier-golden-primary: hsl(var(--color-phi-primary-hue), 45%, 25%);
   --color-nier-golden-secondary: hsl(var(--color-phi-secondary-hue), 35%, 35%);
@@ -292,30 +292,30 @@
 .aspect-phi-portrait { aspect-ratio: 1 / 1.618033988749; aspect-ratio: var(--aspect-phi-portrait); }
 .aspect-phi-square { aspect-ratio: 1 / 1; aspect-ratio: var(--aspect-phi-square); }
 /* Golden Ratio Grid Templates */
-.grid-cols-phi { 
-  display: grid; 
-  grid-template-columns: 1.618033988749fr 1fr; 
-  grid-template-columns: var(--golden-ratio)fr 1fr; 
+.grid-cols-phi {
+  display: grid;
+  grid-template-columns: 1.618033988749fr 1fr;
+  grid-template-columns: var(--golden-ratio)fr 1fr;
 }
-.grid-cols-phi-reverse { 
-  display: grid; 
-  grid-template-columns: 1fr 1.618033988749fr; 
-  grid-template-columns: 1fr var(--golden-ratio)fr; 
+.grid-cols-phi-reverse {
+  display: grid;
+  grid-template-columns: 1fr 1.618033988749fr;
+  grid-template-columns: 1fr var(--golden-ratio)fr;
 }
-.grid-cols-phi-triple { 
-  display: grid; 
-  grid-template-columns: 1.618033988749fr 1fr 0.618033988749fr; 
-  grid-template-columns: var(--golden-ratio)fr 1fr var(--inverse-golden-ratio)fr; 
+.grid-cols-phi-triple {
+  display: grid;
+  grid-template-columns: 1.618033988749fr 1fr 0.618033988749fr;
+  grid-template-columns: var(--golden-ratio)fr 1fr var(--inverse-golden-ratio)fr;
 }
-.grid-rows-phi { 
-  display: grid; 
-  grid-template-rows: 1.618033988749fr 1fr; 
-  grid-template-rows: var(--golden-ratio)fr 1fr; 
+.grid-rows-phi {
+  display: grid;
+  grid-template-rows: 1.618033988749fr 1fr;
+  grid-template-rows: var(--golden-ratio)fr 1fr;
 }
-.grid-rows-phi-reverse { 
-  display: grid; 
-  grid-template-rows: 1fr 1.618033988749fr; 
-  grid-template-rows: 1fr var(--golden-ratio)fr; 
+.grid-rows-phi-reverse {
+  display: grid;
+  grid-template-rows: 1fr 1.618033988749fr;
+  grid-template-rows: 1fr var(--golden-ratio)fr;
 }
 /* Legal AI Specific Golden Ratio Components */
 .nier-golden-sidebar {
@@ -372,25 +372,25 @@
 /* Case Management Layout with Golden Ratio */
 .case-layout-phi {
   display: grid;
-  grid-template-columns: 
+  grid-template-columns:
     calc((300px * 0.618033988749) * 0.618033988749)
-    1.618033988749fr 
+    1.618033988749fr
     1fr;
-  grid-template-columns: 
+  grid-template-columns:
     calc(calc(300px * 0.618033988749) * 0.618033988749)
-    1.618033988749fr 
+    1.618033988749fr
     1fr;
-  grid-template-columns: 
+  grid-template-columns:
     calc(var(--layout-phi-sidebar) * var(--inverse-golden-ratio))
-    var(--golden-ratio)fr 
+    var(--golden-ratio)fr
     1fr;
-  grid-template-rows: 
+  grid-template-rows:
     calc(60px * 0.618033988749)
-    1.618033988749fr 
+    1.618033988749fr
     calc(60px * 0.618033988749);
-  grid-template-rows: 
+  grid-template-rows:
     calc(60px * var(--inverse-golden-ratio))
-    var(--golden-ratio)fr 
+    var(--golden-ratio)fr
     calc(60px * var(--inverse-golden-ratio));
   grid-template-areas:
     "header header header"
@@ -450,16 +450,16 @@
     height: calc(300px * 0.618033988749);
     height: var(--layout-phi-sidebar);
   }
-  
+
   .case-layout-phi {
     grid-template-columns: 1fr;
-    grid-template-rows: 
+    grid-template-rows:
       calc(60px * 0.618033988749)
       auto
       1.618033988749fr
       1fr
       calc(60px * 0.618033988749);
-    grid-template-rows: 
+    grid-template-rows:
       calc(60px * var(--inverse-golden-ratio))
       auto
       var(--golden-ratio)fr
@@ -467,7 +467,7 @@
       calc(60px * var(--inverse-golden-ratio));
     grid-template-areas:
       "header"
-      "sidebar" 
+      "sidebar"
       "main"
       "secondary"
       "footer";
@@ -484,7 +484,7 @@
     margin: calc(0.25rem * 0.618033988749);
     margin: var(--space-phi-xs);
   }
-  
+
   .ai-panel-phi {
     padding: calc(1rem * 0.618033988749);
     padding: var(--space-phi-md);
@@ -506,7 +506,7 @@
   .evidence-card-phi {
     transition: none;
   }
-  
+
   .evidence-card-phi:hover {
     transform: none;
   }
@@ -516,7 +516,7 @@
   .nier-golden-sidebar {
     display: none;
   }
-  
+
   .case-layout-phi {
     grid-template-columns: 1fr;
     grid-template-areas:
@@ -525,7 +525,7 @@
       "secondary"
       "footer";
   }
-  
+
   .evidence-card-phi,
   .ai-panel-phi {
     -moz-column-break-inside: avoid;
@@ -620,10 +620,10 @@
   z-index: 1000;
 }
 .debug-golden-grid {
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 0, 0, 0.1) 0, rgba(255, 0, 0, 0.1) calc(100% / 1.618033988749), transparent calc(100% / 1.618033988749)),
     linear-gradient(to bottom, rgba(0, 255, 0, 0.1) 0, rgba(0, 255, 0, 0.1) calc(100% / 1.618033988749), transparent calc(100% / 1.618033988749));
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 0, 0, 0.1) 0, rgba(255, 0, 0, 0.1) calc(100% / var(--golden-ratio)), transparent calc(100% / var(--golden-ratio))),
     linear-gradient(to bottom, rgba(0, 255, 0, 0.1) 0, rgba(0, 255, 0, 0.1) calc(100% / var(--golden-ratio)), transparent calc(100% / var(--golden-ratio)));
 }
@@ -15652,7 +15652,7 @@ body {
   </head>
   <body data-sveltekit-preload-data="hover" class="min-h-screen antialiased">
     <div style="display: contents"><!--[--><!--[--><!----><main class="min-h-screen bg-background font-mono"><nav class="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between h-16"><div class="flex items-center"><div class="flex-shrink-0"><h1 class="text-xl font-bold">⚖️ Legal AI System</h1></div> <div class="ml-10 flex items-center space-x-1"><!--[--><button class="nier-btn btn-default btn-sm justify-start gap-2 cursor-pointer transition-all duration-100 bg-muted s-1v2dZd0gPnz9" data-button-root="true"><!--[!--><!--]--> <!--[!--><!--]--> <!--[--><span>🏠</span> Dashboard<!----><!--]--> <!--[!--><!--]--></button><!----><button class="nier-btn btn-ghost btn-sm justify-start gap-2 cursor-pointer transition-all duration-100 s-1v2dZd0gPnz9" data-button-root="true"><!--[!--><!--]--> <!--[!--><!--]--> <!--[--><span>🔍</span> Evidence Analysis<!----><!--]--> <!--[!--><!--]--></button><!----><button class="nier-btn btn-ghost btn-sm justify-start gap-2 cursor-pointer transition-all duration-100 s-1v2dZd0gPnz9" data-button-root="true"><!--[!--><!--]--> <!--[!--><!--]--> <!--[--><span>📁</span> Cases<!----><!--]--> <!--[!--><!--]--></button><!----><button class="nier-btn btn-ghost btn-sm justify-start gap-2 cursor-pointer transition-all duration-100 s-1v2dZd0gPnz9" data-button-root="true"><!--[!--><!--]--> <!--[!--><!--]--> <!--[--><span>🔎</span> Search Demo<!----><!--]--> <!--[!--><!--]--></button><!----><button class="nier-btn btn-ghost btn-sm justify-start gap-2 cursor-pointer transition-all duration-100 s-1v2dZd0gPnz9" data-button-root="true"><!--[!--><!--]--> <!--[!--><!--]--> <!--[--><span>🤖</span> Agent Orchestration<!----><!--]--> <!--[!--><!--]--></button><!----><button class="nier-btn btn-ghost btn-sm justify-start gap-2 cursor-pointer transition-all duration-100 s-1v2dZd0gPnz9" data-button-root="true"><!--[!--><!--]--> <!--[!--><!--]--> <!--[--><span>🔧</span> MCP Tools<!----><!--]--> <!--[!--><!--]--></button><!----><!--]--></div></div> <div class="flex items-center space-x-4"><button class="nier-btn btn-outline btn-sm gap-2 s-1v2dZd0gPnz9" data-button-root="true"><!--[!--><!--]--> <!--[!--><!--]--> <!--[--><span>🔍</span> AI Search<!----><!--]--> <!--[!--><!--]--></button><!----> <span class="mx-auto px-4 max-w-7xl border border-input px-2.5 py-0.5 text-xs gap-2"><span>🤖</span> Multi-Agent Pipeline<!----></span><!----> <div class="flex items-center gap-2"><div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" title="System Online"></div> <span class="text-sm text-muted-foreground">Online</span></div></div></div></div></nav><!----> <div class="w-full flex justify-end items-center gap-2 p-2"><span class="ai-status-indicator ai-status-offline" aria-label="LLM backend status" title="offline"></span> <span class="text-xs text-nier-text-muted">LLM: offline</span></div> <div class="container mx-auto p-4"><!----><!--[!--><!----><div class="yorha-demo-container s-y_bCXRrkrYfP"><div class="yorha-demo-header s-y_bCXRrkrYfP"><h1 class="yorha-demo-title s-y_bCXRrkrYfP">YoRHa LEGAL AI SYSTEM</h1> <div class="yorha-demo-subtitle s-y_bCXRrkrYfP">Advanced Case Management &amp; Evidence Analysis</div> <div class="yorha-demo-controls s-y_bCXRrkrYfP"><button class="yorha-control-btn s-y_bCXRrkrYfP active">CASES TABLE</button> <button class="yorha-control-btn s-y_bCXRrkrYfP">EVIDENCE GRID</button> <button class="yorha-control-btn yorha-action s-y_bCXRrkrYfP">TEST LOADING</button> <button class="yorha-control-btn yorha-evidence-action s-y_bCXRrkrYfP">EVIDENCE BOARD</button> <button class="yorha-control-btn yorha-warning s-y_bCXRrkrYfP">GLITCH EFFECT</button></div></div> <!--[--><div class="yorha-demo-section s-y_bCXRrkrYfP"><h2 class="yorha-section-title s-y_bCXRrkrYfP">ACTIVE LEGAL CASES</h2> <div class="yorha-section-description s-y_bCXRrkrYfP">Case management system with AI-powered analysis and tracking</div> <div class="yorha-table-container demo-table s-Q_kAugugXA3x"><div class="yorha-table-header s-Q_kAugugXA3x"><div class="yorha-table-search s-Q_kAugugXA3x"><input type="text" placeholder="SEARCH RECORDS..." value="" class="yorha-search-input s-Q_kAugugXA3x"/> <div class="yorha-search-icon s-Q_kAugugXA3x">⚡</div></div> <!--[!--><!--]--></div> <div class="yorha-table-wrapper s-Q_kAugugXA3x"><table class="yorha-table s-Q_kAugugXA3x yorha-table-striped yorha-table-bordered yorha-table-hover"><thead class="yorha-table-head s-Q_kAugugXA3x"><tr class="yorha-table-head-row s-Q_kAugugXA3x"><!--[--><th class="yorha-table-cell yorha-select-cell s-Q_kAugugXA3x"><input type="checkbox" class="yorha-checkbox s-Q_kAugugXA3x"/></th><!--]--><!--[--><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 120px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">CASE ID</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 300px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">CASE TITLE</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 120px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">STATUS</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 100px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">PRIORITY</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 150px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">ASSIGNED TO</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 120px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">CREATED</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x" style="width: 150px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">ACTIONS</span> <!--[!--><!--]--></div></th><!--]--></tr></thead><tbody class="yorha-table-body s-Q_kAugugXA3x"><!--[!--><!--[!--><!--[--><tr class="yorha-table-row s-Q_kAugugXA3x yorha-row-even"><!--[--><td class="yorha-table-cell yorha-select-cell s-Q_kAugugXA3x"><input type="checkbox" class="yorha-checkbox s-Q_kAugugXA3x"/></td><!--]--><!--[--><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">CASE-2024-001</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">Corporate Fraud Investigation</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-active s-Q_kAugugXA3x">active</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-default s-Q_kAugugXA3x">high</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">Det. Anderson</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">7/31/2024</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[--><div class="yorha-action-buttons s-Q_kAugugXA3x"><!----><button class="yorha-action-btn-sm s-y_bCXRrkrYfP">ANALYZE</button> <button class="yorha-action-btn-sm s-y_bCXRrkrYfP">VIEW</button> <button class="yorha-action-btn-sm s-y_bCXRrkrYfP">EDIT</button><!----></div><!--]--><!--]--></td><!--]--></tr><tr class="yorha-table-row s-Q_kAugugXA3x yorha-row-odd"><!--[--><td class="yorha-table-cell yorha-select-cell s-Q_kAugugXA3x"><input type="checkbox" class="yorha-checkbox s-Q_kAugugXA3x"/></td><!--]--><!--[--><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">CASE-2024-002</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">Cybersecurity Breach Analysis</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-pending s-Q_kAugugXA3x">pending</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-default s-Q_kAugugXA3x">critical</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">Analyst Johnson</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">8/4/2024</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[--><div class="yorha-action-buttons s-Q_kAugugXA3x"><!----><button class="yorha-action-btn-sm s-y_bCXRrkrYfP">ANALYZE</button> <button class="yorha-action-btn-sm s-y_bCXRrkrYfP">VIEW</button> <button class="yorha-action-btn-sm s-y_bCXRrkrYfP">EDIT</button><!----></div><!--]--><!--]--></td><!--]--></tr><tr class="yorha-table-row s-Q_kAugugXA3x yorha-row-even"><!--[--><td class="yorha-table-cell yorha-select-cell s-Q_kAugugXA3x"><input type="checkbox" class="yorha-checkbox s-Q_kAugugXA3x"/></td><!--]--><!--[--><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">CASE-2024-003</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">Employment Discrimination Case</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-default s-Q_kAugugXA3x">closed</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-default s-Q_kAugugXA3x">medium</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">Prosecutor Smith</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">7/14/2024</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[--><div class="yorha-action-buttons s-Q_kAugugXA3x"><!----><button class="yorha-action-btn-sm s-y_bCXRrkrYfP">ANALYZE</button> <button class="yorha-action-btn-sm s-y_bCXRrkrYfP">VIEW</button> <button class="yorha-action-btn-sm s-y_bCXRrkrYfP">EDIT</button><!----></div><!--]--><!--]--></td><!--]--></tr><!--]--><!--]--><!--]--></tbody></table></div> <!--[--><div class="yorha-table-pagination s-Q_kAugugXA3x"><div class="yorha-pagination-info s-Q_kAugugXA3x">SHOWING 1-3 OF 5</div> <div class="yorha-pagination-controls s-Q_kAugugXA3x"><button class="yorha-pagination-btn s-Q_kAugugXA3x" disabled>⟨⟨</button> <button class="yorha-pagination-btn s-Q_kAugugXA3x" disabled>⟨</button> <span class="yorha-page-info s-Q_kAugugXA3x">PAGE 1 OF 2</span> <button class="yorha-pagination-btn s-Q_kAugugXA3x">⟩</button> <button class="yorha-pagination-btn s-Q_kAugugXA3x">⟩⟩</button></div></div><!--]--></div><!----></div> <div class="yorha-demo-section s-y_bCXRrkrYfP"><h2 class="yorha-section-title s-y_bCXRrkrYfP">EVIDENCE MANAGEMENT</h2> <div class="yorha-section-description s-y_bCXRrkrYfP">Compact evidence tracking with processing status</div> <div class="yorha-table-container demo-compact-table s-Q_kAugugXA3x"><div class="yorha-table-header s-Q_kAugugXA3x"><div class="yorha-table-search s-Q_kAugugXA3x"><input type="text" placeholder="SEARCH RECORDS..." value="" class="yorha-search-input s-Q_kAugugXA3x"/> <div class="yorha-search-icon s-Q_kAugugXA3x">⚡</div></div> <!--[!--><!--]--></div> <div class="yorha-table-wrapper s-Q_kAugugXA3x yorha-table-dense"><table class="yorha-table s-Q_kAugugXA3x yorha-table-striped yorha-table-hover"><thead class="yorha-table-head s-Q_kAugugXA3x"><tr class="yorha-table-head-row s-Q_kAugugXA3x"><!--[--><th class="yorha-table-cell yorha-select-cell s-Q_kAugugXA3x"><input type="checkbox" class="yorha-checkbox s-Q_kAugugXA3x"/></th><!--]--><!--[--><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 120px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">ID</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 200px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">FILENAME</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 100px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">TYPE</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 100px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">STATUS</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x yorha-sortable" style="width: 120px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">CASE</span> <!--[--><div class="yorha-sort-indicator s-Q_kAugugXA3x"><!--[!-->⋮<!--]--></div><!--]--></div></th><th class="yorha-table-cell yorha-table-header-cell yorha-table-cell s-Q_kAugugXA3x" style="width: 150px;"><div class="yorha-header-content s-Q_kAugugXA3x"><span class="yorha-header-text s-Q_kAugugXA3x">ACTIONS</span> <!--[!--><!--]--></div></th><!--]--></tr></thead><tbody class="yorha-table-body s-Q_kAugugXA3x"><!--[!--><!--[!--><!--[--><tr class="yorha-table-row s-Q_kAugugXA3x yorha-row-even"><!--[--><td class="yorha-table-cell yorha-select-cell s-Q_kAugugXA3x"><input type="checkbox" class="yorha-checkbox s-Q_kAugugXA3x"/></td><!--]--><!--[--><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">EVD-2024-001</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">financial_records.pdf</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-default s-Q_kAugugXA3x">document</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-default s-Q_kAugugXA3x">processed</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">CASE-2024-001</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[--><div class="yorha-action-buttons s-Q_kAugugXA3x"><!----><button class="yorha-action-btn-sm s-y_bCXRrkrYfP">PROCESS</button> <button class="yorha-action-btn-sm s-y_bCXRrkrYfP">DOWNLOAD</button><!----></div><!--]--><!--]--></td><!--]--></tr><tr class="yorha-table-row s-Q_kAugugXA3x yorha-row-odd"><!--[--><td class="yorha-table-cell yorha-select-cell s-Q_kAugugXA3x"><input type="checkbox" class="yorha-checkbox s-Q_kAugugXA3x"/></td><!--]--><!--[--><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">EVD-2024-002</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">security_logs.json</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-default s-Q_kAugugXA3x">digital</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-processing s-Q_kAugugXA3x">processing</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">CASE-2024-002</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[--><div class="yorha-action-buttons s-Q_kAugugXA3x"><!----><button class="yorha-action-btn-sm s-y_bCXRrkrYfP">PROCESS</button> <button class="yorha-action-btn-sm s-y_bCXRrkrYfP">DOWNLOAD</button><!----></div><!--]--><!--]--></td><!--]--></tr><tr class="yorha-table-row s-Q_kAugugXA3x yorha-row-even"><!--[--><td class="yorha-table-cell yorha-select-cell s-Q_kAugugXA3x"><input type="checkbox" class="yorha-checkbox s-Q_kAugugXA3x"/></td><!--]--><!--[--><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">EVD-2024-003</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">witness_statement.docx</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-default s-Q_kAugugXA3x">document</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[--><span class="yorha-status yorha-status-pending s-Q_kAugugXA3x">pending</span><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[!--><span class="yorha-cell-content s-Q_kAugugXA3x">CASE-2024-003</span><!--]--><!--]--></td><td class="yorha-table-cell yorha-table-cell s-Q_kAugugXA3x"><!--[!--><!--[--><div class="yorha-action-buttons s-Q_kAugugXA3x"><!----><button class="yorha-action-btn-sm s-y_bCXRrkrYfP">PROCESS</button> <button class="yorha-action-btn-sm s-y_bCXRrkrYfP">DOWNLOAD</button><!----></div><!--]--><!--]--></td><!--]--></tr><!--]--><!--]--><!--]--></tbody></table></div> <!--[!--><!--]--></div><!----></div><!--]--> <div class="yorha-demo-stats s-y_bCXRrkrYfP"><h3 class="yorha-stats-title s-y_bCXRrkrYfP">SYSTEM STATISTICS</h3> <div class="yorha-stats-grid s-y_bCXRrkrYfP"><div class="yorha-stat-item s-y_bCXRrkrYfP"><div class="yorha-stat-value s-y_bCXRrkrYfP">5</div> <div class="yorha-stat-label s-y_bCXRrkrYfP">ACTIVE CASES</div></div> <div class="yorha-stat-item s-y_bCXRrkrYfP"><div class="yorha-stat-value s-y_bCXRrkrYfP">3</div> <div class="yorha-stat-label s-y_bCXRrkrYfP">EVIDENCE ITEMS</div></div> <div class="yorha-stat-item s-y_bCXRrkrYfP"><div class="yorha-stat-value s-y_bCXRrkrYfP">2</div> <div class="yorha-stat-label s-y_bCXRrkrYfP">AI PROCESSED</div></div> <div class="yorha-stat-item s-y_bCXRrkrYfP"><div class="yorha-stat-value s-y_bCXRrkrYfP">60%</div> <div class="yorha-stat-label s-y_bCXRrkrYfP">AVG CONFIDENCE</div></div></div></div> <div class="yorha-demo-features s-y_bCXRrkrYfP"><h3 class="yorha-features-title s-y_bCXRrkrYfP">QUICK ACCESS</h3> <div class="yorha-features-grid s-y_bCXRrkrYfP"><div class="yorha-feature s-y_bCXRrkrYfP"><div class="yorha-feature-icon s-y_bCXRrkrYfP">⚖️</div> <div class="yorha-feature-title s-y_bCXRrkrYfP">CASE ANALYSIS</div> <div class="yorha-feature-desc s-y_bCXRrkrYfP">AI-powered case review and insights</div></div> <div class="yorha-feature s-y_bCXRrkrYfP"><div class="yorha-feature-icon s-y_bCXRrkrYfP">🔍</div> <div class="yorha-feature-title s-y_bCXRrkrYfP">EVIDENCE SEARCH</div> <div class="yorha-feature-desc s-y_bCXRrkrYfP">Advanced filtering and semantic search</div></div> <div class="yorha-feature s-y_bCXRrkrYfP"><div class="yorha-feature-icon s-y_bCXRrkrYfP">📊</div> <div class="yorha-feature-title s-y_bCXRrkrYfP">ANALYTICS</div> <div class="yorha-feature-desc s-y_bCXRrkrYfP">Performance metrics and reporting</div></div> <div class="yorha-feature s-y_bCXRrkrYfP"><div class="yorha-feature-icon s-y_bCXRrkrYfP">🤖</div> <div class="yorha-feature-title s-y_bCXRrkrYfP">AI ASSISTANT</div> <div class="yorha-feature-desc s-y_bCXRrkrYfP">Intelligent legal research support</div></div> <div class="yorha-feature s-y_bCXRrkrYfP"><div class="yorha-feature-icon s-y_bCXRrkrYfP">🗂️</div> <div class="yorha-feature-title s-y_bCXRrkrYfP">DOCUMENT MGMT</div> <div class="yorha-feature-desc s-y_bCXRrkrYfP">Automated processing and classification</div></div> <div class="yorha-feature s-y_bCXRrkrYfP"><div class="yorha-feature-icon s-y_bCXRrkrYfP">⚙️</div> <div class="yorha-feature-title s-y_bCXRrkrYfP">SYSTEM CONFIG</div> <div class="yorha-feature-desc s-y_bCXRrkrYfP">Platform settings and integrations</div></div></div></div></div> <!--[!--><!--]--><!----><!--]--><!----></div> <!--[--><!--]--><!----> <!--[--><!--]--><!----> <!--[--><!--]--><!----></main><!----><!--]--> <!--[!--><!--]--><!--]-->
-			
+
 			<script>
 				{
 					__sveltekit_dev = {

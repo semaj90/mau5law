@@ -170,7 +170,7 @@
   }}
       // Save preferences locally
       if (browser) {
-        localStorage.setItem("userPreferences", JSON.stringify(preferences);
+        localStorage.setItem("userPreferences", JSON.stringify(preferences));
         localStorage.setItem(
           "securitySettings",
           JSON.stringify({
@@ -179,7 +179,7 @@
             allowRememberMe: security.allowRememberMe,
           })
         );
-        localStorage.setItem("dataSettings", JSON.stringify(dataSettings);
+        localStorage.setItem("dataSettings", JSON.stringify(dataSettings));
         // Apply theme immediately
         document.documentElement.setAttribute("data-theme", preferences.theme);
   }

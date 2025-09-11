@@ -10,7 +10,7 @@ console.log(chalk.cyan('💬 Chat Session Persistence & Embeddings v1.0'));
 const config = {
   databaseUrl: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
   redisUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
-  ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11436',
+  ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11435',
   embeddingModel: 'nomic-embed-text',
   batchSize: parseInt(process.env.BATCH_SIZE) || 50,
   cacheEnabled: process.env.EMBEDDING_CACHE === 'true',

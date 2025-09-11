@@ -389,8 +389,8 @@
           </Alert.Description>
         </Alert.Root>
       {/if}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 
   <!-- Configuration Panel -->
   <Card.Root>
@@ -464,8 +464,8 @@
           </div>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 
   <!-- Chat Interface -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -548,8 +548,8 @@
             {/if}
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
 
     <!-- Information Panel -->
     <Card.Root>
@@ -607,7 +607,7 @@
             significantly faster than Python-based solutions.
           </Alert.Description>
         </Alert.Root>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
   </div>
 </div>
