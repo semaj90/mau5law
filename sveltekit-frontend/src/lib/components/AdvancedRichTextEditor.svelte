@@ -1,6 +1,5 @@
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
 
   import { Editor } from "@tiptap/core";
@@ -63,14 +62,14 @@
     reportId?: string;
     caseId?: string;
   } = $props();
-let editor = $state<Editor | null >(null);
+  let editor = $state<Editor | null >(null);
   let editorElement: HTMLElement;
-let isFullscreen = $state(false);
-let currentZoom = $state(100);
-let showGrid = $state(false);
-let showRuler = $state(true);
-let wordCount = $state(0);
-let characterCount = $state(0);
+  let isFullscreen = $state(false);
+  let currentZoom = $state(100);
+  let showGrid = $state(false);
+  let showRuler = $state(true);
+  let wordCount = $state(0);
+  let characterCount = $state(0);
 
   // Editor state stores
   const editorState = writable({
@@ -145,7 +144,7 @@ let characterCount = $state(0);
   ];
 
   // Auto-save functionality
-let autoSaveTimeout = $state<NodeJS.Timeout;
+  let autoSaveTimeout = $state<NodeJS.Timeout;
 
   onMount(() >(> {
     initializeEditor());

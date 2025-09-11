@@ -98,7 +98,9 @@
       "Bash(./load-tester.exe:*)",
       "Bash(air:*)",
       "Bash(./legal-corpus-load-test.exe:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(OLLAMA_URL=http://localhost:11436 timeout 10 npm run gpu:cluster)",
+      "Bash(wait)"
     ],
     "deny": [],
     "ask": []

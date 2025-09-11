@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     content?: string;
     placement?: "top" | "bottom" | "left" | "right";
@@ -22,11 +21,11 @@
     timeoutId = setTimeout(() => {
       showTooltip = true;
     }, 500);
-}
+  }
   function handleMouseLeave() {
     clearTimeout(timeoutId);
     showTooltip = false;
-}
+  }
 </script>
 
 <div

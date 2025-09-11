@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import type { ShaderSearchResult, ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
@@ -80,15 +79,12 @@
         body: JSON.stringify({ limit: 100 })
       });
       const data = await response.json();
-      
       const tagSet = new Set<string>();
       const operationSet = new Set<string>();
-      
       data.shaders.forEach((shader: any) => {
         shader.metadata.tags?.forEach((tag: string) => tagSet.add(tag);
         if (shader.metadata.operation) operationSet.add(shader.metadata.operation);
       });
-      
       availableTags = Array.from(tagSet).sort();
       availableOperations = Array.from(operationSet).sort();
     } catch (error) {

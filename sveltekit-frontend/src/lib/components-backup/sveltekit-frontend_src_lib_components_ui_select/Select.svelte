@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   // Basic Select wrapper that uses enhanced-bits Select
   import EnhancedSelect from '../enhanced-bits/Select.svelte';
-  
   interface SelectOption {
     value: string
     label: string
@@ -10,7 +8,6 @@
     disabled?: boolean;
     category?: string;
   }
-  
   let { 
     value = $bindable(''),
     options = [] as SelectOption[],

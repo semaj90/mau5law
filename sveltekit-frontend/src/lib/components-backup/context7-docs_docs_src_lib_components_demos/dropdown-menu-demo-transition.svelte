@@ -1,19 +1,18 @@
 <script lang="ts">
-</script>
-	import { Avatar, DropdownMenu } from "bits-ui";
-	import Cardholder from "phosphor-svelte/lib/Cardholder";
-	import CaretRight from "phosphor-svelte/lib/CaretRight";
-	import DotsThree from "phosphor-svelte/lib/DotsThree";
-	import GearSix from "phosphor-svelte/lib/GearSix";
-	import UserCircle from "phosphor-svelte/lib/UserCircle";
-	import UserCirclePlus from "phosphor-svelte/lib/UserCirclePlus";
-	import Bell from "phosphor-svelte/lib/Bell";
-	import Check from "phosphor-svelte/lib/Check";
-	import DotOutline from "phosphor-svelte/lib/DotOutline";
-	import { fly } from "svelte/transition";
+  	import { Avatar, DropdownMenu } from "bits-ui";
+  	import Cardholder from "phosphor-svelte/lib/Cardholder";
+  	import CaretRight from "phosphor-svelte/lib/CaretRight";
+  	import DotsThree from "phosphor-svelte/lib/DotsThree";
+  	import GearSix from "phosphor-svelte/lib/GearSix";
+  	import UserCircle from "phosphor-svelte/lib/UserCircle";
+  	import UserCirclePlus from "phosphor-svelte/lib/UserCirclePlus";
+  	import Bell from "phosphor-svelte/lib/Bell";
+  	import Check from "phosphor-svelte/lib/Check";
+  	import DotOutline from "phosphor-svelte/lib/DotOutline";
+  	import { fly } from "svelte/transition";
 
-	let notifications = $state<boolean>(false);
-	let invited = $state("");
+  	let notifications = $state<boolean>(false);
+  	let invited = $state("");
 </script>
 
 <DropdownMenu.Root>

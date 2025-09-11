@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props { report: Report | null ;,
     caseId: string; onSave: (report: Report) => void;,
     autoSaveEnabled?: any;
@@ -18,7 +17,6 @@
   import type { CitationPoint, Report, ReportSection  } from "$lib/data/types";
   import { onDestroy, onMount  } from "svelte";
 
-          
   let editorElement: HTMLDivElement
   let citationSidebar: HTMLDivElement
   let isDirty = false;
@@ -50,14 +48,14 @@
       loadAvailableCitations();
       if (report) {
         loadReportContent();
- }
+   }
       setupAutoSave();
-}
+  }
   });
 
   onDestroy(() => { if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
- }
+   }
   });
 
   function setupEditor() { if (!editorElement) return;
@@ -78,7 +76,7 @@
 
     // Initialize word count
     updateWordCount();
- }
+   }
   function handleContentChange(event: Event) { if (readOnly) return;
 
     content = editorElement.innerHTML;
@@ -91,7 +89,7 @@
     // Generate AI suggestions if enabled
     if (content.length > 100) {
       debounceAiSuggestions();
- }}
+   }}
   function handlePaste(event: ClipboardEvent) { if (readOnly) return;
 
     event.preventDefault();
@@ -100,7 +98,7 @@
     // Insert plain text to avoid formatting issues
     document.execCommand("insertText", false, text);
     handleContentChange(event);
- }
+   }
   function handleKeyDown(event: KeyboardEvent) { if (readOnly) return;
 
     // Handle keyboard shortcuts
@@ -126,28 +124,28 @@
           event.preventDefault();
           insertCitationPrompt();
           break;
- }}
+   }}
     // Handle tab key for indentation
     if (event.key === "Tab") { event.preventDefault();
       document.execCommand("insertText", false, "    ");
- }}
+   }}
   function handleSelectionChange() { const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
       currentSelection = selection.getRangeAt(0);
       cursorPosition = currentSelection.startOffset;
- }}
+   }}
   function handleFocus() { // Add focus styling or behavior
     editorElement.classList.add("focused");
- }
+   }
   function handleBlur() { editorElement.classList.remove("focused");
     if (isDirty && autoSaveEnabled) {
       saveReport();
- }}
+   }}
   function formatText(command: string) { if (readOnly) return;
 
     document.execCommand(command, false);
     handleContentChange(new Event("input"));
- }
+   }
   function insertCitation(citation: CitationPoint) { if (readOnly) return;
 
     const citationHtml = `<span class="space-y-4" data-citation-id="${citation.id }" title="${ citation.source }">[${ citation.source }]</span>`;
@@ -164,12 +162,12 @@
       selection?.addRange(range);
      } else { // Append to end if no selection
       editorElement.innerHTML += citationHtml;
- }
+   }
     // Add to selected citations if not already present
     if (!selectedCitations.find((c) => c.id === citation.id)) { selectedCitations = [...selectedCitations, citation];
- }
+   }
     handleContentChange(new Event("input"));
-}
+  }
   function removeCitation(citationId: string) { // Remove citation tokens from content
     const citationTokens = editorElement.querySelectorAll(
       `[data-citation-id="${citationId }"]`
@@ -180,16 +178,16 @@
     selectedCitations = selectedCitations.filter((c) => c.id !== citationId);
 
     handleContentChange(new Event("input"));
-}
+  }
   function insertCitationPrompt() { // Show citation picker modal or sidebar
     citationSidebar.style.display = "block";
- }
+   }
   async function loadAvailableCitations() { try {
       const response = await fetch(`/api/citations?caseId=${caseId }`);
       if (response.ok) { availableCitations = await response.json();
- }
+   }
     } catch (error) { console.error("Failed to load citations:", error);
- }}
+   }}
   function loadReportContent() { if (!report) return;
 
     title = report.title;
@@ -197,11 +195,11 @@
 
     if (editorElement) {
       editorElement.innerHTML = content;
- }
+   }
     // Extract existing citations from content
     extractExistingCitations();
     updateWordCount();
-}
+  }
   function extractExistingCitations() { const citationTokens = editorElement.querySelectorAll(".citation-token");
     const citationIds: string[] = [];,
 
@@ -209,14 +207,14 @@
       const citationId = token.getAttribute("data-citation-id");
       if (citationId) {
         citationIds.push(citationId);
- }
+   }
     });
 
     // Load full citation data
     selectedCitations = availableCitations.filter((c) =>
       citationIds.includes(c.id)
     );
-}
+  }
   function updateWordCount() { const textContent = editorElement.textContent || "";
     const words = textContent
       .trim()
@@ -225,15 +223,15 @@
     wordCount = words.length;
     characterCount = textContent.length;
     estimatedReadTime = Math.ceil(wordCount / 200); // Assume 200 words per minute
- }
+   }
   function scheduleAutoSave() { if (!autoSaveEnabled) return;
 
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
- }
+   }
     autoSaveTimer = setTimeout(() => { saveReport();
      }, 2000); // Auto-save after 2 seconds of inactivity
-}
+  }
   async function saveReport() { if (!isDirty || isLoading) return;
 
     isLoading = true;
@@ -267,19 +265,19 @@
         lastSaved = new Date();
         await onSave(savedReport);
        } else { throw new Error("Failed to save report");
- }
+   }
     } catch (error) { console.error("Save failed:", error);
       // Show error message to user
      } finally { isLoading = false;
- }}
+   }}
   let aiSuggestionTimer: NodeJS.Timeout | null = null;
 
   function debounceAiSuggestions() { if (aiSuggestionTimer) {
       clearTimeout(aiSuggestionTimer);
- }
+   }
     aiSuggestionTimer = setTimeout(async () => { await generateAiSuggestions();
      }, 1000);
-}
+  }
   async function generateAiSuggestions() { if (isGeneratingAi) return;
 
     isGeneratingAi = true;
@@ -298,10 +296,10 @@
 
       if (response.ok) { const suggestions = await response.json();
         aiSuggestions = suggestions.suggestions || [];
- }
+   }
     } catch (error) { console.error("Failed to generate AI suggestions:", error);
      } finally { isGeneratingAi = false;
- }}
+   }}
   function insertAiSuggestion(suggestion: string) { if (readOnly) return;
 
     if (currentSelection) {
@@ -309,17 +307,17 @@
       range.insertNode(range.createContextualFragment(suggestion));
       range.collapse(false);
      } else { editorElement.innerHTML += suggestion;
- }
+   }
     handleContentChange(new Event("input"));
     aiSuggestions = [];
-}
+  }
   function setupAutoSave() { // Auto-save every 30 seconds if dirty
     setInterval(() => {
       if (isDirty && autoSaveEnabled) {
         saveReport();
- }
+   }
     }, 30000);
-}
+  }
 </script>
 
 <div class="space-y-4">

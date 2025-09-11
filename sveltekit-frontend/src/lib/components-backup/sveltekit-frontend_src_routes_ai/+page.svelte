@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { page } from "$app/stores";
   import ChatInterface from "$lib/components/ai/ChatInterface.svelte";
   import { Button } from "$lib/components/ui/button";
@@ -32,15 +31,15 @@
     chatActions.newConversation(caseId);
     selectedConversationId = null;
     showHistory = false;
-}
+  }
   async function loadConversation(conversationId: string) {
     chatActions.loadConversation(conversationId);
     selectedConversationId = conversationId;
     showHistory = false;
-}
+  }
   function showHistoryPanel() {
     showHistory = true;
-}
+  }
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
     const now = new Date();
@@ -53,7 +52,7 @@
     if (diffInDays < 7) return `${diffInDays} days ago`;
 
     return date.toLocaleDateString();
-}
+  }
   let filteredHistory = $derived($conversationsList.filter(
     (conv) =>
       conv.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||

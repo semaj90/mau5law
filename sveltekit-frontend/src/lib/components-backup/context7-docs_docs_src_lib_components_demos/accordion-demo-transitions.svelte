@@ -1,27 +1,26 @@
 <script lang="ts">
-</script>
-	import { Accordion } from "bits-ui";
-	import CaretDown from "phosphor-svelte/lib/CaretDown";
-	import { slide } from "svelte/transition";
+  	import { Accordion } from "bits-ui";
+  	import CaretDown from "phosphor-svelte/lib/CaretDown";
+  	import { slide } from "svelte/transition";
 
-	const items = [
-		{
-			title: "What is the meaning of life?",
-			content:
-				"To become a better person, to help others, and to leave the world a better place than you found it.",
-		},
-		{
-			title: "How do I become a better person?",
-			content:
-				"Read books, listen to podcasts, and surround yourself with people who inspire you.",
-		},
-		{
-			title: "What is the best way to help others?",
-			content: "Give them your time, attention, and love.",
-		},
-	];
+  	const items = [
+  		{
+  			title: "What is the meaning of life?",
+  			content:
+  				"To become a better person, to help others, and to leave the world a better place than you found it.",
+  		},
+  		{
+  			title: "How do I become a better person?",
+  			content:
+  				"Read books, listen to podcasts, and surround yourself with people who inspire you.",
+  		},
+  		{
+  			title: "What is the best way to help others?",
+  			content: "Give them your time, attention, and love.",
+  		},
+  	];
 
-	let value = $state<string[]>([]);
+  	let value = $state<string[]>([]);
 </script>
 
 <Accordion.Root class="w-full sm:max-w-[70%]" type="multiple" bind:value>

@@ -1,6 +1,5 @@
 <!-- Rust WASM Bridge Demo Component -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { 
     initRustBridge, 
@@ -23,7 +22,6 @@
   let windowsServices = $state<unknown[]>([]);
   let bridgeStatus = $state<any>(null);
   let benchmarkResults = $state<any>(null);
-  
   // Demo state
   let sampleText = $state('This is a sample legal document for processing with the Rust WASM bridge.');
   let textProcessingResult = $state<any>(null);
@@ -34,11 +32,9 @@
     try {
       isLoading = true;
       errorMessage = null;
-      
       // Initialize the Rust WASM bridge
       const success = await initRustBridge();
       bridgeInitialized = success;
-      
       if (success) {
         // Load initial data
         await loadSystemData();
@@ -68,7 +64,6 @@
 
   async function processText() {
     if (!bridgeInitialized) return;
-    
     try {
       isLoading = true;
       const result = processLegalTextFast(sampleText);
@@ -83,7 +78,6 @@
 
   async function runBenchmark() {
     if (!bridgeInitialized) return;
-    
     try {
       isLoading = true;
       benchmarkResults = await benchmarkRustBridge();

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { goto } from "$app/navigation";
   import { Button } from "$lib/components/ui/button";
   import Card from "../../../lib/components/ui/Card.svelte";

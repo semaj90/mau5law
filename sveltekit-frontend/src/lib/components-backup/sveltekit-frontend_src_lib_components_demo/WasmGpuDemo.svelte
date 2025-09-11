@@ -4,24 +4,19 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount  } from 'svelte';
   import { createWasmGpuService, WasmGpuHelpers  } from '$lib/wasm/gpu-wasm-init';
-  
   // Initialize WASM GPU service with RTX 3060 configuration
   const wasmGpu = createWasmGpuService(WasmGpuHelpers.rtx3060Config());
-  
   // Reactive stores
   const { initStatus, performanceMetrics, resourceStatus  } = wasmGpu.stores;
   const { isReady, isRtx3060, systemHealth, performance  } = wasmGpu.derived;
-  
   // Demo state
   let benchmarkRunning = false;
   let benchmarkResults: { operation: string; time: number throughput:, number  }[] = [];
   let testVectorCount = 100;
   let testDimensions = 384;
   let similarityResults: Float32Array | null = null;
-  
   // Legal AI test scenarios
   const legalTestScenarios = [
     { name: 'Contract, Analysis',
@@ -43,11 +38,8 @@
       expectedTime: 8 //, ms
      }
   ];
-  
   let selectedScenario = legalTestScenarios[0];
-  
   onMount(async () => { console.log('🎮 WASM GPU Demo component mounted');
-    
     // Wait for initialization
     const unsubscribe = isReady.subscribe(ready => {
       if (ready) {
@@ -56,52 +48,39 @@
        }
     });
   });
-  
   /**
    * Run comprehensive benchmark suite
    */
   async function runBenchmark() { if (!$isReady || benchmarkRunning) return;
-    
     benchmarkRunning = true;
     benchmarkResults = [];
-    
     try {
       console.log('🏃 Starting WASM GPU benchmark suite...');
-      
       // Test 1: Vector similarity computation
       const vectors1 = WasmGpuHelpers.createTestVectors(testVectorCount, testDimensions);
       const vectors2 = WasmGpuHelpers.createTestVectors(testVectorCount, testDimensions);
-      
       const startTime = performance.now();
       const similarities = await wasmGpu.computeVectorSimilarity(vectors1, vectors2, testDimensions);
       const computeTime = performance.now() - startTime;
-      
       const dataSize = (vectors1.length + vectors2.length + similarities.length) * 4; // bytes
       const throughput = (dataSize / 1024 / 1024) / (computeTime / 1000); // MB/s
-      
       benchmarkResults.push({
         operation: 'Vector, Similarity',
         time: computeTime,
         throughput
        });
-      
       similarityResults = similarities;
-      
       // Test 2: Memory bandwidth test
       const largeVectors1 = WasmGpuHelpers.createTestVectors(1000, 768);
       const largeVectors2 = WasmGpuHelpers.createTestVectors(1000, 768);
-      
       const memoryStart = performance.now();
       await wasmGpu.computeVectorSimilarity(largeVectors1, largeVectors2, 768);
       const memoryTime = performance.now() - memoryStart;
-      
       const largeDataSize = (largeVectors1.length + largeVectors2.length) * 4;
       const memoryThroughput = (largeDataSize / 1024 / 1024) / (memoryTime / 1000);
-      
       benchmarkResults.push({ operation: 'Memory, Bandwidth',
         time: memoryTime,
         throughput: memoryThroughput });
-      
       // Test 3: Legal AI scenario
       const scenarioStart = performance.now();
       const scenarioVectors1 = WasmGpuHelpers.createTestVectors(
@@ -112,34 +91,25 @@
         selectedScenario.vectorCount,
         selectedScenario.dimensions
       );
-      
       await wasmGpu.computeVectorSimilarity(scenarioVectors1, scenarioVectors2, selectedScenario.dimensions);
       const scenarioTime = performance.now() - scenarioStart;
-      
       const scenarioDataSize = (scenarioVectors1.length + scenarioVectors2.length) * 4;
       const scenarioThroughput = (scenarioDataSize / 1024 / 1024) / (scenarioTime / 1000);
-      
       benchmarkResults.push({ operation: selectedScenario.name,
         time: scenarioTime,
         throughput: scenarioThroughput });
-      
       console.log('🎯 Benchmark results:', benchmarkResults);
-      
     } catch (error) { console.error('❌ Benchmark failed:', error);
      } finally { benchmarkRunning = false;
      }
   }
-  
   /**
    * Run specific legal AI scenario
    */
   async function runLegalScenario() { if (!$isReady || benchmarkRunning) return;
-    
     benchmarkRunning = true;
-    
     try {
       console.log(`🏛️ Running legal AI scenario: ${selectedScenario.name }`);
-      
       const vectors1 = WasmGpuHelpers.createTestVectors(
         selectedScenario.vectorCount,
         selectedScenario.dimensions
@@ -148,27 +118,21 @@
         selectedScenario.vectorCount,
         selectedScenario.dimensions
       );
-      
       const startTime = performance.now();
       const results = await wasmGpu.computeVectorSimilarity(vectors1, vectors2, selectedScenario.dimensions);
       const executionTime = performance.now() - startTime;
-      
       similarityResults = results;
-      
       // Find top similarities
       const topSimilarities = Array.from(results)
         .map((similarity, index) => ({ similarity, index  }))
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, 10);
-      
       console.log(`✅ ${ selectedScenario.name } completed in ${ Math.round(executionTime) }ms`);
       console.log('🔍 Top similarities:', topSimilarities);
-      
     } catch (error) { console.error(`❌ Legal scenario failed: ${selectedScenario.name }`, error);
     } finally { benchmarkRunning = false;
      }
   }
-  
   /**
    * Get status color based on system health
    */
@@ -183,7 +147,6 @@
        , return 'text-gray-400';
      }
   }
-  
   /**
    * Format throughput for display
    */
@@ -192,7 +155,6 @@
     }
     return `${ throughput.toFixed(1) } MB/s`;
   }
-  
   /**
    * Get performance grade color
    */

@@ -1,12 +1,10 @@
 <script lang="ts">
-</script>
   import { createCombobox, melt } from '@melt-ui/svelte';
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import Fuse from "fuse.js";
   import { Search, X, Filter, Tag, Calendar, FileType } from 'lucide-svelte';
   import type { Evidence } from "../../../lib/stores/report";
-  
   export let items: Evidence[] = [];
   export let onResults: (results: Evidence[]) => void = () => {};
   export let onSelect: (item: Evidence) => void = () => {};
@@ -14,7 +12,6 @@
   export let maxResults = 10;
   export let showFilters = true;
   export let showTags = true;
-  
   let searchValue = '';
   let fuse: Fuse<Evidence>;
   let searchResults: Evidence[] = [];
@@ -22,7 +19,6 @@
   let selectedTags: string[] = [];
   let selectedTypes: string[] = [];
   let dateRange: { start?: Date; end?: Date } = {};
-  
   // Fuse.js configuration for fuzzy search
   const fuseOptions = {
     keys: [
@@ -37,7 +33,6 @@
     includeScore: true,
     includeMatches: true
   };
-  
   // Combobox for search input
   const {
     elements: { input, menu, option, label },
@@ -47,13 +42,11 @@
     forceVisible: true,
     defaultSelected: undefined
   });
-  
   // Initialize Fuse when items change
   // TODO: Convert to $derived: if (items.length > 0) {
     fuse = new Fuse(items, fuseOptions)
     allTags = [...new Set(items.flatMap(item => item.tags || []))];
   }
-  
   // Perform search when input changes
   // TODO: Convert to $derived: if (fuse && searchValue) {
     const fuseResults = fuse.search(searchValue)
@@ -63,14 +56,12 @@
   } else {
     searchResults = items.slice(0, maxResults);
   }
-  
   // Apply filters
   // TODO: Convert to $derived: filteredResults = searchResults.filter(item => {
     // Type filter
     if (selectedTypes.length > 0 && !selectedTypes.includes(item.type)) {
       return false
     }
-    
     // Tag filter
     if (selectedTags.length > 0) {
       const itemTags = item.tags || [];
@@ -78,29 +69,23 @@
         return false;
       }
     }
-    
     // Date range filter
     if (dateRange.start || dateRange.end) {
       const itemDate = new Date(item.createdAt);
       if (dateRange.start && itemDate < dateRange.start) return false;
       if (dateRange.end && itemDate > dateRange.end) return false;
     }
-    
     return true;
   });
-  
   // Update results when filters change
   // TODO: Convert to $derived: onResults(filteredResults)
-  
   // Sync input value
   // TODO: Convert to $derived: searchValue = $inputValue
-  
   // Handle item selection
   const handleSelect = (item: Evidence) => {
     onSelect(item);
     inputValue.set('');
   };
-  
   // Clear search
   const clearSearch = () => {
     inputValue.set('');
@@ -108,7 +93,6 @@
     selectedTypes = [];
     dateRange = {};
   };
-  
   // Toggle tag filter
   const toggleTag = (tag: string) => {
     if (selectedTags.includes(tag)) {
@@ -117,7 +101,6 @@
       selectedTags = [...selectedTags, tag];
     }
   };
-  
   // Toggle type filter
   const toggleType = (type: string) => {
     if (selectedTypes.includes(type)) {
@@ -126,10 +109,8 @@
       selectedTypes = [...selectedTypes, type];
     }
   };
-  
   // Evidence types
   const evidenceTypes = ['document', 'image', 'video', 'audio', 'link'];
-  
   // Highlight search matches
   const highlightMatches = (text: string, searchTerm: string): string => {
     if (!searchTerm) return text;

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from "svelte";
 
   export let ratio: "golden" | "thirds" | "half" | "custom" = "golden";

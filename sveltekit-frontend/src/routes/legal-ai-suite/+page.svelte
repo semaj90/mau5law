@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     Card,
@@ -210,7 +209,7 @@
       realTimeLogs = realTimeLogs.slice(-20);
     }
   }
-let loggingInterval = $state<number | null >(null);
+  let loggingInterval = $state<number | null >(null);
 
   function startRealTimeLogging() {
     // Prevent multiple intervals

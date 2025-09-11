@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
   import { quintOut } from 'svelte/easing';
   import { fly, scale } from 'svelte/transition';
@@ -20,14 +19,14 @@
   const handleClick = (event: MouseEvent) => {
     if (interactive || href) {
       dispatch('click', event);
-}
+  }
   };
 
   const handleKeydown = (event: KeyboardEvent) => {
     if ((interactive || href) && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault();
       dispatch('click', event);
-}
+  }
   };
 
   // Dynamic classes

@@ -2,19 +2,15 @@
 <!-- File: sveltekit-frontend/src/routes/ai-summary/+page.svelte -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
-  
   let caseData = $state(null);
   let summary = $state('');
   let isGenerating = $state(false);
   let summaryType = $state('prosecution');
   let confidence = $state(0);
   let ragScore = $state(0);
-  
   const generateSummary = async () => {
     isGenerating = true;
-    
     try {
       const res = await fetch('/api/ai/generate-summary', {
         method: 'POST',
@@ -26,9 +22,7 @@
           prompt: `Generate ${summaryType} summary with legal analysis`
         })
       });
-      
       const result = await res.json();
-      
       if (result.success) {
         summary = result.summary;
         confidence = result.metadata?.confidence || 0.85;
@@ -39,7 +33,6 @@
     } catch (error) {
       summary = `Connection Error: ${error.message}`;
     }
-    
     isGenerating = false;
   };
 

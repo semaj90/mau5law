@@ -1,72 +1,65 @@
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import EnhancedSemanticIntegration from '$lib/components/demo/EnhancedSemanticIntegration.svelte';
-let pageTitle = $state('🧠 Enhanced Semantic Architecture - Complete Integration Demo');
-let integrationComponent = $state<any;
-	
-	// Demo state
-	let lastTodosUpdate: any >(null);
-let lastTextAnalysis = $state<any >(null);
-let lastPageRankUpdate = $state<any >(null);
-let lastSOMUpdate = $state<any >(null);
-	
-	// Handle integration events
-	function handleTodosUpdated(event: CustomEvent) {
-		lastTodosUpdate = {
-			count: event.detail.count,
-			timestamp: new Date().toLocaleTimeString()
-		};
-		console.log('📝 Todos Updated:', event.detail);
-	}
-	
-	function handleTextAnalyzed(event: CustomEvent) {
-		lastTextAnalysis = {
-			text: event.detail.text,
-			analysis: event.detail.analysis,
-			timestamp: new Date().toLocaleTimeString()
-		};
-		console.log('🔍 Text Analyzed:', event.detail);
-	}
-	
-	function handlePageRankUpdated(event: CustomEvent) {
-		lastPageRankUpdate = {
-			nodes: event.detail.nodes.length,
-			edges: event.detail.edges.length,
-			timestamp: new Date().toLocaleTimeString()
-		};
-		console.log('📊 PageRank Updated:', event.detail);
-	}
-	
-	function handleSOMUpdated(event: CustomEvent) {
-		lastSOMUpdate = {
-			grid_size: '20x20',
-			active_cluster: event.detail.find((row: any) => 
-				row.find((cell: any) => cell.active)
-			),
-			timestamp: new Date().toLocaleTimeString()
-		};
-		console.log('🧠 SOM Updated:', event.detail);
-	}
+  	import { onMount } from 'svelte';
+  	import EnhancedSemanticIntegration from '$lib/components/demo/EnhancedSemanticIntegration.svelte';
+  let pageTitle = $state('🧠 Enhanced Semantic Architecture - Complete Integration Demo');
+  let integrationComponent = $state<any;
+  	// Demo state
+  	let lastTodosUpdate: any >(null);
+  let lastTextAnalysis = $state<any >(null);
+  let lastPageRankUpdate = $state<any >(null);
+  let lastSOMUpdate = $state<any >(null);
+  	// Handle integration events
+  	function handleTodosUpdated(event: CustomEvent) {
+  		lastTodosUpdate = {
+  			count: event.detail.count,
+  			timestamp: new Date().toLocaleTimeString()
+  		};
+  		console.log('📝 Todos Updated:', event.detail);
+  	}
+  	function handleTextAnalyzed(event: CustomEvent) {
+  		lastTextAnalysis = {
+  			text: event.detail.text,
+  			analysis: event.detail.analysis,
+  			timestamp: new Date().toLocaleTimeString()
+  		};
+  		console.log('🔍 Text Analyzed:', event.detail);
+  	}
+  	function handlePageRankUpdated(event: CustomEvent) {
+  		lastPageRankUpdate = {
+  			nodes: event.detail.nodes.length,
+  			edges: event.detail.edges.length,
+  			timestamp: new Date().toLocaleTimeString()
+  		};
+  		console.log('📊 PageRank Updated:', event.detail);
+  	}
+  	function handleSOMUpdated(event: CustomEvent) {
+  		lastSOMUpdate = {
+  			grid_size: '20x20',
+  			active_cluster: event.detail.find((row: any) => 
+  				row.find((cell: any) => cell.active)
+  			),
+  			timestamp: new Date().toLocaleTimeString()
+  		};
+  		console.log('🧠 SOM Updated:', event.detail);
+  	}
 
-	onMount(() => {
-		// Page initialization
-		document.title = pageTitle;
-		
-		// Log system capabilities
-		console.log('🚀 Enhanced Semantic Architecture Demo Initialized');
-		console.log('Technologies Integrated:');
-		console.log('  ✅ PostgreSQL + pgvector');
-		console.log('  ✅ SOM Clustering (20x20 grid)');
-		console.log('  ✅ PageRank Algorithm');
-		console.log('  ✅ Deep Learning Go Modules');
-		console.log('  ✅ WebGPU Acceleration');
-		console.log('  ✅ Redis Caching');
-		console.log('  ✅ Neo4j Context Graph');
-		console.log('  ✅ MinIO Object Storage');
-		console.log('  ✅ NATS Messaging');
-		console.log('  ✅ SvelteKit 2 Frontend');
-	});
+  	onMount(() => {
+  		// Page initialization
+  		document.title = pageTitle;
+  		// Log system capabilities
+  		console.log('🚀 Enhanced Semantic Architecture Demo Initialized');
+  		console.log('Technologies Integrated:');
+  		console.log('  ✅ PostgreSQL + pgvector');
+  		console.log('  ✅ SOM Clustering (20x20 grid)');
+  		console.log('  ✅ PageRank Algorithm');
+  		console.log('  ✅ Deep Learning Go Modules');
+  		console.log('  ✅ WebGPU Acceleration');
+  		console.log('  ✅ Redis Caching');
+  		console.log('  ✅ Neo4j Context Graph');
+  		console.log('  ✅ MinIO Object Storage');
+  		console.log('  ✅ NATS Messaging');
+  		console.log('  ✅ SvelteKit 2 Frontend');
+  	});
 </script>
 
 <svelte:head>

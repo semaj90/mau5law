@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { invoke } from '@tauri-apps/api/tauri';
   let uploadResult = '';
   let error = '';

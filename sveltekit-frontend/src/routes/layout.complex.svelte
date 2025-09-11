@@ -1,36 +1,35 @@
 <script lang="ts">
-</script>
   import '../app.css';
-import '../lib/styles/modern-yorha-theme.css';
-import { onMount, setContext } from 'svelte';
-import Navigation from '$lib/components/Navigation.svelte';
+  import '../lib/styles/modern-yorha-theme.css';
+  import { onMount, setContext } from 'svelte';
+  import Navigation from '$lib/components/Navigation.svelte';
 
-// Simplified state management for compatibility
-let theme = $state<'dark' | 'light' >('dark');
-let sidebarOpen = $state(false);
+  // Simplified state management for compatibility
+  let theme = $state<'dark' | 'light' >('dark');
+  let sidebarOpen = $state(false);
 
-// App context for global state
-setContext('app', {
+  // App context for global state
+  setContext('app', {
   get theme() { return theme; },
   set theme(value) { theme = value; },
   get sidebarOpen() { return sidebarOpen; },
   set sidebarOpen(value) { sidebarOpen = value; },
   toggleSidebar: () => { sidebarOpen = !sidebarOpen; },
   toggleTheme: () => { theme = theme === 'dark' ? 'light' : 'dark'; }
-});
+  });
 
-onMount(() => {
+  onMount(() => {
   // Modern YoRHa UI initialization
   console.log('Modern Dark YoRHa Legal AI Interface initialized');
 
   // Set theme on document
   document.documentElement.setAttribute('data-theme', theme);
-});
+  });
 
-// Reactive theme updates - temporarily simplified
-// $effect(() => {
-//   document.documentElement.setAttribute('data-theme', theme);
-// });
+  // Reactive theme updates - temporarily simplified
+  // $effect(() => {
+  //   document.documentElement.setAttribute('data-theme', theme);
+  // });
 </script>
 
 <div class="app-layout golden-grid-holy-grail yorha-bg-primary">

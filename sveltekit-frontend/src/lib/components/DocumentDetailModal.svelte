@@ -9,19 +9,16 @@
   5. GPU acceleration for document analysis
 -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
   import { db } from '$lib/db/dexie-integration.js';
   import { logger } from '$lib/logging/structured-logger.js';
   import { unifiedStore } from '$lib/storage/unified-dimensional-store.js';
-  
   // Component props
   let { documentId = $bindable() } = $props(); // string;
   let { isOpen = $bindable() } = $props(); // false;
   let { onClose = $bindable() } = $props(); // (() => void) | null = null;
-  
   const dispatch = createEventDispatcher<{
     nodeSelect: { nodeId: string; documentId: string };
     graphUpdate: { connections: any[] };
@@ -31,7 +28,6 @@
   // ========================================================================
   // STATE MANAGEMENT
   // ========================================================================
-  
   interface DocumentDetail {
     id: string;
     title: string;
@@ -62,18 +58,18 @@
   }
 
   // Component state
-let document = $state<DocumentDetail | null >(null);
-let relatedDocuments = $state<RelatedDocument[] >([]);
-let graphConnections = $state<GraphConnection[] >([]);
-let caseAssociations = $state<any[] >([]);
-let gpuAnalysis = $state<any >(null);
-let metadata = $state<any >(null);
-let loading = $state(false);
-let error = $state<string | null >(null);
-let cacheHit = $state(false);
-let serverResponseTime = $state(0);
-let activeTab = $state('document');
-let enableGPUAnalysis = $state(false);
+  let document = $state<DocumentDetail | null >(null);
+  let relatedDocuments = $state<RelatedDocument[] >([]);
+  let graphConnections = $state<GraphConnection[] >([]);
+  let caseAssociations = $state<any[] >([]);
+  let gpuAnalysis = $state<any >(null);
+  let metadata = $state<any >(null);
+  let loading = $state(false);
+  let error = $state<string | null >(null);
+  let cacheHit = $state(false);
+  let serverResponseTime = $state(0);
+  let activeTab = $state('document');
+  let enableGPUAnalysis = $state(false);
 
   // ========================================================================
   // CACHE-FIRST DATA LOADING STRATEGY
@@ -85,7 +81,6 @@ let enableGPUAnalysis = $state(false);
    */
   async function loadDocumentData(docId: string, forceRefresh = false): Promise<void> {
     if (!docId) return;
-    
     const startTime = performance.now();
     loading = true;
     error = null;
@@ -101,19 +96,16 @@ let enableGPUAnalysis = $state(false);
         });
 
         const cachedData = await db.getCache(`document_detail_${docId}`);
-        
         if (cachedData) {
           // Cache hit - populate UI immediately
           populateUIFromCache(cachedData);
           cacheHit = true;
-          
           await logger.logPerformance({
             operation: 'cache_hit',
             documentId: docId,
             processingTime: performance.now() - startTime,
             cacheSize: JSON.stringify(cachedData).length
           });
-          
           // Still fetch fresh data in background for next time
           loadFromServerInBackground(docId);
           return;
@@ -122,11 +114,9 @@ let enableGPUAnalysis = $state(false);
 
       // Step 2: Fetch from server (Slow Path)
       await loadFromServer(docId, forceRefresh);
-      
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       error = errorMessage;
-      
       await logger.logError({
         error: errorMessage,
         context: 'document_detail_load',
@@ -134,7 +124,6 @@ let enableGPUAnalysis = $state(false);
         severity: 'medium',
         category: 'ui'
       });
-      
     } finally {
       loading = false;
       serverResponseTime = performance.now() - startTime;
@@ -146,7 +135,6 @@ let enableGPUAnalysis = $state(false);
    */
   async function loadFromServer(docId: string, forceRefresh = false): Promise<void> {
     const serverStartTime = performance.now();
-    
     await logger.logAPIRequest({
       requestId: crypto.randomUUID(),
       method: 'GET',
@@ -158,13 +146,11 @@ let enableGPUAnalysis = $state(false);
 
     const url = `/api/document/${docId}${enableGPUAnalysis ? '?gpu=true' : ''}`;
     const response = await fetch(url);
-    
     if (!response.ok) {
       throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-    
     if (!data.success) {
       throw new Error(data.error || 'Server returned error');
     }
@@ -201,7 +187,6 @@ let enableGPUAnalysis = $state(false);
     await db.setCache(`document_detail_${docId}`, cacheData, ttl);
 
     const serverTime = performance.now() - serverStartTime;
-    
     await logger.logAPIResponse({
       requestId: crypto.randomUUID(),
       statusCode: 200,
@@ -231,7 +216,6 @@ let enableGPUAnalysis = $state(false);
         signal: controller.signal,
         headers: { 'X-Background-Request': 'true' }
       });
-      
       clearTimeout(timeoutId);
 
       if (response.ok) {
@@ -319,7 +303,6 @@ let enableGPUAnalysis = $state(false);
    */
   async function toggleGPUAnalysis(): Promise<void> {
     enableGPUAnalysis = !enableGPUAnalysis;
-    
     if (enableGPUAnalysis && !gpuAnalysis) {
       await loadDocumentData(documentId, true); // Force refresh with GPU
     }
@@ -331,7 +314,6 @@ let enableGPUAnalysis = $state(false);
   function handleClose(): void {
     isOpen = false;
     if (onClose) onClose();
-    
     // Reset state
     document = null;
     relatedDocuments = [];

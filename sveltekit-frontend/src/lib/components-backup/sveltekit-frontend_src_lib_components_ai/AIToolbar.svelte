@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
@@ -30,10 +29,8 @@
   // Enhanced AI Search with LangChain.js and vector similarity
   async function performAISearch() {
     if (!aiSearchQuery.trim() || isAISearching) return;
-    
     isAISearching = true;
     aiSearchResults = [];
-    
     try {
       const response = await fetch('/api/ai/enhanced-legal-search', {
         method: 'POST',
@@ -52,12 +49,10 @@
       });
 
       const result = await response.json();
-      
       if (result.success) {
         aiSearchResults = result.results || [];
         console.log(`🔍 Enhanced AI search found ${aiSearchResults.length} results in ${result.searchTime}`);
         console.log('Search analytics:', result.analytics);
-        
         if (onAISearch) {
           onAISearch(result);
         }
@@ -90,7 +85,6 @@
       });
 
       const result = await response.json();
-      
       if (result.success) {
         aiSearchResults = result.laws || [];
         if (onAISearch) {
@@ -105,10 +99,8 @@
   // AI Chat
   async function performAIChat() {
     if (!aiChatMessage.trim() || isAIChatting) return;
-    
     isAIChatting = true;
     aiChatResponse = '';
-    
     try {
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
@@ -120,7 +112,6 @@
       });
 
       const result = await response.json();
-      
       if (result.response) {
         aiChatResponse = result.response;
         if (onAIChat) {
@@ -139,10 +130,8 @@
   // AI Summarization
   async function performAISummarization() {
     if (!summarizeText.trim() || isSummarizing) return;
-    
     isSummarizing = true;
     summaryResult = '';
-    
     try {
       const response = await fetch('/api/ai/summarize', {
         method: 'POST',
@@ -155,7 +144,6 @@
       });
 
       const result = await response.json();
-      
       if (result.success) {
         summaryResult = result.summary;
         if (onAISummarize) {

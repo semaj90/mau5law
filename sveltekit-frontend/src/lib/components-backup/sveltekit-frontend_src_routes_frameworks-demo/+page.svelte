@@ -1,6 +1,5 @@
 <!-- Legal Frameworks Demo - Pico CSS + UnoCSS + Melt UI -->
 <script lang="ts">
-</script>
   import AskAI from "$lib/components/ai/AskAI.svelte";
   import LegalDocumentEditor from "$lib/components/editor/LegalDocumentEditor.svelte";
   import WysiwygEditor from "$lib/components/editor/WysiwygEditor.svelte";
@@ -19,20 +18,20 @@
   let activeTab = "document-editor";
   let sampleContent = `MOTION TO DISMISS
 
-Comes now the Defendant, by and through undersigned counsel, and respectfully moves this Honorable Court to dismiss the Plaintiff's Complaint pursuant to Federal Rule of Civil Procedure 12(b)(6) for failure to state a claim upon which relief can be granted.
+  Comes now the Defendant, by and through undersigned counsel, and respectfully moves this Honorable Court to dismiss the Plaintiff's Complaint pursuant to Federal Rule of Civil Procedure 12(b)(6) for failure to state a claim upon which relief can be granted.
 
-I. STATEMENT OF FACTS
+  I. STATEMENT OF FACTS
 
-The Plaintiff filed a complaint alleging breach of contract. However, the complaint fails to...`;
+  The Plaintiff filed a complaint alleging breach of contract. However, the complaint fails to...`;
 
   // Handle component events
   function handleSave(event: CustomEvent) {
     console.log("Document saved:", event.detail);
     // TODO: Save to backend
-}
+  }
   function handleAIResponse(event: CustomEvent) {
     console.log("AI Response:", event.detail);
-}
+  }
   onMount(() => {
     console.log("Legal Frameworks Demo loaded");
   });

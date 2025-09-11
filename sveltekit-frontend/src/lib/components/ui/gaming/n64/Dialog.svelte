@@ -11,7 +11,6 @@
   - Integration with YoRHa design system
 -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount, tick } from 'svelte';
   import { browser } from '$app/environment';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
@@ -59,7 +58,6 @@
     header?: any;
     footer?: any;
     children?: any;
-    
     class?: string;
   }
 
@@ -107,7 +105,6 @@
     header,
     footer,
     children,
-    
     class: className = ''
   }: Props = $props();
 
@@ -170,13 +167,11 @@
 
       // Configure sound based on type
       oscillator.type = 'sawtooth';
-      
       if (type === 'open') {
         // Rising portal sound
         oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(440, audioContext.currentTime + duration * 0.6);
         oscillator.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + duration);
-        
         gainNode.gain.setValueAtTime(0, audioContext.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.2, audioContext.currentTime + duration * 0.3);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
@@ -185,7 +180,6 @@
         oscillator.frequency.setValueAtTime(660, audioContext.currentTime);
         oscillator.frequency.exponentialRampToValueAtTime(330, audioContext.currentTime + duration * 0.7);
         oscillator.frequency.exponentialRampToValueAtTime(165, audioContext.currentTime + duration);
-        
         gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.05, audioContext.currentTime + duration * 0.5);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
@@ -203,12 +197,9 @@
     if (disabled || isAnimating) return;
 
     isAnimating = true;
-    
     // Store current focus
     previousFocusedElement = document.activeElement as HTMLElement;
-    
     await playDialogSound('open');
-    
     // Create portal if needed
     if (portal && browser) {
       const target = document.querySelector(portalTarget);
@@ -218,15 +209,12 @@
     }
 
     isVisible = true;
-    
     await tick();
-    
     // Focus management
     if (dialogElement) {
       const firstFocusable = dialogElement.querySelector(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       ) as HTMLElement;
-      
       if (firstFocusable) {
         firstFocusable.focus();
       } else {
@@ -245,19 +233,16 @@
     if (preventClose || isAnimating) return;
 
     isAnimating = true;
-    
     await playDialogSound('close');
 
     setTimeout(() => {
       isVisible = false;
       isAnimating = false;
-      
       // Restore focus
       if (previousFocusedElement) {
         previousFocusedElement.focus();
         previousFocusedElement = null;
       }
-      
       dispatch('close');
     }, 400);
   };
@@ -269,7 +254,6 @@
       event.preventDefault();
       closeDialog();
     }
-    
     // Trap focus within dialog
     if (event.key === 'Tab' && dialogElement) {
       const focusableElements = Array.from(
@@ -397,7 +381,6 @@
   onMount(() => {
     if (browser) {
       document.addEventListener('keydown', handleKeydown);
-      
       return () => {
         document.removeEventListener('keydown', handleKeydown);
       };

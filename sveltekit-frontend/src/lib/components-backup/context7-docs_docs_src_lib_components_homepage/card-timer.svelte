@@ -1,50 +1,49 @@
 <script lang="ts">
-</script>
-	import X from "phosphor-svelte/lib/X";
-	import HomeSwitch from "$lib/components/homepage/home-switch.svelte";
-	import HomeSelect from "$lib/components/homepage/home-select.svelte";
+  	import X from "phosphor-svelte/lib/X";
+  	import HomeSwitch from "$lib/components/homepage/home-switch.svelte";
+  	import HomeSelect from "$lib/components/homepage/home-select.svelte";
 
-	let checked = $state(false);
-	let startTime = $state(0);
-	let stopwatchInterval: number | null = null;
-	let elapsedPausedTime = $state(0);
-	let displayTime = $state("0:00:00");
+  	let checked = $state(false);
+  	let startTime = $state(0);
+  	let stopwatchInterval: number | null = null;
+  	let elapsedPausedTime = $state(0);
+  	let displayTime = $state("0:00:00");
 
-	function startStopwatch() {
-		if (stopwatchInterval !== null) return;
-		startTime = new Date().getTime() - elapsedPausedTime;
-		stopwatchInterval = window.setInterval(updateStopwatch, 1000);
-	}
+  	function startStopwatch() {
+  		if (stopwatchInterval !== null) return;
+  		startTime = new Date().getTime() - elapsedPausedTime;
+  		stopwatchInterval = window.setInterval(updateStopwatch, 1000);
+  	}
 
-	function stopStopwatch() {
-		if (stopwatchInterval !== null) {
-			window.clearInterval(stopwatchInterval);
-		}
-		elapsedPausedTime = new Date().getTime() - startTime;
-		stopwatchInterval = null;
-	}
+  	function stopStopwatch() {
+  		if (stopwatchInterval !== null) {
+  			window.clearInterval(stopwatchInterval);
+  		}
+  		elapsedPausedTime = new Date().getTime() - startTime;
+  		stopwatchInterval = null;
+  	}
 
-	function resetStopwatch() {
-		stopStopwatch();
-		elapsedPausedTime = 0;
-		displayTime = "0:00:00";
-	}
+  	function resetStopwatch() {
+  		stopStopwatch();
+  		elapsedPausedTime = 0;
+  		displayTime = "0:00:00";
+  	}
 
-	function updateStopwatch() {
-		const currentTime = new Date().getTime();
-		const elapsedTime = currentTime - startTime;
-		const seconds = Math.floor(elapsedTime / 1000) % 60;
-		const minutes = Math.floor(elapsedTime / 1000 / 60) % 60;
-		const hours = Math.floor(elapsedTime / 1000 / 60 / 60);
-		displayTime = `${hours}:${pad(minutes)}:${pad(seconds)}`;
-	}
+  	function updateStopwatch() {
+  		const currentTime = new Date().getTime();
+  		const elapsedTime = currentTime - startTime;
+  		const seconds = Math.floor(elapsedTime / 1000) % 60;
+  		const minutes = Math.floor(elapsedTime / 1000 / 60) % 60;
+  		const hours = Math.floor(elapsedTime / 1000 / 60 / 60);
+  		displayTime = `${hours}:${pad(minutes)}:${pad(seconds)}`;
+  	}
 
-	function pad(number: number) {
-		return (number < 10 ? "0" : "") + number;
-	}
+  	function pad(number: number) {
+  		return (number < 10 ? "0" : "") + number;
+  	}
 
-	const chips = ["design", "code", "other"];
-	let foo = $state("new");
+  	const chips = ["design", "code", "other"];
+  	let foo = $state("new");
 </script>
 
 <div class="relative order-4 lg:order-5 lg:translate-y-[7%]">

@@ -1,323 +1,263 @@
 <script lang="ts">
-</script>
-	import { onMount, onDestroy } from 'svelte';
-	import * as THREE from 'three';
-	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-	
-	let canvas;
-	let scene, camera, renderer, controls;
-	let points, highlightedPoints;
-	let documents = [];
-	let clusters = [];
-	let wasmAccelerator = null;
-	let stats = null;
-	let isLoading = true;
-	let error = null;
-	let selectedPoint = null;
-	let nearestNeighbors = [];
-	
-	// Color palette for clusters
-	const clusterColors = [
-		0x00ff88, // legal_contracts - bright green
-		0x8800ff, // case_precedents - purple  
-		0xff4400, // regulatory_compliance - orange
-		0x0088ff, // additional clusters - blue
-		0xff0088, // pink
-		0x88ff00, // lime
-	];
-	
-	onMount(async () => {
-		try {
-			await initThreeJS();
-			await loadInitialData();
-			await initializeWasmAccelerator();
-			animate();
-		} catch (err) {
-			console.error('Failed to initialize Cyber Elephant:', err);
-			error = err.message;
-			isLoading = false;
-		}
-	});
-	
-	onDestroy(() => {
-		if (controls) controls.dispose();
-		if (renderer) renderer.dispose();
-		if (wasmAccelerator) wasmAccelerator.delete();
-	});
-	
-	async function initThreeJS() {
-		// Scene setup
-		scene = new THREE.Scene();
-		scene.background = new THREE.Color(0x0a0a0a);
-		
-		// Camera setup
-		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-		camera.position.set(10, 10, 10);
-		
-		// Renderer setup
-		renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-		renderer.setSize(window.innerWidth, window.innerHeight);
-		renderer.setPixelRatio(window.devicePixelRatio);
-		
-		// Controls
-		controls = new OrbitControls(camera, canvas);
-		controls.enableDamping = true;
-		controls.dampingFactor = 0.05;
-		
-		// Lighting
-		const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
-		scene.add(ambientLight);
-		
-		const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-		directionalLight.position.set(10, 10, 5);
-		scene.add(directionalLight);
-		
-		// Add coordinate axes for reference
-		const axesHelper = new THREE.AxesHelper(5);
-		scene.add(axesHelper);
-		
-		// Handle window resize
-		window.addEventListener('resize', onWindowResize);
-	}
-	
-	async function loadInitialData() {
-		try {
-			console.log('🐘 Loading initial data from Cyber Elephant backend...');
-			const response = await fetch('http://localhost:8080/api/v1/initial-data');
-			
-			if (!response.ok) {
-				throw new Error(`Backend not available: ${response.status}. Make sure Go backend is running on port 8080.`);
-			}
-			
-			const data = await response.json();
-			documents = data.documents || [];
-			clusters = data.clusters || [];
-			stats = data.stats;
-			
-			console.log(`📊 Loaded ${documents.length} documents in ${clusters.length} clusters`);
-			
-			if (documents.length > 0) {
-				createPointCloud();
-			}
-			
-		} catch (err) {
-			console.error('Failed to load data:', err);
-			throw new Error(`Backend connection failed: ${err.message}. Start the Go backend with: cd cyber-elephant/backend-go && go run main.go`);
-		}
-	}
-	
-	async function initializeWasmAccelerator() {
-		try {
-			console.log('🚀 Loading WebAssembly accelerator...');
-			
-			// Dynamically import the WASM module
-			const createAccelerator = await import('/wasm/cyber-elephant-accelerator.js');
-			const wasmModule = await createAccelerator.default();
-			
-			wasmAccelerator = new wasmModule.WasmKDTreeAccelerator();
-			
-			// Prepare 3D points for the accelerator
-			const flatData = [];
-			documents.forEach(doc => {
-				flatData.push(doc.projected_3d.x, doc.projected_3d.y, doc.projected_3d.z);
-			});
-			
-			// Build the KD-tree index
-			console.time('KD-Tree Build Time');
-			wasmAccelerator.buildIndex(flatData, 3);
-			console.timeEnd('KD-Tree Build Time');
-			
-			console.log('✅ WebAssembly accelerator initialized');
-			
-		} catch (err) {
-			console.warn('WebAssembly accelerator not available:', err.message);
-			console.log('💡 To build: cd cyber-elephant/accelerator-cpp && ./build-wasm.ps1');
-			// Continue without WebAssembly - use JavaScript fallback
-		}
-	}
-	
-	function createPointCloud() {
-		const geometry = new THREE.BufferGeometry();
-		const positions = [];
-		const colors = [];
-		const sizes = [];
-		
-		documents.forEach((doc, index) => {
-			// Position from 3D projection
-			positions.push(doc.projected_3d.x, doc.projected_3d.y, doc.projected_3d.z);
-			
-			// Color based on cluster
-			const color = new THREE.Color(clusterColors[doc.cluster_id % clusterColors.length]);
-			colors.push(color.r, color.g, color.b);
-			
-			// Size based on confidence
-			sizes.push(doc.projected_3d.confidence * 0.1 + 0.05);
-		});
-		
-		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3);
-		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3);
-		geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1);
-		// Custom shader material for better point rendering
-		const material = new THREE.ShaderMaterial({
-			uniforms: {
-				pointTexture: { value: new THREE.CanvasTexture(generatePointTexture()) }
-			},
-			vertexShader: `
-				attribute float size;
-				varying vec3 vColor;
-				void main() {
-					vColor = color;
-					vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-					gl_PointSize = size * (300.0 / -mvPosition.z);
-					gl_Position = projectionMatrix * mvPosition;
-				}
-			`,
-			fragmentShader: `
-				uniform sampler2D pointTexture;
-				varying vec3 vColor;
-				void main() {
-					gl_FragColor = vec4(vColor, 1.0);
-					gl_FragColor = gl_FragColor * texture2D(pointTexture, gl_PointCoord);
-					if (gl_FragColor.a < 0.1) discard;
-				}
-			`,
-			vertexColors: true,
-			transparent: true
-		});
-		
-		points = new THREE.Points(geometry, material);
-		scene.add(points);
-		
-		// Add click interaction
-		canvas.addEventListener('click', onPointClick);
-		
-		isLoading = false;
-	}
-	
-	function generatePointTexture() {
-		const canvas = document.createElement('canvas');
-		canvas.width = 64;
-		canvas.height = 64;
-		
-		const context = canvas.getContext('2d');
-		const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
-		gradient.addColorStop(0, 'rgba(255,255,255,1)');
-		gradient.addColorStop(0.5, 'rgba(255,255,255,0.5)');
-		gradient.addColorStop(1, 'rgba(255,255,255,0)');
-		
-		context.fillStyle = gradient;
-		context.fillRect(0, 0, 64, 64);
-		
-		return canvas;
-	}
-	
-	function onPointClick(event) {
-		event.preventDefault();
-		
-		const mouse = new THREE.Vector2();
-		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-		mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-		
-		const raycaster = new THREE.Raycaster();
-		raycaster.setFromCamera(mouse, camera);
-		
-		if (points) {
-			const intersects = raycaster.intersectObject(points);
-			if (intersects.length > 0) {
-				const intersect = intersects[0];
-				const index = intersect.index;
-				
-				selectedPoint = documents[index];
-				findNearestNeighbors(selectedPoint.projected_3d);
-			}
-		}
-	}
-	
-	async function findNearestNeighbors(queryPoint) {
-		console.time('Nearest Neighbors Search');
-		
-		try {
-			let neighborIndices = [];
-			
-			if (wasmAccelerator && wasmAccelerator.isIndexBuilt()) {
-				// Use WebAssembly accelerator
-				const queryArray = [queryPoint.x, queryPoint.y, queryPoint.z];
-				neighborIndices = wasmAccelerator.searchKNN(queryArray, 10);
-				console.log('🚀 Used WebAssembly accelerator');
-			} else {
-				// Fallback to JavaScript implementation
-				neighborIndices = findNearestNeighborsJS(queryPoint, 10);
-				console.log('📊 Used JavaScript fallback');
-			}
-			
-			// Get the actual documents
-			nearestNeighbors = neighborIndices.map(index => documents[index]);
-			
-			// Highlight the nearest neighbors
-			highlightNearestNeighbors(neighborIndices);
-			
-		} catch (err) {
-			console.error('Search failed:', err);
-		}
-		
-		console.timeEnd('Nearest Neighbors Search');
-	}
-	
-	function findNearestNeighborsJS(queryPoint, k) {
-		// JavaScript fallback implementation
-		const distances = documents.map((doc, index) => {
-			const dx = doc.projected_3d.x - queryPoint.x;
-			const dy = doc.projected_3d.y - queryPoint.y;
-			const dz = doc.projected_3d.z - queryPoint.z;
-			return { index, distance: dx * dx + dy * dy + dz * dz };
-		});
-		
-		distances.sort((a, b) => a.distance - b.distance);
-		return distances.slice(0, k).map(d => d.index);
-	}
-	
-	function highlightNearestNeighbors(indices) {
-		// Remove previous highlights
-		if (highlightedPoints) {
-			scene.remove(highlightedPoints);
-		}
-		
-		// Create highlighted points
-		const geometry = new THREE.BufferGeometry();
-		const positions = [];
-		const colors = [];
-		
-		indices.forEach(index => {
-			const doc = documents[index];
-			positions.push(doc.projected_3d.x, doc.projected_3d.y, doc.projected_3d.z);
-			colors.push(1, 1, 0); // Yellow highlight
-		});
-		
-		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3);
-		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3);
-		const material = new THREE.PointsMaterial({
-			size: 0.2,
-			vertexColors: true,
-			transparent: true,
-			opacity: 0.8
-		});
-		
-		highlightedPoints = new THREE.Points(geometry, material);
-		scene.add(highlightedPoints);
-	}
-	
-	function onWindowResize() {
-		camera.aspect = window.innerWidth / window.innerHeight;
-		camera.updateProjectionMatrix();
-		renderer.setSize(window.innerWidth, window.innerHeight);
-	}
-	
-	function animate() {
-		requestAnimationFrame(animate);
-		
-		if (controls) controls.update();
-		if (renderer) renderer.render(scene, camera);
-	}
+  	import { onMount, onDestroy } from 'svelte';
+  	import * as THREE from 'three';
+  	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+  	let canvas;
+  	let scene, camera, renderer, controls;
+  	let points, highlightedPoints;
+  	let documents = [];
+  	let clusters = [];
+  	let wasmAccelerator = null;
+  	let stats = null;
+  	let isLoading = true;
+  	let error = null;
+  	let selectedPoint = null;
+  	let nearestNeighbors = [];
+  	// Color palette for clusters
+  	const clusterColors = [
+  		0x00ff88, // legal_contracts - bright green
+  		0x8800ff, // case_precedents - purple  
+  		0xff4400, // regulatory_compliance - orange
+  		0x0088ff, // additional clusters - blue
+  		0xff0088, // pink
+  		0x88ff00, // lime
+  	];
+  	onMount(async () => {
+  		try {
+  			await initThreeJS();
+  			await loadInitialData();
+  			await initializeWasmAccelerator();
+  			animate();
+  		} catch (err) {
+  			console.error('Failed to initialize Cyber Elephant:', err);
+  			error = err.message;
+  			isLoading = false;
+  		}
+  	});
+  	onDestroy(() => {
+  		if (controls) controls.dispose();
+  		if (renderer) renderer.dispose();
+  		if (wasmAccelerator) wasmAccelerator.delete();
+  	});
+  	async function initThreeJS() {
+  		// Scene setup
+  		scene = new THREE.Scene();
+  		scene.background = new THREE.Color(0x0a0a0a);
+  		// Camera setup
+  		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  		camera.position.set(10, 10, 10);
+  		// Renderer setup
+  		renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  		renderer.setSize(window.innerWidth, window.innerHeight);
+  		renderer.setPixelRatio(window.devicePixelRatio);
+  		// Controls
+  		controls = new OrbitControls(camera, canvas);
+  		controls.enableDamping = true;
+  		controls.dampingFactor = 0.05;
+  		// Lighting
+  		const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+  		scene.add(ambientLight);
+  		const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  		directionalLight.position.set(10, 10, 5);
+  		scene.add(directionalLight);
+  		// Add coordinate axes for reference
+  		const axesHelper = new THREE.AxesHelper(5);
+  		scene.add(axesHelper);
+  		// Handle window resize
+  		window.addEventListener('resize', onWindowResize);
+  	}
+  	async function loadInitialData() {
+  		try {
+  			console.log('🐘 Loading initial data from Cyber Elephant backend...');
+  			const response = await fetch('http://localhost:8080/api/v1/initial-data');
+  			if (!response.ok) {
+  				throw new Error(`Backend not available: ${response.status}. Make sure Go backend is running on port 8080.`);
+  			}
+  			const data = await response.json();
+  			documents = data.documents || [];
+  			clusters = data.clusters || [];
+  			stats = data.stats;
+  			console.log(`📊 Loaded ${documents.length} documents in ${clusters.length} clusters`);
+  			if (documents.length > 0) {
+  				createPointCloud();
+  			}
+  		} catch (err) {
+  			console.error('Failed to load data:', err);
+  			throw new Error(`Backend connection failed: ${err.message}. Start the Go backend with: cd cyber-elephant/backend-go && go run main.go`);
+  		}
+  	}
+  	async function initializeWasmAccelerator() {
+  		try {
+  			console.log('🚀 Loading WebAssembly accelerator...');
+  			// Dynamically import the WASM module
+  			const createAccelerator = await import('/wasm/cyber-elephant-accelerator.js');
+  			const wasmModule = await createAccelerator.default();
+  			wasmAccelerator = new wasmModule.WasmKDTreeAccelerator();
+  			// Prepare 3D points for the accelerator
+  			const flatData = [];
+  			documents.forEach(doc => {
+  				flatData.push(doc.projected_3d.x, doc.projected_3d.y, doc.projected_3d.z);
+  			});
+  			// Build the KD-tree index
+  			console.time('KD-Tree Build Time');
+  			wasmAccelerator.buildIndex(flatData, 3);
+  			console.timeEnd('KD-Tree Build Time');
+  			console.log('✅ WebAssembly accelerator initialized');
+  		} catch (err) {
+  			console.warn('WebAssembly accelerator not available:', err.message);
+  			console.log('💡 To build: cd cyber-elephant/accelerator-cpp && ./build-wasm.ps1');
+  			// Continue without WebAssembly - use JavaScript fallback
+  		}
+  	}
+  	function createPointCloud() {
+  		const geometry = new THREE.BufferGeometry();
+  		const positions = [];
+  		const colors = [];
+  		const sizes = [];
+  		documents.forEach((doc, index) => {
+  			// Position from 3D projection
+  			positions.push(doc.projected_3d.x, doc.projected_3d.y, doc.projected_3d.z);
+  			// Color based on cluster
+  			const color = new THREE.Color(clusterColors[doc.cluster_id % clusterColors.length]);
+  			colors.push(color.r, color.g, color.b);
+  			// Size based on confidence
+  			sizes.push(doc.projected_3d.confidence * 0.1 + 0.05);
+  		});
+  		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3);
+  		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3);
+  		geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1);
+  		// Custom shader material for better point rendering
+  		const material = new THREE.ShaderMaterial({
+  			uniforms: {
+  				pointTexture: { value: new THREE.CanvasTexture(generatePointTexture()) }
+  			},
+  			vertexShader: `
+  				attribute float size;
+  				varying vec3 vColor;
+  				void main() {
+  					vColor = color;
+  					vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+  					gl_PointSize = size * (300.0 / -mvPosition.z);
+  					gl_Position = projectionMatrix * mvPosition;
+  				}
+  			`,
+  			fragmentShader: `
+  				uniform sampler2D pointTexture;
+  				varying vec3 vColor;
+  				void main() {
+  					gl_FragColor = vec4(vColor, 1.0);
+  					gl_FragColor = gl_FragColor * texture2D(pointTexture, gl_PointCoord);
+  					if (gl_FragColor.a < 0.1) discard;
+  				}
+  			`,
+  			vertexColors: true,
+  			transparent: true
+  		});
+  		points = new THREE.Points(geometry, material);
+  		scene.add(points);
+  		// Add click interaction
+  		canvas.addEventListener('click', onPointClick);
+  		isLoading = false;
+  	}
+  	function generatePointTexture() {
+  		const canvas = document.createElement('canvas');
+  		canvas.width = 64;
+  		canvas.height = 64;
+  		const context = canvas.getContext('2d');
+  		const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
+  		gradient.addColorStop(0, 'rgba(255,255,255,1)');
+  		gradient.addColorStop(0.5, 'rgba(255,255,255,0.5)');
+  		gradient.addColorStop(1, 'rgba(255,255,255,0)');
+  		context.fillStyle = gradient;
+  		context.fillRect(0, 0, 64, 64);
+  		return canvas;
+  	}
+  	function onPointClick(event) {
+  		event.preventDefault();
+  		const mouse = new THREE.Vector2();
+  		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  		mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  		const raycaster = new THREE.Raycaster();
+  		raycaster.setFromCamera(mouse, camera);
+  		if (points) {
+  			const intersects = raycaster.intersectObject(points);
+  			if (intersects.length > 0) {
+  				const intersect = intersects[0];
+  				const index = intersect.index;
+  				selectedPoint = documents[index];
+  				findNearestNeighbors(selectedPoint.projected_3d);
+  			}
+  		}
+  	}
+  	async function findNearestNeighbors(queryPoint) {
+  		console.time('Nearest Neighbors Search');
+  		try {
+  			let neighborIndices = [];
+  			if (wasmAccelerator && wasmAccelerator.isIndexBuilt()) {
+  				// Use WebAssembly accelerator
+  				const queryArray = [queryPoint.x, queryPoint.y, queryPoint.z];
+  				neighborIndices = wasmAccelerator.searchKNN(queryArray, 10);
+  				console.log('🚀 Used WebAssembly accelerator');
+  			} else {
+  				// Fallback to JavaScript implementation
+  				neighborIndices = findNearestNeighborsJS(queryPoint, 10);
+  				console.log('📊 Used JavaScript fallback');
+  			}
+  			// Get the actual documents
+  			nearestNeighbors = neighborIndices.map(index => documents[index]);
+  			// Highlight the nearest neighbors
+  			highlightNearestNeighbors(neighborIndices);
+  		} catch (err) {
+  			console.error('Search failed:', err);
+  		}
+  		console.timeEnd('Nearest Neighbors Search');
+  	}
+  	function findNearestNeighborsJS(queryPoint, k) {
+  		// JavaScript fallback implementation
+  		const distances = documents.map((doc, index) => {
+  			const dx = doc.projected_3d.x - queryPoint.x;
+  			const dy = doc.projected_3d.y - queryPoint.y;
+  			const dz = doc.projected_3d.z - queryPoint.z;
+  			return { index, distance: dx * dx + dy * dy + dz * dz };
+  		});
+  		distances.sort((a, b) => a.distance - b.distance);
+  		return distances.slice(0, k).map(d => d.index);
+  	}
+  	function highlightNearestNeighbors(indices) {
+  		// Remove previous highlights
+  		if (highlightedPoints) {
+  			scene.remove(highlightedPoints);
+  		}
+  		// Create highlighted points
+  		const geometry = new THREE.BufferGeometry();
+  		const positions = [];
+  		const colors = [];
+  		indices.forEach(index => {
+  			const doc = documents[index];
+  			positions.push(doc.projected_3d.x, doc.projected_3d.y, doc.projected_3d.z);
+  			colors.push(1, 1, 0); // Yellow highlight
+  		});
+  		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3);
+  		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3);
+  		const material = new THREE.PointsMaterial({
+  			size: 0.2,
+  			vertexColors: true,
+  			transparent: true,
+  			opacity: 0.8
+  		});
+  		highlightedPoints = new THREE.Points(geometry, material);
+  		scene.add(highlightedPoints);
+  	}
+  	function onWindowResize() {
+  		camera.aspect = window.innerWidth / window.innerHeight;
+  		camera.updateProjectionMatrix();
+  		renderer.setSize(window.innerWidth, window.innerHeight);
+  	}
+  	function animate() {
+  		requestAnimationFrame(animate);
+  		if (controls) controls.update();
+  		if (renderer) renderer.render(scene, camera);
+  	}
 </script>
 
 <svelte:head>

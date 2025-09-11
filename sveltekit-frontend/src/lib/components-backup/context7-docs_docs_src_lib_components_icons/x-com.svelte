@@ -1,8 +1,7 @@
 <script lang="ts">
-</script>
-	import type { SVGAttributes } from "svelte/elements";
+  	import type { SVGAttributes } from "svelte/elements";
 
-	let restProps: SVGAttributes<SVGElement> = $props();
+  	let restProps: SVGAttributes<SVGElement> = $props();
 </script>
 
 <svg aria-label="X formerly known as Twitter" fill="currentColor" viewBox="0 0 22 20" {...restProps}

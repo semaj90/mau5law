@@ -5,7 +5,6 @@
 </script>
 
 <script lang="ts">
-</script>
 
   interface Props {
     user: User | null ;

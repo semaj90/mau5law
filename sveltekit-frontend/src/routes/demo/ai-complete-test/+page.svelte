@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   let testResults = $state<Array<{
     test: string;
@@ -8,13 +7,10 @@
     duration?: number;
     data?: unknown;
   }>>([]);
-  
   let isRunning = $state(false);
-  
   async function runCompleteAITest() {
     isRunning = true;
     testResults = [];
-    
     // Test 1: AI Query Processing
     await runTest('AI Query Processing', async () => {
       const response = await fetch('/api/ai/query', {
@@ -28,19 +24,15 @@
           }
         })
       });
-      
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${await response.text()}`);
       }
-      
       const data = await response.json();
       if (!data.success) {
         throw new Error(data.error || 'Query failed');
       }
-      
       return `AI response generated (confidence: ${(data.data.confidence * 100).toFixed(1)}%)`;
     });
-    
     // Test 2: Evidence Analysis
     await runTest('Evidence Analysis', async () => {
       const response = await fetch('/api/ai/analyze-evidence', {
@@ -52,21 +44,16 @@
           forceReanalyze: true
         })
       });
-      
       // This might fail if evidence doesn't exist, but we can test the API structure
       const data = await response.json();
-      
       if (response.status === 404) {
         return 'Evidence analysis API working (test evidence not found - expected)';
       }
-      
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${data.error || 'Unknown error'}`);
       }
-      
       return `Evidence analyzed successfully`;
     });
-    
     // Test 3: Vector Search
     await runTest('Vector Search', async () => {
       const response = await fetch('/api/ai/search', {
@@ -78,75 +65,57 @@
           threshold: 0.6
         })
       });
-      
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${await response.text()}`);
       }
-      
       const data = await response.json();
       if (!data.success) {
         throw new Error(data.error || 'Search failed');
       }
-      
       return `Vector search completed: ${data.data.results.length} results found`;
     });
-    
     // Test 4: Ollama Health Check
     await runTest('Ollama Service Health', async () => {
       const response = await fetch('http://localhost:11434/api/tags');
-      
       if (!response.ok) {
         throw new Error('Ollama service not accessible');
       }
-      
       const data = await response.json();
       const models = data.models || [];
-      
       const hasGemma = models.some((m: any) => m.name.includes('gemma3-legal');
       const hasEmbedding = models.some((m: any) => m.name.includes('nomic-embed-text');
       if (!hasGemma || !hasEmbedding) {
         throw new Error(`Missing models - gemma3-legal: ${hasGemma}, nomic-embed-text: ${hasEmbedding}`);
       }
-      
       return `Ollama healthy with ${models.length} models (gemma3-legal, nomic-embed-text available)`;
     });
-    
     // Test 5: Database Connectivity
     await runTest('Database Connectivity', async () => {
       const response = await fetch('/api/health/database');
-      
       if (response.status === 404) {
         return 'Database health endpoint not implemented (this is expected)';
       }
-      
       if (!response.ok) {
         throw new Error('Database connectivity check failed');
       }
-      
       const data = await response.json();
       return `Database connected: ${data.status}`;
     });
-    
     // Test 6: Query Suggestions
     await runTest('Query Suggestions', async () => {
       const response = await fetch('/api/ai/query?q=money laundering analysis');
-      
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${await response.text()}`);
       }
-      
       const data = await response.json();
       if (!data.success) {
         throw new Error(data.error || 'Suggestions failed');
       }
-      
       return `Query suggestions working: ${data.data.suggestions.length} similar queries found`;
     });
-    
     // Test 7: Embedding Generation
     await runTest('Embedding Generation Test', async () => {
       const testText = 'Legal document analysis for prosecution evidence review';
-      
       // Test direct embedding through Ollama
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
@@ -156,30 +125,23 @@
           prompt: testText
         })
       });
-      
       if (!response.ok) {
         throw new Error('Embedding generation failed');
       }
-      
       const data = await response.json();
       if (!data.embedding || !Array.isArray(data.embedding)) {
         throw new Error('Invalid embedding response');
       }
-      
       return `Embedding generated: ${data.embedding.length} dimensions`;
     });
-    
     isRunning = false;
   }
-  
   async function runTest(testName: string, testFn: () => Promise<string>) {
     const startTime = Date.now();
     testResults = [...testResults, { test: testName, status: 'pending', message: 'Running...' }];
-    
     try {
       const result = await testFn();
       const duration = Date.now() - startTime;
-      
       testResults = testResults.map(t => 
         t.test === testName 
           ? { ...t, status: 'success' as const, message: result, duration }
@@ -194,7 +156,6 @@
       );
     }
   }
-  
   onMount(() => {
     // Auto-run tests on mount
     runCompleteAITest();

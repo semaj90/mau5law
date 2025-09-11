@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     items?: any;
   }
@@ -9,17 +8,13 @@
 
 
 
-  
   import { fade } from 'svelte/transition';
-  
   export const title = 'Legal Case Manager';
-    
   // Melt UI Dialog
   const {
     elements: { trigger, overlay, content, title: dialogTitle, description, close },
     states: { open }
   } = createDialog();
-  
   // Melt UI Select
   const {
     elements: { trigger: selectTrigger, menu, option, label },

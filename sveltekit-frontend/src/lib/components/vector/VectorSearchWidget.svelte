@@ -5,7 +5,6 @@ Vector Search Widget
 Compact searchable component for embedding in other interfaces
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import {
     Button

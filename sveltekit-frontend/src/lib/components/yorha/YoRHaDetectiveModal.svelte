@@ -1,6 +1,5 @@
 <!-- YoRHa Detective Modal Component -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import type {     Snippet     } from 'svelte';
 
@@ -33,7 +32,6 @@
   onMount(() => {
     const handleEscape = (e: CustomEvent<any>) => handleKeydown(e);
     document.addEventListener('keydown', handleEscape);
-    
     return () => {
       document.removeEventListener('keydown', handleEscape);
     };

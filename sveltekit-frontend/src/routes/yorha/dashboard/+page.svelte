@@ -1,6 +1,5 @@
 <!-- YoRHa System Dashboard -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
@@ -36,8 +35,8 @@
   let isLoading = $state(!data.initialLoad);
   let lastUpdate = $state(new Date(data.timestamp);
   // Data update intervals
-let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null);
-let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
+  let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null);
+  let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
   onMount(async () => {
     await loadSystemData();

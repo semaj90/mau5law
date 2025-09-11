@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
@@ -17,7 +16,7 @@
   let isConnected = $state(false);
   let isTyping = $state(false);
   let gpuStatus = $state<GPUProcessingStatus | null>(null);
-let ws = $state<WebSocket | null>(null);
+  let ws = $state<WebSocket | null>(null);
   let reconnectTimeout: NodeJS.Timeout;
   let healthCheckInterval: NodeJS.Timeout;
   let currentRoom = $state<string | null>(null);
@@ -462,14 +461,14 @@ let ws = $state<WebSocket | null>(null);
       role: 'system',
       content: `🚀 GPU-Accelerated Legal AI Chat
 
-• CUDA acceleration enabled
-• TensorRT optimization active
-• Multi-user support ready
-• Voice input/output available
-• Batch processing supported
-• Document upload enabled
+  • CUDA acceleration enabled
+  • TensorRT optimization active
+  • Multi-user support ready
+  • Voice input/output available
+  • Batch processing supported
+  • Document upload enabled
 
-Type your legal question or upload a document to begin!`,
+  Type your legal question or upload a document to begin!`,
       timestamp: new Date()
     }];
   });

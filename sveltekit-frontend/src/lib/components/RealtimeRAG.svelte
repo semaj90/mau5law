@@ -1,10 +1,8 @@
 <!-- Real-time RAG Interface Component -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { createRealtimeRAGStore, ragQueryMachine, ragQueryServices } from '$lib/stores/realtime-rag.svelte.js';
-  
   // Props for integration with existing components
   let { selectedCaseId = $bindable() } = $props(); // null;
   let { documentTypes = $bindable() } = $props(); // [];
@@ -12,19 +10,17 @@
 
   // Initialize real-time RAG store
   const ragStore = createRealtimeRAGStore();
-  
   // Initialize XState machine
   const ragMachine = useMachine(ragQueryMachine, {
     services: ragQueryServices
   });
 
   // Local component state
-let query = $state('');
-let showAdvancedOptions = $state(false);
-let maxResults = $state(5);
-let confidenceThreshold = $state(0.7);
-let selectedDocumentTypes = $state([]);
-  
+  let query = $state('');
+  let showAdvancedOptions = $state(false);
+  let maxResults = $state(5);
+  let confidenceThreshold = $state(0.7);
+  let selectedDocumentTypes = $state([]);
   // Reactive state from stores
   let documents = $derived(ragStore.documents);
   let ragHistory = $derived(ragStore.ragHistory);
@@ -56,7 +52,6 @@ let selectedDocumentTypes = $state([]);
 
   function handleQuerySubmit() {
     if (!query.trim()) return;
-    
     ragMachine.send({
       type: 'QUERY',
       query: query.trim(),
@@ -71,7 +66,6 @@ let selectedDocumentTypes = $state([]);
 
   function handleFileUpload(event) {
     const files = Array.from(event.target.files);
-    
     files.forEach(async (file) => {
       try {
         await ragStore.uploadDocument(file, {
@@ -83,7 +77,6 @@ let selectedDocumentTypes = $state([]);
         console.error('Upload failed:', error);
       }
     });
-    
     event.target.value = '';
   }
 

@@ -1,12 +1,10 @@
 <!-- Enhanced YoRHa Case Creation Form with Superforms + XState Integration -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
   import { createCaseCreationForm, FormStatePersistence, FORM_STORAGE_KEYS } from '$lib/forms/superforms-xstate-integration';
   import { enhancedCaseAPI } from '$lib/api/enhanced-case-api';
   import { goto } from '$app/navigation';
   import { z } from 'zod';
-  
   const dispatch = createEventDispatcher<{
     success: { caseItem: any };
     error: { message: string };
@@ -31,13 +29,11 @@
 
   // Initialize form state persistence
   const formStatePersistence = new FormStatePersistence(FORM_STORAGE_KEYS.CASE_CREATION);
-  
   // Form integration state
   let formIntegration: any = $state(null);
   let currentStep = $state(0);
-let totalSteps = $state(3); // Basic Info, Legal Details, Review
-let unsubscribe = $state<(() >(> void) | null = null);
-  
+  let totalSteps = $state(3); // Basic Info, Legal Details, Review
+  let unsubscribe = $state<(() >(> void) | null = null);
   // Reactive derived state from form integration
   let isSubmitting = $derived(formIntegration?.isSubmitting?.get() || false);
   let isValid = $derived(formIntegration?.isValid?.get() || false);
@@ -98,7 +94,6 @@ let unsubscribe = $state<(() >(> void) | null = null);
   // Enhanced form submission with PostgreSQL-first worker integration
   async function handleEnhancedSubmit(formData: any) {
     console.log('🚀 Enhanced case creation starting:', formData);
-    
     try {
       // Use the enhanced case API for full workflow integration
       const caseResponse = await enhancedCaseAPI.createCase({
@@ -130,10 +125,8 @@ let unsubscribe = $state<(() >(> void) | null = null);
   function handleFormSuccess(result: any) {
     console.log('🎉 Form submission successful:', result);
     dispatch('success', { caseItem: result });
-    
     // Clear saved draft
     formStatePersistence.clear();
-    
     // Navigate to the new case
     if (result.id) {
       goto(`/cases/${result.id}`);

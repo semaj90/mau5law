@@ -10,7 +10,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { WebGPULegalDocumentGraph } from '$lib/webgpu/legal-document-graph';
@@ -37,7 +36,6 @@
   const isInitialized = writable(false);
   const isLoading = writable(false);
   const error = writable<string | null>(null);
-  
   const performanceStats = writable({
     fps: 0,
     frameTime: 0,
@@ -73,11 +71,11 @@
   // ============================================================================
   // WEBGPU & CANVAS MANAGEMENT
   // ============================================================================
-let canvas = $state<HTMLCanvasElement;
+  let canvas = $state<HTMLCanvasElement;
   let graphEngine: WebGPULegalDocumentGraph | null >(null);
-let tensorStore = $state<DimensionalTensorStore | null >(null);
-let animationFrame = $state<number | null >(null);
-let resizeObserver = $state<ResizeObserver | null >(null);
+  let tensorStore = $state<DimensionalTensorStore | null >(null);
+  let animationFrame = $state<number | null >(null);
+  let resizeObserver = $state<ResizeObserver | null >(null);
 
   // ============================================================================
   // INITIALIZATION
@@ -133,9 +131,7 @@ let resizeObserver = $state<ResizeObserver | null >(null);
     // Initialize tensor store for advanced memory management
     const adapter = await navigator.gpu.requestAdapter();
     if (!adapter) throw new Error('No WebGPU adapter found');
-    
     const device = await adapter.requestDevice();
-    
     tensorStore = new DimensionalTensorStore(device, {
       documents: maxNodes,
       chunks: 100,
@@ -156,11 +152,9 @@ let resizeObserver = $state<ResizeObserver | null >(null);
    */
   async function loadGraphData(): Promise<void> {
     $isLoading = true;
-    
     try {
       // Load from database
       await graphEngine?.loadGraphFromDB(graphId);
-      
       // Update performance stats
       if (graphEngine) {
         const stats = graphEngine.getPerformanceStats();
@@ -190,7 +184,6 @@ let resizeObserver = $state<ResizeObserver | null >(null);
 
     // Update performance stats every second
     const perfInterval = setInterval(updatePerformance, 1000);
-    
     // Start WebGPU render loop
     graphEngine.startRenderLoop();
 
@@ -211,8 +204,8 @@ let resizeObserver = $state<ResizeObserver | null >(null);
    */
   function setupEventListeners(): void {
     if (!canvas) return;
-let isDragging = $state(false);
-let lastMousePos = $state({ x: 0, y: 0 });
+  let isDragging = $state(false);
+  let lastMousePos = $state({ x: 0, y: 0 });
 
     // Mouse events
     canvas.addEventListener('mousedown', (e) => {
@@ -226,7 +219,6 @@ let lastMousePos = $state({ x: 0, y: 0 });
 
       const deltaX = e.clientX - lastMousePos.x;
       const deltaY = e.clientY - lastMousePos.y;
-      
       // Update camera position
       renderState.update(state => ({
         ...state,
@@ -253,10 +245,8 @@ let lastMousePos = $state({ x: 0, y: 0 });
     // Wheel events for zoom
     canvas.addEventListener('wheel', (e) => {
       e.preventDefault();
-      
       const zoomSpeed = 0.1;
       const delta = e.deltaY > 0 ? 1 + zoomSpeed : 1 - zoomSpeed;
-      
       renderState.update(state => ({
         ...state,
         zoom: Math.max(0.1, Math.min(10, state.zoom * delta))
@@ -264,8 +254,7 @@ let lastMousePos = $state({ x: 0, y: 0 });
     });
 
     // Touch events for mobile
-let touchStart = $state({ x: 0, y: 0 });
-    
+  let touchStart = $state({ x: 0, y: 0 });
     canvas.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
       touchStart = { x: touch.clientX, y: touch.clientY };
@@ -276,7 +265,6 @@ let touchStart = $state({ x: 0, y: 0 });
       const touch = e.touches[0];
       const deltaX = touch.clientX - touchStart.x;
       const deltaY = touch.clientY - touchStart.y;
-      
       renderState.update(state => ({
         ...state,
         cameraPosition: [
@@ -293,11 +281,9 @@ let touchStart = $state({ x: 0, y: 0 });
     resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         const { width: newWidth, height: newHeight } = entry.contentRect;
-        
         if (canvas && graphEngine) {
           canvas.width = newWidth;
           canvas.height = newHeight;
-          
           // Update engine configuration
           graphEngine.config.canvasWidth = newWidth;
           graphEngine.config.canvasHeight = newHeight;
@@ -320,18 +306,14 @@ let touchStart = $state({ x: 0, y: 0 });
     if (!graphEngine || !$canInteract) return;
 
     const clickStartTime = performance.now();
-    
     // 1. Convert mouse coordinates to WebGL/WebGPU coordinates
     const rect = canvas.getBoundingClientRect();
     const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     const y = (1 - (event.clientY - rect.top) / rect.height) * 2 - 1;
-    
     // 2. Ray casting to find clicked node (simplified for demonstration)
     const clickedNodeId = await findNodeAtPosition(x, y);
-    
     if (clickedNodeId) {
       console.log(`🖱️  Node clicked: ${clickedNodeId}`);
-      
       // Update visual selection immediately
       renderState.update(state => ({
         ...state,
@@ -366,7 +348,6 @@ let touchStart = $state({ x: 0, y: 0 });
     // 1. Use GPU-based ray casting
     // 2. Check against actual node positions in GPU memory
     // 3. Handle 3D depth testing
-    
     // For demonstration, simulate finding a document node
     const simulatedNodes = [
       'doc-uuid-12345',
@@ -375,7 +356,6 @@ let touchStart = $state({ x: 0, y: 0 });
       'precedent-uuid-22222',
       'statute-uuid-33333'
     ];
-    
     // Simple distance-based selection (in production: proper 3D ray intersection)
     const threshold = 0.1;
     if (Math.abs(x) < threshold && Math.abs(y) < threshold) {
@@ -383,7 +363,6 @@ let touchStart = $state({ x: 0, y: 0 });
       const nodeIndex = Math.floor(Math.random() * simulatedNodes.length);
       return simulatedNodes[nodeIndex];
     }
-    
     return null;
   }
 
@@ -397,10 +376,8 @@ let touchStart = $state({ x: 0, y: 0 });
     try {
       // Extract related document IDs
       const relatedIds = relatedDocs.map(doc => doc.id).filter(id => id !== documentId);
-      
       // Highlight related nodes in the visualization
       const allHighlighted = new Set([documentId, ...relatedIds]);
-      
       renderState.update(state => ({
         ...state,
         highlightedNodes: allHighlighted
@@ -408,12 +385,9 @@ let touchStart = $state({ x: 0, y: 0 });
 
       // Update WebGPU visualization with new highlights
       await graphEngine.highlightNodes(Array.from(allHighlighted));
-      
       // Animate camera to focus on the cluster
       await animateCameraToCluster([documentId, ...relatedIds]);
-      
       console.log(`🔗 Updated graph visualization with ${relatedIds.length} related documents`);
-      
     } catch (error) {
       console.warn('Failed to update graph with relations:', error);
     }
@@ -427,7 +401,6 @@ let touchStart = $state({ x: 0, y: 0 });
     // 1. Calculate the bounding box of the selected nodes
     // 2. Animate the camera to frame them optimally
     // 3. Adjust zoom level for best viewing
-    
     // Simplified animation
     renderState.update(state => ({
       ...state,
@@ -500,7 +473,6 @@ let touchStart = $state({ x: 0, y: 0 });
    */
   export async function exportImage(): Promise<Blob | null> {
     if (!canvas) return null;
-    
     return new Promise((resolve) => {
       canvas.toBlob((blob) => {
         resolve(blob);
@@ -523,7 +495,6 @@ let touchStart = $state({ x: 0, y: 0 });
    */
   export async function saveGraphState(): Promise<void> {
     if (!graphEngine) return;
-    
     try {
       // Get current graph data (this would need implementation in the engine)
       const graphData: GraphVisualizationData = {
@@ -561,15 +532,12 @@ let touchStart = $state({ x: 0, y: 0 });
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
     }
-    
     if (resizeObserver) {
       resizeObserver.disconnect();
     }
-    
     if (graphEngine) {
       graphEngine.dispose();
     }
-    
     if (tensorStore) {
       tensorStore.dispose();
     }

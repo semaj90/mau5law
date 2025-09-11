@@ -2,7 +2,6 @@
 <!-- Features: Local LLM + Enhanced RAG + Loki.js + Fuse.js + XState + Service Workers -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { useMachine } from '@xstate/svelte';
@@ -50,18 +49,18 @@
   });
 
   // Service Worker integration
-let serviceWorker = $state(null);
-let swRegistration = $state(null);
+  let serviceWorker = $state(null);
+  let swRegistration = $state(null);
 
   // UI state
-let isProcessing = $state(false);
-let currentStep = $state('');
-let errorMessage = $state('');
-let showAdvancedOptions = $state(false);
-let exportFormat = $state('json');
+  let isProcessing = $state(false);
+  let currentStep = $state('');
+  let errorMessage = $state('');
+  let showAdvancedOptions = $state(false);
+  let exportFormat = $state('json');
 
   // Advanced configuration
-let config = $state({
+  let config = $state({
     chunkSize: 2000,
     temperature: 0.3,
     maxTokens: 1000,
@@ -73,7 +72,7 @@ let config = $state({
   });
 
   // Real-time metrics
-let metrics = $state({
+  let metrics = $state({
     llmProcessingTime: 0,
     ragRetrievalTime: 0,
     userActivityTime: 0,
@@ -86,7 +85,6 @@ let metrics = $state({
     await initializeServiceWorker();
     setupEventListeners();
     preloadRequiredData();
-    
     // Register for background notifications
     if ('Notification' in window) {
       await Notification.requestPermission();
@@ -104,11 +102,9 @@ let metrics = $state({
       try {
         swRegistration = await navigator.serviceWorker.register('/workers/summaries-sw.js');
         serviceWorker = swRegistration.active || swRegistration.waiting || swRegistration.installing;
-        
         if (serviceWorker) {
           serviceWorker.addEventListener('message', handleServiceWorkerMessage);
         }
-        
         console.log('Summary SW registered successfully');
       } catch (error) {
         console.error('Summary SW registration failed:', error);
@@ -238,7 +234,6 @@ let metrics = $state({
 
   async function handleBatchSummary(request) {
     currentStep = 'Processing comprehensive summary...';
-    
     const response = await fetch('/api/summaries', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -250,7 +245,6 @@ let metrics = $state({
     }
 
     const result = await response.json();
-    
     if (result.success) {
       synthesisResult.set(result.result);
       processingStats.set({
@@ -259,7 +253,6 @@ let metrics = $state({
         documentsRetrieved: result.result.sources.find(s => s.type === 'rag')?.details.documentsUsed || 0,
         confidenceScore: result.result.confidence
       });
-      
       summaryProgress.set(100);
       currentStep = 'Summary completed successfully';
     } else {
@@ -297,7 +290,6 @@ let metrics = $state({
 
   function updateStreamingProgress(data) {
     summaryProgress.set(data.progress * 100);
-    
     if (data.result) {
       streamingData.update(chunks => [...chunks, {
         type: 'chunk',
@@ -335,7 +327,6 @@ let metrics = $state({
   function updateUIBasedOnState(currentState) {
     // Update UI based on XState machine state
     const stateValue = currentState.value;
-    
     if (typeof stateValue === 'object') {
       currentStep = Object.keys(stateValue)[0];
     } else {

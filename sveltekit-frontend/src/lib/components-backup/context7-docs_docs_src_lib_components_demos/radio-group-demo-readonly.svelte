@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-	import { Label, RadioGroup } from "bits-ui";
+  	import { Label, RadioGroup } from "bits-ui";
 </script>
 
 <RadioGroup.Root

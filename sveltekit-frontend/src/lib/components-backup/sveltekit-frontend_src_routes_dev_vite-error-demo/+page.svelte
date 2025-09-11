@@ -1,6 +1,5 @@
 <!-- Vite Error Logger Demo Page -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { logCustomError } from '$lib/vite/vscode-error-logger';
   import { vscodeIntegration, errorNavigator } from '$lib/vite/vscode-extension';
@@ -58,7 +57,6 @@
 
   function generateDemoError() {
     const randomError = demoErrors[Math.floor(Math.random() * demoErrors.length)];
-    
     // Simulate error logging (this would normally be done by the Vite plugin)
     const errorEntry = {
       ...randomError,
@@ -69,7 +67,6 @@
 
     errorLog = [errorEntry, ...errorLog];
     updateStats();
-    
     console.log(`🔧 Demo Error Generated: ${randomError.message}`);
   }
 

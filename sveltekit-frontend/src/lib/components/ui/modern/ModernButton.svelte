@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from "bits-ui";
   // Tooltip functionality will use CSS-only or bits-ui Tooltip when needed
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { goto } from "$app/navigation";
   import { Button } from "$lib/components/ui/button";
   import Card from '$lib/components/ui/Card.svelte';
@@ -23,28 +22,28 @@
       title: (value: string) => {
         if (!value || value.trim().length < 3) {
           return "Title must be at least 3 characters long";
-}
+  }
         if (value.length > 100) {
           return "Title must be less than 100 characters";
-}
+  }
         return null;
       },
       description: (value: string) => {
         if (!value || value.trim().length < 10) {
           return "Description must be at least 10 characters long";
-}
+  }
         return null;
       },
       priority: (value: string) => {
         if (!["low", "medium", "high", "urgent"].includes(value)) {
           return "Please select a valid priority level";
-}
+  }
         return null;
       },
       dueDate: (value: string) => {
         if (value && new Date(value) < new Date()) {
           return "Due date cannot be in the past";
-}
+  }
         return null;
       },
     },
@@ -66,17 +65,17 @@
     formValues = values;
     // Auto-save draft or other real-time updates
     console.log("Form values changed:", values);
-}
+  }
   // Update form state when formApi is available
   $effect(() => { if (formApi) {
     // You can access formApi methods here if needed
-}
+  }
   async function handleSubmit(event: CustomEvent) {
     const { values, isValid } = event.detail;
 
     if (!isValid) {
       return;
-}
+  }
     isSubmitting = true;
 
     try {
@@ -102,7 +101,7 @@
           "Failed to create case",
           error.message || "Please try again later"
         );
-}
+  }
     } catch (error) {
       console.error("Case creation error:", error);
       notifications.error(
@@ -111,14 +110,14 @@
       );
     } finally {
       isSubmitting = false;
-}}
+  }}
   function addTag() {
     const currentTags = formApi.getValues().tags || "";
     formApi.setField(
       "tags",
       currentTags + (currentTags ? ", " : "") + "New Tag"
     );
-}
+  }
   // Keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
     if (event.ctrlKey || event.metaKey) {
@@ -128,7 +127,7 @@
       } else if (event.key === "r") {
         event.preventDefault();
         formApi?.reset();
-}}}
+  }}}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />

@@ -30,11 +30,9 @@
 
 <!-- Grid Layout Component with svelte-brics inspired design -->
 <script lang="ts">
-</script>
   import { cn } from '$lib/utils';
 
         export const resizable: boolean = false;
-    
   const gapClasses = {
     none: "gap-0",
     sm: "gap-2",
@@ -43,7 +41,6 @@
     xl: "gap-8",
   };
 
-  
   // Responsive breakpoints
   let gridClass = $derived(responsive)
     ? `grid-cols-1 sm:grid-cols-2 md:grid-cols-${Math.min(columns, 6)} lg:grid-cols-${Math.min(columns, 8)} xl:grid-cols-${columns}`

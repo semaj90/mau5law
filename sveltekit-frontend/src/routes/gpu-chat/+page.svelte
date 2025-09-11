@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   import GPUAcceleratedChat from '$lib/components/GPUAcceleratedChat.svelte';
   import { onMount } from 'svelte';
-  
   let systemInfo = $state({
     platform: '',
     gpuInfo: '',
@@ -10,21 +8,18 @@
     services: {},
     port: 5173
   });
-  
   let performanceMetrics = $state({
     fps: 0,
     latency: 0,
     throughput: 0,
     gpuUtilization: 0
   });
-  
   onMount(async () => {
     // Get system information with port detection
     try {
       // Try primary port first
-let port = $state(5173);
+  let port = $state(5173);
       let response = await fetch(`http://localhost:${port}/api/system-info`);
-      
       // If primary fails, try fallbacks
       if (!response.ok) {
         const fallbackPorts = [5174, 5175, 8080, 8081];
@@ -38,7 +33,6 @@ let port = $state(5173);
           } catch {}
         }
       }
-      
       if (response.ok) {
         systemInfo = {
           ...await response.json(),
@@ -48,22 +42,18 @@ let port = $state(5173);
     } catch (error) {
       console.error('Failed to fetch system info:', error);
     }
-    
     // Monitor performance metrics
     setInterval(updatePerformanceMetrics, 1000);
   });
-  
   async function updatePerformanceMetrics() {
     // Calculate FPS
     performanceMetrics.fps = Math.round(1000 / 16.67); // ~60 FPS target
-    
     // Measure latency
     const start = performance.now();
     try {
       await fetch(`http://localhost:${systemInfo.port}/api/health`);
       performanceMetrics.latency = Math.round(performance.now() - start);
     } catch {}
-    
     // Estimate throughput and GPU utilization
     performanceMetrics.throughput = Math.round(Math.random() * 1000 + 500); // Messages/sec
     performanceMetrics.gpuUtilization = Math.round(Math.random() * 30 + 50); // 50-80%

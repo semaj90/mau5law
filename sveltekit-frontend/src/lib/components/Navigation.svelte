@@ -1,112 +1,111 @@
 <script lang="ts">
-</script>
 
 
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
-	import { browser } from '$app/environment';
-	import { cn } from '$lib/utils';
-	import {
-		Shield,
-		Search,
-		Database,
-		Folder,
-		Eye,
-		Users,
-		BarChart3,
-		Settings,
-		Terminal,
-		Brain,
-		User,
-		LogOut,
-		LogIn,
-		UserPlus
-	} from 'lucide-svelte';
-	import UniversalSearchBar from '$lib/components/search/UniversalSearchBar.svelte';
-	import { authStore, useAuth } from '$lib/stores/auth-store.svelte.js';
-	import { onMount } from 'svelte';
+  	import { page } from '$app/stores';
+  	import { goto } from '$app/navigation';
+  	import { browser } from '$app/environment';
+  	import { cn } from '$lib/utils';
+  	import {
+  		Shield,
+  		Search,
+  		Database,
+  		Folder,
+  		Eye,
+  		Users,
+  		BarChart3,
+  		Settings,
+  		Terminal,
+  		Brain,
+  		User,
+  		LogOut,
+  		LogIn,
+  		UserPlus
+  	} from 'lucide-svelte';
+  	import UniversalSearchBar from '$lib/components/search/UniversalSearchBar.svelte';
+  	import { authStore, useAuth } from '$lib/stores/auth-store.svelte.js';
+  	import { onMount } from 'svelte';
 
-	const navItems = [
-		{ href: '/', label: 'COMMAND CENTER', icon: Database },
-		{ href: '/evidence', label: 'EVIDENCE', icon: Eye },
-		{ href: '/cases', label: 'CASES', icon: Folder },
-		{ href: '/persons', label: 'PERSONS', icon: Users },
-		{ href: '/analysis', label: 'ANALYSIS', icon: BarChart3 },
-		{ href: '/search', label: 'SEARCH', icon: Search },
-		{ href: '/terminal', label: 'TERMINAL', icon: Terminal }
-	];
+  	const navItems = [
+  		{ href: '/', label: 'COMMAND CENTER', icon: Database },
+  		{ href: '/evidence', label: 'EVIDENCE', icon: Eye },
+  		{ href: '/cases', label: 'CASES', icon: Folder },
+  		{ href: '/persons', label: 'PERSONS', icon: Users },
+  		{ href: '/analysis', label: 'ANALYSIS', icon: BarChart3 },
+  		{ href: '/search', label: 'SEARCH', icon: Search },
+  		{ href: '/terminal', label: 'TERMINAL', icon: Terminal }
+  	];
 
-		let currentPath = browser && $page?.url ? $page.url.pathname : '/';
+  		let currentPath = browser && $page?.url ? $page.url.pathname : '/';
 
-	// Authentication state using the auth store
-	const auth = useAuth();
-	let showMobileMenu = $state(false);
-	let showSearchModal = $state(false);
-	let userAvatarUrl = $state<string | null>(null);
+  	// Authentication state using the auth store
+  	const auth = useAuth();
+  	let showMobileMenu = $state(false);
+  	let showSearchModal = $state(false);
+  	let userAvatarUrl = $state<string | null>(null);
 
-	// Generate user avatar URL from MinIO or use initials
-	$effect(() => {
-		if (auth.user) {
-			// Try to load avatar from MinIO storage
-			if (auth.user.avatar_url) {
-				userAvatarUrl = auth.user.avatar_url;
-			} else {
-				// Generate initials-based avatar URL (you could also use a service like UI Avatars)
-				const initials = `${auth.user.firstName?.[0] || ''}${auth.user.lastName?.[0] || ''}`.toUpperCase();
-				userAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=random&color=fff&size=40`;
-			}
-		} else {
-			userAvatarUrl = null;
-		}
-	});
+  	// Generate user avatar URL from MinIO or use initials
+  	$effect(() => {
+  		if (auth.user) {
+  			// Try to load avatar from MinIO storage
+  			if (auth.user.avatar_url) {
+  				userAvatarUrl = auth.user.avatar_url;
+  			} else {
+  				// Generate initials-based avatar URL (you could also use a service like UI Avatars)
+  				const initials = `${auth.user.firstName?.[0] || ''}${auth.user.lastName?.[0] || ''}`.toUpperCase();
+  				userAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=random&color=fff&size=40`;
+  			}
+  		} else {
+  			userAvatarUrl = null;
+  		}
+  	});
 
-	// Optimized navigation with instant transitions
-	function handleNavigation(href: string, event?: Event) {
-		event?.preventDefault();
-		goto(href, { replaceState: false, noScroll: false, keepFocus: false, invalidateAll: false });
-	}
+  	// Optimized navigation with instant transitions
+  	function handleNavigation(href: string, event?: Event) {
+  		event?.preventDefault();
+  		goto(href, { replaceState: false, noScroll: false, keepFocus: false, invalidateAll: false });
+  	}
 
-		function handleSearchSelect(event: CustomEvent<any>) {
-		const { result } = event.detail;
-		// Navigate to the search result
-		if (result.metadata?.url) {
-			handleNavigation(result.metadata.url);
-		} else {
-			// Generate URL based on result type
-			const typeRoutes: Record<string, string> = {
-				caseItem: '/cases',
-				evidence: '/evidence',
-				criminal: '/persons',
-				document: '/documents',
-				precedent: '/analysis'
-			};
-			const baseRoute = typeRoutes[result.type] || '/search';
-			handleNavigation(`${baseRoute}?id=${result.id}`);
-		}
-		showSearchModal = false;
-	}
+  		function handleSearchSelect(event: CustomEvent<any>) {
+  		const { result } = event.detail;
+  		// Navigate to the search result
+  		if (result.metadata?.url) {
+  			handleNavigation(result.metadata.url);
+  		} else {
+  			// Generate URL based on result type
+  			const typeRoutes: Record<string, string> = {
+  				caseItem: '/cases',
+  				evidence: '/evidence',
+  				criminal: '/persons',
+  				document: '/documents',
+  				precedent: '/analysis'
+  			};
+  			const baseRoute = typeRoutes[result.type] || '/search';
+  			handleNavigation(`${baseRoute}?id=${result.id}`);
+  		}
+  		showSearchModal = false;
+  	}
 
-	function toggleSearchModal() {
-		showSearchModal = !showSearchModal;
-	}
+  	function toggleSearchModal() {
+  		showSearchModal = !showSearchModal;
+  	}
 
-	function handleAuth(action: 'login' | 'register' | 'logout') {
-		switch (action) {
-			case 'login':
-				goto('/auth/login');
-				break;
-			case 'register':
-				goto('/auth/register');
-				break;
-			case 'logout':
-				auth.logout();
-				break;
-		}
-	}
+  	function handleAuth(action: 'login' | 'register' | 'logout') {
+  		switch (action) {
+  			case 'login':
+  				goto('/auth/login');
+  				break;
+  			case 'register':
+  				goto('/auth/register');
+  				break;
+  			case 'logout':
+  				auth.logout();
+  				break;
+  		}
+  	}
 
-		// Svelte 5: allow parent to bind sidebarOpen
-		// This enables: <Navigation bind:sidebarOpen={sidebarOpen} />
-		let { sidebarOpen = $bindable() } = $props();
+  		// Svelte 5: allow parent to bind sidebarOpen
+  		// This enables: <Navigation bind:sidebarOpen={sidebarOpen} />
+  		let { sidebarOpen = $bindable() } = $props();
 </script>
 
 <nav class="nes-legal-header yorha-3d-panel">

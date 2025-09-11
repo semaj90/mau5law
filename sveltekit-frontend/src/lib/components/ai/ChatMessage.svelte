@@ -1,7 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-</script>
   interface Props {
     message: any;
   }
@@ -28,14 +27,14 @@ https://svelte.dev/e/js_parse_error -->
       title: "Copied",
       message: "Message copied to clipboard",
     });
-}
+  }
   function toggleSaved() {
     chatActions.toggleMessageSaved(message.id);
-}
+  }
   function formatTime(timestamp: Date | string | number): string {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-}
+  }
   function getEmotionalToneColor(tone: string): string {
     switch (tone) {
       case "encouraging":
@@ -50,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
         return "text-gray-600";
       default:
         return "text-gray-500";
-}}
+  }}
   function getEmotionalToneIcon(tone: string) {
     switch (tone) {
       case "encouraging":
@@ -61,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
         return Star;
       default:
         return null;
-}}
+  }}
 </script>
 
 <div class="space-y-4">

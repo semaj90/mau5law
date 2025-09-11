@@ -1,10 +1,8 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button, Progress } from 'bits-ui';
   import { langchain } from '$lib/ai/langchain';
   <script lang="ts">
-</script>
     import { Button } from 'bits-ui';
     import { langchain } from '$lib/ai/langchain';
 

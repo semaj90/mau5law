@@ -4,13 +4,11 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { aiAssistant } from '$lib/stores/ai-assistant.svelte';
   import { pgVectorSearch } from '$lib/services/pgvector-semantic-search';
   import type { ChatMessage, Backend } from '$lib/types/ai-assistant';
   import { Bot, Download, Loader2, MessageSquare, Quote, Search, Settings, User as UserIcon, Mic, MicOff } from "lucide-svelte";
-  
   // Component props
   interface Props {
     caseId?: string;
@@ -22,7 +20,6 @@
     onresponse?: (event?: any) => void;
     oncitation?: (event?: any) => void;
   }
-  
   let { 
     caseId = undefined,
     placeholder = "Ask AI about legal matters...",
@@ -33,7 +30,6 @@
     onresponse,
     oncitation
   }: Props = $props();
-  
   // Local reactive state
   let messageInput = $state('');
   let showSettings = $state(false);
@@ -42,7 +38,6 @@
   let messagesContainer: HTMLDivElement;
   let showCitationDialog = $state(false);
   let selectedCitation = $state("");
-  
   // Derived state from store
   const messages = $derived(aiAssistant.messages);
   const isProcessing = $derived(aiAssistant.isProcessing);
@@ -62,17 +57,14 @@
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = 'en-US';
-      
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         messageInput = transcript;
         isListening = false;
       };
-      
       recognition.onerror = () => {
         isListening = false;
       };
-      
       recognition.onend = () => {
         isListening = false;
       };
@@ -89,19 +81,15 @@
   // Send message function
   async function sendMessage() {
     if (!messageInput.trim() || isProcessing) return;
-    
     const message = messageInput;
     messageInput = '';
-    
     try {
       const assistantMessage = await aiAssistant.sendMessage(message, {
         legalContext,
         includeHistory: true
       });
-      
       // Store embeddings for semantic search
       await pgVectorSearch.storeChatEmbedding(assistantMessage);
-      
       // Store user message embedding too
       const userMessage = messages[messages.length - 2]; // Assistant message is last, user is second-to-last
       if (userMessage) {
@@ -110,7 +98,6 @@
 
       // Dispatch event for parent components
       onresponse?.();
-      
     } catch (error) {
       console.error('Failed to send message:', error);
       // Add error message to chat
@@ -136,7 +123,6 @@
   // Voice input toggle
   function toggleVoiceInput() {
     if (!recognition) return;
-    
     if (isListening) {
       recognition.stop();
     } else {
@@ -148,7 +134,6 @@
   // Search conversation history
   async function searchHistory() {
     if (!messageInput.trim()) return;
-    
     try {
       const results = await pgVectorSearch.searchChatHistory({
         query: messageInput,
@@ -156,7 +141,6 @@
         threshold: 0.7,
         filters: { legalDomain: legalContext }
       });
-      
       searchResults = results;
       showSearchResults = true;
     } catch (error) {
@@ -178,7 +162,6 @@
   // Export conversation
   function exportConversation(format: 'json' | 'markdown' | 'pdf' = 'markdown') {
     const exported = aiAssistant.exportConversation(format);
-    
     const blob = new Blob([exported], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { get, type Unsubscriber } from 'svelte/store';
   import { goto } from '$app/navigation';
@@ -18,14 +17,14 @@
   let glitchEffect = $state('');
   const glitchChars = ['#', '%', '@', '◈', '◉', '◎', '⧨', '◐', '⬢'];
   // Use a cross-environment interval type to avoid Node vs DOM return-type mismatches
-let glitchInterval = $state<ReturnType<typeof setInterval> | null >(null);
+  let glitchInterval = $state<ReturnType<typeof setInterval> | null >(null);
 
   // Local snapshot of current user (subscribe to store to avoid $ pref in code)
   let currentUserValue: { email?: string; role?: string } | null = $state(null);
-let unsubscribeCurrentUser = $state<Unsubscriber | null >(null);
+  let unsubscribeCurrentUser = $state<Unsubscriber | null >(null);
 
   // Explicit subscription for page store to avoid using $page in script reactive context
-let unsubscribePage = $state<Unsubscriber | null >(null);
+  let unsubscribePage = $state<Unsubscriber | null >(null);
 
   // YoRHa Terminal styling classes
   const yorhaClasses = {
@@ -80,7 +79,7 @@ let unsubscribePage = $state<Unsubscriber | null >(null);
   ];
 
   // Derive visible nav items from current user permissions
-let visibleNavItems = $state<{ path: string; label: string; icon: string; permission: Permission }[] >([]);
+  let visibleNavItems = $state<{ path: string; label: string; icon: string; permission: Permission }[] >([]);
 
   // Derived display values for safer template usage
   let userEmail = $derived(currentUserValue?.email ?? '');
@@ -93,7 +92,7 @@ let visibleNavItems = $state<{ path: string; label: string; icon: string; permis
   });
 
   // Maintain current path via explicit subscription to avoid $page usage in TS logic
-let currentPath = $state('');
+  let currentPath = $state('');
 
   function isActivePath(itemPath: string) {
     return currentPath === itemPath || (itemPath !== '/admin' && currentPath.startsWith(itemPath + '/');

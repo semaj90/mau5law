@@ -1,6 +1,5 @@
 <!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save with Loki.js -->
 <script lang="ts">
-</script>
   import { aiSummarizationService } from "$lib/services/aiSummarizationService";
   import { evidenceStore } from "$lib/stores/evidenceStore";
   import type { TEvent } from "fabric";

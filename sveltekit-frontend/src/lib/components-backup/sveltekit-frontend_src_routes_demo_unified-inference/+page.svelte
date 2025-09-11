@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { 
     unifiedInferenceClient, 
@@ -64,7 +63,6 @@
   onMount(async () => {
     // Initialize the unified client
     await unifiedInferenceClient.initialize();
-    
     // Generate some sample embeddings for similarity demo
     if (selectedDemo === 'similarity') {
       await generateSampleEmbeddings();
@@ -81,7 +79,6 @@
         maxTokens: 300,
         cacheStrategy: cacheStrategy as any
       });
-      
       demoResults = response;
       addToHistory('Text Generation', response);
     } catch (error) {
@@ -98,7 +95,6 @@
         'nomic-embed-text',
         true
       );
-      
       demoResults = response;
       addToHistory('Embeddings', response);
     } catch (error) {
@@ -112,7 +108,6 @@
       if (similarityVector.length === 0) {
         await generateSampleEmbeddings();
       }
-      
       demoResults = null;
       const response = await unifiedInferenceClient.searchSimilarDocuments(
         similarityVector,
@@ -120,7 +115,6 @@
         'legal_document',
         5
       );
-      
       demoResults = response;
       addToHistory('Similarity Search', response);
     } catch (error) {
@@ -137,7 +131,6 @@
         demoText,
         'summary'
       );
-      
       demoResults = response;
       addToHistory('Legal Analysis', response);
     } catch (error) {
@@ -155,7 +148,6 @@
         metadata: { model: 'legal-tokenizer' },
         cacheStrategy: cacheStrategy as any
       });
-      
       demoResults = response;
       addToHistory('Tokenization', response);
     } catch (error) {

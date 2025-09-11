@@ -1,6 +1,5 @@
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
-</script>
   import { notifications } from "$lib/stores/notification";
   import type { User } from "$lib/types/user";
   import { createEventDispatcher } from "svelte";
@@ -13,7 +12,7 @@
   const dispatch = createEventDispatcher();
 
   // Form data matching the database schema
-let formData = $state({
+  let formData = $state({
     title: case_?.title || "",
     description: case_?.description || "",
     caseNumber: case_?.caseNumber || "",
@@ -33,8 +32,8 @@ let formData = $state({
     tags: case_?.tags || [],
     metadata: case_?.metadata || {},
   });
-let loading = $state(false);
-let errors = $state<Record<string, string> >({});
+  let loading = $state(false);
+  let errors = $state<Record<string, string> >({});
 
   // Form validation
   function validateForm() {
@@ -42,18 +41,18 @@ let errors = $state<Record<string, string> >({});
 
     if (!formData.title.trim()) {
       errors.title = "Title is required";
-}
+  }
     if (!formData.caseNumber.trim()) {
       errors.caseNumber = "Case number is required";
-}
+  }
     if (formData.dangerScore < 0 || formData.dangerScore > 10) {
       errors.dangerScore = "Danger score must be between 0 and 10";
-}
+  }
     if (formData.estimatedValue && isNaN(Number(formData.estimatedValue))) {
       errors.estimatedValue = "Estimated value must be a number";
-}
+  }
     return Object.keys(errors).length === 0;
-}
+  }
   // Handle form submission
   async function handleSubmit() {
     if (!validateForm()) {
@@ -63,7 +62,7 @@ let errors = $state<Record<string, string> >({});
         message: "Please fix the form errors before submitting.",
       });
       return;
-}
+  }
     loading = true;
 
     try {
@@ -96,7 +95,7 @@ let errors = $state<Record<string, string> >({});
       // Defensive: always check for valid API data before fetch
       if (!apiData.title || !apiData.caseNumber) {
         throw new Error("Missing required fields");
-}
+  }
       const url = case_ ? `/api/cases/${case_.id}` : "/api/cases";
       const method = case_ ? "PUT" : "POST";
 
@@ -114,10 +113,10 @@ let errors = $state<Record<string, string> >({});
         savedCase = await response.json();
       } catch (e) {
         throw new Error("Server returned invalid response");
-}
+  }
       if (!response.ok) {
         throw new Error(savedCase?.error || "Failed to save case");
-}
+  }
       notifications.add({
         type: "success",
         title: case_ ? "Case Updated" : "Case Created",
@@ -137,8 +136,8 @@ let errors = $state<Record<string, string> >({});
       });
     } finally {
       loading = false;
-}
-}
+  }
+  }
   // Handle tag management
   function addTag() {
     const tagInput = document.getElementById("new-tag") as HTMLInputElement;
@@ -147,11 +146,11 @@ let errors = $state<Record<string, string> >({});
     if (newTag && !formData.tags.includes(newTag)) {
       formData.tags = [...formData.tags, newTag];
       tagInput.value = "";
-}
-}
+  }
+  }
   function removeTag(tag: string) {
     formData.tags = formData.tags.filter((t) => t !== tag);
-}
+  }
   // Handle team assignment
   function addTeamMember() {
     const memberInput = document.getElementById(
@@ -162,11 +161,11 @@ let errors = $state<Record<string, string> >({});
     if (newMember && !formData.assignedTeam.includes(newMember)) {
       formData.assignedTeam = [...formData.assignedTeam, newMember];
       memberInput.value = "";
-}
-}
+  }
+  }
   function removeTeamMember(member: string) {
     formData.assignedTeam = formData.assignedTeam.filter((m) => m !== member);
-}
+  }
 </script>
 
 <form onsubmit|preventDefault={handleSubmit} class="container mx-auto px-4">

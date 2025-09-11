@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props { autoFetch: boolean; data: ValidateResponse |, null ;
    }
   let { autoFetch = true,

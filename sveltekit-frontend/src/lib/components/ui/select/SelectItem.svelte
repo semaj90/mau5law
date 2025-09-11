@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { getContext } from "svelte";
   import { writable } from "svelte/store";
@@ -10,7 +9,6 @@
     class_?: string;
     children?: import('svelte').Snippet;
   }
-  
   let {
     value,
     class_ = "",

@@ -5,7 +5,6 @@ export {};
 </script>
 
 <script lang="ts">
-</script>
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";

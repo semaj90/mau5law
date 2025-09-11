@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from '$app/environment';
   import { autoTaggingMachine } from '$lib/stores/autoTaggingMachine';
   import { useMachine } from '@xstate/svelte';
@@ -15,7 +14,6 @@
     caseId?: string | null;
     readOnly?: boolean;
   }>();
-  
   let canvas = $state<HTMLCanvasElement>();
   let ctx: CanvasRenderingContext2D;
   let canvasContainer: HTMLDivElement;
@@ -94,7 +92,7 @@
     canvas.height = canvasHeight;
 
     draw();
-}
+  }
   function draw() {
     if (!ctx) return;
 
@@ -126,13 +124,13 @@
     // Draw connection preview if connecting
     if (isConnecting && connectingFromId) {
       drawConnectionPreview();
-}
+  }
     // Restore context
     ctx.restore();
 
     // Draw UI overlay (zoom controls, etc.)
     drawUIOverlay();
-}
+  }
   function drawGrid() {
     const gridSize = 40;
     ctx.strokeStyle = '#e2e8f0';
@@ -149,15 +147,15 @@
       ctx.moveTo(x, startY);
       ctx.lineTo(x, endY);
       ctx.stroke();
-}
+  }
     // Horizontal lines
     for (let y = startY; y < endY; y += gridSize) {
       ctx.beginPath();
       ctx.moveTo(startX, y);
       ctx.lineTo(endX, y);
       ctx.stroke();
-}
-}
+  }
+  }
   function drawConnections() {
     nodeConnections.forEach(connection => {
       const fromNode = fileNodes.find(n => n.id === connection.fromId);
@@ -192,9 +190,9 @@
         ctx.font = `${12 / zoomLevel}px -apple-system, BlinkMacSystemFont, sans-serif`;
         ctx.textAlign = 'center';
         ctx.fillText(connection.label, midX, midY - 5);
-}
+  }
     });
-}
+  }
   function getConnectionColor(type: string): string {
     switch (type) {
       case 'person': return '#8b5cf6';
@@ -202,8 +200,8 @@
       case 'organization': return '#f59e0b';
       case 'temporal': return '#ef4444';
       default: return '#6b7280';
-}
-}
+  }
+  }
   function drawArrowHead(fromX: number, fromY: number, toX: number, toY: number) {
     const angle = Math.atan2(toY - fromY, toX - fromX);
     const arrowLength = 15 / zoomLevel;
@@ -221,11 +219,11 @@
       toY - arrowLength * Math.sin(angle + arrowAngle)
     );
     ctx.stroke();
-}
+  }
   function drawConnectionPreview() {
     // Implementation for visual connection preview while connecting nodes
     // This would show a line from the selected node to the mouse cursor
-}
+  }
   function drawFileNode(node: any) {
     const isSelected = selectedNodeId === node.id;
     const isHovered = hoveredNodeId === node.id;
@@ -242,7 +240,7 @@
     } else {
       nodeGradient.addColorStop(0, '#ffffff');
       nodeGradient.addColorStop(1, '#f9fafb');
-}
+  }
     // Drop shadow
     ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
     ctx.shadowBlur = 10 / zoomLevel;
@@ -292,12 +290,12 @@
       ctx.fillStyle = '#10b981';
       ctx.font = `${12 / zoomLevel}px -apple-system, BlinkMacSystemFont, sans-serif`;
       ctx.fillText(`🏷️ ${tagCount} tags`, node.x + 8 / zoomLevel, node.y + node.height - 8 / zoomLevel);
-}
+  }
     // Connection points (small circles on edges for connecting)
     if (isSelected || isHovered) {
       drawConnectionPoints(node);
-}
-}
+  }
+  }
   function drawConnectionPoints(node: any) {
     const pointSize = 6 / zoomLevel;
     const points = [
@@ -313,7 +311,7 @@
       ctx.arc(point.x, point.y, pointSize, 0, 2 * Math.PI);
       ctx.fill();
     });
-}
+  }
   function getFileIcon(type: string): string {
     if (type.includes('image')) return '🖼️';
     if (type.includes('pdf')) return '📄';
@@ -321,7 +319,7 @@
     if (type.includes('audio')) return '🎵';
     if (type.includes('text')) return '📝';
     return '📁';
-}
+  }
   function getFileTypeColor(type: string): string {
     if (type.includes('image')) return '#ef4444';
     if (type.includes('pdf')) return '#dc2626';
@@ -329,7 +327,7 @@
     if (type.includes('audio')) return '#059669';
     if (type.includes('text')) return '#2563eb';
     return '#6b7280';
-}
+  }
   function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
@@ -342,16 +340,16 @@
     ctx.lineTo(x, y + radius);
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
-}
+  }
   function truncateText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
     if (ctx.measureText(text).width <= maxWidth) return text;
 
     let truncated = text;
     while (ctx.measureText(truncated + '...').width > maxWidth && truncated.length > 0) {
       truncated = truncated.slice(0, -1);
-}
+  }
     return truncated + '...';
-}
+  }
   function drawUIOverlay() {
     // Reset transformations for UI overlay
     ctx.resetTransform();
@@ -371,7 +369,7 @@
     ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(`${Math.round(zoomLevel * 100)}%`, controlsX + 70, controlsY + 45);
-}
+  }
   function drawButton(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, text: string, enabled: boolean) {
     ctx.fillStyle = enabled ? '#ffffff' : '#f3f4f6';
     ctx.strokeStyle = '#d1d5db';
@@ -384,7 +382,7 @@
     ctx.font = '16px Arial';
     ctx.textAlign = 'center';
     ctx.fillText(text, x + width / 2, y + height / 2 + 6);
-}
+  }
   // Event handlers with enhanced functionality
   async function handleDrop(event: DragEvent) {
     event.preventDefault();
@@ -397,8 +395,8 @@
 
     for (const file of files) {
       await processDroppedFile(file, dropX, dropY);
-}
-}
+  }
+  }
   async function processDroppedFile(file: File, x: number, y: number) {
     const reader = new FileReader();
 
@@ -430,7 +428,7 @@
     };
 
     reader.readAsDataURL(file);
-}
+  }
   async function autoTagFileEnhanced(node: any) {
     try {
       const response = await fetch('/api/ai/tag', {
@@ -459,11 +457,11 @@
 
         // Auto-save after tagging
         await autoSave();
-}
+  }
     } catch (error) {
       console.error('Auto-tagging failed:', error);
-}
-}
+  }
+  }
   function createSmartConnections(newNode: any) {
     if (!newNode.aiTags) return;
 
@@ -496,7 +494,7 @@
           strength: sharedPeople.length / Math.max(people?.length || 1, 1),
           label: sharedPeople[0]
         });
-}
+  }
       if (sharedLocations.length > 0) {
         nodeConnections.push({
           fromId: newNode.id,
@@ -505,7 +503,7 @@
           strength: sharedLocations.length / Math.max(locations?.length || 1, 1),
           label: sharedLocations[0]
         });
-}
+  }
       if (sharedOrganizations.length > 0) {
         nodeConnections.push({
           fromId: newNode.id,
@@ -514,16 +512,16 @@
           strength: sharedOrganizations.length / Math.max(organizations?.length || 1, 1),
           label: sharedOrganizations[0]
         });
-}
+  }
     });
-}
+  }
   function getMousePosition(event: MouseEvent) {
     const rect = canvas.getBoundingClientRect();
     return {
       x: (event.clientX - rect.left - panOffset.x) / zoomLevel,
       y: (event.clientY - rect.top - panOffset.y) / zoomLevel
     };
-}
+  }
   function handleCanvasClick(event: MouseEvent) {
     const mouse = getMousePosition(event);
 
@@ -535,12 +533,12 @@
         event.clientY >= controlsY && event.clientY <= controlsY + 30) {
       zoomIn();
       return;
-}
+  }
     if (event.clientX >= controlsX + 50 && event.clientX <= controlsX + 90 &&
         event.clientY >= controlsY && event.clientY <= controlsY + 30) {
       zoomOut();
       return;
-}
+  }
     // Find clicked node
     const clickedNode = fileNodes.find(node =>
       mouse.x >= node.x && mouse.x <= node.x + node.width &&
@@ -554,9 +552,9 @@
     } else {
       selectedNodeId = null;
       dispatch('nodeSelect', null);
-}
+  }
     draw();
-}
+  }
   function handleMouseDown(event: MouseEvent) {
     const mouse = getMousePosition(event);
 
@@ -566,7 +564,7 @@
       lastPanPoint = { x: event.clientX, y: event.clientY };
       canvas.style.cursor = 'grabbing';
       return;
-}
+  }
     const clickedNode = fileNodes.find(node =>
       mouse.x >= node.x && mouse.x <= node.x + node.width &&
       mouse.y >= node.y && mouse.y <= node.y + node.height
@@ -583,9 +581,9 @@
         dragOffset.x = mouse.x - clickedNode.x;
         dragOffset.y = mouse.y - clickedNode.y;
         canvas.style.cursor = 'grabbing';
-}
-}
-}
+  }
+  }
+  }
   function handleMouseMove(event: MouseEvent) {
     const mouse = getMousePosition(event);
 
@@ -599,16 +597,16 @@
       lastPanPoint = { x: event.clientX, y: event.clientY };
       draw();
       return;
-}
+  }
     if (isDragging && selectedNodeId) {
       const selectedNode = fileNodes.find(node => node.id === selectedNodeId);
       if (selectedNode) {
         selectedNode.x = mouse.x - dragOffset.x;
         selectedNode.y = mouse.y - dragOffset.y;
         draw();
-}
+  }
       return;
-}
+  }
     // Update hover state
     const hoveredNode = fileNodes.find(node =>
       mouse.x >= node.x && mouse.x <= node.x + node.width &&
@@ -620,8 +618,8 @@
       hoveredNodeId = newHoveredId;
       canvas.style.cursor = hoveredNodeId ? 'pointer' : 'default';
       draw();
-}
-}
+  }
+  }
   function handleMouseUp() {
     isPanning = false;
     isDragging = false;
@@ -630,8 +628,8 @@
     if (isDragging) {
       // Auto-save after moving nodes
       autoSave();
-}
-}
+  }
+  }
   function handleWheel(event: WheelEvent) {
     event.preventDefault();
 
@@ -650,30 +648,30 @@
 
       zoomLevel = newZoom;
       draw();
-}
-}
+  }
+  }
   function zoomIn() {
     const newZoom = Math.min(maxZoom, zoomLevel * 1.2);
     if (newZoom !== zoomLevel) {
       zoomLevel = newZoom;
       draw();
-}
-}
+  }
+  }
   function zoomOut() {
     const newZoom = Math.max(minZoom, zoomLevel / 1.2);
     if (newZoom !== zoomLevel) {
       zoomLevel = newZoom;
       draw();
-}
-}
+  }
+  }
   function startConnection(nodeId: string) {
     isConnecting = true;
     connectingFromId = nodeId;
     canvas.style.cursor = 'crosshair';
-}
+  }
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
-}
+  }
   // Auto-save functionality
   async function autoSave() {
     if (isAutoSaving) return;
@@ -703,8 +701,8 @@
       console.error('Auto-save failed:', error);
     } finally {
       isAutoSaving = false;
-}
-}
+  }
+  }
   // Public methods
   export function addFileNode(file: any, x: number, y: number) {
     const node = {
@@ -724,33 +722,33 @@
     fileNodes.push(node);
     draw();
     return node;
-}
+  }
   export function getSelectedNode() {
     return fileNodes.find(node => node.id === selectedNodeId) || null;
-}
+  }
   export function updateNode(nodeId: string, updates: any) {
     const node = fileNodes.find(n => n.id === nodeId);
     if (node) {
       Object.assign(node, updates);
       draw();
-}
-}
+  }
+  }
   export function exportCanvasState() {
     return {
       nodes: fileNodes,
       connections: nodeConnections,
       viewport: { zoomLevel, panOffset }
     };
-}
+  }
   export function loadCanvasState(state: any) {
     if (state.nodes) fileNodes = state.nodes;
     if (state.connections) nodeConnections = state.connections;
     if (state.viewport) {
       zoomLevel = state.viewport.zoomLevel || 1;
       panOffset = state.viewport.panOffset || { x: 0, y: 0 };
-}
+  }
     draw();
-}
+  }
 </script>
 
 <div class="container mx-auto px-4 enhanced-canvas-editor" bind:this={canvasContainer}>

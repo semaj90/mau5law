@@ -1,71 +1,67 @@
 <script lang="ts">
-</script>
-	import { createEventDispatcher } from 'svelte';
-	import SearchInput from './SearchInput.svelte';
-	
-	import { Filter, ArrowUpDown } from 'lucide-svelte';
+  	import { createEventDispatcher } from 'svelte';
+  	import SearchInput from './SearchInput.svelte';
+  	import { Filter, ArrowUpDown } from 'lucide-svelte';
 
-	export let placeholder = 'Search...';
-	export let value = '';
-	export let showFilters = true;
-	export let sortOptions = [
-		{ id: 'relevance', label: 'Relevance' },
-		{ id: 'date', label: 'Date' },
-		{ id: 'name', label: 'Name' },
-		{ id: 'type', label: 'Type' }
-	];
+  	export let placeholder = 'Search...';
+  	export let value = '';
+  	export let showFilters = true;
+  	export let sortOptions = [
+  		{ id: 'relevance', label: 'Relevance' },
+  		{ id: 'date', label: 'Date' },
+  		{ id: 'name', label: 'Name' },
+  		{ id: 'type', label: 'Type' }
+  	];
 
-	const dispatch = createEventDispatcher();
+  	const dispatch = createEventDispatcher();
 
-	let selectedSort = 'relevance';
-	let filtersOpen = false;
-	
-	// Filter state
-	let selectedFileTypes: string[] = [];
-	let dateRange = {
-		from: '',
-		to: ''
-	};
+  	let selectedSort = 'relevance';
+  	let filtersOpen = false;
+  	// Filter state
+  	let selectedFileTypes: string[] = [];
+  	let dateRange = {
+  		from: '',
+  		to: ''
+  	};
 
-	function handleSearch(event: CustomEvent) {
-		dispatch('search', event.detail);
-	}
+  	function handleSearch(event: CustomEvent) {
+  		dispatch('search', event.detail);
+  	}
 
-	function handleSortChange(sortId: string) {
-		selectedSort = sortId;
-		dispatch('sortChanged', { sort: sortId });
-	}
+  	function handleSortChange(sortId: string) {
+  		selectedSort = sortId;
+  		dispatch('sortChanged', { sort: sortId });
+  	}
 
-	function toggleFilters() {
-		filtersOpen = !filtersOpen;
-		if (filtersOpen) {
-			// Dispatch current filter state when opening
-			dispatchFilters();
-		}
-	}
+  	function toggleFilters() {
+  		filtersOpen = !filtersOpen;
+  		if (filtersOpen) {
+  			// Dispatch current filter state when opening
+  			dispatchFilters();
+  		}
+  	}
 
-	function handleFileTypeChange(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const value = target.value;
-		
-		if (target.checked) {
-			selectedFileTypes = [...selectedFileTypes, value];
-		} else {
-			selectedFileTypes = selectedFileTypes.filter(type => type !== value);
-		}
-		dispatchFilters();
-	}
+  	function handleFileTypeChange(event: Event) {
+  		const target = event.target as HTMLInputElement;
+  		const value = target.value;
+  		if (target.checked) {
+  			selectedFileTypes = [...selectedFileTypes, value];
+  		} else {
+  			selectedFileTypes = selectedFileTypes.filter(type => type !== value);
+  		}
+  		dispatchFilters();
+  	}
 
-	function handleDateChange() {
-		dispatchFilters();
-	}
+  	function handleDateChange() {
+  		dispatchFilters();
+  	}
 
-	function dispatchFilters() {
-		dispatch('filtersChanged', {
-			fileTypes: selectedFileTypes,
-			dateRange: dateRange
-		});
-	}
+  	function dispatchFilters() {
+  		dispatch('filtersChanged', {
+  			fileTypes: selectedFileTypes,
+  			dateRange: dateRange
+  		});
+  	}
 </script>
 
 <div class="mx-auto px-4 max-w-7xl">

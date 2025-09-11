@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
   import { currentUser } from '$lib/auth/auth-store';
@@ -20,7 +19,7 @@
   // User management state (use $state so updates trigger reactivity)
   let users = $state([] as (AdminUser & { profile?: any })[]);
   let filteredUsers = $state([] as (AdminUser & { profile?: any })[]);
-  let selectedUsers = $state(new Set<string>();
+  let selectedUsers = $state(new Set<string>());
   let isLoading = $state(true);
   let showCreateModal = $state(false);
   let showEditModal = $state(false);
@@ -120,7 +119,7 @@
         const data = await response.json();
         users = data.users || [];
       } else {
-        console.error('Failed to load users:', await response.text();
+        console.error('Failed to load users:', await response.text());
       }
     } catch (error) {
       console.error('Error loading users:', error);
@@ -229,7 +228,7 @@
         const path = e.path.length ? e.path.join('.') : 'value';
         return `${path}: ${e.message}`;
       });
-      alert(messages.join('\n');
+      alert(messages.join('\n'));
       return;
     }
 

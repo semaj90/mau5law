@@ -13,7 +13,6 @@
 
 <!-- Grid Layout Component with svelte-brics inspired design -->
 <script lang="ts">
-</script>
   import { cn } from "../../../../lib/utils";
 
   export let columns: number = 12;

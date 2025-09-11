@@ -1,6 +1,5 @@
 <!-- Enhanced AI Chat Component - Svelte 5 Compatible -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { createDialog } from 'melt-ui';
@@ -71,7 +70,6 @@
 
     try {
       wsConnection = new WebSocket(`ws://localhost:5173/ws/chat`);
-      
       wsConnection.onopen = () => {
         isConnected = true;
         console.log('✅ Enhanced AI Chat connected');
@@ -160,7 +158,6 @@
     };
 
     messages = [...messages, userMessage];
-    
     const messageToSend = currentMessage;
     currentMessage = '';
     isTyping = true;
@@ -190,7 +187,6 @@
         });
 
         const data = await response.json();
-        
         if (response.ok && data.message) {
           messages = [...messages, {
             id: Date.now().toString(),
@@ -240,7 +236,6 @@
   // Track user attention if enabled
   function trackUserAttention() {
     if (!enableAttentionTracking) return;
-    
     userAttention = {
       focused: document.hasFocus(),
       lastActivity: Date.now()
@@ -252,10 +247,8 @@
     if (!sessionId) {
       sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
-    
     await initializeConnection();
     await initializeWebGPU();
-    
     if (enableAttentionTracking) {
       document.addEventListener('visibilitychange', trackUserAttention);
       document.addEventListener('focus', trackUserAttention);
@@ -268,7 +261,6 @@
     if (wsConnection) {
       wsConnection.close();
     }
-    
     if (enableAttentionTracking) {
       document.removeEventListener('visibilitychange', trackUserAttention);
       document.removeEventListener('focus', trackUserAttention);

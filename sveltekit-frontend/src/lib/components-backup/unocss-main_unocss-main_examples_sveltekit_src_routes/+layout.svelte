@@ -1,17 +1,16 @@
 <script lang="ts">
-</script>
   import 'uno.css'
-	import { fade, fly } from 'svelte/transition'
-	let showLogo = false
-	let red = false
-	function toggleLogo() {
-		showLogo = !showLogo
-	}
-	function toggleSpan() {
-		red = !red
-	}
-	// TODO: Convert to $derived: button = showLogo ? 'Hide logo' : 'Show logo'
-	$: span = red ? 'Normal' : 'Red'
+  	import { fade, fly } from 'svelte/transition'
+  	let showLogo = false
+  	let red = false
+  	function toggleLogo() {
+  		showLogo = !showLogo
+  	}
+  	function toggleSpan() {
+  		red = !red
+  	}
+  	// TODO: Convert to $derived: button = showLogo ? 'Hide logo' : 'Show logo'
+  	$: span = red ? 'Normal' : 'Red'
 </script>
 
 <main class="text-center p-1em my-0 mx-auto">

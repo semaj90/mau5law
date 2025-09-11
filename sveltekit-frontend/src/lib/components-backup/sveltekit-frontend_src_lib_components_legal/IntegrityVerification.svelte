@@ -3,7 +3,6 @@ Integrity Verification Component
 Displays detailed integrity verification results with AI analysis
 -->
 <script lang="ts">
-</script>
   interface Props {
     integrityStatus: 'pending' | 'verified' | 'compromised' | 'requires-attention';
     verificationResults: {;
@@ -41,7 +40,6 @@ Displays detailed integrity verification results with AI analysis
     recommendations: string[];
     flaggedAnomalies: string[];
   } | undefined;
-  
   function getStatusIcon(status: string) {
     switch (status) {
       case 'verified':
@@ -102,10 +100,8 @@ Displays detailed integrity verification results with AI analysis
 
   function getOverallScore() {
     if (!verificationResults && !aiAnalysis) return 0;
-    
     let score = 0;
     let factors = 0;
-    
     if (verificationResults) {
       score += verificationResults.hashMatch ? 25 : 0;
       score += verificationResults.metadataIntact ? 15 : 0;
@@ -113,14 +109,12 @@ Displays detailed integrity verification results with AI analysis
       score += verificationResults.digitalSignatureValid ? 10 : 0;
       factors += 60;
     }
-    
     if (aiAnalysis) {
       score += aiAnalysis.authenticity * 15;
       score += aiAnalysis.completeness * 15;
       score += aiAnalysis.relevance * 10;
       factors += 40;
     }
-    
     return Math.round((score / factors) * 100);
   }
 </script>

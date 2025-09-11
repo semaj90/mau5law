@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // @ts-nocheck
   import { Button } from 'bits-ui';
   import { Card } from 'bits-ui';
@@ -59,7 +58,6 @@
       if (!docId) {
         processingStage = 'Creating document entry...';
         processingProgress = 15;
-        
         // Create document via RAG API
         const createResponse = await fetch('/api/documents', {
           method: 'POST',
@@ -95,7 +93,6 @@
       }
 
       const processResult = await processResponse.json();
-      
       if (!processResult.success) {
         throw new Error(processResult.error || 'Processing failed');
       }
@@ -105,7 +102,6 @@
       processingProgress = 85;
 
       const pgaiData = processResult.data;
-      
       // Extract structured data from pgai response
       const summary = pgaiData.summary?.summary || 'Summary generation failed';
       const keyPoints = Array.isArray(pgaiData.summary?.key_points) 
@@ -113,7 +109,6 @@
         : [];
       const entities = formatEntitiesFromPgai(pgaiData.summary?.entities || {});
       const risks = formatRisksFromPgai(pgaiData.summary?.legal_issues || []);
-      
       const confidence = calculatePgaiConfidence(pgaiData);
       const processingTime = pgaiData.processing_time_ms || (Date.now() - startTime);
 
@@ -177,7 +172,6 @@
       }
 
       const result = await response.json();
-      
       if (!result.success) {
         throw new Error(result.error || 'Analysis failed');
       }
@@ -220,7 +214,6 @@
       }
 
       const result = await response.json();
-      
       if (!result.success) {
         throw new Error(result.error || 'Comparison failed');
       }
@@ -261,7 +254,6 @@
       }
 
       const result = await response.json();
-      
       if (!result.success) {
         throw new Error(result.error || 'Extraction failed');
       }
@@ -329,25 +321,21 @@
 
   function formatEntitiesFromPgai(entities: any): any[] {
     const formatted = [];
-    
     if (entities.persons && Array.isArray(entities.persons)) {
       entities.persons.forEach(person => {
         formatted.push({ type: 'person', value: person, confidence: 0.9 });
       });
     }
-    
     if (entities.organizations && Array.isArray(entities.organizations)) {
       entities.organizations.forEach(org => {
         formatted.push({ type: 'organization', value: org, confidence: 0.9 });
       });
     }
-    
     if (entities.dates && Array.isArray(entities.dates)) {
       entities.dates.forEach(date => {
         formatted.push({ type: 'date', value: date, confidence: 0.95 });
       });
     }
-    
     if (entities.locations && Array.isArray(entities.locations)) {
       entities.locations.forEach(location => {
         formatted.push({ type: 'location', value: location, confidence: 0.85 });

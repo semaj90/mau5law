@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     asChild?: any;
     builder: any

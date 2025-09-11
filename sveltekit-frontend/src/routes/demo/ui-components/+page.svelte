@@ -1,21 +1,17 @@
 <script lang="ts">
-</script>
   import { Button } from '$lib/components/ui/enhanced-bits';
   import { createAccordion, melt } from 'melt';
-  
   // Bits UI Dialog
   const {
     elements: { trigger: dialogTrigger, content: dialogContent, overlay: dialogOverlay, close: dialogClose, title: dialogTitle },
     states: { open: dialogOpen }
   } = createDialog();
-  
   // Melt UI Accordion  
   const {
     elements: { root: accordionRoot, item: accordionItem, trigger: accordionTrigger, content: accordionContent },
     helpers: { isSelected }
   } = createAccordion();
-let selectedDemo = $state('overview');
-  
+  let selectedDemo = $state('overview');
   const demoItems = [
     { id: 'overview', label: 'Overview', description: 'Component library integration summary' },
     { id: 'buttons', label: 'Buttons', description: 'bits-ui + shadcn button variants' },

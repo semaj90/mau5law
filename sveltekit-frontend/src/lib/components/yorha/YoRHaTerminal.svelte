@@ -1,8 +1,6 @@
 <!-- YoRHa Terminal/Console Component -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
-  
   interface TerminalProps {
     title?: string;
     prompt?: string;
@@ -74,13 +72,11 @@
 
   function navigateHistory(direction: 'up' | 'down') {
     if (commandHistory.length === 0) return;
-    
     if (direction === 'up') {
       historyIndex = Math.min(historyIndex + 1, commandHistory.length - 1);
     } else {
       historyIndex = Math.max(historyIndex - 1, -1);
     }
-    
     if (historyIndex >= 0) {
       currentCommand = commandHistory[commandHistory.length - 1 - historyIndex];
     } else {
@@ -93,11 +89,9 @@
       'help', 'clear', 'status', 'cases', 'evidence', 'analyze',
       'search', 'report', 'audit', 'backup', 'config', 'exit'
     ];
-    
     const matches = availableCommands.filter(cmd => 
       cmd.startsWith(currentCommand.toLowerCase())
     );
-    
     if (matches.length === 1) {
       currentCommand = matches[0];
     } else if (matches.length > 1) {
@@ -112,17 +106,13 @@
 
   function executeCommand() {
     if (!currentCommand.trim()) return;
-    
     const cmd = currentCommand.trim();
     commandHistory = [cmd, ...commandHistory.slice(0, 49)]; // Keep last 50 commands
     historyIndex = -1;
-    
     // Add command to history
     terminalHistory = [...terminalHistory, `${prompt} ${cmd}`];
-    
     // Process built-in commands
     isProcessing = true;
-    
     setTimeout(() => {
       processCommand(cmd);
       isProcessing = false;
@@ -133,7 +123,6 @@
 
   function processCommand(cmd: string) {
     const [command, ...args] = cmd.toLowerCase().split(' ');
-    
     switch (command) {
       case 'help':
         terminalHistory = [...terminalHistory,
@@ -153,11 +142,9 @@
           ""
         ];
         break;
-        
       case 'clear':
         terminalHistory = [];
         break;
-        
       case 'status':
         terminalHistory = [...terminalHistory,
           "YoRHa Legal AI System Status:",
@@ -170,7 +157,6 @@
           ""
         ];
         break;
-        
       case 'cases':
         terminalHistory = [...terminalHistory,
           "Active Legal Cases:",
@@ -181,7 +167,6 @@
           ""
         ];
         break;
-        
       case 'evidence':
         if (args[0] === 'list') {
           terminalHistory = [...terminalHistory,
@@ -200,7 +185,6 @@
           ];
         }
         break;
-        
       case 'analyze':
         if (args[0]) {
           terminalHistory = [...terminalHistory,
@@ -219,7 +203,6 @@
           ];
         }
         break;
-        
       case 'search':
         if (args[0]) {
           terminalHistory = [...terminalHistory,
@@ -237,7 +220,6 @@
           ];
         }
         break;
-        
       case 'exit':
         terminalHistory = [...terminalHistory,
           "Terminal session ending...",
@@ -246,7 +228,6 @@
           ""
         ];
         break;
-        
       default:
         terminalHistory = [...terminalHistory,
           `Unknown command: ${command}`,
@@ -254,10 +235,8 @@
           ""
         ];
     }
-    
     // Call external command handler if provided
     onCommand?.(cmd);
-    
     // Keep terminal history within limits
     if (terminalHistory.length > maxLines) {
       terminalHistory = terminalHistory.slice(-maxLines);

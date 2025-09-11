@@ -1,6 +1,5 @@
 <!-- AI Chat Message: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
-</script>
   interface Props {
     message: { role: string content: string timestamp?: string; references?: any[] };
   let {

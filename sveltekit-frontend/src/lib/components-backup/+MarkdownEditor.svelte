@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import Editor from '@toast-ui/editor';
   import '@toast-ui/editor/dist/toastui-editor.css';

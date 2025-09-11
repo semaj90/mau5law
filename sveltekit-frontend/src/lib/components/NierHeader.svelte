@@ -3,7 +3,6 @@ import type { User } from '$lib/types';
 import type { User } from '$lib/types/user';
 
 <script lang="ts">
-</script>
   interface Props {
     user: User | null ;
   }
@@ -17,28 +16,28 @@ import type { User } from '$lib/types/user';
 
   import { FolderOpen, Home, LogOut, MoreVertical, Palette, Settings, Shield, User as UserIcon } from "lucide-svelte";
 
-import type { User } from '$lib/types/user';
-let searchQuery = $state("");
-let userMenuOpen = $state(false);
+  import type { User } from '$lib/types/user';
+  let searchQuery = $state("");
+  let userMenuOpen = $state(false);
 
   function handleSearch(event: CustomEvent) {
     searchQuery = event.detail.query;
     // Handle global search
     console.log("Global search:", searchQuery);
-}
+  }
   function handleLogout() {
     goto("/logout");
-}
+  }
   function handleNavigation(path: string) {
     goto(path);
     userMenuOpen = false;
-}
+  }
   function toggleUserMenu() {
     userMenuOpen = !userMenuOpen;
-}
+  }
   function closeUserMenu() {
     userMenuOpen = false;
-}
+  }
 </script>
 
 <header class="space-y-4">

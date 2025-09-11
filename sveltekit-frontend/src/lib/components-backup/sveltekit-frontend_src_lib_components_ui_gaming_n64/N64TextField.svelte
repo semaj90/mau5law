@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
 
   export let value: string = '';
@@ -11,17 +10,17 @@
   const dispatch = createEventDispatcher();
 
   function handleInput(e: Event) {
-	// bind:value on the input already updates the `value` variable; just dispatch the event
-	const newValue = (e.target as HTMLInputElement).value;
-	dispatch('input', { value: newValue });
+  	// bind:value on the input already updates the `value` variable; just dispatch the event
+  	const newValue = (e.target as HTMLInputElement).value;
+  	dispatch('input', { value: newValue });
   }
 
   function handleBlur() {
-	dispatch('blur');
+  	dispatch('blur');
   }
 
   function handleFocus() {
-	dispatch('focus');
+  	dispatch('focus');
   }
 </script>
 

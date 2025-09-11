@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // $props is a Svelte rune; do not import it.
 
   interface Props {

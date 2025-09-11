@@ -4,7 +4,6 @@
   CRT scanning, and other retro visual effects with real-time performance monitoring
 -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { gpuMetricsBatcher } from '$lib/services/gpuMetricsBatcher';
@@ -15,13 +14,11 @@
   let sessionId = $state('');
   let effectsCount = $state(0);
   let currentFPS = $state(0);
-  
   // Retro effects state
   let ps1EffectsActive = $state(false);
   let parallaxActive = $state(false);
   let crtScansActive = $state(false);
   let retroTransformActive = $state(false);
-  
   // Performance monitoring
   let performanceMonitor: number | undefined;
 
@@ -31,9 +28,7 @@
     // Start GPU metrics monitoring
     sessionId = gpuMetricsBatcher.getSessionId();
     metricsActive = true;
-    
     console.log('🎮 Retro GPU Metrics Demo initialized with session:', sessionId);
-    
     // Start performance monitoring loop
     performanceMonitor = setInterval(() => {
       updateMetrics();
@@ -58,14 +53,11 @@
 
   function updateMetrics() {
     if (!browser) return;
-    
     effectsCount = gpuMetricsBatcher.getMetricsCount();
-    
     // Simulate FPS from animation frame timing
     if (typeof performance !== 'undefined') {
       currentFPS = Math.round(60 + Math.random() * 10 - 5); // Simulated FPS
     }
-    
     // Check current effects status
     ps1EffectsActive = document.querySelector('.ps1-surface, .ps1-dither-pattern, .ps1-texture-warp') !== null;
     parallaxActive = document.querySelector('.parallax-transform, [data-depth]') !== null;
@@ -77,7 +69,6 @@
     ps1EffectsActive = !ps1EffectsActive;
     const demo1 = document.getElementById('ps1-demo-1');
     const demo2 = document.getElementById('ps1-demo-2');
-    
     if (ps1EffectsActive) {
       demo1?.classList.add('ps1-surface', 'ps1-dither-pattern');
       demo2?.classList.add('ps1-texture-warp', 'ps1-vertex-jitter');
@@ -90,7 +81,6 @@
   function toggleParallax() {
     parallaxActive = !parallaxActive;
     const layers = document.querySelectorAll('.parallax-layer');
-    
     layers.forEach((layer, index) => {
       if (parallaxActive) {
         layer.classList.add('parallax-transform');
@@ -105,7 +95,6 @@
   function toggleCRTScans() {
     crtScansActive = !crtScansActive;
     const screen = document.getElementById('crt-screen');
-    
     if (crtScansActive) {
       screen?.classList.add('crt-scan-deep', 'crt-convergence-shift', 'crt-phosphor-glow');
     } else {
@@ -116,10 +105,8 @@
   function toggleRetroTransform() {
     retroTransformActive = !retroTransformActive;
     const card = document.getElementById('transform-card');
-    
     if (retroTransformActive && typeof window !== 'undefined' && (window as any).useRetroTransform) {
       card?.classList.add('retro-tilt-active', 'retro-wobble-active');
-      
       // Initialize retro transform if available
       const retroTransform = (window as any).useRetroTransform;
       if (card) {
@@ -134,7 +121,6 @@
     try {
       const response = await fetch(`/api/metrics/gpu?drain=true&sessionId=${sessionId}`);
       const data = await response.json();
-      
       console.log('🔄 Drained metrics:', data);
       alert(`Drained ${data.count} metrics for Go service recovery`);
     } catch (error) {

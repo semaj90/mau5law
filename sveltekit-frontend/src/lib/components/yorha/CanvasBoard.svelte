@@ -3,7 +3,6 @@
   Interactive canvas for evidence visualization with YoRHa styling
 -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import type { EnhancedNeuralSpriteEngine } from '$lib/engines/neural-sprite-engine-enhanced';
 
@@ -61,12 +60,10 @@
 
   function setupCanvasStyle() {
     if (!ctx) return;
-    
     // YoRHa-style canvas setup
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.imageSmoothingEnabled = false; // Pixel-perfect rendering
-    
     // Set initial drawing properties
     ctx.strokeStyle = color;
     ctx.lineWidth = brushSize;
@@ -85,30 +82,24 @@
 
   function startDrawing(e: MouseEvent) {
     if (!enableDrawing || !ctx) return;
-    
     drawing = true;
     const pos = getMousePos(e);
     lastX = pos.x;
     lastY = pos.y;
-    
     dispatch('drawStart', { x: pos.x, y: pos.y, tool, color });
   }
 
   function draw(e: MouseEvent) {
     if (!drawing || !ctx || !enableDrawing) return;
-    
     const pos = getMousePos(e);
-    
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
     ctx.lineTo(pos.x, pos.y);
     ctx.strokeStyle = color;
     ctx.lineWidth = brushSize;
     ctx.stroke();
-    
     lastX = pos.x;
     lastY = pos.y;
-    
     dispatch('draw', { x: pos.x, y: pos.y, tool, color });
   }
 
@@ -145,11 +136,9 @@
     try {
       const { EnhancedNeuralSpriteEngine } = await import('$lib/engines/neural-sprite-engine-enhanced');
       neuralEngine = new EnhancedNeuralSpriteEngine();
-      
       // Connect to services
       await neuralEngine.initializeServices();
       console.log('Neural Sprite Engine initialized for Evidence Board');
-      
       dispatch('neuralEngineReady', { engine: neuralEngine });
     } catch (error) {
       console.error('Failed to initialize Neural Engine:', error);

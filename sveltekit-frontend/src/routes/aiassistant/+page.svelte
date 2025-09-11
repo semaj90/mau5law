@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Svelte 5 runes are built-in, no import needed
   // Web Speech API type declarations
   interface SpeechRecognition extends EventTarget {

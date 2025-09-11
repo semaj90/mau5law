@@ -1,205 +1,186 @@
 <script lang="ts">
-</script>
-	/**
-	 * Enhanced MCP Integration Demo Page
-	 * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit
-	 */
-	
-	import { onMount } from 'svelte';
-	import EnhancedMCPIntegration from '$lib/components/ai/EnhancedMCPIntegration.svelte';
-	import { page } from '$app/stores';
-	import { writable } from 'svelte/store';
-	
-	// Page state
-	const integrationStatus = writable<{
-		mcpServerRunning: boolean
-		vsCodeExtensionActive: boolean
-		clusterSystemOnline: boolean
-		ollamaModelsLoaded: boolean
-		contextualAnalysisReady: boolean
-	}>({
-		mcpServerRunning: false,
-		vsCodeExtensionActive: false,
-		clusterSystemOnline: false,
-		ollamaModelsLoaded: false,
-		contextualAnalysisReady: false
-	});
-	
-	const systemLogs = writable<Array<{
-		timestamp: Date
-		level: 'info' | 'success' | 'warning' | 'error';
-		message: string
-		source: string
-	}>>([]);
-	
-	let selectedCaseId = 'demo-case-001';
-	let enableRealtimeUpdates = true;
-	let showMetrics = true;
-	let enableClusterMode = true;
-	
-	onMount(async () => {
-		await checkSystemStatus();
-		startSystemMonitoring();
-		logMessage('info', 'Enhanced MCP Integration Demo loaded', 'system');
-	});
-	
-	async function checkSystemStatus() {
-		logMessage('info', 'Checking system status...', 'health-check');
-		
-		// Check MCP Server
-		try {
-			const mcpResponse = await fetch('http://localhost:40000/health');
-			if (mcpResponse.ok) {
-				integrationStatus.update(status => ({ ...status, mcpServerRunning: true }));
-				logMessage('success', 'Context7 MCP Server is online', 'mcp-server');
-			}
-		} catch (error) {
-			logMessage('error', 'Context7 MCP Server is offline', 'mcp-server');
-		}
-		
-		// Check cluster performance results
-		try {
-			const clusterResponse = await fetch('/cluster-performance-simple.json');
-			if (clusterResponse.ok) {
-				const data = await clusterResponse.json();
-				if (data.status === 'working') {
-					integrationStatus.update(status => ({ ...status, clusterSystemOnline: true }));
-					logMessage('success', `Cluster system validated - ${data.results.successfulRequests} successful requests`, 'cluster');
-				}
-			}
-		} catch (error) {
-			logMessage('warning', 'Cluster performance data not available', 'cluster');
-		}
-		
-		// Check Ollama models
-		try {
-			const ollamaResponse = await fetch('http://localhost:11434/api/tags');
-			if (ollamaResponse.ok) {
-				const models = await ollamaResponse.json();
-				if (models.models && models.models.length > 0) {
-					integrationStatus.update(status => ({ ...status, ollamaModelsLoaded: true }));
-					logMessage('success', `Ollama models loaded: ${models.models.length} models`, 'ollama');
-				}
-			}
-		} catch (error) {
-			logMessage('warning', 'Ollama service not available', 'ollama');
-		}
-		
-		// Check VS Code extension (simulated)
-		const hasVSCodeExtension = Math.random() > 0.3; // Simulate extension check
-		if (hasVSCodeExtension) {
-			integrationStatus.update(status => ({ ...status, vsCodeExtensionActive: true }));
-			logMessage('success', 'VS Code Context7 MCP Assistant extension detected', 'vscode');
-		} else {
-			logMessage('info', 'VS Code extension not detected (running in browser)', 'vscode');
-		}
-		
-		// All systems check
-		const allSystemsReady = $integrationStatus.mcpServerRunning && $integrationStatus.clusterSystemOnline;
-		if (allSystemsReady) {
-			integrationStatus.update(status => ({ ...status, contextualAnalysisReady: true }));
-			logMessage('success', 'Enhanced MCP Integration fully operational!', 'system');
-		}
-	}
-	
-	function startSystemMonitoring() {
-		setInterval(async () => {
-			// Periodic health checks
-			try {
-				const healthResponse = await fetch('http://localhost:40000/health');
-				if (healthResponse.ok) {
-					const healthData = await healthResponse.json();
-					if (healthData.metrics && healthData.metrics.totalRequests > 0) {
-						logMessage('info', `System healthy - ${healthData.metrics.totalRequests} total requests processed`, 'monitoring');
-					}
-				}
-			} catch (error) {
-				// Silent monitoring, don't spam logs
-			}
-		}, 30000); // Every 30 seconds
-	}
-	
-	function logMessage(level: 'info' | 'success' | 'warning' | 'error', message: string, source: string) {
-		systemLogs.update(logs => [{
-			timestamp: new Date(),
-			level,
-			message,
-			source
-		}, ...logs.slice(0, 49)]); // Keep last 50 logs
-	}
-	
-	async function runSystemDiagnostics() {
-		logMessage('info', 'Running comprehensive system diagnostics...', 'diagnostics');
-		
-		const diagnostics = [
-			{
-				name: 'MCP Server Health',
-				test: async () => {
-					const response = await fetch('http://localhost:40000/health');
-					return response.ok;
-				}
-			},
-			{
-				name: 'Enhanced RAG Query',
-				test: async () => {
-					const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							query: 'System diagnostic test query',
-							caseId: 'diagnostic-test',
-							maxResults: 1
-						})
-					});
-					return response.ok;
-				}
-			},
-			{
-				name: 'Memory Graph Operations',
-				test: async () => {
-					const response = await fetch('http://localhost:40000/mcp/memory/read-graph', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({})
-					});
-					return response.ok;
-				}
-			},
-			{
-				name: 'Context7 Documentation',
-				test: async () => {
-					const response = await fetch('http://localhost:40000/mcp/context7/resolve-library-id', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({ libraryName: 'sveltekit' })
-					});
-					return response.ok;
-				}
-			}
-		];
-		
-		let passedTests = 0;
-		for (const diagnostic of diagnostics) {
-			try {
-				const result = await diagnostic.test();
-				if (result) {
-					logMessage('success', `✅ ${diagnostic.name} - PASSED`, 'diagnostics');
-					passedTests++;
-				} else {
-					logMessage('error', `❌ ${diagnostic.name} - FAILED`, 'diagnostics');
-				}
-			} catch (error) {
-				logMessage('error', `❌ ${diagnostic.name} - ERROR: ${error.message}`, 'diagnostics');
-			}
-		}
-		
-		logMessage('info', `Diagnostics complete: ${passedTests}/${diagnostics.length} tests passed`, 'diagnostics');
-	}
-	
-	function clearLogs() {
-		systemLogs.set([]);
-		logMessage('info', 'System logs cleared', 'system');
-	}
+  	/**
+  	 * Enhanced MCP Integration Demo Page
+  	 * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit
+  	 */
+  	import { onMount } from 'svelte';
+  	import EnhancedMCPIntegration from '$lib/components/ai/EnhancedMCPIntegration.svelte';
+  	import { page } from '$app/stores';
+  	import { writable } from 'svelte/store';
+  	// Page state
+  	const integrationStatus = writable<{
+  		mcpServerRunning: boolean
+  		vsCodeExtensionActive: boolean
+  		clusterSystemOnline: boolean
+  		ollamaModelsLoaded: boolean
+  		contextualAnalysisReady: boolean
+  	}>({
+  		mcpServerRunning: false,
+  		vsCodeExtensionActive: false,
+  		clusterSystemOnline: false,
+  		ollamaModelsLoaded: false,
+  		contextualAnalysisReady: false
+  	});
+  	const systemLogs = writable<Array<{
+  		timestamp: Date
+  		level: 'info' | 'success' | 'warning' | 'error';
+  		message: string
+  		source: string
+  	}>>([]);
+  	let selectedCaseId = 'demo-case-001';
+  	let enableRealtimeUpdates = true;
+  	let showMetrics = true;
+  	let enableClusterMode = true;
+  	onMount(async () => {
+  		await checkSystemStatus();
+  		startSystemMonitoring();
+  		logMessage('info', 'Enhanced MCP Integration Demo loaded', 'system');
+  	});
+  	async function checkSystemStatus() {
+  		logMessage('info', 'Checking system status...', 'health-check');
+  		// Check MCP Server
+  		try {
+  			const mcpResponse = await fetch('http://localhost:40000/health');
+  			if (mcpResponse.ok) {
+  				integrationStatus.update(status => ({ ...status, mcpServerRunning: true }));
+  				logMessage('success', 'Context7 MCP Server is online', 'mcp-server');
+  			}
+  		} catch (error) {
+  			logMessage('error', 'Context7 MCP Server is offline', 'mcp-server');
+  		}
+  		// Check cluster performance results
+  		try {
+  			const clusterResponse = await fetch('/cluster-performance-simple.json');
+  			if (clusterResponse.ok) {
+  				const data = await clusterResponse.json();
+  				if (data.status === 'working') {
+  					integrationStatus.update(status => ({ ...status, clusterSystemOnline: true }));
+  					logMessage('success', `Cluster system validated - ${data.results.successfulRequests} successful requests`, 'cluster');
+  				}
+  			}
+  		} catch (error) {
+  			logMessage('warning', 'Cluster performance data not available', 'cluster');
+  		}
+  		// Check Ollama models
+  		try {
+  			const ollamaResponse = await fetch('http://localhost:11434/api/tags');
+  			if (ollamaResponse.ok) {
+  				const models = await ollamaResponse.json();
+  				if (models.models && models.models.length > 0) {
+  					integrationStatus.update(status => ({ ...status, ollamaModelsLoaded: true }));
+  					logMessage('success', `Ollama models loaded: ${models.models.length} models`, 'ollama');
+  				}
+  			}
+  		} catch (error) {
+  			logMessage('warning', 'Ollama service not available', 'ollama');
+  		}
+  		// Check VS Code extension (simulated)
+  		const hasVSCodeExtension = Math.random() > 0.3; // Simulate extension check
+  		if (hasVSCodeExtension) {
+  			integrationStatus.update(status => ({ ...status, vsCodeExtensionActive: true }));
+  			logMessage('success', 'VS Code Context7 MCP Assistant extension detected', 'vscode');
+  		} else {
+  			logMessage('info', 'VS Code extension not detected (running in browser)', 'vscode');
+  		}
+  		// All systems check
+  		const allSystemsReady = $integrationStatus.mcpServerRunning && $integrationStatus.clusterSystemOnline;
+  		if (allSystemsReady) {
+  			integrationStatus.update(status => ({ ...status, contextualAnalysisReady: true }));
+  			logMessage('success', 'Enhanced MCP Integration fully operational!', 'system');
+  		}
+  	}
+  	function startSystemMonitoring() {
+  		setInterval(async () => {
+  			// Periodic health checks
+  			try {
+  				const healthResponse = await fetch('http://localhost:40000/health');
+  				if (healthResponse.ok) {
+  					const healthData = await healthResponse.json();
+  					if (healthData.metrics && healthData.metrics.totalRequests > 0) {
+  						logMessage('info', `System healthy - ${healthData.metrics.totalRequests} total requests processed`, 'monitoring');
+  					}
+  				}
+  			} catch (error) {
+  				// Silent monitoring, don't spam logs
+  			}
+  		}, 30000); // Every 30 seconds
+  	}
+  	function logMessage(level: 'info' | 'success' | 'warning' | 'error', message: string, source: string) {
+  		systemLogs.update(logs => [{
+  			timestamp: new Date(),
+  			level,
+  			message,
+  			source
+  		}, ...logs.slice(0, 49)]); // Keep last 50 logs
+  	}
+  	async function runSystemDiagnostics() {
+  		logMessage('info', 'Running comprehensive system diagnostics...', 'diagnostics');
+  		const diagnostics = [
+  			{
+  				name: 'MCP Server Health',
+  				test: async () => {
+  					const response = await fetch('http://localhost:40000/health');
+  					return response.ok;
+  				}
+  			},
+  			{
+  				name: 'Enhanced RAG Query',
+  				test: async () => {
+  					const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', {
+  						method: 'POST',
+  						headers: { 'Content-Type': 'application/json' },
+  						body: JSON.stringify({
+  							query: 'System diagnostic test query',
+  							caseId: 'diagnostic-test',
+  							maxResults: 1
+  						})
+  					});
+  					return response.ok;
+  				}
+  			},
+  			{
+  				name: 'Memory Graph Operations',
+  				test: async () => {
+  					const response = await fetch('http://localhost:40000/mcp/memory/read-graph', {
+  						method: 'POST',
+  						headers: { 'Content-Type': 'application/json' },
+  						body: JSON.stringify({})
+  					});
+  					return response.ok;
+  				}
+  			},
+  			{
+  				name: 'Context7 Documentation',
+  				test: async () => {
+  					const response = await fetch('http://localhost:40000/mcp/context7/resolve-library-id', {
+  						method: 'POST',
+  						headers: { 'Content-Type': 'application/json' },
+  						body: JSON.stringify({ libraryName: 'sveltekit' })
+  					});
+  					return response.ok;
+  				}
+  			}
+  		];
+  		let passedTests = 0;
+  		for (const diagnostic of diagnostics) {
+  			try {
+  				const result = await diagnostic.test();
+  				if (result) {
+  					logMessage('success', `✅ ${diagnostic.name} - PASSED`, 'diagnostics');
+  					passedTests++;
+  				} else {
+  					logMessage('error', `❌ ${diagnostic.name} - FAILED`, 'diagnostics');
+  				}
+  			} catch (error) {
+  				logMessage('error', `❌ ${diagnostic.name} - ERROR: ${error.message}`, 'diagnostics');
+  			}
+  		}
+  		logMessage('info', `Diagnostics complete: ${passedTests}/${diagnostics.length} tests passed`, 'diagnostics');
+  	}
+  	function clearLogs() {
+  		systemLogs.set([]);
+  		logMessage('info', 'System logs cleared', 'system');
+  	}
 </script>
 
 <svelte:head>

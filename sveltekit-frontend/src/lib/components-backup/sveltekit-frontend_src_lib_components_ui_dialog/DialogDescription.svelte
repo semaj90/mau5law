@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Simple typed prop for dialog description
   export let description: any
 </script>

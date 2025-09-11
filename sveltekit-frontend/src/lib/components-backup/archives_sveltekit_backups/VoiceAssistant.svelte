@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { speak } from "./speak";
 
@@ -12,7 +11,6 @@
 
   onMount(() => {
     // Initialize speech recognition
-    
     const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
     if (SpeechRecognition) {
       isSupported = true;

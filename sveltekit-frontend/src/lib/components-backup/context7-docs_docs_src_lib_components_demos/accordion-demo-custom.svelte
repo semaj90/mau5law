@@ -1,38 +1,37 @@
 <script lang="ts">
-</script>
-	import { Accordion, type WithoutChildrenOrChild } from "bits-ui";
-	import DemoContainer from "../demo-container.svelte";
-	import CustomAccordionItem from "./accordion-demo-custom-item.svelte";
+  	import { Accordion, type WithoutChildrenOrChild } from "bits-ui";
+  	import DemoContainer from "../demo-container.svelte";
+  	import CustomAccordionItem from "./accordion-demo-custom-item.svelte";
 
-	const myItems = [
-		{
-			value: "A",
-			title: "Title A",
-			content: "Content A",
-			disabled: false,
-		},
-		{
-			value: "B",
-			title: "Title B",
-			content: "Content B",
-			disabled: false,
-		},
-		{
-			value: "C",
-			title: "Title C",
-			content: "Content C",
-			disabled: false,
-		},
-	];
+  	const myItems = [
+  		{
+  			value: "A",
+  			title: "Title A",
+  			content: "Content A",
+  			disabled: false,
+  		},
+  		{
+  			value: "B",
+  			title: "Title B",
+  			content: "Content B",
+  			disabled: false,
+  		},
+  		{
+  			value: "C",
+  			title: "Title C",
+  			content: "Content C",
+  			disabled: false,
+  		},
+  	];
 
-	let {
-		items = myItems,
-		value = $bindable(),
-		ref = $bindable(null),
-		...restProps
-	}: WithoutChildrenOrChild<Accordion.RootProps> & {
-		items: { value?: string; title: string; content: string }[];
-	} = $props();
+  	let {
+  		items = myItems,
+  		value = $bindable(),
+  		ref = $bindable(null),
+  		...restProps
+  	}: WithoutChildrenOrChild<Accordion.RootProps> & {
+  		items: { value?: string; title: string; content: string }[];
+  	} = $props();
 </script>
 
 <DemoContainer size="sm" wrapperClass="rounded-b-card">

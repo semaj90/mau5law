@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { marked  } from "marked";
   import { onMount  } from "svelte";
 
@@ -38,7 +37,7 @@
   async function renderMarkdown() { if (!markdown) {
       renderedHtml = "";
       return;
- }
+   }
     try { // Configure marked with our options
       marked.setOptions(markedOptions);
 
@@ -76,7 +75,7 @@
       renderedHtml = await marked.parse(markdown);
     } catch (error) { console.error("Error rendering markdown:", error);
       renderedHtml = `<p class="space-y-4">Error rendering markdown: ${error instanceof Error ? error.message : "Unknown, error" }</p>`;
-}}
+  }}
   // Re-render when markdown changes using $effect
   $effect(() => { if (isClient && markdown) {
       renderMarkdown();

@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { idleDetectionMachine } from '$lib/machines/idle-detection-rabbitmq-machine.js';
@@ -179,7 +178,6 @@
           priority: 'high',
           compression: true
         });
-        
         streamingActive = true;
         dispatch('streamingStarted', { streamId });
       }
@@ -187,11 +185,9 @@
       // Step 4: Complete (100% progress)
       progressAnimation.target = 100;
       currentGraph = graph;
-      
       // Update render stats
       renderStats.vertices = graph.nodes.length;
       renderStats.relationships = graph.relationships.length;
-      
       dispatch('graphLoaded', { graph });
 
       // Cache the graph in WebGPU SOM cache
@@ -214,15 +210,12 @@
   function animateProgressSegments() {
     const animateSegment = (index: number) => {
       if (index >= progressAnimation.segments.length) return;
-      
       progressAnimation.segments[index].active = true;
-      
       setTimeout(() => {
         progressAnimation.segments[index].active = false;
         animateSegment(index + 1);
       }, 100);
     };
-    
     animateSegment(0);
   }
 
@@ -274,7 +267,6 @@
       if (animation.enabled) {
         animation.time += deltaTime * animation.speed;
         animation.phase = (animation.time % (2 * Math.PI));
-        
         // Rotate camera around the graph
         camera.rotation.y = animation.time * 0.2;
         camera.position.x = Math.cos(camera.rotation.y) * 50;
@@ -315,7 +307,6 @@
     // Smooth progress animation
     const diff = progressAnimation.target - progressAnimation.value;
     progressAnimation.value += diff * progressAnimation.speed;
-    
     // Update progress variable for UI
     progress = progressAnimation.value;
   }
@@ -328,10 +319,8 @@
 
     // Create command encoder
     const commandEncoder = gpuDevice.createCommandEncoder();
-    
     // Get current texture
     const textureView = context.getCurrentTexture().createView();
-    
     // Create render pass
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [{
@@ -344,9 +333,7 @@
 
     // Render graph nodes and relationships here
     // This would use the render pipeline from neo4j3DEngine
-    
     renderPass.end();
-    
     // Submit commands
     gpuDevice.queue.submit([commandEncoder.finish()]);
   }
@@ -364,7 +351,6 @@
     // Convert screen coordinates to world coordinates
     // This would involve ray casting through the 3D scene
     const clickedNode = findNodeAtPosition(x, y);
-    
     if (clickedNode) {
       dispatch('nodeClicked', { node: clickedNode });
     }
@@ -375,12 +361,10 @@
    */
   function findNodeAtPosition(x: number, y: number): Neo4jNode | null {
     if (!currentGraph) return null;
-    
     // Simplified hit testing - would be more sophisticated in production
     const centerX = canvasRef.width / 2;
     const centerY = canvasRef.height / 2;
     const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
-    
     // Return first node if click is near center (simplified)
     return distance < 50 ? currentGraph.nodes[0] : null;
   }
@@ -390,7 +374,6 @@
    */
   function handleResize() {
     if (!canvasRef || !containerRef) return;
-    
     const rect = containerRef.getBoundingClientRect();
     canvasRef.width = rect.width * window.devicePixelRatio;
     canvasRef.height = rect.height * window.devicePixelRatio;
@@ -401,17 +384,13 @@
   // Lifecycle
   onMount(async () => {
     mounted = true;
-    
     // Initialize WebGPU
     await initializeWebGPU();
-    
     // Handle resize
     handleResize();
     window.addEventListener('resize', handleResize);
-    
     // Start render loop
     startRenderLoop();
-    
     // Auto-load if enabled
     if (autoStart && nodeId) {
       await loadRecommendations();
@@ -420,17 +399,13 @@
 
   onDestroy(() => {
     mounted = false;
-    
     // Cleanup
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
     }
-    
     window.removeEventListener('resize', handleResize);
-    
     // Stop idle detection
     sendIdleEvent({ type: 'STOP_IDLE_DETECTION' });
-    
     // Cleanup engine
     neo4j3DEngine.cleanup();
   });

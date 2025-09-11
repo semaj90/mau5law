@@ -1,6 +1,5 @@
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
-</script>
   interface Props {
     caseId: string | undefined ;
     searchQuery: string
@@ -69,10 +68,10 @@
             .toLowerCase();
 
           if (!searchableText.includes(query)) return false;
-}
+  }
         if (selectedTypes.length > 0 && !selectedTypes.includes(item.type)) {
           return false;
-}
+  }
         return true;
       })
       .sort((a, b) => {
@@ -97,7 +96,7 @@
             break;
           default:
             return 0;
-}
+  }
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         return sortOrder === "asc" ? comparison : -comparison;
       });
@@ -107,7 +106,7 @@
       currentPage * pageSize,
       (currentPage + 1) * pageSize
     );
-}
+  }
   // Initialize on mount
   onMount(() => {
     const init = async () => {
@@ -120,7 +119,7 @@
       connectionStatus = connected ? "connected" : "disconnected";
       if (connected) {
         lastUpdateTime = new Date().toISOString();
-}
+  }
     });
 
     // Monitor sync status
@@ -143,16 +142,16 @@
         setTimeout(() => {
           if (lokiEvidenceService.isReady()) {
             loadFromLocal();
-}
+  }
         }, 1000);
-}
+  }
       // Then sync with server
       await syncWithServer();
     } catch (err) {
       console.error("Failed to initialize real-time evidence:", err);
       error = err instanceof Error ? err.message : "Initialization failed";
-}
-}
+  }
+  }
   function loadFromLocal() {
     try {
       const localEvidence = caseId
@@ -162,8 +161,8 @@
       evidenceStore.evidence.set(localEvidence);
     } catch (err) {
       console.error("Failed to load from local:", err);
-}
-}
+  }
+  }
   async function syncWithServer() {
     try {
       evidenceStore.isLoading.set(true);
@@ -178,19 +177,19 @@
         await lokiEvidenceService.syncWithServer(serverEvidence);
         evidenceStore.evidence.set(serverEvidence);
         lastUpdateTime = new Date().toISOString();
-}
+  }
     } catch (err) {
       console.error("Sync failed:", err);
       error = "Failed to sync with server";
     } finally {
       evidenceStore.isLoading.set(false);
-}
-}
+  }
+  }
   function updateSyncStatus() {
     if (lokiEvidenceService.isReady()) {
       syncStatus = lokiEvidenceService.getSyncStatus();
-}
-}
+  }
+  }
   // Evidence operations
   async function createEvidence() {
     try {
@@ -207,8 +206,8 @@
     } catch (err) {
       console.error("Failed to create evidence:", err);
       error = err instanceof Error ? err.message : "Failed to create evidence";
-}
-}
+  }
+  }
   async function updateEvidence(
     evidenceId: string,
     changes: Partial<Evidence>
@@ -219,8 +218,8 @@
     } catch (err) {
       console.error("Failed to update evidence:", err);
       error = err instanceof Error ? err.message : "Failed to update evidence";
-}
-}
+  }
+  }
   async function deleteEvidence(evidenceId: string) {
     if (!confirm("Are you sure you want to delete this evidence?")) return;
 
@@ -231,24 +230,24 @@
     } catch (err) {
       console.error("Failed to delete evidence:", err);
       error = err instanceof Error ? err.message : "Failed to delete evidence";
-}
-}
+  }
+  }
   // UI interactions
   function toggleSelection(evidenceId: string) {
     if (selectedEvidence.has(evidenceId)) {
       selectedEvidence.delete(evidenceId);
     } else {
       selectedEvidence.add(evidenceId);
-}
+  }
     selectedEvidence = selectedEvidence;
-}
+  }
   function selectAll() {
     selectedEvidence = new Set(paginatedEvidence.map((e) => e.id));
-}
+  }
   function clearSelection() {
     selectedEvidence.clear();
     selectedEvidence = selectedEvidence;
-}
+  }
   function getTypeIcon(type: string) {
     switch (type) {
       case "document":
@@ -261,17 +260,17 @@
         return Music;
       default:
         return File;
-}
-}
+  }
+  }
   function formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString();
-}
+  }
   function getRelevanceColor(relevance: number): string {
     if (relevance >= 0.8) return "text-green-600";
     if (relevance >= 0.6) return "text-yellow-600";
     if (relevance >= 0.4) return "text-orange-600";
     return "text-red-600";
-}
+  }
 </script>
 
 <!-- Connection Status Bar -->

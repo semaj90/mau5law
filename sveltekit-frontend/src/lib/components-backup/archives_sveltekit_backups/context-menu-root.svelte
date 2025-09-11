@@ -1,13 +1,9 @@
 <script lang="ts">
-</script>
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
-  
   export let onOpenChange: ((open: boolean) => void) | undefined = undefined;
-  
   const isOpen = writable(false);
   const position = writable({ x: 0, y: 0 });
-  
   setContext('context-menu', {
     isOpen,
     position,

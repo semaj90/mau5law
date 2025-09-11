@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { page } from '$app/stores';
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
   import { UiButton as Button } from '$lib/components/ui';
@@ -16,7 +15,7 @@
 
   function toggleReadOnly() {
     readOnly = !readOnly;
-}
+  }
 </script>
 
 <svelte:head>

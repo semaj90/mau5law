@@ -1,18 +1,17 @@
 <script lang="ts">
-</script>
-	import { goto } from "$app/navigation"
+  	import { goto } from "$app/navigation"
 
-	let name = ''
+  	let name = ''
 
-	let input: HTMLInputElement;
+  	let input: HTMLInputElement;
 
-	function go() {
-		if (name) {
-			goto(`/hi/${name}`)
-		} else {
-			input?.focus()
-		}
-	}
+  	function go() {
+  		if (name) {
+  			goto(`/hi/${name}`)
+  		} else {
+  			input?.focus()
+  		}
+  	}
 </script>
 
 <form on:submit|preventDefault={go}>

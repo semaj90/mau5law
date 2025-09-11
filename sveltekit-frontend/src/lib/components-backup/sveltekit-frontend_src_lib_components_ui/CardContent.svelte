@@ -1,9 +1,7 @@
 <script lang="ts">
-</script>
   interface Props {
     className?: string;
   }
-  
   let {
     className = '',
     children

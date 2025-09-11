@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
   import EvidenceUploadModal from "$lib/components/modals/EvidenceUploadModal.svelte";
@@ -71,50 +70,50 @@
   let { data = $bindable() } = $props(); // PageData;
 
   // State management
-let validationModal = $state({
+  let validationModal = $state({
     open: false,
     evidence: null as Evidence | null,
     aiEvent: null as any,
   });
-let analysisModal = $state({
+  let analysisModal = $state({
     open: false,
     evidence: null as Evidence | null,
     result: null as any,
     loading: false
   });
-let searchQuery = $state("");
-let showFilters = $state(false);
-let showBulkActions = $state(false);
-let viewMode = $state<"grid" | "list" >("grid");
-let sortBy = $state("createdAt");
-let sortOrder = $state<"asc" | "desc" >("desc");
+  let searchQuery = $state("");
+  let showFilters = $state(false);
+  let showBulkActions = $state(false);
+  let viewMode = $state<"grid" | "list" >("grid");
+  let sortBy = $state("createdAt");
+  let sortOrder = $state<"asc" | "desc" >("desc");
 
   // Enhanced AI analysis state
-let thinkingStyleEnabled = $state(false);
-let bulkAnalysisMode = $state(false);
+  let thinkingStyleEnabled = $state(false);
+  let bulkAnalysisMode = $state(false);
   let analysisInProgress = new Set<string>();
 
   // Feedback integration references
-let evidencePageFeedback = $state<any>(null);
+  let evidencePageFeedback = $state<any>(null);
   let evidenceSearchFeedback: any;
   let evidenceUploadFeedback: any;
 
   // Filtering and selection
   let selectedEvidence = $state<Set<string>>(new Set();
-let selectedType = $state("");
-let selectedStatus = $state("");
-let selectedCollector = $state("");
-let dateFrom = $state("");
-let dateTo = $state("");
-let showAdvancedUpload = $state(false);
+  let selectedType = $state("");
+  let selectedStatus = $state("");
+  let selectedCollector = $state("");
+  let dateFrom = $state("");
+  let dateTo = $state("");
+  let showAdvancedUpload = $state(false);
 
   // Pagination
-let currentPage = $state(1);
-let itemsPerPage = $state(12);
-let totalPages = $state(1);
+  let currentPage = $state(1);
+  let itemsPerPage = $state(12);
+  let totalPages = $state(1);
 
   // Bulk operations
-let bulkOperationLoading = $state(false);
+  let bulkOperationLoading = $state(false);
 
   // Get case ID from URL if available
   let caseId = $derived($page.url.searchParams.get("caseId") || undefined);
@@ -134,7 +133,7 @@ let bulkOperationLoading = $state(false);
   });
 
   function filterAndSortEvidence(evidence: Evidence[]) {
-let filtered = $state([...evidence]);
+  let filtered = $state([...evidence]);
 
     // Apply search filter
     if (searchQuery.trim()) {
@@ -267,8 +266,8 @@ let filtered = $state([...evidence]);
 
     bulkOperationLoading = true;
     const evidenceIds = Array.from(selectedEvidence);
-let successCount = $state(0);
-let failureCount = $state(0);
+  let successCount = $state(0);
+  let failureCount = $state(0);
 
     try {
       for (const evidenceId of evidenceIds) {
@@ -326,7 +325,7 @@ let failureCount = $state(0);
 
   function formatAnalysisForDisplay(analysis: any): string {
     if (!analysis) return "No analysis available";
-let display = $state("");
+  let display = $state("");
 
     if (analysis.thinking && thinkingStyleEnabled) {
       display += `**🧠 AI Reasoning Process:**\n${analysis.thinking}\n\n---\n\n`;

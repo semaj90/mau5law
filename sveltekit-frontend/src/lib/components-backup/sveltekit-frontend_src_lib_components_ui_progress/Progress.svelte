@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     value?: any;
     max?: any;
@@ -11,11 +10,11 @@
 
 
 
-	import { cn } from '$lib/utils';
+  	import { cn } from '$lib/utils';
 
-	let className = $state('');
+  	let className = $state('');
 
-	const percentage = $derived(Math.min((value / max) * 100, 100));
+  	const percentage = $derived(Math.min((value / max) * 100, 100));
 </script>
 
 <div

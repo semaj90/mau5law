@@ -1,6 +1,5 @@
 <!-- LazyLoader.svelte - Universal lazy loading wrapper component -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { 
     lazyLoad, 
@@ -17,31 +16,24 @@
     // Lazy loading configuration
     preset = 'NORMAL' as LazyLoadPreset,
     customOptions = {} as LazyLoadOptions,
-    
     // Loading states
     showPlaceholder = true,
     placeholderHeight = '200px',
     placeholderClass = '',
-    
     // Content
     loadingText = 'Loading...',
     errorText = 'Failed to load content',
-    
     // Behavior
     unloadWhenHidden = false,
     enableProfiling = false,
-    
     // Callbacks
     onLoad = undefined as (() => void) | undefined,
     onError = undefined as ((error: Error) => void) | undefined,
-    
     // Style
     class: className = '',
     style = '',
-    
     // Accessibility
     'aria-label': ariaLabel = 'Lazy loaded content',
-    
     // Component state binding
     lazyState = $bindable() as LazyComponentState | undefined
   } = $props();
@@ -53,7 +45,6 @@
 
   // Create lazy loading store
   const lazyStore = createLazyStore();
-  
   // Update bound state when internal state changes
   $effect(() => {
     if (lazyState !== undefined) {
@@ -74,12 +65,10 @@
   // Handle intersection
   function handleIntersection(entry: any) {
     lazyStore.setVisible(entry.isIntersecting, entry.intersectionRatio);
-    
     if (entry.isIntersecting && !$lazyStore.hasBeenVisible) {
       if (enableProfiling) {
         lazyLoadProfiler.recordLoad(entry.target);
       }
-      
       // Trigger loading callback
       if (onLoad) {
         try {

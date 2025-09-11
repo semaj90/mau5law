@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import UnifiedVectorInterface from '$lib/components/unified/UnifiedVectorInterface.svelte';
@@ -21,11 +20,9 @@
 
   async function checkSystemStatus() {
     if (!browser) return;
-    
     try {
       const response = await fetch('/api/unified-vector?action=health');
       const data = await response.json();
-      
       if (data.success && data.health) {
         systemStats.activeServices = Object.values(data.health).filter(Boolean).length;
       }

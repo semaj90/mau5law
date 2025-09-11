@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { wasmGraphEngine } from '$lib/wasm/graphEngine';
   import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';

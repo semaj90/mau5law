@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Svelte 5 layout for /proxy subtree.
   export let children: any;
 </script>

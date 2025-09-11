@@ -2,7 +2,6 @@
 // Combines Hugerte with Melt UI components for legal document editing
 
 <script lang="ts">
-</script>
   interface Props { content?: any;
     placeholder?: any;
     readonly?: any;
@@ -21,7 +20,6 @@
 
 
   import { onMount, createEventDispatcher  } from 'svelte';
-  
   import { writable  } from 'svelte/store';
   import type { Writable  } from 'svelte/store';
 
@@ -120,24 +118,24 @@
               max-width: 800px;,
               margin: 0 auto;,
               padding: 20px;
- }
+   }
             h1, h2, h3, h4, h5, h6 { color: #1f2937;,
               font-weight: 600;,
               margin-top: 1.5em;,
               margin-bottom: 0.5em;
- }
+   }
             .citation { background: #eff6ff;,
               border-left: 4px solid #3b82f6;,
               padding: 0.5em;,
               margin: 1em 0;,
               border-radius: 0 4px 4px 0;
- }
+   }
             .ai-suggestion { background: #f0fdf4;,
               border: 1px solid #bbf7d0;,
               padding: 0.5em;,
               border-radius: 4px;,
               margin: 0.5em 0;
- }
+   }
           `,
           setup: (editor: any) => { // Custom AI Assistant button
             editor.ui.registry.addButton('ai-assistant', {
@@ -188,20 +186,20 @@
       isInitialized = true;
     } catch (error) { console.error('Failed to initialize editor:', error);
      }
-}
+  }
   function updateCounts(text: string) { const plainText = text.replace(/<[^>]*>/g, '');
     wordCount.set(plainText.trim().split(/\s+/).filter(word => word.length > 0).length);
     charCount.set(plainText.length);
- }
+   }
   function openAIAssistant(text: string) { selectedText = text;
     aiQuery = '';
     aiResults = '';
     aiOpen.set(true);
- }
+   }
   function openCitationHelper(text: string) { citationQuery = text;
     citationResults = [];
     citeOpen.set(true);
- }
+   }
   async function processAIRequest() { if (!aiQuery.trim()) return;
 
     isProcessingAI = true;
@@ -221,11 +219,11 @@
       if (data.success) { aiResults = data.data.answer;
         dispatch('aiRequest', { selectedText, action: aiQuery });
       } else { aiResults = 'Sorry, I encountered an error processing your request.';
- }
+   }
     } catch (error) { console.error('AI request failed:', error);
       aiResults = 'Failed to connect to AI service.';
      } finally { isProcessingAI = false;
- }}
+   }}
   async function searchCitations() { if (!citationQuery.trim()) return;
 
     try {
@@ -243,9 +241,9 @@
           citation: r.citation,
           relevance: r.similarity
          }));
-}
+  }
     } catch (error) { console.error('Citation search failed:', error);
- }}
+   }}
   function insertCitation(citation: any) { if (hugerte) {
       const citationHtml = `
         <div class="space-y-4">
@@ -255,7 +253,7 @@
       `;
       hugerte.insertContent(citationHtml);
       citeOpen.set(false);
-}}
+  }}
   function insertAIContent() { if (hugerte && aiResults) {
       const aiHtml = `
         <div class="space-y-4">
@@ -265,17 +263,17 @@
       `;
       hugerte.insertContent(aiHtml);
       aiOpen.set(false);
-}}
+  }}
   // Export content
   export function getContent(): string { return hugerte ? hugerte.getContent() : content;
- }
+   }
   // Import content
   export function setContent(newContent: string) { if (hugerte) {
       hugerte.setContent(newContent);
- }
+   }
     content = newContent;
     updateCounts(newContent);
-}
+  }
 </script>
 
 <!-- Main Editor Container -->

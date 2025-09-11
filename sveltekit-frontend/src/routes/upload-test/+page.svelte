@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 <!-- Test page for Simple File Upload with RAG integration -->
 <script lang="ts">
-</script>
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   import { onMount } from 'svelte';
 
@@ -23,7 +22,7 @@
       const MAX_RETRIES = 5;
       const REQUEST_TIMEOUT_MS = 8000;
       const POLL_INTERVAL_MS = 5000;
-let pollActive = $state(true);
+  let pollActive = $state(true);
 
       async function fetchStatus(attempt = 1) {
         const controller = new AbortController();

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   interface Props {
     onaccept?: (event?: unknown) => void;
@@ -13,8 +12,6 @@
   } from '$lib/components/ui/enhanced-bits';;
   import { aiPersonality } from "$lib/stores/chatStore";
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
-  
-  
   // Array of proactive prompts based on context
   const proactivePrompts = [
     "Would you like me to help clarify anything we've discussed?",
@@ -33,10 +30,10 @@
 
   function handleAccept() {
     onaccept?.();
-}
+  }
   function handleDismiss() {
     ondismiss?.();
-}
+  }
 </script>
 
 <div

@@ -1,6 +1,5 @@
 <!-- Cyber Elephant - Ancient Psychic Tandem War Elephant -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { fabric } from 'fabric';
@@ -18,7 +17,6 @@
   let neuralEngine = $state<any>();
   let cyberElephant = $state<any>();
   let performanceStores = $state<any>();
-  
   // Demo state using Svelte 5 runes
   let isSystemActive = $state(false);
   let documentsLoaded = $state(0);
@@ -26,7 +24,6 @@
   let searchQuery = $state('');
   let searchResults = writable<any[]>([]);
   let selectedDocuments = writable<DocumentPoint[]>([]);
-  
   // Performance metrics
   let systemMetrics = {
     neuralFPS: 60,
@@ -36,7 +33,6 @@
     tensorUpscaling: true,
     gpuAcceleration: true
   };
-  
   // Visualization modes
   const visualizationModes = [
     { id: '3d_scatter', name: '🌌 3D Document Galaxy', description: 'Documents as stars in semantic space' },
@@ -44,7 +40,6 @@
     { id: 'legal_timeline', name: '⚖️ Legal Timeline', description: 'Chronological case law visualization' },
     { id: 'galaxy', name: '🌀 Spiral Galaxy Mode', description: 'Auto-rotating cosmic view' }
   ];
-  
   // Integration demonstration states
   let currentDemoStage = $state('initialization');
   const demoStages = [
@@ -56,23 +51,19 @@
     'tensor_upscaling',
     'complete_system'
   ];
-  
   onMount(async () => {
     await initializeSystem();
     startDemoSequence();
   });
-  
   onDestroy(() => {
     if (neuralEngine) neuralEngine.destroy();
     if (cyberElephant) cyberElephant.destroy();
   });
-  
   /**
    * Initialize the complete Cyber Elephant system
    */
   async function initializeSystem() {
     console.log('🐘 Initializing Ancient Psychic Tandem Cyber Elephant...');
-    
     // 1. Initialize Neural Sprite Engine (2D learning system)
     fabricCanvas = new fabric.Canvas(canvas2d, {
       width: 400,
@@ -80,38 +71,29 @@
       backgroundColor: '#0a0a1a',
       selection: false
     });
-    
     neuralEngine = createNeuralSpriteEngine(fabricCanvas);
     performanceStores = createPerformanceStores(neuralEngine);
-    
     // 2. Initialize Cyber Elephant 3D Engine
     cyberElephant = createCyberElephant3D(canvas3d, {
       visualizationMode: selectedVisualizationMode,
       maxDocuments: 1000,
       bvhMaxDepth: 10
     });
-    
     // 3. Connect Neural Engine to 3D Engine for enhanced learning
     cyberElephant.connectNeuralEngine(neuralEngine);
-    
     // 4. Initialize Tensor Upscaler integration
     await tensorCoreUpscaler.start();
     await tensorCoreUpscaler.initializeNeuralSpriteCache();
-    
     // 5. Load demo documents
     const mockDocs = generateMockDocuments(500);
     await cyberElephant.loadDocuments(mockDocs);
     documentsLoaded = mockDocs.length;
-    
     // 6. Start animation loop
     cyberElephant.animate();
-    
     // 7. Subscribe to reactive stores
     setupReactiveSubscriptions();
-    
     console.log('✅ Cyber Elephant system initialized successfully');
   }
-  
   /**
    * Setup reactive subscriptions between systems
    */
@@ -119,7 +101,6 @@
     // Connect 3D search results to neural learning
     cyberElephant.searchResults.subscribe((results: any[]) => {
       searchResults.set(results);
-      
       // Log search interactions for neural learning
       if (results.length > 0 && neuralEngine) {
         neuralEngine.logUserActivity('3d_search_performed', {
@@ -129,11 +110,9 @@
         });
       }
     });
-    
     // Connect document selections to neural engine
     cyberElephant.selectedDocuments.subscribe((docs: DocumentPoint[]) => {
       selectedDocuments.set(docs);
-      
       if (docs.length > 0 && neuralEngine) {
         for (const doc of docs) {
           neuralEngine.logUserActivity('document_selected', {
@@ -146,19 +125,16 @@
       }
     });
   }
-  
   /**
    * Demonstration sequence showing system integration
    */
   async function startDemoSequence() {
     if (!isSystemActive) return;
-    
     const stageActions = {
       initialization: async () => {
         await neuralEngine.captureCurrentState('system_startup', ['demo', 'initialization']);
         await delay(2000);
       },
-      
       neural_learning: async () => {
         // Simulate neural learning activity
         for (let i = 0; i < 5; i++) {
@@ -169,13 +145,11 @@
           await delay(500);
         }
       },
-      
       '3d_projection': async () => {
         // Change visualization mode to show 3D projection
         await cyberElephant.updateConfig({ visualizationMode: 'neural_network' });
         await delay(2000);
       },
-      
       bvh_building: async () => {
         // Demonstrate BVH spatial search
         const center = { x: 0, y: 0, z: 0 };
@@ -183,13 +157,11 @@
         console.log(`🌳 BVH search found ${results.length} documents`);
         await delay(2000);
       },
-      
       semantic_search: async () => {
         // Perform semantic search demonstration
         await performSemanticSearch('contract liability');
         await delay(2000);
       },
-      
       tensor_upscaling: async () => {
         // Demonstrate tensor upscaling integration
         await tensorCoreUpscaler.optimizeForLegalDocuments();
@@ -197,33 +169,27 @@
         console.log('🎯 Tensor upscaling stats:', stats);
         await delay(2000);
       },
-      
       complete_system: async () => {
         console.log('🏆 Complete Cyber Elephant system demonstration finished!');
       }
     };
-    
     for (const stage of demoStages) {
       if (!isSystemActive) break;
-      
       currentDemoStage = stage;
       await stageActions[stage]();
     }
   }
-  
   /**
    * Perform semantic search integration
    */
   async function performSemanticSearch(query: string) {
     console.log(`🔍 Performing semantic search: "${query}"`);
-    
     // Log search in neural engine for learning
     neuralEngine.logUserActivity('semantic_search', {
       query,
       timestamp: Date.now(),
       searchType: 'text_to_3d'
     });
-    
     // Simulate search results (in real implementation, would use embedding similarity)
     const mockResults = Array.from({ length: 5 }, (_, i) => ({
       document: {
@@ -237,21 +203,17 @@
       similarity: 0.95 - (i * 0.05),
       relevanceRank: i + 1
     }));
-    
     searchResults.set(mockResults);
   }
-  
   /**
    * Toggle system activation
    */
   function toggleSystem() {
     isSystemActive = !isSystemActive;
-    
     if (isSystemActive) {
       startDemoSequence();
     }
   }
-  
   /**
    * Change visualization mode
    */
@@ -261,14 +223,12 @@
       cyberElephant.updateConfig({ visualizationMode: mode });
     }
   }
-  
   /**
    * Utility delay function
    */
   function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  
   // Reactive derived stores
   let totalSystemScore = $derived(() => {
     const neuralScore = systemMetrics.cacheHitRate;
@@ -276,7 +236,6 @@
     const tensorScore = systemMetrics.tensorUpscaling ? 100 : 50;
     return Math.round((neuralScore + spatialScore + tensorScore) / 3);
   });
-  
   let systemGrade = $derived(() => {
     const score = totalSystemScore();
     if (score >= 95) return 'S+';

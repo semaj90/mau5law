@@ -1,6 +1,5 @@
 <!-- Modular API-Integrated Command Palette -->
 <script lang="ts">
-</script>
   import { Command } from 'bits-ui';
   import { Search, FileText, Users, Calendar, Gavel, Loader2 } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -13,19 +12,16 @@
     onOpenChange?: (open: boolean) => void;
     placeholder?: string;
     class?: string;
-    
     // Search configuration
     searchTypes?: ('cases' | 'evidence' | 'documents' | 'people')[];
     searchLimit?: number;
     minQueryLength?: number;
     debounceMs?: number;
     includeVectorSearch?: boolean;
-    
     // Data filtering
     userId?: string;
     caseId?: string;
     filters?: Record<string, any>;
-    
     // Event handlers
     onSelect?: (item: any, type: string) => void;
     onSearchChange?: (query: string) => void;
@@ -36,17 +32,14 @@
     onOpenChange,
     placeholder = 'Search cases, evidence, documents...',
     class: className = '',
-    
     searchTypes = ['cases', 'evidence', 'documents', 'people'],
     searchLimit = 10,
     minQueryLength = 2,
     debounceMs = 300,
     includeVectorSearch = true,
-    
     userId,
     caseId,
     filters = {},
-    
     onSelect,
     onSearchChange
   }: Props = $props();
@@ -65,7 +58,7 @@
   let totalResults = $state(0);
 
   // Debounced search
-let searchTimeout = $state<number | null >(null);
+  let searchTimeout = $state<number | null >(null);
 
   const iconMap = {
     cases: Gavel,
@@ -99,7 +92,6 @@ let searchTimeout = $state<number | null >(null);
       };
 
       const response = await reactiveApiClient.commandSearch(searchParams);
-      
       if (response.success && response.data) {
         searchResults = response.data.results || { cases: [], evidence: [], documents: [], people: [] };
         totalResults = response.data.totalResults || 0;
@@ -142,7 +134,6 @@ let searchTimeout = $state<number | null >(null);
   function handleOpenChange(newOpen: boolean) {
     open = newOpen;
     onOpenChange?.(newOpen);
-    
     if (!newOpen) {
       // Clear search when closed
       query = '';

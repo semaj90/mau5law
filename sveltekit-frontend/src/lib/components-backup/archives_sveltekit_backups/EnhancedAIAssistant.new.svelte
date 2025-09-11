@@ -1,6 +1,5 @@
 <!-- Enhanced AI Assistant - Simplified Version -->
 <script lang="ts">
-</script>
   import {
     Brain,
     Loader2,
@@ -47,14 +46,14 @@
         role: "assistant",
         content: `Based on your query about "${userMessage.content}", here's my analysis:
 
-This is a legal matter that requires careful consideration of relevant statutes, case law, and regulatory frameworks. The key factors to consider include:
+  This is a legal matter that requires careful consideration of relevant statutes, case law, and regulatory frameworks. The key factors to consider include:
 
-1. Jurisdictional requirements
-2. Applicable legal precedents
-3. Statutory framework
-4. Regulatory compliance
+  1. Jurisdictional requirements
+  2. Applicable legal precedents
+  3. Statutory framework
+  4. Regulatory compliance
 
-I can provide more specific guidance if you share additional details about your case context.`,
+  I can provide more specific guidance if you share additional details about your case context.`,
         references: [
           {
             title: "Relevant Case Law",

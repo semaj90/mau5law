@@ -1,14 +1,13 @@
 <script lang="ts">
-</script>
-import { Button } from 'bits-ui';
-import { onMount } from 'svelte';
+  import { Button } from 'bits-ui';
+  import { onMount } from 'svelte';
 
-let response = '';
-let loading = false;
-let error = '';
-let systemStatus = { gpu: false, ollama: false, synthesis: false };
+  let response = '';
+  let loading = false;
+  let error = '';
+  let systemStatus = { gpu: false, ollama: false, synthesis: false };
 
-async function checkSystemStatus() {
+  async function checkSystemStatus() {
   try {
     const res = await fetch('/api/health');
     const data = await res.json();
@@ -20,12 +19,11 @@ async function checkSystemStatus() {
   } catch (e) {
     error = 'System health check failed';
   }
-}
+  }
 
-async function synthesize(type: 'correlation' | 'timeline' | 'compare' | 'merge') {
+  async function synthesize(type: 'correlation' | 'timeline' | 'compare' | 'merge') {
   loading = true;
   error = '';
-  
   try {
     const res = await fetch('/api/evidence/synthesize', {
       method: 'POST',
@@ -37,11 +35,9 @@ async function synthesize(type: 'correlation' | 'timeline' | 'compare' | 'merge'
         title: `${type} synthesis test`
       })
     });
-    
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}`);
     }
-    
     const data = await res.json();
     response = JSON.stringify(data, null, 2);
   } catch (e) {
@@ -50,9 +46,9 @@ async function synthesize(type: 'correlation' | 'timeline' | 'compare' | 'merge'
   } finally {
     loading = false;
   }
-}
+  }
 
-async function testGemma3() {
+  async function testGemma3() {
   loading = true;
   try {
     const res = await fetch('/api/ai/chat', {
@@ -70,9 +66,9 @@ async function testGemma3() {
   } finally {
     loading = false;
   }
-}
+  }
 
-onMount(checkSystemStatus);
+  onMount(checkSystemStatus);
 </script>
 
 <div class="p-6 max-w-4xl mx-auto">

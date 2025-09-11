@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Use modular components
   import {
     Card,
@@ -49,7 +48,7 @@
     },
   });
   let uploadFiles: UploadFile[] = $state([]);
-let uploadProgress = $state(0);
+  let uploadProgress = $state(0);
   // Initialize form with caseId if provided
   // TODO: Convert to $derived: if (caseId) {
     $form.caseId = caseId
@@ -68,10 +67,8 @@ let uploadProgress = $state(0);
   // Handle file changes from FileUpload component
   function handleFilesChange(files: UploadFile[]) {
     uploadFiles = files;
-    
     if (files.length > 0) {
       const file = files[0];
-      
       // Auto-detect file type
       if (file.type.startsWith('image/')) {
         $form.type = 'image';
@@ -100,12 +97,11 @@ let uploadProgress = $state(0);
   async function handleFileUpload(file: UploadFile): Promise<void> {
     // Simulate upload progress
     const simulateProgress = () => {
-let progress = $state(0);
+  let progress = $state(0);
       const interval = setInterval(() => {
         progress += 10;
         file.progress = progress;
         uploadFiles = [...uploadFiles]; // Trigger reactivity
-        
         if (progress >= 100) {
           clearInterval(interval);
           file.status = 'completed';
@@ -117,7 +113,6 @@ let progress = $state(0);
     file.status = 'uploading';
     file.progress = 0;
     uploadFiles = [...uploadFiles];
-    
     try {
       simulateProgress();
     } catch (error) {

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade, slide } from "svelte/transition";
@@ -33,7 +32,7 @@
       currentPage = 0
       displayedItems = [];
       loadMore();
-}}
+  }}
   onMount(() => {
     loadMore();
   });
@@ -48,7 +47,7 @@
     if (newItems.length === 0) {
       hasMore = false;
       return;
-}
+  }
     displayedItems = [...displayedItems, ...newItems];
     currentPage++;
 
@@ -58,7 +57,7 @@
     // Emit event for loading more data from API
     if (!hasMore && items.length >= currentPage * pageSize) {
       dispatch("loadMore");
-}}
+  }}
   function handleScroll() {
     if (!scrollContainer) return;
 
@@ -68,10 +67,10 @@
 
     if (scrolledToBottom) {
       loadMore();
-}}
+  }}
   function handleItemClick(item: unknown) {
     dispatch("itemClick", { item, type: itemType });
-}
+  }
   function getItemIcon(item: unknown) {
     if (itemType === "notes") {
       return FileEdit;
@@ -85,20 +84,20 @@
       if (fileType.includes("text") || fileType.includes("pdf"))
         return FileText;
       return File;
-}}
+  }}
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
-}
+  }
   function truncateText(text: string, maxLength = 100) {
     if (!text) return "";
     return text.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;
-}
+  }
 </script>
 
 <div

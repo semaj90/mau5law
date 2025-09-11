@@ -1,104 +1,91 @@
 <script lang="ts">
-</script>
-	import type {    Snippet    } from 'svelte';
-	import { Select as BitsSelect } from 'bits-ui';
-	import { createEventDispatcher } from 'svelte';
-	import { cn } from '$lib/utils';
+  	import type {    Snippet    } from 'svelte';
+  	import { Select as BitsSelect } from 'bits-ui';
+  	import { createEventDispatcher } from 'svelte';
+  	import { cn } from '$lib/utils';
 
-	interface SelectOption {
-		value: string;
-		label: string;
-		disabled?: boolean;
-	}
+  	interface SelectOption {
+  		value: string;
+  		label: string;
+  		disabled?: boolean;
+  	}
 
-	interface Props {
-		options: SelectOption[];
-		value?: string;
-		placeholder?: string;
-		disabled?: boolean;
-		
-		// Select configuration
-		open?: boolean;
-		
-		// Styling
-		class?: string;
-		triggerClass?: string;
-		contentClass?: string;
-		itemClass?: string;
-		
-		// Event handlers
-		onValueChange?: (value: string | undefined) => void;
-		onOpenChange?: (open: boolean) => void;
-		
-		// Snippets
-		trigger?: Snippet<[{ selected: any; open: boolean }]>;
-		option?: Snippet<[{ option: SelectOption; isSelected: boolean }]>;
-		
-		// Accessibility
-		name?: string;
-		required?: boolean;
-		'aria-label'?: string;
-		'aria-labelledby'?: string;
-		'data-testid'?: string;
-	}
-	
-	let {
-		options,
-		value = undefined,
-		placeholder = 'Select an option...',
-		disabled = false,
-		open = false,
-		class: className = '',
-		triggerClass = '',
-		contentClass = '',
-		itemClass = '',
-		onValueChange,
-		onOpenChange,
-		trigger,
-		option,
-		name,
-		required = false,
-		'aria-label': ariaLabel,
-		'aria-labelledby': ariaLabelledBy,
-		'data-testid': testId
-	}: Props = $props();
-	
-	const dispatch = createEventDispatcher<{
-		'value-change': { value: string | undefined };
-		'open-change': { open: boolean };
-	}>();
+  	interface Props {
+  		options: SelectOption[];
+  		value?: string;
+  		placeholder?: string;
+  		disabled?: boolean;
+  		// Select configuration
+  		open?: boolean;
+  		// Styling
+  		class?: string;
+  		triggerClass?: string;
+  		contentClass?: string;
+  		itemClass?: string;
+  		// Event handlers
+  		onValueChange?: (value: string | undefined) => void;
+  		onOpenChange?: (open: boolean) => void;
+  		// Snippets
+  		trigger?: Snippet<[{ selected: any; open: boolean }]>;
+  		option?: Snippet<[{ option: SelectOption; isSelected: boolean }]>;
+  		// Accessibility
+  		name?: string;
+  		required?: boolean;
+  		'aria-label'?: string;
+  		'aria-labelledby'?: string;
+  		'data-testid'?: string;
+  	}
+  	let {
+  		options,
+  		value = undefined,
+  		placeholder = 'Select an option...',
+  		disabled = false,
+  		open = false,
+  		class: className = '',
+  		triggerClass = '',
+  		contentClass = '',
+  		itemClass = '',
+  		onValueChange,
+  		onOpenChange,
+  		trigger,
+  		option,
+  		name,
+  		required = false,
+  		'aria-label': ariaLabel,
+  		'aria-labelledby': ariaLabelledBy,
+  		'data-testid': testId
+  	}: Props = $props();
+  	const dispatch = createEventDispatcher<{
+  		'value-change': { value: string | undefined };
+  		'open-change': { open: boolean };
+  	}>();
 
-	function handleValueChange(newValue: string | undefined) {
-		if (onValueChange) {
-			onValueChange(newValue);
-		}
-		dispatch('value-change', { value: newValue });
-	}
+  	function handleValueChange(newValue: string | undefined) {
+  		if (onValueChange) {
+  			onValueChange(newValue);
+  		}
+  		dispatch('value-change', { value: newValue });
+  	}
 
-	function handleOpenChange(newOpen: boolean) {
-		if (onOpenChange) {
-			onOpenChange(newOpen);
-		}
-		dispatch('open-change', { open: newOpen });
-	}
-	
-	// Default styles
-	const defaultTriggerClass = 'flex h-10 items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-950 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-800';
-	
-	const defaultContentClass = 'z-50 min-w-[8rem] overflow-hidden rounded-md border border-gray-200 bg-white p-1 text-gray-950 shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50';
-	
-	const defaultItemClass = 'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-gray-100 focus:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-gray-100 data-[highlighted]:text-gray-900 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[highlighted]:bg-gray-800 dark:data-[highlighted]:text-gray-50';
-	
-	// Get display text for trigger
-	let displayText = $derived(() => {
-		if (value) {
-			const option = options.find(opt => opt.value === value);
-			return option?.label || value;
-		}
-		return placeholder;
-	});
-	
-	type $$Props = Props;
+  	function handleOpenChange(newOpen: boolean) {
+  		if (onOpenChange) {
+  			onOpenChange(newOpen);
+  		}
+  		dispatch('open-change', { open: newOpen });
+  	}
+  	// Default styles
+  	const defaultTriggerClass = 'flex h-10 items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-950 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-800';
+  	const defaultContentClass = 'z-50 min-w-[8rem] overflow-hidden rounded-md border border-gray-200 bg-white p-1 text-gray-950 shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50';
+  	const defaultItemClass = 'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-gray-100 focus:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-gray-100 data-[highlighted]:text-gray-900 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[highlighted]:bg-gray-800 dark:data-[highlighted]:text-gray-50';
+  	// Get display text for trigger
+  	let displayText = $derived(() => {
+  		if (value) {
+  			const option = options.find(opt => opt.value === value);
+  			return option?.label || value;
+  		}
+  		return placeholder;
+  	});
+  	type $$Props = Props;
 </script>
 
 <!-- Hidden input for form submission -->

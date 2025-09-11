@@ -1,6 +1,5 @@
 <!-- Enhanced AI Chat Test Component - Svelte 5 with bits-ui and shadcn-svelte -->
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { onMount, tick } from "svelte";
   import { Dialog } from "bits-ui";

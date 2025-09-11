@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import { quintOut } from "svelte/easing";
   import { fly } from "svelte/transition";
@@ -32,14 +31,14 @@
 
   function handleClose(notification: Notification) {
     notifications.remove(notification.id);
-}
+  }
   function handleAction(
     notification: Notification,
     action: NonNullable<Notification["actions"]>[0]
   ) {
     action.action();
     notifications.remove(notification.id);
-}
+  }
 </script>
 
 <!-- Notification Container -->

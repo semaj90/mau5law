@@ -1,39 +1,38 @@
 <script lang="ts">
-</script>
-	import { Combobox, type WithoutChildrenOrChild, mergeProps } from "bits-ui";
-	import ChevronUpDown from "phosphor-svelte/lib/CaretUpDown";
-	type Item = { value: string; label: string };
-	type Props = Combobox.RootProps & {
-		items: Item[];
-		inputProps?: WithoutChildrenOrChild<Combobox.InputProps>;
-		contentProps?: WithoutChildrenOrChild<Combobox.ContentProps>;
-	};
-	let {
-		items,
-		value = $bindable(),
-		open = $bindable(false),
-		inputProps,
-		contentProps,
-		type,
-		...restProps
-	}: Props = $props();
-	let searchValue = $state("");
-	const filteredItems = $derived.by(() => {
-		if (searchValue === "") return items;
-		return items.filter((item) => item.label.toLowerCase().includes(searchValue.toLowerCase()));
-	});
-	function handleInput(e: Event & { currentTarget: HTMLInputElement }) {
-		searchValue = e.currentTarget.value;
-	}
-	function handleOpenChange(newOpen: boolean) {
-		if (!newOpen) searchValue = "";
-	}
-	const mergedRootProps = $derived(mergeProps(restProps, { onOpenChange: handleOpenChange }));
-	const mergedInputProps = $derived(mergeProps(inputProps, { oninput: handleInput }));
+  	import { Combobox, type WithoutChildrenOrChild, mergeProps } from "bits-ui";
+  	import ChevronUpDown from "phosphor-svelte/lib/CaretUpDown";
+  	type Item = { value: string; label: string };
+  	type Props = Combobox.RootProps & {
+  		items: Item[];
+  		inputProps?: WithoutChildrenOrChild<Combobox.InputProps>;
+  		contentProps?: WithoutChildrenOrChild<Combobox.ContentProps>;
+  	};
+  	let {
+  		items,
+  		value = $bindable(),
+  		open = $bindable(false),
+  		inputProps,
+  		contentProps,
+  		type,
+  		...restProps
+  	}: Props = $props();
+  	let searchValue = $state("");
+  	const filteredItems = $derived.by(() => {
+  		if (searchValue === "") return items;
+  		return items.filter((item) => item.label.toLowerCase().includes(searchValue.toLowerCase()));
+  	});
+  	function handleInput(e: Event & { currentTarget: HTMLInputElement }) {
+  		searchValue = e.currentTarget.value;
+  	}
+  	function handleOpenChange(newOpen: boolean) {
+  		if (!newOpen) searchValue = "";
+  	}
+  	const mergedRootProps = $derived(mergeProps(restProps, { onOpenChange: handleOpenChange }));
+  	const mergedInputProps = $derived(mergeProps(inputProps, { oninput: handleInput }));
 
-	let inputValue = $derived.by(() => {
-		return items.find((item) => item.value === value)?.label;
-	});
+  	let inputValue = $derived.by(() => {
+  		return items.find((item) => item.value === value)?.label;
+  	});
 </script>
 
 <Combobox.Root

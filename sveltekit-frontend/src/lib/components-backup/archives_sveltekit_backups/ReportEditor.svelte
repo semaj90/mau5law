@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import type { CitationPoint, Report, ReportSection } from "$lib/data/types";
   import { onDestroy, onMount } from "svelte";

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import N64ToastStore from './N64ToastStore';
   import type { N64Toast } from './N64ToastStore';
@@ -8,15 +7,15 @@
   let unsubscribe: () => void = () => {};
 
   onMount(() => {
-	unsubscribe = N64ToastStore.subscribe((v) => (toasts = v));
+  	unsubscribe = N64ToastStore.subscribe((v) => (toasts = v));
   });
 
   onDestroy(() => {
-	unsubscribe();
+  	unsubscribe();
   });
 
   function remove(id: string) {
-	N64ToastStore.remove(id);
+  	N64ToastStore.remove(id);
   }
 </script>
 

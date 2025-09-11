@@ -1,6 +1,5 @@
 <!-- Enhanced YoRHa AI Assistant with RAG Integration & Evidence Mode -->
 <script lang="ts">
-</script>
   import type { Props } from "$lib/types/global";
   import { onMount, onDestroy } from 'svelte';
   import { fly, fade, scale } from 'svelte/transition';
@@ -29,7 +28,7 @@
   });
 
   // UI state
-let searchBarRef = $state<HTMLInputElement;
+  let searchBarRef = $state<HTMLInputElement;
   let chatContainerRef: HTMLDivElement;
   let evidenceEditorRef: HTMLDivElement;
 
@@ -78,7 +77,7 @@ let searchBarRef = $state<HTMLInputElement;
     isProcessing = true;
 
     try {
-let responseContent = $state('');
+  let responseContent = $state('');
 
       await streamRag({
         query,

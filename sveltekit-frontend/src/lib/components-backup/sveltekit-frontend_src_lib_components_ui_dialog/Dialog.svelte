@@ -1,6 +1,5 @@
 <!-- Enhanced Dialog component with custom implementation -->
 <script lang="ts">
-</script>
   interface Props {
     onclose?: (event?: any) => void;
   }
@@ -21,21 +20,19 @@
   import { fade, fly } from "svelte/transition";
   import { cn } from '$lib/utils';
 
-  
-              
   // Custom dialog implementation
   function handleClose() {
     open = false;
     onclose?.();
-}
+  }
   function handleKeydown(event: KeyboardEvent) {
     if (closeOnEscape && event.key === "Escape") {
       handleClose();
-}}
+  }}
   function handleOutsideClick(event: MouseEvent) {
     if (closeOnOutsideClick && event.target === event.currentTarget) {
       handleClose();
-}}
+  }}
   const sizeClasses = {
     sm: "max-w-sm",
     md: "max-w-md",

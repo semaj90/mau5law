@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { 
@@ -107,7 +106,6 @@
     agentResults.set([]);
     orchestrationLog.set([]);
     agentCommunications.set([]);
-    
     const selectedWorkflowConfig = workflows.find(w => w.id === selectedWorkflow);
     if (!selectedWorkflowConfig) {
       console.error('Selected workflow not found');
@@ -131,7 +129,6 @@
    */
   async function runOrchestrationLoop(workflow: any, prompt: string) {
     let currentPrompt = prompt;
-    
     for (let i = 0; i < maxIterations; i++) {
       currentIteration = i + 1;
       addLogEntry('iteration-start', '', `Starting iteration ${i + 1}/${maxIterations}`, {});
@@ -139,7 +136,6 @@
       // Phase 1: Semantic Search and Memory Analysis
       currentPhase.set('semantic-search');
       const searchResults = await executeSemanticSearch(currentPrompt);
-      
       // Phase 2: Memory Graph Reading
       currentPhase.set('memory-analysis');
       const memoryResults = await executeMemoryAnalysis(currentPrompt);
@@ -158,7 +154,6 @@
       };
 
       const results = await copilotOrchestrator(currentPrompt, orchestrationOptions);
-      
       // Update agent results store
       if (results.agentResults) {
         agentResults.update(prev => [...prev, ...results.agentResults]);
@@ -168,7 +163,6 @@
       currentPhase.set('self-prompting');
       if (enableSelfPrompting && results.selfPrompt) {
         const selfPromptResult = await generateSelfPrompt(results, workflow.agents);
-        
         // Use the self-generated prompt for the next iteration
         if (selfPromptResult.nextPrompt && i < maxIterations - 1) {
           currentPrompt = selfPromptResult.nextPrompt;
@@ -202,12 +196,9 @@
    */
   async function executeSemanticSearch(prompt: string) {
     addLogEntry('semantic-search', 'context7', `Executing semantic search for: ${prompt}`, {});
-    
     updateAgentStatus('context7', 'processing', 'Performing semantic search');
-    
     // Simulate Context7 semantic search
     await new Promise(resolve => setTimeout(resolve, 800));
-    
     const searchResults = {
       query: prompt,
       results: [
@@ -228,7 +219,6 @@
 
     updateAgentStatus('context7', 'completed', 'Semantic search completed');
     addLogEntry('semantic-search', 'context7', 'Semantic search completed', searchResults);
-    
     return searchResults;
   }
 
@@ -237,11 +227,8 @@
    */
   async function executeMemoryAnalysis(prompt: string) {
     addLogEntry('memory-analysis', 'memory-server', `Reading memory graph for: ${prompt}`, {});
-    
     updateAgentStatus('memory-server', 'processing', 'Analyzing memory graph');
-    
     await new Promise(resolve => setTimeout(resolve, 600));
-    
     const memoryResults = {
       nodes: [
         {
@@ -266,7 +253,6 @@
 
     updateAgentStatus('memory-server', 'completed', 'Memory analysis completed');
     addLogEntry('memory-analysis', 'memory-server', 'Memory graph analysis completed', memoryResults);
-    
     return memoryResults;
   }
 
@@ -275,10 +261,8 @@
    */
   async function generateSelfPrompt(results: any, agents: string[]) {
     addLogEntry('self-prompting', 'meta-agent', 'Analyzing results for self-prompting', {});
-    
     // Simulate meta-analysis by the orchestration system
     await new Promise(resolve => setTimeout(resolve, 500));
-    
     const analysis = {
       strengths: [
         'Strong legal precedent identification',
@@ -305,7 +289,6 @@
     };
 
     addLogEntry('self-prompting', 'meta-agent', 'Self-prompt generated', selfPromptResult);
-    
     return selfPromptResult;
   }
 
@@ -314,7 +297,6 @@
    */
   async function synthesizeIterationResults(results: any, iteration: number) {
     addLogEntry('synthesis', 'synthesizer', `Synthesizing iteration ${iteration} results`, {});
-    
     const synthesis = {
       iteration,
       keyFindings: [
@@ -331,7 +313,6 @@
     };
 
     addLogEntry('synthesis', 'synthesizer', 'Iteration synthesis completed', synthesis);
-    
     return synthesis;
   }
 
@@ -342,7 +323,6 @@
     // Simple heuristic: if we have sufficient high-confidence results
     const agentConfidence = results.agentResults?.map((r: any) => r.confidence || 0.8) || [];
     const avgConfidence = agentConfidence.reduce((a: number, b: number) => a + b, 0) / agentConfidence.length;
-    
     return avgConfidence > 0.85 && currentIteration >= 2;
   }
 
@@ -352,7 +332,6 @@
   async function generateFinalReport() {
     currentPhase.set('final-report');
     addLogEntry('final-report', 'orchestrator', 'Generating comprehensive final report', {});
-    
     const finalReport = {
       summary: 'Multi-agent legal evidence analysis completed successfully',
       totalIterations: currentIteration,
@@ -390,10 +369,8 @@
     for (const query of mcpQueries) {
       const prompt = generateMCPPrompt(query);
       addLogEntry('context7-demo', 'context7', `Executing: ${prompt}`, {});
-      
       // Simulate MCP tool execution
       await new Promise(resolve => setTimeout(resolve, 300));
-      
       const mockResult = {
         tool: query.tool,
         result: `Context7 analysis completed for ${query.component || query.area || query.feature}`,

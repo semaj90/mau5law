@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import Enhanced3DSemanticProcessor from '$lib/components/Enhanced3DSemanticProcessor.svelte';
@@ -13,7 +12,6 @@
 
   let pageTitle = '3D Semantic Analysis';
   let pageDescription = 'Advanced text processing with WebAssembly tokenization, WebGPU 3D spatial embeddings, and mathematical optimization';
-  
   // Mathematical concepts and algorithms info
   let mathematicalConcepts = [
     {
@@ -53,7 +51,6 @@
       implementation: "GPU buffer-based octree with 3×3×3 neighborhood queries"
     }
   ];
-  
   // Optimization techniques
   let optimizationTechniques = [
     {
@@ -87,7 +84,6 @@
       description: "Dynamic nearest neighbor index with hierarchical graphs"
     }
   ];
-  
   // Performance metrics (example)
   let performanceMetrics = [
     { metric: "Text Processing Speed", value: "50,000 tokens/sec", detail: "WebAssembly BPE tokenization" },

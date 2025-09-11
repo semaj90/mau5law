@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     value: any
     class_: string
@@ -32,7 +31,7 @@
   function handleClick() {
     onSelect(value);
     open.set(false);
-}
+  }
 </script>
 
 <div

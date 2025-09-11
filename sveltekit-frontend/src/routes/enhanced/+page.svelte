@@ -1,156 +1,155 @@
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	// Debounce + streaming support
-let debounceMs = $state(400);
-let autoSearch = $state(true);
-let lastTimer = $state<any >(null);
-let useStreaming = $state(true);
-let streaming = $state(false);
-let streamedCount = $state(0);
-let query = $state('');
-let mode = $state<'simple' | 'enhanced' >('simple');
-let limit = $state(8);
-let threshold = $state<number | null >(null);
-let model = $state('');
-let caseId = $state('');
-let autoFocus = $state(true);
-let loading = $state(false);
-let controller = $state<AbortController | null >(null);
-let results = $state<any[] >([]);
-let responseMeta = $state<any >(null);
-let errorMsg = $state<string | null >(null);
+  	import { onMount } from 'svelte';
+  	// Debounce + streaming support
+  let debounceMs = $state(400);
+  let autoSearch = $state(true);
+  let lastTimer = $state<any >(null);
+  let useStreaming = $state(true);
+  let streaming = $state(false);
+  let streamedCount = $state(0);
+  let query = $state('');
+  let mode = $state<'simple' | 'enhanced' >('simple');
+  let limit = $state(8);
+  let threshold = $state<number | null >(null);
+  let model = $state('');
+  let caseId = $state('');
+  let autoFocus = $state(true);
+  let loading = $state(false);
+  let controller = $state<AbortController | null >(null);
+  let results = $state<any[] >([]);
+  let responseMeta = $state<any >(null);
+  let errorMsg = $state<string | null >(null);
 
-	function reset() {
-		results = [];
-		responseMeta = null;
-		errorMsg = null;
-		streamedCount = 0;
-	}
+  	function reset() {
+  		results = [];
+  		responseMeta = null;
+  		errorMsg = null;
+  		streamedCount = 0;
+  	}
 
-	function scheduleDebounced() {
-		if (!autoSearch) return;
-		if (lastTimer) clearTimeout(lastTimer);
-		lastTimer = setTimeout(() => {
-			if (query.trim()) runSearch();
-		}, debounceMs);
-	}
+  	function scheduleDebounced() {
+  		if (!autoSearch) return;
+  		if (lastTimer) clearTimeout(lastTimer);
+  		lastTimer = setTimeout(() => {
+  			if (query.trim()) runSearch();
+  		}, debounceMs);
+  	}
 
-	async function runSearch() {
-		if (!query.trim()) return;
-		reset();
-		loading = true;
-		controller?.abort();
-		controller = new AbortController();
-		const body: any = { query, limit, mode };
-		if (threshold !== null && threshold >= 0) body.threshold = threshold;
-		if (model.trim()) body.model = model.trim();
-		if (caseId.trim()) body.caseId = caseId.trim();
-		if (useStreaming) {
-			await runStreaming(body);
-			return;
-		}
-		try {
-			const res = await fetch('/api/ai/vector-search', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(body),
-				signal: controller.signal
-			});
-			if (!res.ok) {
-				errorMsg = `Request failed (${res.status})`;
-			} else {
-				const data = await res.json();
-				results = data.results || [];
-				responseMeta = data;
-			}
-		} catch (e: any) {
-			if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
-		} finally {
-			loading = false;
-		}
-	}
+  	async function runSearch() {
+  		if (!query.trim()) return;
+  		reset();
+  		loading = true;
+  		controller?.abort();
+  		controller = new AbortController();
+  		const body: any = { query, limit, mode };
+  		if (threshold !== null && threshold >= 0) body.threshold = threshold;
+  		if (model.trim()) body.model = model.trim();
+  		if (caseId.trim()) body.caseId = caseId.trim();
+  		if (useStreaming) {
+  			await runStreaming(body);
+  			return;
+  		}
+  		try {
+  			const res = await fetch('/api/ai/vector-search', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify(body),
+  				signal: controller.signal
+  			});
+  			if (!res.ok) {
+  				errorMsg = `Request failed (${res.status})`;
+  			} else {
+  				const data = await res.json();
+  				results = data.results || [];
+  				responseMeta = data;
+  			}
+  		} catch (e: any) {
+  			if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
+  		} finally {
+  			loading = false;
+  		}
+  	}
 
-	async function runStreaming(body: any) {
-		streaming = true;
-		try {
-			const params = new URLSearchParams({ query: body.query, limit: String(body.limit || 8), mode: body.mode || 'simple' });
-			if (body.threshold != null) params.set('threshold', String(body.threshold);
-			if (body.model) params.set('model', body.model);
-			if (body.caseId) params.set('caseId', body.caseId);
-			const url = `/api/ai/vector-search/stream?${params.toString()}`;
-			const res = await fetch(url, { signal: controller!.signal });
-			if (!res.ok || !res.body) { errorMsg = `Stream failed (${res.status})`; return; }
-			const reader = res.body.getReader();
-			const decoder = new TextDecoder();
-let buffer = $state('');
-			while (true) {
-				const { value, done } = await reader.read();
-				if (done) break;
-				buffer += decoder.decode(value, { stream: true });
-				let idx;
-				while ((idx = buffer.indexOf('\n\n')) !== -1) {
-					const raw = buffer.slice(0, idx).trim();
-					buffer = buffer.slice(idx + 2);
-					if (!raw) continue;
-					const lines = raw.split('\n');
-let event = $state('message');
-let dataStr = $state('');
-					for (const line of lines) {
-						if (line.startsWith('event:')) event = line.slice(6).trim();
-						else if (line.startsWith('data:')) dataStr += line.slice(5).trim();
-					}
-					if (dataStr) {
-						try { handleStreamEvent(event, JSON.parse(dataStr)); } catch {}
-					}
-				}
-			}
-		} catch (e: any) {
-			if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
-		} finally {
-			streaming = false;
-			loading = false;
-		}
-	}
+  	async function runStreaming(body: any) {
+  		streaming = true;
+  		try {
+  			const params = new URLSearchParams({ query: body.query, limit: String(body.limit || 8), mode: body.mode || 'simple' });
+  			if (body.threshold != null) params.set('threshold', String(body.threshold);
+  			if (body.model) params.set('model', body.model);
+  			if (body.caseId) params.set('caseId', body.caseId);
+  			const url = `/api/ai/vector-search/stream?${params.toString()}`;
+  			const res = await fetch(url, { signal: controller!.signal });
+  			if (!res.ok || !res.body) { errorMsg = `Stream failed (${res.status})`; return; }
+  			const reader = res.body.getReader();
+  			const decoder = new TextDecoder();
+  let buffer = $state('');
+  			while (true) {
+  				const { value, done } = await reader.read();
+  				if (done) break;
+  				buffer += decoder.decode(value, { stream: true });
+  				let idx;
+  				while ((idx = buffer.indexOf('\n\n')) !== -1) {
+  					const raw = buffer.slice(0, idx).trim();
+  					buffer = buffer.slice(idx + 2);
+  					if (!raw) continue;
+  					const lines = raw.split('\n');
+  let event = $state('message');
+  let dataStr = $state('');
+  					for (const line of lines) {
+  						if (line.startsWith('event:')) event = line.slice(6).trim();
+  						else if (line.startsWith('data:')) dataStr += line.slice(5).trim();
+  					}
+  					if (dataStr) {
+  						try { handleStreamEvent(event, JSON.parse(dataStr)); } catch {}
+  					}
+  				}
+  			}
+  		} catch (e: any) {
+  			if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
+  		} finally {
+  			streaming = false;
+  			loading = false;
+  		}
+  	}
 
-	function handleStreamEvent(event: string, data: any) {
-		if (event === 'meta') {
-			responseMeta = { ...(responseMeta || {}), ...data };
-		} else if (event === 'result') {
-			results = [...results, data];
-			streamedCount = results.length;
-		} else if (event === 'error') {
-			errorMsg = data.message || 'Stream error';
-		} else if (event === 'done') {
-			responseMeta = { ...(responseMeta || {}), ...data, count: results.length };
-		}
-	}
+  	function handleStreamEvent(event: string, data: any) {
+  		if (event === 'meta') {
+  			responseMeta = { ...(responseMeta || {}), ...data };
+  		} else if (event === 'result') {
+  			results = [...results, data];
+  			streamedCount = results.length;
+  		} else if (event === 'error') {
+  			errorMsg = data.message || 'Stream error';
+  		} else if (event === 'done') {
+  			responseMeta = { ...(responseMeta || {}), ...data, count: results.length };
+  		}
+  	}
 
-	function submit(e: Event) {
-		e.preventDefault();
-		runSearch();
-	}
+  	function submit(e: Event) {
+  		e.preventDefault();
+  		runSearch();
+  	}
 
-	function abort() {
-		controller?.abort();
-		loading = false;
-		streaming = false;
-	}
+  	function abort() {
+  		controller?.abort();
+  		loading = false;
+  		streaming = false;
+  	}
 
-	onMount(() => {
-		if (autoFocus) {
-			const el = document.getElementById('query-input');
-			el?.focus();
-		}
-	});
+  	onMount(() => {
+  		if (autoFocus) {
+  			const el = document.getElementById('query-input');
+  			el?.focus();
+  		}
+  	});
 
-	function scoreClass(score: number){
-		if (score == null) return 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200';
-		if (score >= 0.90) return 'score-top';
-		if (score >= 0.80) return 'score-high';
-		if (score >= 0.65) return 'score-mid';
-		return 'score-low';
-	}
+  	function scoreClass(score: number){
+  		if (score == null) return 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200';
+  		if (score >= 0.90) return 'score-top';
+  		if (score >= 0.80) return 'score-high';
+  		if (score >= 0.65) return 'score-mid';
+  		return 'score-low';
+  	}
 </script>
 
 <div class="mx-auto max-w-5xl p-6 space-y-6">

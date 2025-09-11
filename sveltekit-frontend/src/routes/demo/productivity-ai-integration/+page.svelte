@@ -1,15 +1,12 @@
 <!-- Productivity AI Integration Demo -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  
   // Import components
   import QLorATrainingPanel from '$lib/components/ai/QLorATrainingPanel.svelte';
   import NES3DLODProcessor from '$lib/components/ui/gaming/effects/NES3DLODProcessor.svelte';
   import EnhancedMinIODragDrop from '$lib/components/upload/EnhancedMinIODragDrop.svelte';
   import RecommendationContainer from '$lib/components/ui/gaming/RecommendationContainer.svelte';
-  
   // Import services
   import { 
     userAnalyticsRLIntegration, 
@@ -99,12 +96,10 @@
     // Simulate processing with progress updates
     const progressInterval = setInterval(() => {
       demoDocument.progress += Math.random() * 0.15;
-      
       if (demoDocument.progress >= 1) {
         demoDocument.progress = 1;
         processing = false;
         clearInterval(progressInterval);
-        
         // Complete action
         userAnalyticsRLIntegration.completeAction(actionId, {
           success: true,

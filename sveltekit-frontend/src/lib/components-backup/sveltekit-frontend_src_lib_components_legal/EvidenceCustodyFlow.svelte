@@ -4,7 +4,6 @@ Main UI component for managing the complete custody workflow with real-time coll
 and AI-powered verification features.
 -->
 <script lang="ts">
-</script>
   interface Props {
     evidenceId: string
     caseId: string
@@ -39,7 +38,6 @@ and AI-powered verification features.
   import { toast } from '$lib/components/ui/toast';
 
   // Props
-            
   // State machine actor
   let custodyActor = $state(createActor(evidenceCustodyMachine));
   let currentState = $state(custodyActor.getSnapshot());
@@ -67,12 +65,10 @@ and AI-powered verification features.
   onMount(() => {
     // Start the state machine actor
     custodyActor.start();
-    
     // Subscribe to state changes
     custodyActor.subscribe((state) => {
       currentState = state;
       isWorkflowActive = !['idle', 'completed', 'failed', 'rejected', 'cancelled'].includes(state.value as string);
-      
       // Handle workflow completion
       if (state.value === 'completed') {
         toast.success('Evidence custody workflow completed successfully');
@@ -154,25 +150,20 @@ and AI-powered verification features.
   function setupWebSocketConnection() {
     try {
       wsConnection = new WebSocket(`ws://localhost:3000/api/websocket?room=custody-${evidenceId}`);
-      
       wsConnection.onopen = () => {
         console.log('WebSocket connected for custody workflow');
       };
-      
       wsConnection.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        
         // Handle real-time collaboration updates
         if (data.type === 'collaboration-update') {
           // Update collaboration state based on WebSocket messages
           handleCollaborationUpdate(data);
         }
       };
-      
       wsConnection.onerror = (error) => {
         console.error('WebSocket error:', error);
       };
-      
       wsConnection.onclose = () => {
         console.log('WebSocket connection closed');
         // Attempt to reconnect after a delay

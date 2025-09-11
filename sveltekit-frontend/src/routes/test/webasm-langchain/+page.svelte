@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import WebAssemblyLangChainTest from '$lib/components/tests/WebAssemblyLangChainTest.svelte';
 </script>
 

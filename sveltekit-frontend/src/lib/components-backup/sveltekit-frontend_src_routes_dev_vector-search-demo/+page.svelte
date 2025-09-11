@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte'
   let query = 'contract liability terms'
   let results: any[] = []
@@ -21,17 +20,16 @@
       return () => ws.close()
     } catch {}
   })
-</script>
 
-<h1>Vector Search Demo</h1>
-<div class="row">
+  <h1>Vector Search Demo</h1>
+  <div class="row">
   <input bind:value={query} placeholder="Enter query" />
   <button onclick={runSearch}>Search</button>
-</div>
+  </div>
 
-<p>Log: {wsMsg}</p>
+  <p>Log: {wsMsg}</p>
 
-{#if results?.length}
+  {#if results?.length}
   <ul>
     {#each results as r}
       <li>
@@ -39,17 +37,17 @@
       </li>
     {/each}
   </ul>
-{:else}
+  {:else}
   <p>No results yet.</p>
-{/if}
+  {/if}
 
-<style>
+  <style>
   .row { display: flex gap: 8px; margin: 8px 0; }
   input { flex: 1; padding: 6px 8px; }
   button { padding: 6px 12px; }
   pre { background: #111; color: #ddd; padding: 8px; border-radius: 4px; }
-</style>
-<script lang="ts">
+  </style>
+  <script lang="ts">
 </script>
   import { onMount } from 'svelte';
 

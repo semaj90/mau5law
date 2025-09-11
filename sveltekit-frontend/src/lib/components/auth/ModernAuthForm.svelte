@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Svelte 5 runes are used directly without imports
   import { enhance } from '$app/forms';
   // import { Dialog } from 'bits-ui';
@@ -12,7 +11,6 @@
   import { Label } from '$lib/components/ui/label/index.js';
   import { Alert } from '$lib/components/ui/alert/index.js';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
-  
   interface Props {
     mode?: 'login' | 'register';
     open?: boolean;
@@ -35,7 +33,6 @@
     firstName: '',
     lastName: ''
   });
-  
   let loading = $state(false);
   let error = $state('');
   let success = $state('');
@@ -48,13 +45,11 @@
   let isValid = $derived(() => {
     const hasEmail = formData.email.includes('@');
     const hasPassword = formData.password.length >= 6;
-    
     if (mode === 'register') {
       const hasConfirmPassword = formData.confirmPassword === formData.password;
       const hasName = formData.firstName.trim() && formData.lastName.trim();
       return hasEmail && hasPassword && hasConfirmPassword && hasName;
     }
-    
     return hasEmail && hasPassword;
   });
 
@@ -62,7 +57,6 @@
   async function handleSubmit(event: Event) {
     const form = event.target as HTMLFormElement;
     const formDataObj = new FormData(form);
-    
     loading = true;
     error = '';
     success = '';
@@ -96,7 +90,6 @@
 
       if (response.ok) {
         success = result.message || `${mode === 'login' ? 'Login' : 'Registration'} successful!`;
-        
         // Log successful authentication with AI context
         await mcpGPUOrchestrator.processLegalDocument(
           `Authentication success: ${mode} for ${formData.email}`,
@@ -121,7 +114,6 @@
         }, 1000);
       } else {
         error = result.error || 'Authentication failed';
-        
         // Log failed authentication attempt for security analysis
         await mcpGPUOrchestrator.routeAPIRequest(
           '/api/security/log-failed-auth',

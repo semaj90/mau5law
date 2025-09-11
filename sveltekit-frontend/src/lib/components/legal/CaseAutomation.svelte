@@ -1,10 +1,8 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import Dropdown from '$lib/components/ui/Dropdown.svelte';
   import Checkbox from '$lib/components/ui/Checkbox.svelte';
   import { goTensorService, type TensorRequest, generateTensorRequest } from '$lib/services/go-tensor-service-client';
-  
   const dispatch = createEventDispatcher<{
     automationSuccess: { type: string; source: string; config: any };
     automationError: string;
@@ -18,7 +16,6 @@
   let enableGPUAcceleration: boolean = true;
   let batchSize: number = 50;
   let confidenceThreshold: number = 0.85;
-  
   // State management
   let loadingAutomationTypes = true;
   let processing = false;
@@ -123,7 +120,6 @@
       }
 
       processingStats.processingTime = Date.now() - startTime;
-      
       dispatch('automationSuccess', {
         type: selectedAutomationType,
         source: selectedSource,
@@ -135,7 +131,6 @@
       selectedSource = '';
       enableAutoProcessing = false;
       selectedProcessingOptions.clear();
-      
     } catch (error) {
       dispatch('automationError', error instanceof Error ? error.message : 'Configuration failed');
     } finally {
@@ -148,29 +143,24 @@
     const mockDocuments = generateMockLegalDocuments(config.batchSize);
     processingStats.totalDocuments = mockDocuments.length;
     processingStats.totalBatches = Math.ceil(mockDocuments.length / 10);
-    
     const batchId = `batch_${Date.now()}`;
     dispatch('processingStarted', { batchId, documentCount: mockDocuments.length });
 
     for (let i = 0; i < processingStats.totalBatches; i++) {
       processingStats.currentBatch = i + 1;
       const batch = mockDocuments.slice(i * 10, (i + 1) * 10);
-      
       if (config.gpuAcceleration) {
         // Process batch with tensor service
         const tensorRequests: TensorRequest[] = batch.map(doc => 
           generateTensorRequest(doc.id, doc.vectorData, 'analyze')
         );
-        
         try {
           await goTensorService.processBatch(tensorRequests);
         } catch (error) {
           console.log('Using mock tensor processing');
         }
       }
-      
       processingStats.documentsProcessed += batch.length;
-      
       // Simulate processing delay
       await new Promise(resolve => setTimeout(resolve, 200));
     }

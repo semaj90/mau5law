@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { goto } from '$app/navigation';
   import SearchBar from '$lib/components/+SearchBar.svelte';
 

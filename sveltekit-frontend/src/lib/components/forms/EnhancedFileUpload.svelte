@@ -5,7 +5,6 @@
 </script>, template, and <style>.
 -->
 <script lang="ts">
-</script>
   import { onMount } from "svelte";
   import {
     Button
@@ -80,15 +79,15 @@
 
   // State
   let fileInput: HTMLInputElement;
-let isDragOver = $state(false);
-let selectedFiles = $state<File[] >([]);
-let uploadProgress = $state<Record<string, number> >({});
-let previews = $state<Record<string, string> >({});
-let isUploading = $state(false);
-let currentUploadFile = $state("");
+  let isDragOver = $state(false);
+  let selectedFiles = $state<File[] >([]);
+  let uploadProgress = $state<Record<string, number> >({});
+  let previews = $state<Record<string, string> >({});
+  let isUploading = $state(false);
+  let currentUploadFile = $state("");
 
   // Local form state (no $form store)
-let formState = $state({
+  let formState = $state({
     title: '',
     description: '',
     tags: [] as string[],
@@ -103,7 +102,7 @@ let formState = $state({
     enableSummarization: false,
     isAdmissible: false,
   });
-let errors = $state<Record<string, string[]> >({});
+  let errors = $state<Record<string, string[]> >({});
 
   // Options
   const evidenceTypes = [
@@ -251,7 +250,7 @@ let errors = $state<Record<string, string[]> >({});
 
   async function simulateUpload(fileName: string): Promise<void> {
     return new Promise((resolve) => {
-let progress = $state(0);
+  let progress = $state(0);
       const interval = setInterval(() => {
         progress += Math.random() * 20;
         if (progress >= 100) {
@@ -270,7 +269,7 @@ let progress = $state(0);
   }
 
   // Tags
-let tagInput = $state("");
+  let tagInput = $state("");
   function addTag() {
     const trimmed = tagInput.trim();
     if (trimmed && !formState.tags.includes(trimmed)) {

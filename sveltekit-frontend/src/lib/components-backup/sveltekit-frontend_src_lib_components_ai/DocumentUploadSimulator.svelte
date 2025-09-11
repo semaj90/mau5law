@@ -1,8 +1,6 @@
 <!-- Document Upload Simulator with AI Processing -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
-  
   interface DocumentUpload {
     id: string
     filename: string
@@ -171,7 +169,6 @@
   function handleDrop(event: DragEvent): void {
     event.preventDefault();
     isDragging = false;
-    
     const files = event.dataTransfer?.files;
     if (files) {
       Array.from(files).forEach(simulateUpload);
@@ -201,7 +198,6 @@
       embeddings: upload.embeddings,
       processedAt: new Date().toISOString()
     };
-    
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

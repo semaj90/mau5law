@@ -1,16 +1,11 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher, getContext } from 'svelte';
-  
   interface ContextMenuContext {
     close: () => void;
   }
-  
   export let disabled = false;
-  
   const dispatch = createEventDispatcher();
   const { close } = getContext<ContextMenuContext>('context-menu') || { close: () => {} };
-  
   function handleClick() {
     if (!disabled) {
       dispatch('click');

@@ -3,7 +3,6 @@
   Provides feedback hooks for any component or interaction
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { getFeedbackStore } from '$lib/stores/feedback-store.svelte';
   import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
@@ -22,15 +21,13 @@
 
   // Get feedback store
   const store = getFeedbackStore();
-  
   let mounted = $state(false);
   let visible = $state(false);
   let interactionId: string | null = $state(null);
-let element = $state<HTMLElement;
+  let element = $state<HTMLElement;
 
   onMount(() >(> {
     mounted = true);
-    
     if (trackOnMount) {
       triggerFeedback();
     }
@@ -49,7 +46,6 @@ let element = $state<HTMLElement;
    */
   export function triggerFeedback(customContext: Record<string, any> = {}) {
     const finalContext = { ...context, ...customContext };
-    
     interactionId = store.trackInteraction(interactionType, finalContext, {
       autoTrigger,
       priority,
@@ -94,7 +90,6 @@ let element = $state<HTMLElement;
         error,
         failedAt: new Date().toISOString()
       });
-      
       // Higher priority for failed interactions
       triggerFeedback({ priority: 'high', error });
     }

@@ -2,7 +2,6 @@
 <!-- Complete integration of XState, WebGL, Enhanced RAG, and Context7 MCP -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     Button
@@ -20,11 +19,11 @@
   import { CheckCircle, AlertCircle, Cpu, Database, Zap, Activity } from 'lucide-svelte';
 
   // Phase 13 system instances
-let canvas = $state<HTMLCanvasElement;
+  let canvas = $state<HTMLCanvasElement;
   let phase13System: any >(null);
-let apiCoordinator = $state<any >(null);
-let ragEngine = $state<any >(null);
-let context7Integration = $state<any >(null);
+  let apiCoordinator = $state<any >(null);
+  let ragEngine = $state<any >(null);
+  let context7Integration = $state<any >(null);
 
   // Demo state
   let systemInitialized = $state(false);

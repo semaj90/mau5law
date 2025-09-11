@@ -1,13 +1,12 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from "svelte";
   import { draggable } from "../../../lib/actions/draggable";
   import { aiService } from "../../../lib/services/aiService";
-// UI Components
+  // UI Components
   import { Badge, Card, CardContent, CardFooter, CardHeader, Input, Textarea } from "$lib/components/ui";
   import { Button } from "$lib/components/ui/button";
   import * as ContextMenu from "$lib/components/ui/context-menu";
-// Note: Select component has issues - using native select for now
+  // Note: Select component has issues - using native select for now
   // Icons
   import { Edit, Save, Sparkles, Tag, User, X } from "lucide-svelte";
 

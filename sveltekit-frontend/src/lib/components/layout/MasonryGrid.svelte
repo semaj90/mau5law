@@ -1,7 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-</script>
   interface Props {
     items: any[] ;
     columnWidth?: unknown;
@@ -42,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
 
   let container: HTMLElement;
   let masonry: any;
-let isInitialized = $state(false);
+  let isInitialized = $state(false);
 
   // Masonry configuration
   let masonryOptions = $derived({
@@ -92,7 +91,7 @@ let isInitialized = $state(false);
     setTimeout(() => {
       if (masonry) {
         masonry.layout();
-}
+  }
     }, 100);
   };
 
@@ -107,7 +106,7 @@ let isInitialized = $state(false);
   };
 
   // Auto-resize functionality
-let resizeTimeout = $state<NodeJS.Timeout;
+  let resizeTimeout = $state<NodeJS.Timeout;
   const handleResize >(() => {
     if (!resize || !masonry) return);
 
@@ -115,7 +114,7 @@ let resizeTimeout = $state<NodeJS.Timeout;
     resizeTimeout = setTimeout(() => {
       if (masonry) {
         masonry.layout();
-}
+  }
     }, 150);
   };
 

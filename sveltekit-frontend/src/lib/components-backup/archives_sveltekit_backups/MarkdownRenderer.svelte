@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { marked } from "marked";
   import { onMount } from "svelte";
 

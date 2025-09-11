@@ -1,6 +1,5 @@
 <!-- AI Chat Test Page - Showcasing Svelte 5 + bits-ui + Docker Ollama Integration -->
 <script lang="ts">
-</script>
   import { onMount } from "svelte";
   import Button from "$lib/components/ui/button/Button.svelte";
   import Card from "$lib/components/ui/Card.svelte";
@@ -47,7 +46,6 @@
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const data = await response.json();
-      
       // Normalize the response structure for compatibility
       systemStatus = {
         services: data.services,

@@ -5,7 +5,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { integratedCacheSystem, type SearchContext } from '$lib/services/integrated-webgpu-cache-system';
   import CachePerformanceMonitor from '$lib/components/dashboard/CachePerformanceMonitor.svelte';
@@ -15,11 +14,9 @@
   let searchResults = $state<any[]>([]);
   let isSearching = $state(false);
   let lastSearchTime = $state<number>(0);
-  
   // Performance metrics
   let systemMetrics = $state<any>({});
   let operationHistory = $state<any[]>([]);
-  
   // Demo configuration
   let enableWebGPU = $state(true);
   let enableWASM = $state(true);
@@ -93,7 +90,6 @@
   onMount(async () => {
     try {
       console.log('🎮 Initializing WebGPU Ranking Cache Demo');
-      
       // Load sample documents into cache
       for (const doc of sampleDocuments) {
         await integratedCacheSystem.storeLegalDocument(doc, {
@@ -102,15 +98,11 @@
           priority: 'medium'
         });
       }
-      
       // Start metrics monitoring
       startMetricsMonitoring();
-      
       // Start demo automation
       startDemoAutomation();
-      
       console.log('✅ Demo initialized successfully');
-      
     } catch (error) {
       console.error('❌ Failed to initialize demo:', error);
     }
@@ -174,7 +166,6 @@
       };
 
       const result = await integratedCacheSystem.performEnhancedSearch(searchContext);
-      
       if (result.success && result.found && result.results) {
         searchResults = result.results.map((r, index) => ({
           ...r,
@@ -206,7 +197,6 @@
     } catch (error) {
       console.error('Search failed:', error);
       searchResults = [];
-      
       operationHistory = [
         {
           timestamp: new Date().toISOString(),
@@ -220,7 +210,6 @@
         },
         ...operationHistory
       ].slice(0, 20);
-      
     } finally {
       isSearching = false;
     }
@@ -243,7 +232,6 @@
 
     try {
       const result = await integratedCacheSystem.performEnhancedSearch(searchContext);
-      
       operationHistory = [
         {
           timestamp: new Date().toISOString(),
@@ -306,7 +294,6 @@
       enableNESMemory,
       compressionLevel
     });
-    
     // Configuration changes would typically require reinitialization
     // For demo purposes, we'll just log the changes
   }

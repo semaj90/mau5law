@@ -5,7 +5,6 @@
 -->
 
 <script lang="ts">
-</script>
   import type { AIResponse } from '$lib/types/ai';
   import { onMount, onDestroy } from 'svelte';
   import { createGGUFRuntime, GGUFHelpers } from '$lib/services/gguf-runtime';
@@ -47,10 +46,8 @@
   onMount(async () => {
     // Initialize WebGPU for visualization
     await initializeWebGPU();
-    
     // Start demo animation
     startVisualization();
-    
     // Initialize service worker communication
     initializeServiceWorkerComm();
   });
@@ -124,10 +121,8 @@
     try {
       // Create command encoder
       const commandEncoder = device.createCommandEncoder();
-      
       // Get current texture
       const textureView = ctx.getCurrentTexture().createView();
-      
       // Create render pass
       const renderPass = commandEncoder.beginRenderPass({
         colorAttachments: [{
@@ -221,7 +216,6 @@
     try {
       // Submit WebGPU task to service worker
       const channel = new MessageChannel();
-      
       const result = await new Promise((resolve, reject) => {
         channel.port1.onmessage = (event) => {
           if (event.data.type === 'WEBGPU_RESULT') {
@@ -357,7 +351,6 @@
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { 
       type: 'application/json' 
     });
-    
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

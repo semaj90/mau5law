@@ -3,7 +3,6 @@ Enhanced Legal AI Chat with Input Synthesis and LegalBERT Integration
 Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipeline, and streaming
 -->
 <script lang="ts">
-</script>
   import type { SystemStatus } from "$lib/types/global";
   import type { Props } from "$lib/types/global";
   import { onMount, tick } from 'svelte';
@@ -83,7 +82,6 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   let isProcessing = $state(false);
   let showAdvancedAnalysis = $state(false);
   let showSettings = $state(false);
-  
   // Database integration state
   let currentSessionId = $state<string | null>(null);
   let relatedReports = $state<any[]>([]);
@@ -132,12 +130,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     if (browser) {
       // Initialize chat session with database
       await initializeChatSession();
-      
       // Load related reports for context
       if (reportId) {
         await loadRelatedReports();
       }
-      
       // Load existing chat history
       await loadChatHistory();
     }
@@ -145,27 +141,27 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     // Initialize with welcome message
     await addSystemMessage(`🏛️ **Enhanced Legal AI Assistant** ${persistConversation ? '(Database Connected)' : '(Session Only)'}
 
-**Advanced Features Active:**
-- 🧠 LegalBERT analysis with entity recognition
-- 📚 RAG pipeline with document synthesis + PostgreSQL
-- ⚡ Intelligent input enhancement with pg_vector search
-- 🎯 Context-aware recommendations
-- 💾 ${persistConversation ? 'Persistent conversation history' : 'Session-only mode'}
+  **Advanced Features Active:**
+  - 🧠 LegalBERT analysis with entity recognition
+  - 📚 RAG pipeline with document synthesis + PostgreSQL
+  - ⚡ Intelligent input enhancement with pg_vector search
+  - 🎯 Context-aware recommendations
+  - 💾 ${persistConversation ? 'Persistent conversation history' : 'Session-only mode'}
 
-**Available Commands:**
-- \`/analyze <text>\` - Deep legal analysis with vector search
-- \`/research <topic>\` - Case law research with similarity matching
-- \`/draft <document_type>\` - Document drafting assistance
-- \`/review <document>\` - Document review with related cases
-- \`/reports\` - Show related reports
-- \`/settings\` - Configure advanced features
+  **Available Commands:**
+  - \`/analyze <text>\` - Deep legal analysis with vector search
+  - \`/research <topic>\` - Case law research with similarity matching
+  - \`/draft <document_type>\` - Document drafting assistance
+  - \`/review <document>\` - Document review with related cases
+  - \`/reports\` - Show related reports
+  - \`/settings\` - Configure advanced features
 
-${caseId ? `**Current Case:** ${caseId}` : ''}
-${reportId ? `**Linked Report:** ${reportId}` : ''}
-${userRole ? `**Your Role:** ${userRole}` : ''}
-${currentSessionId ? `**Session ID:** ${currentSessionId.slice(0, 8)}...` : ''}
+  ${caseId ? `**Current Case:** ${caseId}` : ''}
+  ${reportId ? `**Linked Report:** ${reportId}` : ''}
+  ${userRole ? `**Your Role:** ${userRole}` : ''}
+  ${currentSessionId ? `**Session ID:** ${currentSessionId.slice(0, 8)}...` : ''}
 
-How can I assist with your legal work today?`);
+  How can I assist with your legal work today?`);
 
     // Check system status
     await checkSystemStatus();
@@ -223,7 +219,6 @@ How can I assist with your legal work today?`);
       if (response.ok) {
         const session = await response.json();
         currentSessionId = session.id;
-        
         // Link to report if specified
         if (reportId && session.id) {
           await linkChatToReport(session.id);
@@ -244,7 +239,6 @@ How can I assist with your legal work today?`);
       const response = await fetch(`/api/v1/chat/sessions/${currentSessionId}/messages`);
       if (response.ok) {
         const chatHistory = await response.json();
-        
         // Convert database messages to component format
         const loadedMessages = chatHistory.map((msg: any) => ({
           id: msg.id,
@@ -420,7 +414,6 @@ How can I assist with your legal work today?`);
     // Add next chunk to streaming content
     const chunk = streamingChunks[currentChunkIndex];
     streamingContent += chunk;
-    
     // Update the message in the messages array
     messages.update((msgs) => 
       msgs.map(msg => 
@@ -431,7 +424,6 @@ How can I assist with your legal work today?`);
     );
 
     currentChunkIndex++;
-    
     // Auto-scroll to bottom during streaming
     await tick();
     scrollToBottom();
@@ -445,7 +437,6 @@ How can I assist with your legal work today?`);
    */
   async function processAIQueryWithStreaming(query: string, context: any) {
     const startTime = Date.now();
-    
     if (settings.enableStreamingResponse && settings.enableTypewriterEffect) {
       // Use streaming endpoint
       return await processStreamingResponse(query, context);
@@ -460,20 +451,19 @@ How can I assist with your legal work today?`);
    */
   async function processStreamingResponse(query: string, context: any) {
     const startTime = Date.now();
-    
     const enhancedPrompt = `You are an advanced legal AI assistant specialized in ${userRole} work. 
-${caseId ? `Working on caseItem: ${caseId}` : ''}
-${context.documentIds?.length ? `Referenced documents: ${context.documentIds.length}` : ''}
+  ${caseId ? `Working on caseItem: ${caseId}` : ''}
+  ${context.documentIds?.length ? `Referenced documents: ${context.documentIds.length}` : ''}
 
-User query: "${query}"
+  User query: "${query}"
 
-Please provide a comprehensive legal analysis including:
-1. Direct answer to the query
-2. Relevant legal concepts
-3. Potential implications
-4. Recommended actions
+  Please provide a comprehensive legal analysis including:
+  1. Direct answer to the query
+  2. Relevant legal concepts
+  3. Potential implications
+  4. Recommended actions
 
-Response:`;
+  Response:`;
 
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
@@ -507,7 +497,6 @@ Response:`;
 
           const chunk = decoder.decode(value);
           const lines = chunk.split('\n').filter(line => line.trim());
-          
           for (const line of lines) {
             try {
               const data = JSON.parse(line);
@@ -522,7 +511,6 @@ Response:`;
       }
 
       const processingTime = Date.now() - startTime;
-      
       return {
         response: fullResponse || 'Response generated successfully',
         confidence: 0.85,
@@ -575,7 +563,6 @@ Response:`;
 
     // Add user message
     messages.update((msgs) => [...msgs, userMessage]);
-    
     // Save user message to database
     if (persistConversation) {
       await saveMessageToDatabase(userMessage);
@@ -629,7 +616,6 @@ Response:`;
           assistantMessage.id, 
           processingResult.response || 'I apologize, but I encountered an issue processing your request.'
         );
-        
         // Save final message to database after streaming completes
         if (persistConversation) {
           const finalMessage = { 
@@ -672,21 +658,20 @@ Response:`;
   // Enhanced AI query processing using direct Ollama
   async function processAIQuery(query: string, context: any) {
     const startTime = Date.now();
-    
     // Enhanced legal prompt for better responses
     const enhancedPrompt = `You are an advanced legal AI assistant specialized in ${userRole} work. 
-${caseId ? `Working on caseItem: ${caseId}` : ''}
-${context.documentIds?.length ? `Referenced documents: ${context.documentIds.length}` : ''}
+  ${caseId ? `Working on caseItem: ${caseId}` : ''}
+  ${context.documentIds?.length ? `Referenced documents: ${context.documentIds.length}` : ''}
 
-User query: "${query}"
+  User query: "${query}"
 
-Please provide a comprehensive legal analysis including:
-1. Direct answer to the query
-2. Relevant legal concepts
-3. Potential implications
-4. Recommended actions
+  Please provide a comprehensive legal analysis including:
+  1. Direct answer to the query
+  2. Relevant legal concepts
+  3. Potential implications
+  4. Recommended actions
 
-Response:`;
+  Response:`;
 
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
@@ -711,14 +696,12 @@ Response:`;
 
     const result = await response.json();
     const processingTime = Date.now() - startTime;
-    
     // Generate enhanced analysis structure
     const analysisData = {
       entities: [userRole, caseId].filter(Boolean),
       concepts: ['legal_analysis', context.enhancementLevel],
       complexity: { legalComplexity: 0.7 }
     };
-    
     return {
       response: result.response || 'Response generated successfully',
       confidence: 0.85,
@@ -758,10 +741,10 @@ Response:`;
     if (cmd === '/status') {
       await checkSystemStatus();
       await addSystemMessage(`📊 **System Status:**
-- LegalBERT: ${systemStatus.legalBERT}
-- RAG Pipeline: ${systemStatus.rag}
-- Input Synthesis: ${systemStatus.synthesis}
-- Last Check: ${systemStatus.lastCheck ? new Date(systemStatus.lastCheck).toLocaleTimeString() : 'Never'}`);
+  - LegalBERT: ${systemStatus.legalBERT}
+  - RAG Pipeline: ${systemStatus.rag}
+  - Input Synthesis: ${systemStatus.synthesis}
+  - Last Check: ${systemStatus.lastCheck ? new Date(systemStatus.lastCheck).toLocaleTimeString() : 'Never'}`);
       return;
     }
 
@@ -784,12 +767,12 @@ Response:`;
 
     await addSystemMessage(`❓ Unknown command: ${command}
 
-**Available Commands:**
-- \`/analyze <text>\` - Deep legal analysis with vector search
-- \`/research <topic>\` - Case law research with similarity matching
-- \`/reports\` - Show related reports (PostgreSQL + vector search)
-- \`/status\` - Check system status
-- \`/settings\` - Toggle settings panel`);
+  **Available Commands:**
+  - \`/analyze <text>\` - Deep legal analysis with vector search
+  - \`/research <topic>\` - Case law research with similarity matching
+  - \`/reports\` - Show related reports (PostgreSQL + vector search)
+  - \`/status\` - Check system status
+  - \`/settings\` - Toggle settings panel`);
   }
 
   // Deep analysis command using direct Ollama analysis
@@ -804,15 +787,15 @@ Response:`;
           model: 'gemma3-legal',
           prompt: `Perform a comprehensive legal analysis of the following text. Extract and analyze:
 
-1. Legal entities (parties, courts, statutes, cases)
-2. Legal concepts (liability, jurisdiction, damages, etc.)
-3. Complexity assessment (simple, moderate, complex)
-4. Key legal findings
-5. Recommendations for ${userRole}
+  1. Legal entities (parties, courts, statutes, cases)
+  2. Legal concepts (liability, jurisdiction, damages, etc.)
+  3. Complexity assessment (simple, moderate, complex)
+  4. Key legal findings
+  5. Recommendations for ${userRole}
 
-Text to analyze: "${text}"
+  Text to analyze: "${text}"
 
-Provide a structured analysis:`,
+  Provide a structured analysis:`,
           stream: false,
           options: {
             temperature: 0.2,
@@ -834,18 +817,18 @@ Provide a structured analysis:`,
 
       await addSystemMessage(`🔍 **Deep Legal Analysis Complete**
 
-**Analysis Results:**
-**Entities Found:** ${entityCount}
-**Legal Concepts:** ${conceptCount}
-**Complexity Score:** ${Math.round(complexityScore)}%
-**Text Length:** ${text.length} characters
+  **Analysis Results:**
+  **Entities Found:** ${entityCount}
+  **Legal Concepts:** ${conceptCount}
+  **Complexity Score:** ${Math.round(complexityScore)}%
+  **Text Length:** ${text.length} characters
 
-**AI Analysis:**
-${analysis.response}
+  **AI Analysis:**
+  ${analysis.response}
 
-**System Status:** ✅ All services operational
-**Model:** gemma3-legal
-**Processing Complete**`);
+  **System Status:** ✅ All services operational
+  **Model:** gemma3-legal
+  **Processing Complete**`);
     } catch (error) {
       await addSystemMessage(`❌ Analysis failed: ${error.message}`);
     } finally {
@@ -865,14 +848,14 @@ ${analysis.response}
           model: 'gemma3-legal',
           prompt: `Research legal topic: "${topic}" for ${userRole}
 
-Provide comprehensive analysis with:
-1. Key legal principles
-2. Relevant case law 
-3. Statutory framework
-4. Practical implications
-5. Recommendations
+  Provide comprehensive analysis with:
+  1. Key legal principles
+  2. Relevant case law 
+  3. Statutory framework
+  4. Practical implications
+  5. Recommendations
 
-Topic: ${topic}`,
+  Topic: ${topic}`,
           stream: false,
           options: {
             temperature: 0.3,
@@ -894,22 +877,22 @@ Topic: ${topic}`,
 
       await addSystemMessage(`📚 **Legal Research Results for "${topic}"**
 
-**Research Quality:** ${Math.round(confidenceScore)}%
-**Keyword Relevance:** ${keywordMatches} matches found
-**Response Length:** ${responseLength} characters
-**Model:** gemma3-legal
+  **Research Quality:** ${Math.round(confidenceScore)}%
+  **Keyword Relevance:** ${keywordMatches} matches found
+  **Response Length:** ${responseLength} characters
+  **Model:** gemma3-legal
 
-**Research Findings:**
-${research.response}
+  **Research Findings:**
+  ${research.response}
 
-**Research Metadata:**
-• **User Role:** ${userRole}
-• **Jurisdiction Scope:** Federal and State
-• **Research Depth:** Comprehensive
-• **AI Confidence:** High
-${caseId ? `• **Case Context:** ${caseId}` : ''}
+  **Research Metadata:**
+  • **User Role:** ${userRole}
+  • **Jurisdiction Scope:** Federal and State
+  • **Research Depth:** Comprehensive
+  • **AI Confidence:** High
+  ${caseId ? `• **Case Context:** ${caseId}` : ''}
 
-**Status:** ✅ Research completed successfully`);
+  **Status:** ✅ Research completed successfully`);
     } catch (error) {
       await addSystemMessage(`❌ Research failed: ${error.message}`);
     } finally {
@@ -936,18 +919,18 @@ ${caseId ? `• **Case Context:** ${caseId}` : ''}
 
       await addSystemMessage(`📋 **Related Reports** ${reportId ? `(for Report ${reportId})` : ''}
 
-**Vector Similarity Search Results:**
-${reportsList}
+  **Vector Similarity Search Results:**
+  ${reportsList}
 
-${relatedReports.length > 0 ? `**Database Stats:**
-- **Search Method**: PostgreSQL pg_vector cosine similarity
-- **Embedding Model**: nomic-embed-text (384 dimensions)
-- **Results**: Top ${relatedReports.length} matches
-- **Threshold**: > 0.7 similarity score
+  ${relatedReports.length > 0 ? `**Database Stats:**
+  - **Search Method**: PostgreSQL pg_vector cosine similarity
+  - **Embedding Model**: nomic-embed-text (384 dimensions)
+  - **Results**: Top ${relatedReports.length} matches
+  - **Threshold**: > 0.7 similarity score
 
-**Usage**: These reports contain similar legal concepts and may provide relevant precedents or insights for your current work.` : '**Tip**: Create and save reports to build your knowledge base for future similarity searches.'}
+  **Usage**: These reports contain similar legal concepts and may provide relevant precedents or insights for your current work.` : '**Tip**: Create and save reports to build your knowledge base for future similarity searches.'}
 
-**Status**: ✅ Vector search completed using PostgreSQL + pg_vector`);
+  **Status**: ✅ Vector search completed using PostgreSQL + pg_vector`);
 
     } catch (error) {
       await addSystemMessage(`❌ Failed to load related reports: ${error.message}`);
@@ -1021,7 +1004,6 @@ ${relatedReports.length > 0 ? `**Database Stats:**
     let legalAnalysis = null;
     let ragResults = null;
     let response = '';
-    
     try {
       // Step 1: Input synthesis if enabled
       if (options.enableSynthesis) {
@@ -1091,7 +1073,6 @@ ${relatedReports.length > 0 ? `**Database Stats:**
   async function generateStreamingResponse(query: string, context: any): Promise<string> {
     try {
       const prompt = buildEnhancedPrompt(query, context);
-      
       const response = await fetch('/api/ollama/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1149,11 +1130,9 @@ ${relatedReports.length > 0 ? `**Database Stats:**
   // Build enhanced prompt with context
   function buildEnhancedPrompt(query: string, context: any): string {
     let prompt = `You are an advanced legal AI assistant with specialized knowledge in legal research and analysis.\n\n`;
-    
     if (context.userRole) {
       prompt += `User Role: ${context.userRole}\n`;
     }
-    
     if (context.caseId) {
       prompt += `Case Context: ${context.caseId}\n`;
     }

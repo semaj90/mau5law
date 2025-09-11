@@ -1,6 +1,5 @@
 <!-- Enhanced ThinkingStyleToggle with Nier Automata + Harvard Crimson Theme -->
 <script lang="ts">
-</script>
   let {
     enabled = $bindable(false),
     loading = false,
@@ -23,10 +22,10 @@
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import { cn } from '$lib/utils';
-let showTooltip = $state(false);
-let showConfig = $state(false);
-let thinkingDepth = $state('detailed');
-let focusAreas = $state({
+  let showTooltip = $state(false);
+  let showConfig = $state(false);
+  let thinkingDepth = $state('detailed');
+  let focusAreas = $state({
     precedents: true,
     evidence: true,
     compliance: true,
@@ -54,10 +53,10 @@ let focusAreas = $state({
     if (!premium) return;
     showConfig = !showConfig;
     onconfigure?.();
-}
+  }
   function handleUpgrade() {
     onupgrade?.();
-}
+  }
 </script>
 
 <div class="thinking-style-control">

@@ -1,10 +1,8 @@
 <!-- AI-Enhanced "Did You Mean?" Suggestions Component with Intent Prediction -->
 <script lang="ts">
-</script>
   import { createCombobox, melt } from 'melt';
   import { Check, ChevronDown, Search, FileText, User, Folder, Tag, Brain, Zap, Target } from 'lucide-svelte';
   import { fly, fade } from 'svelte/transition';
-  
   interface Suggestion {
     term?: string;
     suggestion?: string;
@@ -96,7 +94,6 @@
   $effect(() => {
     if (query.length >= 2) {
       if (debounceTimer) clearTimeout(debounceTimer);
-      
       debounceTimer = setTimeout(async () => {
         await performSearch(query);
       }, 300);
@@ -116,10 +113,8 @@
       userProfile = null;
       return;
     }
-    
     loading = true;
     error = null;
-    
     try {
       const response = await fetch('/api/suggest/did-you-mean', {
         method: 'POST',
@@ -135,11 +130,9 @@
           includeAI
         })
       });
-      
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
       const data = await response.json();
       suggestions = data.suggestions || [];
       taskSuggestions = data.taskSuggestions || [];
@@ -148,7 +141,6 @@
         took_ms: data.took_ms, 
         cached: data.cached 
       };
-      
       onSearch?.(searchQuery);
     } catch (err) {
       console.error('Search error:', err);

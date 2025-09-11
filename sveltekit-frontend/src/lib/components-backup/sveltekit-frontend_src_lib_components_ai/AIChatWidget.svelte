@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import * as Dialog from "$lib/components/ui/dialog/index.js";
   import * as Card from "$lib/components/ui/card/index.js";
@@ -98,7 +97,6 @@
       }
 
       const data = await response.json();
-      
       const aiMessage = {
         id: Date.now() + 1,
         role: 'assistant',
@@ -112,7 +110,6 @@
 
     } catch (error) {
       console.error('AI chat error:', error);
-      
       const errorMessage = {
         id: Date.now() + 1,
         role: 'assistant',

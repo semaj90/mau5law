@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     formData: {
     allFormData: any
@@ -25,7 +24,6 @@
     submission_notes: string
   };
 
-  
   let isSubmitting = false;
   let submissionProgress = writable(0);
   let currentSubmissionStep = writable('');

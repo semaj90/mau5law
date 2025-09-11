@@ -1,9 +1,7 @@
 
 <script lang="ts">
-</script>
   import { page } from '$app/stores';
   import { dev } from '$app/environment';
-  
   // TODO: Convert to $derived: error = $page.error
   // TODO: Convert to $derived: status = $page.status
 </script>

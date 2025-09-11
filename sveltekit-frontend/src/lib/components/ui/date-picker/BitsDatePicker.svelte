@@ -1,6 +1,5 @@
 <!-- Date Picker Component for Legal AI App -->
 <script lang="ts">
-</script>
   import { DatePicker } from 'bits-ui';
   import { Calendar, ChevronLeft, ChevronRight } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -47,7 +46,6 @@
   // Format date for display
   let formattedDate = $derived(() => {
     if (!value) return placeholder;
-    
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
       month: 'short',

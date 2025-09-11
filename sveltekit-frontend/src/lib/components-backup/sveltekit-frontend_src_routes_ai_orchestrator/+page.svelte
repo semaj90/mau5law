@@ -3,7 +3,6 @@ Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
@@ -22,7 +21,6 @@ Showcases the service worker-based AI orchestration system
     Users,
     Workflow
   } from 'lucide-svelte';
-  
   import MultiLLMOrchestrator from '$lib/components/ai/MultiLLMOrchestrator.svelte';
   import LLMSelector from '$lib/components/ai/LLMSelector.svelte';
   import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
@@ -33,7 +31,6 @@ Showcases the service worker-based AI orchestration system
   let userPrompt = $state('Analyze the following legal document for key terms, potential issues, and recommendations...');
   let isProcessing = $state(false);
   let demoResults = $state<Array<{ task: AITask response?: any; error?: string }>>([]);
-  
   // Demo scenarios
   const demoScenarios = [
     {
@@ -116,16 +113,13 @@ Showcases the service worker-based AI orchestration system
       const taskPromises = tasks.map(async (task) => {
         try {
           demoResults = [...demoResults, { task }];
-          
           const taskId = await aiWorkerManager.submitTask(task);
           const result = await aiWorkerManager.waitForTask(taskId);
-          
           // Update result
           const index = demoResults.findIndex(r => r.task.taskId === task.taskId);
           if (index >= 0) {
             demoResults[index] = { task, response: result };
           }
-          
           return result;
         } catch (error) {
           console.error('Task failed:', error);
@@ -163,10 +157,8 @@ Showcases the service worker-based AI orchestration system
       );
 
       demoResults = [{ task }];
-      
       const taskId = await aiWorkerManager.submitTask(task);
       const result = await aiWorkerManager.waitForTask(taskId);
-      
       demoResults = [{ task, response: result }];
       console.log('Custom task completed:', result);
     } catch (error) {

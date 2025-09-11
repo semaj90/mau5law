@@ -3,11 +3,9 @@
   Integrates: Fuse.js + MinIO + PostgreSQL + pgvector + Qdrant + Loki.js
 -->
 <script lang="ts">
-</script>
   import { onMount, tick } from 'svelte';
   import { goto } from '$app/navigation';
   import Fuse from 'fuse.js';
-  
   // Props
   interface Props {
     placeholder?: string;
@@ -15,7 +13,6 @@
     onSearch?: (results: SearchResult[]) => void;
     className?: string;
   }
-  
   let {
     placeholder = "Search evidence, cases, documents...",
     showFilters = true,
@@ -29,7 +26,6 @@
   let showDropdown = $state(false);
   let isLoading = $state(false);
   let selectedIndex = $state(-1);
-  
   // Filter state  
   let selectedFilters = $state({
     practiceArea: '',
@@ -37,15 +33,12 @@
     dateRange: '',
     confidenceMin: 0.5
   });
-  
   // UI references
   let searchInput: HTMLInputElement;
   let dropdownContainer: HTMLElement;
-  
   // Search services
   let fuseIndex: Fuse<any> | null = null;
   let searchCache = new Map<string, SearchResult[]>();
-  
   // Types
   interface SearchResult {
     id: string;
@@ -76,11 +69,9 @@
 
   async function initializeSearchServices() {
     console.log('🔍 Initializing unified search services...');
-    
     try {
       // Initialize Fuse.js with evidence data
       const evidenceData = await loadEvidenceIndex();
-      
       const fuseOptions: Fuse.IFuseOptions<any> = {
         keys: [
           { name: 'title', weight: 0.4 },
@@ -95,10 +86,8 @@
         useExtendedSearch: true,
         ignoreLocation: true
       };
-      
       fuseIndex = new Fuse(evidenceData, fuseOptions);
       console.log('✅ Fuse.js initialized with', evidenceData.length, 'evidence items');
-      
     } catch (error) {
       console.error('❌ Search service initialization failed:', error);
     }
@@ -110,11 +99,9 @@
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
-    
     if (response.ok) {
       return await response.json();
     }
-    
     // Fallback sample data
     return [
       {
@@ -176,7 +163,6 @@
     }
 
     isLoading = true;
-    
     try {
       // Multi-source search strategy
       const [fuseResults, vectorResults, fullTextResults] = await Promise.all([
@@ -193,7 +179,6 @@
       searchResults = rankedResults.slice(0, 10);
       searchCache.set(cacheKey, searchResults);
       showDropdown = searchResults.length > 0;
-      
       onSearch?.(searchResults);
 
     } catch (error) {
@@ -214,7 +199,6 @@
     }
 
     const results = fuseIndex.search(searchQuery);
-    
     return results.map(result => ({
       id: result.item.id,
       title: result.item.title,
@@ -254,7 +238,6 @@
     } catch (error) {
       console.warn('Vector search failed:', error);
     }
-    
     return [];
   }
 
@@ -282,7 +265,6 @@
     } catch (error) {
       console.warn('Full-text search failed:', error);
     }
-    
     return [];
   }
 
@@ -309,17 +291,14 @@
       // Boost exact matches in title
       const aExactTitle = a.title.toLowerCase().includes(query.toLowerCase()) ? 0.2 : 0;
       const bExactTitle = b.title.toLowerCase().includes(query.toLowerCase()) ? 0.2 : 0;
-      
       const aScore = a.similarity + aExactTitle;
       const bScore = b.similarity + bExactTitle;
-      
       return bScore - aScore;
     });
   }
 
   function highlightMatches(text: string, matches?: any[]): string {
     if (!matches?.length) return text;
-    
     let highlighted = text;
     matches.forEach(match => {
       if (match.indices) {
@@ -331,7 +310,6 @@
         });
       }
     });
-    
     return highlighted;
   }
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Badge } from '$lib/components/ui/badge';
   import {
     Button
@@ -45,7 +44,7 @@
   let error = $state<string | null>(null);
 
   // Feedback integration reference
-let vectorSearchFeedback = $state<any>(null);
+  let vectorSearchFeedback = $state<any>(null);
 
   // Document type icons
   const typeIcons = ({

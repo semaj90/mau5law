@@ -3,7 +3,6 @@
 // Frontend client for AI synthesis with real-time streaming
 
 <script lang="ts">
-</script>
 
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
@@ -24,14 +23,14 @@
   const events = writable<unknown[]>([]);
 
   // Configuration
-let enableStreaming = $state(true);
-let enableCache = $state(true);
-let enableMMR = $state(true);
-let enableCrossEncoder = $state(true);
-let maxSources = $state(10);
+  let enableStreaming = $state(true);
+  let enableCache = $state(true);
+  let enableMMR = $state(true);
+  let enableCrossEncoder = $state(true);
+  let maxSources = $state(10);
 
   // SSE connection
-let eventSource = $state<EventSource | null >(null);
+  let eventSource = $state<EventSource | null >(null);
 
   /**
    * Submit query for synthesis
@@ -89,7 +88,6 @@ let eventSource = $state<EventSource | null >(null);
         // Non-streaming result
         result.set(data);
         processing.set(false);
-        
         // Add to conversation history
         addToHistory(query, data);
       }
@@ -115,7 +113,6 @@ let eventSource = $state<EventSource | null >(null);
     eventSource.addEventListener('status', (event) => {
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'status', data, timestamp: Date.now() }]);
-      
       if (data.message) {
         currentStage.set(data.message);
       }
@@ -124,11 +121,9 @@ let eventSource = $state<EventSource | null >(null);
     eventSource.addEventListener('progress', (event) => {
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'progress', data, timestamp: Date.now() }]);
-      
       if (data.stage) {
         currentStage.set(`${data.stage}: ${data.progress.toFixed(0)}%`);
       }
-      
       // Update overall progress based on stage
       const stageProgress = {
         'query_analysis': 0.2,
@@ -137,7 +132,6 @@ let eventSource = $state<EventSource | null >(null);
         'prompt_construction': 0.85,
         'quality_assessment': 1.0
       };
-      
       const baseProgress = stageProgress[data.stage] || 0;
       const stageContribution = data.progress / 100 * 0.2; // Each stage contributes 20%
       progress.set((baseProgress - 0.2 + stageContribution) * 100);
@@ -146,7 +140,6 @@ let eventSource = $state<EventSource | null >(null);
     eventSource.addEventListener('stage', (event) => {
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'stage', data, timestamp: Date.now() }]);
-      
       if (data.stage === 'retrieval' && data.status === 'complete') {
         console.log(`Found ${data.sourceCount} sources`);
       }
@@ -164,10 +157,8 @@ let eventSource = $state<EventSource | null >(null);
       processing.set(false);
       progress.set(100);
       currentStage.set('Complete');
-      
       // Add to conversation history
       addToHistory(query, data);
-      
       // Close stream
       if (eventSource) {
         eventSource.close();
@@ -179,7 +170,6 @@ let eventSource = $state<EventSource | null >(null);
       const data = event.data ? JSON.parse(event.data) : { error: 'Stream error' };
       error.set(data.error || 'Stream error');
       processing.set(false);
-      
       if (eventSource) {
         eventSource.close();
         eventSource = null;
@@ -243,7 +233,7 @@ let eventSource = $state<EventSource | null >(null);
   }
 
   // Conversation history management
-let conversationHistory = $state<any[] >([]);
+  let conversationHistory = $state<any[] >([]);
 
   function getConversationHistory() {
     return conversationHistory.slice(-10); // Last 10 messages
@@ -255,7 +245,6 @@ let conversationHistory = $state<any[] >([]);
       content: query,
       timestamp: new Date()
     });
-    
     if (response.enhancedPrompt) {
       conversationHistory.push({
         role: 'assistant',

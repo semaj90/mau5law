@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
 
@@ -14,17 +13,16 @@
     slowestEndpoints: { endpoint: string avgTime: number requests: number }[];
     errorRate: number
     peakHours: { hour: number requests: number }[];
-}
+  }
   interface SystemHealth {
     cpu: number
     memory: number
     database: 'healthy' | 'warning' | 'error';
     storage: number
-}
+  }
   const metrics = writable<PerformanceMetrics | null>(null);
   const health = writable<SystemHealth | null>(null);
   const logs = writable<any[]>([]);
-  
   let refreshInterval: NodeJS.Timeout;
   let autoRefresh = true;
 
@@ -32,7 +30,7 @@
     loadMetrics();
     if (autoRefresh) {
       refreshInterval = setInterval(loadMetrics, 30000); // Refresh every 30 seconds
-}
+  }
     return () => {
       if (refreshInterval) clearInterval(refreshInterval);
     };
@@ -45,45 +43,45 @@
       if (metricsResponse.ok) {
         const metricsData = await metricsResponse.json();
         metrics.set(metricsData.data);
-}
+  }
       // Load system health
       const healthResponse = await fetch('/api/admin/health');
       if (healthResponse.ok) {
         const healthData = await healthResponse.json();
         health.set(healthData.data);
-}
+  }
       // Load recent logs
       const logsResponse = await fetch('/api/admin/logs?limit=50');
       if (logsResponse.ok) {
         const logsData = await logsResponse.json();
         logs.set(logsData.data);
-}
+  }
     } catch (error) {
       console.error('Failed to load metrics:', error);
-}}
+  }}
   function toggleAutoRefresh() {
     autoRefresh = !autoRefresh;
     if (autoRefresh) {
       refreshInterval = setInterval(loadMetrics, 30000);
     } else {
       clearInterval(refreshInterval);
-}}
+  }}
   function formatTime(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
-}
+  }
   function getHealthColor(status: string): string {
     switch (status) {
       case 'healthy': return 'text-green-600';
       case 'warning': return 'text-yellow-600';
       case 'error': return 'text-red-600';
       default: return 'text-gray-600';
-}}
+  }}
   function formatHour(hour: number): string {
     return hour === 0 ? '12 AM' : 
            hour === 12 ? '12 PM' :
            hour < 12 ? `${hour} AM` : `${hour - 12} PM`;
-}
+  }
 </script>
 
 <svelte:head>

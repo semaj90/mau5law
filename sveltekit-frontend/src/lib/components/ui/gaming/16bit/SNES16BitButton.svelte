@@ -10,7 +10,6 @@
   - Enhanced audio capabilities
 -->
 <script lang="ts">
-</script>
   import { Button as BitsButton } from 'bits-ui';
   import { createEventDispatcher } from 'svelte';
   import type { GamingComponentProps } from '../types/gaming-types.js';
@@ -22,17 +21,14 @@
     form?: string;
     name?: string;
     value?: string;
-    
     // SNES-specific styling
     gradientDirection?: 'horizontal' | 'vertical' | 'diagonal' | 'radial';
     enableLayerEffects?: boolean;
     enableMode7?: boolean;
     plasmaEffect?: boolean;
-    
     // Enhanced audio
     enableEnhancedSound?: boolean;
     soundChannel?: number; // SNES had 8 audio channels
-    
     // Content
     children?: any;
     class?: string;
@@ -48,23 +44,18 @@
     enableScanlines = false,
     enableCRTEffect = false,
     animationStyle = 'smooth',
-    
     type = 'button',
     form,
     name,
     value,
-    
     gradientDirection = 'vertical',
     enableLayerEffects = true,
     enableMode7 = false,
     plasmaEffect = false,
-    
     enableEnhancedSound = false,
     soundChannel = 1,
-    
     children,
     class: className = '',
-    
     onClick,
     onHover,
     onFocus
@@ -74,53 +65,44 @@
 
   let isPressed = $state(false);
   let isHovered = $state(false);
-let audioContext = $state<AudioContext | null >(null);
-let buttonElement = $state<HTMLButtonElement | null >(null);
+  let audioContext = $state<AudioContext | null >(null);
+  let buttonElement = $state<HTMLButtonElement | null >(null);
 
   // Create 16-bit enhanced button sound with multiple channels
   const playEnhancedButtonSound = async () => {
     if (!enableEnhancedSound) return;
-    
     try {
       if (!audioContext) {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
-      
       // Create multiple oscillators for richer sound (SNES had 8 channels)
       const oscillators: OscillatorNode[] = [];
       const gainNodes: GainNode[] = [];
-      
       // Main tone
       const mainOsc = audioContext.createOscillator();
       const mainGain = audioContext.createGain();
       mainOsc.connect(mainGain);
       mainGain.connect(audioContext.destination);
-      
       mainOsc.type = 'square';
       mainOsc.frequency.setValueAtTime(800, audioContext.currentTime);
       mainOsc.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
       mainGain.gain.setValueAtTime(0.3, audioContext.currentTime);
       mainGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
-      
       // Harmony (5th)
       const harmonyOsc = audioContext.createOscillator();
       const harmonyGain = audioContext.createGain();
       harmonyOsc.connect(harmonyGain);
       harmonyGain.connect(audioContext.destination);
-      
       harmonyOsc.type = 'triangle';
       harmonyOsc.frequency.setValueAtTime(1200, audioContext.currentTime);
       harmonyOsc.frequency.exponentialRampToValueAtTime(900, audioContext.currentTime + 0.1);
       harmonyGain.gain.setValueAtTime(0.15, audioContext.currentTime);
       harmonyGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
-      
       oscillators.push(mainOsc, harmonyOsc);
       gainNodes.push(mainGain, harmonyGain);
-      
       // Start all oscillators
       oscillators.forEach(osc => osc.start());
       oscillators.forEach(osc => osc.stop(audioContext!.currentTime + 0.2));
-      
     } catch (error) {
       console.warn('Could not play enhanced button sound:', error);
     }
@@ -128,14 +110,11 @@ let buttonElement = $state<HTMLButtonElement | null >(null);
 
   const handleClick = async () => {
     if (disabled || loading) return;
-    
     isPressed = true;
     await playEnhancedButtonSound();
-    
     setTimeout(() => {
       isPressed = false;
     }, 120);
-    
     onClick?.();
     dispatch('click');
   };
@@ -167,18 +146,14 @@ let buttonElement = $state<HTMLButtonElement | null >(null);
       'error': [SNES_COLOR_PALETTE.red, '#cc2800', '#800000'],
       'info': [SNES_COLOR_PALETTE.cyan, SNES_COLOR_PALETTE.blue, '#0050cc']
     };
-    
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
-    
     const directionMap = {
       'horizontal': 'to right',
       'vertical': 'to bottom',
       'diagonal': 'to bottom right', 
       'radial': 'radial-gradient(circle'
     };
-    
     const gradientType = direction === 'radial' ? 'radial-gradient(circle, ' : 'linear-gradient(' + directionMap[direction as keyof typeof directionMap] + ', ';
-    
     return gradientType + colors.join(', ') + ')';
   };
 

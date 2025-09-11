@@ -1,6 +1,5 @@
 <!-- Progress Indicator Component -->
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
 
     let { steps = $bindable() } = $props(); // Array<{

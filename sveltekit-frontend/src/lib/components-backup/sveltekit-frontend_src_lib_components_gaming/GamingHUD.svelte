@@ -1,52 +1,44 @@
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import type { ComponentProps } from 'svelte';
-	
-	// Gaming-themed props using Svelte 5 patterns
-	interface GamingHUDProps {
-		userLevel?: number;
-		experience?: number;
-		maxExperience?: number;
-		currentCase?: string;
-		documentsAnalyzed?: number;
-		accuracyScore?: number;
-		isOnline?: boolean;
-	}
-	
-	let { 
-		userLevel = 1,
-		experience = 750,
-		maxExperience = 1000,
-		currentCase = "CASE-2024-001",
-		documentsAnalyzed = 47,
-		accuracyScore = 94.2,
-		isOnline = true
-	} = $props();
-	
-	let currentTime = $state('00:00:00');
-	let glowEffect = $state(false);
-	
-	// Experience bar percentage
-	let experiencePercent = $derived(() => Math.round((experience / maxExperience) * 100));
-	
-	onMount(() => {
-		// Update time every second
-		const timeInterval = setInterval(() => {
-			const now = new Date();
-			currentTime = now.toLocaleTimeString();
-		}, 1000);
-		
-		// Glow effect animation
-		const glowInterval = setInterval(() => {
-			glowEffect = !glowEffect;
-		}, 2000);
-		
-		return () => {
-			clearInterval(timeInterval);
-			clearInterval(glowInterval);
-		};
-	});
+  	import { onMount } from 'svelte';
+  	import type { ComponentProps } from 'svelte';
+  	// Gaming-themed props using Svelte 5 patterns
+  	interface GamingHUDProps {
+  		userLevel?: number;
+  		experience?: number;
+  		maxExperience?: number;
+  		currentCase?: string;
+  		documentsAnalyzed?: number;
+  		accuracyScore?: number;
+  		isOnline?: boolean;
+  	}
+  	let { 
+  		userLevel = 1,
+  		experience = 750,
+  		maxExperience = 1000,
+  		currentCase = "CASE-2024-001",
+  		documentsAnalyzed = 47,
+  		accuracyScore = 94.2,
+  		isOnline = true
+  	} = $props();
+  	let currentTime = $state('00:00:00');
+  	let glowEffect = $state(false);
+  	// Experience bar percentage
+  	let experiencePercent = $derived(() => Math.round((experience / maxExperience) * 100));
+  	onMount(() => {
+  		// Update time every second
+  		const timeInterval = setInterval(() => {
+  			const now = new Date();
+  			currentTime = now.toLocaleTimeString();
+  		}, 1000);
+  		// Glow effect animation
+  		const glowInterval = setInterval(() => {
+  			glowEffect = !glowEffect;
+  		}, 2000);
+  		return () => {
+  			clearInterval(timeInterval);
+  			clearInterval(glowInterval);
+  		};
+  	});
 </script>
 
 <!-- Gaming HUD Container -->

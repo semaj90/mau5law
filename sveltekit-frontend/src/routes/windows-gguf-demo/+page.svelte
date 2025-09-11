@@ -7,7 +7,6 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
-</script>
   // $state and $derived are declared globally in src/types/svelte-helpers.d.ts
   import type { AIResponse } from '$lib/types/ai';
   import { onMount, onDestroy } from 'svelte';
@@ -36,9 +35,9 @@ https://svelte.dev/e/js_parse_error -->
   let performanceMetrics = $state({ fps: 0, latency: 0, throughput: 0 });
 
   // WebGPU visualization
-let canvas = $state<HTMLCanvasElement;
+  let canvas = $state<HTMLCanvasElement;
   let ctx: GPUCanvasContext | null >(null);
-let device = $state<GPUDevice | null >(null);
+  let device = $state<GPUDevice | null >(null);
   let animationFrame: number;
 
   // Access stores directly from the service objects

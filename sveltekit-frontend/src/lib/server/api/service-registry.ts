@@ -200,7 +200,7 @@ export class ApiServiceRegistry {
     // Register external services
     this.services.set('postgresql', {
       name: 'PostgreSQL',
-      port: 5432,
+      port: 5433,
       host: 'localhost',
       type: 'database',
       required: true,

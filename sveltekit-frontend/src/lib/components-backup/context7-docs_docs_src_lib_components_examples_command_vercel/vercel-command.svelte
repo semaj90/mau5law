@@ -1,50 +1,49 @@
 <script lang="ts">
-</script>
-	import { Command } from "bits-ui";
-	import Home from "./home.svelte";
-	import Projects from "./projects.svelte";
-	import "./vercel.css";
+  	import { Command } from "bits-ui";
+  	import Home from "./home.svelte";
+  	import Projects from "./projects.svelte";
+  	import "./vercel.css";
 
-	let inputValue = $state("");
+  	let inputValue = $state("");
 
-	let pages = $state<string[]>(["home"]);
+  	let pages = $state<string[]>(["home"]);
 
-	const activePage = $derived(pages[pages.length - 1]);
-	const isHome = $derived(activePage === "home");
+  	const activePage = $derived(pages[pages.length - 1]);
+  	const isHome = $derived(activePage === "home");
 
-	function popPage() {
-		const next = [...pages];
-		next.splice(-1, 1);
-		pages = next;
-	}
+  	function popPage() {
+  		const next = [...pages];
+  		next.splice(-1, 1);
+  		pages = next;
+  	}
 
-	function bounce(node: HTMLElement) {
-		node.style.transform = "scale(0.96)";
-		setTimeout(() => {
-			node.style.transform = "";
-		}, 100);
+  	function bounce(node: HTMLElement) {
+  		node.style.transform = "scale(0.96)";
+  		setTimeout(() => {
+  			node.style.transform = "";
+  		}, 100);
 
-		inputValue = "";
-	}
+  		inputValue = "";
+  	}
 
-	function handleKeydown(e: KeyboardEvent & { currentTarget: HTMLElement }) {
-		const currTarget = e.currentTarget;
-		if (!currTarget) return;
+  	function handleKeydown(e: KeyboardEvent & { currentTarget: HTMLElement }) {
+  		const currTarget = e.currentTarget;
+  		if (!currTarget) return;
 
-		if (e.key === "Enter") {
-			bounce(currTarget);
-		}
+  		if (e.key === "Enter") {
+  			bounce(currTarget);
+  		}
 
-		if (isHome || inputValue.length) {
-			return;
-		}
+  		if (isHome || inputValue.length) {
+  			return;
+  		}
 
-		if (e.key === "Backspace") {
-			e.preventDefault();
-			popPage();
-			bounce(currTarget);
-		}
-	}
+  		if (e.key === "Backspace") {
+  			e.preventDefault();
+  			popPage();
+  			bounce(currTarget);
+  		}
+  	}
 </script>
 
 <div class="vercel">

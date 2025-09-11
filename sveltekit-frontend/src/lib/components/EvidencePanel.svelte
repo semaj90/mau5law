@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { Evidence } from "$lib/data/types";
   import { onMount } from "svelte";
 
@@ -32,19 +31,16 @@
   async function handleUpload(e: Event) {
     const input = e.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
-    
     isUploading = true;
     const file = input.files[0];
     const formData = new FormData();
     formData.append("file", file);
     formData.append("caseId", caseId);
-    
     try {
       const res = await fetch("/api/evidence/upload", {
         method: "POST",
         body: formData,
       });
-      
       if (res.ok) {
         console.log("Evidence uploaded!");
         await fetchEvidence();

@@ -1,164 +1,150 @@
 <!-- Unified Canvas Integration - Bridge Between Enhanced Evidence Canvas and Detective Board -->
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
-	import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
-	import {
+  	import { onMount } from 'svelte';
+  	import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
+  	import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
+  	import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-	import Button from '$lib/components/ui/button/Button.svelte';
-	// Badge replaced with span - not available in enhanced-bits
-	import { Activity, Cpu, Database, Zap, Eye, Grid3X3, Canvas } from 'lucide-svelte';
+  	import Button from '$lib/components/ui/button/Button.svelte';
+  	// Badge replaced with span - not available in enhanced-bits
+  	import { Activity, Cpu, Database, Zap, Eye, Grid3X3, Canvas } from 'lucide-svelte';
 
-	// Svelte 5 state management
-	let viewMode = $state<'canvas' | 'board' | 'hybrid'>('hybrid');
-	let activeAnalysis = $state<any[]>([]);
-	let canvasEvidence = $state<any[]>([]);
-	let processingQueue = $state<any[]>([]);
-	
-	let systemIntegration = $state({
-		canvasActive: false,
-		detectiveActive: false,
-		aiProcessingActive: false,
-		realTimeSync: false,
-		gpuAcceleration: false
-	});
+  	// Svelte 5 state management
+  	let viewMode = $state<'canvas' | 'board' | 'hybrid'>('hybrid');
+  	let activeAnalysis = $state<any[]>([]);
+  	let canvasEvidence = $state<any[]>([]);
+  	let processingQueue = $state<any[]>([]);
+  	let systemIntegration = $state({
+  		canvasActive: false,
+  		detectiveActive: false,
+  		aiProcessingActive: false,
+  		realTimeSync: false,
+  		gpuAcceleration: false
+  	});
 
-	let performanceMetrics = $state({
-		canvasFrameRate: 60,
-		evidenceCount: 0,
-		processingLatency: 0,
-		memoryUsage: 0
-	});
+  	let performanceMetrics = $state({
+  		canvasFrameRate: 60,
+  		evidenceCount: 0,
+  		processingLatency: 0,
+  		memoryUsage: 0
+  	});
 
-	// Component props
-	let { 
-		caseId = 'unified-case-001',
-		evidence = [] as any[]
-	} = $props<{
-		caseId?: string;
-		evidence?: any[];
-	}>();
+  	// Component props
+  	let { 
+  		caseId = 'unified-case-001',
+  		evidence = [] as any[]
+  	} = $props<{
+  		caseId?: string;
+  		evidence?: any[];
+  	}>();
 
-	// Initialize unified integration
-	onMount(async () => {
-		await initializeUnifiedSystems();
-		startPerformanceMonitoring();
-	});
+  	// Initialize unified integration
+  	onMount(async () => {
+  		await initializeUnifiedSystems();
+  		startPerformanceMonitoring();
+  	});
 
-	async function initializeUnifiedSystems() {
-		console.log('🚀 Initializing Unified Canvas Integration for caseItem:', caseId);
-		
-		// Initialize canvas system
-		systemIntegration.canvasActive = true;
-		
-		// Initialize detective board
-		systemIntegration.detectiveActive = true;
-		
-		// Enable real-time synchronization
-		systemIntegration.realTimeSync = true;
-		
-		// Attempt GPU acceleration
-		try {
-			if ('gpu' in navigator) {
-				systemIntegration.gpuAcceleration = true;
-				console.log('✅ WebGPU acceleration enabled');
-			}
-		} catch (error) {
-			console.warn('⚠️ WebGPU not available, falling back to CPU processing');
-		}
-		
-		// Start AI processing integration
-		systemIntegration.aiProcessingActive = true;
-	}
+  	async function initializeUnifiedSystems() {
+  		console.log('🚀 Initializing Unified Canvas Integration for caseItem:', caseId);
+  		// Initialize canvas system
+  		systemIntegration.canvasActive = true;
+  		// Initialize detective board
+  		systemIntegration.detectiveActive = true;
+  		// Enable real-time synchronization
+  		systemIntegration.realTimeSync = true;
+  		// Attempt GPU acceleration
+  		try {
+  			if ('gpu' in navigator) {
+  				systemIntegration.gpuAcceleration = true;
+  				console.log('✅ WebGPU acceleration enabled');
+  			}
+  		} catch (error) {
+  			console.warn('⚠️ WebGPU not available, falling back to CPU processing');
+  		}
+  		// Start AI processing integration
+  		systemIntegration.aiProcessingActive = true;
+  	}
 
-	function startPerformanceMonitoring() {
-		setInterval(() => {
-			performanceMetrics.evidenceCount = evidence.length;
-			performanceMetrics.processingLatency = Math.round(Math.random() * 100 + 50);
-			performanceMetrics.memoryUsage = Math.round(Math.random() * 30 + 40);
-		}, 2000);
-	}
+  	function startPerformanceMonitoring() {
+  		setInterval(() => {
+  			performanceMetrics.evidenceCount = evidence.length;
+  			performanceMetrics.processingLatency = Math.round(Math.random() * 100 + 50);
+  			performanceMetrics.memoryUsage = Math.round(Math.random() * 30 + 40);
+  		}, 2000);
+  	}
 
-	function switchViewMode(mode: 'canvas' | 'board' | 'hybrid') {
-		viewMode = mode;
-		console.log(`📋 Switched to ${mode} view mode`);
-	}
+  	function switchViewMode(mode: 'canvas' | 'board' | 'hybrid') {
+  		viewMode = mode;
+  		console.log(`📋 Switched to ${mode} view mode`);
+  	}
 
-	async function handleEvidenceAnalysis(evidenceItem: any) {
-		console.log('🔍 Starting evidence analysis:', evidenceItem.title);
-		
-		// Add to processing queue
-		processingQueue = [...processingQueue, evidenceItem];
-		
-		// Simulate AI processing
-		try {
-			const response = await fetch('/api/ai/analyze-evidence', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					evidenceId: evidenceItem.id,
-					content: evidenceItem.description || evidenceItem.title,
-					forceReanalyze: false
-				})
-			});
-			
-			const analysisResult = await response.json();
-			
-			if (analysisResult.success) {
-				activeAnalysis = [...activeAnalysis, {
-					evidenceId: evidenceItem.id,
-					...analysisResult.data.analysis,
-					timestamp: new Date().toISOString()
-				}];
-				
-				console.log('✅ Evidence analysis completed:', analysisResult.data.analysis.summary);
-			}
-		} catch (error) {
-			console.error('❌ Evidence analysis failed:', error);
-		} finally {
-			// Remove from processing queue
-			processingQueue = processingQueue.filter(item => item.id !== evidenceItem.id);
-		}
-	}
+  	async function handleEvidenceAnalysis(evidenceItem: any) {
+  		console.log('🔍 Starting evidence analysis:', evidenceItem.title);
+  		// Add to processing queue
+  		processingQueue = [...processingQueue, evidenceItem];
+  		// Simulate AI processing
+  		try {
+  			const response = await fetch('/api/ai/analyze-evidence', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					evidenceId: evidenceItem.id,
+  					content: evidenceItem.description || evidenceItem.title,
+  					forceReanalyze: false
+  				})
+  			});
+  			const analysisResult = await response.json();
+  			if (analysisResult.success) {
+  				activeAnalysis = [...activeAnalysis, {
+  					evidenceId: evidenceItem.id,
+  					...analysisResult.data.analysis,
+  					timestamp: new Date().toISOString()
+  				}];
+  				console.log('✅ Evidence analysis completed:', analysisResult.data.analysis.summary);
+  			}
+  		} catch (error) {
+  			console.error('❌ Evidence analysis failed:', error);
+  		} finally {
+  			// Remove from processing queue
+  			processingQueue = processingQueue.filter(item => item.id !== evidenceItem.id);
+  		}
+  	}
 
-	function handleCanvasEvidenceUpdate(evidenceData: any[]) {
-		canvasEvidence = evidenceData;
-		console.log(`🎨 Canvas evidence updated: ${evidenceData.length} items`);
-	}
+  	function handleCanvasEvidenceUpdate(evidenceData: any[]) {
+  		canvasEvidence = evidenceData;
+  		console.log(`🎨 Canvas evidence updated: ${evidenceData.length} items`);
+  	}
 
-	function handleDetectiveAnalysis(analysisData: any) {
-		console.log('🕵️ Detective analysis received:', analysisData);
-		activeAnalysis = [...activeAnalysis, analysisData];
-	}
+  	function handleDetectiveAnalysis(analysisData: any) {
+  		console.log('🕵️ Detective analysis received:', analysisData);
+  		activeAnalysis = [...activeAnalysis, analysisData];
+  	}
 
-	// Integration bridge functions
-	async function syncCanvasToBoard() {
-		console.log('🔄 Syncing canvas data to detective board...');
-		// Convert canvas evidence to detective board format
-	}
+  	// Integration bridge functions
+  	async function syncCanvasToBoard() {
+  		console.log('🔄 Syncing canvas data to detective board...');
+  		// Convert canvas evidence to detective board format
+  	}
 
-	async function syncBoardToCanvas() {
-		console.log('🔄 Syncing detective board data to canvas...');
-		// Convert detective board evidence to canvas format
-	}
+  	async function syncBoardToCanvas() {
+  		console.log('🔄 Syncing detective board data to canvas...');
+  		// Convert detective board evidence to canvas format
+  	}
 
-	async function processUnifiedAnalysis() {
-		console.log('🧠 Starting unified AI analysis across all evidence...');
-		
-		// Combine evidence from both canvas and board
-		const allEvidence = [...canvasEvidence, ...evidence];
-		
-		for (const item of allEvidence) {
-			if (!activeAnalysis.find(analysis => analysis.evidenceId === item.id)) {
-				await handleEvidenceAnalysis(item);
-			}
-		}
-	}
+  	async function processUnifiedAnalysis() {
+  		console.log('🧠 Starting unified AI analysis across all evidence...');
+  		// Combine evidence from both canvas and board
+  		const allEvidence = [...canvasEvidence, ...evidence];
+  		for (const item of allEvidence) {
+  			if (!activeAnalysis.find(analysis => analysis.evidenceId === item.id)) {
+  				await handleEvidenceAnalysis(item);
+  			}
+  		}
+  	}
 </script>
 
 <!-- Unified Canvas Integration Interface -->

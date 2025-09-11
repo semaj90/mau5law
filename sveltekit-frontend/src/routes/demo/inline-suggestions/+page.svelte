@@ -5,7 +5,6 @@ https://svelte.dev/e/bind_invalid_expression -->
   Demonstrates real-time AI-powered editing with comprehensive suggestion types
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import EnhancedInlineEditor from '$lib/components/ai/EnhancedInlineEditor.svelte';
   import { inlineSuggestionService, type SuggestionOptions } from '$lib/services/inlineSuggestionService';
@@ -25,9 +24,9 @@ https://svelte.dev/e/bind_invalid_expression -->
   // Demo content
   let demoContent = $state(`In the matter of Smith v. Johnson (2024);, the court found that the defendant's actions constituted a breach of contractual obligations. The plaintiff sought damages for lost profits and consequential losses arising from the breach.
 
-The legal precedent established in Williams v. Davis (2019) provides guidance on calculating damages in commercial disputes. The court emphasized the importance of proving causation between the breach and the claimed losses.
+  The legal precedent established in Williams v. Davis (2019) provides guidance on calculating damages in commercial disputes. The court emphasized the importance of proving causation between the breach and the claimed losses.
 
-Furthermore, the doctrine of mitigation requires that the injured party take reasonable steps to minimize their damages. This principle was clearly articulated in`);
+  Furthermore, the doctrine of mitigation requires that the injured party take reasonable steps to minimize their damages. This principle was clearly articulated in`);
 
   // Service configuration
   let serviceOptions = $state<SuggestionOptions>({
@@ -97,9 +96,9 @@ Furthermore, the doctrine of mitigation requires that the injured party take rea
   function resetDemo() {
     demoContent = `In the matter of Smith v. Johnson (2024), the court found that the defendant's actions constituted a breach of contractual obligations. The plaintiff sought damages for lost profits and consequential losses arising from the breach.
 
-The legal precedent established in Williams v. Davis (2019) provides guidance on calculating damages in commercial disputes. The court emphasized the importance of proving causation between the breach and the claimed losses.
+  The legal precedent established in Williams v. Davis (2019) provides guidance on calculating damages in commercial disputes. The court emphasized the importance of proving causation between the breach and the claimed losses.
 
-Furthermore, the doctrine of mitigation requires that the injured party take reasonable steps to minimize their damages. This principle was clearly articulated in`;
+  Furthermore, the doctrine of mitigation requires that the injured party take reasonable steps to minimize their damages. This principle was clearly articulated in`;
 
     // Reset stats
     stats = {

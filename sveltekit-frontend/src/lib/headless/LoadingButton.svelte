@@ -10,7 +10,7 @@
     ...rest
   } = $props();
 
-  $: isDisabled = disabled || loading;
+  let isDisabled = $derived(disabled || loading);
 </script>
 
 <button

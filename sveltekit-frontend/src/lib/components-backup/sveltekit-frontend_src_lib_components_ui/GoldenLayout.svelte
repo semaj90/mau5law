@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     ratio?: string;
     mainFlex?: number;
@@ -12,7 +11,6 @@
     gap?: string;
     ontoggle?: (event?: any) => void;
   }
-  
   let {
     ratio = "golden",
     mainFlex = 1.618,
@@ -30,8 +28,6 @@
 
 
 
-  
-                  
   let className = "";
 
   // Calculate flex values based on ratio
@@ -56,16 +52,16 @@
         calculatedMainFlex = mainFlex;
         calculatedSidebarFlex = sidebarFlex;
         break;
-}}
+  }}
   function toggleSidebar() {
     collapsed = !collapsed;
     ontoggle?.();
-}
+  }
   function handleKeydown(e: KeyboardEvent) {
     if (collapsible && (e.ctrlKey || e.metaKey) && e.key === "\\") {
       e.preventDefault();
       toggleSidebar();
-}}
+  }}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />

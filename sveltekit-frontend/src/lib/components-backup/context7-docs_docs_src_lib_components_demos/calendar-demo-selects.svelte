@@ -1,9 +1,8 @@
 <script lang="ts">
-</script>
-	import { Calendar } from "bits-ui";
-	import { getLocalTimeZone, today } from "@internationalized/date";
+  	import { Calendar } from "bits-ui";
+  	import { getLocalTimeZone, today } from "@internationalized/date";
 
-	let value = $state(today(getLocalTimeZone()));
+  	let value = $state(today(getLocalTimeZone()));
 </script>
 
 <Calendar.Root

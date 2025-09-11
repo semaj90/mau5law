@@ -1,6 +1,5 @@
 <!-- Lightweight Rich Text Editor with Enhanced Image Support -->
 <script lang="ts">
-</script>
   interface Props {
     content: any
     placeholder?: any;
@@ -49,7 +48,6 @@
   import { onDestroy, onMount } from "svelte";
   import { writable } from "svelte/store";
 
-            
   let editor: Editor | null = null;
   let editorElement: HTMLElement
   let wordCount = 0;
@@ -89,10 +87,8 @@
   onMount(() => {
     initializeEditor();
     setupKeyboardShortcuts();
-    
     // Set editor context for keyboard shortcuts
     setShortcutContext('editor');
-    
     // Register editor-specific shortcuts
     registerShortcut({
       key: 's',
@@ -101,7 +97,6 @@
       action: saveContent,
       preventDefault: true
     });
-    
     registerShortcut({
       key: 'c',
       ctrl: true,
@@ -110,7 +105,6 @@
       action: () => generateAIReport('case-summary'),
       preventDefault: true
     });
-    
     registerShortcut({
       key: 'e',
       ctrl: true,
@@ -119,7 +113,6 @@
       action: () => generateAIReport('evidence-analysis'),
       preventDefault: true
     });
-    
     registerShortcut({
       key: 'l',
       ctrl: true,
@@ -128,7 +121,6 @@
       action: () => generateAIReport('legal-brief'),
       preventDefault: true
     });
-    
     registerShortcut({
       key: 'i',
       ctrl: true,
@@ -137,7 +129,6 @@
       action: () => generateAIReport('investigation-report'),
       preventDefault: true
     });
-    
     registerShortcut({
       key: 's',
       ctrl: true,
@@ -146,7 +137,6 @@
       action: summarizeReport,
       preventDefault: true
     });
-    
     registerShortcut({
       key: 'a',
       ctrl: true,
@@ -300,7 +290,6 @@
   function handleDrop(view: any, event: DragEvent, slice: any, moved: boolean): boolean {
     const files = Array.from(event.dataTransfer?.files || []);
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
-    
     if (imageFiles.length > 0) {
       event.preventDefault();
       // Handle async upload without blocking the handler
@@ -313,7 +302,6 @@
   function handlePaste(view: any, event: ClipboardEvent, slice: any): boolean {
     const items = Array.from(event.clipboardData?.items || []);
     const imageItems = items.filter(item => item.type.startsWith('image/'));
-    
     if (imageItems.length > 0) {
       event.preventDefault();
       // Handle async processing without blocking
@@ -327,7 +315,6 @@
 
   async function uploadImages(files: File[]) {
     if (!editor) return;
-    
     uploading = true;
     uploadProgress = 0;
 
@@ -335,7 +322,6 @@
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         uploadProgress = Math.round(((i + 1) / files.length) * 100);
-        
         // For now, convert to base64 for immediate display
         const reader = new FileReader();
         const dataUrl = await new Promise<string>((resolve) => {
@@ -383,15 +369,12 @@
   function toggleBold() {
     editor?.chain().focus().toggleBold().run();
   }
-  
   function toggleItalic() {
     editor?.chain().focus().toggleItalic().run();
   }
-  
   function setAlignment(align: string) {
     editor?.chain().focus().setTextAlign(align).run();
   }
-  
   function insertImage() {
     const input = document.createElement("input");
     input.type = "file";
@@ -409,7 +392,6 @@
   // AI-powered report generation
   async function generateAIReport(reportType: string) {
     if (!editor) return;
-    
     aiGenerating = true;
     aiProgress = 0;
     showAIMenu = false;
@@ -445,7 +427,6 @@
       }
 
       const data = await response.json();
-      
       // Insert generated content
       if (data.content) {
         editor.commands.setContent(data.content);
@@ -495,7 +476,6 @@
       }
 
       const data = await response.json();
-      
       // Insert summary at the beginning
       if (data.summary) {
         const currentContent = editor.getHTML();
@@ -561,7 +541,6 @@
       }
 
       const data = await response.json();
-      
       // Insert analysis at the end
       if (data.analysis || data.rawAnalysis) {
         const currentContent = editor.getHTML();
@@ -584,28 +563,24 @@
                   ${analysis.keyPoints.map(point => `<li>${point}</li>`).join('')}
                 </ul>
               ` : ''}
-              
               ${analysis.findings?.length ? `
                 <p><strong>Findings:</strong></p>
                 <ul>
                   ${analysis.findings.map(finding => `<li>${finding}</li>`).join('')}
                 </ul>
               ` : ''}
-              
               ${analysis.recommendations?.length ? `
                 <p><strong>Recommendations:</strong></p>
                 <ul>
                   ${analysis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
                 </ul>
               ` : ''}
-              
               ${analysis.risks?.length ? `
                 <p><strong>Risk Assessment:</strong></p>
                 <ul>
                   ${analysis.risks.map(risk => `<li style="color: #dc2626;">${risk}</li>`).join('')}
                 </ul>
               ` : ''}
-              
               ${data.rawAnalysis && !analysis.keyPoints?.length ? `
                 <div style="white-space: pre-wrap;">${data.rawAnalysis}</div>
               ` : ''}
@@ -656,11 +631,9 @@
       editor.commands.setContent(content);
     }
   }
-  
   export function getContent() {
     return editor ? editor.getHTML() : "";
   }
-  
   export function getJSON() {
     return editor ? editor.getJSON() : null;
   }

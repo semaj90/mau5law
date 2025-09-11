@@ -3,11 +3,9 @@
   Modern search interface with AI-powered suggestions and vector search
 -->
 <script lang="ts">
-</script>
   import { Search, Filter, X, Zap, Brain, Database } from 'lucide-svelte';
   import { createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
-  
   // Props
   interface Props {
     placeholder?: string;
@@ -18,7 +16,6 @@
     disabled?: boolean;
     class?: string;
   }
-  
   let {
     placeholder = 'Search documents, cases, contracts...',
     searchType = 'universal',
@@ -29,18 +26,15 @@
     class: className = '',
     ...restProps
   } = $props();
-  
   // State using Svelte 5 runes
   let query = $state(initialQuery);
   let isSearching = $state(false);
   let showFilters = $state(false);
   let showSuggestions = $state(false);
   let searchInput: HTMLInputElement
-  
   // Search suggestions
   let suggestions = $state<string[]>([]);
   let selectedSuggestionIndex = $state(-1);
-  
   // Filters state
   let filters = $state({
     documentType: 'all',
@@ -48,7 +42,6 @@
     jurisdiction: 'all',
     tags: [] as string[]
   });
-  
   // Event dispatcher for Svelte 4/5 compatibility
   const dispatch = createEventDispatcher<{
     search: { query: string filters: typeof filters; type: string };
@@ -56,7 +49,6 @@
     filter: typeof filters;
     suggestion: { suggestion: string };
   }>();
-  
   // Search types configuration
   const searchTypes = [
     { id: 'universal', name: 'Universal', icon: Search, description: 'Search all content' },
@@ -64,7 +56,6 @@
     { id: 'vector', name: 'Vector', icon: Zap, description: 'Similarity-based search' },
     { id: 'legal', name: 'Legal', icon: Database, description: 'Legal documents only' }
   ];
-  
   // Mock suggestions for demo
   const mockSuggestions = [
     'contract liability clauses',
@@ -74,7 +65,6 @@
     'data privacy regulations',
     'corporate governance policies'
   ];
-  
   // Reactive updates for suggestions
   $effect(() => {
     if (query.length >= 2) {
@@ -89,14 +79,11 @@
       showSuggestions = false;
     }
   });
-  
   // Search handler
   async function handleSearch() {
     if (!query.trim() || isSearching || disabled) return;
-    
     isSearching = true;
     showSuggestions = false;
-    
     try {
       // Emit search event
       dispatch('search', {
@@ -104,17 +91,14 @@
         filters,
         type: searchType
       });
-      
       // Simulate search delay
       await new Promise(resolve => setTimeout(resolve, 300));
-      
     } catch (error) {
       console.error('Search error:', error);
     } finally {
       isSearching = false;
     }
   }
-  
   // Clear search
   function handleClear() {
     query = '';
@@ -124,11 +108,9 @@
     searchInput?.focus();
     dispatch('clear');
   }
-  
   // Handle keyboard navigation
   function handleKeydown(event: KeyboardEvent) {
     if (!showSuggestions) return;
-    
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
@@ -152,7 +134,6 @@
         break;
     }
   }
-  
   // Select suggestion
   function selectSuggestion(suggestion: string) {
     query = suggestion;
@@ -161,17 +142,14 @@
     dispatch('suggestion', { suggestion });
     handleSearch();
   }
-  
   // Toggle filters
   function toggleFilters() {
     showFilters = !showFilters;
   }
-  
   // Update filters
   function updateFilters() {
     dispatch('filter', filters);
   }
-  
   // Close suggestions when clicking outside
   function handleBlur() {
     setTimeout(() => {

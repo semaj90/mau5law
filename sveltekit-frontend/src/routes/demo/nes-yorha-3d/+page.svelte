@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import * as THREE from 'three';
   import { NESYoRHaHybrid3D, createNESButton, createNESContainer, createNESProgressBar, NES_YORHA_PALETTE } from '$lib/components/three/yorha-ui/NESYoRHaHybrid3D';
@@ -28,9 +27,9 @@
   let showHybridModal = $state(false);
 
   // 3D Components
-let nesButtons = $state<NESYoRHaHybrid3D[] >([]);
-let nesContainers = $state<NESYoRHaHybrid3D[] >([]);
-let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
+  let nesButtons = $state<NESYoRHaHybrid3D[] >([]);
+  let nesContainers = $state<NESYoRHaHybrid3D[] >([]);
+  let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
 
   onMount(() => {
     initializeScene();

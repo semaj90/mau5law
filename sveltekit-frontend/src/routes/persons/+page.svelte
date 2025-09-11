@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import {
     Search, Users, Plus, Eye, Edit, Filter, Grid, List,

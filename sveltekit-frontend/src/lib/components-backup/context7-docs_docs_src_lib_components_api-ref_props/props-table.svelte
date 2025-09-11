@@ -1,25 +1,24 @@
 <script lang="ts">
-</script>
-	import type { PropObj, PropSchema } from "$lib/types/index.js";
-	import * as Table from "$lib/components/ui/table/index.js";
-	import Code from "$lib/components/markdown/code.svelte";
-	import PropsRequiredBadge from "./props-required-badge.svelte";
-	import PropsBindableBadge from "./props-bindable-badge.svelte";
-	import { parseMarkdown } from "$lib/utils/markdown.js";
-	import PropsTypeContent from "./props-type-content.svelte";
-	import PropsTypeContentMobile from "./props-type-content-mobile.svelte";
+  	import type { PropObj, PropSchema } from "$lib/types/index.js";
+  	import * as Table from "$lib/components/ui/table/index.js";
+  	import Code from "$lib/components/markdown/code.svelte";
+  	import PropsRequiredBadge from "./props-required-badge.svelte";
+  	import PropsBindableBadge from "./props-bindable-badge.svelte";
+  	import { parseMarkdown } from "$lib/utils/markdown.js";
+  	import PropsTypeContent from "./props-type-content.svelte";
+  	import PropsTypeContentMobile from "./props-type-content-mobile.svelte";
 
-	let { props: _props }: { props: PropObj<Record<string, unknown>> } = $props();
+  	let { props: _props }: { props: PropObj<Record<string, unknown>> } = $props();
 
-	const propData: Array<PropSchema & { name: string }> = $derived.by(() => {
-		if (!_props) return [];
-		return Object.entries(_props).map(([name, prop]) => {
-			return {
-				name,
-				...prop,
-			};
-		});
-	});
+  	const propData: Array<PropSchema & { name: string }> = $derived.by(() => {
+  		if (!_props) return [];
+  		return Object.entries(_props).map(([name, prop]) => {
+  			return {
+  				name,
+  				...prop,
+  			};
+  		});
+  	});
 </script>
 
 {#if propData.length}

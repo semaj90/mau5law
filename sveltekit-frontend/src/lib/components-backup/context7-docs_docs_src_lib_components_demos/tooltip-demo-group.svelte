@@ -1,16 +1,15 @@
 <script lang="ts">
-</script>
-	import { Tooltip, Toolbar, Separator } from "bits-ui";
-	import TextB from "phosphor-svelte/lib/TextB";
-	import TextItalic from "phosphor-svelte/lib/TextItalic";
-	import TextStrikethrough from "phosphor-svelte/lib/TextStrikethrough";
-	import TextAlignLeft from "phosphor-svelte/lib/TextAlignLeft";
-	import TextAlignCenter from "phosphor-svelte/lib/TextAlignCenter";
-	import TextAlignRight from "phosphor-svelte/lib/TextAlignRight";
-	import Sparkle from "phosphor-svelte/lib/Sparkle";
+  	import { Tooltip, Toolbar, Separator } from "bits-ui";
+  	import TextB from "phosphor-svelte/lib/TextB";
+  	import TextItalic from "phosphor-svelte/lib/TextItalic";
+  	import TextStrikethrough from "phosphor-svelte/lib/TextStrikethrough";
+  	import TextAlignLeft from "phosphor-svelte/lib/TextAlignLeft";
+  	import TextAlignCenter from "phosphor-svelte/lib/TextAlignCenter";
+  	import TextAlignRight from "phosphor-svelte/lib/TextAlignRight";
+  	import Sparkle from "phosphor-svelte/lib/Sparkle";
 
-	let text = $state<string[]>([]);
-	let align = $state<string>("center");
+  	let text = $state<string[]>([]);
+  	let align = $state<string>("center");
 </script>
 
 {#snippet tooltipContent({ content }: { content: string })}

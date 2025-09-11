@@ -1,13 +1,11 @@
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
-</script>
-` element and/or a single top-level `<script module>
-</script>` element
-https://svelte.dev/e/script_duplicate -->
-<!-- Tiptap Editor with AI Assistant Integration -->
-<!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
+  ` element and/or a single top-level `<script module>
+  </script>` element
+  https://svelte.dev/e/script_duplicate -->
+  <!-- Tiptap Editor with AI Assistant Integration -->
+  <!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
 
-<script lang="ts">
-</script>
+  <script lang="ts">
   import { onMount, onDestroy, tick } from 'svelte';
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
@@ -32,7 +30,7 @@ https://svelte.dev/e/script_duplicate -->
   const { state, send } = useMachine(crewAIOrchestrationMachine);
 
   // Component state
-let editor = $state<Editor | null >(null);
+  let editor = $state<Editor | null >(null);
   let editorElement: HTMLElement;
   let showSuggestions = $state(false);
   let currentSuggestions = $state([]);
@@ -44,8 +42,8 @@ let editor = $state<Editor | null >(null);
   let recommendationPosition = $state({ x: 0, y: 0 });
 
   // Auto-save timer
-let autoSaveTimer = $state<NodeJS.Timeout | null >(null);
-let idleTimer = $state<NodeJS.Timeout | null >(null);
+  let autoSaveTimer = $state<NodeJS.Timeout | null >(null);
+  let idleTimer = $state<NodeJS.Timeout | null >(null);
 
   // Derived state
   const isProcessing = $derived($state.matches('orchestrating'));

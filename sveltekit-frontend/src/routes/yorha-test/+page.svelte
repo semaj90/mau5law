@@ -1,6 +1,5 @@
 comment Advanced YoRHa Testing Suite
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import {
     TestTube,

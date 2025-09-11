@@ -1,224 +1,223 @@
 <!-- Smart Document Form with OCR Auto-Population -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from 'svelte';
-	// Updated to use melt-ui components
-	import Button from '$lib/components/ui/bitsbutton.svelte';
-	import Card from '$lib/components/ui/MeltCard.svelte';
+  	// Updated to use melt-ui components
+  	import Button from '$lib/components/ui/bitsbutton.svelte';
+  	import Card from '$lib/components/ui/MeltCard.svelte';
 
-	// TODO: Replace with melt-ui equivalents when available
-	// import { CardContent, CardHeader, CardTitle } from 'bits-ui';
-	// import { Badge } from 'bits-ui';
-	// import { Progress } from 'bits-ui';
-	// import { Input } from 'bits-ui';
-	// import { Textarea } from 'bits-ui';
-	// import { Label } from 'bits-ui';
-	import { ocrService, type ExtractedField, type FormField, type FieldType } from '$lib/services/ocrService';
-	import { enhancedRAG } from '$lib/services/enhancedRAG';
-	import { fade, fly, scale } from 'svelte/transition';
-	import { writable } from 'svelte/store';
+  	// TODO: Replace with melt-ui equivalents when available
+  	// import { CardContent, CardHeader, CardTitle } from 'bits-ui';
+  	// import { Badge } from 'bits-ui';
+  	// import { Progress } from 'bits-ui';
+  	// import { Input } from 'bits-ui';
+  	// import { Textarea } from 'bits-ui';
+  	// import { Label } from 'bits-ui';
+  	import { ocrService, type ExtractedField, type FormField, type FieldType } from '$lib/services/ocrService';
+  	import { enhancedRAG } from '$lib/services/enhancedRAG';
+  	import { fade, fly, scale } from 'svelte/transition';
+  	import { writable } from 'svelte/store';
 
-	let { title = $bindable() } = $props(); // "Smart Document Form";
-	let { description = $bindable() } = $props(); // "Upload a document for automatic field extraction and population";
-	let { formSchema = $bindable() } = $props(); // FormField[] = [];
-	let { enableOCR = $bindable() } = $props(); // true;
-	let { enableSmartSuggestions = $bindable() } = $props(); // true;
-	let { documentTypes = $bindable() } = $props(); // string[] = ['legal_document', 'contract', 'form'];
+  	let { title = $bindable() } = $props(); // "Smart Document Form";
+  	let { description = $bindable() } = $props(); // "Upload a document for automatic field extraction and population";
+  	let { formSchema = $bindable() } = $props(); // FormField[] = [];
+  	let { enableOCR = $bindable() } = $props(); // true;
+  	let { enableSmartSuggestions = $bindable() } = $props(); // true;
+  	let { documentTypes = $bindable() } = $props(); // string[] = ['legal_document', 'contract', 'form'];
 
-	const dispatch = createEventDispatcher<{
-		submit: { formData: Record<string, any>; extractedFields: ExtractedField[] };
-		fieldChange: { fieldName: string; value: string; confidence?: number };
-		ocrComplete: { result: any; extractedFields: ExtractedField[] };
-	}>();
+  	const dispatch = createEventDispatcher<{
+  		submit: { formData: Record<string, any>; extractedFields: ExtractedField[] };
+  		fieldChange: { fieldName: string; value: string; confidence?: number };
+  		ocrComplete: { result: any; extractedFields: ExtractedField[] };
+  	}>();
 
-	// Component state
-let fileInput = $state<HTMLInputElement;
-	let uploadedFile: File | null >(null);
-let populatedFields = $state<FormField[] >([...formSchema]);
-let isProcessing = $state(false);
-let showPreview = $state(false);
-let selectedDocumentType = $state('auto');
+  	// Component state
+  let fileInput = $state<HTMLInputElement;
+  	let uploadedFile: File | null >(null);
+  let populatedFields = $state<FormField[] >([...formSchema]);
+  let isProcessing = $state(false);
+  let showPreview = $state(false);
+  let selectedDocumentType = $state('auto');
 
-	// OCR stores
-	let processing = $derived(ocrService.processing$);
-	let progress = $derived(ocrService.progress$);
-	let ocrResult = $derived(ocrService.currentResult$);
-	let extractedFields = $derived(ocrService.extractedFields$);
+  	// OCR stores
+  	let processing = $derived(ocrService.processing$);
+  	let progress = $derived(ocrService.progress$);
+  	let ocrResult = $derived(ocrService.currentResult$);
+  	let extractedFields = $derived(ocrService.extractedFields$);
 
-	// Form validation
-	const formErrors = writable<Record<string, string>>({});
-let isFormValid = $state(false);
+  	// Form validation
+  	const formErrors = writable<Record<string, string>>({});
+  let isFormValid = $state(false);
 
-	// Smart suggestions
-let activeSuggestions = $state<Record<string, string[]> >({});
-let suggestionLoading = $state<Record<string, boolean> >({});
+  	// Smart suggestions
+  let activeSuggestions = $state<Record<string, string[]> >({});
+  let suggestionLoading = $state<Record<string, boolean> >({});
 
-	// Default form schema if none provided
-	onMount(() => {
-		if (formSchema.length === 0) {
-			populatedFields = [
-				{ name: 'client_name', type: 'name', label: 'Client Name', required: true },
-				{ name: 'case_number', type: 'case_number', label: 'Case Number', required: false },
-				{ name: 'document_date', type: 'date', label: 'Document Date', required: true },
-				{ name: 'jurisdiction', type: 'text_block', label: 'Jurisdiction', required: false },
-				{ name: 'contact_email', type: 'email', label: 'Contact Email', required: true },
-				{ name: 'contact_phone', type: 'phone', label: 'Contact Phone', required: false },
-				{ name: 'description', type: 'text_block', label: 'Description', required: true },
-				{ name: 'notes', type: 'text_block', label: 'Additional Notes', required: false }
-			];
-		}
-	});
+  	// Default form schema if none provided
+  	onMount(() => {
+  		if (formSchema.length === 0) {
+  			populatedFields = [
+  				{ name: 'client_name', type: 'name', label: 'Client Name', required: true },
+  				{ name: 'case_number', type: 'case_number', label: 'Case Number', required: false },
+  				{ name: 'document_date', type: 'date', label: 'Document Date', required: true },
+  				{ name: 'jurisdiction', type: 'text_block', label: 'Jurisdiction', required: false },
+  				{ name: 'contact_email', type: 'email', label: 'Contact Email', required: true },
+  				{ name: 'contact_phone', type: 'phone', label: 'Contact Phone', required: false },
+  				{ name: 'description', type: 'text_block', label: 'Description', required: true },
+  				{ name: 'notes', type: 'text_block', label: 'Additional Notes', required: false }
+  			];
+  		}
+  	});
 
-	// Handle file upload
-	const handleFileUpload = async () => {
-		if (!uploadedFile || !enableOCR) return;
+  	// Handle file upload
+  	const handleFileUpload = async () => {
+  		if (!uploadedFile || !enableOCR) return;
 
-		try {
-			isProcessing = true;
+  		try {
+  			isProcessing = true;
 
-			const result = await ocrService.processDocument(uploadedFile, {
-				documentType: selectedDocumentType as any,
-				extractFields: true,
-				qualityEnhancement: true
-			});
+  			const result = await ocrService.processDocument(uploadedFile, {
+  				documentType: selectedDocumentType as any,
+  				extractFields: true,
+  				qualityEnhancement: true
+  			});
 
-			// Auto-populate form fields
-			populatedFields = ocrService.autoPopulateForm($extractedFields, populatedFields);
+  			// Auto-populate form fields
+  			populatedFields = ocrService.autoPopulateForm($extractedFields, populatedFields);
 
-			// Generate smart suggestions for incomplete fields
-			if (enableSmartSuggestions) {
-				await generateSmartSuggestions(result.text);
-			}
+  			// Generate smart suggestions for incomplete fields
+  			if (enableSmartSuggestions) {
+  				await generateSmartSuggestions(result.text);
+  			}
 
-			showPreview = true;
-			dispatch('ocrComplete', { result, extractedFields: $extractedFields });
+  			showPreview = true;
+  			dispatch('ocrComplete', { result, extractedFields: $extractedFields });
 
-		} catch (error) {
-			console.error('OCR processing failed:', error);
-		} finally {
-			isProcessing = false;
-		}
-	};
+  		} catch (error) {
+  			console.error('OCR processing failed:', error);
+  		} finally {
+  			isProcessing = false;
+  		}
+  	};
 
-	// Generate smart suggestions for incomplete fields
-	const generateSmartSuggestions = async (documentText: string) => {
-		for (const field of populatedFields) {
-			if (!field.value && enableSmartSuggestions) {
-				try {
-					suggestionLoading[field.name] = true;
-					const suggestions = await ocrService.getSuggestions(field.name, field.type, documentText);
-					activeSuggestions[field.name] = suggestions;
-				} catch (error) {
-					console.warn(`Failed to generate suggestions for ${field.name}:`, error);
-				} finally {
-					suggestionLoading[field.name] = false;
-				}
-			}
-		}
-		activeSuggestions = { ...activeSuggestions }; // Trigger reactivity
-	};
+  	// Generate smart suggestions for incomplete fields
+  	const generateSmartSuggestions = async (documentText: string) => {
+  		for (const field of populatedFields) {
+  			if (!field.value && enableSmartSuggestions) {
+  				try {
+  					suggestionLoading[field.name] = true;
+  					const suggestions = await ocrService.getSuggestions(field.name, field.type, documentText);
+  					activeSuggestions[field.name] = suggestions;
+  				} catch (error) {
+  					console.warn(`Failed to generate suggestions for ${field.name}:`, error);
+  				} finally {
+  					suggestionLoading[field.name] = false;
+  				}
+  			}
+  		}
+  		activeSuggestions = { ...activeSuggestions }; // Trigger reactivity
+  	};
 
-	// Handle field value changes
-	const handleFieldChange = (fieldName: string, value: string, confidence?: number) => {
-		const fieldIndex = populatedFields.findIndex(f => f.name === fieldName);
-		if (fieldIndex !== -1) {
-			populatedFields[fieldIndex].value = value;
-			populatedFields[fieldIndex].confidence = confidence;
+  	// Handle field value changes
+  	const handleFieldChange = (fieldName: string, value: string, confidence?: number) => {
+  		const fieldIndex = populatedFields.findIndex(f => f.name === fieldName);
+  		if (fieldIndex !== -1) {
+  			populatedFields[fieldIndex].value = value;
+  			populatedFields[fieldIndex].confidence = confidence;
 
-			// Clear suggestions once user makes a selection
-			delete activeSuggestions[fieldName];
-			activeSuggestions = { ...activeSuggestions };
-		}
+  			// Clear suggestions once user makes a selection
+  			delete activeSuggestions[fieldName];
+  			activeSuggestions = { ...activeSuggestions };
+  		}
 
-		// Validate field
-		validateField(fieldName, value);
+  		// Validate field
+  		validateField(fieldName, value);
 
-		dispatch('fieldChange', { fieldName, value, confidence });
-	};
+  		dispatch('fieldChange', { fieldName, value, confidence });
+  	};
 
-	// Apply suggestion to field
-	const applySuggestion = (fieldName: string, suggestion: string) => {
-		handleFieldChange(fieldName, suggestion, 0.8);
-	};
+  	// Apply suggestion to field
+  	const applySuggestion = (fieldName: string, suggestion: string) => {
+  		handleFieldChange(fieldName, suggestion, 0.8);
+  	};
 
-	// Field validation
-	const validateField = (fieldName: string, value: string) => {
-		const field = populatedFields.find(f => f.name === fieldName);
-		if (!field) return;
+  	// Field validation
+  	const validateField = (fieldName: string, value: string) => {
+  		const field = populatedFields.find(f => f.name === fieldName);
+  		if (!field) return;
 
-		const errors = { ...$formErrors };
+  		const errors = { ...$formErrors };
 
-		// Required field validation
-		if (field.required && !value.trim()) {
-			errors[fieldName] = 'This field is required';
-		} else if (field.validation) {
-			try {
-				field.validation.parse(value);
-				delete errors[fieldName];
-			} catch (error: any) {
-				errors[fieldName] = error.errors?.[0]?.message || 'Invalid value';
-			}
-		} else {
-			delete errors[fieldName];
-		}
+  		// Required field validation
+  		if (field.required && !value.trim()) {
+  			errors[fieldName] = 'This field is required';
+  		} else if (field.validation) {
+  			try {
+  				field.validation.parse(value);
+  				delete errors[fieldName];
+  			} catch (error: any) {
+  				errors[fieldName] = error.errors?.[0]?.message || 'Invalid value';
+  			}
+  		} else {
+  			delete errors[fieldName];
+  		}
 
-		formErrors.set(errors);
-		isFormValid = Object.keys(errors).length === 0 &&
-			populatedFields.filter(f => f.required).every(f => f.value?.trim());
-	};
+  		formErrors.set(errors);
+  		isFormValid = Object.keys(errors).length === 0 &&
+  			populatedFields.filter(f => f.required).every(f => f.value?.trim());
+  	};
 
-	// Form submission
-	const handleSubmit = () => {
-		// Final validation
-		populatedFields.forEach(field => {
-			if (field.value) validateField(field.name, field.value);
-		});
+  	// Form submission
+  	const handleSubmit = () => {
+  		// Final validation
+  		populatedFields.forEach(field => {
+  			if (field.value) validateField(field.name, field.value);
+  		});
 
-		if (isFormValid) {
-			const formData = populatedFields.reduce((acc, field) => {
-				acc[field.name] = field.value || '';
-				return acc;
-			}, {} as Record<string, any>);
+  		if (isFormValid) {
+  			const formData = populatedFields.reduce((acc, field) => {
+  				acc[field.name] = field.value || '';
+  				return acc;
+  			}, {} as Record<string, any>);
 
-			dispatch('submit', { formData, extractedFields: $extractedFields });
-		}
-	};
+  			dispatch('submit', { formData, extractedFields: $extractedFields });
+  		}
+  	};
 
-	// Get field type icon
-	const getFieldTypeIcon = (type: FieldType) => {
-		switch (type) {
-			case 'name': return '👤';
-			case 'email': return '📧';
-			case 'phone': return '📞';
-			case 'date': return '📅';
-			case 'address': return '📍';
-			case 'case_number': return '📋';
-			case 'monetary_amount': return '💰';
-			default: return '📝';
-		}
-	};
+  	// Get field type icon
+  	const getFieldTypeIcon = (type: FieldType) => {
+  		switch (type) {
+  			case 'name': return '👤';
+  			case 'email': return '📧';
+  			case 'phone': return '📞';
+  			case 'date': return '📅';
+  			case 'address': return '📍';
+  			case 'case_number': return '📋';
+  			case 'monetary_amount': return '💰';
+  			default: return '📝';
+  		}
+  	};
 
-	// Get confidence color
-	const getConfidenceColor = (confidence?: number) => {
-		if (!confidence) return 'bg-gray-500';
-		if (confidence >= 0.9) return 'bg-green-500';
-		if (confidence >= 0.7) return 'bg-yellow-500';
-		return 'bg-red-500';
-	};
+  	// Get confidence color
+  	const getConfidenceColor = (confidence?: number) => {
+  		if (!confidence) return 'bg-gray-500';
+  		if (confidence >= 0.9) return 'bg-green-500';
+  		if (confidence >= 0.7) return 'bg-yellow-500';
+  		return 'bg-red-500';
+  	};
 
-	// File drop handling
-	const handleDrop = (event: DragEvent) => {
-		event.preventDefault();
-		const files = event.dataTransfer?.files;
-		if (files && files.length > 0) {
-			uploadedFile = files[0];
-			handleFileUpload();
-		}
-	};
+  	// File drop handling
+  	const handleDrop = (event: DragEvent) => {
+  		event.preventDefault();
+  		const files = event.dataTransfer?.files;
+  		if (files && files.length > 0) {
+  			uploadedFile = files[0];
+  			handleFileUpload();
+  		}
+  	};
 
-	const handleDragOver = (event: DragEvent) => {
-		event.preventDefault();
-	};
+  	const handleDragOver = (event: DragEvent) => {
+  		event.preventDefault();
+  	};
 </script>
 
 <div class="smart-document-form max-w-4xl mx-auto p-6 space-y-6">

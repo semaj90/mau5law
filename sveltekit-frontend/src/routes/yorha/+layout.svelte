@@ -1,8 +1,6 @@
 <!-- YoRHa Interface Layout -->
 <script lang="ts">
-</script>
   let { children } = $props();
-  
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';

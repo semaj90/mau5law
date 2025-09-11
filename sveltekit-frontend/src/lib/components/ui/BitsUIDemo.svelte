@@ -1,6 +1,5 @@
 <!-- Comprehensive Bits-UI Demo for Legal AI App -->
 <script lang="ts">
-</script>
   import BitsDialog from './dialog/BitsDialog.svelte';
   import BitsSelect from './select/BitsSelect.svelte';
   import BitsInput from './input/BitsInput.svelte';

@@ -1,26 +1,25 @@
 <script lang="ts">
-</script>
-	import type { Snippet } from "svelte";
-	import { Dialog, type WithoutChild } from "bits-ui";
-	import X from "phosphor-svelte/lib/X";
+  	import type { Snippet } from "svelte";
+  	import { Dialog, type WithoutChild } from "bits-ui";
+  	import X from "phosphor-svelte/lib/X";
 
-	type Props = Dialog.RootProps & {
-		buttonText: string;
-		title: Snippet;
-		description: Snippet;
-		contentProps?: WithoutChild<Dialog.ContentProps>;
-		// ...other component props if you wish to pass them
-	};
+  	type Props = Dialog.RootProps & {
+  		buttonText: string;
+  		title: Snippet;
+  		description: Snippet;
+  		contentProps?: WithoutChild<Dialog.ContentProps>;
+  		// ...other component props if you wish to pass them
+  	};
 
-	let {
-		open = $bindable(false),
-		children,
-		buttonText,
-		contentProps,
-		title,
-		description,
-		...restProps
-	}: Props = $props();
+  	let {
+  		open = $bindable(false),
+  		children,
+  		buttonText,
+  		contentProps,
+  		title,
+  		description,
+  		...restProps
+  	}: Props = $props();
 </script>
 
 <Dialog.Root bind:open {...restProps}>

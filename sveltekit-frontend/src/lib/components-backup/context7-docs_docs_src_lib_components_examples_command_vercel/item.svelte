@@ -1,19 +1,18 @@
 <script lang="ts">
-</script>
-	import type { Snippet } from "svelte";
-	import { Command } from "bits-ui";
+  	import type { Snippet } from "svelte";
+  	import { Command } from "bits-ui";
 
-	let {
-		shortcut = "",
-		onSelect = () => {},
-		value,
-		children,
-	}: {
-		shortcut?: string;
-		onSelect?: (() => void) | undefined;
-		value: string;
-		children: Snippet;
-	} = $props();
+  	let {
+  		shortcut = "",
+  		onSelect = () => {},
+  		value,
+  		children,
+  	}: {
+  		shortcut?: string;
+  		onSelect?: (() => void) | undefined;
+  		value: string;
+  		children: Snippet;
+  	} = $props();
 </script>
 
 <Command.Item {onSelect} {value}>

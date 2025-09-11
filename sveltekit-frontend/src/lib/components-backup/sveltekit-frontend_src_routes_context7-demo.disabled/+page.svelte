@@ -2,7 +2,6 @@
 // Demonstrates production Context7 MCP workflow with Copilot orchestration
 
 <script lang="ts">
-</script>
   import { writable } from 'svelte/store';
   import { copilotOrchestrator } from '$lib/utils/mcp-helpers';
   import { resolveLibraryId, getLibraryDocs, semanticSearch } from '$lib/ai/mcp-helpers';
@@ -16,19 +15,19 @@
     data
   } = $props();
 
-let query = $state('');
-let results = writable([]);
-let loading = writable(false);
-let orchestrationResult = writable(data.orchestrationResult);
-let enhancedContext = writable(null);
+  let query = $state('');
+  let results = writable([]);
+  let loading = writable(false);
+  let orchestrationResult = writable(data.orchestrationResult);
+  let enhancedContext = writable(null);
 
-// Display SSR-loaded Copilot context
-let copilotArchitecture = $derived(data.copilotContext?.architecture)
-let legalContext = $derived(data.copilotContext?.legalContext)
-let libraryData = $derived(data.libraryData)
+  // Display SSR-loaded Copilot context
+  let copilotArchitecture = $derived(data.copilotContext?.architecture)
+  let legalContext = $derived(data.copilotContext?.legalContext)
+  let libraryData = $derived(data.libraryData)
 
-// Demo: Full Context7 MCP workflow with Copilot architecture integration
-async function runFullWorkflow() {
+  // Demo: Full Context7 MCP workflow with Copilot architecture integration
+  async function runFullWorkflow() {
   loading.set(true);
 
   try {
@@ -80,10 +79,10 @@ async function runFullWorkflow() {
   } finally {
     loading.set(false);
   }
-}
+  }
 
-// Enhanced: Run Copilot self-prompt with architecture context
-async function runCopilotSelfPrompt() {
+  // Enhanced: Run Copilot self-prompt with architecture context
+  async function runCopilotSelfPrompt() {
   loading.set(true);
 
   try {
@@ -112,10 +111,10 @@ async function runCopilotSelfPrompt() {
   } finally {
     loading.set(false);
   }
-}
+  }
 
-// Demo: Quick library resolution
-async function quickResolve() {
+  // Demo: Quick library resolution
+  async function quickResolve() {
   try {
     const libId = await resolveLibraryId(query);
     const docs = await getLibraryDocs(libId, 'overview');
@@ -123,17 +122,17 @@ async function quickResolve() {
   } catch (error) {
     results.set([{ type: 'error', data: error.message }]);
   }
-}
+  }
 
-// Demo: Quick semantic search
-async function quickSearch() {
+  // Demo: Quick semantic search
+  async function quickSearch() {
   try {
     const searchResults = await semanticSearch(query);
     results.set([{ type: 'search', data: searchResults }]);
   } catch (error) {
     results.set([{ type: 'error', data: error.message }]);
   }
-}
+  }
 </script>
 
 <main class="container mx-auto p-6 max-w-6xl">

@@ -11,7 +11,6 @@
   - Integration with YoRHa 3D system
 -->
 <script lang="ts">
-</script>
   import { Button as BitsButton } from 'bits-ui';
   import { createEventDispatcher, onMount } from 'svelte';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
@@ -23,7 +22,6 @@
     form?: string;
     name?: string;
     value?: string;
-    
     // N64-specific styling
     meshComplexity?: 'low' | 'medium' | 'high';
     materialType?: 'basic' | 'phong' | 'pbr';
@@ -32,17 +30,14 @@
     enableFog?: boolean;
     enableLighting?: boolean;
     enableReflections?: boolean;
-    
     // 3D transformations
     rotationX?: number;
     rotationY?: number;
     rotationZ?: number;
     perspective?: number;
-    
     // Advanced effects
     enableParticles?: boolean;
     glowIntensity?: number;
-    
     // Content
     children?: any;
     class?: string;
@@ -56,12 +51,10 @@
     loading = false,
     animationStyle = 'smooth',
     renderOptions,
-    
     type = 'button',
     form,
     name,
     value,
-    
     meshComplexity = 'medium',
     materialType = 'phong',
     enableTextureFiltering = true,
@@ -69,18 +62,14 @@
     enableFog = true,
     enableLighting = true,
     enableReflections = false,
-    
     rotationX = 0,
     rotationY = 0,
     rotationZ = 0,
     perspective = 1000,
-    
     enableParticles = false,
     glowIntensity = 0.5,
-    
     children,
     class: className = '',
-    
     onClick,
     onHover,
     onFocus
@@ -93,9 +82,9 @@
   let isFocused = $state(false);
   let mouseX = $state(0);
   let mouseY = $state(0);
-let audioContext = $state<AudioContext | null >(null);
-let buttonElement = $state<HTMLButtonElement | null >(null);
-let animationId = $state<number | null >(null);
+  let audioContext = $state<AudioContext | null >(null);
+  let buttonElement = $state<HTMLButtonElement | null >(null);
+  let animationId = $state<number | null >(null);
 
   // Default to balanced N64 rendering options
   const effectiveRenderOptions: N64RenderingOptions = {
@@ -112,49 +101,40 @@ let animationId = $state<number | null >(null);
       if (!audioContext) {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
-      
       // Create 3D spatial audio effect
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       const pannerNode = audioContext.createPanner();
       const reverbNode = audioContext.createConvolver();
-      
       // Configure spatial audio
       pannerNode.panningModel = 'HRTF';
       pannerNode.positionX.setValueAtTime(mouseX / window.innerWidth - 0.5, audioContext.currentTime);
       pannerNode.positionY.setValueAtTime(mouseY / window.innerHeight - 0.5, audioContext.currentTime);
       pannerNode.positionZ.setValueAtTime(-1, audioContext.currentTime);
-      
       // Create impulse response for reverb
       const impulseLength = audioContext.sampleRate * 0.2;
       const impulse = audioContext.createBuffer(2, impulseLength, audioContext.sampleRate);
       const impulseL = impulse.getChannelData(0);
       const impulseR = impulse.getChannelData(1);
-      
       for (let i = 0; i < impulseLength; i++) {
         const decay = Math.pow(1 - i / impulseLength, 2);
         impulseL[i] = (Math.random() * 2 - 1) * decay * 0.1;
         impulseR[i] = (Math.random() * 2 - 1) * decay * 0.1;
       }
       reverbNode.buffer = impulse;
-      
       // Connect audio chain
       oscillator.connect(pannerNode);
       pannerNode.connect(reverbNode);
       reverbNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      
       // Rich harmonic content
       oscillator.type = 'sawtooth';
       oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
       oscillator.frequency.exponentialRampToValueAtTime(330, audioContext.currentTime + 0.2);
-      
       gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-      
       oscillator.start();
       oscillator.stop(audioContext.currentTime + 0.3);
-      
     } catch (error) {
       console.warn('Could not play N64 sound:', error);
     }
@@ -162,7 +142,6 @@ let animationId = $state<number | null >(null);
 
   const handleMouseMove = (event: MouseEvent) => {
     if (!buttonElement || disabled) return;
-    
     const rect = buttonElement.getBoundingClientRect();
     mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     mouseY = ((event.clientY - rect.top) / rect.height) * 2 - 1;
@@ -170,19 +149,15 @@ let animationId = $state<number | null >(null);
 
   const handleClick = async () => {
     if (disabled || loading) return;
-    
     isPressed = true;
     await playN64Sound();
-    
     // Create particle effect
     if (enableParticles) {
       createParticleEffect();
     }
-    
     setTimeout(() => {
       isPressed = false;
     }, 150);
-    
     onClick?.();
     dispatch('click');
   };
@@ -233,9 +208,7 @@ let animationId = $state<number | null >(null);
         transform: translate(-50%, -50%);
         z-index: 1000;
       `;
-      
       container.appendChild(particle);
-      
       setTimeout(() => {
         particle.remove();
       }, 800);
@@ -245,21 +218,17 @@ let animationId = $state<number | null >(null);
   // Generate texture filtering CSS classes based on render options
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
-    
     // Apply texture quality class
     if (effectiveRenderOptions.textureQuality === 'ultra') {
       classes.push('texture-ultra');
     }
-    
     // Apply filtering type classes
     if (effectiveRenderOptions.enableBilinearFiltering) {
       classes.push('filtering-bilinear');
     }
-    
     if (effectiveRenderOptions.enableTrilinearFiltering) {
       classes.push('filtering-trilinear');
     }
-    
     // Apply anisotropic filtering level
     const anisotropicLevel = effectiveRenderOptions.anisotropicLevel || 1;
     if (anisotropicLevel >= 16) {
@@ -269,7 +238,6 @@ let animationId = $state<number | null >(null);
     } else if (anisotropicLevel >= 4) {
       classes.push('anisotropic-4x');
     }
-    
     return classes.join(' ');
   };
 

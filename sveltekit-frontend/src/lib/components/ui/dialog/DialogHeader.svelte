@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Props are defined as $props() rune, no import needed
 
   interface Props {

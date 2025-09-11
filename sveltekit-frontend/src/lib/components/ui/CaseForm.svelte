@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { goto } from "$app/navigation";
   import {
@@ -11,7 +10,7 @@
   import { notifications } from '$lib/stores/notification';
 
   export const data = null;
-;
+  ;
   // Form validation
   const formOptions = {
     initialValues: {
@@ -26,28 +25,28 @@
       title: (value: string) => {
         if (!value || value.trim().length < 3) {
           return "Title must be at least 3 characters long";
-}
+  }
         if (value.length > 100) {
           return "Title must be less than 100 characters";
-}
+  }
         return null;
       },
       description: (value: string) => {
         if (!value || value.trim().length < 10) {
           return "Description must be at least 10 characters long";
-}
+  }
         return null;
       },
       priority: (value: string) => {
         if (!["low", "medium", "high", "urgent"].includes(value)) {
           return "Please select a valid priority level";
-}
+  }
         return null;
       },
       dueDate: (value: string) => {
         if (value && new Date(value) < new Date()) {
           return "Due date cannot be in the past";
-}
+  }
         return null;
       },
     },
@@ -55,13 +54,13 @@
   };
 
   let formApi: any;
-let isSubmitting = $state(false);
+  let isSubmitting = $state(false);
 
   // Store form state
-let formValues = $state<Record<string, any> >({});
-let formErrors = $state<Record<string, string> >({});
-let isFormValid = $state(false);
-let isFormDirty = $state(false);
+  let formValues = $state<Record<string, any> >({});
+  let formErrors = $state<Record<string, string> >({});
+  let isFormValid = $state(false);
+  let isFormDirty = $state(false);
 
   // Handle form changes
   function handleFormChange(event: CustomEvent) {
@@ -69,17 +68,17 @@ let isFormDirty = $state(false);
     formValues = values;
     // Auto-save draft or other real-time updates
     console.log("Form values changed:", values);
-}
+  }
   // Update form state when formApi is available
   // TODO: Convert to $derived: if (formApi) {
     // You can access formApi methods here if needed
-}
+  }
   async function handleSubmit(event: CustomEvent) {
     const { values, isValid } = event.detail
 
     if (!isValid) {
       return;
-}
+  }
     isSubmitting = true;
 
     try {
@@ -105,7 +104,7 @@ let isFormDirty = $state(false);
           "Failed to create case",
           error.message || "Please try again later"
         );
-}
+  }
     } catch (error) {
       console.error("Case creation error:", error);
       notifications.error(
@@ -114,14 +113,14 @@ let isFormDirty = $state(false);
       );
     } finally {
       isSubmitting = false;
-}}
+  }}
   function addTag() {
     const currentTags = formApi.getValues().tags || "";
     formApi.setField(
       "tags",
       currentTags + (currentTags ? ", " : "") + "New Tag"
     );
-}
+  }
   // Keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
     if (event.ctrlKey || event.metaKey) {
@@ -131,7 +130,7 @@ let isFormDirty = $state(false);
       } else if (event.key === "r") {
         event.preventDefault();
         formApi?.reset();
-}}}
+  }}}
 </script>
 
 <svelte:window keydown={handleKeydown} />

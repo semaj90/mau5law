@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte'
   import { scale, fly, fade } from 'svelte/transition'
   import { spring } from 'svelte/motion'
@@ -20,8 +19,8 @@
     Shield,
     Target
   } from 'lucide-svelte'
-import GamingAIButton from './GamingAIButton.svelte';
-import NierAIAssistant from './NierAIAssistant.svelte';
+  import GamingAIButton from './GamingAIButton.svelte';
+  import NierAIAssistant from './NierAIAssistant.svelte';
 
   interface AIMessage {
     id: string
@@ -76,7 +75,7 @@ import NierAIAssistant from './NierAIAssistant.svelte';
   ])
 
   let inputValue = $state('');
-let isTyping = $state(false);
+  let isTyping = $state(false);
 
   // Real AI Integration
   async function sendMessage(content?: string) {

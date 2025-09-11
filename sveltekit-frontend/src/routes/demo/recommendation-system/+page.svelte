@@ -1,6 +1,5 @@
 <!-- Recommendation System Demo - Gaming CSS Modals Integration -->
 <script lang="ts">
-</script>
   import { } from 'svelte';
   import { onMount, onDestroy } from 'svelte';
   import RecommendationContainer from '$lib/components/ui/gaming/RecommendationContainer.svelte';
@@ -18,7 +17,6 @@
   let isDetectiveMode = $state(false);
   let showRecommendations = $state(true);
   let simulatedActivity = $state('active');
-  
   // Mock recommendations for demo
   let mockRecommendations = $state([
     {
@@ -71,10 +69,8 @@
 
   // Demo activity simulator
   let activityTimer: number;
-  
   function simulateActivity(activity: 'active' | 'idle' | 'typing') {
     simulatedActivity = activity;
-    
     // Add contextual recommendations based on activity
     if (activity === 'idle') {
       const idleRec = {
@@ -86,9 +82,7 @@
         priority: 'medium' as const,
         action: () => console.log('Running background analysis...')
       };
-      
       mockRecommendations = [...mockRecommendations, idleRec];
-      
       // Remove after 10 seconds
       setTimeout(() => {
         mockRecommendations = mockRecommendations.filter(r => r.id !== idleRec.id);
@@ -98,7 +92,6 @@
 
   function toggleDetectiveMode() {
     isDetectiveMode = !isDetectiveMode;
-    
     if (isDetectiveMode) {
       // Add detective-specific recommendations
       const detectiveRecs = [
@@ -121,7 +114,6 @@
           action: () => console.log('Searching for missing evidence...')
         }
       ];
-      
       mockRecommendations = [...mockRecommendations, ...detectiveRecs];
     } else {
       // Remove detective recommendations
@@ -141,7 +133,6 @@
       priority: 'critical' as const,
       action: () => console.log('Opening security dashboard...')
     };
-    
     mockRecommendations = [...mockRecommendations, criticalRec];
   }
 
@@ -180,7 +171,6 @@
       pendingTasks: ['OCR Processing', 'Pattern Analysis'],
       timeInMode: 1800000 // 30 minutes
     });
-    
     return () => {
       if (activityTimer) clearInterval(activityTimer);
     };

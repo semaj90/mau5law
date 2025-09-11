@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onsummary?: (event?: any) => void;
   }
@@ -7,7 +6,6 @@
 
     let summary = "";
   let loading = false;
-  
   async function getSummary(text: string) {
     loading = true;
     const res = await fetch("/api/ai/ollama-gemma3", {
@@ -19,7 +17,7 @@
     summary = data.response;
     loading = false;
     onsummary?.();
-}
+  }
 </script>
 
 <button

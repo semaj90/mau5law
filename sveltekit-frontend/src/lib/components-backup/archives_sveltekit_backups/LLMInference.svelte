@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { getAvailableModels, runInference } from "$lib/llm/tauri-llm";
 

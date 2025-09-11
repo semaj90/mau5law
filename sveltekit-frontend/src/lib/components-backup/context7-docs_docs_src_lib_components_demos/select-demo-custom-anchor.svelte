@@ -1,9 +1,8 @@
 <script lang="ts">
-</script>
-	import DemoContainer from "../demo-container.svelte";
-	import SelectDemoCustom from "./select-demo-custom.svelte";
+  	import DemoContainer from "../demo-container.svelte";
+  	import SelectDemoCustom from "./select-demo-custom.svelte";
 
-	let customAnchor = $state<HTMLElement>(null!);
+  	let customAnchor = $state<HTMLElement>(null!);
 </script>
 
 <DemoContainer size="xs" wrapperClass="rounded-bl-card rounded-br-card">

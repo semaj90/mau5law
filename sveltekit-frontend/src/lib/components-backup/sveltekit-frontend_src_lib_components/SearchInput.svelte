@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onsearch?: (event?: any) => void;
   }
@@ -11,39 +10,37 @@
 
 
 
-		import { Search, X } from 'lucide-svelte';
+  		import { Search, X } from 'lucide-svelte';
 
-			
-	
-	let debounceTimer: NodeJS.Timeout;
-	let inputElement: HTMLInputElement
-	let isFocused = false;
+  	let debounceTimer: NodeJS.Timeout;
+  	let inputElement: HTMLInputElement
+  	let isFocused = false;
 
-	function handleInput() {
-		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(() => {
-			onsearch?.();
-		}, debounceTime);
-}
-	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			clearTimeout(debounceTimer);
-			onsearch?.();
-		} else if (event.key === 'Escape') {
-			clearValue();
-			inputElement.blur();
-}}
-	function handleFocus() {
-		isFocused = true;
-}
-	function handleBlur() {
-		isFocused = false;
-}
-	function clearValue() {
-		value = '';
-		onsearch?.();
-		inputElement.focus();
-}
+  	function handleInput() {
+  		clearTimeout(debounceTimer);
+  		debounceTimer = setTimeout(() => {
+  			onsearch?.();
+  		}, debounceTime);
+  }
+  	function handleKeydown(event: KeyboardEvent) {
+  		if (event.key === 'Enter') {
+  			clearTimeout(debounceTimer);
+  			onsearch?.();
+  		} else if (event.key === 'Escape') {
+  			clearValue();
+  			inputElement.blur();
+  }}
+  	function handleFocus() {
+  		isFocused = true;
+  }
+  	function handleBlur() {
+  		isFocused = false;
+  }
+  	function clearValue() {
+  		value = '';
+  		onsearch?.();
+  		inputElement.focus();
+  }
 </script>
 
 <div class="space-y-4" class:focused={isFocused}>

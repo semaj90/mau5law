@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Alert, AlertDescription  } from "$lib/components/ui/alert";
   import { Button  } from "$lib/components/ui/button";
   import { Card,

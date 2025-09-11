@@ -1,6 +1,5 @@
 <!-- Enhanced File Upload with Real OCR, Embeddings, and Database Integration -->
 <script lang="ts">
-</script>
   import { createUploadMachine } from '$lib/machines/uploadMachine';
   import type { ProcessingPipeline } from '$lib/types/upload';
   import { toast } from '$lib/utils/toast';
@@ -44,7 +43,7 @@
     status: '/rag/status',
     search: '/rag/search',
   } as const;
-let statusSocket = $state<WebSocket | null >(null);
+  let statusSocket = $state<WebSocket | null >(null);
 
   function connectStatusSocket() {
     try {
@@ -285,7 +284,7 @@ let statusSocket = $state<WebSocket | null >(null);
   function formatFileSize(bytes: number): string {
     const units = ['B', 'KB', 'MB', 'GB'];
     let size = bytes;
-let unitIndex = $state(0);
+  let unitIndex = $state(0);
 
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;

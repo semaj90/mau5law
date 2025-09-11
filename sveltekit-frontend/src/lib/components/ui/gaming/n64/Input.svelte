@@ -10,7 +10,6 @@
   - Spatial audio feedback
 -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
@@ -52,7 +51,6 @@
     // Validation
     error?: string;
     success?: string;
-    
     class?: string;
   }
 
@@ -113,7 +111,6 @@
   let showPlaceholder = $derived(!effectiveValue && !isFocused);
   let hasError = $derived(!!error);
   let hasSuccess = $derived(!!success);
-  
   // Default to balanced N64 rendering options
   const effectiveRenderOptions: N64RenderingOptions = {
     ...N64_TEXTURE_PRESETS.balanced,
@@ -166,10 +163,8 @@
     const target = event.target as HTMLInputElement;
     value = target.value;
     hasContent = target.value.length > 0;
-    
     // Play typing sound
     playInputSound(440 + Math.random() * 200, 0.05);
-    
     dispatch('input', { value: target.value, event });
   };
 
@@ -202,7 +197,6 @@
     } else if (event.key === 'Backspace') {
       playInputSound(330, 0.1);
     }
-    
     dispatch('keydown', { event });
   };
 
@@ -218,7 +212,6 @@
     };
 
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
-    
     // Modify colors based on state
     if (hasError) {
       return baseColors.error;

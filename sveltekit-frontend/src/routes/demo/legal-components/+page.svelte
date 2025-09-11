@@ -1,6 +1,5 @@
 <!-- Comprehensive Legal Components Demo -->
 <script lang="ts">
-</script>
   import {
     Card,
     CardHeader,
@@ -10,7 +9,7 @@
   import { Calendar, FileText, Users, Scale, Shield, AlertTriangle } from 'lucide-svelte';
   // Page state
   let activeTab = $state('data-table');
-let toastProvider = $state<any;
+  let toastProvider = $state<any;
 
   // Sample data for components
   const evidenceData >([

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import type { HTMLFormAttributes } from "svelte/elements";
   import type {     Snippet     } from 'svelte';
@@ -11,16 +10,13 @@
     onSubmit?: SubmitFunction;
     validationErrors?: Record<string, string[]>;
     isSubmitting?: boolean;
-    
     // Layout and styling
     variant?: 'default' | 'card' | 'inline';
     size?: 'sm' | 'md' | 'lg';
     spacing?: 'compact' | 'normal' | 'relaxed';
-    
     // Accessibility
     ariaLabel?: string;
     ariaDescribedBy?: string;
-    
     // Snippets for flexible content
     header?: Snippet;
     footer?: Snippet;
@@ -66,7 +62,6 @@
     if (onSubmit) {
       return onSubmit({ formElement, formData, action, cancel, submitter, controller });
     }
-    
     return async ({ result, update }) => {
       if (result.type === 'failure' && result.data?.validationErrors) {
         validationErrors = result.data.validationErrors;

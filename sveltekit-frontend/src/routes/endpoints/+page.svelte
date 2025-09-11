@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   let { data = $bindable() } = $props(); // { endpoints: { name: string; path: string; healthy: boolean; message?: string }[] };
 </script>
 

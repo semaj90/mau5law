@@ -1,6 +1,5 @@
 <!-- Real-time Communication Demo Component -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     realtimeComm,
@@ -47,7 +46,7 @@
     totalMessages: 0,
     connectionUptime: 0,
   });
-let metricsInterval = $state<number;
+  let metricsInterval = $state<number;
 
   // Subscribe to stores
   $effect(() >(> {

@@ -4,7 +4,6 @@
   Preserves OCR + LegalBERT RAG Flow with enhanced UX
 -->
 <script lang="ts">
-</script>
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
   import { fileUploadSchema } from '$lib/schemas/file-upload.js';
@@ -12,7 +11,6 @@
   import { evidenceProcessingMachine } from '$lib/state/evidenceProcessingMachine.js';
   import { Dialog } from 'bits-ui';
   import type { PageData } from './$types.js';
-  
   interface Props {
     data: PageData;
     caseId?: string;
@@ -20,7 +18,6 @@
     onUploadError?: (error: string) => void;
     preserveExistingFlow?: boolean; // New prop to maintain existing RAG flow
   }
-  
   let { 
     data, 
     caseId = '', 
@@ -55,12 +52,10 @@
     onResult: async ({ result, formData }) => {
       if (result.type === 'success') {
         const uploadResult = result.data?.uploadResult;
-        
         // Enhanced RAG webhook integration
         if (uploadResult?.success && preserveExistingFlow) {
           await triggerWebhookProcessing(uploadResult, formData);
         }
-        
         onUploadComplete?.(uploadResult);
       } else if (result.type === 'failure') {
         onUploadError?.(result.data?.message || 'Upload validation failed');
@@ -83,28 +78,23 @@
   let semanticEmbeddings = $state<any>(null);
   let showAdvancedOptions = $state(false);
   let showProcessingDetails = $state(false);
-  
   // XState evidence processing actor for the existing flow
   let evidenceActor = $state<ReturnType<typeof createActor> | null>(null);
 
   // Enhanced file selection with Superforms integration
   async function handleFileSelect(file: File) {
     selectedFile = file;
-    
     // Clear previous results and errors
     ocrResults = null;
     legalAnalysis = null;
     semanticEmbeddings = null;
     processingStage = '';
-    
     // Use Superforms' validation by updating the form
     $form.file = file as any;
-    
     // Auto-populate case ID if provided as prop
     if (caseId && !$form.caseId) {
       $form.caseId = caseId;
     }
-    
     // Client-side validation using Zod schema (Superforms will handle this automatically)
     try {
       fileUploadSchema.parse({ file, caseId: $form.caseId });
@@ -112,14 +102,12 @@
       // Superforms will show these errors automatically
       return;
     }
-    
     // Generate preview for images
     if (file.type.startsWith('image/')) {
       filePreview = URL.createObjectURL(file);
     } else {
       filePreview = null;
     }
-    
     // Enhanced analysis with progress tracking
     if (preserveExistingFlow) {
       processingStage = 'Preparing enhanced analysis...';
@@ -134,7 +122,6 @@
       $errors.file = ['File size must be less than 100MB'];
       return false;
     }
-    
     const allowedTypes = [
       'application/pdf',
       'application/msword',
@@ -144,43 +131,35 @@
       'image/png',
       'image/tiff'
     ];
-    
     if (!allowedTypes.includes(file.type)) {
       $errors.file = ['File type not supported'];
       return false;
     }
-    
     return true;
   }
 
   // Run preliminary analysis using your existing OCR + LegalBERT flow
   async function runPreliminaryAnalysis(file: File) {
     processingStage = 'Starting preliminary analysis...';
-    
     try {
       // Step 1: OCR Processing (preserving your existing flow)
       if (file.type === 'application/pdf') {
         processingStage = 'Performing OCR extraction...';
         const formData = new FormData();
         formData.append('file', file);
-        
         const ocrResponse = await fetch('/api/ocr/extract', {
           method: 'POST',
           body: formData
         });
-        
         if (ocrResponse.ok) {
           ocrResults = await ocrResponse.json();
           processingStage = `OCR complete: ${ocrResults.pages} pages, ${ocrResults.averageConfidence}% confidence`;
         }
       }
-      
       // Step 2: Legal Analysis (using your LegalBERT middleware)
       if (ocrResults?.text || file.type === 'text/plain') {
         processingStage = 'Running LegalBERT analysis...';
-        
         const textContent = ocrResults?.text || await file.text();
-        
         const legalResponse = await fetch('/api/ai/legal-analysis', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -191,24 +170,20 @@
             includeClassification: true
           })
         });
-        
         if (legalResponse.ok) {
           legalAnalysis = await legalResponse.json();
           processingStage = `Legal analysis complete: ${legalAnalysis.concepts?.length || 0} concepts identified`;
         }
       }
-      
       // Step 3: Enhanced RAG Integration (your semantic architecture)
       if (legalAnalysis) {
         processingStage = 'Generating semantic embeddings...';
-        
         const ragResponse = await fetch('/api/semantic-analysis', {
           method: 'POST',
           body: new URLSearchParams({
             text: ocrResults?.text || await file.text()
           })
         });
-        
         if (ragResponse.ok) {
           semanticEmbeddings = await ragResponse.json();
           processingStage = `Semantic analysis complete: ${semanticEmbeddings.data?.som_cluster ? 
@@ -216,7 +191,6 @@
             'Vector embeddings generated'}`;
         }
       }
-      
       processingStage = 'Preliminary analysis complete';
     } catch (error) {
       console.error('Preliminary analysis failed:', error);
@@ -301,9 +275,7 @@
 
       // Execute all processing in parallel (non-blocking)
       await Promise.allSettled(processingPromises);
-      
       processingStage = 'Enhanced processing pipeline triggered successfully';
-      
     } catch (error) {
       console.warn('Webhook processing failed (non-critical):', error);
       processingStage = 'Upload complete - enhanced processing may have partial failures';

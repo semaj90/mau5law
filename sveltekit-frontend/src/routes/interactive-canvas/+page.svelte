@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     data: PageData;
   }
@@ -7,167 +6,167 @@
     data
   }: Props = $props();
 
-	import AIFabButton from "$lib/components/AIFabButton.svelte";
-	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
-	import FileUploadSection from "$lib/components/FileUploadSection.svelte";
-	import NierHeader from '$lib/components/NierHeader.svelte';
-	import Sidebar from "$lib/components/Sidebar.svelte";
-	import Toolbar from "$lib/components/Toolbar.svelte";
-	import { sidebarStore } from "$lib/stores/canvas";
-	import { loki } from "$lib/stores/lokiStore";
-	import { onDestroy, onMount } from 'svelte';
-	import type { PageData } from "./$types";
+  	import AIFabButton from "$lib/components/AIFabButton.svelte";
+  	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
+  	import FileUploadSection from "$lib/components/FileUploadSection.svelte";
+  	import NierHeader from '$lib/components/NierHeader.svelte';
+  	import Sidebar from "$lib/components/Sidebar.svelte";
+  	import Toolbar from "$lib/components/Toolbar.svelte";
+  	import { sidebarStore } from "$lib/stores/canvas";
+  	import { loki } from "$lib/stores/lokiStore";
+  	import { onDestroy, onMount } from 'svelte';
+  	import type { PageData } from "./$types";
 
-	// Case ID - extract from data or generate
-	function resolveCaseId(d: any) {
-		return d?.reportData?.id
-			|| d?.reportId
-			|| d?.canvasState?.caseId
-			|| crypto.randomUUID?.()
-			|| 'demo-case-' + Date.now();
-	}
-	let caseId = (data as any)?.reportData?.id || (data as any)?.reportId || 'demo-case-' + Date.now();
+  	// Case ID - extract from data or generate
+  	function resolveCaseId(d: any) {
+  		return d?.reportData?.id
+  			|| d?.reportId
+  			|| d?.canvasState?.caseId
+  			|| crypto.randomUUID?.()
+  			|| 'demo-case-' + Date.now();
+  	}
+  	let caseId = (data as any)?.reportData?.id || (data as any)?.reportId || 'demo-case-' + Date.now();
 
-	// Canvas state
-	let canvasElement: HTMLCanvasElement;
-	let canvasWidth = $state(0);
-	let canvasHeight = $state(0);
-	let isFullscreen = $state(false);
+  	// Canvas state
+  	let canvasElement: HTMLCanvasElement;
+  	let canvasWidth = $state(0);
+  	let canvasHeight = $state(0);
+  	let isFullscreen = $state(false);
 
-	// Layout state
-	let mainContainer: HTMLElement;
-	let sidebarOpen = $state(false);
+  	// Layout state
+  	let mainContainer: HTMLElement;
+  	let sidebarOpen = $state(false);
 
-	onMount(() => {
-		// Initialize canvas dimensions
-		updateCanvasDimensions();
-		window.addEventListener('resize', updateCanvasDimensions);
+  	onMount(() => {
+  		// Initialize canvas dimensions
+  		updateCanvasDimensions();
+  		window.addEventListener('resize', updateCanvasDimensions);
 
-		// Load cached data
-		loki.init();
+  		// Load cached data
+  		loki.init();
 
-		// Subscribe to sidebar state
-		const unsubscribeSidebar = sidebarStore.subscribe(state => {
-			sidebarOpen = state.open;
-		});
+  		// Subscribe to sidebar state
+  		const unsubscribeSidebar = sidebarStore.subscribe(state => {
+  			sidebarOpen = state.open;
+  		});
 
-		return () => {
-			unsubscribeSidebar();
-		};
-	});
+  		return () => {
+  			unsubscribeSidebar();
+  		};
+  	});
 
-	onDestroy(() => {
-		window.removeEventListener('resize', updateCanvasDimensions);
-	});
+  	onDestroy(() => {
+  		window.removeEventListener('resize', updateCanvasDimensions);
+  	});
 
-	function updateCanvasDimensions() {
-		if (mainContainer) {
-			const rect = mainContainer.getBoundingClientRect();
-			canvasWidth = rect.width;
-			canvasHeight = rect.height;
-}}
-	function toggleFullscreen() {
-		isFullscreen = !isFullscreen;
-		updateCanvasDimensions();
-}
-	// Enhanced file upload state
-let uploadProgress = $state<{ [key: string]: number } >({});
-let uploadingFiles = $state<{ [key: string]: { name: string; size: number; hash?: string } } >({});
-let completedUploads = $state<{ [key: string]: { name: string; hash: string; id: string } } >({});
+  	function updateCanvasDimensions() {
+  		if (mainContainer) {
+  			const rect = mainContainer.getBoundingClientRect();
+  			canvasWidth = rect.width;
+  			canvasHeight = rect.height;
+  }}
+  	function toggleFullscreen() {
+  		isFullscreen = !isFullscreen;
+  		updateCanvasDimensions();
+  }
+  	// Enhanced file upload state
+  let uploadProgress = $state<{ [key: string]: number } >({});
+  let uploadingFiles = $state<{ [key: string]: { name: string; size: number; hash?: string } } >({});
+  let completedUploads = $state<{ [key: string]: { name: string; hash: string; id: string } } >({});
 
-	// Handle file drops with hash calculation
-	async function handleFileDrop(event: DragEvent) {
-		event.preventDefault();
-		const files = event.dataTransfer?.files;
-		if (files && files.length > 0) {
-			await processFileUploads(Array.from(files);
-}}
-	function handleDragOver(event: DragEvent) {
-		event.preventDefault();
-}
-	// Process multiple file uploads with hash calculation
-	async function processFileUploads(files: File[]) {
-		for (const file of files) {
-			const fileId = crypto.randomUUID();
-			uploadingFiles[fileId] = {
-				name: file.name,
-				size: file.size
-			};
-			uploadProgress[fileId] = 0;
+  	// Handle file drops with hash calculation
+  	async function handleFileDrop(event: DragEvent) {
+  		event.preventDefault();
+  		const files = event.dataTransfer?.files;
+  		if (files && files.length > 0) {
+  			await processFileUploads(Array.from(files);
+  }}
+  	function handleDragOver(event: DragEvent) {
+  		event.preventDefault();
+  }
+  	// Process multiple file uploads with hash calculation
+  	async function processFileUploads(files: File[]) {
+  		for (const file of files) {
+  			const fileId = crypto.randomUUID();
+  			uploadingFiles[fileId] = {
+  				name: file.name,
+  				size: file.size
+  			};
+  			uploadProgress[fileId] = 0;
 
-			try {
-				// Calculate hash while uploading
-				const hash = await calculateFileHash(file, (progress) => {
-					uploadProgress[fileId] = progress * 0.3; // Hash calculation is 30% of progress
-				});
+  			try {
+  				// Calculate hash while uploading
+  				const hash = await calculateFileHash(file, (progress) => {
+  					uploadProgress[fileId] = progress * 0.3; // Hash calculation is 30% of progress
+  				});
 
-				uploadingFiles[fileId].hash = hash;
-				uploadProgress[fileId] = 30;
+  				uploadingFiles[fileId].hash = hash;
+  				uploadProgress[fileId] = 30;
 
-				// Upload file with hash
-				const result = await uploadFileWithHash(file, hash, (progress) => {
-					uploadProgress[fileId] = 30 + (progress * 0.7); // Upload is 70% of progress
-				});
+  				// Upload file with hash
+  				const result = await uploadFileWithHash(file, hash, (progress) => {
+  					uploadProgress[fileId] = 30 + (progress * 0.7); // Upload is 70% of progress
+  				});
 
-				// Mark as completed
-				completedUploads[fileId] = {
-					name: file.name,
-					hash: hash,
-					id: result.id
-				};
-				uploadProgress[fileId] = 100;
+  				// Mark as completed
+  				completedUploads[fileId] = {
+  					name: file.name,
+  					hash: hash,
+  					id: result.id
+  				};
+  				uploadProgress[fileId] = 100;
 
-				// Remove from uploading after delay
-				setTimeout(() => {
-					delete uploadingFiles[fileId];
-					delete uploadProgress[fileId];
-				}, 3000);
+  				// Remove from uploading after delay
+  				setTimeout(() => {
+  					delete uploadingFiles[fileId];
+  					delete uploadProgress[fileId];
+  				}, 3000);
 
-			} catch (error) {
-				console.error('Upload failed:', error);
-				// Handle error state
-				delete uploadingFiles[fileId];
-				delete uploadProgress[fileId];
-}}}
-	// Calculate SHA256 hash with progress
-	async function calculateFileHash(file: File, onProgress?: (progress: number) => void): Promise<string> {
-		const chunkSize = 1024 * 1024; // 1MB chunks
-		const chunks = Math.ceil(file.size / chunkSize);
-		const hash = await crypto.subtle.digest('SHA-256', await file.arrayBuffer();
-		// Simulate progress for demo (real implementation would process chunks)
-		if (onProgress) {
-			for (let i = 0; i <= 100; i += 10) {
-				await new Promise(resolve => setTimeout(resolve, 10);
-				onProgress(i / 100);
-}}
-		return Array.from(new Uint8Array(hash))
-			.map(b => b.toString(16).padStart(2, '0'))
-			.join('');
-}
-	// Upload file with calculated hash
-	async function uploadFileWithHash(file: File, hash: string, onProgress?: (progress: number) => void): Promise<{ id: string }> {
-		const formData = new FormData();
-		formData.append('files', file);
-		formData.append('caseId', caseId);
-		formData.append('hash', hash);
+  			} catch (error) {
+  				console.error('Upload failed:', error);
+  				// Handle error state
+  				delete uploadingFiles[fileId];
+  				delete uploadProgress[fileId];
+  }}}
+  	// Calculate SHA256 hash with progress
+  	async function calculateFileHash(file: File, onProgress?: (progress: number) => void): Promise<string> {
+  		const chunkSize = 1024 * 1024; // 1MB chunks
+  		const chunks = Math.ceil(file.size / chunkSize);
+  		const hash = await crypto.subtle.digest('SHA-256', await file.arrayBuffer();
+  		// Simulate progress for demo (real implementation would process chunks)
+  		if (onProgress) {
+  			for (let i = 0; i <= 100; i += 10) {
+  				await new Promise(resolve => setTimeout(resolve, 10);
+  				onProgress(i / 100);
+  }}
+  		return Array.from(new Uint8Array(hash))
+  			.map(b => b.toString(16).padStart(2, '0'))
+  			.join('');
+  }
+  	// Upload file with calculated hash
+  	async function uploadFileWithHash(file: File, hash: string, onProgress?: (progress: number) => void): Promise<{ id: string }> {
+  		const formData = new FormData();
+  		formData.append('files', file);
+  		formData.append('caseId', caseId);
+  		formData.append('hash', hash);
 
-		// Simulate upload progress
-		if (onProgress) {
-			for (let i = 0; i <= 100; i += 5) {
-				await new Promise(resolve => setTimeout(resolve, 50);
-				onProgress(i / 100);
-}}
-		const response = await fetch('/api/evidence/upload', {
-			method: 'POST',
-			body: formData
-		});
+  		// Simulate upload progress
+  		if (onProgress) {
+  			for (let i = 0; i <= 100; i += 5) {
+  				await new Promise(resolve => setTimeout(resolve, 50);
+  				onProgress(i / 100);
+  }}
+  		const response = await fetch('/api/evidence/upload', {
+  			method: 'POST',
+  			body: formData
+  		});
 
-		if (!response.ok) {
-			throw new Error('Upload failed');
-}
-		const result = await response.json();
-		return { id: result.uploaded?.[0]?.id || crypto.randomUUID() };
-}
+  		if (!response.ok) {
+  			throw new Error('Upload failed');
+  }
+  		const result = await response.json();
+  		return { id: result.uploaded?.[0]?.id || crypto.randomUUID() };
+  }
 </script>
 
 <svelte:head>

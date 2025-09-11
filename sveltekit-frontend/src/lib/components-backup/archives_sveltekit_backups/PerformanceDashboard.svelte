@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
 
@@ -26,7 +25,6 @@
   const metrics = writable<PerformanceMetrics | null>(null);
   const health = writable<SystemHealth | null>(null);
   const logs = writable<unknown[]>([]);
-  
   let refreshInterval: NodeJS.Timeout;
   let autoRefresh = true;
 
@@ -35,7 +33,6 @@
     if (autoRefresh) {
       refreshInterval = setInterval(loadMetrics, 30000); // Refresh every 30 seconds
     }
-    
     return () => {
       if (refreshInterval) clearInterval(refreshInterval);
     };

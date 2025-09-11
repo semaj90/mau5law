@@ -1,50 +1,38 @@
 <script lang="ts">
-</script>
   import { page } from '$app/stores';
-  
   let { data, form } = $props();
-  
   let isAutoLoggingIn = $state(false);
-  
   // Check for registration success message
   let showRegistrationSuccess = $derived($page.url.searchParams.get('registered') === 'true');
-  
   // Auto-fill demo user credentials
   function autoLoginDemo() {
     console.log('🔧 Auto-fill demo credentials clicked');
     const emailInput = document.getElementById('email') as HTMLInputElement;
     const passwordInput = document.getElementById('password') as HTMLInputElement;
-    
     if (!emailInput || !passwordInput) {
       console.error('❌ Could not find email or password inputs');
       return;
     }
-    
     emailInput.value = 'demo@legalai.gov';
     passwordInput.value = 'demo123456';
-    
     // Trigger input events to ensure Svelte recognizes the changes
     emailInput.dispatchEvent(new Event('input', { bubbles: true });
     passwordInput.dispatchEvent(new Event('input', { bubbles: true });
     console.log('✅ Demo credentials filled');
   }
-  
   // Event handlers for buttons
   function handleQuickLogin() {
     console.log('🔧 Quick login handler called');
     quickDemoLogin();
   }
-  
   function handleAutoFill() {
     console.log('🔧 Auto-fill handler called');
     autoLoginDemo();
   }
-  
   // Auto-login with demo user (skip form submission)
   async function quickDemoLogin() {
     console.log('⚡ Quick demo login clicked');
     isAutoLoggingIn = true;
-    
     try {
       console.log('📡 Calling auto-login endpoint...');
       const response = await fetch('/auth/login/auto', {
@@ -53,10 +41,8 @@
           'Content-Type': 'application/json',
         }
       });
-      
       const result = await response.json();
       console.log('📨 Auto-login response:', result);
-      
       if (result.success) {
         console.log('✅ Auto-login successful, redirecting...');
         // Redirect to dashboard

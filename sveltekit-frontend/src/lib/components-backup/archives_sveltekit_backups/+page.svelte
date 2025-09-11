@@ -1,11 +1,8 @@
 <script lang="ts">
-</script>
   import HeadlessDemo from "$lib/components/HeadlessDemo.svelte";
   import BitsDemo from "$lib/components/BitsDemo.svelte";
   import { onMount } from 'svelte';
-  
   let mounted = false;
-  
   onMount(() => {
     mounted = true;
   });

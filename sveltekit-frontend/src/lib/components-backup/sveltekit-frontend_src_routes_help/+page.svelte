@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import {
     AlertTriangle,
@@ -91,39 +90,39 @@
       tags: ["getting-started", "tutorial", "basics"],
       lastUpdated: "2024-01-15",
       content: `
-# Quick Start Guide
+  # Quick Start Guide
 
-Welcome to the Legal Case Management System! This guide will help you get started quickly.
+  Welcome to the Legal Case Management System! This guide will help you get started quickly.
 
-## Step 1: Set Up Your Profile
-1. Navigate to Settings > Profile
-2. Fill in your basic information
-3. Upload a profile picture (optional)
-4. Set your role and department
+  ## Step 1: Set Up Your Profile
+  1. Navigate to Settings > Profile
+  2. Fill in your basic information
+  3. Upload a profile picture (optional)
+  4. Set your role and department
 
-## Step 2: Create Your First Case
-1. Go to Cases > New Case
-2. Enter case title and description
-3. Set priority and status
-4. Save the case
+  ## Step 2: Create Your First Case
+  1. Go to Cases > New Case
+  2. Enter case title and description
+  3. Set priority and status
+  4. Save the case
 
-## Step 3: Add Evidence
-1. Open your case
-2. Click "Add Evidence"
-3. Upload files or enter evidence descriptions
-4. Tag and categorize evidence
+  ## Step 3: Add Evidence
+  1. Open your case
+  2. Click "Add Evidence"
+  3. Upload files or enter evidence descriptions
+  4. Tag and categorize evidence
 
-## Step 4: Use AI Assistant
-1. Navigate to AI Assistant
-2. Ask questions about your cases
-3. Get analysis and recommendations
-4. Export AI responses for documentation
+  ## Step 4: Use AI Assistant
+  1. Navigate to AI Assistant
+  2. Ask questions about your cases
+  3. Get analysis and recommendations
+  4. Export AI responses for documentation
 
-## Next Steps
-- Explore the analytics dashboard
-- Set up notifications
-- Learn about advanced search features
-			`,
+  ## Next Steps
+  - Explore the analytics dashboard
+  - Set up notifications
+  - Learn about advanced search features
+  			`,
     },
     {
       id: "navigation-tour",
@@ -136,31 +135,31 @@ Welcome to the Legal Case Management System! This guide will help you get starte
       tags: [],
       lastUpdated: "2024-01-15",
       content: `
-# System Navigation Tour
+  # System Navigation Tour
 
-## Main Navigation
-The top navigation bar contains links to all major sections:
-- **Dashboard**: Overview of your work
-- **Search**: Find cases and evidence
-- **Cases**: Manage case files
-- **Analytics**: View performance metrics
-- **Evidence**: Handle evidence items
-- **Export/Import**: Data management
-- **AI Assistant**: Get AI help
+  ## Main Navigation
+  The top navigation bar contains links to all major sections:
+  - **Dashboard**: Overview of your work
+  - **Search**: Find cases and evidence
+  - **Cases**: Manage case files
+  - **Analytics**: View performance metrics
+  - **Evidence**: Handle evidence items
+  - **Export/Import**: Data management
+  - **AI Assistant**: Get AI help
 
-## Keyboard Shortcuts
-Press \`Ctrl + H\` to see all keyboard shortcuts, including:
-- \`Ctrl + K\`: Quick search
-- \`Ctrl + N\`: New evidence
-- \`Ctrl + S\`: Save current work
-- \`F11\`: Toggle fullscreen
+  ## Keyboard Shortcuts
+  Press \`Ctrl + H\` to see all keyboard shortcuts, including:
+  - \`Ctrl + K\`: Quick search
+  - \`Ctrl + N\`: New evidence
+  - \`Ctrl + S\`: Save current work
+  - \`F11\`: Toggle fullscreen
 
-## User Menu
-Click your profile picture (top right) to access:
-- User settings
-- Preferences
-- Logout
-			`,
+  ## User Menu
+  Click your profile picture (top right) to access:
+  - User settings
+  - Preferences
+  - Logout
+  			`,
     },
     {
       id: "first-case",
@@ -173,37 +172,37 @@ Click your profile picture (top right) to access:
       tags: [],
       lastUpdated: "2024-01-15",
       content: `
-# Creating Your First Case
+  # Creating Your First Case
 
-## Video Tutorial
-import type { Case } from '$lib/types';
+  ## Video Tutorial
+  import type { Case } from '$lib/types';
 
-[Play Video: CaseCreation Walkthrough] (8 minutes)
+  [Play Video: CaseCreation Walkthrough] (8 minutes)
 
-## Written Steps
-1. **Navigate to Cases**
+  ## Written Steps
+  1. **Navigate to Cases**
    - Click "Cases" in the main navigation
    - Click "New Case" button
 
-2. **Fill Case Details**
+  2. **Fill Case Details**
    - Enter a descriptive title
    - Add detailed description
    - Set appropriate priority level
    - Choose initial status
 
-3. **Add Participants**
+  3. **Add Participants**
    - Click "Add Participant"
    - Enter names and roles
    - Add contact information
 
-4. **Organize with Tags**
+  4. **Organize with Tags**
    - Add relevant tags for categorization
    - Use consistent tagging for easy search
 
-5. **Save and Continue**
+  5. **Save and Continue**
    - Save your case
    - Begin adding evidence immediately
-			`,
+  			`,
     },
 
     // Case Management
@@ -217,36 +216,36 @@ import type { Case } from '$lib/types';
       popularity: 4,
       tags: [],
       content: `
-# Case Organization Best Practices
+  # Case Organization Best Practices
 
-## Naming Conventions
-Use consistent naming patterns:
-- Include case number/ID
-- Add date in YYYY-MM-DD format
-- Use descriptive keywords
-- Example: "2024-01-15_FraudInvestigation_SmithCorp"
+  ## Naming Conventions
+  Use consistent naming patterns:
+  - Include case number/ID
+  - Add date in YYYY-MM-DD format
+  - Use descriptive keywords
+  - Example: "2024-01-15_FraudInvestigation_SmithCorp"
 
-## Status Management
-Maintain clear status progression:
-- **New**: Recently created cases
-- **Active**: Currently being investigated
-- **Pending**: Waiting for information/action
-- **Closed**: Investigation complete
-- **Suspended**: Temporarily halted
+  ## Status Management
+  Maintain clear status progression:
+  - **New**: Recently created cases
+  - **Active**: Currently being investigated
+  - **Pending**: Waiting for information/action
+  - **Closed**: Investigation complete
+  - **Suspended**: Temporarily halted
 
-## Priority Levels
-Set appropriate priorities:
-- **Urgent**: Immediate attention required
-- **High**: Important, handle soon
-- **Medium**: Standard priority
-- **Low**: Handle when time permits
+  ## Priority Levels
+  Set appropriate priorities:
+  - **Urgent**: Immediate attention required
+  - **High**: Important, handle soon
+  - **Medium**: Standard priority
+  - **Low**: Handle when time permits
 
-## Documentation Standards
-- Keep detailed case notes
-- Document all actions taken
-- Include timestamps on updates
-- Use consistent terminology
-			`,
+  ## Documentation Standards
+  - Keep detailed case notes
+  - Document all actions taken
+  - Include timestamps on updates
+  - Use consistent terminology
+  			`,
     },
 
     // Evidence
@@ -260,35 +259,35 @@ Set appropriate priorities:
       popularity: 5,
       tags: [],
       content: `
-# Evidence Handling Best Practices
+  # Evidence Handling Best Practices
 
-## Chain of Custody
-Maintain proper documentation:
-1. Record who collected evidence
-2. Document when and where collected
-3. Note any transfers of custody
-4. Keep detailed handling logs
+  ## Chain of Custody
+  Maintain proper documentation:
+  1. Record who collected evidence
+  2. Document when and where collected
+  3. Note any transfers of custody
+  4. Keep detailed handling logs
 
-## File Organization
-Structure your evidence files:
-- Use descriptive filenames
-- Include dates and evidence numbers
-- Organize by evidence type
-- Maintain backup copies
+  ## File Organization
+  Structure your evidence files:
+  - Use descriptive filenames
+  - Include dates and evidence numbers
+  - Organize by evidence type
+  - Maintain backup copies
 
-## Metadata Management
-Record important details:
-- Source information
-- Collection method
-- File integrity hashes
-- Analysis results
+  ## Metadata Management
+  Record important details:
+  - Source information
+  - Collection method
+  - File integrity hashes
+  - Analysis results
 
-## Security Considerations
-- Encrypt sensitive files
-- Control access permissions
-- Regular backup procedures
-- Audit trail maintenance
-			`,
+  ## Security Considerations
+  - Encrypt sensitive files
+  - Control access permissions
+  - Regular backup procedures
+  - Audit trail maintenance
+  			`,
     },
 
     // AI Assistant
@@ -302,32 +301,32 @@ Record important details:
       popularity: 4,
       tags: [],
       content: `
-# Effective AI Prompting Techniques
+  # Effective AI Prompting Techniques
 
-## Clear and Specific Queries
-Be specific about what you need:
-- ❌ "Help with case"
-- ✅ "Analyze evidence patterns in fraud case #2024-001"
+  ## Clear and Specific Queries
+  Be specific about what you need:
+  - ❌ "Help with case"
+  - ✅ "Analyze evidence patterns in fraud case #2024-001"
 
-## Provide Context
-Include relevant background:
-- Case type and details
-- Specific evidence items
-- Timeline information
-- Relevant legal precedents
+  ## Provide Context
+  Include relevant background:
+  - Case type and details
+  - Specific evidence items
+  - Timeline information
+  - Relevant legal precedents
 
-## Ask Follow-up Questions
-Build on previous responses:
-- "Can you elaborate on point 3?"
-- "What additional evidence would strengthen this?"
-- "How does this compare to similar cases?"
+  ## Ask Follow-up Questions
+  Build on previous responses:
+  - "Can you elaborate on point 3?"
+  - "What additional evidence would strengthen this?"
+  - "How does this compare to similar cases?"
 
-## Use the Right Question Types
-- **Analysis**: "What patterns do you see in this evidence?"
-- **Recommendations**: "What should I investigate next?"
-- **Explanations**: "Explain the legal implications of..."
-- **Summaries**: "Summarize the key findings in this case"
-			`,
+  ## Use the Right Question Types
+  - **Analysis**: "What patterns do you see in this evidence?"
+  - **Recommendations**: "What should I investigate next?"
+  - **Explanations**: "Explain the legal implications of..."
+  - **Summaries**: "Summarize the key findings in this case"
+  			`,
     },
 
     // Troubleshooting
@@ -341,40 +340,40 @@ Build on previous responses:
       popularity: 3,
       tags: [],
       content: `
-# Common Issues and Solutions
+  # Common Issues and Solutions
 
-## Login Problems
-**Issue**: Cannot log in to the system
-**Solutions**:
-1. Check username/password spelling
-2. Clear browser cache and cookies
-3. Try incognito/private browsing mode
-4. Contact system administrator
+  ## Login Problems
+  **Issue**: Cannot log in to the system
+  **Solutions**:
+  1. Check username/password spelling
+  2. Clear browser cache and cookies
+  3. Try incognito/private browsing mode
+  4. Contact system administrator
 
-## File Upload Issues
-**Issue**: Cannot upload evidence files
-**Solutions**:
-1. Check file size (max 50MB)
-2. Verify file format is supported
-3. Ensure stable internet connection
-4. Try different browser
+  ## File Upload Issues
+  **Issue**: Cannot upload evidence files
+  **Solutions**:
+  1. Check file size (max 50MB)
+  2. Verify file format is supported
+  3. Ensure stable internet connection
+  4. Try different browser
 
-## Performance Issues
-**Issue**: System running slowly
-**Solutions**:
-1. Close unnecessary browser tabs
-2. Clear browser cache
-3. Check internet connection speed
-4. Update to latest browser version
+  ## Performance Issues
+  **Issue**: System running slowly
+  **Solutions**:
+  1. Close unnecessary browser tabs
+  2. Clear browser cache
+  3. Check internet connection speed
+  4. Update to latest browser version
 
-## Search Not Working
-**Issue**: Search returns no results
-**Solutions**:
-1. Check spelling and try synonyms
-2. Remove filters and try again
-3. Use broader search terms
-4. Try advanced search options
-			`,
+  ## Search Not Working
+  **Issue**: Search returns no results
+  **Solutions**:
+  1. Check spelling and try synonyms
+  2. Remove filters and try again
+  3. Use broader search terms
+  4. Try advanced search options
+  			`,
     },
   ];
 

@@ -1,9 +1,8 @@
 <script lang="ts">
-</script>
-	import { Slider } from "bits-ui";
-	import { cn } from "$lib/utils/styles.js";
+  	import { Slider } from "bits-ui";
+  	import { cn } from "$lib/utils/styles.js";
 
-	let { value = $bindable(5) }: { value: number } = $props();
+  	let { value = $bindable(5) }: { value: number } = $props();
 </script>
 
 <div class="w-full">

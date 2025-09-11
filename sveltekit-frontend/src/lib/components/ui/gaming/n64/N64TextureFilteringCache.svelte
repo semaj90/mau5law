@@ -11,7 +11,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import type { N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
@@ -24,23 +23,19 @@
     textureId: string;
     textureSource?: string | HTMLImageElement | ImageData | ArrayBuffer;
     renderingOptions?: N64RenderingOptions;
-    
     // Cache settings
     enableCache?: boolean;
     cacheKey?: string;
     preloadTextures?: boolean;
     adaptiveQuality?: boolean;
-    
     // Performance settings
     targetFPS?: number;
     memoryBudget?: number;
     enableWASMAcceleration?: boolean;
-    
     // Visual feedback
     showPerformanceMetrics?: boolean;
     showCacheStatus?: boolean;
     enableDebugMode?: boolean;
-    
     // Event handlers
     onTextureLoaded?: (entry: TextureCacheEntry) => void;
     onCacheHit?: (textureId: string) => void;
@@ -69,19 +64,17 @@
   }: Props = $props();
 
   // Component state
-let canvasElement = $state<HTMLCanvasElement | null >(null);
-let gpuContext = $state<GPUCanvasContext | null >(null);
+  let canvasElement = $state<HTMLCanvasElement | null >(null);
+  let gpuContext = $state<GPUCanvasContext | null >(null);
   let isInitialized = $state(false);
   let isLoading = $state(false);
   let hasError = $state(false);
   let errorMessage = $state('');
-  
   // Cache state
   let cacheEntry: TextureCacheEntry | null = $state(null);
   let cacheHitRate = $state(0);
   let textureLoadTime = $state(0);
   let currentFilteringType = $state<'bilinear' | 'trilinear' | 'anisotropic'>('bilinear');
-  
   // Performance metrics
   let performanceMetrics = $state({
     fps: 0,
@@ -91,12 +84,10 @@ let gpuContext = $state<GPUCanvasContext | null >(null);
     filteringQuality: 0,
     gpuUtilization: 0
   });
-  
   // Animation state
-let animationId = $state<number | null >(null);
-let lastFrameTime = $state(0);
-let frameCount = $state(0);
-  
+  let animationId = $state<number | null >(null);
+  let lastFrameTime = $state(0);
+  let frameCount = $state(0);
   // Texture filtering presets
   const filteringPresets = {
     performance: {
@@ -132,11 +123,9 @@ let frameCount = $state(0);
     try {
       isLoading = true;
       hasError = false;
-      
       if (!navigator.gpu) {
         throw new Error('WebGPU not supported');
       }
-      
       // Initialize GPU context if canvas is available
       if (canvasElement) {
         gpuContext = canvasElement.getContext('webgpu');
@@ -144,11 +133,9 @@ let frameCount = $state(0);
           throw new Error('Failed to get WebGPU context');
         }
       }
-      
       // Check cache for existing texture
       if (enableCache) {
         cacheEntry = enhancedGPUCache.getCachedTexture(cacheKey);
-        
         if (cacheEntry) {
           console.log(`🎯 Cache hit for texture "${textureId}"`);
           onCacheHit?.(textureId);
@@ -157,7 +144,6 @@ let frameCount = $state(0);
           console.log(`❌ Cache miss for texture "${textureId}"`);
           onCacheMiss?.(textureId);
           updateCacheMetrics(false);
-          
           // Load and cache new texture
           await loadAndCacheTexture();
         }
@@ -165,14 +151,11 @@ let frameCount = $state(0);
         // Load texture without caching
         await loadTexture();
       }
-      
       // Start performance monitoring
       if (showPerformanceMetrics) {
         startPerformanceMonitoring();
       }
-      
       isInitialized = true;
-      
     } catch (error: any) {
       hasError = true;
       errorMessage = error.message || 'Failed to initialize texture cache';
@@ -189,51 +172,38 @@ let frameCount = $state(0);
     if (!textureSource) {
       throw new Error('No texture source provided');
     }
-    
     const startTime = performance.now();
-    
     try {
       // Convert texture source to appropriate format
-let imageData = $state<ImageData | HTMLImageElement | ArrayBuffer;
-      
+  let imageData = $state<ImageData | HTMLImageElement | ArrayBuffer;
       if (typeof textureSource >(== 'string') {
         // Load image from URL
         const image = new Image());
         image.crossOrigin = 'anonymous';
-        
         await new Promise((resolve, reject) => {
           image.onload = resolve;
           image.onerror = reject;
           image.src = textureSource;
         });
-        
         imageData = image;
-        
       } else {
         imageData = textureSource;
       }
-      
       // Cache texture with GPU service
       cacheEntry = await enhancedGPUCache.cacheN64Texture(
         cacheKey,
         imageData,
         renderingOptions
       );
-      
       if (!cacheEntry) {
         throw new Error('Failed to cache texture');
       }
-      
       textureLoadTime = performance.now() - startTime;
-      
       // Update filtering type based on cache entry
       currentFilteringType = cacheEntry.filteringType;
-      
       // Notify texture loaded
       onTextureLoaded?.(cacheEntry);
-      
       console.log(`🎨 Texture "${textureId}" cached with ${currentFilteringType} filtering in ${textureLoadTime.toFixed(2)}ms`);
-      
     } catch (error: any) {
       throw new Error(`Failed to load and cache texture: ${error.message}`);
     }
@@ -246,17 +216,14 @@ let imageData = $state<ImageData | HTMLImageElement | ArrayBuffer;
     if (!textureSource || typeof textureSource !== 'string') {
       return;
     }
-    
     try {
       const image = new Image();
       image.crossOrigin = 'anonymous';
-      
       await new Promise((resolve, reject) => {
         image.onload = resolve;
         image.onerror = reject;
         image.src = textureSource;
       });
-      
       // Create basic texture entry for display
       cacheEntry = {
         id: textureId,
@@ -272,7 +239,6 @@ let imageData = $state<ImageData | HTMLImageElement | ArrayBuffer;
         compressionRatio: 1.0,
         qualityScore: calculateQualityScore(renderingOptions)
       };
-      
     } catch (error: any) {
       throw new Error(`Failed to load texture: ${error.message}`);
     }
@@ -283,11 +249,9 @@ let imageData = $state<ImageData | HTMLImageElement | ArrayBuffer;
    */
   function applyAdaptiveQuality(): void {
     if (!adaptiveQuality || !performanceMetrics.fps) return;
-    
     const currentFPS = performanceMetrics.fps;
     const fpsRatio = currentFPS / targetFPS;
-let newPreset = $state<keyof typeof filteringPresets;
-    
+  let newPreset = $state<keyof typeof filteringPresets;
     if (fpsRatio < 0.7) {
       // Performance is poor, reduce quality
       newPreset >('performance');
@@ -301,14 +265,11 @@ let newPreset = $state<keyof typeof filteringPresets;
       // Performance is good, use quality preset
       newPreset = 'quality';
     }
-    
     const newOptions = filteringPresets[newPreset];
-    
     // Only update if options changed significantly
     if (JSON.stringify(newOptions) !== JSON.stringify(renderingOptions)) {
       console.log(`🔧 Adaptive quality: switching to ${newPreset} preset (FPS: ${currentFPS.toFixed(1)})`);
       renderingOptions = newOptions;
-      
       // Reload texture with new options if caching is enabled
       if (enableCache && cacheEntry) {
         loadAndCacheTexture().catch(console.error);
@@ -322,7 +283,6 @@ let newPreset = $state<keyof typeof filteringPresets;
   function updateCacheMetrics(isHit: boolean): void {
     const analytics = enhancedGPUCache.getCacheAnalytics();
     cacheHitRate = analytics.hitRate;
-    
     performanceMetrics.cacheEfficiency = analytics.hitRate;
     performanceMetrics.memoryUsage = analytics.totalSize;
   }
@@ -331,45 +291,34 @@ let newPreset = $state<keyof typeof filteringPresets;
    * Start performance monitoring loop
    */
   function startPerformanceMonitoring(): void {
-let frameCount = $state(0);
+  let frameCount = $state(0);
     let lastTime = performance.now();
-    
     const updateMetrics = () => {
       const now = performance.now();
       const deltaTime = now - lastTime;
-      
       frameCount++;
-      
       if (deltaTime >= 1000) {
         // Update FPS
         performanceMetrics.fps = (frameCount * 1000) / deltaTime;
         performanceMetrics.frameTime = deltaTime / frameCount;
-        
         // Update other metrics
         const analytics = enhancedGPUCache.getCacheAnalytics();
         performanceMetrics.cacheEfficiency = analytics.hitRate;
         performanceMetrics.memoryUsage = analytics.totalSize / (1024 * 1024); // MB
-        
         // Calculate filtering quality score
         performanceMetrics.filteringQuality = cacheEntry?.qualityScore || 0;
-        
         // GPU utilization (estimated)
         performanceMetrics.gpuUtilization = Math.min(performanceMetrics.frameTime / 16.67, 1.0);
-        
         // Apply adaptive quality if enabled
         applyAdaptiveQuality();
-        
         // Notify performance update
         onPerformanceUpdate?.(performanceMetrics);
-        
         // Reset counters
         frameCount = 0;
         lastTime = now;
       }
-      
       animationId = requestAnimationFrame(updateMetrics);
     };
-    
     animationId = requestAnimationFrame(updateMetrics);
   }
 
@@ -383,8 +332,7 @@ let frameCount = $state(0);
   }
 
   function calculateQualityScore(options: N64RenderingOptions): number {
-let score = $state(0.3);
-    
+  let score = $state(0.3);
     if (options.enableBilinearFiltering) score += 0.2;
     if (options.enableTrilinearFiltering) score += 0.3;
     if (options.anisotropicLevel) {
@@ -393,7 +341,6 @@ let score = $state(0.3);
       else if (options.anisotropicLevel >= 4) score += 0.2;
       else score += 0.1;
     }
-    
     return Math.min(score, 1.0);
   }
 
@@ -422,7 +369,6 @@ let score = $state(0.3);
     cacheHitRate > 0.8 ? '#00ff00' :
     cacheHitRate > 0.5 ? '#ffff00' : '#ff6600'
   );
-  
   // Effect for texture cache initialization
   $effect(() => {
     if (textureId && enableCache && isInitialized) {

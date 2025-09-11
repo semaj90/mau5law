@@ -1,540 +1,528 @@
 <!-- Unified AI Assistant Chat Interface -->
 <!-- Integrates Ollama, LLaMA.cpp WebASM, WebGPU acceleration, and Go microservices -->
 <script lang="ts">
-</script>
-	import { onMount, onDestroy, tick } from 'svelte';
-	import {
+  	import { onMount, onDestroy, tick } from 'svelte';
+  	import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-	import Button from '$lib/components/ui/button/Button.svelte';
-	// Badge replaced with span - not available in enhanced-bits
-	import {
+  	import Button from '$lib/components/ui/button/Button.svelte';
+  	// Badge replaced with span - not available in enhanced-bits
+  	import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
-	import { 
-		Bot, Send, Cpu, Zap, Database, MessageSquare,
-		Settings, Mic, MicOff, Upload, Download,
-		Layers, Activity, AlertCircle, CheckCircle2,
-		Pause, Play, Square, RotateCw, Brain
-	} from 'lucide-svelte';
-	import goMicroserviceClient from '$lib/services/go-microservice-client';
-
-	// Svelte 5 state management
-	let messages = $state<any[]>([]);
-	let currentMessage = $state('');
-	let isProcessing = $state(false);
-	let chatContainer: HTMLDivElement;
-	let messageInput: HTMLInputElement;
-	
-	let aiBackends = $state({
-		vllm: { available: false, status: 'unknown', endpoint: 'http://localhost:8000' },
-		ollama: { available: false, status: 'unknown', endpoint: 'http://localhost:11434' },
-		webasm: { available: false, status: 'unknown', loaded: false },
-		webgpu: { available: false, status: 'unknown', initialized: false },
-		goMicroservice: { available: false, status: 'unknown', endpoint: 'http://localhost:8080' }
-	});
-
-	let performanceMetrics = $state({
-		responseTime: 0,
-		tokensPerSecond: 0,
-		contextLength: 0,
-		memoryUsage: 0,
-		gpuUtilization: 0
-	});
-
-	let assistantConfig = $state({
-		model: 'gemma3-legal',
-		temperature: 0.7,
-		maxTokens: 1000,
-		streamResponse: true,
-		useGPUAcceleration: true,
-		preferredBackend: 'auto', // 'vllm' | 'ollama' | 'webasm' | 'auto'
-		legalContext: true
-	});
-
-	let voiceRecording = $state({
-		isRecording: false,
-		mediaRecorder: null as MediaRecorder | null,
-		audioChunks: [] as Blob[]
-	});
-
-	let webgpuBridge: Worker | null = null;
-
-	// Component props
-	let { 
-		caseId = '',
-		evidenceContext = [] as any[],
-		readonly = false
-	} = $props<{
-		caseId?: string;
-		evidenceContext?: any[];
-		readonly?: boolean;
-	}>();
-
-	// Initialize AI systems
-	onMount(async () => {
-		console.log('🤖 Initializing Unified AI Assistant');
-		
-		await initializeBackends();
-		await loadConversationHistory();
-		setupWebGPUWorker();
-		
-		// Add welcome message
-		addSystemMessage('Legal AI Assistant initialized. How can I help you analyze your case today?');
-	});
-
-	async function initializeBackends() {
-		console.log('🔌 Checking backend availability...');
-
-		// Check vLLM
-		try {
-			const vllmResponse = await fetch(`${aiBackends.vllm.endpoint}/v1/models`, { 
-				method: 'GET',
-				signal: AbortSignal.timeout(5000)
-			});
-			aiBackends.vllm.available = vllmResponse.ok;
-			aiBackends.vllm.status = vllmResponse.ok ? 'healthy' : 'error';
-		} catch {
-			aiBackends.vllm.available = false;
-			aiBackends.vllm.status = 'unavailable';
-		}
-
-		// Check Ollama
-		try {
-			const ollamaResponse = await fetch(`${aiBackends.ollama.endpoint}/api/version`, {
-				method: 'GET',
-				signal: AbortSignal.timeout(5000)
-			});
-			aiBackends.ollama.available = ollamaResponse.ok;
-			aiBackends.ollama.status = ollamaResponse.ok ? 'healthy' : 'error';
-		} catch {
-			aiBackends.ollama.available = false;
-			aiBackends.ollama.status = 'unavailable';
-		}
-
-		// Check WebASM LLaMA.cpp support
-		try {
-			if (typeof SharedArrayBuffer !== 'undefined' && 'gpu' in navigator) {
-				aiBackends.webasm.available = true;
-				aiBackends.webasm.status = 'ready';
-			}
-		} catch {
-			aiBackends.webasm.available = false;
-			aiBackends.webasm.status = 'unsupported';
-		}
-
-		// Check WebGPU support
-		if ('gpu' in navigator) {
-			try {
-				const adapter = await navigator.gpu.requestAdapter();
-				aiBackends.webgpu.available = !!adapter;
-				aiBackends.webgpu.status = adapter ? 'supported' : 'unavailable';
-			} catch {
-				aiBackends.webgpu.available = false;
-				aiBackends.webgpu.status = 'error';
-			}
-		}
-
-		// Initialize Go microservice client
-		try {
-			const initialized = await goMicroserviceClient.initialize();
-			aiBackends.goMicroservice.available = initialized;
-			aiBackends.goMicroservice.status = initialized ? 'healthy' : 'error';
-		} catch {
-			aiBackends.goMicroservice.available = false;
-			aiBackends.goMicroservice.status = 'unavailable';
-		}
-
-		console.log('📊 Backend Status:', aiBackends);
-	}
-
-	async function setupWebGPUWorker() {
-		if (aiBackends.webgpu.available) {
-			try {
-				webgpuBridge = new Worker('/src/lib/workers/webgpu-cuda-bridge.ts', { type: 'module' });
-				
-				webgpuBridge.onmessage = (event) => {
-					const { type, data } = event.data;
-					
-					switch (type) {
-						case 'init-complete':
-							aiBackends.webgpu.initialized = data.success;
-							aiBackends.webgpu.status = data.success ? 'ready' : 'error';
-							break;
-						case 'task-complete':
-							handleWebGPUTaskComplete(data);
-							break;
-						case 'error':
-							console.error('❌ WebGPU Worker Error:', data.error);
-							break;
-					}
-				};
-
-				// Initialize the bridge
-				webgpuBridge.postMessage({
-					type: 'init',
-					requestId: `init-${Date.now()}`
-				});
-			} catch (error) {
-				console.error('❌ Failed to setup WebGPU worker:', error);
-			}
-		}
-	}
-
-	function handleWebGPUTaskComplete(data: any) {
-		console.log('✅ WebGPU task completed:', data);
-		// Update performance metrics
-		performanceMetrics.gpuUtilization = data.gpuUtilization || 0;
-	}
-
-	async function loadConversationHistory() {
-		if (caseId) {
-			try {
-				const response = await fetch(`/api/legal/conversations/${caseId}`);
-				if (response.ok) {
-					const history = await response.json();
-					messages = history.messages || [];
-					await scrollToBottom();
-				}
-			} catch (error) {
-				console.warn('⚠️ Failed to load conversation history:', error);
-			}
-		}
-	}
-
-	async function sendMessage() {
-		if (!currentMessage.trim() || isProcessing) return;
-
-		const userMessage = {
-			id: `msg-${Date.now()}-user`,
-			role: 'user',
-			content: currentMessage.trim(),
-			timestamp: new Date().toISOString(),
-			caseId
-		};
-
-		messages = [...messages, userMessage];
-		const messageToSend = currentMessage.trim();
-		currentMessage = '';
-		isProcessing = true;
-
-		await scrollToBottom();
-
-		try {
-			const startTime = Date.now();
-			const response = await processAIRequest(messageToSend);
-			const processingTime = Date.now() - startTime;
-
-			const aiMessage = {
-				id: `msg-${Date.now()}-assistant`,
-				role: 'assistant',
-				content: response.content,
-				timestamp: new Date().toISOString(),
-				processingTime,
-				backend: response.backend,
-				tokensPerSecond: response.tokensPerSecond || 0,
-				caseId
-			};
-
-			messages = [...messages, aiMessage];
-
-			// Update performance metrics
-			performanceMetrics.responseTime = processingTime;
-			performanceMetrics.tokensPerSecond = response.tokensPerSecond || 0;
-			performanceMetrics.contextLength = messages.length;
-
-			await scrollToBottom();
-			await saveConversation();
-
-		} catch (error) {
-			console.error('❌ AI request failed:', error);
-			
-			const errorMessage = {
-				id: `msg-${Date.now()}-error`,
-				role: 'assistant',
-				content: `Sorry, I encountered an error processing your request: ${error instanceof Error ? error.message : String(error)}`,
-				timestamp: new Date().toISOString(),
-				isError: true,
-				caseId
-			};
-
-			messages = [...messages, errorMessage];
-			await scrollToBottom();
-		} finally {
-			isProcessing = false;
-		}
-	}
-
-	async function processAIRequest(message: string): Promise<any> {
-		const context = buildContextPrompt(message);
-		
-		// Try backends in order of preference and availability
-		if (assistantConfig.preferredBackend === 'auto') {
-			return await tryBackendsInOrder(context);
-		} else {
-			return await useSpecificBackend(context, assistantConfig.preferredBackend);
-		}
-	}
-
-	function buildContextPrompt(message: string): string {
-		let contextPrompt = '';
-
-		if (assistantConfig.legalContext) {
-			contextPrompt += 'You are a legal AI assistant specializing in evidence analysis, case management, and legal research. ';
-		}
-
-		if (caseId) {
-			contextPrompt += `You are working on caseItem: ${caseId}. `;
-		}
-
-		if (evidenceContext.length > 0) {
-			contextPrompt += `Available evidence context: ${evidenceContext.map(e => e.title).join(', ')}. `;
-		}
-
-		// Add recent conversation context
-		const recentMessages = messages.slice(-5);
-		if (recentMessages.length > 0) {
-			contextPrompt += 'Recent conversation: ';
-			contextPrompt += recentMessages.map(m => `${m.role}: ${m.content}`).join(' | ') + ' | ';
-		}
-
-		contextPrompt += `User question: ${message}`;
-
-		return contextPrompt;
-	}
-
-	async function tryBackendsInOrder(context: string): Promise<any> {
-		const backendOrder = ['goMicroservice', 'vllm', 'ollama', 'webasm'];
-		
-		for (const backendName of backendOrder) {
-			if (aiBackends[backendName]?.available) {
-				try {
-					const result = await useSpecificBackend(context, backendName);
-					return result;
-				} catch (error) {
-					console.warn(`⚠️ Backend ${backendName} failed, trying next:`, error);
-					continue;
-				}
-			}
-		}
-
-		throw new Error('All AI backends are unavailable');
-	}
-
-	async function useSpecificBackend(context: string, backend: string): Promise<any> {
-		switch (backend) {
-			case 'vllm':
-				return await processWithVLLM(context);
-			case 'ollama':
-				return await processWithOllama(context);
-			case 'webasm':
-				return await processWithWebASM(context);
-			case 'goMicroservice':
-				return await processWithGoMicroservice(context);
-			default:
-				throw new Error(`Unknown backend: ${backend}`);
-		}
-	}
-
-	async function processWithVLLM(context: string): Promise<any> {
-		const response = await fetch(`${aiBackends.vllm.endpoint}/v1/chat/completions`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				model: 'mistralai/Mistral-7B-Instruct-v0.3',
-				messages: [{ role: 'user', content: context }],
-				temperature: assistantConfig.temperature,
-				max_tokens: assistantConfig.maxTokens,
-				stream: false
-			})
-		});
-
-		if (!response.ok) {
-			throw new Error(`vLLM API error: ${response.status}`);
-		}
-
-		const result = await response.json();
-		return {
-			content: result.choices?.[0]?.message?.content || 'No response',
-			backend: 'vLLM',
-			tokensPerSecond: 0 // vLLM doesn't provide this directly
-		};
-	}
-
-	async function processWithOllama(context: string): Promise<any> {
-		const response = await fetch(`${aiBackends.ollama.endpoint}/api/chat`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				model: assistantConfig.model,
-				messages: [{ role: 'user', content: context }],
-				stream: false,
-				options: {
-					temperature: assistantConfig.temperature,
-					num_predict: assistantConfig.maxTokens
-				}
-			})
-		});
-
-		if (!response.ok) {
-			throw new Error(`Ollama API error: ${response.status}`);
-		}
-
-		const result = await response.json();
-		return {
-			content: result.message?.content || 'No response',
-			backend: 'Ollama',
-			tokensPerSecond: result.eval_duration ? (result.eval_count || 0) / (result.eval_duration / 1000000000) : 0
-		};
-	}
-
-	async function processWithWebASM(context: string): Promise<any> {
-		// WebASM LLaMA.cpp processing (placeholder implementation)
-		// In a real implementation, this would load and run a WebAssembly version of LLaMA.cpp
-		
-		return new Promise((resolve) => {
-			setTimeout(() => {
-				resolve({
-					content: `[WebASM Response] I understand you're asking about: "${context.slice(-100)}...". This is a placeholder response from the WebAssembly LLaMA.cpp implementation.`,
-					backend: 'WebASM LLaMA.cpp',
-					tokensPerSecond: 15
-				});
-			}, 2000);
-		});
-	}
-
-	async function processWithGoMicroservice(context: string): Promise<any> {
-		const result = await goMicroserviceClient.processChat({
-			messages: [{ role: 'user', content: context }],
-			model: assistantConfig.model,
-			temperature: assistantConfig.temperature,
-			stream: false
-		});
-
-		if (!result.success) {
-			throw new Error(result.error || 'Go microservice error');
-		}
-
-		return {
-			content: result.data?.content || result.data?.response || 'No response',
-			backend: 'Go Microservice',
-			tokensPerSecond: result.metadata?.tokensPerSecond || 0
-		};
-	}
-
-	async function saveConversation() {
-		if (caseId) {
-			try {
-				await fetch('/api/legal/conversations', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						caseId,
-						messages: messages.slice(-20), // Save last 20 messages
-						timestamp: new Date().toISOString()
-					})
-				});
-			} catch (error) {
-				console.warn('⚠️ Failed to save conversation:', error);
-			}
-		}
-	}
-
-	function addSystemMessage(content: string) {
-		const systemMessage = {
-			id: `msg-${Date.now()}-system`,
-			role: 'system',
-			content,
-			timestamp: new Date().toISOString(),
-			isSystem: true
-		};
-		
-		messages = [...messages, systemMessage];
-	}
-
-	async function scrollToBottom() {
-		await tick();
-		if (chatContainer) {
-			chatContainer.scrollTop = chatContainer.scrollHeight;
-		}
-	}
-
-	function handleKeyPress(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !event.shiftKey) {
-			event.preventDefault();
-			sendMessage();
-		}
-	}
-
-	async function startVoiceRecording() {
-		try {
-			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-			
-			voiceRecording.mediaRecorder = new MediaRecorder(stream);
-			voiceRecording.audioChunks = [];
-			voiceRecording.isRecording = true;
-
-			voiceRecording.mediaRecorder.ondataavailable = (event) => {
-				voiceRecording.audioChunks.push(event.data);
-			};
-
-			voiceRecording.mediaRecorder.onstop = async () => {
-				const audioBlob = new Blob(voiceRecording.audioChunks, { type: 'audio/wav' });
-				await processVoiceInput(audioBlob);
-			};
-
-			voiceRecording.mediaRecorder.start();
-		} catch (error) {
-			console.error('❌ Voice recording failed:', error);
-		}
-	}
-
-	function stopVoiceRecording() {
-		if (voiceRecording.mediaRecorder && voiceRecording.isRecording) {
-			voiceRecording.mediaRecorder.stop();
-			voiceRecording.isRecording = false;
-		}
-	}
-
-	async function processVoiceInput(audioBlob: Blob) {
-		// Voice-to-text processing (placeholder)
-		// In a real implementation, this would use a speech-to-text service
-		currentMessage = '[Voice input detected - speech-to-text processing would occur here]';
-	}
-
-	function clearConversation() {
-		if (confirm('Are you sure you want to clear the conversation?')) {
-			messages = [];
-			addSystemMessage('Conversation cleared. How can I help you?');
-		}
-	}
-
-	function exportConversation() {
-		const exportData = {
-			caseId,
-			messages,
-			timestamp: new Date().toISOString(),
-			performanceMetrics
-		};
-
-		const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = `conversation-${caseId || 'export'}-${new Date().toISOString().split('T')[0]}.json`;
-		a.click();
-		URL.revokeObjectURL(url);
-	}
-
-	onDestroy(() => {
-		if (webgpuBridge) {
-			webgpuBridge.terminate();
-		}
-		goMicroserviceClient.cleanup();
-	});
+  	import { 
+  		Bot, Send, Cpu, Zap, Database, MessageSquare,
+  		Settings, Mic, MicOff, Upload, Download,
+  		Layers, Activity, AlertCircle, CheckCircle2,
+  		Pause, Play, Square, RotateCw, Brain
+  	} from 'lucide-svelte';
+  	import goMicroserviceClient from '$lib/services/go-microservice-client';
+
+  	// Svelte 5 state management
+  	let messages = $state<any[]>([]);
+  	let currentMessage = $state('');
+  	let isProcessing = $state(false);
+  	let chatContainer: HTMLDivElement;
+  	let messageInput: HTMLInputElement;
+  	let aiBackends = $state({
+  		vllm: { available: false, status: 'unknown', endpoint: 'http://localhost:8000' },
+  		ollama: { available: false, status: 'unknown', endpoint: 'http://localhost:11434' },
+  		webasm: { available: false, status: 'unknown', loaded: false },
+  		webgpu: { available: false, status: 'unknown', initialized: false },
+  		goMicroservice: { available: false, status: 'unknown', endpoint: 'http://localhost:8080' }
+  	});
+
+  	let performanceMetrics = $state({
+  		responseTime: 0,
+  		tokensPerSecond: 0,
+  		contextLength: 0,
+  		memoryUsage: 0,
+  		gpuUtilization: 0
+  	});
+
+  	let assistantConfig = $state({
+  		model: 'gemma3-legal',
+  		temperature: 0.7,
+  		maxTokens: 1000,
+  		streamResponse: true,
+  		useGPUAcceleration: true,
+  		preferredBackend: 'auto', // 'vllm' | 'ollama' | 'webasm' | 'auto'
+  		legalContext: true
+  	});
+
+  	let voiceRecording = $state({
+  		isRecording: false,
+  		mediaRecorder: null as MediaRecorder | null,
+  		audioChunks: [] as Blob[]
+  	});
+
+  	let webgpuBridge: Worker | null = null;
+
+  	// Component props
+  	let { 
+  		caseId = '',
+  		evidenceContext = [] as any[],
+  		readonly = false
+  	} = $props<{
+  		caseId?: string;
+  		evidenceContext?: any[];
+  		readonly?: boolean;
+  	}>();
+
+  	// Initialize AI systems
+  	onMount(async () => {
+  		console.log('🤖 Initializing Unified AI Assistant');
+  		await initializeBackends();
+  		await loadConversationHistory();
+  		setupWebGPUWorker();
+  		// Add welcome message
+  		addSystemMessage('Legal AI Assistant initialized. How can I help you analyze your case today?');
+  	});
+
+  	async function initializeBackends() {
+  		console.log('🔌 Checking backend availability...');
+
+  		// Check vLLM
+  		try {
+  			const vllmResponse = await fetch(`${aiBackends.vllm.endpoint}/v1/models`, { 
+  				method: 'GET',
+  				signal: AbortSignal.timeout(5000)
+  			});
+  			aiBackends.vllm.available = vllmResponse.ok;
+  			aiBackends.vllm.status = vllmResponse.ok ? 'healthy' : 'error';
+  		} catch {
+  			aiBackends.vllm.available = false;
+  			aiBackends.vllm.status = 'unavailable';
+  		}
+
+  		// Check Ollama
+  		try {
+  			const ollamaResponse = await fetch(`${aiBackends.ollama.endpoint}/api/version`, {
+  				method: 'GET',
+  				signal: AbortSignal.timeout(5000)
+  			});
+  			aiBackends.ollama.available = ollamaResponse.ok;
+  			aiBackends.ollama.status = ollamaResponse.ok ? 'healthy' : 'error';
+  		} catch {
+  			aiBackends.ollama.available = false;
+  			aiBackends.ollama.status = 'unavailable';
+  		}
+
+  		// Check WebASM LLaMA.cpp support
+  		try {
+  			if (typeof SharedArrayBuffer !== 'undefined' && 'gpu' in navigator) {
+  				aiBackends.webasm.available = true;
+  				aiBackends.webasm.status = 'ready';
+  			}
+  		} catch {
+  			aiBackends.webasm.available = false;
+  			aiBackends.webasm.status = 'unsupported';
+  		}
+
+  		// Check WebGPU support
+  		if ('gpu' in navigator) {
+  			try {
+  				const adapter = await navigator.gpu.requestAdapter();
+  				aiBackends.webgpu.available = !!adapter;
+  				aiBackends.webgpu.status = adapter ? 'supported' : 'unavailable';
+  			} catch {
+  				aiBackends.webgpu.available = false;
+  				aiBackends.webgpu.status = 'error';
+  			}
+  		}
+
+  		// Initialize Go microservice client
+  		try {
+  			const initialized = await goMicroserviceClient.initialize();
+  			aiBackends.goMicroservice.available = initialized;
+  			aiBackends.goMicroservice.status = initialized ? 'healthy' : 'error';
+  		} catch {
+  			aiBackends.goMicroservice.available = false;
+  			aiBackends.goMicroservice.status = 'unavailable';
+  		}
+
+  		console.log('📊 Backend Status:', aiBackends);
+  	}
+
+  	async function setupWebGPUWorker() {
+  		if (aiBackends.webgpu.available) {
+  			try {
+  				webgpuBridge = new Worker('/src/lib/workers/webgpu-cuda-bridge.ts', { type: 'module' });
+  				webgpuBridge.onmessage = (event) => {
+  					const { type, data } = event.data;
+  					switch (type) {
+  						case 'init-complete':
+  							aiBackends.webgpu.initialized = data.success;
+  							aiBackends.webgpu.status = data.success ? 'ready' : 'error';
+  							break;
+  						case 'task-complete':
+  							handleWebGPUTaskComplete(data);
+  							break;
+  						case 'error':
+  							console.error('❌ WebGPU Worker Error:', data.error);
+  							break;
+  					}
+  				};
+
+  				// Initialize the bridge
+  				webgpuBridge.postMessage({
+  					type: 'init',
+  					requestId: `init-${Date.now()}`
+  				});
+  			} catch (error) {
+  				console.error('❌ Failed to setup WebGPU worker:', error);
+  			}
+  		}
+  	}
+
+  	function handleWebGPUTaskComplete(data: any) {
+  		console.log('✅ WebGPU task completed:', data);
+  		// Update performance metrics
+  		performanceMetrics.gpuUtilization = data.gpuUtilization || 0;
+  	}
+
+  	async function loadConversationHistory() {
+  		if (caseId) {
+  			try {
+  				const response = await fetch(`/api/legal/conversations/${caseId}`);
+  				if (response.ok) {
+  					const history = await response.json();
+  					messages = history.messages || [];
+  					await scrollToBottom();
+  				}
+  			} catch (error) {
+  				console.warn('⚠️ Failed to load conversation history:', error);
+  			}
+  		}
+  	}
+
+  	async function sendMessage() {
+  		if (!currentMessage.trim() || isProcessing) return;
+
+  		const userMessage = {
+  			id: `msg-${Date.now()}-user`,
+  			role: 'user',
+  			content: currentMessage.trim(),
+  			timestamp: new Date().toISOString(),
+  			caseId
+  		};
+
+  		messages = [...messages, userMessage];
+  		const messageToSend = currentMessage.trim();
+  		currentMessage = '';
+  		isProcessing = true;
+
+  		await scrollToBottom();
+
+  		try {
+  			const startTime = Date.now();
+  			const response = await processAIRequest(messageToSend);
+  			const processingTime = Date.now() - startTime;
+
+  			const aiMessage = {
+  				id: `msg-${Date.now()}-assistant`,
+  				role: 'assistant',
+  				content: response.content,
+  				timestamp: new Date().toISOString(),
+  				processingTime,
+  				backend: response.backend,
+  				tokensPerSecond: response.tokensPerSecond || 0,
+  				caseId
+  			};
+
+  			messages = [...messages, aiMessage];
+
+  			// Update performance metrics
+  			performanceMetrics.responseTime = processingTime;
+  			performanceMetrics.tokensPerSecond = response.tokensPerSecond || 0;
+  			performanceMetrics.contextLength = messages.length;
+
+  			await scrollToBottom();
+  			await saveConversation();
+
+  		} catch (error) {
+  			console.error('❌ AI request failed:', error);
+  			const errorMessage = {
+  				id: `msg-${Date.now()}-error`,
+  				role: 'assistant',
+  				content: `Sorry, I encountered an error processing your request: ${error instanceof Error ? error.message : String(error)}`,
+  				timestamp: new Date().toISOString(),
+  				isError: true,
+  				caseId
+  			};
+
+  			messages = [...messages, errorMessage];
+  			await scrollToBottom();
+  		} finally {
+  			isProcessing = false;
+  		}
+  	}
+
+  	async function processAIRequest(message: string): Promise<any> {
+  		const context = buildContextPrompt(message);
+  		// Try backends in order of preference and availability
+  		if (assistantConfig.preferredBackend === 'auto') {
+  			return await tryBackendsInOrder(context);
+  		} else {
+  			return await useSpecificBackend(context, assistantConfig.preferredBackend);
+  		}
+  	}
+
+  	function buildContextPrompt(message: string): string {
+  		let contextPrompt = '';
+
+  		if (assistantConfig.legalContext) {
+  			contextPrompt += 'You are a legal AI assistant specializing in evidence analysis, case management, and legal research. ';
+  		}
+
+  		if (caseId) {
+  			contextPrompt += `You are working on caseItem: ${caseId}. `;
+  		}
+
+  		if (evidenceContext.length > 0) {
+  			contextPrompt += `Available evidence context: ${evidenceContext.map(e => e.title).join(', ')}. `;
+  		}
+
+  		// Add recent conversation context
+  		const recentMessages = messages.slice(-5);
+  		if (recentMessages.length > 0) {
+  			contextPrompt += 'Recent conversation: ';
+  			contextPrompt += recentMessages.map(m => `${m.role}: ${m.content}`).join(' | ') + ' | ';
+  		}
+
+  		contextPrompt += `User question: ${message}`;
+
+  		return contextPrompt;
+  	}
+
+  	async function tryBackendsInOrder(context: string): Promise<any> {
+  		const backendOrder = ['goMicroservice', 'vllm', 'ollama', 'webasm'];
+  		for (const backendName of backendOrder) {
+  			if (aiBackends[backendName]?.available) {
+  				try {
+  					const result = await useSpecificBackend(context, backendName);
+  					return result;
+  				} catch (error) {
+  					console.warn(`⚠️ Backend ${backendName} failed, trying next:`, error);
+  					continue;
+  				}
+  			}
+  		}
+
+  		throw new Error('All AI backends are unavailable');
+  	}
+
+  	async function useSpecificBackend(context: string, backend: string): Promise<any> {
+  		switch (backend) {
+  			case 'vllm':
+  				return await processWithVLLM(context);
+  			case 'ollama':
+  				return await processWithOllama(context);
+  			case 'webasm':
+  				return await processWithWebASM(context);
+  			case 'goMicroservice':
+  				return await processWithGoMicroservice(context);
+  			default:
+  				throw new Error(`Unknown backend: ${backend}`);
+  		}
+  	}
+
+  	async function processWithVLLM(context: string): Promise<any> {
+  		const response = await fetch(`${aiBackends.vllm.endpoint}/v1/chat/completions`, {
+  			method: 'POST',
+  			headers: { 'Content-Type': 'application/json' },
+  			body: JSON.stringify({
+  				model: 'mistralai/Mistral-7B-Instruct-v0.3',
+  				messages: [{ role: 'user', content: context }],
+  				temperature: assistantConfig.temperature,
+  				max_tokens: assistantConfig.maxTokens,
+  				stream: false
+  			})
+  		});
+
+  		if (!response.ok) {
+  			throw new Error(`vLLM API error: ${response.status}`);
+  		}
+
+  		const result = await response.json();
+  		return {
+  			content: result.choices?.[0]?.message?.content || 'No response',
+  			backend: 'vLLM',
+  			tokensPerSecond: 0 // vLLM doesn't provide this directly
+  		};
+  	}
+
+  	async function processWithOllama(context: string): Promise<any> {
+  		const response = await fetch(`${aiBackends.ollama.endpoint}/api/chat`, {
+  			method: 'POST',
+  			headers: { 'Content-Type': 'application/json' },
+  			body: JSON.stringify({
+  				model: assistantConfig.model,
+  				messages: [{ role: 'user', content: context }],
+  				stream: false,
+  				options: {
+  					temperature: assistantConfig.temperature,
+  					num_predict: assistantConfig.maxTokens
+  				}
+  			})
+  		});
+
+  		if (!response.ok) {
+  			throw new Error(`Ollama API error: ${response.status}`);
+  		}
+
+  		const result = await response.json();
+  		return {
+  			content: result.message?.content || 'No response',
+  			backend: 'Ollama',
+  			tokensPerSecond: result.eval_duration ? (result.eval_count || 0) / (result.eval_duration / 1000000000) : 0
+  		};
+  	}
+
+  	async function processWithWebASM(context: string): Promise<any> {
+  		// WebASM LLaMA.cpp processing (placeholder implementation)
+  		// In a real implementation, this would load and run a WebAssembly version of LLaMA.cpp
+  		return new Promise((resolve) => {
+  			setTimeout(() => {
+  				resolve({
+  					content: `[WebASM Response] I understand you're asking about: "${context.slice(-100)}...". This is a placeholder response from the WebAssembly LLaMA.cpp implementation.`,
+  					backend: 'WebASM LLaMA.cpp',
+  					tokensPerSecond: 15
+  				});
+  			}, 2000);
+  		});
+  	}
+
+  	async function processWithGoMicroservice(context: string): Promise<any> {
+  		const result = await goMicroserviceClient.processChat({
+  			messages: [{ role: 'user', content: context }],
+  			model: assistantConfig.model,
+  			temperature: assistantConfig.temperature,
+  			stream: false
+  		});
+
+  		if (!result.success) {
+  			throw new Error(result.error || 'Go microservice error');
+  		}
+
+  		return {
+  			content: result.data?.content || result.data?.response || 'No response',
+  			backend: 'Go Microservice',
+  			tokensPerSecond: result.metadata?.tokensPerSecond || 0
+  		};
+  	}
+
+  	async function saveConversation() {
+  		if (caseId) {
+  			try {
+  				await fetch('/api/legal/conversations', {
+  					method: 'POST',
+  					headers: { 'Content-Type': 'application/json' },
+  					body: JSON.stringify({
+  						caseId,
+  						messages: messages.slice(-20), // Save last 20 messages
+  						timestamp: new Date().toISOString()
+  					})
+  				});
+  			} catch (error) {
+  				console.warn('⚠️ Failed to save conversation:', error);
+  			}
+  		}
+  	}
+
+  	function addSystemMessage(content: string) {
+  		const systemMessage = {
+  			id: `msg-${Date.now()}-system`,
+  			role: 'system',
+  			content,
+  			timestamp: new Date().toISOString(),
+  			isSystem: true
+  		};
+  		messages = [...messages, systemMessage];
+  	}
+
+  	async function scrollToBottom() {
+  		await tick();
+  		if (chatContainer) {
+  			chatContainer.scrollTop = chatContainer.scrollHeight;
+  		}
+  	}
+
+  	function handleKeyPress(event: KeyboardEvent) {
+  		if (event.key === 'Enter' && !event.shiftKey) {
+  			event.preventDefault();
+  			sendMessage();
+  		}
+  	}
+
+  	async function startVoiceRecording() {
+  		try {
+  			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  			voiceRecording.mediaRecorder = new MediaRecorder(stream);
+  			voiceRecording.audioChunks = [];
+  			voiceRecording.isRecording = true;
+
+  			voiceRecording.mediaRecorder.ondataavailable = (event) => {
+  				voiceRecording.audioChunks.push(event.data);
+  			};
+
+  			voiceRecording.mediaRecorder.onstop = async () => {
+  				const audioBlob = new Blob(voiceRecording.audioChunks, { type: 'audio/wav' });
+  				await processVoiceInput(audioBlob);
+  			};
+
+  			voiceRecording.mediaRecorder.start();
+  		} catch (error) {
+  			console.error('❌ Voice recording failed:', error);
+  		}
+  	}
+
+  	function stopVoiceRecording() {
+  		if (voiceRecording.mediaRecorder && voiceRecording.isRecording) {
+  			voiceRecording.mediaRecorder.stop();
+  			voiceRecording.isRecording = false;
+  		}
+  	}
+
+  	async function processVoiceInput(audioBlob: Blob) {
+  		// Voice-to-text processing (placeholder)
+  		// In a real implementation, this would use a speech-to-text service
+  		currentMessage = '[Voice input detected - speech-to-text processing would occur here]';
+  	}
+
+  	function clearConversation() {
+  		if (confirm('Are you sure you want to clear the conversation?')) {
+  			messages = [];
+  			addSystemMessage('Conversation cleared. How can I help you?');
+  		}
+  	}
+
+  	function exportConversation() {
+  		const exportData = {
+  			caseId,
+  			messages,
+  			timestamp: new Date().toISOString(),
+  			performanceMetrics
+  		};
+
+  		const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  		const url = URL.createObjectURL(blob);
+  		const a = document.createElement('a');
+  		a.href = url;
+  		a.download = `conversation-${caseId || 'export'}-${new Date().toISOString().split('T')[0]}.json`;
+  		a.click();
+  		URL.revokeObjectURL(url);
+  	}
+
+  	onDestroy(() => {
+  		if (webgpuBridge) {
+  			webgpuBridge.terminate();
+  		}
+  		goMicroserviceClient.cleanup();
+  	});
 </script>
 
 <!-- Unified AI Assistant Interface -->

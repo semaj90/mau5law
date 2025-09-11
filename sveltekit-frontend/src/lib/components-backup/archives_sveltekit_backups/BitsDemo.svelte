@@ -1,18 +1,15 @@
 <script lang="ts">
-</script>
   import { Dialog, Button, Select, AlertDialog } from 'bits-ui';
   import { fade } from 'svelte/transition';
   import { createToaster, melt } from '@melt-ui/svelte';
   import { flip } from 'svelte/animate';
   import { fly } from 'svelte/transition';
-  
   export let caseTypes = [
     { value: 'criminal', label: 'Criminal Cases' },
     { value: 'civil', label: 'Civil Cases' },
     { value: 'family', label: 'Family Law' },
     { value: 'corporate', label: 'Corporate Law' }
   ];
-  
   interface ToastData {
     title?: string;
     description?: string;
@@ -21,7 +18,6 @@
 
   let dialogOpen = false;
   let alertOpen = false;
-  
   // Melt-UI Toast/Notification setup
   const {
     elements: { content, title, description, close },
@@ -29,7 +25,6 @@
     states: { toasts },
     actions: { portal }
   } = createToaster<ToastData>();
-  
   // Notification functions
   function showSuccessNotification() {
     addToast({

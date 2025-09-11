@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { createGPUProcessingActor, type DocumentInput, type ProcessingResult } from '$lib/state/gpu-processing-machine';
   import { Button } from 'bits-ui';
@@ -21,7 +20,6 @@
 
   // XState actor
   const gpuActor = createGPUProcessingActor();
-  
   // Reactive state
   let state = $state(gpuActor.getSnapshot());
   let isProcessing = $derived(state.matches('processing'));
@@ -44,7 +42,6 @@
   // Start the actor
   onMount(() => {
     gpuActor.start();
-    
     // Subscribe to state changes
     const subscription = gpuActor.subscribe((snapshot) => {
       state = snapshot;
@@ -88,7 +85,6 @@
     };
 
     gpuActor.send({ type: 'PROCESS_DOCUMENT', ...document });
-    
     // Clear form
     newDocumentContent = '';
     newDocumentTitle = '';

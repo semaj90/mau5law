@@ -1,6 +1,5 @@
 <!-- Chat Demo Page -->
 <script lang="ts">
-</script>
   import SimpleWorkingChat from '$lib/components/ai/SimpleWorkingChat.svelte';
 </script>
 

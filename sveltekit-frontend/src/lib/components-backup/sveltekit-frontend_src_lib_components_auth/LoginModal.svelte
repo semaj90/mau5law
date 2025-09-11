@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onsuccess?: (event?: any) => void;
     onclose?: (event?: any) => void;
@@ -12,29 +11,26 @@
 
 
   import { Button } from "$lib/components/ui/button";
-  
     import { writable } from "svelte/store";
   import { superForm } from "sveltekit-superforms";
 
-    
-  
   const { form, errors, submitting, message, enhance } = superForm(
     data.loginForm,
     {
       onUpdated: ({ form }) => {
         if (form.valid) onsuccess?.();
       },
-}
+  }
   );
 
   // FIX 1: The 'open' property for createDialog must be a writable store.
   // We create an internal store and sync it with the 'open' prop.
   const openStore = writable(open);
 
-const {
+  const {
   elements: { trigger, overlay, content, title, close },
   states: { open: isMeltOpen },
-} = createDialog({
+  } = createDialog({
   open: openStore,
   onOpenChange: (nextOpen: boolean) => {
     open = nextOpen;
@@ -42,13 +38,13 @@ const {
       onclose?.();
     }
   },
-});
+  });
 
   // This reactive statement ensures that if the parent changes
   // the 'open' prop, our internal store is updated.
   $effect(() => { if ($openStore !== open) {
     $openStore = open;
-}
+  }
 </script>
 
 <button use:melt={$trigger} style="display: none">Open Modal</button>

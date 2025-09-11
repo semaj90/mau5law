@@ -1,6 +1,5 @@
 <!-- YoRHa Command Center Dashboard Component -->
 <script lang="ts">
-</script>
   // Svelte 5 runes and modern imports
   import { onMount } from 'svelte';
   import { goto } from "$app/navigation";
@@ -52,7 +51,6 @@
   let selectedCard = $state<string | null>(null);
   let animationPhase = $state(0);
   let showCaseModal = $state(false);
-  
   // Error boundary state
   let componentError = $state<Error | null>(null);
   let recentActivity = $state([
@@ -101,7 +99,6 @@
 
   function handleQuickAction(action: any) {
     selectedCard = action?.id ?? null;
-    
     if (action?.action === 'modal' && action?.id === 'new-case') {
       showCaseModal = true;
     } else if (action?.route) {
@@ -114,7 +111,6 @@
   function handleCaseCreated(event: any) {
     const newCase = event.detail.case;
     showCaseModal = false;
-    
     // Update recent activity
     recentActivity = [
       {
@@ -126,7 +122,6 @@
       },
       ...recentActivity.slice(0, 4)
     ];
-    
     // Update system data (for reactive updates)
     systemData.activeCases = systemData.activeCases + 1;
   }

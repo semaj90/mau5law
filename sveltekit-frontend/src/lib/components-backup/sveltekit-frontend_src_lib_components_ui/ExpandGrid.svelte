@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     columns?: number;
     expandedColumns?: number;
@@ -10,7 +9,6 @@
     expandOnFocus?: boolean;
     onexpand?: (event?: any) => void;
   }
-  
   let {
     columns = 1,
     expandedColumns = 3,
@@ -24,8 +22,6 @@
 
 
 
-  
-              
   let className = "";
 
   let isExpanded = false;
@@ -35,22 +31,22 @@
     if (expandOnHover) {
       isExpanded = true;
       onexpand?.();
-}}
+  }}
   function handleMouseLeave() {
     if (expandOnHover) {
       isExpanded = false;
       onexpand?.();
-}}
+  }}
   function handleFocusIn() {
     if (expandOnFocus) {
       isExpanded = true;
       onexpand?.();
-}}
+  }}
   function handleFocusOut() {
     if (expandOnFocus) {
       isExpanded = false;
       onexpand?.();
-}}
+  }}
   let currentColumns = $derived(isExpanded ? expandedColumns : columns)
 </script>
 

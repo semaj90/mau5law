@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
 
@@ -64,7 +63,6 @@
 
     loading = true;
     error = '';
-    
     try {
       const params = new URLSearchParams({
         query: searchFilters.query,
@@ -78,7 +76,6 @@
       if (searchFilters.yearTo) params.set('yearTo', searchFilters.yearTo.toString());
 
       const response = await fetch(`/api/legal/precedents?${params}`);
-      
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`);
       }
@@ -88,7 +85,6 @@
       totalCount = data.totalCount;
       searchTerms = data.searchTerms;
       processingTime = data.processingTime;
-      
     } catch (err) {
       error = err instanceof Error ? err.message : 'Search failed';
       console.error('Precedent search error:', err);

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button, Dialog, Select, Input, Card } from './index.js';
   import type { SelectOption } from './index.js';
   import { cn } from '$lib/utils/cn';

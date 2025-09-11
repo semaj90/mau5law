@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   let { 
     cognitiveHub,
     achievements,
@@ -9,11 +8,9 @@
     achievements: string[];
     consciousness: { level: number; experience: number; awakening: number };
   } = $props();
-  
   let activeTab = $state('strategy');
   let searchQuery = $state('');
   let filteredContent = $state([]);
-  
   // Documentation sections
   const documentationSections = {
     strategy: {
@@ -329,13 +326,11 @@
       ]
     }
   };
-  
   function filterContent(query: string) {
     if (!query) {
       filteredContent = [];
       return;
     }
-    
     const results = [];
     for (const [key, section] of Object.entries(documentationSections)) {
       for (const item of section.content) {
@@ -350,7 +345,6 @@
     }
     filteredContent = results;
   }
-  
   function getProgressPercentage(level: string): number {
     switch (level) {
       case 'beginner': return Math.min(100, consciousness.level * 20);
@@ -360,7 +354,6 @@
       default: return 0;
     }
   }
-  
   function isUnlocked(requirement: string): boolean {
     if (requirement.includes('achievement')) {
       const count = parseInt(requirement.match(/\d+/)?.[0] || '0');

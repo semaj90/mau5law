@@ -1,7 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-</script>
   import { } from 'svelte';
 
   interface Props {
@@ -14,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
   import Button from "$lib/components/ui/button";
   // Badge replaced with span - not available in enhanced-bits
   import { Sparkles, Copy, X, AlertCircle, Check } from 'lucide-svelte';
-let copied = $state(false);
+  let copied = $state(false);
 
   // Use the Svelte store reactively
   let summary = $derived($aiService.summary);
@@ -32,11 +31,11 @@ let copied = $state(false);
         setTimeout(() => copied = false, 2000);
       } catch (err) {
         console.error('Failed to copy text:', err);
-}}}
+  }}}
   function closeModal() {
     aiService.reset();
     onclose?.();
-}
+  }
 </script>
 
 <Dialog.Root open={isOpen} close={closeModal}>

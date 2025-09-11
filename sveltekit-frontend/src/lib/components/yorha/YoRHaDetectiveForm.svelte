@@ -1,6 +1,5 @@
 <!-- YoRHa Detective Form Component - Fixed dynamic type binding -->
 <script lang="ts">
-</script>
   interface FormField {
     name: string;
     label: string;
@@ -38,13 +37,10 @@
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    
     if (isSubmitting) return;
-    
     try {
       isSubmitting = true;
       await onSubmit(formData);
-      
       // Reset form
       formData = {};
       fields.forEach(field => {
@@ -52,7 +48,6 @@
           formData[field.name] = field.defaultValue;
         }
       });
-      
     } catch (error) {
       console.error('Form submission error:', error);
     } finally {

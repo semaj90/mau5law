@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
   import { page } from '$app/stores';
-  
   let title = $state('Evidence Canvas - Legal AI Platform');
   let description = $state('Interactive evidence analysis and annotation canvas with AI-powered analysis capabilities');
 </script>

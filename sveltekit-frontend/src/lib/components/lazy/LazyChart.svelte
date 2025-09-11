@@ -1,6 +1,5 @@
 <!-- LazyChart.svelte - Lazy loading wrapper for heavy chart components -->
 <script lang="ts">
-</script>
   import LazyLoader from '../LazyLoader.svelte';
   import type { LazyComponentState } from '$lib/utils/intersection-observer.js';
 
@@ -10,19 +9,15 @@
     data = [] as any[],
     chartType = 'line' as 'line' | 'bar' | 'pie' | 'scatter' | 'area',
     config = {} as Record<string, any>,
-    
     // Lazy loading options
     lazyOptions = {},
-    
     // Visual props
     height = '400px',
     width = '100%',
     class: className = '',
-    
     // Loading states
     loadingText = 'Loading chart...',
     errorText = 'Failed to load chart',
-    
     // Component state binding
     lazyState = $bindable() as LazyComponentState | undefined
   } = $props();
@@ -41,10 +36,8 @@
         case 'area':
           // Example: const module = await import('$lib/components/charts/LineChart.svelte');
           // chartComponent = module.default;
-          
           // For demonstration, simulate loading delay
           await new Promise(resolve => setTimeout(resolve, 500));
-          
           // Mock component for now - replace with actual chart import
           chartComponent = {
             // This would be your actual chart component
@@ -52,17 +45,14 @@
             props: { data, config, height, width }
           };
           break;
-          
         case 'pie':
           // Example: const module = await import('$lib/components/charts/PieChart.svelte');
           // chartComponent = module.default;
           break;
-          
         case 'scatter':
           // Example: const module = await import('$lib/components/charts/ScatterChart.svelte');
           // chartComponent = module.default;
           break;
-          
         default:
           throw new Error(`Unsupported chart type: ${chartType}`);
       }

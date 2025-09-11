@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     evidence: Evidence | null ;
     data: any
@@ -14,14 +13,12 @@
   import { invalidateAll } from "$app/navigation";
   import { createEventDispatcher } from "svelte";
   import { superForm } from "sveltekit-superforms";
-// Corrected UI component import paths
+  // Corrected UI component import paths
   import Textarea from "$lib/components/ui/Textarea.svelte";
   import Button from "$lib/components/ui/button";
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label";
   import type { Evidence } from "$lib/types/api";
-  
-  
    // Evidence | null = null;
   let { data = $bindable() } = $props(); // any = null;
 
@@ -42,9 +39,9 @@
         if (form.valid) {
           await invalidateAll();
           dispatch("success");
-}
+  }
       },
-}
+  }
   );
 </script>
 

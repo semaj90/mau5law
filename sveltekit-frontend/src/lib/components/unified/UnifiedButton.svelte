@@ -11,12 +11,10 @@
 -->
 
 <script lang="ts">
-</script>
   import { createButton, melt } from 'melt';
   import { fly, fade } from 'svelte/transition';
   import { spring } from 'svelte/motion';
   import { onMount } from 'svelte';
-  
   // Props with Svelte 5 bindable support
   interface Props {
     variant?: 'primary' | 'secondary' | 'legal' | 'evidence' | 'case' | 'ghost';
@@ -24,7 +22,6 @@
     disabled?: boolean;
     loading?: boolean;
     children?: import('svelte').Snippet;
-    
     // Legal AI Context
     legalContext?: {
       confidence?: number;
@@ -32,13 +29,11 @@
       aiSuggested?: boolean;
       riskLevel?: 'low' | 'medium' | 'high';
     };
-    
     // GPU Animation Settings
     gpuEffects?: boolean;
     glowIntensity?: number;
     pixelated?: boolean;
     nesStyle?: boolean;
-    
     // Event handlers
     onclick?: (event: MouseEvent) => void;
     class?: string;
@@ -69,12 +64,11 @@
   });
 
   // GPU Animation State
-let canvas = $state<HTMLCanvasElement;
+  let canvas = $state<HTMLCanvasElement;
   let gl: WebGLRenderingContext | null >(null);
   let animationFrame: number;
   let isHovered = $state(false);
   let isPressed = $state(false);
-  
   // Legal AI confidence animation
   const confidence = spring(legalContext?.confidence || 0, {
     stiffness: 0.3,
@@ -94,7 +88,6 @@ let canvas = $state<HTMLCanvasElement;
       initWebGL();
       startAnimation();
     }
-    
     // Update confidence when legalContext changes
     $effect(() => {
       if (legalContext?.confidence !== undefined) {
@@ -112,7 +105,6 @@ let canvas = $state<HTMLCanvasElement;
 
   function initWebGL() {
     if (!canvas) return;
-    
     gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
     if (!gl) {
       console.warn('WebGL not supported, falling back to CSS animations');
@@ -124,7 +116,6 @@ let canvas = $state<HTMLCanvasElement;
       attribute vec4 a_position;
       attribute vec2 a_texCoord;
       varying vec2 v_texCoord;
-      
       void main() {
         gl_Position = a_position;
         v_texCoord = a_texCoord;
@@ -137,15 +128,12 @@ let canvas = $state<HTMLCanvasElement;
       uniform float u_time;
       uniform float u_glow;
       varying vec2 v_texCoord;
-      
       void main() {
         vec2 center = vec2(0.5, 0.5);
         float distance = length(v_texCoord - center);
-        
         // Legal confidence glow effect
         float glow = u_confidence * u_glow * (1.0 - distance);
         glow *= (sin(u_time * 2.0) * 0.3 + 0.7); // Subtle pulse
-        
         // Color based on legal context
         vec3 color = vec3(0.0, 0.8, 0.2); // Legal green
         if (u_confidence > 0.8) {
@@ -153,7 +141,6 @@ let canvas = $state<HTMLCanvasElement;
         } else if (u_confidence < 0.4) {
           color = vec3(0.9, 0.5, 0.0); // Low confidence warning
         }
-        
         gl_FragColor = vec4(color * glow, glow * 0.6);
       }
     `;
@@ -175,14 +162,11 @@ let canvas = $state<HTMLCanvasElement;
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
     gl.useProgram(program);
-    
     // Set up attributes
     const positionLocation = gl.getAttribLocation(program, 'a_position');
     const texCoordLocation = gl.getAttribLocation(program, 'a_texCoord');
-    
     gl.enableVertexAttribArray(positionLocation);
     gl.enableVertexAttribArray(texCoordLocation);
-    
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 16, 0);
     gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 16, 8);
 
@@ -197,7 +181,6 @@ let canvas = $state<HTMLCanvasElement;
 
     const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
     const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
-    
     if (!vertexShader || !fragmentShader) return null;
 
     const program = gl.createProgram()!;
@@ -273,10 +256,8 @@ let canvas = $state<HTMLCanvasElement;
 
   function handleClick(event: MouseEvent) {
     if (disabled || loading) return;
-    
     isPressed = true;
     setTimeout(() => isPressed = false, 150);
-    
     onclick?.(event);
   }
 
@@ -294,13 +275,11 @@ let canvas = $state<HTMLCanvasElement;
     'relative inline-flex items-center justify-center',
     'font-medium transition-all duration-200',
     'focus:outline-none focus:ring-2 focus:ring-offset-2',
-    
     // Size variants
     size === 'sm' ? 'px-3 py-1.5 text-sm rounded' :
     size === 'md' ? 'px-4 py-2 text-sm rounded-md' :
     size === 'lg' ? 'px-6 py-3 text-base rounded-lg' :
     size === 'xl' ? 'px-8 py-4 text-lg rounded-xl' : '',
-    
     // Variant styles
     variant === 'primary' ? 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500' :
     variant === 'secondary' ? 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500' :
@@ -308,21 +287,17 @@ let canvas = $state<HTMLCanvasElement;
     variant === 'evidence' ? 'bg-amber-600 text-white hover:bg-amber-700 focus:ring-amber-500' :
     variant === 'case' ? 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500' :
     variant === 'ghost' ? 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500' : '',
-    
     // Legal context styling
     legalContext?.riskLevel === 'high' ? 'border-2 border-red-400' :
     legalContext?.riskLevel === 'medium' ? 'border-2 border-yellow-400' :
     legalContext?.aiSuggested ? 'border-2 border-blue-400' : '',
-    
     // NES/Pixel styling
     nesStyle ? 'font-mono text-xs tracking-wider' : '',
     pixelated ? 'image-rendering-pixelated' : '',
-    
     // State classes
     disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
     loading ? 'cursor-wait' : '',
     isPressed ? 'scale-95' : '',
-    
     class
   ].filter(Boolean).join(' ');
 

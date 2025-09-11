@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props { items: Evidence[] ;,
     onResults: (results: Evidence[]) => void;,
     onSelect: (item: Evidence) => void;,
@@ -19,13 +18,11 @@
 
 
 
-  
   import { fly  } from 'svelte/transition';
   import Fuse from "fuse.js";
   import { Search, X, Tag, Calendar, FileType  } from 'lucide-svelte';
   import type { Evidence  } from '$lib/stores/report';
 
-              
   let searchValue = '';
   let fuse: Fuse<Evidence>
   let searchResults: Evidence[] = [];

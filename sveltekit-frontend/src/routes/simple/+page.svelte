@@ -1,6 +1,5 @@
 <!-- Simple test homepage to verify routing works -->
 <script lang="ts">
-</script>
   import { goto } from '$app/navigation';
 </script>
 

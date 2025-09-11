@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { useWebGPUCapability } from '$lib/services/webgpu-capability-service';
-  
   let { 
     gpuOrchestrator,
     width = 800,
@@ -14,22 +12,18 @@
   let context = $state<GPUCanvasContext | null>(null);
   let animationFrame: number;
   let isInitialized = $state(false);
-  
   // WebGPU capability service
   const webgpuCapability = useWebGPUCapability();
-  
   // Visualization states
   let neurons = $state([]);
   let connections = $state([]);
   let quantumParticles = $state([]);
   let consciousnessNodes = $state([]);
   let matrixStreams = $state([]);
-  
   // Performance metrics
   let fps = $state(60);
-let frameCount = $state(0);
-let lastTime = $state(0);
-  
+  let frameCount = $state(0);
+  let lastTime = $state(0);
   onMount(async () => {
     // Initialize WebGPU capability service first
     await webgpuCapability.initialize();
@@ -39,37 +33,30 @@ let lastTime = $state(0);
       startAnimation();
     }
   });
-  
   onDestroy(() => {
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
     }
   });
-  
   async function initializeWebGPU() {
     try {
       const capabilities = webgpuCapability.getCapabilities();
-      
       if (!capabilities?.isAvailable) {
         console.warn(`WebGPU not available: ${capabilities?.fallbackReason || 'Unknown reason'}`);
         return initializeFallback();
       }
-      
       // Use the device from capability service
       gpu = capabilities.device!;
       context = canvas?.getContext('webgpu') as GPUCanvasContext;
-      
       if (!context) {
         console.warn('WebGPU canvas context not available');
         return initializeFallback();
       }
-      
       const presentationFormat = navigator.gpu!.getPreferredCanvasFormat();
       context.configure({
         device: gpu,
         format: presentationFormat,
       });
-      
       isInitialized = true;
       console.log(`🎮 WebGPU visualization initialized successfully (${capabilities.supportLevel} support)`);
     } catch (error) {
@@ -77,7 +64,6 @@ let lastTime = $state(0);
       initializeFallback();
     }
   }
-  
   function initializeFallback() {
     // Fallback to 2D canvas rendering
     const ctx = canvas.getContext('2d');
@@ -86,7 +72,6 @@ let lastTime = $state(0);
       console.log('📊 2D Canvas fallback initialized');
     }
   }
-  
   function generateVisualizationData() {
     switch (visualizationMode) {
       case 'neural-network':
@@ -103,15 +88,12 @@ let lastTime = $state(0);
         break;
     }
   }
-  
   function generateNeuralNetwork() {
     neurons = [];
     connections = [];
-    
     // Generate layers of neurons
     const layers = [8, 16, 32, 16, 8];
     let nodeId = 0;
-    
     for (let layer = 0; layer < layers.length; layer++) {
       for (let node = 0; node < layers[layer]; node++) {
         neurons.push({
@@ -125,12 +107,10 @@ let lastTime = $state(0);
         });
       }
     }
-    
     // Generate connections
     for (let layer = 0; layer < layers.length - 1; layer++) {
       const currentLayer = neurons.filter(n => n.layer === layer);
       const nextLayer = neurons.filter(n => n.layer === layer + 1);
-      
       for (const current of currentLayer) {
         for (const next of nextLayer) {
           if (Math.random() > 0.3) { // 70% connection probability
@@ -145,10 +125,8 @@ let lastTime = $state(0);
       }
     }
   }
-  
   function generateQuantumField() {
     quantumParticles = [];
-    
     for (let i = 0; i < 200; i++) {
       quantumParticles.push({
         x: Math.random() * width,
@@ -163,21 +141,17 @@ let lastTime = $state(0);
       });
     }
   }
-  
   function generateConsciousnessMap() {
     consciousnessNodes = [];
-    
     // Create consciousness clusters
     const clusters = 5;
     for (let cluster = 0; cluster < clusters; cluster++) {
       const centerX = Math.random() * width;
       const centerY = Math.random() * height;
       const clusterSize = 20 + Math.random() * 30;
-      
       for (let i = 0; i < clusterSize; i++) {
         const angle = Math.random() * Math.PI * 2;
         const distance = Math.random() * 100;
-        
         consciousnessNodes.push({
           x: centerX + Math.cos(angle) * distance,
           y: centerY + Math.sin(angle) * distance,
@@ -190,10 +164,8 @@ let lastTime = $state(0);
       }
     }
   }
-  
   function generateMatrixFlow() {
     matrixStreams = [];
-    
     for (let i = 0; i < 30; i++) {
       matrixStreams.push({
         x: Math.random() * width,
@@ -205,7 +177,6 @@ let lastTime = $state(0);
       });
     }
   }
-  
   function generateMatrixString(length: number): string {
     const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{}|;:,.<>?';
     let result = '';
@@ -214,26 +185,21 @@ let lastTime = $state(0);
     }
     return result;
   }
-  
   function startAnimation() {
     function animate(currentTime: number) {
       if (currentTime - lastTime >= 16.67) { // ~60 FPS
         updateVisualization(currentTime - lastTime);
         render();
-        
         frameCount++;
         if (frameCount % 60 === 0) {
           fps = Math.round(1000 / (currentTime - lastTime));
         }
-        
         lastTime = currentTime;
       }
-      
       animationFrame = requestAnimationFrame(animate);
     }
     animate(0);
   }
-  
   function updateVisualization(deltaTime: number) {
     switch (visualizationMode) {
       case 'neural-network':
@@ -250,14 +216,12 @@ let lastTime = $state(0);
         break;
     }
   }
-  
   function updateNeuralNetwork(deltaTime: number) {
     // Update neuron pulse phases
     for (const neuron of neurons) {
       neuron.pulsePhase += 0.05;
       neuron.activation = 0.5 + 0.5 * Math.sin(neuron.pulsePhase);
     }
-    
     // Update connection activities
     for (const connection of connections) {
       if (Math.random() > 0.95) {
@@ -265,17 +229,14 @@ let lastTime = $state(0);
       }
     }
   }
-  
   function updateQuantumField(deltaTime: number) {
     for (const particle of quantumParticles) {
       particle.x += particle.vx;
       particle.y += particle.vy;
       particle.phase += particle.frequency;
-      
       // Boundary conditions
       if (particle.x < 0 || particle.x > width) particle.vx *= -1;
       if (particle.y < 0 || particle.y > height) particle.vy *= -1;
-      
       // Quantum effects
       if (particle.entangled && Math.random() > 0.98) {
         particle.x += (Math.random() - 0.5) * 50; // Quantum tunneling
@@ -283,7 +244,6 @@ let lastTime = $state(0);
       }
     }
   }
-  
   function updateConsciousnessMap(deltaTime: number) {
     for (const node of consciousnessNodes) {
       node.awareness += node.growth * (Math.random() - 0.5);
@@ -291,17 +251,14 @@ let lastTime = $state(0);
       node.luminosity = node.awareness + 0.3 * Math.sin(Date.now() * 0.003 + node.x * 0.01);
     }
   }
-  
   function updateMatrixFlow(deltaTime: number) {
     for (const stream of matrixStreams) {
       stream.y += stream.speed;
-      
       if (stream.y > height + 50) {
         stream.y = -Math.random() * height;
         stream.x = Math.random() * width;
         stream.characters = generateMatrixString(20);
       }
-      
       // Randomly change characters
       if (Math.random() > 0.95) {
         const chars = stream.characters.split('');
@@ -310,22 +267,18 @@ let lastTime = $state(0);
       }
     }
   }
-  
   function render() {
     if (!isInitialized) return;
-    
     if (gpu && context) {
       renderWebGPU();
     } else {
       render2D();
     }
   }
-  
   function renderWebGPU() {
     // WebGPU rendering (simplified for this example)
     const commandEncoder = gpu!.createCommandEncoder();
     const textureView = context!.getCurrentTexture().createView();
-    
     const renderPassDescriptor: GPURenderPassDescriptor = {
       colorAttachments: [
         {
@@ -336,19 +289,15 @@ let lastTime = $state(0);
         },
       ],
     };
-    
     const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
     // Add actual rendering commands here
     passEncoder.end();
-    
     gpu!.queue.submit([commandEncoder.finish()]);
   }
-  
   function render2D() {
     const ctx = canvas.getContext('2d')!;
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
-    
     switch (visualizationMode) {
       case 'neural-network':
         renderNeuralNetwork2D(ctx);
@@ -364,7 +313,6 @@ let lastTime = $state(0);
         break;
     }
   }
-  
   function renderNeuralNetwork2D(ctx: CanvasRenderingContext2D) {
     // Render connections
     for (const connection of connections) {
@@ -377,17 +325,14 @@ let lastTime = $state(0);
         ctx.stroke();
       }
     }
-    
     // Render neurons
     for (const neuron of neurons) {
       const intensity = neuron.activation;
       const radius = neuron.size + intensity * 4;
-      
       ctx.fillStyle = `rgba(255, ${Math.floor(intensity * 255)}, 100, 0.8)`;
       ctx.beginPath();
       ctx.arc(neuron.x, neuron.y, radius, 0, Math.PI * 2);
       ctx.fill();
-      
       // Pulse effect
       ctx.strokeStyle = `rgba(255, 255, 255, ${intensity})`;
       ctx.lineWidth = 2;
@@ -396,22 +341,18 @@ let lastTime = $state(0);
       ctx.stroke();
     }
   }
-  
   function renderQuantumField2D(ctx: CanvasRenderingContext2D) {
     for (const particle of quantumParticles) {
       const wave = particle.amplitude * Math.sin(particle.phase);
       const alpha = 0.3 + 0.7 * particle.quantum;
-      
       if (particle.entangled) {
         ctx.fillStyle = `rgba(255, 0, 255, ${alpha})`;
       } else {
         ctx.fillStyle = `rgba(100, 200, 255, ${alpha})`;
       }
-      
       ctx.beginPath();
       ctx.arc(particle.x + wave, particle.y + wave * 0.5, 2 + Math.abs(wave) * 0.2, 0, Math.PI * 2);
       ctx.fill();
-      
       // Quantum uncertainty visualization
       if (particle.entangled) {
         ctx.strokeStyle = `rgba(255, 0, 255, 0.3)`;
@@ -421,19 +362,15 @@ let lastTime = $state(0);
       }
     }
   }
-  
   function renderConsciousnessMap2D(ctx: CanvasRenderingContext2D) {
     const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
-    
     for (const node of consciousnessNodes) {
       const color = colors[node.cluster];
       const alpha = 0.3 + 0.7 * node.luminosity;
-      
       ctx.fillStyle = color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
       ctx.beginPath();
       ctx.arc(node.x, node.y, 3 + node.awareness * 5, 0, Math.PI * 2);
       ctx.fill();
-      
       // Connection visualization
       if (node.connections > 0) {
         ctx.strokeStyle = color + '40';
@@ -449,13 +386,10 @@ let lastTime = $state(0);
       }
     }
   }
-  
   function renderMatrixFlow2D(ctx: CanvasRenderingContext2D) {
     ctx.font = '12px monospace';
-    
     for (const stream of matrixStreams) {
       const chars = stream.characters.split('');
-      
       for (let i = 0; i < chars.length; i++) {
         const y = stream.y + i * 16;
         if (y > 0 && y < height) {
@@ -466,7 +400,6 @@ let lastTime = $state(0);
       }
     }
   }
-  
   function switchMode() {
     const modes = ['neural-network', 'quantum-field', 'consciousness-map', 'matrix-flow'];
     const currentIndex = modes.indexOf(visualizationMode);

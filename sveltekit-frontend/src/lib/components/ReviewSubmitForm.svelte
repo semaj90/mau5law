@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { createEventDispatcher } from 'svelte';
   import { Button } from 'bits-ui';
@@ -17,7 +16,7 @@
   };
 
   let { allFormData = $bindable() } = $props(); // any;
-let isSubmitting = $state(false);
+  let isSubmitting = $state(false);
   let submissionProgress = writable(0);
   let currentSubmissionStep = writable('');
 
@@ -58,11 +57,11 @@ let isSubmitting = $state(false);
   let sectionScores = writable<Record<string, number>>({});
 
   function calculateQualityScore() {
-let totalScore = $state(0);
+  let totalScore = $state(0);
     const scores: Record<string, number> = {};
 
     qualityCriteria.forEach(criterion => {
-let score = $state(0);
+  let score = $state(0);
 
       switch (criterion.id) {
         case 'case_info':

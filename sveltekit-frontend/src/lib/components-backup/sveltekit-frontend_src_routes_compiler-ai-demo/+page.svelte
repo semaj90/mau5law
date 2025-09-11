@@ -2,7 +2,6 @@
 <!-- Real-time demonstration of AI-driven development architecture -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import Card from '$lib/components/ui/Card.svelte';
@@ -14,7 +13,6 @@
   let ragEngine: any = null;
   let feedbackLoop: any = null;
   let systemInitialized = $state(false);
-  
   // Real-time state
   let events = $state<CompilerEvent[]>([]);
   let patches = $state<PatchCandidate[]>([]);
@@ -25,7 +23,6 @@
     averageProcessingTime: 0,
     clusterCount: 0
   });
-  
   // Demo controls
   let isMonitoring = $state(false);
   let selectedEvent: CompilerEvent | null = $state(null);
@@ -34,7 +31,6 @@
   onMount(async () => {
     try {
       console.log('🚀 Initializing Compiler AI Demo...');
-      
       // Initialize Enhanced RAG Engine
       ragEngine = createEnhancedRAGEngine({
         enablePageRank: true,
@@ -46,27 +42,22 @@
 
       // Initialize Compiler Feedback Loop
       feedbackLoop = createCompilerFeedbackLoop(ragEngine);
-      
       // Subscribe to reactive stores
       feedbackLoop.events.subscribe((newEvents: CompilerEvent[]) => {
         events = newEvents;
       });
-      
       feedbackLoop.patches.subscribe((newPatches: PatchCandidate[]) => {
         patches = newPatches;
       });
-      
       feedbackLoop.clusters.subscribe((newClusters: SOMCluster[]) => {
         clusters = newClusters;
       });
-      
       feedbackLoop.performance.subscribe((newPerformance: any) => {
         performance = newPerformance;
       });
 
       systemInitialized = true;
       console.log('✅ Compiler AI Demo initialized successfully');
-      
     } catch (error) {
       console.error('❌ Failed to initialize Compiler AI Demo:', error);
     }
@@ -80,7 +71,6 @@
 
   async function startMonitoring() {
     if (!feedbackLoop) return;
-    
     try {
       await feedbackLoop.startMonitoring();
       isMonitoring = true;
@@ -92,7 +82,6 @@
 
   function stopMonitoring() {
     if (!feedbackLoop) return;
-    
     feedbackLoop.stopMonitoring();
     isMonitoring = false;
     console.log('⏹️ Compiler monitoring stopped');
@@ -100,7 +89,6 @@
 
   function addTestError() {
     if (!feedbackLoop) return;
-    
     const testEvent: CompilerEvent = {
       type: 'ERROR_DETECTED',
       logs: [{
@@ -124,7 +112,6 @@
         warningCount: Math.floor(Math.random() * 3)
       }
     };
-    
     feedbackLoop.addEvent(testEvent);
   }
 
@@ -159,15 +146,12 @@
 
   function generateHeatmapGradient(weights: Float32Array): string {
     if (!weights || weights.length === 0) return 'rgba(0,0,0,0.1)';
-    
     const maxWeight = Math.max(...Array.from(weights));
     const colors = [];
-    
     for (let i = 0; i < Math.min(10, weights.length); i++) {
       const intensity = weights[i] / maxWeight;
       colors.push(`rgba(59, 130, 246, ${intensity * 0.8})`);
     }
-    
     return `linear-gradient(90deg, ${colors.join(', ')})`;
   }
 </script>

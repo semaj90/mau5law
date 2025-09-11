@@ -1,6 +1,5 @@
 <!-- TokenUsageManager.svelte - Advanced Token Management with Slider -->
 <script lang="ts">
-</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';

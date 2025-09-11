@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
 
@@ -37,7 +36,6 @@
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
-    
     const droppedFiles = e.dataTransfer?.files;
     if (droppedFiles) {
       files = droppedFiles;
@@ -63,7 +61,6 @@
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        
         // Validate file type
         if (!allAllowedTypes.includes(file.type)) {
           uploadStatus.set(`Unsupported file type: ${file.type}`);
@@ -92,7 +89,6 @@
         if (response.ok) {
           const result = await response.json();
           uploadProgress.set(((i + 1) / files.length) * 100);
-          
           // Dispatch success event
           dispatch('uploaded', {
             file,

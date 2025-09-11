@@ -1,8 +1,7 @@
 <script lang="ts">
-</script>
-	import { Portal, BitsConfig } from "bits-ui";
+  	import { Portal, BitsConfig } from "bits-ui";
 
-	let target: HTMLElement | undefined = $state();
+  	let target: HTMLElement | undefined = $state();
 </script>
 
 <BitsConfig defaultPortalTo={target}>

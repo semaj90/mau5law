@@ -1,6 +1,5 @@
 <!-- Simple Upload Test Page -->
 <script lang="ts">
-</script>
   // $state runtime rune is provided globally
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   import { onMount } from 'svelte';

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { 
@@ -74,7 +73,6 @@
     const processing = documents.filter(d => d.status === 'processing').length;
     const completed = documents.filter(d => d.status === 'final').length;
     const withAI = documents.filter(d => d.aiAnalysis).length;
-    
     return { total, processing, completed, withAI };
   });
 
@@ -239,7 +237,6 @@
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-    
     const file = event.dataTransfer?.files?.[0];
     if (file) {
       uploadFile = file;

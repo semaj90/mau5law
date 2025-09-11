@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     open?: boolean;
     onOpenChange?: ((open: boolean) => void) | undefined;
@@ -12,7 +11,6 @@
 
 
 
-  
   import { writable } from 'svelte/store';
 
 
@@ -30,7 +28,7 @@
       open = next;
       onOpenChange?.(next);
       return next;
-}
+  }
   });
 
 </script>

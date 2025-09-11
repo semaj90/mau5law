@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte'
   import { scale, fly } from 'svelte/transition'
   import { 
@@ -11,7 +10,6 @@
     Settings,
     Power
   } from 'lucide-svelte'
-  
   interface Props {
     isVisible?: boolean
     onToggle?: () => void
@@ -19,7 +17,6 @@
     isConnected?: boolean
     aiMode?: 'idle' | 'thinking' | 'active'
   }
-  
   let { 
     isVisible = $bindable(true),
     onToggle = () => {},
@@ -27,18 +24,15 @@
     isConnected = true,
     aiMode = $bindable('idle')
   } = $props()
-  
   let isExpanded = $state(false);
   let isHovered = $state(false);
   let pulseAnimation = $state(true);
-  
   // Gaming UI inspiration - pulse effect for AI activity
   const pulseClasses = {
     idle: 'animate-pulse',
     thinking: 'animate-bounce', 
     active: 'animate-ping'
   }
-  
   // YoRHa/Gaming color scheme
   const getModeColor = (mode: string) => {
     switch (mode) {
@@ -47,7 +41,6 @@
       default: return 'text-blue-400'
     }
   }
-  
   const quickActions = [
     { 
       id: 'analyze', 
@@ -68,11 +61,9 @@
       color: 'hover:bg-green-500/20' 
     }
   ]
-  
   const handleQuickAction = (actionId: string) => {
     console.log(`Quick action triggered: ${actionId}`)
     aiMode = 'thinking'
-    
     // Simulate AI processing
     setTimeout(() => {
       aiMode = 'active'
@@ -80,14 +71,11 @@
         aiMode = 'idle'
       }, 2000)
     }, 1000)
-    
     onToggle()
   }
-  
   onMount(() => {
     // Auto-hide expanded menu after inactivity
     let timeoutId: number
-    
     const resetExpanded = () => {
       clearTimeout(timeoutId)
       timeoutId = setTimeout(() => {
@@ -96,9 +84,7 @@
         }
       }, 3000)
     }
-    
     if (isExpanded) resetExpanded()
-    
     return () => clearTimeout(timeoutId)
   })
 </script>

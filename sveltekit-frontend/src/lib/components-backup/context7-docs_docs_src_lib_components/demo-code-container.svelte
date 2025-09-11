@@ -1,49 +1,48 @@
 <script lang="ts">
-</script>
-	import { type Snippet, untrack } from "svelte";
-	import { Collapsible, ScrollArea, Tabs } from "bits-ui";
-	import DemoCodeTabs from "./demo-code-tabs.svelte";
-	import AppCSS from "./code-renders/app-css.svelte";
-	import { cn } from "$lib/utils/styles.js";
-	import { useCopyToClipboard } from "$lib/utils/copy-to-clipboard.svelte.js";
+  	import { type Snippet, untrack } from "svelte";
+  	import { Collapsible, ScrollArea, Tabs } from "bits-ui";
+  	import DemoCodeTabs from "./demo-code-tabs.svelte";
+  	import AppCSS from "./code-renders/app-css.svelte";
+  	import { cn } from "$lib/utils/styles.js";
+  	import { useCopyToClipboard } from "$lib/utils/copy-to-clipboard.svelte.js";
 
-	let {
-		children,
-		fileName = "app.svelte",
-		class: className,
-		nonExpandableItems = [],
-	}: {
-		fileName?: string;
-		children: Snippet;
-		class?: string;
-		nonExpandableItems?: string[];
-	} = $props();
+  	let {
+  		children,
+  		fileName = "app.svelte",
+  		class: className,
+  		nonExpandableItems = [],
+  	}: {
+  		fileName?: string;
+  		children: Snippet;
+  		class?: string;
+  		nonExpandableItems?: string[];
+  	} = $props();
 
-	const items = $derived([
-		{
-			label: fileName,
-			value: fileName,
-		},
-		{
-			label: "app.css",
-			value: "app.css",
-		},
-	]);
+  	const items = $derived([
+  		{
+  			label: fileName,
+  			value: fileName,
+  		},
+  		{
+  			label: "app.css",
+  			value: "app.css",
+  		},
+  	]);
 
-	let open = $state(false);
-	let activeValue = $state(fileName);
-	let codeWrapper = $state<HTMLElement>(null!);
-	const expandable = $derived(!nonExpandableItems.includes(activeValue));
-	const copyToClipboard = useCopyToClipboard();
+  	let open = $state(false);
+  	let activeValue = $state(fileName);
+  	let codeWrapper = $state<HTMLElement>(null!);
+  	const expandable = $derived(!nonExpandableItems.includes(activeValue));
+  	const copyToClipboard = useCopyToClipboard();
 
-	$effect(() => {
-		activeValue;
-		codeWrapper;
-		untrack(() => {
-			if (!codeWrapper) return;
-			copyToClipboard?.setCodeString(codeWrapper.innerText.trim() ?? "");
-		});
-	});
+  	$effect(() => {
+  		activeValue;
+  		codeWrapper;
+  		untrack(() => {
+  			if (!codeWrapper) return;
+  			copyToClipboard?.setCodeString(codeWrapper.innerText.trim() ?? "");
+  		});
+  	});
 </script>
 
 <DemoCodeTabs

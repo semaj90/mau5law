@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { Button } from '$lib/components/ui/enhanced-bits';
   import { } from 'svelte';
@@ -18,7 +17,7 @@
   const dispatch = createEventDispatcher();
 
   let fileInput: HTMLInputElement;
-let dragActive = $state(false);
+  let dragActive = $state(false);
 
   let isOpen = $derived($uploadModal.isOpen);
   let files = $derived($uploadModal.files || []);

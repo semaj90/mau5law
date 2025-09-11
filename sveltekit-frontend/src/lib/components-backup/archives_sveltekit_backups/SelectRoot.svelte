@@ -1,10 +1,7 @@
 <script lang="ts">
-</script>
   import { createSelect, melt } from '@melt-ui/svelte';
   import { setContext } from 'svelte';
-  
   export let selected = undefined;
-  
   const {
     elements: { trigger, menu, option },
     states: { selectedLabel, open },
@@ -12,7 +9,6 @@
   } = createSelect({
     defaultSelected: selected
   });
-  
   // Provide context for child components
   setContext('select', {
     trigger,
@@ -25,7 +21,6 @@
       selected = value;
     }
   });
-  
   export { trigger, menu, option, selectedLabel, open, isSelected };
 </script>
 

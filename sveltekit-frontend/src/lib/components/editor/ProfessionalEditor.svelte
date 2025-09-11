@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
@@ -13,20 +12,19 @@
 
   // State management
   let editorElement: HTMLDivElement;
-let isFullscreen = $state(false);
-let isFocusMode = $state(false);
-let showShortcuts = $state(false);
+  let isFullscreen = $state(false);
+  let isFocusMode = $state(false);
+  let showShortcuts = $state(false);
   let lastSaved = new Date();
-let wordCount = $state(0);
-let charCount = $state(0);
-let readingTime = $state(0);
-let hasUnsavedChanges = $state(false);
+  let wordCount = $state(0);
+  let charCount = $state(0);
+  let readingTime = $state(0);
+  let hasUnsavedChanges = $state(false);
 
   const dispatch = createEventDispatcher();
 
   // Auto-save functionality
-let autoSaveTimer = $state<NodeJS.Timeout;
-  
+  let autoSaveTimer = $state<NodeJS.Timeout;
   function startAutoSave() {
     if (autoSaveTimer) clearInterval(autoSaveTimer);
     autoSaveTimer >(setInterval(() => {
@@ -58,42 +56,36 @@ let autoSaveTimer = $state<NodeJS.Timeout;
   // Keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
     const isCtrl = event.ctrlKey || event.metaKey;
-    
     // Save (Ctrl+S)
     if (isCtrl && event.key === 's') {
       event.preventDefault();
       saveDocument();
       return;
     }
-    
     // Bold (Ctrl+B)
     if (isCtrl && event.key === 'b') {
       event.preventDefault();
       document.execCommand('bold');
       return;
     }
-    
     // Italic (Ctrl+I)
     if (isCtrl && event.key === 'i') {
       event.preventDefault();
       document.execCommand('italic');
       return;
     }
-    
     // Show shortcuts (Ctrl+/)
     if (isCtrl && event.key === '/') {
       event.preventDefault();
       showShortcuts = !showShortcuts;
       return;
     }
-    
     // Fullscreen (F11)
     if (event.key === 'F11') {
       event.preventDefault();
       toggleFullscreen();
       return;
     }
-    
     // Focus mode (F10)
     if (event.key === 'F10') {
       event.preventDefault();
@@ -126,7 +118,6 @@ let autoSaveTimer = $state<NodeJS.Timeout;
 
   onMount(() => {
     if (autoSave) startAutoSave();
-    
     // Listen for fullscreen changes
     document.addEventListener('fullscreenchange', () => {
       isFullscreen = !!document.fullscreenElement;

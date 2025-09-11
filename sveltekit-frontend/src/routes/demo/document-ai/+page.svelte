@@ -1,6 +1,5 @@
 <!-- AI Document Processing Demo Page -->
 <script lang="ts">
-</script>
   import DocumentUploadSimulator from '$lib/components/ai/DocumentUploadSimulator.svelte';
   import DemoNavigation from '$lib/components/navigation/DemoNavigation.svelte';
   import { onMount } from 'svelte';

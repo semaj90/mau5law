@@ -1,10 +1,9 @@
 <script lang="ts">
-</script>
-	import { page } from "$app/state";
-	import type { SidebarNavItem } from "$lib/config/index.js";
-	import { cn } from "$lib/utils/styles.js";
+  	import { page } from "$app/state";
+  	import type { SidebarNavItem } from "$lib/config/index.js";
+  	import { cn } from "$lib/utils/styles.js";
 
-	let { items = [] }: { items: SidebarNavItem[] } = $props();
+  	let { items = [] }: { items: SidebarNavItem[] } = $props();
 </script>
 
 {#if items.length}

@@ -1,102 +1,101 @@
 <script lang="ts">
-</script>
-	import { onMount, createEventDispatcher } from 'svelte';
-	import { fly, fade } from 'svelte/transition';
-	import { quintOut } from 'svelte/easing';
+  	import { onMount, createEventDispatcher } from 'svelte';
+  	import { fly, fade } from 'svelte/transition';
+  	import { quintOut } from 'svelte/easing';
 
-	// Component props
-	export let position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' = 'bottom-right';
-	export let size: 'sm' | 'md' | 'lg' = 'md';
-	export let variant: 'primary' | 'secondary' | 'accent' = 'primary';
-	export let disabled = false;
-	export let loading = false;
-	export let notification = false;
-	export let notificationCount = 0;
-	export let tooltip = 'Legal AI Assistant';
+  	// Component props
+  	export let position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' = 'bottom-right';
+  	export let size: 'sm' | 'md' | 'lg' = 'md';
+  	export let variant: 'primary' | 'secondary' | 'accent' = 'primary';
+  	export let disabled = false;
+  	export let loading = false;
+  	export let notification = false;
+  	export let notificationCount = 0;
+  	export let tooltip = 'Legal AI Assistant';
 
-	// State management
-	let mounted = false;
-	let showTooltip = false;
-	let buttonElement: HTMLButtonElement
+  	// State management
+  	let mounted = false;
+  	let showTooltip = false;
+  	let buttonElement: HTMLButtonElement
 
-	// Event dispatcher
-	const dispatch = createEventDispatcher<{
-		click: void
-		activate: void
-		deactivate: void
-	}>();
+  	// Event dispatcher
+  	const dispatch = createEventDispatcher<{
+  		click: void
+  		activate: void
+  		deactivate: void
+  	}>();
 
-	// Size configurations
-	const sizeClasses = {
-		sm: 'w-12 h-12 text-sm',
-		md: 'w-16 h-16 text-base',
-		lg: 'w-20 h-20 text-lg'
-	};
+  	// Size configurations
+  	const sizeClasses = {
+  		sm: 'w-12 h-12 text-sm',
+  		md: 'w-16 h-16 text-base',
+  		lg: 'w-20 h-20 text-lg'
+  	};
 
-	// Position configurations
-	const positionClasses = {
-		'bottom-right': 'bottom-6 right-6',
-		'bottom-left': 'bottom-6 left-6',
-		'top-right': 'top-6 right-6',
-		'top-left': 'top-6 left-6'
-	};
+  	// Position configurations
+  	const positionClasses = {
+  		'bottom-right': 'bottom-6 right-6',
+  		'bottom-left': 'bottom-6 left-6',
+  		'top-right': 'top-6 right-6',
+  		'top-left': 'top-6 left-6'
+  	};
 
-	// Variant configurations
-	const variantClasses = {
-		primary: 'bg-gradient-to-br from-yorha-primary to-yorha-secondary hover:from-yorha-secondary hover:to-yorha-primary border-yorha-primary',
-		secondary: 'bg-gradient-to-br from-yorha-bg-secondary to-yorha-bg-tertiary hover:from-yorha-bg-tertiary hover:to-yorha-bg-secondary border-yorha-border',
-		accent: 'bg-gradient-to-br from-yorha-accent to-blue-400 hover:from-blue-400 hover:to-yorha-accent border-yorha-accent'
-	};
+  	// Variant configurations
+  	const variantClasses = {
+  		primary: 'bg-gradient-to-br from-yorha-primary to-yorha-secondary hover:from-yorha-secondary hover:to-yorha-primary border-yorha-primary',
+  		secondary: 'bg-gradient-to-br from-yorha-bg-secondary to-yorha-bg-tertiary hover:from-yorha-bg-tertiary hover:to-yorha-bg-secondary border-yorha-border',
+  		accent: 'bg-gradient-to-br from-yorha-accent to-blue-400 hover:from-blue-400 hover:to-yorha-accent border-yorha-accent'
+  	};
 
-	// Handle button click
-	function handleClick() {
-		if (disabled || loading) return;
+  	// Handle button click
+  	function handleClick() {
+  		if (disabled || loading) return;
 
-		dispatch('click');
-		dispatch('activate');
+  		dispatch('click');
+  		dispatch('activate');
 
-		// Add haptic feedback on supported devices
-		if ('vibrate' in navigator) {
-			navigator.vibrate(50);
-		}
-	}
+  		// Add haptic feedback on supported devices
+  		if ('vibrate' in navigator) {
+  			navigator.vibrate(50);
+  		}
+  	}
 
-	// Handle keyboard events
-	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault();
-			handleClick();
-		}
-	}
+  	// Handle keyboard events
+  	function handleKeydown(event: KeyboardEvent) {
+  		if (event.key === 'Enter' || event.key === ' ') {
+  			event.preventDefault();
+  			handleClick();
+  		}
+  	}
 
-	// Show/hide tooltip
-	function showTooltipHandler() {
-		if (tooltip && !disabled) {
-			showTooltip = true;
-		}
-	}
+  	// Show/hide tooltip
+  	function showTooltipHandler() {
+  		if (tooltip && !disabled) {
+  			showTooltip = true;
+  		}
+  	}
 
-	function hideTooltipHandler() {
-		showTooltip = false;
-	}
+  	function hideTooltipHandler() {
+  		showTooltip = false;
+  	}
 
-	onMount(() => {
-		mounted = true;
+  	onMount(() => {
+  		mounted = true;
 
-		// Add global keyboard shortcut (Ctrl/Cmd + K)
-		function handleGlobalKeydown(event: KeyboardEvent) {
-			if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
-				event.preventDefault();
-				handleClick();
-			}
-		}
+  		// Add global keyboard shortcut (Ctrl/Cmd + K)
+  		function handleGlobalKeydown(event: KeyboardEvent) {
+  			if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+  				event.preventDefault();
+  				handleClick();
+  			}
+  		}
 
-		document.addEventListener('keydown', handleGlobalKeydown);
+  		document.addEventListener('keydown', handleGlobalKeydown);
 
-		return () => {
-			document.removeEventListener('keydown', handleGlobalKeydown);
-		};
-	});
+  		return () => {
+  			document.removeEventListener('keydown', handleGlobalKeydown);
+  		};
+  	});
 </script>
 
 {#if mounted}

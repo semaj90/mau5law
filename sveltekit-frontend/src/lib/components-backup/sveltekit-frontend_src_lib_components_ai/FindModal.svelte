@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onselect?: (event?: any) => void;
   }
@@ -17,7 +16,6 @@
     type AutoMCPSuggestion
   } from '$lib/utils/mcp-helpers';
   import { phase13Integration, getSystemHealth } from '$lib/integrations/phase13-full-integration';
-  
   // Svelte 5 reactive state
   let isOpen = $state(false);
   let searchQuery = $state('');
@@ -34,18 +32,14 @@
   let autoSuggestions = $state<AutoMCPSuggestion[]>([]);
   let phase13Status = $state<any>(null);
   let systemHealth = $state<any>(null);
-  
-  
   // Load search history from localStorage and initialize Phase 13
   onMount(async () => {
     const saved = localStorage.getItem('ai-search-history');
     if (saved) {
       searchHistory = JSON.parse(saved);
     }
-    
     // Initialize Phase 13 integration status
     await updatePhase13Status();
-    
     // Generate auto-suggestions on mount
     generateAutoSuggestions();
   });
@@ -53,9 +47,7 @@
   // AI-powered search with MCP integration
   async function performAISearch() {
     if (!searchQuery.trim()) return;
-    
     isSearching = true;
-    
     try {
       // Add to search history
       if (!searchHistory.includes(searchQuery)) {
@@ -76,13 +68,10 @@
           confidenceThreshold: aiConfidenceThreshold
         })
       });
-      
       const data = await response.json();
-      
       if (data.success) {
         searchResults = data.results;
         mcpContext = data.mcpContext;
-        
         // Update memory graph with search interaction
         await updateMemoryWithAIContext({
           userId: 'current-user',
@@ -96,7 +85,6 @@
         console.error('Search failed:', data.error);
         searchResults = [];
       }
-      
     } catch (error) {
       console.error('AI search failed:', error);
       searchResults = [];
@@ -115,7 +103,6 @@
     try {
       const response = await fetch(`/api/ai/find?q=${encodeURIComponent(searchQuery)}`);
       const data = await response.json();
-      
       if (data.success) {
         suggestions = data.suggestions;
       }
@@ -276,14 +263,11 @@
           suggestion
         })
       });
-      
       if (response.ok) {
         const result = await response.json();
         console.log('✅ Suggestion applied via Phase 13:', result);
-        
         // Update system status after applying suggestion
         await updatePhase13Status();
-        
         // Show success message with Phase 13 integration info
         alert(`✅ Applied suggestion: ${suggestion.suggestion}\n🔧 Implementation: ${suggestion.implementation}\n📊 Phase 13 Status: ${phase13Status?.status || 'Updated'}`);
       } else {

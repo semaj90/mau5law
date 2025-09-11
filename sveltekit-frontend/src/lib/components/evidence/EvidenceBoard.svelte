@@ -10,7 +10,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { caseManagementService } from '$lib/services/case-management-service.js';
@@ -21,14 +20,12 @@
     Video, Music, Archive, Settings, Zap, Target,
     Network, Brain, Lightbulb, BookOpen
   } from 'lucide-svelte';
-  
   // Props - Svelte 5
   interface Props {
     caseId: string;
     detectiveMode?: boolean;
     readOnly?: boolean;
   }
-  
   let {
     caseId,
     detectiveMode = false,
@@ -41,7 +38,6 @@
   let detectiveInsights = writable<any>({});
   let connectionMap = writable<any[]>([]);
   let analysisResults = writable<any>({});
-  
   // UI state
   let searchQuery = '';
   let filterType = 'all';
@@ -93,7 +89,6 @@
         includeEvidence: true,
         includeTimeline: true,
       });
-      
       if (caseData?.evidence) {
         evidenceItems.set(caseData.evidence);
       }
@@ -108,7 +103,6 @@
       loadingAnalysis = true;
       const insights = await caseManagementService.generateDetectiveInsights(caseId);
       detectiveInsights.set(insights);
-      
       // Build connection map for network view
       buildConnectionMap(insights);
     } catch (error) {
@@ -121,7 +115,6 @@
   // Build connection map for network visualization
   function buildConnectionMap(insights: any) {
     const connections: any[] = [];
-    
     // Process entity connections
     insights.entityConnections?.forEach((connection: any) => {
       connections.push({
@@ -150,11 +143,9 @@
   // Initialize canvas for network view
   function initializeCanvas() {
     if (!canvas) return;
-    
     ctx = canvas.getContext('2d');
     canvas.width = canvas.offsetWidth * window.devicePixelRatio;
     canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-    
     if (ctx) {
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
@@ -166,16 +157,13 @@
       evidence.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       evidence.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       evidence.evidenceNumber.toLowerCase().includes(searchQuery.toLowerCase())
-    
     const matchesType = filterType === 'all' || evidence.evidenceType === filterType;
-    
     return matchesSearch && matchesType;
   });
 
   // Toggle detective mode
   async function toggleDetectiveMode() {
     detectiveMode = !detectiveMode;
-    
     if (detectiveMode) {
       await caseManagementService.enableDetectiveMode(caseId, detectiveConfig);
       await loadDetectiveInsights();
@@ -185,9 +173,7 @@
   // Analyze selected evidence
   async function analyzeSelectedEvidence() {
     if ($selectedEvidence.length === 0) return;
-    
     loadingAnalysis = true;
-    
     try {
       for (const evidenceId of $selectedEvidence) {
         await caseManagementService.analyzeEvidence({
@@ -196,7 +182,6 @@
           detectiveMode: detectiveMode,
         });
       }
-      
       // Reload evidence and insights
       await loadEvidence();
       if (detectiveMode) {
@@ -223,7 +208,6 @@
   // Handle drag and drop for evidence connections
   function handleDragStart(event: DragEvent, evidenceId: string) {
     if (!event.dataTransfer) return;
-    
     draggedEvidence = evidenceId;
     event.dataTransfer.setData('text/plain', evidenceId);
     event.dataTransfer.effectAllowed = 'link';
@@ -231,11 +215,9 @@
 
   function handleDrop(event: DragEvent, targetEvidenceId: string) {
     event.preventDefault();
-    
     if (draggedEvidence && draggedEvidence !== targetEvidenceId) {
       createEvidenceConnection(draggedEvidence, targetEvidenceId);
     }
-    
     draggedEvidence = null;
   }
 
@@ -244,7 +226,6 @@
     try {
       // This would update the database to create a connection
       console.log(`Creating connection: ${sourceId} -> ${targetId}`);
-      
       // Update UI to show new connection
       connectionMap.update(connections => [
         ...connections,
@@ -283,18 +264,14 @@
   // Render network view
   function renderNetworkView() {
     if (!ctx || !canvas) return;
-    
     const width = canvas.offsetWidth;
     const height = canvas.offsetHeight;
-    
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
-    
     // Draw connections
     $connectionMap.forEach(connection => {
       drawConnection(connection);
     });
-    
     // Draw evidence nodes
     filteredEvidence.forEach((evidence, index) => {
       drawEvidenceNode(evidence, index);
@@ -303,33 +280,27 @@
 
   function drawConnection(connection: any) {
     if (!ctx) return;
-    
     // Simplified connection drawing
     ctx.beginPath();
     ctx.strokeStyle = connection.type === 'entity' ? '#3b82f6' : '#ef4444';
     ctx.lineWidth = connection.strength * 3;
     ctx.setLineDash(connection.type === 'manual' ? [5, 5] : []);
-    
     // Draw line between nodes (simplified positioning)
     ctx.moveTo(100, 100);
     ctx.lineTo(300, 200);
     ctx.stroke();
-    
     ctx.setLineDash([]);
   }
 
   function drawEvidenceNode(evidence: any, index: number) {
     if (!ctx) return;
-    
     const x = 50 + (index % 8) * 100;
     const y = 50 + Math.floor(index / 8) * 100;
-    
     // Draw node circle
     ctx.beginPath();
     ctx.arc(x, y, 20, 0, 2 * Math.PI);
     ctx.fillStyle = evidence.analyzed ? '#10b981' : '#6b7280';
     ctx.fill();
-    
     // Draw evidence type indicator
     ctx.fillStyle = '#ffffff';
     ctx.font = '12px sans-serif';

@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import GPUCacheIntegrationDemo from '$lib/components/ui/gaming/demo/GPUCacheIntegrationDemo.svelte';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';

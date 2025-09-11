@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -28,9 +27,9 @@
   let inactivityTimer: NodeJS.Timeout;
 
   // Enhanced thinking style state
-let thinkingStyleEnabled = $state(false);
-let analysisMode = $state(false);
-let lastAnalysisResult = $state<any>(null);
+  let thinkingStyleEnabled = $state(false);
+  let analysisMode = $state(false);
+  let lastAnalysisResult = $state<any>(null);
 
   const IDLE_TIMEOUT = 60000; // 60 seconds
 
@@ -69,7 +68,7 @@ let lastAnalysisResult = $state<any>(null);
       const isAnalysisRequest = userMessage.toLowerCase().includes('analyze') ||
                                userMessage.toLowerCase().includes('evidence') ||
                                userMessage.toLowerCase().includes('case');
-let response: Response;
+  let response: Response;
 
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
         // Use the enhanced analysis endpoint
@@ -150,7 +149,7 @@ let response: Response;
 
   function formatAnalysisResponse(analysis: any, metadata: any): string {
     if (!analysis) return "Analysis completed.";
-let response = `# AI Analysis Results\n\n`;
+  let response = `# AI Analysis Results\n\n`;
 
     // Add thinking process if available
     if (analysis.thinking && thinkingStyleEnabled) {

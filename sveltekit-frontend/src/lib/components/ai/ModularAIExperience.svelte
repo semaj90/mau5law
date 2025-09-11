@@ -5,7 +5,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
   import { aiComputationMachine } from '$lib/machines/ai-computation-machine';
@@ -19,26 +18,26 @@
   let { enableModularSwitching = $bindable() } = $props(); // boolean = true;
 
   // State
-let aiActor = $state<any;
+  let aiActor = $state<any;
   let currentComputation: any >(null);
-let recommendations = $state<any >(null);
-let isProcessing = $state(false);
-let processingTime = $state(0);
-let webgpuSupported = $state(false);
-let currentModule = $state('dimensional-arrays');
-let computationHistory = $state<any[] >([]);
+  let recommendations = $state<any >(null);
+  let isProcessing = $state(false);
+  let processingTime = $state(0);
+  let webgpuSupported = $state(false);
+  let currentModule = $state('dimensional-arrays');
+  let computationHistory = $state<any[] >([]);
 
   // Input data
-let inputData = $state('1,2,3,4,5,6,7,8');
-let attentionWeights = $state('0.8,0.6,0.9,0.7,0.5,0.8,0.6,0.9');
-let kernelSize = $state(4);
-let useT5 = $state(false);
-let t5Task = $state('summarize');
-let t5Text = $state('This is sample text for T5 processing');
+  let inputData = $state('1,2,3,4,5,6,7,8');
+  let attentionWeights = $state('0.8,0.6,0.9,0.7,0.5,0.8,0.6,0.9');
+  let kernelSize = $state(4);
+  let useT5 = $state(false);
+  let t5Task = $state('summarize');
+  let t5Text = $state('This is sample text for T5 processing');
 
   // Results
-let results = $state<any >(null);
-let error = $state<string | null >(null);
+  let results = $state<any >(null);
+  let error = $state<string | null >(null);
 
   onMount(async () => {
     // Initialize AI computation machine
@@ -122,7 +121,6 @@ let error = $state<string | null >(null);
             [data.length],
             weights
           );
-          
           await dimensionalCache.cacheDimensionalArray(
             `computation_${Date.now()}`,
             dimensionalArray,
@@ -175,14 +173,11 @@ let error = $state<string | null >(null);
 
   function switchModule(moduleName: string) {
     if (!enableModularSwitching) return;
-    
     currentModule = moduleName;
     console.log(`🔄 Switching to ${moduleName} module`);
-    
     // Reset relevant state
     results = null;
     error = null;
-    
     // Update context based on module
     switch (moduleName) {
       case 'dimensional-arrays':
@@ -201,7 +196,6 @@ let error = $state<string | null >(null);
         initialContext = 'WebGPU compute shaders';
         break;
     }
-    
     loadRecommendations();
   }
 
@@ -213,7 +207,6 @@ let error = $state<string | null >(null);
     } else if (recommendation.includes('T5')) {
       switchModule('t5-transformer');
     }
-    
     // Trigger new computation
     processComputation();
   }
@@ -222,7 +215,6 @@ let error = $state<string | null >(null);
     if (computationHistory.length > 0) {
       const lastComputation = computationHistory[computationHistory.length - 1];
       console.log('🔄 Resuming from:', lastComputation);
-      
       aiActor.send({
         type: 'PICK_UP_WHERE_LEFT_OFF'
       });

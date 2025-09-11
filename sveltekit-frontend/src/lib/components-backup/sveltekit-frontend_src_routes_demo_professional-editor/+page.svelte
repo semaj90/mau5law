@@ -1,41 +1,40 @@
 <script lang="ts">
-</script>
   import ProfessionalEditor from '$lib/components/editor/ProfessionalEditor.svelte';
   import { FileText, Zap, Keyboard, Eye, Save, BarChart3 } from 'lucide-svelte';
 
   let editorContent = `<h1>Professional Document Editor</h1>
 
-<p>This is a demonstration of the professional document editor with advanced features designed for legal professionals and content creators.</p>
+  <p>This is a demonstration of the professional document editor with advanced features designed for legal professionals and content creators.</p>
 
-<h2>Key Features</h2>
+  <h2>Key Features</h2>
 
-<ul>
+  <ul>
   <li><strong>Full-screen immersive experience</strong> - Press F11 or click the maximize button</li>
   <li><strong>Keyboard shortcuts</strong> - Press Ctrl+/ to see all available shortcuts</li>
   <li><strong>Auto-save functionality</strong> - Your work is automatically saved every 5 seconds</li>
   <li><strong>Focus mode</strong> - Press F10 to dim the UI and focus on writing</li>
   <li><strong>Professional typography</strong> - Optimized for readability and professional documents</li>
   <li><strong>Real-time statistics</strong> - Word count, character count, and reading time</li>
-</ul>
+  </ul>
 
-<h2>Sample Legal Document</h2>
+  <h2>Sample Legal Document</h2>
 
-<blockquote>
-"The law is reason, free from passion." - Aristotle
-</blockquote>
+  <blockquote>
+  "The law is reason, free from passion." - Aristotle
+  </blockquote>
 
-<p>In the matter of contract interpretation, courts generally apply the principle of <em>contra proferentem</em>, which states that ambiguous terms should be construed against the party who drafted the contract.</p>
+  <p>In the matter of contract interpretation, courts generally apply the principle of <em>contra proferentem</em>, which states that ambiguous terms should be construed against the party who drafted the contract.</p>
 
-<h3>Contract Elements</h3>
+  <h3>Contract Elements</h3>
 
-<ol>
+  <ol>
   <li>Offer and acceptance</li>
   <li>Consideration</li>
   <li>Capacity to contract</li>
   <li>Legality of purpose</li>
-</ol>
+  </ol>
 
-<p>Try using the keyboard shortcuts to format this text, or switch to focus mode for distraction-free writing.</p>`;
+  <p>Try using the keyboard shortcuts to format this text, or switch to focus mode for distraction-free writing.</p>`;
 
   let documentTitle = 'Professional Editor Demo';
 

@@ -1,30 +1,29 @@
 <script lang="ts">
-</script>
-	import GamingLayout from '$lib/components/gaming/GamingLayout.svelte';
+  	import GamingLayout from '$lib/components/gaming/GamingLayout.svelte';
   import GamingPanel from '$lib/components/gaming/GamingPanel.svelte';
-	import GamingButton from '$lib/components/gaming/GamingButton.svelte';
+  	import GamingButton from '$lib/components/gaming/GamingButton.svelte';
 
-	let currentCase = $state("CASE-2024-001");
-	let analysisProgress = $state(75);
-	let documents = $state([
-		{ id: 1, name: "Contract_Agreement.pdf", status: "analyzed", confidence: 94.2 },
-		{ id: 2, name: "Evidence_Report.docx", status: "processing", confidence: 0 },
-		{ id: 3, name: "Witness_Statement.pdf", status: "queued", confidence: 0 }
-	]);
+  	let currentCase = $state("CASE-2024-001");
+  	let analysisProgress = $state(75);
+  	let documents = $state([
+  		{ id: 1, name: "Contract_Agreement.pdf", status: "analyzed", confidence: 94.2 },
+  		{ id: 2, name: "Evidence_Report.docx", status: "processing", confidence: 0 },
+  		{ id: 3, name: "Witness_Statement.pdf", status: "queued", confidence: 0 }
+  	]);
 
-	let isAnalyzing = $state(false);
+  	let isAnalyzing = $state(false);
 
-	function startAnalysis() {
-		isAnalyzing = true;
-		setTimeout(() => {
-			isAnalyzing = false;
-			analysisProgress = Math.min(100, analysisProgress + 15);
-		}, 3000);
-	}
+  	function startAnalysis() {
+  		isAnalyzing = true;
+  		setTimeout(() => {
+  			isAnalyzing = false;
+  			analysisProgress = Math.min(100, analysisProgress + 15);
+  		}, 3000);
+  	}
 
-	function generateReport() {
-		alert("Report generation started! Check the Reports section in 5 minutes.");
-	}
+  	function generateReport() {
+  		alert("Report generation started! Check the Reports section in 5 minutes.");
+  	}
 </script>
 
 <svelte:head>

@@ -1,16 +1,15 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
 
   // State
-let searchQuery = $state('');
-let viewMode = $state<'grid' | 'list' >('grid');
-let showFilters = $state(false);
+  let searchQuery = $state('');
+  let viewMode = $state<'grid' | 'list' >('grid');
+  let showFilters = $state(false);
 
   // Mock persons data - replace with real API call
-let persons = $state([
+  let persons = $state([
     {
       id: '1',
       name: 'John Smith',

@@ -1,22 +1,21 @@
 <script lang="ts">
-</script>
-import { onMount } from 'svelte';
-import type { Document } from "$lib/types/global";
+  import { onMount } from 'svelte';
+  import type { Document } from "$lib/types/global";
 
-// Types
-interface SimilarityResult extends Document {
+  // Types
+  interface SimilarityResult extends Document {
   similarity: number;
-}
+  }
 
-// Props (Svelte 5 runes)
-let { selectedDocument = $bindable(), searchQuery = $bindable() } = $props<{
+  // Props (Svelte 5 runes)
+  let { selectedDocument = $bindable(), searchQuery = $bindable() } = $props<{
   selectedDocument: Document | null;
   searchQuery: string;
-}>();
-// State
-let similarDocuments = $state<SimilarityResult[] >([]);
-let isLoading = $state<boolean >(false);
-let error = $state<string | null >(null);
+  }>();
+  // State
+  let similarDocuments = $state<SimilarityResult[] >([]);
+  let isLoading = $state<boolean >(false);
+  let error = $state<string | null >(null);
   async function performSemanticSearch(query: string) {
     if (!query.trim()) {
       similarDocuments = [];
@@ -55,17 +54,17 @@ let error = $state<string | null >(null);
     }
   }
 
-// Reactive search when query changes
-// TODO: Convert to $derived: if (searchQuery && searchQuery.trim().length) {
+  // Reactive search when query changes
+  // TODO: Convert to $derived: if (searchQuery && searchQuery.trim().length) {
   // simple reactive trigger (debounce could be added later)
   performSemanticSearch(searchQuery)
-}
+  }
 
-onMount(() => {
+  onMount(() => {
   if (searchQuery && searchQuery.trim().length) {
     performSemanticSearch(searchQuery);
   }
-});
+  });
 </script>
 
 <!-- Search Input -->

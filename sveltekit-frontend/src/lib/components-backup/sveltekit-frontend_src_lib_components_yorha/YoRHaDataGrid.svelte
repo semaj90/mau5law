@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { Snippet  } from 'svelte';
   interface GridColumn { key: string; title: string,
     width?: number;
@@ -60,9 +59,7 @@
   let columnFilters = $state<Map<string, string>>(new Map());
   let resizingColumn = $state<string | null>(null);
   let scrollContainer: HTMLElement | null = $state(null);
-  
   const filteredData = $derived.by(() => { let filtered = data;
-    
     // Apply column filters
     for (const [column, filter] of columnFilters) {
       if (filter) {
@@ -71,36 +68,29 @@
         );
        }
     }
-    
     // Apply sorting
     if (sortConfig) { filtered.sort((a, b) => {
         const aVal = a[sortConfig.column];
         const bVal = b[sortConfig.column];
-        
         if (typeof aVal === 'number' && typeof bVal === 'number') {
           return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
          }
-        
         const aStr = String(aVal).toLowerCase();
         const bStr = String(bVal).toLowerCase();
-        
         return sortConfig.direction === 'asc' 
           ? aStr.localeCompare(bStr)
           : bStr.localeCompare(aStr);
       });
     }
-    
     return filtered;
   });
 
   const visibleRows = $derived.by(() => { const filtered = filteredData; // Access the derived value directly
     if (!virtualScroll) return filtered;
-    
     const containerHeight = maxHeight;
     const visibleCount = Math.ceil(containerHeight / rowHeight) + 5; // Buffer
     const startIndex = Math.floor((scrollContainer?.scrollTop || 0) / rowHeight);
     const endIndex = Math.min(startIndex + visibleCount, filtered.length);
-    
     return filtered.slice(startIndex, endIndex).map((row, index) => ({
       ...row,
       _originalIndex: startIndex +, index
@@ -108,7 +98,6 @@
   });
 
   function handleSort(column: GridColumn) { if (!column.sortable || !sortable) return;
-    
     if (sortConfig?.column === column.key) {
       sortConfig = {
         column: column.key,
@@ -153,7 +142,6 @@
   }
 
   function handleColumnResize(column: string, event: MouseEvent) { if (!resizable) return;
-    
     resizingColumn = column;
     const startX = event.clientX;
     const startWidth = columnWidths.get(column) || 150;

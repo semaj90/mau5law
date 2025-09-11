@@ -1,6 +1,5 @@
 <!-- Production AI Assistant Component - bits-ui Implementation -->
 <script lang="ts">
-</script>
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import { Loader2, Brain, Zap, AlertTriangle } from 'lucide-svelte';
 

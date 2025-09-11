@@ -1,6 +1,5 @@
 <!-- Enhanced ThinkingStyleToggle with Nier Automata + Harvard Crimson Theme -->
 <script lang="ts">
-</script>
   interface Props {
     enabled?: any;
     loading?: any;
@@ -21,14 +20,11 @@
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import { cn } from '$lib/utils';
-  
-          
   const dispatch = createEventDispatcher<{
     toggle: { enabled: boolean };
     configure: void
     upgrade: void
   }>();
-  
   let showTooltip = false;
   let showConfig = false;
   let thinkingDepth = 'detailed';
@@ -38,7 +34,6 @@
     compliance: true,
     alternatives: false
   };
-  
   let iconSize = $derived(size === 'sm' ? 16 : size === 'md' ? 20 : 24)
   let buttonClass = $derived(cn()
     "thinking-toggle",
@@ -47,23 +42,22 @@
     loading ? 'loading' : '',
     !premium ? 'premium-required' : ''
   );
-  
   function handleToggle() {
     if (!premium) {
       dispatch('upgrade');
       return;
-}
+  }
     enabled = !enabled;
     dispatch('toggle', { enabled });
-}
+  }
   function handleConfigure() {
     if (!premium) return;
     showConfig = !showConfig;
     dispatch('configure');
-}
+  }
   function handleUpgrade() {
     dispatch('upgrade');
-}
+  }
 </script>
 
 <div class="thinking-style-control">

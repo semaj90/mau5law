@@ -1,417 +1,415 @@
 <script lang="ts">
-</script>
-	import { onMount, tick } from 'svelte';
-	import {
-		Loader2, Send, MessageCircle, Bot, User, FileText,
-		Brain, Zap, Clock, Trash2, Copy, ThumbsUp, ThumbsDown,
-		AlertCircle, CheckCircle, BookOpen, Gavel, Search
-	} from 'lucide-svelte';
-	import {
+  	import { onMount, tick } from 'svelte';
+  	import {
+  		Loader2, Send, MessageCircle, Bot, User, FileText,
+  		Brain, Zap, Clock, Trash2, Copy, ThumbsUp, ThumbsDown,
+  		AlertCircle, CheckCircle, BookOpen, Gavel, Search
+  	} from 'lucide-svelte';
+  	import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
-	import * as Card from '$lib/components/ui/card';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Progress } from '$lib/components/ui/progress';
-	import { toast } from 'svelte-sonner';
-	import QLoRAMonitoringDashboard from '$lib/components/ai/QLoRAMonitoringDashboard.svelte';
+  	import * as Card from '$lib/components/ui/card';
+  	import * as Dialog from '$lib/components/ui/dialog';
+  	import { Badge } from '$lib/components/ui/badge';
+  	import { Progress } from '$lib/components/ui/progress';
+  	import { toast } from 'svelte-sonner';
+  	import QLoRAMonitoringDashboard from '$lib/components/ai/QLoRAMonitoringDashboard.svelte';
 
-	interface Message {
-		role: 'user' | 'assistant' | 'system';
-		content: string;
-		id: string;
-		timestamp: Date;
-		metadata?: {
-			type?: 'analysis' | 'research' | 'legal_advice' | 'case_review';
-			confidence?: number;
-			sources?: string[];
-			legalConcepts?: string[];
-			citations?: string[];
-			processingTime?: number;
-		};
-		reactions?: {
-			helpful: boolean;
-			accurate: boolean;
-		};
-	}
+  	interface Message {
+  		role: 'user' | 'assistant' | 'system';
+  		content: string;
+  		id: string;
+  		timestamp: Date;
+  		metadata?: {
+  			type?: 'analysis' | 'research' | 'legal_advice' | 'case_review';
+  			confidence?: number;
+  			sources?: string[];
+  			legalConcepts?: string[];
+  			citations?: string[];
+  			processingTime?: number;
+  		};
+  		reactions?: {
+  			helpful: boolean;
+  			accurate: boolean;
+  		};
+  	}
 
-	interface ChatSession {
-		id: string;
-		title: string;
-		messages: Message[];
-		created: Date;
-		updated: Date;
-	}
+  	interface ChatSession {
+  		id: string;
+  		title: string;
+  		messages: Message[];
+  		created: Date;
+  		updated: Date;
+  	}
 
-	// State management with Svelte 5 runes
-	let input = $state('');
-	let messages = $state<Message[]>([]);
-	let chatSessions = $state<ChatSession[]>([]);
-	let currentSessionId = $state<string | null>(null);
-	let busy = $state(false);
-	let chatContainer = $state<HTMLElement>();
-	let showSessions = $state(false);
-	let showAdvancedOptions = $state(false);
-	let showQLoRAMonitoring = $state(false);
-	let analysisMode = $state<'general' | 'case_analysis' | 'legal_research' | 'document_review' | 'qlora_topology'>('general');
-	let enableCitations = $state(true);
-	let enableContextualSearch = $state(true);
-	let processingStatus = $state<{
-		stage: string;
-		progress: number;
-		message: string;
-	} | null>(null);
+  	// State management with Svelte 5 runes
+  	let input = $state('');
+  	let messages = $state<Message[]>([]);
+  	let chatSessions = $state<ChatSession[]>([]);
+  	let currentSessionId = $state<string | null>(null);
+  	let busy = $state(false);
+  	let chatContainer = $state<HTMLElement>();
+  	let showSessions = $state(false);
+  	let showAdvancedOptions = $state(false);
+  	let showQLoRAMonitoring = $state(false);
+  	let analysisMode = $state<'general' | 'case_analysis' | 'legal_research' | 'document_review' | 'qlora_topology'>('general');
+  	let enableCitations = $state(true);
+  	let enableContextualSearch = $state(true);
+  	let processingStatus = $state<{
+  		stage: string;
+  		progress: number;
+  		message: string;
+  	} | null>(null);
 
-	// Computed properties
-	let currentSession = $derived(() => {
-		if (!currentSessionId) return null;
-		return chatSessions.find(s => s.id === currentSessionId) || null;
-	});
+  	// Computed properties
+  	let currentSession = $derived(() => {
+  		if (!currentSessionId) return null;
+  		return chatSessions.find(s => s.id === currentSessionId) || null;
+  	});
 
-	let suggestedQuestions = $derived(() => {
-		const baseQuestions = [
-			"What are the key elements of probable cause?",
-			"How should chain of custody be documented?",
-			"Explain Miranda rights requirements",
-			"What constitutes admissible evidence?",
-			"How to handle confidential informants?",
-			"What are the Fourth Amendment protections?"
-		];
+  	let suggestedQuestions = $derived(() => {
+  		const baseQuestions = [
+  			"What are the key elements of probable cause?",
+  			"How should chain of custody be documented?",
+  			"Explain Miranda rights requirements",
+  			"What constitutes admissible evidence?",
+  			"How to handle confidential informants?",
+  			"What are the Fourth Amendment protections?"
+  		];
 
-		if (analysisMode === 'case_analysis') {
-			return [
-				"Analyze this case for potential prosecution strategies",
-				"What are the strengths and weaknesses of this case?",
-				"Identify key evidence gaps that need addressing",
-				"What legal precedents are relevant here?"
-			];
-		} else if (analysisMode === 'legal_research') {
-			return [
-				"Find recent court decisions on this topic",
-				"What are the federal vs state law differences?",
-				"Research similar cases and their outcomes",
-				"Analyze statutory interpretation issues"
-			];
-		} else if (analysisMode === 'qlora_topology') {
-			return [
-				"Analyze case patterns with 90%+ prediction accuracy",
-				"Predict legal outcomes using QLoRA reinforcement learning",
-				"Map relationship topology between legal entities",
-				"Generate optimized legal strategy recommendations"
-			];
-		}
+  		if (analysisMode === 'case_analysis') {
+  			return [
+  				"Analyze this case for potential prosecution strategies",
+  				"What are the strengths and weaknesses of this case?",
+  				"Identify key evidence gaps that need addressing",
+  				"What legal precedents are relevant here?"
+  			];
+  		} else if (analysisMode === 'legal_research') {
+  			return [
+  				"Find recent court decisions on this topic",
+  				"What are the federal vs state law differences?",
+  				"Research similar cases and their outcomes",
+  				"Analyze statutory interpretation issues"
+  			];
+  		} else if (analysisMode === 'qlora_topology') {
+  			return [
+  				"Analyze case patterns with 90%+ prediction accuracy",
+  				"Predict legal outcomes using QLoRA reinforcement learning",
+  				"Map relationship topology between legal entities",
+  				"Generate optimized legal strategy recommendations"
+  			];
+  		}
 
-		return baseQuestions;
-	});
+  		return baseQuestions;
+  	});
 
-	onMount(() => {
-		loadChatSessions();
-		// Auto-create a session if none exist
-		if (chatSessions.length === 0) {
-			createNewSession();
-		}
-	});
+  	onMount(() => {
+  		loadChatSessions();
+  		// Auto-create a session if none exist
+  		if (chatSessions.length === 0) {
+  			createNewSession();
+  		}
+  	});
 
-	function loadChatSessions() {
-		const saved = localStorage.getItem('legal-ai-chat-sessions');
-		if (saved) {
-			try {
-				const parsed = JSON.parse(saved);
-				chatSessions = parsed.map((s: any) => ({
-					...s,
-					created: new Date(s.created),
-					updated: new Date(s.updated),
-					messages: s.messages.map((m: any) => ({
-						...m,
-						timestamp: new Date(m.timestamp)
-					}))
-				});
-				// Load the most recent session
-				if (chatSessions.length > 0) {
-					const recent = chatSessions.sort((a, b) => b.updated.getTime() - a.updated.getTime())[0];
-					loadSession(recent.id);
-				}
-			} catch (error) {
-				console.warn('Failed to load chat sessions:', error);
-				createNewSession();
-			}
-		}
-	}
+  	function loadChatSessions() {
+  		const saved = localStorage.getItem('legal-ai-chat-sessions');
+  		if (saved) {
+  			try {
+  				const parsed = JSON.parse(saved);
+  				chatSessions = parsed.map((s: any) => ({
+  					...s,
+  					created: new Date(s.created),
+  					updated: new Date(s.updated),
+  					messages: s.messages.map((m: any) => ({
+  						...m,
+  						timestamp: new Date(m.timestamp)
+  					}))
+  				});
+  				// Load the most recent session
+  				if (chatSessions.length > 0) {
+  					const recent = chatSessions.sort((a, b) => b.updated.getTime() - a.updated.getTime())[0];
+  					loadSession(recent.id);
+  				}
+  			} catch (error) {
+  				console.warn('Failed to load chat sessions:', error);
+  				createNewSession();
+  			}
+  		}
+  	}
 
-	function saveChatSessions() {
-		localStorage.setItem('legal-ai-chat-sessions', JSON.stringify(chatSessions);
-	}
+  	function saveChatSessions() {
+  		localStorage.setItem('legal-ai-chat-sessions', JSON.stringify(chatSessions);
+  	}
 
-	function createNewSession() {
-		const sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-		const newSession: ChatSession = {
-			id: sessionId,
-			title: `Legal Chat ${new Date().toLocaleDateString()}`,
-			messages: [],
-			created: new Date(),
-			updated: new Date()
-		};
+  	function createNewSession() {
+  		const sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  		const newSession: ChatSession = {
+  			id: sessionId,
+  			title: `Legal Chat ${new Date().toLocaleDateString()}`,
+  			messages: [],
+  			created: new Date(),
+  			updated: new Date()
+  		};
 
-		chatSessions = [...chatSessions, newSession];
-		currentSessionId = sessionId;
-		messages = [];
-		saveChatSessions();
-	}
+  		chatSessions = [...chatSessions, newSession];
+  		currentSessionId = sessionId;
+  		messages = [];
+  		saveChatSessions();
+  	}
 
-	function loadSession(sessionId: string) {
-		const session = chatSessions.find(s => s.id === sessionId);
-		if (session) {
-			currentSessionId = sessionId;
-			messages = [...session.messages];
-			scrollToBottom();
-		}
-	}
+  	function loadSession(sessionId: string) {
+  		const session = chatSessions.find(s => s.id === sessionId);
+  		if (session) {
+  			currentSessionId = sessionId;
+  			messages = [...session.messages];
+  			scrollToBottom();
+  		}
+  	}
 
-	function deleteSession(sessionId: string) {
-		if (chatSessions.length <= 1) {
-			toast.error("Cannot delete the last session");
-			return;
-		}
+  	function deleteSession(sessionId: string) {
+  		if (chatSessions.length <= 1) {
+  			toast.error("Cannot delete the last session");
+  			return;
+  		}
 
-		chatSessions = chatSessions.filter(s => s.id !== sessionId);
+  		chatSessions = chatSessions.filter(s => s.id !== sessionId);
 
-		if (currentSessionId === sessionId) {
-			// Switch to another session
-			const remaining = chatSessions[0];
-			if (remaining) {
-				loadSession(remaining.id);
-			} else {
-				createNewSession();
-			}
-		}
+  		if (currentSessionId === sessionId) {
+  			// Switch to another session
+  			const remaining = chatSessions[0];
+  			if (remaining) {
+  				loadSession(remaining.id);
+  			} else {
+  				createNewSession();
+  			}
+  		}
 
-		saveChatSessions();
-		toast.success("Session deleted");
-	}
+  		saveChatSessions();
+  		toast.success("Session deleted");
+  	}
 
-	function updateCurrentSession() {
-		if (!currentSessionId) return;
+  	function updateCurrentSession() {
+  		if (!currentSessionId) return;
 
-		const sessionIndex = chatSessions.findIndex(s => s.id === currentSessionId);
-		if (sessionIndex !== -1) {
-			chatSessions[sessionIndex] = {
-				...chatSessions[sessionIndex],
-				messages: [...messages],
-				updated: new Date(),
-				title: messages.length > 0
-					? messages[0].content.substring(0, 50) + (messages[0].content.length > 50 ? '...' : '')
-					: `Legal Chat ${new Date().toLocaleDateString()}`
-			};
-			saveChatSessions();
-		}
-	}
+  		const sessionIndex = chatSessions.findIndex(s => s.id === currentSessionId);
+  		if (sessionIndex !== -1) {
+  			chatSessions[sessionIndex] = {
+  				...chatSessions[sessionIndex],
+  				messages: [...messages],
+  				updated: new Date(),
+  				title: messages.length > 0
+  					? messages[0].content.substring(0, 50) + (messages[0].content.length > 50 ? '...' : '')
+  					: `Legal Chat ${new Date().toLocaleDateString()}`
+  			};
+  			saveChatSessions();
+  		}
+  	}
 
-	async function scrollToBottom() {
-		await tick();
-		if (chatContainer) {
-			chatContainer.scrollTop = chatContainer.scrollHeight;
-		}
-	}
+  	async function scrollToBottom() {
+  		await tick();
+  		if (chatContainer) {
+  			chatContainer.scrollTop = chatContainer.scrollHeight;
+  		}
+  	}
 
-	async function send(): Promise<void> {
-		if (!input.trim() || busy) return;
+  	async function send(): Promise<void> {
+  		if (!input.trim() || busy) return;
 
-		const content = input.trim();
-		const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  		const content = input.trim();
+  		const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-		// Add user message
-		const userMessage: Message = {
-			role: 'user',
-			content,
-			id: messageId,
-			timestamp: new Date()
-		};
+  		// Add user message
+  		const userMessage: Message = {
+  			role: 'user',
+  			content,
+  			id: messageId,
+  			timestamp: new Date()
+  		};
 
-		messages = [...messages, userMessage];
-		input = '';
-		busy = true;
+  		messages = [...messages, userMessage];
+  		input = '';
+  		busy = true;
 
-		// Show processing status
-		processingStatus = {
-			stage: 'Analyzing query',
-			progress: 20,
-			message: 'Understanding your legal question...'
-		};
+  		// Show processing status
+  		processingStatus = {
+  			stage: 'Analyzing query',
+  			progress: 20,
+  			message: 'Understanding your legal question...'
+  		};
 
-		await scrollToBottom();
+  		await scrollToBottom();
 
-		try {
-			let res: Response;
-			let data: any;
+  		try {
+  			let res: Response;
+  			let data: any;
 
-			if (analysisMode === 'qlora_topology') {
-				// Use QLoRA topology prediction system
-				processingStatus = {
-					stage: 'QLoRA topology analysis',
-					progress: 30,
-					message: 'Initializing reinforcement learning prediction...'
-				};
+  			if (analysisMode === 'qlora_topology') {
+  				// Use QLoRA topology prediction system
+  				processingStatus = {
+  					stage: 'QLoRA topology analysis',
+  					progress: 30,
+  					message: 'Initializing reinforcement learning prediction...'
+  				};
 
-				// First call the QLoRA topology API
-				const qloraRes = await fetch('/api/ai/qlora-topology', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						query: content,
-						context: messages.slice(-3).map(m => m.content).join('\n'),
-						topologyType: 'legal',
-						accuracyTarget: 90,
-						useCache: enableContextualSearch,
-						trainingMode: true
-					})
-				});
+  				// First call the QLoRA topology API
+  				const qloraRes = await fetch('/api/ai/qlora-topology', {
+  					method: 'POST',
+  					headers: { 'Content-Type': 'application/json' },
+  					body: JSON.stringify({
+  						query: content,
+  						context: messages.slice(-3).map(m => m.content).join('\n'),
+  						topologyType: 'legal',
+  						accuracyTarget: 90,
+  						useCache: enableContextualSearch,
+  						trainingMode: true
+  					})
+  				});
 
-				processingStatus = {
-					stage: 'Processing predictions',
-					progress: 70,
-					message: 'Analyzing topology patterns and generating response...'
-				};
+  				processingStatus = {
+  					stage: 'Processing predictions',
+  					progress: 70,
+  					message: 'Analyzing topology patterns and generating response...'
+  				};
 
-				if (qloraRes.ok) {
-					const qloraData = await qloraRes.json();
-					
-					// Format the QLoRA response for display
-					data = {
-						text: `**QLoRA Topology Analysis** (${qloraData.accuracy}% accuracy)\n\n${qloraData.prediction?.analysis || qloraData.prediction || 'Analysis completed successfully.'}\n\n**Topology Insights:**\n${qloraData.topology?.summary || 'Pattern analysis complete.'}\n\n**Performance Metrics:**\n- HMM Prediction Score: ${qloraData.metrics.hmmPredictionScore}%\n- SOM Cluster Accuracy: ${qloraData.metrics.somClusterAccuracy}%\n- WebGPU Optimization: ${qloraData.metrics.webgpuOptimizationGain}x speedup\n- Cache Efficiency: ${qloraData.metrics.cacheEfficiency}%\n- Processing Time: ${qloraData.processingTime}ms`,
-						type: 'qlora_analysis',
-						confidence: qloraData.accuracy / 100,
-						processingTime: qloraData.processingTime,
-						legalConcepts: qloraData.topology?.entities || [],
-						sources: ['QLoRA Reinforcement Learning Model', 'WebGPU Acceleration', 'Multi-tier Cache System']
-					};
-				} else {
-					throw new Error('QLoRA topology prediction failed');
-				}
-			} else {
-				// Use standard chat API for other modes
-				const requestBody = {
-					messages: messages.map(m => ({ role: m.role, content: m.content })),
-					analysisMode,
-					enableCitations,
-					useProfile: enableContextualSearch,
-					sessionId: currentSessionId
-				};
+  				if (qloraRes.ok) {
+  					const qloraData = await qloraRes.json();
+  					// Format the QLoRA response for display
+  					data = {
+  						text: `**QLoRA Topology Analysis** (${qloraData.accuracy}% accuracy)\n\n${qloraData.prediction?.analysis || qloraData.prediction || 'Analysis completed successfully.'}\n\n**Topology Insights:**\n${qloraData.topology?.summary || 'Pattern analysis complete.'}\n\n**Performance Metrics:**\n- HMM Prediction Score: ${qloraData.metrics.hmmPredictionScore}%\n- SOM Cluster Accuracy: ${qloraData.metrics.somClusterAccuracy}%\n- WebGPU Optimization: ${qloraData.metrics.webgpuOptimizationGain}x speedup\n- Cache Efficiency: ${qloraData.metrics.cacheEfficiency}%\n- Processing Time: ${qloraData.processingTime}ms`,
+  						type: 'qlora_analysis',
+  						confidence: qloraData.accuracy / 100,
+  						processingTime: qloraData.processingTime,
+  						legalConcepts: qloraData.topology?.entities || [],
+  						sources: ['QLoRA Reinforcement Learning Model', 'WebGPU Acceleration', 'Multi-tier Cache System']
+  					};
+  				} else {
+  					throw new Error('QLoRA topology prediction failed');
+  				}
+  			} else {
+  				// Use standard chat API for other modes
+  				const requestBody = {
+  					messages: messages.map(m => ({ role: m.role, content: m.content })),
+  					analysisMode,
+  					enableCitations,
+  					useProfile: enableContextualSearch,
+  					sessionId: currentSessionId
+  				};
 
-				processingStatus = {
-					stage: 'Legal research',
-					progress: 50,
-					message: 'Searching legal databases...'
-				};
+  				processingStatus = {
+  					stage: 'Legal research',
+  					progress: 50,
+  					message: 'Searching legal databases...'
+  				};
 
-				res = await fetch('/api/chat', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ ...requestBody, useProfile: enableContextualSearch })
-				});
+  				res = await fetch('/api/chat', {
+  					method: 'POST',
+  					headers: { 'Content-Type': 'application/json' },
+  					body: JSON.stringify({ ...requestBody, useProfile: enableContextualSearch })
+  				});
 
-				if (!res.ok) {
-					throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-				}
+  				if (!res.ok) {
+  					throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+  				}
 
-				data = await res.json();
-			}
+  				data = await res.json();
+  			}
 
-			processingStatus = {
-				stage: 'Generating response',
-				progress: 80,
-				message: 'Crafting legal analysis...'
-			};
+  			processingStatus = {
+  				stage: 'Generating response',
+  				progress: 80,
+  				message: 'Crafting legal analysis...'
+  			};
 
-			const responseText = data?.text || data?.content || (data?.error ? `Error: ${data.error}` : '(no response)');
+  			const responseText = data?.text || data?.content || (data?.error ? `Error: ${data.error}` : '(no response)');
 
-			// Add assistant response with metadata
-			const assistantMessage: Message = {
-				role: 'assistant',
-				content: responseText,
-				id: `resp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-				timestamp: new Date(),
-				metadata: {
-					type: data?.type || 'general',
-					confidence: data?.confidence || 0.85,
-					sources: data?.sources || [],
-					legalConcepts: data?.legalConcepts || [],
-					citations: data?.citations || [],
-					processingTime: data?.processingTime || 0
-				}
-			};
+  			// Add assistant response with metadata
+  			const assistantMessage: Message = {
+  				role: 'assistant',
+  				content: responseText,
+  				id: `resp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+  				timestamp: new Date(),
+  				metadata: {
+  					type: data?.type || 'general',
+  					confidence: data?.confidence || 0.85,
+  					sources: data?.sources || [],
+  					legalConcepts: data?.legalConcepts || [],
+  					citations: data?.citations || [],
+  					processingTime: data?.processingTime || 0
+  				}
+  			};
 
-			messages = [...messages, assistantMessage];
-			updateCurrentSession();
+  			messages = [...messages, assistantMessage];
+  			updateCurrentSession();
 
-		} catch (error: any) {
-			const errorMessage: Message = {
-				role: 'assistant',
-				content: `I apologize, but I encountered an error: ${error.message || 'Unknown error'}. Please try rephrasing your question or check your connection.`,
-				id: `error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-				timestamp: new Date(),
-				metadata: {
-					type: 'general',
-					confidence: 0
-				}
-			};
-			messages = [...messages, errorMessage];
-			updateCurrentSession();
-		} finally {
-			busy = false;
-			processingStatus = null;
-			await scrollToBottom();
-		}
-	}
+  		} catch (error: any) {
+  			const errorMessage: Message = {
+  				role: 'assistant',
+  				content: `I apologize, but I encountered an error: ${error.message || 'Unknown error'}. Please try rephrasing your question or check your connection.`,
+  				id: `error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+  				timestamp: new Date(),
+  				metadata: {
+  					type: 'general',
+  					confidence: 0
+  				}
+  			};
+  			messages = [...messages, errorMessage];
+  			updateCurrentSession();
+  		} finally {
+  			busy = false;
+  			processingStatus = null;
+  			await scrollToBottom();
+  		}
+  	}
 
-	function reactToMessage(messageId: string, reaction: 'helpful' | 'accurate', value: boolean) {
-		const messageIndex = messages.findIndex(m => m.id === messageId);
-		if (messageIndex !== -1) {
-			if (!messages[messageIndex].reactions) {
-				messages[messageIndex].reactions = { helpful: false, accurate: false };
-			}
-			messages[messageIndex].reactions![reaction] = value;
-			messages = [...messages];
-			updateCurrentSession();
+  	function reactToMessage(messageId: string, reaction: 'helpful' | 'accurate', value: boolean) {
+  		const messageIndex = messages.findIndex(m => m.id === messageId);
+  		if (messageIndex !== -1) {
+  			if (!messages[messageIndex].reactions) {
+  				messages[messageIndex].reactions = { helpful: false, accurate: false };
+  			}
+  			messages[messageIndex].reactions![reaction] = value;
+  			messages = [...messages];
+  			updateCurrentSession();
 
-			toast.success(value ? `Marked as ${reaction}` : `Removed ${reaction} rating`);
-		}
-	}
+  			toast.success(value ? `Marked as ${reaction}` : `Removed ${reaction} rating`);
+  		}
+  	}
 
-	function copyMessage(content: string) {
-		navigator.clipboard.writeText(content);
-		toast.success('Copied to clipboard');
-	}
+  	function copyMessage(content: string) {
+  		navigator.clipboard.writeText(content);
+  		toast.success('Copied to clipboard');
+  	}
 
-	function useSuggestedQuestion(question: string) {
-		input = question;
-	}
+  	function useSuggestedQuestion(question: string) {
+  		input = question;
+  	}
 
-	function formatTimestamp(timestamp: Date): string {
-		return new Date(timestamp).toLocaleTimeString(undefined, {
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-	}
+  	function formatTimestamp(timestamp: Date): string {
+  		return new Date(timestamp).toLocaleTimeString(undefined, {
+  			hour: '2-digit',
+  			minute: '2-digit'
+  		});
+  	}
 
-	function getAnalysisModeIcon(mode: string) {
-		switch (mode) {
-			case 'case_analysis': return Gavel;
-			case 'legal_research': return BookOpen;
-			case 'document_review': return FileText;
-			default: return Brain;
-		}
-	}
+  	function getAnalysisModeIcon(mode: string) {
+  		switch (mode) {
+  			case 'case_analysis': return Gavel;
+  			case 'legal_research': return BookOpen;
+  			case 'document_review': return FileText;
+  			default: return Brain;
+  		}
+  	}
 
-	function getMessageTypeColor(type?: string) {
-		switch (type) {
-			case 'analysis': return 'bg-purple-100 text-purple-800';
-			case 'research': return 'bg-blue-100 text-blue-800';
-			case 'legal_advice': return 'bg-green-100 text-green-800';
-			case 'case_review': return 'bg-orange-100 text-orange-800';
-			case 'qlora_analysis': return 'bg-yellow-100 text-yellow-800 border border-yellow-300';
-			default: return 'bg-gray-100 text-gray-800';
-		}
-	}
+  	function getMessageTypeColor(type?: string) {
+  		switch (type) {
+  			case 'analysis': return 'bg-purple-100 text-purple-800';
+  			case 'research': return 'bg-blue-100 text-blue-800';
+  			case 'legal_advice': return 'bg-green-100 text-green-800';
+  			case 'case_review': return 'bg-orange-100 text-orange-800';
+  			case 'qlora_analysis': return 'bg-yellow-100 text-yellow-800 border border-yellow-300';
+  			default: return 'bg-gray-100 text-gray-800';
+  		}
+  	}
 </script>
 
 <svelte:head>

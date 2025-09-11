@@ -1,6 +1,5 @@
 <!-- NES-Inspired Neural Sprite Engine Demo -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { fabric } from 'fabric';

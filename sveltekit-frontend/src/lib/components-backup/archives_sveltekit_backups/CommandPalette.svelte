@@ -1,27 +1,21 @@
 <script lang="ts">
-</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { Search, File, Briefcase, User, Settings, Command } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  
   export let open = false;
-  
   const dispatch = createEventDispatcher<{
     close: void;
     select: { item: unknown };
   }>();
-  
   let searchInput: HTMLInputElement;
   let searchQuery = '';
   let selectedIndex = 0;
-  
   // TODO: Convert to $derived: filteredItems = searchQuery 
     ? allItems.filter(item => 
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : allItems
-  
   const allItems = [
     // Navigation
     {
@@ -51,7 +45,6 @@
       href: '/cases',
       shortcut: ['⌘', 'C']
     },
-    
     // Actions
     {
       id: 'action-new-case',
@@ -71,7 +64,6 @@
       action: () => console.log('Upload evidence'),
       shortcut: ['⌘', 'U']
     },
-    
     // Settings
     {
       id: 'settings-profile',
@@ -90,20 +82,16 @@
       href: '/settings'
     }
   ];
-  
   onMount(() => {
     if (open && searchInput) {
       searchInput.focus();
     }
   });
-  
   // TODO: Convert to $derived: if (open && searchInput) {
     searchInput.focus()
   }
-  
   function handleKeydown(e: KeyboardEvent) {
     if (!open) return;
-    
     switch (e.key) {
       case 'Escape':
         e.preventDefault();
@@ -125,24 +113,19 @@
         break;
     }
   }
-  
   function selectItem(item: unknown) {
     dispatch('select', { item });
-    
     if (item.href) {
       window.location.href = item.href;
     } else if (item.action) {
       item.action();
     }
-    
     close();
   }
-  
   function close() {
     open = false;
     dispatch('close');
   }
-  
   // TODO: Convert to $derived: if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) {
     selectedIndex = 0
   }

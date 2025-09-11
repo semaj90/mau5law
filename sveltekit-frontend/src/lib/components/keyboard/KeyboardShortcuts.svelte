@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
 
   }
@@ -182,7 +181,7 @@
   ];
 
   import { keyboardShortcuts, loadShortcutsFromAI } from '$lib/stores';
-// Duplicate import removed: onMount is already imported above
+  // Duplicate import removed: onMount is already imported above
   import { get } from 'svelte/store';
 
   let searchQuery = $state("");
@@ -327,7 +326,7 @@
         event.preventDefault();
         open = !open;
         return;
-}
+  }
       // Handle command palette navigation
       if (open) {
         switch (event.key) {
@@ -350,15 +349,15 @@
             event.preventDefault();
             executeCommand(filteredCommands[selectedIndex]);
             break;
-}
+  }
         return;
-}
+  }
       // Global shortcuts
       const shortcut = findShortcut(event);
       if (shortcut) {
         event.preventDefault();
         shortcut.action();
-}
+  }
     };
 
     document.addEventListener("keydown", handleKeydown);
@@ -373,7 +372,7 @@
     return shortcuts
       .flatMap((category) => category.items)
       .find((shortcut) => shortcut.key === key);
-}
+  }
   function formatKeyCombo(event: KeyboardEvent): string {
     const parts: string[] = [];
 
@@ -396,7 +395,7 @@
     parts.push(key);
 
     return parts.join("+");
-}
+  }
   function executeCommand(command: any) {
     if (!command) return;
 
@@ -416,7 +415,7 @@
         title: "Command Failed",
         message: `Failed to execute: ${command.title}`,
       });
-}}
+  }}
   function focusSearch() {
     const searchInput = document.querySelector(
       'input[type="search"]'
@@ -424,23 +423,23 @@
     if (searchInput) {
       searchInput.focus();
       searchInput.select();
-}}
+  }}
   function triggerPageSearch() {
     // Trigger browser's find in page
     if (document.execCommand) {
       document.execCommand("find");
-}}
+  }}
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
     } else {
       document.exitFullscreen();
-}}
+  }}
   function closeModals() {
     // Dispatch event to close any open modals
     document.dispatchEvent(new CustomEvent("close-modals"));
     open = false;
-}
+  }
   function toggleDarkMode() {
     const html = document.documentElement;
     const isDark = html.classList.contains("dark");
@@ -451,13 +450,13 @@
     } else {
       html.classList.add("dark");
       localStorage.setItem("theme", "dark");
-}
+  }
     notifications.add({
       type: "info",
       title: "Theme Changed",
       message: `Switched to ${isDark ? "light" : "dark"} mode`,
     });
-}
+  }
   function toggleLayout() {
     // This would toggle between different layout modes
     notifications.add({
@@ -465,7 +464,7 @@
       title: "Layout Toggle",
       message: "Layout toggled (feature to be implemented)",
     });
-}
+  }
   function toggleHeadingNav() {
     // Accessibility feature to navigate by headings
     const headings = Array.from(
@@ -475,7 +474,7 @@
       // Simple implementation - focus first heading
       (headings[0] as HTMLElement).focus();
       FocusManager.announceToScreenReader("Heading navigation enabled");
-}}
+  }}
   function toggleLandmarkNav() {
     // Accessibility feature to navigate by landmarks
     const landmarks = Array.from(
@@ -486,7 +485,7 @@
     if (landmarks.length > 0) {
       (landmarks[0] as HTMLElement).focus();
       FocusManager.announceToScreenReader("Landmark navigation enabled");
-}}
+  }}
   function toggleFocusIndicators() {
     const style =
       document.getElementById("focus-indicators") ||
@@ -505,14 +504,14 @@
         *:focus {
           outline: 3px solid #3b82f6 !important;
           outline-offset: 2px !important;
-}
+  }
       `;
       notifications.add({
         type: "info",
         title: "Focus Indicators",
         message: "Enhanced focus indicators enabled",
       });
-}
+  }
     if (!style.parentNode) {
       document.head.appendChild(style);
     }

@@ -1,7 +1,5 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
-  
   export let onUpload: (files: FileList) => void = () => {};
   export let acceptedTypes: string = '.pdf,.jpg,.jpeg,.png,.mp4,.avi,.mov,.mp3,.wav';
   export let maxFiles: number = 10;
@@ -20,10 +18,8 @@
   export let uploadEndpoint: string = '/api/parse/';
   export let retryAttempts: number = 3;
   export let chunkSize: number = 1024 * 1024; // 1MB chunks for large files (future use)
-  
   // Prevent unused export warning - this is for future chunked upload implementation
   // TODO: Convert to $derived: void chunkSize
-  
   interface UploadResult {
     file: File;
     result?: unknown;
@@ -32,7 +28,6 @@
     progress?: number;
     retryCount?: number;
   }
-  
   const dispatch = createEventDispatcher<{
     'upload-start': { files: FileList };
     'upload-progress': { progress: number; file: File };
@@ -45,7 +40,6 @@
     'files-selected': { files: FileList };
     'validation-error': { errors: string[] };
   }>();
-  
   let isDragOver = false;
   let isUploading = false;
   let uploadProgress = 0;
@@ -56,43 +50,32 @@
   let processedFiles = 0;
   let dragCounter = 0; // Track drag enter/leave events
   let fileInput: HTMLInputElement;
-  
   // Debounce timer for drag events
   let dragLeaveTimer: NodeJS.Timeout;
-  
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
     e.stopPropagation();
-    
     if (disabled) return;
-    
     dragCounter++;
     if (!isDragOver) {
       isDragOver = true;
       clearTimeout(dragLeaveTimer);
     }
   }
-  
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     e.stopPropagation();
-    
     if (disabled) return;
-    
     // Ensure we're allowing the drop
     if (e.dataTransfer) {
       e.dataTransfer.dropEffect = 'copy';
     }
   }
-  
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     e.stopPropagation();
-    
     if (disabled) return;
-    
     dragCounter--;
-    
     // Use a timer to handle rapid drag enter/leave events
     dragLeaveTimer = setTimeout(() => {
       if (dragCounter <= 0) {
@@ -101,22 +84,17 @@
       }
     }, 50);
   }
-  
   async function handleDrop(e: DragEvent) {
     e.preventDefault();
     e.stopPropagation();
-    
     // Reset drag state
     isDragOver = false;
     dragCounter = 0;
     clearTimeout(dragLeaveTimer);
-    
     if (disabled) return;
-    
     const droppedFiles = e.dataTransfer?.files;
     if (droppedFiles && droppedFiles.length > 0) {
       dispatch('files-selected', { files: droppedFiles });
-      
       if (autoUpload) {
         await processFiles(droppedFiles);
       } else {
@@ -124,12 +102,10 @@
       }
     }
   }
-  
   async function handleFileInput(e: Event) {
     const target = e.target as HTMLInputElement;
     if (target.files && target.files.length > 0 && !disabled) {
       dispatch('files-selected', { files: target.files });
-      
       if (autoUpload) {
         await processFiles(target.files);
       } else {
@@ -137,20 +113,17 @@
       }
     }
   }
-  
   function handleKeyDown(e: KeyboardEvent) {
     if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
       e.preventDefault();
       fileInput?.click();
     }
   }
-  
   function browseFiles() {
     if (!disabled) {
       fileInput?.click();
     }
   }
-  
   function clearFiles() {
     files = null;
     uploadErrors = [];
@@ -158,44 +131,35 @@
     uploadProgress = 0;
     processedFiles = 0;
     totalFiles = 0;
-    
     // Reset file input
     if (fileInput) {
       fileInput.value = '';
     }
   }
-  
   async function startUpload() {
     if (files && !isUploading) {
       await processFiles(files);
     }
   }
-  
   function retryUpload() {
     if (files && !isUploading) {
       processFiles(files);
     }
   }
-  
   function removeFile(index: number) {
     if (!files || isUploading) return;
-    
     const fileArray = Array.from(files);
     fileArray.splice(index, 1);
-    
     // Create new FileList-like object
     const dt = new DataTransfer();
     fileArray.forEach(file => dt.items.add(file));
     files = dt.files;
-    
     if (files.length === 0) {
       clearFiles();
     }
   }
-  
   async function processFiles(fileList: FileList) {
     if (fileList.length === 0) return;
-    
     // Clear previous state
     uploadErrors = [];
     uploadResults = [];
@@ -203,9 +167,7 @@
     uploadProgress = 0;
     totalFiles = fileList.length;
     processedFiles = 0;
-    
     dispatch('upload-start', { files: fileList });
-    
     try {
       // Validate files first
       const validationErrors = validateFiles(fileList);
@@ -214,9 +176,7 @@
         dispatch('validation-error', { errors: validationErrors });
         throw new Error(validationErrors.join(', '));
       }
-      
       const fileArray = Array.from(fileList);
-      
       // Process files with better progress tracking and retry logic
       for (let i = 0; i < fileArray.length; i++) {
         const file = fileArray[i];
@@ -224,45 +184,36 @@
         let success = false;
         let result: unknown = null;
         let lastError: string = '';
-        
         dispatch('file-start', { file, index: i });
-        
         // Retry logic
         while (!success && retryCount < retryAttempts) {
           try {
             result = await uploadFileWithProgress(file, (progress) => {
               dispatch('file-progress', { file, progress, index: i });
             });
-            
             uploadResults.push({ file, result, success: true, retryCount });
             dispatch('file-success', { file, result, index: i });
             success = true;
-            
           } catch (error) {
             retryCount++;
             lastError = error instanceof Error ? error.message : 'Unknown error';
-            
             if (retryCount < retryAttempts) {
               // Wait before retry (exponential backoff)
               await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
             }
           }
         }
-        
         if (!success) {
           uploadErrors = [...uploadErrors, `${file.name}: ${lastError} (failed after ${retryAttempts} attempts)`];
           uploadResults.push({ file, error: lastError, success: false, retryCount });
           dispatch('file-error', { file, error: lastError, index: i });
         }
-        
         processedFiles = i + 1;
         uploadProgress = (processedFiles / totalFiles) * 100;
         dispatch('upload-progress', { progress: uploadProgress, file });
       }
-      
       const successfulFiles = uploadResults.filter(r => r.success);
       const failedFiles = uploadResults.filter(r => !r.success);
-      
       if (successfulFiles.length > 0) {
         dispatch('upload-complete', { 
           files: successfulFiles.map(r => r.file), 
@@ -271,11 +222,9 @@
         });
         onUpload(fileList);
       }
-      
       if (failedFiles.length > 0 && successfulFiles.length === 0) {
         throw new Error(`All ${failedFiles.length} files failed to upload`);
       }
-      
     } catch (error) {
       console.error('Upload process failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -284,74 +233,60 @@
       isUploading = false;
     }
   }
-  
   function validateFiles(fileList: FileList): string[] {
     const errors: string[] = [];
     const fileArray = Array.from(fileList);
-    
     // Check file count
     if (fileArray.length > maxFiles) {
       errors.push(`Too many files selected. Maximum ${maxFiles} allowed.`);
     }
-    
     // Check each file
     fileArray.forEach((file, index) => {
       // Check file size
       if (file.size > maxFileSize) {
         errors.push(`${file.name}: File too large (${formatFileSize(file.size)}). Maximum ${formatFileSize(maxFileSize)} allowed.`);
       }
-      
       // Check file type by extension
       const extension = '.' + file.name.split('.').pop()?.toLowerCase();
       if (!acceptedTypes.toLowerCase().includes(extension)) {
         errors.push(`${file.name}: Unsupported file type (${extension}). Allowed: ${acceptedTypes}`);
       }
-      
       // Check MIME type for additional security
       if (allowedMimeTypes.length > 0 && !allowedMimeTypes.includes(file.type)) {
         errors.push(`${file.name}: Invalid MIME type (${file.type})`);
       }
-      
       // Check for empty files
       if (file.size === 0) {
         errors.push(`${file.name}: File is empty`);
       }
-      
       // Basic file name validation
       if (file.name.length > 255) {
         errors.push(`${file.name}: Filename too long (max 255 characters)`);
       }
-      
       // Check for potentially dangerous file names
       if (/[<>:"|?*\\\/]/.test(file.name)) {
         errors.push(`${file.name}: Filename contains invalid characters`);
       }
-      
       // Check for suspicious file extensions
       const suspiciousExtensions = ['.exe', '.bat', '.cmd', '.scr', '.vbs', '.js', '.jar'];
       if (suspiciousExtensions.some(ext => file.name.toLowerCase().endsWith(ext))) {
         errors.push(`${file.name}: Potentially unsafe file type`);
       }
-      
       // Check for null bytes in filename (potential path traversal)
       if (file.name.includes('\0')) {
         errors.push(`${file.name}: Invalid filename characters detected`);
       }
     });
-    
     // Check for duplicate files
     const duplicates = findDuplicateFiles(fileArray);
     if (duplicates.length > 0) {
       errors.push(`Duplicate files detected: ${duplicates.join(', ')}`);
     }
-    
     return errors;
   }
-  
   function findDuplicateFiles(files: File[]): string[] {
     const seen = new Map<string, string>();
     const duplicates: string[] = [];
-    
     files.forEach(file => {
       const key = `${file.name}-${file.size}-${file.lastModified}`;
       if (seen.has(key)) {
@@ -360,10 +295,8 @@
         seen.set(key, file.name);
       }
     });
-    
     return duplicates;
   }
-  
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -371,17 +304,13 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  
   async function uploadFileWithProgress(file: File, onProgress?: (progress: number) => void): Promise<any> {
     return new Promise((resolve, reject) => {
       const formData = new FormData();
       formData.append('file', file);
-      
       // Auto-detect API endpoint based on file type
       const endpoint = getUploadEndpoint(file);
-      
       const xhr = new XMLHttpRequest();
-      
       // Track upload progress
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable && onProgress) {
@@ -389,7 +318,6 @@
           onProgress(progress);
         }
       };
-      
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           try {
@@ -402,21 +330,16 @@
           reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
         }
       };
-      
       xhr.onerror = () => reject(new Error('Network error occurred'));
       xhr.ontimeout = () => reject(new Error('Upload timeout'));
-      
       // Set timeout (30 seconds)
       xhr.timeout = 30000;
-      
       xhr.open('POST', endpoint);
       xhr.send(formData);
     });
   }
-  
   function getUploadEndpoint(file: File): string {
     const extension = file.name.split('.').pop()?.toLowerCase();
-    
     if (extension && ['pdf'].includes(extension)) {
       return `${uploadEndpoint}pdf`;
     } else if (extension && ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
@@ -429,7 +352,6 @@
       throw new Error(`Unsupported file type: ${extension || 'unknown'}`);
     }
   }
-  
   function getFileIcon(fileName: string): string {
     const extension = fileName.split('.').pop()?.toLowerCase();
     switch (extension) {
@@ -450,7 +372,6 @@
       default: return 'bi-file-earmark';
     }
   }
-  
   function getFileTypeColor(fileName: string): string {
     const extension = fileName.split('.').pop()?.toLowerCase();
     switch (extension) {
@@ -471,14 +392,11 @@
       default: return 'text-secondary';
     }
   }
-  
   function truncateFileName(fileName: string, maxLength: number = 25): string {
     if (fileName.length <= maxLength) return fileName;
-    
     const extension = fileName.split('.').pop();
     const name = fileName.substring(0, fileName.lastIndexOf('.'));
     const truncatedName = name.substring(0, maxLength - extension!.length - 4) + '...';
-    
     return `${truncatedName}.${extension}`;
   }
 </script>

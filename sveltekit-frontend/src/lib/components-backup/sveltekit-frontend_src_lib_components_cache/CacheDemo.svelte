@@ -2,7 +2,6 @@
 <!-- Demonstrates Loki.js + Redis + PostgreSQL caching with real-time statistics -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { Button } from 'bits-ui';
@@ -89,7 +88,6 @@
     isLoading.set(true);
     try {
       const tags = selectedTags.split(',').map(t => t.trim()).filter(t => t);
-      
       const response = await fetch('/api/cache', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -130,7 +128,6 @@
     try {
       const response = await fetch(`/api/cache?action=get&key=${encodeURIComponent(cacheKey)}`);
       const data = await response.json();
-      
       if (data.success) {
         if (data.cached) {
           addTestResult('success', `Retrieved "${cacheKey}": ${JSON.stringify(data.value)}`);
@@ -261,11 +258,9 @@
 
     try {
       const testKey = `hit_miss_test_${Date.now()}`;
-      
       // Test cache miss
       let response = await fetch(`/api/cache?action=get&key=${testKey}`);
       let data = await response.json();
-      
       if (!data.cached) {
         addTestResult('success', '✓ Cache miss test passed');
       } else {
@@ -286,7 +281,6 @@
       // Test cache hit
       response = await fetch(`/api/cache?action=get&key=${testKey}`);
       data = await response.json();
-      
       if (data.cached && data.value === 'test_data_for_hit_test') {
         addTestResult('success', '✓ Cache hit test passed');
       } else {
@@ -295,7 +289,6 @@
 
       // Clean up
       await fetch(`/api/cache?key=${testKey}`, { method: 'DELETE' });
-      
     } catch (error) {
       addTestResult('error', `Hit/miss test error: ${error}`);
     } finally {
@@ -344,10 +337,8 @@
 
   onMount(() => {
     refreshStats();
-    
     // Auto-refresh stats every 10 seconds
     const interval = setInterval(refreshStats, 10000);
-    
     return () => clearInterval(interval);
   });
 </script>

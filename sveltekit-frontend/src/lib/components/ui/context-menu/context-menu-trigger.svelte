@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     asChild?: boolean;
     children?: unknown;
@@ -23,7 +22,7 @@
   function handleContextMenu(event: MouseEvent) {
     event.preventDefault();
     open(event.clientX, event.clientY);
-}
+  }
   function builderAction(node: HTMLElement) {
     node.addEventListener('contextmenu', handleContextMenu);
     return {

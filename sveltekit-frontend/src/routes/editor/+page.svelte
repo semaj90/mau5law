@@ -1,10 +1,8 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import ReportEditor from "$lib/components/editor/ReportEditor.svelte";
   import { report, reportActions } from "$lib/stores/report";
-  
   // Sample evidence data for demonstration
   const sampleEvidence = [
     {
@@ -72,9 +70,8 @@
       metadata: { format: 'JPG', size: 1536000 },
       createdAt: new Date('2024-01-16'),
       updatedAt: new Date('2024-01-16')
-}
+  }
   ];
-  
   onMount(() => {
     // Load sample data for demonstration
     const sampleReport = {
@@ -83,10 +80,8 @@
       content: `
         <h2>Executive Summary</h2>
         <p>This report details the investigation of the incident that occurred on January 15th, 2024, at approximately 10:30 PM in the downtown area. The investigation involved multiple agencies and utilized various forms of evidence to establish a comprehensive understanding of the events.</p>
-        
         <h2>Initial Response</h2>
         <p>Officers responded to a 911 call reporting suspicious activity near the intersection of Main Street and 5th Avenue. Upon arrival, the scene was secured and preliminary evidence collection began.</p>
-        
         <h2>Evidence Collection</h2>
         <p>The following evidence was collected and processed:</p>
         <ul>
@@ -95,10 +90,8 @@
           <li>Video surveillance footage</li>
           <li>Witness statements</li>
         </ul>
-        
         <h2>Analysis and Findings</h2>
         <p>Based on the evidence collected and witness testimonies, the following preliminary findings have been established...</p>
-        
         <p><em>This is a demonstration report. Use the evidence panel to add supporting documentation and continue building your case file.</em></p>
       `,
       attachedEvidence: sampleEvidence,
@@ -114,9 +107,8 @@
         autoSave: true,
         theme: 'light' as const,
         layout: 'dual' as const
-}
+  }
     };
-    
     reportActions.load(sampleReport);
   });
 </script>

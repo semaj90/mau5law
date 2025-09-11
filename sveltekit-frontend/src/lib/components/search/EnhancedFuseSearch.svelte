@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Fuse from 'fuse.js';
   // Use direct component imports to avoid broken barrels
   import { Card } from '$lib/components/ui/enhanced-bits';

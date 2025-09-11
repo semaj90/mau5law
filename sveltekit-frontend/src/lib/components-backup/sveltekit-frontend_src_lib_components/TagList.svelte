@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     tags: string[] ;
     availableTags: string[] ;
@@ -24,7 +23,6 @@
   import { createEventDispatcher } from "svelte";
   import { scale } from "svelte/transition";
 
-            
   const dispatch = createEventDispatcher<{
     change: string[];
     add: string
@@ -66,18 +64,18 @@
           const apiSuggestions = data.suggestions.map((s: any) => s.tag);
           // Merge with existing available tags
           availableTags = [...new Set([...availableTags, ...apiSuggestions])];
-}
+  }
       } catch (error) {
         console.error("Failed to fetch tag suggestions:", error);
-}
-}
+  }
+  }
   }, 300);
 
   function handleInput() {
     showSuggestions = inputValue.length > 0;
     activeIndex = -1;
     debouncedSearch(inputValue);
-}
+  }
   function addTag(tag: string) {
     if (!tag.trim()) return;
 
@@ -95,14 +93,14 @@
     inputValue = "";
     showSuggestions = false;
     activeIndex = -1;
-}
+  }
   function removeTag(tag: string) {
     const newTags = tags.filter((t) => t !== tag);
     tags = newTags;
 
     dispatch("change", newTags);
     dispatch("remove", tag);
-}
+  }
   function handleKeyDown(event: KeyboardEvent) {
     if (readonly) return;
 
@@ -113,7 +111,7 @@
           addTag(suggestions[activeIndex]);
         } else if (inputValue.trim() && allowCustomTags) {
           addTag(inputValue);
-}
+  }
         break;
 
       case "ArrowDown":
@@ -135,25 +133,25 @@
       case "Backspace":
         if (!inputValue && tags.length > 0) {
           removeTag(tags[tags.length - 1]);
-}
+  }
         break;
-}
-}
+  }
+  }
   function handleSuggestionClick(tag: string) {
     addTag(tag);
     inputElement?.focus();
-}
+  }
   function handleClickOutside(event: MouseEvent) {
     if (!suggestionsContainer?.contains(event.target as Node)) {
       showSuggestions = false;
       activeIndex = -1;
-}
-}
+  }
+  }
   function handleFocus() {
     if (inputValue.length > 0) {
       showSuggestions = true;
-}
-}
+  }
+  }
 </script>
 
 <svelte:window onclick={handleClickOutside} />

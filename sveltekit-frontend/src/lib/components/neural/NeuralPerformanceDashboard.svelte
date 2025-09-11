@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
 
@@ -42,7 +41,6 @@
     vectordb: 'healthy',
     lastCheck: new Date()
   });
-  
   const connectionStatus = writable<'connected' | 'disconnected' | 'error'>('disconnected');
 
   // Dashboard state
@@ -54,7 +52,6 @@
   // Derived performance indicators
   const overallGrade = derived([currentMetrics], ([$metrics]) => {
     if (!$metrics) return { grade: 'N/A', color: 'text-gray-400', bg: 'bg-gray-500/20' };
-    
     const efficiency = $metrics.neuralEfficiency;
     if (efficiency >= 95) return { grade: 'S+', color: 'text-emerald-400', bg: 'bg-emerald-500/20' };
     if (efficiency >= 90) return { grade: 'S', color: 'text-green-400', bg: 'bg-green-500/20' };
@@ -68,10 +65,8 @@
     const services = Object.values($status).filter(s => typeof s === 'string') as string[];
     const healthyCount = services.filter(s => s === 'healthy').length;
     const totalServices = services.length;
-    
     if (totalServices === 0) return { score: 0, status: 'Initializing', color: 'text-gray-400' };
     const percentage = (healthyCount / totalServices) * 100;
-    
     if (percentage === 100) return { score: percentage, status: 'All Systems Operational', color: 'text-green-400' };
     if (percentage >= 75) return { score: percentage, status: 'Minor Issues Detected', color: 'text-yellow-400' };
     if (percentage >= 50) return { score: percentage, status: 'Service Degradation', color: 'text-orange-400' };
@@ -82,7 +77,6 @@
   function generateMetrics(): PerformanceMetrics {
     const now = Date.now();
     const baseGpuUtilization = 70 + Math.sin(now / 10000) * 20;
-    
     return {
       timestamp: now,
       gpuUtilization: Math.max(0, Math.min(100, baseGpuUtilization + (Math.random() - 0.5) * 10)),
@@ -116,16 +110,13 @@
   // Start monitoring
   function startMonitoring() {
     if (isMonitoring) return;
-    
     isMonitoring = true;
     connectionStatus.set('connected');
-    
     monitoringInterval = setInterval(() => {
       try {
         const metrics = generateMetrics();
         currentMetrics.set(metrics);
         updateHistory(metrics);
-        
         // Periodic health check
         if (Date.now() - lastUpdate > 5000) {
           const health = checkServiceHealth();
@@ -142,10 +133,8 @@
   // Stop monitoring
   function stopMonitoring() {
     if (!isMonitoring) return;
-    
     isMonitoring = false;
     connectionStatus.set('disconnected');
-    
     if (monitoringInterval) {
       clearInterval(monitoringInterval);
       monitoringInterval = null;

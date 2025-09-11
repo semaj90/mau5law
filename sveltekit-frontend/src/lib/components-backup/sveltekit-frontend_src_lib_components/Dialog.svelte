@@ -1,177 +1,176 @@
 <script lang="ts">
-</script>
-	import { aiStore } from "$lib/stores/canvas";
-	import { onMount } from 'svelte';
-	import { quintOut } from 'svelte/easing';
-	import { fade, fly } from 'svelte/transition';
+  	import { aiStore } from "$lib/stores/canvas";
+  	import { onMount } from 'svelte';
+  	import { quintOut } from 'svelte/easing';
+  	import { fade, fly } from 'svelte/transition';
 
-	import { Bot, Send, User as UserIcon, X } from "lucide-svelte";
+  	import { Bot, Send, User as UserIcon, X } from "lucide-svelte";
 
-	interface Props {
-		title?: string;
-		open?: boolean;
-		onclose?: () => void;
-		onsubmit?: (data: any) => void;
-	}
+  	interface Props {
+  		title?: string;
+  		open?: boolean;
+  		onclose?: () => void;
+  		onsubmit?: (data: any) => void;
+  	}
 
-	let {
-		title = 'AI Assistant',
-		open = $bindable(false),
-		onclose,
-		onsubmit
-	} = $props();
+  	let {
+  		title = 'AI Assistant',
+  		open = $bindable(false),
+  		onclose,
+  		onsubmit
+  	} = $props();
 
-	let dialogElement: HTMLElement
-	let promptInput: HTMLTextAreaElement
-	let messagesContainer: HTMLElement
+  	let dialogElement: HTMLElement
+  	let promptInput: HTMLTextAreaElement
+  	let messagesContainer: HTMLElement
 
-	// Vibe options
-	const vibes = [
-		{ id: 'professional', label: 'Professional', description: 'Formal and structured' },
-		{ id: 'concise', label: 'Concise', description: 'Brief and to the point' },
-		{ id: 'investigative', label: 'Investigative', description: 'Thorough and analytical' },
-		{ id: 'dramatic', label: 'Dramatic', description: 'Engaging and vivid' },
-		{ id: 'technical', label: 'Technical', description: 'Detailed and precise' }
-	];
+  	// Vibe options
+  	const vibes = [
+  		{ id: 'professional', label: 'Professional', description: 'Formal and structured' },
+  		{ id: 'concise', label: 'Concise', description: 'Brief and to the point' },
+  		{ id: 'investigative', label: 'Investigative', description: 'Thorough and analytical' },
+  		{ id: 'dramatic', label: 'Dramatic', description: 'Engaging and vivid' },
+  		{ id: 'technical', label: 'Technical', description: 'Detailed and precise' }
+  	];
 
-	// Reactive state
-	let selectedVibe = $derived($aiStore.selectedVibe)
-	let prompt = $derived($aiStore.prompt)
-	let response = $derived($aiStore.response)
-	let isGenerating = $derived($aiStore.isGenerating)
-	let history = $derived($aiStore.history)
+  	// Reactive state
+  	let selectedVibe = $derived($aiStore.selectedVibe)
+  	let prompt = $derived($aiStore.prompt)
+  	let response = $derived($aiStore.response)
+  	let isGenerating = $derived($aiStore.isGenerating)
+  	let history = $derived($aiStore.history)
 
-	let currentPrompt = '';
+  	let currentPrompt = '';
 
-	onMount(() => {
-		if (open) {
-			focusInput();
-}
-	});
+  	onMount(() => {
+  		if (open) {
+  			focusInput();
+  }
+  	});
 
-	function focusInput() {
-		setTimeout(() => {
-			promptInput?.focus();
-		}, 100);
-}
-	function handleClose() {
-		aiStore.update(state => ({ ...state, dialogOpen: false }));
-		dispatch('close');
-}
-	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			handleClose();
-		} else if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
-			handleSubmit();
-}}
-	function handleVibeChange(vibeId: string) {
-		aiStore.update(state => ({ ...state, selectedVibe: vibeId }));
-}
-	async function handleSubmit() {
-		if (!currentPrompt.trim() || isGenerating) return;
+  	function focusInput() {
+  		setTimeout(() => {
+  			promptInput?.focus();
+  		}, 100);
+  }
+  	function handleClose() {
+  		aiStore.update(state => ({ ...state, dialogOpen: false }));
+  		dispatch('close');
+  }
+  	function handleKeydown(event: KeyboardEvent) {
+  		if (event.key === 'Escape') {
+  			handleClose();
+  		} else if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+  			handleSubmit();
+  }}
+  	function handleVibeChange(vibeId: string) {
+  		aiStore.update(state => ({ ...state, selectedVibe: vibeId }));
+  }
+  	async function handleSubmit() {
+  		if (!currentPrompt.trim() || isGenerating) return;
 
-		const userMessage = {
-			id: crypto.randomUUID(),
-			role: 'user',
-			content: currentPrompt.trim(),
-			timestamp: new Date().toISOString()
-		};
+  		const userMessage = {
+  			id: crypto.randomUUID(),
+  			role: 'user',
+  			content: currentPrompt.trim(),
+  			timestamp: new Date().toISOString()
+  		};
 
-		// Add user message to history
-		aiStore.update(state => ({
-			...state,
-			isGenerating: true,
-			prompt: currentPrompt.trim(),
-			history: [...state.history, userMessage]
-		}));
+  		// Add user message to history
+  		aiStore.update(state => ({
+  			...state,
+  			isGenerating: true,
+  			prompt: currentPrompt.trim(),
+  			history: [...state.history, userMessage]
+  		}));
 
-		// Clear input
-		currentPrompt = '';
+  		// Clear input
+  		currentPrompt = '';
 
-		try {
-			// Send request to AI API
-			const response = await fetch('/api/ai/suggest', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					prompt: userMessage.content,
-					vibe: selectedVibe,
-					context: 'canvas'
-				})
-			});
+  		try {
+  			// Send request to AI API
+  			const response = await fetch('/api/ai/suggest', {
+  				method: 'POST',
+  				headers: {
+  					'Content-Type': 'application/json'
+  				},
+  				body: JSON.stringify({
+  					prompt: userMessage.content,
+  					vibe: selectedVibe,
+  					context: 'canvas'
+  				})
+  			});
 
-			if (!response.ok) {
-				throw new Error('Failed to get AI response');
-}
-			const data = await response.json();
+  			if (!response.ok) {
+  				throw new Error('Failed to get AI response');
+  }
+  			const data = await response.json();
 
-			const aiMessage = {
-				id: crypto.randomUUID(),
-				role: 'assistant',
-				content: data.response || 'Sorry, I could not generate a response.',
-				timestamp: new Date().toISOString()
-			};
+  			const aiMessage = {
+  				id: crypto.randomUUID(),
+  				role: 'assistant',
+  				content: data.response || 'Sorry, I could not generate a response.',
+  				timestamp: new Date().toISOString()
+  			};
 
-			// Add AI response to history
-			aiStore.update(state => ({
-				...state,
-				isGenerating: false,
-				response: data.response,
-				history: [...state.history, aiMessage]
-			}));
+  			// Add AI response to history
+  			aiStore.update(state => ({
+  				...state,
+  				isGenerating: false,
+  				response: data.response,
+  				history: [...state.history, aiMessage]
+  			}));
 
-			// Emit event for parent component
-			dispatch('aiRequest', {
-				prompt: userMessage.content,
-				response: data.response,
-				vibe: selectedVibe
-			});
+  			// Emit event for parent component
+  			dispatch('aiRequest', {
+  				prompt: userMessage.content,
+  				response: data.response,
+  				vibe: selectedVibe
+  			});
 
-		} catch (error) {
-			console.error('AI request failed:', error);
+  		} catch (error) {
+  			console.error('AI request failed:', error);
 
-			const errorMessage = {
-				id: crypto.randomUUID(),
-				role: 'assistant',
-				content: 'Sorry, I encountered an error. Please try again.',
-				timestamp: new Date().toISOString(),
-				isError: true
-			};
+  			const errorMessage = {
+  				id: crypto.randomUUID(),
+  				role: 'assistant',
+  				content: 'Sorry, I encountered an error. Please try again.',
+  				timestamp: new Date().toISOString(),
+  				isError: true
+  			};
 
-			aiStore.update(state => ({
-				...state,
-				isGenerating: false,
-				history: [...state.history, errorMessage]
-			}));
-}
-		// Scroll to bottom of messages
-		setTimeout(() => {
-			if (messagesContainer) {
-				messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-		}, 100);
-}
-	function clearHistory() {
-		aiStore.update(state => ({
-			...state,
-			history: [],
-			prompt: '',
-			response: ''
-		}));
-}
-	function formatTimestamp(timestamp: string) {
-		return new Date(timestamp).toLocaleTimeString('en-US', {
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-}
-	// Close on outside click
-	function handleBackdropClick(event: MouseEvent) {
-		if (event.target === event.currentTarget) {
-			handleClose();
-}}
+  			aiStore.update(state => ({
+  				...state,
+  				isGenerating: false,
+  				history: [...state.history, errorMessage]
+  			}));
+  }
+  		// Scroll to bottom of messages
+  		setTimeout(() => {
+  			if (messagesContainer) {
+  				messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+  		}, 100);
+  }
+  	function clearHistory() {
+  		aiStore.update(state => ({
+  			...state,
+  			history: [],
+  			prompt: '',
+  			response: ''
+  		}));
+  }
+  	function formatTimestamp(timestamp: string) {
+  		return new Date(timestamp).toLocaleTimeString('en-US', {
+  			hour: '2-digit',
+  			minute: '2-digit'
+  		});
+  }
+  	// Close on outside click
+  	function handleBackdropClick(event: MouseEvent) {
+  		if (event.target === event.currentTarget) {
+  			handleClose();
+  }}
 </script>
 
 {#if open}

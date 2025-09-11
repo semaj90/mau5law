@@ -4,7 +4,6 @@ import type { Case } from '$lib/types';
 
 
 <script lang="ts">
-</script>
   interface Props {
     data: LayoutData
   }
@@ -24,7 +23,6 @@ import type { Case } from '$lib/types';
   import { writable } from 'svelte/store';
   import type { LayoutData } from "./$types";
 
-  
   // Sync server data with client store
   $effect(() => {
     if (browser) {
@@ -84,7 +82,7 @@ import type { Case } from '$lib/types';
         goto(url.toString(), { replaceState: true, keepFocus: true, noScroll: true });
       } else {
         await update();
-}
+  }
       isFiltering.set(false);
     };
   };
@@ -94,13 +92,13 @@ import type { Case } from '$lib/types';
     const url = new URL($page.url);
     url.searchParams.delete('view');
     goto(url.toString(), { keepFocus: true, noScroll: true });
-}
+  }
   // Open case view
   function openCase(caseId: string) {
     const url = new URL($page.url);
     url.searchParams.set('view', caseId);
     goto(url.toString(), { keepFocus: true, noScroll: true });
-}
+  }
   // Quick case actions
   async function quickAction(caseId: string, action: string) {
     isLoading.set(true);
@@ -113,13 +111,13 @@ import type { Case } from '$lib/types';
       if (response.ok) {
         // Refresh the layout data
         goto($page.url.pathname + $page.url.search, { invalidateAll: true });
-}
+  }
     } catch (error) {
       console.error('Action failed:', error);
     } finally {
       isLoading.set(false);
-}
-}
+  }
+  }
   // Handle quick status update
   async function updateCaseStatus(caseId: string, status: string) {
     isLoading.set(true);
@@ -141,19 +139,19 @@ import type { Case } from '$lib/types';
             c.id === caseId ? { ...c, status } : c
           )
         }));
-}
+  }
     } catch (error) {
       console.error('Status update failed:', error);
     } finally {
       isLoading.set(false);
-}
-}
+  }
+  }
   // Handle keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape' && isModalOpen) {
       closeCase();
-}
-}
+  }
+  }
 </script>
 
 <svelte:window onkeydown={handleKeydown} />

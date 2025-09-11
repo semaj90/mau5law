@@ -1,6 +1,5 @@
 <!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save with Loki.js -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
 
   import { aiSummarizationService } from "$lib/services/aiSummarizationService";
@@ -51,11 +50,11 @@
     height?: number;
     readOnly?: boolean;
   } = $props();
-let canvasElement = $state<HTMLCanvasElement;
+  let canvasElement = $state<HTMLCanvasElement;
   let canvas: fabric.Canvas | null >(null);
-let lokiDb = $state<Loki | null >(null);
-let canvasCollection = $state<Collection<any> | null >(null);
-let searchEngine = $state<Fuse<any> | null >(null);
+  let lokiDb = $state<Loki | null >(null);
+  let canvasCollection = $state<Collection<any> | null >(null);
+  let searchEngine = $state<Fuse<any> | null >(null);
 
   // Canvas state management
   const canvasState = writable({
@@ -75,13 +74,13 @@ let searchEngine = $state<Fuse<any> | null >(null);
   });
 
   // History management
-let historyStack = $state<string[] >([]);
+  let historyStack = $state<string[] >([]);
   let historyIndex = -1;
   const maxHistorySize = 50;
 
   // Auto-save
   let autoSaveTimeout: NodeJS.Timeout;
-let isDirty = $state(false);
+  let isDirty = $state(false);
 
   // Tools and modes
   const tools = [
@@ -101,8 +100,8 @@ let isDirty = $state(false);
   ];
 
   // Evidence items from store
-let evidenceItems = $state<any[] >([]);
-let searchResults = $state<any[] >([]);
+  let evidenceItems = $state<any[] >([]);
+  let searchResults = $state<any[] >([]);
 
   onMount(() => {
     // Initialize components
@@ -409,7 +408,7 @@ let searchResults = $state<any[] >([]);
     );
 
     // Add thumbnail if available
-let thumbnail = $state(null);
+  let thumbnail = $state(null);
     if (evidence.fileUrl) {
       thumbnail = createThumbnail(evidence);
     }
@@ -929,8 +928,8 @@ let thumbnail = $state(null);
   // Export functions
   function exportCanvas(format: "png" | "svg" | "json") {
     if (!canvas) return;
-let dataUrl = $state<string;
-let filename = $state<string;
+  let dataUrl = $state<string;
+  let filename = $state<string;
 
     switch (format) {
       case "png":

@@ -1,106 +1,101 @@
 <!-- Real AI File Upload Demo Page with Production System -->
 <script lang="ts">
-</script>
   import EnhancedFileUpload from '$lib/components/ai/EnhancedFileUpload.svelte';
-	import { onMount } from 'svelte';
-	
-	let uploadResults: any[] = $state([]);
-	let systemHealth = $state<any>({});
-	let isLoadingHealth = $state(true);
-	
-	function handleUploadComplete(result: any) {
-		console.log('Upload completed:', result);
-		uploadResults = [...uploadResults, result];
-	}
+  	import { onMount } from 'svelte';
+  	let uploadResults: any[] = $state([]);
+  	let systemHealth = $state<any>({});
+  	let isLoadingHealth = $state(true);
+  	function handleUploadComplete(result: any) {
+  		console.log('Upload completed:', result);
+  		uploadResults = [...uploadResults, result];
+  	}
 
-	// Check system health on mount
-	onMount(async () => {
-		await checkSystemHealth();
-	});
+  	// Check system health on mount
+  	onMount(async () => {
+  		await checkSystemHealth();
+  	});
 
-	async function checkSystemHealth() {
-		isLoadingHealth = true;
-		const health = {
-			ocr: { status: 'unknown', details: null },
-			embeddings: { status: 'unknown', details: null },
-			search: { status: 'unknown', details: null },
-			database: { status: 'unknown', details: null }
-		};
+  	async function checkSystemHealth() {
+  		isLoadingHealth = true;
+  		const health = {
+  			ocr: { status: 'unknown', details: null },
+  			embeddings: { status: 'unknown', details: null },
+  			search: { status: 'unknown', details: null },
+  			database: { status: 'unknown', details: null }
+  		};
 
-		try {
-			// Check OCR API
-			const ocrResponse = await fetch('/api/ocr/langextract');
-			if (ocrResponse.ok) {
-				health.ocr.details = await ocrResponse.json();
-				health.ocr.status = health.ocr.details.status;
-			} else {
-				health.ocr.status = 'error';
-			}
+  		try {
+  			// Check OCR API
+  			const ocrResponse = await fetch('/api/ocr/langextract');
+  			if (ocrResponse.ok) {
+  				health.ocr.details = await ocrResponse.json();
+  				health.ocr.status = health.ocr.details.status;
+  			} else {
+  				health.ocr.status = 'error';
+  			}
 
-			// Check Embeddings API
-			const embResponse = await fetch('/api/embeddings/generate');
-			if (embResponse.ok) {
-				health.embeddings.details = await embResponse.json();
-				health.embeddings.status = health.embeddings.details.status;
-			} else {
-				health.embeddings.status = 'error';
-			}
+  			// Check Embeddings API
+  			const embResponse = await fetch('/api/embeddings/generate');
+  			if (embResponse.ok) {
+  				health.embeddings.details = await embResponse.json();
+  				health.embeddings.status = health.embeddings.details.status;
+  			} else {
+  				health.embeddings.status = 'error';
+  			}
 
-			// Check Search API
-			const searchResponse = await fetch('/api/documents/search');
-			if (searchResponse.ok) {
-				health.search.details = await searchResponse.json();
-				health.search.status = health.search.details.status;
-			} else {
-				health.search.status = 'error';
-			}
+  			// Check Search API
+  			const searchResponse = await fetch('/api/documents/search');
+  			if (searchResponse.ok) {
+  				health.search.details = await searchResponse.json();
+  				health.search.status = health.search.details.status;
+  			} else {
+  				health.search.status = 'error';
+  			}
 
-		} catch (error) {
-			console.error('Health check failed:', error);
-		}
+  		} catch (error) {
+  			console.error('Health check failed:', error);
+  		}
 
-		systemHealth = health;
-		isLoadingHealth = false;
-	}
+  		systemHealth = health;
+  		isLoadingHealth = false;
+  	}
 
-	function getStatusColor(status: string): string {
-		switch (status) {
-			case 'healthy': return 'text-green-600 bg-green-50 border-green-200';
-			case 'degraded': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-			case 'unhealthy':
-			case 'error': return 'text-red-600 bg-red-50 border-red-200';
-			default: return 'text-gray-600 bg-gray-50 border-gray-200';
-		}
-	}
+  	function getStatusColor(status: string): string {
+  		switch (status) {
+  			case 'healthy': return 'text-green-600 bg-green-50 border-green-200';
+  			case 'degraded': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+  			case 'unhealthy':
+  			case 'error': return 'text-red-600 bg-red-50 border-red-200';
+  			default: return 'text-gray-600 bg-gray-50 border-gray-200';
+  		}
+  	}
 
-	function getStatusIcon(status: string): string {
-		switch (status) {
-			case 'healthy': return '✅';
-			case 'degraded': return '⚠️';
-			case 'unhealthy':
-			case 'error': return '❌';
-			default: return '❓';
-		}
-	}
+  	function getStatusIcon(status: string): string {
+  		switch (status) {
+  			case 'healthy': return '✅';
+  			case 'degraded': return '⚠️';
+  			case 'unhealthy':
+  			case 'error': return '❌';
+  			default: return '❓';
+  		}
+  	}
 
-	async function testAPI(endpoint: string, method: string = 'GET', body?: unknown) {
-		try {
-			const options: RequestInit = { method };
-			if (body) {
-				options.headers = { 'Content-Type': 'application/json' };
-				options.body = JSON.stringify(body);
-			}
-			
-			const response = await fetch(endpoint, options);
-			const result = await response.json();
-			
-			console.log(`API Test ${endpoint}:`, result);
-			alert(`API Test Result:\n${JSON.stringify(result, null, 2)}`);
-		} catch (error) {
-			console.error(`API Test ${endpoint} failed:`, error);
-			alert(`API Test Failed:\n${error.message}`);
-		}
-	}
+  	async function testAPI(endpoint: string, method: string = 'GET', body?: unknown) {
+  		try {
+  			const options: RequestInit = { method };
+  			if (body) {
+  				options.headers = { 'Content-Type': 'application/json' };
+  				options.body = JSON.stringify(body);
+  			}
+  			const response = await fetch(endpoint, options);
+  			const result = await response.json();
+  			console.log(`API Test ${endpoint}:`, result);
+  			alert(`API Test Result:\n${JSON.stringify(result, null, 2)}`);
+  		} catch (error) {
+  			console.error(`API Test ${endpoint} failed:`, error);
+  			alert(`API Test Failed:\n${error.message}`);
+  		}
+  	}
 </script>
 
 <svelte:head>

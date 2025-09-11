@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     cases: Case[] ;
   }
@@ -28,7 +27,6 @@
 
   import type { Case } from '$lib/types/api';
 
-  
   // TODO: Enhanced stats interface
   // interface AdvancedStats {
   //   resolutionTimeAvg: number

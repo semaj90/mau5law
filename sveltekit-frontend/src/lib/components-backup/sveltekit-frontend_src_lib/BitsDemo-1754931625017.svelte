@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Dialog, Button as BitsButton, Select } from 'bits-ui';
   import { AlertDialog } from 'bits-ui';
   import { fade } from 'svelte/transition';
@@ -49,7 +48,7 @@
         color: 'success',
       },
     });
-}
+  }
   function showWarningNotification() {
     addToast({
       data: {
@@ -58,7 +57,7 @@
         color: 'warning',
       },
     });
-}
+  }
   function showErrorNotification() {
     addToast({
       data: {
@@ -67,7 +66,7 @@
         color: 'error',
       },
     });
-}
+  }
   function showInfoNotification() {
     addToast({
       data: {
@@ -76,7 +75,7 @@
         color: 'info',
       },
     });
-}
+  }
 </script>
 
 

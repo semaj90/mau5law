@@ -6,7 +6,6 @@
 -->
 
 <script lang="ts">
-</script>
   // Updated to use melt-ui components
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
 
@@ -57,7 +56,7 @@
   let isSearching = $state(false);
 
   // Demo data
-let layoutData = $state({
+  let layoutData = $state({
     user: { name: 'James', email: 'james@example.com' },
     stats: { totalCases: 12, openCases: 5, closedCases: 7, evidenceCount: 142 },
     recentActivity: [

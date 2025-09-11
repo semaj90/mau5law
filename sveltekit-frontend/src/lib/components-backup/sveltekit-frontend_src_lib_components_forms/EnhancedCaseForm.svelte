@@ -1,6 +1,5 @@
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
-</script>
   interface Props {
     oncancel?: (event?: any) => void;
   }
@@ -17,8 +16,6 @@
 
    // Case| null = null; // Edit mode if provided
 
-  
-  
   // Form data matching the database schema
   let formData = {
     title: case_?.title || "",
@@ -50,18 +47,18 @@
 
     if (!formData.title.trim()) {
       errors.title = "Title is required";
-}
+  }
     if (!formData.caseNumber.trim()) {
       errors.caseNumber = "Case number is required";
-}
+  }
     if (formData.dangerScore < 0 || formData.dangerScore > 10) {
       errors.dangerScore = "Danger score must be between 0 and 10";
-}
+  }
     if (formData.estimatedValue && isNaN(Number(formData.estimatedValue))) {
       errors.estimatedValue = "Estimated value must be a number";
-}
+  }
     return Object.keys(errors).length === 0;
-}
+  }
   // Handle form submission
   async function handleSubmit() {
     if (!validateForm()) {
@@ -71,7 +68,7 @@
         message: "Please fix the form errors before submitting.",
       });
       return;
-}
+  }
     loading = true;
 
     try {
@@ -104,7 +101,7 @@
       // Defensive: always check for valid API data before fetch
       if (!apiData.title || !apiData.caseNumber) {
         throw new Error("Missing required fields");
-}
+  }
       const url = case_ ? `/api/cases/${case_.id}` : "/api/cases";
       const method = case_ ? "PUT" : "POST";
 
@@ -122,10 +119,10 @@
         savedCase = await response.json();
       } catch (e) {
         throw new Error("Server returned invalid response");
-}
+  }
       if (!response.ok) {
         throw new Error(savedCase?.error || "Failed to save case");
-}
+  }
       notifications.add({
         type: "success",
         title: case_ ? "Case Updated" : "Case Created",
@@ -145,8 +142,8 @@
       });
     } finally {
       loading = false;
-}
-}
+  }
+  }
   // Handle tag management
   function addTag() {
     const tagInput = document.getElementById("new-tag") as HTMLInputElement;
@@ -155,11 +152,11 @@
     if (newTag && !formData.tags.includes(newTag)) {
       formData.tags = [...formData.tags, newTag];
       tagInput.value = "";
-}
-}
+  }
+  }
   function removeTag(tag: string) {
     formData.tags = formData.tags.filter((t) => t !== tag);
-}
+  }
   // Handle team assignment
   function addTeamMember() {
     const memberInput = document.getElementById(
@@ -170,11 +167,11 @@
     if (newMember && !formData.assignedTeam.includes(newMember)) {
       formData.assignedTeam = [...formData.assignedTeam, newMember];
       memberInput.value = "";
-}
-}
+  }
+  }
   function removeTeamMember(member: string) {
     formData.assignedTeam = formData.assignedTeam.filter((m) => m !== member);
-}
+  }
 </script>
 
 <form on:submit|preventDefault={handleSubmit} class="space-y-4">

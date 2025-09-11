@@ -1,12 +1,11 @@
 <script lang="ts">
-</script>
-	import { RangeCalendar } from "bits-ui";
+  	import { RangeCalendar } from "bits-ui";
 
-	function cn(str: string) {
-		return str;
-	}
+  	function cn(str: string) {
+  		return str;
+  	}
 
-	let { value = $bindable() } = $props();
+  	let { value = $bindable() } = $props();
 </script>
 
 <RangeCalendar.Root

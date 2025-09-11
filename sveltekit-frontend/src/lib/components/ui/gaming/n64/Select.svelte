@@ -11,7 +11,6 @@
   - Integration with YoRHa design system
 -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount, tick } from 'svelte';
   import { browser } from '$app/environment';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
@@ -60,7 +59,6 @@
     // Validation
     error?: string;
     success?: string;
-    
     class?: string;
   }
 
@@ -133,7 +131,6 @@
   let hasSuccess = $derived(!!success);
   let selectedOption = $derived(options.find(opt => opt.value === value));
   let displayText = $derived(selectedOption?.label || placeholder);
-  
   // Filter options based on search term
   let filteredOptions = $derived(
     searchable && searchTerm
@@ -203,11 +200,8 @@
 
     isOpen = true;
     selectedIndex = value ? filteredOptions.findIndex(opt => opt.value === value) : -1;
-    
     await playSelectSound(550, 0.2);
-    
     await tick();
-    
     if (searchable && searchInputElement) {
       searchInputElement.focus();
     }
@@ -217,9 +211,7 @@
     isOpen = false;
     selectedIndex = -1;
     searchTerm = '';
-    
     await playSelectSound(440, 0.15);
-    
     if (selectElement) {
       selectElement.focus();
     }
@@ -229,10 +221,8 @@
     if (option.disabled) return;
 
     value = option.value;
-    
     await playSelectSound(660, 0.2);
     await closeDropdown();
-    
     dispatch('change', { value: option.value, option });
   };
 
@@ -240,9 +230,7 @@
     if (!clearable || disabled) return;
 
     value = '';
-    
     await playSelectSound(330, 0.15);
-    
     dispatch('change', { value: '', option: null });
   };
 
@@ -356,7 +344,6 @@
     };
 
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
-    
     if (hasError) {
       return baseColors.error;
     } else if (hasSuccess) {
@@ -448,7 +435,6 @@
   onMount(() => {
     if (browser) {
       document.addEventListener('click', handleOutsideClick);
-      
       return () => {
         document.removeEventListener('click', handleOutsideClick);
       };

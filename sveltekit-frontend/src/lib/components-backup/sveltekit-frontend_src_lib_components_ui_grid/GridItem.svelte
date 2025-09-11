@@ -1,6 +1,5 @@
 <!-- Grid Item Component -->
 <script lang="ts">
-</script>
   interface Props {
     colSpan: number
     rowSpan: number
@@ -22,7 +21,6 @@
 
   import { cn } from '$lib/utils';
 
-            
   // Build grid classes dynamically
   let spanClasses = $derived(responsive)
     ? `col-span-1 sm:col-span-${Math.min(colSpan, 2)} md:col-span-${Math.min(colSpan, 4)} lg:col-span-${Math.min(colSpan, 6)} xl:col-span-${colSpan}`

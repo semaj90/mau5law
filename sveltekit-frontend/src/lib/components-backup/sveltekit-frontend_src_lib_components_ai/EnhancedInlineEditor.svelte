@@ -3,7 +3,6 @@
   Real-time AI-powered editing with mini text box suggestions
 -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy, tick  } from 'svelte';
   import { createActor  } from 'xstate';
   import { aiProcessingMachine, createAITask, aiTaskCreators  } from '$lib/stores/machines';
@@ -56,7 +55,6 @@
     try { // Get context around cursor
       const contextBefore = text.slice(Math.max(0, cursorPos - 100), cursorPos);
       const contextAfter = text.slice(cursorPos, Math.min(text.length, cursorPos + 50));
-      
       // Generate AI suggestions using the enhanced RAG system
       const suggestions = await generateAISuggestions({
         text,
@@ -65,7 +63,6 @@
         cursorPosition: cursorPos });
 
       currentSuggestions = suggestions.slice(0, maxSuggestions);
-      
       if (currentSuggestions.length > 0) { await tick();
         updateSuggestionPopupPosition();
         isShowingSuggestions = true;
@@ -85,19 +82,16 @@
     if (enableAutoComplete) {
       const completionTask = aiTaskCreators.analyzeDocument(
         `Complete this text naturally: "${context.contextBefore }[CURSOR]${ context.contextAfter }"
-        
         Provide 2-3 natural completions for the text at [CURSOR]. Focus on:
         - Legal terminology accuracy
         - Contextual relevance
         - Natural language flow
-        
         Return JSON array with completions.`,
         aiModel,
         'json'
       );
 
       aiActor.send({ type: 'START_PROCESSING', task: completionTask });
-      
       const result = await waitForAIResult(completionTask.id);
       if (result?.success && result.result?.completions) { suggestions.push(...result.result.completions.map((completion: string, index: number) => ({,
           id: `completion_${index }`,
@@ -112,20 +106,17 @@
     // 2. Grammar and style suggestions
     if (enableGrammarCheck) { const grammarTask = aiTaskCreators.analyzeDocument(
         `Analyze this text for grammar, style, and legal writing improvements: "${context.text }"
-        
         Focus on:
         - Grammar errors
         - Legal writing style
         - Clarity improvements
         - Professional tone
-        
         Return JSON with specific suggestions and replacements.`,
         aiModel,
         'json'
       );
 
       aiActor.send({ type: 'START_PROCESSING', task: grammarTask });
-      
       const result = await waitForAIResult(grammarTask.id);
       if (result?.success && result.result?.suggestions) { suggestions.push(...result.result.suggestions.map((suggestion: any, index: number) => ({,
           id: `grammar_${index }`,
@@ -146,7 +137,6 @@
        }, { priority: 'medium'  });
 
       aiActor.send({ type: 'START_PROCESSING', task: semanticTask });
-      
       const embeddingResult = await waitForAIResult(semanticTask.id);
       if (embeddingResult?.success) { // Use RAG to find related legal terms and concepts
         const ragResults = await enhancedRAGStore.queryRAG(
@@ -178,7 +168,6 @@
   // Wait for AI task completion
   function waitForAIResult(taskId: string): Promise<any> { return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => reject(new Error('AI task timeout')), 10000);
-      
       const subscription = aiActor.subscribe((state) => {
         if (state.context.result?.taskId === taskId) {
           clearTimeout(timeout);
@@ -210,10 +199,8 @@
   // Handle input events
   function handleInput(event: InputEvent) { const target = event.target as HTMLDivElement;
     value = target.textContent || '';
-    
     const selection = window.getSelection();
     const cursorPos = selection ? selection.anchorOffset : 0;
-    
     generateSuggestions(value, cursorPos);
    }
 
@@ -228,12 +215,10 @@
           currentSuggestions.length - 1
         );
         break;
-      
       case 'ArrowUp':
         event.preventDefault();
         selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, 0);
         break;
-      
       case 'Tab':
       case 'Enter':
         if (selectedSuggestionIndex >= 0) {
@@ -241,7 +226,6 @@
           applySuggestion(currentSuggestions[selectedSuggestionIndex]);
          }
         break;
-      
       case 'Escape':
         event.preventDefault();
         hideSuggestions();

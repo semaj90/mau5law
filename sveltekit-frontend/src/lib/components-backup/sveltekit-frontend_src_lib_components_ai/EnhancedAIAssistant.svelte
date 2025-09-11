@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     caseId?: string;
     placeholder?: string;
@@ -20,10 +19,7 @@
 
 
   import { Bot, Download, Loader2, MessageSquare, Quote, Search, Settings, User as UserIcon } from "lucide-svelte";
-  
     export const evidenceIds: string[] = [];
-      
-  
   // State
   let query = $state("");
   let isLoading = $state(false);
@@ -72,7 +68,7 @@
 
       if (!response.ok) {
         throw new Error("Failed to get AI response");
-}
+  }
       const data = await response.json();
 
       const assistantMessage = {
@@ -98,23 +94,23 @@
       messages = [...messages, errorMessage];
     } finally {
       isLoading = false;
-}}
+  }}
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       handleSubmit();
-}}
+  }}
   function showCitation(citation: string) {
     selectedCitation = citation;
     showCitationDialog = true;
-}
+  }
   function insertCitation() {
     oncitation?.();
     showCitationDialog = false;
-}
+  }
   function clearChat() {
     messages = [];
-}
+  }
   function downloadChat() {
     const chatData = {
       caseId,
@@ -131,7 +127,7 @@
     a.download = `ai-chat-${caseId || "session"}-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
-}
+  }
 </script>
 
 <div class="ai-assistant-container">

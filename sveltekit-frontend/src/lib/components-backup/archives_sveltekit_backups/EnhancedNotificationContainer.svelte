@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import { notifications, type Notification } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";

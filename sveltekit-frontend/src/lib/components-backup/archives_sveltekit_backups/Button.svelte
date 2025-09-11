@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from "svelte";
   import { quintOut } from "svelte/easing";
   import { scale } from "svelte/transition";
@@ -33,7 +32,7 @@
     if (isDisabled) {
       event.preventDefault();
       return;
-}
+  }
     dispatch("click", event);
   };
 

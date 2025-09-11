@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import { aiPersonality } from "$lib/stores/chatStore";
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";

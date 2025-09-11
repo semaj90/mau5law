@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import {
     Button
@@ -129,7 +128,6 @@
         };
 
         const response = await unifiedAIService.query(options);
-        
         if (response.success) {
           // Add to conversation history manually since we're bypassing the store
           const entry = {
@@ -145,7 +143,6 @@
               context7Used: useContext7
             }
           };
-          
           // Add user message first
           const userEntry = {
             id: crypto.randomUUID(),
@@ -153,7 +150,6 @@
             content: message,
             timestamp: new Date()
           };
-          
           console.log('📝 Unified AI Response:', response);
         } else {
           console.error('Unified AI query failed:', response.error);

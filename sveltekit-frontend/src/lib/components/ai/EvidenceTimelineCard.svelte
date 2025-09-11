@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
 
   // runes-mode: props accessed via $props()

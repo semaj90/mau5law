@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  
   let systemStatus = null;
   let memoryPrediction = null;
   let isLoading = true;
@@ -11,7 +9,6 @@
   onMount(async () => {
     if (browser) {
       await loadData();
-      
       // Refresh data every 30 seconds
       setInterval(loadData, 30000);
     }
@@ -20,7 +17,6 @@
   async function loadData() {
     try {
       error = null;
-      
       // Fetch system status and memory prediction
       const [statusResponse, predictionResponse] = await Promise.all([
         fetch('/api/memory/neural?action=status'),
@@ -49,7 +45,6 @@
     try {
       const response = await fetch('/api/memory/neural?action=optimize');
       const result = await response.json();
-      
       if (result.success) {
         // Reload data after optimization
         await loadData();

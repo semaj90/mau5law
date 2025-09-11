@@ -1,6 +1,5 @@
 <!-- Enhanced AI Chat Test Component - Svelte 5 with bits-ui and shadcn-svelte -->
 <script lang="ts">
-</script>
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
@@ -207,7 +206,7 @@
       messages = [...messages, assistantMessage];
 
       if (reader) {
-let fullContent = $state('');
+  let fullContent = $state('');
 
         while (true) {
           const { done, value } = await reader.read();

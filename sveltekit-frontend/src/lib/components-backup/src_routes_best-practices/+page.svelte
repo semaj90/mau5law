@@ -1,17 +1,13 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  
   let report: any = null;
   let loading = false;
   let error = '';
   let storedReports: any[] = [];
-  
   async function generateBestPractices() {
     loading = true;
     error = '';
-    
     try {
       const response = await fetch('/api/generate-best-practices', {
         method: 'POST',
@@ -21,9 +17,7 @@
           options: {}
         })
       });
-      
       const result = await response.json();
-      
       if (result.success) {
         report = result.data.report;
         await loadStoredReports();
@@ -36,12 +30,10 @@
       loading = false;
     }
   }
-  
   async function loadStoredReports() {
     try {
       const response = await fetch('/api/generate-best-practices?limit=5');
       const result = await response.json();
-      
       if (result.success) {
         storedReports = result.data.reports;
       }
@@ -49,11 +41,9 @@
       console.warn('Failed to load stored reports:', err);
     }
   }
-  
   onMount(() => {
     loadStoredReports();
   });
-  
   function getPriorityColor(priority: string) {
     switch (priority) {
       case 'high': return 'bg-red-100 text-red-800 border-red-200';
@@ -62,7 +52,6 @@
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
-  
   function getCategoryIcon(category: string) {
     switch (category) {
       case 'security': return '🔒';

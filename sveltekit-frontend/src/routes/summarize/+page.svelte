@@ -9,73 +9,68 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { enhance } from '$app/forms';
   import type { ActionData } from './$types';
-  
   // Component state
-let reportText = $state('');
-let summary = $state('');
-let isLoading = $state(false);
-let errorMessage = $state('');
-let processingSteps = $state<string[] >([]);
-let metadata = $state<any >(null);
-  
+  let reportText = $state('');
+  let summary = $state('');
+  let isLoading = $state(false);
+  let errorMessage = $state('');
+  let processingSteps = $state<string[] >([]);
+  let metadata = $state<any >(null);
   // Summarization options
-let summaryLength = $state<'short' | 'medium' | 'long' >('medium');
-let includeKeyTerms = $state(true);
-let includeLegalAnalysis = $state(true);
-let temperature = $state(0.3);
-  
+  let summaryLength = $state<'short' | 'medium' | 'long' >('medium');
+  let includeKeyTerms = $state(true);
+  let includeLegalAnalysis = $state(true);
+  let temperature = $state(0.3);
   // UI state
-let activeTab = $state<'input' | 'summary' | 'analysis' >('input');
-let wordCount = $state(0);
-let charCount = $state(0);
-let estimatedProcessingTime = $state(0);
-  
+  let activeTab = $state<'input' | 'summary' | 'analysis' >('input');
+  let wordCount = $state(0);
+  let charCount = $state(0);
+  let estimatedProcessingTime = $state(0);
   // Sample legal document for demonstration
   const sampleLegalDoc = `MEMORANDUM OF LAW
 
-TO: Senior Partner
-FROM: Legal Research Team  
-DATE: August 25, 2025
-RE: Contract Breach Analysis - ABC Corp v. XYZ Industries
+  TO: Senior Partner
+  FROM: Legal Research Team  
+  DATE: August 25, 2025
+  RE: Contract Breach Analysis - ABC Corp v. XYZ Industries
 
-I. EXECUTIVE SUMMARY
+  I. EXECUTIVE SUMMARY
 
-This memorandum analyzes the potential breach of contract claim by ABC Corporation against XYZ Industries regarding the Master Services Agreement dated January 15, 2024. Based on our analysis of the contract terms, relevant case law, and factual circumstances, we conclude that ABC has a strong claim for material breach due to XYZ's failure to deliver services within the specified timeframes and quality standards.
+  This memorandum analyzes the potential breach of contract claim by ABC Corporation against XYZ Industries regarding the Master Services Agreement dated January 15, 2024. Based on our analysis of the contract terms, relevant case law, and factual circumstances, we conclude that ABC has a strong claim for material breach due to XYZ's failure to deliver services within the specified timeframes and quality standards.
 
-II. FACTUAL BACKGROUND
+  II. FACTUAL BACKGROUND
 
-ABC Corporation entered into a Master Services Agreement with XYZ Industries on January 15, 2024, for the provision of IT infrastructure services over a 24-month period. The contract includes specific performance milestones, service level agreements (SLAs), and liquidated damages provisions. XYZ was required to implement the new system by June 30, 2024, with performance benchmarks of 99.5% uptime and response times under 2 seconds.
+  ABC Corporation entered into a Master Services Agreement with XYZ Industries on January 15, 2024, for the provision of IT infrastructure services over a 24-month period. The contract includes specific performance milestones, service level agreements (SLAs), and liquidated damages provisions. XYZ was required to implement the new system by June 30, 2024, with performance benchmarks of 99.5% uptime and response times under 2 seconds.
 
-However, XYZ failed to meet multiple critical deadlines and performance standards. The implementation was delayed by over 90 days, causing significant business disruption to ABC's operations. Additionally, when the system was finally deployed, it consistently failed to meet the contracted SLA requirements, with uptimes averaging only 95% and response times frequently exceeding 5 seconds.
+  However, XYZ failed to meet multiple critical deadlines and performance standards. The implementation was delayed by over 90 days, causing significant business disruption to ABC's operations. Additionally, when the system was finally deployed, it consistently failed to meet the contracted SLA requirements, with uptimes averaging only 95% and response times frequently exceeding 5 seconds.
 
-III. LEGAL ANALYSIS
+  III. LEGAL ANALYSIS
 
-A. Material Breach Standard
+  A. Material Breach Standard
 
-Under California law, a material breach occurs when a party's failure to perform substantially defeats the purpose of the contract. In Comunale v. Traders & General Insurance Co. (1958) 50 Cal.2d 654, the court established that materiality depends on the extent to which the injured party is deprived of the benefit reasonably expected from the contract.
+  Under California law, a material breach occurs when a party's failure to perform substantially defeats the purpose of the contract. In Comunale v. Traders & General Insurance Co. (1958) 50 Cal.2d 654, the court established that materiality depends on the extent to which the injured party is deprived of the benefit reasonably expected from the contract.
 
-Here, XYZ's delays and performance failures substantially frustrated ABC's legitimate expectations under the agreement. The 90-day delay caused ABC to lose a major client contract worth $2.3 million, and the ongoing performance issues have resulted in additional operational costs and customer complaints.
+  Here, XYZ's delays and performance failures substantially frustrated ABC's legitimate expectations under the agreement. The 90-day delay caused ABC to lose a major client contract worth $2.3 million, and the ongoing performance issues have resulted in additional operational costs and customer complaints.
 
-B. Damages Calculation  
+  B. Damages Calculation  
 
-The contract includes both liquidated damages provisions for delays ($10,000 per day after the deadline) and general damages for performance failures. Based on the delay period and documented losses, ABC's potential damages include:
+  The contract includes both liquidated damages provisions for delays ($10,000 per day after the deadline) and general damages for performance failures. Based on the delay period and documented losses, ABC's potential damages include:
 
-1. Liquidated damages: $900,000 (90 days × $10,000)
-2. Lost profits from terminated client contract: $2,300,000
-3. Additional operational costs: $150,000
-4. Consequential damages from customer loss: $400,000
+  1. Liquidated damages: $900,000 (90 days × $10,000)
+  2. Lost profits from terminated client contract: $2,300,000
+  3. Additional operational costs: $150,000
+  4. Consequential damages from customer loss: $400,000
 
-Total estimated damages: $3,750,000
+  Total estimated damages: $3,750,000
 
-IV. CONCLUSION AND RECOMMENDATIONS
+  IV. CONCLUSION AND RECOMMENDATIONS
 
-We recommend that ABC proceed with a breach of contract claim against XYZ Industries. The evidence clearly supports a finding of material breach, and ABC's damages are well-documented and substantial. We should also consider whether the contract's limitation of liability clause applies to these circumstances, as it may affect the recoverable damages amount.
+  We recommend that ABC proceed with a breach of contract claim against XYZ Industries. The evidence clearly supports a finding of material breach, and ABC's damages are well-documented and substantial. We should also consider whether the contract's limitation of liability clause applies to these circumstances, as it may affect the recoverable damages amount.
 
-Additionally, we recommend exploring settlement negotiations before filing suit, as the strength of ABC's position may encourage a favorable resolution without the costs and uncertainties of litigation.`;
+  Additionally, we recommend exploring settlement negotiations before filing suit, as the strength of ABC's position may encourage a favorable resolution without the costs and uncertainties of litigation.`;
 
   // Reactive calculations
   // TODO: Convert to $derived: {
@@ -169,7 +164,6 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
         summary = data.summary;
         metadata = data.metadata;
         processingSteps.push('✅ Summarization complete!');
-        
         // Auto-switch to analysis tab if legal analysis was included
         if (includeLegalAnalysis && metadata?.legalRiskAnalysis) {
           setTimeout(() => activeTab = 'analysis', 1000);

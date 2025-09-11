@@ -1,6 +1,5 @@
 <!-- YoRHa Advanced Command Interface - Complete 3D System -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import type { 
@@ -9,19 +8,16 @@
     YoRHaModule,
     HolographicData 
   } from '$lib/types/yorha-interface';
-  
   // Core system stores
   const systemStatus = writable<'ONLINE' | 'DEGRADED' | 'OFFLINE'>('ONLINE');
   const powerLevel = writable<number>(98.7);
   const activeModules = writable<YoRHaModule[]>([]);
   const commandHistory = writable<CommandResult[]>([]);
   const holographicData = writable<HolographicData[]>([]);
-  
   // 3D visualization elements
-let canvas3D = $state<HTMLCanvasElement;
+  let canvas3D = $state<HTMLCanvasElement;
   let glContext: WebGLRenderingContext | null >(null);
-let animationId = $state<number;
-  
+  let animationId = $state<number;
   // System metrics
   let metrics >(writable<SystemMetrics>({
     cpu_usage: 45.2,
@@ -33,16 +29,13 @@ let animationId = $state<number;
     quantum_state: 'COHERENT',
     neural_activity: 94.6,
   }));
-  
   // Command input
-let commandInput = $state('');
-let isProcessingCommand = $state(false);
-  
+  let commandInput = $state('');
+  let isProcessingCommand = $state(false);
   // Visual effects
-let glitchActive = $state(false);
-let scanlineOpacity = $state(0.3);
-let hologramFlicker = $state(false);
-  
+  let glitchActive = $state(false);
+  let scanlineOpacity = $state(0.3);
+  let hologramFlicker = $state(false);
   // YoRHa modules configuration
   const yorhaModules: YoRHaModule[] = [
     {
@@ -100,7 +93,6 @@ let hologramFlicker = $state(false);
       color: '#06b6d4'
     }
   ];
-  
   onMount(() => {
     activeModules.set(yorhaModules);
     initializeHolographics();
@@ -110,7 +102,6 @@ let hologramFlicker = $state(false);
       if (animationId) cancelAnimationFrame(animationId);
     };
   });
-  
   function initializeHolographics() {
     const initialData: HolographicData[] = [
       {
@@ -146,7 +137,6 @@ let hologramFlicker = $state(false);
     ];
     holographicData.set(initialData);
   }
-  
   function startSystemMonitoring() {
     setInterval(() => {
       metrics.update(current => ({
@@ -157,31 +147,25 @@ let hologramFlicker = $state(false);
         network_latency: 8 + Math.random() * 8,
         neural_activity: 90 + Math.random() * 8,
       }));
-      
       // Random glitch effects
       if (Math.random() < 0.05) {
         triggerGlitch();
       }
     }, 2000);
   }
-  
   function initWebGL() {
     if (!canvas3D) return;
-    
     glContext = canvas3D.getContext('webgl');
     if (!glContext) {
       console.warn('WebGL not supported, falling back to 2D rendering');
       return;
     }
-    
     // Initialize WebGL rendering pipeline
     setupShaders();
     startRenderLoop();
   }
-  
   function setupShaders() {
     if (!glContext) return;
-    
     // Vertex shader for holographic effects
     const vertexShaderSource = `
       attribute vec4 position;
@@ -191,18 +175,15 @@ let hologramFlicker = $state(false);
       uniform float time;
       varying vec3 vNormal;
       varying float vGlow;
-      
       void main() {
         vec4 pos = position;
         pos.y += sin(pos.x * 2.0 + time * 3.0) * 0.1;
         pos.x += cos(pos.z * 1.5 + time * 2.0) * 0.05;
-        
         gl_Position = projectionMatrix * modelViewMatrix * pos;
         vNormal = normal;
         vGlow = abs(sin(time * 4.0 + position.x)) * 0.5 + 0.5;
       }
     `;
-    
     // Fragment shader for cyber effects
     const fragmentShaderSource = `
       precision mediump float;
@@ -211,44 +192,33 @@ let hologramFlicker = $state(false);
       uniform float time;
       varying vec3 vNormal;
       varying float vGlow;
-      
       void main() {
         vec3 finalColor = color * vGlow;
         finalColor += vec3(0.0, 1.0, 0.5) * abs(sin(time * 5.0)) * 0.3;
-        
         float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 2.0);
         finalColor *= (1.0 + fresnel);
-        
         gl_FragColor = vec4(finalColor, opacity * vGlow);
       }
     `;
-    
     // Compile and link shaders (simplified implementation)
     console.log('YoRHa: WebGL shaders initialized');
   }
-  
   function startRenderLoop() {
     const render = (timestamp: number) => {
       if (!glContext || !canvas3D) return;
-      
       // Clear and setup viewport
       glContext.viewport(0, 0, canvas3D.width, canvas3D.height);
       glContext.clearColor(0.02, 0.05, 0.1, 1.0);
       glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
-      
       // Render holographic elements
       renderHolographics(timestamp);
-      
       animationId = requestAnimationFrame(render);
     };
-    
     render(0);
   }
-  
   function renderHolographics(timestamp: number) {
     // 3D holographic rendering implementation
     const time = timestamp * 0.001;
-    
     // Update holographic data rotations
     holographicData.update(data => 
       data.map(item => ({
@@ -261,13 +231,10 @@ let hologramFlicker = $state(false);
       }))
     );
   }
-  
   async function executeCommand(command: string) {
     if (isProcessingCommand) return;
-    
     isProcessingCommand = true;
     commandInput = '';
-    
     const result: CommandResult = {
       id: `cmd-${Date.now()}`,
       command,
@@ -276,17 +243,13 @@ let hologramFlicker = $state(false);
       output: 'Executing command...',
       module: 'YORHA-CORE'
     };
-    
     commandHistory.update(history => [result, ...history.slice(0, 9)]);
-    
     try {
       // Route command to appropriate system
       const response = await routeCommand(command);
-      
       result.status = 'SUCCESS';
       result.output = response.output;
       result.data = response.data;
-      
     } catch (error) {
       result.status = 'ERROR';
       result.output = error instanceof Error ? error.message : 'Unknown error';
@@ -297,10 +260,8 @@ let hologramFlicker = $state(false);
       );
     }
   }
-  
   async function routeCommand(command: string) {
     const cmd = command.toLowerCase().trim();
-    
     if (cmd.startsWith('legal')) {
       return await executeLegalCommand(cmd);
     } else if (cmd.startsWith('analyze')) {
@@ -315,7 +276,6 @@ let hologramFlicker = $state(false);
       return executeHelpCommand(cmd);
     }
   }
-  
   async function executeLegalCommand(cmd: string): Promise<any> {
     // Integration with legal AI services
     const response = await fetch('/api/v1/legal-ai/query', {
@@ -323,7 +283,6 @@ let hologramFlicker = $state(false);
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: cmd, source: 'yorha-interface' })
     });
-    
     if (response.ok) {
       const data = await response.json();
       return {
@@ -334,14 +293,12 @@ let hologramFlicker = $state(false);
       throw new Error('Legal AI system unavailable');
     }
   }
-  
   async function executeAnalysisCommand(cmd: string): Promise<any> {
     return {
       output: `Analysis initiated: ${cmd.replace('analyze ', '')}`,
       data: { analysis_id: 'ANL-' + Date.now(), status: 'queued' }
     };
   }
-  
   async function executeSearchCommand(cmd: string): Promise<any> {
     const query = cmd.replace('search ', '');
     return {
@@ -349,7 +306,6 @@ let hologramFlicker = $state(false);
       data: { query, results_count: Math.floor(Math.random() * 50) + 1 }
     };
   }
-  
   function executeSystemCommand(cmd: string) {
     if (cmd.includes('status')) {
       return {
@@ -368,37 +324,31 @@ let hologramFlicker = $state(false);
       };
     }
   }
-  
   async function executeNeuralCommand(cmd: string): Promise<any> {
     return {
       output: 'Neural network processing initiated',
       data: { neural_activity: $metrics.neural_activity }
     };
   }
-  
   function executeHelpCommand(cmd: string) {
     return {
       output: `Available commands: LEGAL <query>, ANALYZE <target>, SEARCH <terms>, SYSTEM STATUS, NEURAL SCAN`,
       data: { commands: ['legal', 'analyze', 'search', 'system', 'neural'] }
     };
   }
-  
   function triggerGlitch() {
     glitchActive = true;
     hologramFlicker = true;
-    
     setTimeout(() => {
       glitchActive = false;
       hologramFlicker = false;
     }, 200);
   }
-  
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter' && commandInput.trim()) {
       executeCommand(commandInput.trim());
     }
   }
-  
   function getStatusColor(status: string): string {
     switch (status) {
       case 'ACTIVE': return '#00ff88';

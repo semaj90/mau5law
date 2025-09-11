@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onsave?: (event?: any) => void;
   }
@@ -29,10 +28,8 @@
   let readingTime = 0;
   let hasUnsavedChanges = false;
 
-  
   // Auto-save functionality
   let autoSaveTimer: NodeJS.Timeout;
-  
   function startAutoSave() {
     if (autoSaveTimer) clearInterval(autoSaveTimer);
     autoSaveTimer = setInterval(() => {
@@ -64,42 +61,36 @@
   // Keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
     const isCtrl = event.ctrlKey || event.metaKey;
-    
     // Save (Ctrl+S)
     if (isCtrl && event.key === 's') {
       event.preventDefault();
       saveDocument();
       return;
     }
-    
     // Bold (Ctrl+B)
     if (isCtrl && event.key === 'b') {
       event.preventDefault();
       document.execCommand('bold');
       return;
     }
-    
     // Italic (Ctrl+I)
     if (isCtrl && event.key === 'i') {
       event.preventDefault();
       document.execCommand('italic');
       return;
     }
-    
     // Show shortcuts (Ctrl+/)
     if (isCtrl && event.key === '/') {
       event.preventDefault();
       showShortcuts = !showShortcuts;
       return;
     }
-    
     // Fullscreen (F11)
     if (event.key === 'F11') {
       event.preventDefault();
       toggleFullscreen();
       return;
     }
-    
     // Focus mode (F10)
     if (event.key === 'F10') {
       event.preventDefault();
@@ -132,7 +123,6 @@
 
   onMount(() => {
     if (autoSave) startAutoSave();
-    
     // Listen for fullscreen changes
     document.addEventListener('fullscreenchange', () => {
       isFullscreen = !!document.fullscreenElement;

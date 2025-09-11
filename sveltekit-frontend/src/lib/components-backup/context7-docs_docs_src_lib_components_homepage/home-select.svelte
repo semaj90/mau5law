@@ -1,22 +1,21 @@
 <script lang="ts">
-</script>
-	import { Select } from "bits-ui";
-	import Check from "phosphor-svelte/lib/Check";
-	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
-	import CaretDoubleUp from "phosphor-svelte/lib/CaretDoubleUp";
-	import CaretDoubleDown from "phosphor-svelte/lib/CaretDoubleDown";
+  	import { Select } from "bits-ui";
+  	import Check from "phosphor-svelte/lib/Check";
+  	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
+  	import CaretDoubleUp from "phosphor-svelte/lib/CaretDoubleUp";
+  	import CaretDoubleDown from "phosphor-svelte/lib/CaretDoubleDown";
 
-	const themes = [
-		{ value: "new", label: "New App" },
-		{ value: "code", label: "Code" },
-		{ value: "design", label: "Design" },
-	];
+  	const themes = [
+  		{ value: "new", label: "New App" },
+  		{ value: "code", label: "Code" },
+  		{ value: "design", label: "Design" },
+  	];
 
-	let { value = $bindable("new") }: { value: string } = $props();
+  	let { value = $bindable("new") }: { value: string } = $props();
 
-	const selectedLabel = $derived(
-		value ? themes.find((theme) => theme.value === value)?.label : "New app"
-	);
+  	const selectedLabel = $derived(
+  		value ? themes.find((theme) => theme.value === value)?.label : "New app"
+  	);
 </script>
 
 <Select.Root type="single" bind:value items={themes}>

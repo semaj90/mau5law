@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import GlyphGenerator from '$lib/components/glyph/GlyphGenerator.svelte';
   import {
     Card,
@@ -10,7 +9,6 @@
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
-  
   // Demo state
   let selectedEvidenceId = $state(12345);
   let recentGlyphs = $state([]);
@@ -29,18 +27,15 @@
       },
       ...recentGlyphs.slice(0, 9) // Keep last 10
     ];
-    
     console.log('New glyph generated:', result);
   }
 
   async function searchTensors() {
     if (!tensorSearchQuery.trim()) return;
-    
     searching = true;
     try {
       const response = await fetch(`/api/glyph/search?q=${encodeURIComponent(tensorSearchQuery)}&limit=10`);
       const data = await response.json();
-      
       if (data.success) {
         tensorSearchResults = data.data.results;
       } else {

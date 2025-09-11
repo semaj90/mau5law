@@ -3,7 +3,6 @@ Enhanced AI Chat Assistant for Prosecutors
 Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 -->
 <script lang="ts">
-</script>
   import type { Props } from "$lib/types/global";
   import {
     Card,
@@ -57,20 +56,19 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     if (enableSelfPrompting) {
       generateSelfPromptSuggestions();
     }
-    
     // Add welcome message
     messages = [{
       id: crypto.randomUUID(),
       role: 'assistant',
       content: `Hello! I'm your AI legal assistant powered by Gemma3Legal. I can help you with:
 
-• Evidence analysis and correlation
-• Legal precedent research  
-• Case strategy recommendations
-• Document synthesis and review
-• Timeline reconstruction
+  • Evidence analysis and correlation
+  • Legal precedent research  
+  • Case strategy recommendations
+  • Document synthesis and review
+  • Timeline reconstruction
 
-${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get started with case-specific insights.'}`,
+  ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get started with case-specific insights.'}`,
       timestamp: new Date(),
       metadata: {
         model: 'gemma3-legal:latest',
@@ -83,7 +81,6 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
   // Self-prompting system
   const generateSelfPromptSuggestions = async () => {
     if (!caseId) return;
-    
     try {
       const response = await fetch('/api/ai/self-prompt', {
         method: 'POST',
@@ -94,7 +91,6 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
           currentPhase: 'evidence_review'
         })
       });
-      
       const result = await response.json();
       selfPromptSuggestions = result.suggestions || [
         "Analyze evidence strength for this case",
@@ -110,15 +106,11 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
   // Elemental awareness (YOLO-style hover analysis)
   const handleElementHover = async (event: MouseEvent) => {
     if (!enableElementalAwareness) return;
-    
     const target = event.target as HTMLElement;
     const elementType = target.tagName.toLowerCase();
     const elementText = target.textContent?.substring(0, 100) || '';
-    
     if (elementText.length < 3) return;
-    
     hoveredElement = elementType;
-    
     // Analyze element with AI for legal relevance
     try {
       const response = await fetch('/api/ai/analyze-element', {
@@ -130,7 +122,6 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
           context: 'legal_analysis'
         })
       });
-      
       const analysis = await response.json();
       elementAnalysis = analysis;
     } catch (error) {
@@ -141,14 +132,12 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
   // Enhanced RAG chat with vector search
   const sendMessage = async () => {
     if (!currentMessage.trim()) return;
-    
     const userMessage = {
       id: crypto.randomUUID(),
       role: 'user',
       content: currentMessage,
       timestamp: new Date()
     };
-    
     messages = [...messages, userMessage];
     const userQuery = currentMessage;
     currentMessage = '';
@@ -169,7 +158,6 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
             vectorSearch: true
           })
         });
-        
         const ragResult = await ragResponse.json();
         ragSources = ragResult.sources || [];
       }
@@ -208,14 +196,12 @@ ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get st
           processingTime: aiResult.processingTime || 0
         }
       };
-      
       messages = [...messages, assistantMessage];
 
       // Generate new self-prompt suggestions based on conversation
       if (enableSelfPrompting) {
         setTimeout(generateSelfPromptSuggestions, 1000);
       }
-      
     } catch (error) {
       console.error('Chat error:', error);
       const errorMessage = {

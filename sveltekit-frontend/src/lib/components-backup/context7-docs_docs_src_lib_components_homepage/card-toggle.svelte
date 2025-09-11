@@ -1,11 +1,10 @@
 <script lang="ts">
-</script>
-	import { Avatar, DropdownMenu, Tabs } from "bits-ui";
-	import Cardholder from "phosphor-svelte/lib/Cardholder";
-	import DotsThreeVertical from "phosphor-svelte/lib/DotsThreeVertical";
-	import UserCircle from "phosphor-svelte/lib/UserCircle";
+  	import { Avatar, DropdownMenu, Tabs } from "bits-ui";
+  	import Cardholder from "phosphor-svelte/lib/Cardholder";
+  	import DotsThreeVertical from "phosphor-svelte/lib/DotsThreeVertical";
+  	import UserCircle from "phosphor-svelte/lib/UserCircle";
 
-	let loadingStatus = $state<Avatar.RootProps["loadingStatus"]>("loading");
+  	let loadingStatus = $state<Avatar.RootProps["loadingStatus"]>("loading");
 </script>
 
 <div

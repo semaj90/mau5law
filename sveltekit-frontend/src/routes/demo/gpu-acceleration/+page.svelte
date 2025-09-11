@@ -1,21 +1,18 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import type { CUDAResponse } from '$lib/services/gpu-service-router.js';
   import type { AttentionResult, LegalContextAnalysis } from '$lib/services/flashattention2-rtx3060.js';
-  
   // Reactive stores for GPU status and results
   const gpuStatus = writable<any>(null);
   const cudaHealth = writable<boolean>(false);
   const processingResults = writable<any[]>([]);
   const isProcessing = writable<boolean>(false);
   const performanceMetrics = writable<any>(null);
-let testText = $state("The defendant's indemnification clause shall survive termination of this agreement and remain in full force and effect, providing liability coverage for all preceding actions.");
-let selectedService = $state('enhanced-rag');
-let selectedOperation = $state('legal_analysis');
-let selectedPriority = $state<'high' | 'normal' | 'low' >('high');
-  
+  let testText = $state("The defendant's indemnification clause shall survive termination of this agreement and remain in full force and effect, providing liability coverage for all preceding actions.");
+  let selectedService = $state('enhanced-rag');
+  let selectedOperation = $state('legal_analysis');
+  let selectedPriority = $state<'high' | 'normal' | 'low' >('high');
   const availableServices = [
     { value: 'enhanced-rag', label: 'Enhanced RAG (Port 8094)' },
     { value: 'legal-ai', label: 'Legal AI Service (Port 8202)' },
@@ -24,7 +21,6 @@ let selectedPriority = $state<'high' | 'normal' | 'low' >('high');
     { value: 'ai-summary', label: 'AI Summary (Port 8096)' },
     { value: 'kratos-server', label: 'Kratos gRPC (Port 50051)' }
   ];
-  
   const availableOperations = [
     { value: 'legal_analysis', label: 'Legal Document Analysis' },
     { value: 'embedding', label: 'Text Embedding Generation' },
@@ -32,37 +28,29 @@ let selectedPriority = $state<'high' | 'normal' | 'low' >('high');
     { value: 'vector_search', label: 'Vector Database Search' },
     { value: 'som_train', label: 'Self-Organizing Map Training' }
   ];
-  
   // Check GPU status and CUDA health on mount
   onMount(async () => {
     await checkGPUStatus();
   });
-  
   async function checkGPUStatus() {
     try {
       const response = await fetch('/api/gpu/cuda-status');
       const data = await response.json();
-      
       gpuStatus.set(data.gpu_status);
       cudaHealth.set(data.cuda.available);
-      
       if (data.gpu_status?.performanceMetrics) {
         performanceMetrics.set(data.gpu_status.performanceMetrics);
       }
-      
     } catch (error) {
       console.error('Failed to check GPU status:', error);
       cudaHealth.set(false);
     }
   }
-  
   async function processWithCUDA() {
     isProcessing.set(true);
-    
     try {
       // Convert text to simple numeric array for processing
       const textData = Array.from(testText).map((char, i) => char.charCodeAt(0) + i * 0.01);
-      
       const response = await fetch('/api/gpu/cuda-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -79,9 +67,7 @@ let selectedPriority = $state<'high' | 'normal' | 'low' >('high');
           }
         })
       });
-      
       const result = await response.json();
-      
       // Add to results
       processingResults.update(results => [
         {
@@ -97,10 +83,8 @@ let selectedPriority = $state<'high' | 'normal' | 'low' >('high');
         },
         ...results
       ]);
-      
       // Refresh status to get updated metrics
       await checkGPUStatus();
-      
     } catch (error) {
       console.error('GPU processing failed:', error);
       processingResults.update(results => [
@@ -115,13 +99,10 @@ let selectedPriority = $state<'high' | 'normal' | 'low' >('high');
         ...results
       ]);
     }
-    
     isProcessing.set(false);
   }
-  
   async function testFlashAttention2() {
     isProcessing.set(true);
-    
     try {
       // Test FlashAttention2 directly
       const response = await fetch('/api/gpu/flash-attention', {
@@ -133,9 +114,7 @@ let selectedPriority = $state<'high' | 'normal' | 'low' >('high');
           analysisType: 'legal'
         })
       });
-      
       const result = await response.json();
-      
       processingResults.update(results => [
         {
           timestamp: new Date().toISOString(),
@@ -150,14 +129,11 @@ let selectedPriority = $state<'high' | 'normal' | 'low' >('high');
         },
         ...results
       ]);
-      
     } catch (error) {
       console.error('FlashAttention2 test failed:', error);
     }
-    
     isProcessing.set(false);
   }
-  
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -165,7 +141,6 @@ let selectedPriority = $state<'high' | 'normal' | 'low' >('high');
     const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms.toFixed(2)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;

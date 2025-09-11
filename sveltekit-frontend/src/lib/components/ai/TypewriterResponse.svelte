@@ -1,350 +1,333 @@
 <script lang="ts">
-</script>
 
-	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-	import { quintOut, elasticOut } from 'svelte/easing';
-	import { advancedCache } from '$lib/services/advanced-cache-manager';
+  	import { quintOut, elasticOut } from 'svelte/easing';
+  	import { advancedCache } from '$lib/services/advanced-cache-manager';
 
-	// Props
-	let { text = $bindable() } = $props(); // string = '';
-	let { speed = $bindable() } = $props(); // number = 50; // milliseconds per character
-	let { showCursor = $bindable() } = $props(); // boolean = true;
-	let { cursorChar = $bindable() } = $props(); // string = '▋';
-	let { cacheKey = $bindable() } = $props(); // string = '';
-	let { userActivity = $bindable() } = $props(); // UserActivity[] = [];
-	let { enableThinking = $bindable() } = $props(); // boolean = true;
-	let { autoStart = $bindable() } = $props(); // boolean = true;
+  	// Props
+  	let { text = $bindable() } = $props(); // string = '';
+  	let { speed = $bindable() } = $props(); // number = 50; // milliseconds per character
+  	let { showCursor = $bindable() } = $props(); // boolean = true;
+  	let { cursorChar = $bindable() } = $props(); // string = '▋';
+  	let { cacheKey = $bindable() } = $props(); // string = '';
+  	let { userActivity = $bindable() } = $props(); // UserActivity[] = [];
+  	let { enableThinking = $bindable() } = $props(); // boolean = true;
+  	let { autoStart = $bindable() } = $props(); // boolean = true;
 
-	// Types
-	interface UserActivity {
-		timestamp: number;
-		action: 'typing' | 'pause' | 'delete' | 'select';
-		content?: string;
-		duration?: number;
-		position?: number;
-	}
+  	// Types
+  	interface UserActivity {
+  		timestamp: number;
+  		action: 'typing' | 'pause' | 'delete' | 'select';
+  		content?: string;
+  		duration?: number;
+  		position?: number;
+  	}
 
-	interface ThinkingState {
-		phase: 'analyzing' | 'processing' | 'generating' | 'complete';
-		progress: number;
-		currentThought?: string;
-	}
+  	interface ThinkingState {
+  		phase: 'analyzing' | 'processing' | 'generating' | 'complete';
+  		progress: number;
+  		currentThought?: string;
+  	}
 
-	// State
-let displayedText = $state('');
-let currentIndex = $state(0);
-let isTyping = $state(false);
-let isPaused = $state(false);
-let cursorVisible = $state(true);
-let thinkingState = $state<ThinkingState >({
-		phase: 'analyzing',
-		progress: 0
-	});
-	
-	// Activity replay state
-let isReplayingActivity = $state(false);
-let activityIndex = $state(0);
-let replaySpeed = $state(1.0);
+  	// State
+  let displayedText = $state('');
+  let currentIndex = $state(0);
+  let isTyping = $state(false);
+  let isPaused = $state(false);
+  let cursorVisible = $state(true);
+  let thinkingState = $state<ThinkingState >({
+  		phase: 'analyzing',
+  		progress: 0
+  	});
+  	// Activity replay state
+  let isReplayingActivity = $state(false);
+  let activityIndex = $state(0);
+  let replaySpeed = $state(1.0);
 
-	// Event dispatcher
-	const dispatch = createEventDispatcher<{
-		complete: void;
-		progress: { progress: number; phase: string };
-		activityComplete: void;
-	}>();
+  	// Event dispatcher
+  	const dispatch = createEventDispatcher<{
+  		complete: void;
+  		progress: { progress: number; phase: string };
+  		activityComplete: void;
+  	}>();
 
-	// Thinking phrases for different phases
-	const thinkingPhrases = {
-		analyzing: [
-			'Analyzing legal context...',
-			'Processing case precedents...',
-			'Reviewing contract clauses...',
-			'Examining regulatory compliance...'
-		],
-		processing: [
-			'Cross-referencing legal databases...',
-			'Applying legal reasoning models...',
-			'Evaluating risk factors...',
-			'Synthesizing legal arguments...'
-		],
-		generating: [
-			'Crafting legal analysis...',
-			'Structuring recommendations...',
-			'Preparing citation references...',
-			'Finalizing response...'
-		]
-	};
+  	// Thinking phrases for different phases
+  	const thinkingPhrases = {
+  		analyzing: [
+  			'Analyzing legal context...',
+  			'Processing case precedents...',
+  			'Reviewing contract clauses...',
+  			'Examining regulatory compliance...'
+  		],
+  		processing: [
+  			'Cross-referencing legal databases...',
+  			'Applying legal reasoning models...',
+  			'Evaluating risk factors...',
+  			'Synthesizing legal arguments...'
+  		],
+  		generating: [
+  			'Crafting legal analysis...',
+  			'Structuring recommendations...',
+  			'Preparing citation references...',
+  			'Finalizing response...'
+  		]
+  	};
 
-	// Intervals and timeouts
-let typingInterval = $state<NodeJS.Timeout;
-let cursorInterval = $state<NodeJS.Timeout;
-	let thinkingInterval: NodeJS.Timeout;
-	let activityTimeout: NodeJS.Timeout;
+  	// Intervals and timeouts
+  let typingInterval = $state<NodeJS.Timeout;
+  let cursorInterval = $state<NodeJS.Timeout;
+  	let thinkingInterval: NodeJS.Timeout;
+  	let activityTimeout: NodeJS.Timeout;
 
-	onMount(() >(> {
-		if (autoStart) {
-			startTypewriter());
-		}
-		startCursorBlink();
-		
-		// Load cached user activity if available
-		loadCachedActivity();
-	});
+  	onMount(() >(> {
+  		if (autoStart) {
+  			startTypewriter());
+  		}
+  		startCursorBlink();
+  		// Load cached user activity if available
+  		loadCachedActivity();
+  	});
 
-	onDestroy(() >(> {
-		clearAllIntervals());
-	});
+  	onDestroy(() >(> {
+  		clearAllIntervals());
+  	});
 
-	// Main typewriter function
-	async function startTypewriter() {
-		if (isTyping) return;
-		
-		isTyping = true;
-		currentIndex = 0;
-		displayedText = '';
+  	// Main typewriter function
+  	async function startTypewriter() {
+  		if (isTyping) return;
+  		isTyping = true;
+  		currentIndex = 0;
+  		displayedText = '';
 
-		// Check cache first
-		if (cacheKey) {
-			const cached = await advancedCache.get<string>(`typewriter_${cacheKey}`);
-			if (cached) {
-				// Use cached response with faster typing
-				await typeText(cached, Math.max(10, speed / 3));
-				return;
-			}
-		}
+  		// Check cache first
+  		if (cacheKey) {
+  			const cached = await advancedCache.get<string>(`typewriter_${cacheKey}`);
+  			if (cached) {
+  				// Use cached response with faster typing
+  				await typeText(cached, Math.max(10, speed / 3));
+  				return;
+  			}
+  		}
 
-		// Show thinking animation while LLM loads
-		if (enableThinking) {
-			await showThinkingAnimation();
-		}
+  		// Show thinking animation while LLM loads
+  		if (enableThinking) {
+  			await showThinkingAnimation();
+  		}
 
-		// Replay user activity if available
-		if (userActivity.length > 0) {
-			await replayUserActivity();
-		}
+  		// Replay user activity if available
+  		if (userActivity.length > 0) {
+  			await replayUserActivity();
+  		}
 
-		// Type the actual response
-		await typeText(text, speed);
+  		// Type the actual response
+  		await typeText(text, speed);
 
-		// Cache the response
-		if (cacheKey && text) {
-			await advancedCache.set(`typewriter_${cacheKey}`, text, {
-				priority: 'high',
-				ttl: 10 * 60 * 1000, // 10 minutes
-				tags: ['typewriter', 'responses']
-			});
-		}
-	}
+  		// Cache the response
+  		if (cacheKey && text) {
+  			await advancedCache.set(`typewriter_${cacheKey}`, text, {
+  				priority: 'high',
+  				ttl: 10 * 60 * 1000, // 10 minutes
+  				tags: ['typewriter', 'responses']
+  			});
+  		}
+  	}
 
-	async function typeText(textToType: string, typingSpeed: number): Promise<void> {
-		return new Promise((resolve) => {
-let index = $state(0);
-			displayedText = '';
-			
-			const type = () => {
-				if (index < textToType.length && !isPaused) {
-					// Simulate natural typing variations
-					const char = textToType[index];
-					const baseSpeed = typingSpeed;
-					let currentSpeed = baseSpeed;
+  	async function typeText(textToType: string, typingSpeed: number): Promise<void> {
+  		return new Promise((resolve) => {
+  let index = $state(0);
+  			displayedText = '';
+  			const type = () => {
+  				if (index < textToType.length && !isPaused) {
+  					// Simulate natural typing variations
+  					const char = textToType[index];
+  					const baseSpeed = typingSpeed;
+  					let currentSpeed = baseSpeed;
 
-					// Vary speed based on character type
-					if (char === ' ') currentSpeed = baseSpeed * 0.5; // Faster for spaces
-					if (char === '.' || char === '!' || char === '?') currentSpeed = baseSpeed * 2; // Slower for punctuation
-					if (char.match(/[A-Z]/)) currentSpeed = baseSpeed * 1.2; // Slightly slower for capitals
+  					// Vary speed based on character type
+  					if (char === ' ') currentSpeed = baseSpeed * 0.5; // Faster for spaces
+  					if (char === '.' || char === '!' || char === '?') currentSpeed = baseSpeed * 2; // Slower for punctuation
+  					if (char.match(/[A-Z]/)) currentSpeed = baseSpeed * 1.2; // Slightly slower for capitals
 
-					displayedText += char;
-					index++;
-					
-					// Dispatch progress
-					dispatch('progress', {
-						progress: (index / textToType.length) * 100,
-						phase: 'typing'
-					});
+  					displayedText += char;
+  					index++;
+  					// Dispatch progress
+  					dispatch('progress', {
+  						progress: (index / textToType.length) * 100,
+  						phase: 'typing'
+  					});
 
-					typingInterval = setTimeout(type, currentSpeed + Math.random() * 20 - 10);
-				} else {
-					isTyping = false;
-					thinkingState.phase = 'complete';
-					dispatch('complete');
-					resolve();
-				}
-			};
+  					typingInterval = setTimeout(type, currentSpeed + Math.random() * 20 - 10);
+  				} else {
+  					isTyping = false;
+  					thinkingState.phase = 'complete';
+  					dispatch('complete');
+  					resolve();
+  				}
+  			};
 
-			type();
-		});
-	}
+  			type();
+  		});
+  	}
 
-	async function showThinkingAnimation(): Promise<void> {
-		return new Promise((resolve) => {
-			thinkingState.phase = 'analyzing';
-			thinkingState.progress = 0;
-let phaseIndex = $state(0);
-			const phases: (keyof typeof thinkingPhrases)[] = ['analyzing', 'processing', 'generating'];
-			
-			const updateThinking = () => {
-				const currentPhase = phases[phaseIndex];
-				thinkingState.phase = currentPhase;
-				
-				// Random thought from current phase
-				const thoughts = thinkingPhrases[currentPhase];
-				thinkingState.currentThought = thoughts[Math.floor(Math.random() * thoughts.length)];
-				
-				thinkingState.progress += 10 + Math.random() * 15;
-				
-				dispatch('progress', {
-					progress: thinkingState.progress,
-					phase: currentPhase
-				});
+  	async function showThinkingAnimation(): Promise<void> {
+  		return new Promise((resolve) => {
+  			thinkingState.phase = 'analyzing';
+  			thinkingState.progress = 0;
+  let phaseIndex = $state(0);
+  			const phases: (keyof typeof thinkingPhrases)[] = ['analyzing', 'processing', 'generating'];
+  			const updateThinking = () => {
+  				const currentPhase = phases[phaseIndex];
+  				thinkingState.phase = currentPhase;
+  				// Random thought from current phase
+  				const thoughts = thinkingPhrases[currentPhase];
+  				thinkingState.currentThought = thoughts[Math.floor(Math.random() * thoughts.length)];
+  				thinkingState.progress += 10 + Math.random() * 15;
+  				dispatch('progress', {
+  					progress: thinkingState.progress,
+  					phase: currentPhase
+  				});
 
-				if (thinkingState.progress >= 100) {
-					resolve();
-				} else if (thinkingState.progress > 33 && phaseIndex < 1) {
-					phaseIndex = 1;
-				} else if (thinkingState.progress > 66 && phaseIndex < 2) {
-					phaseIndex = 2;
-				}
-			};
+  				if (thinkingState.progress >= 100) {
+  					resolve();
+  				} else if (thinkingState.progress > 33 && phaseIndex < 1) {
+  					phaseIndex = 1;
+  				} else if (thinkingState.progress > 66 && phaseIndex < 2) {
+  					phaseIndex = 2;
+  				}
+  			};
 
-			// Simulate thinking time (2-4 seconds)
-			const thinkingDuration = 2000 + Math.random() * 2000;
-			const updateInterval = thinkingDuration / 10;
-			
-			thinkingInterval = setInterval(updateThinking, updateInterval);
-			
-			// Ensure completion
-			setTimeout(() => {
-				clearInterval(thinkingInterval);
-				thinkingState.progress = 100;
-				thinkingState.phase = 'complete';
-				resolve();
-			}, thinkingDuration);
-		});
-	}
+  			// Simulate thinking time (2-4 seconds)
+  			const thinkingDuration = 2000 + Math.random() * 2000;
+  			const updateInterval = thinkingDuration / 10;
+  			thinkingInterval = setInterval(updateThinking, updateInterval);
+  			// Ensure completion
+  			setTimeout(() => {
+  				clearInterval(thinkingInterval);
+  				thinkingState.progress = 100;
+  				thinkingState.phase = 'complete';
+  				resolve();
+  			}, thinkingDuration);
+  		});
+  	}
 
-	async function replayUserActivity(): Promise<void> {
-		if (!userActivity.length) return;
-		
-		isReplayingActivity = true;
-		activityIndex = 0;
-		
-		return new Promise((resolve) => {
-			const replayNext = () => {
-				if (activityIndex >= userActivity.length) {
-					isReplayingActivity = false;
-					dispatch('activityComplete');
-					resolve();
-					return;
-				}
+  	async function replayUserActivity(): Promise<void> {
+  		if (!userActivity.length) return;
+  		isReplayingActivity = true;
+  		activityIndex = 0;
+  		return new Promise((resolve) => {
+  			const replayNext = () => {
+  				if (activityIndex >= userActivity.length) {
+  					isReplayingActivity = false;
+  					dispatch('activityComplete');
+  					resolve();
+  					return;
+  				}
 
-				const activity = userActivity[activityIndex];
-				const scaledDuration = (activity.duration || 500) / replaySpeed;
+  				const activity = userActivity[activityIndex];
+  				const scaledDuration = (activity.duration || 500) / replaySpeed;
 
-				switch (activity.action) {
-					case 'typing':
-						if (activity.content) {
-							// Show partial content being typed
-							displayedText = activity.content.substring(0, 
-								Math.floor((activityIndex / userActivity.length) * activity.content.length)
-							);
-						}
-						break;
-					
-					case 'pause':
-						// Brief pause in typing
-						break;
-					
-					case 'delete':
-						// Show text being deleted
-						if (displayedText.length > 0) {
-							displayedText = displayedText.substring(0, displayedText.length - 1);
-						}
-						break;
-					
-					case 'select':
-						// Visual indication of text selection
-						// This could be enhanced with CSS animations
-						break;
-				}
+  				switch (activity.action) {
+  					case 'typing':
+  						if (activity.content) {
+  							// Show partial content being typed
+  							displayedText = activity.content.substring(0, 
+  								Math.floor((activityIndex / userActivity.length) * activity.content.length)
+  							);
+  						}
+  						break;
+  					case 'pause':
+  						// Brief pause in typing
+  						break;
+  					case 'delete':
+  						// Show text being deleted
+  						if (displayedText.length > 0) {
+  							displayedText = displayedText.substring(0, displayedText.length - 1);
+  						}
+  						break;
+  					case 'select':
+  						// Visual indication of text selection
+  						// This could be enhanced with CSS animations
+  						break;
+  				}
 
-				activityIndex++;
-				activityTimeout = setTimeout(replayNext, scaledDuration);
-			};
+  				activityIndex++;
+  				activityTimeout = setTimeout(replayNext, scaledDuration);
+  			};
 
-			replayNext();
-		});
-	}
+  			replayNext();
+  		});
+  	}
 
-	function startCursorBlink() {
-		cursorInterval = setInterval(() => {
-			cursorVisible = !cursorVisible;
-		}, 530); // Natural cursor blink rate
-	}
+  	function startCursorBlink() {
+  		cursorInterval = setInterval(() => {
+  			cursorVisible = !cursorVisible;
+  		}, 530); // Natural cursor blink rate
+  	}
 
-	function pause() {
-		isPaused = true;
-	}
+  	function pause() {
+  		isPaused = true;
+  	}
 
-	function resume() {
-		isPaused = false;
-	}
+  	function resume() {
+  		isPaused = false;
+  	}
 
-	function stop() {
-		clearAllIntervals();
-		isTyping = false;
-		isPaused = false;
-		isReplayingActivity = false;
-	}
+  	function stop() {
+  		clearAllIntervals();
+  		isTyping = false;
+  		isPaused = false;
+  		isReplayingActivity = false;
+  	}
 
-	function restart() {
-		stop();
-		currentIndex = 0;
-		displayedText = '';
-		startTypewriter();
-	}
+  	function restart() {
+  		stop();
+  		currentIndex = 0;
+  		displayedText = '';
+  		startTypewriter();
+  	}
 
-	function setSpeed(newSpeed: number) {
-		speed = Math.max(10, Math.min(200, newSpeed));
-	}
+  	function setSpeed(newSpeed: number) {
+  		speed = Math.max(10, Math.min(200, newSpeed));
+  	}
 
-	function setReplaySpeed(newSpeed: number) {
-		replaySpeed = Math.max(0.1, Math.min(5.0, newSpeed));
-	}
+  	function setReplaySpeed(newSpeed: number) {
+  		replaySpeed = Math.max(0.1, Math.min(5.0, newSpeed));
+  	}
 
-	async function loadCachedActivity() {
-		if (cacheKey) {
-			const cached = await advancedCache.get<UserActivity[]>(`activity_${cacheKey}`);
-			if (cached) {
-				userActivity = cached;
-			}
-		}
-	}
+  	async function loadCachedActivity() {
+  		if (cacheKey) {
+  			const cached = await advancedCache.get<UserActivity[]>(`activity_${cacheKey}`);
+  			if (cached) {
+  				userActivity = cached;
+  			}
+  		}
+  	}
 
-	async function cacheCurrentActivity() {
-		if (cacheKey && userActivity.length > 0) {
-			await advancedCache.set(`activity_${cacheKey}`, userActivity, {
-				priority: 'medium',
-				ttl: 30 * 60 * 1000, // 30 minutes
-				tags: ['user-activity', 'replay']
-			});
-		}
-	}
+  	async function cacheCurrentActivity() {
+  		if (cacheKey && userActivity.length > 0) {
+  			await advancedCache.set(`activity_${cacheKey}`, userActivity, {
+  				priority: 'medium',
+  				ttl: 30 * 60 * 1000, // 30 minutes
+  				tags: ['user-activity', 'replay']
+  			});
+  		}
+  	}
 
-	function clearAllIntervals() {
-		if (typingInterval) clearTimeout(typingInterval);
-		if (cursorInterval) clearInterval(cursorInterval);
-		if (thinkingInterval) clearInterval(thinkingInterval);
-		if (activityTimeout) clearTimeout(activityTimeout);
-	}
+  	function clearAllIntervals() {
+  		if (typingInterval) clearTimeout(typingInterval);
+  		if (cursorInterval) clearInterval(cursorInterval);
+  		if (thinkingInterval) clearInterval(thinkingInterval);
+  		if (activityTimeout) clearTimeout(activityTimeout);
+  	}
 
-	// Reactive statements
-	// TODO: Convert to $derived: if (text && autoStart) {
-		restart()
-	}
+  	// Reactive statements
+  	// TODO: Convert to $derived: if (text && autoStart) {
+  		restart()
+  	}
 
-	// Export functions for external control
-	export { pause, resume, stop, restart, setSpeed, setReplaySpeed };
+  	// Export functions for external control
+  	export { pause, resume, stop, restart, setSpeed, setReplaySpeed };
 </script>
 
 <!-- Thinking Animation (shown while LLM loads) -->

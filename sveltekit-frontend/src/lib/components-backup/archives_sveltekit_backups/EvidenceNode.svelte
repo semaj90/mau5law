@@ -1,13 +1,10 @@
 <script lang="ts">
-</script>
   import { Move, RotateCcw, Trash2 } from 'lucide-svelte';
   import { onDestroy, onMount } from 'svelte';
-  
   // Fabric.js types
   type FabricCanvas = any;
   type FabricImage = any;
   type FabricObject = any;
-  
   // Props - simplified for the Detective Mode interface
   export let title: string = '';
   export let fileUrl: string = '';
@@ -15,18 +12,15 @@
   export let size = { width: 400, height: 300 };
   export let isSelected = false;
   export let isDirty = false;
-  
   let canvasEl: HTMLCanvasElement;
   let fabricCanvas: FabricCanvas | null = null; // fabric.Canvas when Fabric.js is loaded
   let nodeElement: HTMLElement;
   let canvasState = {};
-  
   onMount(async () => {
     // Dynamically import Fabric.js to avoid SSR issues
     try {
       const fabric = await import('fabric');
       const { Canvas, Image } = fabric; // Fix: use fabric directly
-      
       fabricCanvas = new Canvas(canvasEl, {
         width: size.width - 20,
         height: size.height - 80,
@@ -57,7 +51,6 @@
       (fabricCanvas as any)?.on?.('object:modified', saveCanvasState);
       (fabricCanvas as any)?.on?.('object:added', saveCanvasState);
       (fabricCanvas as any)?.on?.('object:removed', saveCanvasState);
-      
     } catch (error) {
       console.warn('Fabric.js not available, canvas features disabled:', error);
     }
@@ -107,7 +100,6 @@
         });
         fabricCanvas.add(rect);
         break;
-        
       case 'circle':
         const circle = new fabric.Circle({
           left: 50,
@@ -119,7 +111,6 @@
         });
         fabricCanvas.add(circle);
         break;
-        
       case 'arrow':
         const line = new fabric.Line([50, 50, 150, 100], {
           stroke: '#3b82f6',
@@ -128,7 +119,6 @@
         });
         fabricCanvas.add(line);
         break;
-        
       case 'text':
         const text = new fabric.IText('Click to edit', {
           left: 50,
@@ -139,7 +129,6 @@
         fabricCanvas.add(text);
         break;
     }
-    
     fabricCanvas.renderAll();
   }
 
@@ -171,18 +160,13 @@
     function onMouseMove(e: MouseEvent) {
       const deltaX = e.clientX - startX;
       const deltaY = e.clientY - startY;
-      
       let newWidth = startWidth;
       let newHeight = startHeight;
-      
       if (corner.includes('right')) newWidth = startWidth + deltaX;
       if (corner.includes('bottom')) newHeight = startHeight + deltaY;
-      
       newWidth = Math.max(200, newWidth);
       newHeight = Math.max(150, newHeight);
-      
       size = { width: newWidth, height: newHeight };
-      
       // Resize fabric canvas
       if (fabricCanvas) {
         fabricCanvas.setDimensions({

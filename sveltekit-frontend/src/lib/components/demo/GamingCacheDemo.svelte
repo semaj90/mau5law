@@ -5,7 +5,6 @@ and performance monitoring across N64 and YoRHa gaming components
 -->
 
 <script lang="ts">
-</script>
   import { onMount, tick } from 'svelte';
   import type { 
     EnhancedGPUCacheEntry, 
@@ -36,7 +35,7 @@ and performance monitoring across N64 and YoRHa gaming components
 
   // Demo scenarios
   let currentScenario = $state(0);
-let scenarios = $state([
+  let scenarios = $state([
     {
       name: 'N64 Texture Filtering Showcase',
       description: 'Demonstrate high-performance N64-style texture filtering with cache optimization',
@@ -90,13 +89,12 @@ let scenarios = $state([
   let enableWasmAcceleration = $state(true);
   let enableRealTimeMetrics = $state(true);
   let stressTestMode = $state(false);
-let demoTimer = $state<number | null >(null);
-let metricsTimer = $state<number | null >(null);
+  let demoTimer = $state<number | null >(null);
+  let metricsTimer = $state<number | null >(null);
 
   onMount(() => {
     initializeDemoData();
     startRealTimeMetrics();
-    
     // Cleanup on component destroy
     return () => {
       if (demoTimer) clearInterval(demoTimer);
@@ -111,10 +109,8 @@ let metricsTimer = $state<number | null >(null);
     try {
       // Generate test texture data
       textureTestData = await generateTestTextures();
-      
       // Generate test shader data
       shaderTestData = await generateTestShaders();
-      
       console.log('[Gaming Cache Demo] Initialized with:', {
         textures: textureTestData.length,
         shaders: shaderTestData.length
@@ -141,23 +137,19 @@ let metricsTimer = $state<number | null >(null);
       const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
-      
       const ctx = canvas.getContext('2d');
       if (!ctx) continue;
 
       // Generate procedural texture pattern
       const imageData = ctx.createImageData(width, height);
       const data = imageData.data;
-      
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           const index = (y * width + x) * 4;
-          
           // Create interesting pattern for demo
           const r = Math.sin(x * 0.02) * 127 + 128;
           const g = Math.sin(y * 0.02) * 127 + 128;
           const b = Math.sin((x + y) * 0.01) * 127 + 128;
-          
           data[index] = r;     // Red
           data[index + 1] = g; // Green
           data[index + 2] = b; // Blue
@@ -187,20 +179,16 @@ let metricsTimer = $state<number | null >(null);
           attribute vec3 position;
           attribute vec2 uv;
           attribute vec3 normal;
-          
           uniform mat4 projectionMatrix;
           uniform mat4 modelViewMatrix;
           uniform mat3 normalMatrix;
-          
           varying vec2 vUv;
           varying vec3 vNormal;
           varying vec3 vPosition;
-          
           void main() {
             vUv = uv;
             vNormal = normalize(normalMatrix * normal);
             vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
-            
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
           }
         `
@@ -210,17 +198,14 @@ let metricsTimer = $state<number | null >(null);
         type: 'fragment',
         source: `
           precision mediump float;
-          
           uniform sampler2D diffuseTexture;
           uniform float filterType; // 0=point, 1=bilinear, 2=trilinear
           uniform float fogStart;
           uniform float fogEnd;
           uniform vec3 fogColor;
-          
           varying vec2 vUv;
           varying vec3 vNormal;
           varying vec3 vPosition;
-          
           vec4 sampleTexture(sampler2D tex, vec2 uv, float filter) {
             if (filter < 0.5) {
               // Point sampling
@@ -234,22 +219,17 @@ let metricsTimer = $state<number | null >(null);
               return texture2D(tex, uv);
             }
           }
-          
           void main() {
             vec4 texColor = sampleTexture(diffuseTexture, vUv, filterType);
-            
             // Simple N64-style lighting
             vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
             float NdotL = max(dot(vNormal, lightDir), 0.0);
             vec3 lighting = vec3(0.3 + 0.7 * NdotL);
-            
             vec3 color = texColor.rgb * lighting;
-            
             // N64-style fog
             float depth = length(vPosition);
             float fogFactor = clamp((fogEnd - depth) / (fogEnd - fogStart), 0.0, 1.0);
             color = mix(fogColor, color, fogFactor);
-            
             gl_FragColor = vec4(color, texColor.a);
           }
         `
@@ -260,16 +240,13 @@ let metricsTimer = $state<number | null >(null);
         source: `
           #version 310 es
           precision highp float;
-          
           layout(local_size_x = 8, local_size_y = 8) in;
           layout(binding = 0, rgba8) uniform readonly image2D inputImage;
           layout(binding = 1, rgba8) uniform writeonly image2D outputImage;
-          
           uniform float aaType; // 0=FXAA, 1=TAA, 2=SMAA
           uniform float frameIndex;
           uniform mat4 prevViewProjection;
           uniform mat4 currViewProjection;
-          
           // FXAA implementation
           vec3 fxaa(ivec2 coord) {
             vec3 rgbNW = imageLoad(inputImage, coord + ivec2(-1, -1)).rgb;
@@ -277,34 +254,26 @@ let metricsTimer = $state<number | null >(null);
             vec3 rgbSW = imageLoad(inputImage, coord + ivec2(-1, 1)).rgb;
             vec3 rgbSE = imageLoad(inputImage, coord + ivec2(1, 1)).rgb;
             vec3 rgbM = imageLoad(inputImage, coord).rgb;
-            
             float lumaNW = dot(rgbNW, vec3(0.299, 0.587, 0.114));
             float lumaNE = dot(rgbNE, vec3(0.299, 0.587, 0.114));
             float lumaSW = dot(rgbSW, vec3(0.299, 0.587, 0.114));
             float lumaSE = dot(rgbSE, vec3(0.299, 0.587, 0.114));
             float lumaM = dot(rgbM, vec3(0.299, 0.587, 0.114));
-            
             float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));
             float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));
-            
             if ((lumaMax - lumaMin) < max(0.0833, lumaMax * 0.125)) {
               return rgbM;
             }
-            
             // Simplified FXAA blend
             return mix(rgbM, (rgbNW + rgbNE + rgbSW + rgbSE) * 0.25, 0.5);
           }
-          
           void main() {
             ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
             ivec2 imageSize = imageSize(inputImage);
-            
             if (coord.x >= imageSize.x || coord.y >= imageSize.y) {
               return;
             }
-            
             vec3 color = imageLoad(inputImage, coord).rgb;
-            
             if (aaType < 0.5) {
               // FXAA
               color = fxaa(coord);
@@ -317,15 +286,12 @@ let metricsTimer = $state<number | null >(null);
               float luma = dot(color, vec3(0.299, 0.587, 0.114));
               float lumaLeft = dot(imageLoad(inputImage, coord + ivec2(-1, 0)).rgb, vec3(0.299, 0.587, 0.114));
               float lumaTop = dot(imageLoad(inputImage, coord + ivec2(0, -1)).rgb, vec3(0.299, 0.587, 0.114));
-              
               float edgeH = abs(luma - lumaLeft);
               float edgeV = abs(luma - lumaTop);
-              
               if (max(edgeH, edgeV) > 0.1) {
                 color = fxaa(coord);
               }
             }
-            
             imageStore(outputImage, coord, vec4(color, 1.0));
           }
         `
@@ -393,7 +359,6 @@ let metricsTimer = $state<number | null >(null);
 
     try {
       await runCurrentScenario();
-      
       if (autoRunScenarios) {
         demoTimer = setInterval(async () => {
           currentScenario = (currentScenario + 1) % scenarios.length;
@@ -464,7 +429,6 @@ let metricsTimer = $state<number | null >(null);
         };
 
         const startTime = performance.now();
-        
         const cachedEntry = await enhancedGPUCacheService.cacheN64Texture(
           `${texture.id}-${filterType}`,
           texture.data,
@@ -602,7 +566,6 @@ let metricsTimer = $state<number | null >(null);
     }));
 
     await wasmCacheOps.analyzeCachePerformance(cacheEntries);
-    
     // Trigger memory defragmentation
     await gpuCacheInvalidationSystem.performCleanup('demo-performance-test');
 
@@ -618,23 +581,18 @@ let metricsTimer = $state<number | null >(null);
    */
   async function runStressTest() {
     stressTestMode = true;
-    
     const stressOperations = 1000;
     const batchSize = 10;
-    
     for (let i = 0; i < stressOperations; i += batchSize) {
       const batch = Array.from({ length: Math.min(batchSize, stressOperations - i) }, () => 
         runCurrentScenario()
       );
-      
       await Promise.all(batch);
-      
       if (i % 100 === 0) {
         console.log(`[Gaming Cache Demo] Stress test progress: ${i}/${stressOperations}`);
         await tick(); // Allow UI updates
       }
     }
-    
     stressTestMode = false;
     console.log('[Gaming Cache Demo] Stress test completed');
   }
@@ -645,7 +603,6 @@ let metricsTimer = $state<number | null >(null);
   async function clearAllCaches() {
     await enhancedGPUCacheService.clearCache();
     await gpuCacheInvalidationSystem.clearAll('demo-manual-clear');
-    
     // Reset demo stats
     demoStats = {
       totalOperations: 0,
@@ -657,7 +614,6 @@ let metricsTimer = $state<number | null >(null);
       wasmAcceleratedOps: 0,
       memoryUsedMB: 0
     };
-    
     performanceHistory = [];
     console.log('[Gaming Cache Demo] All caches cleared');
   }

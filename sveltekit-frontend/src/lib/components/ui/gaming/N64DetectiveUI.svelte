@@ -5,7 +5,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { detectiveAnalysisEngine, type EvidenceItem, type ConflictAnalysis, type SearchSuggestion } from '$lib/evidence/detective-analysis-engine.js';
   import { browser } from '$app/environment';
@@ -19,7 +18,6 @@
   let searchQuery = $state('');
   let searchSuggestions: SearchSuggestion[] = $state([]);
   let showSuggestions = $state(false);
-  
   // N64-style UI state
   let selectedTab = $state<'evidence' | 'conflicts' | 'search' | 'cache'>('evidence');
   let textureStreamingProgress = $state(0);
@@ -57,13 +55,10 @@
       console.log('🎮 Initializing N64 Detective UI...');
       await detectiveAnalysisEngine.initializeEngine();
       isInitialized = true;
-      
       // Start texture streaming simulation
       simulateTextureStreaming();
-      
       // Update memory bank status periodically
       setInterval(updateMemoryStatus, 2000);
-      
       console.log('✅ N64 Detective UI ready');
     } catch (error: any) {
       console.error('N64 Detective UI initialization failed:', error);
@@ -104,17 +99,14 @@
 
     isAnalyzing = true;
     textureStreamingProgress = 0;
-    
     try {
       console.log('🔍 Starting detective analysis...');
-      
       // Simulate texture streaming progress
       const progressInterval = setInterval(() => {
         textureStreamingProgress = Math.min(textureStreamingProgress + 10, 90);
       }, 200);
 
       const startTime = performance.now();
-      
       const evidence = await detectiveAnalysisEngine.analyzeEvidence(file, {
         type: file.type.startsWith('image/') ? 'image' : 'document',
         userId: 'detective_user',
@@ -217,7 +209,6 @@
    */
   function updateMemoryStatus() {
     const bankNames = Object.keys(memoryBankStatus) as Array<keyof typeof memoryBankStatus>;
-    
     bankNames.forEach(bank => {
       const bankData = memoryBankStatus[bank];
       // Simulate memory usage fluctuations
@@ -241,7 +232,6 @@
       console.log('📸 Taking screenshot for enhancement...');
       // Mock screenshot functionality
       const mockScreenshot = new Blob(['mock screenshot data'], { type: 'image/png' });
-      
       const enhanced = await detectiveAnalysisEngine.analyzeEvidence(mockScreenshot, {
         type: 'screenshot',
         userId: 'detective_user',

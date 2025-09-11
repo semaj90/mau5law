@@ -12,7 +12,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { UnifiedButton, UnifiedDialog, type UnifiedButtonProps } from '$lib/components/unified/index.js';
@@ -50,7 +49,7 @@
   let metricsInterval: NodeJS.Timeout;
   let frameCount = $state(0);
   let fps = $state(0);
-let lastFrameTime = $state(0);
+  let lastFrameTime = $state(0);
 
   // Demo scenarios
   const demoScenarios = [

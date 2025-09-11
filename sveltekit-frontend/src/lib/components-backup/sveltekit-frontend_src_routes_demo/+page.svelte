@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Button from "$lib/components/ui/Button.svelte";
   // FIX: Import all necessary parts of the Tooltip component
   import Card from "$lib/components/ui/Card.svelte";
@@ -24,9 +23,9 @@
             variant: "primary",
           },
         ],
-}
+  }
     );
-}
+  }
   function showErrorNotification() {
     notifications.error(
       "Error Occurred",
@@ -45,21 +44,21 @@
             variant: "secondary",
           },
         ],
-}
+  }
     );
-}
+  }
   function showWarningNotification() {
     notifications.warning(
       "Warning",
       "This action may have consequences. Please review before proceeding."
     );
-}
+  }
   function showInfoNotification() {
     notifications.info(
       "Information",
       "Here is some useful information about the current process."
     );
-}
+  }
   // Demo modal functions
   function showConfirmModal() {
     modals.confirm({
@@ -78,7 +77,7 @@
         notifications.info("Cancelled", "Delete operation was cancelled.");
       },
     });
-}
+  }
   function showAlertModal() {
     modals.alert({
       title: "System Maintenance",
@@ -88,7 +87,7 @@
         console.log("Alert dismissed");
       },
     });
-}
+  }
   function showPromptModal() {
     modals.prompt({
       title: "Add Note",
@@ -105,7 +104,7 @@
         console.log("Prompt cancelled");
       },
     });
-}
+  }
   // Demo form
   const demoFormOptions = {
     initialValues: {
@@ -152,7 +151,7 @@
         "Form submitted!",
         `Welcome ${values.name}! Your account has been created.`
       );
-}}
+  }}
   let interactiveCardSelected = false;
 </script>
 

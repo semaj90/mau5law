@@ -3,7 +3,6 @@ Autonomous Engineering Demo Component
 Showcases Copilot self-prompting with comprehensive AI orchestration
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import {
     Button
@@ -40,7 +39,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     FileText,
     Settings
   } from 'lucide-svelte';
-  
   import { copilotSelfPrompt } from '$lib/utils/copilot-self-prompt.js';
   import type { CopilotSelfPromptResult, NextAction, Recommendation } from '$lib/utils/copilot-self-prompt.js';
 
@@ -60,7 +58,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   let selectedPlatform = $state<'webapp' | 'desktop' | 'mobile' | 'all'>('webapp');
   let selectedUrgency = $state<'low' | 'medium' | 'high' | 'critical'>('medium');
   let outputFormat = $state<'json' | 'markdown' | 'structured'>('structured');
-  
   // Execution state
   let isProcessing = $state(false);
   let currentResult = $state<CopilotSelfPromptResult | null>(null);
@@ -190,7 +187,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     selectedMode = example.mode;
     selectedPlatform = example.platform;
     selectedUrgency = example.urgency;
-    
     await executePrompt();
   }
 
@@ -223,7 +219,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       }
 
       const data = await response.json();
-      
       // Transform API response to match component format
       currentResult = {
         ...data,
@@ -236,7 +231,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       };
 
       processingStage = 'API call complete!';
-      
     } catch (error) {
       console.error('API call failed:', error);
       processingStage = `API Error: ${(error as Error).message}`;
@@ -251,7 +245,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     const blob = new Blob([JSON.stringify(currentResult, null, 2)], {
       type: 'application/json'
     });
-    
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     timelineEvents: Array<{;
     caseId: string
@@ -15,7 +14,6 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
-  
       date: string
     time?: string;
     event: string
@@ -25,7 +23,6 @@
     category?: 'crime' | 'witness' | 'discovery' | 'movement' | 'communication';
   }> = [];
 
-  
   // Sort events chronologically
   let sortedEvents = $derived(timelineEvents)
     .sort((a, b) => new Date(a.date + ' ' + (a.time || '00:00')).getTime() - 

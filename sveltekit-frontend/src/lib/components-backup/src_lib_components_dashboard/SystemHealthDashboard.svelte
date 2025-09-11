@@ -1,10 +1,7 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
-  
   // Props
   let { health = {}, metrics = {} } = $props();
-  
   // Derived values for display
   let systemStatus = $derived(health.components ? 'Online' : 'Offline');
   let totalComponents = $derived(Object.keys(health.components || {}).length);
@@ -12,7 +9,6 @@
   let cpuUsage = $derived(Math.round((health.performance?.cpuUsage?.user || 0) / 10000)); // Convert microseconds to percentage
   let memoryUsage = $derived(Math.round((health.performance?.memoryUsage?.heapUsed || 0) / 1024 / 1024)); // Convert to MB
   let uptime = $derived(Math.round((health.system?.uptime || 0) / 3600)); // Convert to hours
-  
   // Component status colors
   function getStatusColor(status: string) {
     switch (status) {
@@ -22,7 +18,6 @@
       default: return 'text-gray-400';
     }
   }
-  
   function getStatusBg(status: string) {
     switch (status) {
       case 'active': return 'bg-green-400/20 border-green-400/30';
@@ -31,16 +26,13 @@
       default: return 'bg-gray-400/20 border-gray-400/30';
     }
   }
-  
   // Health score calculation
   let healthScore = $derived(() => {
     if (!health.components) return 0;
-    
     const total = totalComponents;
     const active = activeComponents;
     const cpuScore = Math.max(0, 100 - cpuUsage);
     const memoryScore = Math.max(0, 100 - Math.min(memoryUsage / 10, 100)); // Assume 1GB is 100%
-    
     const componentScore = total > 0 ? (active / total) * 100 : 0;
     return Math.round((componentScore + cpuScore + memoryScore) / 3);
   });

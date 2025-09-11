@@ -3,7 +3,6 @@
   Demonstrates the validation utilities in practice
 -->
 <script lang="ts">
-</script>
   interface Props {
     name: string
     label: string
@@ -68,7 +67,6 @@
     | "number"
     | "date"
     | "textarea" = "text";
-                                    
   const dispatch = createEventDispatcher<{
     input: { value: string validation: ValidationResult };
     change: { value: string validation: ValidationResult };
@@ -101,7 +99,7 @@
       value,
       validation: { isValid, errors, warnings, value },
     });
-}
+  }
   function handleChange(event: Event) {
     const target = event.target as HTMLInputElement | HTMLTextAreaElement;
     value = target.value;
@@ -112,15 +110,15 @@
       value,
       validation: { isValid, errors, warnings, value },
     });
-}
+  }
   function handleFocus() {
     dispatch("focus", { name });
-}
+  }
   function handleBlur() {
     isDirty = true;
     validateField();
     dispatch("blur", { name });
-}
+  }
   function validateField() {
     if (validator && config) {
       const result = validator.setValue(name, value);
@@ -137,13 +135,13 @@
               errors = validationResult.errors;
               warnings = validationResult.warnings;
               isValid = validationResult.isValid;
-}
+  }
           );
         } else {
           errors = result.errors;
           warnings = result.warnings;
           isValid = result.isValid;
-}
+  }
       });
     } else {
       // Basic HTML5 validation
@@ -151,21 +149,21 @@
         isValid = inputElement.validity.valid;
         errors = isValid ? [] : [inputElement.validationMessage];
         warnings = [];
-}}}
+  }}}
   function togglePasswordVisibility() {
     showPassword = !showPassword;
-}
+  }
   function focusInput() {
     if (inputElement) {
       inputElement.focus();
-}}
+  }}
   // Expose focus method
   export { focusInput as focus };
 
   // Reactive validation
   $effect(() => { if (value !== undefined) {
     validateField();
-}
+  }
 </script>
 
 <div class="space-y-4">

@@ -2,7 +2,6 @@ import type { Case } from '$lib/types';
 
 
 <script lang="ts">
-</script>
   interface Props {
     onclick?: (event?: any) => void;
     onstatusChange?: (event?: any) => void;
@@ -19,18 +18,15 @@ import type { Case } from '$lib/types';
   import type { Case as CaseType } from '$lib/types';
   import { formatDistanceToNow } from "date-fns";
   import { Archive, Calendar, CheckCircle, Clock, FileText, User as UserIcon } from "lucide-svelte";
-  
-      
-  
   function handleClick() {
     if (!disabled) {
       onclick?.();
-}}
+  }}
   function handleStatusChange(event: Event) {
     event.stopPropagation();
     const target = event.target as HTMLSelectElement;
     onstatusChange?.();
-}
+  }
   function getStatusColor(status: string) {
     switch (status) {
       case "open":
@@ -43,7 +39,7 @@ import type { Case } from '$lib/types';
         return "bg-gray-100 text-gray-800";
       default:
         return "bg-gray-100 text-gray-800";
-}}
+  }}
   function getPriorityColor(priority: string) {
     switch (priority) {
       case "low":
@@ -56,7 +52,7 @@ import type { Case } from '$lib/types';
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
-}}
+  }}
   function getStatusIcon(status: string) {
     switch (status) {
       case "open":
@@ -69,7 +65,7 @@ import type { Case } from '$lib/types';
         return Archive;
       default:
         return FileText;
-}}
+  }}
   let statusIcon = $derived(getStatusIcon(caseData.status));
   let formattedDate = $derived(formatDistanceToNow(new Date(caseData.openedAt), {);
     addSuffix: true,

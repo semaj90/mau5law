@@ -1,28 +1,27 @@
 <script lang="ts">
-</script>
-	import { onMount, type Snippet } from "svelte";
-	import { Button } from "bits-ui";
-	import { scale } from "svelte/transition";
-	import { cubicOut } from "svelte/easing";
-	import Moon from "phosphor-svelte/lib/Moon";
-	import Sun from "phosphor-svelte/lib/Sun";
+  	import { onMount, type Snippet } from "svelte";
+  	import { Button } from "bits-ui";
+  	import { scale } from "svelte/transition";
+  	import { cubicOut } from "svelte/easing";
+  	import Moon from "phosphor-svelte/lib/Moon";
+  	import Sun from "phosphor-svelte/lib/Sun";
 
-	let { children }: { children: Snippet } = $props();
+  	let { children }: { children: Snippet } = $props();
 
-	let theme = $state("light");
-	let componentName = "%component.name%";
+  	let theme = $state("light");
+  	let componentName = "%component.name%";
 
-	onMount(() => {
-		const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-			? "dark"
-			: "light";
-		theme = systemTheme;
-	});
+  	onMount(() => {
+  		const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+  			? "dark"
+  			: "light";
+  		theme = systemTheme;
+  	});
 
-	function toggleTheme() {
-		theme = theme === "light" ? "dark" : "light";
-		document.documentElement.setAttribute("class", theme);
-	}
+  	function toggleTheme() {
+  		theme = theme === "light" ? "dark" : "light";
+  		document.documentElement.setAttribute("class", theme);
+  	}
 </script>
 
 <div class={theme}>

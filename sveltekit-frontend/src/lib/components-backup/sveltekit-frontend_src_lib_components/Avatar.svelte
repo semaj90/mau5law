@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     size: 'small' | 'medium' | 'large' ;
     clickable?: any;
@@ -13,82 +12,68 @@
 
 
 
-	import { onMount } from 'svelte';
-	import { avatarStore } from "../stores/avatarStore";
-	
-				
-	let fileInput: HTMLInputElement
-	let dragOver = false;
-	
-	let avatarSize = $derived({})
-		small: '32px',
-		medium: '48px', 
-		large: '80px'
-	}[size];
-	
-	onMount(() => {
-		avatarStore.loadAvatar();
-	});
-	
-	function handleAvatarClick() {
-		if (clickable && fileInput) {
-			fileInput.click();
-		}
-	}
-	
-	function handleFileSelect(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const file = target.files?.[0];
-		if (file) {
-			uploadFile(file);
-		}
-	}
-	
-	function handleDrop(event: DragEvent) {
-		event.preventDefault();
-		dragOver = false;
-		
-		const files = event.dataTransfer?.files;
-		if (files && files.length > 0) {
-			uploadFile(files[0]);
-		}
-	}
-	
-	function handleDragOver(event: DragEvent) {
-		event.preventDefault();
-		dragOver = true;
-	}
-	
-	function handleDragLeave(event: DragEvent) {
-		event.preventDefault();
-		dragOver = false;
-	}
-	
-	async function uploadFile(file: File) {
-		// Validate file type
-		const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
-		if (!allowedTypes.includes(file.type)) {
-			alert('Please select a valid image file (JPEG, PNG, GIF, SVG, WebP)');
-			return;
-		}
-		
-		// Validate file size (5MB)
-		if (file.size > 5 * 1024 * 1024) {
-			alert('File too large. Maximum size: 5MB');
-			return;
-		}
-		
-		const result = await avatarStore.uploadAvatar(file);
-		if (!result.success) {
-			alert(result.error || 'Upload failed');
-		}
-	}
-	
-	function handleRemoveAvatar() {
-		if (confirm('Remove your avatar?')) {
-			avatarStore.removeAvatar();
-		}
-	}
+  	import { onMount } from 'svelte';
+  	import { avatarStore } from "../stores/avatarStore";
+  	let fileInput: HTMLInputElement
+  	let dragOver = false;
+  	let avatarSize = $derived({})
+  		small: '32px',
+  		medium: '48px', 
+  		large: '80px'
+  	}[size];
+  	onMount(() => {
+  		avatarStore.loadAvatar();
+  	});
+  	function handleAvatarClick() {
+  		if (clickable && fileInput) {
+  			fileInput.click();
+  		}
+  	}
+  	function handleFileSelect(event: Event) {
+  		const target = event.target as HTMLInputElement;
+  		const file = target.files?.[0];
+  		if (file) {
+  			uploadFile(file);
+  		}
+  	}
+  	function handleDrop(event: DragEvent) {
+  		event.preventDefault();
+  		dragOver = false;
+  		const files = event.dataTransfer?.files;
+  		if (files && files.length > 0) {
+  			uploadFile(files[0]);
+  		}
+  	}
+  	function handleDragOver(event: DragEvent) {
+  		event.preventDefault();
+  		dragOver = true;
+  	}
+  	function handleDragLeave(event: DragEvent) {
+  		event.preventDefault();
+  		dragOver = false;
+  	}
+  	async function uploadFile(file: File) {
+  		// Validate file type
+  		const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
+  		if (!allowedTypes.includes(file.type)) {
+  			alert('Please select a valid image file (JPEG, PNG, GIF, SVG, WebP)');
+  			return;
+  		}
+  		// Validate file size (5MB)
+  		if (file.size > 5 * 1024 * 1024) {
+  			alert('File too large. Maximum size: 5MB');
+  			return;
+  		}
+  		const result = await avatarStore.uploadAvatar(file);
+  		if (!result.success) {
+  			alert(result.error || 'Upload failed');
+  		}
+  	}
+  	function handleRemoveAvatar() {
+  		if (confirm('Remove your avatar?')) {
+  			avatarStore.removeAvatar();
+  		}
+  	}
 </script>
 
 <div class="avatar-container" class:clickable class:drag-over={dragOver}>

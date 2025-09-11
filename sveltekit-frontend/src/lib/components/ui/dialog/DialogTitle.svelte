@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   let { title, children }: { title: any; children?: any } = $props();
 </script>
 

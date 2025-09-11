@@ -2,7 +2,6 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- Grid Item Component -->
 <script lang="ts">
-</script>
   interface Props {
     colSpan: number;
     rowSpan: number;

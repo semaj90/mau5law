@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Minimal hub that links to evidence board, evidence canvas, cases, and chat
   import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
   import CaseForm from '$lib/components/forms/CaseForm.svelte';
@@ -12,7 +11,7 @@
   let mounted = $state(false);
 
   // Sample evidence data for the detective board
-let sampleEvidence = $state([
+  let sampleEvidence = $state([
     {
       id: 'evidence-1',
       title: 'Security Camera Footage',
@@ -99,7 +98,7 @@ let sampleEvidence = $state([
       tags: ['dna', 'forensics', 'lab-report'],
       hash: 'dna456',
       aiSummary: 'DNA evidence confirms 99.7% match with suspect sample collected at scene'
-}
+  }
   ]);
 
   onMount(() => {
@@ -109,10 +108,10 @@ let sampleEvidence = $state([
   function handleCaseFormSuccess(event: CustomEvent) {
     console.log('Case created/updated:', event.detail);
     currentView = 'board';
-}
+  }
   function handleCaseFormCancel() {
     currentView = 'board';
-}
+  }
   // Demo collaboration simulation
   function simulateCollaboration() {
     if (!mounted) return;
@@ -150,9 +149,9 @@ let sampleEvidence = $state([
           document.body.removeChild(notification);
         }, 300);
       }, 3000);
-}
+  }
     console.log('🚀 Collaboration demo:', randomUser.name, 'joined the case');
-}
+  }
 </script>
 
 <div class="p-6 max-w-4xl mx-auto space-y-4">

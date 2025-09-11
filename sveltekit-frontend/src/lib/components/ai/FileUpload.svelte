@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Button from "$lib/components/ui/button/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
   import Label from "$lib/components/ui/Label.svelte";
@@ -9,7 +8,6 @@
   import AlertDescription from "$lib/components/ui/alert/AlertDescription.svelte";
   import AlertTitle from "$lib/components/ui/alert/AlertTitle.svelte";
   import { FileUp, BrainCircuit, Search, Loader2 } from "lucide-svelte";
-  
   // Feedback Integration
   import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
 
@@ -23,9 +21,9 @@
   let analysisResult = $state<any>(null);
 
   // Feedback integration
-let feedbackIntegration = $state<any;
+  let feedbackIntegration = $state<any;
   let currentInteractionId: string | null >(null);
-let uploadStartTime = $state(0);
+  let uploadStartTime = $state(0);
 
   async function handleUpload() {
     if (!files || files.length === 0) {
@@ -67,11 +65,9 @@ let uploadStartTime = $state(0);
     xhr.onload = () => {
       isUploading = false;
       const processingTime = Date.now() - uploadStartTime;
-      
       if (xhr.status === 200) {
         analysisResult = JSON.parse(xhr.responseText);
         uploadProgress = 100;
-        
         // Track successful upload for feedback
         if (currentInteractionId && feedbackIntegration) {
           feedbackIntegration.markCompleted({
@@ -85,7 +81,6 @@ let uploadStartTime = $state(0);
       } else {
         const errorText = JSON.parse(xhr.responseText).error || "An unknown error occurred.";
         error = errorText;
-        
         // Track failed upload for feedback
         if (currentInteractionId && feedbackIntegration) {
           feedbackIntegration.markFailed({
@@ -102,7 +97,6 @@ let uploadStartTime = $state(0);
       isUploading = false;
       const errorMsg = "Upload failed. Please check your network connection.";
       error = errorMsg;
-      
       // Track network error for feedback
       if (currentInteractionId && feedbackIntegration) {
         feedbackIntegration.markFailed({

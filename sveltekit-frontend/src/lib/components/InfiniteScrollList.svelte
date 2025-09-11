@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
@@ -34,10 +33,10 @@
     selectedIndex = $bindable(-1),
     onitemClick
   }: Props = $props();
-let scrollContainer = $state<HTMLElement>();
+  let scrollContainer = $state<HTMLElement>();
   let displayedItems: any[] = $state([]);
-let currentPage = $state(0);
-let hasMore = $state(true);
+  let currentPage = $state(0);
+  let hasMore = $state(true);
 
   // TODO: Convert to $derived: {
     // Reset when items change
@@ -45,7 +44,7 @@ let hasMore = $state(true);
       currentPage = 0
       displayedItems = [];
       loadMore();
-}}
+  }}
   onMount(() => {
     loadMore();
   });
@@ -60,7 +59,7 @@ let hasMore = $state(true);
     if (newItems.length === 0) {
       hasMore = false;
       return;
-}
+  }
     displayedItems = [...displayedItems, ...newItems];
     currentPage++;
 
@@ -72,13 +71,13 @@ let hasMore = $state(true);
   if (onloadMore && endIndex >= items.length) {
     onloadMore();
   }
-}
+  }
 
-function handleItemClick(item: any) {
+  function handleItemClick(item: any) {
   onitemClick?.({ item, type: itemType });
-}
+  }
 
-function handleScroll() {
+  function handleScroll() {
   if (!scrollContainer) return;
 
   const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
@@ -88,7 +87,7 @@ function handleScroll() {
   if (scrolledToBottom) {
     loadMore();
   }
-}
+  }
     if (itemType === "notes") {
       return FileEdit;
     } else if (itemType === "canvas") {
@@ -101,20 +100,20 @@ function handleScroll() {
       if (fileType.includes("text") || fileType.includes("pdf"))
         return FileText;
       return File;
-}}
+  }}
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
-}
+  }
   function truncateText(text: string, maxLength = 100) {
     if (!text) return "";
     return text.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;
-}
+  }
 </script>
 
 <div

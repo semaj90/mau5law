@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     class?: string;
     children?: import('svelte').Snippet;

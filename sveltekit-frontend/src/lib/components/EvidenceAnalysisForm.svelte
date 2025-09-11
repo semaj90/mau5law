@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { createEventDispatcher } from 'svelte';
   import { Button } from 'bits-ui';
@@ -17,7 +16,7 @@
   };
 
   let { ocrResults = $bindable() } = $props(); // OCRResult[];
-let isAnalyzing = $state(false);
+  let isAnalyzing = $state(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
 

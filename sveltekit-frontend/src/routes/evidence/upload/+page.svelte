@@ -3,13 +3,12 @@
   Rich metadata support with type-safe validation
 -->
 <script lang="ts">
-</script>
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
   import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile } from '$lib/schemas/evidence-upload.js';
   import type { PageData } from './$types.js';
   
-  let { data }: { data: PageData } = $props();
+  const { data }: { data: PageData } = $props();
   
   // Initialize Superform with Zod validation
   const { form, errors, enhance, submitting, message } = superForm(data.form, {

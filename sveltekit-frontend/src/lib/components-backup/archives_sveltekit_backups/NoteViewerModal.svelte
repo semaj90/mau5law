@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createDialog, melt } from "@melt-ui/svelte";
   import {
     Bookmark,
@@ -55,7 +54,7 @@
 
   // TODO: Convert to $derived: if (isOpen !== $open) {
     open.set(isOpen)
-}
+  }
   // Parse markdown to HTML for display
   // TODO: Convert to $derived: displayHtml = html || (markdown ? marked.parse(markdown) : "")
 
@@ -77,22 +76,22 @@
       setTimeout(() => (isSaved = false), 2000);
     } catch (error) {
       console.error("Failed to save note:", error);
-}}
+  }}
   async function handleRemoveFromSaved() {
     try {
       await removeSavedNote(noteId);
       isSaved = false;
     } catch (error) {
       console.error("Failed to remove note:", error);
-}}
+  }}
   function addTag() {
     if (newTag.trim() && !editedTags.includes(newTag.trim())) {
       editedTags = [...editedTags, newTag.trim()];
       newTag = "";
-}}
+  }}
   function removeTag(tag: string) {
     editedTags = editedTags.filter((t) => t !== tag);
-}
+  }
   function handleEditorSave(event: CustomEvent) {
     const {
       html: newHtml,
@@ -123,19 +122,19 @@
     html = newHtml;
     contentJson = newJson;
     tags = [...editedTags];
-}
+  }
   function startEdit() {
     mode = "edit";
     editedContent = content;
     editedTitle = title;
     editedTags = [...tags];
-}
+  }
   function cancelEdit() {
     mode = "view";
     editedContent = content;
     editedTitle = title;
     editedTags = [...tags];
-}
+  }
 </script>
 
 {#if isOpen}

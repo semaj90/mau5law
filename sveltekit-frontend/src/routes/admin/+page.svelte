@@ -359,8 +359,8 @@
       <CardContent class="space-y-4">
         {#if recentActivity.length > 0}
           {#each recentActivity as activity}
+            {@const ActivityIcon = getActivityIcon(activity.type)}
             <div class="flex items-start gap-3 p-3 border-l-4 {activity.status === 'success' ? 'border-green-500 bg-green-50' : activity.status === 'error' ? 'border-red-500 bg-red-50' : 'border-blue-500 bg-blue-50'} rounded-r-lg">
-              {@const ActivityIcon = getActivityIcon(activity.type)}
               <ActivityIcon class="w-4 h-4 mt-1 text-muted-foreground" />
               <div class="flex-1">
                 <p class="text-sm font-medium">{activity.description}</p>

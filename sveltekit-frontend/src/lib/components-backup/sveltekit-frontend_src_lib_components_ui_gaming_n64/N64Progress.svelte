@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   export let id: string | undefined = undefined;
   export let value: number = 0;
   export let max: number = 100;

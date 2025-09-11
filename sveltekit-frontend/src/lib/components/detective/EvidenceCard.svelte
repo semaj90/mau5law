@@ -1,6 +1,5 @@
 <!-- EvidenceCard.svelte - Fixed for Svelte 5 -->
 <script lang="ts">
-</script>
   // Badge replaced with span - not available in enhanced-bits
   import Button from "$lib/components/ui/button/Button.svelte";
   import {
@@ -18,7 +17,6 @@
     onView?: (item: Evidence) => void;
     onMoreOptions?: (item: Evidence) => void;
   }
-  
   let { item, onView, onMoreOptions }: Props = $props();
 
   // --- Helper Functions ---

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Fuse from 'fuse.js';
   import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
@@ -82,10 +81,8 @@
 
   function highlightMatches(text: string, matches?: readonly Fuse.FuseResultMatch[]): string {
     if (!matches) return text;
-    
     let highlightedText = text;
     const sortedMatches = [...matches].sort((a, b) => b.indices[0][0] - a.indices[0][0]);
-    
     for (const match of sortedMatches) {
       for (const [start, end] of match.indices.reverse()) {
         highlightedText = 
@@ -96,7 +93,6 @@
           highlightedText.slice(end + 1);
       }
     }
-    
     return highlightedText;
   }
 

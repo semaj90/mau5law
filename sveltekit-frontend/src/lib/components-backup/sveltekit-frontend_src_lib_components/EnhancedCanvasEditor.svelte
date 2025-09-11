@@ -1,6 +1,5 @@
 <!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save with Loki.js -->
 <script lang="ts">
-</script>
   interface Props {
     caseId: string
     canvasId: string
@@ -53,7 +52,6 @@
   import { onDestroy, onMount } from "svelte";
   import { get, writable } from "svelte/store";
 
-          
   let canvasElement: HTMLCanvasElement
   let canvas: fabric.Canvas | null = null;
   let lokiDb: Loki | null = null;
@@ -127,13 +125,13 @@
   onDestroy(() => {
     if (autoSaveTimeout) {
       clearTimeout(autoSaveTimeout);
-}
+  }
     if (canvas) {
       canvas.dispose();
-}
+  }
     if (lokiDb) {
       lokiDb.close();
-}
+  }
   });
 
   function initializeLokiDB() {
@@ -149,7 +147,7 @@
       autosave: true,
       autosaveInterval: 4000,
     });
-}
+  }
   function initializeCanvas() {
     canvas = new fabric.Canvas(canvasElement, {
       width,
@@ -179,7 +177,7 @@
 
     // Initialize history
     saveState();
-}
+  }
   function initializeSearch() {
     const searchOptions = {
       keys: ["title", "description", "evidenceType", "tags"],
@@ -187,12 +185,12 @@
       includeMatches: true,
     };
     searchEngine = new Fuse(evidenceItems, searchOptions);
-}
+  }
   function updateSearchEngine() {
     if (searchEngine && evidenceItems) {
       searchEngine.setCollection(evidenceItems);
-}
-}
+  }
+  }
   function setupEventListeners() {
     // Keyboard shortcuts
     document.addEventListener("keydown", handleKeyboard);
@@ -202,8 +200,8 @@
       canvas.on("mouse:down", handleMouseDown);
       canvas.on("mouse:move", handleMouseMove);
       canvas.on("mouse:up", handleMouseUp);
-}
-}
+  }
+  }
   function handleKeyboard(e: KeyboardEvent) {
     if (!canvas) return;
 
@@ -215,7 +213,7 @@
             redo();
           } else {
             undo();
-}
+  }
           break;
         case "s":
           e.preventDefault();
@@ -238,9 +236,9 @@
           e.preventDefault();
           deleteSelected();
           break;
-}
-}
-}
+  }
+  }
+  }
   function handleMouseDown(event: TEvent) {
     const state = get(canvasState);
     if (!canvas) return;
@@ -263,14 +261,14 @@
       case "arrow":
         createArrow(pointer);
         break;
-}
-}
+  }
+  }
   function handleMouseMove(event: TEvent) {
     // Handle drawing modes
-}
+  }
   function handleMouseUp(event: TEvent) {
     // Finalize drawing operations
-}
+  }
   function createRectangle(pointer: fabric.Point) {
     if (!canvas) return;
 
@@ -288,7 +286,7 @@
 
     canvas.add(rect);
     canvas.setActiveObject(rect);
-}
+  }
   function createCircle(pointer: fabric.Point) {
     if (!canvas) return;
 
@@ -303,7 +301,7 @@
 
     canvas.add(circle);
     canvas.setActiveObject(circle);
-}
+  }
   function createText(pointer: fabric.Point) {
     if (!canvas) return;
 
@@ -318,7 +316,7 @@
     canvas.add(text);
     canvas.setActiveObject(text);
     text.enterEditing();
-}
+  }
   function createLine(pointer: fabric.Point) {
     if (!canvas) return;
 
@@ -328,12 +326,12 @@
         stroke: "#ef4444",
         strokeWidth: 2,
         selectable: true,
-}
+  }
     );
 
     canvas.add(line);
     canvas.setActiveObject(line);
-}
+  }
   function createArrow(pointer: fabric.Point) {
     if (!canvas) return;
 
@@ -359,7 +357,7 @@
 
     canvas.add(arrow);
     canvas.setActiveObject(arrow);
-}
+  }
   function createEvidenceObject(evidence: any): fabric.Group {
     const rect = new fabric.Rect({
       width: 200,
@@ -394,14 +392,14 @@
         left: 10,
         width: 180,
         fill: "#374151",
-}
+  }
     );
 
     // Add thumbnail if available
     let thumbnail = null;
     if (evidence.fileUrl) {
       thumbnail = createThumbnail(evidence);
-}
+  }
     const elements = [rect, title, type, description];
     if (thumbnail) elements.push(thumbnail);
 
@@ -417,7 +415,7 @@
     group.set("objectType", "evidence");
 
     return group;
-}
+  }
   function createThumbnail(evidence: any): fabric.Object | null {
     // Create appropriate thumbnail based on file type
     const fileType = evidence.fileType || evidence.mimeType || "";
@@ -451,9 +449,9 @@
         left: 140,
         fill: "#7c2d12",
       });
-}
+  }
     return null;
-}
+  }
   function addTimelineToCanvas() {
     if (!canvas) return;
 
@@ -461,7 +459,7 @@
     const timelineGroup = createTimelineVisualization();
     canvas.add(timelineGroup);
     canvas.setActiveObject(timelineGroup);
-}
+  }
   function createTimelineVisualization(): fabric.Group {
     const line = new fabric.Line([0, 0, 400, 0], {
       stroke: "#374151",
@@ -489,7 +487,7 @@
       });
 
       elements.push(marker, date);
-}
+  }
     const timeline = new fabric.Group(elements, {
       left: 100,
       top: 200,
@@ -497,14 +495,14 @@
 
     timeline.set("objectType", "timeline");
     return timeline;
-}
+  }
   function addPersonToCanvas() {
     if (!canvas) return;
 
     const person = createPersonVisualization();
     canvas.add(person);
     canvas.setActiveObject(person);
-}
+  }
   function createPersonVisualization(): fabric.Group {
     const circle = new fabric.Circle({
       radius: 30,
@@ -536,14 +534,14 @@
 
     person.set("objectType", "person");
     return person;
-}
+  }
   function addLocationToCanvas() {
     if (!canvas) return;
 
     const location = createLocationVisualization();
     canvas.add(location);
     canvas.setActiveObject(location);
-}
+  }
   function createLocationVisualization(): fabric.Group {
     const marker = new fabric.Polygon(
       [
@@ -558,7 +556,7 @@
         fill: "#dc2626",
         stroke: "#991b1b",
         strokeWidth: 1,
-}
+  }
     );
 
     const label = new fabric.Text("Location", {
@@ -575,37 +573,37 @@
 
     location.set("objectType", "location");
     return location;
-}
+  }
   // Canvas state management functions
   function handleObjectAdded() {
     isDirty = true;
     updateCanvasState();
     scheduleAutoSave();
     saveState();
-}
+  }
   function handleObjectRemoved() {
     isDirty = true;
     updateCanvasState();
     scheduleAutoSave();
     saveState();
-}
+  }
   function handleObjectModified() {
     isDirty = true;
     scheduleAutoSave();
     saveState();
-}
+  }
   function handleSelectionCreated(options: any) {
     updateSelection();
-}
+  }
   function handleSelectionUpdated(options: any) {
     updateSelection();
-}
+  }
   function handleSelectionCleared() {
     updateSelection();
-}
+  }
   function handlePathCreated() {
     saveState();
-}
+  }
   function updateSelection() {
     if (!canvas) return;
 
@@ -614,7 +612,7 @@
       ...state,
       selectedObjects: activeObjects,
     }));
-}
+  }
   function updateCanvasState() {
     if (!canvas) return;
 
@@ -624,7 +622,7 @@
       canUndo: historyIndex > 0,
       canRedo: historyIndex < historyStack.length - 1,
     }));
-}
+  }
   // History management
   function saveState() {
     if (!canvas) return;
@@ -642,9 +640,9 @@
     if (historyStack.length > maxHistorySize) {
       historyStack.shift();
       historyIndex--;
-}
+  }
     updateCanvasState();
-}
+  }
   async function undo() {
     if (!canvas || historyIndex <= 0) return;
 
@@ -653,7 +651,7 @@
     await canvas.loadFromJSON(state);
     canvas.renderAll();
     updateCanvasState();
-}
+  }
   async function redo() {
     if (!canvas || historyIndex >= historyStack.length - 1) return;
 
@@ -662,16 +660,16 @@
     await canvas.loadFromJSON(state);
     canvas.renderAll();
     updateCanvasState();
-}
+  }
   // Auto-save functionality
   function scheduleAutoSave() {
     if (autoSaveTimeout) {
       clearTimeout(autoSaveTimeout);
-}
+  }
     autoSaveTimeout = setTimeout(() => {
       saveCanvas();
     }, 3000);
-}
+  }
   async function saveCanvas() {
     if (!canvas || !canvasCollection || !isDirty) return;
 
@@ -697,7 +695,7 @@
         canvasCollection.update({ ...existing, ...canvasData });
       } else {
         canvasCollection.insert(canvasData);
-}
+  }
       // Save to server
       await fetch("/api/canvas/save", {
         method: "POST",
@@ -709,8 +707,8 @@
       showSaveIndicator();
     } catch (error) {
       console.error("Failed to save canvas:", error);
-}
-}
+  }
+  }
   async function loadCanvasData() {
     if (!canvasCollection) return;
 
@@ -723,7 +721,7 @@
           canvas?.renderAll();
         });
         return;
-}
+  }
       // Fallback to server
       const response = await fetch(`/api/canvas/${caseId}`);
       if (response.ok) {
@@ -731,11 +729,11 @@
         canvas?.loadFromJSON(serverData.data, () => {
           canvas?.renderAll();
         });
-}
+  }
     } catch (error) {
       console.error("Failed to load canvas:", error);
-}
-}
+  }
+  }
   function showSaveIndicator() {
     // Visual save indicator
     const indicator = document.createElement("div");
@@ -746,9 +744,9 @@
     setTimeout(() => {
       if (document.body.contains(indicator)) {
         document.body.removeChild(indicator);
-}
+  }
     }, 2000);
-}
+  }
   // Tool functions
   function setTool(toolId: string) {
     canvasState.update((state) => ({ ...state, tool: toolId }));
@@ -769,29 +767,29 @@
         break;
       default:
         canvas.defaultCursor = "default";
-}
-}
+  }
+  }
   function zoomIn() {
     const currentZoom = get(canvasState).zoom;
     const newZoom = Math.min(currentZoom + 10, 200);
     setZoom(newZoom);
-}
+  }
   function zoomOut() {
     const currentZoom = get(canvasState).zoom;
     const newZoom = Math.max(currentZoom - 10, 25);
     setZoom(newZoom);
-}
+  }
   function setZoom(zoom: number) {
     if (!canvas) return;
 
     canvasState.update((state) => ({ ...state, zoom }));
     canvas.setZoom(zoom / 100);
     canvas.renderAll();
-}
+  }
   function toggleGrid() {
     canvasState.update((state) => ({ ...state, showGrid: !state.showGrid }));
     updateGrid();
-}
+  }
   function updateGrid() {
     if (!canvas) return;
 
@@ -805,8 +803,8 @@
     } else {
       canvas.backgroundColor = "#ffffff";
       canvas.renderAll();
-}
-}
+  }
+  }
   function createGridPattern(size: number): string {
     const svg = `
       <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
@@ -819,7 +817,7 @@
       </svg>
     `;
     return `data:image/svg+xml;base64,${btoa(svg)}`;
-}
+  }
   // Object manipulation
   function deleteSelected() {
     if (!canvas) return;
@@ -829,8 +827,8 @@
       canvas.discardActiveObject();
       activeObjects.forEach((obj) => canvas?.remove(obj));
       canvas.renderAll();
-}
-}
+  }
+  }
   async function copySelected() {
     if (!canvas) return;
 
@@ -844,8 +842,8 @@
       canvas?.add(cloned);
       canvas?.setActiveObject(cloned);
       canvas?.renderAll();
-}
-}
+  }
+  }
   function pasteClipboard() {
     // Implement clipboard paste functionality
     navigator.clipboard.read().then((items) => {
@@ -862,10 +860,10 @@
             };
             reader.readAsDataURL(blob);
           });
-}
-}
+  }
+  }
     });
-}
+  }
   function selectAll() {
     if (!canvas) return;
 
@@ -873,7 +871,7 @@
     const selection = new fabric.ActiveSelection(allObjects, { canvas });
     canvas.setActiveObject(selection);
     canvas.renderAll();
-}
+  }
   // Export functions
   function exportCanvas(format: "png" | "svg" | "json") {
     if (!canvas) return;
@@ -899,21 +897,21 @@
         dataUrl = `data:application/json;base64,${btoa(JSON.stringify(jsonData, null, 2))}`;
         filename = `canvas-${caseId}.json`;
         break;
-}
+  }
     const link = document.createElement("a");
     link.href = dataUrl;
     link.download = filename;
     link.click();
-}
+  }
   // Search functionality
   function searchEvidence(query: string) {
     if (!searchEngine || !query.trim()) {
       searchResults = [];
       return;
-}
+  }
     const results = searchEngine.search(query);
     searchResults = results.map((result) => result.item);
-}
+  }
   // Generate AI summary for canvas
   async function generateAISummary() {
     if (!canvas) return;
@@ -930,7 +928,7 @@
       if (evidenceData.length === 0) {
         alert("No evidence items found on canvas to summarize.");
         return;
-}
+  }
       const summary = await aiSummarizationService.generateEvidenceAnalysis(
         evidenceData,
         caseId
@@ -947,7 +945,7 @@
           fill: "#374151",
           backgroundColor: "#f0f9ff",
           padding: 10,
-}
+  }
       );
 
       canvas.add(summaryText);
@@ -955,8 +953,8 @@
     } catch (error) {
       console.error("Failed to generate AI summary:", error);
       alert("Failed to generate AI summary. Please try again.");
-}
-}
+  }
+  }
   // Reactive statements
   let state = $derived(get(canvasState));
 
@@ -966,7 +964,7 @@
     const evidenceObject = createEvidenceObject(evidence);
     canvas.add(evidenceObject);
     canvas.setActiveObject(evidenceObject);
-}
+  }
   export function addElementsToCanvas(elements: any[]) {
     if (!canvas || !elements) return;
     elements.forEach((element) => {
@@ -974,10 +972,10 @@
       const canvasObject = createCanvasObjectFromData(element);
       if (canvasObject) {
         canvas.add(canvasObject);
-}
+  }
     });
     canvas.renderAll();
-}
+  }
   function createCanvasObjectFromData(elementData: any): fabric.Object | null {
     try {
       // Basic implementation - can be expanded based on element types
@@ -990,13 +988,13 @@
           fontSize: elementData.fontSize || 16,
           fill: elementData.fill || "#333",
         });
-}
+  }
       return null;
     } catch (error) {
       console.error("Error creating canvas object:", error);
       return null;
-}
-}
+  }
+  }
 </script>
 
 <div class="space-y-4">

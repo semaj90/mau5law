@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { goto } from '$app/navigation';
   // import { createTooltip, melt } from 'melt'; // Removed melt dependency
   import { Brain, MessageSquare, Sparkles, Mic, MicOff, Settings } from 'lucide-svelte';
@@ -69,7 +68,7 @@
       listening: 'bg-red-500/10 border-red-500 text-red-400 animate-pulse',
       connected: 'bg-yorha-accent-gold/10 border-yorha-accent-gold text-yorha-accent-gold'
     };
-let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
+  let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
 
     if (variant === 'floating') {
       classes += ` ${positions[position]}`;

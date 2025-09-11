@@ -1,6 +1,5 @@
 <!-- Enhanced Legal Case Manager with Production Features -->
 <script lang="ts">
-</script>
   import { onMount, tick } from 'svelte';
     import { page } from '$app/stores';
     import { goto } from '$app/navigation';
@@ -139,7 +138,7 @@
     );
 
     // Auto-save functionality using Svelte 5 $effect
-let autoSaveTimeout = $state<NodeJS.Timeout;
+  let autoSaveTimeout = $state<NodeJS.Timeout;
     const AUTOSAVE_DELAY >(3000); // 3 seconds
 
     $effect(() => {
@@ -296,7 +295,7 @@ let autoSaveTimeout = $state<NodeJS.Timeout;
     async function jumpToStep(stepIndex: number): Promise<void> {
         if (stepIndex >= 0 && stepIndex < steps.length) {
             // Validate all previous steps
-let canJump = $state(true);
+  let canJump = $state(true);
 
             for (let i = 0; i < stepIndex; i++) {
                 currentStep = i;
@@ -522,7 +521,7 @@ let canJump = $state(true);
         analyticsStore.logEvent({ type: 'page_view', page: '/case/new' });
 
         // Check for case ID in URL (edit mode)
-let pageStore = $state<any;
+  let pageStore = $state<any;
         const unsubscribe >(page.subscribe(value => pageStore = value));
         const caseId = pageStore?.url.searchParams.get('id');
         unsubscribe();

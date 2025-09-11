@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   // $state and $derived are available in runes mode via types, not runtime imports
   import * as Dialog from '$lib/components/ui/dialog';
@@ -120,7 +119,6 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(personData)
       });
-      
       if (response.ok) {
         const newPerson = await response.json();
         persons = [...persons, newPerson];

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Dialog as BitsDialog } from 'bits-ui';
   import { fade, fly } from 'svelte/transition';
   import { cn } from '$lib/utils/cn';

@@ -1,42 +1,41 @@
 <script lang="ts">
-</script>
-	import { page } from "$app/state";
-	import { cn } from "$lib/utils/styles.js";
-	import type { Component } from "svelte";
-	import Metadata from "./metadata.svelte";
-	import type { TocItem } from "$lib/utils/use-toc.svelte.js";
-	import Toc from "./toc/toc.svelte";
-	import type { APISchema } from "$lib/content/types.js";
-	import type { DocMetadata } from "$lib/utils/docs.js";
-	import DocPageHeader from "./doc-page-header.svelte";
-	import SidebarSponsor from "./sidebar-sponsor.svelte";
+  	import { page } from "$app/state";
+  	import { cn } from "$lib/utils/styles.js";
+  	import type { Component } from "svelte";
+  	import Metadata from "./metadata.svelte";
+  	import type { TocItem } from "$lib/utils/use-toc.svelte.js";
+  	import Toc from "./toc/toc.svelte";
+  	import type { APISchema } from "$lib/content/types.js";
+  	import type { DocMetadata } from "$lib/utils/docs.js";
+  	import DocPageHeader from "./doc-page-header.svelte";
+  	import SidebarSponsor from "./sidebar-sponsor.svelte";
 
-	let {
-		component,
-		metadata,
-		schemas = [],
-	}: {
-		component: Component;
-		metadata: DocMetadata;
-		schemas?: APISchema[];
-	} = $props();
+  	let {
+  		component,
+  		metadata,
+  		schemas = [],
+  	}: {
+  		component: Component;
+  		metadata: DocMetadata;
+  		schemas?: APISchema[];
+  	} = $props();
 
-	const PageComponent = $derived(component);
+  	const PageComponent = $derived(component);
 
-	const apiSchemaToc: TocItem | null = $derived.by(() => {
-		if (!schemas.length) return null;
+  	const apiSchemaToc: TocItem | null = $derived.by(() => {
+  		if (!schemas.length) return null;
 
-		return {
-			title: "API Reference",
-			url: "#api-reference",
-			items: schemas.map((schema) => ({
-				title: schema.title,
-				url: `#${schema.title.toLowerCase()}`,
-			})),
-		};
-	});
+  		return {
+  			title: "API Reference",
+  			url: "#api-reference",
+  			items: schemas.map((schema) => ({
+  				title: schema.title,
+  				url: `#${schema.title.toLowerCase()}`,
+  			})),
+  		};
+  	});
 
-	const fullToc = $derived(apiSchemaToc ? [...metadata.toc, apiSchemaToc] : metadata.toc);
+  	const fullToc = $derived(apiSchemaToc ? [...metadata.toc, apiSchemaToc] : metadata.toc);
 </script>
 
 <Metadata {...metadata} />

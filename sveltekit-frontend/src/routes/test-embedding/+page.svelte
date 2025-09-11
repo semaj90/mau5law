@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
   import {
     Button
@@ -12,9 +11,9 @@
   } from '$lib/components/ui/enhanced-bits';;
 
   let evidenceText = $state(`This is a test contract regarding intellectual property rights and licensing agreements.
-The contract includes provisions for patent licensing, trademark usage, and trade secret protection.
-Key terms include exclusive licensing rights, royalty payments of 5% of net sales, and territorial restrictions.
-The agreement is valid for 5 years with automatic renewal options.`);
+  The contract includes provisions for patent licensing, trademark usage, and trade secret protection.
+  Key terms include exclusive licensing rights, royalty payments of 5% of net sales, and territorial restrictions.
+  The agreement is valid for 5 years with automatic renewal options.`);
 
   let caseId = $state('test-case-123');
   let contextItems = $state([

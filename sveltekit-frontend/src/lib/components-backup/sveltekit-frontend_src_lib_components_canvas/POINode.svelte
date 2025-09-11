@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props { onupdate?: (event?: any) => void;
     onupdatePosition?: (event?: any) => void;
     ondelete?: (event?: any) => void;
@@ -11,21 +10,20 @@
 
     import { draggable  } from '$lib/actions/draggable';
   import { aiService  } from '$lib/services/aiService';
-// UI Components
+  // UI Components
   import Badge from "$lib/components/ui/Badge.svelte";
-import Card from "$lib/components/ui/Card.svelte";
-import CardContent from "$lib/components/ui/CardContent.svelte";
-import CardFooter from "$lib/components/ui/CardFooter.svelte";
-import CardHeader from "$lib/components/ui/CardHeader.svelte";
-import Input from "$lib/components/ui/Input.svelte";
-// Remove broken Textarea import, use native <textarea> for now
-// Remove Button import, use native <button> for now
+  import Card from "$lib/components/ui/Card.svelte";
+  import CardContent from "$lib/components/ui/CardContent.svelte";
+  import CardFooter from "$lib/components/ui/CardFooter.svelte";
+  import CardHeader from "$lib/components/ui/CardHeader.svelte";
+  import Input from "$lib/components/ui/Input.svelte";
+  // Remove broken Textarea import, use native <textarea> for now
+  // Remove Button import, use native <button> for now
   import * as ContextMenu from "$lib/components/ui/context-menu";
-// Note: Select component has issues - using native select for now
+  // Note: Select component has issues - using native select for now
   // Icons
   import { Edit, Save, Sparkles, Tag, User as UserIcon, X  } from "lucide-svelte";
 
-  
   // Simple POI interface for the component
   interface POIData { id: string; name: string,
     posX: number; posY: number,
@@ -41,8 +39,7 @@ import Input from "$lib/components/ui/Input.svelte";
     status?: string;
     tags?: string[];
     createdBy?: string;
-}
-  
+  }
   let nodeElement: HTMLElement
   let isEditing = false;
   let showContextMenu = false;
@@ -71,7 +68,7 @@ import Input from "$lib/components/ui/Input.svelte";
     threatLevel = poi.threatLevel || "low";
     status = poi.status || "active";
     tags = poi.tags || [];
-}
+  }
   // Form data for editing
   let formData = { name: "",
     aliases: "",
@@ -92,7 +89,7 @@ import Input from "$lib/components/ui/Input.svelte";
       status: status,
       tags: tags.join(", "),
     };
-}
+  }
   function saveChanges() { // Update POI with form data
     const updatedPoi = {
       ...poi,
@@ -124,14 +121,14 @@ import Input from "$lib/components/ui/Input.svelte";
     onupdate?.();
 
     isEditing = false;
-}
+  }
   function cancelEditing() { isEditing = false;
- }
+   }
   function handleContextMenu(event: MouseEvent) { event.preventDefault();
     contextX = event.clientX;
     contextY = event.clientY;
     showContextMenu = true;
- }
+   }
   async function summarizePOI() { const summary = await aiService.summarizePOI(
       { name, profileData  },
       poi.id,
@@ -140,8 +137,8 @@ import Input from "$lib/components/ui/Input.svelte";
 
     if (summary) { // You could show this in a modal or add it to the POI data
       console.log("POI Summary:", summary);
- }
-}
+   }
+  }
   function getThreatLevelColor(level: string): string { switch (level) {
       case "high":
         return "bg-red-500";
@@ -151,8 +148,8 @@ import Input from "$lib/components/ui/Input.svelte";
         return "bg-green-500";
       default:
        , return "bg-gray-500";
- }
-}
+   }
+  }
   function getStatusColor(status: string): string { switch (status) {
       case "active":
         return "bg-blue-500";
@@ -164,15 +161,15 @@ import Input from "$lib/components/ui/Input.svelte";
         return "bg-green-500";
       default:
        , return "bg-gray-500";
- }
-}
+   }
+  }
   // Handle dragging
   function handleDrag(event: CustomEvent<{ x: number; y:, number  }>) { posX = event.detail.x;
     posY = event.detail.y;
 
     // Dispatch position update event
     onupdatePosition?.();
- }
+   }
 </script>
 
 <ContextMenu.Root>

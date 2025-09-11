@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import { Textarea } from "$lib/components/ui/textarea/index";
   import {
@@ -26,7 +25,6 @@
   let messagesContainer: HTMLElement;
   let inputElement: HTMLTextAreaElement;
   let inactivityTimer: NodeJS.Timeout;
-  
   // Enhanced thinking style state
   let thinkingStyleEnabled = false;
   let analysisMode = false;
@@ -71,7 +69,6 @@
                                userMessage.toLowerCase().includes('case');
 
       let response: Response;
-      
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
         // Use the enhanced analysis endpoint
         response = await fetch("/api/analyze", {
@@ -118,7 +115,6 @@
         // This is an analysis response
         lastAnalysisResult = apiResponse.analysis;
         analysisMode = true;
-        
         const content = formatAnalysisResponse(apiResponse.analysis, apiResponse.metadata);
         chatActions.addMessage(content, "assistant", {
           ...apiResponse.metadata,
@@ -151,9 +147,7 @@
 
   function formatAnalysisResponse(analysis: unknown, metadata: unknown): string {
     if (!analysis) return "Analysis completed.";
-    
     let response = `# AI Analysis Results\n\n`;
-    
     // Add thinking process if available
     if (analysis.thinking && thinkingStyleEnabled) {
       response += `## 🧠 Reasoning Process\n\n`;
@@ -161,13 +155,10 @@
       response += analysis.thinking.replace(/\n/g, '\n\n') + `\n\n`;
       response += `---\n\n`;
     }
-    
     // Add main analysis
     response += `## 📋 Analysis Results\n\n`;
-    
     if (analysis.analysis) {
       const analysisData = analysis.analysis;
-      
       if (analysisData.key_findings) {
         response += `**Key Findings:**\n`;
         analysisData.key_findings.forEach((finding: string) => {
@@ -175,7 +166,6 @@
         });
         response += `\n`;
       }
-      
       if (analysisData.legal_implications) {
         response += `**Legal Implications:**\n`;
         analysisData.legal_implications.forEach((implication: string) => {
@@ -183,7 +173,6 @@
         });
         response += `\n`;
       }
-      
       if (analysisData.recommendations) {
         response += `**Recommendations:**\n`;
         analysisData.recommendations.forEach((rec: string) => {
@@ -191,26 +180,22 @@
         });
         response += `\n`;
       }
-      
       if (analysisData.raw_analysis) {
         response += analysisData.raw_analysis + `\n\n`;
       }
     }
-    
     // Add confidence and metadata
     response += `## 📊 Analysis Metadata\n\n`;
     response += `• **Confidence:** ${Math.round(analysis.confidence * 100)}%\n`;
     response += `• **Model:** ${metadata.model_used}\n`;
     response += `• **Processing Time:** ${metadata.processing_time}ms\n`;
     response += `• **Thinking Style:** ${metadata.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
-    
     if (analysis.reasoning_steps && analysis.reasoning_steps.length > 0) {
       response += `\n**Reasoning Steps:**\n`;
       analysis.reasoning_steps.forEach((step: string, index: number) => {
         response += `${index + 1}. ${step}\n`;
       });
     }
-    
     return response;
   }
 
@@ -262,12 +247,10 @@
 
   function handleThinkingToggle(event: CustomEvent<{ enabled: boolean }>) {
     thinkingStyleEnabled = event.detail.enabled;
-    
     // Add a system message to indicate the change
     const message = thinkingStyleEnabled 
       ? "🧠 Thinking Style enabled. AI will now show detailed reasoning process."
       : "⚡ Quick Mode enabled. AI will provide concise responses.";
-    
     notifications.add({
       type: "info",
       title: "AI Mode Changed",

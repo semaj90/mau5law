@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   let serviceStatus = $state<any>(null);
   let extractionResult = $state<any>(null);
@@ -13,18 +12,18 @@
   let selectedModel = $state('gemma2:2b');
   let inputText = $state(`This Software License Agreement ("Agreement"); is entered into on January 15, 2024, between TechCorp Inc., a Delaware corporation ("Licensor"), and DataSystems LLC, a California limited liability company ("Licensee").
 
-WHEREAS, Licensor owns certain proprietary software and related documentation; and
-WHEREAS, Licensee desires to obtain a license to use such software;
+  WHEREAS, Licensor owns certain proprietary software and related documentation; and
+  WHEREAS, Licensee desires to obtain a license to use such software;
 
-NOW, THEREFORE, in consideration of the mutual covenants contained herein, the parties agree as follows:
+  NOW, THEREFORE, in consideration of the mutual covenants contained herein, the parties agree as follows:
 
-1. GRANT OF LICENSE. Subject to the terms and conditions of this Agreement, Licensor hereby grants to Licensee a non-exclusive, non-transferable license to use the Software for internal business purposes only.
+  1. GRANT OF LICENSE. Subject to the terms and conditions of this Agreement, Licensor hereby grants to Licensee a non-exclusive, non-transferable license to use the Software for internal business purposes only.
 
-2. TERM. This Agreement shall commence on the Effective Date and shall continue for a period of three (3) years, unless earlier terminated in accordance with the provisions hereof.
+  2. TERM. This Agreement shall commence on the Effective Date and shall continue for a period of three (3) years, unless earlier terminated in accordance with the provisions hereof.
 
-3. FEES. In consideration for the rights granted hereunder, Licensee shall pay Licensor a license fee of $50,000 per year, payable annually in advance.
+  3. FEES. In consideration for the rights granted hereunder, Licensee shall pay Licensor a license fee of $50,000 per year, payable annually in advance.
 
-4. TERMINATION. Either party may terminate this Agreement upon thirty (30) days' written notice to the other party.`);
+  4. TERMINATION. Either party may terminate this Agreement upon thirty (30) days' written notice to the other party.`);
 
   const actions = [
     { value: 'extract', label: 'General Extraction' },
@@ -95,7 +94,6 @@ NOW, THEREFORE, in consideration of the mutual covenants contained herein, the p
       });
 
       const result = await response.json();
-      
       if (result.success) {
         extractionResult = result.data;
       } else {

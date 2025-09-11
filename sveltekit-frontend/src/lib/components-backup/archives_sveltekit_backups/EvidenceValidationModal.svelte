@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Button from "$lib/components/ui/Button.svelte";
   import { Dialog as DialogPrimitive } from "bits-ui";
   import {

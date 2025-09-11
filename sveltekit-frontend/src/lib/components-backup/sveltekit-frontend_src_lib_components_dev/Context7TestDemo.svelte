@@ -1,17 +1,13 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  
   // Test state
   const testResults = writable<any[]>([]);
   const isRunning = writable(false);
   const currentTest = writable<string>('');
-  
   // Test configuration
   let selectedComponent = 'sveltekit';
   let testQuery = 'Context7 legal AI stack analysis';
-  
   const components = [
     'sveltekit', 'drizzle', 'unocss', 'bits-ui', 'xstate', 
     'typescript', 'postgresql', 'autogen', 'crewai', 'vllm'
@@ -22,10 +18,8 @@
     $isRunning = true;
     $currentTest = 'semantic-audit';
     $testResults = [];
-    
     try {
       console.log('[Context7 Test] Starting semantic audit test...');
-      
       const response = await fetch('/api/audit/semantic', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -34,15 +28,11 @@
           component: selectedComponent
         })
       });
-      
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
       const data = await response.json();
-      
       console.log('[Context7 Test] Semantic audit completed:', data);
-      
       $testResults = [
         {
           test: 'Semantic Audit API',
@@ -52,10 +42,8 @@
           summary: `Analyzed ${selectedComponent} with ${data.results?.length || 0} results, ${data.triggeredAgents?.length || 0} agent triggers`
         }
       ];
-      
     } catch (error) {
       console.error('[Context7 Test] Semantic audit failed:', error);
-      
       $testResults = [
         {
           test: 'Semantic Audit API',
@@ -75,13 +63,10 @@
   async function runSemanticSearchTest() {
     $isRunning = true;
     $currentTest = 'semantic-search';
-    
     try {
       console.log('[Context7 Test] Testing semantic search...');
-      
       // Import the performContext7Search function dynamically
       const { performContext7Search } = await import('$lib/ai/types');
-      
       const searchResults = await performContext7Search({
         query: testQuery,
         maxResults: 5,
@@ -89,9 +74,7 @@
         includeCode: true,
         includeDocs: true
       });
-      
       console.log('[Context7 Test] Semantic search completed:', searchResults);
-      
       $testResults = [
         ...$testResults,
         {
@@ -102,10 +85,8 @@
           summary: `Found ${searchResults.length} search results`
         }
       ];
-      
     } catch (error) {
       console.error('[Context7 Test] Semantic search failed:', error);
-      
       $testResults = [
         ...$testResults,
         {
@@ -126,22 +107,16 @@
   async function runAgentOrchestrationTest() {
     $isRunning = true;
     $currentTest = 'agent-orchestration';
-    
     try {
       console.log('[Context7 Test] Testing agent orchestration...');
-      
       const { context7AgentOrchestrator } = await import('$lib/ai/types');
-      
       const trigger = {
         todoId: `test_${Date.now()}`,
         action: 'analyze' as const,
         status: 'pending' as const
       };
-      
       const result = await context7AgentOrchestrator.triggerAgent(trigger);
-      
       console.log('[Context7 Test] Agent orchestration completed:', result);
-      
       $testResults = [
         ...$testResults,
         {
@@ -152,10 +127,8 @@
           summary: `Agent ${trigger.action} completed for ${trigger.todoId}`
         }
       ];
-      
     } catch (error) {
       console.error('[Context7 Test] Agent orchestration failed:', error);
-      
       $testResults = [
         ...$testResults,
         {

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import NierThemeShowcase from '$lib/components/NierThemeShowcase.svelte';
   import NierHeader from '$lib/components/NierHeader.svelte';
   import CaseCard from '$lib/components/cases/CaseCard.svelte';

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Badge } from '$lib/components/ui/badge';
   import {
     Button
@@ -39,7 +38,7 @@
   let processingStatus = $state('');
   let searchQuery = $state('');
   let searchResults = $state<any[]>([]);
-let fuse = $state<Fuse<any> | null >(null);
+  let fuse = $state<Fuse<any> | null >(null);
   let aiInsights = $state({
     connections: [],
     similarEvidence: [],

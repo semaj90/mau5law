@@ -1,18 +1,15 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { createActor } from 'xstate';
   import { evidenceProcessingMachine, type EvidenceProcessingContext } from '$lib/state/evidenceProcessingMachine';
   import { documentUploadMachine, type DocumentUploadContext } from '$lib/state/documentUploadMachine';
   import { performanceMonitor, formatMetricValue, getHealthStatusColor, getAlertSeverityColor } from '$lib/services/performanceMonitor';
   import type { AIMetrics, QueueMetrics, CacheMetrics, SystemMetrics } from '$lib/services/performanceMonitor';
-  
   // State machine actors
-let evidenceActor = $state<any >(null);
-let uploadActor = $state<any >(null);
+  let evidenceActor = $state<any >(null);
+  let uploadActor = $state<any >(null);
   let evidenceState = $state({ value: 'idle', context: {} as EvidenceProcessingContext });
   let uploadState = $state({ value: 'idle', context: {} as DocumentUploadContext });
-  
   // Performance metrics stores
   let aiMetrics = $state<AIMetrics | null>(null);
   let queueMetrics = $state<QueueMetrics | null>(null);
@@ -20,64 +17,58 @@ let uploadActor = $state<any >(null);
   let systemMetrics = $state<SystemMetrics | null>(null);
   let healthScore = $state(0);
   let alerts = $state<SystemMetrics['activeAlerts']>([]);
-  
   // Demo state
   let selectedTab = $state<'overview' | 'processing' | 'queues' | 'cache' | 'system'>('overview');
   let isProcessingDemo = $state(false);
   let demoLog = $state<Array<{ timestamp: string; level: 'info' | 'success' | 'warning' | 'error'; message: string }>>([]);
-  
   // Demo document content
   const DEMO_DOCUMENT = `
-CASE FILE: People v. Johnson
-Case Number: CR-2024-005678
+  CASE FILE: People v. Johnson
+  Case Number: CR-2024-005678
 
-INCIDENT REPORT:
-On March 15, 2024, at approximately 2:30 PM, officers responded to a report of theft at TechMart Electronics, 
-located at 789 Commerce Street, Downtown District. Witness statements indicate that the suspect, 
-identified as Marcus Johnson (DOB: 01/15/1985), allegedly concealed multiple electronic devices 
-and attempted to leave the store without payment.
+  INCIDENT REPORT:
+  On March 15, 2024, at approximately 2:30 PM, officers responded to a report of theft at TechMart Electronics, 
+  located at 789 Commerce Street, Downtown District. Witness statements indicate that the suspect, 
+  identified as Marcus Johnson (DOB: 01/15/1985), allegedly concealed multiple electronic devices 
+  and attempted to leave the store without payment.
 
-EVIDENCE COLLECTED:
-1. Store surveillance footage showing suspect's actions
-2. Recovered merchandise: iPad Pro (SKU: IPD-PRO-128), valued at $1,099.99
-3. Recovered merchandise: Wireless headphones (SKU: WH-BT-500), valued at $349.99
-4. Store receipt showing unpaid items
-5. Suspect's statement recorded during interview
+  EVIDENCE COLLECTED:
+  1. Store surveillance footage showing suspect's actions
+  2. Recovered merchandise: iPad Pro (SKU: IPD-PRO-128), valued at $1,099.99
+  3. Recovered merchandise: Wireless headphones (SKU: WH-BT-500), valued at $349.99
+  4. Store receipt showing unpaid items
+  5. Suspect's statement recorded during interview
 
-WITNESS STATEMENTS:
-Store Manager Sarah Chen: "I observed the suspect placing items in a large bag and bypassing the checkout area."
-Loss Prevention Officer David Wilson: "Suspect was cooperative during detention and admitted to taking the items."
-Customer Jennifer Martinez: "I saw someone acting suspiciously near the electronics display."
+  WITNESS STATEMENTS:
+  Store Manager Sarah Chen: "I observed the suspect placing items in a large bag and bypassing the checkout area."
+  Loss Prevention Officer David Wilson: "Suspect was cooperative during detention and admitted to taking the items."
+  Customer Jennifer Martinez: "I saw someone acting suspiciously near the electronics display."
 
-BACKGROUND CHECK:
-Suspect has prior convictions for petty theft (2019) and shoplifting (2021). Currently unemployed.
-Address: 456 Elm Street, Apt 3B, Riverside District.
+  BACKGROUND CHECK:
+  Suspect has prior convictions for petty theft (2019) and shoplifting (2021). Currently unemployed.
+  Address: 456 Elm Street, Apt 3B, Riverside District.
 
-LEGAL ANALYSIS:
-Under Penal Code Section 459.5, this constitutes shoplifting as the value exceeds $950.
-Potential charges: Grand theft, burglary in the second degree.
+  LEGAL ANALYSIS:
+  Under Penal Code Section 459.5, this constitutes shoplifting as the value exceeds $950.
+  Potential charges: Grand theft, burglary in the second degree.
 
-NEXT STEPS:
-Arraignment scheduled for April 2, 2024, at 10:00 AM, Superior Court Department 5.
-Defendant released on $5,000 bail.
-`;
+  NEXT STEPS:
+  Arraignment scheduled for April 2, 2024, at 10:00 AM, Superior Court Department 5.
+  Defendant released on $5,000 bail.
+  `;
 
   onMount(() => {
     // Initialize state machine actors
     evidenceActor = createActor(evidenceProcessingMachine);
     uploadActor = createActor(documentUploadMachine);
-    
     evidenceActor.subscribe((state: any) => {
       evidenceState = state;
     });
-    
     uploadActor.subscribe((state: any) => {
       uploadState = state;
     });
-    
     evidenceActor.start();
     uploadActor.start();
-    
     // Subscribe to performance metrics
     const unsubscribeAI = performanceMonitor.aiMetrics.subscribe(value => aiMetrics = value);
     const unsubscribeQueue = performanceMonitor.queueMetrics.subscribe(value => queueMetrics = value);
@@ -85,13 +76,10 @@ Defendant released on $5,000 bail.
     const unsubscribeSystem = performanceMonitor.systemMetrics.subscribe(value => systemMetrics = value);
     const unsubscribeHealth = performanceMonitor.healthScore.subscribe(value => healthScore = value);
     const unsubscribeAlerts = performanceMonitor.alerts.subscribe(value => alerts = value);
-    
     // Start monitoring
     performanceMonitor.startMonitoring(10000); // Every 10 seconds for demo
-    
     // Add demo start log
     addLog('info', 'AI Dashboard Demo initialized');
-    
     return () => {
       unsubscribeAI();
       unsubscribeQueue();
@@ -102,18 +90,15 @@ Defendant released on $5,000 bail.
       performanceMonitor.stopMonitoring();
     };
   });
-  
   onDestroy(() => {
     evidenceActor?.stop();
     uploadActor?.stop();
     performanceMonitor.stopMonitoring();
   });
-  
   // Demo functions
   function startProcessingDemo() {
     isProcessingDemo = true;
     addLog('info', 'Starting evidence processing demo...');
-    
     // Start evidence processing
     evidenceActor.send({
       type: 'START_PROCESSING',
@@ -128,17 +113,13 @@ Defendant released on $5,000 bail.
         source: 'demo'
       }
     });
-    
     addLog('success', 'Evidence processing started');
   }
-  
   function startUploadDemo() {
     // Create a fake file for demo
     const blob = new Blob([DEMO_DOCUMENT], { type: 'text/plain' });
     const file = new File([blob], 'demo-case-file.txt', { type: 'text/plain' });
-    
     addLog('info', 'Starting document upload demo...');
-    
     uploadActor.send({
       type: 'SELECT_FILE',
       file,
@@ -148,26 +129,21 @@ Defendant released on $5,000 bail.
       description: 'Demonstration of document upload and processing workflow',
       tags: ['demo', 'case-file', 'legal-document']
     });
-    
     addLog('success', 'Document upload started');
   }
-  
   function retryProcessing() {
     evidenceActor.send({ type: 'RETRY' });
     addLog('info', 'Retrying evidence processing...');
   }
-  
   function cancelProcessing() {
     evidenceActor.send({ type: 'CANCEL' });
     uploadActor.send({ type: 'CANCEL_UPLOAD' });
     isProcessingDemo = false;
     addLog('warning', 'Processing cancelled');
   }
-  
   function clearLogs() {
     demoLog = [];
   }
-  
   function addLog(level: 'info' | 'success' | 'warning' | 'error', message: string) {
     demoLog = [
       ...demoLog,
@@ -178,7 +154,6 @@ Defendant released on $5,000 bail.
       }
     ].slice(-50); // Keep last 50 logs
   }
-  
   // Reactive effects for state changes
   $effect(() => {
     if (evidenceState.value === 'completed') {
@@ -192,7 +167,6 @@ Defendant released on $5,000 bail.
       addLog('warning', 'Evidence processing cancelled');
     }
   });
-  
   $effect(() => {
     if (uploadState.value === 'completed') {
       addLog('success', 'Document upload and processing completed!');
@@ -200,7 +174,6 @@ Defendant released on $5,000 bail.
       addLog('error', `Document upload failed: ${uploadState.context.error}`);
     }
   });
-  
   // Helper functions
   function getStateColor(state: string): string {
     if (state.includes('error') || state.includes('failed')) return 'text-red-500';
@@ -208,7 +181,6 @@ Defendant released on $5,000 bail.
     if (state.includes('processing') || state.includes('uploading')) return 'text-blue-500';
     return 'text-gray-500';
   }
-  
   function getLogColor(level: string): string {
     switch (level) {
       case 'success': return 'text-green-500';

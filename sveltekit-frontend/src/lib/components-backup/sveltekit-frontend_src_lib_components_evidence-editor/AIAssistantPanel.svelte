@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     ontagsUpdate?: (event?: any) => void;
   }
@@ -10,12 +9,9 @@
 
 
   import Badge from "$lib/components/ui/Badge.svelte";
-import Button from "$lib/components/ui/Button.svelte";
-import Input from "$lib/components/ui/Input.svelte";
+  import Button from "$lib/components/ui/Button.svelte";
+  import Input from "$lib/components/ui/Input.svelte";
   import Fuse from "fuse.js";
-  
-  
-  
   // AI processing state
   let isProcessing = false;
   let processingStatus = "";
@@ -57,8 +53,8 @@ import Input from "$lib/components/ui/Input.svelte";
         threshold: 0.4,
         includeScore: true,
       });
-}
-}
+  }
+  }
   async function reprocessWithAI() {
     if (!selectedNode || isProcessing) return;
 
@@ -86,15 +82,15 @@ import Input from "$lib/components/ui/Input.svelte";
         await generateInsights();
       } else {
         processingStatus = "Analysis failed";
-}
+  }
     } catch (error) {
       console.error("AI reprocessing failed:", error);
       processingStatus = "Analysis failed";
     } finally {
       isProcessing = false;
       setTimeout(() => (processingStatus = ""), 3000);
-}
-}
+  }
+  }
   async function generateInsights() {
     if (!selectedNode?.aiTags) return;
 
@@ -108,8 +104,8 @@ import Input from "$lib/components/ui/Input.svelte";
       };
     } catch (error) {
       console.error("Failed to generate insights:", error);
-}
-}
+  }
+  }
   function generateConnections(): any[] {
     if (!selectedNode?.aiTags) return [];
 
@@ -124,7 +120,7 @@ import Input from "$lib/components/ui/Input.svelte";
         strength: "high",
         description: `Connected through person: ${people[0]}`,
       });
-}
+  }
     if (locations?.length > 0) {
       connections.push({
         type: "location",
@@ -132,9 +128,9 @@ import Input from "$lib/components/ui/Input.svelte";
         strength: "medium",
         description: `Connected through location: ${locations[0]}`,
       });
-}
+  }
     return connections;
-}
+  }
   function findSimilarEvidence(): any[] {
     // In real app, this would use vector similarity search
     return [
@@ -149,7 +145,7 @@ import Input from "$lib/components/ui/Input.svelte";
         reason: "Shared people and location",
       },
     ];
-}
+  }
   function generateTimeline(): any[] {
     if (!selectedNode?.aiTags?.dates) return [];
 
@@ -158,7 +154,7 @@ import Input from "$lib/components/ui/Input.svelte";
       event: `Evidence related to ${date}`,
       type: "evidence",
     }));
-}
+  }
   function generateSuggestedActions(): any[] {
     const actions: any[] = [];
 
@@ -168,41 +164,41 @@ import Input from "$lib/components/ui/Input.svelte";
         reason: "High legal relevance detected",
         priority: "high",
       });
-}
+  }
     if (selectedNode?.aiTags?.people?.length > 0) {
       actions.push({
         action: "Cross-reference People",
         reason: "Multiple people identified",
         priority: "medium",
       });
-}
+  }
     return actions;
-}
+  }
   function performSearch() {
     if (!fuse || !searchQuery.trim()) {
       searchResults = [];
       return;
-}
+  }
     const results = fuse.search(searchQuery);
     searchResults = results.map((result) => ({
       ...result.item,
       score: result.score,
     }));
-}
+  }
   function clearSearch() {
     searchQuery = "";
     searchResults = [];
-}
+  }
   // Reactive search
   $effect(() => { if (searchQuery) {
     performSearch();
   } else {
     searchResults = [];
-}
+  }
   // Auto-generate insights when node changes
   $effect(() => { if (selectedNode?.aiTags) {
     generateInsights();
-}
+  }
 </script>
 
 <div class="space-y-4">

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   interface Props {
     class?: string;
@@ -14,7 +13,6 @@
   import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/button';
   // import { Avatar } from '$lib/components/ui/Avatar.svelte';
-  
   let { person = $bindable() } = $props(); // {
     name: string;
     role: 'suspect' | 'witness' | 'victim' | 'associate' | 'unknown';
@@ -72,11 +70,10 @@
   };
 
   let roleInfo = $derived(roleConfig[person.role] ?? roleConfig.unknown);
-  
   // Confidence level styling
   let confidenceColor = $derived(person.confidence > 0.8 ? 'text-green-600' : 
                       person.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600');
-let showFullDetails = $state(false);
+  let showFullDetails = $state(false);
 </script>
 
 <Card class="w-full max-w-md hover:shadow-lg transition-shadow">

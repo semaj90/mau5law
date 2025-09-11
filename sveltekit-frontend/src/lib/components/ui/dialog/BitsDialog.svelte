@@ -1,6 +1,5 @@
 <!-- Modern Bits-UI Dialog Component for Legal AI App -->
 <script lang="ts">
-</script>
   import * as Dialog from './index';
   import { X } from 'lucide-svelte';
   import { cn } from '$lib/utils';

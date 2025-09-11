@@ -1,6 +1,5 @@
 <!-- Enhanced Legal Document Editor with UnoCSS + Melt UI -->
 <script lang="ts">
-</script>
   interface Props { caseId: string | undefined ;,
     documentId: string | undefined ;,
     documentType: "brief" | "contract" | "motion" | "evidence" ;,
@@ -69,7 +68,7 @@
       id: string; text: string,
       source: string;, type: "case" | "statute" | "regulation";
      }>;
-}
+  }
   const dispatch = createEventDispatcher<{ save: { content: string; title:, string  };
     aiRequest: { query: string; context:, string  };
     citationAdded: { citation: any };
@@ -133,14 +132,14 @@
       dispatch("aiRequest", { query, context: content });
     } catch (err) { error = err instanceof Error ? err.message : "AI request failed";
      } finally { isProcessingAI = false;
- }}
+   }}
   function insertCitation(citation: (typeof citations)[0]) { const citationText = `[${citation.source }]`;
     content += citationText;
     citations = [...citations, citation];
     dispatch("citationAdded", { citation  });
-}
+  }
   function saveDocument() { dispatch("save", { content, title  });
-}
+  }
   // Enhanced auto-save function with debouncing
   function scheduleAutoSave() { if (!documentId || readonly) return;
 
@@ -149,11 +148,11 @@
     // Clear existing timer
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
- }
+   }
     // Schedule new auto-save after 2 seconds of inactivity
     autoSaveTimer = setTimeout(() => { autoSaveDocument();
      }, 2000);
-}
+  }
   // Function to auto-save document
   async function autoSaveDocument() { if (!documentId || readonly || isSaving) return;
 
@@ -174,18 +173,18 @@
       });
 
       if (!response.ok) { throw new Error("Failed to auto-save document");
- }
+   }
       const result = await response.json();
 
       if (result.success) { lastSaved = new Date().toLocaleTimeString();
         hasUnsavedChanges = false;
         console.log("Document auto-saved successfully");
        } else { throw new Error(result.error || "Auto-save failed");
- }
+   }
     } catch (err) { saveError = err instanceof Error ? err.message : "Auto-save failed";
       console.error("Auto-save failed:", err);
      } finally { isSaving = false;
- }}
+   }}
   // Function to manually save document
   async function manualSaveDocument() { if (!documentId || readonly || isSaving) return;
 
@@ -206,25 +205,25 @@
       });
 
       if (!response.ok) { throw new Error("Failed to save document");
- }
+   }
       const result = await response.json();
 
       if (result.success) { lastSaved = new Date().toLocaleTimeString();
         hasUnsavedChanges = false;
         console.log("Document saved successfully");
        } else { throw new Error(result.error || "Save failed");
- }
+   }
     } catch (err) { saveError = err instanceof Error ? err.message : "Save failed";
       console.error("Save failed:", err);
      } finally { isSaving = false;
- }}
+   }}
   // Function to get save status
   function getSaveStatus() { if (isSaving) return "Saving...";
     if (saveError) return "Save failed";
     if (hasUnsavedChanges) return "Unsaved changes";
     if (lastSaved) return `Last saved ${lastSaved }`;
     return "All changes saved";
-}
+  }
   function getDocumentTypeIcon() { switch (documentType) {
       case "brief":
         return FileText;
@@ -236,22 +235,22 @@
         return Search;
       default:
         return, FileText;
- }}
+   }}
   onMount(() => { // Load document content if documentId is provided
     if (documentId) {
       loadDocument();
- }
+   }
     // Set up auto-save on content changes
     return () => { if (autoSaveTimer) {
         clearTimeout(autoSaveTimer);
- }
+   }
     };
   });
 
   // Reactive statement to trigger auto-save when content changes
   $effect(() => { if (content && documentId && !loadingDocument) {
     scheduleAutoSave();
- }
+   }
   // Reactive statement to update save status
   let saveStatus = $derived(getSaveStatus());
 
@@ -269,7 +268,7 @@
       });
 
       if (!response.ok) { throw new Error(`Failed to load document: ${response.statusText }`);
-}
+  }
       const documentData: DocumentData = await response.json();
 
       // Update component state with loaded data
@@ -279,7 +278,7 @@
 
       // Load citations if available
       if (documentData.citations) { citations = documentData.citations;
- }
+   }
       // Set initial save status
       lastSaved = new Date(documentData.updatedAt).toLocaleTimeString();
       hasUnsavedChanges = false;
@@ -289,7 +288,7 @@
         err instanceof Error ? err.message : "Failed to load document";
       console.error("Error loading document:", err);
      } finally { loadingDocument = false;
- }}
+   }}
   // Custom animation function for dialog
   function flyAndScale(
     node: Element,
@@ -327,7 +326,7 @@
       },
       easing: quintOut,
     };
-}
+  }
 </script>
 
 <!-- Main Document Editor Container -->

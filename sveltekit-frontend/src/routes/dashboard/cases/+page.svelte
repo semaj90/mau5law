@@ -3,10 +3,8 @@
   Real-time case management with vector search integration
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  
   // Modern UI Components
   import * as Card from '$lib/components/ui/card';
   import {
@@ -18,7 +16,6 @@
   import { Badge } from '$lib/components/ui/badge';
   import * as Table from '$lib/components/ui/table';
   import * as Dialog from '$lib/components/ui/dialog';
-  
   // Icons
   import { 
     Plus, Search, Filter, FileText, Calendar,
@@ -26,7 +23,6 @@
     AlertCircle, CheckCircle, XCircle,
     TrendingUp, MoreHorizontal
   } from 'lucide-svelte';
-  
   // Types matching Drizzle schema
   interface Case {
     id: string;
@@ -43,7 +39,6 @@
     evidence_count?: number;
     vector_queries?: number;
   }
-  
   // State
   let cases = $state<Case[]>([]);
   let loading = $state(true);
@@ -51,7 +46,6 @@
   let searchQuery = $state('');
   let selectedStatus = $state<string>('all');
   let showNewCaseDialog = $state(false);
-  
   // New case form
   let newCase = $state({
     title: '',
@@ -60,7 +54,6 @@
     assigned_to: '',
     status: 'active' as const
   });
-  
   // Filters
   const statusOptions = [
     { value: 'all', label: 'All Cases', count: 0 },
@@ -69,16 +62,13 @@
     { value: 'closed', label: 'Closed', count: 0 },
     { value: 'archived', label: 'Archived', count: 0 }
   ];
-  
   // Filtered cases
   let filteredCases = $derived(() => {
     let filtered = cases;
-    
     // Status filter
     if (selectedStatus !== 'all') {
       filtered = filtered.filter(c => c.status === selectedStatus);
     }
-    
     // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -88,10 +78,8 @@
         c.description?.toLowerCase().includes(query)
       );
     }
-    
     return filtered;
   });
-  
   // Case statistics
   let caseStats = $derived(() => {
     const stats = {
@@ -103,50 +91,39 @@
       thisWeek: 0,
       avgProcessingTime: 0
     };
-    
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    
     cases.forEach(c => {
       stats[c.status as keyof typeof stats]++;
       if (new Date(c.created_at) >= oneWeekAgo) {
         stats.thisWeek++;
       }
     });
-    
     return stats;
   });
-  
   // Load cases from API
   async function loadCases() {
     try {
       loading = true;
       error = null;
-      
       const searchParams = new URLSearchParams();
       if (selectedStatus !== 'all') {
         searchParams.set('status', selectedStatus);
       }
       searchParams.set('page', '1');
       searchParams.set('limit', '50');
-      
       const response = await fetch(`/api/v1/cases?${searchParams}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
-      
       if (!response.ok) {
         throw new Error(`Failed to load cases: ${response.statusText}`);
       }
-      
       const result = await response.json();
-      
       if (!result.success) {
         throw new Error(result.message || 'Failed to load cases');
       }
-      
       cases = result.data || [];
-      
       // Update status counts
       statusOptions.forEach(option => {
         if (option.value === 'all') {
@@ -155,7 +132,6 @@
           option.count = cases.filter(c => c.status === option.value).length;
         }
       });
-      
     } catch (err) {
       console.error('Failed to load cases:', err);
       error = err instanceof Error ? err.message : 'Unknown error';
@@ -163,11 +139,9 @@
       loading = false;
     }
   }
-  
   // Create new case
   async function createCase() {
     if (!newCase.title.trim()) return;
-    
     try {
       const response = await fetch('/api/v1/cases', {
         method: 'POST',
@@ -180,17 +154,13 @@
           metadata: {}
         })
       });
-      
       if (!response.ok) {
         throw new Error(`Failed to create caseItem: ${response.statusText}`);
       }
-      
       const result = await response.json();
-      
       if (!result.success) {
         throw new Error(result.message || 'Failed to create case');
       }
-      
       // Reset form and reload
       newCase = {
         title: '',
@@ -200,15 +170,12 @@
         status: 'active'
       };
       showNewCaseDialog = false;
-      
       await loadCases();
-      
     } catch (err) {
       console.error('Failed to create caseItem:', err);
       error = err instanceof Error ? err.message : 'Failed to create case';
     }
   }
-  
   function getStatusIcon(status: string) {
     switch (status) {
       case 'active': return CheckCircle;
@@ -218,7 +185,6 @@
       default: return AlertCircle;
     }
   }
-  
   function getStatusColor(status: string): string {
     switch (status) {
       case 'active': return 'bg-green-500';
@@ -228,7 +194,6 @@
       default: return 'bg-gray-400';
     }
   }
-  
   function formatDate(date: Date | string): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -236,7 +201,6 @@
       day: 'numeric'
     });
   }
-  
   function formatRelativeTime(date: Date | string): string {
     const now = new Date();
     const then = new Date(date);
@@ -248,7 +212,6 @@
     if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
     return `${Math.floor(days / 30)} months ago`;
   }
-  
   // Initialize
   onMount(() => {
     loadCases();

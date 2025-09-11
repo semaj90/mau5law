@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from "svelte";
   import { X } from "lucide-svelte";
   import { quadOut } from "svelte/easing";

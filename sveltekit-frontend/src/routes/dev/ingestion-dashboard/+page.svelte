@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
 
@@ -31,7 +30,6 @@
     try {
       const response = await fetch('/api/ingestion/comprehensive?action=get_dashboard');
       const result = await response.json();
-      
       if (result.success) {
         dashboardData.set(result.dashboard);
         isConnected = true;
@@ -53,7 +51,6 @@
 
     try {
       submissionStatus = 'Submitting...';
-      
       // Split text into chunks
       const words = newJob.text.split(' ');
       const chunkSize = Math.ceil(words.length / newJob.chunks);
@@ -142,7 +139,6 @@
 
   onMount(() => {
     fetchDashboardData();
-    
     if (autoRefresh) {
       pollInterval = setInterval(fetchDashboardData, refreshRate);
     }

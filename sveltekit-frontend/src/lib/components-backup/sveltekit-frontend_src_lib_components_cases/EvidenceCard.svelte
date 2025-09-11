@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onedit?: (event?: any) => void;
     ondelete?: (event?: any) => void;
@@ -26,9 +25,6 @@
     Trash2,
     Video,
   } from "lucide-svelte";
-  
-    
-  
   function getEvidenceIcon(type: string) {
     switch (type) {
       case "document":

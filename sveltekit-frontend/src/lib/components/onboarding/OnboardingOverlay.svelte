@@ -1,13 +1,12 @@
 <script lang="ts">
-</script>
-// @ts-nocheck
-import { onMount } from 'svelte';
+  // @ts-nocheck
+  import { onMount } from 'svelte';
 
-import { browser } from "$app/environment";
-import {
+  import { browser } from "$app/environment";
+  import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
-import {
+  import {
   ArrowLeft,
   ArrowRight,
   Check,
@@ -18,10 +17,10 @@ import {
   SkipForward,
   Target,
   X,
-} from 'lucide-svelte';
+  } from 'lucide-svelte';
 
 
-interface OnboardingStep {
+  interface OnboardingStep {
   id: string;
   title: string;
   description: string;
@@ -34,9 +33,9 @@ interface OnboardingStep {
   content?: string;
   image?: string;
   video?: string;
-}
+  }
 
-interface Props {
+  interface Props {
   open?: boolean;
   currentStep?: number;
   steps?: OnboardingStep[];
@@ -46,10 +45,10 @@ interface Props {
   allowSkip?: boolean;
     onclose?: (event?: unknown) => void;
   oncomplete?: (event?: unknown) => void;
-}
+  }
 
-// Props interface
-interface Props {
+  // Props interface
+  interface Props {
   open?: boolean;
   currentStep?: number;
   steps?: OnboardingStep[];
@@ -59,9 +58,9 @@ interface Props {
   allowSkip?: boolean;
   onclose?: ((event?: unknown) => void) | undefined;
   oncomplete?: ((event?: unknown) => void) | undefined;
-}
+  }
 
-let {
+  let {
   open = false,
   currentStep = 0,
   steps = [],
@@ -71,39 +70,39 @@ let {
   allowSkip = true,
   onclose,
   oncomplete
-}: Props = $props();
-let overlayEl = $state<HTMLElement;
-let autoProgressTimer: number | undefined;
-let isPlaying >(autoProgress);
-let targetElement = $state<Element | null >(null);
-let highlightBox = $state<{
+  }: Props = $props();
+  let overlayEl = $state<HTMLElement;
+  let autoProgressTimer: number | undefined;
+  let isPlaying >(autoProgress);
+  let targetElement = $state<Element | null >(null);
+  let highlightBox = $state<{
   top: number;
   left: number;
   width: number;
   height: number;
-} | null >(null);
+  } | null >(null);
 
-// Reactive effect replacement for $effect
-// TODO: Convert to $derived: if (open && steps.length > 0) {
+  // Reactive effect replacement for $effect
+  // TODO: Convert to $derived: if (open && steps.length > 0) {
   updateTargetHighlight()
-}
+  }
 
-// Reactive derived value for current step data
-// TODO: Convert to $derived: currentStepData = steps[currentStep] || null
+  // Reactive derived value for current step data
+  // TODO: Convert to $derived: currentStepData = steps[currentStep] || null
 
   onMount(() => {
     if (browser) {
       document.addEventListener("keydown", handleKeydown);
       window.addEventListener("resize", updateTargetHighlight);
-}
+  }
     return () => {
       if (browser) {
         document.removeEventListener("keydown", handleKeydown);
         window.removeEventListener("resize", updateTargetHighlight);
-}
+  }
       if (autoProgressTimer) {
         clearTimeout(autoProgressTimer);
-}
+  }
     };
   });
 
@@ -123,13 +122,13 @@ let highlightBox = $state<{
         event.preventDefault();
         previousStep();
         break;
-}}
+  }}
   function updateTargetHighlight() {
     if (!currentStepData?.targetSelector || !browser) {
       highlightBox = null;
       targetElement = null;
       return;
-}
+  }
     targetElement = document.querySelector(currentStepData.targetSelector);
     if (targetElement) {
       const rect = targetElement.getBoundingClientRect();
@@ -148,70 +147,70 @@ let highlightBox = $state<{
       });
     } else {
       highlightBox = null;
-}}
+  }}
   function nextStep() {
     if (currentStep < steps.length - 1) {
       // Validate current step if needed
       if (currentStepData?.validate && !currentStepData.validate()) {
         return;
-}
+  }
       // Execute step action if available
       if (currentStepData?.action) {
         currentStepData.action();
-}
+  }
       currentStep++;
       resetAutoProgress();
     } else {
       completeOnboarding();
-}}
+  }}
   function previousStep() {
     if (currentStep > 0) {
       currentStep--;
       resetAutoProgress();
-}}
+  }}
   function goToStep(stepIndex: number) {
     if (stepIndex >= 0 && stepIndex < steps.length) {
       currentStep = stepIndex;
       resetAutoProgress();
-}}
+  }}
   function toggleAutoProgress() {
     isPlaying = !isPlaying;
     if (isPlaying) {
       startAutoProgress();
     } else {
       stopAutoProgress();
-}}
+  }}
   function startAutoProgress() {
     if (!isPlaying) return;
 
     autoProgressTimer = setTimeout(() => {
       if (isPlaying && currentStep < steps.length - 1) {
         nextStep();
-}
+  }
     }, progressDelay);
-}
+  }
   function stopAutoProgress() {
     if (autoProgressTimer) {
       clearTimeout(autoProgressTimer);
-}}
+  }}
   function resetAutoProgress() {
     stopAutoProgress();
     updateTargetHighlight();
     if (isPlaying) {
       startAutoProgress();
-}}
+  }}
   function skipOnboarding() {
     if (!allowSkip) return;
     closeOnboarding();
-}
+  }
   function closeOnboarding() {
     open = false;
     onclose?.();
-}
+  }
   function completeOnboarding() {
     oncomplete?.();
     closeOnboarding();
-}
+  }
   function getTooltipPosition() {
     if (!highlightBox || !currentStepData) return { top: "50%", left: "50%" };
 
@@ -249,7 +248,7 @@ let highlightBox = $state<{
           left: "50%",
           transform: "translate(-50%, -50%)",
         };
-}}
+  }}
 </script>
 
 {#if open && currentStepData}

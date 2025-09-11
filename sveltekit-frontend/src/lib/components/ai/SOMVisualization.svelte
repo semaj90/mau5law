@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { onMount } from 'svelte';
   import { createSOMRAGSystem, type SOMConfig } from '$lib/ai/som-rag-system';
@@ -18,7 +17,6 @@
   let ingestionPipeline: any;
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
-  
   // Visualization state
   let isInitialized = $state(false);
   let isTraining = $state(false);
@@ -34,7 +32,6 @@
     is_processing: false,
     som_visualization: []
   });
-  
   // Configuration
   let somConfig: SOMConfig = $state({
     mapWidth: 20,
@@ -45,7 +42,6 @@
     maxEpochs: 500,
     clusterCount: 8
   });
-  
   // Sample legal documents for demo
   const sampleDocuments = [
     {
@@ -107,15 +103,11 @@
   async function initializeSOMSystem(): Promise<void> {
     try {
       console.log('🚀 Initializing SOM RAG System...');
-      
       somRAG = createSOMRAGSystem(somConfig);
       ingestionPipeline = createEnhancedIngestionPipeline();
-      
       await ingestionPipeline.initialize();
-      
       isInitialized = true;
       console.log('✅ SOM System initialized');
-      
     } catch (error) {
       console.error('❌ Failed to initialize SOM system:', error);
     }
@@ -123,14 +115,11 @@
 
   function setupCanvas(): void {
     if (!canvas) return;
-    
     const context = canvas.getContext('2d');
     if (!context) return;
-    
     ctx = context;
     canvas.width = width;
     canvas.height = height;
-    
     // Set canvas styling
     ctx.fillStyle = '#1a1a1a';
     ctx.fillRect(0, 0, width, height);
@@ -138,23 +127,16 @@
 
   async function trainWithSampleData(): Promise<void> {
     if (!isInitialized || isTraining) return;
-    
     isTraining = true;
-    
     try {
       console.log('🧠 Training SOM with sample legal documents...');
-      
       // Process sample documents through pipeline
       const results = await ingestionPipeline.processBatch(sampleDocuments);
-      
       // Update visualization data
       visualizationData = somRAG.getVisualizationData();
-      
       // Update stats
       stats = ingestionPipeline.getStats();
-      
       console.log('✅ Training completed:', results);
-      
     } catch (error) {
       console.error('❌ Training failed:', error);
     } finally {
@@ -169,7 +151,6 @@
       }
       requestAnimationFrame(animate);
     }
-    
     requestAnimationFrame(animate);
   }
 
@@ -177,29 +158,23 @@
     // Clear canvas
     ctx.fillStyle = '#0a0a0a';
     ctx.fillRect(0, 0, width, height);
-    
     // Calculate cell size
     const cellWidth = width / somConfig.mapWidth;
     const cellHeight = height / somConfig.mapHeight;
-    
     // Draw SOM grid
     visualizationData.forEach(node => {
       const x = node.position.x * cellWidth;
       const y = node.position.y * cellHeight;
-      
       // Color based on cluster
       const clusterColors = [
         '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4',
         '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'
       ];
-      
       const clusterColor = clusterColors[node.cluster % clusterColors.length] || '#666666';
-      
       // Node background
       ctx.fillStyle = clusterColor;
       ctx.globalAlpha = 0.3 + (node.confidence * 0.7);
       ctx.fillRect(x, y, cellWidth - 1, cellHeight - 1);
-      
       // Document count indicator
       if (node.documents > 0) {
         ctx.fillStyle = '#ffffff';
@@ -212,7 +187,6 @@
           y + cellHeight / 2
         );
       }
-      
       // Evidence type indicator
       const evidenceColors = {
         'forensic': '#ff4757',
@@ -221,17 +195,13 @@
         'physical': '#ffa502',
         'unknown': '#747d8c'
       };
-      
       ctx.fillStyle = evidenceColors[node.evidenceType as keyof typeof evidenceColors] || evidenceColors.unknown;
       ctx.globalAlpha = 0.6;
       ctx.fillRect(x + cellWidth - 6, y + 2, 4, 4);
     });
-    
     ctx.globalAlpha = 1.0;
-    
     // Draw cluster boundaries
     drawClusterBoundaries();
-    
     // Draw legend
     drawLegend();
   }
@@ -239,30 +209,24 @@
   function drawClusterBoundaries(): void {
     const cellWidth = width / somConfig.mapWidth;
     const cellHeight = height / somConfig.mapHeight;
-    
     ctx.strokeStyle = '#ffd700';
     ctx.lineWidth = 2;
     ctx.globalAlpha = 0.7;
-    
     // Group nodes by cluster and draw boundaries
     const clusterNodes = new Map<number, Array<{ x: number; y: number }>>();
-    
     visualizationData.forEach(node => {
       if (!clusterNodes.has(node.cluster)) {
         clusterNodes.set(node.cluster, []);
       }
       clusterNodes.get(node.cluster)!.push(node.position);
     });
-    
     clusterNodes.forEach((positions, cluster) => {
       if (positions.length < 2) return;
-      
       // Simple convex hull approximation for cluster boundary
       const minX = Math.min(...positions.map(p => p.x));
       const maxX = Math.max(...positions.map(p => p.x));
       const minY = Math.min(...positions.map(p => p.y));
       const maxY = Math.max(...positions.map(p => p.y));
-      
       ctx.strokeRect(
         minX * cellWidth - 2,
         minY * cellHeight - 2,
@@ -270,24 +234,20 @@
         (maxY - minY + 1) * cellHeight + 4
       );
     });
-    
     ctx.globalAlpha = 1.0;
   }
 
   function drawLegend(): void {
     const legendX = width - 180;
     const legendY = 20;
-    
     // Legend background
     ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
     ctx.fillRect(legendX - 10, legendY - 10, 170, 160);
-    
     // Legend title
     ctx.fillStyle = '#ffd700';
     ctx.font = 'bold 14px sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('SOM Clusters', legendX, legendY + 10);
-    
     // Evidence type legend
     const evidenceTypes = [
       { type: 'forensic', color: '#ff4757', label: 'Forensic' },
@@ -295,20 +255,16 @@
       { type: 'digital', color: '#2ed573', label: 'Digital' },
       { type: 'physical', color: '#ffa502', label: 'Physical' }
     ];
-    
     ctx.font = '12px sans-serif';
     evidenceTypes.forEach((item, index) => {
       const y = legendY + 35 + (index * 20);
-      
       // Color indicator
       ctx.fillStyle = item.color;
       ctx.fillRect(legendX, y - 8, 12, 12);
-      
       // Label
       ctx.fillStyle = '#ffffff';
       ctx.fillText(item.label, legendX + 20, y);
     });
-    
     // Cluster info
     ctx.fillStyle = '#cccccc';
     ctx.font = '11px sans-serif';
@@ -318,14 +274,12 @@
 
   function updateSOMConfig(): void {
     if (isTraining) return;
-    
     somRAG = createSOMRAGSystem(somConfig);
     visualizationData = [];
   }
 
   async function processTestDocument(): Promise<void> {
     if (!isInitialized || isTraining) return;
-    
     const testDoc = {
       id: `test-${Date.now()}`,
       content: 'Test forensic analysis report with high confidence DNA match and chain of custody documentation.',
@@ -338,16 +292,13 @@
         mime_type: 'application/pdf'
       }
     };
-    
     try {
       await ingestionPipeline.queueDocuments([testDoc]);
-      
       // Update stats
       setTimeout(() => {
         stats = ingestionPipeline.getStats();
         visualizationData = stats.som_visualization;
       }, 1000);
-      
     } catch (error) {
       console.error('Failed to process test document:', error);
     }
@@ -355,16 +306,13 @@
 
   function exportSOMData(): void {
     if (!somRAG) return;
-    
     const exportData = somRAG.exportRapidJSON();
     const blob = new Blob([exportData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
     const link = document.createElement('a');
     link.href = url;
     link.download = `som-data-${Date.now()}.json`;
     link.click();
-    
     URL.revokeObjectURL(url);
   }
 </script>

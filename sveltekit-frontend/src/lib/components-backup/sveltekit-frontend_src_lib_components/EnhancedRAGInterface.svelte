@@ -1,6 +1,5 @@
 <!-- EnhancedRAGInterface.svelte - SvelteKit 2.0 Advanced RAG Interface -->
 <script lang="ts">
-</script>
   import { onMount, tick } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';

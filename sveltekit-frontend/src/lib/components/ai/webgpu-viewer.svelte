@@ -2,60 +2,59 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- WebGPU Embedding Visualization - 3D Vector Space with Real-time Updates -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
-import { Play, Pause, RotateCw, ZoomIn, ZoomOut, Layers } from 'lucide-svelte';
+  import { Play, Pause, RotateCw, ZoomIn, ZoomOut, Layers } from 'lucide-svelte';
 
-// Props
-let {
+  // Props
+  let {
   embeddings = [],
   labels = [],
   docId = null,
   autoRotate = true
-}: {
+  }: {
   embeddings?: number[][];
   labels?: string[];
   docId?: string | null;
   autoRotate?: boolean;
-} = $props();
+  } = $props();
 
-// State
-let canvas = $state<HTMLCanvasElement | null>(null);
-let device: GPUDevice | null = null;
-let context = $state<GPUCanvasContext | null>(null);
-let pipeline = $state<GPURenderPipeline | null>(null);
-let isPlaying = $state(autoRotate);
-let zoom = $state(1.0);
-let rotation = $state({ x: 0, y: 0, z: 0 });
-let mouseDown = $state(false);
-let lastMouse = $state({ x: 0, y: 0 });
-let animationFrame = $state<number | null>(null);
-let embedBuffer: GPUBuffer | null = null;
-let uniformBuffer = $state<GPUBuffer | null>(null);
-let bindGroup = $state<GPUBindGroup | null>(null);
+  // State
+  let canvas = $state<HTMLCanvasElement | null>(null);
+  let device: GPUDevice | null = null;
+  let context = $state<GPUCanvasContext | null>(null);
+  let pipeline = $state<GPURenderPipeline | null>(null);
+  let isPlaying = $state(autoRotate);
+  let zoom = $state(1.0);
+  let rotation = $state({ x: 0, y: 0, z: 0 });
+  let mouseDown = $state(false);
+  let lastMouse = $state({ x: 0, y: 0 });
+  let animationFrame = $state<number | null>(null);
+  let embedBuffer: GPUBuffer | null = null;
+  let uniformBuffer = $state<GPUBuffer | null>(null);
+  let bindGroup = $state<GPUBindGroup | null>(null);
 
-// WebSocket for real-time updates
-let ws = $state<WebSocket | null >(null);
+  // WebSocket for real-time updates
+  let ws = $state<WebSocket | null >(null);
 
-// Vertex shader
-const vertexShaderCode = `
-struct Uniforms {
+  // Vertex shader
+  const vertexShaderCode = `
+  struct Uniforms {
   matrix: mat4x4<f32>,
   time: f32,
   zoom: f32,
-}
+  }
 
-@group(0) @binding(0) var<uniform> uniforms: Uniforms;
-@group(0) @binding(1) var<storage, read> embeddings: array<vec3<f32>>;
+  @group(0) @binding(0) var<uniform> uniforms: Uniforms;
+  @group(0) @binding(1) var<storage, read> embeddings: array<vec3<f32>>;
 
-struct VertexOutput {
+  struct VertexOutput {
   @builtin(position) position: vec4<f32>,
   @location(0) color: vec3<f32>,
   @location(1) pointSize: f32,
-}
+  }
 
-@vertex
-fn main(@builtin(vertex_index) vertexIndex: u32) -> VertexOutput {
+  @vertex
+  fn main(@builtin(vertex_index) vertexIndex: u32) -> VertexOutput {
   var output: VertexOutput;
 
   let embedding = embeddings[vertexIndex / 6u];
@@ -77,23 +76,23 @@ fn main(@builtin(vertex_index) vertexIndex: u32) -> VertexOutput {
   output.pointSize = 5.0 * uniforms.zoom;
 
   return output;
-}
-`;
+  }
+  `;
 
-// Fragment shader
-const fragmentShaderCode = `
-struct FragmentInput {
+  // Fragment shader
+  const fragmentShaderCode = `
+  struct FragmentInput {
   @location(0) color: vec3<f32>,
   @location(1) pointSize: f32,
-}
+  }
 
-@fragment
-fn main(input: FragmentInput) -> @location(0) vec4<f32> {
+  @fragment
+  fn main(input: FragmentInput) -> @location(0) vec4<f32> {
   return vec4<f32>(input.color, 1.0);
-}
-`;
+  }
+  `;
 
-onMount(async () => {
+  onMount(async () => {
   if (!navigator.gpu) {
     console.error('WebGPU not supported');
     return;
@@ -108,18 +107,18 @@ onMount(async () => {
   if (isPlaying) {
     animate();
   }
-});
+  });
 
-onDestroy(() => {
+  onDestroy(() => {
   if (animationFrame) {
     cancelAnimationFrame(animationFrame);
   }
   if (ws) {
     ws.close();
   }
-});
+  });
 
-async function initWebGPU() {
+  async function initWebGPU() {
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) {
     console.error('No GPU adapter found');
@@ -178,9 +177,9 @@ async function initWebGPU() {
     size: 64 + 8, // mat4x4 + 2 floats
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
   });
-}
+  }
 
-function updateEmbeddings(newEmbeddings: number[][]) {
+  function updateEmbeddings(newEmbeddings: number[][]) {
   if (!device || newEmbeddings.length === 0) return;
 
   // Convert embeddings to 3D points using PCA or t-SNE projection
@@ -218,9 +217,9 @@ function updateEmbeddings(newEmbeddings: number[][]) {
       ]
     });
   }
-}
+  }
 
-function projectTo3D(embeddings: number[][]): number[][] {
+  function projectTo3D(embeddings: number[][]): number[][] {
   // Simple PCA-like projection to 3D
   // In production, use proper PCA or t-SNE
   return embeddings.map(embed => {
@@ -229,9 +228,9 @@ function projectTo3D(embeddings: number[][]): number[][] {
     const z = embed[2] || 0;
     return [x * 2 - 1, y * 2 - 1, z * 2 - 1];
   });
-}
+  }
 
-function createTransformMatrix(): Float32Array {
+  function createTransformMatrix(): Float32Array {
   const matrix = new Float32Array(16);
 
   // Create rotation matrix
@@ -264,9 +263,9 @@ function createTransformMatrix(): Float32Array {
   matrix[15] = 1;
 
   return matrix;
-}
+  }
 
-function render() {
+  function render() {
   if (!device || !context || !pipeline || !bindGroup || !uniformBuffer) return;
 
   const commandEncoder = device.createCommandEncoder();
@@ -296,17 +295,17 @@ function render() {
   renderPass.end();
 
   device.queue.submit([commandEncoder.finish()]);
-}
+  }
 
-function animate() {
+  function animate() {
   if (isPlaying) {
     rotation.y += 0.01;
     render();
     animationFrame = requestAnimationFrame(animate);
   }
-}
+  }
 
-function connectWebSocket() {
+  function connectWebSocket() {
   if (!docId) return;
 
   ws = new WebSocket(`ws://localhost:8080/ws?docId=${docId}`);
@@ -319,14 +318,14 @@ function connectWebSocket() {
       render();
     }
   };
-}
+  }
 
-function handleMouseDown(e: MouseEvent) {
+  function handleMouseDown(e: MouseEvent) {
   mouseDown = true;
   lastMouse = { x: e.clientX, y: e.clientY };
-}
+  }
 
-function handleMouseMove(e: MouseEvent) {
+  function handleMouseMove(e: MouseEvent) {
   if (!mouseDown) return;
 
   const deltaX = e.clientX - lastMouse.x;
@@ -337,50 +336,50 @@ function handleMouseMove(e: MouseEvent) {
 
   lastMouse = { x: e.clientX, y: e.clientY };
   render();
-}
+  }
 
-function handleMouseUp() {
+  function handleMouseUp() {
   mouseDown = false;
-}
+  }
 
-function handleWheel(e: WheelEvent) {
+  function handleWheel(e: WheelEvent) {
   e.preventDefault();
   zoom = Math.max(0.1, Math.min(5, zoom - e.deltaY * 0.001));
   render();
-}
+  }
 
-function togglePlay() {
+  function togglePlay() {
   isPlaying = !isPlaying;
   if (isPlaying) {
     animate();
   } else if (animationFrame) {
     cancelAnimationFrame(animationFrame);
   }
-}
+  }
 
-function resetView() {
+  function resetView() {
   rotation = { x: 0, y: 0, z: 0 };
   zoom = 1.0;
   render();
-}
+  }
 
-function zoomIn() {
+  function zoomIn() {
   zoom = Math.min(5, zoom * 1.2);
   render();
-}
+  }
 
-function zoomOut() {
+  function zoomOut() {
   zoom = Math.max(0.1, zoom / 1.2);
   render();
-}
+  }
 
-// React to prop changes
-$effect(() => {
+  // React to prop changes
+  $effect(() => {
   if (embeddings.length > 0 && device) {
     updateEmbeddings(embeddings);
     render();
   }
-});
+  });
 </script>
 
 <div class="webgpu-viewer">

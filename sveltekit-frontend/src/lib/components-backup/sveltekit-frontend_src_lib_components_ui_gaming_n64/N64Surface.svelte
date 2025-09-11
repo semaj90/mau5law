@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   export let id: string | undefined = undefined;
   export let extraClass: string = '';
   export let padding: string = '12px';

@@ -1,13 +1,11 @@
 <!-- Example: Modular Case Management with API Integration -->
 <script lang="ts">
-</script>
   import { ModularDialog } from '../modular-dialog';
   import { ModularCommand } from '../modular-command';
   import { Button } from 'bits-ui';
   import { Search, Plus, FileText, Users, Calendar } from 'lucide-svelte';
   import { reactiveApiClient } from '$lib/services/api-client';
   import type { Case, Evidence } from '$lib/types/api';
-  
   // Component state
   let showCaseDialog = $state(false);
   let showCommandPalette = $state(false);
@@ -26,7 +24,6 @@
 
   function handleCommandSearch(item: any, type: string) {
     console.log(`Selected ${type}:`, item);
-    
     switch (type) {
       case 'cases':
         handleCaseSelect(item, type);
@@ -60,7 +57,6 @@
       if (updatedCase) {
         selectedCase = updatedCase;
       }
-      
       const updatedEvidence = await reactiveApiClient.fetchEvidence(selectedCaseId, false);
       caseEvidence = updatedEvidence;
     }
@@ -74,7 +70,6 @@
 
   async function updateCase(caseData: Partial<Case>) {
     if (!selectedCase) return;
-    
     try {
       await reactiveApiClient.updateCase({
         id: selectedCase.id,

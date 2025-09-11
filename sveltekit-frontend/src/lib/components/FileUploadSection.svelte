@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Use modular components and types
   import {
     Card,
@@ -64,11 +63,11 @@
   import TagList from './TagList.svelte';
 
   let uploadFiles: UploadFile[] = $state([]);
-let aiSystem = $state<ComprehensiveAISystemIntegration;
+  let aiSystem = $state<ComprehensiveAISystemIntegration;
   let docStatus: string >('');
-let docs = $state<any >(null);
-let availableTags = $state<string[] >([]);
-let summaryType = $state<'key_points' | 'narrative' | 'prosecutorial' >('narrative');
+  let docs = $state<any >(null);
+  let availableTags = $state<string[] >([]);
+  let summaryType = $state<'key_points' | 'narrative' | 'prosecutorial' >('narrative');
 
   // Load available tags
   onMount(async () => {
@@ -85,67 +84,66 @@ let summaryType = $state<'key_points' | 'narrative' | 'prosecutorial' >('narrati
     }
   });
 
-	async function loadAvailableTags() {
-		try {
-			const evidence = loki.evidence.getAll();
-			const allTags = evidence.flatMap((e: any) => e.tags || []);
-			availableTags = [...new Set(allTags as string[])].sort();
-		} catch (error) {
-			console.error('Failed to load available tags:', error);
-		}
-	}
-	function getFileIcon(file: globalThis.File) {
-		const type = file.type.toLowerCase();
-		const name = file.name.toLowerCase();
+  	async function loadAvailableTags() {
+  		try {
+  			const evidence = loki.evidence.getAll();
+  			const allTags = evidence.flatMap((e: any) => e.tags || []);
+  			availableTags = [...new Set(allTags as string[])].sort();
+  		} catch (error) {
+  			console.error('Failed to load available tags:', error);
+  		}
+  	}
+  	function getFileIcon(file: globalThis.File) {
+  		const type = file.type.toLowerCase();
+  		const name = file.name.toLowerCase();
 
-		if (type.startsWith('image/')) {
-			return Image;
-		} else if (type === 'application/pdf' || name.endsWith('.pdf')) {
-			return FileText; // Using FileText for PDF since lucide doesn't have a specific PDF icon
-		} else if (type.startsWith('text/') || name.endsWith('.txt') || name.endsWith('.doc') || name.endsWith('.docx')) {
-			return FileText;
-		}
-		return FileIcon;
-	}
-	function formatFileSize(bytes: number): string {
-		if (bytes === 0) return '0 Bytes';
-		const k = 1024;
-		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-		const i = Math.floor(Math.log(bytes) / Math.log(k));
-		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-	}
-	function isFileValid(file: globalThis.File): { valid: boolean; error?: string } {
-		// Check file size
-		if (file.size > maxFileSize) {
-			return {
-				valid: false,
-				error: `File size exceeds ${formatFileSize(maxFileSize)} limit`
-			};
-		}
-		// Check file type
-		const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
-		if (!acceptedTypes.some(type => type.toLowerCase() === fileExtension)) {
-			return {
-				valid: false,
-				error: `File type not supported. Accepted types: ${acceptedTypes.join(', ')}`
-			};
-		}
-		return { valid: true };
-	}
-	async function createFilePreview(file: globalThis.File): Promise<string | undefined> {
-		if (!file.type.startsWith('image/')) return undefined;
+  		if (type.startsWith('image/')) {
+  			return Image;
+  		} else if (type === 'application/pdf' || name.endsWith('.pdf')) {
+  			return FileText; // Using FileText for PDF since lucide doesn't have a specific PDF icon
+  		} else if (type.startsWith('text/') || name.endsWith('.txt') || name.endsWith('.doc') || name.endsWith('.docx')) {
+  			return FileText;
+  		}
+  		return FileIcon;
+  	}
+  	function formatFileSize(bytes: number): string {
+  		if (bytes === 0) return '0 Bytes';
+  		const k = 1024;
+  		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  		const i = Math.floor(Math.log(bytes) / Math.log(k));
+  		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  	}
+  	function isFileValid(file: globalThis.File): { valid: boolean; error?: string } {
+  		// Check file size
+  		if (file.size > maxFileSize) {
+  			return {
+  				valid: false,
+  				error: `File size exceeds ${formatFileSize(maxFileSize)} limit`
+  			};
+  		}
+  		// Check file type
+  		const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+  		if (!acceptedTypes.some(type => type.toLowerCase() === fileExtension)) {
+  			return {
+  				valid: false,
+  				error: `File type not supported. Accepted types: ${acceptedTypes.join(', ')}`
+  			};
+  		}
+  		return { valid: true };
+  	}
+  	async function createFilePreview(file: globalThis.File): Promise<string | undefined> {
+  		if (!file.type.startsWith('image/')) return undefined;
 
-		return new Promise((resolve) => {
-			const reader = new FileReader();
-			reader.onload = (e) => resolve(e.target?.result as string);
-			reader.onerror = () => resolve(undefined);
-			reader.readAsDataURL(file);
-		});
-	}
+  		return new Promise((resolve) => {
+  			const reader = new FileReader();
+  			reader.onload = (e) => resolve(e.target?.result as string);
+  			reader.onerror = () => resolve(undefined);
+  			reader.readAsDataURL(file);
+  		});
+  	}
   // Handle files change from modular FileUpload component
   function handleFilesChange(files: UploadFile[]) {
     uploadFiles = files;
-    
     // Convert to legacy FileUpload format for compatibility
     const legacyUploads = files.map(file => ({
       id: file.id,
@@ -160,7 +158,6 @@ let summaryType = $state<'key_points' | 'narrative' | 'prosecutorial' >('narrati
       error: file.error,
       hash: undefined
     }));
-    
     onfilesChanged?.(legacyUploads);
   }
 
@@ -207,7 +204,6 @@ let summaryType = $state<'key_points' | 'narrative' | 'prosecutorial' >('narrati
 
       // Process workflow (MinIO, Neo4j, pgvector)
       await processDocumentWorkflow(workflow);
-      
       // Trigger AI/ML analysis
       if (aiSystem) {
         await aiSystem.processDocument(file.id, file.name, { tags: [] });
@@ -230,12 +226,10 @@ let summaryType = $state<'key_points' | 'narrative' | 'prosecutorial' >('narrati
   // Handle file removal
   function handleFileRemove(fileId: string) {
     uploadFiles = uploadFiles.filter(f => f.id !== fileId);
-    
     // Also notify parent of successful uploads for final callback
     const successfulFiles = uploadFiles
       .filter(f => f.status === 'completed')
       .map(f => f.file);
-    
     if (successfulFiles.length > 0) {
       onupload?.({ files: successfulFiles, tags: [] });
     }

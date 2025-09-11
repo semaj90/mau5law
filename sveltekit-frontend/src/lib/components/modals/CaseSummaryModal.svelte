@@ -1,6 +1,5 @@
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
-</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -10,7 +9,7 @@
   import Drawer from '$lib/components/ui/drawer/Drawer.svelte';
   import Grid from '$lib/components/ui/grid/Grid.svelte';
   import GridItem from '$lib/components/ui/grid/GridItem.svelte';
-// Icons
+  // Icons
   import {
     AlertTriangle,
     Brain,
@@ -70,8 +69,8 @@
   let { useDrawer = $bindable() } = $props(); // boolean = false;
 
   const dispatch = createEventDispatcher();
-let isGeneratingSummary = $state(false);
-let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" >("overview");
+  let isGeneratingSummary = $state(false);
+  let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" >("overview");
 
   async function generateSummary() {
     if (!caseData) return;
@@ -93,12 +92,12 @@ let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" 
       if (result.success) {
         caseData = { ...caseData, summary: result.summary };
         dispatch("summaryGenerated", caseData);
-}
+  }
     } catch (error) {
       console.error("Summary generation failed:", error);
     } finally {
       isGeneratingSummary = false;
-}}
+  }}
   function getStatusColor(status: string): string {
     switch (status) {
       case "active":
@@ -109,7 +108,7 @@ let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" 
         return "bg-gray-100 text-gray-800 border-gray-300";
       default:
         return "bg-gray-100 text-gray-800 border-gray-300";
-}}
+  }}
   function getPriorityColor(priority: string): string {
     switch (priority) {
       case "critical":
@@ -122,7 +121,7 @@ let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" 
         return "bg-green-100 text-green-800 border-green-300";
       default:
         return "bg-gray-100 text-gray-800 border-gray-300";
-}}
+  }}
   function getRiskColor(level: string): string {
     switch (level) {
       case "high":
@@ -133,7 +132,7 @@ let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" 
         return "text-green-600";
       default:
         return "text-gray-600";
-}}
+  }}
   // SSR: parse date string only on client
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -142,7 +141,7 @@ let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" 
       month: "short",
       day: "numeric",
     }).format(date);
-}
+  }
 </script>
 
 {#if useDrawer}

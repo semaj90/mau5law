@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-	import { AspectRatio } from "bits-ui";
+  	import { AspectRatio } from "bits-ui";
 </script>
 
 <AspectRatio.Root ratio={14 / 9} class="rounded-15px scale-[0.8] bg-transparent">

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Badge, Button, Input } from "$lib/components/ui";
   import Fuse from "fuse.js";
   import { createEventDispatcher, onMount } from "svelte";

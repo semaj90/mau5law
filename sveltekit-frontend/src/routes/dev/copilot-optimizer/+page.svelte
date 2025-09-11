@@ -6,7 +6,6 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
@@ -191,13 +190,12 @@ https://svelte.dev/e/js_parse_error -->
    */
   async function generateSuggestions() {
     const testCode = `// Test Svelte 5 component
-<script lang="ts">
-</script>
+  <script lang="ts">
   let { data = [] } = $props();
   let count = $state(0);
 
   // Need suggestions here
-<\/script>`.trim();
+  <\/script>`.trim();
 
     try {
       isLoading = true;

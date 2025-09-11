@@ -1,9 +1,8 @@
 <!-- Test page for YoRHa Detective functionality -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
-let testResult = $state('');
-let isLoading = $state(false);
+  let testResult = $state('');
+  let isLoading = $state(false);
 
   async function testCaseCreation() {
     isLoading = true;
@@ -21,7 +20,6 @@ let isLoading = $state(false);
       });
 
       const result = await response.json();
-      
       if (response.ok) {
         testResult = `✅ Case created successfully!\nID: ${result.data.id}\nCase Number: ${result.data.caseNumber}\nTitle: ${result.data.title}`;
       } else {
@@ -39,7 +37,6 @@ let isLoading = $state(false);
     try {
       const response = await fetch('/api/cases');
       const result = await response.json();
-      
       if (response.ok) {
         testResult = `✅ Cases retrieved successfully!\nTotal: ${result.data.length}\nFirst few cases:\n${JSON.stringify(result.data.slice(0, 3), null, 2)}`;
       } else {

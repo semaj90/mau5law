@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { goto } from "$app/navigation";
   import { citationStore } from "$lib/stores/citations";
   // import { createPopover, melt } from "melt"; // Removed melt dependency
@@ -30,7 +29,7 @@
   // Command menu state using Svelte 5 syntax
   let searchQuery = $state("");
   let selectedIndex = $state(0);
-let inputElement = $state<HTMLInputElement;
+  let inputElement = $state<HTMLInputElement;
 
   // Create popover
   // const {
@@ -43,7 +42,6 @@ let inputElement = $state<HTMLInputElement;
   //   escapeBehavior: "close",
   //   closeOnOutsideClick: true,
   // }));
-  
   // Alternative state management without melt
   let isOpen = $state(false);
 
@@ -157,7 +155,7 @@ let inputElement = $state<HTMLInputElement;
         e.preventDefault();
         if (filteredCommands[selectedIndex]) {
           executeCommand(filteredCommands[selectedIndex]);
-}
+  }
         break;
       case "Escape":
         e.preventDefault();
@@ -165,13 +163,13 @@ let inputElement = $state<HTMLInputElement;
         searchQuery = "";
         open.set(false);
         break;
-}}
+  }}
   function executeCommand(command: (typeof commands)[0]) {
     command.action();
     open.set(false);
     searchQuery = "";
     selectedIndex = 0;
-}
+  }
   function insertText(text: string) {
     if (textareaElement) {
       const start = textareaElement.selectionStart;
@@ -191,9 +189,9 @@ let inputElement = $state<HTMLInputElement;
 
       // Trigger input event
       textareaElement.dispatchEvent(new Event("input", { bubbles: true }));
-}
+  }
     onInsert(text);
-}
+  }
   function insertCitation(citation?: unknown) {
     if (citation) {
       // Format the citation properly
@@ -206,14 +204,14 @@ let inputElement = $state<HTMLInputElement;
       // Generic citation placeholder
       const citation = "[Citation: Document Title, Source (Year)]";
       insertText(citation);
-}}
+  }}
   // Open command menu
   export function openCommandMenu() {
     open.set(true);
     tick().then(() => {
       inputElement?.focus();
     });
-}
+  }
   // Reset when closing
   $effect(() => {
     if (!isOpen) {

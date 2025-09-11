@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { Button } from "$lib/components/ui/button";
   import {
@@ -76,15 +75,15 @@
     if (browser) {
       document.addEventListener("keydown", handleKeydown);
       window.addEventListener("resize", updateTargetHighlight);
-}
+  }
     return () => {
       if (browser) {
         document.removeEventListener("keydown", handleKeydown);
         window.removeEventListener("resize", updateTargetHighlight);
-}
+  }
       if (autoProgressTimer) {
         clearTimeout(autoProgressTimer);
-}
+  }
     };
   });
 
@@ -104,13 +103,13 @@
         event.preventDefault();
         previousStep();
         break;
-}}
+  }}
   function updateTargetHighlight() {
     if (!currentStepData?.targetSelector || !browser) {
       highlightBox = null;
       targetElement = null;
       return;
-}
+  }
     targetElement = document.querySelector(currentStepData.targetSelector);
     if (targetElement) {
       const rect = targetElement.getBoundingClientRect();
@@ -129,70 +128,70 @@
       });
     } else {
       highlightBox = null;
-}}
+  }}
   function nextStep() {
     if (currentStep < steps.length - 1) {
       // Validate current step if needed
       if (currentStepData?.validate && !currentStepData.validate()) {
         return;
-}
+  }
       // Execute step action if available
       if (currentStepData?.action) {
         currentStepData.action();
-}
+  }
       currentStep++;
       resetAutoProgress();
     } else {
       completeOnboarding();
-}}
+  }}
   function previousStep() {
     if (currentStep > 0) {
       currentStep--;
       resetAutoProgress();
-}}
+  }}
   function goToStep(stepIndex: number) {
     if (stepIndex >= 0 && stepIndex < steps.length) {
       currentStep = stepIndex;
       resetAutoProgress();
-}}
+  }}
   function toggleAutoProgress() {
     isPlaying = !isPlaying;
     if (isPlaying) {
       startAutoProgress();
     } else {
       stopAutoProgress();
-}}
+  }}
   function startAutoProgress() {
     if (!isPlaying) return;
 
     autoProgressTimer = setTimeout(() => {
       if (isPlaying && currentStep < steps.length - 1) {
         nextStep();
-}
+  }
     }, progressDelay);
-}
+  }
   function stopAutoProgress() {
     if (autoProgressTimer) {
       clearTimeout(autoProgressTimer);
-}}
+  }}
   function resetAutoProgress() {
     stopAutoProgress();
     updateTargetHighlight();
     if (isPlaying) {
       startAutoProgress();
-}}
+  }}
   function skipOnboarding() {
     if (!allowSkip) return;
     closeOnboarding();
-}
+  }
   function closeOnboarding() {
     open = false;
     dispatch("close");
-}
+  }
   function completeOnboarding() {
     dispatch("complete");
     closeOnboarding();
-}
+  }
   function getTooltipPosition() {
     if (!highlightBox || !currentStepData) return { top: "50%", left: "50%" };
 
@@ -230,7 +229,7 @@
           left: "50%",
           transform: "translate(-50%, -50%)",
         };
-}}
+  }}
 </script>
 
 {#if open && currentStepData}

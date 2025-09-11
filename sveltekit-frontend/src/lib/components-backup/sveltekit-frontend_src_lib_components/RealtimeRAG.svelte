@@ -1,6 +1,5 @@
 <!-- Real-time RAG Interface Component -->
 <script lang="ts">
-</script>
   interface Props {
     selectedCaseId?: any;
     documentTypes?: any;
@@ -17,12 +16,9 @@
   import { onMount, onDestroy } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { createRealtimeRAGStore, ragQueryMachine, ragQueryServices } from '$lib/stores/realtime-rag.svelte.js';
-  
   // Props for integration with existing components
-      
   // Initialize real-time RAG store
   const ragStore = createRealtimeRAGStore();
-  
   // Initialize XState machine
   const ragMachine = useMachine(ragQueryMachine, {
     services: ragQueryServices
@@ -34,7 +30,6 @@
   let maxResults = 5;
   let confidenceThreshold = 0.7;
   let selectedDocumentTypes = [];
-  
   // Reactive state from stores
   let documents = $derived(ragStore.documents)
   let ragHistory = $derived(ragStore.ragHistory)
@@ -66,7 +61,6 @@
 
   function handleQuerySubmit() {
     if (!query.trim()) return;
-    
     ragMachine.send({
       type: 'QUERY',
       query: query.trim(),
@@ -81,7 +75,6 @@
 
   function handleFileUpload(event) {
     const files = Array.from(event.target.files);
-    
     files.forEach(async (file) => {
       try {
         await ragStore.uploadDocument(file, {
@@ -93,7 +86,6 @@
         console.error('Upload failed:', error);
       }
     });
-    
     event.target.value = '';
   }
 

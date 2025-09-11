@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import {
     Button
@@ -103,13 +102,13 @@
         profile.name = $user.name || "";
         profile.email = $user.email || "";
         profile.role = $user.role || "investigator";
-}
+  }
       // Load preferences from localStorage
       if (browser) {
         const savedPrefs = localStorage.getItem("userPreferences");
         if (savedPrefs) {
           preferences = { ...preferences, ...JSON.parse(savedPrefs) };
-}
+  }
         const savedSecurity = localStorage.getItem("securitySettings");
         if (savedSecurity) {
           const securityData = JSON.parse(savedSecurity);
@@ -118,11 +117,11 @@
           security.currentPassword = "";
           security.newPassword = "";
           security.confirmPassword = "";
-}
+  }
         const savedDataSettings = localStorage.getItem("dataSettings");
         if (savedDataSettings) {
           dataSettings = { ...dataSettings, ...JSON.parse(savedDataSettings) };
-}}
+  }}
     } catch (error) {
       console.error("Error loading settings:", error);
       notifications.add({
@@ -132,7 +131,7 @@
       });
     } finally {
       isLoading = false;
-}}
+  }}
   async function saveSettings() {
     isSaving = true;
 
@@ -143,21 +142,21 @@
         security.newPassword !== security.confirmPassword
       ) {
         throw new Error("Passwords do not match");
-}
+  }
       // Save to server (mock API calls)
       const updates: any = {};
 
       // Profile updates
       if (profile.name || profile.department || profile.phone || profile.bio) {
         updates.profile = profile;
-}
+  }
       // Password change
       if (security.currentPassword && security.newPassword) {
         updates.password = {
           current: security.currentPassword,
           new: security.newPassword,
         };
-}
+  }
       // Send updates to server
       if (Object.keys(updates).length > 0) {
         const response = await fetch("/api/user/settings", {
@@ -168,7 +167,7 @@
 
         if (!response.ok) {
           throw new Error("Failed to save profile settings");
-}}
+  }}
       // Save preferences locally
       if (browser) {
         localStorage.setItem("userPreferences", JSON.stringify(preferences);
@@ -183,7 +182,7 @@
         localStorage.setItem("dataSettings", JSON.stringify(dataSettings);
         // Apply theme immediately
         document.documentElement.setAttribute("data-theme", preferences.theme);
-}
+  }
       // Clear password fields
       security.currentPassword = "";
       security.newPassword = "";
@@ -204,7 +203,7 @@
       });
     } finally {
       isSaving = false;
-}}
+  }}
   function handleAvatarChange(e: Event) {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -218,11 +217,11 @@
         avatarPreview = e.target?.result as string;
       };
       reader.readAsDataURL(file);
-}}
+  }}
   function clearAvatar() {
     profile.avatar = null;
     avatarPreview = null;
-}
+  }
   async function exportUserData() {
     try {
       const response = await fetch("/api/user/export", {
@@ -247,14 +246,14 @@
           title: "Export Complete",
           message: "User data exported successfully",
         });
-}
+  }
     } catch (error) {
       notifications.add({
         type: "error",
         title: "Export Error",
         message: "Failed to export user data",
       });
-}}
+  }}
   function resetToDefaults() {
     if (
       confirm(
@@ -297,7 +296,7 @@
         title: "Settings Reset",
         message: "Settings reset to defaults",
       });
-}}
+  }}
 </script>
 
 <svelte:head>

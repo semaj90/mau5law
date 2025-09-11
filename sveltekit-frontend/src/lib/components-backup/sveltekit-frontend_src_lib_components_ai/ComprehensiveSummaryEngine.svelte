@@ -2,7 +2,6 @@
 <!-- Features: Local LLM + Enhanced RAG + Loki.js + Fuse.js + XState + Service Workers -->
 
 <script lang="ts">
-</script>
   interface Props {
     targetId: string
     targetType: 'case' | 'evidence' | 'legal_document' | 'cross_analysis' ;
@@ -44,7 +43,6 @@
   } from 'lucide-svelte';
 
   // Props
-            
   // XState machine integration
   const { state, send, context } = useMachine(aiSummaryMachine);
 
@@ -99,7 +97,6 @@
     await initializeServiceWorker();
     setupEventListeners();
     preloadRequiredData();
-    
     // Register for background notifications
     if ('Notification' in window) {
       await Notification.requestPermission();
@@ -117,11 +114,9 @@
       try {
         swRegistration = await navigator.serviceWorker.register('/workers/summaries-sw.js');
         serviceWorker = swRegistration.active || swRegistration.waiting || swRegistration.installing;
-        
         if (serviceWorker) {
           serviceWorker.addEventListener('message', handleServiceWorkerMessage);
         }
-        
         console.log('Summary SW registered successfully');
       } catch (error) {
         console.error('Summary SW registration failed:', error);
@@ -251,7 +246,6 @@
 
   async function handleBatchSummary(request) {
     currentStep = 'Processing comprehensive summary...';
-    
     const response = await fetch('/api/summaries', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -263,7 +257,6 @@
     }
 
     const result = await response.json();
-    
     if (result.success) {
       synthesisResult.set(result.result);
       processingStats.set({
@@ -272,7 +265,6 @@
         documentsRetrieved: result.result.sources.find(s => s.type === 'rag')?.details.documentsUsed || 0,
         confidenceScore: result.result.confidence
       });
-      
       summaryProgress.set(100);
       currentStep = 'Summary completed successfully';
     } else {
@@ -310,7 +302,6 @@
 
   function updateStreamingProgress(data) {
     summaryProgress.set(data.progress * 100);
-    
     if (data.result) {
       streamingData.update(chunks => [...chunks, {
         type: 'chunk',
@@ -348,7 +339,6 @@
   function updateUIBasedOnState(currentState) {
     // Update UI based on XState machine state
     const stateValue = currentState.value;
-    
     if (typeof stateValue === 'object') {
       currentStep = Object.keys(stateValue)[0];
     } else {

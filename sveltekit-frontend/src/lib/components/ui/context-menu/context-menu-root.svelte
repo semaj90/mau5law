@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onOpenChange?: (open: boolean) => void;
     children: any;
@@ -14,7 +13,6 @@
 
   const isOpen = writable(false);
   const position = writable({ x: 0, y: 0 });
-  
   setContext('context-menu', {
     isOpen,
     position,

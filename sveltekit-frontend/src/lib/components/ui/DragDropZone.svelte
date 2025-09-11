@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { AlertCircle, FileText, Image, Upload } from 'lucide-svelte';
   // runtime helpers ($props, $state, $derived, $effect, $bindable) are provided by the compiler in runes mode
@@ -42,7 +41,7 @@
     isDragOver = true;
     dragActive = true;
     onFileHover?.(true);
-}
+  }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     if (disabled) return;
@@ -50,7 +49,7 @@
     isDragOver = false;
     dragActive = false;
     onFileHover?.(false);
-}
+  }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     if (disabled) return;
@@ -61,12 +60,12 @@
 
     const files = Array.from(e.dataTransfer?.files || []);
     processFiles(files);
-}
+  }
   function handleFileSelect(e: Event) {
     const target = e.target as HTMLInputElement;
     const files = Array.from(target.files || []);
     processFiles(files);
-}
+  }
   function processFiles(files: File[]) {
     errors = [];
     const validFiles: File[] = [];
@@ -76,21 +75,21 @@
       if (file.size > maxSize) {
         errors.push(`${file.name} is too large (max ${formatFileSize(maxSize)})`);
         continue;
-}
+  }
       // Check file type if accept is specified and not wildcard
       if (accept !== '*/*' && !matchesAcceptType(file.type, accept)) {
         errors.push(`${file.name} is not an accepted file type`);
         continue;
-}
+  }
       validFiles.push(file);
-}
+  }
     if (validFiles.length > 0) {
       onFilesDropped?.(validFiles);
-}
+  }
     // Clear input so same file can be selected again
     if (fileInput) {
       fileInput.value = '';
-}}
+  }}
   function matchesAcceptType(fileType: string, acceptString: string): boolean {
     const acceptTypes = acceptString.split(',').map(s => s.trim());
     return acceptTypes.some(acceptType => {
@@ -98,25 +97,25 @@
       if (acceptType.endsWith('/*')) {
         const baseType = acceptType.slice(0, -2);
         return fileType.startsWith(baseType);
-}
+  }
       return fileType === acceptType;
     });
-}
+  }
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
+  }
   function getAcceptedFileInfo() {
     const types = accept.split(',').map(s => s.trim());
     return types.map(type => allowedTypes[type as keyof typeof allowedTypes] || allowedTypes['*/*']);
-}
+  }
   function openFileDialog() {
     if (!disabled && fileInput) {
       fileInput.click();
-}}
+  }}
 </script>
 
 <div

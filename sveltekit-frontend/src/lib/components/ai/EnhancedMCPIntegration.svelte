@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     caseId: string | undefined ;
     enableRealtimeUpdates: boolean
@@ -15,381 +14,338 @@
 
 
 
-	/**
-	 * Enhanced MCP Integration Component for SvelteKit Frontend
-	 * Connects cluster system, MCP tools, and Context7 integration
-	 */
-	
-	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { page } from '$app/stores';
-	
-	// Props using Svelte 5 syntax compatibility
-					
-	// Reactive state using writable stores for Svelte 4/5 compatibility
-	const mcpStatus = writable<'disconnected' | 'connecting' | 'connected' | 'error'>('disconnected');
-	const clusterMetrics = writable<{
-		activeWorkers: number
-		totalRequests: number
-		successRate: number
-		averageResponseTime: number
-		cacheHitRate: number
-	}>({
-		activeWorkers: 0,
-		totalRequests: 0,
-		successRate: 0,
-		averageResponseTime: 0,
-		cacheHitRate: 0
-	});
-	
-	const mcpTools = writable<Array<{
-		id: string
-		name: string
-		description: string
-		status: 'available' | 'busy' | 'error';
-		lastUsed?: Date;
-		successCount: number
-		errorCount: number
-	}>>([]);
-	
-	const queryResults = writable<Array<{
-		id: string
-		query: string
-		result: any
-		source: 'enhanced_rag' | 'memory_graph' | 'context7' | 'agent_orchestration';
-		timestamp: Date
-		responseTime: number
-		success: boolean
-	}>>([]);
-	
-	const contextualSuggestions = writable<Array<{
-		type: 'mcp_tool' | 'context7_doc' | 'memory_relation' | 'agent_action';
-		title: string
-		description: string
-		action: () => Promise<void>;
-		priority: 'high' | 'medium' | 'low';
-	}>>([]);
-	
-	// WebSocket connection for real-time updates
-	let wsConnection: WebSocket | null = null;
-	let queryInput = '';
-	let selectedTool = '';
-	let isProcessing = false;
-	
-	// Available MCP tools
-	const availableMCPTools = [
-		{ id: 'enhanced_rag_query', name: 'Enhanced RAG Query', description: 'Semantic search with Context7 integration' },
-		{ id: 'mcp_memory2_create_relations', name: 'Memory Relations', description: 'Create knowledge graph relations' },
-		{ id: 'mcp_memory2_read_graph', name: 'Read Memory Graph', description: 'Query knowledge graph' },
-		{ id: 'mcp_memory2_search_nodes', name: 'Search Memory Nodes', description: 'Find specific memory nodes' },
-		{ id: 'mcp_context72_get-library-docs', name: 'Context7 Docs', description: 'Get library documentation' },
-		{ id: 'mcp_context72_resolve-library-id', name: 'Resolve Library ID', description: 'Resolve library identifiers' },
-		{ id: 'agent_orchestrate_claude', name: 'Claude Agent', description: 'Orchestrate Claude AI agent' },
-		{ id: 'agent_orchestrate_crewai', name: 'CrewAI Agent', description: 'Orchestrate CrewAI agent' },
-		{ id: 'agent_orchestrate_autogen', name: 'AutoGen Agent', description: 'Orchestrate AutoGen agent' }
-	];
-	
-	onMount(async () => {
-		await initializeMCPConnection();
-		if (enableRealtimeUpdates) {
-			setupWebSocketConnection();
-		}
-		await loadInitialData();
-		startMetricsPolling();
-	});
-	
-	async function initializeMCPConnection() {
-		mcpStatus.set('connecting');
-		
-		try {
-			// Test connection to Context7 MCP server
-			const response = await fetch('http://localhost:40000/health');
-			if (response.ok) {
-				mcpStatus.set('connected');
-				console.log('🚀 Enhanced MCP Integration connected');
-				
-				// Initialize available tools
-				mcpTools.set(availableMCPTools.map(tool => ({
-					...tool,
-					status: 'available',
-					successCount: 0,
-					errorCount: 0
-				})));
-				
-			} else {
-				throw new Error('MCP server not responding');
-			}
-		} catch (error) {
-			console.error('❌ MCP connection failed:', error);
-			mcpStatus.set('error');
-		}
-	}
-	
-	function setupWebSocketConnection() {
-		try {
-			wsConnection = new WebSocket('ws://localhost:40000');
-			
-			wsConnection.onopen = () => {
-				console.log('📡 WebSocket connected for real-time updates');
-			};
-			
-			wsConnection.onmessage = (event) => {
-				const data = JSON.parse(event.data);
-				handleRealtimeUpdate(data);
-			};
-			
-			wsConnection.onclose = () => {
-				console.log('📡 WebSocket disconnected');
-				// Attempt reconnection after 5 seconds
-				setTimeout(setupWebSocketConnection, 5000);
-			};
-		} catch (error) {
-			console.error('WebSocket connection failed:', error);
-		}
-	}
-	
-	function handleRealtimeUpdate(data: any) {
-		switch (data.type) {
-			case 'cluster-metrics-update':
-				clusterMetrics.set(data.metrics);
-				break;
-			case 'mcp-tool-status':
-				mcpTools.update(tools => 
-					tools.map(tool => 
-						tool.id === data.toolId 
-							? { ...tool, status: data.status, lastUsed: new Date() }
-							: tool
-					)
-				);
-				break;
-			case 'query-result':
-				queryResults.update(results => [data.result, ...results.slice(0, 9)]);
-				break;
-		}
-	}
-	
-	async function loadInitialData() {
-		// Load contextual suggestions based on current page/case
-		const suggestions = await generateContextualSuggestions();
-		contextualSuggestions.set(suggestions);
-	}
-	
-	async function generateContextualSuggestions() {
-		const suggestions = [];
-		
-		// Case-specific suggestions
-		if (caseId) {
-			suggestions.push({
-				type: 'mcp_tool',
-				title: 'Analyze Case Evidence',
-				description: 'Run enhanced RAG analysis on case evidence',
-				action: async () => {
-					await executeMCPTool('enhanced_rag_query', {
-						query: `Analyze all evidence for case ${caseId}`,
-						caseId,
-						maxResults: 10,
-						includeContext7: true
-					});
-				},
-				priority: 'high'
-			});
-			
-			suggestions.push({
-				type: 'memory_relation',
-				title: 'Update Knowledge Graph',
-				description: 'Create memory relations for current case',
-				action: async () => {
-					await executeMCPTool('mcp_memory2_create_relations', {
-						entities: [
-							{
-								type: 'case',
-								id: caseId,
-								properties: {
-									analyzed_at: new Date().toISOString(),
-									source: 'enhanced_mcp_integration'
-								}
-							}
-						]
-					});
-				},
-				priority: 'medium'
-			});
-		}
-		
-		// Context7 documentation suggestions
-		suggestions.push({
-			type: 'context7_doc',
-			title: 'Get SvelteKit Best Practices',
-			description: 'Fetch Context7 documentation for SvelteKit',
-			action: async () => {
-				await executeMCPTool('mcp_context72_get-library-docs', {
-					libraryId: '/sveltejs/kit',
-					topic: 'best-practices'
-				});
-			},
-			priority: 'low'
-		});
-		
-		return suggestions;
-	}
-	
-	function startMetricsPolling() {
-		setInterval(async () => {
-			if ($mcpStatus === 'connected') {
-				await updateClusterMetrics();
-			}
-		}, 5000); // Update every 5 seconds
-	}
-	
-	async function updateClusterMetrics() {
-		try {
-			const response = await fetch('http://localhost:40000/mcp/metrics');
-			if (response.ok) {
-				const data = await response.json();
-				if (data.success) {
-					clusterMetrics.set({
-						activeWorkers: data.metrics.connections || 0,
-						totalRequests: data.metrics.totalRequests || 0,
-						successRate: 1 - (data.metrics.errorRate || 0),
-						averageResponseTime: data.metrics.averageResponseTime || 0,
-						cacheHitRate: data.metrics.cache?.hitRate || 0
-					});
-				}
-			}
-		} catch (error) {
-			console.error('Failed to update cluster metrics:', error);
-		}
-	}
-	
-	async function executeMCPTool(toolId: string, args: any = {}) {
-		if (isProcessing) return;
-		
-		isProcessing = true;
-		const startTime = Date.now();
-		
-		try {
-			// Update tool status
-			mcpTools.update(tools =>
-				tools.map(tool =>
-					tool.id === toolId ? { ...tool, status: 'busy' } : tool
-				)
-			);
-			
-			// Determine the appropriate endpoint based on tool type
-			let endpoint = '';
-			switch (toolId) {
-				case 'enhanced_rag_query':
-					endpoint = '/mcp/enhanced-rag/query';
-					break;
-				case 'mcp_memory2_create_relations':
-					endpoint = '/mcp/memory/create-relations';
-					break;
-				case 'mcp_memory2_read_graph':
-					endpoint = '/mcp/memory/read-graph';
-					break;
-				case 'mcp_memory2_search_nodes':
-					endpoint = '/mcp/memory/search-nodes';
-					break;
-				case 'mcp_context72_get-library-docs':
-					endpoint = '/mcp/context7/get-library-docs';
-					break;
-				case 'mcp_context72_resolve-library-id':
-					endpoint = '/mcp/context7/resolve-library-id';
-					break;
-				case 'agent_orchestrate_claude':
-				case 'agent_orchestrate_crewai':
-				case 'agent_orchestrate_autogen':
-					endpoint = '/mcp/agent/orchestrate';
-					args.agent = toolId.replace('agent_orchestrate_', '');
-					break;
-				default:
-					throw new Error(`Unknown tool: ${toolId}`);
-			}
-			
-			const response = await fetch(`http://localhost:40000${endpoint}`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(args)
-			});
-			
-			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-			}
-			
-			const result = await response.json();
-			const responseTime = Date.now() - startTime;
-			
-			// Update query results
-			queryResults.update(results => [{
-				id: crypto.randomUUID(),
-				query: JSON.stringify(args),
-				result,
-				source: getSourceType(toolId),
-				timestamp: new Date(),
-				responseTime,
-				success: true
-			}, ...results.slice(0, 9)]);
-			
-			// Update tool success count
-			mcpTools.update(tools =>
-				tools.map(tool =>
-					tool.id === toolId 
-						? { ...tool, status: 'available', successCount: tool.successCount + 1, lastUsed: new Date() }
-						: tool
-				)
-			);
-			
-			console.log(`✅ MCP tool ${toolId} executed successfully in ${responseTime}ms`);
-			
-		} catch (error) {
-			console.error(`❌ MCP tool ${toolId} failed:`, error);
-			
-			// Update tool error count
-			mcpTools.update(tools =>
-				tools.map(tool =>
-					tool.id === toolId 
-						? { ...tool, status: 'error', errorCount: tool.errorCount + 1 }
-						: tool
-				)
-			);
-			
-			// Add error to results
-			queryResults.update(results => [{
-				id: crypto.randomUUID(),
-				query: JSON.stringify(args),
-				result: { error: error.message },
-				source: getSourceType(toolId),
-				timestamp: new Date(),
-				responseTime: Date.now() - startTime,
-				success: false
-			}, ...results.slice(0, 9)]);
-		} finally {
-			isProcessing = false;
-		}
-	}
-	
-	function getSourceType(toolId: string): 'enhanced_rag' | 'memory_graph' | 'context7' | 'agent_orchestration' {
-		if (toolId.includes('rag')) return 'enhanced_rag';
-		if (toolId.includes('memory')) return 'memory_graph';
-		if (toolId.includes('context7')) return 'context7';
-		if (toolId.includes('agent')) return 'agent_orchestration';
-		return 'enhanced_rag';
-	}
-	
-	async function executeQuery() {
-		if (!queryInput.trim() || !selectedTool) return;
-		
-		const args = selectedTool === 'enhanced_rag_query' 
-			? { query: queryInput, caseId, maxResults: 10, includeContext7: true }
-			: selectedTool.includes('memory') && selectedTool.includes('search')
-			? { query: queryInput }
-			: selectedTool.includes('context7')
-			? { libraryName: queryInput }
-			: { prompt: queryInput, context: 'sveltekit_frontend' };
-			
-		await executeMCPTool(selectedTool, args);
-		queryInput = '';
-	}
+  	/**
+  	 * Enhanced MCP Integration Component for SvelteKit Frontend
+  	 * Connects cluster system, MCP tools, and Context7 integration
+  	 */
+  	import { onMount } from 'svelte';
+  	import { writable } from 'svelte/store';
+  	import { page } from '$app/stores';
+  	// Props using Svelte 5 syntax compatibility
+  	// Reactive state using writable stores for Svelte 4/5 compatibility
+  	const mcpStatus = writable<'disconnected' | 'connecting' | 'connected' | 'error'>('disconnected');
+  	const clusterMetrics = writable<{
+  		activeWorkers: number
+  		totalRequests: number
+  		successRate: number
+  		averageResponseTime: number
+  		cacheHitRate: number
+  	}>({
+  		activeWorkers: 0,
+  		totalRequests: 0,
+  		successRate: 0,
+  		averageResponseTime: 0,
+  		cacheHitRate: 0
+  	});
+  	const mcpTools = writable<Array<{
+  		id: string
+  		name: string
+  		description: string
+  		status: 'available' | 'busy' | 'error';
+  		lastUsed?: Date;
+  		successCount: number
+  		errorCount: number
+  	}>>([]);
+  	const queryResults = writable<Array<{
+  		id: string
+  		query: string
+  		result: any
+  		source: 'enhanced_rag' | 'memory_graph' | 'context7' | 'agent_orchestration';
+  		timestamp: Date
+  		responseTime: number
+  		success: boolean
+  	}>>([]);
+  	const contextualSuggestions = writable<Array<{
+  		type: 'mcp_tool' | 'context7_doc' | 'memory_relation' | 'agent_action';
+  		title: string
+  		description: string
+  		action: () => Promise<void>;
+  		priority: 'high' | 'medium' | 'low';
+  	}>>([]);
+  	// WebSocket connection for real-time updates
+  	let wsConnection: WebSocket | null = null;
+  	let queryInput = '';
+  	let selectedTool = '';
+  	let isProcessing = false;
+  	// Available MCP tools
+  	const availableMCPTools = [
+  		{ id: 'enhanced_rag_query', name: 'Enhanced RAG Query', description: 'Semantic search with Context7 integration' },
+  		{ id: 'mcp_memory2_create_relations', name: 'Memory Relations', description: 'Create knowledge graph relations' },
+  		{ id: 'mcp_memory2_read_graph', name: 'Read Memory Graph', description: 'Query knowledge graph' },
+  		{ id: 'mcp_memory2_search_nodes', name: 'Search Memory Nodes', description: 'Find specific memory nodes' },
+  		{ id: 'mcp_context72_get-library-docs', name: 'Context7 Docs', description: 'Get library documentation' },
+  		{ id: 'mcp_context72_resolve-library-id', name: 'Resolve Library ID', description: 'Resolve library identifiers' },
+  		{ id: 'agent_orchestrate_claude', name: 'Claude Agent', description: 'Orchestrate Claude AI agent' },
+  		{ id: 'agent_orchestrate_crewai', name: 'CrewAI Agent', description: 'Orchestrate CrewAI agent' },
+  		{ id: 'agent_orchestrate_autogen', name: 'AutoGen Agent', description: 'Orchestrate AutoGen agent' }
+  	];
+  	onMount(async () => {
+  		await initializeMCPConnection();
+  		if (enableRealtimeUpdates) {
+  			setupWebSocketConnection();
+  		}
+  		await loadInitialData();
+  		startMetricsPolling();
+  	});
+  	async function initializeMCPConnection() {
+  		mcpStatus.set('connecting');
+  		try {
+  			// Test connection to Context7 MCP server
+  			const response = await fetch('http://localhost:40000/health');
+  			if (response.ok) {
+  				mcpStatus.set('connected');
+  				console.log('🚀 Enhanced MCP Integration connected');
+  				// Initialize available tools
+  				mcpTools.set(availableMCPTools.map(tool => ({
+  					...tool,
+  					status: 'available',
+  					successCount: 0,
+  					errorCount: 0
+  				})));
+  			} else {
+  				throw new Error('MCP server not responding');
+  			}
+  		} catch (error) {
+  			console.error('❌ MCP connection failed:', error);
+  			mcpStatus.set('error');
+  		}
+  	}
+  	function setupWebSocketConnection() {
+  		try {
+  			wsConnection = new WebSocket('ws://localhost:40000');
+  			wsConnection.onopen = () => {
+  				console.log('📡 WebSocket connected for real-time updates');
+  			};
+  			wsConnection.onmessage = (event) => {
+  				const data = JSON.parse(event.data);
+  				handleRealtimeUpdate(data);
+  			};
+  			wsConnection.onclose = () => {
+  				console.log('📡 WebSocket disconnected');
+  				// Attempt reconnection after 5 seconds
+  				setTimeout(setupWebSocketConnection, 5000);
+  			};
+  		} catch (error) {
+  			console.error('WebSocket connection failed:', error);
+  		}
+  	}
+  	function handleRealtimeUpdate(data: any) {
+  		switch (data.type) {
+  			case 'cluster-metrics-update':
+  				clusterMetrics.set(data.metrics);
+  				break;
+  			case 'mcp-tool-status':
+  				mcpTools.update(tools => 
+  					tools.map(tool => 
+  						tool.id === data.toolId 
+  							? { ...tool, status: data.status, lastUsed: new Date() }
+  							: tool
+  					)
+  				);
+  				break;
+  			case 'query-result':
+  				queryResults.update(results => [data.result, ...results.slice(0, 9)]);
+  				break;
+  		}
+  	}
+  	async function loadInitialData() {
+  		// Load contextual suggestions based on current page/case
+  		const suggestions = await generateContextualSuggestions();
+  		contextualSuggestions.set(suggestions);
+  	}
+  	async function generateContextualSuggestions() {
+  		const suggestions = [];
+  		// Case-specific suggestions
+  		if (caseId) {
+  			suggestions.push({
+  				type: 'mcp_tool',
+  				title: 'Analyze Case Evidence',
+  				description: 'Run enhanced RAG analysis on case evidence',
+  				action: async () => {
+  					await executeMCPTool('enhanced_rag_query', {
+  						query: `Analyze all evidence for case ${caseId}`,
+  						caseId,
+  						maxResults: 10,
+  						includeContext7: true
+  					});
+  				},
+  				priority: 'high'
+  			});
+  			suggestions.push({
+  				type: 'memory_relation',
+  				title: 'Update Knowledge Graph',
+  				description: 'Create memory relations for current case',
+  				action: async () => {
+  					await executeMCPTool('mcp_memory2_create_relations', {
+  						entities: [
+  							{
+  								type: 'case',
+  								id: caseId,
+  								properties: {
+  									analyzed_at: new Date().toISOString(),
+  									source: 'enhanced_mcp_integration'
+  								}
+  							}
+  						]
+  					});
+  				},
+  				priority: 'medium'
+  			});
+  		}
+  		// Context7 documentation suggestions
+  		suggestions.push({
+  			type: 'context7_doc',
+  			title: 'Get SvelteKit Best Practices',
+  			description: 'Fetch Context7 documentation for SvelteKit',
+  			action: async () => {
+  				await executeMCPTool('mcp_context72_get-library-docs', {
+  					libraryId: '/sveltejs/kit',
+  					topic: 'best-practices'
+  				});
+  			},
+  			priority: 'low'
+  		});
+  		return suggestions;
+  	}
+  	function startMetricsPolling() {
+  		setInterval(async () => {
+  			if ($mcpStatus === 'connected') {
+  				await updateClusterMetrics();
+  			}
+  		}, 5000); // Update every 5 seconds
+  	}
+  	async function updateClusterMetrics() {
+  		try {
+  			const response = await fetch('http://localhost:40000/mcp/metrics');
+  			if (response.ok) {
+  				const data = await response.json();
+  				if (data.success) {
+  					clusterMetrics.set({
+  						activeWorkers: data.metrics.connections || 0,
+  						totalRequests: data.metrics.totalRequests || 0,
+  						successRate: 1 - (data.metrics.errorRate || 0),
+  						averageResponseTime: data.metrics.averageResponseTime || 0,
+  						cacheHitRate: data.metrics.cache?.hitRate || 0
+  					});
+  				}
+  			}
+  		} catch (error) {
+  			console.error('Failed to update cluster metrics:', error);
+  		}
+  	}
+  	async function executeMCPTool(toolId: string, args: any = {}) {
+  		if (isProcessing) return;
+  		isProcessing = true;
+  		const startTime = Date.now();
+  		try {
+  			// Update tool status
+  			mcpTools.update(tools =>
+  				tools.map(tool =>
+  					tool.id === toolId ? { ...tool, status: 'busy' } : tool
+  				)
+  			);
+  			// Determine the appropriate endpoint based on tool type
+  			let endpoint = '';
+  			switch (toolId) {
+  				case 'enhanced_rag_query':
+  					endpoint = '/mcp/enhanced-rag/query';
+  					break;
+  				case 'mcp_memory2_create_relations':
+  					endpoint = '/mcp/memory/create-relations';
+  					break;
+  				case 'mcp_memory2_read_graph':
+  					endpoint = '/mcp/memory/read-graph';
+  					break;
+  				case 'mcp_memory2_search_nodes':
+  					endpoint = '/mcp/memory/search-nodes';
+  					break;
+  				case 'mcp_context72_get-library-docs':
+  					endpoint = '/mcp/context7/get-library-docs';
+  					break;
+  				case 'mcp_context72_resolve-library-id':
+  					endpoint = '/mcp/context7/resolve-library-id';
+  					break;
+  				case 'agent_orchestrate_claude':
+  				case 'agent_orchestrate_crewai':
+  				case 'agent_orchestrate_autogen':
+  					endpoint = '/mcp/agent/orchestrate';
+  					args.agent = toolId.replace('agent_orchestrate_', '');
+  					break;
+  				default:
+  					throw new Error(`Unknown tool: ${toolId}`);
+  			}
+  			const response = await fetch(`http://localhost:40000${endpoint}`, {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify(args)
+  			});
+  			if (!response.ok) {
+  				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  			}
+  			const result = await response.json();
+  			const responseTime = Date.now() - startTime;
+  			// Update query results
+  			queryResults.update(results => [{
+  				id: crypto.randomUUID(),
+  				query: JSON.stringify(args),
+  				result,
+  				source: getSourceType(toolId),
+  				timestamp: new Date(),
+  				responseTime,
+  				success: true
+  			}, ...results.slice(0, 9)]);
+  			// Update tool success count
+  			mcpTools.update(tools =>
+  				tools.map(tool =>
+  					tool.id === toolId 
+  						? { ...tool, status: 'available', successCount: tool.successCount + 1, lastUsed: new Date() }
+  						: tool
+  				)
+  			);
+  			console.log(`✅ MCP tool ${toolId} executed successfully in ${responseTime}ms`);
+  		} catch (error) {
+  			console.error(`❌ MCP tool ${toolId} failed:`, error);
+  			// Update tool error count
+  			mcpTools.update(tools =>
+  				tools.map(tool =>
+  					tool.id === toolId 
+  						? { ...tool, status: 'error', errorCount: tool.errorCount + 1 }
+  						: tool
+  				)
+  			);
+  			// Add error to results
+  			queryResults.update(results => [{
+  				id: crypto.randomUUID(),
+  				query: JSON.stringify(args),
+  				result: { error: error.message },
+  				source: getSourceType(toolId),
+  				timestamp: new Date(),
+  				responseTime: Date.now() - startTime,
+  				success: false
+  			}, ...results.slice(0, 9)]);
+  		} finally {
+  			isProcessing = false;
+  		}
+  	}
+  	function getSourceType(toolId: string): 'enhanced_rag' | 'memory_graph' | 'context7' | 'agent_orchestration' {
+  		if (toolId.includes('rag')) return 'enhanced_rag';
+  		if (toolId.includes('memory')) return 'memory_graph';
+  		if (toolId.includes('context7')) return 'context7';
+  		if (toolId.includes('agent')) return 'agent_orchestration';
+  		return 'enhanced_rag';
+  	}
+  	async function executeQuery() {
+  		if (!queryInput.trim() || !selectedTool) return;
+  		const args = selectedTool === 'enhanced_rag_query' 
+  			? { query: queryInput, caseId, maxResults: 10, includeContext7: true }
+  			: selectedTool.includes('memory') && selectedTool.includes('search')
+  			? { query: queryInput }
+  			: selectedTool.includes('context7')
+  			? { libraryName: queryInput }
+  			: { prompt: queryInput, context: 'sveltekit_frontend' };
+  		await executeMCPTool(selectedTool, args);
+  		queryInput = '';
+  	}
 </script>
 
 <div class="enhanced-mcp-integration">

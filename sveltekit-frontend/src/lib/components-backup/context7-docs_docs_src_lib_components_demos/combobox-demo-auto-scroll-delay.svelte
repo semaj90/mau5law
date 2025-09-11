@@ -1,61 +1,60 @@
 <script lang="ts">
-</script>
-	import { Combobox } from "bits-ui";
-	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
-	import Check from "phosphor-svelte/lib/Check";
-	import OrangeSlice from "phosphor-svelte/lib/OrangeSlice";
-	import CaretDoubleUp from "phosphor-svelte/lib/CaretDoubleUp";
-	import CaretDoubleDown from "phosphor-svelte/lib/CaretDoubleDown";
-	import { cubicOut } from "svelte/easing";
+  	import { Combobox } from "bits-ui";
+  	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
+  	import Check from "phosphor-svelte/lib/Check";
+  	import OrangeSlice from "phosphor-svelte/lib/OrangeSlice";
+  	import CaretDoubleUp from "phosphor-svelte/lib/CaretDoubleUp";
+  	import CaretDoubleDown from "phosphor-svelte/lib/CaretDoubleDown";
+  	import { cubicOut } from "svelte/easing";
 
-	const fruits = [
-		{ value: "mango", label: "Mango" },
-		{ value: "watermelon", label: "Watermelon" },
-		{ value: "apple", label: "Apple" },
-		{ value: "pineapple", label: "Pineapple" },
-		{ value: "orange", label: "Orange" },
-		{ value: "grape", label: "Grape" },
-		{ value: "strawberry", label: "Strawberry" },
-		{ value: "banana", label: "Banana" },
-		{ value: "kiwi", label: "Kiwi" },
-		{ value: "peach", label: "Peach" },
-		{ value: "cherry", label: "Cherry" },
-		{ value: "blueberry", label: "Blueberry" },
-		{ value: "raspberry", label: "Raspberry" },
-		{ value: "blackberry", label: "Blackberry" },
-		{ value: "plum", label: "Plum" },
-		{ value: "apricot", label: "Apricot" },
-		{ value: "pear", label: "Pear" },
-		{ value: "grapefruit", label: "Grapefruit" },
-	];
+  	const fruits = [
+  		{ value: "mango", label: "Mango" },
+  		{ value: "watermelon", label: "Watermelon" },
+  		{ value: "apple", label: "Apple" },
+  		{ value: "pineapple", label: "Pineapple" },
+  		{ value: "orange", label: "Orange" },
+  		{ value: "grape", label: "Grape" },
+  		{ value: "strawberry", label: "Strawberry" },
+  		{ value: "banana", label: "Banana" },
+  		{ value: "kiwi", label: "Kiwi" },
+  		{ value: "peach", label: "Peach" },
+  		{ value: "cherry", label: "Cherry" },
+  		{ value: "blueberry", label: "Blueberry" },
+  		{ value: "raspberry", label: "Raspberry" },
+  		{ value: "blackberry", label: "Blackberry" },
+  		{ value: "plum", label: "Plum" },
+  		{ value: "apricot", label: "Apricot" },
+  		{ value: "pear", label: "Pear" },
+  		{ value: "grapefruit", label: "Grapefruit" },
+  	];
 
-	// Duplicate the menu items a couple of times to show off scrolling a big list
-	const baseFruits = [...fruits];
-	for (let i = 0; i < 10; i++) {
-		for (let baseTheme of baseFruits) {
-			fruits.push({ ...baseTheme, value: baseTheme.value + i });
-		}
-	}
+  	// Duplicate the menu items a couple of times to show off scrolling a big list
+  	const baseFruits = [...fruits];
+  	for (let i = 0; i < 10; i++) {
+  		for (let baseTheme of baseFruits) {
+  			fruits.push({ ...baseTheme, value: baseTheme.value + i });
+  		}
+  	}
 
-	let searchValue = $state("");
+  	let searchValue = $state("");
 
-	const filteredFruits = $derived(
-		searchValue === ""
-			? fruits
-			: fruits.filter((fruit) =>
-					fruit.label.toLowerCase().includes(searchValue.toLowerCase())
-				)
-	);
+  	const filteredFruits = $derived(
+  		searchValue === ""
+  			? fruits
+  			: fruits.filter((fruit) =>
+  					fruit.label.toLowerCase().includes(searchValue.toLowerCase())
+  				)
+  	);
 
-	function autoScrollDelay(tick: number) {
-		const maxDelay = 200;
-		const minDelay = 25;
-		const steps = 30;
+  	function autoScrollDelay(tick: number) {
+  		const maxDelay = 200;
+  		const minDelay = 25;
+  		const steps = 30;
 
-		const progress = Math.min(tick / steps, 1);
-		// Use the cubicOut easing function from svelte/easing
-		return maxDelay - (maxDelay - minDelay) * cubicOut(progress);
-	}
+  		const progress = Math.min(tick / steps, 1);
+  		// Use the cubicOut easing function from svelte/easing
+  		return maxDelay - (maxDelay - minDelay) * cubicOut(progress);
+  	}
 </script>
 
 <Combobox.Root

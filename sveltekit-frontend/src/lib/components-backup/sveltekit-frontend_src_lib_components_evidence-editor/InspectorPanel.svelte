@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onaiAnalysisComplete?: (event?: any) => void;
     onautoSaved?: (event?: any) => void;
@@ -14,9 +13,6 @@
 
 
     import { writable } from 'svelte/store';
-  
-    
-      
   // Enhanced form fields with auto-population
   let formData = writable({
     // Basic fields
@@ -24,20 +20,17 @@
     description: '',
     tags: [] as string[],
     customTags: [] as string[],
-    
     // Entity fields (auto-populated by AI)
     people: [] as string[],
     locations: [] as string[],
     organizations: [] as string[],
     dates: [] as string[],
-    
     // Legal fields
     evidenceType: 'other',
     legalRelevance: 'medium',
     legalCategories: [] as string[],
     confidentialityLevel: 'internal',
     urgencyLevel: 'normal',
-    
     // Analysis fields
     keyFacts: [] as string[],
     potentialWitnesses: [] as string[],
@@ -45,7 +38,6 @@
     statutes: [] as string[],
     monetaryAmounts: [] as string[],
     actions: [] as string[],
-    
     // Quality metrics
     qualityScore: 0,
     extractionConfidence: {
@@ -54,26 +46,22 @@
       dates: 0,
       organizations: 0
     } as Record<string, number>,
-    
     // Warnings and recommendations
     redFlags: [] as string[],
     recommendations: [] as string[]
   });
-  
   // Form state
   let isLoading = false;
   let isSaving = false;
   let hasUnsavedChanges = false;
   let lastSavedAt: Date | null = null;
   let autoSaveTimer: ReturnType<typeof setTimeout>;
-  
   // Custom input fields
   let customTag = '';
   let customPerson = '';
   let customLocation = '';
   let customOrganization = '';
   let customAction = '';
-  
   // Evidence type options with icons
   const evidenceTypes = [
     { value: 'document', label: 'Document', icon: '📄' },
@@ -85,7 +73,6 @@
     { value: 'testimony', label: 'Testimony', icon: '🗣️' },
     { value: 'other', label: 'Other', icon: '📁' }
   ];
-  
   // Legal relevance options with colors
   const relevanceOptions = [
     { value: 'critical', label: 'Critical', color: 'bg-red-100 text-red-800 border-red-200' },
@@ -93,7 +80,6 @@
     { value: 'medium', label: 'Medium', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
     { value: 'low', label: 'Low', color: 'bg-green-100 text-green-800 border-green-200' }
   ];
-  
   // Confidentiality levels
   const confidentialityLevels = [
     { value: 'public', label: 'Public', color: 'bg-blue-100 text-blue-800' },
@@ -101,7 +87,6 @@
     { value: 'confidential', label: 'Confidential', color: 'bg-yellow-100 text-yellow-800' },
     { value: 'restricted', label: 'Restricted', color: 'bg-red-100 text-red-800' }
   ];
-  
   // Urgency levels
   const urgencyLevels = [
     { value: 'immediate', label: 'Immediate', color: 'bg-red-100 text-red-800' },
@@ -109,27 +94,23 @@
     { value: 'normal', label: 'Normal', color: 'bg-blue-100 text-blue-800' },
     { value: 'low', label: 'Low', color: 'bg-gray-100 text-gray-800' }
   ];
-  
   // Watch for node changes and auto-populate form
   $effect(() => { if (selectedNode) {
     autoPopulateForm(selectedNode);
-}
+  }
   // Track changes for auto-save
   $effect(() => { if ($formData && selectedNode) {
     hasUnsavedChanges = true;
     scheduleAutoSave();
-}
+  }
   onMount(() => {
     return () => {
       if (autoSaveTimer) clearTimeout(autoSaveTimer);
     };
   });
-  
   async function autoPopulateForm(node: any) {
     if (!node) return;
-    
     isLoading = true;
-    
     try {
       // Start with basic file information
       const newFormData = {
@@ -162,7 +143,6 @@
         redFlags: [],
         recommendations: []
       };
-      
       // If AI tags exist, populate from them
       if (node.aiTags) {
         Object.assign(newFormData, {
@@ -192,20 +172,19 @@
       } else {
         // Trigger AI analysis for enhanced auto-population
         await triggerEnhancedAIAnalysis(node, newFormData);
-}
+  }
       // Add any existing custom data
       if (node.metadata) {
         newFormData.customTags = [...(node.customTags || [])];
-}
+  }
       formData.set(newFormData);
       hasUnsavedChanges = false;
-      
     } catch (error) {
       console.error('Auto-population failed:', error);
     } finally {
       isLoading = false;
-}
-}
+  }
+  }
   async function triggerEnhancedAIAnalysis(node: any, formData: any) {
     try {
       const response = await fetch('/api/ai/tag', {
@@ -218,13 +197,10 @@
           enhanced: true // Request enhanced analysis
         })
       });
-      
       if (response.ok) {
         const aiTags = await response.json();
-        
         // Update the node with AI tags
         node.aiTags = aiTags;
-        
         // Auto-populate form with enhanced data
         Object.assign(formData, {
           title: aiTags.title || node.name,
@@ -250,21 +226,20 @@
           redFlags: [...(aiTags.redFlags || [])],
           recommendations: [...(aiTags.recommendations || [])]
         });
-        
         // Notify parent components
         onaiAnalysisComplete?.();
-}
+  }
     } catch (error) {
       console.error('Enhanced AI analysis failed:', error);
-}
-}
+  }
+  }
   function detectEvidenceType(fileType: string): string {
     if (fileType.includes('image')) return 'photo';
     if (fileType.includes('video')) return 'video';
     if (fileType.includes('audio')) return 'audio';
     if (fileType.includes('pdf') || fileType.includes('document')) return 'document';
     return 'digital';
-}
+  }
   // Add/remove functions for arrays
   function addCustomTag() {
     if (customTag.trim() && !$formData.customTags.includes(customTag.trim())) {
@@ -273,14 +248,14 @@
         customTags: [...data.customTags, customTag.trim()]
       }));
       customTag = '';
-}
-}
+  }
+  }
   function removeCustomTag(tag: string) {
     formData.update(data => ({
       ...data,
       customTags: data.customTags.filter(t => t !== tag)
     }));
-}
+  }
   function addCustomPerson() {
     if (customPerson.trim() && !$formData.people.includes(customPerson.trim())) {
       formData.update(data => ({
@@ -288,14 +263,14 @@
         people: [...data.people, customPerson.trim()]
       }));
       customPerson = '';
-}
-}
+  }
+  }
   function removePerson(person: string) {
     formData.update(data => ({
       ...data,
       people: data.people.filter(p => p !== person)
     }));
-}
+  }
   function addCustomLocation() {
     if (customLocation.trim() && !$formData.locations.includes(customLocation.trim())) {
       formData.update(data => ({
@@ -303,14 +278,14 @@
         locations: [...data.locations, customLocation.trim()]
       }));
       customLocation = '';
-}
-}
+  }
+  }
   function removeLocation(location: string) {
     formData.update(data => ({
       ...data,
       locations: data.locations.filter(l => l !== location)
     }));
-}
+  }
   function addCustomOrganization() {
     if (customOrganization.trim() && !$formData.organizations.includes(customOrganization.trim())) {
       formData.update(data => ({
@@ -318,14 +293,14 @@
         organizations: [...data.organizations, customOrganization.trim()]
       }));
       customOrganization = '';
-}
-}
+  }
+  }
   function removeOrganization(org: string) {
     formData.update(data => ({
       ...data,
       organizations: data.organizations.filter(o => o !== org)
     }));
-}
+  }
   function addCustomAction() {
     if (customAction.trim() && !$formData.actions.includes(customAction.trim())) {
       formData.update(data => ({
@@ -333,27 +308,25 @@
         actions: [...data.actions, customAction.trim()]
       }));
       customAction = '';
-}
-}
+  }
+  }
   function removeAction(action: string) {
     formData.update(data => ({
       ...data,
       actions: data.actions.filter(a => a !== action)
     }));
-}
+  }
   // Auto-save functionality
   function scheduleAutoSave() {
     if (autoSaveTimer) clearTimeout(autoSaveTimer);
-    
     autoSaveTimer = setTimeout(() => {
       if (hasUnsavedChanges && !readOnly) {
         autoSave();
-}
+  }
     }, 5000); // Auto-save after 5 seconds of inactivity
-}
+  }
   async function autoSave() {
     if (!selectedNode || readOnly) return;
-    
     try {
       const updatedNode = {
         ...selectedNode,
@@ -372,9 +345,8 @@
         metadata: {
           ...selectedNode.metadata,
           lastModified: new Date().toISOString()
-}
+  }
       };
-      
       const response = await fetch('/api/evidence/save-node', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -383,21 +355,18 @@
           data: updatedNode
         })
       });
-      
       if (response.ok) {
         hasUnsavedChanges = false;
         lastSavedAt = new Date();
         onautoSaved?.();
-}
+  }
     } catch (error) {
       console.warn('Auto-save failed:', error);
-}
-}
+  }
+  }
   async function handleSave() {
     if (!selectedNode || isSaving) return;
-    
     isSaving = true;
-    
     try {
       const updatedNode = {
         ...selectedNode,
@@ -416,9 +385,8 @@
         metadata: {
           ...selectedNode.metadata,
           lastModified: new Date().toISOString()
-}
+  }
       };
-      
       const response = await fetch('/api/evidence/save-node', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -427,56 +395,50 @@
           data: updatedNode
         })
       });
-      
       if (response.ok) {
         const result = await response.json();
         hasUnsavedChanges = false;
         lastSavedAt = new Date();
-        
         onsave?.();
         onshowNotification?.();
       } else {
         throw new Error('Save failed');
-}
+  }
     } catch (error) {
       console.error('Save failed:', error);
       onshowNotification?.();
     } finally {
       isSaving = false;
-}
-}
+  }
+  }
   async function reanalyzeWithAI() {
     if (!selectedNode || isLoading) return;
-    
     isLoading = true;
-    
     try {
       // Clear existing AI tags
       selectedNode.aiTags = null;
-      
       // Trigger fresh AI analysis
       await triggerEnhancedAIAnalysis(selectedNode, $formData);
-      
       onshowNotification?.();
     } catch (error) {
       console.error('Re-analysis failed:', error);
       onshowNotification?.();
     } finally {
       isLoading = false;
-}
-}
+  }
+  }
   function formatDate(dateStr: string) {
     try {
       return new Date(dateStr).toLocaleDateString();
     } catch {
       return dateStr;
-}
-}
+  }
+  }
   function getConfidenceColor(confidence: number): string {
     if (confidence >= 0.8) return 'text-green-600';
     if (confidence >= 0.6) return 'text-yellow-600';
     return 'text-red-600';
-}
+  }
 </script>
 
 <div class="space-y-4">

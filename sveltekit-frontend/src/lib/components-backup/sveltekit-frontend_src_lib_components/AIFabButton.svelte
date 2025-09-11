@@ -1,29 +1,27 @@
 <script lang="ts">
-</script>
   interface Props {
     onaiRequest?: (event?: any) => void;
   }
 
 
-		import { aiStore } from "../stores/canvas";
-	import Dialog from './Dialog.svelte';
+  		import { aiStore } from "../stores/canvas";
+  	import Dialog from './Dialog.svelte';
 
-	import { Sparkles, Bot } from 'lucide-svelte';
+  	import { Sparkles, Bot } from 'lucide-svelte';
 
-	
-	// Reactive state
-	let dialogOpen = $derived($aiStore.dialogOpen)
-	let isGenerating = $derived($aiStore.isGenerating)
+  	// Reactive state
+  	let dialogOpen = $derived($aiStore.dialogOpen)
+  	let isGenerating = $derived($aiStore.isGenerating)
 
-	function toggleDialog() {
-		aiStore.update(state => ({
-			...state,
-			dialogOpen: !state.dialogOpen
-		}));
-}
-	function handleAIRequest(event: CustomEvent) {
-		onaiRequest?.();
-}
+  	function toggleDialog() {
+  		aiStore.update(state => ({
+  			...state,
+  			dialogOpen: !state.dialogOpen
+  		}));
+  }
+  	function handleAIRequest(event: CustomEvent) {
+  		onaiRequest?.();
+  }
 </script>
 
 <!-- Floating Action Button -->

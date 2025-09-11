@@ -3,7 +3,6 @@
   Tests GPU accelerated authentication, XState integration, and Context7 documentation
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { authStore } from '$lib/stores/auth-store';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';

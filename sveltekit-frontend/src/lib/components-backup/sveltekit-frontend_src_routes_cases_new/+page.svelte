@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     form: ActionData
   }
@@ -15,7 +14,6 @@
   import TauriAPI from "$lib/tauri";
   import type { ActionData } from "./$types";
 
-  
   let isSubmitting = false;
   let caseData = {};
 
@@ -44,10 +42,10 @@
       });
     } finally {
       isSubmitting = false;
-}}
+  }}
   function handleCancel() {
     goto("/cases");
-}
+  }
   // Show server-side form errors as notifications
   $effect(() => {
     if (form?.error) {

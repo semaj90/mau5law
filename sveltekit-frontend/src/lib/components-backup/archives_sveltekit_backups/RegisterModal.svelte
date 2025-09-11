@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Modal from "../ui/Modal.svelte";
   // Adjust path to melt-ui or bits-ui as needed
   import { createEventDispatcher } from "svelte";

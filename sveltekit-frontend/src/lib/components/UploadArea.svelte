@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { preventDefault } from 'svelte/legacy';
   interface Props {
@@ -9,8 +8,8 @@
   }
 
   let { onFileSelected = () => {}, accept = "*", multiple = false }: Props = $props();
-let dragActive = $state(false);
-let fileInput = $state<HTMLInputElement;
+  let dragActive = $state(false);
+  let fileInput = $state<HTMLInputElement;
 
   function handleDrop(e: DragEvent) {
     e.preventDefault();

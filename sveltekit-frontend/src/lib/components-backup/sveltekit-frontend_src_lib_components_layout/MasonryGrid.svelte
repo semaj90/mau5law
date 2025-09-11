@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     items: any[] ;
     columnWidth?: any;
@@ -39,12 +38,9 @@
   import { dndzone } from 'svelte-dnd-action';
   import { fly } from 'svelte/transition';
   import Masonry from 'masonry-layout';
-  
-                              
   let container: HTMLElement
   let masonry: any
   let isInitialized = false;
-  
   // Masonry configuration
   let masonryOptions = $derived({})
     itemSelector,
@@ -57,7 +53,6 @@
     initLayout,
     transitionDuration
   };
-  
   // Initialize Masonry
   onMount(() => {
     if (container && items.length > 0) {
@@ -65,40 +60,36 @@
         masonry = new Masonry(container, masonryOptions);
         isInitialized = true;
       }, 100);
-}
+  }
   });
-  
   // Update layout when items change
   $effect(() => { if (masonry && isInitialized) {
     setTimeout(() => {
       if (masonry) {
         masonry.reloadItems();
         masonry.layout();
-}
+  }
     }, 50);
-}
+  }
   // Cleanup
   onDestroy(() => {
     if (masonry) {
       masonry.destroy();
-}
+  }
   });
-  
   // Handle drag and drop
   const handleDndConsider = (e: CustomEvent) => {
     items = e.detail.items;
   };
-  
   const handleDndFinalize = (e: CustomEvent) => {
     items = e.detail.items;
     // Trigger layout update after reordering
     setTimeout(() => {
       if (masonry) {
         masonry.layout();
-}
+  }
     }, 100);
   };
-  
   // Responsive breakpoints
   const getResponsiveColumns = () => {
     if (typeof window === 'undefined') return 3;
@@ -108,24 +99,21 @@
     if (width < 1280) return 3;
     return 4;
   };
-  
   // Auto-resize functionality
   let resizeTimeout: NodeJS.Timeout;
   const handleResize = () => {
     if (!resize || !masonry) return;
-    
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       if (masonry) {
         masonry.layout();
-}
+  }
     }, 150);
   };
-  
   onMount(() => {
     if (resize) {
       window.addEventListener('resize', handleResize);
-}
+  }
     return () => {
       window.removeEventListener('resize', handleResize);
       if (resizeTimeout) clearTimeout(resizeTimeout);

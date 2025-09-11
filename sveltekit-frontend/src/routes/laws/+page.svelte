@@ -1,14 +1,14 @@
 <script lang="ts">
-</script>
   import {
     Card,
     CardHeader,
     CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+    CardContent,
+    CardDescription
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Search, BookOpen, ExternalLink, Bot, MessageSquare } from 'lucide-svelte';
   import { onMount } from 'svelte';

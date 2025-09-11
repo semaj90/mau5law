@@ -3,7 +3,6 @@
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';

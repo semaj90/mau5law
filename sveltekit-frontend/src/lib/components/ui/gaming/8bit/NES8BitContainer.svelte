@@ -10,7 +10,6 @@
   - Optional effects (scanlines, CRT)
 -->
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { NES_COLOR_PALETTE } from '../constants/gaming-constants.js';
@@ -19,12 +18,10 @@
     // Container specific props
     title?: string;
     containerType?: 'default' | 'with-title' | 'is-rounded' | 'is-dark' | 'is-centered';
-    
     // Content and styling
     children?: any;
     class?: string;
     style?: string;
-    
     // Layout
     padding?: 'none' | 'small' | 'medium' | 'large';
     maxWidth?: string;
@@ -39,18 +36,14 @@
     pixelPerfect = true,
     enableScanlines = false,
     enableCRTEffect = false,
-    
     title,
     containerType = title ? 'with-title' : 'default',
-    
     children,
     class: className = '',
     style = '',
-    
     padding = 'medium',
     maxWidth,
     minHeight,
-    
     onClick,
     onHover
   }: Props = $props();

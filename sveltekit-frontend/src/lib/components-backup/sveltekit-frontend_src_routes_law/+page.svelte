@@ -1,12 +1,9 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
-  
   let laws: any[] = [];
   let loading = true;
   let error: string | null = null;
   let searchQuery = '';
-  
   onMount(async () => {
     try {
       const response = await fetch('/api/statutes');
@@ -14,15 +11,14 @@
         laws = await response.json();
       } else {
         error = 'Failed to load laws';
-}
+  }
     } catch (err) {
       error = 'Error loading laws';
       console.error('Error:', err);
     } finally {
       loading = false;
-}
+  }
   });
-  
   let filteredLaws = $derived(laws.filter(law => true)
     law.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     law.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||

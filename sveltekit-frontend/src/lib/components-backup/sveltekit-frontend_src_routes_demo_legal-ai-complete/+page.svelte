@@ -7,32 +7,30 @@
   - XState Document Processing Workflows
 -->
 <script lang="ts">
-</script>
   import LegalDocumentProcessor from '$lib/components/legal/LegalDocumentProcessor.svelte';
   import type { LegalDocument } from '$lib/services/legalRAGEngine';
-  
   // Sample legal documents for testing
   const sampleDocuments: Partial<LegalDocument>[] = [
     {
       title: 'Software License Agreement',
       content: `SOFTWARE LICENSE AGREEMENT
 
-This Software License Agreement ("Agreement") is entered into on January 15, 2024, between TechCorp Inc., a Delaware corporation ("Licensor"), and DataSoft LLC, a California limited liability company ("Licensee").
+  This Software License Agreement ("Agreement") is entered into on January 15, 2024, between TechCorp Inc., a Delaware corporation ("Licensor"), and DataSoft LLC, a California limited liability company ("Licensee").
 
-1. GRANT OF LICENSE
-Subject to the terms and conditions of this Agreement, Licensor hereby grants to Licensee a non-exclusive, non-transferable license to use the Software solely for Licensee's internal business purposes.
+  1. GRANT OF LICENSE
+  Subject to the terms and conditions of this Agreement, Licensor hereby grants to Licensee a non-exclusive, non-transferable license to use the Software solely for Licensee's internal business purposes.
 
-2. LIABILITY LIMITATIONS
-IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION, DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA, OR OTHER INTANGIBLE LOSSES.
+  2. LIABILITY LIMITATIONS
+  IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION, DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA, OR OTHER INTANGIBLE LOSSES.
 
-3. INDEMNIFICATION
-Licensee agrees to indemnify, defend, and hold harmless Licensor from and against any and all claims, damages, liabilities, costs, and expenses arising out of or relating to Licensee's use of the Software.
+  3. INDEMNIFICATION
+  Licensee agrees to indemnify, defend, and hold harmless Licensor from and against any and all claims, damages, liabilities, costs, and expenses arising out of or relating to Licensee's use of the Software.
 
-4. TERMINATION
-This Agreement may be terminated by either party upon thirty (30) days written notice to the other party. Upon termination, Licensee shall immediately cease all use of the Software and return or destroy all copies.
+  4. TERMINATION
+  This Agreement may be terminated by either party upon thirty (30) days written notice to the other party. Upon termination, Licensee shall immediately cease all use of the Software and return or destroy all copies.
 
-5. GOVERNING LAW
-This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of laws principles.`,
+  5. GOVERNING LAW
+  This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of laws principles.`,
       caseType: 'contract',
       jurisdiction: 'federal',
       caseId: 'CASE-2024-001'
@@ -41,29 +39,29 @@ This Agreement shall be governed by and construed in accordance with the laws of
       title: 'Employment Termination Dispute',
       content: `COMPLAINT FOR WRONGFUL TERMINATION
 
-Plaintiff John Smith brings this action against Defendant MegaCorp Inc. for wrongful termination, discrimination, and retaliation in violation of state and federal employment laws.
+  Plaintiff John Smith brings this action against Defendant MegaCorp Inc. for wrongful termination, discrimination, and retaliation in violation of state and federal employment laws.
 
-FACTUAL ALLEGATIONS
+  FACTUAL ALLEGATIONS
 
-1. Plaintiff was employed by Defendant as a Senior Software Engineer from March 2020 through December 2023.
+  1. Plaintiff was employed by Defendant as a Senior Software Engineer from March 2020 through December 2023.
 
-2. Throughout his employment, Plaintiff received excellent performance reviews and was promoted twice.
+  2. Throughout his employment, Plaintiff received excellent performance reviews and was promoted twice.
 
-3. In November 2023, Plaintiff reported safety violations and potential regulatory compliance issues to company management.
+  3. In November 2023, Plaintiff reported safety violations and potential regulatory compliance issues to company management.
 
-4. Within thirty days of making these reports, Plaintiff was terminated allegedly for "performance issues" despite his exemplary record.
+  4. Within thirty days of making these reports, Plaintiff was terminated allegedly for "performance issues" despite his exemplary record.
 
-5. Plaintiff believes his termination was in retaliation for his protected whistleblower activities.
+  5. Plaintiff believes his termination was in retaliation for his protected whistleblower activities.
 
-CAUSES OF ACTION
+  CAUSES OF ACTION
 
-Count I: Wrongful Termination in Violation of Public Policy
-Count II: Retaliation under the Whistleblower Protection Act  
-Count III: Breach of Implied Contract
+  Count I: Wrongful Termination in Violation of Public Policy
+  Count II: Retaliation under the Whistleblower Protection Act  
+  Count III: Breach of Implied Contract
 
-PRAYER FOR RELIEF
+  PRAYER FOR RELIEF
 
-Plaintiff seeks compensatory damages in excess of $250,000, punitive damages, attorney's fees, and such other relief as the Court deems just and proper.`,
+  Plaintiff seeks compensatory damages in excess of $250,000, punitive damages, attorney's fees, and such other relief as the Court deems just and proper.`,
       caseType: 'litigation',
       jurisdiction: 'state',
       caseId: 'CASE-2024-002'
@@ -71,44 +69,44 @@ Plaintiff seeks compensatory damages in excess of $250,000, punitive damages, at
     {
       title: 'Corporate Compliance Audit Report',
       content: `CORPORATE COMPLIANCE AUDIT REPORT
-Q4 2023 Regulatory Review
+  Q4 2023 Regulatory Review
 
-EXECUTIVE SUMMARY
+  EXECUTIVE SUMMARY
 
-This report presents the findings of our comprehensive compliance audit conducted for GlobalTech Corporation during Q4 2023. The audit evaluated adherence to federal securities regulations, data privacy requirements, and industry-specific compliance standards.
+  This report presents the findings of our comprehensive compliance audit conducted for GlobalTech Corporation during Q4 2023. The audit evaluated adherence to federal securities regulations, data privacy requirements, and industry-specific compliance standards.
 
-KEY FINDINGS
+  KEY FINDINGS
 
-1. DATA PRIVACY COMPLIANCE
-- GDPR compliance rate: 87% (Improvement needed)
-- CCPA implementation: Complete
-- Data breach response procedures: Adequate
+  1. DATA PRIVACY COMPLIANCE
+  - GDPR compliance rate: 87% (Improvement needed)
+  - CCPA implementation: Complete
+  - Data breach response procedures: Adequate
 
-2. SECURITIES REGULATIONS
-- Form 10-K filing: Compliant
-- Insider trading policies: Requires update
-- Disclosure controls: Partially effective
+  2. SECURITIES REGULATIONS
+  - Form 10-K filing: Compliant
+  - Insider trading policies: Requires update
+  - Disclosure controls: Partially effective
 
-3. RISK ASSESSMENT
-- High-risk areas identified: 3
-- Medium-risk areas: 7
-- Regulatory penalties exposure: $150,000 potential
+  3. RISK ASSESSMENT
+  - High-risk areas identified: 3
+  - Medium-risk areas: 7
+  - Regulatory penalties exposure: $150,000 potential
 
-RECOMMENDATIONS
+  RECOMMENDATIONS
 
-1. Immediate Actions Required:
+  1. Immediate Actions Required:
    - Update data retention policies by March 2024
    - Enhance employee training on GDPR requirements
    - Implement additional internal controls for financial reporting
 
-2. Long-term Improvements:
+  2. Long-term Improvements:
    - Establish dedicated compliance monitoring system
    - Quarterly risk assessment reviews
    - Enhanced documentation procedures
 
-CONCLUSION
+  CONCLUSION
 
-While the company demonstrates strong commitment to compliance, several areas require immediate attention to reduce regulatory risk and ensure continued adherence to applicable laws and regulations.`,
+  While the company demonstrates strong commitment to compliance, several areas require immediate attention to reduce regulatory risk and ensure continued adherence to applicable laws and regulations.`,
       caseType: 'compliance',
       jurisdiction: 'federal',
       caseId: 'CASE-2024-003'

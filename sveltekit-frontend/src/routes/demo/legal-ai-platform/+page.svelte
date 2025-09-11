@@ -1,9 +1,7 @@
 <script lang="ts">
-</script>
   import type { PageData } from './$types.js';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  
   // Enhanced-Bits orchestrated components
   import { 
     Button, 
@@ -20,7 +18,6 @@
     getPriorityClass,
     formatAnalysisDate
   } from '$lib/components/ui/orchestrated';
-  
   // Icons for the showcase
   import { 
     Brain, Database, Search, Zap, Shield, Settings,
@@ -30,7 +27,6 @@
   } from 'lucide-svelte';
 
   let { data }: { data: PageData } = $props();
-  
   // Svelte 5 runes for demo interactions
   let selectedDemo = $state<string>('overview');
   let isRunningDemo = $state<boolean>(false);
@@ -41,7 +37,6 @@
   async function runRAGDemo() {
     isRunningDemo = true;
     demoResults = null;
-    
     try {
       const response = await fetch('/api/rag/search', {
         method: 'POST',
@@ -51,7 +46,6 @@
           limit: 5
         })
       });
-      
       const result = await response.json();
       demoResults = result;
     } catch (error) {
@@ -65,7 +59,6 @@
   async function runVectorSearchDemo() {
     isRunningDemo = true;
     demoResults = null;
-    
     try {
       const response = await fetch('/api/unified/search', {
         method: 'POST',
@@ -76,7 +69,6 @@
           filters: { limit: 3 }
         })
       });
-      
       const result = await response.json();
       demoResults = result;
     } catch (error) {
@@ -104,7 +96,6 @@
         avgProcessingTime: realTimeStats.avgProcessingTime + Math.floor(Math.random() * 100) - 50
       };
     }, 5000);
-    
     return () => clearInterval(interval);
   });
 

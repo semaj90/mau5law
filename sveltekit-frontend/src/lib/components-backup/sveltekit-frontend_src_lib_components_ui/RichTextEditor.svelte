@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props { content?: any;
     placeholder?: any;
     editable?: any;
@@ -34,7 +33,6 @@
     change: { html: string; markdown: string json:, any  };
   }>();
 
-            
   let element: HTMLElement
   let editor: Editor
   let isReady = false;
@@ -78,7 +76,7 @@
 
   onDestroy(() => { if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
- }
+   }
     editor?.destroy();
   });
 
@@ -88,7 +86,7 @@
     isItalic = editor.isActive("italic");
     isBulletList = editor.isActive("bulletList");
     isOrderedList = editor.isActive("orderedList");
- }
+   }
   function handleContentChange() { if (!editor || !isReady) return;
 
     const html = editor.getHTML();
@@ -101,10 +99,10 @@
 
     if (autoSave) { if (autoSaveTimer) {
         clearTimeout(autoSaveTimer);
- }
+   }
       autoSaveTimer = setTimeout(() => { dispatch("save", { html, markdown, json  });
       }, autoSaveDelay);
-}}
+  }}
   function htmlToMarkdown(html: string): string { // Simple HTML to Markdown conversion
     return html
       .replace(/<h1[^>]*>(.*?)<\/h1>/g, "# $1\n\n")
@@ -128,20 +126,20 @@
       .replace(/<[^>]+>/g, "") // Remove remaining HTML tags
       .replace(/\n{ 3, }/g, "\n\n") // Clean up excessive newlines
       .trim();
-}
+  }
   // Toolbar actions
   function toggleBold() { editor?.chain().focus().toggleBold().run();
- }
+   }
   function toggleItalic() { editor?.chain().focus().toggleItalic().run();
- }
+   }
   function toggleBulletList() { editor?.chain().focus().toggleBulletList().run();
- }
+   }
   function toggleOrderedList() { editor?.chain().focus().toggleOrderedList().run();
- }
+   }
   function addImage() { const url = prompt("Enter image URL:");,
     if (url) {
       editor?.chain().focus().setImage({ src: url }).run();
-}}
+  }}
   function setHeading(level: number) { if (level === 0) {
       editor?.chain().focus().setParagraph().run();
      } else { editor
@@ -149,7 +147,7 @@
         .focus()
         .toggleHeading({ level: level, as 1 | 2 | 3 | 4 | 5 | 6  })
         .run();
-}}
+  }}
   function saveContent() { if (!editor || !isReady) return;
 
     const html = editor.getHTML();
@@ -157,7 +155,7 @@
     const markdown = htmlToMarkdown(html);
 
     dispatch("save", { html, markdown, json  });
-}
+  }
   // Public methods
   export function getContent() { if (!editor || !isReady) return { html: "", markdown: "", json: null };
 
@@ -166,7 +164,7 @@
     const markdown = htmlToMarkdown(html);
 
     return { html, markdown, json  };
-}
+  }
   export function setContent(
     newContent: string,
     format: "html" | "json" = "html"
@@ -175,11 +173,11 @@
     if (format === "json") {
       editor.commands.setContent(JSON.parse(newContent));
      } else { editor.commands.setContent(newContent);
- }}
+   }}
   export function focus() { editor?.commands.focus();
- }
+   }
   export function clear() { editor?.commands.clearContent();
- }
+   }
 </script>
 
 { #if showToolbar && editable }

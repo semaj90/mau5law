@@ -1,25 +1,20 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { gpuPerformanceOptimizer, type GPUPerformanceMetrics, type PerformanceAlert } from '$lib/services/gpu-performance-optimizer';
-  
   // Reactive state from performance optimizer
   let metrics = $state<GPUPerformanceMetrics>();
   let alerts = $state<PerformanceAlert[]>([]);
   let isMonitoring = $state(false);
   let currentProfile = $state('realtime-analysis');
-  
   // Chart data for visualizations
   let gpuUtilizationHistory = $state<number[]>([]);
   let memoryUsageHistory = $state<number[]>([]);
   let temperatureHistory = $state<number[]>([]);
   let latencyHistory = $state<number[]>([]);
   let maxDataPoints = 50;
-  
   // Performance grade calculation
   let performanceGrade = $derived(() => {
     if (!metrics) return { grade: 'N/A', score: 0, color: 'text-gray-400' };
-    
     const factors = [
       { value: 100 - metrics.gpu.utilization, weight: 0.2 }, // Lower utilization = better for headroom
       { value: (1 - (metrics.gpu.memoryUsed / metrics.gpu.memoryTotal)) * 100, weight: 0.25 }, // Memory availability
@@ -27,12 +22,9 @@
       { value: Math.max(0, 100 - (metrics.tensor.averageLatency / 10)), weight: 0.25 }, // Latency performance
       { value: metrics.cache.hitRate, weight: 0.15 } // Cache performance
     ];
-    
     const score = factors.reduce((sum, factor) => sum + (factor.value * factor.weight), 0);
-    
     let grade: string;
     let color: string;
-    
     if (score >= 85) {
       grade = 'A+';
       color = 'text-green-400';
@@ -52,13 +44,10 @@
       grade = 'D';
       color = 'text-red-400';
     }
-    
     return { grade, score: Math.round(score), color };
   });
-  
   // Available optimization profiles
   let availableProfiles = $state<any[]>([]);
-  
   // Component lifecycle
   onMount(async () => {
     // Subscribe to metrics and alerts
@@ -66,104 +55,80 @@
       metrics = value;
       updateChartData();
     });
-    
     const unsubscribeAlerts = gpuPerformanceOptimizer.alertsStore.subscribe(value => {
       alerts = value;
     });
-    
     // Load available profiles
     availableProfiles = gpuPerformanceOptimizer.getAvailableProfiles();
-    
     // Check monitoring status
     isMonitoring = gpuPerformanceOptimizer.monitoring;
-    
     // Start monitoring if not already running
     if (!isMonitoring) {
       gpuPerformanceOptimizer.startMonitoring();
       isMonitoring = true;
     }
-    
     // Cleanup subscriptions on destroy
     onDestroy(() => {
       unsubscribeMetrics();
       unsubscribeAlerts();
     });
   });
-  
   function updateChartData() {
     if (!metrics) return;
-    
     // Update GPU utilization history
     gpuUtilizationHistory = [...gpuUtilizationHistory, metrics.gpu.utilization].slice(-maxDataPoints);
-    
     // Update memory usage history
     const memoryUsagePercent = (metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100;
     memoryUsageHistory = [...memoryUsageHistory, memoryUsagePercent].slice(-maxDataPoints);
-    
     // Update temperature history
     temperatureHistory = [...temperatureHistory, metrics.gpu.temperature].slice(-maxDataPoints);
-    
     // Update latency history
     latencyHistory = [...latencyHistory, metrics.tensor.averageLatency].slice(-maxDataPoints);
   }
-  
   function getStatusColor(percentage: number, thresholds: { warning: number; critical: number }) {
     if (percentage >= thresholds.critical) return 'text-red-400';
     if (percentage >= thresholds.warning) return 'text-yellow-400';
     return 'text-green-400';
   }
-  
   function getStatusBg(percentage: number, thresholds: { warning: number; critical: number }) {
     if (percentage >= thresholds.critical) return 'bg-red-400/20 border-red-400/30';
     if (percentage >= thresholds.warning) return 'bg-yellow-400/20 border-yellow-400/30';
     return 'bg-green-400/20 border-green-400/30';
   }
-  
   // Generate mini chart path for SVG
   function generateMiniChart(data: number[], maxValue: number = 100): string {
     if (data.length < 2) return '';
-    
     const width = 120;
     const height = 40;
     const padding = 2;
-    
     const maxY = Math.max(maxValue, Math.max(...data));
     const stepX = (width - padding * 2) / (data.length - 1);
-    
     let path = '';
-    
     data.forEach((value, index) => {
       const x = padding + index * stepX;
       const y = height - padding - ((value / maxY) * (height - padding * 2));
-      
       if (index === 0) {
         path += `M ${x} ${y}`;
       } else {
         path += ` L ${x} ${y}`;
       }
     });
-    
     return path;
   }
-  
   // Event handlers
   async function handleOptimizeMemory() {
     await gpuPerformanceOptimizer.optimizeGPUMemory();
   }
-  
   async function handleOptimizeTensors() {
     await gpuPerformanceOptimizer.optimizeTensorOperations();
   }
-  
   async function handleBalanceWorkload() {
     await gpuPerformanceOptimizer.balanceWorkload();
   }
-  
   function handleProfileChange(profileName: string) {
     gpuPerformanceOptimizer.setOptimizationProfile(profileName);
     currentProfile = profileName;
   }
-  
   function handleToggleMonitoring() {
     if (isMonitoring) {
       gpuPerformanceOptimizer.stopMonitoring();
@@ -172,7 +137,6 @@
     }
     isMonitoring = !isMonitoring;
   }
-  
   function getSeverityColor(severity: string) {
     switch (severity) {
       case 'critical': return 'text-red-400 bg-red-400/20 border-red-400/50';

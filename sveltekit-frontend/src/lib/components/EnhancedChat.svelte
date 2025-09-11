@@ -2,260 +2,256 @@
      Rename the variable and try again or migrate by hand. -->
 <!-- Enhanced Chat Component with bits-ui, melt-ui, shadcn-svelte integration -->
 <script lang="ts">
-</script>
 
-	import { onMount, onDestroy } from 'svelte';
-	import { useMachine } from '@xstate/svelte';
-	import { createMachine, assign } from 'xstate';
-	import {
+  	import { onMount, onDestroy } from 'svelte';
+  	import { useMachine } from '@xstate/svelte';
+  	import { createMachine, assign } from 'xstate';
+  	import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
-	import { cn } from '$lib/utils/cn';
-	import { chatStore } from '$lib/stores/chat';
-	import type { ChatMessage, ChatSession } from '$lib/types/chat';
+  	import { cn } from '$lib/utils/cn';
+  	import { chatStore } from '$lib/stores/chat';
+  	import type { ChatMessage, ChatSession } from '$lib/types/chat';
 
-	// Enhanced Chat Machine with proper error handling
-	const enhancedChatMachine = createMachine({
-		id: 'enhancedChat',
-		initial: 'idle',
-		context: {
-			messages: [] as ChatMessage[],
-			currentMessage: '',
-			isTyping: false,
-			isLoading: false,
-			session: null as ChatSession | null,
-			error: null as string | null,
-			confidence: 0,
-			model: 'gemma3-legal'
-		},
-		states: {
-			idle: {
-				on: {
-					SEND: 'sending',
-					CONNECT: 'connecting',
-					SET_MODEL: {
-						actions: assign({
-							model: ({ event }) => event.model
-						})
-					}
-				}
-			},
-			connecting: {
-				invoke: {
-					src: 'initializeSession',
-					onDone: {
-						target: 'idle',
-						actions: assign({
-							session: ({ event }) => event.data
-						})
-					},
-					onError: {
-						target: 'error',
-						actions: assign({
-							error: ({ event }) => event.data.message || 'Failed to initialize session'
-						})
-					}
-				}
-			},
-			sending: {
-				entry: assign({
-					isLoading: true,
-					error: null
-				}),
-				invoke: {
-					src: 'sendMessageToOllama',
-					onDone: {
-						target: 'idle',
-						actions: [
-							assign({
-								messages: ({ context, event }) => [
-									...context.messages,
-									event.data.userMessage,
-									event.data.aiResponse
-								],
-								currentMessage: '',
-								isLoading: false,
-								confidence: ({ event }) => event.data.confidence || 0
-							}),
-							'saveChatHistory',
-							'updateChatStore'
-						]
-					},
-					onError: {
-						target: 'error',
-						actions: assign({
-							error: ({ event }) => event.data.message || 'Failed to send message',
-							isLoading: false
-						})
-					}
-				}
-			},
-			error: {
-				on: {
-					RETRY: 'sending',
-					CLEAR_ERROR: {
-						target: 'idle',
-						actions: assign({
-							error: null
-						})
-					}
-				}
-			}
-		}
-	}, {
-		actions: {
-			updateChatStore: ({ context }) => {
-				chatStore.setMessages(context.messages);
-			},
-			saveChatHistory: async ({ context }) => {
-				// Save to PostgreSQL with pgvector
-				try {
-					await fetch('/api/chat/save', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							messages: context.messages.slice(-2), // Last user + AI message
-							sessionId: context.session?.id,
-							model: context.model
-						})
-					});
-				} catch (error) {
-					console.warn('Failed to save chat history:', error);
-				}
-			}
-		},
-		services: {
-			initializeSession: async () => {
-				const sessionId = crypto.randomUUID();
-				const session: ChatSession = {
-					id: sessionId,
-					createdAt: new Date(),
-					model: 'gemma3-legal',
-					metadata: {
-						userAgent: navigator.userAgent,
-						context: 'legal-ai-chat'
-					}
-				};
-				
-				// Initialize session in database
-				try {
-					await fetch('/api/chat/session', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify(session)
-					});
-				} catch (error) {
-					console.warn('Failed to save session:', error);
-				}
-				
-				return session;
-			},
-			sendMessageToOllama: async ({ context, event }) => {
-				const userMessage: ChatMessage = {
-					id: crypto.randomUUID(),
-					content: event.message,
-					role: 'user',
-					timestamp: new Date(),
-					sessionId: context.session?.id
-				};
+  	// Enhanced Chat Machine with proper error handling
+  	const enhancedChatMachine = createMachine({
+  		id: 'enhancedChat',
+  		initial: 'idle',
+  		context: {
+  			messages: [] as ChatMessage[],
+  			currentMessage: '',
+  			isTyping: false,
+  			isLoading: false,
+  			session: null as ChatSession | null,
+  			error: null as string | null,
+  			confidence: 0,
+  			model: 'gemma3-legal'
+  		},
+  		states: {
+  			idle: {
+  				on: {
+  					SEND: 'sending',
+  					CONNECT: 'connecting',
+  					SET_MODEL: {
+  						actions: assign({
+  							model: ({ event }) => event.model
+  						})
+  					}
+  				}
+  			},
+  			connecting: {
+  				invoke: {
+  					src: 'initializeSession',
+  					onDone: {
+  						target: 'idle',
+  						actions: assign({
+  							session: ({ event }) => event.data
+  						})
+  					},
+  					onError: {
+  						target: 'error',
+  						actions: assign({
+  							error: ({ event }) => event.data.message || 'Failed to initialize session'
+  						})
+  					}
+  				}
+  			},
+  			sending: {
+  				entry: assign({
+  					isLoading: true,
+  					error: null
+  				}),
+  				invoke: {
+  					src: 'sendMessageToOllama',
+  					onDone: {
+  						target: 'idle',
+  						actions: [
+  							assign({
+  								messages: ({ context, event }) => [
+  									...context.messages,
+  									event.data.userMessage,
+  									event.data.aiResponse
+  								],
+  								currentMessage: '',
+  								isLoading: false,
+  								confidence: ({ event }) => event.data.confidence || 0
+  							}),
+  							'saveChatHistory',
+  							'updateChatStore'
+  						]
+  					},
+  					onError: {
+  						target: 'error',
+  						actions: assign({
+  							error: ({ event }) => event.data.message || 'Failed to send message',
+  							isLoading: false
+  						})
+  					}
+  				}
+  			},
+  			error: {
+  				on: {
+  					RETRY: 'sending',
+  					CLEAR_ERROR: {
+  						target: 'idle',
+  						actions: assign({
+  							error: null
+  						})
+  					}
+  				}
+  			}
+  		}
+  	}, {
+  		actions: {
+  			updateChatStore: ({ context }) => {
+  				chatStore.setMessages(context.messages);
+  			},
+  			saveChatHistory: async ({ context }) => {
+  				// Save to PostgreSQL with pgvector
+  				try {
+  					await fetch('/api/chat/save', {
+  						method: 'POST',
+  						headers: { 'Content-Type': 'application/json' },
+  						body: JSON.stringify({
+  							messages: context.messages.slice(-2), // Last user + AI message
+  							sessionId: context.session?.id,
+  							model: context.model
+  						})
+  					});
+  				} catch (error) {
+  					console.warn('Failed to save chat history:', error);
+  				}
+  			}
+  		},
+  		services: {
+  			initializeSession: async () => {
+  				const sessionId = crypto.randomUUID();
+  				const session: ChatSession = {
+  					id: sessionId,
+  					createdAt: new Date(),
+  					model: 'gemma3-legal',
+  					metadata: {
+  						userAgent: navigator.userAgent,
+  						context: 'legal-ai-chat'
+  					}
+  				};
+  				// Initialize session in database
+  				try {
+  					await fetch('/api/chat/session', {
+  						method: 'POST',
+  						headers: { 'Content-Type': 'application/json' },
+  						body: JSON.stringify(session)
+  					});
+  				} catch (error) {
+  					console.warn('Failed to save session:', error);
+  				}
+  				return session;
+  			},
+  			sendMessageToOllama: async ({ context, event }) => {
+  				const userMessage: ChatMessage = {
+  					id: crypto.randomUUID(),
+  					content: event.message,
+  					role: 'user',
+  					timestamp: new Date(),
+  					sessionId: context.session?.id
+  				};
 
-				// Direct Ollama API call with streaming disabled for now
-				const response = await fetch('http://localhost:11434/api/generate', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						model: context.model,
-						prompt: event.message,
-						stream: false,
-						options: {
-							temperature: 0.7,
-							max_tokens: 1000,
-							top_p: 0.9
-						},
-						system: "You are a helpful legal AI assistant. Provide accurate, professional responses about legal matters. Always include appropriate disclaimers that your advice should not replace professional legal counsel."
-					})
-				});
+  				// Direct Ollama API call with streaming disabled for now
+  				const response = await fetch('http://localhost:11434/api/generate', {
+  					method: 'POST',
+  					headers: { 'Content-Type': 'application/json' },
+  					body: JSON.stringify({
+  						model: context.model,
+  						prompt: event.message,
+  						stream: false,
+  						options: {
+  							temperature: 0.7,
+  							max_tokens: 1000,
+  							top_p: 0.9
+  						},
+  						system: "You are a helpful legal AI assistant. Provide accurate, professional responses about legal matters. Always include appropriate disclaimers that your advice should not replace professional legal counsel."
+  					})
+  				});
 
-				if (!response.ok) {
-					throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
-				}
+  				if (!response.ok) {
+  					throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
+  				}
 
-				const data = await response.json();
-				
-				const aiResponse: ChatMessage = {
-					id: crypto.randomUUID(),
-					content: data.response || 'Sorry, I could not generate a response.',
-					role: 'assistant',
-					timestamp: new Date(),
-					sessionId: context.session?.id,
-					metadata: {
-						model: context.model,
-						confidence: data.confidence || 0.8,
-						totalDuration: data.total_duration,
-						loadDuration: data.load_duration,
-						promptEvalCount: data.prompt_eval_count,
-						evalCount: data.eval_count
-					}
-				};
+  				const data = await response.json();
+  				const aiResponse: ChatMessage = {
+  					id: crypto.randomUUID(),
+  					content: data.response || 'Sorry, I could not generate a response.',
+  					role: 'assistant',
+  					timestamp: new Date(),
+  					sessionId: context.session?.id,
+  					metadata: {
+  						model: context.model,
+  						confidence: data.confidence || 0.8,
+  						totalDuration: data.total_duration,
+  						loadDuration: data.load_duration,
+  						promptEvalCount: data.prompt_eval_count,
+  						evalCount: data.eval_count
+  					}
+  				};
 
-				return { 
-					userMessage, 
-					aiResponse, 
-					confidence: data.confidence || 0.8 
-				};
-			}
-		}
-	});
+  				return { 
+  					userMessage, 
+  					aiResponse, 
+  					confidence: data.confidence || 0.8 
+  				};
+  			}
+  		}
+  	});
 
-	const { state, send } = useMachine(enhancedChatMachine);
-let messageInput = $state('');
-let chatContainer = $state<HTMLDivElement;
+  	const { state, send } = useMachine(enhancedChatMachine);
+  let messageInput = $state('');
+  let chatContainer = $state<HTMLDivElement;
 
-	// Available models
-	const models >([
-		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
-		{ value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },
-		{ value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
-	]);
+  	// Available models
+  	const models >([
+  		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
+  		{ value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },
+  		{ value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
+  	]);
 
-	function handleSend() {
-		if (messageInput.trim() && !$state.matches('sending')) {
-			send({ type: 'SEND', message: messageInput.trim() });
-			messageInput = '';
-		}
-	}
+  	function handleSend() {
+  		if (messageInput.trim() && !$state.matches('sending')) {
+  			send({ type: 'SEND', message: messageInput.trim() });
+  			messageInput = '';
+  		}
+  	}
 
-	function handleKeyPress(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !event.shiftKey) {
-			event.preventDefault();
-			handleSend();
-		}
-	}
+  	function handleKeyPress(event: KeyboardEvent) {
+  		if (event.key === 'Enter' && !event.shiftKey) {
+  			event.preventDefault();
+  			handleSend();
+  		}
+  	}
 
-	function scrollToBottom() {
-		if (chatContainer) {
-			setTimeout(() => {
-				chatContainer.scrollTop = chatContainer.scrollHeight;
-			}, 50);
-		}
-	}
+  	function scrollToBottom() {
+  		if (chatContainer) {
+  			setTimeout(() => {
+  				chatContainer.scrollTop = chatContainer.scrollHeight;
+  			}, 50);
+  		}
+  	}
 
-	function formatTime(date: Date): string {
-		return new Intl.DateTimeFormat('en-US', {
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit'
-		}).format(date);
-	}
+  	function formatTime(date: Date): string {
+  		return new Intl.DateTimeFormat('en-US', {
+  			hour: '2-digit',
+  			minute: '2-digit',
+  			second: '2-digit'
+  		}).format(date);
+  	}
 
-	onMount(() => {
-		send({ type: 'CONNECT' });
-	});
+  	onMount(() => {
+  		send({ type: 'CONNECT' });
+  	});
 
-	// Auto-scroll when messages update
-	// TODO: Convert to $derived: if ($state.context.messages.length > 0) {
-		scrollToBottom()
-	}
+  	// Auto-scroll when messages update
+  	// TODO: Convert to $derived: if ($state.context.messages.length > 0) {
+  		scrollToBottom()
+  	}
 </script>
 
 <div class="enhanced-chat-container flex flex-col h-full max-w-4xl mx-auto p-4 space-y-4">

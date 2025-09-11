@@ -1,6 +1,5 @@
 <!-- ContextualBVectorChat.svelte - Enhanced AI Chat with BVector Store Integration -->
 <script lang="ts">
-</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { createEnhancedBVectorStore, type EnhancedBVectorStore, type SearchResult } from '$lib/services/enhanced-bvector-store';
   import { ContextualRLValidator, type ValidationResult } from '$lib/ai/contextual-rl-validator';
@@ -62,7 +61,6 @@
   let bvectorStore: EnhancedBVectorStore | null = null;
   let storeMetrics = $state<any>(null);
   let lastUserFeedback = $state<{ messageId: string; rating: number } | null>(null);
-  
   // Validation system state
   let validator: ContextualRLValidator | null = null;
   let showValidationPanel = $state(false);
@@ -255,7 +253,6 @@
 
     } catch (error) {
       console.error('Chat error:', error);
-      
       chatHistory.push({
         id: Date.now().toString() + '_error',
         type: 'system',
@@ -298,12 +295,12 @@
 
     return `Based on your previous conversations and legal knowledge:
 
-Context from your history:
-${contextText}
+  Context from your history:
+  ${contextText}
 
-Current question: ${userMessage}
+  Current question: ${userMessage}
 
-Please provide a contextual response that takes into account the relevant information from your conversation history while addressing the current question.`;
+  Please provide a contextual response that takes into account the relevant information from your conversation history while addressing the current question.`;
   }
 
   function calculateResponseConfidence(aiResponse: any, contextResults: SearchResult[]): number {
@@ -333,7 +330,6 @@ Please provide a contextual response that takes into account the relevant inform
     if (messageIndex === -1) return;
 
     const message = chatHistory[messageIndex];
-    
     // Update reinforcement learning based on feedback
     if (message.type === 'assistant') {
       await bvectorStore.store({
@@ -406,26 +402,18 @@ Please provide a contextual response that takes into account the relevant inform
 
     isRunningValidation = true;
     validationProgress = 0;
-    
     try {
       addSystemMessage('🧪 Starting contextual prompting validation tests...');
-      
       const contextualTests = ContextualRLValidator.getStandardContextualTests();
       const contextualResults = await validator.validateContextualPrompting(contextualTests);
-      
       validationProgress = 50;
       addSystemMessage('🧠 Starting reinforcement learning validation tests...');
-      
       const rlTests = ContextualRLValidator.getStandardRLTests();
       const rlResults = await validator.validateReinforcementLearning(rlTests);
-      
       validationResults = [...contextualResults, ...rlResults];
       validationProgress = 100;
-      
       const successRate = (validationResults.filter(r => r.success).length / validationResults.length) * 100;
-      
       addSystemMessage(`✅ Validation completed: ${successRate.toFixed(1)}% success rate (${validationResults.filter(r => r.success).length}/${validationResults.length} tests passed)`);
-      
       if (successRate >= 80) {
         addSystemMessage('🎉 Contextual AI system performing excellently!');
       } else if (successRate >= 60) {
@@ -433,7 +421,6 @@ Please provide a contextual response that takes into account the relevant inform
       } else {
         addSystemMessage('❌ Contextual AI system requires immediate attention');
       }
-      
     } catch (error) {
       addSystemMessage(`❌ Validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
@@ -445,10 +432,8 @@ Please provide a contextual response that takes into account the relevant inform
     if (!validator || !bvectorStore || isRunningValidation) return;
 
     isRunningValidation = true;
-    
     try {
       addSystemMessage('⚡ Running quick validation test...');
-      
       // Quick contextual test
       const testQuery = 'contract liability terms';
       const baselineResults = await bvectorStore.search(testQuery, { topK: 5 });
@@ -463,13 +448,10 @@ Please provide a contextual response that takes into account the relevant inform
         topK: 5,
         enableRL: enableReinforcementLearning
       });
-      
       const contextualBoost = contextualResults.reduce((sum, result) => sum + (result.contextualBoost || 0), 0) / contextualResults.length;
       const averageConfidenceImprovement = contextualResults.reduce((sum, result) => sum + result.metadata.confidence, 0) / contextualResults.length - 
                                          baselineResults.reduce((sum, result) => sum + result.metadata.confidence, 0) / baselineResults.length;
-      
       addSystemMessage(`📊 Quick test results: ${contextualBoost.toFixed(3)} avg contextual boost, ${averageConfidenceImprovement.toFixed(3)} confidence improvement`);
-      
     } catch (error) {
       addSystemMessage(`❌ Quick validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {

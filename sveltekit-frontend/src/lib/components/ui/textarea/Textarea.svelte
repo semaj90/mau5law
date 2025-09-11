@@ -1,8 +1,7 @@
 <script lang="ts">
-</script>
   // Props are defined as $props() rune, no import needed
 
-import { cn } from "../../../utils";
+  import { cn } from "../../../utils";
 
   interface Props {
     value?: string;
@@ -22,7 +21,6 @@ import { cn } from "../../../utils";
     onfocus?: (event: FocusEvent) => void;
     onblur?: (event: FocusEvent) => void;
   }
-  
   let {
     value = $bindable(""),
     placeholder = "",

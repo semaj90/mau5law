@@ -1,6 +1,5 @@
 <!-- Unified GPU/WASM Integration Demo Component -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -16,27 +15,25 @@
   const activeOperations = writable([]);
   const results = writable([]);
   const metrics = writable([]);
-let isLoading = $state(false);
-let selectedOperation = $state('processDocument');
-let testInput = $state('');
-let errorMessage = $state('');
+  let isLoading = $state(false);
+  let selectedOperation = $state('processDocument');
+  let testInput = $state('');
+  let errorMessage = $state('');
 
   // Demo data for different operations
   const demoInputs = {
     processDocument: `LEGAL CONTRACT AGREEMENT
 
-This Service Agreement is entered into between Company A and Company B.
+  This Service Agreement is entered into between Company A and Company B.
 
-TERMS AND CONDITIONS:
-1. Service Period: 12 months from execution
-2. Payment Terms: Net 30 days
-3. Deliverables: As specified in Schedule A
-4. Termination: Either party may terminate with 60 days notice
+  TERMS AND CONDITIONS:
+  1. Service Period: 12 months from execution
+  2. Payment Terms: Net 30 days
+  3. Deliverables: As specified in Schedule A
+  4. Termination: Either party may terminate with 60 days notice
 
-Both parties acknowledge they have read and agree to these terms.`,
-    
+  Both parties acknowledge they have read and agree to these terms.`,
     performInference: JSON.stringify([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]),
-    
     processCanvas: JSON.stringify({
       width: 64,
       height: 64,
@@ -48,7 +45,6 @@ Both parties acknowledge they have read and agree to these terms.`,
       }),
       format: 'RGBA'
     }),
-    
     matmul: JSON.stringify({
       a: [1, 2, 3, 4, 5, 6],
       b: [7, 8, 9, 10, 11, 12],
@@ -56,7 +52,6 @@ Both parties acknowledge they have read and agree to these terms.`,
       n: 3,
       k: 3
     }),
-    
     attention: JSON.stringify({
       query: Array(64).fill(0).map(() => Math.random()),
       key: Array(64).fill(0).map(() => Math.random()),
@@ -70,13 +65,11 @@ Both parties acknowledge they have read and agree to these terms.`,
     updateSystemHealth();
     updateMetrics();
     testInput = demoInputs[selectedOperation];
-    
     // Auto-refresh system status
     const interval = setInterval(() => {
       updateSystemHealth();
       updateMetrics();
     }, 5000);
-    
     return () => clearInterval(interval);
   });
 
@@ -106,13 +99,10 @@ Both parties acknowledge they have read and agree to these terms.`,
 
   async function executeOperation() {
     if (!testInput.trim()) return;
-    
     isLoading = true;
     errorMessage = '';
-    
     try {
       let requestData;
-      
       switch (selectedOperation) {
         case 'processDocument':
           requestData = {
@@ -127,7 +117,6 @@ Both parties acknowledge they have read and agree to these terms.`,
             }
           };
           break;
-          
         case 'performInference':
           requestData = {
             operation: 'performInference',
@@ -140,7 +129,6 @@ Both parties acknowledge they have read and agree to these terms.`,
             }
           };
           break;
-          
         case 'processCanvas':
           const canvasData = JSON.parse(testInput);
           requestData = {
@@ -154,7 +142,6 @@ Both parties acknowledge they have read and agree to these terms.`,
             }
           };
           break;
-          
         case 'matmul':
           const matrixData = JSON.parse(testInput);
           requestData = {
@@ -165,7 +152,6 @@ Both parties acknowledge they have read and agree to these terms.`,
             }
           };
           break;
-          
         case 'attention':
           const attentionData = JSON.parse(testInput);
           requestData = {
@@ -177,7 +163,6 @@ Both parties acknowledge they have read and agree to these terms.`,
           };
           break;
       }
-      
       const response = await fetch('/api/v1/orchestrator', {
         method: 'POST',
         headers: {
@@ -185,9 +170,7 @@ Both parties acknowledge they have read and agree to these terms.`,
         },
         body: JSON.stringify(requestData)
       });
-      
       const result = await response.json();
-      
       if (result.success) {
         results.update(prev => [
           {
@@ -203,7 +186,6 @@ Both parties acknowledge they have read and agree to these terms.`,
       } else {
         errorMessage = result.error || 'Operation failed';
       }
-      
     } catch (error) {
       errorMessage = `Error: ${error.message}`;
       console.error('Operation failed:', error);

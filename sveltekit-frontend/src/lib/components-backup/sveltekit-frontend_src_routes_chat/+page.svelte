@@ -1,58 +1,56 @@
 <!-- Enhanced Chat Test Page -->
 <script lang="ts">
-</script>
-	import EnhancedChat from '$lib/components/EnhancedChat.svelte';
-	import { onMount } from 'svelte';
+  	import EnhancedChat from '$lib/components/EnhancedChat.svelte';
+  	import { onMount } from 'svelte';
 
-	let connectionStatus = 'testing';
-	let services = {
-		ollama: false,
-		postgresql: false,
-		redis: false,
-		minio: false
-	};
+  	let connectionStatus = 'testing';
+  	let services = {
+  		ollama: false,
+  		postgresql: false,
+  		redis: false,
+  		minio: false
+  	};
 
-	async function checkServices() {
-		connectionStatus = 'testing';
-		
-		// Test Ollama
-		try {
-			const response = await fetch('http://localhost:11434/api/version');
-			services.ollama = response.ok;
-		} catch {
-			services.ollama = false;
-		}
+  	async function checkServices() {
+  		connectionStatus = 'testing';
+  		// Test Ollama
+  		try {
+  			const response = await fetch('http://localhost:11434/api/version');
+  			services.ollama = response.ok;
+  		} catch {
+  			services.ollama = false;
+  		}
 
-		// Test PostgreSQL via our API
-		try {
-			const response = await fetch('/api/health/database');
-			services.postgresql = response.ok;
-		} catch {
-			services.postgresql = false;
-		}
+  		// Test PostgreSQL via our API
+  		try {
+  			const response = await fetch('/api/health/database');
+  			services.postgresql = response.ok;
+  		} catch {
+  			services.postgresql = false;
+  		}
 
-		// Test Redis (if accessible)
-		try {
-			const response = await fetch('/api/health/redis');
-			services.redis = response.ok;
-		} catch {
-			services.redis = false;
-		}
+  		// Test Redis (if accessible)
+  		try {
+  			const response = await fetch('/api/health/redis');
+  			services.redis = response.ok;
+  		} catch {
+  			services.redis = false;
+  		}
 
-		// Test MinIO (if accessible)
-		try {
-			const response = await fetch('http://localhost:9000/minio/health/live');
-			services.minio = response.ok;
-		} catch {
-			services.minio = false;
-		}
+  		// Test MinIO (if accessible)
+  		try {
+  			const response = await fetch('http://localhost:9000/minio/health/live');
+  			services.minio = response.ok;
+  		} catch {
+  			services.minio = false;
+  		}
 
-		connectionStatus = 'complete';
-	}
+  		connectionStatus = 'complete';
+  	}
 
-	onMount(() => {
-		checkServices();
-	});
+  	onMount(() => {
+  		checkServices();
+  	});
 </script>
 
 <svelte:head>

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     person: {;
     relationships: Array<{;
@@ -15,7 +14,6 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   // import { Avatar } from '$lib/components/ui/Avatar.svelte';
-  
       name: string
     role: 'suspect' | 'witness' | 'victim' | 'associate' | 'unknown';
     details?: {
@@ -71,7 +69,6 @@
   };
 
   let roleInfo = $derived(roleConfig[person.role] ?? roleConfig.unknown)
-  
   // Confidence level styling
   let confidenceColor = $derived(person.confidence > 0.8 ? 'text-green-600' :)
                       person.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600';

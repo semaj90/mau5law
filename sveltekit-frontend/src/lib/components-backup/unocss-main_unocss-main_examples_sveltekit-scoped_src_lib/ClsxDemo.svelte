@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Button from './Button.svelte';
 
   let underline = $state(false);

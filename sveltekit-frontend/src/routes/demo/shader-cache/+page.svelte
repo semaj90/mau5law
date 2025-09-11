@@ -4,10 +4,8 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  
   // Demo state
   const metrics = writable({
     cacheHits: 0,
@@ -17,11 +15,9 @@
     averageRetrievalMs: 0,
     reinforcementAccuracy: 0
   });
-  
   const shaderResults = writable<any[]>([]);
   const systemLog = writable<string[]>([]);
   const isLoading = writable(false);
-  
   // Demo workflow context
   const workflowContext = {
     userId: 'demo-user-001',
@@ -36,7 +32,6 @@
     },
     timestamp: new Date()
   };
-  
   // Demo shader configurations
   const demoShaders = [
     {
@@ -64,12 +59,10 @@
       useCase: 'Vector space visualization of legal precedent similarity'
     }
   ];
-  
   // Demo functions
   async function demonstrateColdPath(shaderConfig: typeof demoShaders[0]) {
     isLoading.set(true);
     addLog(`🧊 COLD PATH: Requesting shader "${shaderConfig.key}" for first time`);
-    
     try {
       const response = await fetch('/api/v1/gpu-cache', {
         method: 'PATCH',
@@ -81,7 +74,6 @@
           context: workflowContext
         })
       });
-      
       if (response.ok) {
         const result = await response.json();
         addLog(`✅ Cold path success: ${shaderConfig.key} cached with ${result.shader?.sourceCode?.length || 0} chars`);
@@ -95,13 +87,10 @@
       isLoading.set(false);
     }
   }
-  
   async function demonstrateHotPath(shaderKey: string) {
     isLoading.set(true);
     addLog(`🔥 HOT PATH: Retrieving cached shader "${shaderKey}"`);
-    
     const startTime = Date.now();
-    
     try {
       const response = await fetch('/api/v1/gpu-cache', {
         method: 'PATCH',
@@ -111,9 +100,7 @@
           shaderKey: shaderKey
         })
       });
-      
       const latency = Date.now() - startTime;
-      
       if (response.ok) {
         const result = await response.json();
         addLog(`⚡ Hot path success: ${shaderKey} retrieved in ${latency}ms (from cache)`);
@@ -127,18 +114,15 @@
       isLoading.set(false);
     }
   }
-  
   async function demonstratePredictivePreloading() {
     isLoading.set(true);
     addLog(`🧠 PREDICTIVE PRELOADING: Analyzing workflow and preloading likely shaders`);
-    
     // Simulate workflow progression
     const advancedContext = {
       ...workflowContext,
       currentStep: 'evidence-view' as const,
       previousSteps: [...workflowContext.previousSteps, 'doc-load']
     };
-    
     try {
       const response = await fetch('/api/v1/gpu-cache', {
         method: 'PATCH',
@@ -148,7 +132,6 @@
           context: advancedContext
         })
       });
-      
       if (response.ok) {
         const result = await response.json();
         addLog(`🎯 Predictive preloading triggered: ${result.message}`);
@@ -162,11 +145,9 @@
       isLoading.set(false);
     }
   }
-  
   async function demonstrateMultiDimensionalSearch() {
     isLoading.set(true);
     addLog(`🔍 MULTI-DIMENSIONAL SEARCH: Finding shaders by semantic similarity`);
-    
     try {
       const response = await fetch('/api/v1/gpu-cache', {
         method: 'PATCH', 
@@ -181,7 +162,6 @@
           }
         })
       });
-      
       if (response.ok) {
         const result = await response.json();
         addLog(`🎯 Multi-dimensional search: Found ${result.count} semantically similar shaders`);
@@ -197,7 +177,6 @@
       isLoading.set(false);
     }
   }
-  
   async function loadMetrics() {
     try {
       const response = await fetch('/api/v1/gpu-cache/metrics');
@@ -211,7 +190,6 @@
       console.error('Failed to load metrics:', error);
     }
   }
-  
   async function clearCache() {
     try {
       const response = await fetch('/api/v1/gpu-cache', {
@@ -219,7 +197,6 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'clear' })
       });
-      
       if (response.ok) {
         addLog(`🧹 Cache cleared successfully`);
         shaderResults.set([]);
@@ -229,14 +206,12 @@
       addLog(`❌ Failed to clear cache: ${error.message}`);
     }
   }
-  
   function addLog(message: string) {
     systemLog.update(log => {
       const newLog = [...log, `[${new Date().toLocaleTimeString()}] ${message}`];
       return newLog.slice(-20); // Keep last 20 log entries
     });
   }
-  
   function updateShaderResults(result: any) {
     if (result.success && result.shader) {
       shaderResults.update(results => {
@@ -252,7 +227,6 @@
     }
     loadMetrics(); // Refresh metrics after each operation
   }
-  
   onMount(() => {
     loadMetrics();
     addLog(`🚀 GPU Shader Cache Demo initialized`);

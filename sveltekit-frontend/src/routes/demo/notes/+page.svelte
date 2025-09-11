@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { page } from '$app/state';
   import { BookOpen, Plus, Search, Tag } from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -16,37 +15,37 @@
   let isCreatingNote = $state(false);
 
   // Demo data
-let demoMarkdown = $state(`# Legal Case Analysis
+  let demoMarkdown = $state(`# Legal Case Analysis
 
-## Case Summary
-This is a **comprehensive analysis** of the evidence collected in case #2024-001.
+  ## Case Summary
+  This is a **comprehensive analysis** of the evidence collected in case #2024-001.
 
-### Key Findings
-1. Witness testimony corroborates timeline
-2. Physical evidence supports suspect identification
-3. *Digital forensics* reveal additional context
+  ### Key Findings
+  1. Witness testimony corroborates timeline
+  2. Physical evidence supports suspect identification
+  3. *Digital forensics* reveal additional context
 
-### Evidence List
-- Security footage from 14:30-15:00
-- Fingerprint analysis results
-- Mobile phone records
+  ### Evidence List
+  - Security footage from 14:30-15:00
+  - Fingerprint analysis results
+  - Mobile phone records
 
-> **Important Note**: All evidence has been properly catalogued and chain of custody maintained.
+  > **Important Note**: All evidence has been properly catalogued and chain of custody maintained.
 
-\`\`\`
-Case ID: 2024-001
-Status: Active Investigation
-Priority: High
-\`\`\`
+  \`\`\`
+  Case ID: 2024-001
+  Status: Active Investigation
+  Priority: High
+  \`\`\`
 
-![Evidence Photo](https://via.placeholder.com/400x200?text=Evidence+Photo)
+  ![Evidence Photo](https://via.placeholder.com/400x200?text=Evidence+Photo)
 
----
+  ---
 
-**Next Steps:**
-- Schedule additional witness interviews
-- Request additional forensic analysis
-- Coordinate with district attorney's office`);
+  **Next Steps:**
+  - Schedule additional witness interviews
+  - Request additional forensic analysis
+  - Coordinate with district attorney's office`);
 
   let editorContent = $state('');
   let currentNote = $state({
@@ -73,7 +72,7 @@ Priority: High
 
     // Save the note
     saveCurrentNote(html, markdown, json);
-}
+  }
   function handleEditorChange(event: CustomEvent) {
     const { html, markdown, json } = event.detail;
     editorContent = markdown || html;
@@ -86,7 +85,7 @@ Priority: High
       html,
       contentJson: json
     };
-}
+  }
   async function saveCurrentNote(html: string, markdown: string, json: any) {
     if (!currentNote.title.trim() && !markdown.trim()) return;
 
@@ -116,10 +115,10 @@ Priority: High
       console.log('Note saved successfully');
     } catch (error) {
       console.error('Failed to save note:', error);
-}}
+  }}
   function generateNoteId(): string {
     return `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-}
+  }
   function createNewNote() {
     currentNote = {
       id: generateNoteId(),
@@ -134,19 +133,19 @@ Priority: High
       caseId: page.url.searchParams.get('caseId') || undefined
     };
     isCreatingNote = true;
-}
+  }
   function viewNote(note: any) {
     selectedNote = note;
     showNoteModal = true;
-}
+  }
   function handleFilesDropped(event: CustomEvent) {
     const files = event.detail as File[];
     console.log('Files dropped:', files);
     // Handle file upload logic here
-}
+  }
   function updateSearch() {
     setNoteFilter({ search: searchQuery, noteType: selectedNoteType });
-}
+  }
   $effect(() => {
     updateSearch();
   });

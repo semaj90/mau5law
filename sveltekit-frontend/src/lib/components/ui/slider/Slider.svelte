@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { Props } from "$lib/types/global";
   let {
     value = $bindable([0.5]),

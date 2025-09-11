@@ -1,28 +1,27 @@
 <script lang="ts">
-</script>
-	import { Command } from "bits-ui";
+  	import { Command } from "bits-ui";
 
-	// prettier-ignore
-	const ten_first_names = ["John", "Doe", "Jane", "Smith", "Michael", "Brown", "William", "Johnson", "David", "Williams"];
-	// prettier-ignore
-	const ten_middle_names = ["James", "Lee", "Robert", "Michael", "David", "Joseph", "Thomas", "Charles", "Christopher", "Daniel"];
-	// prettier-ignore
-	const ten_last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"];
-	// prettier-ignore
-	const ten_second_first_names = [ "Emma", "Liam", "Sophia", "Noah", "Olivia", "Ethan", "Ava", 	"Mason", "Isabella", "William"];
+  	// prettier-ignore
+  	const ten_first_names = ["John", "Doe", "Jane", "Smith", "Michael", "Brown", "William", "Johnson", "David", "Williams"];
+  	// prettier-ignore
+  	const ten_middle_names = ["James", "Lee", "Robert", "Michael", "David", "Joseph", "Thomas", "Charles", "Christopher", "Daniel"];
+  	// prettier-ignore
+  	const ten_last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"];
+  	// prettier-ignore
+  	const ten_second_first_names = [ "Emma", "Liam", "Sophia", "Noah", "Olivia", "Ethan", "Ava", 	"Mason", "Isabella", "William"];
 
-	const names = ten_first_names
-		.map((first) => {
-			return ten_middle_names.map((middle) => {
-				return ten_last_names.map((last) => {
-					return ten_second_first_names.map((second) => {
-						return `${first} ${second} ${middle} ${last}`;
-					});
-				});
-			});
-		})
-		.flat(3)
-		.slice(0, 2500);
+  	const names = ten_first_names
+  		.map((first) => {
+  			return ten_middle_names.map((middle) => {
+  				return ten_last_names.map((last) => {
+  					return ten_second_first_names.map((second) => {
+  						return `${first} ${second} ${middle} ${last}`;
+  					});
+  				});
+  			});
+  		})
+  		.flat(3)
+  		.slice(0, 2500);
 </script>
 
 <div>

@@ -1,6 +1,5 @@
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import Dialog from '../../../lib/components/ui/dialog/Dialog.svelte';
@@ -9,7 +8,6 @@
   import { Button } from "$lib/components/ui/button";
   import Input from '../../../lib/components/ui/Input.svelte';
   import Badge from '../../../lib/components/ui/Badge.svelte';
-  
   // Icons
   import { FileText, Brain, Tag, Scale, Zap, Download, Upload, Sparkles } from 'lucide-svelte';
 
@@ -44,7 +42,6 @@
 
   async function analyzeEvidence() {
     if (!evidence) return;
-    
     isAnalyzing = true;
     try {
       const response = await fetch('/api/evidence', {
@@ -73,9 +70,7 @@
 
   async function updateTags() {
     if (!evidence || !newTags.trim()) return;
-    
     const tags = newTags.split(',').map(t => t.trim()).filter(Boolean);
-    
     try {
       const response = await fetch('/api/evidence', {
         method: 'PUT',

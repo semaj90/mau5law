@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     showDetails?: unknown;
   }
@@ -9,19 +8,18 @@
 
   import { onMount, onDestroy } from 'svelte';
   import { memoryMonitoring } from '$lib/services/memory-monitoring.service';
-let memoryData = $state({
+  let memoryData = $state({
     currentLOD: { name: 'medium', level: 2 },
     memoryPressure: 0.5,
     pools: [],
     clusters: [],
     cacheLayers: []
   });
-let updateCount = $state(0);
-let isOptimizing = $state(false);
+  let updateCount = $state(0);
+  let isOptimizing = $state(false);
 
   onMount(() => {
     memoryMonitoring.start(10000); // Update every 10 seconds
-    
     memoryMonitoring.onUpdate((data) => {
       memoryData = data;
       updateCount++;

@@ -9,7 +9,6 @@
   - Integration with YoRHa theming system
 -->
 <script lang="ts">
-</script>
   import { setContext, onMount, onDestroy } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import { GamingEvolutionManager } from './GamingEvolutionManager.js';
@@ -23,19 +22,15 @@
   interface Props {
     // Configuration
     config?: Partial<ProgressiveGamingConfig>;
-    
     // Initial settings
     initialEra?: GamingEra;
     enableAutoEvolution?: boolean;
     enablePerformanceMonitoring?: boolean;
-    
     // Integration settings
     integrateWithYorha?: boolean;
     enableGlobalCSS?: boolean;
-    
     // Debug
     showDebugInfo?: boolean;
-    
     // Content
     children?: any;
     class?: string;
@@ -66,19 +61,16 @@
     defaultEra: initialEra,
     enableAutoEvolution,
     performanceThreshold: 16.67,
-    
     nesSettings: {
       strictPalette: true,
       enableScanlines: false,
       pixelScale: 2
     },
-    
     snesSettings: {
       enableGradients: true,
       enableModeViitColors: true,
       layerCount: 4
     },
-    
     n64Settings: {
       enableAntiAliasing: true,
       enableTextureFiltering: true,
@@ -92,13 +84,12 @@
       enableRealTimeReflections: false,
       textureQuality: 'medium'
     },
-    
     yorhaIntegration: integrateWithYorha,
     bitsUICompatibility: true,
     ...config
   });
-let evolutionManager = $state<GamingEvolutionManager;
-let unsubscribe = $state<(() >(> void) | null >(null));
+  let evolutionManager = $state<GamingEvolutionManager;
+  let unsubscribe = $state<(() >(> void) | null >(null));
   let debugInfo = $state<any>(null);
 
   // Set context for child components
@@ -137,7 +128,6 @@ let unsubscribe = $state<(() >(> void) | null >(null));
     if (!enableGlobalCSS || typeof document === 'undefined') return;
 
     const root = document.documentElement;
-    
     // Apply base gaming variables
     Object.entries(GAMING_CSS_VARS).forEach(([property, value]) => {
       root.style.setProperty(property, value);
@@ -152,7 +142,6 @@ let unsubscribe = $state<(() >(> void) | null >(null));
         root.style.setProperty('--gaming-border-radius', '0px');
         root.style.setProperty('--gaming-transition-speed', 'var(--gaming-transition-instant)');
         break;
-        
       case '16bit':
         root.style.setProperty('--gaming-current-era', '"16bit"');
         root.style.setProperty('--gaming-pixel-rendering', 'auto');
@@ -160,7 +149,6 @@ let unsubscribe = $state<(() >(> void) | null >(null));
         root.style.setProperty('--gaming-border-radius', '2px');
         root.style.setProperty('--gaming-transition-speed', 'var(--gaming-transition-fast)');
         break;
-        
       case 'n64':
         root.style.setProperty('--gaming-current-era', '"n64"');
         root.style.setProperty('--gaming-pixel-rendering', 'auto');
@@ -180,7 +168,6 @@ let unsubscribe = $state<(() >(> void) | null >(null));
   // Update debug information
   const updateDebugInfo = () => {
     if (!showDebugInfo || !evolutionManager) return;
-    
     debugInfo = {
       currentState: evolutionManager.getCurrentState(),
       capabilities: evolutionManager.getCapabilities(),
@@ -192,12 +179,10 @@ let unsubscribe = $state<(() >(> void) | null >(null));
   onMount(async () => {
     // Initialize gaming evolution manager
     evolutionManager = GamingEvolutionManager.getInstance($gamingConfig);
-    
     // Subscribe to state changes
     unsubscribe = evolutionManager.subscribe((state) => {
       gamingState.set(state);
       applyCSSVariables(state.currentEra);
-      
       if (showDebugInfo) {
         updateDebugInfo();
       }
@@ -215,7 +200,6 @@ let unsubscribe = $state<(() >(> void) | null >(null));
     if (unsubscribe) {
       unsubscribe();
     }
-    
     if (evolutionManager) {
       evolutionManager.dispose();
     }

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { Button } from "$lib/components/ui/button";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";

@@ -4,22 +4,18 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
   import WasmGpuDemo from '$lib/components/demo/WasmGpuDemo.svelte';
   import { WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
-  
   let webGpuSupported = false;
   let supportCheckComplete = false;
-  
   onMount(async () => {
     if (browser) {
       // Check WebGPU support
       webGpuSupported = await WasmGpuHelpers.validateWebGpuSupport();
       supportCheckComplete = true;
-      
       console.log('🎮 WebGPU support check:', webGpuSupported ? 'Supported' : 'Not supported');
     }
   });

@@ -519,7 +519,7 @@ class DevFullManager {
     this.log('GPU-Cluster', '⚡ Starting GPU Cluster Concurrent Executor...', 'magenta');
 
     // Gate on Ollama availability to prevent immediate cascading failures
-    const ollamaUrl = process.env.OLLAMA_URL || 'http://127.0.0.1:11435';
+    const ollamaUrl = process.env.OLLAMA_URL || 'http://127.0.0.1:11434';
     const maxOllamaChecks = 5;
     for (let attempt = 1; attempt <= maxOllamaChecks; attempt++) {
       const available = await fetch(`${ollamaUrl}/api/tags`)

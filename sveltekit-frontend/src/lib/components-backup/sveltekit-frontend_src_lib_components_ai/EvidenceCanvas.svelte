@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { apiFetch } from "$lib/api/clients/api-client";
   import { onMount } from "svelte";
   let canvasEl: HTMLCanvasElement

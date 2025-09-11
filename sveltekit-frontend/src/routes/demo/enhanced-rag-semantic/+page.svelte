@@ -1,6 +1,5 @@
 <!-- Enhanced RAG Semantic Analysis Demo Page -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import EnhancedRAGDemo from '$lib/components/ai/EnhancedRAGDemo.svelte';
   import {

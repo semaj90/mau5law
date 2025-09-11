@@ -1,7 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Cannot subscribe to stores that are not declared at the top level of the component
 https://svelte.dev/e/store_invalid_scoped_subscription -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { Accordion } from 'melt';
@@ -25,25 +24,21 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
   // XState machine integration
   const { state, send, context } = useMachine(legalFormMachine);
-  
   // Phase 8 system components
   let matrixCompiler: MatrixUICompiler;
   let reranker: LegalAIReranker;
   let prefetcher: PredictivePrefetcher;
-  
   // Melt UI Accordion for multi-step form
   const accordion = Accordion({ 
     multiple: false,
     value: $derived(getAccordionValue($state.value))
   });
-  
   // Reactive state calculations
   let currentStateDescription = $derived(getStateDescription($state.value));
   let aiSuggestions = $derived(getAISuggestions($context, $state.value));
   let progressPercentage = $derived(calculateProgressPercentage($context));
   let possibleActions = $derived(getNextPossibleActions($state.value));
   let aiConfidence = $derived($context.confidence);
-  
   // Form data
   let fileInput: HTMLInputElement;
   let caseTitle = $state('');
@@ -74,17 +69,14 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     reranker = new LegalAIReranker();
     prefetcher = new PredictivePrefetcher();
     await prefetcher.initialize();
-    
     // Generate initial matrix UI nodes
     updateMatrixUINodes();
-    
     // Set up AI-aware prefetching
     setupPredictivePrefetching();
   });
 
   function updateMatrixUINodes(): void {
     const currentState = $state.value as string;
-    
     matrixUINodes = [
       {
         type: 'card',
@@ -169,12 +161,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   function handleFileUpload(event: Event): void {
     const target = event.target as HTMLInputElement;
     const files = Array.from(target.files || []);
-    
     send({ type: 'UPLOAD_EVIDENCE', files });
-    
     // Update matrix UI based on file types
     updateMatrixUINodes();
-    
     // Trigger AI reranking for file suggestions
     performAIReranking('file_upload', files.map(f => f.name));
   }
@@ -185,10 +174,8 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       title: caseTitle, 
       description: caseDescription 
     });
-    
     // Update matrix UI
     updateMatrixUINodes();
-    
     // Trigger AI reranking for case suggestions
     performAIReranking('case_details', [caseTitle, caseDescription]);
   }
@@ -208,11 +195,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       // Use enhanced search with custom reranker
       const query = context.join(' ');
       const results = await enhancedSearch(query, userContext, 5);
-      
       // Update AI suggestions based on reranked results
       const suggestions = results.map(r => r.content).slice(0, 3);
       send({ type: 'AI_SUGGESTION', suggestions });
-      
     } catch (error) {
       console.warn('AI reranking failed:', error);
     }
@@ -241,20 +226,17 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
   function applyAIRecommendation(recommendation: string): void {
     send({ type: 'APPLY_AI_RECOMMENDATION', recommendation });
-    
     // Apply the recommendation based on its content
     if (recommendation.includes('priority to HIGH')) {
       selectedPriority = 'high';
       send({ type: 'SET_PRIORITY', priority: 'high' });
     }
-    
     updateMatrixUINodes();
   }
 
   // Watch for state changes and update UI accordingly
   $effect(() => {
     updateMatrixUINodes();
-    
     // Update form fields from context
     caseTitle = $context.caseTitle;
     caseDescription = $context.caseDescription;

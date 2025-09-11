@@ -1,43 +1,42 @@
 <script lang="ts">
-</script>
-	import { Combobox } from "bits-ui";
-	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
-	import Check from "phosphor-svelte/lib/Check";
-	import OrangeSlice from "phosphor-svelte/lib/OrangeSlice";
-	import CaretDoubleUp from "phosphor-svelte/lib/CaretDoubleUp";
-	import CaretDoubleDown from "phosphor-svelte/lib/CaretDoubleDown";
-	import { fly } from "svelte/transition";
+  	import { Combobox } from "bits-ui";
+  	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
+  	import Check from "phosphor-svelte/lib/Check";
+  	import OrangeSlice from "phosphor-svelte/lib/OrangeSlice";
+  	import CaretDoubleUp from "phosphor-svelte/lib/CaretDoubleUp";
+  	import CaretDoubleDown from "phosphor-svelte/lib/CaretDoubleDown";
+  	import { fly } from "svelte/transition";
 
-	const fruits = [
-		{ value: "mango", label: "Mango" },
-		{ value: "watermelon", label: "Watermelon" },
-		{ value: "apple", label: "Apple" },
-		{ value: "pineapple", label: "Pineapple" },
-		{ value: "orange", label: "Orange" },
-		{ value: "grape", label: "Grape" },
-		{ value: "strawberry", label: "Strawberry" },
-		{ value: "banana", label: "Banana" },
-		{ value: "kiwi", label: "Kiwi" },
-		{ value: "peach", label: "Peach" },
-		{ value: "cherry", label: "Cherry" },
-		{ value: "blueberry", label: "Blueberry" },
-		{ value: "raspberry", label: "Raspberry" },
-		{ value: "blackberry", label: "Blackberry" },
-		{ value: "plum", label: "Plum" },
-		{ value: "apricot", label: "Apricot" },
-		{ value: "pear", label: "Pear" },
-		{ value: "grapefruit", label: "Grapefruit" },
-	];
+  	const fruits = [
+  		{ value: "mango", label: "Mango" },
+  		{ value: "watermelon", label: "Watermelon" },
+  		{ value: "apple", label: "Apple" },
+  		{ value: "pineapple", label: "Pineapple" },
+  		{ value: "orange", label: "Orange" },
+  		{ value: "grape", label: "Grape" },
+  		{ value: "strawberry", label: "Strawberry" },
+  		{ value: "banana", label: "Banana" },
+  		{ value: "kiwi", label: "Kiwi" },
+  		{ value: "peach", label: "Peach" },
+  		{ value: "cherry", label: "Cherry" },
+  		{ value: "blueberry", label: "Blueberry" },
+  		{ value: "raspberry", label: "Raspberry" },
+  		{ value: "blackberry", label: "Blackberry" },
+  		{ value: "plum", label: "Plum" },
+  		{ value: "apricot", label: "Apricot" },
+  		{ value: "pear", label: "Pear" },
+  		{ value: "grapefruit", label: "Grapefruit" },
+  	];
 
-	let searchValue = $state("");
+  	let searchValue = $state("");
 
-	const filteredFruits = $derived(
-		searchValue === ""
-			? fruits
-			: fruits.filter((fruit) =>
-					fruit.label.toLowerCase().includes(searchValue.toLowerCase())
-				)
-	);
+  	const filteredFruits = $derived(
+  		searchValue === ""
+  			? fruits
+  			: fruits.filter((fruit) =>
+  					fruit.label.toLowerCase().includes(searchValue.toLowerCase())
+  				)
+  	);
 </script>
 
 <Combobox.Root

@@ -1,6 +1,5 @@
 <!-- AI Status Indicator Component -->
 <script lang="ts">
-</script>
   interface Props {
     isReady?: boolean;
     isLoading?: boolean;

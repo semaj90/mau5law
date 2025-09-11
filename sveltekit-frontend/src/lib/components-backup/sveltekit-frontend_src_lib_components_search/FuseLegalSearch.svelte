@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Fuse from 'fuse.js';
   import { onMount } from 'svelte';
   import { Input } from "$lib/components/ui/input/index.js";
@@ -61,11 +60,9 @@
     }
 
     isSearching = true;
-    
     try {
       // Use Fuse.js extended search patterns
       let query = searchQuery;
-      
       // Add smart query preprocessing
       if (query.includes('murder') || query.includes('homicide')) {
         query = `murder | homicide | killing`;
@@ -76,7 +73,6 @@
       }
 
       const results = fuse.search(query).slice(0, maxResults);
-      
       // Process results with highlighting and scoring
       searchResults = results.map(result => ({
         ...result.item,
@@ -95,25 +91,20 @@
 
   function highlightMatches(item, matches) {
     const highlighted = { ...item };
-    
     matches.forEach(match => {
       if (match.key && highlighted[match.key]) {
         let text = highlighted[match.key];
-        
         // Sort indices in reverse order to avoid offset issues
         const indices = [...match.indices].sort((a, b) => b[0] - a[0]);
-        
         indices.forEach(([start, end]) => {
           const before = text.substring(0, start);
           const matched = text.substring(start, end + 1);
           const after = text.substring(end + 1);
           text = `${before}<mark class="bg-yellow-200 dark:bg-yellow-900 px-1 rounded">${matched}</mark>${after}`;
         });
-        
         highlighted[match.key] = text;
       }
     });
-    
     return highlighted;
   }
 

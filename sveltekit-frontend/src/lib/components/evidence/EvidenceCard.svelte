@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     evidence: ExtendedEvidence;
     onView: (evidence: Evidence) => void;
@@ -23,7 +22,6 @@
 
 
 
-  
   import {
     Download,
     PenLine,

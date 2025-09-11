@@ -16,7 +16,7 @@ const config = {
     mcp_context7: 8777,
     redis: 4005,
     postgres: 5432,
-    ollama: 11435
+    ollama: 11436
   },
   services: [
     'caddy-quic-proxy',

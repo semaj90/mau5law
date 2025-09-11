@@ -1,58 +1,57 @@
 <script lang="ts">
-</script>
-	import { NavigationMenu } from "bits-ui";
-	import CaretDown from "phosphor-svelte/lib/CaretDown";
-	import { cn } from "$lib/utils/styles.js";
+  	import { NavigationMenu } from "bits-ui";
+  	import CaretDown from "phosphor-svelte/lib/CaretDown";
+  	import { cn } from "$lib/utils/styles.js";
 
-	const typeHelpers = [
-		{
-			title: "WithElementRef",
-			href: "/docs/type-helpers/with-element-ref",
-			description: "Expose a ref to the element.",
-		},
-		{
-			title: "WithoutChild",
-			href: "/docs/type-helpers/without-child",
-			description: "Remove the child snippet prop from a props type.",
-		},
-		{
-			title: "WithoutChildrenOrChild",
-			href: "/docs/type-helpers/without-children-or-child",
-			description: "Remove the children and child snippet props from a props type.",
-		},
-	];
+  	const typeHelpers = [
+  		{
+  			title: "WithElementRef",
+  			href: "/docs/type-helpers/with-element-ref",
+  			description: "Expose a ref to the element.",
+  		},
+  		{
+  			title: "WithoutChild",
+  			href: "/docs/type-helpers/without-child",
+  			description: "Remove the child snippet prop from a props type.",
+  		},
+  		{
+  			title: "WithoutChildrenOrChild",
+  			href: "/docs/type-helpers/without-children-or-child",
+  			description: "Remove the children and child snippet props from a props type.",
+  		},
+  	];
 
-	const utilities = [
-		{
-			title: "mergeProps",
-			href: "/docs/utilities/merge-props",
-			description: "Merge multiple objects into a single object",
-		},
-		{
-			title: "Portal",
-			href: "/docs/utilities/portal",
-			description: "Render a component in a different part of the DOM",
-		},
-		{
-			title: "IsUsingKeyboard",
-			href: "/docs/utilities/is-using-keyboard",
-			description: "Check if the user is using a keyboard",
-		},
-	];
+  	const utilities = [
+  		{
+  			title: "mergeProps",
+  			href: "/docs/utilities/merge-props",
+  			description: "Merge multiple objects into a single object",
+  		},
+  		{
+  			title: "Portal",
+  			href: "/docs/utilities/portal",
+  			description: "Render a component in a different part of the DOM",
+  		},
+  		{
+  			title: "IsUsingKeyboard",
+  			href: "/docs/utilities/is-using-keyboard",
+  			description: "Check if the user is using a keyboard",
+  		},
+  	];
 
-	type ListItemProps = {
-		className?: string;
-		title: string;
-		href: string;
-		content: string;
-	};
+  	type ListItemProps = {
+  		className?: string;
+  		title: string;
+  		href: string;
+  		content: string;
+  	};
 
-	type SubmenuItemProps = {
-		className?: string;
-		title: string;
-		value: string;
-		items: { title: string; href: string; description: string }[];
-	};
+  	type SubmenuItemProps = {
+  		className?: string;
+  		title: string;
+  		value: string;
+  		items: { title: string; href: string; description: string }[];
+  	};
 </script>
 
 {#snippet ListItem({ className, title, content, href }: ListItemProps)}

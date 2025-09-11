@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { createActor } from 'xstate';
   import { onMount, onDestroy } from 'svelte';
   import { enhancedCaseManagementMachine, type EnhancedCaseManagementContext } from '../../machines/enhanced-case-machine-with-cognitive-cache';
@@ -13,7 +12,6 @@
 
   // Machine actor
   const actor = createActor(enhancedCaseManagementMachine);
-  
   // Reactive state
   let machineState = $state(actor.getSnapshot());
   let isConnected = $state(false);
@@ -37,10 +35,8 @@
 
     // Start the machine
     actor.start();
-    
     // Initialize the system
     actor.send({ type: 'INITIALIZE_SYSTEM', userId });
-    
     isConnected = true;
 
     return () => {

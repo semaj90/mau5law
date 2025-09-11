@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     evidenceId: string;
     caseId: string;
@@ -86,48 +85,48 @@
 
   function generateAnalysisContent(report: EvidenceReport): string {
     return `
-EVIDENCE ANALYSIS REPORT
+  EVIDENCE ANALYSIS REPORT
 
-Case ID: ${caseId}
-Evidence Item: ${report.evidence.itemNumber}
-Report Type: ${report.type.replace("_", " ").toUpperCase()}
-Priority Level: ${report.priority.toUpperCase()}
-Status: ${report.status.toUpperCase()}
+  Case ID: ${caseId}
+  Evidence Item: ${report.evidence.itemNumber}
+  Report Type: ${report.type.replace("_", " ").toUpperCase()}
+  Priority Level: ${report.priority.toUpperCase()}
+  Status: ${report.status.toUpperCase()}
 
-ANALYST INFORMATION
-Name: ${report.analyst.name}
-Credentials: ${report.analyst.credentials}
-Department: ${report.analyst.department}
+  ANALYST INFORMATION
+  Name: ${report.analyst.name}
+  Credentials: ${report.analyst.credentials}
+  Department: ${report.analyst.department}
 
-EVIDENCE DETAILS
-Description: ${report.evidence.description}
-Collection Date: ${report.evidence.dateCollected}
-Collection Location: ${report.evidence.location}
-Chain of Custody: ${report.evidence.chainOfCustody.join(" → ")}
+  EVIDENCE DETAILS
+  Description: ${report.evidence.description}
+  Collection Date: ${report.evidence.dateCollected}
+  Collection Location: ${report.evidence.location}
+  Chain of Custody: ${report.evidence.chainOfCustody.join(" → ")}
 
-METHODOLOGY
-Procedures: ${report.methodology.procedures.join(", ")}
-Tools Used: ${report.methodology.tools.join(", ")}
-Standards Applied: ${report.methodology.standards.join(", ")}
+  METHODOLOGY
+  Procedures: ${report.methodology.procedures.join(", ")}
+  Tools Used: ${report.methodology.tools.join(", ")}
+  Standards Applied: ${report.methodology.standards.join(", ")}
 
-FINDINGS
-${report.findings.summary}
+  FINDINGS
+  ${report.findings.summary}
 
-Key Points:
-${report.findings.keyPoints.map((point) => `• ${point}`).join("\n")}
+  Key Points:
+  ${report.findings.keyPoints.map((point) => `• ${point}`).join("\n")}
 
-Confidence Level: ${Math.round(report.findings.confidence * 100)}%
+  Confidence Level: ${Math.round(report.findings.confidence * 100)}%
 
-Limitations:
-${report.findings.limitations.map((limitation) => `• ${limitation}`).join("\n")}
+  Limitations:
+  ${report.findings.limitations.map((limitation) => `• ${limitation}`).join("\n")}
 
-LEGAL IMPLICATIONS
-Potential Charges: ${report.legalImplications.charges.join(", ")}
-Relevant Precedents: ${report.legalImplications.precedents.join(", ")}
-Challenge Points: ${report.legalImplications.challengePoints.join(", ")}
+  LEGAL IMPLICATIONS
+  Potential Charges: ${report.legalImplications.charges.join(", ")}
+  Relevant Precedents: ${report.legalImplications.precedents.join(", ")}
+  Challenge Points: ${report.legalImplications.challengePoints.join(", ")}
 
-ATTACHMENTS
-${report.attachments.map((att) => `• ${att.name} (${att.type})`).join("\n")}
+  ATTACHMENTS
+  ${report.attachments.map((att) => `• ${att.name} (${att.type})`).join("\n")}
     `.trim();
   }
 

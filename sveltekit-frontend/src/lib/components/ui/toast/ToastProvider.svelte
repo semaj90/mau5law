@@ -1,6 +1,5 @@
 <!-- Toast Provider for Legal AI App -->
 <script lang="ts">
-</script>
   import { Toast } from 'bits-ui';
   import BitsToast, { type ToastProps } from './BitsToast.svelte';
   interface ToastWithId extends ToastProps {
@@ -15,9 +14,7 @@
       ...toast,
       id
     };
-    
     toasts = [...toasts, newToast];
-    
     return {
       id,
       dismiss: () => removeToast(id)

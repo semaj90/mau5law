@@ -1,17 +1,14 @@
 <!-- YoRHa Dialog Manager Component -->
 <script lang="ts">
-</script>
   import YoRHaDialog from './YoRHaDialog.svelte';
   import { dialogStore, type Dialog } from '$lib/stores/dialogs';
 
   // Subscribe to dialog store
   let dialogs = $state<Dialog[]>([]);
-  
   $effect(() => {
     const unsubscribe = dialogStore.subscribe((value) => {
       dialogs = value;
     });
-    
     return unsubscribe;
   });
 

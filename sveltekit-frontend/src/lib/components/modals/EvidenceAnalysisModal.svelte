@@ -2,7 +2,6 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
-</script>
   interface Evidence {
     id: string;
     content: string;
@@ -31,7 +30,6 @@ https://svelte.dev/e/js_parse_error -->
       similarity: number;
     }>;
   }
-  
   let {
     open = false,
     evidence = null,
@@ -45,16 +43,14 @@ https://svelte.dev/e/js_parse_error -->
   import Button from "$lib/components/ui/button";
   import Input from '$lib/components/ui/Input.svelte';
   // Badge replaced with span - not available in enhanced-bits
-  
   // Icons
   import { FileText, Brain, Tag, Scale, Zap, Download, Upload, Sparkles } from 'lucide-svelte';
-let isAnalyzing = $state(false);
-let newTags = $state<string >('');
-let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
+  let isAnalyzing = $state(false);
+  let newTags = $state<string >('');
+  let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
 
   async function analyzeEvidence() {
     if (!evidence) return;
-    
     isAnalyzing = true;
     try {
       const response = await fetch('/api/evidence', {
@@ -73,17 +69,15 @@ let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
       if (result.success) {
         evidence = { ...evidence, ...result.evidence };
         onevidenceUpdated?.();
-}
+  }
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
       isAnalyzing = false;
-}}
+  }}
   async function updateTags() {
     if (!evidence || !newTags.trim()) return;
-    
     const tags = newTags.split(',').map(t => t.trim()).filter(Boolean);
-    
     try {
       const response = await fetch('/api/evidence', {
         method: 'PUT',
@@ -100,22 +94,22 @@ let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
         evidence = { ...evidence, tags: result.evidence.tags };
         newTags = '';
         onevidenceUpdated?.();
-}
+  }
     } catch (error) {
       console.error('Tag update failed:', error);
-}}
+  }}
   function getAdmissibilityColor(admissibility: string): string {
     switch (admissibility) {
       case 'admissible': return 'bg-green-100 text-green-800 border-green-300';
       case 'questionable': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
       case 'inadmissible': return 'bg-red-100 text-red-800 border-red-300';
       default: return 'bg-gray-100 text-gray-800 border-gray-300';
-}}
+  }}
   function getRelevanceColor(relevance: number): string {
     if (relevance >= 8) return 'text-green-600';
     if (relevance >= 6) return 'text-yellow-600';
     return 'text-red-600';
-}
+  }
 </script>
 
 <Dialog 

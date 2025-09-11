@@ -1,39 +1,33 @@
 <script lang="ts">
-</script>
-	import type { ComponentProps } from 'svelte';
-	
-	interface GamingPanelProps {
-		title?: string;
-		subtitle?: string;
-		variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
-		borderGlow?: boolean;
-		scanEffect?: boolean;
-		minimizable?: boolean;
-		closable?: boolean;
-		children: any
-	}
-	
-	let { 
-		title,
-		subtitle,
-		variant = 'default',
-		borderGlow = false,
-		scanEffect = false,
-		minimizable = false,
-		closable = false,
-		children
-	} = $props();
-	
-	let isMinimized = $state(false);
-	let isClosed = $state(false);
-	
-	function toggleMinimize() {
-		isMinimized = !isMinimized;
-	}
-	
-	function closePanel() {
-		isClosed = true;
-	}
+  	import type { ComponentProps } from 'svelte';
+  	interface GamingPanelProps {
+  		title?: string;
+  		subtitle?: string;
+  		variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+  		borderGlow?: boolean;
+  		scanEffect?: boolean;
+  		minimizable?: boolean;
+  		closable?: boolean;
+  		children: any
+  	}
+  	let { 
+  		title,
+  		subtitle,
+  		variant = 'default',
+  		borderGlow = false,
+  		scanEffect = false,
+  		minimizable = false,
+  		closable = false,
+  		children
+  	} = $props();
+  	let isMinimized = $state(false);
+  	let isClosed = $state(false);
+  	function toggleMinimize() {
+  		isMinimized = !isMinimized;
+  	}
+  	function closePanel() {
+  		isClosed = true;
+  	}
 </script>
 
 {#if !isClosed}

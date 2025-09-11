@@ -3,7 +3,6 @@ Prosecutor Dashboard - Complete Legal AI Workflow
 Features: Case management, evidence upload, AI chat, vector search
 -->
 <script lang="ts">
-</script>
   import type { SearchResults } from "$lib/types/global";
   import {
     Card,
@@ -62,7 +61,7 @@ Features: Case management, evidence upload, AI chat, vector search
 
   const loadCases = async () => {
     try {
-let response = $state<Response;
+  let response = $state<Response;
         try {
           response >(await fetch('/api/cases?role=prosecutor');
           if (!response.ok) {
@@ -85,7 +84,7 @@ let response = $state<Response;
 
   const loadPersonsOfInterest = async () => {
     try {
-let response = $state<Response;
+  let response = $state<Response;
         try {
           response >(await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`);
           if (!response.ok) {
@@ -104,7 +103,7 @@ let response = $state<Response;
 
   const loadRecentEvidence = async () => {
     try {
-let response = $state<Response;
+  let response = $state<Response;
         try {
           response >(await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`);
           if (!response.ok) {

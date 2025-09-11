@@ -1,5 +1,4 @@
 mcp<script lang="ts">
-</script>
 
   import {
     Button
@@ -10,20 +9,20 @@ mcp<script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
 
   const dispatch = createEventDispatcher();
-let container = $state<HTMLElement;
+  let container = $state<HTMLElement;
   let notificationElements >(new Map<string, HTMLElement>());
-let isVisible = $state(false);
-let maxVisible = $state(5);
-let position = $state<| "top-right"
+  let isVisible = $state(false);
+  let maxVisible = $state(5);
+  let position = $state<| "top-right"
     | "top-left"
     | "bottom-right"
     | "bottom-left"
     | "top-center"
     | "bottom-center" >("top-right");
-let stackDirection = $state<"up" | "down" >("down" as "up" | "down");
-let pauseOnHover = $state(true);
-let groupSimilar = $state(true);
-let enableSounds = $state(true);
+  let stackDirection = $state<"up" | "down" >("down" as "up" | "down");
+  let pauseOnHover = $state(true);
+  let groupSimilar = $state(true);
+  let enableSounds = $state(true);
 
   // Reactive notifications list
   let visibleNotifications = $derived($notifications.notifications.slice(0, maxVisible));
@@ -39,7 +38,7 @@ let enableSounds = $state(true);
       if (latestNotification && notifs.notifications.length > 0) {
         announceNotification(latestNotification);
         playNotificationSound(latestNotification.type);
-}
+  }
     });
 
     return unsubscribe;
@@ -51,7 +50,7 @@ let enableSounds = $state(true);
       message,
       notification.type === "error" ? "assertive" : "polite"
     );
-}
+  }
   function playNotificationSound(type: Notification["type"]) {
     if (!enableSounds) return;
 
@@ -90,17 +89,17 @@ let enableSounds = $state(true);
     } catch (error) {
       // Fallback to no sound if audio context fails
       console.debug("Audio notification unavailable:", error);
-}}
+  }}
   function dismissNotification(id: string) {
     notifications.remove(id);
     notificationElements.delete(id);
     dispatch("dismiss", { id });
-}
+  }
   function dismissAll() {
     notifications.clear();
     notificationElements.clear();
     dispatch("dismissAll");
-}
+  }
   // Action to set notification element in the Map
   function setNotificationElement(node: HTMLElement, notificationId: string) {
     notificationElements.set(notificationId, node);
@@ -110,7 +109,7 @@ let enableSounds = $state(true);
         notificationElements.delete(notificationId);
       },
     };
-}
+  }
   function getNotificationIcon(type: Notification["type"]) {
     switch (type) {
       case "success":
@@ -122,7 +121,7 @@ let enableSounds = $state(true);
       case "info":
       default:
         return Info;
-}}
+  }}
   function getNotificationColor(type: Notification["type"]) {
     switch (type) {
       case "success":
@@ -134,22 +133,22 @@ let enableSounds = $state(true);
       case "info":
       default:
         return "bg-blue-50 border-blue-200 text-blue-800";
-}}
+  }}
   function handleNotificationAction(notification: Notification, action: any) {
     if (action.callback) {
       action.callback();
-}
+  }
     if (action.dismissOnClick !== false) {
       dismissNotification(notification.id);
-}}
+  }}
   function pauseTimer(notification: Notification) {
     // Timer functionality could be implemented here if needed
     // For now, this is a placeholder
-}
+  }
   function resumeTimer(notification: Notification) {
     // Timer functionality could be implemented here if needed
     // For now, this is a placeholder
-}
+  }
   function getContainerClasses() {
     const baseClasses = "fixed z-50 pointer-events-none";
 
@@ -168,7 +167,7 @@ let enableSounds = $state(true);
         return `${baseClasses} bottom-4 left-1/2 transform -translate-x-1/2`;
       default:
         return `${baseClasses} top-4 right-4`;
-}}
+  }}
   function getAnimationClasses() {
     const isTop = position.includes("top");
     const enterFrom = isTop ? "-translate-y-2" : "translate-y-2";
@@ -178,7 +177,7 @@ let enableSounds = $state(true);
       enterActive: "transform translate-y-0 opacity-100",
       exit: `transition-all duration-200 ease-in transform ${enterFrom} opacity-0`,
     };
-}
+  }
 </script>
 
 <div

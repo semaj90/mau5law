@@ -1,240 +1,228 @@
 <!-- GPU Integration Demo for Legal AI Platform -->
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import { gpuServiceClient, isGPUAvailable, getGPUUtilization, processLegalDocument } from '$lib/services/gpu-service-client';
-	import type { GPUStatus, GPUMetrics, WorkerStatus, ServiceRegistry, GPUResult } from '$lib/types/gpu-services';
+  	import { onMount } from 'svelte';
+  	import { gpuServiceClient, isGPUAvailable, getGPUUtilization, processLegalDocument } from '$lib/services/gpu-service-client';
+  	import type { GPUStatus, GPUMetrics, WorkerStatus, ServiceRegistry, GPUResult } from '$lib/types/gpu-services';
 
-	// Component state
-let gpuAvailable = $state(false);
-let loading = $state(true);
-let error = $state('');
-	
-	// GPU Status & Metrics
-let gpuStatus = $state<GPUStatus | null >(null);
-let gpuMetrics = $state<GPUMetrics | null >(null);
-let workers = $state<WorkerStatus[] >([]);
-let services = $state<ServiceRegistry | null >(null);
-let utilization = $state(0);
+  	// Component state
+  let gpuAvailable = $state(false);
+  let loading = $state(true);
+  let error = $state('');
+  	// GPU Status & Metrics
+  let gpuStatus = $state<GPUStatus | null >(null);
+  let gpuMetrics = $state<GPUMetrics | null >(null);
+  let workers = $state<WorkerStatus[] >([]);
+  let services = $state<ServiceRegistry | null >(null);
+  let utilization = $state(0);
 
-	// Demo forms
-let documentText = $state(`EMPLOYMENT AGREEMENT
+  	// Demo forms
+  let documentText = $state(`EMPLOYMENT AGREEMENT
 
-This Employment Agreement ("Agreement") is entered into on [DATE] between [COMPANY NAME], a [STATE] corporation ("Company"), and [EMPLOYEE NAME] ("Employee").
+  This Employment Agreement ("Agreement") is entered into on [DATE] between [COMPANY NAME], a [STATE] corporation ("Company"), and [EMPLOYEE NAME] ("Employee").
 
-1. POSITION AND DUTIES
-Employee will serve as [POSITION TITLE] and will perform duties and responsibilities typically associated with such position, including but not limited to:
-- Managing day-to-day operations
-- Overseeing team performance
-- Reporting to senior management
+  1. POSITION AND DUTIES
+  Employee will serve as [POSITION TITLE] and will perform duties and responsibilities typically associated with such position, including but not limited to:
+  - Managing day-to-day operations
+  - Overseeing team performance
+  - Reporting to senior management
 
-2. COMPENSATION
-Employee will receive an annual base salary of $[AMOUNT], payable in accordance with Company's standard payroll practices.
+  2. COMPENSATION
+  Employee will receive an annual base salary of $[AMOUNT], payable in accordance with Company's standard payroll practices.
 
-3. BENEFITS
-Employee will be eligible for Company's standard benefits package including health insurance, dental insurance, and retirement plans.
+  3. BENEFITS
+  Employee will be eligible for Company's standard benefits package including health insurance, dental insurance, and retirement plans.
 
-4. TERMINATION
-This agreement may be terminated by either party with thirty (30) days written notice.`);
-let queryText = $state('What are the termination provisions in employment contracts?');
-let processingResults = $state<any[] >([]);
-let isProcessing = $state(false);
+  4. TERMINATION
+  This agreement may be terminated by either party with thirty (30) days written notice.`);
+  let queryText = $state('What are the termination provisions in employment contracts?');
+  let processingResults = $state<any[] >([]);
+  let isProcessing = $state(false);
 
-	// Real-time updates
-let metricsInterval = $state<NodeJS.Timeout;
-let statusInterval = $state<NodeJS.Timeout;
+  	// Real-time updates
+  let metricsInterval = $state<NodeJS.Timeout;
+  let statusInterval = $state<NodeJS.Timeout;
 
-	onMount(async () => { {
-		await loadGPUData();
-		startRealtimeUpdates();
-		
-		return () => { {
-			if (metricsInterval) clearInterval(metricsInterval);
-			if (statusInterval) clearInterval(statusInterval);
-		};
-	});
+  	onMount(async () => { {
+  		await loadGPUData();
+  		startRealtimeUpdates();
+  		return () => { {
+  			if (metricsInterval) clearInterval(metricsInterval);
+  			if (statusInterval) clearInterval(statusInterval);
+  		};
+  	});
 
-	async function loadGPUData() {
-		try {
-			loading = true;
-			error = '';
+  	async function loadGPUData() {
+  		try {
+  			loading = true;
+  			error = '';
 
-			// Load all GPU data in parallel
-			const [available, status, metrics, workerStatus, serviceRegistry, util] = await Promise.all([
-				isGPUAvailable(),
-				gpuServiceClient.getStatus(),
-				gpuServiceClient.getMetrics(),
-				gpuServiceClient.getWorkers(),
-				gpuServiceClient.getServices(),
-				getGPUUtilization()
-			]);
+  			// Load all GPU data in parallel
+  			const [available, status, metrics, workerStatus, serviceRegistry, util] = await Promise.all([
+  				isGPUAvailable(),
+  				gpuServiceClient.getStatus(),
+  				gpuServiceClient.getMetrics(),
+  				gpuServiceClient.getWorkers(),
+  				gpuServiceClient.getServices(),
+  				getGPUUtilization()
+  			]);
 
-			gpuAvailable = available;
-			gpuStatus = status;
-			gpuMetrics = metrics;
-			workers = workerStatus;
-			services = serviceRegistry;
-			utilization = util;
+  			gpuAvailable = available;
+  			gpuStatus = status;
+  			gpuMetrics = metrics;
+  			workers = workerStatus;
+  			services = serviceRegistry;
+  			utilization = util;
 
-		} catch (err: any) {
-			error = `Failed to load GPU data: ${err.message}`;
-			console.error('GPU data loading error:', err);
-		} finally {
-			loading = false;
-		}
-	}
+  		} catch (err: any) {
+  			error = `Failed to load GPU data: ${err.message}`;
+  			console.error('GPU data loading error:', err);
+  		} finally {
+  			loading = false;
+  		}
+  	}
 
-	function startRealtimeUpdates() {
-		// Update metrics every 5 seconds
-		metricsInterval = setInterval(async () => {
-			try {
-				const [newMetrics, newUtilization] = await Promise.all([
-					gpuServiceClient.getMetrics(),
-					getGPUUtilization()
-				]);
-				gpuMetrics = newMetrics;
-				utilization = newUtilization;
-			} catch (err) {
-				console.warn('Metrics update failed:', err);
-			}
-		}, 5000);
+  	function startRealtimeUpdates() {
+  		// Update metrics every 5 seconds
+  		metricsInterval = setInterval(async () => {
+  			try {
+  				const [newMetrics, newUtilization] = await Promise.all([
+  					gpuServiceClient.getMetrics(),
+  					getGPUUtilization()
+  				]);
+  				gpuMetrics = newMetrics;
+  				utilization = newUtilization;
+  			} catch (err) {
+  				console.warn('Metrics update failed:', err);
+  			}
+  		}, 5000);
 
-		// Update status every 10 seconds
-		statusInterval = setInterval(async () => {
-			try {
-				const [newStatus, newWorkers] = await Promise.all([
-					gpuServiceClient.getStatus(),
-					gpuServiceClient.getWorkers()
-				]);
-				gpuStatus = newStatus;
-				workers = newWorkers;
-			} catch (err) {
-				console.warn('Status update failed:', err);
-			}
-		}, 10000);
-	}
+  		// Update status every 10 seconds
+  		statusInterval = setInterval(async () => {
+  			try {
+  				const [newStatus, newWorkers] = await Promise.all([
+  					gpuServiceClient.getStatus(),
+  					gpuServiceClient.getWorkers()
+  				]);
+  				gpuStatus = newStatus;
+  				workers = newWorkers;
+  			} catch (err) {
+  				console.warn('Status update failed:', err);
+  			}
+  		}, 10000);
+  	}
 
-	async function processDocument() {
-		if (!documentText.trim()) return;
-		
-		try {
-			isProcessing = true;
-			
-			const result = await processLegalDocument(documentText, {
-				documentId: `demo-doc-${Date.now()}`,
-				documentType: 'contract',
-				practiceArea: 'employment-law',
-				jurisdiction: 'US'
-			});
+  	async function processDocument() {
+  		if (!documentText.trim()) return;
+  		try {
+  			isProcessing = true;
+  			const result = await processLegalDocument(documentText, {
+  				documentId: `demo-doc-${Date.now()}`,
+  				documentType: 'contract',
+  				practiceArea: 'employment-law',
+  				jurisdiction: 'US'
+  			});
 
-			processingResults = [...processingResults, {
-				timestamp: new Date().toLocaleTimeString(),
-				type: 'Document Processing',
-				input: documentText.substring(0, 100) + '...',
-				result: result,
-				success: true
-			}];
+  			processingResults = [...processingResults, {
+  				timestamp: new Date().toLocaleTimeString(),
+  				type: 'Document Processing',
+  				input: documentText.substring(0, 100) + '...',
+  				result: result,
+  				success: true
+  			}];
 
-		} catch (err: any) {
-			processingResults = [...processingResults, {
-				timestamp: new Date().toLocaleTimeString(),
-				type: 'Document Processing',
-				input: documentText.substring(0, 100) + '...',
-				error: err.message,
-				success: false
-			}];
-		} finally {
-			isProcessing = false;
-		}
-	}
+  		} catch (err: any) {
+  			processingResults = [...processingResults, {
+  				timestamp: new Date().toLocaleTimeString(),
+  				type: 'Document Processing',
+  				input: documentText.substring(0, 100) + '...',
+  				error: err.message,
+  				success: false
+  			}];
+  		} finally {
+  			isProcessing = false;
+  		}
+  	}
 
-	async function processQuery() {
-		if (!queryText.trim()) return;
-		
-		try {
-			isProcessing = true;
-			
-			const result = await gpuServiceClient.submitTask({
-				type: 'embedding',
-				data: textToFloatArray(queryText),
-				metadata: {
-					query_type: 'legal_search',
-					practice_area: 'general'
-				},
-				priority: 8,
-				service_origin: 'demo-interface'
-			});
+  	async function processQuery() {
+  		if (!queryText.trim()) return;
+  		try {
+  			isProcessing = true;
+  			const result = await gpuServiceClient.submitTask({
+  				type: 'embedding',
+  				data: textToFloatArray(queryText),
+  				metadata: {
+  					query_type: 'legal_search',
+  					practice_area: 'general'
+  				},
+  				priority: 8,
+  				service_origin: 'demo-interface'
+  			});
 
-			processingResults = [...processingResults, {
-				timestamp: new Date().toLocaleTimeString(),
-				type: 'Query Processing',
-				input: queryText,
-				result: result,
-				success: result.status === 'success'
-			}];
+  			processingResults = [...processingResults, {
+  				timestamp: new Date().toLocaleTimeString(),
+  				type: 'Query Processing',
+  				input: queryText,
+  				result: result,
+  				success: result.status === 'success'
+  			}];
 
-		} catch (err: any) {
-			processingResults = [...processingResults, {
-				timestamp: new Date().toLocaleTimeString(),
-				type: 'Query Processing',
-				input: queryText,
-				error: err.message,
-				success: false
-			}];
-		} finally {
-			isProcessing = false;
-		}
-	}
+  		} catch (err: any) {
+  			processingResults = [...processingResults, {
+  				timestamp: new Date().toLocaleTimeString(),
+  				type: 'Query Processing',
+  				input: queryText,
+  				error: err.message,
+  				success: false
+  			}];
+  		} finally {
+  			isProcessing = false;
+  		}
+  	}
 
-	// Helper function for simple text to float array conversion
-	function textToFloatArray(text: string): number[] {
-		// Simplified version for demo - in production use proper tokenization
-		const normalized = text.toLowerCase().replace(/[^\w\s]/g, '');
-		const words = normalized.split(/\s+/).filter(w => w.length > 0);
-		
-		// Create 384-dimensional embedding
-		const embedding = new Array(384).fill(0);
-		
-		for (let i = 0; i < words.length; i++) {
-			const word = words[i];
-let hash = $state(0);
-			for (let j = 0; j < word.length; j++) {
-				hash = ((hash << 5) - hash) + word.charCodeAt(j);
-				hash = hash & hash;
-			}
-			
-			const index = Math.abs(hash) % embedding.length;
-			embedding[index] += 1 / Math.sqrt(words.length);
-		}
-		
-		// Normalize
-		const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
-		if (magnitude > 0) {
-			for (let i = 0; i < embedding.length; i++) {
-				embedding[i] /= magnitude;
-			}
-		}
-		
-		return embedding;
-	}
+  	// Helper function for simple text to float array conversion
+  	function textToFloatArray(text: string): number[] {
+  		// Simplified version for demo - in production use proper tokenization
+  		const normalized = text.toLowerCase().replace(/[^\w\s]/g, '');
+  		const words = normalized.split(/\s+/).filter(w => w.length > 0);
+  		// Create 384-dimensional embedding
+  		const embedding = new Array(384).fill(0);
+  		for (let i = 0; i < words.length; i++) {
+  			const word = words[i];
+  let hash = $state(0);
+  			for (let j = 0; j < word.length; j++) {
+  				hash = ((hash << 5) - hash) + word.charCodeAt(j);
+  				hash = hash & hash;
+  			}
+  			const index = Math.abs(hash) % embedding.length;
+  			embedding[index] += 1 / Math.sqrt(words.length);
+  		}
+  		// Normalize
+  		const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
+  		if (magnitude > 0) {
+  			for (let i = 0; i < embedding.length; i++) {
+  				embedding[i] /= magnitude;
+  			}
+  		}
+  		return embedding;
+  	}
 
-	function clearResults() {
-		processingResults = [];
-	}
+  	function clearResults() {
+  		processingResults = [];
+  	}
 
-	function getStatusColor(status: string): string {
-		switch (status) {
-			case 'healthy': 
-			case 'running': 
-			case 'success': return 'text-green-600';
-			case 'degraded': 
-			case 'processing': return 'text-yellow-600';
-			case 'unhealthy': 
-			case 'error': 
-			case 'down': return 'text-red-600';
-			default: return 'text-gray-600';
-		}
-	}
+  	function getStatusColor(status: string): string {
+  		switch (status) {
+  			case 'healthy': 
+  			case 'running': 
+  			case 'success': return 'text-green-600';
+  			case 'degraded': 
+  			case 'processing': return 'text-yellow-600';
+  			case 'unhealthy': 
+  			case 'error': 
+  			case 'down': return 'text-red-600';
+  			default: return 'text-gray-600';
+  		}
+  	}
 </script>
 
 <svelte:head>

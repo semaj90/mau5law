@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   let foo = true
 </script>
 <footer>

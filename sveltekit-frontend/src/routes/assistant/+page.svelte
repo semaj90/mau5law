@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
   import EvidenceManager from '$lib/components/evidence/EvidenceManager.svelte';
   import {
@@ -10,12 +9,10 @@
   } from '$lib/components/ui/enhanced-bits';;
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import { onMount } from 'svelte';
-  
   let caseId = $state('');
   let contextItems = $state([]);
   let evidenceText = $state('');
   let activeTab = $state('assistant');
-  
   // Mock user context
   import { setContext } from 'svelte';
   const mockUser = {
@@ -30,7 +27,6 @@
     try {
       const response = await fetch('/api/evidence-files?limit=10');
       const data = await response.json();
-      
       if (data.success) {
         contextItems = data.items.map(item => ({
           id: item.id.toString(),
@@ -55,7 +51,6 @@
       },
       ...contextItems.slice(0, 9) // Keep only 10 most recent
     ];
-    
     // Switch to assistant tab after upload
     activeTab = 'assistant';
   }

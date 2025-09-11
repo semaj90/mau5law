@@ -1,9 +1,8 @@
 <script lang="ts">
-</script>
-	import { Slider } from "bits-ui";
+  	import { Slider } from "bits-ui";
 
-	let fontSize = $state(16);
-	const fontSizes = [0, 4, 8, 16, 24];
+  	let fontSize = $state(16);
+  	const fontSizes = [0, 4, 8, 16, 24];
 </script>
 
 <div class="w-full md:max-w-[320px]">

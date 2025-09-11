@@ -1,11 +1,9 @@
 <script lang="ts">
-</script>
 
   import { onMount, onDestroy } from 'svelte';
   import { io, type Socket } from 'socket.io-client';
   import { uploadStore } from '$lib/stores/upload-machine';
   import { writable } from 'svelte/store';
-  
   // Props
   interface Props {
     caseId?: string;
@@ -21,9 +19,8 @@
   }: Props = $props();
 
   // WebSocket connection
-let socket = $state<Socket | null >(null);
+  let socket = $state<Socket | null >(null);
   let connectionStatus = writable<'disconnected' | 'connecting' | 'connected'>('disconnected');
-  
   // Progress tracking
   let progressData = writable({
     stage: 'idle',
@@ -70,7 +67,6 @@ let socket = $state<Socket | null >(null);
 
   function initializeWebSocket() {
     connectionStatus.set('connecting');
-    
     // Connect to WebSocket server
     socket = io('/api/ws', {
       transports: ['websocket', 'polling'],
@@ -80,7 +76,6 @@ let socket = $state<Socket | null >(null);
     socket.on('connect', () => {
       console.log('🔌 WebSocket connected');
       connectionStatus.set('connected');
-      
       // Join relevant rooms
       if (caseId) {
         socket?.emit('join-case', caseId);
@@ -135,7 +130,6 @@ let socket = $state<Socket | null >(null);
     // Tensor processing results
     socket.on('tensor-result', (data) => {
       console.log('🧮 Tensor result:', data);
-      
       if (showTensorMetrics) {
         tensorResults.update(current => ({
           ...current,
@@ -203,7 +197,7 @@ let socket = $state<Socket | null >(null);
   }
 
   // Attention tracking setup
-let attentionListeners = $state<Array<() >(> void> = []);
+  let attentionListeners = $state<Array<() >(> void> = []);
 
   function setupAttentionTracking() {
     if (!socket) return;
@@ -219,17 +213,15 @@ let attentionListeners = $state<Array<() >(> void> = []);
     // Focus/blur tracking
     const focusHandler = () => trackEvent('focus');
     const blurHandler = () => trackEvent('blur');
-    
     window.addEventListener('focus', focusHandler);
     window.addEventListener('blur', blurHandler);
-    
     attentionListeners.push(
       () => window.removeEventListener('focus', focusHandler),
       () => window.removeEventListener('blur', blurHandler)
     );
 
     // Scroll tracking (throttled)
-let scrollTimeout = $state<number;
+  let scrollTimeout = $state<number;
     const scrollHandler >(() => {
       clearTimeout(scrollTimeout));
       scrollTimeout = setTimeout(() => {
@@ -267,7 +259,6 @@ let scrollTimeout = $state<number;
   // Typing event tracking
   export function trackTyping(query: string) {
     if (!socket || !enableAttentionTracking) return;
-    
     socket.emit('user-attention', {
       type: 'typing',
       timestamp: new Date().toISOString(),

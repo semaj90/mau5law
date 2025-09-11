@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     data: any
     formType: "login" | "register";
@@ -13,7 +12,6 @@
 
   import { superForm } from "sveltekit-superforms";
 
-    
   const { form, enhance, errors, message } = superForm(data, {
     resetForm: true,
   });

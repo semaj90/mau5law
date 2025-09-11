@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   // RoleGuard component - Role-based access control - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
-  
   interface Props {
     children?: import('svelte').Snippet;
     roles: string | string[];
@@ -27,7 +25,6 @@
     }
 
     const userRole = authStore.user.role;
-    
     // Admin always has access
     if (userRole === 'admin') {
       return true;

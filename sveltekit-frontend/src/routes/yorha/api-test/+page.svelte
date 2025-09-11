@@ -1,6 +1,5 @@
 <!-- YoRHa Advanced API Testing Interface -->
 <script lang="ts">
-</script>
   // Svelte runes are provided globally via src/types/svelte-helpers.d.ts
   import { onMount, onDestroy } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
@@ -508,7 +507,7 @@
 
       // Parse response
       let responseData;
-let responseSize = $state(0);
+  let responseSize = $state(0);
       const responseText = await response.text();
       responseSize = responseText.length;
 

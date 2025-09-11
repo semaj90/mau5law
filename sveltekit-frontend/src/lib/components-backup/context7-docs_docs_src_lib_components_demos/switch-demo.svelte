@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-	import { Label, Switch } from "bits-ui";
+  	import { Label, Switch } from "bits-ui";
 </script>
 
 <div class="flex items-center space-x-3">

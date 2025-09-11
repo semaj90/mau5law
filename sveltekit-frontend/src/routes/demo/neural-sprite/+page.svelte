@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onDestroy } from 'svelte';
 
   let file = null;
@@ -7,37 +6,37 @@
   let error = '';
 
   function onFileChange(event) {
-	error = '';
-	const f = event.target.files && event.target.files[0];
-	if (!f) {
-	  file = null;
-	  updatePreview();
-	  return;
-	}
-	if (!f.type.startsWith('image/')) {
-	  file = null;
-	  error = 'Please select an image file.';
-	  updatePreview();
-	  return;
-	}
-	file = f;
-	updatePreview();
+  	error = '';
+  	const f = event.target.files && event.target.files[0];
+  	if (!f) {
+  	  file = null;
+  	  updatePreview();
+  	  return;
+  	}
+  	if (!f.type.startsWith('image/')) {
+  	  file = null;
+  	  error = 'Please select an image file.';
+  	  updatePreview();
+  	  return;
+  	}
+  	file = f;
+  	updatePreview();
   }
 
   function updatePreview() {
-	if (previewUrl) {
-	  try { URL.revokeObjectURL(previewUrl); } catch (e) {}
-	  previewUrl = '';
-	}
-	if (file) {
-	  previewUrl = URL.createObjectURL(file);
-	}
+  	if (previewUrl) {
+  	  try { URL.revokeObjectURL(previewUrl); } catch (e) {}
+  	  previewUrl = '';
+  	}
+  	if (file) {
+  	  previewUrl = URL.createObjectURL(file);
+  	}
   }
 
   onDestroy(() => {
-	if (previewUrl) {
-	  try { URL.revokeObjectURL(previewUrl); } catch (e) {}
-	}
+  	if (previewUrl) {
+  	  try { URL.revokeObjectURL(previewUrl); } catch (e) {}
+  	}
   });
 </script>
 

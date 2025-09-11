@@ -2,7 +2,6 @@
 // Created on 2025-07-20
 
 <script lang="ts">
-</script>
   import { Separator } from "bits-ui";
   export let orientation: 'horizontal' | 'vertical' = 'horizontal';
   export let decorative: boolean = false;

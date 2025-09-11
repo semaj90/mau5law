@@ -5,7 +5,6 @@
 
 <!-- AI Chat Message Component -->
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
 
@@ -45,7 +44,7 @@
         hour: "2-digit",
         minute: "2-digit",
       });
-}
+  }
   });
 
   // Copy message content to clipboard
@@ -57,16 +56,16 @@
       // TODO: Show toast notification
     } catch (error) {
       console.error("Failed to copy:", error);
-}}
+  }}
   // Format confidence as percentage
   function formatConfidence(confidence: number): string {
     return Math.round(confidence * 100) + "%";
-}
+  }
   // Format execution time
   function formatExecutionTime(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(1)}s`;
-}
+  }
 </script>
 
 <div

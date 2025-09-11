@@ -1,28 +1,27 @@
 <script lang="ts">
-</script>
-	import type { HTMLAttributes } from 'svelte/elements';
+  	import type { HTMLAttributes } from 'svelte/elements';
 
-	interface Props extends HTMLAttributes<HTMLDivElement> {
-		elevated?: boolean;
-		interactive?: boolean;
-		children?: import('svelte').Snippet;
-		class?: string;
-	}
+  	interface Props extends HTMLAttributes<HTMLDivElement> {
+  		elevated?: boolean;
+  		interactive?: boolean;
+  		children?: import('svelte').Snippet;
+  		class?: string;
+  	}
 
-	let {
-		elevated = false,
-		interactive = false,
-		children,
-		class: className,
-		...props
-	} = $props();
+  	let {
+  		elevated = false,
+  		interactive = false,
+  		children,
+  		class: className,
+  		...props
+  	} = $props();
 
-	const cardClasses = $derived([
-		'yorha-card shadcn-card',
-		elevated && 'yorha-card-elevated',
-		interactive && 'cursor-pointer hover:scale-[1.02] transition-transform duration-200',
-		className
-	].filter(Boolean).join(' '));
+  	const cardClasses = $derived([
+  		'yorha-card shadcn-card',
+  		elevated && 'yorha-card-elevated',
+  		interactive && 'cursor-pointer hover:scale-[1.02] transition-transform duration-200',
+  		className
+  	].filter(Boolean).join(' '));
 </script>
 
 <div

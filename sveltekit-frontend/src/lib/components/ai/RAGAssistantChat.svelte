@@ -15,8 +15,8 @@
 	let currentMessage = $state('');
 	let isTyping = $state(false);
 	let isProcessing = $state(false);
-	let chatContainer: HTMLDivElement;
-	let messageInput: HTMLTextAreaElement;
+	let chatContainer = $state<HTMLDivElement>();
+	let messageInput = $state<HTMLTextAreaElement>();
 
 	// Workflow state
 	let workflowActive = $state(false);

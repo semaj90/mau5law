@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
 
@@ -36,7 +35,7 @@
   let searchHistory = $state<any[]>([]);
 
   // Polling interval for job status
-let statusPollingInterval = $state<number | null >(null);
+  let statusPollingInterval = $state<number | null >(null);
 
   // Load cases on component mount
   onMount(async () => {
@@ -94,7 +93,6 @@ let statusPollingInterval = $state<number | null >(null);
    */
   async function createCase() {
     if (!browser) return;
-    
     isLoading = true;
     error = null;
 
@@ -199,12 +197,10 @@ let statusPollingInterval = $state<number | null >(null);
 
       // Step 2: Upload directly to MinIO using pre-signed POST
       const formData = new FormData();
-      
       // Add required fields from pre-signed POST
       Object.entries(presignedPost.fields).forEach(([key, value]) => {
         formData.append(key, value as string);
       });
-      
       // Add the file (must be last)
       formData.append('file', uploadFile);
 
@@ -253,7 +249,6 @@ let statusPollingInterval = $state<number | null >(null);
 
         if (result.success) {
           jobStatus = result.data.job;
-          
           if (result.data.job.progress) {
             uploadProgress = result.data.job.progress.percentage;
             uploadStatus = result.data.job.progress.message;
@@ -265,12 +260,10 @@ let statusPollingInterval = $state<number | null >(null);
               clearInterval(statusPollingInterval);
               statusPollingInterval = null;
             }
-            
             if (result.data.job.status === 'completed') {
               uploadProgress = 100;
               uploadStatus = 'Processing completed';
               success = 'Document processed successfully';
-              
               // Refresh case data to show new evidence
               if (selectedCase) {
                 await loadCase(selectedCase.id);
@@ -352,7 +345,6 @@ let statusPollingInterval = $state<number | null >(null);
         searchResults = result.data.results || [];
         ragResponse = result.data.rag;
         console.log('Search completed:', searchResults.length, 'results');
-        
         if (searchResults.length === 0) {
           error = 'No relevant evidence found for your search query';
         } else {

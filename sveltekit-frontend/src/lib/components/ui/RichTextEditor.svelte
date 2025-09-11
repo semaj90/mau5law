@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     content?: unknown;
     placeholder?: unknown;
@@ -38,14 +37,14 @@
 
   let element: HTMLElement;
   let editor: Editor;
-let isReady = $state(false);
+  let isReady = $state(false);
   let autoSaveTimer: NodeJS.Timeout;
 
   // Toolbar state
-let isBold = $state(false);
-let isItalic = $state(false);
-let isBulletList = $state(false);
-let isOrderedList = $state(false);
+  let isBold = $state(false);
+  let isItalic = $state(false);
+  let isBulletList = $state(false);
+  let isOrderedList = $state(false);
 
   onMount(() => {
     editor = new Editor({
@@ -86,7 +85,7 @@ let isOrderedList = $state(false);
   onDestroy(() => {
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
-}
+  }
     editor?.destroy();
   });
 
@@ -97,7 +96,7 @@ let isOrderedList = $state(false);
     isItalic = editor.isActive("italic");
     isBulletList = editor.isActive("bulletList");
     isOrderedList = editor.isActive("orderedList");
-}
+  }
   function handleContentChange() {
     if (!editor || !isReady) return;
 
@@ -112,11 +111,11 @@ let isOrderedList = $state(false);
     if (autoSave) {
       if (autoSaveTimer) {
         clearTimeout(autoSaveTimer);
-}
+  }
       autoSaveTimer = setTimeout(() => {
         dispatch("save", { html, markdown, json });
       }, autoSaveDelay);
-}}
+  }}
   function htmlToMarkdown(html: string): string {
     // Simple HTML to Markdown conversion
     return html
@@ -131,7 +130,7 @@ let isOrderedList = $state(false);
         return content.replace(/<li[^>]*>(.*?)<\/li>/g, "- $1\n") + "\n";
       })
       .replace(/<ol[^>]*>(.*?)<\/ol>/gs, (match, content) => {
-let counter = $state(1);
+  let counter = $state(1);
         return (
           content.replace(/<li[^>]*>(.*?)<\/li>/g, () => `${counter++}. $1\n`) +
           "\n"
@@ -142,25 +141,25 @@ let counter = $state(1);
       .replace(/<[^>]+>/g, "") // Remove remaining HTML tags
       .replace(/\n{3,}/g, "\n\n") // Clean up excessive newlines
       .trim();
-}
+  }
   // Toolbar actions
   function toggleBold() {
     editor?.chain().focus().toggleBold().run();
-}
+  }
   function toggleItalic() {
     editor?.chain().focus().toggleItalic().run();
-}
+  }
   function toggleBulletList() {
     editor?.chain().focus().toggleBulletList().run();
-}
+  }
   function toggleOrderedList() {
     editor?.chain().focus().toggleOrderedList().run();
-}
+  }
   function addImage() {
     const url = prompt("Enter image URL:");
     if (url) {
       editor?.chain().focus().setImage({ src: url }).run();
-}}
+  }}
   function setHeading(level: number) {
     if (level === 0) {
       editor?.chain().focus().setParagraph().run();
@@ -170,7 +169,7 @@ let counter = $state(1);
         .focus()
         .toggleHeading({ level: level as 1 | 2 | 3 | 4 | 5 | 6 })
         .run();
-}}
+  }}
   function saveContent() {
     if (!editor || !isReady) return;
 
@@ -179,7 +178,7 @@ let counter = $state(1);
     const markdown = htmlToMarkdown(html);
 
     dispatch("save", { html, markdown, json });
-}
+  }
   // Public methods
   export function getContent() {
     if (!editor || !isReady) return { html: "", markdown: "", json: null };
@@ -189,7 +188,7 @@ let counter = $state(1);
     const markdown = htmlToMarkdown(html);
 
     return { html, markdown, json };
-}
+  }
   export function setContent(;
     newContent: string,
     format: "html" | "json" = "html"
@@ -200,13 +199,13 @@ let counter = $state(1);
       editor.commands.setContent(JSON.parse(newContent));
     } else {
       editor.commands.setContent(newContent);
-}}
+  }}
   export function focus() {
     editor?.commands.focus();
-}
+  }
   export function clear() {
     editor?.commands.clearContent();
-}
+  }
 </script>
 
 {#if showToolbar && editable}

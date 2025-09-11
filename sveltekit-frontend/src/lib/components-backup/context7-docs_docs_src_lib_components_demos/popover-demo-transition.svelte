@@ -1,12 +1,11 @@
 <script lang="ts">
-</script>
-	import { Popover, Separator, Toggle } from "bits-ui";
-	import ImageSquare from "phosphor-svelte/lib/ImageSquare";
-	import LinkSimpleHorizontalBreak from "phosphor-svelte/lib/LinkSimpleHorizontalBreak";
-	import { fly } from "svelte/transition";
+  	import { Popover, Separator, Toggle } from "bits-ui";
+  	import ImageSquare from "phosphor-svelte/lib/ImageSquare";
+  	import LinkSimpleHorizontalBreak from "phosphor-svelte/lib/LinkSimpleHorizontalBreak";
+  	import { fly } from "svelte/transition";
 
-	let width = $state(1024);
-	let height = $state(768);
+  	let width = $state(1024);
+  	let height = $state(768);
 </script>
 
 <Popover.Root>

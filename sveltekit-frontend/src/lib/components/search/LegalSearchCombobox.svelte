@@ -9,13 +9,11 @@
   - Advanced filtering capabilities
 -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { Combobox } from 'bits-ui';
   import { Search, FileText, Scale, Shield, Users, Zap, Clock } from 'lucide-svelte';
   import { debounce } from 'lodash-es';
   import { cn } from '$lib/utils/cn';
-  
   // Types
   interface SearchResult {
     id: string;
@@ -33,7 +31,6 @@
     };
     highlights?: string[];
   }
-  
   interface SearchOptions {
     categories: Array<'cases' | 'evidence' | 'precedents' | 'statutes' | 'criminals' | 'documents'>;
     enableVectorSearch: boolean;
@@ -42,7 +39,6 @@
     similarityThreshold: number;
     includeMetadata: boolean;
   }
-  
   // Props
   let { placeholder = $bindable() } = $props(); // "Search cases, precedents, statutes, evidence...";
   let { value = $bindable() } = $props(); // "";
@@ -54,23 +50,20 @@
   let { includeMetadata = $bindable() } = $props(); // true;
   let { disabled = $bindable() } = $props(); // false;
   let { class = $bindable() } = $props(); // "";
-  
   // State
-let open = $state(false);
+  let open = $state(false);
   let inputValue = value;
-let searchResults = $state<SearchResult[] >([]);
-let isLoading = $state(false);
-let selectedResult = $state<SearchResult | null >(null);
-let recentSearches = $state<string[] >([]);
-let suggestions = $state<string[] >([]);
-  
+  let searchResults = $state<SearchResult[] >([]);
+  let isLoading = $state(false);
+  let selectedResult = $state<SearchResult | null >(null);
+  let recentSearches = $state<string[] >([]);
+  let suggestions = $state<string[] >([]);
   // Event dispatcher
   const dispatch = createEventDispatcher<{
     select: SearchResult;
     search: { query: string; results: SearchResult[] };
     clear: void;
   }>();
-  
   // Icons for different types
   const typeIcons = {
     caseItem: Scale,
@@ -80,7 +73,6 @@ let suggestions = $state<string[] >([]);
     criminal: Users,
     document: FileText
   };
-  
   const typeColors = {
     caseItem: 'text-blue-600',
     evidence: 'text-red-600', 
@@ -89,29 +81,24 @@ let suggestions = $state<string[] >([]);
     criminal: 'text-orange-600',
     document: 'text-gray-600'
   };
-  
   // Load recent searches from localStorage
   onMount(() => {
     const stored = localStorage.getItem('legalSearchHistory');
     if (stored) {
       recentSearches = JSON.parse(stored).slice(0, 5);
     }
-    
     // Load AI suggestions if enabled
     if (aiSuggestions) {
       loadAISuggestions();
     }
   });
-  
   // Debounced search function
   const performSearch = debounce(async (query: string) => {
     if (query.length < 2) {
       searchResults = [];
       return;
     }
-    
     isLoading = true;
-    
     try {
       const searchParams = new URLSearchParams({
         q: query,
@@ -122,10 +109,8 @@ let suggestions = $state<string[] >([]);
         aiSuggestions: aiSuggestions.toString(),
         includeMetadata: includeMetadata.toString()
       });
-      
       const response = await fetch(`/api/search/legal?${searchParams}`);
       const data = await response.json();
-      
       if (data.success) {
         searchResults = data.results.map((result: any) => ({
           id: result.id,
@@ -143,7 +128,6 @@ let suggestions = $state<string[] >([]);
           },
           highlights: result.highlights || []
         }));
-        
         dispatch('search', { query, results: searchResults });
       } else {
         console.error('Search failed:', data.error);
@@ -156,7 +140,6 @@ let suggestions = $state<string[] >([]);
       isLoading = false;
     }
   }, 300);
-  
   // Load AI-powered search suggestions
   async function loadAISuggestions() {
     try {
@@ -169,36 +152,30 @@ let suggestions = $state<string[] >([]);
       console.error('Failed to load AI suggestions:', error);
     }
   }
-  
   // Handle input changes
   function handleInputChange(event: Event) {
     const target = event.target as HTMLInputElement;
     inputValue = target.value;
     value = inputValue;
-    
     if (inputValue) {
       performSearch(inputValue);
     } else {
       searchResults = [];
     }
   }
-  
   // Handle result selection
   function handleSelect(result: SearchResult) {
     selectedResult = result;
     inputValue = result.title;
     value = inputValue;
     open = false;
-    
     // Add to recent searches
     if (!recentSearches.includes(result.title)) {
       recentSearches = [result.title, ...recentSearches.slice(0, 4)];
       localStorage.setItem('legalSearchHistory', JSON.stringify(recentSearches));
     }
-    
     dispatch('select', result);
   }
-  
   // Handle clear
   function handleClear() {
     inputValue = "";
@@ -207,7 +184,6 @@ let suggestions = $state<string[] >([]);
     searchResults = [];
     dispatch('clear');
   }
-  
   // Get display results (includes recent searches when no query)
   let displayResults = $derived(inputValue.length < 2 );
     ? recentSearches.map(search => ({

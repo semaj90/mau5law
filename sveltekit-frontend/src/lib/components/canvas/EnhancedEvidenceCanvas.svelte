@@ -1,6 +1,5 @@
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
-</script>
   interface Props {
     onevidenceUpdated?: (event?: unknown) => void;
     onsave?: (event?: unknown) => void;
@@ -25,26 +24,24 @@
     ZoomIn,
     ZoomOut,
   } from "lucide-svelte";
-  
-  
   // --- XState workflow state machine ---
   // Dynamically imported in onMount for SSR safety
-let canvasService = $state<any >(null);
-let currentMode = $state<string >("evidence");
+  let canvasService = $state<any >(null);
+  let currentMode = $state<string >("evidence");
   let canvasContainer: HTMLDivElement = $state();
-let fabricCanvas = $state<any >(null);
+  let fabricCanvas = $state<any >(null);
   let selectedTool = $state("select");
-let isDrawing = $state(false);
+  let isDrawing = $state(false);
   let fabricLoaded = $state(false);
   let canvasHistory: string[] = $state([]);
   let historyIndex = $state(-1);
   let zoom = $state(1);
-let readonly = $state(false);
-let caseId = $state<string | undefined >(undefined);
-let evidenceItems = $state<Array<any> >([]);
+  let readonly = $state(false);
+  let caseId = $state<string | undefined >(undefined);
+  let evidenceItems = $state<Array<any> >([]);
   function setWorkflowMode(mode: string) {
     if (canvasService) canvasService.send(mode.toUpperCase());
-}
+  }
   onMount(async () => {
     if (!browser) return;
     try {
@@ -88,9 +85,9 @@ let evidenceItems = $state<Array<any> >([]);
       if (evidenceItems && evidenceItems.length) {
         for (const item of evidenceItems) {
           await addEvidenceToCanvas(item);
-}
+  }
         fabricCanvas.renderAll();
-}
+  }
       // Save initial state
       saveCanvasState();
     } catch (error) {
@@ -101,7 +98,7 @@ let evidenceItems = $state<Array<any> >([]);
         message:
           "Failed to initialize canvas or workflow state. Some features may not work.",
       });
-}
+  }
   });
 
   onDestroy(() => {
@@ -115,7 +112,7 @@ let evidenceItems = $state<Array<any> >([]);
     try {
       const fabricModule = await import("fabric");
       const fabricLib = fabricModule.default;
-let fabricObject = $state<any;
+  let fabricObject = $state<any;
 
       if (item.type >(== "image" && item.thumbnailUrl) {
         // Add image
@@ -143,7 +140,7 @@ let fabricObject = $state<any;
             selectable: !readonly,
             evented: !readonly,
           });
-}
+  }
       } else {
         // Add as text/document representation
         const text = `${getTypeIcon(item.type)} ${item.title}`;
@@ -161,7 +158,7 @@ let fabricObject = $state<any;
           selectable: !readonly,
           evented: !readonly,
         });
-}
+  }
       // Add metadata
       fabricObject.set({
         evidenceId: item.id,
@@ -172,7 +169,7 @@ let fabricObject = $state<any;
       fabricCanvas.add(fabricObject);
     } catch (error) {
       console.error("Error adding evidence to canvas:", error);
-}}
+  }}
   function getTypeIcon(type: string): string {
     switch (type) {
       case "image":
@@ -185,7 +182,7 @@ let fabricObject = $state<any;
         return "🎵";
       default:
         return "📎";
-}}
+  }}
   function selectTool(tool: string) {
     selectedTool = tool;
 
@@ -205,14 +202,14 @@ let fabricObject = $state<any;
         fabricCanvas.selection = true;
         addTextBox();
         break;
-}}
+  }}
   async function addShape(shape: "rectangle" | "circle") {
     if (!fabricCanvas) return;
 
     try {
       const fabricModule = await import("fabric");
       const fabricLib = fabricModule.default;
-let fabricObject = $state<any;
+  let fabricObject = $state<any;
 
       if (shape >(== "rectangle") {
         fabricObject = new fabricLib.Rect({
@@ -233,7 +230,7 @@ let fabricObject = $state<any;
           stroke: "#10b981",
           strokeWidth: 2,
         });
-}
+  }
       fabricObject.set({
         customType: "shape",
       });
@@ -243,7 +240,7 @@ let fabricObject = $state<any;
       saveCanvasState();
     } catch (error) {
       console.error("Error adding shape:", error);
-}}
+  }}
   async function addTextBox() {
     if (!fabricCanvas) return;
 
@@ -271,18 +268,18 @@ let fabricObject = $state<any;
       saveCanvasState();
     } catch (error) {
       console.error("Error adding text:", error);
-}}
-let currentPath = $state<any >(null);
+  }}
+  let currentPath = $state<any >(null);
 
   function startDrawing(pointer: { x: number; y: number }) {
     // Drawing implementation
-}
+  }
   function continueDrawing(pointer: { x: number; y: number }) {
     // Continue drawing implementation
-}
+  }
   function finishDrawing() {
     saveCanvasState();
-}
+  }
   function saveCanvasState() {
     if (!fabricCanvas) return;
 
@@ -293,7 +290,7 @@ let currentPath = $state<any >(null);
     // Manage history
     if (historyIndex < canvasHistory.length - 1) {
       canvasHistory = canvasHistory.slice(0, historyIndex + 1);
-}
+  }
     canvasHistory.push(state);
     historyIndex++;
 
@@ -301,17 +298,17 @@ let currentPath = $state<any >(null);
     if (canvasHistory.length > 50) {
       canvasHistory = canvasHistory.slice(1);
       historyIndex--;
-}}
+  }}
   function undo() {
     if (historyIndex > 0) {
       historyIndex--;
       loadCanvasState(canvasHistory[historyIndex]);
-}}
+  }}
   function redo() {
     if (historyIndex < canvasHistory.length - 1) {
       historyIndex++;
       loadCanvasState(canvasHistory[historyIndex]);
-}}
+  }}
   async function loadCanvasState(state: string) {
     if (!fabricCanvas) return;
 
@@ -322,7 +319,7 @@ let currentPath = $state<any >(null);
       });
     } catch (error) {
       console.error("Error loading canvas state:", error);
-}}
+  }}
   function updateEvidencePositions() {
     if (!fabricCanvas) return;
 
@@ -331,25 +328,25 @@ let currentPath = $state<any >(null);
     objects.forEach((obj: any) => {
       if (obj.evidenceId) {
         onevidenceUpdated?.();
-}
+  }
     });
-}
+  }
   function zoomIn() {
     if (!fabricCanvas) return;
     zoom = Math.min(zoom * 1.2, 3);
     fabricCanvas.setZoom(zoom);
-}
+  }
   function zoomOut() {
     if (!fabricCanvas) return;
     zoom = Math.max(zoom / 1.2, 0.1);
     fabricCanvas.setZoom(zoom);
-}
+  }
   function resetZoom() {
     if (!fabricCanvas) return;
     zoom = 1;
     fabricCanvas.setZoom(1);
     fabricCanvas.viewportTransform = [1, 0, 0, 1, 0, 0];
-}
+  }
   function deleteSelected() {
     if (!fabricCanvas || readonly) return;
 
@@ -360,7 +357,7 @@ let currentPath = $state<any >(null);
       });
       fabricCanvas.discardActiveObject();
       saveCanvasState();
-}}
+  }}
   async function saveCanvas() {
     if (!fabricCanvas) return;
 
@@ -393,7 +390,7 @@ let currentPath = $state<any >(null);
       });
       if (!response.ok) {
         throw new Error("Failed to save canvas");
-}
+  }
       notifications.add({
         type: "success",
         title: "Canvas Saved",
@@ -405,9 +402,9 @@ let currentPath = $state<any >(null);
         title: "Save Failed",
         message: "Failed to save evidence board.",
       });
-}
+  }
     onsave?.();
-}
+  }
   async function exportCanvas() {
     if (!fabricCanvas) return;
 
@@ -436,7 +433,7 @@ let currentPath = $state<any >(null);
         title: "Export Failed",
         message: "Failed to export evidence board.",
       });
-}}
+  }}
   function clearCanvas() {
     if (!fabricCanvas || readonly) return;
 
@@ -444,7 +441,7 @@ let currentPath = $state<any >(null);
       fabricCanvas.clear();
       fabricCanvas.backgroundColor = "#f8fafc";
       saveCanvasState();
-}}
+  }}
 </script>
 
 <div class="space-y-4">

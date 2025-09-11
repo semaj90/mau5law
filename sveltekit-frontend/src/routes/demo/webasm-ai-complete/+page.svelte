@@ -3,7 +3,6 @@
   Showcases: WASM inference + Go chat service + PostgreSQL memory
 -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { wasmLlama } from '$lib/services/webasm-llama-complete';
   import * as Card from '$lib/components/ui/card';
@@ -27,7 +26,6 @@
   let chatHistory = $state<Array<{role: 'user' | 'assistant', content: string, timestamp: number}>>([]);
   let conversationId = $state('');
   let isStreamingActive = $state(false);
-  
   // Service status
   let serviceStatus = $state({
     wasm: { status: 'disconnected', message: 'Not initialized' },
@@ -70,7 +68,6 @@
       const wasmReady = await wasmLlama.initialize();
       if (wasmReady) {
         serviceStatus.wasm = { status: 'connected', message: 'WebAssembly worker ready' };
-        
         // Try to load a model
         try {
           await wasmLlama.loadModel({
@@ -163,7 +160,6 @@
       })) {
         assistantMessage.content += token;
         tokenCount++;
-        
         // Update metrics in real-time
         const elapsed = (performance.now() - startTime) / 1000;
         metrics.tokensPerSecond = tokenCount / elapsed;
@@ -199,7 +195,6 @@
 
     try {
       const startTime = performance.now();
-      
       const response = await fetch('/api/go-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -218,7 +213,6 @@
       }
 
       const data = await response.json();
-      
       if (data.error) {
         throw new Error(data.error);
       }

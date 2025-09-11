@@ -1,6 +1,5 @@
 <!-- Real-time Evidence Management Demo Page -->
 <script lang="ts">
-</script>
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
   import {
@@ -62,7 +61,7 @@
   function updateStats() {
     if (lokiEvidenceService.isReady()) {
       stats = lokiEvidenceService.getEvidenceStats();
-}}
+  }}
   function updateSyncStatus() {
     if (lokiEvidenceService.isReady()) {
       const status = lokiEvidenceService.getSyncStatus();
@@ -72,7 +71,7 @@
         total: status.total,
         inProgress: status.inProgress ?? false,
       };
-}}
+  }}
   async function startDemoMode() {
     demoMode = true;
 
@@ -139,9 +138,9 @@
           await evidenceStore.createEvidence(demoEvidence[i]);
         } catch (err) {
           console.error("Failed to create demo evidence:", err);
-}
+  }
       }, i * 1000);
-}}
+  }}
   async function clearAllEvidence() {
     if (
       !confirm(
@@ -149,25 +148,25 @@
       )
     ) {
       return;
-}
+  }
     try {
       await lokiEvidenceService.clearLocalData();
       evidenceStore.evidence.set([]);
       stats = { total: 0, byType: {}, byCase: {}, recentCount: 0 };
     } catch (err) {
       console.error("Failed to clear evidence:", err);
-}}
+  }}
   function getConnectionStatusColor(): string {
     return isConnected ? "text-green-600" : "text-red-600";
-}
+  }
   function formatObjectAsCount(obj: Record<string, number>): string {
     const entries = Object.entries(obj);
     if (entries.length === 0) return "0 types";
     if (entries.length <= 3) {
       return entries.map(([key, value]) => `${key}: ${value}`).join(", ");
-}
+  }
     return `${entries.length} types`;
-}
+  }
 </script>
 
 <svelte:head>

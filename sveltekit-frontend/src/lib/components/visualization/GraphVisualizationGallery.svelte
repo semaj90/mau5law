@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { GraphVisualizationEngine, type GraphVisualizationResult, type GraphNode, type GraphEdge } from '$lib/services/graph-visualization-engine';
@@ -121,9 +120,7 @@
       const algorithm = algorithms[i];
       try {
         const cacheKey = `graph_vis_${algorithm}_${JSON.stringify(currentGraphData).slice(0, 100)}`;
-        
         let visualization: GraphVisualizationResult | null = null;
-        
         // Try cache first if enabled
         if (cacheResults && multiLayerCache) {
           visualization = await multiLayerCache.get('visualization', cacheKey);
@@ -147,7 +144,6 @@
           };
 
           visualization = await visualizationEngine.generateVisualization(currentGraphData, options);
-          
           // Cache if enabled
           if (cacheResults && multiLayerCache && visualization) {
             await multiLayerCache.set('visualization', cacheKey, visualization, 3600);
@@ -174,7 +170,6 @@
     if (!visualizationEngine || !currentGraphData) return;
 
     isGenerating.set(true);
-    
     try {
       const options = {
         algorithm: algorithm as 'dfs' | 'bfs' | 'som' | 'autoencoder',
@@ -189,7 +184,6 @@
       };
 
       const visualization = await visualizationEngine.generateVisualization(currentGraphData, options);
-      
       if (visualization) {
         visualizations.update(current => {
           const filtered = current.filter(v => v.metadata.algorithm !== algorithm);
@@ -217,7 +211,6 @@
       const rect = canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      
       // Handle canvas interactions for real-time visualization
       if (visualizationEngine) {
         visualizationEngine.handleCanvasClick(x, y);

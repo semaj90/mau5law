@@ -1,6 +1,5 @@
 <!-- AI Status Indicator Component -->
 <script lang="ts">
-</script>
   export let isReady = false;
   export let isLoading = false;
   export let provider: "local" | "cloud" | "hybrid" | null = null;

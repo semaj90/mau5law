@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -43,10 +42,10 @@
       if (response.ok) {
         const data = await response.json();
         availableCases = data.cases || [];
-}
+  }
     } catch (error) {
       console.error("Failed to load cases:", error);
-}}
+  }}
   async function exportData() {
     exportLoading = true;
     exportError = null;
@@ -63,7 +62,7 @@
             ? {
                 from: dateFrom || undefined,
                 to: dateTo || undefined,
-}
+  }
             : undefined,
         caseIds: selectedCaseIds.length > 0 ? selectedCaseIds : undefined,
       };
@@ -79,7 +78,7 @@
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Export failed");
-}
+  }
       // Get the filename from the response headers
       const contentDisposition = response.headers.get("Content-Disposition");
       const filename =
@@ -101,19 +100,19 @@
       exportError = error instanceof Error ? error.message : "Export failed";
     } finally {
       exportLoading = false;
-}}
+  }}
   function toggleCaseSelection(caseId: string) {
     if (selectedCaseIds.includes(caseId)) {
       selectedCaseIds = selectedCaseIds.filter((id) => id !== caseId);
     } else {
       selectedCaseIds = [...selectedCaseIds, caseId];
-}}
+  }}
   function selectAllCases() {
     selectedCaseIds = availableCases.map((c) => c.id);
-}
+  }
   function clearCaseSelection() {
     selectedCaseIds = [];
-}
+  }
 </script>
 
 <svelte:head>

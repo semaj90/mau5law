@@ -1,14 +1,11 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
-  
   let laws: any[] = $state([]);
   let loading = $state(true);
   let error: string | null = $state(null);
   let searchQuery = $state('');
-  
   onMount(async () => {
     try {
       const response = await fetch('/api/statutes');
@@ -16,15 +13,14 @@ https://svelte.dev/e/js_parse_error -->
         laws = await response.json();
       } else {
         error = 'Failed to load laws';
-}
+  }
     } catch (err) {
       error = 'Error loading laws';
       console.error('Error:', err);
     } finally {
       loading = false;
-}
+  }
   });
-  
   let filteredLaws = $derived(laws.filter(law => 
     law.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     law.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||

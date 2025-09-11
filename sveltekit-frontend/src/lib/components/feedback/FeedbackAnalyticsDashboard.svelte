@@ -3,7 +3,6 @@
   Provides comprehensive insights into user feedback and system performance
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { 
@@ -30,7 +29,6 @@
   let refreshing = $state(false);
   let selectedTimeframe = $state('7d');
   let selectedRatingType = $state('all');
-  
   // Analytics data
   let dashboardData = $state<any>({
     overview: {
@@ -69,7 +67,6 @@
 
   onMount(() => {
     loadDashboardData();
-    
     // Auto-refresh every 5 minutes
     const refreshInterval = setInterval(() => {
       if (!refreshing) {
@@ -89,7 +86,6 @@
     } else {
       isLoading = true;
     }
-    
     error = null;
 
     try {

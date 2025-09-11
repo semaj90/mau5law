@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { invoke } from '@tauri-apps/api/tauri';
   let uploadResult = $state('');
   let error = $state('');
@@ -17,7 +16,7 @@
       error = 'Upload failed or cancelled.';
     } finally {
       loading = false;
-}}
+  }}
 </script>
 
 <div class="space-y-4">

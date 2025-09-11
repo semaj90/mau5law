@@ -1,12 +1,10 @@
 <script lang="ts">
-</script>
   import { Dialog } from 'bits-ui';
 
   interface Props {
     open?: boolean;
     onOpenChange?: ((open: boolean) => void) | undefined;
   }
-  
   let {
     open = $bindable(false),
     onOpenChange = undefined,

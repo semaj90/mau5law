@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
@@ -31,7 +30,7 @@
     relevance?: number;
     score?: number;
     metadata?: Record<string, unknown>;
-}
+  }
   interface SearchResults {
     query: string
     results: SearchResult[];
@@ -40,7 +39,7 @@
     hasMore: boolean
     executionTime?: number;
     source?: string;
-}
+  }
   // Search state
   let searchQuery = "";
   let searchResults: SearchResults | null = null;
@@ -79,14 +78,14 @@
     if (urlQuery) {
       searchQuery = urlQuery;
       performSearch();
-}
+  }
     // Load search history from localStorage
     if (browser) {
       const savedHistory = localStorage.getItem("searchHistory");
       if (savedHistory) {
         searchHistory = JSON.parse(savedHistory);
-}
-}
+  }
+  }
   });
 
   async function performSearch() {
@@ -131,11 +130,11 @@
               "searchHistory",
               JSON.stringify(searchHistory)
             );
-}
-}
+  }
+  }
       } else {
         throw new Error(result.error || "Search failed");
-}
+  }
     } catch (error) {
       console.error("Search error:", error);
       searchError = error instanceof Error ? error.message : "Search failed";
@@ -146,26 +145,26 @@
       });
     } finally {
       isSearching = false;
-}
-}
+  }
+  }
   function handleSearchSubmit(e: Event) {
     e.preventDefault();
     performSearch();
-}
+  }
   function selectQuickSearch(query: string) {
     searchQuery = query;
     performSearch();
-}
+  }
   function clearFilters() {
     selectedType = "";
     selectedCaseId = "";
     threshold = 0.7;
     limit = 20;
     showAdvancedFilters = false;
-}
+  }
   function formatScore(score: number): string {
     return `${(score * 100).toFixed(1)}%`;
-}
+  }
   function getResultIcon(type: string) {
     switch (type) {
       case "case":
@@ -176,8 +175,8 @@
         return Users;
       default:
         return FileText;
-}
-}
+  }
+  }
   function handleResultClick(result: SearchResult) {
     // Navigate to the appropriate page based on result type
     switch (result.type) {
@@ -190,8 +189,8 @@
       default:
         // Handle other types or show details modal
         break;
-}
-}
+  }
+  }
 </script>
 
 <svelte:head>

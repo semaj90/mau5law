@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { Dialog } from 'bits-ui';
@@ -189,13 +188,11 @@
    */
   async function generateSuggestions() {
     const testCode = `// Test Svelte 5 component
-<script lang="ts">
-</script>
-  
+  <script lang="ts">
   let count = $state(0);
 
   // Need suggestions here
-</script>`.trim();
+  </script>`.trim();
 
     try {
       isLoading = true;

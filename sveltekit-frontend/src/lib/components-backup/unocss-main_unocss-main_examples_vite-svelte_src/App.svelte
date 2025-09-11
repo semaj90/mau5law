@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
     import { fade, fly } from 'svelte/transition'
     import Footer from './Footer.svelte'
     let logo = false

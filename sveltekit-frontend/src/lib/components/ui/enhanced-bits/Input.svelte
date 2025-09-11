@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     class?: string;
     children?: import('svelte').Snippet;
@@ -79,7 +78,6 @@
 
   // Determine if this is a password input
   let isPassword = $derived(variant === 'password' || type === 'password');
-  
   // Actual input type to use
   let inputType = $derived(
     isPassword ? (showPassword ? 'text' : 'password') : type

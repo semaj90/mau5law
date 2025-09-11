@@ -3,37 +3,30 @@
   Showcases various drag and drop implementations with gaming aesthetics
 -->
 <script lang="ts">
-</script>
   import SimpleDragDrop from '$lib/components/ui/SimpleDragDrop.svelte';
   import EnhancedMinIODragDrop from '$lib/components/upload/EnhancedMinIODragDrop.svelte';
-  
   // Demo state
   let uploadedFiles = $state<File[]>([]);
   let errorMessage = $state<string>('');
   let successMessage = $state<string>('');
-
   // Demo handlers
   function handleFilesSelected(files: File[]) {
     uploadedFiles = [...uploadedFiles, ...files];
     successMessage = `Added ${files.length} file(s)`;
     errorMessage = '';
-    
     // Clear success message after 3 seconds
     setTimeout(() => {
       successMessage = '';
     }, 3000);
   }
-
   function handleError(error: string) {
     errorMessage = error;
     successMessage = '';
-    
     // Clear error after 5 seconds
     setTimeout(() => {
       errorMessage = '';
     }, 5000);
   }
-
   function clearFiles() {
     uploadedFiles = [];
     successMessage = 'Files cleared';
@@ -41,25 +34,21 @@
       successMessage = '';
     }, 2000);
   }
-
   // Enhanced upload handlers
   function handleEnhancedUploadComplete(event: CustomEvent) {
     console.log('Enhanced upload complete:', event.detail);
     successMessage = `MinIO upload complete: ${event.detail.length} files`;
   }
-
   function handleEnhancedUploadError(event: CustomEvent) {
     console.log('Enhanced upload error:', event.detail);
     errorMessage = `Upload error: ${event.detail}`;
   }
-</script>
-
-<svelte:head>
+  </script>
+  <svelte:head>
   <title>HTML5 Drag & Drop Demo - Legal AI Platform</title>
   <meta name="description" content="Interactive demonstration of HTML5 drag and drop functionality with gaming aesthetics and MinIO integration" />
-</svelte:head>
-
-<div class="demo-container nes-scanlines">
+  </svelte:head>
+  <div class="demo-container nes-scanlines">
   <!-- Header -->
   <div class="demo-header retro-border">
     <h1 class="demo-title gradient-text-retro">HTML5 Drag & Drop Demo</h1>
@@ -67,7 +56,6 @@
       Modern file upload with gaming aesthetics and MinIO storage
     </p>
   </div>
-
   <!-- Status Messages -->
   {#if successMessage}
     <div class="status-message success">
@@ -75,14 +63,12 @@
       {successMessage}
     </div>
   {/if}
-
   {#if errorMessage}
     <div class="status-message error">
       <span class="status-icon">❌</span>
       {errorMessage}
     </div>
   {/if}
-
   <!-- Demo Sections -->
   <div class="demo-sections">
     <!-- Simple Drag Drop -->
@@ -91,7 +77,6 @@
       <p class="section-description">
         Basic HTML5 drag and drop with retro gaming aesthetics
       </p>
-      
       <SimpleDragDrop
         accept="image/*,.pdf,.txt,.docx"
         multiple={true}
@@ -99,7 +84,6 @@
         onFilesSelected={handleFilesSelected}
         onError={handleError}
       />
-      
       <!-- File Summary -->
       {#if uploadedFiles.length > 0}
         <div class="file-summary">
@@ -109,7 +93,6 @@
               Clear All
             </button>
           </div>
-          
           <div class="file-grid">
             {#each uploadedFiles as file, index (file.name + file.size + index)}
               <div class="file-card">
@@ -136,14 +119,12 @@
         </div>
       {/if}
     </section>
-
     <!-- Enhanced MinIO Drag Drop -->
     <section class="demo-section">
       <h2 class="section-title">Enhanced MinIO Upload</h2>
       <p class="section-description">
         Advanced drag and drop with MinIO storage, CUDA processing, and AI analysis
       </p>
-      
       <EnhancedMinIODragDrop
         caseId="DEMO-CASE-001"
         enableCudaAcceleration={true}
@@ -155,11 +136,9 @@
         onuploadError={handleEnhancedUploadError}
       />
     </section>
-
     <!-- Technical Features -->
     <section class="demo-section">
       <h2 class="section-title">Technical Features</h2>
-      
       <div class="features-grid">
         <div class="feature-card">
           <h3 class="feature-title">🎮 Gaming Aesthetics</h3>
@@ -170,7 +149,6 @@
             <li>Retro glow animations</li>
           </ul>
         </div>
-        
         <div class="feature-card">
           <h3 class="feature-title">📁 HTML5 Drag & Drop</h3>
           <ul class="feature-list">
@@ -180,7 +158,6 @@
             <li>Multiple file support</li>
           </ul>
         </div>
-        
         <div class="feature-card">
           <h3 class="feature-title">⚡ Performance</h3>
           <ul class="feature-list">
@@ -190,7 +167,6 @@
             <li>Async file processing</li>
           </ul>
         </div>
-        
         <div class="feature-card">
           <h3 class="feature-title">🔧 Modern Tech</h3>
           <ul class="feature-list">
@@ -203,11 +179,9 @@
       </div>
     </section>
   </div>
-
   <!-- Code Example -->
   <section class="code-section">
     <h2 class="section-title">Usage Example</h2>
-    
     <pre class="code-block"><code>{`<script lang="ts">
 </script>
   import SimpleDragDrop from '$lib/components/ui/SimpleDragDrop.svelte';

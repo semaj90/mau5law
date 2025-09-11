@@ -1,309 +1,268 @@
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import ParallaxDynamic from '$lib/utils/parallaxDynamic.js';
-	import '../../../lib/components/yorha/ps1.css';
-	
-	let parallaxController = null;
-	let performanceStats = {
-		fps: 0,
-		memory: 0,
-		gpu: 'Unknown',
-		webgpuSupported: false
-	};
-	
-	// Feature flags with runtime detection
-	let featureFlags = {
-		'PS1 FX': { enabled: true, experimental: false, description: 'Enhanced PS1 visual effects' },
-		'3D Hybrid': { enabled: false, experimental: true, description: 'NES × YoRHa 3D hybrid rendering' },
-		'Subsample AA': { enabled: true, experimental: false, description: 'Subsampling anti-aliasing' },
-		'Dynamic Parallax': { enabled: true, experimental: false, description: 'Mouse/gyroscope parallax' },
-		'Anisotropic Sim': { enabled: false, experimental: true, description: 'Anisotropic filtering simulation' },
-		'WebGPU Accel': { enabled: false, experimental: true, description: 'WebGPU hardware acceleration' }
-	};
-	
-	// LOD system
-	let lodLevel = 'medium'; // auto-detected
-	let lodStats = {
-		autoDetected: true,
-		reason: 'Device capabilities',
-		deviceMemory: navigator.deviceMemory || 4,
-		deviceCores: navigator.hardwareConcurrency || 4
-	};
-	
-	// Runtime badges
-	let runtimeBadges = [];
-	
-	onMount(async () => {
-		await detectCapabilities();
-		await initializeParallax();
-		updateFeatureFlags();
-		startPerformanceMonitoring();
-		generateRuntimeBadges();
-		
-		// Set LOD on HTML element
-		document.documentElement.setAttribute('data-hybrid-lod', lodLevel);
-	});
-	
-	async function detectCapabilities() {
-		// WebGPU detection
-		if (navigator.gpu) {
-			try {
-				const adapter = await navigator.gpu.requestAdapter();
-				if (adapter) {
-					performanceStats.webgpuSupported = true;
-					performanceStats.gpu = adapter.info?.description || 'WebGPU Capable';
-					featureFlags['WebGPU Accel'].enabled = true;
-				}
-			} catch (error) {
-				console.warn('WebGPU detection failed:', error);
-			}
-		}
-		
-		// Memory detection for auto-LOD
-		const memory = lodStats.deviceMemory;
-		const cores = lodStats.deviceCores;
-		
-		if (memory >= 8 && cores >= 8) {
-			lodLevel = 'high';
-			lodStats.reason = `High-end device (${memory}GB RAM, ${cores} cores)`;
-		} else if (memory >= 4 && cores >= 4) {
-			lodLevel = 'medium';
-			lodStats.reason = `Mid-range device (${memory}GB RAM, ${cores} cores)`;
-		} else {
-			lodLevel = 'low';
-			lodStats.reason = `Low-end device (${memory}GB RAM, ${cores} cores)`;
-		}
-		
-		performanceStats.memory = memory;
-		
-		console.log(`🎯 Auto-detected LOD: ${lodLevel} - ${lodStats.reason}`);
-	}
-	
-	async function initializeParallax() {
-		parallaxController = new ParallaxDynamic({
-			enableWebGPU: featureFlags['WebGPU Accel'].enabled,
-			performanceMode: lodLevel,
-			mouseSensitivity: 0.02,
-			gyroSensitivity: 0.5,
-			maxOffset: 100,
-			enableAutoRotate: true,
-			autoRotateSpeed: 0.001
-		});
-		
-		// Add parallax layers
-		parallaxController.addLayer('[data-parallax="background"]', { 
-			depth: 0.1, 
-			id: 'background' 
-		});
-		parallaxController.addLayer('[data-parallax="midground"]', { 
-			depth: 0.3, 
-			id: 'midground' 
-		});
-		parallaxController.addLayer('[data-parallax="foreground"]', { 
-			depth: 0.6, 
-			id: 'foreground' 
-		});
-		
-		// Performance callback
-		parallaxController.onPerformanceChange((stats) => {
-			performanceStats.fps = stats.fps;
-			
-			// Auto-adjust quality based on performance
-			if (stats.fps < 30 && lodLevel === 'high') {
-				setLOD('medium');
-				addRuntimeBadge('Performance', 'Downgraded to medium quality due to low FPS', 'warning');
-			}
-		});
-		
-		parallaxController.start();
-	}
-	
-	function updateFeatureFlags() {
-		const root = document.documentElement;
-		
-		// Apply feature flag classes
-		Object.entries(featureFlags).forEach(([name, flag]) => {
-			const className = `fx-${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-			if (flag.enabled) {
-				root.classList.add(className);
-			} else {
-				root.classList.remove(className);
-			}
-		});
-		
-		console.log('🎛️ Feature flags updated:', featureFlags);
-	}
-	
-	function toggleFeatureFlag(flagName) {
-		featureFlags[flagName].enabled = !featureFlags[flagName].enabled;
-		updateFeatureFlags();
-		
-		// Special handling for WebGPU
-		if (flagName === 'WebGPU Accel' && parallaxController) {
-			parallaxController.setConfig({ 
-				enableWebGPU: featureFlags[flagName].enabled 
-			});
-		}
-		
-		addRuntimeBadge('Feature Toggle', `${flagName}: ${featureFlags[flagName].enabled ? 'ON' : 'OFF'}`, 'info');
-	}
-	
-	function setLOD(level) {
-		lodLevel = level;
-		lodStats.autoDetected = false;
-		lodStats.reason = 'Manual override';
-		
-		document.documentElement.setAttribute('data-hybrid-lod', level);
-		
-		if (parallaxController) {
-			parallaxController.setPerformanceMode(level);
-		}
-		
-		addRuntimeBadge('LOD Change', `Quality set to ${level}`, 'info');
-		console.log(`🎯 LOD manually set to: ${level}`);
-	}
-	
-	function startPerformanceMonitoring() {
-		setInterval(() => {
-			// Basic performance monitoring
-			if (performance.memory) {
-				performanceStats.memory = Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
-			}
-			
-			// Check if page is hidden (Page Visibility API)
-			if (document.hidden && parallaxController) {
-				parallaxController.pause();
-			} else if (!document.hidden && parallaxController && !parallaxController.isActive) {
-				parallaxController.resume();
-			}
-		}, 1000);
-	}
-	
-	function generateRuntimeBadges() {
-		runtimeBadges = [
-			{
-				type: 'system',
-				label: 'LOD',
-				value: lodLevel.toUpperCase(),
-				status: lodLevel === 'high' ? 'good' : lodLevel === 'medium' ? 'warning' : 'error'
-			},
-			{
-				type: 'system',
-				label: 'WebGPU',
-				value: performanceStats.webgpuSupported ? 'YES' : 'NO',
-				status: performanceStats.webgpuSupported ? 'good' : 'warning'
-			},
-			{
-				type: 'system',
-				label: 'Memory',
-				value: `${performanceStats.memory}GB`,
-				status: performanceStats.memory >= 8 ? 'good' : performanceStats.memory >= 4 ? 'warning' : 'error'
-			},
-			{
-				type: 'system',
-				label: 'GPU',
-				value: performanceStats.gpu.split(' ')[0] || 'Unknown',
-				status: performanceStats.webgpuSupported ? 'good' : 'neutral'
-			}
-		];
-	}
-	
-	function addRuntimeBadge(category, message, status) {
-		const badge = {
-			type: 'runtime',
-			label: category,
-			value: message,
-			status: status,
-			timestamp: Date.now()
-		};
-		
-		runtimeBadges = [badge, ...runtimeBadges.slice(0, 9)]; // Keep last 10
-	}
-	
-	async function initializeEffect(effectName) {
-		addRuntimeBadge('Init', `Initializing ${effectName}...`, 'info');
-		
-		// Simulate initialization delay
-		await new Promise(resolve => setTimeout(resolve, 500);
-		switch (effectName) {
-			case 'webgpu':
-				featureFlags['WebGPU Accel'].enabled = true;
-				break;
-			case 'parallax':
-				featureFlags['Dynamic Parallax'].enabled = true;
-				if (parallaxController) {
-					parallaxController.resume();
-				}
-				break;
-			case '3d-hybrid':
-				featureFlags['3D Hybrid'].enabled = true;
-				break;
-		}
-		
-		updateFeatureFlags();
-		addRuntimeBadge('Init', `${effectName} initialized successfully`, 'good');
-	}
-	
-	// GPU metrics integration (connects to SvelteKit + Go backend)
-	async function sendGPUMetrics() {
-		const metrics = {
-			gpu_model: performanceStats.gpu,
-			memory_usage: performanceStats.memory || 0,
-			fps: performanceStats.fps || 0,
-			lod_level: lodLevel,
-			features_enabled: Object.keys(featureFlags).filter(key => featureFlags[key].enabled),
-			timestamp: Date.now(),
-			viewport: {
-				width: window.innerWidth,
-				height: window.innerHeight
-			},
-			device_info: {
-				memory: lodStats.deviceMemory,
-				cores: lodStats.deviceCores,
-				platform: navigator.platform || 'Unknown'
-			}
-		};
-		
-		try {
-			const response = await fetch('/api/metrics/gpu', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(metrics)
-			});
-			
-			if (response.ok) {
-				const result = await response.json();
-				addRuntimeBadge('Metrics', `Sent to backend (${result.metrics_id?.slice(-6) || 'OK'})`, 'good');
-				
-				// Apply recommendations if provided
-				if (result.recommendations?.length > 0) {
-					result.recommendations.forEach(rec => {
-						addRuntimeBadge('Recommendation', rec, 'info');
-					});
-				}
-			} else {
-				addRuntimeBadge('Metrics', 'Failed to send to backend', 'error');
-			}
-		} catch (error) {
-			console.warn('Failed to send GPU metrics:', error);
-			addRuntimeBadge('Metrics', 'Connection error', 'error');
-		}
-	}
-	
-	// Auto-send metrics on significant performance changes
-	function autoSendMetrics() {
-		if (performanceStats.fps > 0) {
-			sendGPUMetrics();
-		}
-	}
-	
-	// Send metrics every 30 seconds if performance is being tracked
-	setInterval(() => {
-		if (performanceStats.fps > 0) {
-			autoSendMetrics();
-		}
-	}, 30000);
+  	import { onMount } from 'svelte';
+  	import ParallaxDynamic from '$lib/utils/parallaxDynamic.js';
+  	import '../../../lib/components/yorha/ps1.css';
+  	let parallaxController = null;
+  	let performanceStats = {
+  		fps: 0,
+  		memory: 0,
+  		gpu: 'Unknown',
+  		webgpuSupported: false
+  	};
+  	// Feature flags with runtime detection
+  	let featureFlags = {
+  		'PS1 FX': { enabled: true, experimental: false, description: 'Enhanced PS1 visual effects' },
+  		'3D Hybrid': { enabled: false, experimental: true, description: 'NES × YoRHa 3D hybrid rendering' },
+  		'Subsample AA': { enabled: true, experimental: false, description: 'Subsampling anti-aliasing' },
+  		'Dynamic Parallax': { enabled: true, experimental: false, description: 'Mouse/gyroscope parallax' },
+  		'Anisotropic Sim': { enabled: false, experimental: true, description: 'Anisotropic filtering simulation' },
+  		'WebGPU Accel': { enabled: false, experimental: true, description: 'WebGPU hardware acceleration' }
+  	};
+  	// LOD system
+  	let lodLevel = 'medium'; // auto-detected
+  	let lodStats = {
+  		autoDetected: true,
+  		reason: 'Device capabilities',
+  		deviceMemory: navigator.deviceMemory || 4,
+  		deviceCores: navigator.hardwareConcurrency || 4
+  	};
+  	// Runtime badges
+  	let runtimeBadges = [];
+  	onMount(async () => {
+  		await detectCapabilities();
+  		await initializeParallax();
+  		updateFeatureFlags();
+  		startPerformanceMonitoring();
+  		generateRuntimeBadges();
+  		// Set LOD on HTML element
+  		document.documentElement.setAttribute('data-hybrid-lod', lodLevel);
+  	});
+  	async function detectCapabilities() {
+  		// WebGPU detection
+  		if (navigator.gpu) {
+  			try {
+  				const adapter = await navigator.gpu.requestAdapter();
+  				if (adapter) {
+  					performanceStats.webgpuSupported = true;
+  					performanceStats.gpu = adapter.info?.description || 'WebGPU Capable';
+  					featureFlags['WebGPU Accel'].enabled = true;
+  				}
+  			} catch (error) {
+  				console.warn('WebGPU detection failed:', error);
+  			}
+  		}
+  		// Memory detection for auto-LOD
+  		const memory = lodStats.deviceMemory;
+  		const cores = lodStats.deviceCores;
+  		if (memory >= 8 && cores >= 8) {
+  			lodLevel = 'high';
+  			lodStats.reason = `High-end device (${memory}GB RAM, ${cores} cores)`;
+  		} else if (memory >= 4 && cores >= 4) {
+  			lodLevel = 'medium';
+  			lodStats.reason = `Mid-range device (${memory}GB RAM, ${cores} cores)`;
+  		} else {
+  			lodLevel = 'low';
+  			lodStats.reason = `Low-end device (${memory}GB RAM, ${cores} cores)`;
+  		}
+  		performanceStats.memory = memory;
+  		console.log(`🎯 Auto-detected LOD: ${lodLevel} - ${lodStats.reason}`);
+  	}
+  	async function initializeParallax() {
+  		parallaxController = new ParallaxDynamic({
+  			enableWebGPU: featureFlags['WebGPU Accel'].enabled,
+  			performanceMode: lodLevel,
+  			mouseSensitivity: 0.02,
+  			gyroSensitivity: 0.5,
+  			maxOffset: 100,
+  			enableAutoRotate: true,
+  			autoRotateSpeed: 0.001
+  		});
+  		// Add parallax layers
+  		parallaxController.addLayer('[data-parallax="background"]', { 
+  			depth: 0.1, 
+  			id: 'background' 
+  		});
+  		parallaxController.addLayer('[data-parallax="midground"]', { 
+  			depth: 0.3, 
+  			id: 'midground' 
+  		});
+  		parallaxController.addLayer('[data-parallax="foreground"]', { 
+  			depth: 0.6, 
+  			id: 'foreground' 
+  		});
+  		// Performance callback
+  		parallaxController.onPerformanceChange((stats) => {
+  			performanceStats.fps = stats.fps;
+  			// Auto-adjust quality based on performance
+  			if (stats.fps < 30 && lodLevel === 'high') {
+  				setLOD('medium');
+  				addRuntimeBadge('Performance', 'Downgraded to medium quality due to low FPS', 'warning');
+  			}
+  		});
+  		parallaxController.start();
+  	}
+  	function updateFeatureFlags() {
+  		const root = document.documentElement;
+  		// Apply feature flag classes
+  		Object.entries(featureFlags).forEach(([name, flag]) => {
+  			const className = `fx-${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+  			if (flag.enabled) {
+  				root.classList.add(className);
+  			} else {
+  				root.classList.remove(className);
+  			}
+  		});
+  		console.log('🎛️ Feature flags updated:', featureFlags);
+  	}
+  	function toggleFeatureFlag(flagName) {
+  		featureFlags[flagName].enabled = !featureFlags[flagName].enabled;
+  		updateFeatureFlags();
+  		// Special handling for WebGPU
+  		if (flagName === 'WebGPU Accel' && parallaxController) {
+  			parallaxController.setConfig({ 
+  				enableWebGPU: featureFlags[flagName].enabled 
+  			});
+  		}
+  		addRuntimeBadge('Feature Toggle', `${flagName}: ${featureFlags[flagName].enabled ? 'ON' : 'OFF'}`, 'info');
+  	}
+  	function setLOD(level) {
+  		lodLevel = level;
+  		lodStats.autoDetected = false;
+  		lodStats.reason = 'Manual override';
+  		document.documentElement.setAttribute('data-hybrid-lod', level);
+  		if (parallaxController) {
+  			parallaxController.setPerformanceMode(level);
+  		}
+  		addRuntimeBadge('LOD Change', `Quality set to ${level}`, 'info');
+  		console.log(`🎯 LOD manually set to: ${level}`);
+  	}
+  	function startPerformanceMonitoring() {
+  		setInterval(() => {
+  			// Basic performance monitoring
+  			if (performance.memory) {
+  				performanceStats.memory = Math.round(performance.memory.usedJSHeapSize / 1024 / 1024);
+  			}
+  			// Check if page is hidden (Page Visibility API)
+  			if (document.hidden && parallaxController) {
+  				parallaxController.pause();
+  			} else if (!document.hidden && parallaxController && !parallaxController.isActive) {
+  				parallaxController.resume();
+  			}
+  		}, 1000);
+  	}
+  	function generateRuntimeBadges() {
+  		runtimeBadges = [
+  			{
+  				type: 'system',
+  				label: 'LOD',
+  				value: lodLevel.toUpperCase(),
+  				status: lodLevel === 'high' ? 'good' : lodLevel === 'medium' ? 'warning' : 'error'
+  			},
+  			{
+  				type: 'system',
+  				label: 'WebGPU',
+  				value: performanceStats.webgpuSupported ? 'YES' : 'NO',
+  				status: performanceStats.webgpuSupported ? 'good' : 'warning'
+  			},
+  			{
+  				type: 'system',
+  				label: 'Memory',
+  				value: `${performanceStats.memory}GB`,
+  				status: performanceStats.memory >= 8 ? 'good' : performanceStats.memory >= 4 ? 'warning' : 'error'
+  			},
+  			{
+  				type: 'system',
+  				label: 'GPU',
+  				value: performanceStats.gpu.split(' ')[0] || 'Unknown',
+  				status: performanceStats.webgpuSupported ? 'good' : 'neutral'
+  			}
+  		];
+  	}
+  	function addRuntimeBadge(category, message, status) {
+  		const badge = {
+  			type: 'runtime',
+  			label: category,
+  			value: message,
+  			status: status,
+  			timestamp: Date.now()
+  		};
+  		runtimeBadges = [badge, ...runtimeBadges.slice(0, 9)]; // Keep last 10
+  	}
+  	async function initializeEffect(effectName) {
+  		addRuntimeBadge('Init', `Initializing ${effectName}...`, 'info');
+  		// Simulate initialization delay
+  		await new Promise(resolve => setTimeout(resolve, 500);
+  		switch (effectName) {
+  			case 'webgpu':
+  				featureFlags['WebGPU Accel'].enabled = true;
+  				break;
+  			case 'parallax':
+  				featureFlags['Dynamic Parallax'].enabled = true;
+  				if (parallaxController) {
+  					parallaxController.resume();
+  				}
+  				break;
+  			case '3d-hybrid':
+  				featureFlags['3D Hybrid'].enabled = true;
+  				break;
+  		}
+  		updateFeatureFlags();
+  		addRuntimeBadge('Init', `${effectName} initialized successfully`, 'good');
+  	}
+  	// GPU metrics integration (connects to SvelteKit + Go backend)
+  	async function sendGPUMetrics() {
+  		const metrics = {
+  			gpu_model: performanceStats.gpu,
+  			memory_usage: performanceStats.memory || 0,
+  			fps: performanceStats.fps || 0,
+  			lod_level: lodLevel,
+  			features_enabled: Object.keys(featureFlags).filter(key => featureFlags[key].enabled),
+  			timestamp: Date.now(),
+  			viewport: {
+  				width: window.innerWidth,
+  				height: window.innerHeight
+  			},
+  			device_info: {
+  				memory: lodStats.deviceMemory,
+  				cores: lodStats.deviceCores,
+  				platform: navigator.platform || 'Unknown'
+  			}
+  		};
+  		try {
+  			const response = await fetch('/api/metrics/gpu', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify(metrics)
+  			});
+  			if (response.ok) {
+  				const result = await response.json();
+  				addRuntimeBadge('Metrics', `Sent to backend (${result.metrics_id?.slice(-6) || 'OK'})`, 'good');
+  				// Apply recommendations if provided
+  				if (result.recommendations?.length > 0) {
+  					result.recommendations.forEach(rec => {
+  						addRuntimeBadge('Recommendation', rec, 'info');
+  					});
+  				}
+  			} else {
+  				addRuntimeBadge('Metrics', 'Failed to send to backend', 'error');
+  			}
+  		} catch (error) {
+  			console.warn('Failed to send GPU metrics:', error);
+  			addRuntimeBadge('Metrics', 'Connection error', 'error');
+  		}
+  	}
+  	// Auto-send metrics on significant performance changes
+  	function autoSendMetrics() {
+  		if (performanceStats.fps > 0) {
+  			sendGPUMetrics();
+  		}
+  	}
+  	// Send metrics every 30 seconds if performance is being tracked
+  	setInterval(() => {
+  		if (performanceStats.fps > 0) {
+  			autoSendMetrics();
+  		}
+  	}, 30000);
 </script>
 
 <svelte:head>

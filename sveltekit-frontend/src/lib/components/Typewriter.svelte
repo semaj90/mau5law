@@ -1,7 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-</script>
   interface Props {
     text: string ;
     speed: number ;
@@ -10,19 +9,16 @@ https://svelte.dev/e/js_parse_error -->
     text = '',
     speed = 50
   }: Props = $props();
-let output = $state('');
-let i = $state(0);
-let intervalId = $state<NodeJS.Timeout | null >(null);
-  
+  let output = $state('');
+  let i = $state(0);
+  let intervalId = $state<NodeJS.Timeout | null >(null);
   $effect(() => {
     if (text) {
       output = '';
       i = 0;
-      
       if (intervalId) {
         clearInterval(intervalId);
       }
-      
       intervalId = setInterval(() => {
         if (i < text.length) {
           output += text[i];

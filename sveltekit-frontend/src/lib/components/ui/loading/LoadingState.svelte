@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     loading?: boolean;
     error?: string | null;
@@ -10,7 +9,6 @@
     children?: any;
     fallback?: any;
   }
-  
   let { 
     loading = false,
     error = null,

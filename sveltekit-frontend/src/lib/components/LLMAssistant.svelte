@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { onMount } from 'svelte';
   import { invoke } from '@tauri-apps/api/tauri';

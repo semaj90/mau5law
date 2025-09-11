@@ -1,9 +1,8 @@
 <script lang="ts">
-</script>
-	import { Popover } from "bits-ui";
-	import Code from "$lib/components/markdown/code.svelte";
+  	import { Popover } from "bits-ui";
+  	import Code from "$lib/components/markdown/code.svelte";
 
-	let { name }: { name: string } = $props();
+  	let { name }: { name: string } = $props();
 </script>
 
 <div class="flex items-center gap-1.5">

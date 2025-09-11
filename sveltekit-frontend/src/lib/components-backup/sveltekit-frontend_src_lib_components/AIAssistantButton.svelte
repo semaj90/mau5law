@@ -2,7 +2,6 @@
 // File: AIAssistantButton.svelte
 
 <script lang="ts">
-</script>
   interface Props {
     onresponse?: (event?: any) => void;
     onerror?: (event?: any) => void;
@@ -19,12 +18,8 @@
     import { Button } from 'bits-ui';
   import { Badge } from 'bits-ui';
   import { Loader2, Brain, Zap, AlertTriangle } from 'lucide-svelte';
-  
-          
-    
   let apiLogs = [];
   let currentTest = null;
-  
   const logAPI = (endpoint, status, time, error = null) => {
     apiLogs = [{
       endpoint,
@@ -37,11 +32,9 @@
 
   const testGemma3 = async () => {
     if (isProcessing) return;
-    
     isProcessing = true;
     currentTest = 'gemma3';
     const startTime = Date.now();
-    
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
@@ -57,10 +50,8 @@
           }
         })
       });
-      
       const time = Date.now() - startTime;
       responseTime = time;
-      
       if (response.ok) {
         const result = await response.json();
         systemStatus = 'operational';
@@ -74,18 +65,15 @@
       logAPI('Gemma3 Legal', 0, Date.now() - startTime, error.message);
       onerror?.();
     }
-    
     isProcessing = false;
     currentTest = null;
   };
 
   const testSynthesis = async () => {
     if (isProcessing) return;
-    
     isProcessing = true;
     currentTest = 'synthesis';
     const startTime = Date.now();
-    
     try {
       const response = await fetch('/api/evidence/synthesize', {
         method: 'POST',
@@ -98,10 +86,8 @@
           prompt: query
         })
       });
-      
       const time = Date.now() - startTime;
       responseTime = time;
-      
       // 401 is expected without auth
       if (response.status === 401 || response.ok) {
         systemStatus = 'operational';
@@ -117,18 +103,15 @@
       logAPI('Synthesis API', 0, Date.now() - startTime, error.message);
       onerror?.();
     }
-    
     isProcessing = false;
     currentTest = null;
   };
 
   const testRAG = async () => {
     if (isProcessing) return;
-    
     isProcessing = true;
     currentTest = 'rag';
     const startTime = Date.now();
-    
     try {
       const response = await fetch('/api/enhanced-rag/query', {
         method: 'POST',
@@ -139,10 +122,8 @@
           maxResults: 10
         })
       });
-      
       const time = Date.now() - startTime;
       responseTime = time;
-      
       if (response.ok) {
         const result = await response.json();
         logAPI('RAG Studio', 200, time);
@@ -156,7 +137,6 @@
       logAPI('RAG Studio', 0, Date.now() - startTime, error.message);
       onerror?.();
     }
-    
     isProcessing = false;
     currentTest = null;
   };

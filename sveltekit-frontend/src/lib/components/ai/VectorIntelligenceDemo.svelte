@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Search, Database, Brain, FileText, AlertCircle, CheckCircle2, Loader2, Star, Clock } from "lucide-svelte";
   import {
     Button

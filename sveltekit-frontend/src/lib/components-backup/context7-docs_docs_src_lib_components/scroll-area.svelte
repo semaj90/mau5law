@@ -1,19 +1,18 @@
 <script lang="ts">
-</script>
-	import { cn } from "$lib/utils/styles.js";
-	import { ScrollArea } from "bits-ui";
-	import type { ComponentProps } from "svelte";
+  	import { cn } from "$lib/utils/styles.js";
+  	import { ScrollArea } from "bits-ui";
+  	import type { ComponentProps } from "svelte";
 
-	let {
-		class: className,
-		children,
-		scrollbarXProps,
-		scrollbarYProps,
-		...restProps
-	}: ComponentProps<typeof ScrollArea.Root> & {
-		scrollbarXProps?: Partial<ComponentProps<typeof ScrollArea.Scrollbar>>;
-		scrollbarYProps?: Partial<ComponentProps<typeof ScrollArea.Scrollbar>>;
-	} = $props();
+  	let {
+  		class: className,
+  		children,
+  		scrollbarXProps,
+  		scrollbarYProps,
+  		...restProps
+  	}: ComponentProps<typeof ScrollArea.Root> & {
+  		scrollbarXProps?: Partial<ComponentProps<typeof ScrollArea.Scrollbar>>;
+  		scrollbarYProps?: Partial<ComponentProps<typeof ScrollArea.Scrollbar>>;
+  	} = $props();
 </script>
 
 <ScrollArea.Root {...restProps}>

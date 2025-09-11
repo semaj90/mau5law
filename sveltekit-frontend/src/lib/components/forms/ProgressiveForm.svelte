@@ -1,6 +1,5 @@
 <!-- ProgressiveForm.svelte - Example of properly progressive enhanced form -->
 <script lang="ts">
-</script>
   import { enhance } from '$app/forms';
   import { createProgressiveForm, type ProgressiveEnhancementConfig } from '$lib/utils/progressive-enhancement-audit.js';
   import type { SubmitFunction } from '@sveltejs/kit';
@@ -10,21 +9,16 @@
     // Form behavior props
     action = '/api/submit-form',
     method = 'POST' as 'GET' | 'POST',
-    
     // Data props
     initialData = {} as Record<string, any>,
-    
     // Configuration props
     config = {} as Partial<ProgressiveEnhancementConfig>,
-    
     // Event handlers
     onsubmit = undefined as ((data: FormData) => void) | undefined,
     onsuccess = undefined as ((result: any) => void) | undefined,
     onerror = undefined as ((error: string) => void) | undefined,
-    
     // Form styling
     class: className = '',
-    
     // Form metadata
     formId = `form-${Date.now()}`,
     title = 'Progressive Form',
@@ -33,7 +27,6 @@
 
   // Initialize progressive form utilities
   const progressiveForm = createProgressiveForm(config);
-  
   // Form state
   let formState = $state(progressiveForm.createFormState(initialData));
   let isSubmitting = $state(false);
@@ -56,27 +49,22 @@
       case 'email':
         return progressiveForm.validateRequired(value, 'Email') || 
                progressiveForm.validateEmail(value);
-      
       case 'password':
         return progressiveForm.validateRequired(value, 'Password') ||
                progressiveForm.validateLength(value, 8, 128);
-      
       case 'confirmPassword':
         if (value !== formState.data.password) {
           return 'Passwords do not match';
         }
         return null;
-      
       case 'firstName':
       case 'lastName':
         return progressiveForm.validateRequired(value, fieldName);
-      
       case 'terms':
         if (!value) {
           return 'You must accept the terms and conditions';
         }
         return null;
-      
       default:
         return null;
     }
@@ -87,10 +75,8 @@
     // Update form data
     formState.data[fieldName] = value;
     formState.isDirty = true;
-    
     // Mark field as touched
     formState.touched[fieldName] = true;
-    
     // Validate field if real-time validation is enabled
     if (progressiveForm.config.enableRealTimeValidation && formState.touched[fieldName]) {
       const error = validateField(fieldName, value);
@@ -106,7 +92,6 @@
   function validateForm(): boolean {
     const fields = ['email', 'password', 'confirmPassword', 'firstName', 'lastName', 'terms'];
     let isValid = true;
-    
     for (const fieldName of fields) {
       const error = validateField(fieldName, formState.data[fieldName]);
       if (error) {
@@ -116,7 +101,6 @@
         delete formState.errors[fieldName];
       }
     }
-    
     return isValid;
   }
 
@@ -125,62 +109,50 @@
     // Client-side validation before submit
     if (!validateForm()) {
       cancel();
-      
       // Focus first invalid field
       const firstErrorField = Object.keys(formState.errors)[0];
       if (firstErrorField) {
         const element = document.getElementById(fieldIds[firstErrorField as keyof typeof fieldIds]);
         element?.focus();
       }
-      
       return;
     }
-    
     isSubmitting = true;
     submitMessage = '';
     submitMessageType = '';
-    
     // Call custom onsubmit handler if provided
     if (onsubmit) {
       onsubmit(formData);
     }
-    
     return async ({ result, update }) => {
       isSubmitting = false;
-      
       if (result.type === 'success') {
         submitMessage = 'Form submitted successfully!';
         submitMessageType = 'success';
-        
         // Reset form on success if configured
         if (!progressiveForm.config.enableAutoSave) {
           formState = progressiveForm.createFormState();
         }
-        
         if (onsuccess) {
           onsuccess(result.data);
         }
       } else if (result.type === 'failure') {
         submitMessage = result.data?.message || 'Form submission failed. Please try again.';
         submitMessageType = 'error';
-        
         // Handle server validation errors
         if (result.data?.errors) {
           formState.errors = { ...formState.errors, ...result.data.errors };
         }
-        
         if (onerror) {
           onerror(submitMessage);
         }
       } else if (result.type === 'error') {
         submitMessage = 'An unexpected error occurred. Please try again.';
         submitMessageType = 'error';
-        
         if (onerror) {
           onerror(submitMessage);
         }
       }
-      
       // Announce result to screen readers
       if (progressiveForm.config.announceErrors && submitMessage) {
         const announcement = document.getElementById(`${formId}-announcements`);
@@ -188,7 +160,6 @@
           announcement.textContent = submitMessage;
         }
       }
-      
       await update();
     };
   };
@@ -197,7 +168,6 @@
   function handleNativeSubmit(event: Event) {
     const form = event.target as HTMLFormElement;
     const formData = new FormData(form);
-    
     // Basic client-side validation for browsers without JavaScript
     if (!validateForm()) {
       event.preventDefault();
@@ -220,7 +190,6 @@
     const fieldId = fieldIds[fieldName as keyof typeof fieldIds];
     const errorId = progressiveForm.generateErrorId(fieldId);
     const descriptionId = progressiveForm.generateDescriptionId(fieldId);
-    
     return {
       id: fieldId,
       'aria-invalid': hasError(fieldName) ? 'true' : 'false',

@@ -2,7 +2,6 @@
 <!-- Real-time GPU-accelerated legal AI visualizations -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     Button
@@ -21,8 +20,8 @@
   import { Activity, Cpu, Zap, Eye, BarChart, BarChart3, Network, Clock } from 'lucide-svelte';
 
   // GPU system state
-let gpuManager = $state<any >(null);
-let shaderCache = $state<any >(null);
+  let gpuManager = $state<any >(null);
+  let shaderCache = $state<any >(null);
   interface GpuCapabilities {
     webgl: boolean;
     webgl2: boolean;
@@ -37,15 +36,15 @@ let shaderCache = $state<any >(null);
   });
 
   // Canvas and WebGL context
-let canvas = $state<HTMLCanvasElement | null >(null);
+  let canvas = $state<HTMLCanvasElement | null >(null);
   // Allow fallback to WebGL1 so assignment is type-safe
-let gl = $state<WebGL2RenderingContext | WebGLRenderingContext | null >(null);
+  let gl = $state<WebGL2RenderingContext | WebGLRenderingContext | null >(null);
 
   // Demo state
   let isInitialized = $state(false);
   let activeVisualization: string = $state('attentionHeatmap');
   let isRendering = $state(false);
-let animationFrame = $state<number >(0);
+  let animationFrame = $state<number >(0);
 
   // Performance metrics
   let gpuMetrics: {
@@ -84,13 +83,13 @@ let animationFrame = $state<number >(0);
   const shaderPrograms: Record<string, any> = {};
 
   // Subscriptions (track to unsubscribe on destroy)
-let gpuMetricsSub = $state<{ unsubscribe?: () => void } | null>(null);
-let shaderMetricsSub = $state<{ unsubscribe?: () => void } | null>(null);
+  let gpuMetricsSub = $state<{ unsubscribe?: () => void } | null>(null);
+  let shaderMetricsSub = $state<{ unsubscribe?: () => void } | null>(null);
 
   // Demo data
-let attentionData = $state<Float32Array >(new Float32Array(0);
-let documentData = $state<Float32Array >(new Float32Array(0);
-let timelineData = $state<Float32Array >(new Float32Array(0);
+  let attentionData = $state<Float32Array >(new Float32Array(0);
+  let documentData = $state<Float32Array >(new Float32Array(0);
+  let timelineData = $state<Float32Array >(new Float32Array(0);
   onMount(async () => {
     // Create GPU manager then init (shader cache created after GL context is ready)
     gpuManager = createGPUClusterManager();

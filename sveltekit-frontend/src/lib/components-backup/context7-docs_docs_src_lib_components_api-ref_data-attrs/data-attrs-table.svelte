@@ -1,13 +1,12 @@
 <script lang="ts">
-</script>
-	import Code from "$lib/components/markdown/code.svelte";
-	import * as Table from "$lib/components/ui/table/index.js";
-	import type { DataAttrSchema } from "$lib/types/index.js";
-	import { parseMarkdown } from "$lib/utils/index.js";
-	import DataAttrsValueContentMobile from "./data-attrs-value-content-mobile.svelte";
-	import DataAttrValueContent from "./data-attrs-value-content.svelte";
+  	import Code from "$lib/components/markdown/code.svelte";
+  	import * as Table from "$lib/components/ui/table/index.js";
+  	import type { DataAttrSchema } from "$lib/types/index.js";
+  	import { parseMarkdown } from "$lib/utils/index.js";
+  	import DataAttrsValueContentMobile from "./data-attrs-value-content-mobile.svelte";
+  	import DataAttrValueContent from "./data-attrs-value-content.svelte";
 
-	let { dataAttrs = [] }: { dataAttrs: DataAttrSchema[] } = $props();
+  	let { dataAttrs = [] }: { dataAttrs: DataAttrSchema[] } = $props();
 </script>
 
 <Table.Root>

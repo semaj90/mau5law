@@ -1,8 +1,7 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from "svelte";
   import type { Report } from "../../../lib/data/types";
-// UI Components
+  // UI Components
   import * as ContextMenu from "../../../lib/components/ui/context-menu";
   // Icons
   import { Link, Sparkles } from "lucide-svelte";

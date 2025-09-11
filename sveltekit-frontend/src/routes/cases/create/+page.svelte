@@ -3,7 +3,6 @@
   Demonstrates complete form enhancement pattern
 -->
 <script lang="ts">
-</script>
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { enhance } from '$app/forms';
@@ -17,9 +16,9 @@
   { CaseForm } from '$lib/schemas/forms';
 
   let { data = $bindable() } = $props(); // PageData;
-let isSubmitting = $state(false);
-let showSuccess = $state(false);
-let errorMessage = $state('');
+  let isSubmitting = $state(false);
+  let showSuccess = $state(false);
+  let errorMessage = $state('');
 
   // Handle form submission success
   function handleFormSuccess(event: CustomEvent<{ caseItem: any }>) {
@@ -70,7 +69,7 @@ let errorMessage = $state('');
   });
 
   // Auto-save functionality
-let autoSaveTimeout = $state<NodeJS.Timeout | undefined>(undefined);
+  let autoSaveTimeout = $state<NodeJS.Timeout | undefined>(undefined);
 
   function scheduleAutoSave(formData: CaseForm) {
     clearTimeout(autoSaveTimeout);

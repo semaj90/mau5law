@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     isOpen?: any;
     caseId: string | undefined ;
@@ -18,8 +17,6 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import Dialog from '$lib/components/Dialog.svelte';
-  
-        
   interface LegalAnalysis {
     sessionId: string
     analysis: string
@@ -56,7 +53,6 @@
 
     loading = true;
     error = '';
-    
     try {
       const response = await fetch('/api/legal/chat', {
         method: 'POST',
@@ -82,7 +78,6 @@
 
       analysis = await response.json();
       onAnalysisComplete(analysis);
-      
     } catch (err) {
       error = err instanceof Error ? err.message : 'Analysis failed';
       console.error('Legal analysis error:', err);

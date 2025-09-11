@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { shouldEnableRetroEffects } from './retroPerformanceGuard';
 
@@ -13,24 +12,24 @@
   // TODO: Convert to $derived: thumbX = checked ? 18 : 0
 
   onMount(() => {
-	try {
-	  retroEnabled = shouldEnableRetroEffects();
-	} catch {
-	  retroEnabled = false;
-	}
+  	try {
+  	  retroEnabled = shouldEnableRetroEffects();
+  	} catch {
+  	  retroEnabled = false;
+  	}
   });
 
   function toggle() {
-	if (disabled) return;
-	checked = !checked;
-	dispatch('change', { checked });
+  	if (disabled) return;
+  	checked = !checked;
+  	dispatch('change', { checked });
   }
 
   function handleKey(e: KeyboardEvent) {
-	if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
-	  e.preventDefault();
-	  toggle();
-	}
+  	if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
+  	  e.preventDefault();
+  	  toggle();
+  	}
   }
 </script>
 

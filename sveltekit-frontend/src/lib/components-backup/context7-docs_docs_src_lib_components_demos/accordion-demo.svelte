@@ -1,27 +1,26 @@
 <script lang="ts">
-</script>
-	import { Accordion } from "bits-ui";
-	import CaretDown from "phosphor-svelte/lib/CaretDown";
+  	import { Accordion } from "bits-ui";
+  	import CaretDown from "phosphor-svelte/lib/CaretDown";
 
-	const items = [
-		{
-			value: "1",
-			title: "What is the meaning of life?",
-			content:
-				"To become a better person, to help others, and to leave the world a better place than you found it.",
-		},
-		{
-			value: "2",
-			title: "How do I become a better person?",
-			content:
-				"Read books, listen to podcasts, and surround yourself with people who inspire you.",
-		},
-		{
-			value: "3",
-			title: "What is the best way to help others?",
-			content: "Give them your time, attention, and love.",
-		},
-	];
+  	const items = [
+  		{
+  			value: "1",
+  			title: "What is the meaning of life?",
+  			content:
+  				"To become a better person, to help others, and to leave the world a better place than you found it.",
+  		},
+  		{
+  			value: "2",
+  			title: "How do I become a better person?",
+  			content:
+  				"Read books, listen to podcasts, and surround yourself with people who inspire you.",
+  		},
+  		{
+  			value: "3",
+  			title: "What is the best way to help others?",
+  			content: "Give them your time, attention, and love.",
+  		},
+  	];
 </script>
 
 <Accordion.Root class="w-full sm:max-w-[70%]" type="multiple">

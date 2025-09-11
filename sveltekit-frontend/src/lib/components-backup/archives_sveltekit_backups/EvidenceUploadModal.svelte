@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Button from "$lib/components/ui/Button.svelte";
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
   import { formatFileSize } from "$lib/utils/file-utils";

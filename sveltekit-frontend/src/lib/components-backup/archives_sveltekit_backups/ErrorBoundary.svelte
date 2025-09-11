@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import {
     errorHandler,
@@ -77,10 +76,10 @@
     if (!currentError) return;
 
     const errorText = `Error: ${currentError.title}
-Message: ${currentError.message}
-Suggestion: ${currentError.suggestion || "None"}
-Severity: ${currentError.severity}
-Timestamp: ${new Date().toISOString()}`;
+  Message: ${currentError.message}
+  Suggestion: ${currentError.suggestion || "None"}
+  Severity: ${currentError.severity}
+  Timestamp: ${new Date().toISOString()}`;
 
     navigator.clipboard
       .writeText(errorText)

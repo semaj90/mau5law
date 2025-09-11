@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Page data (SvelteKit): receive `data` from the page's load function
   import { goto } from "$app/navigation";
   import EnhancedCaseForm from "$lib/components/forms/EnhancedCaseForm.svelte";
@@ -9,8 +8,8 @@
 
   // In Svelte runes mode use the built-in $props() to access page props
   const { form } = $props() as { form?: ActionData };
-let isSubmitting = $state(false);
-let caseData = $state({});
+  let isSubmitting = $state(false);
+  let caseData = $state({});
 
   async function handleSubmit(event: CustomEvent) {
     const { data } = event.detail;
@@ -37,10 +36,10 @@ let caseData = $state({});
       });
     } finally {
       isSubmitting = false;
-}}
+  }}
   function handleCancel() {
     goto("/cases");
-}
+  }
   // Show server-side form errors as notifications
   $effect(() => {
     if (form?.error) {

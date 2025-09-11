@@ -1,11 +1,10 @@
 <!-- Legal Case Analysis Dialog - Bits UI Component -->
 <script lang="ts">
-</script>
   import { Dialog } from 'bits-ui/components/dialog';
-import { Select } from 'bits-ui/components/select';
-import { Button } from 'bits-ui/components/button';
-import { Badge } from 'bits-ui/components/badge';
-import { Progress } from 'bits-ui/components/progress';
+  import { Select } from 'bits-ui/components/select';
+  import { Button } from 'bits-ui/components/button';
+  import { Badge } from 'bits-ui/components/badge';
+  import { Progress } from 'bits-ui/components/progress';
   import { legalCaseStore } from '$lib/stores/legal-case.store.svelte';
   import type { LegalCase } from '$lib/types/legal';
 
@@ -43,7 +42,6 @@ import { Progress } from 'bits-ui/components/progress';
       }, 200);
 
       await analyzeCase(selectedCaseForAnalysis);
-      
       clearInterval(progressInterval);
       analysisProgress = 100;
       analysisStatus = 'complete';

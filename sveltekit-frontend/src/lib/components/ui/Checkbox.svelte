@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   export let checked: boolean = false;
   export let label: string = '';
   export let id: string = '';

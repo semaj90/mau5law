@@ -3,7 +3,6 @@ Autonomous Engineering Page
 Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
@@ -24,7 +23,6 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     FileText,
     Workflow
   } from 'lucide-svelte';
-  
   import AutonomousEngineeringDemo from '$lib/components/copilot/AutonomousEngineeringDemo.svelte';
 
   // System status state
@@ -110,41 +108,41 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
       title: 'VS Code Copilot Integration',
       description: 'Direct integration with GitHub Copilot for enhanced suggestions',
       code: `// In VS Code, Copilot can now leverage our autonomous system
-await copilotSelfPrompt("Fix TypeScript errors", {
+  await copilotSelfPrompt("Fix TypeScript errors", {
   useAutonomousEngineering: true,
   context: { platform: "webapp", urgency: "high" }
-});`
+  });`
     },
     {
       title: 'Cline Extension Integration',
       description: 'Autonomous engineering for Cline AI assistant',
       code: `// Cline can use our API for comprehensive analysis
-const response = await fetch('/api/copilot/self-prompt', {
+  const response = await fetch('/api/copilot/self-prompt', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
     prompt: "Optimize performance across all platforms",
     mode: "autonomous"
   })
-});`
+  });`
     },
     {
       title: 'Roo Extension Integration',
       description: 'Multi-agent coordination for Roo AI workflows',
       code: `// Roo can leverage multi-agent analysis
-const analysis = await copilotSelfPrompt(userRequest, {
+  const analysis = await copilotSelfPrompt(userRequest, {
   useMultiAgent: true,
   useSemanticSearch: true,
   outputFormat: "structured"
-});`
+  });`
     },
     {
       title: 'Custom Extension Development',
       description: 'Build your own VS Code extension with our AI stack',
       code: `// Custom extension using our autonomous engineering
-import { copilotSelfPrompt } from './autonomous-ai';
+  import { copilotSelfPrompt } from './autonomous-ai';
 
-export function activate(context: vscode.ExtensionContext) {
+  export function activate(context: vscode.ExtensionContext) {
   const command = vscode.commands.registerCommand(
     'myext.analyzeCode',
     async () => {
@@ -154,7 +152,7 @@ export function activate(context: vscode.ExtensionContext) {
       // Process result...
     }
   );
-}`
+  }`
     }
   ];
 

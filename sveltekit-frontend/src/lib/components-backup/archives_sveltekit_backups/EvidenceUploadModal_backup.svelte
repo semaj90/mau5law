@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
 
   // TODO: Convert to $derived: isOpen = $uploadModal.isOpen

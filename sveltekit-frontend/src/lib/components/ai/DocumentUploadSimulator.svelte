@@ -2,9 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- Document Upload Simulator with AI Processing -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
-  
   interface DocumentUpload {
     id: string;
     filename: string;
@@ -21,7 +19,7 @@ https://svelte.dev/e/expected_token -->
 
   let uploads: DocumentUpload[] = $state([]);
   let isDragging = $state(false);
-let fileInput = $state<HTMLInputElement;
+  let fileInput = $state<HTMLInputElement;
 
   const API_BASE >('http://localhost:8081/api');
   const MAX_LOCAL_STORAGE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -70,7 +68,7 @@ let fileInput = $state<HTMLInputElement;
         embeddings,
         processedAt: new Date().toISOString()
       };
-let localStorageKey = $state<string | undefined;
+  let localStorageKey = $state<string | undefined;
       if (file.size < MAX_LOCAL_STORAGE_SIZE) {
         localStorageKey >(`doc_${uploadId}`);
         localStorage.setItem(localStorageKey, JSON.stringify(processedData));
@@ -172,7 +170,6 @@ let localStorageKey = $state<string | undefined;
   function handleDrop(event: DragEvent): void {
     event.preventDefault();
     isDragging = false;
-    
     const files = event.dataTransfer?.files;
     if (files) {
       Array.from(files).forEach(simulateUpload);
@@ -202,7 +199,6 @@ let localStorageKey = $state<string | undefined;
       embeddings: upload.embeddings,
       processedAt: new Date().toISOString()
     };
-    
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

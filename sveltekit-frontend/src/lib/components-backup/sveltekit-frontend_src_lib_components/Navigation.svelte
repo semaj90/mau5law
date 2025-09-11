@@ -1,29 +1,25 @@
 <script lang="ts">
-</script>
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
-	import { cn } from '$lib/utils';
-	import Badge from '$lib/components/ui/Badge.svelte';
-	import Button from '$lib/components/ui/button/Button.svelte';
-	
-	const navItems = [
-		{ href: '/', label: 'Dashboard', icon: '🏠' },
-		{ href: '/evidence/analyze', label: 'Evidence Analysis', icon: '🔍' },
-		{ href: '/cases', label: 'Cases', icon: '📁' },
-		{ href: '/semantic-search-demo', label: 'Search Demo', icon: '🔎' },
-		{ href: '/dev/self-prompting-demo', label: 'Agent Orchestration', icon: '🤖' },
-		{ href: '/dev/mcp-tools', label: 'MCP Tools', icon: '🔧' }
-	];
-	
-	let currentPath = $derived($page.url.pathname)
-	
-	// Optimized navigation with instant transitions
-	function handleNavigation(href: string, event?: Event) {
-		event?.preventDefault();
-		// Use replaceState for instant visual feedback, then navigate
-		history.pushState(null, '', href);
-		goto(href, { replaceState: false, noScroll: false, keepFocus: false, invalidateAll: false });
-	}
+  	import { page } from '$app/stores';
+  	import { goto } from '$app/navigation';
+  	import { cn } from '$lib/utils';
+  	import Badge from '$lib/components/ui/Badge.svelte';
+  	import Button from '$lib/components/ui/button/Button.svelte';
+  	const navItems = [
+  		{ href: '/', label: 'Dashboard', icon: '🏠' },
+  		{ href: '/evidence/analyze', label: 'Evidence Analysis', icon: '🔍' },
+  		{ href: '/cases', label: 'Cases', icon: '📁' },
+  		{ href: '/semantic-search-demo', label: 'Search Demo', icon: '🔎' },
+  		{ href: '/dev/self-prompting-demo', label: 'Agent Orchestration', icon: '🤖' },
+  		{ href: '/dev/mcp-tools', label: 'MCP Tools', icon: '🔧' }
+  	];
+  	let currentPath = $derived($page.url.pathname)
+  	// Optimized navigation with instant transitions
+  	function handleNavigation(href: string, event?: Event) {
+  		event?.preventDefault();
+  		// Use replaceState for instant visual feedback, then navigate
+  		history.pushState(null, '', href);
+  		goto(href, { replaceState: false, noScroll: false, keepFocus: false, invalidateAll: false });
+  	}
 </script>
 
 <nav class="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

@@ -1,24 +1,18 @@
 <script lang="ts">
-</script>
   import type { PageData } from './$types';
-  
   let { data } = $props<{ data: PageData }>();
-  
   // Component state
   let selectedCategory = $state('all');
   let searchTerm = $state('');
   let viewMode = $state<'grid' | 'list'>('grid');
   let showEmptyRoutes = $state(false);
-  
   // Derived data
   let filteredRoutes = $derived(() => {
     let routes = data.routes;
-    
     // Filter by category
     if (selectedCategory !== 'all') {
       routes = routes.filter(route => route.category === selectedCategory);
     }
-    
     // Filter by search term
     if (searchTerm.trim()) {
       const search = searchTerm.toLowerCase();
@@ -27,18 +21,14 @@
         route.description.toLowerCase().includes(search)
       );
     }
-    
     // Filter empty routes
     if (!showEmptyRoutes) {
       routes = routes.filter(route => route.status !== 'empty');
     }
-    
     return routes;
   });
-  
   let categoryStats = $derived(() => {
     const stats: Record<string, { total: number; functional: number; icon: string }> = {};
-    
     Object.entries(data.routesByCategory).forEach(([category, routes]) => {
       const categoryInfo = Object.values(data.categories).find(cat => cat.name === category);
       stats[category] = {
@@ -47,7 +37,6 @@
         icon: categoryInfo?.icon || '📄'
       };
     });
-    
     return stats;
   });
 
@@ -61,7 +50,6 @@
       default: return '❓';
     }
   }
-  
   function getStatusColor(status: string) {
     switch (status) {
       case 'functional': return 'text-green-400';
@@ -71,7 +59,6 @@
       default: return 'text-amber-400';
     }
   }
-  
   function getPriorityColor(priority: string) {
     switch (priority) {
       case 'high': return 'border-red-400 text-red-400';

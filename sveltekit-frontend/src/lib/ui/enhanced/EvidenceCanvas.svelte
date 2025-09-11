@@ -1,11 +1,9 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from "svelte";
   import { apiFetch } from "$lib/api/clients/api-client";
   import { concurrencyOrchestrator } from '$lib/services/concurrency-orchestrator';
   import { detectiveAnalysisEngine } from '$lib/evidence/detective-analysis-engine';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap, X, Cpu, Database, Layers } from 'lucide-svelte';
-  
   // Enhanced ingestion system (mock implementations for demo)
   const ingestionWorkerManager = {
     processIngestion: async (task: any, onProgress?: Function) => {
@@ -16,10 +14,8 @@
         setTimeout(() => onProgress(75, 'SOM clustering'), 2500);
         setTimeout(() => onProgress(100, 'RTX compression'), 3500);
       }
-      
       // Simulate processing delay
       await new Promise(resolve => setTimeout(resolve, 4000));
-      
       return {
         taskId: task.id,
         success: true,
@@ -38,16 +34,13 @@
     },
     isAvailable: true
   };
-  
   class MockEnhancedIngestionPipeline {
     async initialize() { 
       console.log('🎮 Mock Enhanced Ingestion Pipeline initialized'); 
     }
-    
     async processMultimodalEvidence(evidence: any) {
       // Simulate multimodal processing
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
       return {
         processing_result: { 
           document_id: evidence.id, 
@@ -86,7 +79,6 @@
       };
     }
   }
-  
   interface Props {
     caseId?: string;
     enableDragDrop?: boolean;
@@ -96,7 +88,6 @@
     maxFileSize?: number;
     acceptedTypes?: string[];
   }
-  
   let {
     caseId = '',
     enableDragDrop = true,
@@ -106,7 +97,6 @@
     maxFileSize = 100 * 1024 * 1024, // 100MB
     acceptedTypes = ['image/*', 'application/pdf', 'text/*', '.docx', '.xlsx']
   }: Props = $props();
-  
   let canvasEl: HTMLCanvasElement = $state();
   let fabricCanvas: any;
   let fabric: any;
@@ -122,7 +112,6 @@
     status?: string;
     error?: string;
   } | null = $state(null);
-  
   let options = $state({
     analyze_layout: true,
     extract_entities: true,
@@ -130,7 +119,6 @@
     confidence_level: 0.8,
     context_window: 4096,
   });
-  
   // Drag and drop state
   let dragOver = $state(false);
   let uploading = $state(false);
@@ -142,7 +130,6 @@
     avgProcessingTime: 0,
     throughputMBps: 0
   });
-  
   interface UploadedFile {
     id: string;
     file: File;
@@ -169,7 +156,6 @@
       legal_relevance: 'high' | 'medium' | 'low';
     }>;
   }
-  
   interface UploadResult {
     id: string;
     fileName: string;
@@ -184,16 +170,13 @@
     const fabricModule = await import("fabric");
     fabric = fabricModule.fabric;
     fabricCanvas = new fabric.Canvas(canvasEl);
-    
     // Register canvas with concurrency orchestrator
     const canvasId = `evidence-canvas-${Date.now()}`;
     concurrencyOrchestrator.createCanvas(canvasId, canvasEl);
-    
     // Setup canvas drag and drop
     if (enableDragDrop) {
       setupCanvasDragDrop();
     }
-    
     // Example: Add a rectangle with N64 styling
     fabricCanvas.add(
       new fabric.Rect({
@@ -206,7 +189,6 @@
         strokeWidth: enableN64Style ? 2 : 0
       })
     );
-    
     // Example: Add evidence annotation text with N64 styling
     fabricCanvas.add(
       new fabric.Text('🎮 Evidence Item #1', {
@@ -218,13 +200,11 @@
         fontWeight: enableN64Style ? 'bold' : 'normal'
       })
     );
-    
     // Add canvas event listeners for file drops
     canvasEl.addEventListener('dragover', handleCanvasDragOver);
     canvasEl.addEventListener('dragleave', handleCanvasDragLeave);
     canvasEl.addEventListener('drop', handleCanvasDrop);
   });
-  
   onDestroy(() => {
     if (canvasEl) {
       canvasEl.removeEventListener('dragover', handleCanvasDragOver);
@@ -248,7 +228,6 @@
     analyzing = true;
     error = null;
     result = null;
-    
     try {
       // Use concurrency orchestrator for analysis
       const analysisTaskId = await concurrencyOrchestrator.submitAnalysisTask(
@@ -266,13 +245,11 @@
         },
         'legal'
       );
-      
       // Subscribe to task completion
       const unsubscribe = concurrencyOrchestrator.subscribe((snapshot: any) => {
         const completedResult = snapshot.context.results.find(
           (r: any) => r.taskId === analysisTaskId && r.success
         );
-        
         if (completedResult) {
           result = {
             analysis: completedResult.data.response || completedResult.data.analysis || 'Analysis completed',
@@ -284,18 +261,15 @@
           unsubscribe();
           analyzing = false;
         }
-        
         const failedResult = snapshot.context.results.find(
           (r: any) => r.taskId === analysisTaskId && !r.success
         );
-        
         if (failedResult) {
           error = failedResult.error || 'Analysis failed';
           unsubscribe();
           analyzing = false;
         }
       });
-      
       // Fallback timeout
       setTimeout(() => {
         if (analyzing) {
@@ -304,18 +278,15 @@
           unsubscribe();
         }
       }, 30000);
-      
     } catch (e: any) {
       error = e instanceof Error ? e.message : String(e);
       analyzing = false;
     }
   }
-  
   // Drag and Drop Functions
   function setupCanvasDragDrop() {
     console.log('🎮 Canvas drag and drop enabled with N64 style');
   }
-  
   function handleCanvasDragOver(event: DragEvent) {
     event.preventDefault();
     event.dataTransfer!.dropEffect = 'copy';
@@ -323,64 +294,50 @@
       dragOver = true;
     }
   }
-  
   function handleCanvasDragLeave(event: DragEvent) {
     event.preventDefault();
     const rect = canvasEl.getBoundingClientRect();
     const x = event.clientX;
     const y = event.clientY;
-    
     if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
       dragOver = false;
     }
   }
-  
   function handleCanvasDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-    
     if (uploading) return;
-    
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     const canvasRect = canvasEl.getBoundingClientRect();
     const dropX = event.clientX - canvasRect.left;
     const dropY = event.clientY - canvasRect.top;
-    
     processDroppedFiles(droppedFiles, { x: dropX, y: dropY });
   }
-  
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     if (!target.files) return;
-    
     const selectedFiles = Array.from(target.files);
     processDroppedFiles(selectedFiles, { x: 400, y: 300 }); // Center position
-    
     target.value = ''; // Clear input
   }
-  
   async function processDroppedFiles(droppedFiles: File[], position: { x: number; y: number }) {
     error = null;
-    
     // Validate files
     const validFiles = droppedFiles.filter(file => {
       if (file.size > maxFileSize) {
         console.warn(`File ${file.name} exceeds size limit`);
         return false;
       }
-      
       const isValidType = acceptedTypes.some(type => {
         if (type.startsWith('.')) {
           return file.name.toLowerCase().endsWith(type.toLowerCase());
         }
         return file.type.match(type.replace('*', '.*'));
       });
-      
       if (!isValidType) {
         console.warn(`File ${file.name} has invalid type`);
         return false;
       }
-      
       return true;
     });
 
@@ -399,28 +356,22 @@
 
     uploadedFiles = [...uploadedFiles, ...uploadFiles];
     performanceStats.totalFiles += uploadFiles.length;
-    
     // Start upload process
     await uploadFilesToMinIO(uploadFiles, position);
   }
-  
   async function uploadFilesToMinIO(uploadFiles: UploadedFile[], position: { x: number; y: number }) {
     uploading = true;
     uploadProgress = 0;
-    
     const startTime = Date.now();
-    
     try {
       for (let i = 0; i < uploadFiles.length; i++) {
         const uploadFile = uploadFiles[i];
         uploadFile.status = 'uploading';
-        
         uploadProgress = (i / uploadFiles.length) * 100;
 
         // CUDA preprocessing if enabled
         let preprocessedData = uploadFile.file;
         let cudaProcessed = false;
-        
         if (enableCUDAAcceleration && shouldUseCudaPreprocessing(uploadFile.file)) {
           const cudaResult = await preprocessWithCuda(uploadFile.file);
           if (cudaResult.success) {
@@ -432,52 +383,42 @@
 
         // Upload to MinIO via evidence API
         const result = await uploadSingleFile(uploadFile, preprocessedData, cudaProcessed);
-        
         if (result.success) {
           uploadFile.status = 'ingestion';
           uploadFile.progress = 100;
           uploadFile.cudaProcessed = cudaProcessed;
           uploadFile.minioPath = result.data.minioPath;
-          
           // Start enhanced ingestion processing
           try {
             const ingestionResult = await processEnhancedIngestion(uploadFile);
             uploadFile.ingestionResult = ingestionResult.processing_result;
             uploadFile.anchorPoints = ingestionResult.anchor_points;
-            
             // Start detective analysis
             uploadFile.status = 'detective_analysis';
             const detectiveResult = await processDetectiveAnalysis(uploadFile);
             uploadFile.detectiveAnalysis = detectiveResult;
-            
             uploadFile.status = 'completed';
-            
             // Add file to canvas with anchor points and detective insights
             await addFileToCanvas(uploadFile, position, result.data);
-            
             // Add anchor points visualization
             if (ingestionResult.anchor_points) {
               await addAnchorPointsToCanvas(uploadFile, ingestionResult.anchor_points);
             }
-            
             // Add detective analysis visualization
             if (detectiveResult.analysis.detectedPatterns.length > 0) {
               await addDetectiveInsightsToCanvas(uploadFile, detectiveResult);
             }
-            
           } catch (ingestionError) {
             console.warn('Enhanced ingestion failed:', ingestionError);
             uploadFile.status = 'completed'; // Still mark as completed if upload succeeded
             await addFileToCanvas(uploadFile, position, result.data);
           }
-          
           // Adjust position for next file
           position.x += 120;
           if (position.x > 600) {
             position.x = 50;
             position.y += 120;
           }
-          
         } else {
           uploadFile.status = 'error';
           uploadFile.errorMessage = result.error;
@@ -487,7 +428,6 @@
       const endTime = Date.now();
       const totalTime = endTime - startTime;
       const totalSizeMB = uploadFiles.reduce((sum, f) => sum + f.file.size, 0) / (1024 * 1024);
-      
       performanceStats.avgProcessingTime = totalTime / uploadFiles.length;
       performanceStats.throughputMBps = totalSizeMB / (totalTime / 1000);
 
@@ -499,14 +439,11 @@
       uploadProgress = 0;
     }
   }
-  
   function shouldUseCudaPreprocessing(file: File): boolean {
     const cudaTypes = ['image/', 'application/pdf'];
     const isLargeFile = file.size > 10 * 1024 * 1024; // 10MB+
-    
     return cudaTypes.some(type => file.type.startsWith(type)) || isLargeFile;
   }
-  
   async function preprocessWithCuda(file: File) {
     try {
       const formData = new FormData();
@@ -538,10 +475,8 @@
       return { success: false };
     }
   }
-  
   async function uploadSingleFile(uploadFile: UploadedFile, file: File, cudaProcessed: boolean) {
     const formData = new FormData();
-    
     formData.append('file', file);
     formData.append('uploadData', JSON.stringify({
       caseId,
@@ -568,7 +503,6 @@
     }
 
     const result = await response.json();
-    
     if (result.success && result.data?.[0]) {
       return {
         success: true,
@@ -584,12 +518,9 @@
       error: 'Invalid response from upload service'
     };
   }
-  
   async function addFileToCanvas(uploadFile: UploadedFile, position: { x: number; y: number }, uploadResult: UploadResult) {
     if (!fabricCanvas) return;
-    
     const file = uploadFile.file;
-    
     if (file.type.startsWith('image/')) {
       // Add image to canvas
       const reader = new FileReader();
@@ -605,10 +536,8 @@
             cornerStrokeColor: enableN64Style ? '#FFA500' : '#178cff',
             borderColor: enableN64Style ? '#FFD700' : '#178cff'
           });
-          
           fabricCanvas.add(fabricImage);
           uploadFile.canvasObjectId = fabricImage.id;
-          
           // Add N64-style label
           const label = new fabric.Text(enableN64Style ? `🎮 ${file.name}` : file.name, {
             left: position.x,
@@ -639,7 +568,6 @@
         rx: enableN64Style ? 0 : 5,
         ry: enableN64Style ? 0 : 5
       });
-      
       // File type icon
       const fileIcon = new fabric.Text(getFileIcon(file), {
         left: position.x + 25,
@@ -649,7 +577,6 @@
         fontFamily: enableN64Style ? 'Courier New' : 'Arial',
         textAlign: 'center'
       });
-      
       const label = new fabric.Text(enableN64Style ? `🎮 ${file.name}` : file.name, {
         left: position.x + 5,
         top: position.y + 50,
@@ -660,7 +587,6 @@
         textAlign: 'center',
         fontWeight: enableN64Style ? 'bold' : 'normal'
       });
-      
       // CUDA indicator if processed
       if (uploadFile.cudaProcessed) {
         const cudaIndicator = new fabric.Text('⚡', {
@@ -671,7 +597,6 @@
         });
         fabricCanvas.add(cudaIndicator);
       }
-      
       fabricCanvas.add(icon);
       fabricCanvas.add(fileIcon);
       fabricCanvas.add(label);
@@ -679,7 +604,6 @@
       fabricCanvas.renderAll();
     }
   }
-  
   function getFileIcon(file: File): string {
     if (file.type.startsWith('image/')) return '🖼️';
     if (file.type === 'application/pdf') return '📄';
@@ -690,7 +614,6 @@
     if (file.type.includes('excel') || file.type.includes('spreadsheet')) return '📊';
     return '📎';
   }
-  
   function getEvidenceType(file: File): string {
     if (file.type.startsWith('image/')) return 'IMAGE';
     if (file.type === 'application/pdf') return 'PDF';
@@ -699,7 +622,6 @@
     if (file.type.startsWith('text/')) return 'TEXT';
     return 'DOCUMENT';
   }
-  
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -707,19 +629,16 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  
   function openFileDialog() {
     if (!uploading && fileInput) {
       fileInput.click();
     }
   }
-  
   async function processEnhancedIngestion(uploadFile: UploadedFile) {
     if (!ingestionPipeline) {
       ingestionPipeline = new MockEnhancedIngestionPipeline();
       await ingestionPipeline.initialize();
     }
-    
     const evidence = {
       id: uploadFile.id,
       type: getEvidenceType(uploadFile.file).toLowerCase(),
@@ -727,14 +646,11 @@
       size: uploadFile.file.size,
       minioPath: uploadFile.minioPath
     };
-    
     return await ingestionPipeline.processMultimodalEvidence(evidence);
   }
-  
   async function processDetectiveAnalysis(uploadFile: UploadedFile) {
     try {
       console.log(`🕵️ Starting detective analysis for: ${uploadFile.file.name}`);
-      
       // Use the detective analysis engine
       const evidenceType = getEvidenceType(uploadFile.file).toLowerCase();
       const evidenceItem = await detectiveAnalysisEngine.analyzeEvidence(
@@ -745,7 +661,6 @@
           userId: 'evidence-canvas-user'
         }
       );
-      
       return {
         ocrResults: evidenceItem.ocrResults,
         embeddings: evidenceItem.embeddings,
@@ -753,7 +668,6 @@
         conflicts: [], // Would be populated by conflict detection
         processingTime: evidenceItem.metadata.processingTime
       };
-      
     } catch (error) {
       console.error('Detective analysis failed:', error);
       return {
@@ -768,13 +682,10 @@
 
   async function addDetectiveInsightsToCanvas(uploadFile: UploadedFile, detectiveResult: any) {
     if (!fabricCanvas || !detectiveResult.analysis.detectedPatterns.length) return;
-    
     // Find the uploaded file's canvas object
     const canvasObjects = fabricCanvas.getObjects();
     const fileObject = canvasObjects.find((obj: any) => obj.id === uploadFile.canvasObjectId);
-    
     if (!fileObject) return;
-    
     // Add detective insights indicator
     const insightsIcon = new fabric.Text('🔍', {
       left: fileObject.left + 80,
@@ -787,7 +698,6 @@
       hasBorders: false,
       hoverCursor: 'pointer'
     });
-    
     // Add tooltip on hover (simplified)
     insightsIcon.on('mouseover', () => {
       const tooltip = new fabric.Text(
@@ -804,11 +714,9 @@
           selectable: false
         }
       );
-      
       fabricCanvas.add(tooltip);
       setTimeout(() => fabricCanvas.remove(tooltip), 3000);
     });
-    
     fabricCanvas.add(insightsIcon);
     fabricCanvas.renderAll();
   }
@@ -817,7 +725,6 @@
   async function processEvidenceWithUnifiedService(canvasId: string, evidenceItems: any[]) {
     try {
       console.log(`🚀 Starting unified evidence processing for canvas: ${canvasId}`);
-      
       // Use the unified legal orchestration service for comprehensive processing
       const response = await apiFetch('/api/legal/evidence-canvas', {
         method: 'POST',
@@ -855,14 +762,12 @@
   async function monitorUnifiedProcessingJobs(jobIds: string[], jobStatuses: Record<string, any>) {
     const monitoringPromises = jobIds.map(async (jobId) => {
       const endpoint = jobStatuses[jobId].subscriptionEndpoint;
-      
       // Poll job status every 2 seconds
       const pollStatus = async () => {
         try {
           const statusResponse = await apiFetch(endpoint);
           if (statusResponse.success) {
             updateJobProgressUI(jobId, statusResponse.status);
-            
             // Continue polling if job is still processing
             if (statusResponse.status.status === 'processing' || statusResponse.status.status === 'pending') {
               setTimeout(pollStatus, 2000);
@@ -886,7 +791,6 @@
   function updateJobProgressUI(jobId: string, status: any) {
     // Update any UI elements that show processing status
     console.log(`📊 Job ${jobId} status: ${status.status} (${status.progress || 0}%)`);
-    
     // You could add visual indicators here, update progress bars, etc.
     if (status.status === 'processing') {
       showProcessingIndicator(`Processing job: ${status.type}`);
@@ -896,7 +800,6 @@
   // Handle job completion
   function handleJobCompletion(jobId: string, status: any) {
     console.log(`✅ Job ${jobId} completed:`, status);
-    
     // Update canvas with results if applicable
     if (status.results) {
       addProcessingResultsToCanvas(status.results);
@@ -911,11 +814,9 @@
     if (results.detectedEntities) {
       addEntitiesToCanvas(results.detectedEntities);
     }
-    
     if (results.relationshipMap) {
       addRelationshipLinesToCanvas(results.relationshipMap);
     }
-    
     if (results.patternDetection) {
       highlightPatterns(results.patternDetection);
     }
@@ -937,7 +838,6 @@
 
     const canvasId = `canvas_${Date.now()}`;
     const processingResult = await processEvidenceWithUnifiedService(canvasId, evidenceItems);
-    
     if (processingResult) {
       showSuccessMessage(`Evidence processing started with ${processingResult.jobIds.length} jobs`);
     }
@@ -946,25 +846,20 @@
   // Helper function to get canvas object position
   function getCanvasObjectPosition(objectId: string) {
     if (!fabricCanvas) return null;
-    
     const obj = fabricCanvas.getObjects().find((o: any) => o.id === objectId);
     return obj ? { x: obj.left, y: obj.top } : null;
   }
 
   async function addAnchorPointsToCanvas(uploadFile: UploadedFile, anchorPoints: any[]) {
     if (!fabricCanvas || !anchorPoints?.length) return;
-    
     // Find the uploaded file's canvas object
     const canvasObjects = fabricCanvas.getObjects();
     const fileObject = canvasObjects.find((obj: any) => obj.id === uploadFile.canvasObjectId);
-    
     if (!fileObject) return;
-    
     // Add anchor point indicators
     anchorPoints.forEach((anchor, index) => {
       const anchorX = fileObject.left + (fileObject.width * fileObject.scaleX * anchor.coordinates.x);
       const anchorY = fileObject.top + (fileObject.height * fileObject.scaleY * anchor.coordinates.y);
-      
       // Add anchor point circle
       const anchorCircle = new fabric.Circle({
         left: anchorX,
@@ -978,7 +873,6 @@
         hasControls: false,
         hasBorders: false
       });
-      
       // Add anchor label
       const anchorLabel = new fabric.Text(`📍 ${anchor.type}`, {
         left: anchorX + 15,
@@ -990,20 +884,16 @@
         padding: 2,
         fontWeight: enableN64Style ? 'bold' : 'normal'
       });
-      
       fabricCanvas.add(anchorCircle);
       fabricCanvas.add(anchorLabel);
     });
-    
     fabricCanvas.renderAll();
   }
 
   function removeFile(fileId: string) {
     const fileIndex = uploadedFiles.findIndex(f => f.id === fileId);
     if (fileIndex === -1) return;
-    
     const file = uploadedFiles[fileIndex];
-    
     // Remove from canvas if it exists
     if (file.canvasObjectId && fabricCanvas) {
       const canvasObjects = fabricCanvas.getObjects();
@@ -1014,7 +904,6 @@
       objectsToRemove.forEach((obj: any) => fabricCanvas.remove(obj));
       fabricCanvas.renderAll();
     }
-    
     // Remove from files array
     uploadedFiles = uploadedFiles.filter(f => f.id !== fileId);
   }

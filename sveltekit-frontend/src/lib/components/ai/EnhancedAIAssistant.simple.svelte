@@ -1,6 +1,5 @@
 <!-- Simplified Enhanced AI Assistant -->
 <script lang="ts">
-</script>
   import {
     Brain,
     Loader2,
@@ -17,21 +16,21 @@
   let { maxHeight = $bindable() } = $props(); // "400px";
   let { showReferences = $bindable() } = $props(); // true;
   export const enableVoiceInput = false;
-;
+  ;
   const dispatch = createEventDispatcher();
 
   // State
-let query = $state("");
-let isLoading = $state(false);
-let messages = $state<any[] >([]);
-let showSettings = $state(false);
-let showCitationDialog = $state(false);
-let selectedCitation = $state("");
-let selectedModel = $state("gpt-4");
-let searchThreshold = $state(0.7);
-let maxResults = $state(5);
-let temperature = $state(0.7);
-let enabledSources = $state(["cases", "statutes", "regulations", "secondary"]);
+  let query = $state("");
+  let isLoading = $state(false);
+  let messages = $state<any[] >([]);
+  let showSettings = $state(false);
+  let showCitationDialog = $state(false);
+  let selectedCitation = $state("");
+  let selectedModel = $state("gpt-4");
+  let searchThreshold = $state(0.7);
+  let maxResults = $state(5);
+  let temperature = $state(0.7);
+  let enabledSources = $state(["cases", "statutes", "regulations", "secondary"]);
 
   // Mock AI response
   async function handleSubmit() {
@@ -50,15 +49,15 @@ let enabledSources = $state(["cases", "statutes", "regulations", "secondary"]);
         role: "assistant",
         content: `Based on the case information provided, here are my findings regarding "${userMessage.content}":
 
-This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction.
+  This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction.
 
-Key considerations:
-1. Applicable statutory framework
-2. Relevant case precedents
-3. Jurisdictional variations
-4. Current regulatory environment
+  Key considerations:
+  1. Applicable statutory framework
+  2. Relevant case precedents
+  3. Jurisdictional variations
+  4. Current regulatory environment
 
-Would you like me to elaborate on any of these aspects?`,
+  Would you like me to elaborate on any of these aspects?`,
         references: [
           {
             title: "Smith v. Jones",
@@ -76,18 +75,18 @@ Would you like me to elaborate on any of these aspects?`,
       messages = [...messages, aiResponse];
       isLoading = false;
     }, 1500);
-}
+  }
   function handleReferenceClick(reference: any) {
     selectedCitation = `${reference.title} - ${reference.citation}`;
     showCitationDialog = true;
-}
+  }
   function insertCitation() {
     dispatch("citation-inserted", selectedCitation);
     showCitationDialog = false;
-}
+  }
   function clearMessages() {
     messages = [];
-}
+  }
 </script>
 
 <div class="container mx-auto px-4">

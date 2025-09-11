@@ -1,156 +1,130 @@
 <script lang="ts">
-</script>
 
-	import { onMount } from 'svelte';
+  	import { onMount } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
-	import { quintOut } from 'svelte/easing';
-	
-	// Import our advanced services
-	import { advancedCache } from '$lib/services/advanced-cache-manager';
-	import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
-	import { context7MCPIntegration } from '$lib/services/context7-mcp-integration';
-	import TypewriterResponse from '$lib/components/ai/TypewriterResponse.svelte';
-	
-	// Demo state
-	let cacheStats = $state({ hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 });
-	let recommendations: any[] = $state([]);
-	let bestPractices: any[] = $state([]);
-	let demoQuery = $state('Review contract liability clauses for potential risks');
-	let isLoading = $state(false);
-	let showTypewriter = $state(false);
-	let aiResponse = $state('');
-	let userActivity: any[] = $state([]);
-	
-	// Demo data
-	const legalQueries = [
-		'Analyze employment contract termination clause',
-		'Review intellectual property licensing agreement',
-		'Assess compliance with GDPR regulations',
-		'Evaluate litigation risk for breach of contract',
-		'Examine patent infringement claims'
-	];
-	
-	onMount(async () => {
-		// Load cache stats
-		loadCacheStats();
-		
-		// Generate sample user activity
-		generateSampleActivity();
-		
-		// Load initial best practices
-		await loadBestPractices();
-		
-		// Set up periodic updates
-		const interval = setInterval(loadCacheStats, 2000);
-		return () => clearInterval(interval);
-	});
-	
-	async function loadCacheStats() {
-		const stats = advancedCache.getStats();
-		cacheStats = { ...(await new Promise(resolve => stats.subscribe(resolve))) };
-	}
-	
-	async function loadBestPractices() {
-		try {
-			bestPractices = await context7MCPIntegration.generateBestPractices('performance');
-		} catch (error) {
-			console.error('Failed to load best practices:', error);
-		}
-	}
-	
-	async function generateRecommendations() {
-		isLoading = true;
-		
-		try {
-			// Simulate thinking time
-			await new Promise(resolve => setTimeout(resolve, 1500));
-			
-			recommendations = await aiRecommendationEngine.generateRecommendations({
-				userQuery: demoQuery,
-				legalDomain: 'contract',
-				userRole: 'legal_analyst',
-				priority: 'high'
-			});
-			
-			// Simulate AI response
-			aiResponse = `Based on my analysis of "${demoQuery}", I've identified several key considerations:\n\n1. **Liability Limitations**: Review indemnification clauses for scope and mutual obligations.\n2. **Risk Assessment**: Evaluate consequential damages exclusions and caps.\n3. **Jurisdiction**: Ensure governing law aligns with business operations.\n4. **Termination**: Assess notice periods and post-termination obligations.`;
-			
-			showTypewriter = true;
-		} catch (error) {
-			console.error('Failed to generate recommendations:', error);
-		} finally {
-			isLoading = false;
-		}
-	}
-	
-	function generateSampleActivity() {
-		userActivity = [
-			{ timestamp: Date.now() - 5000, action: 'typing', content: 'Review contract', duration: 800 },
-			{ timestamp: Date.now() - 4000, action: 'pause', duration: 300 },
-			{ timestamp: Date.now() - 3500, action: 'typing', content: ' liability clauses', duration: 600 },
-			{ timestamp: Date.now() - 2800, action: 'delete', duration: 200 },
-			{ timestamp: Date.now() - 2500, action: 'typing', content: ' for potential risks', duration: 700 },
-			{ timestamp: Date.now() - 1800, action: 'pause', duration: 500 }
-		];
-	}
-	
-	async function testCaching() {
-		const testKey = `demo_${Date.now()}`;
-		const testData = { message: 'Cached legal document', timestamp: Date.now() };
-		
-		// Set cache item
-		await advancedCache.set(testKey, testData, {
-			priority: 'high',
-			ttl: 30000,
-			tags: ['demo', 'legal-doc']
-		});
-		
-		// Get cache item (should be a hit)
-		const retrieved = await advancedCache.get(testKey);
-		console.log('Cache test result:', retrieved);
-		
-		// Update stats
-		await loadCacheStats();
-	}
-	
-	async function testLazyLoading() {
-		const loader = async () => {
-			// Simulate API call
-			await new Promise(resolve => setTimeout(resolve, 1000));
-			return {
-				title: 'Legal Document Analysis',
-				content: 'This document has been analyzed for compliance and risk factors.',
-				analysis: {
-					risk_level: 'medium',
-					compliance_score: 85,
-					recommendations: ['Review clause 4.2', 'Update termination notice']
-				}
-			};
-		};
-		
-		const result = await advancedCache.lazyLoad(
-			'lazy_demo_document',
-			loader,
-			{ priority: 'medium', prefetch: true }
-		);
-		
-		console.log('Lazy loading result:', result);
-		await loadCacheStats();
-	}
-	
-	function selectQuery(query: string) {
-		demoQuery = query;
-		showTypewriter = false;
-		recommendations = [];
-	}
-	
-	function getRiskLevelClass(level: string) {
-		return `risk-indicator ${level}`;
-	}
-	
-	function getConfidenceWidth(confidence: number) {
-		return `${Math.round(confidence * 100)}%`;
-	}
+  	import { quintOut } from 'svelte/easing';
+  	// Import our advanced services
+  	import { advancedCache } from '$lib/services/advanced-cache-manager';
+  	import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
+  	import { context7MCPIntegration } from '$lib/services/context7-mcp-integration';
+  	import TypewriterResponse from '$lib/components/ai/TypewriterResponse.svelte';
+  	// Demo state
+  	let cacheStats = $state({ hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 });
+  	let recommendations: any[] = $state([]);
+  	let bestPractices: any[] = $state([]);
+  	let demoQuery = $state('Review contract liability clauses for potential risks');
+  	let isLoading = $state(false);
+  	let showTypewriter = $state(false);
+  	let aiResponse = $state('');
+  	let userActivity: any[] = $state([]);
+  	// Demo data
+  	const legalQueries = [
+  		'Analyze employment contract termination clause',
+  		'Review intellectual property licensing agreement',
+  		'Assess compliance with GDPR regulations',
+  		'Evaluate litigation risk for breach of contract',
+  		'Examine patent infringement claims'
+  	];
+  	onMount(async () => {
+  		// Load cache stats
+  		loadCacheStats();
+  		// Generate sample user activity
+  		generateSampleActivity();
+  		// Load initial best practices
+  		await loadBestPractices();
+  		// Set up periodic updates
+  		const interval = setInterval(loadCacheStats, 2000);
+  		return () => clearInterval(interval);
+  	});
+  	async function loadCacheStats() {
+  		const stats = advancedCache.getStats();
+  		cacheStats = { ...(await new Promise(resolve => stats.subscribe(resolve))) };
+  	}
+  	async function loadBestPractices() {
+  		try {
+  			bestPractices = await context7MCPIntegration.generateBestPractices('performance');
+  		} catch (error) {
+  			console.error('Failed to load best practices:', error);
+  		}
+  	}
+  	async function generateRecommendations() {
+  		isLoading = true;
+  		try {
+  			// Simulate thinking time
+  			await new Promise(resolve => setTimeout(resolve, 1500));
+  			recommendations = await aiRecommendationEngine.generateRecommendations({
+  				userQuery: demoQuery,
+  				legalDomain: 'contract',
+  				userRole: 'legal_analyst',
+  				priority: 'high'
+  			});
+  			// Simulate AI response
+  			aiResponse = `Based on my analysis of "${demoQuery}", I've identified several key considerations:\n\n1. **Liability Limitations**: Review indemnification clauses for scope and mutual obligations.\n2. **Risk Assessment**: Evaluate consequential damages exclusions and caps.\n3. **Jurisdiction**: Ensure governing law aligns with business operations.\n4. **Termination**: Assess notice periods and post-termination obligations.`;
+  			showTypewriter = true;
+  		} catch (error) {
+  			console.error('Failed to generate recommendations:', error);
+  		} finally {
+  			isLoading = false;
+  		}
+  	}
+  	function generateSampleActivity() {
+  		userActivity = [
+  			{ timestamp: Date.now() - 5000, action: 'typing', content: 'Review contract', duration: 800 },
+  			{ timestamp: Date.now() - 4000, action: 'pause', duration: 300 },
+  			{ timestamp: Date.now() - 3500, action: 'typing', content: ' liability clauses', duration: 600 },
+  			{ timestamp: Date.now() - 2800, action: 'delete', duration: 200 },
+  			{ timestamp: Date.now() - 2500, action: 'typing', content: ' for potential risks', duration: 700 },
+  			{ timestamp: Date.now() - 1800, action: 'pause', duration: 500 }
+  		];
+  	}
+  	async function testCaching() {
+  		const testKey = `demo_${Date.now()}`;
+  		const testData = { message: 'Cached legal document', timestamp: Date.now() };
+  		// Set cache item
+  		await advancedCache.set(testKey, testData, {
+  			priority: 'high',
+  			ttl: 30000,
+  			tags: ['demo', 'legal-doc']
+  		});
+  		// Get cache item (should be a hit)
+  		const retrieved = await advancedCache.get(testKey);
+  		console.log('Cache test result:', retrieved);
+  		// Update stats
+  		await loadCacheStats();
+  	}
+  	async function testLazyLoading() {
+  		const loader = async () => {
+  			// Simulate API call
+  			await new Promise(resolve => setTimeout(resolve, 1000));
+  			return {
+  				title: 'Legal Document Analysis',
+  				content: 'This document has been analyzed for compliance and risk factors.',
+  				analysis: {
+  					risk_level: 'medium',
+  					compliance_score: 85,
+  					recommendations: ['Review clause 4.2', 'Update termination notice']
+  				}
+  			};
+  		};
+  		const result = await advancedCache.lazyLoad(
+  			'lazy_demo_document',
+  			loader,
+  			{ priority: 'medium', prefetch: true }
+  		);
+  		console.log('Lazy loading result:', result);
+  		await loadCacheStats();
+  	}
+  	function selectQuery(query: string) {
+  		demoQuery = query;
+  		showTypewriter = false;
+  		recommendations = [];
+  	}
+  	function getRiskLevelClass(level: string) {
+  		return `risk-indicator ${level}`;
+  	}
+  	function getConfidenceWidth(confidence: number) {
+  		return `${Math.round(confidence * 100)}%`;
+  	}
 </script>
 
 <!-- Load advanced interaction styles -->

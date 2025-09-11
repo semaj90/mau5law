@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     user: User | null ;
   }
@@ -25,7 +24,6 @@
     User as UserIcon,
   } from "lucide-svelte";
 
-  
   let searchQuery = "";
   let userMenuOpen = false;
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onvalidated?: (event?: any) => void;
   }
@@ -25,7 +24,6 @@
 
       let { aiEvent = $bindable() } = $props(); // any = null; // Specific AI analysis event to validate
 
-  
   let validationChoice: "approve" | "reject" | null = null;
   let feedback: string = "";
   let corrections = {
@@ -45,21 +43,21 @@
       evidenceType: evidence.evidenceType || "",
       analysis: evidence.aiAnalysis?.analysis || "",
     };
-}
+  }
   function handleValidationChoice(choice: "approve" | "reject") {
     validationChoice = choice;
     showCorrections = choice === "reject";
-}
+  }
   function addTag() {
     const tagInput = document.getElementById("new-tag") as HTMLInputElement;
     const newTag = tagInput?.value.trim();
     if (newTag && !corrections.tags.includes(newTag)) {
       corrections.tags = [...corrections.tags, newTag];
       tagInput.value = "";
-}}
+  }}
   function removeTag(tagToRemove: string) {
     corrections.tags = corrections.tags.filter((tag) => tag !== tagToRemove);
-}
+  }
   async function submitValidation() {
     if (!evidence || !validationChoice) return;
 
@@ -93,7 +91,7 @@
       } else {
         console.error("Validation failed:", result.error);
         alert("Failed to submit validation. Please try again.");
-}
+  }
     } catch (error) {
       console.error("Validation submission error:", error);
       alert(
@@ -101,13 +99,13 @@
       );
     } finally {
       isSubmitting = false;
-}}
+  }}
   function closeModal() {
     validationChoice = null;
     feedback = "";
     showCorrections = false;
     open = false;
-}
+  }
 </script>
 
 <DialogPrimitive.Root bind:open>

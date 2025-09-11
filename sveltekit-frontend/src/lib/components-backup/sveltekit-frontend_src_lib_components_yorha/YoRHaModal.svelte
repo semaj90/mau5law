@@ -1,6 +1,5 @@
 <!-- YoRHa Modal Component with Terminal Styling -->
 <script lang="ts">
-</script>
   import { createEventDispatcher } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade, scale } from "svelte/transition";

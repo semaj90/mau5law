@@ -1,25 +1,19 @@
 <script lang="ts">
-</script>
   interface Props {
     user?: any;
     isDarkMode?: boolean;
   }
-  
   let { user = {}, isDarkMode = $bindable(false) } = $props();
-  
   let messages: any[] = [];
   let currentMessage = '';
-  
   function sendMessage() {
     if (!currentMessage.trim()) return;
-    
     messages = [...messages, {
       id: Date.now(),
       text: currentMessage,
       sender: 'user',
       timestamp: new Date()
     }];
-    
     // Mock AI response
     setTimeout(() => {
       messages = [...messages, {
@@ -29,7 +23,6 @@
         timestamp: new Date()
       }];
     }, 1000);
-    
     currentMessage = '';
   }
 </script>

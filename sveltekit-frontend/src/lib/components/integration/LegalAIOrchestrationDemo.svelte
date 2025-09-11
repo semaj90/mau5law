@@ -4,7 +4,6 @@
   Shows complete workflow from user input to AI-powered results
 -->
 <script lang="ts">
-</script>
   import { workflowOrchestrator, workflowStore, currentWorkflowStore, healthStore, isSystemHealthy } from '$lib/services/end-to-end-api-integration.js';
   import type { LegalResearchWorkflowRequest, DocumentProcessingWorkflowRequest, CaseCreationWorkflowRequest } from '$lib/services/end-to-end-api-integration.js';
   import {
@@ -59,17 +58,17 @@
     documentProcessing: {
       content: `PURCHASE AGREEMENT
 
-This Purchase Agreement ("Agreement") is entered into on [DATE], between ABC Corporation ("Buyer") and XYZ Ltd ("Seller").
+  This Purchase Agreement ("Agreement") is entered into on [DATE], between ABC Corporation ("Buyer") and XYZ Ltd ("Seller").
 
-1. PURCHASE PRICE: The total purchase price shall be $500,000.
+  1. PURCHASE PRICE: The total purchase price shall be $500,000.
 
-2. DELIVERY: Seller agrees to deliver the goods within 30 days of contract execution.
+  2. DELIVERY: Seller agrees to deliver the goods within 30 days of contract execution.
 
-3. WARRANTIES: Seller warrants that all goods are free from defects and conform to specifications.
+  3. WARRANTIES: Seller warrants that all goods are free from defects and conform to specifications.
 
-4. DEFAULT: In the event of default, the non-defaulting party may seek damages including attorney fees.
+  4. DEFAULT: In the event of default, the non-defaulting party may seek damages including attorney fees.
 
-[Additional standard terms and conditions...]`,
+  [Additional standard terms and conditions...]`,
       documentType: 'contract'
     },
     caseCreation: {

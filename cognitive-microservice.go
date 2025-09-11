@@ -37,6 +37,9 @@ import (
 	sonic "github.com/bytedance/sonic"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	redis "github.com/redis/go-redis/v9"
+
+	// OpenTelemetry trace API for extracting span IDs for log correlation
+	gooteltrace "go.opentelemetry.io/otel/trace"
 )
 
 // Config
@@ -613,19 +616,49 @@ func truncate(s string, n int) string { if len(s) <= n { return s }; return s[:n
 type statusRecorder struct { http.ResponseWriter; status int }
 func (s *statusRecorder) WriteHeader(code int){ s.status = code; s.ResponseWriter.WriteHeader(code) }
 
+type ctxReqIDKey struct{}
+type ctxLoggerKey struct{}
+
+// LoggerFromContext fetches a request-scoped logger if present, else the global logger.
+func LoggerFromContext(ctx context.Context) *slog.Logger {
+	if ctx == nil { return logger }
+	if l, ok := ctx.Value(ctxLoggerKey{}).(*slog.Logger); ok && l != nil { return l }
+	return logger
+}
+
+// LogError emits an error with correlation identifiers automatically included.
+// Additional key/value pairs can be appended via attrs (must be even length: key,value,...).
+func LogError(ctx context.Context, msg string, err error, attrs ...any) {
+	l := LoggerFromContext(ctx)
+	if err != nil {
+		attrs = append(attrs, "error", err)
+	}
+	l.Error(msg, attrs...)
+}
+
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		rec := &statusRecorder{ResponseWriter: w, status: 200}
-		next.ServeHTTP(rec, r)
+		rid, _ := r.Context().Value(ctxReqIDKey{}).(string)
+		spanCtx := gooteltrace.SpanContextFromContext(r.Context())
+		traceID := ""
+		spanID := ""
+		if spanCtx.IsValid() { traceID = spanCtx.TraceID().String(); spanID = spanCtx.SpanID().String() }
+		reqLogger := logger.With(
+			slog.String("request_id", rid),
+			slog.String("trace_id", traceID),
+			slog.String("span_id", spanID),
+		)
+		ctx := context.WithValue(r.Context(), ctxLoggerKey{}, reqLogger)
+		next.ServeHTTP(rec, r.WithContext(ctx))
 		dur := time.Since(start)
-		logger.Info("request", "method", r.Method, "path", r.URL.Path, "status", rec.status, "duration_ms", dur.Milliseconds(), "request_id", r.Context().Value(ctxReqIDKey{}))
+		reqLogger.Info("request", "method", r.Method, "path", r.URL.Path, "status", rec.status, "duration_ms", dur.Milliseconds())
 		recordHTTPRequest(r.Method, r.URL.Path, rec.status, dur)
 	})
 }
 
-type ctxReqIDKey struct{}
-
+// requestIDMiddleware (restored) assigns a request id if missing and places it in context
 func requestIDMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		rid := r.Header.Get("X-Request-ID")
@@ -636,19 +669,18 @@ func requestIDMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// handleLive / handleReady (restored) minimal versions; original logic for readiness moved earlier
 func handleLive(w http.ResponseWriter, _ *http.Request) { w.Write([]byte("ok")) }
+
 func handleReady(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 	type check struct { OK bool `json:"ok"`; LatencyMs int64 `json:"latency_ms,omitempty"`; Error string `json:"error,omitempty"` }
-	resp := struct { Status string `json:"status"`; Redis check `json:"redis"`; Postgres check `json:"postgres"`; Ollama check `json:"ollama"`; Model struct { Name string `json:"name"`; Validated bool `json:"validated"` } `json:"model"`; Timestamp string `json:"timestamp"` }{}
+	resp := struct { Status string `json:"status"`; Redis check `json:"redis"`; Postgres check `json:"postgres"`; Timestamp string `json:"timestamp"` }{}
 	resp.Timestamp = time.Now().UTC().Format(time.RFC3339)
-	resp.Model.Name = modelName
-	resp.Model.Validated = modelValidated
 	overall := true
 	{ t0 := time.Now(); if err := rdb.Ping(ctx).Err(); err != nil { resp.Redis = check{OK:false, Error: err.Error()}; overall=false } else { resp.Redis = check{OK:true, LatencyMs: time.Since(t0).Milliseconds()} } }
 	{ t0 := time.Now(); if err := pg.PingContext(ctx); err != nil { resp.Postgres = check{OK:false, Error: err.Error()}; overall=false } else { resp.Postgres = check{OK:true, LatencyMs: time.Since(t0).Milliseconds()} } }
-	{ t0 := time.Now(); embCtx, cancel2 := context.WithTimeout(ctx, 3*time.Second); defer cancel2(); err := func() error { req, _ := http.NewRequestWithContext(embCtx, "POST", fmt.Sprintf("%s/api/embeddings", ollamaHost), strings.NewReader(fmt.Sprintf(`{"model":"%s","prompt":"ok"}`, modelName))); req.Header.Set("Content-Type","application/json"); resp, err := http.DefaultClient.Do(req); if err != nil { return err }; defer resp.Body.Close(); if resp.StatusCode != 200 { return fmt.Errorf("status %d", resp.StatusCode) }; return nil }(); if err != nil { resp.Ollama = check{OK:false, Error: err.Error()}; overall=false } else { resp.Ollama = check{OK:true, LatencyMs: time.Since(t0).Milliseconds()} } }
 	if overall { resp.Status = "ok" } else { resp.Status = "degraded" }
 	w.Header().Set("Content-Type", "application/json")
 	writeJSON(w, resp)

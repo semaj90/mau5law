@@ -1,80 +1,79 @@
 <script lang="ts">
-</script>
-	import type { Component } from "svelte";
-	import { crossfade } from "svelte/transition";
-	import { cubicInOut } from "svelte/easing";
-	import { FramerIcon, LinearIcon, RaycastIcon, VercelIcon } from "./icons/index.js";
+  	import type { Component } from "svelte";
+  	import { crossfade } from "svelte/transition";
+  	import { cubicInOut } from "svelte/easing";
+  	import { FramerIcon, LinearIcon, RaycastIcon, VercelIcon } from "./icons/index.js";
 
-	type Themes = "raycast" | "linear" | "vercel" | "framer";
+  	type Themes = "raycast" | "linear" | "vercel" | "framer";
 
-	let { theme = $bindable("raycast") }: { theme: Themes } = $props();
+  	let { theme = $bindable("raycast") }: { theme: Themes } = $props();
 
-	let showArrowKeyHint = $state(false);
+  	let showArrowKeyHint = $state(false);
 
-	function isTheme(value: unknown): value is Themes {
-		return (
-			typeof value === "string" && ["raycast", "linear", "vercel", "framer"].includes(value)
-		);
-	}
+  	function isTheme(value: unknown): value is Themes {
+  		return (
+  			typeof value === "string" && ["raycast", "linear", "vercel", "framer"].includes(value)
+  		);
+  	}
 
-	type ThemeObj = {
-		icon: Component;
-		key: Themes;
-	};
+  	type ThemeObj = {
+  		icon: Component;
+  		key: Themes;
+  	};
 
-	const themes: ThemeObj[] = [
-		{
-			icon: RaycastIcon,
-			key: "raycast",
-		},
-		{
-			icon: LinearIcon,
-			key: "linear",
-		},
-		{
-			icon: VercelIcon,
-			key: "vercel",
-		},
-		{
-			icon: FramerIcon,
-			key: "framer",
-		},
-	];
+  	const themes: ThemeObj[] = [
+  		{
+  			icon: RaycastIcon,
+  			key: "raycast",
+  		},
+  		{
+  			icon: LinearIcon,
+  			key: "linear",
+  		},
+  		{
+  			icon: VercelIcon,
+  			key: "vercel",
+  		},
+  		{
+  			icon: FramerIcon,
+  			key: "framer",
+  		},
+  	];
 
-	function handleKeydown(e: KeyboardEvent) {
-		const themeNames = themes.map(({ key }) => key);
+  	function handleKeydown(e: KeyboardEvent) {
+  		const themeNames = themes.map(({ key }) => key);
 
-		if (e.key === "ArrowRight") {
-			const currentIndex = themeNames.indexOf(theme);
-			const nextIndex = currentIndex + 1;
-			const nextTheme = themeNames[nextIndex];
+  		if (e.key === "ArrowRight") {
+  			const currentIndex = themeNames.indexOf(theme);
+  			const nextIndex = currentIndex + 1;
+  			const nextTheme = themeNames[nextIndex];
 
-			if (isTheme(nextTheme)) {
-				theme = nextTheme;
-			}
-		}
-		if (e.key === "ArrowLeft") {
-			const currentIndex = themeNames.indexOf(theme);
-			const nextIndex = currentIndex - 1;
-			const nextTheme = themeNames[nextIndex];
+  			if (isTheme(nextTheme)) {
+  				theme = nextTheme;
+  			}
+  		}
+  		if (e.key === "ArrowLeft") {
+  			const currentIndex = themeNames.indexOf(theme);
+  			const nextIndex = currentIndex - 1;
+  			const nextTheme = themeNames[nextIndex];
 
-			if (isTheme(nextTheme)) {
-				theme = nextTheme;
-			}
-		}
-	}
+  			if (isTheme(nextTheme)) {
+  				theme = nextTheme;
+  			}
+  		}
+  	}
 
-	function handleButtonClick(key: Themes) {
-		theme = key;
-		if (showArrowKeyHint === false) {
-			showArrowKeyHint = true;
-		}
-	}
+  	function handleButtonClick(key: Themes) {
+  		theme = key;
+  		if (showArrowKeyHint === false) {
+  			showArrowKeyHint = true;
+  		}
+  	}
 
-	const [send, receive] = crossfade({
-		duration: 250,
-		easing: cubicInOut,
-	});
+  	const [send, receive] = crossfade({
+  		duration: 250,
+  		easing: cubicInOut,
+  	});
 </script>
 
 <svelte:document onkeydown={handleKeydown} />

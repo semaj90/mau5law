@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { marked } from "marked";
   import { onMount } from "svelte";
 
@@ -18,8 +17,8 @@
     baseUrl = "",
     breaks = true
   }: Props = $props();
-let renderedHtml = $state<string >("");
-let isClient = $state(false);
+  let renderedHtml = $state<string >("");
+  let isClient = $state(false);
 
   // Configure marked options
   const markedOptions = {
@@ -42,7 +41,7 @@ let isClient = $state(false);
     if (!markdown) {
       renderedHtml = "";
       return;
-}
+  }
     try {
       // Configure marked with our options
       marked.setOptions(markedOptions);
@@ -85,7 +84,7 @@ let isClient = $state(false);
     } catch (error) {
       console.error("Error rendering markdown:", error);
       renderedHtml = `<p class="space-y-4">Error rendering markdown: ${error instanceof Error ? error.message : "Unknown error"}</p>`;
-}}
+  }}
   // Re-render when markdown changes using $effect
   $effect(() => {
     if (isClient && markdown) {

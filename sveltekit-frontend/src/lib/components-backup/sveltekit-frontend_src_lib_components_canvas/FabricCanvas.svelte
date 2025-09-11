@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import Badge from '$lib/components/ui/Badge.svelte';
@@ -53,7 +52,6 @@
   onMount(async () => {
     // Dynamically import Fabric.js to avoid SSR issues
     const fabric = await import('fabric');
-    
     fabricCanvas = new fabric.Canvas(canvasElement, {
       width,
       height,
@@ -88,10 +86,8 @@
       const delta = opt.e.deltaY;
       let zoom = fabricCanvas.getZoom();
       zoom *= 0.999 ** delta;
-      
       if (zoom > 20) zoom = 20;
       if (zoom < 0.01) zoom = 0.01;
-      
       fabricCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
       zoomLevel = zoom;
       opt.e.preventDefault();
@@ -101,14 +97,12 @@
 
   async function loadCanvasData() {
     if (!caseId) return;
-    
     try {
       isLoading = true;
       // Load evidence items for this case
       const response = await fetch(`/api/cases/${caseId}/evidence`);
       const evidence = await response.json();
       evidenceItems = evidence;
-      
       // Add evidence to canvas
       for (const item of evidenceItems) {
         await addEvidenceToCanvas(item);
@@ -126,7 +120,6 @@
     try {
       if (evidence.type === 'image' && evidence.url) {
         const fabric = await import('fabric');
-        
         fabric.Image.fromURL(evidence.url, (img: any) => {
           img.set({
             left: evidence.x,
@@ -137,13 +130,11 @@
             evidenceId: evidence.id,
             evidenceType: evidence.type
           });
-          
           fabricCanvas.add(img);
           fabricCanvas.renderAll();
         });
       } else if (evidence.type === 'document') {
         const fabric = await import('fabric');
-        
         const rect = new fabric.Rect({
           left: evidence.x,
           top: evidence.y,
@@ -185,36 +176,28 @@
   async function handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement;
     const files = input.files;
-    
     if (!files || files.length === 0) return;
-    
     for (const file of Array.from(files)) {
       await uploadEvidence(file);
     }
-    
     input.value = ''; // Reset input
   }
 
   async function uploadEvidence(file: File) {
     try {
       isLoading = true;
-      
       // Upload file
       const formData = new FormData();
       formData.append('file', file);
       formData.append('caseId', caseId || '');
-      
       const uploadResponse = await fetch('/api/evidence/upload', {
         method: 'POST',
         body: formData
       });
-      
       if (!uploadResponse.ok) {
         throw new Error('Upload failed');
       }
-      
       const uploadResult = await uploadResponse.json();
-      
       // Create evidence item
       const evidence: EvidenceItem = {
         id: uploadResult.id,
@@ -229,10 +212,8 @@
           uploadDate: new Date().toISOString()
         }
       };
-      
       evidenceItems = [...evidenceItems, evidence];
       await addEvidenceToCanvas(evidence);
-      
     } catch (error) {
       console.error('Failed to upload evidence:', error);
     } finally {
@@ -264,17 +245,13 @@
 
   function deleteSelected() {
     if (!fabricCanvas || !selectedObject) return;
-    
     const evidenceId = selectedObject.evidenceId;
-    
     fabricCanvas.remove(selectedObject);
     fabricCanvas.renderAll();
-    
     if (evidenceId) {
       evidenceItems = evidenceItems.filter(item => item.id !== evidenceId);
       onDelete?.({ objectId: evidenceId });
     }
-    
     selectedObject = null;
   }
 
@@ -300,7 +277,6 @@
 
   function saveCanvas() {
     if (!fabricCanvas) return;
-    
     const objects = fabricCanvas.getObjects();
     updateCanvasObjects();
     onSave?.({ objects: canvasObjects });
@@ -324,13 +300,11 @@
 
   function exportCanvas() {
     if (!fabricCanvas) return;
-    
     const dataURL = fabricCanvas.toDataURL({
       format: 'png',
       quality: 1,
       multiplier: 2
     });
-    
     // Create download link
     const link = document.createElement('a');
     link.download = `case-${caseId || 'canvas'}-${Date.now()}.png`;

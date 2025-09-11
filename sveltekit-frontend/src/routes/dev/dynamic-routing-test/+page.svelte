@@ -3,7 +3,6 @@
   Basic route testing without complex imports
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { goto } from '$app/navigation';
@@ -18,8 +17,8 @@
   // State management
   const testResults = writable<string[]>([]);
   const routeStats = writable<any>({});
-let isLoading = $state(false);
-let currentPath = $state('');
+  let isLoading = $state(false);
+  let currentPath = $state('');
 
   // Test configuration
   const testCases = [

@@ -2,7 +2,6 @@
 <!-- Native Windows Implementation -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { createFileMergeSystem, fileMergeStore, type FileMetadata, type MergeOperation } from '$lib/services/file-merge-system.js';
   import { Button } from '$lib/components/ui/button/index.js';
@@ -60,7 +59,6 @@
             uploadedAt: new Date().toISOString()
           }
         });
-        
         files = [...files, metadata];
       } catch (error) {
         console.error('Upload failed:', error);
@@ -122,7 +120,6 @@
       const response = new Response(stream);
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
-      
       const metadata = files.find(f => f.id === fileId);
       const a = document.createElement('a');
       a.href = url;

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { cognitiveSmartRouter } from '$lib/ai/cognitive-smart-router';
@@ -10,7 +9,6 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  
   // Stores for reactive UI
   const messages = writable([]);
   const engineStatus = writable({
@@ -45,13 +43,10 @@
   onMount(async () => {
     // Initialize new session
     await createNewSession();
-    
     // Check engine status
     await checkAllEngineStatus();
-    
     // Set up periodic status updates
     const statusInterval = setInterval(checkAllEngineStatus, 30000); // Every 30s
-    
     return () => {
       clearInterval(statusInterval);
     };
@@ -67,7 +62,6 @@
           userId: 'demo-user'
         })
       });
-      
       if (response.ok) {
         const session = await response.json();
         currentSessionId = session.id;
@@ -81,7 +75,6 @@
   async function checkAllEngineStatus() {
     const engines = ['webgpu', 'ollama', 'vllm', 'fastembed'];
     const status = {};
-    
     for (const engine of engines) {
       try {
         const startTime = Date.now();
@@ -90,7 +83,6 @@
           timeout: 5000
         });
         const responseTime = Date.now() - startTime;
-        
         status[engine] = {
           online: response.ok,
           responseTime,
@@ -100,9 +92,7 @@
         status[engine] = { online: false, responseTime: 0, error: error.message };
       }
     }
-    
     engineStatus.set(status);
-    
     // Update performance metrics
     const onlineEngines = Object.values(status).filter(s => s.online).length;
     performanceMetrics.update(m => ({
@@ -113,11 +103,9 @@
 
   async function sendMessage() {
     if (!currentInput.trim() || isProcessing) return;
-    
     const userMessage = currentInput.trim();
     currentInput = '';
     isProcessing = true;
-    
     // Add user message to chat
     messages.update(msgs => [...msgs, {
       id: crypto.randomUUID(),
@@ -126,11 +114,9 @@
       timestamp: new Date(),
       engine: 'user'
     }]);
-    
     try {
       const startTime = Date.now();
       let response;
-      
       if (selectedEngine === 'auto') {
         // Use cognitive smart router
         response = await cognitiveSmartRouter.route({
@@ -153,9 +139,7 @@
         });
         response = await response.json();
       }
-      
       const responseTime = Date.now() - startTime;
-      
       // Add assistant response to chat
       messages.update(msgs => [...msgs, {
         id: crypto.randomUUID(),
@@ -168,7 +152,6 @@
         cacheHit: response.cacheHit || false,
         metadata: response.metadata
       }]);
-      
       // Update performance metrics
       performanceMetrics.update(m => ({
         totalRequests: m.totalRequests + 1,
@@ -184,7 +167,6 @@
           chatContainer.scrollTop = chatContainer.scrollHeight;
         }
       }, 100);
-      
     } catch (error) {
       console.error('❌ Inference error:', error);
       messages.update(msgs => [...msgs, {

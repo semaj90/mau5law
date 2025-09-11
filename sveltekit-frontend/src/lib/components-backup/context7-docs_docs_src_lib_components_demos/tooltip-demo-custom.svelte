@@ -1,15 +1,14 @@
 <script lang="ts">
-</script>
-	import { Tooltip, type WithoutChildren, type WithoutChildrenOrChild } from "bits-ui";
-	import MagicWand from "phosphor-svelte/lib/MagicWand";
+  	import { Tooltip, type WithoutChildren, type WithoutChildrenOrChild } from "bits-ui";
+  	import MagicWand from "phosphor-svelte/lib/MagicWand";
 
-	let {
-		delayDuration = 200,
-		contentProps = { sideOffset: 8 },
-		...restProps
-	}: WithoutChildren<Tooltip.RootProps> & {
-		contentProps?: WithoutChildrenOrChild<Tooltip.ContentProps>;
-	} = $props();
+  	let {
+  		delayDuration = 200,
+  		contentProps = { sideOffset: 8 },
+  		...restProps
+  	}: WithoutChildren<Tooltip.RootProps> & {
+  		contentProps?: WithoutChildrenOrChild<Tooltip.ContentProps>;
+  	} = $props();
 </script>
 
 <Tooltip.Provider>

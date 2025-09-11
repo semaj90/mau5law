@@ -5,7 +5,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { intelligentWebAnalyzer, type UserAnalytics, type QLoRATrainingData } from '$lib/ai/intelligent-web-analyzer.js';
   import { browser } from '$app/environment';
@@ -35,7 +34,6 @@
 
   // Real-time logs
   let logs: string[] = $state([]);
-  
   // Performance monitoring
   let performanceMetrics = $state({
     domExtraction: 0,
@@ -79,22 +77,17 @@
 
     try {
       addLog('🚀 Initializing Intelligent Web Analyzer...');
-      
       // Initialize with user context
       await intelligentWebAnalyzer.initialize();
       intelligentWebAnalyzer.updateUserContext(userAnalytics);
-      
       isInitialized = true;
       addLog('✅ Intelligent Web Analyzer ready');
-      
       // Set up real-time user tracking
       setupRealTimeTracking();
-      
       // Auto-analysis if enabled
       if (settings.autoAnalysis) {
         setTimeout(() => analyzeCurrentPage(), 2000);
       }
-      
     } catch (error: any) {
       addLog(`❌ Initialization failed: ${error.message}`);
     }
@@ -115,27 +108,19 @@
     isAnalyzing = true;
     analysisState.currentStep = 'Starting analysis...';
     analysisState.progress = 0;
-    
     addLog('🔍 Starting comprehensive page analysis...');
-    
     try {
       const startTime = performance.now();
-      
       // Update user context before analysis
       intelligentWebAnalyzer.updateUserContext(userAnalytics);
-      
       // Perform complete analysis
       analysisState.currentStep = 'Analyzing DOM elements...';
       analysisState.progress = 10;
-      
       const results = await intelligentWebAnalyzer.analyzeCurrentPage();
-      
       analysisState.currentStep = 'Processing complete';
       analysisState.progress = 100;
-      
       // Update results
       analysisResults = results;
-      
       // Update metrics
       const processingTime = performance.now() - startTime;
       analysisMetrics = {
@@ -147,11 +132,9 @@
         memoryUsage: estimateMemoryUsage(results),
         qloraDataSize: results.metadata.distilled_size
       };
-      
       addLog(`✅ Analysis complete: ${results.chunks.length} chunks, ${analysisMetrics.totalElements} elements`);
       addLog(`📊 Processing time: ${processingTime.toFixed(2)}ms`);
       addLog(`🧮 QLoRA data prepared: ${results.metadata.distilled_size} training examples`);
-      
     } catch (error: any) {
       addLog(`❌ Analysis failed: ${error.message}`);
     } finally {
@@ -169,7 +152,6 @@
       commonWords: ['contract', 'legal', 'case', 'document', 'evidence', 'court', 'plaintiff', 'defendant'],
       specialization: ['legal', 'litigation', 'document_review']
     };
-    
     intelligentWebAnalyzer.updateUserContext(userAnalytics);
     addLog('📝 Updated typing patterns for legal specialization');
   }
@@ -192,7 +174,6 @@
         'Risk Assessment Report'
       ]
     };
-    
     intelligentWebAnalyzer.updateUserContext(userAnalytics);
     addLog('⚖️ Updated case context with active litigation matters');
   }
@@ -205,14 +186,12 @@
     document.addEventListener('click', (e) => {
       liveInteractions.clickCount++;
       liveInteractions.lastActivity = Date.now();
-      
       // Update user analytics heatmap
       userAnalytics.interactionPatterns.clickHeatmap.push({
         x: e.clientX,
         y: e.clientY,
         count: 1
       });
-      
       // Limit heatmap size
       if (userAnalytics.interactionPatterns.clickHeatmap.length > 100) {
         userAnalytics.interactionPatterns.clickHeatmap = 
@@ -230,7 +209,6 @@
     document.addEventListener('scroll', () => {
       liveInteractions.scrollDistance += Math.abs(window.scrollY);
       liveInteractions.lastActivity = Date.now();
-      
       const scrollDepth = window.scrollY / (document.body.scrollHeight - window.innerHeight);
       userAnalytics.interactionPatterns.scrollBehavior.depth = Math.max(
         userAnalytics.interactionPatterns.scrollBehavior.depth,
@@ -280,13 +258,11 @@
       const dataBlob = new Blob([JSON.stringify(analysisResults, null, 2)], {
         type: 'application/json'
       });
-      
       const url = URL.createObjectURL(dataBlob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `qlora-training-data-${Date.now()}.json`;
       a.click();
-      
       URL.revokeObjectURL(url);
       addLog('📥 QLoRA training data exported');
     } catch (error: any) {
@@ -299,7 +275,6 @@
    */
   async function testBatchProcessing() {
     addLog('🔄 Testing batch processing performance...');
-    
     const testTexts = [
       'This is a contract between parties for legal services',
       'Evidence submitted in case number 2024-CV-001',
@@ -310,7 +285,6 @@
 
     try {
       const startTime = performance.now();
-      
       // Simulate batch embedding generation
       const response = await fetch('/api/embeddings', {
         method: 'PUT',
@@ -325,7 +299,6 @@
       if (response.ok) {
         const data = await response.json();
         const processingTime = performance.now() - startTime;
-        
         addLog(`✅ Batch processing: ${testTexts.length} texts in ${processingTime.toFixed(2)}ms`);
         addLog(`📦 Cache hits: ${data.summary.cache_hits}/${data.summary.total}`);
       }

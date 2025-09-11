@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     size: 'sm' | 'md' | 'lg' ;
     message: string

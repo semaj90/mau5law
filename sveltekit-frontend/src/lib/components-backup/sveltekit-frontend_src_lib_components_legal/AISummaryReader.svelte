@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     documentId: string | null ;
     caseId: string | null ;

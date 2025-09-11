@@ -1,12 +1,10 @@
 <script lang="ts">
-</script>
   import { getContext } from 'svelte';
 
   interface Props {
     value: string
     class?: string;
   }
-  
   let {
     value,
     class: className = '',

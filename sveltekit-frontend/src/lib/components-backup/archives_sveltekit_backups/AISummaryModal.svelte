@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { aiService } from "../../../lib/services/aiService";
   import Dialog from '../../../lib/components/ui/dialog/Dialog.svelte';
   import { Button } from "$lib/components/ui/button";

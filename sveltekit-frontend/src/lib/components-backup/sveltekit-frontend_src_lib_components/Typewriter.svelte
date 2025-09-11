@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     text: string
     speed: number
@@ -11,18 +10,15 @@
 
 
 
-      
   let output = '';
   let i = 0;
   let intervalId: NodeJS.Timeout | null = null;
-  
   $effect(() => { if (text && i === 0) {
     output = '';
     i = 0;
-    
     if (intervalId) {
       clearInterval(intervalId);
-}
+  }
     intervalId = setInterval(() => {
       if (i < text.length) {
         output += text[i];
@@ -31,9 +27,9 @@
         if (intervalId) {
           clearInterval(intervalId);
           intervalId = null;
-}}
+  }}
     }, speed);
-}
+  }
 </script>
 
 <div class="space-y-4">

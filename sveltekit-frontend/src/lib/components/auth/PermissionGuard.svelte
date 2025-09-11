@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   // PermissionGuard component - Permission-based access control - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
-  
   interface Props {
     children?: import('svelte').Snippet;
     permissions: string | string[];

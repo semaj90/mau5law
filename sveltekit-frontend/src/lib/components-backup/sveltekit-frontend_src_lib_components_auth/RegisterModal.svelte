@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onsuccess?: (event?: any) => void;
   }
@@ -12,7 +11,6 @@
   let confirmPassword = "";
   let loading = false;
   let error = "";
-  
   async function handleRegister() {
     loading = true;
     error = "";
@@ -29,7 +27,7 @@
       error = e instanceof Error ? e.message : "Registration failed";
     } finally {
       loading = false;
-}}
+  }}
 </script>
 
 <Modal open>

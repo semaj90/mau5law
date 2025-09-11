@@ -1,6 +1,4 @@
 <script lang="ts">
-</script>
-  
   import { setContext } from "svelte";
 
   // Create the context menu and set it in context for child components

@@ -11,7 +11,6 @@
   - Performance monitoring and auto-quality adjustment
 -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
@@ -64,7 +63,6 @@
     onCanvasReady?: (canvas: HTMLCanvasElement, context: any) => void;
     onDraw?: (context: any, deltaTime: number) => void;
     onResize?: (width: number, height: number) => void;
-    
     class?: string;
   }
 
@@ -157,20 +155,15 @@
   const vertexShaderSource = `
     attribute vec2 a_position;
     attribute vec2 a_texCoord;
-    
     uniform mat3 u_transform;
     uniform float u_perspective;
-    
     varying vec2 v_texCoord;
     varying float v_depth;
-    
     void main() {
       vec3 position = u_transform * vec3(a_position, 1.0);
-      
       // Apply perspective transformation
       float w = 1.0 + position.z / u_perspective;
       gl_Position = vec4(position.xy / w, position.z, w);
-      
       v_texCoord = a_texCoord;
       v_depth = position.z;
     }
@@ -178,7 +171,6 @@
 
   const fragmentShaderSource = `
     precision mediump float;
-    
     uniform sampler2D u_texture;
     uniform float u_time;
     uniform vec2 u_resolution;
@@ -187,77 +179,58 @@
     uniform bool u_enableFog;
     uniform bool u_enableDither;
     uniform bool u_enableBloom;
-    
     varying vec2 v_texCoord;
     varying float v_depth;
-    
     // N64-style texture filtering
     vec4 n64TextureFilter(sampler2D tex, vec2 coord) {
       vec4 color = texture2D(tex, coord);
-      
       // Apply anisotropic filtering simulation
       if (u_anisotropicLevel > 1.0) {
         vec2 dx = dFdx(coord) * u_anisotropicLevel;
         vec2 dy = dFdy(coord) * u_anisotropicLevel;
-        
         color = mix(color, 
           texture2D(tex, coord + dx * 0.5) * 0.5 + 
           texture2D(tex, coord + dy * 0.5) * 0.5, 
           0.3);
       }
-      
       return color;
     }
-    
     // N64-style dithering
     vec4 n64Dither(vec4 color, vec2 coord) {
       if (!u_enableDither) return color;
-      
       float dither = fract(sin(dot(coord.xy, vec2(12.9898, 78.233))) * 43758.5453);
       vec3 ditherPattern = vec3(dither) * 0.05;
-      
       return vec4(color.rgb + ditherPattern, color.a);
     }
-    
     // N64-style fog
     vec4 n64Fog(vec4 color, float depth) {
       if (!u_enableFog) return color;
-      
       float fogFactor = clamp((depth + 2.0) / 4.0, 0.0, 1.0);
       vec3 fogColor = vec3(0.2, 0.2, 0.25);
-      
       return vec4(mix(color.rgb, fogColor, fogFactor * 0.3), color.a);
     }
-    
     // Simple bloom effect
     vec4 n64Bloom(vec4 color, vec2 coord) {
       if (!u_enableBloom) return color;
-      
       vec4 bloom = vec4(0.0);
       float bloomRadius = 2.0;
-      
       for (float x = -bloomRadius; x <= bloomRadius; x += 1.0) {
         for (float y = -bloomRadius; y <= bloomRadius; y += 1.0) {
           vec2 offset = vec2(x, y) / u_resolution;
           bloom += texture2D(u_texture, coord + offset) * 0.04;
         }
       }
-      
       return color + bloom * u_glowIntensity * 0.5;
     }
-    
     void main() {
       vec4 color = n64TextureFilter(u_texture, v_texCoord);
-      
       // Apply N64 post-processing effects
       color = n64Dither(color, gl_FragCoord.xy);
       color = n64Fog(color, v_depth);
       color = n64Bloom(color, v_texCoord);
-      
       // Apply subtle color adjustment for N64 look
       color.rgb = pow(color.rgb, vec3(1.1));
       color.rgb = mix(color.rgb, color.rgb * 1.2, 0.1);
-      
       gl_FragColor = color;
     }
   `;
@@ -412,7 +385,6 @@
     try {
       // Dynamic import of Fabric.js
       const { fabric } = await import('fabric');
-      
       fabricCanvas = new fabric.Canvas(canvasElement, {
         ...fabricConfig,
         width,
@@ -532,10 +504,8 @@
 
   onMount(() => {
     initializeCanvas();
-    
     // Handle window resize
     window.addEventListener('resize', handleResize);
-    
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -545,7 +515,6 @@
     if (animationFrameId) {
       cancelAnimationFrame(animationFrameId);
     }
-    
     if (fabricCanvas) {
       fabricCanvas.dispose();
     }

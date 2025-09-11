@@ -2,7 +2,6 @@
 <!-- Cases, POI, Evidence, Documents, and more -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { globalSearch, searchServices } from '$lib/services/search-service.js';
   import { hybridSearch } from '$lib/services/hybrid-vector-operations.js';
@@ -55,7 +54,7 @@
   ];
 
   // Recent searches and suggestions
-let trendingSearches = $state([
+  let trendingSearches = $state([
     'fraud investigation',
     'corporate embezzlement',
     'witness testimony',
@@ -64,7 +63,7 @@ let trendingSearches = $state([
   ]);
 
   // Debounced search
-let searchTimeout = $state<NodeJS.Timeout | null>(null);
+  let searchTimeout = $state<NodeJS.Timeout | null>(null);
 
   $effect(() => {
     if (searchInput) {

@@ -3,7 +3,6 @@
   Complete testing of authentication flow with GPU accelerated legal AI features
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import XStateAuthDemo from '$lib/components/auth/XStateAuthDemo.svelte';

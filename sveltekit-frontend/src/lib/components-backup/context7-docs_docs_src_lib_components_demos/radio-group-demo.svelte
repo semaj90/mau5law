@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-	import { Label, RadioGroup } from "bits-ui";
+  	import { Label, RadioGroup } from "bits-ui";
 </script>
 
 <RadioGroup.Root class="flex flex-col gap-4 text-sm font-medium">

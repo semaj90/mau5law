@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import type { UnifiedVectorRequest, UnifiedVectorResponse } from '$lib/services/unified-vector-orchestrator';
@@ -21,7 +20,6 @@
   let inputText = '';
   let userId = 'demo_user';
   let sessionId = `session_${Date.now()}`;
-  
   // Options
   let useWebGPU = true;
   let useWebAssembly = true;
@@ -59,7 +57,6 @@
       const response = await fetch('/api/unified-vector?action=health');
       const data = await response.json();
       health.set(data.health || {});
-      
       const healthStatus = data.allSystemsOperational ? 'All systems operational' : 'Some systems offline';
       addLog(`Health check: ${healthStatus}`);
     } catch (error: any) {
@@ -146,7 +143,6 @@
   onMount(() => {
     checkHealth();
     loadAnalytics();
-    
     // Refresh health and analytics every 30 seconds
     const interval = setInterval(() => {
       checkHealth();

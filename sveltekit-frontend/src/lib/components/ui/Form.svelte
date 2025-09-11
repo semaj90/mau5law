@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -47,7 +46,7 @@
       onsubmit?.({ values, isValid: true });
       if (options.onSubmit) {
         await options.onSubmit(values);
-}
+  }
     },
   });
 
@@ -66,11 +65,11 @@
         "Form validation failed",
         "Please correct the errors and try again."
       );
-}}
+  }}
   function handleReset() {
     form.reset();
     onreset?.();
-}
+  }
   // Update formApi when form changes using $effect
   $effect(() => {
     if (formApi !== undefined) {

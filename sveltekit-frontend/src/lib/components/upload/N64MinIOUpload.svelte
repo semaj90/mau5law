@@ -1,6 +1,5 @@
 <!-- N64 Gaming-Style MinIO Upload with Retro Progress Bars -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
   import { toastService } from '$lib/services/toast-service';
@@ -9,7 +8,6 @@
   import { embeddingService } from '$lib/services/embedding-service';
   import { telemetry } from '$lib/services/telemetry-service';
   import { uploadTelemetry } from '$lib/services/upload-telemetry-service';
-  
   // Import our N64 gaming components
   import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
   import N64LoadingRing from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
@@ -152,12 +150,10 @@
       if (!raw) return;
       const data = JSON.parse(raw);
       if (!data?.files) return;
-      
       // Restore evolution stage
       if (data.evolutionStage) {
         evolutionStage = data.evolutionStage;
       }
-      
       const restored: FileState[] = [];
       for (const m of data.files) {
         const ph = new File([], m.name, { type: m.type || 'application/octet-stream' });
@@ -172,7 +168,6 @@
           gamingProgress: m.gamingProgress || n64Themes[evolutionStage]
         });
       }
-      
       if (restored.length) {
         fileStates = [...fileStates, ...restored];
         files = [...files, ...restored.map(r => r.file)];
@@ -207,7 +202,6 @@
       fs.status = 'error';
       fs.error = reason;
       telemetry.emit('upload_retry_exhausted', { file: fs.file.name, attempts: fs.attempts, reason });
-      
       if (enableToastNotifications && fs.toastId) {
         toastService.failUpload(
           fs.toastId,
@@ -217,7 +211,6 @@
       }
       return;
     }
-    
     const delay = Math.min(8000, 600 * Math.pow(2, (fs.attempts - 1))) + Math.floor(Math.random() * 300);
     fs.status = 'pending';
     fs.nextRetryAt = Date.now() + delay;
@@ -225,7 +218,6 @@
       clearTimeout(fs.retryTimeoutId); 
       fs.retryTimeoutId = null; 
     }
-    
     if (enableToastNotifications) {
       const eta = (delay/1000).toFixed(1);
       if (fs.toastId) {
@@ -241,7 +233,6 @@
         );
       }
     }
-    
     fs.retryTimeoutId = setTimeout(() => {
       if (fs.status === 'pending' && uploading) {
         fs.retryTimeoutId = null;
@@ -250,7 +241,6 @@
         processUploadQueue();
       }
     }, delay);
-    
     ensureRetryTicker();
     telemetry.emit('upload_retry_scheduled', { 
       file: fs.file.name, 
@@ -262,7 +252,6 @@
 
   let retryTicker = $state(0);
   let retryInterval: any = null;
-  
   function ensureRetryTicker() {
     if (retryInterval) return;
     retryInterval = setInterval(() => {
@@ -301,14 +290,11 @@
       }
       return fs;
     });
-    
     uploading = false;
     liveMessage = 'All uploads canceled';
-    
     if (enableToastNotifications) {
       toastService.info('🎮 Uploads Canceled', 'All in‑flight and queued uploads have been canceled.', { duration: 4000 });
     }
-    
     finalizeAggregateStatus();
     serializeSession();
     telemetry.emit('upload_batch_canceled_all', { remaining: fileStates.length });
@@ -344,7 +330,6 @@
   function processFiles(newFiles: File[]) {
     errorMessage = null;
     const validFiles: File[] = [];
-    
     for (const file of newFiles) {
       if (file.size > maxSize) {
         errorMessage = `File ${file.name} exceeds ${formatFileSize(maxSize)} limit`;
@@ -354,7 +339,6 @@
     }
 
     matchPlaceholders(validFiles);
-    
     if (multiple) {
       files = [...files, ...validFiles];
     } else {
@@ -372,7 +356,6 @@
         }];
       }
     }
-    
     fileStates = fileStates.filter(fs => files.includes(fs.file));
     serializeSession();
   }
@@ -431,7 +414,6 @@
       uploadStatus = 'error';
     } else if (allDone) {
       uploadStatus = 'completed';
-      
       // Evolution stage progression on completion
       if (animateEvolution && allDone && !anyError) {
         const stages: typeof evolutionStage[] = ['nes', 'snes', 'n64', 'modern'];
@@ -587,7 +569,6 @@
     fs.error = undefined;
     fs.startTime = new Date();
     fs.attempts = (fs.attempts || 0) + 1;
-    
     const controller = new AbortController();
     fs.controller = controller;
     liveMessage = `🎮 Uploading ${file.name}`;
@@ -640,16 +621,13 @@
     try {
       const xhr: XMLHttpRequest = new XMLHttpRequest();
       xhr.open('POST', '/api/evidence/upload');
-      
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable) {
           fs.progress = Math.min(90, Math.round((e.loaded / e.total) * 90));
         }
       };
-      
       const abortHandler = () => xhr.abort();
       controller.signal.addEventListener('abort', abortHandler);
-      
       const resultPromise = new Promise<UploadResult[]>((resolve, reject) => {
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
@@ -668,10 +646,8 @@
         xhr.onerror = () => reject(new Error('Network error'));
         xhr.onabort = () => reject(new Error('Upload aborted'));
       });
-      
       xhr.send(formData);
       const data = await resultPromise;
-      
       fs.progress = 90;
       fs.status = 'processing';
       liveMessage = `🎮 Processing ${file.name}`;
@@ -718,7 +694,6 @@
           let embeddingVector: number[] = [];
           let embeddingDims = 0;
           let embeddingModel = '';
-          
           try {
             const embedding = await embeddingService.generateEmbedding(textContent, { preferRagService: false });
             embeddingVector = embedding.vector;
@@ -792,7 +767,6 @@
             `🎮 ${file.name} uploaded successfully! ${fs.gpuTaskIds?.length || 0} GPU tasks queued.`
           );
         }
-        
         serializeSession();
         telemetry.emit('upload_complete', { 
           file: file.name, 
@@ -844,7 +818,6 @@
           }
         }
       }
-      
       telemetry.emit(fs.status === 'canceled' ? 'upload_canceled' : 'upload_error', { 
         file: file.name, 
         error: fs.error, 

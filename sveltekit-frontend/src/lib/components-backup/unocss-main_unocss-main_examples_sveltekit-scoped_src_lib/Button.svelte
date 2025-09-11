@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
- export let onclick: () => any;
+   export let onclick: () => any;
 </script>
 
 <button onclick={onclick} type="button"><slot /></button>

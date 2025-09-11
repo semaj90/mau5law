@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-	import { Avatar } from "bits-ui";
+  	import { Avatar } from "bits-ui";
 </script>
 
 <Avatar.Root

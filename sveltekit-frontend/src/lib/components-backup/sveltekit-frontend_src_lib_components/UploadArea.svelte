@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onFileSelected?: (files: File[]) => void;
     accept?: string;

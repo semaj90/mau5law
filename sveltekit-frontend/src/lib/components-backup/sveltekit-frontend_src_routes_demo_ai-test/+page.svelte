@@ -1,25 +1,19 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { OllamaService } from '$lib/services/ollamaService';
   import { multiLayerCache } from '$lib/services/multiLayerCache';
-  
   // Initialize services
   const ollamaService = new OllamaService();
-  
   let testResults = $state<Array<{
     test: string
     status: 'pending' | 'success' | 'error';
     message: string
     duration?: number;
   }>>([]);
-  
   let isRunning = $state(false);
-  
   async function runAITests() {
     isRunning = true;
     testResults = [];
-    
     // Test 1: Ollama Service Health Check
     await runTest('Ollama Health Check', async () => {
       const health = await ollamaService.healthCheck();
@@ -29,14 +23,12 @@
         throw new Error(`Ollama unhealthy: ${health.error}`);
       }
     });
-    
     // Test 2: Cache System
     await runTest('Cache System Test', async () => {
       await multiLayerCache.set('test-key', { message: 'Hello AI!' }, {
         type: 'query',
         ttl: 300
       });
-      
       const retrieved = await multiLayerCache.get('test-key');
       if (retrieved?.message === 'Hello AI!') {
         return 'Cache system working correctly';
@@ -44,42 +36,34 @@
         throw new Error('Cache retrieval failed');
       }
     });
-    
     // Test 3: Text Analysis
     await runTest('Text Analysis Test', async () => {
       const testText = "This is a legal document regarding evidence in case 2024-001.";
       const analysis = await ollamaService.analyzeDocument(testText, 'summary');
-      
       if (analysis && analysis.length > 0) {
         return `Analysis completed: ${analysis.substring(0, 100)}...`;
       } else {
         throw new Error('No analysis returned');
       }
     });
-    
     // Test 4: Embedding Generation
     await runTest('Embedding Generation Test', async () => {
       const testText = "Legal document embedding test";
       const embedding = await ollamaService.generateEmbedding(testText);
-      
       if (embedding && embedding.length > 0) {
         return `Embedding generated: ${embedding.length} dimensions`;
       } else {
         throw new Error('No embedding generated');
       }
     });
-    
     isRunning = false;
   }
-  
   async function runTest(testName: string, testFn: () => Promise<string>) {
     const startTime = Date.now();
     testResults = [...testResults, { test: testName, status: 'pending', message: 'Running...' }];
-    
     try {
       const result = await testFn();
       const duration = Date.now() - startTime;
-      
       testResults = testResults.map(t => 
         t.test === testName 
           ? { ...t, status: 'success' as const, message: result, duration }
@@ -94,7 +78,6 @@
       );
     }
   }
-  
   onMount(() => {
     // Auto-run tests on mount
     runAITests();

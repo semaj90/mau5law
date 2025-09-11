@@ -32,6 +32,8 @@ import { cachingLayer } from './caching-layer';
 import { feedbackLoop } from './feedback-loop';
 import { monitoringService } from './monitoring-service';
 import { EventEmitter } from 'events';
+// Import dynamic port management
+import { portManager, getServicePort } from '../config/dynamic-ports';
 
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 
@@ -67,6 +69,21 @@ export const synthesisCache = pgTable('synthesis_cache', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
+// ===== DYNAMIC PORT CONFIGURATION =====
+
+// Initialize dynamic port allocation for all services
+async function initializeDynamicPorts() {
+  const allocatedPorts = await portManager.initializeAllServices();
+  logger.info('🔌 Dynamic ports allocated:', Array.from(allocatedPorts.entries()));
+  return allocatedPorts;
+}
+
+// Helper function to get service port with fallback
+function getServicePortWithFallback(serviceName: string, fallbackPort: number): number {
+  const dynamicPort = getServicePort(serviceName);
+  return dynamicPort || fallbackPort;
+}
+
 // ===== SERVICE CONFIGURATION =====
 
 const services = {
@@ -77,18 +94,18 @@ const services = {
     password: process.env.NEO4J_PASSWORD || 'password',
   },
 
-  // Go Microservices
+  // Go Microservices with dynamic ports
   goMicroservice: {
-    enhancedRAG: 'http://localhost:8094',
-    gpuOrchestrator: 'http://localhost:8095',
-    goLlama: 'http://localhost:8096',
-    tensorService: 'http://localhost:8097',
-    quicServer: 'quic://localhost:8098',
+    enhancedRAG: `http://localhost:${getServicePortWithFallback('enhanced-rag', 8094)}`,
+    gpuOrchestrator: `http://localhost:${getServicePortWithFallback('gpu-orchestrator', 8095)}`,
+    vectorConsumer: `http://localhost:${getServicePortWithFallback('vector-consumer', 8095)}`,
+    binaryVectorEngine: `http://localhost:${getServicePortWithFallback('binary-vector-engine', 8091)}`,
+    quicServer: `quic://localhost:${getServicePortWithFallback('quic-gateway', 8443)}`,
   },
 
-  // Ollama Configuration
+  // Ollama Configuration with dynamic port
   ollama: {
-    baseUrl: 'http://localhost:11434',
+    baseUrl: `http://localhost:${getServicePortWithFallback('ollama', 11434)}`,
     models: {
       legal: 'gemma3-legal:latest',
       embedding: 'nomic-embed-text:latest',
@@ -100,19 +117,19 @@ const services = {
   context7MultiCore: 'http://localhost:4100',
   aiSynthesisMCP: 'http://localhost:8200',
 
-  // Database
+  // Database with dynamic port
   postgres: {
     host: process.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(process.env.POSTGRES_PORT || '5432'),
-    database: process.env.POSTGRES_DB || 'legal_ai',
-    user: process.env.POSTGRES_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || 'postgres',
+    port: parseInt(process.env.POSTGRES_PORT || getServicePortWithFallback('postgresql', 5433).toString()),
+    database: process.env.POSTGRES_DB || 'legal_ai_db',
+    user: process.env.POSTGRES_USER || 'legal_admin',
+    password: process.env.POSTGRES_PASSWORD || '123456',
   },
 
-  // Redis Configuration
+  // Redis Configuration with dynamic port
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '6379'),
+    port: parseInt(process.env.REDIS_PORT || getServicePortWithFallback('redis', 6379).toString()),
     db: 0,
     keyPrefix: 'legal-ai:',
   },
@@ -490,6 +507,10 @@ export class EnhancedAISynthesisOrchestrator {
   private async initialize() {
     try {
       logger.info('[Orchestrator] Initializing Enhanced AI Synthesis Orchestrator...');
+
+      // Initialize dynamic port allocation first
+      await initializeDynamicPorts();
+      logger.info('[Orchestrator] Dynamic ports initialized successfully');
 
       // Initialize Ollama with gemma3-legal:latest
       this.ollama = new ChatOllama({

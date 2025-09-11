@@ -1,10 +1,8 @@
 <script lang="ts">
-</script>
   let count = 0;
   function increment() {
     count += 1;
   }
-  
   const orange = (n: number) => `bg-orange-${n}`;
 </script>
 
