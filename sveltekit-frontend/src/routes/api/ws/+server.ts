@@ -2,13 +2,25 @@
 import { Server } from 'socket.io';
 import { dev } from "$app/environment";
 import type { Redis } from 'ioredis';
-import { createRedisInstance } from '$lib/server/redis';
+import { createRedisInstance, createRedisClientSet } from '$lib/server/redis';
+import { createPubSubHelper } from '$lib/server/redisPubSub';
+import { registerCleanup } from '$lib/server/shutdown';
 import type { RequestHandler } from './$types';
-
 
 // WebSocket server for real-time updates
 let io: Server | null = null;
-let redis: ReturnType<typeof createRedisInstance> | null = null;
+// Legacy single redis client usage replaced by dedicated pub/sub helper set.
+let redisPrimary: ReturnType<typeof createRedisInstance> | null = null;
+let pubSub = null as ReturnType<typeof createPubSubHelper> | null;
+
+// Lightweight in-memory metrics (reset on process restart)
+const metrics = {
+  pubsubMessages: 0,
+  progressMessages: 0,
+  resultMessages: 0,
+  errorMessages: 0,
+  lastMessageAt: null as string | null,
+};
 
 // Initialize WebSocket server and Redis subscriber
 function initializeWebSocket() {
@@ -24,11 +36,12 @@ function initializeWebSocket() {
   });
 
   // Initialize Redis subscriber for job progress
+  // Initialize Redis primary (non-subscriber) for auxiliary commands (get/set)
   try {
-    redis = createRedisInstance();
+    redisPrimary = createRedisInstance();
   } catch {
     const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
-    redis = new RedisCtor({
+    redisPrimary = new RedisCtor({
       host: import.meta.env.REDIS_HOST || 'localhost',
       port: parseInt(import.meta.env.REDIS_PORT || '6379'),
       password: import.meta.env.REDIS_PASSWORD,
@@ -52,7 +65,7 @@ function initializeWebSocket() {
       console.log(`📤 Client ${socket.id} joined upload room: ${uploadId}`);
 
       // Send current progress if available
-      getCurrentProgress(uploadId).then(progress => {
+      getCurrentProgress(uploadId).then((progress) => {
         if (progress) {
           socket.emit('upload-progress', progress);
         }
@@ -72,21 +85,20 @@ function initializeWebSocket() {
     });
 
     // Handle attention tracking
-    socket.on('user-attention', (data: {
-      type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing';
-      timestamp: string;
-      metadata?: unknown;
-    }) => {
-      // Track user attention for AI context switching
-      trackUserAttention(socket.id, data);
-    });
+    socket.on(
+      'user-attention',
+      (data: {
+        type: 'focus' | 'blur' | 'scroll' | 'click' | 'typing';
+        timestamp: string;
+        metadata?: unknown;
+      }) => {
+        // Track user attention for AI context switching
+        trackUserAttention(socket.id, data);
+      }
+    );
 
     // Handle real-time collaboration
-    socket.on('document-edit', (data: {
-      documentId: string;
-      change: any;
-      userId: string;
-    }) => {
+    socket.on('document-edit', (data: { documentId: string; change: any; userId: string }) => {
       // Broadcast document changes to other collaborators
       socket.to(`doc-${data.documentId}`).emit('document-change', {
         change: data.change,
@@ -100,74 +112,67 @@ function initializeWebSocket() {
     });
   });
 
-  // Subscribe to Redis channels for job progress
+  // Setup pub/sub using helper (pattern + direct channels)
   setupRedisSubscriptions();
+
+  // Register cleanup once
+  registerCleanup(() => _closeWebSocket());
 
   return io;
 }
 
 // Setup Redis subscriptions for job progress updates
 function setupRedisSubscriptions() {
-  if (!redis || !io) return;
-
-  // Subscribe to job progress updates
-  redis.psubscribe('progress:*', 'result:*', 'error:*');
-
-  redis.on('pmessage', (pattern, channel, message) => {
-    try {
-      const data = JSON.parse(message);
-
-      if (channel.startsWith('progress:')) {
-        const uploadId = channel.split(':')[1];
-
-        // Emit progress to specific upload room
-        io?.to(`upload-${uploadId}`).emit('upload-progress', {
-          uploadId,
-          ...data,
-          timestamp: new Date().toISOString(),
-        });
-
-        // Also emit to case room if caseId is available
-        if (data.caseId) {
-          io?.to(`case-${data.caseId}`).emit('case-progress', {
+  if (!io || pubSub) return;
+  pubSub = createPubSubHelper({
+    patterns: ['progress:*', 'result:*', 'error:*'],
+    onMessage: ({ channel, message }) => {
+      metrics.pubsubMessages++;
+      metrics.lastMessageAt = new Date().toISOString();
+      try {
+        const data = JSON.parse(message);
+        if (channel.startsWith('progress:')) {
+          metrics.progressMessages++;
+          const uploadId = channel.split(':')[1];
+          (io as Server)?.to(`upload-${uploadId}`).emit('upload-progress', {
             uploadId,
             ...data,
             timestamp: new Date().toISOString(),
           });
+          if ((data as any).caseId) {
+            (io as Server)?.to(`case-${(data as any).caseId}`).emit('case-progress', {
+              uploadId,
+              ...data,
+              timestamp: new Date().toISOString(),
+            });
+          }
+        } else if (channel.startsWith('result:')) {
+          metrics.resultMessages++;
+          const jobId = channel.split(':')[1];
+          (io as Server)?.to(`tensor-${jobId}`).emit('tensor-result', {
+            jobId,
+            result: data,
+            timestamp: new Date().toISOString(),
+          });
+        } else if (channel.startsWith('error:')) {
+          metrics.errorMessages++;
+          const uploadId = channel.split(':')[1];
+          (io as Server)?.to(`upload-${uploadId}`).emit('upload-error', {
+            uploadId,
+            error: data,
+            timestamp: new Date().toISOString(),
+          });
         }
+      } catch (e) {
+        console.error('❌ Failed to parse Redis message:', e);
       }
-
-      if (channel.startsWith('result:')) {
-        const jobId = channel.split(':')[1];
-
-        // Emit results to tensor processing rooms
-        io?.to(`tensor-${jobId}`).emit('tensor-result', {
-          jobId,
-          result: data,
-          timestamp: new Date().toISOString(),
-        });
-      }
-
-      if (channel.startsWith('error:')) {
-        const uploadId = channel.split(':')[1];
-
-        // Emit errors to relevant rooms
-        io?.to(`upload-${uploadId}`).emit('upload-error', {
-          uploadId,
-          error: data,
-          timestamp: new Date().toISOString(),
-        });
-      }
-
-    } catch (error: any) {
-      console.error('❌ Failed to parse Redis message:', error);
-    }
+    },
   });
 }
 
 // Track user attention for AI context switching
 async function trackUserAttention(socketId: string, data: any): Promise<void> {
-  if (!redis) return;
+  if (!redisPrimary) return;
 
   const attentionEvent = {
     socketId,
@@ -176,7 +181,7 @@ async function trackUserAttention(socketId: string, data: any): Promise<void> {
   };
 
   // Store in Redis with expiration (1 hour)
-  await redis.setex(
+  await (redisPrimary as any).setex(
     `attention:${socketId}:${Date.now()}`,
     3600,
     JSON.stringify(attentionEvent)
@@ -223,7 +228,7 @@ async function getCurrentProgress(uploadId: string): Promise<any> {
   if (!redis) return null;
 
   try {
-    const progressData = await redis.get(`progress:${uploadId}`);
+    const progressData = await (redisPrimary as any).get(`progress:${uploadId}`);
     return progressData ? JSON.parse(progressData) : null;
   } catch (error: any) {
     console.error('❌ Failed to get current progress:', error);
@@ -232,11 +237,7 @@ async function getCurrentProgress(uploadId: string): Promise<any> {
 }
 
 // Broadcast progress update to specific rooms
-export function _broadcastProgress(
-  uploadId: string,
-  caseId: string,
-  progress: any
-) {
+export function _broadcastProgress(uploadId: string, caseId: string, progress: any) {
   if (!io) return;
 
   const progressData = {
@@ -280,19 +281,22 @@ export const GET: RequestHandler = async ({ url }) => {
   const server = initializeWebSocket();
 
   // Return WebSocket connection info
-  return new Response(JSON.stringify({
-    status: 'WebSocket server running',
-    endpoint: '/api/ws',
-    features: [
-      'Real-time upload progress',
-      'Tensor processing updates',
-      'AI context switching',
-      'Document collaboration',
-      'Search result streaming',
-    ],
-  }), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return new Response(
+    JSON.stringify({
+      status: 'WebSocket server running',
+      endpoint: '/api/ws',
+      features: [
+        'Real-time upload progress',
+        'Tensor processing updates',
+        'AI context switching',
+        'Document collaboration',
+        'Search result streaming',
+      ],
+    }),
+    {
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
 };
 
 // Cleanup function
@@ -301,8 +305,17 @@ export function _closeWebSocket() {
     io.close();
     io = null;
   }
-  if (redis) {
-    redis.disconnect();
-    redis = null;
+  if (pubSub) {
+    pubSub.stop().catch(() => {});
+    pubSub = null;
   }
+  if (redisPrimary) {
+    (redisPrimary as any).disconnect?.();
+    redisPrimary = null;
+  }
+}
+
+// Expose metrics endpoint data (can be imported by health/metrics route)
+export function _getWsMetrics() {
+  return { ...metrics };
 }

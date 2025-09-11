@@ -91,7 +91,14 @@
       "Bash(export REDIS_PASSWORD=\"redis\")",
       "Bash(REDIS_PASSWORD=\"redis\" npm run dev:gpu)",
       "Bash(REDIS_PASSWORD=\"redis\" npx vite dev --port 5176)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(grep:*)",
+      "Bash(ollama list:*)",
+      "Bash(ollama show:*)",
+      "Bash(./load-tester.exe:*)",
+      "Bash(air:*)",
+      "Bash(./legal-corpus-load-test.exe:*)",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": []

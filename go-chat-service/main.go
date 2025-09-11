@@ -31,7 +31,7 @@ const (
 	PostgreSQLURL       = "postgres://legal_admin:123456@localhost:5432/legal_ai_db"
 
 	// Cache
-	RedisURL           = "localhost:4005"
+	RedisURL           = "redis://:redis@localhost:6379"
 
 	// Performance
 	MaxChatHistory     = 100

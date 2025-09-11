@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async () => {
   let redis: any = null;
-  
+
   try {
     // Test basic Redis connection
     const { createRedisInstance } = await import('$lib/server/redis');
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async () => {
         connectTimeout: 5000,
         retryDelayOnFailover: 100,
         maxRetriesPerRequest: 3,
-        lazyConnect: false
+        lazyConnect: false,
       });
     }
 
@@ -32,12 +32,12 @@ export const GET: RequestHandler = async () => {
       redis.on('error', reject);
       setTimeout(() => reject(new Error('Connection timeout')), 5000);
     });
-    
+
     // Test basic operations
     await redis.set('test:connection', 'working');
     const testValue = await redis.get('test:connection');
     await redis.del('test:connection');
-    
+
     // Test Redis Stack JSON operations
     let jsonSupported = false;
     try {
@@ -51,7 +51,7 @@ export const GET: RequestHandler = async () => {
 
     // Get Redis info
     const info = await redis.info('server');
-    
+
     if (redis) {
       await redis.quit();
     }
@@ -62,11 +62,10 @@ export const GET: RequestHandler = async () => {
       testValue,
       redisInfo: {
         server: info.includes('redis_version'),
-        jsonSupported
+        jsonSupported,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error: any) {
     if (redis) {
       try {
@@ -75,17 +74,20 @@ export const GET: RequestHandler = async () => {
         // Ignore quit errors during cleanup
       }
     }
-    return json({
-      success: false,
-      error: error.message,
-      details: {
-        code: error.code,
-        errno: error.errno,
-        syscall: error.syscall,
-        address: error.address,
-        port: error.port
+    return json(
+      {
+        success: false,
+        error: error.message,
+        details: {
+          code: error.code,
+          errno: error.errno,
+          syscall: error.syscall,
+          address: error.address,
+          port: error.port,
+        },
+        timestamp: new Date().toISOString(),
       },
-      timestamp: new Date().toISOString()
-    }, { status: 500 });
+      { status: 500 }
+    );
   }
 };

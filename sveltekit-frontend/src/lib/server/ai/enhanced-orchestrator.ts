@@ -230,17 +230,17 @@ QUERY: ${input.query}
   if (input.rankedResults?.length > 0) {
     prompt += `RELEVANT LEGAL SOURCES:
 `;
-  input.rankedResults.slice(0, 5).forEach((source: any, i: number) => {
-      const title = source.metadata?.title || `Document ${i + 1}`;
-      const content = source.pageContent || source.content || source.text || '';
-      const relevance = source.crossEncoderScore || source.score || 0;
+  (input.rankedResults as any[]).slice(0, 5).forEach((source: any, i: number) => {
+    const title = source.metadata?.title || `Document ${i + 1}`;
+    const content = source.pageContent || source.content || source.text || '';
+    const relevance = source.crossEncoderScore || source.score || 0;
 
-      prompt += `
+    prompt += `
 ${i + 1}. ${title} (Relevance: ${(relevance * 100).toFixed(1)}%)
 ${content.substring(0, 500)}...
 
 `;
-    });
+  });
   }
 
   // Add Context7 documentation if available
@@ -899,13 +899,17 @@ export class EnhancedAISynthesisOrchestrator {
       },
 
       actions: {
-        recordStartTime: ({ context }) => {
-          context.performance.startTime = Date.now() as any;
+        recordStartTime: ({ context }: { context: any }) => {
+          if (!context.performance) context.performance = {};
+          context.performance.startTime = Date.now();
         },
 
-        recordEndTime: ({ context }) => {
-          context.performance.endTime = Date.now() as any;
-          const duration = (context.performance.endTime as any) - (context.performance.startTime as any);
+        recordEndTime: ({ context }: { context: any }) => {
+          if (!context.performance) return;
+          context.performance.endTime = Date.now();
+          const start = context.performance.startTime || 0;
+          const end = context.performance.endTime || 0;
+          const duration = end - start;
           logger.info(`[Performance] Total processing time: ${duration}ms`);
         },
 
@@ -989,8 +993,11 @@ export class EnhancedAISynthesisOrchestrator {
 
     // XState v5 uses createActor instead of interpret
     this.service = createActor(this.machine);
-  this.service.subscribe((snapshot: any) => {
-      logger.debug(`[State] ${JSON.stringify(snapshot.value || snapshot.status)}`);
+    // @ts-ignore snapshot typing not critical for logging
+    this.service.subscribe((snapshot: any) => {
+      try {
+        logger.debug(`[State] ${JSON.stringify(snapshot.value || snapshot.status)}`);
+      } catch {}
     });
     this.service.start();
   }
@@ -1014,10 +1021,13 @@ export class EnhancedAISynthesisOrchestrator {
       const response = await fetch(`${services.ollama.baseUrl}/api/tags`);
       const { models } = await response.json();
 
-      const hasGemma3Legal = models?.some(
-  (m: any) =>
-          m.name === 'gemma3-legal:latest' || (m.name.includes('gemma') && m.name.includes('legal'))
-      );
+      const hasGemma3Legal =
+        Array.isArray(models) &&
+        models.some(
+          (m: any) =>
+            m?.name === 'gemma3-legal:latest' ||
+            (m?.name?.includes('gemma') && m?.name?.includes('legal'))
+        );
 
       if (!hasGemma3Legal) {
         logger.info('[Models] Creating gemma3-legal:latest...');
@@ -1084,9 +1094,11 @@ TEMPLATE """{{ if .System }}<|system|>
       const response = await fetch(`${services.ollama.baseUrl}/api/tags`);
       const { models } = await response.json();
 
-      const hasNomicEmbed = models?.some(
-  (m: any) => m.name === 'nomic-embed-text' || m.name === 'nomic-embed-text:latest'
-      );
+      const hasNomicEmbed =
+        Array.isArray(models) &&
+        models.some(
+          (m: any) => m?.name === 'nomic-embed-text' || m?.name === 'nomic-embed-text:latest'
+        );
 
       if (!hasNomicEmbed) {
         logger.info('[Models] Pulling nomic-embed-text...');
@@ -1317,7 +1329,8 @@ TEMPLATE """{{ if .System }}<|system|>
     };
 
     const stateString = typeof state === 'object' ? JSON.stringify(state) : state;
-  return (stages as any)[stateString] || 0;
+    // @ts-ignore dynamic index acceptable
+    return (stages as any)[stateString as any] || 0;
   }
 
   // Health check

@@ -640,3 +640,15 @@ document-chunker/document-chunker
 go-chat-service/go-chat-service
 *.exe
 
+go.mod
+cuda-mock-gateway/go.mod
+go-chat-service/go.mod
+go-enhanced-rag-service/go.mod
+legal-gateway/cuda-worker
+legal-gateway/go.mod
+legal-gateway/legal-api
+legal-gateway/legal-worker
+comprehensive-all-routes-phase-file.txt
+cognitive-service-jsonv2
+cognitive-service
+go.mod

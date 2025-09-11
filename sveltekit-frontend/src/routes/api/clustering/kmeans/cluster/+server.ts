@@ -235,7 +235,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Try WASM clustering first for better performance
       const wasmMetrics = wasmClusteringService.getPerformanceMetrics();
       let clusters;
-      
+
       if (wasmMetrics.recommendedForDataSize(embeddings.length)) {
         console.log('Using WebAssembly K-Means clustering for enhanced performance');
         const wasmResult = await wasmClusteringService.performKMeansClustering(

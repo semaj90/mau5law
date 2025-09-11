@@ -487,7 +487,7 @@
     "@useverk/drizzle-pgvector": "^1.0.11",
     "@xenova/transformers": "^2.17.2",
     "@xstate/svelte": "^5.0.0",
-    "amqplib": "^0.10.8",
+    "amqplib": "^0.10.9",
     "arktype": "^2.1.20",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",

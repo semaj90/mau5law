@@ -4,29 +4,51 @@ import type { RequestHandler } from './$types';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { context7CompatibleLibraryID, topic, tokens = 10000 } = await request.json();
-    
+
     if (!context7CompatibleLibraryID) {
       return json({ error: 'context7CompatibleLibraryID is required' }, { status: 400 });
     }
 
     const libraryDocs = {
       '/svelte/svelte': {
-        content: '# Svelte 5 Runes\n\n- `let count = $state(0)` - reactive state\n- `let doubled = $derived(count * 2)` - computed values\n- `$effect(() => console.log(count))` - side effects',
+        content:
+          '# Svelte 5 Runes\n\n- `let count = $state(0)` - reactive state\n- `let doubled = $derived(count * 2)` - computed values\n- `$effect(() => console.log(count))` - side effects',
         metadata: { library: 'svelte', topic: topic || 'runes', tokenCount: 150 },
-        snippets: [{ title: 'State', code: 'let count = $state(0);', description: 'Reactive state' }]
+        snippets: [
+          { title: 'State', code: 'let count = $state(0);', description: 'Reactive state' },
+        ],
       },
       '/melt-ui/melt-ui': {
-        content: '# Melt UI v0.39.0\n\n```js\nconst { elements: { root } } = createButton();\n```\n```svelte\n<button use:melt={$root}>Click</button>\n```',
-        metadata: { library: 'melt-ui', version: '0.39.0', topic: topic || 'builders', tokenCount: 120 },
-        snippets: [{ title: 'Button', code: 'const { elements: { root } } = createButton();', description: 'Melt button builder' }]
+        content:
+          '# Melt UI v0.39.0\n\n```js\nconst { elements: { root } } = createButton();\n```\n```svelte\n<button use:melt={$root}>Click</button>\n```',
+        metadata: {
+          library: 'melt-ui',
+          version: '0.39.0',
+          topic: topic || 'builders',
+          tokenCount: 120,
+        },
+        snippets: [
+          {
+            title: 'Button',
+            code: 'const { elements: { root } } = createButton();',
+            description: 'Melt button builder',
+          },
+        ],
       },
       '/bits-ui/bits-ui': {
-        content: '# Bits UI v2\n\n```svelte\n<Dialog.Root bind:open={isOpen}>\n  <Dialog.Trigger>Open</Dialog.Trigger>\n  <Dialog.Content>\n    <Dialog.Title>Title</Dialog.Title>\n  </Dialog.Content>\n</Dialog.Root>\n```',
-        metadata: { library: 'bits-ui', version: '2.x', topic: topic || 'dialog', tokenCount: 140 }
+        content:
+          '# Bits UI v2\n\n```svelte\n<Dialog.Root bind:open={isOpen}>\n  <Dialog.Trigger>Open</Dialog.Trigger>\n  <Dialog.Content>\n    <Dialog.Title>Title</Dialog.Title>\n  </Dialog.Content>\n</Dialog.Root>\n```',
+        metadata: { library: 'bits-ui', version: '2.x', topic: topic || 'dialog', tokenCount: 140 },
       },
       '/xstate/xstate': {
-        content: '# XState v5\n\n```js\nconst machine = createMachine({\n  initial: "idle",\n  states: {\n    idle: { on: { START: "active" } },\n    active: { on: { STOP: "idle" } }\n  }\n});\n```',
-        metadata: { library: 'xstate', version: '5.x', topic: topic || 'machines', tokenCount: 130 }
+        content:
+          '# XState v5\n\n```js\nconst machine = createMachine({\n  initial: "idle",\n  states: {\n    idle: { on: { START: "active" } },\n    active: { on: { STOP: "idle" } }\n  }\n});\n```',
+        metadata: {
+          library: 'xstate',
+          version: '5.x',
+          topic: topic || 'machines',
+          tokenCount: 130,
+        },
       },
       '/ioredis/ioredis': {
         content: `# IORedis - Advanced Redis Client for Node.js
@@ -64,24 +86,27 @@ class RedisService {
   async initialize() {
     this.pool = {
       // Primary connection for read/write
-      primary: new Redis({
+  // (Note) In production, prefer a centralized helper (createRedisInstance) instead of raw new Redis.
+  primary: new Redis({
         host: 'localhost',
         port: 6379,
         connectionName: 'primary',
         lazyConnect: false,
       }),
-      
+
       // Dedicated subscriber (required for pub/sub)
-      subscriber: new Redis({
-        host: 'localhost', 
+  // (Note) Use createRedisInstance or a small wrapper for subscriber in real code.
+  subscriber: new Redis({
+        host: 'localhost',
         port: 6379,
         connectionName: 'subscriber',
       }),
-      
+
       // Dedicated publisher
-      publisher: new Redis({
+  // (Note) Use createRedisInstance or a small wrapper for publisher in real code.
+  publisher: new Redis({
         host: 'localhost',
-        port: 6379, 
+        port: 6379,
         connectionName: 'publisher',
       }),
     };
@@ -166,7 +191,7 @@ subscriber.on('pmessage', (pattern: string, channel: string, message: string) =>
   try {
     const data = JSON.parse(message);
     console.log(\`Pattern \${pattern} on \${channel}:\`, data);
-    
+
     // Handle document updates
     if (pattern === 'legal-ai:document:*') {
       handleDocumentUpdate(data);
@@ -180,7 +205,7 @@ subscriber.on('pmessage', (pattern: string, channel: string, message: string) =>
 subscriber.on('message', (channel: string, message: string) => {
   try {
     const data = JSON.parse(message);
-    
+
     if (channel === 'legal-ai:cache:invalidate') {
       invalidateCache(data);
     }
@@ -205,7 +230,7 @@ async function notifyDocumentUpdate(docId: string, operation: string) {
     operation, // 'create', 'update', 'delete'
     timestamp: Date.now(),
   });
-  
+
   await publisher.publish(\`legal-ai:document:\${docId}\`, message);
 }
 
@@ -250,10 +275,10 @@ const incrementScript = \`
   else
     current = tonumber(current)
   end
-  
+
   local max_val = tonumber(ARGV[1])
   local increment = tonumber(ARGV[2])
-  
+
   if current + increment <= max_val then
     local new_val = current + increment
     redis.call('SET', KEYS[1], new_val)
@@ -340,7 +365,7 @@ class TypedRedisService {
     try {
       const value = await this.redis.get(key);
       if (!value) return null;
-      
+
       return JSON.parse(value) as CacheDocument;
     } catch (error) {
       console.error('Failed to get document:', error);
@@ -362,7 +387,7 @@ class TypedRedisService {
 
 ### 1. Connection Management
 - Use separate connections for pub/sub and regular operations
-- Implement connection pooling for high-throughput applications  
+- Implement connection pooling for high-throughput applications
 - Set appropriate timeouts and retry logic
 - Use \`lazyConnect: true\` to defer connection until first command
 
@@ -383,37 +408,42 @@ class TypedRedisService {
 - Encrypt connections with TLS
 - Implement rate limiting
 - Validate and sanitize all inputs`,
-        metadata: { library: 'ioredis', version: '5.x', topic: topic || 'client-patterns', tokenCount: 2800 },
+        metadata: {
+          library: 'ioredis',
+          version: '5.x',
+          topic: topic || 'client-patterns',
+          tokenCount: 2800,
+        },
         snippets: [
-          { 
-            title: 'Connection Pool', 
+          {
+            title: 'Connection Pool',
             code: `const redis = new Redis({
   host: 'localhost',
   port: 6379,
   retryDelayOnFailover: 100,
   enableReadyCheck: true,
   lazyConnect: true,
-});`, 
-            description: 'Basic Redis connection with retry logic' 
+});`,
+            description: 'Basic Redis connection with retry logic',
           },
-          { 
-            title: 'Pub/Sub Setup', 
+          {
+            title: 'Pub/Sub Setup',
             code: `await subscriber.psubscribe('legal-ai:document:*');
 subscriber.on('pmessage', (pattern, channel, message) => {
   const data = JSON.parse(message);
   handleDocumentUpdate(data);
-});`, 
-            description: 'Pattern-based pub/sub subscription' 
+});`,
+            description: 'Pattern-based pub/sub subscription',
           },
-          { 
-            title: 'Pipeline Operations', 
+          {
+            title: 'Pipeline Operations',
             code: `const pipeline = redis.pipeline();
 pipeline.set('key1', 'value1');
 pipeline.expire('key1', 3600);
-const results = await pipeline.exec();`, 
-            description: 'Atomic batch operations with pipeline' 
-          }
-        ]
+const results = await pipeline.exec();`,
+            description: 'Atomic batch operations with pipeline',
+          },
+        ],
       },
       '/redis/node-redis': {
         content: `# Node Redis - Official Redis Client
@@ -462,7 +492,7 @@ await subscriber.connect();
 // Subscribe to specific channels
 await subscriber.subscribe('legal-ai:updates', (message, channel) => {
   console.log(\`Received message on \${channel}:\`, message);
-  
+
   try {
     const data = JSON.parse(message);
     handleUpdate(data);
@@ -493,7 +523,7 @@ async function notifyDocumentChange(docId: string, operation: string) {
     operation,
     timestamp: Date.now(),
   });
-  
+
   await client.publish(\`legal-ai:document:\${docId}\`, message);
 }
 \`\`\`
@@ -535,7 +565,7 @@ client.on('ready', () => {
 ### Graceful Error Handling
 \`\`\`typescript
 async function safeRedisOperation<T>(
-  operation: () => Promise<T>, 
+  operation: () => Promise<T>,
   fallback: T
 ): Promise<T> {
   try {
@@ -583,13 +613,13 @@ const ratelimitScript = \`
   local key = KEYS[1]
   local limit = tonumber(ARGV[1])
   local window = tonumber(ARGV[2])
-  
+
   local current = redis.call('GET', key)
   if current == false then
     redis.call('SETEX', key, window, 1)
     return 1
   end
-  
+
   current = tonumber(current)
   if current < limit then
     return redis.call('INCR', key)
@@ -700,18 +730,18 @@ class TypedRedisClient {
 
   async indexDocument(doc: LegalDocument): Promise<void> {
     const multi = this.client.multi();
-    
+
     // Add to type-specific sets
     multi.sAdd(\`documents:type:\${doc.type}\`, doc.id);
     multi.sAdd(\`documents:case:\${doc.metadata.caseId}\`, doc.id);
     multi.sAdd(\`documents:risk:\${doc.metadata.riskLevel}\`, doc.id);
-    
+
     // Add to sorted set by priority
     multi.zAdd('documents:by_priority', {
       score: doc.metadata.priority,
       value: doc.id,
     });
-    
+
     await multi.exec();
   }
 }
@@ -724,14 +754,14 @@ class TypedRedisClient {
 // Create connection pool
 const createRedisPool = (size: number = 10) => {
   const clients: RedisClientType[] = [];
-  
+
   for (let i = 0; i < size; i++) {
     const client = createClient({
       url: 'redis://localhost:6379',
     });
     clients.push(client);
   }
-  
+
   return {
     getClient: () => {
       // Round-robin or least-used logic
@@ -755,7 +785,7 @@ const keys = {
 };
 
 // Use hash tags for cluster deployment
-const clusterKey = (userId: string, suffix: string) => 
+const clusterKey = (userId: string, suffix: string) =>
   \`user:\${userId}:\${suffix}\`; // Keys with same {user:123} will be on same node
 \`\`\`
 
@@ -767,49 +797,54 @@ class EfficientRedisCache {
   async storeUserData(userId: string, data: Record<string, string>) {
     await client.hSet(\`user:\${userId}\`, data);
   }
-  
+
   // Use sets for unique collections
   async addToUserTags(userId: string, tag: string) {
     await client.sAdd(\`user:\${userId}:tags\`, tag);
   }
-  
+
   // Use sorted sets for rankings
   async updateScore(userId: string, score: number) {
     await client.zAdd('leaderboard', { score, value: userId });
   }
 }
 \`\`\``,
-        metadata: { library: 'redis', version: '4.x', topic: topic || 'official-client', tokenCount: 2400 },
+        metadata: {
+          library: 'redis',
+          version: '4.x',
+          topic: topic || 'official-client',
+          tokenCount: 2400,
+        },
         snippets: [
-          { 
-            title: 'Basic Connection', 
+          {
+            title: 'Basic Connection',
             code: `const client = createClient({
   url: 'redis://localhost:6379',
   socket: {
     reconnectStrategy: (retries) => Math.min(retries * 50, 1000)
   }
 });
-await client.connect();`, 
-            description: 'Simple Redis connection with reconnect strategy' 
+await client.connect();`,
+            description: 'Simple Redis connection with reconnect strategy',
           },
-          { 
-            title: 'Pub/Sub Pattern', 
+          {
+            title: 'Pub/Sub Pattern',
             code: `const subscriber = client.duplicate();
 await subscriber.subscribe('legal-ai:updates', (message, channel) => {
   const data = JSON.parse(message);
   handleUpdate(data);
-});`, 
-            description: 'Channel subscription with message handling' 
+});`,
+            description: 'Channel subscription with message handling',
           },
-          { 
-            title: 'Transaction', 
+          {
+            title: 'Transaction',
             code: `const multi = client.multi();
 multi.set('key1', 'value1');
 multi.expire('key1', 3600);
-const results = await multi.exec();`, 
-            description: 'Atomic operations with MULTI/EXEC' 
-          }
-        ]
+const results = await multi.exec();`,
+            description: 'Atomic operations with MULTI/EXEC',
+          },
+        ],
       },
       '/patterns/message-queue-redis': {
         content: `# Redis Integration Patterns for Legal AI Platform
@@ -822,7 +857,7 @@ const results = await multi.exec();`,
 class RedisService {
   private pool: {
     primary: Redis;      // Read/write operations
-    subscriber: Redis;   // Pub/sub subscriptions  
+    subscriber: Redis;   // Pub/sub subscriptions
     publisher: Redis;    // Pub/sub publishing
   };
 
@@ -836,16 +871,16 @@ class RedisService {
         lazyConnect: false,
         connectionName: 'legal-ai-primary',
       }),
-      
+
       subscriber: new Redis({
-        host: process.env.REDIS_HOST || 'localhost', 
+        host: process.env.REDIS_HOST || 'localhost',
         port: parseInt(process.env.REDIS_PORT || '6379'),
         connectionName: 'legal-ai-subscriber',
       }),
-      
+
       publisher: new Redis({
         host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379'), 
+        port: parseInt(process.env.REDIS_PORT || '6379'),
         connectionName: 'legal-ai-publisher',
       }),
     };
@@ -860,7 +895,7 @@ class RedisService {
 
 ## Legal Document Caching Strategy
 
-### Hybrid Cache Architecture  
+### Hybrid Cache Architecture
 \`\`\`typescript
 interface CachedDocument {
   id: string;
@@ -880,32 +915,32 @@ interface CachedDocument {
 class LegalDocumentCache {
   async storeDocument(doc: CachedDocument): Promise<void> {
     const key = \`legal:doc:\${doc.id}\`;
-    
+
     // Store with TTL based on document importance
     const ttl = this.calculateTTL(doc);
-    
+
     // Compress large documents
-    const data = doc.content.length > 10240 
+    const data = doc.content.length > 10240
       ? await this.compress(JSON.stringify(doc))
       : JSON.stringify(doc);
-    
+
     await redis.setex(key, ttl, data);
-    
+
     // Index for fast retrieval
     await this.indexDocument(doc);
-    
+
     // Notify other services
     await this.notifyDocumentStored(doc);
   }
 
   private calculateTTL(doc: CachedDocument): number {
     const baseTTL = 3600; // 1 hour
-    
+
     // Critical documents stay longer
     if (doc.metadata.riskLevel === 'critical') return baseTTL * 24;
     if (doc.metadata.riskLevel === 'high') return baseTTL * 6;
     if (doc.metadata.priority > 200) return baseTTL * 4;
-    
+
     return baseTTL;
   }
 }
@@ -940,7 +975,7 @@ class DocumentSyncService {
   async setupDocumentWatcher() {
     // Subscribe to document-specific updates
     await subscriber.psubscribe('legal:document:*');
-    
+
     subscriber.on('pmessage', async (pattern, channel, message) => {
       try {
         const data = JSON.parse(message);
@@ -974,13 +1009,13 @@ class DocumentSyncService {
 \`\`\`typescript
 class SearchCacheService {
   async cacheSearchResults(
-    query: string, 
-    filters: any, 
+    query: string,
+    filters: any,
     results: any[]
   ): Promise<void> {
     const cacheKey = this.generateSearchKey(query, filters);
     const ttl = this.calculateSearchTTL(query, filters, results);
-    
+
     const cacheData = {
       query,
       filters,
@@ -990,7 +1025,7 @@ class SearchCacheService {
     };
 
     await redis.setex(cacheKey, ttl, JSON.stringify(cacheData));
-    
+
     // Track search patterns
     await this.trackSearchPattern(query, filters);
   }
@@ -999,9 +1034,9 @@ class SearchCacheService {
     // Find all search cache keys that might be affected
     const pattern = 'legal:search:*';
     const keys = await redis.keys(pattern);
-    
+
     const pipeline = redis.pipeline();
-    
+
     for (const key of keys) {
       const cached = await redis.get(key);
       if (cached) {
@@ -1011,9 +1046,9 @@ class SearchCacheService {
         }
       }
     }
-    
+
     await pipeline.exec();
-    
+
     // Notify other services
     await publisher.publish(
       'legal:search:invalidate',
@@ -1024,16 +1059,16 @@ class SearchCacheService {
   private shouldInvalidate(searchData: any, criteria: any): boolean {
     // Invalidate if search involved affected document types
     if (criteria.documentTypes && searchData.filters.type) {
-      return criteria.documentTypes.some((type: string) => 
+      return criteria.documentTypes.some((type: string) =>
         searchData.filters.type.includes(type)
       );
     }
-    
+
     // Invalidate if search involved affected case
     if (criteria.caseId && searchData.filters.caseId === criteria.caseId) {
       return true;
     }
-    
+
     return false;
   }
 }
@@ -1047,7 +1082,7 @@ class RedisCircuitBreaker {
   private failureCount = 0;
   private lastFailureTime = 0;
   private state: 'closed' | 'open' | 'half-open' = 'closed';
-  
+
   private readonly failureThreshold = 5;
   private readonly recoveryTimeout = 60000; // 1 minute
 
@@ -1080,7 +1115,7 @@ class RedisCircuitBreaker {
   private onFailure() {
     this.failureCount++;
     this.lastFailureTime = Date.now();
-    
+
     if (this.failureCount >= this.failureThreshold) {
       this.state = 'open';
       console.warn('Circuit breaker opened due to failures');
@@ -1121,7 +1156,7 @@ class RedisMonitoringService {
 
     try {
       const result = await operation();
-      
+
       // Track hits/misses for cache operations
       if (operationType === 'get') {
         if (result) {
@@ -1141,12 +1176,12 @@ class RedisMonitoringService {
 
   private updateResponseTime(responseTime: number) {
     // Simple moving average
-    this.metrics.avgResponseTime = 
+    this.metrics.avgResponseTime =
       (this.metrics.avgResponseTime * 0.9) + (responseTime * 0.1);
   }
 
   getMetrics() {
-    const hitRatio = this.metrics.operations > 0 
+    const hitRatio = this.metrics.operations > 0
       ? this.metrics.hits / (this.metrics.hits + this.metrics.misses)
       : 0;
 
@@ -1170,28 +1205,28 @@ class RedisMonitoringService {
 \`\`\`typescript
 const getRedisConfig = () => {
   const isProduction = process.env.NODE_ENV === 'production';
-  
+
   return {
     host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT || '6379'),
     password: process.env.REDIS_PASSWORD,
     db: parseInt(process.env.REDIS_DB || '0'),
-    
+
     // Production optimizations
     maxRetriesPerRequest: isProduction ? 3 : 1,
     retryDelayOnFailover: isProduction ? 100 : 50,
     enableReadyCheck: true,
     lazyConnect: false,
     keepAlive: isProduction ? 30000 : 10000,
-    
+
     // Connection pooling
     family: 4, // IPv4
     keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:',
-    
+
     // Timeouts
     connectTimeout: 60000,
     commandTimeout: 5000,
-    
+
     // TLS for production
     tls: isProduction ? {
       checkServerIdentity: false,
@@ -1231,36 +1266,41 @@ const getRedisConfig = () => {
 - Implement proper caching strategies with TTL
 - Monitor cache hit rates and response times
 - Use Lua scripts for complex atomic operations`,
-        metadata: { library: 'redis-patterns', version: '1.0', topic: topic || 'integration-patterns', tokenCount: 3200 },
+        metadata: {
+          library: 'redis-patterns',
+          version: '1.0',
+          topic: topic || 'integration-patterns',
+          tokenCount: 3200,
+        },
         snippets: [
-          { 
-            title: 'Multi-Client Setup', 
+          {
+            title: 'Multi-Client Setup',
             code: `this.pool = {
   primary: new Redis({ connectionName: 'legal-ai-primary' }),
   subscriber: new Redis({ connectionName: 'legal-ai-subscriber' }),
   publisher: new Redis({ connectionName: 'legal-ai-publisher' }),
-};`, 
-            description: 'Separate Redis connections for different purposes' 
+};`,
+            description: 'Separate Redis connections for different purposes',
           },
-          { 
-            title: 'Document Sync', 
+          {
+            title: 'Document Sync',
             code: `await publisher.publish(\`legal:document:\${docId}\`, JSON.stringify({
   documentId: docId,
   operation: 'update',
   timestamp: Date.now(),
-}));`, 
-            description: 'Real-time document update notifications' 
+}));`,
+            description: 'Real-time document update notifications',
           },
-          { 
-            title: 'Circuit Breaker', 
+          {
+            title: 'Circuit Breaker',
             code: `return circuitBreaker.execute(
   () => redis.get(\`legal:doc:\${id}\`),
   null // fallback value
-);`, 
-            description: 'Resilient Redis operations with fallback' 
-          }
-        ]
-      }
+);`,
+            description: 'Resilient Redis operations with fallback',
+          },
+        ],
+      },
     };
 
     const result = libraryDocs[context7CompatibleLibraryID] || {
@@ -1269,7 +1309,7 @@ const getRedisConfig = () => {
     };
 
     return json({ success: true, ...result, requestedTokens: tokens, timestamp: new Date().toISOString() });
-    
+
   } catch (error) {
     return json({ success: false, error: error.message }, { status: 500 });
   }
