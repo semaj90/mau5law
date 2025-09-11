@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open -->
 <!--
   Integrated Legal Investigation Workspace
@@ -5,7 +7,7 @@
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
   import UnifiedCanvasIntegration from '$lib/components/unified/UnifiedCanvasIntegration.svelte';
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';

@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">

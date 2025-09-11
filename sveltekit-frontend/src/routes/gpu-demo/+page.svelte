@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- GPU Integration Demo for Legal AI Platform -->
 <script lang="ts">

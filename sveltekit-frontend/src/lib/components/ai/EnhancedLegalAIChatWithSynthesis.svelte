@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'Props' has already been declared -->
 <!--
 Enhanced Legal AI Chat with Input Synthesis and LegalBERT Integration

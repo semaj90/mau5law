@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: ')}' is not a valid attribute name
+https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: ')}' is not a valid attribute name -->
 <!-- AI-Enhanced "Did You Mean?" Suggestions Component with Intent Prediction -->
 <script lang="ts">

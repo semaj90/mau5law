@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant
+https://svelte.dev/e/unterminated_string_constant -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import { AlertCircle, FileText, Image, Upload } from 'lucide-svelte';

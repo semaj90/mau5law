@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 // Backup of ScrollArea.svelte before any future changes
 // Created on 2025-07-20
 

@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token >
+https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token > -->
 <!-- Document Upload Simulator with AI Processing -->
 <script lang="ts">

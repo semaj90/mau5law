@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   import type { Evidence } from '$lib/types';

@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token }
+https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">

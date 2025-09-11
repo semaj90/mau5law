@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Document Update Notifications Component -->
 <!-- Shows real-time updates for document re-embedding and re-ranking -->

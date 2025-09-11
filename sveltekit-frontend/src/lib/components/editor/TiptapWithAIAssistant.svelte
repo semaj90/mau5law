@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script>` element and/or a single top-level `<script module>` element
+https://svelte.dev/e/script_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script>` element and/or a single top-level `<script module>` element -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
   ` element and/or a single top-level `<script module>

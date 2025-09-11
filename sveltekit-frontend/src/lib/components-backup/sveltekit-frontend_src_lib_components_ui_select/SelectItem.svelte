@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'class_' has already been declared
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'class_' has already been declared -->
 <script lang="ts">
   interface Props {

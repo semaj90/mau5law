@@ -1,10 +1,12 @@
+<!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression
+https://svelte.dev/e/tag_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression -->
 <!--
   Enhanced Dashboard Layout - Modern SvelteKit 2 + Drizzle ORM + pgvector
   Features: Responsive grid, real-time data, vector search integration
 -->
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { onMount, onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
@@ -110,7 +112,7 @@
   $effect(() => {
     // Update active state based on current route
     dashboardSections.forEach(section => {
-      section.active = $page.url.pathname === section.href;
+      section.active = page.url.pathname === section.href;
     });
   });
 </script>
@@ -218,7 +220,7 @@
             <span class="text-nier-text-muted">Dashboard</span>
             <ChevronDown class="w-4 h-4 text-nier-text-muted rotate-[-90deg]" />
             <span class="text-nier-text-primary font-medium">
-              {$page.url.pathname.split('/').pop() || 'Overview'}
+              {page.url.pathname.split('/').pop() || 'Overview'}
             </span>
           </div>
         </div>

@@ -5,7 +5,7 @@
 <script lang="ts">
   // runtime helpers ($props, $state, $derived, $effect) are available in runes mode — do not import them
   import { enhance } from '$app/forms';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';

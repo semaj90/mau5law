@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `$evidenceStore` is an illegal variable name. To reference a global variable called `$evidenceStore`, use `globalThis.$evidenceStore`
+https://svelte.dev/e/global_reference_invalid -->
 <!-- @migration-task Error while migrating Svelte code: `$evidenceStore` is an illegal variable name. To reference a global variable called `$evidenceStore`, use `globalThis.$evidenceStore` -->
 <script lang="ts">
   import Badge from "$lib/components/ui/Badge.svelte";
@@ -22,7 +24,7 @@
   import { keyboardShortcuts } from "$lib/stores";
   import { get as getStore } from "svelte/store";
   // Save to logic: update user activity store, backend, Qdrant, Loki.js, MCP, LLM
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import {
     callContext7Tool,
     getContextAwareSuggestions,
@@ -38,7 +40,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: $page.data.user?.id,
+          userId: page.data.user?.id,
           evidenceId: contextMenu.item.id,
           action: "save",
           target,

@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   interface Props {
@@ -9,7 +11,7 @@
 
 
 
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import { Button } from "$lib/components/ui/button";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { notifications } from "$lib/stores/notification";
@@ -74,7 +76,7 @@
 
   // Get caseId from URL if not provided as prop
   $effect(() => { if (!caseId) {
-    caseId = $page.url.searchParams.get("caseId") || $page.params.id || "";
+    caseId = page.url.searchParams.get("caseId") || page.params.id || "";
   }
   onMount(() => {
     if (caseId) {

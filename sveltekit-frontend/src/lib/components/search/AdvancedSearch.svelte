@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   const { items: Evidence[] = [], onResults: (results: Evidence[]) = > void = () => {}, onSelect: (item: Evidence) = > void = () => {}, placeholder = 'Search evidence...', maxResults = 10, showFilters = true, showTags = true } = $props();

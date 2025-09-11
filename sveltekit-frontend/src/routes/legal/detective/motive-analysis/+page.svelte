@@ -1,7 +1,7 @@
 <!-- Detective Mode: Motive Analysis Enhancement -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import Button from '$lib/components/ui/button/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
@@ -83,7 +83,7 @@
   }
 
   onMount(() => {
-    caseId = $page.url.searchParams.get('case') || 'CASE-2024-001';
+    caseId = page.url.searchParams.get('case') || 'CASE-2024-001';
     initializeDetectiveMode();
     startSystemMonitoring();
   });

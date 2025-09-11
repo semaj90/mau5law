@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:on:mouseenter) and new syntaxes for event handling is not allowed. Use only the onon:mouseenter syntax
+https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:on:mouseenter) and new syntaxes for event handling is not allowed. Use only the onon:mouseenter syntax -->
 <!--
   NES 8-Bit Container Component

@@ -258,7 +258,7 @@
   }
 
   /* Full size variant */
-  .dialog-content:has(.max-w-7xl) {
+  .dialog-content:has(:global(.max-w-7xl)) {
     width: calc(100vw - var(--golden-md));
     height: calc(100vh - var(--golden-md));
     max-width: none;

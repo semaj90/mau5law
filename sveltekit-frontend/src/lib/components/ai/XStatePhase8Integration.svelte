@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <!-- @migration-task Error while migrating Svelte code: Cannot subscribe to stores that are not declared at the top level of the component
 https://svelte.dev/e/store_invalid_scoped_subscription -->

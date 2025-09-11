@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string
+https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
   import * as Button from "$lib/components/ui/button";

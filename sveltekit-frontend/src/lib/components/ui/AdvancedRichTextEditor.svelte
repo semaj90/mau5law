@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">

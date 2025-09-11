@@ -1,10 +1,12 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Case Creation Page - SuperForms + Zod + Enhanced Actions
   Demonstrates complete form enhancement pattern
 -->
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { enhance } from '$app/forms';
   import { onMount } from 'svelte';
@@ -53,19 +55,19 @@
 
   // Check for success message from server
   onMount(() => {
-    if ($page.form?.message?.type === 'success') {
+    if (page.form?.message?.type === 'success') {
       showSuccess = true;
-      toast.success($page.form.message.text);
+      toast.success(page.form.message.text);
 
       // Redirect if we have a redirect URL
-      if ($page.form.message.data?.redirectUrl) {
+      if (page.form.message.data?.redirectUrl) {
         setTimeout(() => {
-          goto($page.form.message.data.redirectUrl);
+          goto(page.form.message.data.redirectUrl);
         }, 2000);
       }
-    } else if ($page.form?.message?.type === 'error') {
-      errorMessage = $page.form.message.text;
-      toast.error($page.form.message.text);
+    } else if (page.form?.message?.type === 'error') {
+      errorMessage = page.form.message.text;
+      toast.error(page.form.message.text);
     }
   });
 

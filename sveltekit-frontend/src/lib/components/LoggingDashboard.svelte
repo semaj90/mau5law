@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `<div>` was left open
+https://svelte.dev/e/element_unclosed -->
 <!-- @migration-task Error while migrating Svelte code: `<div>` was left open -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';

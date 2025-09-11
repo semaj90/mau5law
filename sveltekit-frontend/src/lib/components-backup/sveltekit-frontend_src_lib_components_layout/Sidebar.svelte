@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`
+https://svelte.dev/e/const_tag_invalid_placement -->
 <!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
 <script lang="ts">
   interface Props {
@@ -5,7 +7,7 @@
   }
   let { open = false } = $props();
 
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import Button from "$lib/components/ui/Button.svelte";
   import { cn } from "$lib/utils";
   import {
@@ -30,7 +32,7 @@
     mounted = true;
   });
 
-  let currentPath = $derived($page.url.pathname)
+  let currentPath = $derived(page.url.pathname)
 
   const navigation = [
     {

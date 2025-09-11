@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here
+https://svelte.dev/e/unexpected_reserved_word -->
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
   import { Button } from "$lib/components/ui/button";

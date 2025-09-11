@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import Avatar from "$lib/components/Avatar.svelte";
   import { avatarStore } from "$lib/stores/avatarStore";
   import { onMount } from "svelte";
 
-  let user = $state($page.data.user);
+  let user = $state(page.data.user);
   let profileForm = $state({
     name: "",
     email: "",

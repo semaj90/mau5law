@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:keydown) and new syntaxes for event handling is not allowed. Use only the onkeydown syntax
+https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:keydown) and new syntaxes for event handling is not allowed. Use only the onkeydown syntax -->
 <script lang="ts">
   import { Bookmark, BookmarkCheck, Calendar, Edit3, Eye, Tag, User as UserIcon, X } from "lucide-svelte";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import type { PageData, ActionData } from './$types';
   import { goto } from '$app/navigation';
   let { data }: { data: PageData } = $props();

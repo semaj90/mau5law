@@ -12,7 +12,7 @@
 
 <script lang="ts">
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import DetectiveWebSocketManager from '$lib/websocket/DetectiveWebSocketManager.js';
   
   // Props

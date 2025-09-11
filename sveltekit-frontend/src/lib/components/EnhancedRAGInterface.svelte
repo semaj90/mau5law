@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->

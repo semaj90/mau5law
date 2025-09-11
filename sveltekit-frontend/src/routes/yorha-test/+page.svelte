@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `</section>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `</section>` attempted to close an element that was not open -->
 <!-- Advanced YoRHa Testing Suite -->
 <script lang="ts">

@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YorhaAI Assistant - Advanced Chat Interface with SvelteKit 5 + Bits UI + Melt UI -->
 <!-- Integrates with go-llama, MCP orchestrator, and tensor transport services -->

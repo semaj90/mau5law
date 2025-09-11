@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Unified Canvas Integration - Bridge Between Enhanced Evidence Canvas and Detective Board -->
 <script lang="ts">

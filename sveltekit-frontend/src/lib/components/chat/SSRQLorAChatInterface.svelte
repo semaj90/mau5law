@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!--
   SSR QLoRA Chat Interface - Revolutionary legal AI chat with instant SSR hydration
@@ -17,7 +19,7 @@
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { browser } from '$app/environment';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   // XState machine integration
   import { useMachine } from '@xstate/svelte';
   import { chatMachine } from '$lib/machines/chat-machine';

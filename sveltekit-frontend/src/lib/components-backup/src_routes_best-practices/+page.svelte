@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   let report: any = $state(null);
   let loading = $state(false);
   let error = $state('');

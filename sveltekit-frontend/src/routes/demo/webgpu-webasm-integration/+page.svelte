@@ -5,7 +5,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
   import {
     Card,
@@ -94,7 +94,7 @@
   
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="{$page.url}" />
+  <meta property="og:url" content="{page.url}" />
   <meta property="og:title" content={pageTitle} />
   <meta property="og:description" content={pageDescription} />
 </svelte:head>

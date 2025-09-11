@@ -1,7 +1,7 @@
 <script lang="ts">
   	import { onMount } from 'svelte';
   	import { writable } from 'svelte/store';
-  	import { page } from '$app/stores';
+  	import { page } from '$app/state';
   import { Dialog } from 'bits-ui';
   // Dropzone and Superforms fallback for SvelteKit 2/Svelte 5
   // If Bits UI and Superforms are unavailable, use SvelteKit's built-in file input and Zod validation

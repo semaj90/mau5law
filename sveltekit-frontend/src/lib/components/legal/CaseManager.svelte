@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: 'return' outside of function
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: 'return' outside of function -->
 <!-- 
   Legal Case Manager Component

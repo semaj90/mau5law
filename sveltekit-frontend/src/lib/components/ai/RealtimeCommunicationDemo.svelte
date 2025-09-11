@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'Card' has already been declared
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'Card' has already been declared -->
 <!-- Real-time Communication Demo Component -->
 <script lang="ts">

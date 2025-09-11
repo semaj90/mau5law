@@ -1,8 +1,10 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 /// <reference types="vite/client" />
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { useMachine } from '@xstate/svelte';
   import { legalCaseMachine, legalCaseSelectors } from '$lib/state/legal-case-machine.js';
   import type { LegalCaseContext, LegalCaseEvents } from '$lib/state/legal-case-machine.js';
@@ -39,7 +41,7 @@
 
   // Handle route changes and load case
   $effect(() => {
-    const routeCaseId = $page.params.caseId;
+    const routeCaseId = page.params.caseId;
     if (routeCaseId && routeCaseId !== caseId) {
       caseId = routeCaseId;
       send({ type: 'LOAD_CASE', caseId: routeCaseId });

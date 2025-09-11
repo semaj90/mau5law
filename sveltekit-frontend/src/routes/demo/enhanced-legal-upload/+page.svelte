@@ -5,7 +5,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import EnhancedLegalUploadAnalytics from '$lib/components/EnhancedLegalUploadAnalytics.svelte';
   import {
     Button,

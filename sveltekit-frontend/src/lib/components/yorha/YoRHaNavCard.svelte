@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <script lang="ts">
   const { title: string, description: string, path: string, icon: any, ariaLabel: string = title } = $props();

@@ -1,7 +1,7 @@
 <!-- Bits-UI Components Demo Page -->
 <script lang="ts">
   import BitsUIDemo from '$lib/components/ui/BitsUIDemo.svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   // Page metadata
   const title = 'Bits-UI Components Demo';
   const description = 'Modern Svelte 5 components with bits-ui primitives for Legal AI Platform';

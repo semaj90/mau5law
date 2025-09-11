@@ -1,5 +1,5 @@
 <script lang="ts">
-  	import { page } from '$app/stores';
+  	import { page } from '$app/state';
   	import { goto } from '$app/navigation';
   	import { cn } from '$lib/utils';
   	import Badge from '$lib/components/ui/Badge.svelte';
@@ -12,7 +12,7 @@
   		{ href: '/dev/self-prompting-demo', label: 'Agent Orchestration', icon: '🤖' },
   		{ href: '/dev/mcp-tools', label: 'MCP Tools', icon: '🔧' }
   	];
-  	let currentPath = $derived($page.url.pathname)
+  	let currentPath = $derived(page.url.pathname)
   	// Optimized navigation with instant transitions
   	function handleNavigation(href: string, event?: Event) {
   		event?.preventDefault();

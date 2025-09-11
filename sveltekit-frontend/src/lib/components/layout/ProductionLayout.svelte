@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
@@ -106,7 +106,7 @@
   });
 
   // Derived state
-  let currentPath = $derived(browser && $page.url ? $page.url.pathname : '/');
+  let currentPath = $derived(browser && page.url ? page.url.pathname : '/');
   let currentNavItem = $derived(
     mainNavItems.find(item => currentPath === item.href || currentPath.startsWith(item.href + '/'))
   );
