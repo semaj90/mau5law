@@ -1,35 +1,27 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import CanvasEditor from './CanvasEditor.svelte';
   import InspectorPanel from './InspectorPanel.svelte';
   import AIAssistantPanel from './AIAssistantPanel.svelte';
-  
   // Store for selected node
   export const selectedNode = writable(null);
-  
   // Props
   export let caseId: string | null = null;
   export let readOnly = false;
-  
   let canvasComponent: CanvasEditor;
   let currentSelectedNode: unknown = null;
-  
   // Subscribe to selected node changes
   selectedNode.subscribe(node => {
     currentSelectedNode = node;
   });
-  
   function handleNodeSelect(event: CustomEvent) {
     selectedNode.set(event.detail);
   }
-  
   function handleNodeSave(event: CustomEvent) {
     // Handle saving node data
     const nodeData = event.detail;
     console.log('Saving node:', nodeData);
-    
     // TODO: Implement actual save to database
     // await fetch('/api/evidence', { method: 'POST', body: JSON.stringify(nodeData) });
   }

@@ -1,14 +1,13 @@
 <script lang="ts">
-</script>
-	import { DateField } from "bits-ui";
+  	import { DateField } from "bits-ui";
 
-	let {
-		labelText = "Select a date",
-		value = $bindable(),
-		placeholder = $bindable(),
-		name,
-		...restProps
-	}: DateField.RootProps & { labelText: string; name?: string } = $props();
+  	let {
+  		labelText = "Select a date",
+  		value = $bindable(),
+  		placeholder = $bindable(),
+  		name,
+  		...restProps
+  	}: DateField.RootProps & { labelText: string; name?: string } = $props();
 </script>
 
 <DateField.Root bind:value bind:placeholder {...restProps}>

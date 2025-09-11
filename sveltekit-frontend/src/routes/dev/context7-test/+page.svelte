@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Context7TestDemo from '$lib/components/dev/Context7TestDemo.svelte';
 </script>
 

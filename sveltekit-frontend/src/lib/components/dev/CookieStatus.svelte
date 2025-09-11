@@ -1,19 +1,15 @@
 <script lang="ts">
-</script>
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
-let cookiesEnabled = $state(false);
-let localStorageEnabled = $state(false);
-let sessionStorageEnabled = $state(false);
-let devMode = $state(false);
-let sessionInfo = $state('');
-  
+  let cookiesEnabled = $state(false);
+  let localStorageEnabled = $state(false);
+  let sessionStorageEnabled = $state(false);
+  let devMode = $state(false);
+  let sessionInfo = $state('');
   onMount(() => {
     if (!browser) return;
-    
     devMode = window.location.hostname === 'localhost' || 
               window.location.hostname === '127.0.0.1';
-    
     // Test cookie support
     try {
       document.cookie = 'test=1; SameSite=Strict';
@@ -22,7 +18,6 @@ let sessionInfo = $state('');
     } catch (e) {
       cookiesEnabled = false;
     }
-    
     // Test localStorage support
     try {
       localStorage.setItem('test', '1');
@@ -31,7 +26,6 @@ let sessionInfo = $state('');
     } catch (e) {
       localStorageEnabled = false;
     }
-    
     // Test sessionStorage support
     try {
       sessionStorage.setItem('test', '1');
@@ -40,12 +34,10 @@ let sessionInfo = $state('');
     } catch (e) {
       sessionStorageEnabled = false;
     }
-    
     // Check for existing session
     const sessionCookie = document.cookie
       .split('; ')
       .find(row => row.startsWith('session_id='));
-    
     if (sessionCookie) {
       sessionInfo = `Active session: ${sessionCookie.split('=')[1].substring(0, 8)}...`;
     } else if (localStorageEnabled) {

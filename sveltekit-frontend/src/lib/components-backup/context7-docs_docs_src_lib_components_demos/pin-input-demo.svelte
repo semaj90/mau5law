@@ -1,17 +1,16 @@
 <script lang="ts">
-</script>
-	import { PinInput, REGEXP_ONLY_DIGITS, type PinInputRootSnippetProps } from "bits-ui";
-	import { toast } from "svelte-sonner";
-	import { cn } from "$lib/utils/styles.js";
+  	import { PinInput, REGEXP_ONLY_DIGITS, type PinInputRootSnippetProps } from "bits-ui";
+  	import { toast } from "svelte-sonner";
+  	import { cn } from "$lib/utils/styles.js";
 
-	let value = $state("");
+  	let value = $state("");
 
-	type CellProps = PinInputRootSnippetProps["cells"][0];
+  	type CellProps = PinInputRootSnippetProps["cells"][0];
 
-	function onComplete() {
-		toast.success(`Completed with value ${value}`);
-		value = "";
-	}
+  	function onComplete() {
+  		toast.success(`Completed with value ${value}`);
+  		value = "";
+  	}
 </script>
 
 <PinInput.Root

@@ -4,10 +4,8 @@
   Features: CUDA GPU acceleration, Visual Studio 2022 native performance
 -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  
   interface UploadFile {
     id: string;
     file: File;
@@ -38,7 +36,6 @@
     enableGpuOptimization?: boolean;
     useMsvcOptimizations?: boolean;
   }
-  
   let {
     caseId = '',
     disabled = false,
@@ -85,7 +82,6 @@
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
-      
       if (response.ok) {
         const data = await response.json();
         console.log('CUDA Worker Status:', data);
@@ -109,7 +105,6 @@
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const x = event.clientX;
     const y = event.clientY;
-    
     // Only hide drag overlay if mouse is actually outside the drop zone
     if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
       dragOver = false;
@@ -119,9 +114,7 @@
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-    
     if (disabled || uploading) return;
-    
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     processDroppedFiles(droppedFiles);
   }
@@ -130,26 +123,22 @@
   async function processDroppedFiles(droppedFiles: File[]) {
     errorMessage = null;
     successMessage = null;
-    
     // Validate files
     const validFiles = droppedFiles.filter(file => {
       if (file.size > maxFileSize) {
         console.warn(`File ${file.name} exceeds size limit`);
         return false;
       }
-      
       const isValidType = acceptedTypes.some(type => {
         if (type.startsWith('.')) {
           return file.name.toLowerCase().endsWith(type.toLowerCase());
         }
         return file.type.match(type.replace('*', '.*'));
       });
-      
       if (!isValidType) {
         console.warn(`File ${file.name} has invalid type`);
         return false;
       }
-      
       return true;
     });
 
@@ -168,7 +157,6 @@
 
     files = uploadFiles;
     performanceStats.totalFiles = files.length;
-    
     // Start upload process
     await uploadFilesToMinIO(uploadFiles);
   }
@@ -177,15 +165,12 @@
   async function uploadFilesToMinIO(uploadFiles: UploadFile[]) {
     uploading = true;
     uploadProgress = 0;
-    
     const startTime = Date.now();
     const results: UploadResult[] = [];
-    
     try {
       for (let i = 0; i < uploadFiles.length; i++) {
         const uploadFile = uploadFiles[i];
         uploadFile.status = 'uploading';
-        
         dispatch('uploadProgress', {
           progress: (i / uploadFiles.length) * 100,
           currentFile: uploadFile.file.name
@@ -194,7 +179,6 @@
         // CUDA preprocessing for supported file types
         let preprocessedData = uploadFile.file;
         let cudaProcessed = false;
-        
         if (enableCudaAcceleration && shouldUseCudaPreprocessing(uploadFile.file)) {
           const cudaResult = await preprocessWithCuda(uploadFile.file);
           if (cudaResult.success) {
@@ -206,13 +190,11 @@
 
         // Upload to MinIO via evidence API
         const result = await uploadSingleFile(uploadFile, preprocessedData, cudaProcessed);
-        
         if (result.success) {
           uploadFile.status = 'completed';
           uploadFile.progress = 100;
           uploadFile.cudaProcessed = cudaProcessed;
           results.push(result.data);
-          
           // Publish real-time sync event
           await publishMinIOSyncEvent(result.data, caseId);
         } else {
@@ -224,7 +206,6 @@
       const endTime = Date.now();
       const totalTime = endTime - startTime;
       const totalSizeMB = uploadFiles.reduce((sum, f) => sum + f.file.size, 0) / (1024 * 1024);
-      
       performanceStats.avgProcessingTime = totalTime / uploadFiles.length;
       performanceStats.throughputMBps = totalSizeMB / (totalTime / 1000);
 
@@ -232,7 +213,6 @@
       if (enableCudaAcceleration) {
         successMessage += ` (${performanceStats.cudaAccelerated} CUDA-optimized)`;
       }
-      
       dispatch('uploadComplete', results);
 
     } catch (error) {
@@ -249,7 +229,6 @@
     // Use CUDA for image processing, PDF text extraction, and large files
     const cudaTypes = ['image/', 'application/pdf'];
     const isLargeFile = file.size > 10 * 1024 * 1024; // 10MB+
-    
     return cudaTypes.some(type => file.type.startsWith(type)) || isLargeFile;
   }
 
@@ -292,7 +271,6 @@
 
   async function uploadSingleFile(uploadFile: UploadFile, file: File, cudaProcessed: boolean) {
     const formData = new FormData();
-    
     // Add file and metadata
     formData.append('file', file);
     formData.append('uploadData', JSON.stringify({
@@ -323,7 +301,6 @@
 
     const result = await response.json();
     const processingTime = Date.now() - startTime;
-    
     if (result.success && result.data?.[0]) {
       return {
         success: true,
@@ -391,10 +368,8 @@
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     if (!target.files) return;
-    
     const selectedFiles = Array.from(target.files);
     processDroppedFiles(selectedFiles);
-    
     // Clear the input so the same file can be selected again
     target.value = '';
   }

@@ -1,7 +1,6 @@
 <script lang="ts">
-</script>
-	import DemoContainer from "../demo-container.svelte";
-	import CustomDialog from "./dialog-demo-custom.svelte";
+  	import DemoContainer from "../demo-container.svelte";
+  	import CustomDialog from "./dialog-demo-custom.svelte";
 </script>
 
 <DemoContainer size="sm" wrapperClass="rounded-bl-card rounded-br-card">

@@ -1,6 +1,5 @@
 <!-- NieR: Automata Themed Rich Text Editor using bits-ui -->
 <script lang="ts">
-</script>
   interface Props {
     content?: any;
     placeholder?: any;
@@ -18,11 +17,8 @@
   import { Button } from "$lib/components/ui/button";
   import { Select } from "$lib/components/ui/select";
   import { Separator } from "$lib/components/ui/separator";
-  
-      
   let editor: Editor | null = null;
   let editorElement: HTMLElement
-  
   onMount(() => {
     editor = new Editor({
       element: editorElement,
@@ -35,7 +31,6 @@
       }
     });
   });
-  
   const fontOptions = [
     { value: "JetBrains Mono", label: "JetBrains Mono" },
     { value: "Courier New", label: "Courier New" },

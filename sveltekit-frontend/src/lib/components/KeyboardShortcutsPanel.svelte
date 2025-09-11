@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { } from 'svelte';
   import {
@@ -26,9 +25,9 @@
 
   let { visible = $bindable() } = $props(); // false;
   let { context = $bindable() } = $props(); // string[] = ['global'];
-let searchQuery = $state('');
-let selectedCategory = $state('all');
-let showRemoteOnly = $state(false);
+  let searchQuery = $state('');
+  let selectedCategory = $state('all');
+  let showRemoteOnly = $state(false);
 
   let filteredShortcuts = $derived($shortcuts.filter(shortcut => {
     const matchesSearch = !searchQuery ||
@@ -44,8 +43,8 @@ let showRemoteOnly = $state(false);
 
   let categories = $derived($shortcutCategories);
   let recentCommands = $derived($remoteCommands.slice(-10).reverse());
-let helpModalVisible = $state(false);
-let remoteStatusVisible = $state(false);
+  let helpModalVisible = $state(false);
+  let remoteStatusVisible = $state(false);
 
   onMount(() => {
     // Set context for shortcuts service

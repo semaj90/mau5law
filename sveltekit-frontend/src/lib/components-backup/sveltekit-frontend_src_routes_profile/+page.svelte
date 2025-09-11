@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { page } from "$app/stores";
   import Avatar from "$lib/components/Avatar.svelte";
   import { avatarStore } from "$lib/stores/avatarStore";
@@ -24,7 +23,7 @@
         firstName: "", // Not available in SessionUser
         lastName: "", // Not available in SessionUser
       };
-}
+  }
     // Load avatar
     avatarStore.loadAvatar();
   });
@@ -49,12 +48,12 @@
         user = data.user;
       } else {
         updateMessage = data.error || "Update failed";
-}
+  }
     } catch (error) {
       updateMessage = "Network error occurred";
     } finally {
       isUpdating = false;
-}}
+  }}
 </script>
 
 <svelte:head>

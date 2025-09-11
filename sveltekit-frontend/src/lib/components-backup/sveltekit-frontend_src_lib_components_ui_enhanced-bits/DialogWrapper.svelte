@@ -1,7 +1,5 @@
 <!-- Dialog Wrapper: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
-</script>
-  
 
   interface Props {
     open?: boolean;

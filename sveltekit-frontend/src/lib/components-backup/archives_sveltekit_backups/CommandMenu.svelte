@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { goto } from "$app/navigation";
   import { citationStore } from "$lib/stores/citations";
   import { createPopover, melt } from "@melt-ui/svelte";
@@ -119,7 +118,7 @@
     (acc, cmd) => {
       if (!acc[cmd.category]) {
         acc[cmd.category] = []
-}
+  }
       acc[cmd.category].push(cmd);
       return acc;
     },
@@ -146,7 +145,7 @@
         e.preventDefault();
         if (filteredCommands[selectedIndex]) {
           executeCommand(filteredCommands[selectedIndex]);
-}
+  }
         break;
       case "Escape":
         e.preventDefault();
@@ -154,13 +153,13 @@
         searchQuery = "";
         open.set(false);
         break;
-}}
+  }}
   function executeCommand(command: (typeof commands)[0]) {
     command.action();
     open.set(false);
     searchQuery = "";
     selectedIndex = 0;
-}
+  }
   function insertText(text: string) {
     if (textareaElement) {
       const start = textareaElement.selectionStart;
@@ -180,9 +179,9 @@
 
       // Trigger input event
       textareaElement.dispatchEvent(new Event("input", { bubbles: true }));
-}
+  }
     onInsert(text);
-}
+  }
   function insertCitation(citation?: unknown) {
     if (citation) {
       // Format the citation properly
@@ -195,19 +194,19 @@
       // Generic citation placeholder
       const citation = "[Citation: Document Title, Source (Year)]";
       insertText(citation);
-}}
+  }}
   // Open command menu
   export function openCommandMenu() {
     open.set(true);
     tick().then(() => {
       inputElement?.focus();
     });
-}
+  }
   // Reset when closing
   // TODO: Convert to $derived: if (!$open) {
     searchQuery = ""
     selectedIndex = 0;
-}
+  }
 </script>
 
 <svelte:window onkeydown={handleKeydown} />

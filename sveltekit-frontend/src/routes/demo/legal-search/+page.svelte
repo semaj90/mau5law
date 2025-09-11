@@ -3,22 +3,20 @@
   Demonstrates the LegalSearchCombobox component with various configurations
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import LegalSearchCombobox from '$lib/components/search/LegalSearchCombobox.svelte';
   import { Search, Zap, Database, Users, FileText, Scale } from 'lucide-svelte';
-  
   // Demo state
-let selectedResult = $state<any >(null);
-let searchHistory = $state<any[] >([]);
-let demoConfig = $state({
+  let selectedResult = $state<any >(null);
+  let searchHistory = $state<any[] >([]);
+  let demoConfig = $state({
     enableVectorSearch: true,
     aiSuggestions: true,
     categories: ['cases', 'evidence', 'precedents'],
     maxResults: 20,
     similarityThreshold: 0.7
   });
-let demoSearches = $state([
+  let demoSearches = $state([
     "Miranda rights violation",
     "DNA evidence chain of custody", 
     "Constitutional search and seizure",
@@ -26,24 +24,20 @@ let demoSearches = $state([
     "Probable cause determination",
     "Fourth Amendment exceptions"
   ]);
-let currentDemo = $state(0);
-  
+  let currentDemo = $state(0);
   // Handle search results
   function handleSearchSelect(event) {
     selectedResult = event.detail;
     searchHistory = [event.detail, ...searchHistory.slice(0, 4)];
     console.log('Selected result:', event.detail);
   }
-  
   function handleSearchQuery(event) {
     console.log('Search performed:', event.detail);
   }
-  
   function handleClear() {
     selectedResult = null;
     console.log('Search cleared');
   }
-  
   // Demo functions
   function runDemoSearch() {
     const searchText = demoSearches[currentDemo];
@@ -55,17 +49,14 @@ let currentDemo = $state(0);
     }
     currentDemo = (currentDemo + 1) % demoSearches.length;
   }
-  
   function toggleVectorSearch() {
     demoConfig.enableVectorSearch = !demoConfig.enableVectorSearch;
     demoConfig = { ...demoConfig };
   }
-  
   function toggleAISuggestions() {
     demoConfig.aiSuggestions = !demoConfig.aiSuggestions;
     demoConfig = { ...demoConfig };
   }
-  
   onMount(() => {
     console.log('Legal Search Demo loaded');
   });

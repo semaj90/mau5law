@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { cn } from '$lib/utils';
 
   interface Props {
@@ -25,7 +24,6 @@
 
   let sectionClass = $derived(() => {
     const baseClass = "flex flex-col";
-    
     const variantClasses = {
       default: "",
       card: "nes-legal-priority-medium yorha-3d-button rounded-lg",

@@ -1,12 +1,11 @@
 <script lang="ts">
-</script>
-	import Fan from "phosphor-svelte/lib/Fan";
-	import { Tabs } from "bits-ui";
-	import HomeSlider from "$lib/components/homepage/home-slider.svelte";
+  	import Fan from "phosphor-svelte/lib/Fan";
+  	import { Tabs } from "bits-ui";
+  	import HomeSlider from "$lib/components/homepage/home-slider.svelte";
 
-	let fanSpeed = $state(50);
+  	let fanSpeed = $state(50);
 
-	const temps: number[] = [50, 80, 95, 80, 50, 40, 60];
+  	const temps: number[] = [50, 80, 95, 80, 50, 40, 60];
 </script>
 
 <div class="relative order-2 lg:order-3 lg:-translate-y-3">

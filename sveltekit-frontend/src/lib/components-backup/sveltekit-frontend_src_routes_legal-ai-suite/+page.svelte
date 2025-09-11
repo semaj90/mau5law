@@ -1,208 +1,173 @@
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { AlertCircle, Upload, Search, Brain, CheckCircle, AlertTriangle } from 'lucide-svelte';
-	
-	// Svelte 5 runes for state management
-	let selectedFiles = $state<File[]>([]);
-	let isProcessing = $state(false);
-	let processedDocuments = $state<any[]>([]);
-	let ragQuery = $state('');
-	let ragResults = $state<any[]>([]);
-	let systemMetrics = $state({
-		gpuAcceleration: false,
-		ollamaStatus: 'unknown',
-		processingSpeed: 0,
-		caseAIScore: 0
-	});
-	let selectedJurisdiction = $state('federal');
-	let processingSummary = $state<any>(null);
-	let realTimeLogs = $state<string[]>([]);
-	
-	// Computed properties
-	let hasFiles = $derived(selectedFiles.length > 0)
-	let canProcess = $derived(hasFiles && !isProcessing)
-	let totalEntities = $derived(processedDocuments.reduce((sum, doc) => sum + (doc.entityCount || 0), 0)
-	);
-	let averageProsecutionScore = $derived(processedDocuments.length > 0 
-			? processedDocuments.reduce((sum, doc) => sum + (doc.prosecutionScore || 0), 0) / processedDocuments.length
-			: 0
-	);
-	
-	onMount(async () => {
-		await checkSystemStatus();
-		// Start real-time logging
-		startRealTimeLogging();
-	});
-	
-	function handleFileSelect(event: Event) {
-		const input = event.target as HTMLInputElement;
-		if (input.files) {
-			selectedFiles = Array.from(input.files).filter(file => 
-				file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
-			);
-			addLog(`📄 Selected ${selectedFiles.length} PDF files for processing`);
-		}
-	}
-	
-	async function processLegalDocuments() {
-		if (!canProcess) return;
-		
-		isProcessing = true;
-		processingSummary = null;
-		addLog(`🚀 Starting legal document processing...`);
-		
-		try {
-			const formData = new FormData();
-			
-			// Add files to form data
-			selectedFiles.forEach(file => {
-				formData.append('pdfFiles', file);
-			});
-			
-			// Add processing parameters
-			formData.append('jurisdiction', selectedJurisdiction);
-			formData.append('enhanceRAG', 'true');
-			formData.append('caseId', `case-${Date.now()}`);
-			
-			addLog(`⚖️ Processing ${selectedFiles.length} documents under ${selectedJurisdiction} jurisdiction`);
-			
-			const response = await fetch('/api/legal/ingest', {
-				method: 'POST',
-				body: formData
-			});
-			
-			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-			}
-			
-			const result = await response.json();
-			
-			if (result.success) {
-				processedDocuments = result.documents || [];
-				processingSummary = result.summary;
-				systemMetrics.caseAIScore = result.caseAISummaryScore;
-				
-				addLog(`✅ Processing complete: ${result.documentsProcessed} documents`);
-				addLog(`📊 Total entities extracted: ${result.summary?.totalEntities || 0}`);
-				addLog(`🎯 Average prosecution score: ${(averageProsecutionScore * 100).toFixed(1)}%`);
-				addLog(`📈 Case AI summary score: ${result.caseAISummaryScore}/100`);
-			} else {
-				throw new Error(result.error || 'Processing failed');
-			}
-			
-		} catch (error) {
-			console.error('Document processing failed:', error);
-			addLog(`❌ Processing failed: ${error.message}`);
-		} finally {
-			isProcessing = false;
-		}
-	}
-	
-	async function executeRAGQuery() {
-		if (!ragQuery.trim()) return;
-		
-		addLog(`🔍 Executing enhanced RAG query: "${ragQuery}"`);
-		
-		try {
-			const response = await fetch('/api/enhanced-rag/query', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					query: ragQuery,
-					jurisdiction: selectedJurisdiction,
-					maxResults: 5,
-					includeContext7: true,
-					prioritizeFactChecked: true,
-					minProsecutionScore: 0.5
-				})
-			});
-			
-			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-			}
-			
-			const result = await response.json();
-			
-			if (result.success) {
-				ragResults = result.results || [];
-				addLog(`✅ RAG query complete: ${ragResults.length} results, score: ${(result.ragScore * 100).toFixed(1)}%`);
-				
-				if (result.aggregatedAnalysis?.recommendedNextQuery) {
-					addLog(`💡 Recommended follow-up: "${result.aggregatedAnalysis.recommendedNextQuery}"`);
-				}
-			} else {
-				throw new Error(result.error || 'RAG query failed');
-			}
-			
-		} catch (error) {
-			console.error('RAG query failed:', error);
-			addLog(`❌ RAG query failed: ${error.message}`);
-		}
-	}
-	
-	async function checkSystemStatus() {
-		try {
-			// Check Ollama status
-			const ollamaResponse = await fetch('http://localhost:11434/api/tags');
-			systemMetrics.ollamaStatus = ollamaResponse.ok ? 'healthy' : 'offline';
-			
-			// Simulate GPU detection
-			systemMetrics.gpuAcceleration = Math.random() > 0.3; // 70% chance for demo
-			
-			addLog(`🖥️ System status: Ollama ${systemMetrics.ollamaStatus}, GPU: ${systemMetrics.gpuAcceleration ? 'enabled' : 'disabled'}`);
-			
-		} catch (error) {
-			systemMetrics.ollamaStatus = 'error';
-			addLog(`⚠️ System check failed: ${error.message}`);
-		}
-	}
-	
-	function addLog(message: string) {
-		const timestamp = new Date().toLocaleTimeString();
-		realTimeLogs = [...realTimeLogs, `[${timestamp}] ${message}`];
-		
-		// Keep only the last 20 log entries
-		if (realTimeLogs.length > 20) {
-			realTimeLogs = realTimeLogs.slice(-20);
-		}
-	}
-	
-	function startRealTimeLogging() {
-		// Simulate periodic system metrics updates
-		setInterval(() => {
-			if (isProcessing) {
-				systemMetrics.processingSpeed = Math.random() * 100 + 50; // 50-150 docs/min
-			}
-		}, 1000);
-	}
-	
-	function clearLogs() {
-		realTimeLogs = [];
-		addLog('📋 Logs cleared');
-	}
-	
-	function getFactCheckBadgeVariant(status: string) {
-		switch (status) {
-			case 'FACT': return 'default';
-			case 'FICTION': case 'DISPUTED': return 'destructive';
-			case 'UNVERIFIED': return 'secondary';
-			default: return 'outline';
-		}
-	}
-	
-	function getProsecutionScoreColor(score: number) {
-		if (score >= 0.8) return 'text-green-600';
-		if (score >= 0.6) return 'text-yellow-600';
-		return 'text-red-600';
-	}
+  	import { onMount } from 'svelte';
+  	import { Button } from '$lib/components/ui/button/index.js';
+  	import { Input } from '$lib/components/ui/input/index.js';
+  	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
+  	import { Badge } from '$lib/components/ui/badge/index.js';
+  	import { Progress } from '$lib/components/ui/progress/index.js';
+  	import { AlertCircle, Upload, Search, Brain, CheckCircle, AlertTriangle } from 'lucide-svelte';
+  	// Svelte 5 runes for state management
+  	let selectedFiles = $state<File[]>([]);
+  	let isProcessing = $state(false);
+  	let processedDocuments = $state<any[]>([]);
+  	let ragQuery = $state('');
+  	let ragResults = $state<any[]>([]);
+  	let systemMetrics = $state({
+  		gpuAcceleration: false,
+  		ollamaStatus: 'unknown',
+  		processingSpeed: 0,
+  		caseAIScore: 0
+  	});
+  	let selectedJurisdiction = $state('federal');
+  	let processingSummary = $state<any>(null);
+  	let realTimeLogs = $state<string[]>([]);
+  	// Computed properties
+  	let hasFiles = $derived(selectedFiles.length > 0)
+  	let canProcess = $derived(hasFiles && !isProcessing)
+  	let totalEntities = $derived(processedDocuments.reduce((sum, doc) => sum + (doc.entityCount || 0), 0)
+  	);
+  	let averageProsecutionScore = $derived(processedDocuments.length > 0 
+  			? processedDocuments.reduce((sum, doc) => sum + (doc.prosecutionScore || 0), 0) / processedDocuments.length
+  			: 0
+  	);
+  	onMount(async () => {
+  		await checkSystemStatus();
+  		// Start real-time logging
+  		startRealTimeLogging();
+  	});
+  	function handleFileSelect(event: Event) {
+  		const input = event.target as HTMLInputElement;
+  		if (input.files) {
+  			selectedFiles = Array.from(input.files).filter(file => 
+  				file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
+  			);
+  			addLog(`📄 Selected ${selectedFiles.length} PDF files for processing`);
+  		}
+  	}
+  	async function processLegalDocuments() {
+  		if (!canProcess) return;
+  		isProcessing = true;
+  		processingSummary = null;
+  		addLog(`🚀 Starting legal document processing...`);
+  		try {
+  			const formData = new FormData();
+  			// Add files to form data
+  			selectedFiles.forEach(file => {
+  				formData.append('pdfFiles', file);
+  			});
+  			// Add processing parameters
+  			formData.append('jurisdiction', selectedJurisdiction);
+  			formData.append('enhanceRAG', 'true');
+  			formData.append('caseId', `case-${Date.now()}`);
+  			addLog(`⚖️ Processing ${selectedFiles.length} documents under ${selectedJurisdiction} jurisdiction`);
+  			const response = await fetch('/api/legal/ingest', {
+  				method: 'POST',
+  				body: formData
+  			});
+  			if (!response.ok) {
+  				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  			}
+  			const result = await response.json();
+  			if (result.success) {
+  				processedDocuments = result.documents || [];
+  				processingSummary = result.summary;
+  				systemMetrics.caseAIScore = result.caseAISummaryScore;
+  				addLog(`✅ Processing complete: ${result.documentsProcessed} documents`);
+  				addLog(`📊 Total entities extracted: ${result.summary?.totalEntities || 0}`);
+  				addLog(`🎯 Average prosecution score: ${(averageProsecutionScore * 100).toFixed(1)}%`);
+  				addLog(`📈 Case AI summary score: ${result.caseAISummaryScore}/100`);
+  			} else {
+  				throw new Error(result.error || 'Processing failed');
+  			}
+  		} catch (error) {
+  			console.error('Document processing failed:', error);
+  			addLog(`❌ Processing failed: ${error.message}`);
+  		} finally {
+  			isProcessing = false;
+  		}
+  	}
+  	async function executeRAGQuery() {
+  		if (!ragQuery.trim()) return;
+  		addLog(`🔍 Executing enhanced RAG query: "${ragQuery}"`);
+  		try {
+  			const response = await fetch('/api/enhanced-rag/query', {
+  				method: 'POST',
+  				headers: {
+  					'Content-Type': 'application/json'
+  				},
+  				body: JSON.stringify({
+  					query: ragQuery,
+  					jurisdiction: selectedJurisdiction,
+  					maxResults: 5,
+  					includeContext7: true,
+  					prioritizeFactChecked: true,
+  					minProsecutionScore: 0.5
+  				})
+  			});
+  			if (!response.ok) {
+  				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  			}
+  			const result = await response.json();
+  			if (result.success) {
+  				ragResults = result.results || [];
+  				addLog(`✅ RAG query complete: ${ragResults.length} results, score: ${(result.ragScore * 100).toFixed(1)}%`);
+  				if (result.aggregatedAnalysis?.recommendedNextQuery) {
+  					addLog(`💡 Recommended follow-up: "${result.aggregatedAnalysis.recommendedNextQuery}"`);
+  				}
+  			} else {
+  				throw new Error(result.error || 'RAG query failed');
+  			}
+  		} catch (error) {
+  			console.error('RAG query failed:', error);
+  			addLog(`❌ RAG query failed: ${error.message}`);
+  		}
+  	}
+  	async function checkSystemStatus() {
+  		try {
+  			// Check Ollama status
+  			const ollamaResponse = await fetch('http://localhost:11434/api/tags');
+  			systemMetrics.ollamaStatus = ollamaResponse.ok ? 'healthy' : 'offline';
+  			// Simulate GPU detection
+  			systemMetrics.gpuAcceleration = Math.random() > 0.3; // 70% chance for demo
+  			addLog(`🖥️ System status: Ollama ${systemMetrics.ollamaStatus}, GPU: ${systemMetrics.gpuAcceleration ? 'enabled' : 'disabled'}`);
+  		} catch (error) {
+  			systemMetrics.ollamaStatus = 'error';
+  			addLog(`⚠️ System check failed: ${error.message}`);
+  		}
+  	}
+  	function addLog(message: string) {
+  		const timestamp = new Date().toLocaleTimeString();
+  		realTimeLogs = [...realTimeLogs, `[${timestamp}] ${message}`];
+  		// Keep only the last 20 log entries
+  		if (realTimeLogs.length > 20) {
+  			realTimeLogs = realTimeLogs.slice(-20);
+  		}
+  	}
+  	function startRealTimeLogging() {
+  		// Simulate periodic system metrics updates
+  		setInterval(() => {
+  			if (isProcessing) {
+  				systemMetrics.processingSpeed = Math.random() * 100 + 50; // 50-150 docs/min
+  			}
+  		}, 1000);
+  	}
+  	function clearLogs() {
+  		realTimeLogs = [];
+  		addLog('📋 Logs cleared');
+  	}
+  	function getFactCheckBadgeVariant(status: string) {
+  		switch (status) {
+  			case 'FACT': return 'default';
+  			case 'FICTION': case 'DISPUTED': return 'destructive';
+  			case 'UNVERIFIED': return 'secondary';
+  			default: return 'outline';
+  		}
+  	}
+  	function getProsecutionScoreColor(score: number) {
+  		if (score >= 0.8) return 'text-green-600';
+  		if (score >= 0.6) return 'text-yellow-600';
+  		return 'text-red-600';
+  	}
 </script>
 
 <svelte:head>

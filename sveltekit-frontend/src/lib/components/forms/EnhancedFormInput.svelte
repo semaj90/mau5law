@@ -3,7 +3,6 @@
   Demonstrates the validation utilities in practice
 -->
 <script lang="ts">
-</script>
   import {
     FormValidator,
     type FormFieldConfig,
@@ -50,11 +49,11 @@
   }>();
 
   // Local validation state
-let errors = $state<string[] >([]);
-let warnings = $state<string[] >([]);
-let isValid = $state<boolean >(true);
-let isDirty = $state<boolean >(false);
-let showPassword = $state<boolean >(false);
+  let errors = $state<string[] >([]);
+  let warnings = $state<string[] >([]);
+  let isValid = $state<boolean >(true);
+  let isDirty = $state<boolean >(false);
+  let showPassword = $state<boolean >(false);
   let inputElement: HTMLInputElement | HTMLTextAreaElement;
 
   // Computed properties
@@ -74,7 +73,7 @@ let showPassword = $state<boolean >(false);
       value,
       validation: { isValid, errors, warnings, value },
     });
-}
+  }
   function handleChange(event: Event) {
     const target = event.target as HTMLInputElement | HTMLTextAreaElement;
     value = target.value;
@@ -85,15 +84,15 @@ let showPassword = $state<boolean >(false);
       value,
       validation: { isValid, errors, warnings, value },
     });
-}
+  }
   function handleFocus() {
     dispatch("focus", { name });
-}
+  }
   function handleBlur() {
     isDirty = true;
     validateField();
     dispatch("blur", { name });
-}
+  }
   function validateField() {
     if (validator && config) {
       const result = validator.setValue(name, value);
@@ -110,13 +109,13 @@ let showPassword = $state<boolean >(false);
               errors = validationResult.errors;
               warnings = validationResult.warnings;
               isValid = validationResult.isValid;
-}
+  }
           );
         } else {
           errors = result.errors;
           warnings = result.warnings;
           isValid = result.isValid;
-}
+  }
       });
     } else {
       // Basic HTML5 validation
@@ -124,21 +123,21 @@ let showPassword = $state<boolean >(false);
         isValid = inputElement.validity.valid;
         errors = isValid ? [] : [inputElement.validationMessage];
         warnings = [];
-}}}
+  }}}
   function togglePasswordVisibility() {
     showPassword = !showPassword;
-}
+  }
   function focusInput() {
     if (inputElement) {
       inputElement.focus();
-}}
+  }}
   // Expose focus method
   export { focusInput as focus };
 
   // Reactive validation
   // TODO: Convert to $derived: if (value !== undefined) {
     validateField()
-}
+  }
 </script>
 
 <div class="container mx-auto px-4">

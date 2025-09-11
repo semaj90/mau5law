@@ -1,6 +1,5 @@
 {#snippet default}
 <script lang="ts">
-</script>
   import { pipelineManager, type PipelineType, type PipelineResult } from '$lib/services/pipeline-manager';
   import { PipelineVisualizer } from '$lib/services/pipeline-visualizer';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -10,7 +9,6 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  
   // Reactive state using Svelte 5 runes
   let isProcessing = $state(false);
   let results = $state<PipelineResult[]>([]);
@@ -32,22 +30,17 @@
   // Pipeline execution with XState management
   async function executePipeline() {
     if (isProcessing) return;
-    
     isProcessing = true;
-    
     try {
       console.log(`🚀 Starting ${selectedPipeline} pipeline execution`);
-      
       const result = await pipelineManager.executePipeline(cacheKey, {
         type: selectedPipeline,
         enableGPU: true,
         enableConcurrency: true,
         enableMemoryOptimization: true
       });
-      
       results = [result, ...results.slice(0, 9)]; // Keep last 10 results
       updateMetrics();
-      
     } catch (error) {
       console.error('Pipeline execution failed:', error);
     } finally {
@@ -58,22 +51,17 @@
   // Auto-select optimal pipeline
   async function autoExecutePipeline() {
     if (isProcessing) return;
-    
     isProcessing = true;
-    
     try {
       console.log('🧠 Auto-selecting optimal pipeline');
-      
       const result = await pipelineManager.autoSelectPipeline(cacheKey, {
         estimatedSize: 25000,
         requiresGPU: true,
         requiresConcurrency: true,
         prioritizeSpeed: true
       });
-      
       results = [result, ...results.slice(0, 9)];
       updateMetrics();
-      
     } catch (error) {
       console.error('Auto pipeline execution failed:', error);
     } finally {
@@ -84,22 +72,17 @@
   // Batch processing demo
   async function batchProcess() {
     if (isProcessing) return;
-    
     isProcessing = true;
-    
     try {
       console.log('📦 Starting batch processing');
-      
       const batchRequests = [
         { cacheKey: 'contracts_batch', config: { type: 'optimized' as PipelineType } },
         { cacheKey: 'evidence_batch', config: { type: 'advanced' as PipelineType } },
         { cacheKey: 'cases_batch', config: { type: 'end-to-end' as PipelineType } }
       ];
-      
       const batchResults = await pipelineManager.batchProcess(batchRequests);
       results = [...batchResults, ...results.slice(0, 7)];
       updateMetrics();
-      
     } catch (error) {
       console.error('Batch processing failed:', error);
     } finally {
@@ -110,13 +93,10 @@
   // Search across all pipelines
   async function searchPipelines() {
     if (!searchQuery.trim()) return;
-    
     try {
       console.log(`🔍 Searching all pipelines for: "${searchQuery}"`);
-      
       const results = await pipelineManager.searchAllPipelines(searchQuery, 10);
       searchResults = results;
-      
     } catch (error) {
       console.error('Search failed:', error);
     }
@@ -142,7 +122,6 @@
   function updateMetrics() {
     const successful = results.filter(r => r.success).length;
     const totalTime = results.reduce((sum, r) => sum + r.metrics.totalProcessingTime, 0);
-    
     metrics = {
       totalOperations: results.length,
       averageTime: results.length > 0 ? totalTime / results.length : 0,

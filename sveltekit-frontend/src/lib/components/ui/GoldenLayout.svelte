@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { createEventDispatcher } from "svelte";
   interface Props {
@@ -31,8 +30,8 @@
   const dispatch = createEventDispatcher();
 
   // Calculate flex values based on ratio
-let calculatedMainFlex = $state<number;
-let calculatedSidebarFlex = $state<number;
+  let calculatedMainFlex = $state<number;
+  let calculatedSidebarFlex = $state<number;
 
   // TODO: Convert to $derived: {
     switch (ratio) {
@@ -52,16 +51,16 @@ let calculatedSidebarFlex = $state<number;
         calculatedMainFlex = mainFlex;
         calculatedSidebarFlex = sidebarFlex;
         break;
-}}
+  }}
   function toggleSidebar() {
     collapsed = !collapsed;
     dispatch("toggle", { collapsed });
-}
+  }
   function handleKeydown(e: KeyboardEvent) {
     if (collapsible && (e.ctrlKey || e.metaKey) && e.key === "\\") {
       e.preventDefault();
       toggleSidebar();
-}}
+  }}
 </script>
 
 <svelte:window keydown={handleKeydown} />

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import { quintOut } from "svelte/easing";
   import { fly } from "svelte/transition";
@@ -45,7 +44,7 @@
   ) {
     action.action();
     notifications.remove(notification.id);
-}
+  }
 </script>
 
 <!-- Notification Container -->

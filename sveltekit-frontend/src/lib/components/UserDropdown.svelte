@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     user: any ;
   }
@@ -7,34 +6,32 @@
     user = null
   }: Props = $props();
 
-	import { onMount } from 'svelte';
-	import { avatarStore } from "../stores/avatarStore";
-	import Avatar from './Avatar.svelte';
-let dropdownOpen = $state(false);
-let dropdownElement = $state<HTMLElement>();
-	
-	onMount(() => {
-		// Close dropdown when clicking outside
-		function handleClickOutside(event: MouseEvent) {
-			if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-				dropdownOpen = false;
-}}
-		document.addEventListener('click', handleClickOutside);
-		return () => document.removeEventListener('click', handleClickOutside);
-	});
-	
-	function toggleDropdown() {
-		dropdownOpen = !dropdownOpen;
-}
-	function handleLogout() {
-		// Reset avatar store
-		avatarStore.reset();
-		// Navigate to logout endpoint
-		fetch('/api/auth/logout', { method: 'POST' })
-			.then(() => {
-				window.location.href = '/login';
-			});
-}
+  	import { onMount } from 'svelte';
+  	import { avatarStore } from "../stores/avatarStore";
+  	import Avatar from './Avatar.svelte';
+  let dropdownOpen = $state(false);
+  let dropdownElement = $state<HTMLElement>();
+  	onMount(() => {
+  		// Close dropdown when clicking outside
+  		function handleClickOutside(event: MouseEvent) {
+  			if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
+  				dropdownOpen = false;
+  }}
+  		document.addEventListener('click', handleClickOutside);
+  		return () => document.removeEventListener('click', handleClickOutside);
+  	});
+  	function toggleDropdown() {
+  		dropdownOpen = !dropdownOpen;
+  }
+  	function handleLogout() {
+  		// Reset avatar store
+  		avatarStore.reset();
+  		// Navigate to logout endpoint
+  		fetch('/api/auth/logout', { method: 'POST' })
+  			.then(() => {
+  				window.location.href = '/login';
+  			});
+  }
 </script>
 
 <div class="user-dropdown" bind:this={dropdownElement}>

@@ -3,7 +3,6 @@ Agent Orchestrator Component
 Manages AutoGen and CrewAI multi-agent workflows
 -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import {
@@ -74,7 +73,7 @@ Manages AutoGen and CrewAI multi-agent workflows
   let executionResults = $state<CrewTaskResult[]>([]);
 
   // Monitoring
-let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
+  let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
   let executionProgress = $state(0);
   let lastUpdate = $state<string>('');
 

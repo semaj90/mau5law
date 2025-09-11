@@ -1,6 +1,5 @@
 <!-- Enhanced RAG Demo Component with Semantic Analysis -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import {
     semanticAnalyzer,
@@ -22,32 +21,32 @@
 
   // Reactive state using runes
   let sampleLegalText = $state(`
-MEMORANDUM OF UNDERSTANDING
+  MEMORANDUM OF UNDERSTANDING
 
-This Memorandum of Understanding ("MOU"); is entered into on January 15, 2024, between TechCorp Inc., a Delaware corporation ("Company"), and John Smith, Esq., individually ("Consultant").
+  This Memorandum of Understanding ("MOU"); is entered into on January 15, 2024, between TechCorp Inc., a Delaware corporation ("Company"), and John Smith, Esq., individually ("Consultant").
 
-WHEREAS, Company desires to engage Consultant to provide legal advisory services regarding intellectual property matters and contract negotiations;
+  WHEREAS, Company desires to engage Consultant to provide legal advisory services regarding intellectual property matters and contract negotiations;
 
-WHEREAS, Consultant agrees to provide such services pursuant to the terms and conditions set forth herein;
+  WHEREAS, Consultant agrees to provide such services pursuant to the terms and conditions set forth herein;
 
-NOW, THEREFORE, in consideration of the mutual covenants contained herein, the parties agree as follows:
+  NOW, THEREFORE, in consideration of the mutual covenants contained herein, the parties agree as follows:
 
-1. SERVICES. Consultant shall provide legal advisory services to Company, including but not limited to:
+  1. SERVICES. Consultant shall provide legal advisory services to Company, including but not limited to:
    a) Review and analysis of intellectual property portfolios
    b) Contract negotiation and drafting
    c) Legal research and compliance advisory
 
-2. COMPENSATION. Company shall pay Consultant $350 per hour for services rendered, payable within 30 days of receipt of invoice.
+  2. COMPENSATION. Company shall pay Consultant $350 per hour for services rendered, payable within 30 days of receipt of invoice.
 
-3. CONFIDENTIALITY. Consultant acknowledges that during the course of engagement, Consultant may have access to confidential and proprietary information of Company.
+  3. CONFIDENTIALITY. Consultant acknowledges that during the course of engagement, Consultant may have access to confidential and proprietary information of Company.
 
-4. LIABILITY. Company's total liability under this MOU shall not exceed $50,000 in aggregate.
+  4. LIABILITY. Company's total liability under this MOU shall not exceed $50,000 in aggregate.
 
-5. BREACH. In the event of breach by either party, the non-breaching party may terminate this MOU upon written notice.
+  5. BREACH. In the event of breach by either party, the non-breaching party may terminate this MOU upon written notice.
 
-This MOU shall be governed by Delaware law and shall remain in effect until December 31, 2024, unless terminated earlier in accordance with its terms.
+  This MOU shall be governed by Delaware law and shall remain in effect until December 31, 2024, unless terminated earlier in accordance with its terms.
 
-IN WITNESS WHEREOF, the parties have executed this MOU as of the date first written above.
+  IN WITNESS WHEREOF, the parties have executed this MOU as of the date first written above.
     `);
 
   let queryText = $state('What are the liability limitations in this contract?');

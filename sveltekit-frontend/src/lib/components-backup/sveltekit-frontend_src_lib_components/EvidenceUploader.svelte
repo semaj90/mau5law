@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onuploaded?: (event?: any) => void;
   }
@@ -14,7 +13,6 @@
 
     let { maxFileSize = $bindable() } = $props(); // 50 * 1024 * 1024; // 50MB default
 
-  
   let files: FileList | null = null;
   let dragActive = false;
   let uploading = false;
@@ -34,26 +32,25 @@
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
-}
+  }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
-}
+  }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
-    
     const droppedFiles = e.dataTransfer?.files;
     if (droppedFiles) {
       files = droppedFiles;
       handleFileUpload();
-}}
+  }}
   function handleFileSelect(e: Event) {
     const input = e.target as HTMLInputElement;
     files = input.files;
     if (files) {
       handleFileUpload();
-}}
+  }}
   async function handleFileUpload() {
     if (!files || files.length === 0) return;
 
@@ -64,17 +61,16 @@
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        
         // Validate file type
         if (!allAllowedTypes.includes(file.type)) {
           uploadStatus.set(`Unsupported file type: ${file.type}`);
           continue;
-}
+  }
         // Validate file size
         if (file.size > maxFileSize) {
           uploadStatus.set(`File too large: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)`);
           continue;
-}
+  }
         uploadStatus.set(`Uploading ${file.name}...`);
 
         const formData = new FormData();
@@ -91,13 +87,12 @@
         if (response.ok) {
           const result = await response.json();
           uploadProgress.set(((i + 1) / files.length) * 100);
-          
           // Dispatch success event
           onuploaded?.();
         } else {
           const error = await response.json();
           uploadStatus.set(`Upload failed: ${error.error}`);
-}}
+  }}
       uploadStatus.set('Upload complete');
       setTimeout(() => {
         uploadStatus.set('');
@@ -109,28 +104,28 @@
     } finally {
       uploading = false;
       files = null;
-}}
+  }}
   function getEvidenceType(mimeType: string): string {
     if (allowedTypes.images.includes(mimeType)) return 'photograph';
     if (allowedTypes.videos.includes(mimeType)) return 'video';
     if (allowedTypes.documents.includes(mimeType)) return 'document';
     if (allowedTypes.audio.includes(mimeType)) return 'audio';
     return 'physical';
-}
+  }
   function getFileIcon(mimeType: string): string {
     if (allowedTypes.images.includes(mimeType)) return '🖼️';
     if (allowedTypes.videos.includes(mimeType)) return '🎥';
     if (allowedTypes.documents.includes(mimeType)) return '📄';
     if (allowedTypes.audio.includes(mimeType)) return '🎵';
     return '📁';
-}
+  }
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
+  }
 </script>
 
 <div class="space-y-4">

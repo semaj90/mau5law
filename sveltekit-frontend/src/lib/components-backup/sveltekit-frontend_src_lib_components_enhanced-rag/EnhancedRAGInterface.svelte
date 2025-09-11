@@ -1,9 +1,7 @@
 <!-- Enhanced RAG Interface Component for SvelteKit 2 + Svelte 5 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import Fuse from 'fuse.js';
-  
   // Svelte 5 reactive state
   let searchQuery = $state('');
   let documents = $state<any[]>([]);
@@ -15,29 +13,24 @@
     averageScore: 0,
     topLabels: [] as string[]
   });
-  
   // Fuse.js search instance
   let fuseSearch: Fuse<any> | null = null;
-  
   // Configuration
   const config = {
     ollamaHost: 'http://localhost:11434',
     embedModel: 'nomic-embed-text',
     legalModel: 'gemma3-legal'
   };
-  
   // Initialize component
   onMount(async () => {
     await loadDocuments();
     initializeFuseSearch();
     updateAnalytics();
   });
-  
   // Load documents from enhanced RAG cache
   async function loadDocuments() {
     try {
       isLoading = true;
-      
       // In a real app, this would come from your backend API
       // For demo, we'll simulate with sample legal documents
       documents = [
@@ -114,21 +107,17 @@
           timestamp: new Date('2025-01-03')
         }
       ];
-      
       // Generate embeddings for documents
       await generateEmbeddings();
-      
     } catch (error) {
       console.error('❌ Failed to load documents:', error);
     } finally {
       isLoading = false;
     }
   }
-  
   // Generate embeddings using nomic-embed-text
   async function generateEmbeddings() {
     console.log('🧠 Generating embeddings with nomic-embed-text...');
-    
     for (const doc of documents) {
       try {
         const response = await fetch(`${config.ollamaHost}/api/embeddings`, {
@@ -139,7 +128,6 @@
             prompt: doc.content
           })
         });
-        
         if (response.ok) {
           const result = await response.json();
           embeddings.set(doc.id, result.embedding);
@@ -150,7 +138,6 @@
       }
     }
   }
-  
   // Initialize Fuse.js search
   function initializeFuseSearch() {
     fuseSearch = new Fuse(documents, {
@@ -163,42 +150,34 @@
       threshold: 0.3,
       includeScore: true
     });
-    
     console.log('🔍 Fuse.js search initialized');
   }
-  
   // Update analytics
   function updateAnalytics() {
     analytics.totalDocuments = documents.length;
     analytics.averageScore = documents.reduce((sum, doc) => sum + doc.score, 0) / documents.length;
-    
     const labelCounts = documents.reduce((acc, doc) => {
       acc[doc.label] = (acc[doc.label] || 0) + 1;
       return acc;
     }, {});
-    
     analytics.topLabels = Object.entries(labelCounts)
       .sort(([,a], [,b]) => b - a)
       .slice(0, 3)
       .map(([label]) => label);
   }
-  
   // Search functionality
   function performSearch() {
     if (!searchQuery.trim() || !fuseSearch) {
       searchResults = [];
       return;
     }
-    
     const results = fuseSearch.search(searchQuery);
     searchResults = results.map(result => ({
       ...result.item,
       searchScore: 1 - (result.score || 0) // Convert distance to similarity
     }));
-    
     console.log(`🔍 Search "${searchQuery}" returned ${searchResults.length} results`);
   }
-  
   // Reactive search
   $effect(() => {
     if (searchQuery) {
@@ -207,7 +186,6 @@
       searchResults = [];
     }
   });
-  
   // Get score color class
   function getScoreColor(score: number): string {
     if (score >= 0.9) return 'text-green-600 font-bold';
@@ -215,7 +193,6 @@
     if (score >= 0.5) return 'text-yellow-600';
     return 'text-red-600';
   }
-  
   // Get label color class
   function getLabelColor(label: string): string {
     const colors = {
@@ -229,12 +206,10 @@
     };
     return colors[label as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
-  
   // Analyze document with gemma3-legal
   async function analyzeDocument(doc: any) {
     try {
       console.log(`🤖 Analyzing document ${doc.id} with ${config.legalModel}...`);
-      
       const response = await fetch(`${config.ollamaHost}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -245,7 +220,6 @@
           stream: false
         })
       });
-      
       if (response.ok) {
         const result = await response.json();
         alert(`AI Analysis:\n\n${result.response}`);

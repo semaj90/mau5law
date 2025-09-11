@@ -1,9 +1,8 @@
 <script lang="ts">
-</script>
-	import type { Snippet } from "svelte";
-	import { Command } from "bits-ui";
+  	import type { Snippet } from "svelte";
+  	import { Command } from "bits-ui";
 
-	let { shortcut, children }: { shortcut: string; children: Snippet } = $props();
+  	let { shortcut, children }: { shortcut: string; children: Snippet } = $props();
 </script>
 
 <Command.Item>

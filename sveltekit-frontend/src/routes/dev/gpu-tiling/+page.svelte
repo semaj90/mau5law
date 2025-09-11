@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { embedText } from '$lib/ai/tensor-client';
 
   let text = 'A short legal passage about indemnification and liability.';

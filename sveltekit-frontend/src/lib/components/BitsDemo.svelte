@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { BitsDemoProps } from '$lib/types/component-props.js';
 
   // Component library choice - toggle between bits-ui and melt-ui
@@ -34,22 +33,19 @@
     description?: string;
     color: string;
   }
-let dialogOpen = $state(false);
-let alertOpen = $state(false);
+  let dialogOpen = $state(false);
+  let alertOpen = $state(false);
 
   // Simple native toast system
   let toasts = $state<Array<{ id: string; data: ToastData }>>([]);
-  
   function addToast(toast: { data: ToastData }) {
     const id = Date.now().toString();
     toasts = [...toasts, { id, data: toast.data }];
-    
     // Auto-remove after 5 seconds
     setTimeout(() => {
       toasts = toasts.filter(t => t.id !== id);
     }, 5000);
   }
-  
   function removeToast(id: string) {
     toasts = toasts.filter(t => t.id !== id);
   }

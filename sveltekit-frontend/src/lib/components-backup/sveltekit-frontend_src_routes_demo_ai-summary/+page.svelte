@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import AISummaryReader from '$lib/components/legal/AISummaryReader.svelte';
   import EvidenceReportSummary from '$lib/components/legal/EvidenceReportSummary.svelte';
   import CaseSynthesisWorkflow from '$lib/components/legal/CaseSynthesisWorkflow.svelte';
@@ -117,57 +116,57 @@
 
   const sampleLegalContent = `# Legal Analysis Report: Cybercrime Investigation
 
-## Case Overview
-This comprehensive analysis examines evidence collected in the investigation of a sophisticated data breach targeting XYZ Corporation. The investigation reveals a systematic cyber attack involving unauthorized access, data theft, and financial fraud.
+  ## Case Overview
+  This comprehensive analysis examines evidence collected in the investigation of a sophisticated data breach targeting XYZ Corporation. The investigation reveals a systematic cyber attack involving unauthorized access, data theft, and financial fraud.
 
-## Executive Summary
-Digital forensics analysis has uncovered substantial evidence of criminal activity including:
-- Unauthorized access to corporate networks affecting 15 different systems
-- Theft of customer data involving over 50,000 individual records
-- Financial fraud through cryptocurrency transactions
-- Sophisticated attempts to destroy digital evidence
+  ## Executive Summary
+  Digital forensics analysis has uncovered substantial evidence of criminal activity including:
+  - Unauthorized access to corporate networks affecting 15 different systems
+  - Theft of customer data involving over 50,000 individual records
+  - Financial fraud through cryptocurrency transactions
+  - Sophisticated attempts to destroy digital evidence
 
-## Key Evidence Points
+  ## Key Evidence Points
 
-### Digital Forensics Findings
-The forensic examination of the suspect's laptop computer revealed extensive evidence of criminal activity. Advanced forensic techniques were employed to recover deleted files and analyze encrypted partitions.
+  ### Digital Forensics Findings
+  The forensic examination of the suspect's laptop computer revealed extensive evidence of criminal activity. Advanced forensic techniques were employed to recover deleted files and analyze encrypted partitions.
 
-### Network Analysis
-Comprehensive analysis of network logs demonstrates unauthorized access patterns consistent with advanced persistent threat (APT) tactics. The investigation revealed:
-- Multiple points of entry into corporate networks
-- Data exfiltration over extended periods
-- Use of sophisticated evasion techniques
+  ### Network Analysis
+  Comprehensive analysis of network logs demonstrates unauthorized access patterns consistent with advanced persistent threat (APT) tactics. The investigation revealed:
+  - Multiple points of entry into corporate networks
+  - Data exfiltration over extended periods
+  - Use of sophisticated evasion techniques
 
-### Financial Investigation
-Forensic accounting analysis traced cryptocurrency transactions linking stolen data sales to the suspect's digital wallets. Evidence includes:
-- Transaction records showing payments for stolen data
-- Connection to underground marketplace activities
-- Quantifiable financial damages exceeding $2.5 million
+  ### Financial Investigation
+  Forensic accounting analysis traced cryptocurrency transactions linking stolen data sales to the suspect's digital wallets. Evidence includes:
+  - Transaction records showing payments for stolen data
+  - Connection to underground marketplace activities
+  - Quantifiable financial damages exceeding $2.5 million
 
-## Legal Implications
+  ## Legal Implications
 
-### Federal Charges
-The evidence supports multiple federal charges under:
-- Computer Fraud and Abuse Act (CFAA)
-- Wire Fraud statutes
-- Identity Theft provisions
-- Money Laundering regulations
+  ### Federal Charges
+  The evidence supports multiple federal charges under:
+  - Computer Fraud and Abuse Act (CFAA)
+  - Wire Fraud statutes
+  - Identity Theft provisions
+  - Money Laundering regulations
 
-### Prosecution Strategy
-Recommended prosecution approach focuses on the systematic nature of the violations and quantifiable damages. The strong digital evidence chain provides an excellent foundation for successful prosecution.
+  ### Prosecution Strategy
+  Recommended prosecution approach focuses on the systematic nature of the violations and quantifiable damages. The strong digital evidence chain provides an excellent foundation for successful prosecution.
 
-## Risk Assessment
-Potential defense challenges include:
-- Technical complexity requiring expert testimony
-- Encryption and privacy arguments
-- Attribution and identity verification
+  ## Risk Assessment
+  Potential defense challenges include:
+  - Technical complexity requiring expert testimony
+  - Encryption and privacy arguments
+  - Attribution and identity verification
 
-## Recommendations
-1. Prepare comprehensive expert testimony for technical evidence
-2. Develop clear visualizations for jury presentation
-3. Coordinate with financial crimes specialists
-4. Ensure robust chain of custody documentation
-`;
+  ## Recommendations
+  1. Prepare comprehensive expert testimony for technical evidence
+  2. Develop clear visualizations for jury presentation
+  3. Coordinate with financial crimes specialists
+  4. Ensure robust chain of custody documentation
+  `;
 </script>
 
 <svelte:head>

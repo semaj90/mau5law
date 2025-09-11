@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   // Svelte 5 props interface
   interface Props {

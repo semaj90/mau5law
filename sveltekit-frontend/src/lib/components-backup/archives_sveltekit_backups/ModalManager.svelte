@@ -1,97 +1,96 @@
 <script lang="ts">
-</script>
-	import { Button } from "$lib/components/ui/button";
-	import { quintOut } from 'svelte/easing';
-	import { fade, fly } from 'svelte/transition';
-	import { modals } from "../../stores/modal";
+  	import { Button } from "$lib/components/ui/button";
+  	import { quintOut } from 'svelte/easing';
+  	import { fade, fly } from 'svelte/transition';
+  	import { modals } from "../../stores/modal";
 
-	// Built-in modal components
-	function ConfirmModal({ props, onConfirm, onClose }: unknown) {
-		return {
-			title: 'Confirm Action',
-			content: props.message,
-			actions: [
-				{
-					label: props.cancelText || 'Cancel',
-					variant: 'ghost',
-					action: onClose
-				},
-				{
-					label: props.confirmText || 'Confirm',
-					variant: 'primary',
-					action: onConfirm
-}
-			]
-		};
-}
-	function AlertModal({ props, onClose }: unknown) {
-		return {
-			title: 'Alert',
-			content: props.message,
-			actions: [
-				{
-					label: props.buttonText || 'OK',
-					variant: 'primary',
-					action: onClose
-}
-			]
-		};
-}
-	function PromptModal({ props, onConfirm, onClose }: unknown) {
-		let inputValue = props.defaultValue || '';
+  	// Built-in modal components
+  	function ConfirmModal({ props, onConfirm, onClose }: unknown) {
+  		return {
+  			title: 'Confirm Action',
+  			content: props.message,
+  			actions: [
+  				{
+  					label: props.cancelText || 'Cancel',
+  					variant: 'ghost',
+  					action: onClose
+  				},
+  				{
+  					label: props.confirmText || 'Confirm',
+  					variant: 'primary',
+  					action: onConfirm
+  }
+  			]
+  		};
+  }
+  	function AlertModal({ props, onClose }: unknown) {
+  		return {
+  			title: 'Alert',
+  			content: props.message,
+  			actions: [
+  				{
+  					label: props.buttonText || 'OK',
+  					variant: 'primary',
+  					action: onClose
+  }
+  			]
+  		};
+  }
+  	function PromptModal({ props, onConfirm, onClose }: unknown) {
+  		let inputValue = props.defaultValue || '';
 
-		return {
-			title: 'Input Required',
-			content: `
-				<div class="mx-auto px-4 max-w-7xl">
-					<p class="mx-auto px-4 max-w-7xl">${props.message}</p>
-					<input
-						type="text"
-						class="mx-auto px-4 max-w-7xl"
-						placeholder="${props.placeholder || ''}"
-						value="${inputValue}"
-						autofocus
-					/>
-				</div>
-			`,
-			actions: [
-				{
-					label: props.cancelText || 'Cancel',
-					variant: 'ghost',
-					action: onClose
-				},
-				{
-					label: props.confirmText || 'OK',
-					variant: 'primary',
-					action: () => onConfirm?.(inputValue)
-}
-			]
-		};
-}
-	const builtInComponents = {
-		ConfirmModal,
-		AlertModal,
-		PromptModal
-	};
+  		return {
+  			title: 'Input Required',
+  			content: `
+  				<div class="mx-auto px-4 max-w-7xl">
+  					<p class="mx-auto px-4 max-w-7xl">${props.message}</p>
+  					<input
+  						type="text"
+  						class="mx-auto px-4 max-w-7xl"
+  						placeholder="${props.placeholder || ''}"
+  						value="${inputValue}"
+  						autofocus
+  					/>
+  				</div>
+  			`,
+  			actions: [
+  				{
+  					label: props.cancelText || 'Cancel',
+  					variant: 'ghost',
+  					action: onClose
+  				},
+  				{
+  					label: props.confirmText || 'OK',
+  					variant: 'primary',
+  					action: () => onConfirm?.(inputValue)
+  }
+  			]
+  		};
+  }
+  	const builtInComponents = {
+  		ConfirmModal,
+  		AlertModal,
+  		PromptModal
+  	};
 
-	function getSizeClasses(size: string) {
-		const sizeMap = {
-			sm: 'max-w-md',
-			md: 'max-w-lg',
-			lg: 'max-w-2xl',
-			xl: 'max-w-4xl',
-			full: 'max-w-[95vw] max-h-[95vh]'
-		};
-		return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
-}
-	function handleBackdropClick(event: MouseEvent, modal: unknown) {
-		if (event.target === event.currentTarget && !modal.persistent) {
-			modals.close(modal.id);
-}}
-	function handleKeydown(event: KeyboardEvent, modal: unknown) {
-		if (event.key === 'Escape' && modal.closable) {
-			modals.close(modal.id);
-}}
+  	function getSizeClasses(size: string) {
+  		const sizeMap = {
+  			sm: 'max-w-md',
+  			md: 'max-w-lg',
+  			lg: 'max-w-2xl',
+  			xl: 'max-w-4xl',
+  			full: 'max-w-[95vw] max-h-[95vh]'
+  		};
+  		return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
+  }
+  	function handleBackdropClick(event: MouseEvent, modal: unknown) {
+  		if (event.target === event.currentTarget && !modal.persistent) {
+  			modals.close(modal.id);
+  }}
+  	function handleKeydown(event: KeyboardEvent, modal: unknown) {
+  		if (event.key === 'Escape' && modal.closable) {
+  			modals.close(modal.id);
+  }}
 </script>
 
 <!-- Render all active modals -->

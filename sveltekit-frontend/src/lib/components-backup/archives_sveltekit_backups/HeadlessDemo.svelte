@@ -1,17 +1,13 @@
 <script lang="ts">
-</script>
   import { createDialog, createSelect } from '@melt-ui/svelte';
   import { fade } from 'svelte/transition';
-  
   export const title = 'Legal Case Manager';
   export let items = ['Active Cases', 'Pending Cases', 'Closed Cases'];
-  
   // Melt UI Dialog
   const {
     elements: { trigger, overlay, content, title: dialogTitle, description, close },
     states: { open }
   } = createDialog();
-  
   // Melt UI Select
   const {
     elements: { trigger: selectTrigger, menu, option, label },

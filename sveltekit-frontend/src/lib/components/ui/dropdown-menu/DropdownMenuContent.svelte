@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { melt } from 'melt';
 
   interface Props {
@@ -7,7 +6,6 @@
     children?: import('svelte').Snippet;
     class?: string;
   }
-  
   let { children, menu, class: className = '' }: Props = $props();
 </script>
 

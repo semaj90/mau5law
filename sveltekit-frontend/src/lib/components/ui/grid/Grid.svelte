@@ -1,6 +1,5 @@
 <!-- Grid Layout Component with svelte-brics inspired design -->
 <script lang="ts">
-</script>
   import { cn } from '$lib/utils';
 
   interface Props {
@@ -11,7 +10,6 @@
     maxHeight?: string;
     children?: import('svelte').Snippet;
   }
-  
   let {
     columns = 12,
     gap = "md",
@@ -31,7 +29,6 @@
   }
 
   export const resizable: boolean = false;
-    
   const gapClasses = {
     none: "gap-0",
     sm: "gap-2",

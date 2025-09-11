@@ -1,5 +1,4 @@
 mcp<script lang="ts">
-</script>
   interface Props {
     ondismiss?: (event?: any) => void;
     ondismissAll?: (event?: any) => void;
@@ -10,8 +9,6 @@ mcp<script lang="ts">
   import { notifications, type Notification } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
-  
-  
   let container: HTMLElement
   let notificationElements = new Map<string, HTMLElement>();
   let isVisible = false;
@@ -42,7 +39,7 @@ mcp<script lang="ts">
       if (latestNotification && notifs.notifications.length > 0) {
         announceNotification(latestNotification);
         playNotificationSound(latestNotification.type);
-}
+  }
     });
 
     return unsubscribe;
@@ -54,7 +51,7 @@ mcp<script lang="ts">
       message,
       notification.type === "error" ? "assertive" : "polite"
     );
-}
+  }
   function playNotificationSound(type: Notification["type"]) {
     if (!enableSounds) return;
 
@@ -93,17 +90,17 @@ mcp<script lang="ts">
     } catch (error) {
       // Fallback to no sound if audio context fails
       console.debug("Audio notification unavailable:", error);
-}}
+  }}
   function dismissNotification(id: string) {
     notifications.remove(id);
     notificationElements.delete(id);
     ondismiss?.();
-}
+  }
   function dismissAll() {
     notifications.clear();
     notificationElements.clear();
     ondismissAll?.();
-}
+  }
   // Action to set notification element in the Map
   function setNotificationElement(node: HTMLElement, notificationId: string) {
     notificationElements.set(notificationId, node);
@@ -113,7 +110,7 @@ mcp<script lang="ts">
         notificationElements.delete(notificationId);
       },
     };
-}
+  }
   function getNotificationIcon(type: Notification["type"]) {
     switch (type) {
       case "success":
@@ -125,7 +122,7 @@ mcp<script lang="ts">
       case "info":
       default:
         return Info;
-}}
+  }}
   function getNotificationColor(type: Notification["type"]) {
     switch (type) {
       case "success":
@@ -137,22 +134,22 @@ mcp<script lang="ts">
       case "info":
       default:
         return "bg-blue-50 border-blue-200 text-blue-800";
-}}
+  }}
   function handleNotificationAction(notification: Notification, action: any) {
     if (action.callback) {
       action.callback();
-}
+  }
     if (action.dismissOnClick !== false) {
       dismissNotification(notification.id);
-}}
+  }}
   function pauseTimer(notification: Notification) {
     // Timer functionality could be implemented here if needed
     // For now, this is a placeholder
-}
+  }
   function resumeTimer(notification: Notification) {
     // Timer functionality could be implemented here if needed
     // For now, this is a placeholder
-}
+  }
   function getContainerClasses() {
     const baseClasses = "fixed z-50 pointer-events-none";
 
@@ -171,7 +168,7 @@ mcp<script lang="ts">
         return `${baseClasses} bottom-4 left-1/2 transform -translate-x-1/2`;
       default:
         return `${baseClasses} top-4 right-4`;
-}}
+  }}
   function getAnimationClasses() {
     const isTop = position.includes("top");
     const enterFrom = isTop ? "-translate-y-2" : "translate-y-2";
@@ -181,7 +178,7 @@ mcp<script lang="ts">
       enterActive: "transform translate-y-0 opacity-100",
       exit: `transition-all duration-200 ease-in transform ${enterFrom} opacity-0`,
     };
-}
+  }
 </script>
 
 <div

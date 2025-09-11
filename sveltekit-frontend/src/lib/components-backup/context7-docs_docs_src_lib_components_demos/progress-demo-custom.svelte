@@ -1,21 +1,20 @@
 <script lang="ts">
-</script>
-	import { Progress, useId } from "bits-ui";
-	import type { ComponentProps } from "svelte";
-	import DemoContainer from "../demo-container.svelte";
+  	import { Progress, useId } from "bits-ui";
+  	import type { ComponentProps } from "svelte";
+  	import DemoContainer from "../demo-container.svelte";
 
-	let {
-		max = 100,
-		value = 0,
-		min = 0,
-		label,
-		valueLabel,
-	}: ComponentProps<typeof Progress.Root> & {
-		label: string;
-		valueLabel: string;
-	} = $props();
+  	let {
+  		max = 100,
+  		value = 0,
+  		min = 0,
+  		label,
+  		valueLabel,
+  	}: ComponentProps<typeof Progress.Root> & {
+  		label: string;
+  		valueLabel: string;
+  	} = $props();
 
-	const labelId = useId();
+  	const labelId = useId();
 </script>
 
 <DemoContainer size="xs" wrapperClass="rounded-bl-card rounded-br-card">

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createDropdownMenu, createToolbar, melt } from "@melt-ui/svelte";
   import {
     Download,

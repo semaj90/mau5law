@@ -3,7 +3,6 @@
   Displays security events, system health, and security metrics
 -->
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import { notifications } from "$lib/stores/notification";
   import { getSecurityEvents, type SecurityEvent } from "$lib/utils/security";
@@ -68,7 +67,7 @@
   onDestroy(() => {
     if (refreshInterval) {
       clearInterval(refreshInterval);
-}
+  }
   });
 
   function loadSecurityEvents() {
@@ -85,34 +84,34 @@
       });
     } finally {
       loading = false;
-}}
+  }}
   function filterEvents() {
     let filtered = [...securityEvents];
 
     if (selectedSeverity) {
       filtered = filtered.filter((e) => e.severity === selectedSeverity);
-}
+  }
     if (selectedType) {
       filtered = filtered.filter((e) => e.type === selectedType);
-}
+  }
     // Sort by timestamp (most recent first)
     filtered.sort((a, b) => b.timestamp - a.timestamp);
 
     filteredEvents = filtered;
-}
+  }
   function startAutoRefresh() {
     refreshInterval = window.setInterval(() => {
       loadSecurityEvents();
     }, 30000); // Refresh every 30 seconds
-}
+  }
   function toggleEventDetails(index: number) {
     if (showDetails.has(index)) {
       showDetails.delete(index);
     } else {
       showDetails.add(index);
-}
+  }
     showDetails = showDetails;
-}
+  }
   function clearAllEvents() {
     if (
       confirm(
@@ -127,7 +126,7 @@
         title: "Security Events Cleared",
         message: "All security events have been cleared.",
       });
-}}
+  }}
   function exportEvents() {
     const dataStr = JSON.stringify(securityEvents, null, 2);
     const dataBlob = new Blob([dataStr], { type: "application/json" });
@@ -137,7 +136,7 @@
     link.download = `security_events_${new Date().toISOString().split("T")[0]}.json`;
     link.click();
     URL.revokeObjectURL(url);
-}
+  }
   function getSeverityIcon(severity: string) {
     switch (severity) {
       case "critical":
@@ -150,7 +149,7 @@
         return CheckCircle;
       default:
         return Info;
-}}
+  }}
   function getSeverityColor(severity: string) {
     switch (severity) {
       case "critical":
@@ -163,7 +162,7 @@
         return "text-success bg-success/10 border-success/20";
       default:
         return "text-base-content bg-base-200 border-base-300";
-}}
+  }}
   function getTypeIcon(type: string) {
     switch (type) {
       case "login":
@@ -180,10 +179,10 @@
         return Download;
       default:
         return Activity;
-}}
+  }}
   function formatTimestamp(timestamp: number) {
     return new Date(timestamp).toLocaleString();
-}
+  }
   function getSystemHealthIcon(status: string) {
     switch (status) {
       case "healthy":
@@ -194,7 +193,7 @@
         return XCircle;
       default:
         return Info;
-}}
+  }}
   function getSystemHealthColor(status: string) {
     switch (status) {
       case "healthy":
@@ -205,11 +204,11 @@
         return "text-error";
       default:
         return "text-base-content";
-}}
+  }}
   // Reactive statements
   $effect(() => { if (selectedSeverity || selectedType) {
     filterEvents();
-}
+  }
 </script>
 
 <div class="space-y-4">

@@ -1,27 +1,26 @@
 <script lang="ts">
-</script>
-	import { page } from "$app/state";
-	import { useSiteConfig, type SiteConfig } from "$lib/utils/use-site-config.svelte.js";
+  	import { page } from "$app/state";
+  	import { useSiteConfig, type SiteConfig } from "$lib/utils/use-site-config.svelte.js";
 
-	const siteConfig = useSiteConfig();
+  	const siteConfig = useSiteConfig();
 
-	let {
-		title = siteConfig.current.name,
-		ogImage = siteConfig.current.ogImage,
-		description = siteConfig.current.description,
-		keywords = siteConfig.current.keywords,
-	}: {
-		title?: string;
-		ogImage?: SiteConfig["ogImage"];
-		description?: string;
-		keywords?: string[];
-	} = $props();
+  	let {
+  		title = siteConfig.current.name,
+  		ogImage = siteConfig.current.ogImage,
+  		description = siteConfig.current.description,
+  		keywords = siteConfig.current.keywords,
+  	}: {
+  		title?: string;
+  		ogImage?: SiteConfig["ogImage"];
+  		description?: string;
+  		keywords?: string[];
+  	} = $props();
 
-	const trueTitle = $derived(
-		title === siteConfig.current.name
-			? siteConfig.current.name
-			: `${title} - ${siteConfig.current.name}`
-	);
+  	const trueTitle = $derived(
+  		title === siteConfig.current.name
+  			? siteConfig.current.name
+  			: `${title} - ${siteConfig.current.name}`
+  	);
 </script>
 
 <svelte:head>

@@ -5,7 +5,10 @@
     errors = undefined,
     describedBy = undefined,
     showError = true,
-    inline = true
+    inline = true,
+    // Snippet props replacing legacy slots
+    control = undefined,
+    hint = undefined
   } = $props();
 
   const inputId = `${name}`;
@@ -15,25 +18,24 @@
 </script>
 
 <div class={inline ? 'flex flex-col gap-1' : ''}>
-  <slot
-    name="control"
-    {inputId}
-    fieldName={name}
-    let:attrs
-  >
-    <!-- Default: forward id/name/aria -->
-    <slot {inputId} />
-  </slot>
+  {#if control}
+    {#key control}
+      {@render control?.({ inputId, fieldName: name })}
+    {/key}
+  {:else}
+    <!-- Default control rendering (no provided control snippet) -->
+    <input id={inputId} name={name} aria-describedby={ariaDescribed} class="border rounded px-2 py-1 text-sm" />
+  {/if}
   {#if showError && hasError}
     <p id={errorId} class="text-xs text-red-600" role="alert">{errors[0]}</p>
   {/if}
 </div>
 
-<!-- Expose helper data via slots -->
-<slot name="hint" />
+<!-- Hint snippet rendering -->
+{@render hint?.({ inputId, fieldName: name })}
 
-<!-- Usage example:
-<FormField name="title" errors={$form.errors.title}>
-  <Input slot="control" bind:value={$form.title} id={inputId} name="title" aria-invalid={hasError} aria-describedby={ariaDescribed} />
-</FormField>
+<!-- Usage example (runes mode snippet prop):
+<FormField name="title" errors={$form.errors.title} control={({ inputId, fieldName }) => (
+  <Input id={inputId} name={fieldName} bind:value={$form.title} aria-invalid={hasError} aria-describedby={ariaDescribed} />
+)} />
 -->

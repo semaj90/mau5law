@@ -18,12 +18,12 @@
   // GPU metrics batcher for performance monitoring
   import { initGpuMetricsBatcher, cleanupGpuMetricsBatcher } from '$lib/services/gpuMetricsBatcher';
 
-  // Svelte 5 children prop
+  // Svelte 5 children prop (optional to avoid undefined .call errors on pages without content)
   interface Props {
-    children: Snippet;
+    children?: Snippet;
   }
 
-  let { children }: Props = $props();
+  const { children } = $props<{ children?: Snippet }>();
 
   let startupStatus = $state<StartupStatus | null>(null);
   let showStartupLog = $state(false);
@@ -313,11 +313,20 @@
 
   <!-- Main Content with Golden Ratio Spacing -->
   <main id="main-content" class="container mx-auto px-golden-lg py-golden-xl min-h-[calc(100vh-theme(spacing.16))]" aria-label="Main content">
-  {@render children()}
+  {#if children}
+    {@render children()}
+  {:else}
+    <!-- Fallback content when no children provided -->
+    <div class="text-center text-nier-text-muted">
+      <p>Loading...</p>
+    </div>
+  {/if}
   </main>
 </div>
 
-{#if mounted && currentFeedbackTrigger}
+<!-- FeedbackWidget temporarily disabled due to Svelte 5 compatibility issues -->
+<!-- TODO: Update FeedbackWidget to use Svelte 5 event patterns -->
+{#if false && mounted && currentFeedbackTrigger}
   <FeedbackWidget
     interactionId={currentFeedbackTrigger.interactionId}
     sessionId={store?.userContext?.sessionId || ''}

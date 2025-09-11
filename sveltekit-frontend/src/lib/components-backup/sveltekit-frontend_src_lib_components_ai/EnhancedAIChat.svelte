@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
-  
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Card from '$lib/components/ui/card';
@@ -81,7 +79,6 @@
     if (browser) {
       await initializeChat();
       setupAttentionTracking();
-      
       if (enableWebGPU) {
         webgpuAccelerator = await createWebGPUAccelerator();
       }
@@ -98,7 +95,6 @@
   async function initializeChat() {
     try {
       isLoading = true;
-      
       // Create chat session
       const sessionResponse = await fetch('/api/chat/session', {
         method: 'POST',
@@ -115,7 +111,6 @@
 
       // Initialize WebSocket connection
       wsConnection = createWebSocketConnection(`/api/chat/ws/${session.id}`);
-      
       wsConnection.onConnected(() => {
         isConnected = true;
         console.log('🔌 Chat WebSocket connected');
@@ -181,7 +176,6 @@
         messages = [...messages, aiMessage];
         streamingResponse = '';
         isTyping = false;
-        
         // Scroll to bottom
         scrollToBottom();
         break;
@@ -238,7 +232,6 @@
     try {
       isLoading = true;
       isTyping = true;
-      
       // Send via WebSocket for real-time processing
       if (wsConnection && isConnected) {
         wsConnection.send({
@@ -264,7 +257,6 @@
         }
 
         const result = await response.json();
-        
         // Add AI response
         if (result.ai_response) {
           messages = [...messages, result.ai_response];
@@ -346,7 +338,6 @@
         inputText = 'Show me similar cases and their outcomes';
         break;
     }
-    
     messageInput?.focus();
   }
 
@@ -373,7 +364,6 @@
       }
 
       const report = await response.json();
-      
       // Trigger download
       const blob = new Blob([report.content], { type: 'text/markdown' });
       const url = URL.createObjectURL(blob);

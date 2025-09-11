@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import HeadlessDemo from "$lib/components/HeadlessDemo.svelte";
   // $state is provided globally via src/types/svelte-helpers.d.ts
   import BitsDemo from "$lib/components/BitsDemo.svelte";

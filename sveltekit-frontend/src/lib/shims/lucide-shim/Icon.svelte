@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Convert to Svelte 5 runes pattern
   let { name = '', className = '' } = $props<{
     name?: string;

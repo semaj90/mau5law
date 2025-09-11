@@ -3,7 +3,6 @@ Vector Recommendations Widget
 Compact AI recommendations component for sidebar/dashboard use
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import {
     Button

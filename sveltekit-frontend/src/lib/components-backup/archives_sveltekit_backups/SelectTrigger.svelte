@@ -1,7 +1,5 @@
 <script lang="ts">
-</script>
   import { melt } from '@melt-ui/svelte';
-  
   export let trigger: unknown;
   export let selectedLabel: unknown;
 </script>

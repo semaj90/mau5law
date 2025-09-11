@@ -1,6 +1,5 @@
 <!-- Ollama Agent Shell - Real-time Terminal Modal with Streaming Support -->
 <script lang="ts">
-</script>
   import type { OllamaAgentShellProps } from '$lib/types/component-props.js';
 
   import { agentShellMachine } from "$lib/machines/agentShellMachine";
@@ -47,8 +46,8 @@
   let input = $state("");
   let isLoading = $state(false);
   let copiedIndex = $state<number | null>(null);
-let terminalElement = $state<HTMLDivElement;
-let inputElement = $state<HTMLTextAreaElement;
+  let terminalElement = $state<HTMLDivElement;
+  let inputElement = $state<HTMLTextAreaElement;
 
   // WebSocket for real-time updates
   let ws: WebSocket | null >(null);
@@ -58,9 +57,9 @@ let inputElement = $state<HTMLTextAreaElement;
     messages.push({
       role: "system",
       content: `🚀 Ollama Agent Shell v1.0
-Connected to: nomic-embed-text, gemma:3b
-GPU: ${navigator.gpu ? "Enabled" : "Disabled"}
-Type /help for commands`,
+  Connected to: nomic-embed-text, gemma:3b
+  GPU: ${navigator.gpu ? "Enabled" : "Disabled"}
+  Type /help for commands`,
       timestamp: new Date(),
       status: "complete",
     }));
@@ -178,7 +177,7 @@ Type /help for commands`,
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-let content = $state("");
+  let content = $state("");
 
       while (true) {
         const { done, value } = await reader.read();
@@ -220,11 +219,11 @@ let content = $state("");
         messages.push({
           role: "system",
           content: `Commands:
-/help - Show this help
-/clear - Clear chat
-/embed - Show embeddings
-/gpu - GPU status
-/export - Export chat`,
+  /help - Show this help
+  /clear - Clear chat
+  /embed - Show embeddings
+  /gpu - GPU status
+  /export - Export chat`,
           timestamp: new Date(),
           status: "complete",
         });

@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { Button } from 'bits-ui';
@@ -167,7 +166,7 @@
         '/api/v1/gpu-cache',
         '/api/v1/cluster'
       ];
-let successCount = $state(0);
+  let successCount = $state(0);
       for (const endpoint of endpoints) {
         try {
           const response = await fetch(endpoint, { method: 'HEAD' });

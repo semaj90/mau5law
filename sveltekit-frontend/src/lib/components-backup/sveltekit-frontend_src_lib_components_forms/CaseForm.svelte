@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { caseFormSchema, type CaseForm } from "$lib/schemas/forms";
   import { getAuthContext } from "$lib/stores/auth";
   import { superForm, type SuperValidated } from 'sveltekit-superforms';
@@ -70,21 +69,21 @@
     if (tagInput.trim() && (!$form.tags || !$form.tags.includes(tagInput.trim()))) {
       $form.tags = [...($form.tags || []), tagInput.trim()];
       tagInput = '';
-}}
+  }}
   function removeTag(tag: string) {
     $form.tags = $form.tags?.filter(t => t !== tag) || [];
-}
+  }
   function handleTagKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
       addTag();
-}}
+  }}
   // Auto-generate case number
   function generateCaseNumber() {
     const year = new Date().getFullYear();
     const random = Math.floor(Math.random() * 900000) + 100000;
     $form.caseNumber = `CAS-${year}-${random}`;
-}
+  }
 </script>
 
 <div class="space-y-4">

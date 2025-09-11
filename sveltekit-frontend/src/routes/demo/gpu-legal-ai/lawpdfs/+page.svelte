@@ -1,7 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Expected token >
 https://svelte.dev/e/expected_token -->
 <script lang="ts">
-</script>
   import { page } from '$app/state';
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
@@ -36,7 +35,7 @@ https://svelte.dev/e/expected_token -->
   }
 
   // Check AI ready on component mount (run once)
-let hasCheckedAI = $state(false);
+  let hasCheckedAI = $state(false);
   $effect(() => {
     if (!hasCheckedAI) {
       hasCheckedAI = true;
@@ -45,7 +44,7 @@ let hasCheckedAI = $state(false);
   });
 
   // File upload handling
-let fileInput = $state<HTMLInputElement;
+  let fileInput = $state<HTMLInputElement;
 
   const handleFileUpload >(async (event: Event) => {
     const target = event.target as HTMLInputElement);

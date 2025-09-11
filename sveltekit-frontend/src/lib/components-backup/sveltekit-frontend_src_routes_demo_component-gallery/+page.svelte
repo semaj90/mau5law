@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
@@ -92,19 +91,19 @@
   ];
 
   let demoContent = `<h1>Legal Document Analysis</h1>
-<p>This professional editor demonstrates advanced typography and formatting capabilities designed specifically for legal professionals.</p>
+  <p>This professional editor demonstrates advanced typography and formatting capabilities designed specifically for legal professionals.</p>
 
-<h2>Contract Analysis Summary</h2>
-<blockquote>"The terms of this agreement shall be construed in accordance with the laws of the jurisdiction specified herein."</blockquote>
+  <h2>Contract Analysis Summary</h2>
+  <blockquote>"The terms of this agreement shall be construed in accordance with the laws of the jurisdiction specified herein."</blockquote>
 
-<h3>Key Findings</h3>
-<ul>
+  <h3>Key Findings</h3>
+  <ul>
   <li><strong>Liability Clauses</strong> - Standard limitation provisions identified</li>
   <li><strong>Termination Rights</strong> - Mutual termination with 30-day notice</li>
   <li><strong>Intellectual Property</strong> - Work-for-hire agreement with copyright assignment</li>
-</ul>
+  </ul>
 
-<p>Use <kbd>Ctrl+B</kbd> for bold, <kbd>Ctrl+I</kbd> for italic, and <kbd>F11</kbd> for fullscreen mode.</p>`;
+  <p>Use <kbd>Ctrl+B</kbd> for bold, <kbd>Ctrl+I</kbd> for italic, and <kbd>F11</kbd> for fullscreen mode.</p>`;
 </script>
 
 <svelte:head>

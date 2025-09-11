@@ -1,18 +1,15 @@
 <script lang="ts">
-</script>
   /**
    * Simple Document Ingest Demo
    * Demonstrates the working ingest integration without complex UI dependencies
    */
-  
   import { onMount } from 'svelte';
-let serviceHealth = $state(null);
-let serviceStatus = $state('checking...');
-let ingestResult = $state(null);
-let documentTitle = $state('Test Contract');
-let documentContent = $state('This is a test legal contract with indemnification clauses and termination provisions.');
-let isProcessing = $state(false);
-  
+  let serviceHealth = $state(null);
+  let serviceStatus = $state('checking...');
+  let ingestResult = $state(null);
+  let documentTitle = $state('Test Contract');
+  let documentContent = $state('This is a test legal contract with indemnification clauses and termination provisions.');
+  let isProcessing = $state(false);
   async function checkServiceHealth() {
     try {
       const response = await fetch('/api/v1/ingest');
@@ -27,13 +24,10 @@ let isProcessing = $state(false);
       serviceStatus = 'error';
     }
   }
-  
   async function ingestDocument() {
     if (isProcessing) return;
-    
     isProcessing = true;
     ingestResult = null;
-    
     try {
       const response = await fetch('/api/v1/ingest', {
         method: 'POST',
@@ -45,7 +39,6 @@ let isProcessing = $state(false);
           metadata: { document_type: 'contract', demo: true }
         })
       });
-      
       if (response.ok) {
         ingestResult = await response.json();
       } else {
@@ -58,7 +51,6 @@ let isProcessing = $state(false);
       isProcessing = false;
     }
   }
-  
   onMount(() => {
     checkServiceHealth();
   });

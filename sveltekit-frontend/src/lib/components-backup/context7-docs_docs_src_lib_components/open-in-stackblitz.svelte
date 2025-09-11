@@ -1,11 +1,10 @@
 <script lang="ts">
-</script>
-	import { openInStackBlitz } from "$lib/utils/open-in-stackblitz.js";
-	import Stackblitz from "$icons/stackblitz.svelte";
-	import { Tooltip } from "bits-ui";
+  	import { openInStackBlitz } from "$lib/utils/open-in-stackblitz.js";
+  	import Stackblitz from "$icons/stackblitz.svelte";
+  	import { Tooltip } from "bits-ui";
 
-	let { demoName, componentName = demoName }: { demoName: string; componentName?: string } =
-		$props();
+  	let { demoName, componentName = demoName }: { demoName: string; componentName?: string } =
+  		$props();
 </script>
 
 <div class="absolute bottom-2 right-2">

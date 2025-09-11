@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     ontoolSelected?: (event?: any) => void;
     onformatToggled?: (event?: any) => void;
@@ -12,138 +11,133 @@
   }
 
 
-		import { toolbarStore } from "../stores/canvas";
-	
-	import { 
-		Bold, 
-		Italic, 
-		Underline, 
-		Strikethrough, 
-		AlignLeft, 
-		AlignCenter, 
-		AlignRight, 
-		Palette, 
-		MousePointer2, 
-		Hand, 
-		Square, 
-		Circle, 
-		RotateCcw, 
-		RotateCw, 
-		Copy, 
-		Trash2, 
-		ZoomIn, 
-		ZoomOut 
-	} from 'lucide-svelte';
+  		import { toolbarStore } from "../stores/canvas";
+  	import { 
+  		Bold, 
+  		Italic, 
+  		Underline, 
+  		Strikethrough, 
+  		AlignLeft, 
+  		AlignCenter, 
+  		AlignRight, 
+  		Palette, 
+  		MousePointer2, 
+  		Hand, 
+  		Square, 
+  		Circle, 
+  		RotateCcw, 
+  		RotateCw, 
+  		Copy, 
+  		Trash2, 
+  		ZoomIn, 
+  		ZoomOut 
+  	} from 'lucide-svelte';
 
-	
-	// Tool categories
-	const tools = [
-		{ id: 'select', icon: MousePointer2, label: 'Select', category: 'selection' },
-		{ id: 'pan', icon: Hand, label: 'Pan', category: 'navigation' },
-		{ id: 'text', icon: Bold, label: 'Text', category: 'content' },
-		{ id: 'rectangle', icon: Square, label: 'Rectangle', category: 'shapes' },
-		{ id: 'circle', icon: Circle, label: 'Circle', category: 'shapes' },
-		{ id: 'draw', icon: Palette, label: 'Draw', category: 'drawing' }
-	];
+  	// Tool categories
+  	const tools = [
+  		{ id: 'select', icon: MousePointer2, label: 'Select', category: 'selection' },
+  		{ id: 'pan', icon: Hand, label: 'Pan', category: 'navigation' },
+  		{ id: 'text', icon: Bold, label: 'Text', category: 'content' },
+  		{ id: 'rectangle', icon: Square, label: 'Rectangle', category: 'shapes' },
+  		{ id: 'circle', icon: Circle, label: 'Circle', category: 'shapes' },
+  		{ id: 'draw', icon: Palette, label: 'Draw', category: 'drawing' }
+  	];
 
-	const formatActions = [
-		{ id: 'bold', icon: Bold, label: 'Bold' },
-		{ id: 'italic', icon: Italic, label: 'Italic' },
-		{ id: 'underline', label: 'Underline' },
-		{ id: 'strikethrough', icon: Strikethrough, label: 'Strikethrough' }
-	];
+  	const formatActions = [
+  		{ id: 'bold', icon: Bold, label: 'Bold' },
+  		{ id: 'italic', icon: Italic, label: 'Italic' },
+  		{ id: 'underline', label: 'Underline' },
+  		{ id: 'strikethrough', icon: Strikethrough, label: 'Strikethrough' }
+  	];
 
-	const alignActions = [
-		{ id: 'left', icon: AlignLeft, label: 'Align Left' },
-		{ id: 'center', icon: AlignCenter, label: 'Align Center' },
-		{ id: 'right', icon: AlignRight, label: 'Align Right' }
-	];
+  	const alignActions = [
+  		{ id: 'left', icon: AlignLeft, label: 'Align Left' },
+  		{ id: 'center', icon: AlignCenter, label: 'Align Center' },
+  		{ id: 'right', icon: AlignRight, label: 'Align Right' }
+  	];
 
-	// Reactive toolbar state
-	let selectedTool = $derived($toolbarStore.selectedTool)
-	let formatting = $derived($toolbarStore.formatting)
-	let drawing = $derived($toolbarStore.drawing)
-	let canUndo = $derived($toolbarStore.canUndo)
-	let canRedo = $derived($toolbarStore.canRedo)
-	let zoom = $derived($toolbarStore.zoom)
+  	// Reactive toolbar state
+  	let selectedTool = $derived($toolbarStore.selectedTool)
+  	let formatting = $derived($toolbarStore.formatting)
+  	let drawing = $derived($toolbarStore.drawing)
+  	let canUndo = $derived($toolbarStore.canUndo)
+  	let canRedo = $derived($toolbarStore.canRedo)
+  	let zoom = $derived($toolbarStore.zoom)
 
-	function selectTool(toolId: string) {
-		toolbarStore.update(state => ({
-			...state,
-			selectedTool: toolId
-		}));
-		ontoolSelected?.();
-}
-	function toggleFormatting(formatType: string) {
-		toolbarStore.update(state => ({
-			...state,
-			formatting: {
-				...state.formatting,
-				[formatType]: !(state.formatting as any)[formatType]
-}
-		}));
-		onformatToggled?.()[formatType] });
-}
-	function setAlignment(alignment: string) {
-		toolbarStore.update(state => ({
-			...state,
-			formatting: {
-				...state.formatting,
-				textAlign: alignment
-}
-		}));
-		onalignmentChanged?.();
-}
-	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
-		const target = event.target as HTMLInputElement;
-		const color = target.value;
-		
-		toolbarStore.update(state => ({
-			...state,
-			formatting: {
-				...state.formatting,
-				[type]: color
-}
-		}));
-		oncolorChanged?.();
-}
-	function handleFontSizeChange(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const fontSize = parseInt(target.value, 10);
-		
-		toolbarStore.update(state => ({
-			...state,
-			formatting: {
-				...state.formatting,
-				fontSize
-}
-		}));
-		onfontSizeChanged?.();
-}
-	function handleStrokeWidthChange(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const strokeWidth = parseInt(target.value, 10);
-		
-		toolbarStore.update(state => ({
-			...state,
-			drawing: {
-				...state.drawing,
-				strokeWidth
-}
-		}));
-		onstrokeWidthChanged?.();
-}
-	function handleAction(action: string) {
-		onaction?.();
-}
-	function handleZoom(delta: number) {
-		const newZoom = Math.max(10, Math.min(500, zoom + delta));
-		toolbarStore.update(state => ({
-			...state,
-			zoom: newZoom
-		}));
-		onzoomChanged?.();
-}
+  	function selectTool(toolId: string) {
+  		toolbarStore.update(state => ({
+  			...state,
+  			selectedTool: toolId
+  		}));
+  		ontoolSelected?.();
+  }
+  	function toggleFormatting(formatType: string) {
+  		toolbarStore.update(state => ({
+  			...state,
+  			formatting: {
+  				...state.formatting,
+  				[formatType]: !(state.formatting as any)[formatType]
+  }
+  		}));
+  		onformatToggled?.()[formatType] });
+  }
+  	function setAlignment(alignment: string) {
+  		toolbarStore.update(state => ({
+  			...state,
+  			formatting: {
+  				...state.formatting,
+  				textAlign: alignment
+  }
+  		}));
+  		onalignmentChanged?.();
+  }
+  	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
+  		const target = event.target as HTMLInputElement;
+  		const color = target.value;
+  		toolbarStore.update(state => ({
+  			...state,
+  			formatting: {
+  				...state.formatting,
+  				[type]: color
+  }
+  		}));
+  		oncolorChanged?.();
+  }
+  	function handleFontSizeChange(event: Event) {
+  		const target = event.target as HTMLInputElement;
+  		const fontSize = parseInt(target.value, 10);
+  		toolbarStore.update(state => ({
+  			...state,
+  			formatting: {
+  				...state.formatting,
+  				fontSize
+  }
+  		}));
+  		onfontSizeChanged?.();
+  }
+  	function handleStrokeWidthChange(event: Event) {
+  		const target = event.target as HTMLInputElement;
+  		const strokeWidth = parseInt(target.value, 10);
+  		toolbarStore.update(state => ({
+  			...state,
+  			drawing: {
+  				...state.drawing,
+  				strokeWidth
+  }
+  		}));
+  		onstrokeWidthChanged?.();
+  }
+  	function handleAction(action: string) {
+  		onaction?.();
+  }
+  	function handleZoom(delta: number) {
+  		const newZoom = Math.max(10, Math.min(500, zoom + delta));
+  		toolbarStore.update(state => ({
+  			...state,
+  			zoom: newZoom
+  		}));
+  		onzoomChanged?.();
+  }
 </script>
 
 <div class="space-y-4" role="toolbar" aria-label="Canvas tools">

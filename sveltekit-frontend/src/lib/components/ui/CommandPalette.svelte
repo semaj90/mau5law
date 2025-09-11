@@ -1,12 +1,9 @@
 <script lang="ts">
-</script>
   import type { User } from '$lib/types';
   import { onMount, createEventDispatcher } from 'svelte';
   import { Search, File, Briefcase, User as UserIcon, Settings, Command } from "lucide-svelte";
   import { cn } from '$lib/utils';
-  
   let { open = $bindable() } = $props(); // false;
-  
   // Define the command item type
   interface CommandItem {
     id: string;
@@ -18,23 +15,19 @@
     shortcut?: string[];
     action?: () => void;
   }
-  
   const dispatch = createEventDispatcher<{
     close: void;
     select: { item: CommandItem };
   }>();
-  
   let searchInput: HTMLInputElement;
-let searchQuery = $state('');
-let selectedIndex = $state(0);
-  
+  let searchQuery = $state('');
+  let selectedIndex = $state(0);
   let filteredItems = $derived(searchQuery 
     ? allItems.filter(item => 
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : allItems);
-  
   const allItems: CommandItem[] = [
     // Navigation
     {
@@ -64,7 +57,6 @@ let selectedIndex = $state(0);
       href: '/cases',
       shortcut: ['⌘', 'C']
     },
-    
     // Actions
     {
       id: 'action-new-case',
@@ -84,7 +76,6 @@ let selectedIndex = $state(0);
       action: () => console.log('Upload evidence'),
       shortcut: ['⌘', 'U']
     },
-    
     // Settings
     {
       id: 'settings-profile',
@@ -101,21 +92,18 @@ let selectedIndex = $state(0);
       icon: Settings,
       category: 'Settings',
       href: '/settings'
-}
+  }
   ];
-  
   onMount(() => {
     if (open && searchInput) {
       searchInput.focus();
-}
+  }
   });
-  
   // TODO: Convert to $derived: if (open && searchInput) {
     searchInput.focus()
-}
+  }
   function handleKeydown(e: KeyboardEvent) {
     if (!open) return;
-    
     switch (e.key) {
       case 'Escape':
         e.preventDefault();
@@ -133,27 +121,26 @@ let selectedIndex = $state(0);
         e.preventDefault();
         if (filteredItems[selectedIndex]) {
           selectItem(filteredItems[selectedIndex]);
-}
+  }
         break;
-}
-}
+  }
+  }
   function selectItem(item: any) {
     dispatch('select', { item });
-    
     if (item.href) {
       window.location.href = item.href;
     } else if (item.action) {
       item.action();
-}
+  }
     close();
-}
+  }
   function close() {
     open = false;
     dispatch('close');
-}
+  }
   // TODO: Convert to $derived: if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) {
     selectedIndex = 0
-}
+  }
 </script>
 
 <svelte:window keydown={handleKeydown} />

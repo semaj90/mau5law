@@ -1,21 +1,20 @@
 <script lang="ts">
-</script>
 
-	import type {     Snippet     } from 'svelte';
+  	import type {     Snippet     } from 'svelte';
 
-	let { open = false, title, children }: {
-		open?: boolean;
-		title: string;
-		children?: Snippet;
-	} = $props();
+  	let { open = false, title, children }: {
+  		open?: boolean;
+  		title: string;
+  		children?: Snippet;
+  	} = $props();
 
-	// Local mutable state derived from the (read-only) prop
-	let isOpen = $state(open);
+  	// Local mutable state derived from the (read-only) prop
+  	let isOpen = $state(open);
 
-	// Sync local state if parent updates the prop
-	$effect(() => {
-		if (open !== isOpen) isOpen = open;
-	});
+  	// Sync local state if parent updates the prop
+  	$effect(() => {
+  		if (open !== isOpen) isOpen = open;
+  	});
 </script>
 
 {#if isOpen}

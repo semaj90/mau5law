@@ -1,6 +1,5 @@
 <!-- Enhanced Legal Document Editor with UnoCSS + Melt UI -->
 <script lang="ts">
-</script>
   import {
     createDialog,
     createDropdownMenu,

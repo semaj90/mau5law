@@ -1,9 +1,7 @@
 <script lang="ts">
-</script>
   import { Dialog } from "bits-ui";
   import { X } from "lucide-svelte";
   import { fade, fly } from "svelte/transition";
-  
   interface Props {
     open?: boolean;
     title?: string;
@@ -16,7 +14,6 @@
     children?: any;
     footer?: any;
   }
-  
   let {
     open = $bindable(false),
     title = "",
@@ -29,7 +26,6 @@
     children,
     footer
   } = $props();
-  
   // Size mappings
   const sizeClasses = {
     sm: "max-w-sm",
@@ -37,7 +33,6 @@
     lg: "max-w-lg",
     xl: "max-w-xl"
   };
-  
   function handleOpenChange(isOpen: boolean) {
     if (isOpen && !open) {
       onopen?.();

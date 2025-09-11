@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onclose?: (event?: any) => void;
   }
@@ -14,17 +13,14 @@
 
 
   import { X } from "lucide-svelte";
-  
-          
-  
   function handleClose() {
     open = false;
     onclose?.();
-}
+  }
   function handleBackdropClick(e: MouseEvent) {
     if (e.target === e.currentTarget) {
       handleClose();
-}}
+  }}
 </script>
 
 {#if open}

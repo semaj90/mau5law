@@ -1,12 +1,11 @@
 <script lang="ts">
-</script>
   import { goto } from '$app/navigation';
   export let title: string;
   export let description: string;
   export let path: string;
   export let icon: any; // Svelte component constructor;
   export let ariaLabel: string = title;
-;
+  ;
   function handleNavigate() {
     if (path) goto(path);
   }

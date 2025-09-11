@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   import { goto, invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
-  
   onMount(async () => {
     try {
       // Call logout API endpoint
@@ -10,9 +8,8 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-}
+  }
       });
-      
       if (response.ok) {
         // Invalidate all data and redirect to home
         await invalidateAll();
@@ -21,12 +18,12 @@
         console.error('Logout failed');
         // Redirect anyway for security
         goto('/');
-}
+  }
     } catch (error) {
       console.error('Logout error:', error);
       // Redirect anyway for security
       goto('/');
-}
+  }
   });
 </script>
 

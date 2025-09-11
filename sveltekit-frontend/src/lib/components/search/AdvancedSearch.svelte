@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { createCombobox, melt } from 'melt';
   // Global Svelte runes are declared in src/types/svelte-helpers.d.ts
@@ -15,14 +14,14 @@
   export let maxResults = 10;
   export let showFilters = true;
   export let showTags = true;
-;
-let searchValue = $state('');
-let fuse = $state<Fuse<Evidence>;
+  ;
+  let searchValue = $state('');
+  let fuse = $state<Fuse<Evidence>;
   let searchResults: Evidence[] >([]);
-let allTags = $state<string[] >([]);
-let selectedTags = $state<string[] >([]);
-let selectedTypes = $state<string[] >([]);
-let dateRange = $state<{ start?: Date; end?: Date } >({});
+  let allTags = $state<string[] >([]);
+  let selectedTags = $state<string[] >([]);
+  let selectedTypes = $state<string[] >([]);
+  let dateRange = $state<{ start?: Date; end?: Date } >({});
 
   // Fuse.js configuration for fuzzy search
   const fuseOptions = {

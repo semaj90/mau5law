@@ -1,48 +1,47 @@
 <script lang="ts">
-</script>
-	import { createEventDispatcher } from 'svelte';
-	import { Search, X } from 'lucide-svelte';
+  	import { createEventDispatcher } from 'svelte';
+  	import { Search, X } from 'lucide-svelte';
 
-	export let placeholder = 'Search...';
-	export let value = '';
-	export let debounceTime = 300;
+  	export let placeholder = 'Search...';
+  	export let value = '';
+  	export let debounceTime = 300;
 
-	const dispatch = createEventDispatcher();
+  	const dispatch = createEventDispatcher();
 
-	let debounceTimer: NodeJS.Timeout;
-	let inputElement: HTMLInputElement;
-	let isFocused = false;
+  	let debounceTimer: NodeJS.Timeout;
+  	let inputElement: HTMLInputElement;
+  	let isFocused = false;
 
-	function handleInput() {
-		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(() => {
-			dispatch('search', { query: value });
-		}, debounceTime);
-	}
+  	function handleInput() {
+  		clearTimeout(debounceTimer);
+  		debounceTimer = setTimeout(() => {
+  			dispatch('search', { query: value });
+  		}, debounceTime);
+  	}
 
-	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			clearTimeout(debounceTimer);
-			dispatch('search', { query: value });
-		} else if (event.key === 'Escape') {
-			clearValue();
-			inputElement.blur();
-		}
-	}
+  	function handleKeydown(event: KeyboardEvent) {
+  		if (event.key === 'Enter') {
+  			clearTimeout(debounceTimer);
+  			dispatch('search', { query: value });
+  		} else if (event.key === 'Escape') {
+  			clearValue();
+  			inputElement.blur();
+  		}
+  	}
 
-	function handleFocus() {
-		isFocused = true;
-	}
+  	function handleFocus() {
+  		isFocused = true;
+  	}
 
-	function handleBlur() {
-		isFocused = false;
-	}
+  	function handleBlur() {
+  		isFocused = false;
+  	}
 
-	function clearValue() {
-		value = '';
-		dispatch('search', { query: '' });
-		inputElement.focus();
-	}
+  	function clearValue() {
+  		value = '';
+  		dispatch('search', { query: '' });
+  		inputElement.focus();
+  	}
 </script>
 
 <div class="mx-auto px-4 max-w-7xl" class:focused={isFocused}>

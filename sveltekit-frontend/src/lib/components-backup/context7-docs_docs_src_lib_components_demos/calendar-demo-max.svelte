@@ -1,11 +1,10 @@
 <script lang="ts">
-</script>
-	import { Calendar } from "bits-ui";
-	import CaretLeft from "phosphor-svelte/lib/CaretLeft";
-	import CaretRight from "phosphor-svelte/lib/CaretRight";
-	import { getLocalTimeZone, today } from "@internationalized/date";
+  	import { Calendar } from "bits-ui";
+  	import CaretLeft from "phosphor-svelte/lib/CaretLeft";
+  	import CaretRight from "phosphor-svelte/lib/CaretRight";
+  	import { getLocalTimeZone, today } from "@internationalized/date";
 
-	let value = $state([today(getLocalTimeZone())]);
+  	let value = $state([today(getLocalTimeZone())]);
 </script>
 
 <Calendar.Root

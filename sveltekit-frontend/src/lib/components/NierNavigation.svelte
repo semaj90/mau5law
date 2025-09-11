@@ -1,6 +1,5 @@
 <!-- YoRHa Terminal Navigation Component -->
 <script lang="ts">
-</script>
   import { page } from '$app/state';
 
   interface NavigationProps {

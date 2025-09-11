@@ -1,20 +1,19 @@
 <script lang="ts">
-</script>
 
   import { createEventDispatcher } from "svelte";
   import { draggable } from '$lib/actions/draggable';
   import { aiService } from '$lib/services/aiService';
-// UI Components
+  // UI Components
   // Badge replaced with span - not available in enhanced-bits
-import { Card } from '$lib/components/ui/enhanced-bits';
-import CardContent from "$lib/components/ui/CardContent.svelte";
-import CardFooter from "$lib/components/ui/CardFooter.svelte";
-import CardHeader from "$lib/components/ui/CardHeader.svelte";
-import Input from "$lib/components/ui/Input.svelte";
-// Remove broken Textarea import, use native <textarea> for now
-// Remove Button import, use native <button> for now
+  import { Card } from '$lib/components/ui/enhanced-bits';
+  import CardContent from "$lib/components/ui/CardContent.svelte";
+  import CardFooter from "$lib/components/ui/CardFooter.svelte";
+  import CardHeader from "$lib/components/ui/CardHeader.svelte";
+  import Input from "$lib/components/ui/Input.svelte";
+  // Remove broken Textarea import, use native <textarea> for now
+  // Remove Button import, use native <button> for now
   import * as ContextMenu from "$lib/components/ui/context-menu";
-// Note: Select component has issues - using native select for now
+  // Note: Select component has issues - using native select for now
   // Icons
   import { Edit, Save, Sparkles, Tag, User as UserIcon, X } from "lucide-svelte";
 
@@ -40,25 +39,25 @@ import Input from "$lib/components/ui/Input.svelte";
     status?: string;
     tags?: string[];
     createdBy?: string;
-}
+  }
   let { poi = $bindable() } = $props(); // POIData;
 
   let nodeElement: HTMLElement;
-let isEditing = $state(false);
-let showContextMenu = $state(false);
-let contextX = $state(0);
-let contextY = $state(0);
+  let isEditing = $state(false);
+  let showContextMenu = $state(false);
+  let contextX = $state(0);
+  let contextY = $state(0);
 
   // Component state - using poi props directly
   let name = poi.name || "";
-let aliases = $state<string[] >(poi.aliases || []);
+  let aliases = $state<string[] >(poi.aliases || []);
   let profileData = poi.profileData || { who: "", what: "", why: "", how: "" };
   let posX = poi.posX || 100;
   let posY = poi.posY || 100;
   let relationship = poi.relationship || "";
   let threatLevel = poi.threatLevel || "low";
   let status = poi.status || "active";
-let tags = $state<string[] >(poi.tags || []);
+  let tags = $state<string[] >(poi.tags || []);
 
   // Update component state when poi changes
   // TODO: Convert to $derived: {
@@ -71,9 +70,9 @@ let tags = $state<string[] >(poi.tags || []);
     threatLevel = poi.threatLevel || "low";
     status = poi.status || "active";
     tags = poi.tags || [];
-}
+  }
   // Form data for editing
-let formData = $state({
+  let formData = $state({
     name: "",
     aliases: "",
     profileData: { who: "", what: "", why: "", how: "" },
@@ -94,7 +93,7 @@ let formData = $state({
       status: status,
       tags: tags.join(", "),
     };
-}
+  }
   function saveChanges() {
     // Update POI with form data
     const updatedPoi = {
@@ -127,16 +126,16 @@ let formData = $state({
     dispatch("update", updatedPoi);
 
     isEditing = false;
-}
+  }
   function cancelEditing() {
     isEditing = false;
-}
+  }
   function handleContextMenu(event: MouseEvent) {
     event.preventDefault();
     contextX = event.clientX;
     contextY = event.clientY;
     showContextMenu = true;
-}
+  }
   async function summarizePOI() {
     const summary = await aiService.summarizePOI(
       { name, profileData },
@@ -147,8 +146,8 @@ let formData = $state({
     if (summary) {
       // You could show this in a modal or add it to the POI data
       console.log("POI Summary:", summary);
-}
-}
+  }
+  }
   function getThreatLevelColor(level: string): string {
     switch (level) {
       case "high":
@@ -159,8 +158,8 @@ let formData = $state({
         return "bg-green-500";
       default:
         return "bg-gray-500";
-}
-}
+  }
+  }
   function getStatusColor(status: string): string {
     switch (status) {
       case "active":
@@ -173,8 +172,8 @@ let formData = $state({
         return "bg-green-500";
       default:
         return "bg-gray-500";
-}
-}
+  }
+  }
   // Handle dragging
   function handleDrag(event: CustomEvent<{ x: number; y: number }>) {
     posX = event.detail.x;
@@ -182,7 +181,7 @@ let formData = $state({
 
     // Dispatch position update event
     dispatch("updatePosition", { id: poi.id, x: posX, y: posY });
-}
+  }
 </script>
 
 <ContextMenu.Root>

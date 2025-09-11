@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
@@ -16,7 +15,6 @@
   let searchHistory = $state([]);
   let systemStatus = $state(null);
   let errorMessage = $state(null);
-  
   // Search configuration
   let searchConfig = $state({
     limit: 5,
@@ -26,7 +24,6 @@
 
   onMount(async () => {
     await loadSystemStatus();
-    
     // Refresh system status periodically
     const interval = setInterval(loadSystemStatus, 10000);
     return () => clearInterval(interval);
@@ -42,10 +39,8 @@
 
   async function performSearch() {
     if (!searchQuery.trim() || isSearching) return;
-    
     isSearching = true;
     errorMessage = null;
-    
     try {
       const response = await fetch('/api/embed/search', {
         method: 'POST',
@@ -61,10 +56,8 @@
       }
 
       const data = await response.json();
-      
       searchResults = data.results;
       ragResponse = data.ragResponse;
-      
       // Add to search history
       searchHistory.unshift({
         query: searchQuery,
@@ -72,17 +65,14 @@
         timestamp: new Date(),
         hasRAGResponse: !!data.ragResponse
       });
-      
       // Keep only last 5 searches
       if (searchHistory.length > 5) {
         searchHistory = searchHistory.slice(0, 5);
       }
-      
       // Cache the query using unified service registry
       if (data.results.length > 0) {
         await unifiedServiceRegistry.cacheGraphQuery(searchQuery, data, 300);
       }
-      
     } catch (error) {
       errorMessage = error.message;
       console.error('Search error:', error);
@@ -95,14 +85,11 @@
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.txt,.pdf,.doc,.docx';
-    
     fileInput.onchange= async (event) => {
       const file = event.target.files[0];
       if (!file) return;
-      
       try {
         const text = await file.text();
-        
         const response = await fetch('/api/embed/ingest', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -123,15 +110,12 @@
         }
 
         const result = await response.json();
-        
         // Show success notification
         console.log(`✅ Document ingested: ${result.chunks.length} chunks created`);
-        
       } catch (error) {
         errorMessage = `Document ingestion failed: ${error.message}`;
       }
     };
-    
     fileInput.click();
   }
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import { SoraGraphTraversal, type SoraTraversalPath, type SoraTraversalOptions } from '$lib/ai/sora-graph-traversal.js';
@@ -11,7 +10,6 @@
   import { SOMWebGPUCache } from '$lib/webgpu/som-webgpu-cache.js';
   import { GPUTensorWorker } from '$lib/workers/gpu-tensor-worker.js';
   import { LegalAIReranker } from '$lib/ai/custom-reranker.js';
-  
   // Props
   interface Props {
     query?: string;
@@ -57,20 +55,20 @@
   const error: Writable<string | null> = writable(null);
 
   // Component instances
-let soraTraversal = $state<SoraGraphTraversal | null >(null);
-let moogleSynthesizer = $state<MoogleGraphSynthesizer | null >(null);
-let canvas2D = $state<HTMLCanvasElement;
+  let soraTraversal = $state<SoraGraphTraversal | null >(null);
+  let moogleSynthesizer = $state<MoogleGraphSynthesizer | null >(null);
+  let canvas2D = $state<HTMLCanvasElement;
   let canvas3D: HTMLCanvasElement;
   let container: HTMLDivElement;
 
   // GPU and memory integrations
   let gpuIntegration: NESGPUIntegration | null >(null);
-let memoryArch = $state<NESMemoryArchitecture | null >(null);
-let semanticPipeline = $state<SemanticAnalysisPipeline | null >(null);
-let tensorStore = $state<DimensionalTensorStore | null >(null);
-let somCache = $state<SOMWebGPUCache | null >(null);
-let gpuWorker = $state<GPUTensorWorker | null >(null);
-let reranker = $state<LegalAIReranker | null >(null);
+  let memoryArch = $state<NESMemoryArchitecture | null >(null);
+  let semanticPipeline = $state<SemanticAnalysisPipeline | null >(null);
+  let tensorStore = $state<DimensionalTensorStore | null >(null);
+  let somCache = $state<SOMWebGPUCache | null >(null);
+  let gpuWorker = $state<GPUTensorWorker | null >(null);
+  let reranker = $state<LegalAIReranker | null >(null);
 
   // Theme configurations
   const themes = {
@@ -354,7 +352,6 @@ let reranker = $state<LegalAIReranker | null >(null);
     viz.metadata.nodePositions.forEach((nodePos) => {
       const projectedX = nodePos.x + width / 2;
       const projectedY = nodePos.y + height / 2;
-      
       ctx.fillStyle = currentTheme.nodeColors.document;
       ctx.beginPath();
       ctx.arc(projectedX, projectedY, 6, 0, 2 * Math.PI);
@@ -400,12 +397,10 @@ let reranker = $state<LegalAIReranker | null >(null);
     if (gpuWorker) {
       gpuWorker.terminate?.();
     }
-    
     // Clear caches
     if (soraTraversal) {
       soraTraversal.clearCache();
     }
-    
     if (moogleSynthesizer) {
       moogleSynthesizer.clearCache();
     }

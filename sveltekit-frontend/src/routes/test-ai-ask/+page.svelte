@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
@@ -17,8 +16,8 @@
   let manualTestResponse: any = $state(null);
   let manualTestLoading = $state(false);
   let manualTestError: string | null = $state(null);
-let healthCheckResults = $state<any >(null);
-let selectedExample = $state("");
+  let healthCheckResults = $state<any >(null);
+  let selectedExample = $state("");
 
   // Sample queries for testing
   const sampleQueries = [
@@ -34,9 +33,9 @@ let selectedExample = $state("");
 
   // Missing variables that are referenced in template
   let query = $state("");
-let isLoading = $state(false);
-let error = $state<string | null >(null);
-let response = $state<any >(null);
+  let isLoading = $state(false);
+  let error = $state<string | null >(null);
+  let response = $state<any >(null);
   let exampleQueries = sampleQueries; // Alias for template
 
   // Initialize page
@@ -47,14 +46,14 @@ let response = $state<any >(null);
       isPageReady = true;
       // Auto-check health on load
       checkHealthEndpoints();
-}
+  }
   });
 
   // Select example query
   function selectQuery(query: string) {
     manualTestQuery = query;
     selectedExample = query;
-}
+  }
   // Manual API test function (for debugging)
   async function testAPIDirectly() {
     if (!manualTestQuery.trim()) return;
@@ -83,10 +82,10 @@ let response = $state<any >(null);
 
       if (!res.ok) {
         throw new Error(data.error || `HTTP ${res.status}: ${res.statusText}`);
-}
+  }
       if (!data.success) {
         throw new Error(data.error || "API request failed");
-}
+  }
       manualTestResponse = data.data;
     } catch (error) {
       console.error("Manual API test failed:", error);
@@ -94,7 +93,7 @@ let response = $state<any >(null);
         error instanceof Error ? error.message : "Unknown error occurred";
     } finally {
       manualTestLoading = false;
-}}
+  }}
   // Check health endpoints
   async function checkHealthEndpoints() {
     try {
@@ -106,14 +105,14 @@ let response = $state<any >(null);
       console.log("Local AI Health:", localHealth);
 
       // Check cloud AI health
-let cloudHealth = $state(null);
+  let cloudHealth = $state(null);
       try {
         const cloudRes = await fetch("/api/ai/health/cloud");
         cloudHealth = await cloudRes.json();
         console.log("Cloud AI Health:", cloudHealth);
       } catch (error) {
         console.log("Cloud AI Health: Not available");
-}
+  }
       healthCheckResults = {
         local: localHealth,
         cloud: cloudHealth,
@@ -123,7 +122,7 @@ let cloudHealth = $state(null);
       console.error("Health check failed:", error);
       manualTestError =
         "Health check failed. Make sure the development server is running.";
-}}
+  }}
   // Clear conversation
   function clearConversation() {
     if (confirm("Clear conversation history?")) {
@@ -135,7 +134,7 @@ let cloudHealth = $state(null);
       });
       manualTestResponse = null;
       manualTestError = null;
-}}
+  }}
   // Export conversation
   function exportConversation() {
     const data = {
@@ -153,12 +152,12 @@ let cloudHealth = $state(null);
     a.download = `ai-conversation-${new Date().toISOString().split("T")[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
-}
+  }
   // Missing functions that are referenced in template
   function testGemma3() {
     console.log("Testing Gemma3...");
     // Add your test logic here
-}
+  }
 </script>
 
 <svelte:head>

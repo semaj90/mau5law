@@ -1,25 +1,20 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
-  
   // Import all advanced AI components
   import DocumentAnalysis from "$lib/components/DocumentAnalysis.svelte";
   import LegalChat from "$lib/components/LegalChat.svelte";
   import AISummarization from "$lib/components/AISummarization.svelte";
   import FindModal from "$lib/components/ai/FindModal.svelte";
-  
   // Import system integration components
   import SystemHealthDashboard from "$lib/components/dashboard/SystemHealthDashboard.svelte";
   import PerformanceMonitor from "$lib/components/dashboard/PerformanceMonitor.svelte";
   import AIRecommendations from "$lib/components/ai/AIRecommendations.svelte";
   import RealTimeMetrics from "$lib/components/dashboard/RealTimeMetrics.svelte";
-  
   // Import the comprehensive AI system
   import { createAISystemStore } from '$lib/stores/ai-system-store';
   import { createWebSocketStore } from '$lib/stores/websocket-store';
-  
   // State management with Svelte 5 runes
   let activeTab = $state<"dashboard" | "chat" | "analysis" | "search" | "monitor">("dashboard");
   let systemHealth = $state<any>({});
@@ -29,22 +24,17 @@
   let showFindModal = $state(false);
   let webSocketConnection = $state<WebSocket | null>(null);
   let connectionStatus = $state<"connecting" | "connected" | "disconnected" | "error">("disconnected");
-  
   // AI System Integration
   const aiSystemStore = browser ? createAISystemStore() : null;
   const webSocketStore = browser ? createWebSocketStore() : null;
-  
   // Reactive system state
   let systemState = $derived(aiSystemStore?.systemState || {});
   let wsState = $derived(webSocketStore?.connectionState || {});
-  
   // Initialize comprehensive AI system on mount
   onMount(async () => {
     if (!browser) return;
-    
     try {
       console.log('🚀 Initializing Comprehensive AI System...');
-      
       // Initialize AI system store
       if (aiSystemStore) {
         await aiSystemStore.initialize({
@@ -60,41 +50,32 @@
             enableRealTimeMetrics: true
           }
         });
-        
         isSystemInitialized = true;
         console.log('✅ AI System initialized successfully');
       }
-      
       // Initialize WebSocket connection for real-time updates
       if (webSocketStore) {
         await webSocketStore.connect('ws://localhost:8080/ws');
         webSocketConnection = webSocketStore.socket;
-        
         webSocketStore.on('system-health', (data: any) => {
           systemHealth = data;
         });
-        
         webSocketStore.on('performance-metrics', (data: any) => {
           performanceMetrics = data;
         });
-        
         webSocketStore.on('ai-recommendations', (data: any) => {
           aiRecommendations = data;
         });
-        
         connectionStatus = "connected";
         console.log('🌐 WebSocket connection established');
       }
-      
       // Start periodic health checks
       startHealthChecks();
-      
     } catch (error) {
       console.error('❌ System initialization failed:', error);
       connectionStatus = "error";
     }
   });
-  
   onDestroy(() => {
     if (browser) {
       webSocketStore?.disconnect();
@@ -104,29 +85,23 @@
       }
     }
   });
-  
   let healthCheckInterval: NodeJS.Timeout;
-  
   function startHealthChecks() {
     healthCheckInterval = setInterval(async () => {
       if (aiSystemStore) {
         try {
           const health = await aiSystemStore.getSystemHealth();
           systemHealth = health;
-          
           const metrics = await aiSystemStore.getPerformanceMetrics();
           performanceMetrics = metrics;
-          
           const recommendations = await aiSystemStore.getRecommendations();
           aiRecommendations = recommendations;
-          
         } catch (error) {
           console.warn('Health check failed:', error);
         }
       }
     }, 5000); // Every 5 seconds
   }
-  
   // Event handlers
   function handleAnalysisComplete(result: any) {
     console.log("Analysis complete:", result);
@@ -134,18 +109,15 @@
       aiSystemStore.logAnalysis(result);
     }
   }
-  
   function handleChatMessage(message: any) {
     console.log("New message:", message);
     if (aiSystemStore) {
       aiSystemStore.logInteraction(message);
     }
   }
-  
   function toggleFindModal() {
     showFindModal = !showFindModal;
   }
-  
   // Keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
     if (event.ctrlKey && event.key === 'k') {
@@ -153,7 +125,6 @@
       toggleFindModal();
     }
   }
-  
   // Quick actions for different user roles
   const quickActions = {
     prosecutor: [
@@ -178,7 +149,6 @@
       { icon: "⭐", label: "Best Practices", action: () => window.location.href = "/best-practices" }
     ]
   };
-  
   // Current user role (would come from auth in real app)
   const currentUserRole = "prosecutor";
   const userActions = quickActions[currentUserRole];

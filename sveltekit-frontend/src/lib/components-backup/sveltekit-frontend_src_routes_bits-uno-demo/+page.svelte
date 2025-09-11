@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import BitsUnoDemo from "$lib/components/ui/BitsUnoDemo.svelte";
   import { goto } from '$app/navigation';
 </script>

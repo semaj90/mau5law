@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { Props } from "$lib/types/global";
   let { checked = $bindable(false), disabled = false, id, class: klass = '' }: Props = $props();
 </script>

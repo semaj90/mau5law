@@ -12,29 +12,24 @@
 -->
 
 <script lang="ts">
-</script>
   import { createDialog, melt } from 'melt';
   import { fade, fly, scale } from 'svelte/transition';
   import { cubicInOut } from 'svelte/easing';
   import { onMount } from 'svelte';
   import { UnifiedButton } from './index.js';
-  
   // Props with Svelte 5 support
   interface Props {
     open?: boolean;
     size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
-    
     // Content slots
     title?: import('svelte').Snippet;
     content?: import('svelte').Snippet;
     footer?: import('svelte').Snippet;
-    
     // Styling
     variant?: 'default' | 'legal' | 'evidence' | 'case' | 'nes';
     glassmorphism?: boolean;
     pixelated?: boolean;
     webgpuEffects?: boolean;
-    
     // Real-time collaboration
     collaboration?: {
       enabled: boolean;
@@ -47,7 +42,6 @@
       }>;
       sessionId?: string;
     };
-    
     // Legal AI context
     legalContext?: {
       caseId?: string;
@@ -58,7 +52,6 @@
         suggestions: string[];
       };
     };
-    
     // Events
     onOpenChange?: (open: boolean) => void;
     onClose?: () => void;
@@ -97,11 +90,10 @@
   });
 
   // WebGPU animation state
-let canvas = $state<HTMLCanvasElement;
+  let canvas = $state<HTMLCanvasElement;
   let gpu: GPU | null >(null);
-let device = $state<GPUDevice | null >(null);
+  let device = $state<GPUDevice | null >(null);
   let animationFrame: number;
-  
   // Memory-efficient state (NES constraints: 8KB)
   let dialogState = $state({
     animationPhase: 0,
@@ -152,23 +144,18 @@ let device = $state<GPUDevice | null >(null);
           variant: f32,
           legal_confidence: f32,
         }
-        
         @group(0) @binding(0) var<uniform> uniforms: Uniforms;
         @group(0) @binding(1) var outputTex: texture_storage_2d<rgba8unorm, write>;
-        
         @compute @workgroup_size(8, 8)
         fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           let dims = textureDimensions(outputTex);
           let coord = vec2<i32>(global_id.xy);
-          
           if (coord.x >= dims.x || coord.y >= dims.y) {
             return;
           }
-          
           let uv = vec2<f32>(coord) / vec2<f32>(dims);
           let center = vec2<f32>(0.5, 0.5);
           let dist = distance(uv, center);
-          
           // Legal AI context glow
           var color = vec3<f32>(0.0, 0.0, 0.0);
           if (uniforms.variant == 1.0) { // legal
@@ -178,14 +165,11 @@ let device = $state<GPUDevice | null >(null);
           } else if (uniforms.variant == 3.0) { // case
             color = vec3<f32>(0.2, 0.4, 0.8);
           }
-          
           // Background gradient with confidence influence
           let gradient = (1.0 - dist) * uniforms.intensity * uniforms.legal_confidence;
           let wave = sin(uniforms.time * 2.0 + dist * 10.0) * 0.1 + 0.9;
-          
           let finalColor = color * gradient * wave;
           let alpha = gradient * 0.3;
-          
           textureStore(outputTex, coord, vec4<f32>(finalColor, alpha));
         }
       `;
@@ -312,30 +296,25 @@ let device = $state<GPUDevice | null >(null);
   // Dynamic classes
   let dialogClasses = $derived([);
     'fixed inset-0 z-50 flex items-center justify-center p-4',
-    
     // Size variants
     size === 'sm' ? 'max-w-sm' :
     size === 'md' ? 'max-w-md' :
     size === 'lg' ? 'max-w-2xl' :
     size === 'xl' ? 'max-w-4xl' :
     size === 'fullscreen' ? 'max-w-full h-full' : '',
-    
     class
   ].filter(Boolean).join(' ');
 
   let contentClasses = $derived([);
     'relative bg-white rounded-lg shadow-xl',
     'max-h-[90vh] overflow-hidden',
-    
     // Variant styling
     variant === 'legal' ? 'border-l-4 border-green-500' :
     variant === 'evidence' ? 'border-l-4 border-amber-500' :
     variant === 'case' ? 'border-l-4 border-indigo-500' : '',
-    
     // Effects
     glassmorphism ? 'backdrop-blur-md bg-white/80' : 'bg-white',
     pixelated ? 'image-rendering-pixelated' : '',
-    
     // NES styling
     variant === 'nes' ? 'border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : ''
   ].filter(Boolean).join(' ');

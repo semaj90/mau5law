@@ -1,7 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-</script>
   interface Props {
     onchange?: (event?: unknown) => void;
   }
@@ -17,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
 
   let editorElement: HTMLElement;
   let editor: Editor;
-let isInitialized = $state(false);
+  let isInitialized = $state(false);
 
   // Convert ContentNode array to markdown
   function contentToMarkdown(nodes: ContentNode[]): string {
@@ -30,10 +29,9 @@ let isInitialized = $state(false);
         if (node.color) text = `<span style="color: ${node.color}">${text}</span>`;
         if (node.fontSize) text = `<span style="font-size: ${node.fontSize}">${text}</span>`;
         return text;
-}
+  }
       if (node.children) {
         const childText = node.children.map(nodeToMd).join('');
-        
         switch (node.type) {
           case 'paragraph':
             return childText + '\n\n';
@@ -56,30 +54,30 @@ let isInitialized = $state(false);
             return `![${node.alt || ''}](${node.url || ''})`;
           default:
             return childText;
-}}
+  }}
       return '';
     };
 
     return nodes.map(nodeToMd).join('');
-}
+  }
   // Convert markdown to ContentNode array (simplified)
   function markdownToContent(markdown: string): ContentNode[] {
     if (!markdown.trim()) {
       return [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
-}
+  }
     // Basic markdown parsing - in production, use a proper parser
     const lines = markdown.split('\n');
     const nodes: ContentNode[] = [];
-let currentParagraph = $state<ContentNode | null >(null);
+  let currentParagraph = $state<ContentNode | null >(null);
 
     for (const line of lines) {
       if (line.trim() === '') {
         if (currentParagraph) {
           nodes.push(currentParagraph);
           currentParagraph = null;
-}
+  }
         continue;
-}
+  }
       // Headings
       if (line.startsWith('#')) {
         const level = line.match(/^#+/)?.[0].length || 1;
@@ -90,7 +88,7 @@ let currentParagraph = $state<ContentNode | null >(null);
           children: [{ type: 'text', text }]
         });
         continue;
-}
+  }
       // Lists
       if (line.startsWith('- ') || line.startsWith('* ')) {
         const text = line.replace(/^[-*]\s*/, '');
@@ -99,7 +97,7 @@ let currentParagraph = $state<ContentNode | null >(null);
           children: [{ type: 'text', text }]
         });
         continue;
-}
+  }
       // Blockquotes
       if (line.startsWith('> ')) {
         const text = line.replace(/^>\s*/, '');
@@ -108,14 +106,14 @@ let currentParagraph = $state<ContentNode | null >(null);
           children: [{ type: 'text', text }]
         });
         continue;
-}
+  }
       // Regular paragraph
       if (!currentParagraph) {
         currentParagraph = {
           type: 'paragraph',
           children: []
         };
-}
+  }
       // Basic inline formatting
       let text = line;
       const textNode: ContentNode = { type: 'text', text };
@@ -125,20 +123,20 @@ let currentParagraph = $state<ContentNode | null >(null);
         textNode.bold = true;
         text = text.replace(/\*\*(.*?)\*\*/g, '$1');
         textNode.text = text;
-}
+  }
       // Italic
       if (text.includes('*') && !textNode.bold) {
         textNode.italic = true;
         text = text.replace(/\*(.*?)\*/g, '$1');
         textNode.text = text;
-}
+  }
       currentParagraph.children!.push(textNode);
-}
+  }
     if (currentParagraph) {
       nodes.push(currentParagraph);
-}
+  }
     return nodes.length > 0 ? nodes : [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
-}
+  }
   onMount(() => {
     editor = new Editor({
       el: editorElement,
@@ -164,7 +162,7 @@ let currentParagraph = $state<ContentNode | null >(null);
             callback(e.target?.result as string, 'Uploaded image');
           };
           reader.readAsDataURL(blob);
-}}
+  }}
     });
 
     // Listen for content changes
@@ -180,7 +178,7 @@ let currentParagraph = $state<ContentNode | null >(null);
   onDestroy(() => {
     if (editor) {
       editor.destroy();
-}
+  }
   });
 
   // Reactive update when content prop changes
@@ -188,7 +186,6 @@ let currentParagraph = $state<ContentNode | null >(null);
     if (editor && isInitialized && content) {
       const currentMarkdown = editor.getMarkdown();
       const newMarkdown = contentToMarkdown(content);
-      
       if (currentMarkdown !== newMarkdown) {
         editor.setMarkdown(newMarkdown);
       }
@@ -239,12 +236,10 @@ let currentParagraph = $state<ContentNode | null >(null);
   // Formatting methods
   function toggleMark(mark: string) {
     if (!editor) return;
-    
     const selectedText = editor.getSelectedText();
     if (!selectedText) return;
 
     let formattedText = selectedText;
-    
     switch (mark) {
       case 'bold':
         formattedText = `**${selectedText}**`;
@@ -261,7 +256,6 @@ let currentParagraph = $state<ContentNode | null >(null);
 
   function addMark(mark: string, value: string) {
     if (!editor) return;
-    
     const selectedText = editor.getSelectedText();
     if (!selectedText) return;
 

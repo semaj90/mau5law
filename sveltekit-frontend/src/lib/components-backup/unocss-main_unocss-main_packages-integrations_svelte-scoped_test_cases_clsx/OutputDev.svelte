@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { clsx } from "clsx";
 
   function wrapped(...args: Parameters<typeof clsx>) {

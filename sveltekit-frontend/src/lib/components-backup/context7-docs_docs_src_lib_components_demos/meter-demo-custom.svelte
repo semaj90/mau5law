@@ -1,30 +1,29 @@
 <script lang="ts">
-</script>
-	import { Meter, useId } from "bits-ui";
-	import type { ComponentProps } from "svelte";
-	import DemoContainer from "../demo-container.svelte";
+  	import { Meter, useId } from "bits-ui";
+  	import type { ComponentProps } from "svelte";
+  	import DemoContainer from "../demo-container.svelte";
 
-	let {
-		max = 100,
-		value = 0,
-		min = 0,
-		label,
-		valueLabel,
-	}: ComponentProps<typeof Meter.Root> & {
-		label: string;
-		valueLabel: string;
-	} = $props();
+  	let {
+  		max = 100,
+  		value = 0,
+  		min = 0,
+  		label,
+  		valueLabel,
+  	}: ComponentProps<typeof Meter.Root> & {
+  		label: string;
+  		valueLabel: string;
+  	} = $props();
 
-	const labelId = useId();
+  	const labelId = useId();
 
-	const usedPercentage = $derived((value / max) * 100);
-	const percentageRemaining = $derived(100 - usedPercentage);
-	const color = $derived.by(() => {
-		if (percentageRemaining < 15) return "bg-red-500 dark:bg-red-400";
-		if (percentageRemaining < 35) return "bg-orange-500 dark:bg-orange-400";
-		if (percentageRemaining < 50) return "bg-yellow-500 dark:bg-yellow-400";
-		return "bg-green-500 dark:bg-green-400";
-	});
+  	const usedPercentage = $derived((value / max) * 100);
+  	const percentageRemaining = $derived(100 - usedPercentage);
+  	const color = $derived.by(() => {
+  		if (percentageRemaining < 15) return "bg-red-500 dark:bg-red-400";
+  		if (percentageRemaining < 35) return "bg-orange-500 dark:bg-orange-400";
+  		if (percentageRemaining < 50) return "bg-yellow-500 dark:bg-yellow-400";
+  		return "bg-green-500 dark:bg-green-400";
+  	});
 </script>
 
 <DemoContainer size="xs" wrapperClass="rounded-bl-card rounded-br-card">

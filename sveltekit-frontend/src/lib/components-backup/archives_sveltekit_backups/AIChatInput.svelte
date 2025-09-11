@@ -1,6 +1,5 @@
 <!-- AI Chat Input Component -->
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { createEventDispatcher, onMount } from "svelte";
 
@@ -29,7 +28,7 @@
   onMount(() => {
     if (browser && autoFocus && textarea) {
       setTimeout(() => textarea.focus(), 100);
-}
+  }
   });
 
   // Handle input changes
@@ -38,7 +37,7 @@
     value = target.value;
     dispatch("input", value);
     adjustTextareaHeight();
-}
+  }
   // Handle key press
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Enter") {
@@ -49,7 +48,7 @@
         // Enter: send message
         event.preventDefault();
         handleSend();
-}}}
+  }}}
   // Send message
   function handleSend() {
     const trimmedValue = value.trim();
@@ -58,7 +57,7 @@
     dispatch("send", trimmedValue);
     value = "";
     resetTextareaHeight();
-}
+  }
   // Auto-resize textarea
   function adjustTextareaHeight() {
     if (!textarea) return;
@@ -79,7 +78,7 @@
 
     textarea.style.height = `${targetRows * lineHeight + paddingHeight}px`;
     isMultiline = targetRows > 1;
-}
+  }
   // Reset textarea height
   function resetTextareaHeight() {
     if (!textarea) return;
@@ -91,14 +90,14 @@
 
     textarea.style.height = `${rows * lineHeight + paddingHeight}px`;
     isMultiline = false;
-}
+  }
   // Handle focus/blur events
   function handleFocus() {
     dispatch("focus");
-}
+  }
   function handleBlur() {
     dispatch("blur");
-}
+  }
   // Character count
   // TODO: Convert to $derived: characterCount = value.length
   // TODO: Convert to $derived: isNearLimit = characterCount > maxLength * 0.8

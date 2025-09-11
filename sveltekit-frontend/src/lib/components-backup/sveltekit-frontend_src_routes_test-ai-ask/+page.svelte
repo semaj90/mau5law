@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
   import AIChatInterface from "$lib/components/ai/AIChatInterface.svelte";
@@ -46,14 +45,14 @@
       isPageReady = true;
       // Auto-check health on load
       checkHealthEndpoints();
-}
+  }
   });
 
   // Select example query
   function selectQuery(query: string) {
     manualTestQuery = query;
     selectedExample = query;
-}
+  }
   // Manual API test function (for debugging)
   async function testAPIDirectly() {
     if (!manualTestQuery.trim()) return;
@@ -82,10 +81,10 @@
 
       if (!res.ok) {
         throw new Error(data.error || `HTTP ${res.status}: ${res.statusText}`);
-}
+  }
       if (!data.success) {
         throw new Error(data.error || "API request failed");
-}
+  }
       manualTestResponse = data.data;
     } catch (error) {
       console.error("Manual API test failed:", error);
@@ -93,7 +92,7 @@
         error instanceof Error ? error.message : "Unknown error occurred";
     } finally {
       manualTestLoading = false;
-}}
+  }}
   // Check health endpoints
   async function checkHealthEndpoints() {
     try {
@@ -112,7 +111,7 @@
         console.log("Cloud AI Health:", cloudHealth);
       } catch (error) {
         console.log("Cloud AI Health: Not available");
-}
+  }
       healthCheckResults = {
         local: localHealth,
         cloud: cloudHealth,
@@ -122,7 +121,7 @@
       console.error("Health check failed:", error);
       manualTestError =
         "Health check failed. Make sure the development server is running.";
-}}
+  }}
   // Clear conversation
   function clearConversation() {
     if (confirm("Clear conversation history?")) {
@@ -134,7 +133,7 @@
       });
       manualTestResponse = null;
       manualTestError = null;
-}}
+  }}
   // Export conversation
   function exportConversation() {
     const data = {
@@ -152,12 +151,12 @@
     a.download = `ai-conversation-${new Date().toISOString().split("T")[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
-}
+  }
   // Missing functions that are referenced in template
   function testGemma3() {
     console.log("Testing Gemma3...");
     // Add your test logic here
-}
+  }
 </script>
 
 <svelte:head>

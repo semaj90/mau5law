@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { cva, type VariantProps } from 'class-variance-authority'
   import { cn } from '$lib/utils'
   import type { HTMLButtonAttributes } from 'svelte/elements'

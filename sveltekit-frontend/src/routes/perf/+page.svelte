@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import PerfChart from '$lib/components/PerfChart.svelte';
   import { writable } from 'svelte/store';

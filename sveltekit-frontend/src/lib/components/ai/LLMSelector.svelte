@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { onMount } from 'svelte';
   // import { createSelect, melt } from 'melt'; // Removed melt dependency
@@ -16,7 +15,6 @@
     Globe,
     Settings
   } from 'lucide-svelte'
-  
   // LLM Provider Types
   interface LLMModel {
     id: string
@@ -34,7 +32,6 @@
     capabilities: string[]
     endpoint: string
   }
-  
   interface Props {
     selectedModel?: LLMModel
     onModelChange?: (model: LLMModel) => void
@@ -42,7 +39,6 @@
     allowMultiSelect?: boolean
     filterBy?: 'all' | 'legal' | 'general' | 'code'
   }
-  
   let { 
     selectedModel = $bindable(),
     onModelChange = () => {},
@@ -50,7 +46,6 @@
     allowMultiSelect = false,
     filterBy = 'all'
   }: Props = $props()
-  
   // Available LLM Models
   let availableModels = $state<LLMModel[]>([
     {
@@ -118,13 +113,11 @@
       endpoint: 'http://localhost:11434'
     }
   ])
-  
   // Filter models based on criteria
   let filteredModels = $derived(
     filterBy === 'all' ? availableModels : 
     availableModels.filter(model => model.specialization === filterBy)
   )
-  
   // Melt UI Select Setup
   // const {
   //   elements: { trigger, menu, option, label },
@@ -138,7 +131,6 @@
   //     sameWidth: true,
   //   }
   // })
-  
   // Mock implementations for now
   const trigger = {};
   const menu = {};
@@ -148,7 +140,6 @@
   const open = false;
   const selected = null;
   const isSelected = () => false;
-  
   // Provider Icons
   const getProviderIcon = (provider: string) => {
     switch (provider) {
@@ -159,7 +150,6 @@
       default: return Settings
     }
   }
-  
   // Status Colors
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -170,7 +160,6 @@
       default: return 'text-gray-400'
     }
   }
-  
   // Status Icons
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -181,7 +170,6 @@
       default: return AlertCircle
     }
   }
-  
   // Handle model selection
   $effect(() => {
     if ($selected) {
@@ -189,16 +177,13 @@
       onModelChange($selected.value)
     }
   })
-  
   // Load model statuses on mount
   onMount(async () => {
     await refreshModelStatuses()
-    
     // Auto-refresh every 10 seconds
     const interval = setInterval(refreshModelStatuses, 10000)
     return () => clearInterval(interval)
   })
-  
   async function refreshModelStatuses() {
     // Check each model's health
     for (const model of availableModels) {
@@ -207,7 +192,6 @@
           method: 'GET',
           signal: AbortSignal.timeout(2000)
         })
-        
         if (response.ok) {
           const data = await response.json()
           const isModelLoaded = data.models?.some((m: any) => m.name === model.name)
@@ -219,24 +203,19 @@
         model.status = 'error'
       }
     }
-    
     // Trigger reactivity
     availableModels = [...availableModels]
   }
-  
   async function loadModel(model: LLMModel) {
     if (model.status === 'online') return
-    
     model.status = 'loading'
     availableModels = [...availableModels]
-    
     try {
       const response = await fetch(`${model.endpoint}/api/pull`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: model.name })
       })
-      
       if (response.ok) {
         model.status = 'online'
       } else {
@@ -245,7 +224,6 @@
     } catch (error) {
       model.status = 'error'
     }
-    
     availableModels = [...availableModels]
   }
 </script>

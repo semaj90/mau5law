@@ -1,6 +1,5 @@
 <!-- BVector Store Integration Test Interface -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { BVectorIntegrationTestSuite, runBVectorIntegrationTest } from '$lib/tests/bvector-integration-test';
   import type { TestResult, TestConfig } from '$lib/tests/bvector-integration-test';
@@ -78,7 +77,6 @@
     if ('navigator' in globalThis && 'hardwareConcurrency' in navigator) {
       systemResources.cpuCores = navigator.hardwareConcurrency;
     }
-    
     if ('navigator' in globalThis && 'deviceMemory' in navigator) {
       systemResources.memoryGB = (navigator as any).deviceMemory;
     }
@@ -86,7 +84,6 @@
 
   async function runTests() {
     if (isRunning) return;
-    
     isRunning = true;
     currentTest = 'Initializing...';
     progress = 0;
@@ -97,24 +94,18 @@
     try {
       addLog('🚀 Starting BVector Store Integration Tests');
       addLog(`Configuration: GPU=${!testConfig.skipGpuTests}, Go=${!testConfig.skipGoBindings}, Workers=${!testConfig.mockWorkers}`);
-      
       const testSuite = new BVectorIntegrationTestSuite(testConfig);
-      
       // Mock progress updates during test execution
       const progressInterval = setInterval(() => {
         progress = Math.min(progress + Math.random() * 10, 95);
       }, 500);
 
       const testResults = await testSuite.runFullIntegrationTest();
-      
       clearInterval(progressInterval);
       progress = 100;
-      
       results = testResults.results;
       summary = testResults.summary;
-      
       addLog(`✅ Tests completed: ${summary.passed}/${summary.totalTests} passed in ${summary.totalDuration}ms`);
-      
       if (summary.failed > 0) {
         addLog(`❌ ${summary.failed} tests failed - check detailed results below`);
       }

@@ -11,7 +11,7 @@ console.log(chalk.cyan('🔗 Redis-GPU Pipeline Bridge v1.0'));
 const config = {
   redisUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
   databaseUrl: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
-  ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11435',
+  ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11436',
   gpuClusterScript: 'scripts/gpu-cluster-concurrent-executor.mjs',
   pipelineManagerUrl: '/api/pipeline-manager',
   batchSize: 25,

@@ -1,364 +1,334 @@
 <script lang="ts">
-</script>
 
-	import { onMount, createEventDispatcher } from 'svelte';
-	import { writable, derived, get } from 'svelte/store';
-	import { browser } from '$app/environment';
-	
-	// Enhanced types for comprehensive integration
-	interface IntelligentTodo {
-		id: string;
-		title: string;
-		description: string;
-		priority: number;
-		category: string;
-		error: string;
-		solution: string;
-		created_at: string;
-		pagerank_score?: number;
-		som_cluster?: { x: number; y: number };
-	}
+  	import { onMount, createEventDispatcher } from 'svelte';
+  	import { writable, derived, get } from 'svelte/store';
+  	import { browser } from '$app/environment';
+  	// Enhanced types for comprehensive integration
+  	interface IntelligentTodo {
+  		id: string;
+  		title: string;
+  		description: string;
+  		priority: number;
+  		category: string;
+  		error: string;
+  		solution: string;
+  		created_at: string;
+  		pagerank_score?: number;
+  		som_cluster?: { x: number; y: number };
+  	}
 
-	interface SemanticAnalysis {
-		embedding: number[];
-		som_cluster: { x: number; y: number };
-		analysis: string;
-	}
+  	interface SemanticAnalysis {
+  		embedding: number[];
+  		som_cluster: { x: number; y: number };
+  		analysis: string;
+  	}
 
-	interface CacheStats {
-		cache_size: number;
-		index_size: number;
-		last_update: string;
-		max_size: number;
-	}
+  	interface CacheStats {
+  		cache_size: number;
+  		index_size: number;
+  		last_update: string;
+  		max_size: number;
+  	}
 
-	interface SystemStatus {
-		postgresql: boolean;
-		redis: boolean;
-		ollama: boolean;
-		minio: boolean;
-		qdrant: boolean;
-		neo4j: boolean;
-		enhanced_rag: boolean;
-		semantic_architecture: boolean;
-	}
+  	interface SystemStatus {
+  		postgresql: boolean;
+  		redis: boolean;
+  		ollama: boolean;
+  		minio: boolean;
+  		qdrant: boolean;
+  		neo4j: boolean;
+  		enhanced_rag: boolean;
+  		semantic_architecture: boolean;
+  	}
 
-	// Reactive stores for real-time updates
-	const todos = writable<IntelligentTodo[]>([]);
-	const semanticAnalysis = writable<SemanticAnalysis | null>(null);
-	const cacheStats = writable<CacheStats | null>(null);
-	const systemStatus = writable<SystemStatus>({
-		postgresql: false,
-		redis: false,
-		ollama: false,
-		minio: false,
-		qdrant: false,
-		neo4j: false,
-		enhanced_rag: false,
-		semantic_architecture: false
-	});
+  	// Reactive stores for real-time updates
+  	const todos = writable<IntelligentTodo[]>([]);
+  	const semanticAnalysis = writable<SemanticAnalysis | null>(null);
+  	const cacheStats = writable<CacheStats | null>(null);
+  	const systemStatus = writable<SystemStatus>({
+  		postgresql: false,
+  		redis: false,
+  		ollama: false,
+  		minio: false,
+  		qdrant: false,
+  		neo4j: false,
+  		enhanced_rag: false,
+  		semantic_architecture: false
+  	});
 
-	// WebGPU-accelerated processing states
-	const isProcessing = writable(false);
-	const processingProgress = writable(0);
-	const webGPUSupported = writable(false);
-	
-	// Analysis input and results
-let analysisText = $state('');
-let selectedTodo = $state<IntelligentTodo | null >(null);
-let showSOMVisualization = $state(false);
-let showPageRankGraph = $state(false);
-	
-	// Derived stores for computed values
-	const todosByCategory = derived(todos, $todos => {
-		const categories: Record<string, IntelligentTodo[]> = {};
-		$todos.forEach(todo => {
-			if (!categories[todo.category]) {
-				categories[todo.category] = [];
-			}
-			categories[todo.category].push(todo);
-		});
-		return categories;
-	});
+  	// WebGPU-accelerated processing states
+  	const isProcessing = writable(false);
+  	const processingProgress = writable(0);
+  	const webGPUSupported = writable(false);
+  	// Analysis input and results
+  let analysisText = $state('');
+  let selectedTodo = $state<IntelligentTodo | null >(null);
+  let showSOMVisualization = $state(false);
+  let showPageRankGraph = $state(false);
+  	// Derived stores for computed values
+  	const todosByCategory = derived(todos, $todos => {
+  		const categories: Record<string, IntelligentTodo[]> = {};
+  		$todos.forEach(todo => {
+  			if (!categories[todo.category]) {
+  				categories[todo.category] = [];
+  			}
+  			categories[todo.category].push(todo);
+  		});
+  		return categories;
+  	});
 
-	const topPriorityTodos = derived(todos, $todos => 
-		$todos
-			.filter(todo => todo.priority >= 4)
-			.sort((a, b) => b.priority - a.priority)
-			.slice(0, 5)
-	);
+  	const topPriorityTodos = derived(todos, $todos => 
+  		$todos
+  			.filter(todo => todo.priority >= 4)
+  			.sort((a, b) => b.priority - a.priority)
+  			.slice(0, 5)
+  	);
 
-	const categoryStats = derived(todosByCategory, $categories => {
-		const stats = Object.entries($categories).map(([category, todos]) => ({
-			category,
-			count: todos.length,
-			avgPriority: todos.reduce((sum, todo) => sum + todo.priority, 0) / todos.length,
-			avgPageRank: todos.reduce((sum, todo) => sum + (todo.pagerank_score || 0), 0) / todos.length
-		}));
-		return stats.sort((a, b) => b.count - a.count);
-	});
+  	const categoryStats = derived(todosByCategory, $categories => {
+  		const stats = Object.entries($categories).map(([category, todos]) => ({
+  			category,
+  			count: todos.length,
+  			avgPriority: todos.reduce((sum, todo) => sum + todo.priority, 0) / todos.length,
+  			avgPageRank: todos.reduce((sum, todo) => sum + (todo.pagerank_score || 0), 0) / todos.length
+  		}));
+  		return stats.sort((a, b) => b.count - a.count);
+  	});
 
-	// Event dispatcher for parent communication
-	const dispatch = createEventDispatcher();
+  	// Event dispatcher for parent communication
+  	const dispatch = createEventDispatcher();
 
-	// API integration functions
-	async function fetchIntelligentTodos() {
-		if (!browser) return;
-		
-		isProcessing.set(true);
-		processingProgress.set(10);
-		
-		try {
-			const response = await fetch('/api/enhanced-semantic/intelligent-todos', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-			
-			processingProgress.set(50);
-			
-			if (response.ok) {
-				const result = await response.json();
-				todos.set(result.data || []);
-				processingProgress.set(100);
-				
-				// Update system status
-				systemStatus.update(status => ({
-					...status,
-					semantic_architecture: true
-				}));
-				
-				dispatch('todos-updated', { count: result.data?.length || 0 });
-			} else {
-				console.error('Failed to fetch todos:', response.statusText);
-			}
-		} catch (error) {
-			console.error('Error fetching intelligent todos:', error);
-		} finally {
-			isProcessing.set(false);
-			processingProgress.set(0);
-		}
-	}
+  	// API integration functions
+  	async function fetchIntelligentTodos() {
+  		if (!browser) return;
+  		isProcessing.set(true);
+  		processingProgress.set(10);
+  		try {
+  			const response = await fetch('/api/enhanced-semantic/intelligent-todos', {
+  				method: 'GET',
+  				headers: {
+  					'Content-Type': 'application/json'
+  				}
+  			});
+  			processingProgress.set(50);
+  			if (response.ok) {
+  				const result = await response.json();
+  				todos.set(result.data || []);
+  				processingProgress.set(100);
+  				// Update system status
+  				systemStatus.update(status => ({
+  					...status,
+  					semantic_architecture: true
+  				}));
+  				dispatch('todos-updated', { count: result.data?.length || 0 });
+  			} else {
+  				console.error('Failed to fetch todos:', response.statusText);
+  			}
+  		} catch (error) {
+  			console.error('Error fetching intelligent todos:', error);
+  		} finally {
+  			isProcessing.set(false);
+  			processingProgress.set(0);
+  		}
+  	}
 
-	async function analyzeText(text: string) {
-		if (!browser || !text.trim()) return;
-		
-		isProcessing.set(true);
-		processingProgress.set(20);
-		
-		try {
-			const response = await fetch(`/api/enhanced-semantic/analyze?text=${encodeURIComponent(text)}`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-			
-			processingProgress.set(70);
-			
-			if (response.ok) {
-				const result = await response.json();
-				semanticAnalysis.set(result.data);
-				processingProgress.set(100);
-				
-				dispatch('text-analyzed', { 
-					text, 
-					analysis: result.data 
-				});
-			} else {
-				console.error('Failed to analyze text:', response.statusText);
-			}
-		} catch (error) {
-			console.error('Error analyzing text:', error);
-		} finally {
-			isProcessing.set(false);
-			processingProgress.set(0);
-		}
-	}
+  	async function analyzeText(text: string) {
+  		if (!browser || !text.trim()) return;
+  		isProcessing.set(true);
+  		processingProgress.set(20);
+  		try {
+  			const response = await fetch(`/api/enhanced-semantic/analyze?text=${encodeURIComponent(text)}`, {
+  				method: 'GET',
+  				headers: {
+  					'Content-Type': 'application/json'
+  				}
+  			});
+  			processingProgress.set(70);
+  			if (response.ok) {
+  				const result = await response.json();
+  				semanticAnalysis.set(result.data);
+  				processingProgress.set(100);
+  				dispatch('text-analyzed', { 
+  					text, 
+  					analysis: result.data 
+  				});
+  			} else {
+  				console.error('Failed to analyze text:', response.statusText);
+  			}
+  		} catch (error) {
+  			console.error('Error analyzing text:', error);
+  		} finally {
+  			isProcessing.set(false);
+  			processingProgress.set(0);
+  		}
+  	}
 
-	async function fetchCacheStats() {
-		if (!browser) return;
-		
-		try {
-			const response = await fetch('/api/enhanced-semantic/cache-stats');
-			if (response.ok) {
-				const result = await response.json();
-				cacheStats.set(result.data);
-			}
-		} catch (error) {
-			console.error('Error fetching cache stats:', error);
-		}
-	}
+  	async function fetchCacheStats() {
+  		if (!browser) return;
+  		try {
+  			const response = await fetch('/api/enhanced-semantic/cache-stats');
+  			if (response.ok) {
+  				const result = await response.json();
+  				cacheStats.set(result.data);
+  			}
+  		} catch (error) {
+  			console.error('Error fetching cache stats:', error);
+  		}
+  	}
 
-	async function checkSystemStatus() {
-		if (!browser) return;
-		
-		// Check all service endpoints
-		const services = [
-			{ key: 'postgresql', url: '/api/enhanced-semantic/status/postgresql' },
-			{ key: 'redis', url: '/api/enhanced-semantic/status/redis' },
-			{ key: 'ollama', url: 'http://localhost:11434/api/version' },
-			{ key: 'enhanced_rag', url: 'http://localhost:8094/health' },
-			{ key: 'semantic_architecture', url: 'http://localhost:8095/api/cache-stats' }
-		];
-		
-		const statusChecks = await Promise.allSettled(
-			services.map(async service => {
-				try {
-					const response = await fetch(service.url);
-					return { [service.key]: response.ok };
-				} catch {
-					return { [service.key]: false };
-				}
-			})
-		);
-		
-		const newStatus = statusChecks.reduce((acc, result) => {
-			if (result.status === 'fulfilled') {
-				return { ...acc, ...result.value };
-			}
-			return acc;
-		}, get(systemStatus));
-		
-		systemStatus.set(newStatus);
-	}
+  	async function checkSystemStatus() {
+  		if (!browser) return;
+  		// Check all service endpoints
+  		const services = [
+  			{ key: 'postgresql', url: '/api/enhanced-semantic/status/postgresql' },
+  			{ key: 'redis', url: '/api/enhanced-semantic/status/redis' },
+  			{ key: 'ollama', url: 'http://localhost:11434/api/version' },
+  			{ key: 'enhanced_rag', url: 'http://localhost:8094/health' },
+  			{ key: 'semantic_architecture', url: 'http://localhost:8095/api/cache-stats' }
+  		];
+  		const statusChecks = await Promise.allSettled(
+  			services.map(async service => {
+  				try {
+  					const response = await fetch(service.url);
+  					return { [service.key]: response.ok };
+  				} catch {
+  					return { [service.key]: false };
+  				}
+  			})
+  		);
+  		const newStatus = statusChecks.reduce((acc, result) => {
+  			if (result.status === 'fulfilled') {
+  				return { ...acc, ...result.value };
+  			}
+  			return acc;
+  		}, get(systemStatus));
+  		systemStatus.set(newStatus);
+  	}
 
-	// WebGPU detection and initialization
-	async function initializeWebGPU() {
-		if (!browser) return;
-		
-		try {
-			// Check WebGPU support
-			const gpu = (navigator as any).gpu;
-			if (gpu) {
-				const adapter = await gpu.requestAdapter();
-				if (adapter) {
-					webGPUSupported.set(true);
-					console.log('🚀 WebGPU acceleration available');
-					
-					// Initialize WebGPU-accelerated caching
-					await initializeWebGPUCache();
-				}
-			}
-		} catch (error) {
-			console.log('WebGPU not supported, falling back to CPU processing');
-			webGPUSupported.set(false);
-		}
-	}
+  	// WebGPU detection and initialization
+  	async function initializeWebGPU() {
+  		if (!browser) return;
+  		try {
+  			// Check WebGPU support
+  			const gpu = (navigator as any).gpu;
+  			if (gpu) {
+  				const adapter = await gpu.requestAdapter();
+  				if (adapter) {
+  					webGPUSupported.set(true);
+  					console.log('🚀 WebGPU acceleration available');
+  					// Initialize WebGPU-accelerated caching
+  					await initializeWebGPUCache();
+  				}
+  			}
+  		} catch (error) {
+  			console.log('WebGPU not supported, falling back to CPU processing');
+  			webGPUSupported.set(false);
+  		}
+  	}
 
-	async function initializeWebGPUCache() {
-		// Simulate WebGPU-accelerated IndexDB-style caching
-		if (!browser) return;
-		
-		try {
-			// Open IndexedDB for WebGPU cache
-			const request = indexedDB.open('EnhancedSemanticCache', 1);
-			
-			request.onupgradeneeded = (event) => {
-				const db = (event.target as any).result;
-				if (!db.objectStoreNames.contains('todos')) {
-					db.createObjectStore('todos', { keyPath: 'id' });
-				}
-				if (!db.objectStoreNames.contains('analysis')) {
-					db.createObjectStore('analysis', { keyPath: 'text' });
-				}
-				if (!db.objectStoreNames.contains('embeddings')) {
-					db.createObjectStore('embeddings', { keyPath: 'id' });
-				}
-			};
-			
-			request.onsuccess = () => {
-				console.log('✅ WebGPU-accelerated IndexDB cache initialized');
-			};
-		} catch (error) {
-			console.error('Failed to initialize WebGPU cache:', error);
-		}
-	}
+  	async function initializeWebGPUCache() {
+  		// Simulate WebGPU-accelerated IndexDB-style caching
+  		if (!browser) return;
+  		try {
+  			// Open IndexedDB for WebGPU cache
+  			const request = indexedDB.open('EnhancedSemanticCache', 1);
+  			request.onupgradeneeded = (event) => {
+  				const db = (event.target as any).result;
+  				if (!db.objectStoreNames.contains('todos')) {
+  					db.createObjectStore('todos', { keyPath: 'id' });
+  				}
+  				if (!db.objectStoreNames.contains('analysis')) {
+  					db.createObjectStore('analysis', { keyPath: 'text' });
+  				}
+  				if (!db.objectStoreNames.contains('embeddings')) {
+  					db.createObjectStore('embeddings', { keyPath: 'id' });
+  				}
+  			};
+  			request.onsuccess = () => {
+  				console.log('✅ WebGPU-accelerated IndexDB cache initialized');
+  			};
+  		} catch (error) {
+  			console.error('Failed to initialize WebGPU cache:', error);
+  		}
+  	}
 
-	// SOM Visualization helpers
-	function generateSOMVisualization(analysis: SemanticAnalysis) {
-		// Create 20x20 SOM grid visualization
-		const som = Array(20).fill(null).map((_, x) => 
-			Array(20).fill(null).map((_, y) => ({
-				x, y,
-				active: x === analysis.som_cluster.x && y === analysis.som_cluster.y,
-				intensity: Math.random() // Placeholder for actual weights
-			}))
-		);
-		return som;
-	}
+  	// SOM Visualization helpers
+  	function generateSOMVisualization(analysis: SemanticAnalysis) {
+  		// Create 20x20 SOM grid visualization
+  		const som = Array(20).fill(null).map((_, x) => 
+  			Array(20).fill(null).map((_, y) => ({
+  				x, y,
+  				active: x === analysis.som_cluster.x && y === analysis.som_cluster.y,
+  				intensity: Math.random() // Placeholder for actual weights
+  			}))
+  		);
+  		return som;
+  	}
 
-	// PageRank Graph visualization
-	function generatePageRankGraph(todos: IntelligentTodo[]) {
-		const nodes = todos.map(todo => ({
-			id: todo.id,
-			title: todo.title,
-			category: todo.category,
-			priority: todo.priority,
-			pagerank: todo.pagerank_score || 0,
-			x: Math.random() * 400,
-			y: Math.random() * 300
-		}));
-		
-		const edges = [];
-		// Create edges based on category similarity
-		for (let i = 0; i < nodes.length; i++) {
-			for (let j = i + 1; j < nodes.length; j++) {
-				if (nodes[i].category === nodes[j].category) {
-					edges.push({
-						from: nodes[i].id,
-						to: nodes[j].id,
-						weight: Math.random()
-					});
-				}
-			}
-		}
-		
-		return { nodes, edges };
-	}
+  	// PageRank Graph visualization
+  	function generatePageRankGraph(todos: IntelligentTodo[]) {
+  		const nodes = todos.map(todo => ({
+  			id: todo.id,
+  			title: todo.title,
+  			category: todo.category,
+  			priority: todo.priority,
+  			pagerank: todo.pagerank_score || 0,
+  			x: Math.random() * 400,
+  			y: Math.random() * 300
+  		}));
+  		const edges = [];
+  		// Create edges based on category similarity
+  		for (let i = 0; i < nodes.length; i++) {
+  			for (let j = i + 1; j < nodes.length; j++) {
+  				if (nodes[i].category === nodes[j].category) {
+  					edges.push({
+  						from: nodes[i].id,
+  						to: nodes[j].id,
+  						weight: Math.random()
+  					});
+  				}
+  			}
+  		}
+  		return { nodes, edges };
+  	}
 
-	// Real-time updates
-let updateInterval = $state<any;
-	
-	function startRealTimeUpdates() {
-		if (updateInterval) clearInterval(updateInterval);
-		
-		updateInterval >(setInterval(async () => {
-			await Promise.all([
-				fetchCacheStats(),
-				checkSystemStatus()
-			]));
-		}, 5000); // Update every 5 seconds
-	}
+  	// Real-time updates
+  let updateInterval = $state<any;
+  	function startRealTimeUpdates() {
+  		if (updateInterval) clearInterval(updateInterval);
+  		updateInterval >(setInterval(async () => {
+  			await Promise.all([
+  				fetchCacheStats(),
+  				checkSystemStatus()
+  			]));
+  		}, 5000); // Update every 5 seconds
+  	}
 
-	function stopRealTimeUpdates() {
-		if (updateInterval) {
-			clearInterval(updateInterval);
-			updateInterval = null;
-		}
-	}
+  	function stopRealTimeUpdates() {
+  		if (updateInterval) {
+  			clearInterval(updateInterval);
+  			updateInterval = null;
+  		}
+  	}
 
-	// Lifecycle
-	onMount(async () => {
-		await initializeWebGPU();
-		await checkSystemStatus();
-		await fetchCacheStats();
-		startRealTimeUpdates();
-		
-		return () => {
-			stopRealTimeUpdates();
-		};
-	});
+  	// Lifecycle
+  	onMount(async () => {
+  		await initializeWebGPU();
+  		await checkSystemStatus();
+  		await fetchCacheStats();
+  		startRealTimeUpdates();
+  		return () => {
+  			stopRealTimeUpdates();
+  		};
+  	});
 
-	// Reactive statements for automatic updates
-	// TODO: Convert to $derived: if ($todos.length > 0 && showPageRankGraph) {
-		dispatch('pagerank-updated', generatePageRankGraph($todos))
-	}
+  	// Reactive statements for automatic updates
+  	// TODO: Convert to $derived: if ($todos.length > 0 && showPageRankGraph) {
+  		dispatch('pagerank-updated', generatePageRankGraph($todos))
+  	}
 
-	// TODO: Convert to $derived: if ($semanticAnalysis && showSOMVisualization) {
-		dispatch('som-updated', generateSOMVisualization($semanticAnalysis))
-	}
+  	// TODO: Convert to $derived: if ($semanticAnalysis && showSOMVisualization) {
+  		dispatch('som-updated', generateSOMVisualization($semanticAnalysis))
+  	}
 </script>
 
 <!-- Enhanced Semantic Integration Dashboard -->

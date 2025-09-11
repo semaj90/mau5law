@@ -1,6 +1,5 @@
 <!-- Comprehensive CRUD Dashboard showing all entities working together -->
 <script lang="ts">
-</script>
   import { notifications } from "$lib/stores/notification";
   import {
     Activity,
@@ -85,8 +84,8 @@
       });
     } finally {
       refreshing = false;
-}
-}
+  }
+  }
   // Fetch functions for each entity
   async function fetchCases() {
     loading.cases = true;
@@ -97,13 +96,13 @@
       if (response.ok) {
         const data = await response.json();
         cases = data.cases || data;
-}
+  }
     } catch (error) {
       console.error("Error fetching cases:", error);
     } finally {
       loading.cases = false;
-}
-}
+  }
+  }
   async function fetchEvidence() {
     loading.evidence = true;
     try {
@@ -113,13 +112,13 @@
       if (response.ok) {
         const data = await response.json();
         evidence = data.evidence || data;
-}
+  }
     } catch (error) {
       console.error("Error fetching evidence:", error);
     } finally {
       loading.evidence = false;
-}
-}
+  }
+  }
   async function fetchReports() {
     loading.reports = true;
     try {
@@ -129,13 +128,13 @@
       if (response.ok) {
         const data = await response.json();
         reports = data.reports || data;
-}
+  }
     } catch (error) {
       console.error("Error fetching reports:", error);
     } finally {
       loading.reports = false;
-}
-}
+  }
+  }
   async function fetchCriminals() {
     loading.criminals = true;
     try {
@@ -145,13 +144,13 @@
       if (response.ok) {
         const data = await response.json();
         criminals = data.criminals || data;
-}
+  }
     } catch (error) {
       console.error("Error fetching criminals:", error);
     } finally {
       loading.criminals = false;
-}
-}
+  }
+  }
   async function fetchActivities() {
     loading.activities = true;
     try {
@@ -161,13 +160,13 @@
       if (response.ok) {
         const data = await response.json();
         activities = data.activities || data;
-}
+  }
     } catch (error) {
       console.error("Error fetching activities:", error);
     } finally {
       loading.activities = false;
-}
-}
+  }
+  }
   async function fetchUsers() {
     loading.users = true;
     try {
@@ -175,13 +174,13 @@
       if (response.ok) {
         const data = await response.json();
         users_list = data.users || data;
-}
+  }
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
       loading.users = false;
-}
-}
+  }
+  }
   // Calculate statistics
   function calculateStats() {
     stats.totalCases = cases.length;
@@ -198,16 +197,16 @@
       const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
       return created > dayAgo;
     }).length;
-}
+  }
   // Quick actions
   function createNew(entity: string) {
     // Navigate to create form for entity
     window.location.href = `/${entity}/create`;
-}
+  }
   function viewAll(entity: string) {
     // Navigate to full list view
     window.location.href = `/${entity}`;
-}
+  }
   // Search handlers
   function handleSearch(entity: string) {
     switch (entity) {
@@ -226,13 +225,13 @@
       case "activities":
         fetchActivities();
         break;
-}
-}
+  }
+  }
   // Format date helper
   function formatDate(dateString: string) {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString();
-}
+  }
   // Initialize
   onMount(() => {
     fetchAllData();

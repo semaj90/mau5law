@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import CommandMenu from "./CommandMenu.svelte";
   interface Props {
@@ -36,9 +35,9 @@
 
   let textarea: HTMLTextAreaElement;
   let commandMenu: CommandMenu;
-let showCommandMenu = $state(false);
-let commandMenuPosition = $state({ x: 0, y: 0 });
-let lastCursorPosition = $state(0);
+  let showCommandMenu = $state(false);
+  let commandMenuPosition = $state({ x: 0, y: 0 });
+  let lastCursorPosition = $state(0);
 
   function handleInput(e: Event) {
     const target = e.target as HTMLTextAreaElement;
@@ -50,9 +49,9 @@ let lastCursorPosition = $state(0);
 
     if (textBeforeCursor.endsWith(triggerChar)) {
       openCommandMenu();
-}
+  }
     onInput?.({ value, target });
-}
+  }
   function handleKeydown(e: KeyboardEvent) {
     // Don't interfere with command menu navigation
     if (
@@ -60,15 +59,15 @@ let lastCursorPosition = $state(0);
       ["ArrowUp", "ArrowDown", "Enter", "Escape"].includes(e.key)
     ) {
       return;
-}
+  }
     // Ctrl/Cmd + K to open command menu
     if ((e.ctrlKey || e.metaKey) && e.key === "k") {
       e.preventDefault();
       openCommandMenu();
       return;
-}
+  }
     onKeydown?.(e);
-}
+  }
   function openCommandMenu() {
     if (!textarea) return;
 
@@ -93,32 +92,32 @@ let lastCursorPosition = $state(0);
 
     showCommandMenu = true;
     commandMenu?.openCommandMenu();
-}
+  }
   function handleCommandInsert(text: string) {
     // The CommandMenu component handles text insertion
     showCommandMenu = false;
     textarea.focus();
     onCommandInsert?.({ text });
-}
+  }
   function handleBlur(e: FocusEvent) {
     // Don't close command menu immediately to allow clicking on it
     setTimeout(() => {
       if (!document.activeElement?.closest(".command-menu")) {
         showCommandMenu = false;
-}
+  }
     }, 150);
 
     onBlur?.(e);
-}
+  }
   function handleFocus(e: FocusEvent) {
     onFocus?.(e);
-}
+  }
   // Auto-resize textarea
   function autoResize() {
     if (textarea) {
       textarea.style.height = "auto";
       textarea.style.height = textarea.scrollHeight + "px";
-}}
+  }}
   // Watch for value changes to auto-resize
   $effect(() => {
     if (value !== undefined) {

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { writable, derived } from 'svelte/store';
@@ -49,26 +48,19 @@
           cases: result.data.cases,
           filters: result.data.filters
         }));
-        
         // Update URL params to reflect filter state
         const url = new URL($page.url);
         const filters = result.data.filters;
-        
         if (filters.search) url.searchParams.set('search', filters.search);
         else url.searchParams.delete('search');
-        
         if (filters.status !== 'all') url.searchParams.set('status', filters.status);
         else url.searchParams.delete('status');
-        
         if (filters.priority !== 'all') url.searchParams.set('priority', filters.priority);
         else url.searchParams.delete('priority');
-        
         if (filters.sort !== 'openedAt') url.searchParams.set('sort', filters.sort);
         else url.searchParams.delete('sort');
-        
         if (filters.order !== 'desc') url.searchParams.set('order', filters.order);
         else url.searchParams.delete('order');
-        
         goto(url.toString(), { replaceState: true, keepFocus: true, noScroll: true });
       } else {
         await update();
@@ -99,7 +91,6 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
-      
       if (response.ok) {
         // Refresh the layout data
         goto($page.url.pathname + $page.url.search, { invalidateAll: true });
@@ -118,12 +109,10 @@
       const formData = new FormData();
       formData.append('caseId', caseId);
       formData.append('status', status);
-      
       const response = await fetch('?/updateStatus', {
         method: 'POST',
         body: formData
       });
-      
       if (response.ok) {
         // Update the case in the store
         casesStore.update(store => ({

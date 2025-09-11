@@ -1,17 +1,12 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
-  
   export let score: number = 5; // Current attractiveness score (1-10)
   export let label: string = 'Attractiveness Rating';
   export let readOnly: boolean = false;
   export let showDescription: boolean = true;
   export let size: 'sm' | 'md' | 'lg' = 'md';
-  
   const dispatch = createEventDispatcher();
-  
   let hoveredScore: number | null = null;
-  
   const descriptions = {
     1: 'Very Low',
     2: 'Low', 
@@ -24,24 +19,20 @@
     9: 'Very High',
     10: 'Exceptional'
   };
-  
   function handleRatingClick(rating: number) {
     if (!readOnly) {
       score = rating;
       dispatch('change', { score });
     }
   }
-  
   function handleMouseEnter(rating: number) {
     if (!readOnly) {
       hoveredScore = rating;
     }
   }
-  
   function handleMouseLeave() {
     hoveredScore = null;
   }
-  
   // TODO: Convert to $derived: displayScore = hoveredScore !== null ? hoveredScore : score
   // TODO: Convert to $derived: sizeClasses = {
     sm: 'w-4 h-4',

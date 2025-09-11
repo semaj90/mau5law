@@ -3,7 +3,6 @@ Enhanced Evidence Upload Component for Prosecutors
 Features: MinIO storage, AI analysis, multi-file support, drag-drop
 -->
 <script lang="ts">
-</script>
   import type { Props } from "$lib/types/global";
   import {
     Card,
@@ -86,7 +85,6 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   const handleDrop = (e: DragEvent) => {
     e.preventDefault();
     dragActive = false;
-    
     const files = Array.from(e.dataTransfer?.files || []);
     addFiles(files);
   };
@@ -106,10 +104,8 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         type.endsWith('/*') ? file.type.startsWith(type.replace('/*', '/')) : 
         file.type === type
       );
-      
       // Check if not already selected
       const notDuplicate = !selectedFiles.some(f => f.name === file.name && f.size === file.size);
-      
       return isAllowed && notDuplicate;
     });
 
@@ -147,7 +143,6 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         // Process files individually
         for (let i = 0; i < selectedFiles.length; i++) {
           const file = selectedFiles[i];
-          
           const formData = new FormData();
           formData.append('file', file);
           formData.append('caseId', caseId);
@@ -158,7 +153,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           formData.append('collectedBy', collectedBy);
           formData.append('location', location);
           formData.append('isAdmissible', isAdmissible.toString());
-let response = $state<Response;
+  let response = $state<Response;
         try {
           response >(await fetch('/api/evidence/upload', {
             method: 'POST',
@@ -174,7 +169,6 @@ let response = $state<Response;
 
           const result = await response.json();
           uploadResults.push({ file: file.name, ...result });
-          
           uploadProgress = ((i + 1) / selectedFiles.length) * 100;
         }
       }
@@ -184,9 +178,7 @@ let response = $state<Response;
       evidenceTitle = '';
       evidenceDescription = '';
       tags = '';
-      
       onUploadComplete?.(uploadResults);
-      
     } catch (error) {
       console.error('Upload failed:', error);
       alert('Upload failed. Please try again.');

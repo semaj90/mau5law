@@ -1,6 +1,5 @@
 <!-- YoRHa Detective Command Center Component -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -151,13 +150,10 @@
 
       if (response.ok) {
         const newCase = await response.json();
-        
         // Add to active cases
         activeCases = [newCase, ...activeCases];
-        
         // Update system data
         systemData = { ...systemData, activeCases: systemData.activeCases + 1 };
-        
         showNotification('Case successfully saved!', 'success');
         closeNewCaseModal();
       } else {

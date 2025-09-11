@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { User } from '$lib/types';
   import { browser } from "$app/environment";
   import { Tooltip } from "$lib/components/ui";
@@ -67,11 +66,11 @@
     "status": "active|closed|pending",
     "priority": "low|medium|high|urgent",
     "created_at": "2024-01-01T00:00:00Z"
-}
-]`,
+  }
+  ]`,
       csv: `title,description,status,priority
-"Fraud Investigation","Corporate fraud case","active","high"
-"Theft Case","Retail theft investigation","pending","medium"`,
+  "Fraud Investigation","Corporate fraud case","active","high"
+  "Theft Case","Retail theft investigation","pending","medium"`,
     },
     evidence: {
       json: `[
@@ -81,11 +80,11 @@
     "description": "Evidence description",
     "file_path": "optional-file-path",
     "metadata": {"key": "value"}
-}
-]`,
+  }
+  ]`,
       csv: `case_id,type,description,file_path
-"case-uuid","document","Contract document","/files/contract.pdf"
-"case-uuid","photo","Crime scene photo","/files/scene.jpg"`,
+  "case-uuid","document","Contract document","/files/contract.pdf"
+  "case-uuid","photo","Crime scene photo","/files/scene.jpg"`,
     },
   };
 
@@ -101,20 +100,20 @@
         document.removeEventListener("drop", handleDrop);
         document.removeEventListener("dragleave", handleDragLeave);
       };
-}
+  }
     return () => {}; // Return empty cleanup function if not in browser
   });
 
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
-}
+  }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     if (!e.relatedTarget) {
       dragActive = false;
-}
-}
+  }
+  }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
@@ -122,15 +121,15 @@
     const files = e.dataTransfer?.files;
     if (files && files.length > 0) {
       handleFileSelect(files[0]);
-}
-}
+  }
+  }
   function handleFileInput(e: Event) {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0];
     if (file) {
       handleFileSelect(file);
-}
-}
+  }
+  }
   async function handleFileSelect(file: File) {
     importFile = file;
     importResults = null;
@@ -155,7 +154,7 @@
       });
       importFile = null;
       return;
-}
+  }
     // Generate file preview
     try {
       const content = await file.text();
@@ -184,7 +183,7 @@
           data: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
           raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
         };
-}
+  }
     } catch (error) {
       notifications.add({
         type: "error",
@@ -193,8 +192,8 @@
       });
       importFile = null;
       filePreview = null;
-}
-}
+  }
+  }
   async function performImport() {
     if (!importFile) return;
 
@@ -223,7 +222,7 @@
         });
       } else {
         throw new Error(result.error || "Import failed");
-}
+  }
     } catch (error) {
       console.error("Import error:", error);
       notifications.add({
@@ -233,14 +232,14 @@
       });
     } finally {
       isImporting = false;
-}
-}
+  }
+  }
   function clearImport() {
     importFile = null;
     filePreview = null;
     importResults = null;
     if (fileInput) fileInput.value = "";
-}
+  }
   function downloadExampleTemplate(type: string, format: string) {
     const data = exampleFormats[type as keyof typeof exampleFormats];
     if (!data) return;
@@ -257,7 +256,7 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-}
+  }
 </script>
 
 <svelte:head>

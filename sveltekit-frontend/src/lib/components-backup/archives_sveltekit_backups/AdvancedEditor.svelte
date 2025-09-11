@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import Editor from '@toast-ui/editor';
   import '@toast-ui/editor/dist/toastui-editor.css';
@@ -10,7 +9,6 @@
   export let content: ContentNode[] = [];
   export let height: string = '400px';
   export let placeholder: string = 'Start writing...';
-  
   let editorElement: HTMLElement;
   let editor: Editor;
   let isInitialized = false;
@@ -27,10 +25,8 @@
         if (node.fontSize) text = `<span style="font-size: ${node.fontSize}">${text}</span>`;
         return text;
       }
-      
       if (node.children) {
         const childText = node.children.map(nodeToMd).join('');
-        
         switch (node.type) {
           case 'paragraph':
             return childText + '\n\n';
@@ -55,7 +51,6 @@
             return childText;
         }
       }
-      
       return '';
     };
 
@@ -199,7 +194,6 @@
   // TODO: Convert to $derived: if (editor && isInitialized && content) {
     const currentMarkdown = editor.getMarkdown()
     const newMarkdown = contentToMarkdown(content);
-    
     if (currentMarkdown !== newMarkdown) {
       editor.setMarkdown(newMarkdown);
     }
@@ -249,12 +243,10 @@
   // Formatting methods
   export function toggleMark(mark: string) {
     if (!editor) return;
-    
     const selectedText = editor.getSelectedText();
     if (!selectedText) return;
 
     let formattedText = selectedText;
-    
     switch (mark) {
       case 'bold':
         formattedText = `**${selectedText}**`;
@@ -272,7 +264,6 @@
 
   export function addMark(mark: string, value: string) {
     if (!editor) return;
-    
     const selectedText = editor.getSelectedText();
     if (!selectedText) return;
 

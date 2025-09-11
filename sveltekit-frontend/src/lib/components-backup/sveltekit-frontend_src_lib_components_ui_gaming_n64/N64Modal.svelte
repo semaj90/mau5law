@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
 
   export let id: string | undefined = undefined;
@@ -9,20 +8,20 @@
   const dispatch = createEventDispatcher();
 
   function close() {
-	open = false;
-	dispatch('close');
+  	open = false;
+  	dispatch('close');
   }
 
   function handleKeydown(e: KeyboardEvent) {
-	if (e.key === 'Escape') close();
+  	if (e.key === 'Escape') close();
   }
 
   onMount(() => {
-	document.addEventListener('keydown', handleKeydown);
+  	document.addEventListener('keydown', handleKeydown);
   });
 
   onDestroy(() => {
-	document.removeEventListener('keydown', handleKeydown);
+  	document.removeEventListener('keydown', handleKeydown);
   });
 </script>
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
 
   export let id: string | undefined = undefined;
@@ -12,13 +11,13 @@
   const dispatch = createEventDispatcher();
 
   function handleChange(e: Event) {
-	value = (e.target as HTMLSelectElement).value;
-	dispatch('change', { value });
+  	value = (e.target as HTMLSelectElement).value;
+  	dispatch('change', { value });
   }
 
   function handleInput(e: Event) {
-	value = (e.target as HTMLSelectElement).value;
-	dispatch('input', { value });
+  	value = (e.target as HTMLSelectElement).value;
+  	dispatch('input', { value });
   }
 </script>
 

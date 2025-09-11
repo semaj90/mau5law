@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createTooltip, melt } from "@melt-ui/svelte";
   import {
     Download,

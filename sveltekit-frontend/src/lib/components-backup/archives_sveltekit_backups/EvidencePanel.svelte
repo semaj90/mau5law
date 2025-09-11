@@ -1,10 +1,8 @@
 <script lang="ts">
-</script>
   import type { Evidence } from "$lib/data/types";
   import { createEventDispatcher, onMount } from 'svelte';
   import { writable } from 'svelte/store';
 
-  
   export let caseId: string;
   export let onEvidenceDrop: (evidence: Evidence) => void = () => {};
 

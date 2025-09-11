@@ -1,17 +1,16 @@
 <script lang="ts">
-</script>
-	import { Command } from "bits-ui";
-	import {
-		ContactIcon,
-		DocsIcon,
-		FeedbackIcon,
-		PlusIcon,
-		ProjectsIcon,
-		TeamsIcon,
-	} from "./icons/index.js";
-	import Item from "./item.svelte";
+  	import { Command } from "bits-ui";
+  	import {
+  		ContactIcon,
+  		DocsIcon,
+  		FeedbackIcon,
+  		PlusIcon,
+  		ProjectsIcon,
+  		TeamsIcon,
+  	} from "./icons/index.js";
+  	import Item from "./item.svelte";
 
-	let { searchProjects }: { searchProjects: () => void } = $props();
+  	let { searchProjects }: { searchProjects: () => void } = $props();
 </script>
 
 <Command.Group>

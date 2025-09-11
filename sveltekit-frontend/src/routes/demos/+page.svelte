@@ -1,6 +1,5 @@
 <!-- YoRHa Demos Single Page App with ScrollArea -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/bitsbutton.svelte';
@@ -39,7 +38,7 @@
   // Svelte 5 state management
   let selectedDemo = $state('overview');
   let isLoading = $state(false);
-let scrollElement = $state<HTMLElement;
+  let scrollElement = $state<HTMLElement;
 
   // All demo routes organized by category
   const demoCategories >([

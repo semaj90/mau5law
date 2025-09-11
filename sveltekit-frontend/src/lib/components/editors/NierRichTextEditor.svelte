@@ -1,301 +1,300 @@
 <!-- NieR-themed Rich Text Editor for Legal Investigation Notes -->
 <script lang="ts">
-</script>
-	import { onMount, onDestroy } from 'svelte';
-	import {
+  	import { onMount, onDestroy } from 'svelte';
+  	import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-	import Button from '$lib/components/ui/button/Button.svelte';
-	// Badge replaced with span - not available in enhanced-bits
-	import {
-		Bold, Italic, Underline, List, ListOrdered,
-		Link2, Image, Quote, Code, Save,
-		FileText, Zap, Eye, Search
-	} from 'lucide-svelte';
+  	import Button from '$lib/components/ui/button/Button.svelte';
+  	// Badge replaced with span - not available in enhanced-bits
+  	import {
+  		Bold, Italic, Underline, List, ListOrdered,
+  		Link2, Image, Quote, Code, Save,
+  		FileText, Zap, Eye, Search
+  	} from 'lucide-svelte';
 
-	// Svelte 5 state management
-	let editorContainer: HTMLDivElement;
-	let editorContent = $state('');
-	let isEditing = $state(false);
-	let wordCount = $state(0);
-	let characterCount = $state(0);
+  	// Svelte 5 state management
+  	let editorContainer: HTMLDivElement;
+  	let editorContent = $state('');
+  	let isEditing = $state(false);
+  	let wordCount = $state(0);
+  	let characterCount = $state(0);
 
-	let editorState = $state({
-		isBold: false,
-		isItalic: false,
-		isUnderlined: false,
-		currentFormat: 'paragraph'
-	});
+  	let editorState = $state({
+  		isBold: false,
+  		isItalic: false,
+  		isUnderlined: false,
+  		currentFormat: 'paragraph'
+  	});
 
-	let nieRTheme = $state({
-		mode: 'android', // 'android' | 'yorha' | 'machine'
-		glitchEnabled: true,
-		scanlines: true,
-		typingSound: true
-	});
+  	let nieRTheme = $state({
+  		mode: 'android', // 'android' | 'yorha' | 'machine'
+  		glitchEnabled: true,
+  		scanlines: true,
+  		typingSound: true
+  	});
 
-	// Component props
-	let {
-		value = '',
-		placeholder = 'Begin investigation notes...',
-		caseId = '',
-		readonly = false,
-		autosave = true
-	} = $props<{
-		value?: string;
-		placeholder?: string;
-		caseId?: string;
-		readonly?: boolean;
-		autosave?: boolean;
-	}>();
+  	// Component props
+  	let {
+  		value = '',
+  		placeholder = 'Begin investigation notes...',
+  		caseId = '',
+  		readonly = false,
+  		autosave = true
+  	} = $props<{
+  		value?: string;
+  		placeholder?: string;
+  		caseId?: string;
+  		readonly?: boolean;
+  		autosave?: boolean;
+  	}>();
 
-	// Initialize editor
-	onMount(() => {
-		initializeNierEditor();
-		setupAutoSave();
-		if (value) {
-			editorContent = value;
-			updateStats();
-		}
-	});
+  	// Initialize editor
+  	onMount(() => {
+  		initializeNierEditor();
+  		setupAutoSave();
+  		if (value) {
+  			editorContent = value;
+  			updateStats();
+  		}
+  	});
 
-	function initializeNierEditor() {
-		console.log('🤖 Initializing NieR-themed Rich Text Editor');
+  	function initializeNierEditor() {
+  		console.log('🤖 Initializing NieR-themed Rich Text Editor');
 
-		// Set up editor with contenteditable
-		if (editorContainer) {
-			editorContainer.contentEditable = readonly ? 'false' : 'true';
-			editorContainer.innerHTML = editorContent || `<p>${placeholder}</p>`;
+  		// Set up editor with contenteditable
+  		if (editorContainer) {
+  			editorContainer.contentEditable = readonly ? 'false' : 'true';
+  			editorContainer.innerHTML = editorContent || `<p>${placeholder}</p>`;
 
-			// Add event listeners
-			editorContainer.addEventListener('input', handleInput);
-			editorContainer.addEventListener('keydown', handleKeyDown);
-			editorContainer.addEventListener('focus', handleFocus);
-			editorContainer.addEventListener('blur', handleBlur);
-		}
+  			// Add event listeners
+  			editorContainer.addEventListener('input', handleInput);
+  			editorContainer.addEventListener('keydown', handleKeyDown);
+  			editorContainer.addEventListener('focus', handleFocus);
+  			editorContainer.addEventListener('blur', handleBlur);
+  		}
 
-		// Initialize NieR visual effects
-		applyNierTheme();
-	}
+  		// Initialize NieR visual effects
+  		applyNierTheme();
+  	}
 
-	function applyNierTheme() {
-		console.log(`🎨 Applying NieR theme: ${nieRTheme.mode}`);
+  	function applyNierTheme() {
+  		console.log(`🎨 Applying NieR theme: ${nieRTheme.mode}`);
 
-		if (nieRTheme.glitchEnabled) {
-			startGlitchEffect();
-		}
+  		if (nieRTheme.glitchEnabled) {
+  			startGlitchEffect();
+  		}
 
-		if (nieRTheme.scanlines) {
-			enableScanlines();
-		}
-	}
+  		if (nieRTheme.scanlines) {
+  			enableScanlines();
+  		}
+  	}
 
-	function startGlitchEffect() {
-		setInterval(() => {
-			if (Math.random() < 0.1 && editorContainer) { // 10% chance every interval
-				editorContainer.classList.add('glitch-effect');
-				setTimeout(() => {
-					editorContainer?.classList.remove('glitch-effect');
-				}, 100);
-			}
-		}, 3000);
-	}
+  	function startGlitchEffect() {
+  		setInterval(() => {
+  			if (Math.random() < 0.1 && editorContainer) { // 10% chance every interval
+  				editorContainer.classList.add('glitch-effect');
+  				setTimeout(() => {
+  					editorContainer?.classList.remove('glitch-effect');
+  				}, 100);
+  			}
+  		}, 3000);
+  	}
 
-	function enableScanlines() {
-		// Scanlines are handled via CSS
-	}
+  	function enableScanlines() {
+  		// Scanlines are handled via CSS
+  	}
 
-	function handleInput(event: Event) {
-		const target = event.target as HTMLElement;
-		editorContent = target.innerHTML;
-		updateStats();
+  	function handleInput(event: Event) {
+  		const target = event.target as HTMLElement;
+  		editorContent = target.innerHTML;
+  		updateStats();
 
-		if (nieRTheme.typingSound) {
-			playTypingSound();
-		}
-	}
+  		if (nieRTheme.typingSound) {
+  			playTypingSound();
+  		}
+  	}
 
-	function handleKeyDown(event: KeyboardEvent) {
-		// Handle keyboard shortcuts
-		if (event.ctrlKey || event.metaKey) {
-			switch (event.key) {
-				case 'b':
-					event.preventDefault();
-					toggleBold();
-					break;
-				case 'i':
-					event.preventDefault();
-					toggleItalic();
-					break;
-				case 'u':
-					event.preventDefault();
-					toggleUnderline();
-					break;
-				case 's':
-					event.preventDefault();
-					saveContent();
-					break;
-			}
-		}
-	}
+  	function handleKeyDown(event: KeyboardEvent) {
+  		// Handle keyboard shortcuts
+  		if (event.ctrlKey || event.metaKey) {
+  			switch (event.key) {
+  				case 'b':
+  					event.preventDefault();
+  					toggleBold();
+  					break;
+  				case 'i':
+  					event.preventDefault();
+  					toggleItalic();
+  					break;
+  				case 'u':
+  					event.preventDefault();
+  					toggleUnderline();
+  					break;
+  				case 's':
+  					event.preventDefault();
+  					saveContent();
+  					break;
+  			}
+  		}
+  	}
 
-	function handleFocus() {
-		isEditing = true;
-	}
+  	function handleFocus() {
+  		isEditing = true;
+  	}
 
-	function handleBlur() {
-		isEditing = false;
-		if (autosave) {
-			saveContent();
-		}
-	}
+  	function handleBlur() {
+  		isEditing = false;
+  		if (autosave) {
+  			saveContent();
+  		}
+  	}
 
-	function updateStats() {
-		const textContent = editorContainer?.textContent || '';
-		characterCount = textContent.length;
-		wordCount = textContent.trim() ? textContent.trim().split(/\s+/).length : 0;
-	}
+  	function updateStats() {
+  		const textContent = editorContainer?.textContent || '';
+  		characterCount = textContent.length;
+  		wordCount = textContent.trim() ? textContent.trim().split(/\s+/).length : 0;
+  	}
 
-	function playTypingSound() {
-		// Simulate NieR typing sound effect
-		if (typeof window !== 'undefined' && 'AudioContext' in window) {
-			try {
-				const audioContext = new AudioContext();
-				const oscillator = audioContext.createOscillator();
-				const gainNode = audioContext.createGain();
+  	function playTypingSound() {
+  		// Simulate NieR typing sound effect
+  		if (typeof window !== 'undefined' && 'AudioContext' in window) {
+  			try {
+  				const audioContext = new AudioContext();
+  				const oscillator = audioContext.createOscillator();
+  				const gainNode = audioContext.createGain();
 
-				oscillator.connect(gainNode);
-				gainNode.connect(audioContext.destination);
+  				oscillator.connect(gainNode);
+  				gainNode.connect(audioContext.destination);
 
-				oscillator.frequency.setValueAtTime(800 + Math.random() * 400, audioContext.currentTime);
-				oscillator.type = 'square';
+  				oscillator.frequency.setValueAtTime(800 + Math.random() * 400, audioContext.currentTime);
+  				oscillator.type = 'square';
 
-				gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-				gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+  				gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+  				gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
 
-				oscillator.start();
-				oscillator.stop(audioContext.currentTime + 0.05);
-			} catch (error) {
-				// Silently fail if audio context is not available
-			}
-		}
-	}
+  				oscillator.start();
+  				oscillator.stop(audioContext.currentTime + 0.05);
+  			} catch (error) {
+  				// Silently fail if audio context is not available
+  			}
+  		}
+  	}
 
-	function executeCommand(command: string, value?: string) {
-		document.execCommand(command, false, value);
-		updateEditorState();
-	}
+  	function executeCommand(command: string, value?: string) {
+  		document.execCommand(command, false, value);
+  		updateEditorState();
+  	}
 
-	function toggleBold() {
-		executeCommand('bold');
-	}
+  	function toggleBold() {
+  		executeCommand('bold');
+  	}
 
-	function toggleItalic() {
-		executeCommand('italic');
-	}
+  	function toggleItalic() {
+  		executeCommand('italic');
+  	}
 
-	function toggleUnderline() {
-		executeCommand('underline');
-	}
+  	function toggleUnderline() {
+  		executeCommand('underline');
+  	}
 
-	function insertList() {
-		executeCommand('insertUnorderedList');
-	}
+  	function insertList() {
+  		executeCommand('insertUnorderedList');
+  	}
 
-	function insertOrderedList() {
-		executeCommand('insertOrderedList');
-	}
+  	function insertOrderedList() {
+  		executeCommand('insertOrderedList');
+  	}
 
-	function insertLink() {
-		const url = prompt('Enter URL:');
-		if (url) {
-			executeCommand('createLink', url);
-		}
-	}
+  	function insertLink() {
+  		const url = prompt('Enter URL:');
+  		if (url) {
+  			executeCommand('createLink', url);
+  		}
+  	}
 
-	function insertQuote() {
-		executeCommand('formatBlock', 'blockquote');
-	}
+  	function insertQuote() {
+  		executeCommand('formatBlock', 'blockquote');
+  	}
 
-	function insertCode() {
-		executeCommand('formatBlock', 'pre');
-	}
+  	function insertCode() {
+  		executeCommand('formatBlock', 'pre');
+  	}
 
-	function updateEditorState() {
-		editorState.isBold = document.queryCommandState('bold');
-		editorState.isItalic = document.queryCommandState('italic');
-		editorState.isUnderlined = document.queryCommandState('underline');
-	}
+  	function updateEditorState() {
+  		editorState.isBold = document.queryCommandState('bold');
+  		editorState.isItalic = document.queryCommandState('italic');
+  		editorState.isUnderlined = document.queryCommandState('underline');
+  	}
 
-	async function saveContent() {
-		console.log('💾 Saving investigation notes...');
+  	async function saveContent() {
+  		console.log('💾 Saving investigation notes...');
 
-		try {
-			const response = await fetch('/api/legal/investigation-notes', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					caseId,
-					content: editorContent,
-					wordCount,
-					characterCount,
-					timestamp: new Date().toISOString()
-				})
-			});
+  		try {
+  			const response = await fetch('/api/legal/investigation-notes', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					caseId,
+  					content: editorContent,
+  					wordCount,
+  					characterCount,
+  					timestamp: new Date().toISOString()
+  				})
+  			});
 
-			if (response.ok) {
-				console.log('✅ Investigation notes saved successfully');
-				// Show success indicator
-				showSaveIndicator('success');
-			} else {
-				console.error('❌ Failed to save investigation notes');
-				showSaveIndicator('error');
-			}
-		} catch (error) {
-			console.error('❌ Save error:', error);
-			showSaveIndicator('error');
-		}
-	}
+  			if (response.ok) {
+  				console.log('✅ Investigation notes saved successfully');
+  				// Show success indicator
+  				showSaveIndicator('success');
+  			} else {
+  				console.error('❌ Failed to save investigation notes');
+  				showSaveIndicator('error');
+  			}
+  		} catch (error) {
+  			console.error('❌ Save error:', error);
+  			showSaveIndicator('error');
+  		}
+  	}
 
-	function showSaveIndicator(status: 'success' | 'error') {
-		// Create a temporary save indicator
-		const indicator = document.createElement('div');
-		indicator.className = `save-indicator save-${status}`;
-		indicator.textContent = status === 'success' ? 'SAVED' : 'ERROR';
-		document.body.appendChild(indicator);
+  	function showSaveIndicator(status: 'success' | 'error') {
+  		// Create a temporary save indicator
+  		const indicator = document.createElement('div');
+  		indicator.className = `save-indicator save-${status}`;
+  		indicator.textContent = status === 'success' ? 'SAVED' : 'ERROR';
+  		document.body.appendChild(indicator);
 
-		setTimeout(() => {
-			document.body.removeChild(indicator);
-		}, 2000);
-	}
+  		setTimeout(() => {
+  			document.body.removeChild(indicator);
+  		}, 2000);
+  	}
 
-	function setupAutoSave() {
-		if (autosave) {
-			setInterval(() => {
-				if (editorContent && !readonly) {
-					saveContent();
-				}
-			}, 30000); // Auto-save every 30 seconds
-		}
-	}
+  	function setupAutoSave() {
+  		if (autosave) {
+  			setInterval(() => {
+  				if (editorContent && !readonly) {
+  					saveContent();
+  				}
+  			}, 30000); // Auto-save every 30 seconds
+  		}
+  	}
 
-	function switchTheme(mode: 'android' | 'yorha' | 'machine') {
-		nieRTheme.mode = mode;
-		applyNierTheme();
-		console.log(`🎨 Switched to ${mode} theme`);
-	}
+  	function switchTheme(mode: 'android' | 'yorha' | 'machine') {
+  		nieRTheme.mode = mode;
+  		applyNierTheme();
+  		console.log(`🎨 Switched to ${mode} theme`);
+  	}
 
-	onDestroy(() => {
-		if (editorContainer) {
-			editorContainer.removeEventListener('input', handleInput);
-			editorContainer.removeEventListener('keydown', handleKeyDown);
-			editorContainer.removeEventListener('focus', handleFocus);
-			editorContainer.removeEventListener('blur', handleBlur);
-		}
-	});
+  	onDestroy(() => {
+  		if (editorContainer) {
+  			editorContainer.removeEventListener('input', handleInput);
+  			editorContainer.removeEventListener('keydown', handleKeyDown);
+  			editorContainer.removeEventListener('focus', handleFocus);
+  			editorContainer.removeEventListener('blur', handleBlur);
+  		}
+  	});
 </script>
 
 <!-- NieR Rich Text Editor Interface -->

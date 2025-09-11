@@ -3,7 +3,6 @@ Unified Gallery - Main Gallery Route
 Displays all media: evidence, generated images, documents, uploads
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
@@ -71,7 +70,7 @@ Displays all media: evidence, generated images, documents, uploads
 
     // Sort items
     items.sort((a, b) => {
-let comparison = $state(0);
+  let comparison = $state(0);
 
       switch (sortBy) {
         case 'date':

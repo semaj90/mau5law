@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     showInline?: any;
     autoHide?: any;
@@ -50,9 +49,9 @@
         setTimeout(() => {
           if (currentError === error) {
             clearError();
-}
+  }
         }, 5000);
-}
+  }
     });
 
     return unsubscribe;
@@ -63,7 +62,7 @@
     currentError = null;
     showDetails = false;
     retryInProgress = false;
-}
+  }
   async function retryAction() {
     if (!currentError?.canRetry) return;
 
@@ -83,15 +82,15 @@
       errorHandler.handle(error, { context: "retry_failed" });
     } finally {
       retryInProgress = false;
-}}
+  }}
   function copyErrorDetails() {
     if (!currentError) return;
 
     const errorText = `Error: ${currentError.title}
-Message: ${currentError.message}
-Suggestion: ${currentError.suggestion || "None"}
-Severity: ${currentError.severity}
-Timestamp: ${new Date().toISOString()}`;
+  Message: ${currentError.message}
+  Suggestion: ${currentError.suggestion || "None"}
+  Severity: ${currentError.severity}
+  Timestamp: ${new Date().toISOString()}`;
 
     navigator.clipboard
       .writeText(errorText)
@@ -117,7 +116,7 @@ Timestamp: ${new Date().toISOString()}`;
           message: "Error details copied to clipboard.",
         });
       });
-}
+  }
   function getIcon(severity: string) {
     switch (severity) {
       case "critical":
@@ -128,7 +127,7 @@ Timestamp: ${new Date().toISOString()}`;
       case "info":
       default:
         return Info;
-}}
+  }}
   function getAlertClass(severity: string) {
     switch (severity) {
       case "critical":
@@ -140,7 +139,7 @@ Timestamp: ${new Date().toISOString()}`;
       case "info":
       default:
         return "alert-info border-info/20 bg-info/5";
-}}
+  }}
   function getButtonClass(severity: string) {
     switch (severity) {
       case "critical":
@@ -151,7 +150,7 @@ Timestamp: ${new Date().toISOString()}`;
       case "info":
       default:
         return "btn-info";
-}}
+  }}
   // Report error to support (placeholder)
   function reportError() {
     if (!currentError) return;
@@ -164,7 +163,7 @@ Timestamp: ${new Date().toISOString()}`;
       title: "Error Reported",
       message: "Thank you for reporting this issue. Our team will investigate.",
     });
-}
+  }
 </script>
 
 {#if currentError}

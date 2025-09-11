@@ -1,146 +1,141 @@
 <script lang="ts">
-</script>
-	import { createEventDispatcher } from 'svelte';
-	import { toolbarStore } from "../stores/canvas";
-	
-	import { 
-		Bold, 
-		Italic, 
-		Underline, 
-		Strikethrough, 
-		AlignLeft, 
-		AlignCenter, 
-		AlignRight, 
-		Palette, 
-		MousePointer2, 
-		Hand, 
-		Square, 
-		Circle, 
-		RotateCcw, 
-		RotateCw, 
-		Copy, 
-		Trash2, 
-		ZoomIn, 
-		ZoomOut 
-	} from 'lucide-svelte';
+  	import { createEventDispatcher } from 'svelte';
+  	import { toolbarStore } from "../stores/canvas";
+  	import { 
+  		Bold, 
+  		Italic, 
+  		Underline, 
+  		Strikethrough, 
+  		AlignLeft, 
+  		AlignCenter, 
+  		AlignRight, 
+  		Palette, 
+  		MousePointer2, 
+  		Hand, 
+  		Square, 
+  		Circle, 
+  		RotateCcw, 
+  		RotateCw, 
+  		Copy, 
+  		Trash2, 
+  		ZoomIn, 
+  		ZoomOut 
+  	} from 'lucide-svelte';
 
-	const dispatch = createEventDispatcher();
+  	const dispatch = createEventDispatcher();
 
-	// Tool categories
-	const tools = [
-		{ id: 'select', icon: MousePointer2, label: 'Select', category: 'selection' },
-		{ id: 'pan', icon: Hand, label: 'Pan', category: 'navigation' },
-		{ id: 'text', icon: Bold, label: 'Text', category: 'content' },
-		{ id: 'rectangle', icon: Square, label: 'Rectangle', category: 'shapes' },
-		{ id: 'circle', icon: Circle, label: 'Circle', category: 'shapes' },
-		{ id: 'draw', icon: Palette, label: 'Draw', category: 'drawing' }
-	];
+  	// Tool categories
+  	const tools = [
+  		{ id: 'select', icon: MousePointer2, label: 'Select', category: 'selection' },
+  		{ id: 'pan', icon: Hand, label: 'Pan', category: 'navigation' },
+  		{ id: 'text', icon: Bold, label: 'Text', category: 'content' },
+  		{ id: 'rectangle', icon: Square, label: 'Rectangle', category: 'shapes' },
+  		{ id: 'circle', icon: Circle, label: 'Circle', category: 'shapes' },
+  		{ id: 'draw', icon: Palette, label: 'Draw', category: 'drawing' }
+  	];
 
-	const formatActions = [
-		{ id: 'bold', icon: Bold, label: 'Bold' },
-		{ id: 'italic', icon: Italic, label: 'Italic' },
-		{ id: 'underline', label: 'Underline' },
-		{ id: 'strikethrough', icon: Strikethrough, label: 'Strikethrough' }
-	];
+  	const formatActions = [
+  		{ id: 'bold', icon: Bold, label: 'Bold' },
+  		{ id: 'italic', icon: Italic, label: 'Italic' },
+  		{ id: 'underline', label: 'Underline' },
+  		{ id: 'strikethrough', icon: Strikethrough, label: 'Strikethrough' }
+  	];
 
-	const alignActions = [
-		{ id: 'left', icon: AlignLeft, label: 'Align Left' },
-		{ id: 'center', icon: AlignCenter, label: 'Align Center' },
-		{ id: 'right', icon: AlignRight, label: 'Align Right' }
-	];
+  	const alignActions = [
+  		{ id: 'left', icon: AlignLeft, label: 'Align Left' },
+  		{ id: 'center', icon: AlignCenter, label: 'Align Center' },
+  		{ id: 'right', icon: AlignRight, label: 'Align Right' }
+  	];
 
-	// Reactive toolbar state
-	// TODO: Convert to $derived: selectedTool = $toolbarStore.selectedTool
-	// TODO: Convert to $derived: formatting = $toolbarStore.formatting
-	// TODO: Convert to $derived: drawing = $toolbarStore.drawing
-	// TODO: Convert to $derived: canUndo = $toolbarStore.canUndo
-	// TODO: Convert to $derived: canRedo = $toolbarStore.canRedo
-	// TODO: Convert to $derived: zoom = $toolbarStore.zoom
+  	// Reactive toolbar state
+  	// TODO: Convert to $derived: selectedTool = $toolbarStore.selectedTool
+  	// TODO: Convert to $derived: formatting = $toolbarStore.formatting
+  	// TODO: Convert to $derived: drawing = $toolbarStore.drawing
+  	// TODO: Convert to $derived: canUndo = $toolbarStore.canUndo
+  	// TODO: Convert to $derived: canRedo = $toolbarStore.canRedo
+  	// TODO: Convert to $derived: zoom = $toolbarStore.zoom
 
-	function selectTool(toolId: string) {
-		toolbarStore.update(state => ({
-			...state,
-			selectedTool: toolId
-		}));
-		dispatch('toolSelected', { tool: toolId });
-	}
+  	function selectTool(toolId: string) {
+  		toolbarStore.update(state => ({
+  			...state,
+  			selectedTool: toolId
+  		}));
+  		dispatch('toolSelected', { tool: toolId });
+  	}
 
-	function toggleFormatting(formatType: string) {
-		toolbarStore.update(state => ({
-			...state,
-			formatting: {
-				...state.formatting,
-				[formatType]: !(state.formatting as any)[formatType]
-			}
-		}));
-		dispatch('formatToggled', { type: formatType, value: !(formatting as any)[formatType] });
-	}
+  	function toggleFormatting(formatType: string) {
+  		toolbarStore.update(state => ({
+  			...state,
+  			formatting: {
+  				...state.formatting,
+  				[formatType]: !(state.formatting as any)[formatType]
+  			}
+  		}));
+  		dispatch('formatToggled', { type: formatType, value: !(formatting as any)[formatType] });
+  	}
 
-	function setAlignment(alignment: string) {
-		toolbarStore.update(state => ({
-			...state,
-			formatting: {
-				...state.formatting,
-				textAlign: alignment
-			}
-		}));
-		dispatch('alignmentChanged', { alignment });
-	}
+  	function setAlignment(alignment: string) {
+  		toolbarStore.update(state => ({
+  			...state,
+  			formatting: {
+  				...state.formatting,
+  				textAlign: alignment
+  			}
+  		}));
+  		dispatch('alignmentChanged', { alignment });
+  	}
 
-	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
-		const target = event.target as HTMLInputElement;
-		const color = target.value;
-		
-		toolbarStore.update(state => ({
-			...state,
-			formatting: {
-				...state.formatting,
-				[type]: color
-			}
-		}));
-		dispatch('colorChanged', { type, color });
-	}
+  	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
+  		const target = event.target as HTMLInputElement;
+  		const color = target.value;
+  		toolbarStore.update(state => ({
+  			...state,
+  			formatting: {
+  				...state.formatting,
+  				[type]: color
+  			}
+  		}));
+  		dispatch('colorChanged', { type, color });
+  	}
 
-	function handleFontSizeChange(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const fontSize = parseInt(target.value, 10);
-		
-		toolbarStore.update(state => ({
-			...state,
-			formatting: {
-				...state.formatting,
-				fontSize
-			}
-		}));
-		dispatch('fontSizeChanged', { fontSize });
-	}
+  	function handleFontSizeChange(event: Event) {
+  		const target = event.target as HTMLInputElement;
+  		const fontSize = parseInt(target.value, 10);
+  		toolbarStore.update(state => ({
+  			...state,
+  			formatting: {
+  				...state.formatting,
+  				fontSize
+  			}
+  		}));
+  		dispatch('fontSizeChanged', { fontSize });
+  	}
 
-	function handleStrokeWidthChange(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const strokeWidth = parseInt(target.value, 10);
-		
-		toolbarStore.update(state => ({
-			...state,
-			drawing: {
-				...state.drawing,
-				strokeWidth
-			}
-		}));
-		dispatch('strokeWidthChanged', { strokeWidth });
-	}
+  	function handleStrokeWidthChange(event: Event) {
+  		const target = event.target as HTMLInputElement;
+  		const strokeWidth = parseInt(target.value, 10);
+  		toolbarStore.update(state => ({
+  			...state,
+  			drawing: {
+  				...state.drawing,
+  				strokeWidth
+  			}
+  		}));
+  		dispatch('strokeWidthChanged', { strokeWidth });
+  	}
 
-	function handleAction(action: string) {
-		dispatch('action', { action });
-	}
+  	function handleAction(action: string) {
+  		dispatch('action', { action });
+  	}
 
-	function handleZoom(delta: number) {
-		const newZoom = Math.max(10, Math.min(500, zoom + delta));
-		toolbarStore.update(state => ({
-			...state,
-			zoom: newZoom
-		}));
-		dispatch('zoomChanged', { zoom: newZoom });
-	}
+  	function handleZoom(delta: number) {
+  		const newZoom = Math.max(10, Math.min(500, zoom + delta));
+  		toolbarStore.update(state => ({
+  			...state,
+  			zoom: newZoom
+  		}));
+  		dispatch('zoomChanged', { zoom: newZoom });
+  	}
 </script>
 
 <div class="mx-auto px-4 max-w-7xl" role="toolbar" aria-label="Canvas tools">

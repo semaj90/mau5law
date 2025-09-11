@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // runtime helper $props() is provided by the runes compiler; do not import it.
 
   interface Props {
@@ -15,7 +14,7 @@
 
 
   // `class` is reserved; use `className` instead
-let className = $state("");
+  let className = $state("");
 </script>
 
 {#if asChild}

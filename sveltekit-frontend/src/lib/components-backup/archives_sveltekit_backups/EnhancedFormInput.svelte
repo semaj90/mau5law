@@ -3,7 +3,6 @@
   Demonstrates the validation utilities in practice
 -->
 <script lang="ts">
-</script>
   import {
     FormValidator,
     type FormFieldConfig,

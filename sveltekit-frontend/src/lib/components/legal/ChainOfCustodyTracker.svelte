@@ -1,6 +1,5 @@
 <!-- Chain of Custody Tracker for Legal AI App -->
 <script lang="ts">
-</script>
   import { Shield, User, Calendar, MapPin, FileCheck, AlertTriangle, Lock, Unlock } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   export interface CustodyTransfer {
@@ -96,7 +95,6 @@
     const diffTime = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-    
     if (diffDays > 0) {
       return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
     } else if (diffHours > 0) {

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { Button } from '$lib/components/ui/enhanced-bits';
   import { notifications } from "$lib/stores/notification";
@@ -92,43 +91,43 @@
     totalChunks?: number;
     url?: string;
     thumbnailUrl?: string;
-}
+  }
   onMount(() => {
     if (browser && enablePasteUpload) {
       document.addEventListener("paste", handlePaste);
-}
+  }
     return () => {
       if (browser && enablePasteUpload) {
         document.removeEventListener("paste", handlePaste);
-}
+  }
       if (recordingStream) {
         recordingStream.getTracks().forEach((track) => track.stop());
-}
+  }
     };
   });
 
   function generateId(): string {
     return Math.random().toString(36).substr(2, 9);
-}
+  }
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files) {
       addFiles(Array.from(target.files));
-}}
+  }}
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
 
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     addFiles(droppedFiles);
-}
+  }
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     isDragOver = true;
-}
+  }
   function handleDragLeave() {
     isDragOver = false;
-}
+  }
   function handlePaste(event: ClipboardEvent) {
     if (!enablePasteUpload || disabled) return;
 
@@ -145,7 +144,7 @@
         title: "Files Pasted",
         message: `${files.length} file(s) added from clipboard`,
       });
-}}
+  }}
   async function addFiles(newFiles: File[]) {
     if (disabled) return;
 
@@ -157,7 +156,7 @@
         message: `Maximum ${maxFiles} files allowed`,
       });
       return;
-}
+  }
     // Validate and process files
     const validFiles: FileUploadItem[] = [];
 
@@ -173,7 +172,7 @@
           message: `${file.name} is not a supported file type`,
         });
         continue;
-}
+  }
       // Validate file size
       if (file.size > maxFileSize) {
         notifications.add({
@@ -182,7 +181,7 @@
           message: `${file.name} exceeds maximum size of ${formatFileSize(maxFileSize)}`,
         });
         continue;
-}
+  }
       // Create file item
       const fileItem: FileUploadItem = {
         id: generateId(),
@@ -197,9 +196,9 @@
       // Generate preview if enabled
       if (enablePreview && file.type.startsWith("image/")) {
         fileItem.preview = await generatePreview(file);
-}
+  }
       validFiles.push(fileItem);
-}
+  }
     // Check total size
     const totalSize = [...files, ...validFiles].reduce(
       (sum, item) => sum + item.size,
@@ -212,23 +211,23 @@
         message: `Total size cannot exceed ${formatFileSize(maxTotalSize)}`,
       });
       return;
-}
+  }
     files = [...files, ...validFiles];
 
     if (autoUpload) {
       uploadFiles(validFiles.map((f) => f.id));
-}
+  }
     // Announce to screen reader
     FocusManager.announceToScreenReader(
       `${validFiles.length} file(s) added. Total: ${files.length} files`
     );
 
     dispatch("filesAdded", { files: validFiles });
-}
+  }
   async function compressFile(file: File): Promise<File> {
     if (!enableCompression || !file.type.startsWith("image/")) {
       return file;
-}
+  }
     return new Promise((resolve) => {
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
@@ -244,7 +243,7 @@
           const ratio = Math.min(maxWidth / width, maxHeight / height);
           width *= ratio;
           height *= ratio;
-}
+  }
         canvas.width = width;
         canvas.height = height;
 
@@ -260,7 +259,7 @@
               resolve(compressedFile);
             } else {
               resolve(file);
-}
+  }
           },
           file.type,
           compressionQuality
@@ -270,7 +269,7 @@
       img.onerror = () => resolve(file);
       img.src = URL.createObjectURL(file);
     });
-}
+  }
   async function generatePreview(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -278,7 +277,7 @@
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-}
+  }
   async function uploadFiles(fileIds?: string[]) {
     const filesToUpload = fileIds
       ? files.filter((f) => fileIds.includes(f.id))
@@ -290,12 +289,12 @@
 
     for (const fileItem of filesToUpload) {
       await uploadFile(fileItem);
-}
+  }
     isUploading = false;
     updateTotalProgress();
 
     dispatch("uploadComplete", { files: filesToUpload });
-}
+  }
   async function uploadFile(fileItem: FileUploadItem) {
     fileItem.status = "uploading";
     fileItem.progress = 0;
@@ -305,7 +304,7 @@
         await uploadFileInChunks(fileItem);
       } else {
         await uploadFileWhole(fileItem);
-}
+  }
       fileItem.status = "success";
       fileItem.progress = 100;
 
@@ -323,9 +322,9 @@
         title: "Upload Failed",
         message: `Failed to upload ${fileItem.name}: ${fileItem.error}`,
       });
-}
+  }
     updateTotalProgress();
-}
+  }
   async function uploadFileWhole(fileItem: FileUploadItem) {
     const formData = new FormData();
     formData.append("file", fileItem.file);
@@ -338,11 +337,11 @@
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-}
+  }
     const result = await response.json();
     fileItem.url = result.url;
     fileItem.thumbnailUrl = result.thumbnailUrl;
-}
+  }
   async function uploadFileInChunks(fileItem: FileUploadItem) {
     const totalChunks = Math.ceil(fileItem.size / chunkSize);
     fileItem.totalChunks = totalChunks;
@@ -367,10 +366,10 @@
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-}
+  }
       fileItem.uploadedChunks = chunkIndex + 1;
       fileItem.progress = (fileItem.uploadedChunks / totalChunks) * 100;
-}
+  }
     // Finalize chunked upload
     const finalizeResponse = await fetch(`${uploadUrl}/finalize`, {
       method: "POST",
@@ -384,29 +383,29 @@
 
     if (!finalizeResponse.ok) {
       throw new Error("Failed to finalize upload");
-}
+  }
     const result = await finalizeResponse.json();
     fileItem.url = result.url;
     fileItem.thumbnailUrl = result.thumbnailUrl;
-}
+  }
   function updateTotalProgress() {
     if (files.length === 0) {
       totalProgress = 0;
       return;
-}
+  }
     const totalProgressSum = files.reduce(
       (sum, file) => sum + file.progress,
       0
     );
     totalProgress = totalProgressSum / files.length;
-}
+  }
   function removeFile(fileId: string) {
     files = files.filter((f) => f.id !== fileId);
     updateTotalProgress();
 
     FocusManager.announceToScreenReader("File removed");
     dispatch("fileRemoved", { fileId });
-}
+  }
   function retryUpload(fileId: string) {
     const fileItem = files.find((f) => f.id === fileId);
     if (fileItem) {
@@ -414,19 +413,19 @@
       fileItem.progress = 0;
       fileItem.error = undefined;
       uploadFiles([fileId]);
-}}
+  }}
   // Wrapper functions to handle event propagation
   function handleCameraCaptureClick(event: CustomEvent | Event) {
     event.stopPropagation();
     startCameraCapture();
-}
+  }
   function handleAudioRecordingClick(event: CustomEvent | Event) {
     event.stopPropagation();
     if (isRecording) {
       stopAudioRecording();
     } else {
       startAudioRecording();
-}}
+  }}
   async function startCameraCapture() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -454,12 +453,12 @@
         title: "Camera Error",
         message: "Could not access camera",
       });
-}}
+  }}
   async function startAudioRecording() {
     if (isRecording) {
       stopAudioRecording();
       return;
-}
+  }
     try {
       recordingStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
@@ -493,7 +492,7 @@
         title: "Recording Error",
         message: "Could not start audio recording",
       });
-}}
+  }}
   function stopAudioRecording() {
     if (mediaRecorder && isRecording) {
       mediaRecorder.stop();
@@ -502,30 +501,30 @@
       if (recordingStream) {
         recordingStream.getTracks().forEach((track) => track.stop());
         recordingStream = null;
-}
+  }
       notifications.add({
         type: "success",
         title: "Recording Complete",
         message: "Audio recording saved",
       });
-}}
+  }}
   function formatFileSize(bytes: number): string {
     const units = ["B", "KB", "MB", "GB"];
     let size = bytes;
-let unitIndex = $state(0);
+  let unitIndex = $state(0);
 
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;
-}
+  }
     return `${Math.round(size * 100) / 100} ${units[unitIndex]}`;
-}
+  }
   function getFileIcon(type: string) {
     if (type.startsWith("image/")) return ImageIcon;
     if (type.startsWith("video/")) return Video;
     if (type.startsWith("text/") || type.includes("document")) return FileText;
     return FileIcon;
-}
+  }
   function getStatusColor(status: string) {
     switch (status) {
       case "success":
@@ -536,7 +535,7 @@ let unitIndex = $state(0);
         return "text-blue-600";
       default:
         return "text-gray-600";
-}}
+  }}
 </script>
 
 <div class="container mx-auto px-4" class:disabled>

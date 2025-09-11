@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import * as THREE from 'three';
   import { YoRHaQuantumEffects3D } from './yorha-ui/components/YoRHaQuantumEffects3D';
@@ -50,8 +49,8 @@
   });
 
   let isInitialized = $state(false);
-let lastTime = $state(0);
-let frameCount = $state(0);
+  let lastTime = $state(0);
+  let frameCount = $state(0);
 
   onMount(async () => {
     await initializeQuantumVisualization();

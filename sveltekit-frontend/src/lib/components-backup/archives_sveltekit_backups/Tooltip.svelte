@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   export let content: string = "";
   export let placement: "top" | "bottom" | "left" | "right" = "top";
   export let disabled: boolean = false;

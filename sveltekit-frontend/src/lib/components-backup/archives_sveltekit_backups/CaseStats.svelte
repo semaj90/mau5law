@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Simple Case Stats Component - TODO: Enhance with full functionality
   //
   // 🚀 ENHANCEMENT ROADMAP (See: /ENHANCED_FEATURES_TODO.md)
@@ -16,11 +15,8 @@
   // - Services: AnalyticsService, ExportService, SSE
   // - Components: TrendChart, DistributionChart, MetricCard
   // - Stores: Real-time stats store, user preferences
-  
   import type { Case } from '$lib/types/api';
-  
   export let cases: Case[] = [];
-  
   // TODO: Enhanced stats interface
   // interface AdvancedStats {
   //   resolutionTimeAvg: number;
@@ -32,7 +28,6 @@
   //   upcomingDeadlines: number;
   //   overdueCount: number;
   // }
-  
   // TODO: Convert to $derived: stats = {
     // TODO: IMPLEMENT ADVANCED CALCULATIONS
     // ===================================
@@ -41,7 +36,6 @@
     // 3. Trend calculations with historical data
     // 4. Performance metrics and KPIs
     // 5. Predictive analytics for case outcomes
-    
     // Basic stats (STUB)
     total: cases.length,
     active: cases.filter(c => c.status === 'active').length,

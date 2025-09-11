@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     class_: string
   }
@@ -9,11 +8,9 @@
 
 
 
-  
   import { getContext } from "svelte";
   import { fly } from "svelte/transition";
 
-  
   const contextMenu = (getContext("contextMenu") as any) || {
     elements: { menu: { subscribe: () => {} } },
   };

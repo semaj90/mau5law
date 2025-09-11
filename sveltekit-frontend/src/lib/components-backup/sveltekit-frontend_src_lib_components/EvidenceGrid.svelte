@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { Evidence } from '$lib/types';
   import { Button } from "$lib/components/ui/button";
   import {
@@ -86,36 +85,36 @@
   function handleSearch(event: Event) {
     const target = event.target as HTMLInputElement;
     evidenceActions.setSearchQuery(target.value);
-}
+  }
   function toggleViewMode() {
     evidenceActions.setViewMode(viewMode === "grid" ? "list" : "grid");
-}
+  }
   function toggleSort(field: typeof sortBy) {
     if (sortBy === field) {
       evidenceActions.setSorting(field, sortOrder === "asc" ? "desc" : "asc");
     } else {
       evidenceActions.setSorting(field, "desc");
-}}
+  }}
   function toggleSelection(item: Evidence) {
     evidenceActions.toggleSelection(item.id);
-}
+  }
   function selectAll() {
     filteredData.forEach((item) => {
       if (!selectedItems.has(item.id)) {
         evidenceActions.toggleSelection(item.id);
-}
+  }
     });
-}
+  }
   function clearSelection() {
     evidenceActions.clearSelection();
-}
+  }
   function getFileIcon(evidenceType: string, mimeType?: string) {
     if (mimeType) {
       if (isImageFile(mimeType)) return Image;
       if (mimeType.startsWith("video/")) return Video;
       if (mimeType.startsWith("audio/")) return Music;
       if (mimeType.includes("pdf")) return FileText;
-}
+  }
     switch (evidenceType.toLowerCase()) {
       case "image":
         return Image;
@@ -128,7 +127,7 @@
         return FileText;
       default:
         return File;
-}}  function formatDate(date: string | Date | undefined): string {
+  }}  function formatDate(date: string | Date | undefined): string {
     if (!date) return 'Unknown';
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return new Intl.DateTimeFormat("en-US", {
@@ -167,11 +166,11 @@
       } catch (error) {
         console.error("Delete failed:", error);
         alert("Failed to delete evidence. Please try again.");
-}}}
+  }}}
   function openPreview(item: Evidence) {
     selectedItem = item;
     // You can implement a preview modal here
-}
+  }
   function showContextMenu(event: MouseEvent, item: Evidence) {
     // Simple context menu implementation - could be enhanced with a proper context menu component
     event.preventDefault();
@@ -179,7 +178,7 @@
     // For now, just select the item - can be enhanced later with actual context menu
     if (!selectedItems.has(item.id)) {
       toggleSelection(item);
-}}
+  }}
   // Context menu actions
   const contextMenuItems = [
     { label: "Preview", icon: Eye, action: "preview" },
@@ -208,7 +207,7 @@
       case "delete":
         deleteEvidence(item);
         break;
-}}
+  }}
 </script>
 
 <div class="space-y-4">

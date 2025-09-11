@@ -2,7 +2,6 @@
   Simple SuperForms + Zod + Enhanced Actions Test Page
 -->
 <script lang="ts">
-</script>
   import { enhance } from '$app/forms';
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';

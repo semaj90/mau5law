@@ -1,80 +1,77 @@
 <script lang="ts">
-</script>
-	import SearchInput from './SearchInput.svelte';
-	import { Filter, ArrowUpDown } from 'lucide-svelte';
+  	import SearchInput from './SearchInput.svelte';
+  	import { Filter, ArrowUpDown } from 'lucide-svelte';
 
-	interface Props {
-		placeholder?: string;
-		value?: string;
-		showFilters?: boolean;
-		sortOptions?: Array<{ id: string; label: string; }>;
-		onsearch?: (event: CustomEvent) => void;
-		onsortChanged?: (event: CustomEvent) => void;
-		onfiltersChanged?: (event: CustomEvent) => void;
-	}
+  	interface Props {
+  		placeholder?: string;
+  		value?: string;
+  		showFilters?: boolean;
+  		sortOptions?: Array<{ id: string; label: string; }>;
+  		onsearch?: (event: CustomEvent) => void;
+  		onsortChanged?: (event: CustomEvent) => void;
+  		onfiltersChanged?: (event: CustomEvent) => void;
+  	}
 
-	// Props using Svelte 5 syntax
-	let {
-		placeholder = 'Search...',
-		value = '',
-		showFilters = true,
-		sortOptions = [
-			{ id: 'relevance', label: 'Relevance' },
-			{ id: 'date', label: 'Date' },
-			{ id: 'name', label: 'Name' },
-			{ id: 'type', label: 'Type' }
-		],
-		onsearch,
-		onsortChanged,
-		onfiltersChanged
-	}: Props = $props();
+  	// Props using Svelte 5 syntax
+  	let {
+  		placeholder = 'Search...',
+  		value = '',
+  		showFilters = true,
+  		sortOptions = [
+  			{ id: 'relevance', label: 'Relevance' },
+  			{ id: 'date', label: 'Date' },
+  			{ id: 'name', label: 'Name' },
+  			{ id: 'type', label: 'Type' }
+  		],
+  		onsearch,
+  		onsortChanged,
+  		onfiltersChanged
+  	}: Props = $props();
 
-	// State using Svelte 5 syntax
-	let selectedSort = $state('relevance');
-	let filtersOpen = $state(false);
-	
-	// Filter state
-	let selectedFileTypes: string[] = $state([]);
-	let dateRange = $state({
-		from: '',
-		to: ''
-	});
+  	// State using Svelte 5 syntax
+  	let selectedSort = $state('relevance');
+  	let filtersOpen = $state(false);
+  	// Filter state
+  	let selectedFileTypes: string[] = $state([]);
+  	let dateRange = $state({
+  		from: '',
+  		to: ''
+  	});
 
-	function handleSearch(event: CustomEvent) {
-		onsearch?.(event);
-	}
-	function handleSortChange(sortId: string) {
-		selectedSort = sortId;
-		onsortChanged?.(new CustomEvent('sortChanged', { detail: { sort: sortId } }));
-	}
-	function toggleFilters() {
-		filtersOpen = !filtersOpen;
-		if (filtersOpen) {
-			// Dispatch current filter state when opening
-			dispatchFilters();
-}}
-	function handleFileTypeChange(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const value = target.value;
-		
-		if (target.checked) {
-			selectedFileTypes = [...selectedFileTypes, value];
-		} else {
-			selectedFileTypes = selectedFileTypes.filter(type => type !== value);
-}
-		dispatchFilters();
-}
-	function handleDateChange() {
-		dispatchFilters();
-}
-	function dispatchFilters() {
-		onfiltersChanged?.(new CustomEvent('filtersChanged', { 
-			detail: {
-				fileTypes: selectedFileTypes,
-				dateRange: dateRange
-			}
-		}));
-	}
+  	function handleSearch(event: CustomEvent) {
+  		onsearch?.(event);
+  	}
+  	function handleSortChange(sortId: string) {
+  		selectedSort = sortId;
+  		onsortChanged?.(new CustomEvent('sortChanged', { detail: { sort: sortId } }));
+  	}
+  	function toggleFilters() {
+  		filtersOpen = !filtersOpen;
+  		if (filtersOpen) {
+  			// Dispatch current filter state when opening
+  			dispatchFilters();
+  }}
+  	function handleFileTypeChange(event: Event) {
+  		const target = event.target as HTMLInputElement;
+  		const value = target.value;
+  		if (target.checked) {
+  			selectedFileTypes = [...selectedFileTypes, value];
+  		} else {
+  			selectedFileTypes = selectedFileTypes.filter(type => type !== value);
+  }
+  		dispatchFilters();
+  }
+  	function handleDateChange() {
+  		dispatchFilters();
+  }
+  	function dispatchFilters() {
+  		onfiltersChanged?.(new CustomEvent('filtersChanged', { 
+  			detail: {
+  				fileTypes: selectedFileTypes,
+  				dateRange: dateRange
+  			}
+  		}));
+  	}
 </script>
 
 <div class="search-bar-container">

@@ -1,668 +1,667 @@
 <!-- YorhaAI Assistant - Advanced Chat Interface with SvelteKit 5 + Bits UI + Melt UI -->
 <!-- Integrates with go-llama, MCP orchestrator, and tensor transport services -->
 <script lang="ts">
-</script>
   import { onMount, tick } from 'svelte';
-	import { browser } from '$app/environment';
-	import { createDialog } from 'melt';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Button from '$lib/components/ui/button';
-	import * as Input from '$lib/components/ui/input';
-	import { Badge } from '$lib/components/ui/badge';
-	import { ScrollArea } from '$lib/components/ui/scroll-area';
-	import { Separator } from '$lib/components/ui/separator';
-	import { createMachine, interpret } from 'xstate';
-	import type { Interpreter } from 'xstate';
-	import { writable, derived } from 'svelte/store';
-	import { cn } from '$lib/utils';
-
-	// Props and bindings
-	interface YorhaAIAssistantProps {
-		userID?: string;
-		caseID?: string;
-		initialOpen?: boolean;
-		theme?: 'light' | 'dark' | 'yorha';
-		enableGPUAcceleration?: boolean;
-		enableMCPIntegration?: boolean;
-	}
-
-	let {
-		userID = 'user_' + Date.now(),
-		caseID = '',
-		initialOpen = false,
-		theme = 'yorha',
-		enableGPUAcceleration = true,
-		enableMCPIntegration = true
-	}: YorhaAIAssistantProps = $props();
-
-	// State management with Svelte 5 runes
-	let isOpen = $state(initialOpen);
-	let currentMessage = $state('');
-	let isTyping = $state(false);
-	let isConnected = $state(false);
-	let streamingResponse = $state(false);
-	let userActivity = $state<UserActivity>({
-		isTyping: false,
-		lastActivity: Date.now(),
-		attentionLevel: 'medium',
-		currentPage: browser ? window.location.pathname : ''
-	});
-
-	// Chat session state
-	let chatSession = $state<ChatSession>({
-		id: 'session_' + Date.now(),
-		userID,
-		messages: [],
-		context: {
-			caseID,
-			userIntent: 'general',
-			confidence: 0.8,
-			recentActions: [],
-			preferences: {}
-		},
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		isActive: true
-	});
-
-	// Performance metrics
-	let metrics = $state<PerformanceMetrics>({
-		totalMessages: 0,
-		averageResponseTime: 0,
-		gpuUtilization: 0,
-		cacheHitRate: 0,
-		connectionLatency: 0
-	});
-
-	// WebSocket connections
-	let chatSocket: WebSocket | null = $state(null);
-	let activitySocket: WebSocket | null = $state(null);
-
-	// XState machine for chat flow
-	const chatMachine = createMachine({
-		id: 'yorhaChat',
-		initial: 'disconnected',
-		context: {
-			sessionID: chatSession.id,
-			userID,
-			retryCount: 0,
-			lastError: null
-		},
-		states: {
-			disconnected: {
-				on: {
-					CONNECT: 'connecting'
-				}
-			},
-			connecting: {
-				on: {
-					CONNECTED: 'idle',
-					ERROR: 'error'
-				}
-			},
-			idle: {
-				on: {
-					SEND_MESSAGE: 'sending',
-					START_STREAMING: 'streaming',
-					DISCONNECT: 'disconnected'
-				}
-			},
-			sending: {
-				on: {
-					MESSAGE_SENT: 'waiting_response',
-					ERROR: 'error'
-				}
-			},
-			waiting_response: {
-				on: {
-					RESPONSE_RECEIVED: 'idle',
-					START_STREAMING: 'streaming',
-					ERROR: 'error'
-				}
-			},
-			streaming: {
-				on: {
-					STREAM_TOKEN: 'streaming',
-					STREAM_COMPLETE: 'idle',
-					ERROR: 'error'
-				}
-			},
-			error: {
-				on: {
-					RETRY: 'connecting',
-					RESET: 'disconnected'
-				}
-			}
-		}
-	});
-
-	let chatService: Interpreter<any> | null = $state(null);
-	let currentState = $derived(chatService?.getSnapshot()?.value || 'disconnected');
-
-	// Types
-	interface ChatMessage {
-		id: string;
-		role: 'user' | 'assistant' | 'system';
-		content: string;
-		timestamp: Date;
-		metadata?: Record<string, any>;
-		streaming?: boolean;
-	}
-
-	interface ChatSession {
-		id: string;
-		userID: string;
-		messages: ChatMessage[];
-		context: ChatContext;
-		createdAt: Date;
-		updatedAt: Date;
-		isActive: boolean;
-	}
-
-	interface ChatContext {
-		caseID?: string;
-		userIntent: string;
-		confidence: number;
-		recentActions: any[];
-		preferences: Record<string, any>;
-	}
-
-	interface UserActivity {
-		isTyping: boolean;
-		lastActivity: number;
-		attentionLevel: 'low' | 'medium' | 'high';
-		currentPage: string;
-	}
-
-	interface PerformanceMetrics {
-		totalMessages: number;
-		averageResponseTime: number;
-		gpuUtilization: number;
-		cacheHitRate: number;
-		connectionLatency: number;
-	}
-
-	// Melt UI Dialog
-	const {
-		elements: { trigger, overlay, content, title, description, close },
-		states: { open }
-	} = createDialog({
-		preventScroll: true,
-		closeOnOutsideClick: false,
-		forceVisible: true
-	});
-
-	// Reactive derived values
-	let connectionStatus = $derived(
-		isConnected
-			? streamingResponse
-				? 'streaming'
-				: 'connected'
-			: currentState === 'connecting'
-				? 'connecting'
-				: 'disconnected'
-	);
-
-	let canSendMessage = $derived(
-		isConnected &&
-		currentState === 'idle' &&
-		currentMessage.trim() !== '' &&
-		!streamingResponse
-	);
-
-	let hasMessages = $derived(chatSession.messages.length > 0);
-	let lastAssistantMessage = $derived(
-		chatSession.messages.filter(m => m.role === 'assistant').pop()
-	);
-
-	// Lifecycle
-	onMount(() => {
-		if (browser) {
-			initializeAI();
-			setupActivityTracking();
-			if (initialOpen) {
-				open.set(true);
-				isOpen = true;
-			}
-		}
-
-		return () => {
-			cleanup();
-		};
-	});
-
-	// Initialize AI services
-	async function initializeAI() {
-		try {
-			// Start XState service
-			chatService = interpret(chatMachine);
-			chatService.start();
-
-			// Connect to chat service
-			await connectToChatService();
-
-			// Connect to activity tracking
-			if (enableMCPIntegration) {
-				await connectToActivityService();
-			}
-
-			// Load existing session if available
-			await loadChatSession();
-
-			isConnected = true;
-			chatService?.send('CONNECTED');
-		} catch (error) {
-			console.error('AI initialization failed:', error);
-			chatService?.send('ERROR', { error });
-		}
-	}
-
-	// Connect to go-llama chat service
-	async function connectToChatService() {
-		const wsUrl = `ws://localhost:8099/ws/chat?user_id=${userID}&session_id=${chatSession.id}`;
-
-		chatSocket = new WebSocket(wsUrl);
-
-		chatSocket.on:open=() => {
-			console.log('= Connected to YorhaAI chat service');
-			isConnected = true;
-		};
-
-		chatSocket.onmessage = (event) => {
-			try {
-				const data = JSON.parse(event.data);
-				handleChatResponse(data);
-			} catch (error) {
-				console.error('Chat message parse error:', error);
-			}
-		};
-
-		chatSocket.on:close=() => {
-			console.log('L Chat service disconnected');
-			isConnected = false;
-			chatService?.send('DISCONNECT');
-		};
-
-		chatSocket.onerror = (error) => {
-			console.error('Chat service error:', error);
-			chatService?.send('ERROR', { error });
-		};
-	}
-
-	// Connect to user activity service
-	async function connectToActivityService() {
-		const wsUrl = `ws://localhost:8099/ws/activity?user_id=${userID}`;
-
-		activitySocket = new WebSocket(wsUrl);
-
-		activitySocket.on:open=() => {
-			console.log('=� Connected to activity service');
-		};
-
-		activitySocket.onmessage = (event) => {
-			try {
-				const data = JSON.parse(event.data);
-				handleActivityResponse(data);
-			} catch (error) {
-				console.error('Activity message parse error:', error);
-			}
-		};
-	}
-
-	// Send message to AI
-	async function sendMessage() {
-		if (!canSendMessage) return;
-
-		const message = currentMessage.trim();
-		const timestamp = new Date();
-
-		// Add user message to chat
-		const userMessage: ChatMessage = {
-			id: 'msg_' + Date.now(),
-			role: 'user',
-			content: message,
-			timestamp,
-			metadata: {
-				userIntent: analyzeUserIntent(message),
-				caseID: chatSession.context.caseID
-			}
-		};
-
-		chatSession.messages = [...chatSession.messages, userMessage];
-		currentMessage = '';
-
-		// Update activity
-		updateUserActivity({ action: 'send_message', content_length: message.length });
-
-		// Send to chat service
-		try {
-			chatService?.send('SEND_MESSAGE');
-
-			const chatRequest = {
-				message,
-				user_id: userID,
-				session_id: chatSession.id,
-				case_id: caseID,
-				context: chatSession.context,
-				stream: true,
-				temperature: 0.7,
-				max_tokens: 2000
-			};
-
-			chatSocket?.send(JSON.stringify(chatRequest));
-			metrics.totalMessages++;
-
-			chatService?.send('MESSAGE_SENT');
-		} catch (error) {
-			console.error('Send message error:', error);
-			chatService?.send('ERROR', { error });
-		}
-	}
-
-	// Handle chat service responses
-	function handleChatResponse(data: any) {
-		if (data.streaming) {
-			handleStreamingResponse(data);
-		} else {
-			handleStandardResponse(data);
-		}
-	}
-
-	// Handle streaming response
-	function handleStreamingResponse(data: any) {
-		if (data.token && !data.done) {
-			// Update streaming message
-			let streamingMessage = chatSession.messages.find(m => m.streaming);
-
-			if (!streamingMessage) {
-				streamingMessage = {
-					id: 'streaming_' + Date.now(),
-					role: 'assistant',
-					content: data.token,
-					timestamp: new Date(),
-					streaming: true,
-					metadata: {
-						session_id: data.session_id,
-						gpu_accelerated: enableGPUAcceleration
-					}
-				};
-				chatSession.messages = [...chatSession.messages, streamingMessage];
-			} else {
-				streamingMessage.content += data.token;
-				// Trigger reactivity
-				chatSession.messages = [...chatSession.messages];
-			}
-
-			streamingResponse = true;
-			chatService?.send('STREAM_TOKEN');
-
-			// Auto-scroll to bottom
-			tick().then(() => scrollToBottom());
-
-		} else if (data.done) {
-			// Finalize streaming message
-			const streamingMessage = chatSession.messages.find(m => m.streaming);
-			if (streamingMessage) {
-				streamingMessage.streaming = false;
-				streamingMessage.metadata = {
-					...streamingMessage.metadata,
-					token_count: data.token_count,
-					processing_time: data.processing_time_ms,
-					user_intent: data.user_intent
-				};
-				chatSession.messages = [...chatSession.messages];
-			}
-
-			streamingResponse = false;
-			chatService?.send('STREAM_COMPLETE');
-
-			// Update context and metrics
-			updateChatContext(data);
-			updateMetrics(data);
-		}
-	}
-
-	// Handle standard response
-	function handleStandardResponse(data: any) {
-		const assistantMessage: ChatMessage = {
-			id: 'msg_' + Date.now(),
-			role: 'assistant',
-			content: data.response || data.content,
-			timestamp: new Date(),
-			metadata: {
-				session_id: data.session_id,
-				token_count: data.token_count,
-				processing_time: data.processing_time_ms,
-				user_intent: data.user_intent,
-				suggestions: data.suggestions || [],
-				gpu_accelerated: enableGPUAcceleration
-			}
-		};
-
-		chatSession.messages = [...chatSession.messages, assistantMessage];
-		chatService?.send('RESPONSE_RECEIVED');
-
-		updateChatContext(data);
-		updateMetrics(data);
-
-		tick().then(() => scrollToBottom());
-	}
-
-	// Handle activity service responses
-	function handleActivityResponse(data: any) {
-		if (data.attention_level) {
-			userActivity.attentionLevel = data.attention_level;
-		}
-
-		if (data.suggestions) {
-			// Handle AI-suggested actions based on user activity
-			console.log('AI Activity Suggestions:', data.suggestions);
-		}
-	}
-
-	// Update user activity
-	function updateUserActivity(activity: Record<string, any>) {
-		userActivity.lastActivity = Date.now();
-
-		if (activity.action === 'typing') {
-			userActivity.isTyping = true;
-			isTyping = true;
-		} else {
-			userActivity.isTyping = false;
-			isTyping = false;
-		}
-
-		// Send to activity service
-		activitySocket?.send(JSON.stringify({
-			...activity,
-			user_id: userID,
-			timestamp: userActivity.lastActivity,
-			page: userActivity.currentPage
-		}));
-	}
-
-	// Update chat context
-	function updateChatContext(data: any) {
-		if (data.context) {
-			chatSession.context = { ...chatSession.context, ...data.context };
-		}
-
-		if (data.user_intent) {
-			chatSession.context.userIntent = data.user_intent;
-		}
-
-		if (data.confidence !== undefined) {
-			chatSession.context.confidence = data.confidence;
-		}
-
-		chatSession.updatedAt = new Date();
-
-		// Persist session
-		saveChatSession();
-	}
-
-	// Update performance metrics
-	function updateMetrics(data: any) {
-		if (data.processing_time_ms) {
-			const responseTime = data.processing_time_ms;
-			metrics.averageResponseTime =
-				(metrics.averageResponseTime * (metrics.totalMessages - 1) + responseTime) / metrics.totalMessages;
-		}
-
-		if (data.gpu_used !== undefined) {
-			metrics.gpuUtilization = data.gpu_used ? 85 : 20; // Mock values
-		}
-
-		if (data.cache_hit !== undefined) {
-			metrics.cacheHitRate = data.cache_hit ? 0.8 : 0.6; // Mock values
-		}
-	}
-
-	// Analyze user intent
-	function analyzeUserIntent(message: string): string {
-		const lowerMsg = message.toLowerCase();
-
-		if (lowerMsg.includes('search') || lowerMsg.includes('find')) return 'search';
-		if (lowerMsg.includes('summarize') || lowerMsg.includes('summary')) return 'summarize';
-		if (lowerMsg.includes('analyze') || lowerMsg.includes('analysis')) return 'analyze';
-		if (lowerMsg.includes('draft') || lowerMsg.includes('write')) return 'draft';
-		if (lowerMsg.includes('help') || lowerMsg.includes('explain')) return 'help';
-
-		return 'general';
-	}
-
-	// Input handling
-	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !event.shiftKey) {
-			event.preventDefault();
-			sendMessage();
-		} else if (event.key === 'Escape') {
-			closeDialog();
-		}
-
-		// Update typing activity
-		updateUserActivity({ action: 'typing', key: event.key });
-	}
-
-	// Dialog controls
-	function openDialog() {
-		open.set(true);
-		isOpen = true;
-
-		tick().then(() => {
-			const input = document.querySelector('[data-yorha-input]') as HTMLElement;
-			input?.focus();
-		});
-	}
-
-	function closeDialog() {
-		open.set(false);
-		isOpen = false;
-	}
-
-	// Utility functions
-	function scrollToBottom() {
-		const scrollArea = document.querySelector('[data-scroll-area]');
-		if (scrollArea) {
-			scrollArea.scrollTop = scrollArea.scrollHeight;
-		}
-	}
-
-	function formatTimestamp(date: Date): string {
-		return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-	}
-
-	function getMessageIcon(role: string): string {
-		switch (role) {
-			case 'user': return '=d';
-			case 'assistant': return '>';
-			case 'system': return '�';
-			default: return '=�';
-		}
-	}
-
-	// Session management
-	async function loadChatSession() {
-		try {
-			const response = await fetch(`/api/chat/sessions/${userID}/${chatSession.id}`);
-			if (response.ok) {
-				const sessionData = await response.json();
-				chatSession = { ...chatSession, ...sessionData };
-			}
-		} catch (error) {
-			console.error('Load session error:', error);
-		}
-	}
-
-	async function saveChatSession() {
-		try {
-			await fetch(`/api/chat/sessions/${chatSession.id}`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(chatSession)
-			});
-		} catch (error) {
-			console.error('Save session error:', error);
-		}
-	}
-
-	function clearChat() {
-		chatSession.messages = [];
-		chatSession.context.recentActions = [];
-		chatSession.updatedAt = new Date();
-		saveChatSession();
-	}
-
-	// Setup activity tracking
-	function setupActivityTracking() {
-		// Track typing in message input
-let typingTimeout = $state<number;
-
-		const updateTyping >(() => {
-			clearTimeout(typingTimeout));
-			updateUserActivity({ action: 'typing' });
-
-			typingTimeout = setTimeout(() => {
-				updateUserActivity({ action: 'stopped_typing' });
-			}, 1000) as any;
-		};
-
-		// Global activity tracking
-		if (browser) {
-			document.addEventListener('keydown', updateTyping);
-			document.addEventListener('click', () =>
-				updateUserActivity({ action: 'click', page: window.location.pathname })
-			);
-
-			// Page visibility tracking
-			document.addEventListener('visibilitychange', () => {
-				updateUserActivity({
-					action: 'visibility_change',
-					visible: !document.hidden
-				});
-			});
-		}
-	}
-
-	// Cleanup
-	function cleanup() {
-		chatSocket?.close();
-		activitySocket?.close();
-		chatService?.stop();
-	}
-
-	// Effects
-	$effect(() => {
-		if (isOpen) {
-			tick().then(() => scrollToBottom());
-		}
-	});
-
-	$effect(() => {
-		if (currentMessage) {
-			updateUserActivity({ action: 'typing', message_length: currentMessage.length });
-		}
-	});
+  	import { browser } from '$app/environment';
+  	import { createDialog } from 'melt';
+  	import * as Dialog from '$lib/components/ui/dialog';
+  	import * as Button from '$lib/components/ui/button';
+  	import * as Input from '$lib/components/ui/input';
+  	import { Badge } from '$lib/components/ui/badge';
+  	import { ScrollArea } from '$lib/components/ui/scroll-area';
+  	import { Separator } from '$lib/components/ui/separator';
+  	import { createMachine, interpret } from 'xstate';
+  	import type { Interpreter } from 'xstate';
+  	import { writable, derived } from 'svelte/store';
+  	import { cn } from '$lib/utils';
+
+  	// Props and bindings
+  	interface YorhaAIAssistantProps {
+  		userID?: string;
+  		caseID?: string;
+  		initialOpen?: boolean;
+  		theme?: 'light' | 'dark' | 'yorha';
+  		enableGPUAcceleration?: boolean;
+  		enableMCPIntegration?: boolean;
+  	}
+
+  	let {
+  		userID = 'user_' + Date.now(),
+  		caseID = '',
+  		initialOpen = false,
+  		theme = 'yorha',
+  		enableGPUAcceleration = true,
+  		enableMCPIntegration = true
+  	}: YorhaAIAssistantProps = $props();
+
+  	// State management with Svelte 5 runes
+  	let isOpen = $state(initialOpen);
+  	let currentMessage = $state('');
+  	let isTyping = $state(false);
+  	let isConnected = $state(false);
+  	let streamingResponse = $state(false);
+  	let userActivity = $state<UserActivity>({
+  		isTyping: false,
+  		lastActivity: Date.now(),
+  		attentionLevel: 'medium',
+  		currentPage: browser ? window.location.pathname : ''
+  	});
+
+  	// Chat session state
+  	let chatSession = $state<ChatSession>({
+  		id: 'session_' + Date.now(),
+  		userID,
+  		messages: [],
+  		context: {
+  			caseID,
+  			userIntent: 'general',
+  			confidence: 0.8,
+  			recentActions: [],
+  			preferences: {}
+  		},
+  		createdAt: new Date(),
+  		updatedAt: new Date(),
+  		isActive: true
+  	});
+
+  	// Performance metrics
+  	let metrics = $state<PerformanceMetrics>({
+  		totalMessages: 0,
+  		averageResponseTime: 0,
+  		gpuUtilization: 0,
+  		cacheHitRate: 0,
+  		connectionLatency: 0
+  	});
+
+  	// WebSocket connections
+  	let chatSocket: WebSocket | null = $state(null);
+  	let activitySocket: WebSocket | null = $state(null);
+
+  	// XState machine for chat flow
+  	const chatMachine = createMachine({
+  		id: 'yorhaChat',
+  		initial: 'disconnected',
+  		context: {
+  			sessionID: chatSession.id,
+  			userID,
+  			retryCount: 0,
+  			lastError: null
+  		},
+  		states: {
+  			disconnected: {
+  				on: {
+  					CONNECT: 'connecting'
+  				}
+  			},
+  			connecting: {
+  				on: {
+  					CONNECTED: 'idle',
+  					ERROR: 'error'
+  				}
+  			},
+  			idle: {
+  				on: {
+  					SEND_MESSAGE: 'sending',
+  					START_STREAMING: 'streaming',
+  					DISCONNECT: 'disconnected'
+  				}
+  			},
+  			sending: {
+  				on: {
+  					MESSAGE_SENT: 'waiting_response',
+  					ERROR: 'error'
+  				}
+  			},
+  			waiting_response: {
+  				on: {
+  					RESPONSE_RECEIVED: 'idle',
+  					START_STREAMING: 'streaming',
+  					ERROR: 'error'
+  				}
+  			},
+  			streaming: {
+  				on: {
+  					STREAM_TOKEN: 'streaming',
+  					STREAM_COMPLETE: 'idle',
+  					ERROR: 'error'
+  				}
+  			},
+  			error: {
+  				on: {
+  					RETRY: 'connecting',
+  					RESET: 'disconnected'
+  				}
+  			}
+  		}
+  	});
+
+  	let chatService: Interpreter<any> | null = $state(null);
+  	let currentState = $derived(chatService?.getSnapshot()?.value || 'disconnected');
+
+  	// Types
+  	interface ChatMessage {
+  		id: string;
+  		role: 'user' | 'assistant' | 'system';
+  		content: string;
+  		timestamp: Date;
+  		metadata?: Record<string, any>;
+  		streaming?: boolean;
+  	}
+
+  	interface ChatSession {
+  		id: string;
+  		userID: string;
+  		messages: ChatMessage[];
+  		context: ChatContext;
+  		createdAt: Date;
+  		updatedAt: Date;
+  		isActive: boolean;
+  	}
+
+  	interface ChatContext {
+  		caseID?: string;
+  		userIntent: string;
+  		confidence: number;
+  		recentActions: any[];
+  		preferences: Record<string, any>;
+  	}
+
+  	interface UserActivity {
+  		isTyping: boolean;
+  		lastActivity: number;
+  		attentionLevel: 'low' | 'medium' | 'high';
+  		currentPage: string;
+  	}
+
+  	interface PerformanceMetrics {
+  		totalMessages: number;
+  		averageResponseTime: number;
+  		gpuUtilization: number;
+  		cacheHitRate: number;
+  		connectionLatency: number;
+  	}
+
+  	// Melt UI Dialog
+  	const {
+  		elements: { trigger, overlay, content, title, description, close },
+  		states: { open }
+  	} = createDialog({
+  		preventScroll: true,
+  		closeOnOutsideClick: false,
+  		forceVisible: true
+  	});
+
+  	// Reactive derived values
+  	let connectionStatus = $derived(
+  		isConnected
+  			? streamingResponse
+  				? 'streaming'
+  				: 'connected'
+  			: currentState === 'connecting'
+  				? 'connecting'
+  				: 'disconnected'
+  	);
+
+  	let canSendMessage = $derived(
+  		isConnected &&
+  		currentState === 'idle' &&
+  		currentMessage.trim() !== '' &&
+  		!streamingResponse
+  	);
+
+  	let hasMessages = $derived(chatSession.messages.length > 0);
+  	let lastAssistantMessage = $derived(
+  		chatSession.messages.filter(m => m.role === 'assistant').pop()
+  	);
+
+  	// Lifecycle
+  	onMount(() => {
+  		if (browser) {
+  			initializeAI();
+  			setupActivityTracking();
+  			if (initialOpen) {
+  				open.set(true);
+  				isOpen = true;
+  			}
+  		}
+
+  		return () => {
+  			cleanup();
+  		};
+  	});
+
+  	// Initialize AI services
+  	async function initializeAI() {
+  		try {
+  			// Start XState service
+  			chatService = interpret(chatMachine);
+  			chatService.start();
+
+  			// Connect to chat service
+  			await connectToChatService();
+
+  			// Connect to activity tracking
+  			if (enableMCPIntegration) {
+  				await connectToActivityService();
+  			}
+
+  			// Load existing session if available
+  			await loadChatSession();
+
+  			isConnected = true;
+  			chatService?.send('CONNECTED');
+  		} catch (error) {
+  			console.error('AI initialization failed:', error);
+  			chatService?.send('ERROR', { error });
+  		}
+  	}
+
+  	// Connect to go-llama chat service
+  	async function connectToChatService() {
+  		const wsUrl = `ws://localhost:8099/ws/chat?user_id=${userID}&session_id=${chatSession.id}`;
+
+  		chatSocket = new WebSocket(wsUrl);
+
+  		chatSocket.on:open=() => {
+  			console.log('= Connected to YorhaAI chat service');
+  			isConnected = true;
+  		};
+
+  		chatSocket.onmessage = (event) => {
+  			try {
+  				const data = JSON.parse(event.data);
+  				handleChatResponse(data);
+  			} catch (error) {
+  				console.error('Chat message parse error:', error);
+  			}
+  		};
+
+  		chatSocket.on:close=() => {
+  			console.log('L Chat service disconnected');
+  			isConnected = false;
+  			chatService?.send('DISCONNECT');
+  		};
+
+  		chatSocket.onerror = (error) => {
+  			console.error('Chat service error:', error);
+  			chatService?.send('ERROR', { error });
+  		};
+  	}
+
+  	// Connect to user activity service
+  	async function connectToActivityService() {
+  		const wsUrl = `ws://localhost:8099/ws/activity?user_id=${userID}`;
+
+  		activitySocket = new WebSocket(wsUrl);
+
+  		activitySocket.on:open=() => {
+  			console.log('=� Connected to activity service');
+  		};
+
+  		activitySocket.onmessage = (event) => {
+  			try {
+  				const data = JSON.parse(event.data);
+  				handleActivityResponse(data);
+  			} catch (error) {
+  				console.error('Activity message parse error:', error);
+  			}
+  		};
+  	}
+
+  	// Send message to AI
+  	async function sendMessage() {
+  		if (!canSendMessage) return;
+
+  		const message = currentMessage.trim();
+  		const timestamp = new Date();
+
+  		// Add user message to chat
+  		const userMessage: ChatMessage = {
+  			id: 'msg_' + Date.now(),
+  			role: 'user',
+  			content: message,
+  			timestamp,
+  			metadata: {
+  				userIntent: analyzeUserIntent(message),
+  				caseID: chatSession.context.caseID
+  			}
+  		};
+
+  		chatSession.messages = [...chatSession.messages, userMessage];
+  		currentMessage = '';
+
+  		// Update activity
+  		updateUserActivity({ action: 'send_message', content_length: message.length });
+
+  		// Send to chat service
+  		try {
+  			chatService?.send('SEND_MESSAGE');
+
+  			const chatRequest = {
+  				message,
+  				user_id: userID,
+  				session_id: chatSession.id,
+  				case_id: caseID,
+  				context: chatSession.context,
+  				stream: true,
+  				temperature: 0.7,
+  				max_tokens: 2000
+  			};
+
+  			chatSocket?.send(JSON.stringify(chatRequest));
+  			metrics.totalMessages++;
+
+  			chatService?.send('MESSAGE_SENT');
+  		} catch (error) {
+  			console.error('Send message error:', error);
+  			chatService?.send('ERROR', { error });
+  		}
+  	}
+
+  	// Handle chat service responses
+  	function handleChatResponse(data: any) {
+  		if (data.streaming) {
+  			handleStreamingResponse(data);
+  		} else {
+  			handleStandardResponse(data);
+  		}
+  	}
+
+  	// Handle streaming response
+  	function handleStreamingResponse(data: any) {
+  		if (data.token && !data.done) {
+  			// Update streaming message
+  			let streamingMessage = chatSession.messages.find(m => m.streaming);
+
+  			if (!streamingMessage) {
+  				streamingMessage = {
+  					id: 'streaming_' + Date.now(),
+  					role: 'assistant',
+  					content: data.token,
+  					timestamp: new Date(),
+  					streaming: true,
+  					metadata: {
+  						session_id: data.session_id,
+  						gpu_accelerated: enableGPUAcceleration
+  					}
+  				};
+  				chatSession.messages = [...chatSession.messages, streamingMessage];
+  			} else {
+  				streamingMessage.content += data.token;
+  				// Trigger reactivity
+  				chatSession.messages = [...chatSession.messages];
+  			}
+
+  			streamingResponse = true;
+  			chatService?.send('STREAM_TOKEN');
+
+  			// Auto-scroll to bottom
+  			tick().then(() => scrollToBottom());
+
+  		} else if (data.done) {
+  			// Finalize streaming message
+  			const streamingMessage = chatSession.messages.find(m => m.streaming);
+  			if (streamingMessage) {
+  				streamingMessage.streaming = false;
+  				streamingMessage.metadata = {
+  					...streamingMessage.metadata,
+  					token_count: data.token_count,
+  					processing_time: data.processing_time_ms,
+  					user_intent: data.user_intent
+  				};
+  				chatSession.messages = [...chatSession.messages];
+  			}
+
+  			streamingResponse = false;
+  			chatService?.send('STREAM_COMPLETE');
+
+  			// Update context and metrics
+  			updateChatContext(data);
+  			updateMetrics(data);
+  		}
+  	}
+
+  	// Handle standard response
+  	function handleStandardResponse(data: any) {
+  		const assistantMessage: ChatMessage = {
+  			id: 'msg_' + Date.now(),
+  			role: 'assistant',
+  			content: data.response || data.content,
+  			timestamp: new Date(),
+  			metadata: {
+  				session_id: data.session_id,
+  				token_count: data.token_count,
+  				processing_time: data.processing_time_ms,
+  				user_intent: data.user_intent,
+  				suggestions: data.suggestions || [],
+  				gpu_accelerated: enableGPUAcceleration
+  			}
+  		};
+
+  		chatSession.messages = [...chatSession.messages, assistantMessage];
+  		chatService?.send('RESPONSE_RECEIVED');
+
+  		updateChatContext(data);
+  		updateMetrics(data);
+
+  		tick().then(() => scrollToBottom());
+  	}
+
+  	// Handle activity service responses
+  	function handleActivityResponse(data: any) {
+  		if (data.attention_level) {
+  			userActivity.attentionLevel = data.attention_level;
+  		}
+
+  		if (data.suggestions) {
+  			// Handle AI-suggested actions based on user activity
+  			console.log('AI Activity Suggestions:', data.suggestions);
+  		}
+  	}
+
+  	// Update user activity
+  	function updateUserActivity(activity: Record<string, any>) {
+  		userActivity.lastActivity = Date.now();
+
+  		if (activity.action === 'typing') {
+  			userActivity.isTyping = true;
+  			isTyping = true;
+  		} else {
+  			userActivity.isTyping = false;
+  			isTyping = false;
+  		}
+
+  		// Send to activity service
+  		activitySocket?.send(JSON.stringify({
+  			...activity,
+  			user_id: userID,
+  			timestamp: userActivity.lastActivity,
+  			page: userActivity.currentPage
+  		}));
+  	}
+
+  	// Update chat context
+  	function updateChatContext(data: any) {
+  		if (data.context) {
+  			chatSession.context = { ...chatSession.context, ...data.context };
+  		}
+
+  		if (data.user_intent) {
+  			chatSession.context.userIntent = data.user_intent;
+  		}
+
+  		if (data.confidence !== undefined) {
+  			chatSession.context.confidence = data.confidence;
+  		}
+
+  		chatSession.updatedAt = new Date();
+
+  		// Persist session
+  		saveChatSession();
+  	}
+
+  	// Update performance metrics
+  	function updateMetrics(data: any) {
+  		if (data.processing_time_ms) {
+  			const responseTime = data.processing_time_ms;
+  			metrics.averageResponseTime =
+  				(metrics.averageResponseTime * (metrics.totalMessages - 1) + responseTime) / metrics.totalMessages;
+  		}
+
+  		if (data.gpu_used !== undefined) {
+  			metrics.gpuUtilization = data.gpu_used ? 85 : 20; // Mock values
+  		}
+
+  		if (data.cache_hit !== undefined) {
+  			metrics.cacheHitRate = data.cache_hit ? 0.8 : 0.6; // Mock values
+  		}
+  	}
+
+  	// Analyze user intent
+  	function analyzeUserIntent(message: string): string {
+  		const lowerMsg = message.toLowerCase();
+
+  		if (lowerMsg.includes('search') || lowerMsg.includes('find')) return 'search';
+  		if (lowerMsg.includes('summarize') || lowerMsg.includes('summary')) return 'summarize';
+  		if (lowerMsg.includes('analyze') || lowerMsg.includes('analysis')) return 'analyze';
+  		if (lowerMsg.includes('draft') || lowerMsg.includes('write')) return 'draft';
+  		if (lowerMsg.includes('help') || lowerMsg.includes('explain')) return 'help';
+
+  		return 'general';
+  	}
+
+  	// Input handling
+  	function handleKeydown(event: KeyboardEvent) {
+  		if (event.key === 'Enter' && !event.shiftKey) {
+  			event.preventDefault();
+  			sendMessage();
+  		} else if (event.key === 'Escape') {
+  			closeDialog();
+  		}
+
+  		// Update typing activity
+  		updateUserActivity({ action: 'typing', key: event.key });
+  	}
+
+  	// Dialog controls
+  	function openDialog() {
+  		open.set(true);
+  		isOpen = true;
+
+  		tick().then(() => {
+  			const input = document.querySelector('[data-yorha-input]') as HTMLElement;
+  			input?.focus();
+  		});
+  	}
+
+  	function closeDialog() {
+  		open.set(false);
+  		isOpen = false;
+  	}
+
+  	// Utility functions
+  	function scrollToBottom() {
+  		const scrollArea = document.querySelector('[data-scroll-area]');
+  		if (scrollArea) {
+  			scrollArea.scrollTop = scrollArea.scrollHeight;
+  		}
+  	}
+
+  	function formatTimestamp(date: Date): string {
+  		return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  	}
+
+  	function getMessageIcon(role: string): string {
+  		switch (role) {
+  			case 'user': return '=d';
+  			case 'assistant': return '>';
+  			case 'system': return '�';
+  			default: return '=�';
+  		}
+  	}
+
+  	// Session management
+  	async function loadChatSession() {
+  		try {
+  			const response = await fetch(`/api/chat/sessions/${userID}/${chatSession.id}`);
+  			if (response.ok) {
+  				const sessionData = await response.json();
+  				chatSession = { ...chatSession, ...sessionData };
+  			}
+  		} catch (error) {
+  			console.error('Load session error:', error);
+  		}
+  	}
+
+  	async function saveChatSession() {
+  		try {
+  			await fetch(`/api/chat/sessions/${chatSession.id}`, {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify(chatSession)
+  			});
+  		} catch (error) {
+  			console.error('Save session error:', error);
+  		}
+  	}
+
+  	function clearChat() {
+  		chatSession.messages = [];
+  		chatSession.context.recentActions = [];
+  		chatSession.updatedAt = new Date();
+  		saveChatSession();
+  	}
+
+  	// Setup activity tracking
+  	function setupActivityTracking() {
+  		// Track typing in message input
+  let typingTimeout = $state<number;
+
+  		const updateTyping >(() => {
+  			clearTimeout(typingTimeout));
+  			updateUserActivity({ action: 'typing' });
+
+  			typingTimeout = setTimeout(() => {
+  				updateUserActivity({ action: 'stopped_typing' });
+  			}, 1000) as any;
+  		};
+
+  		// Global activity tracking
+  		if (browser) {
+  			document.addEventListener('keydown', updateTyping);
+  			document.addEventListener('click', () =>
+  				updateUserActivity({ action: 'click', page: window.location.pathname })
+  			);
+
+  			// Page visibility tracking
+  			document.addEventListener('visibilitychange', () => {
+  				updateUserActivity({
+  					action: 'visibility_change',
+  					visible: !document.hidden
+  				});
+  			});
+  		}
+  	}
+
+  	// Cleanup
+  	function cleanup() {
+  		chatSocket?.close();
+  		activitySocket?.close();
+  		chatService?.stop();
+  	}
+
+  	// Effects
+  	$effect(() => {
+  		if (isOpen) {
+  			tick().then(() => scrollToBottom());
+  		}
+  	});
+
+  	$effect(() => {
+  		if (currentMessage) {
+  			updateUserActivity({ action: 'typing', message_length: currentMessage.length });
+  		}
+  	});
 </script>
 
 <!-- Main Chat Interface -->

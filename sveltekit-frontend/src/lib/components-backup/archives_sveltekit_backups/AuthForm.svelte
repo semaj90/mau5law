@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { superForm } from "sveltekit-superforms";
 
   export let data: unknown;

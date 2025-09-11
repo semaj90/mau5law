@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   export interface Settings {
     theme: string;
     language: string;

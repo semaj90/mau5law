@@ -1,17 +1,14 @@
 <!-- YoRHa Modal Manager Component -->
 <script lang="ts">
-</script>
   import YoRHaModal from './YoRHaModal.svelte';
   import { modalStore, type Modal } from '$lib/stores/dialogs';
 
   // Subscribe to modal store
   let modals = $state<Modal[]>([]);
-  
   $effect(() => {
     const unsubscribe = modalStore.subscribe((value) => {
       modals = value;
     });
-    
     return unsubscribe;
   });
 

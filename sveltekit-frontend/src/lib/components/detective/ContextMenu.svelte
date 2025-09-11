@@ -2,7 +2,6 @@
 https://svelte.dev/e/js_parse_error -->
 
 <script lang="ts">
-</script>
   import { onMount, tick } from 'svelte';
 
   interface Props {
@@ -66,14 +65,14 @@ https://svelte.dev/e/js_parse_error -->
     closeMenu();
   }
 
-let cases = $state<Case[]>([]);
-let menuOpen = $state(true);
+  let cases = $state<Case[]>([]);
+  let menuOpen = $state(true);
     }
     closeMenu();
   }
   }
-let cases = $state<Case[] >([]);
-let menuOpen = $state(true);
+  let cases = $state<Case[] >([]);
+  let menuOpen = $state(true);
 
   onMount(async () => {
     // Load available cases
@@ -81,10 +80,10 @@ let menuOpen = $state(true);
       const response = await fetch("/api/cases");
       if (response.ok) {
         cases = await response.json();
-}
+  }
     } catch (error) {
       console.error("Failed to load cases:", error);
-}
+  }
     // Open menu after mount
     await tick();
   });
@@ -92,40 +91,40 @@ let menuOpen = $state(true);
   function sendToCase(caseId: string) {
     onsendToCase?.();
     closeMenu();
-}
+  }
   function viewEvidence() {
     if (item) window.open(`/evidence/${item.id}`, "_blank");
     closeMenu();
-}
+  }
   function editEvidence() {
     if (item) window.location.href = `/evidence/${item.id}/edit`;
     closeMenu();
-}
+  }
   function downloadEvidence() {
     if (item && item.fileUrl) {
       const link = document.createElement("a");
       link.href = item.fileUrl;
       link.download = item.fileName || "evidence";
       link.click();
-}
+  }
     closeMenu();
-}
+  }
   function duplicateEvidence() {
     // Implementation for duplicating evidence
     console.log("Duplicate evidence:", item?.id);
     closeMenu();
-}
+  }
   function deleteEvidence() {
     if (item && confirm("Are you sure you want to delete this evidence?")) {
       // Implementation for deleting evidence
       console.log("Delete evidence:", item.id);
-}
+  }
     closeMenu();
-}
+  }
   function closeMenu() {
     menuOpen = false;
     onclose?.();
-}
+  }
 </script>
   <button
     style="position:fixed;left:-9999px;top:-9999px;"

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
 
   let pipelineStatus = $state<any>(null);

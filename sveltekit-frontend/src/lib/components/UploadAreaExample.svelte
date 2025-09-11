@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import UploadArea from './UploadArea.svelte';
   let uploadComponent: UploadArea = $state();
@@ -13,39 +12,39 @@
   function handleUploadStart(event: CustomEvent) {
     uploadStatus = `Starting upload of ${event.detail.files.length} files...`;
     console.log('Upload started:', event.detail);
-}
+  }
   function handleUploadProgress(event: CustomEvent) {
     uploadStatus = `Upload progress: ${Math.round(event.detail.progress)}%`;
     console.log('Upload progress:', event.detail);
-}
+  }
   function handleUploadComplete(event: CustomEvent) {
     uploadStatus = `Successfully uploaded ${event.detail.files.length} files!`;
     uploadedFiles = [...uploadedFiles, ...event.detail.results];
     console.log('Upload completed:', event.detail);
-}
+  }
   function handleUploadError(event: CustomEvent) {
     uploadStatus = `Upload failed: ${event.detail.error}`;
     console.error('Upload error:', event.detail);
-}
+  }
   function handleFileStart(event: CustomEvent) {
     console.log('File upload started:', event.detail.file.name);
-}
+  }
   function handleFileSuccess(event: CustomEvent) {
     console.log('File uploaded successfully:', event.detail.file.name);
-}
+  }
   function handleFileError(event: CustomEvent) {
     console.error('File upload failed:', event.detail.file.name, event.detail.error);
-}
+  }
   function handleFilesSelected(event: CustomEvent) {
     console.log('Files selected:', event.detail.files.length);
-}
+  }
   function handleValidationError(event: CustomEvent) {
     console.warn('Validation errors:', event.detail.errors);
-}
+  }
   function clearStatus() {
     uploadStatus = '';
     uploadedFiles = [];
-}
+  }
 </script>
 
 <div class="space-y-4">

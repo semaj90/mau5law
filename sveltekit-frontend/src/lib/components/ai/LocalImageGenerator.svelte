@@ -4,7 +4,6 @@ Supports Stable Diffusion WebUI, ComfyUI, and Ollama integration
 Production-ready with native Windows support
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { 
     imageGenerationService, 
@@ -12,14 +11,12 @@ Production-ready with native Windows support
     type ImageGenerationRequest,
     type ImageGenerationResult 
   } from '$lib/services/local-image-generation-service.js';
-  
   interface Props {
     caseId?: string;
     onImageGenerated?: (result: ImageGenerationResult) => void;
     initialPrompt?: string;
     compact?: boolean;
   }
-  
   let { 
     caseId = '', 
     onImageGenerated = () => {}, 
@@ -33,26 +30,22 @@ Production-ready with native Windows support
   let selectedStyle = $state<'realistic' | 'artistic' | 'anime' | 'sketch' | 'legal-diagram' | 'evidence-recreation'>('realistic');
   let selectedProvider = $state<'stable-diffusion-webui' | 'comfyui' | 'ollama-vision' | 'fallback'>('fallback');
   let advancedMode = $state(false);
-  
   // Advanced parameters
   let width = $state(512);
   let height = $state(512);
   let steps = $state(20);
   let cfgScale = $state(7.5);
   let seed = $state(-1);
-  
   // UI state
   let showHistory = $state(false);
   let selectedImage = $state<ImageGenerationResult | null>(null);
   let generationHistory = $state<ImageGenerationResult[]>([]);
-  
   // Provider status
   let providerStatus = $state<Map<string, string>>(new Map());
 
   onMount(() => {
     // Load provider status
     providerStatus = imageGenerationService.getProviderStatus();
-    
     // Load generation history
     loadHistory();
   });
@@ -85,14 +78,11 @@ Production-ready with native Windows support
       };
 
       const result = await imageGenerationService.generateImage(request);
-      
       // Update history
       generationHistory = [result, ...generationHistory];
       selectedImage = result;
-      
       // Notify parent component
       onImageGenerated(result);
-      
     } catch (error) {
       console.error('Image generation failed:', error);
       alert(`Image generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -116,7 +106,6 @@ Production-ready with native Windows support
         },
         tags: ['ai-generated', result.provider, selectedStyle]
       };
-      
       onImageGenerated(result);
     }
   }
@@ -129,7 +118,6 @@ Production-ready with native Windows support
     selectedStyle = (result.parameters.style as any) || 'realistic';
     width = result.metadata.size.width;
     height = result.metadata.size.height;
-    
     await generateImage();
   }
 

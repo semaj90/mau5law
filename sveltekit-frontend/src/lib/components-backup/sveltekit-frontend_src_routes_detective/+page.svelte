@@ -1,15 +1,11 @@
 <script lang="ts">
-</script>
   import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
   import CaseForm from '$lib/components/forms/CaseForm.svelte';
   import { getAuthContext } from "$lib/stores/auth";
   import { onMount } from 'svelte';
-  
   const auth = getAuthContext();
-  
   let currentView = 'board'; // 'board' | 'create-case' | 'auth-demo'
   let mounted = false;
-  
   // Sample evidence data for the detective board
   let sampleEvidence = [
     {
@@ -98,34 +94,29 @@
       tags: ['dna', 'forensics', 'lab-report'],
       hash: 'dna456',
       aiSummary: 'DNA evidence confirms 99.7% match with suspect sample collected at scene'
-}
+  }
   ];
-  
   onMount(() => {
     mounted = true;
   });
-  
   function handleCaseFormSuccess(event: CustomEvent) {
     console.log('Case created/updated:', event.detail);
     currentView = 'board';
-}
+  }
   function handleCaseFormCancel() {
     currentView = 'board';
-}
+  }
   // Demo collaboration simulation
   function simulateCollaboration() {
     if (!mounted) return;
-    
     // Simulate other users joining
     const mockUsers = [
       { id: 'user-1', name: 'Sarah Chen', email: 'sarah.chen@prosecutor.office' },
       { id: 'user-2', name: 'Mike Rodriguez', email: 'mike.rodriguez@prosecutor.office' },
       { id: 'user-3', name: 'Dr. Lisa Kim', email: 'lisa.kim@forensics.office' }
     ];
-    
     // Add one random user as if they joined
     const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
-    
     // Show notification
     if (typeof window !== 'undefined') {
       // Create a temporary notification
@@ -139,9 +130,7 @@
           <span class="space-y-4">${randomUser.name} joined the case</span>
         </div>
       `;
-      
       document.body.appendChild(notification);
-      
       // Remove after 3 seconds
       setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
@@ -149,9 +138,9 @@
           document.body.removeChild(notification);
         }, 300);
       }, 3000);
-}
+  }
     console.log('🚀 Collaboration demo:', randomUser.name, 'joined the case');
-}
+  }
 </script>
 
 <svelte:head>

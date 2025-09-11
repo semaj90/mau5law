@@ -1,6 +1,5 @@
 <!-- YoRHa Detective Notification Component -->
 <script lang="ts">
-</script>
   interface Props {
     message: string;
     type: 'success' | 'error' | 'info' | 'warning';

@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-	import { TimeField } from "bits-ui";
+  	import { TimeField } from "bits-ui";
 </script>
 
 <TimeField.Root>

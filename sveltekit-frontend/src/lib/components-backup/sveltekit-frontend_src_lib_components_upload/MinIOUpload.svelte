@@ -1,12 +1,10 @@
 <!-- MinIO Upload Component with SvelteKit 2 + Superforms + PostgreSQL Integration -->
 <script lang="ts">
-</script>
   import { superForm } from 'sveltekit-superforms/client';
   import { fileUploadSchema, type FileUploadData } from '$lib/schemas/upload';
   import { page } from '$app/stores';
   import { invalidateAll } from '$app/navigation';
   import type { PageData } from './$types';
-  
   // Props
   interface Props {
     data: PageData
@@ -16,7 +14,6 @@
     multiple?: boolean;
     disabled?: boolean;
   }
-  
   let { 
     data, 
     caseId = '', 
@@ -41,10 +38,8 @@
     validators: {
       file: (value) => {
         if (!value || !(value instanceof File)) return 'File is required';
-        
         const maxSize = 100 * 1024 * 1024; // 100MB
         if (value.size > maxSize) return 'File must be less than 100MB';
-        
         const allowedTypes = [
           'application/pdf',
           'application/msword',
@@ -54,11 +49,9 @@
           'image/png',
           'image/tiff'
         ];
-        
         if (!allowedTypes.includes(value.type)) {
           return 'File type not supported';
         }
-        
         return null;
       }
     },
@@ -111,7 +104,6 @@
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-    
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       $form.file = files[0];
@@ -152,7 +144,6 @@
   function handleSubmit() {
     uploadStatus = 'uploading';
     uploadProgress = 0;
-    
     // Simulate upload progress (in real implementation, track actual progress)
     const progressInterval = setInterval(() => {
       if (uploadProgress < 90) {
@@ -162,11 +153,9 @@
 
     return async ({ result }: { result: any }) => {
       clearInterval(progressInterval);
-      
       if (result.type === 'success') {
         uploadProgress = 100;
         uploadStatus = 'processing';
-        
         // Simulate processing time
         setTimeout(() => {
           uploadStatus = 'completed';

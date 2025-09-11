@@ -1,6 +1,5 @@
 <!-- Enhanced Legal Document Editor with UnoCSS + bits-ui -->
 <script lang="ts">
-</script>
   import {
     createDialog,
     createDropdownMenu,
@@ -35,14 +34,14 @@
   let { readonly = $bindable() } = $props(); // false;
 
   // Component state
-let content = $state("");
-let query = $state("");
-let isLoading = $state(false);
-let isProcessingAI = $state(false);
-let error = $state("");
-let loadingDocument = $state(false);
-let documentLoadError = $state("");
-let citations = $state<Array<{
+  let content = $state("");
+  let query = $state("");
+  let isLoading = $state(false);
+  let isProcessingAI = $state(false);
+  let error = $state("");
+  let loadingDocument = $state(false);
+  let documentLoadError = $state("");
+  let citations = $state<Array<{
     id: string;
     text: string;
     source: string;
@@ -50,11 +49,11 @@ let citations = $state<Array<{
   }> >([]);
 
   // Auto-save state
-let autoSaveTimer = $state<ReturnType<typeof setTimeout> | null >(null);
-let lastSaved = $state("");
-let isSaving = $state(false);
-let saveError = $state("");
-let hasUnsavedChanges = $state(false);
+  let autoSaveTimer = $state<ReturnType<typeof setTimeout> | null >(null);
+  let lastSaved = $state("");
+  let isSaving = $state(false);
+  let saveError = $state("");
+  let hasUnsavedChanges = $state(false);
 
   // Document type definitions
   interface DocumentData {
@@ -71,7 +70,7 @@ let hasUnsavedChanges = $state(false);
       source: string;
       type: "case" | "statute" | "regulation";
     }>;
-}
+  }
   const dispatch = createEventDispatcher<{
     save: { content: string; title: string };
     aiRequest: { query: string; context: string };
@@ -144,16 +143,16 @@ let hasUnsavedChanges = $state(false);
       error = err instanceof Error ? err.message : "AI request failed";
     } finally {
       isProcessingAI = false;
-}}
+  }}
   function insertCitation(citation: (typeof citations)[0]) {
     const citationText = `[${citation.source}]`;
     content += citationText;
     citations = [...citations, citation];
     dispatch("citationAdded", { citation });
-}
+  }
   function saveDocument() {
     dispatch("save", { content, title });
-}
+  }
   // Enhanced auto-save function with debouncing
   function scheduleAutoSave() {
     if (!documentId || readonly) return;
@@ -163,12 +162,12 @@ let hasUnsavedChanges = $state(false);
     // Clear existing timer
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
-}
+  }
     // Schedule new auto-save after 2 seconds of inactivity
     autoSaveTimer = setTimeout(() => {
       autoSaveDocument();
     }, 2000);
-}
+  }
   // Function to auto-save document
   async function autoSaveDocument() {
     if (!documentId || readonly || isSaving) return;
@@ -193,7 +192,7 @@ let hasUnsavedChanges = $state(false);
 
       if (!response.ok) {
         throw new Error("Failed to auto-save document");
-}
+  }
       const result = await response.json();
 
       if (result.success) {
@@ -202,13 +201,13 @@ let hasUnsavedChanges = $state(false);
         console.log("Document auto-saved successfully");
       } else {
         throw new Error(result.error || "Auto-save failed");
-}
+  }
     } catch (err) {
       saveError = err instanceof Error ? err.message : "Auto-save failed";
       console.error("Auto-save failed:", err);
     } finally {
       isSaving = false;
-}}
+  }}
   // Function to manually save document
   async function manualSaveDocument() {
     if (!documentId || readonly || isSaving) return;
@@ -233,7 +232,7 @@ let hasUnsavedChanges = $state(false);
 
       if (!response.ok) {
         throw new Error("Failed to save document");
-}
+  }
       const result = await response.json();
 
       if (result.success) {
@@ -242,13 +241,13 @@ let hasUnsavedChanges = $state(false);
         console.log("Document saved successfully");
       } else {
         throw new Error(result.error || "Save failed");
-}
+  }
     } catch (err) {
       saveError = err instanceof Error ? err.message : "Save failed";
       console.error("Save failed:", err);
     } finally {
       isSaving = false;
-}}
+  }}
   // Function to get save status
   function getSaveStatus() {
     if (isSaving) return "Saving...";
@@ -256,7 +255,7 @@ let hasUnsavedChanges = $state(false);
     if (hasUnsavedChanges) return "Unsaved changes";
     if (lastSaved) return `Last saved ${lastSaved}`;
     return "All changes saved";
-}
+  }
   function getDocumentTypeIcon() {
     switch (documentType) {
       case "brief":
@@ -269,24 +268,24 @@ let hasUnsavedChanges = $state(false);
         return Search;
       default:
         return FileText;
-}}
+  }}
   onMount(() => {
     // Load document content if documentId is provided
     if (documentId) {
       loadDocument();
-}
+  }
     // Set up auto-save on content changes
     return () => {
       if (autoSaveTimer) {
         clearTimeout(autoSaveTimer);
-}
+  }
     };
   });
 
   // Reactive statement to trigger auto-save when content changes
   // TODO: Convert to $derived: if (content && documentId && !loadingDocument) {
     scheduleAutoSave()
-}
+  }
   // Reactive statement to update save status
   let saveStatus = $derived(getSaveStatus());
 
@@ -307,7 +306,7 @@ let hasUnsavedChanges = $state(false);
 
       if (!response.ok) {
         throw new Error(`Failed to load document: ${response.statusText}`);
-}
+  }
       const documentData: DocumentData = await response.json();
 
       // Update component state with loaded data
@@ -318,7 +317,7 @@ let hasUnsavedChanges = $state(false);
       // Load citations if available
       if (documentData.citations) {
         citations = documentData.citations;
-}
+  }
       // Set initial save status
       lastSaved = new Date(documentData.updatedAt).toLocaleTimeString();
       hasUnsavedChanges = false;
@@ -330,7 +329,7 @@ let hasUnsavedChanges = $state(false);
       console.error("Error loading document:", err);
     } finally {
       loadingDocument = false;
-}}
+  }}
   // Custom animation function for dialog
   function flyAndScale(
     node: Element,
@@ -371,7 +370,7 @@ let hasUnsavedChanges = $state(false);
       },
       easing: quintOut,
     };
-}
+  }
 </script>
 
 <!-- Main Document Editor Container -->

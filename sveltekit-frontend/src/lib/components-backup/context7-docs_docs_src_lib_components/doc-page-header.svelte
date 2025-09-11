@@ -1,27 +1,26 @@
 <script lang="ts">
-</script>
-	import type { DocMetadata } from "$lib/utils/docs.js";
-	import { Tooltip } from "bits-ui";
-	import PageHeaderDescription from "./page-header/page-header-description.svelte";
-	import PageHeaderHeading from "./page-header/page-header-heading.svelte";
-	import PageHeader from "./page-header/page-header.svelte";
-	import CopySimple from "phosphor-svelte/lib/CopySimple";
-	import ArrowUpRight from "phosphor-svelte/lib/ArrowUpRight";
-	import { CopyToClipboard } from "$lib/utils/copy-to-clipboard.svelte.js";
-	import { page } from "$app/state";
-	import Check from "phosphor-svelte/lib/Check";
+  	import type { DocMetadata } from "$lib/utils/docs.js";
+  	import { Tooltip } from "bits-ui";
+  	import PageHeaderDescription from "./page-header/page-header-description.svelte";
+  	import PageHeaderHeading from "./page-header/page-header-heading.svelte";
+  	import PageHeader from "./page-header/page-header.svelte";
+  	import CopySimple from "phosphor-svelte/lib/CopySimple";
+  	import ArrowUpRight from "phosphor-svelte/lib/ArrowUpRight";
+  	import { CopyToClipboard } from "$lib/utils/copy-to-clipboard.svelte.js";
+  	import { page } from "$app/state";
+  	import Check from "phosphor-svelte/lib/Check";
 
-	let { metadata }: { metadata: DocMetadata } = $props();
+  	let { metadata }: { metadata: DocMetadata } = $props();
 
-	const copyState = new CopyToClipboard();
+  	const copyState = new CopyToClipboard();
 
-	async function copyMarkdown() {
-		const url = page.url.origin + page.url.pathname + "/llms.txt";
-		const res = await fetch(url);
-		const text = await res.text();
-		copyState.setCodeString(text);
-		copyState.copyToClipboard();
-	}
+  	async function copyMarkdown() {
+  		const url = page.url.origin + page.url.pathname + "/llms.txt";
+  		const res = await fetch(url);
+  		const text = await res.text();
+  		copyState.setCodeString(text);
+  		copyState.copyToClipboard();
+  	}
 </script>
 
 <PageHeader>

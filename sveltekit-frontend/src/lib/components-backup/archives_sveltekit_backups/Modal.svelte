@@ -1,47 +1,36 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  
   export let open = false;
   export let title = '';
   export let size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   export let closeOnOutsideClick = true;
   export let closeOnEscape = true;
-  
   const dispatch = createEventDispatcher();
-  
   let modalElement: HTMLDivElement;
-  
   function handleClose() {
     open = false;
     dispatch('close');
   }
-  
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape' && closeOnEscape) {
       handleClose();
     }
   }
-  
   function handleOutsideClick(event: MouseEvent) {
     if (closeOnOutsideClick && event.target === modalElement) {
       handleClose();
     }
   }
-  
   onMount(() => {
     const handleGlobalKeydown = (e: KeyboardEvent) => {
       if (open) handleKeydown(e);
     };
-    
     document.addEventListener('keydown', handleGlobalKeydown);
-    
     return () => {
       document.removeEventListener('keydown', handleGlobalKeydown);
     };
   });
-  
   // TODO: Convert to $derived: sizeClasses = {
     sm: 'max-w-md',
     md: 'max-w-lg',

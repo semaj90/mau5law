@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Dropdown from './Dropdown.svelte';
   import Checkbox from './Checkbox.svelte';
   import SearchBar from './SearchBar.svelte';

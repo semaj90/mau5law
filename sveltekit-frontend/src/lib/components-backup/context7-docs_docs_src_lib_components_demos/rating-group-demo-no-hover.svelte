@@ -1,9 +1,8 @@
 <script lang="ts">
-</script>
-	import { unstable_RatingGroup as RatingGroup } from "bits-ui";
-	import Star from "phosphor-svelte/lib/Star";
+  	import { unstable_RatingGroup as RatingGroup } from "bits-ui";
+  	import Star from "phosphor-svelte/lib/Star";
 
-	let value = $state(2);
+  	let value = $state(2);
 </script>
 
 <div class="flex select-none flex-col gap-4">

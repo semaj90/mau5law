@@ -1,10 +1,9 @@
 <script lang="ts">
-</script>
-	import { Checkbox, Label, useId } from "bits-ui";
-	import Check from "phosphor-svelte/lib/Check";
-	import Minus from "phosphor-svelte/lib/Minus";
+  	import { Checkbox, Label, useId } from "bits-ui";
+  	import Check from "phosphor-svelte/lib/Check";
+  	import Minus from "phosphor-svelte/lib/Minus";
 
-	let myValue = $state<string[]>(["marketing", "news"]);
+  	let myValue = $state<string[]>(["marketing", "news"]);
 </script>
 
 <Checkbox.Group

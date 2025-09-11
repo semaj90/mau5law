@@ -1,6 +1,5 @@
 <!-- Lazy Loading Demo - Shows how to use the lazy loading system -->
 <script lang="ts">
-</script>
   import { 
     LazyLoader, 
     LazyChart, 
@@ -60,18 +59,16 @@
     analysisLazyState?.isVisible,
     customLazyState?.isVisible
   ].filter(Boolean).length);
-</script>
 
-<svelte:head>
+  <svelte:head>
   <title>Lazy Loading Demo - Legal AI Platform</title>
   <meta name="description" content="Demonstration of lazy loading system for performance optimization" />
-</svelte:head>
+  </svelte:head>
 
-<div class="demo-container">
+  <div class="demo-container">
   <header class="demo-header">
     <h1>Lazy Loading System Demo</h1>
     <p>Performance optimization through intelligent component loading</p>
-    
     <div class="stats-bar">
       <div class="stat-item">
         <span class="stat-value">{loadedComponents}</span>
@@ -97,7 +94,6 @@
         of heavy components until they're about to come into view. This improves initial 
         page load times and reduces memory usage.
       </p>
-      
       <div class="benefits-grid">
         <div class="benefit-card">
           <div class="benefit-icon">⚡</div>
@@ -141,7 +137,6 @@
         Charts can be resource-intensive, especially with large datasets. 
         This chart component loads only when visible.
       </p>
-      
       <LazyChart
         {chartData}
         chartType="bar"
@@ -179,7 +174,6 @@
         AI analysis components are particularly heavy as they may load models 
         and perform complex computations. Lazy loading prevents unnecessary processing.
       </p>
-      
       <LazyAIAnalysis
         analysisType="evidence"
         analysisData={evidenceData}
@@ -221,7 +215,6 @@
         The base LazyLoader component can wrap any content. Here's a custom 
         implementation showing a document list.
       </p>
-      
       <LazyLoader
         preset="NORMAL"
         placeholderHeight="500px"
@@ -265,7 +258,6 @@
     <section class="demo-section">
       <h2>4. Configuration Options</h2>
       <p>The lazy loading system offers various presets and customization options:</p>
-      
       <div class="config-grid">
         {#each Object.entries(LAZY_LOAD_PRESETS) as [preset, config]}
           <div class="config-card">
@@ -292,7 +284,6 @@
     <!-- Implementation guide -->
     <section class="demo-section">
       <h2>5. Implementation Guide</h2>
-      
       <div class="code-example">
         <h4>Basic Usage</h4>
         <pre><code>{`<script lang="ts">

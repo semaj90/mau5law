@@ -1,21 +1,20 @@
 
 <script lang="ts">
-</script>
-import '../app.css';
-import '../lib/styles/nier.css';
-import '../lib/styles/theme.css';
-import Navigation from '$lib/components/Navigation.svelte';
-import YoRHaNotificationManager from '$lib/components/yorha/YoRHaNotificationManager.svelte';
-import YoRHaDialogManager from '$lib/components/yorha/YoRHaDialogManager.svelte';
-import YoRHaModalManager from '$lib/components/yorha/YoRHaModalManager.svelte';
-import { notificationStore as notificationStoreExport } from '$lib/stores/notifications';
-// import { aiService } from '$lib/services/ai-service';
-import { onMount } from 'svelte';
+  import '../app.css';
+  import '../lib/styles/nier.css';
+  import '../lib/styles/theme.css';
+  import Navigation from '$lib/components/Navigation.svelte';
+  import YoRHaNotificationManager from '$lib/components/yorha/YoRHaNotificationManager.svelte';
+  import YoRHaDialogManager from '$lib/components/yorha/YoRHaDialogManager.svelte';
+  import YoRHaModalManager from '$lib/components/yorha/YoRHaModalManager.svelte';
+  import { notificationStore as notificationStoreExport } from '$lib/stores/notifications';
+  // import { aiService } from '$lib/services/ai-service';
+  import { onMount } from 'svelte';
 
-let llmEndpoint = '';
-let llmStatus: 'Ollama' | 'vLLM' | 'offline' = 'offline';
+  let llmEndpoint = '';
+  let llmStatus: 'Ollama' | 'vLLM' | 'offline' = 'offline';
 
-onMount(() => {
+  onMount(() => {
   // Temporary disable AI service connection for development
   llmEndpoint = 'mock://localhost:5175';
   llmStatus = 'offline';
@@ -37,7 +36,7 @@ onMount(() => {
       showProgress: false
     });
   }
-});
+  });
 </script>
 
 <svelte:window on:keydown />

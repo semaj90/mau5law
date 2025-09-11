@@ -1,22 +1,18 @@
 <script lang="ts">
-</script>
   import { page } from '$app/stores';
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
   import { UiButton as Button } from '$lib/components/ui';
   import { onMount } from 'svelte';
-  
   let caseId: string | null = null;
   let readOnly = false;
-  
   onMount(() => {
     // Get case ID from URL params if provided
     caseId = $page.url.searchParams.get('caseId');
     readOnly = $page.url.searchParams.get('readOnly') === 'true';
   });
-  
   function toggleReadOnly() {
     readOnly = !readOnly;
-}
+  }
 </script>
 
 <svelte:head>

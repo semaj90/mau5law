@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   // Svelte 5 runes are built-in, no import needed
   import * as Card from '$lib/components/ui/card';

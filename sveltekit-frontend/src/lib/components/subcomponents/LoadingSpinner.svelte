@@ -1,6 +1,5 @@
 <!-- Loading Spinner (Svelte 5 runes-compatible, simplified props) -->
 <script lang="ts">
-</script>
   // Runes mode: derive props via $props()
   interface P { size?: 'sm'|'md'|'lg'|'xl'; color?: 'blue'|'green'|'red'|'yellow'|'gray'|'white'; label?: string; inline?: boolean }
   let { size='md', color='blue', label='Loading...', inline=false }: P = $props();

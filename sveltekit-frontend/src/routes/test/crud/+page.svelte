@@ -1,6 +1,5 @@
 <!-- Test CRUD Display with SSR UI -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { enhance } from '$app/forms';
@@ -30,12 +29,12 @@
 
   /** @type {import('./$types').PageData} */
   let { data } = $props();
-let isCreating = $state(false);
-let editingCase = $state(null);
-let isDeleting = $state(false);
+  let isCreating = $state(false);
+  let editingCase = $state(null);
+  let isDeleting = $state(false);
 
   // Form state
-let formData = $state({
+  let formData = $state({
     title: '',
     description: '',
     priority: 'medium',
@@ -44,8 +43,8 @@ let formData = $state({
   });
 
   // UI state
-let gamingEra = $state('nes'); // nes, snes, n64
-let showSystemHealth = $state(false);
+  let gamingEra = $state('nes'); // nes, snes, n64
+  let showSystemHealth = $state(false);
 
   // Reset form
   const resetForm = () => {

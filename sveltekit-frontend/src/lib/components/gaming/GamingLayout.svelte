@@ -1,66 +1,60 @@
 <script lang="ts">
-</script>
-	import { page } from '$app/stores';
-	import GamingHUD from './GamingHUD.svelte';
-	import GamingPanel from './GamingPanel.svelte';
-	import GamingButton from './GamingButton.svelte';
-	import type { ComponentProps } from 'svelte';
-	
-	interface GamingLayoutProps {
-		showHUD?: boolean;
-		title?: string;
-		subtitle?: string;
-		user?: {
-			level: number
-			experience: number
-			maxExperience: number
-		};
-		stats?: {
-			documentsAnalyzed: number
-			accuracyScore: number
-		};
-		navigation?: {
-			label: string
-			href: string
-			icon?: string;
-		}[];
-		children: any
-	}
-	
-	let { 
-		showHUD = true,
-		title = "Legal AI System",
-		subtitle = "Advanced Document Analysis",
-		user = {
-			level: 1,
-			experience: 750,
-			maxExperience: 1000
-		},
-		stats = {
-			documentsAnalyzed: 47,
-			accuracyScore: 94.2
-		},
-		navigation = [
-			{ label: 'Dashboard', href: '/', icon: '🏠' },
-			{ label: 'Cases', href: '/cases', icon: '📁' },
-			{ label: 'Evidence', href: '/evidence', icon: '📋' },
-			{ label: 'Documents', href: '/documents', icon: '📄' },
-			{ label: 'Analysis', href: '/analysis', icon: '🔍' },
-			{ label: 'Reports', href: '/reports', icon: '📊' },
-		],
-		children
-	} = $props();
-	
-	let currentPath = $derived($page.url.pathname)
-	let sidebarCollapsed = $state(false);
-	
-	function toggleSidebar() {
-		sidebarCollapsed = !sidebarCollapsed;
-	}
-	
-	function isActiveRoute(href: string): boolean {
-		return currentPath === href || (href !== '/' && currentPath.startsWith(href));
-	}
+  	import { page } from '$app/stores';
+  	import GamingHUD from './GamingHUD.svelte';
+  	import GamingPanel from './GamingPanel.svelte';
+  	import GamingButton from './GamingButton.svelte';
+  	import type { ComponentProps } from 'svelte';
+  	interface GamingLayoutProps {
+  		showHUD?: boolean;
+  		title?: string;
+  		subtitle?: string;
+  		user?: {
+  			level: number
+  			experience: number
+  			maxExperience: number
+  		};
+  		stats?: {
+  			documentsAnalyzed: number
+  			accuracyScore: number
+  		};
+  		navigation?: {
+  			label: string
+  			href: string
+  			icon?: string;
+  		}[];
+  		children: any
+  	}
+  	let { 
+  		showHUD = true,
+  		title = "Legal AI System",
+  		subtitle = "Advanced Document Analysis",
+  		user = {
+  			level: 1,
+  			experience: 750,
+  			maxExperience: 1000
+  		},
+  		stats = {
+  			documentsAnalyzed: 47,
+  			accuracyScore: 94.2
+  		},
+  		navigation = [
+  			{ label: 'Dashboard', href: '/', icon: '🏠' },
+  			{ label: 'Cases', href: '/cases', icon: '📁' },
+  			{ label: 'Evidence', href: '/evidence', icon: '📋' },
+  			{ label: 'Documents', href: '/documents', icon: '📄' },
+  			{ label: 'Analysis', href: '/analysis', icon: '🔍' },
+  			{ label: 'Reports', href: '/reports', icon: '📊' },
+  		],
+  		children
+  	} = $props();
+  	let currentPath = $derived($page.url.pathname)
+  	let sidebarCollapsed = $state(false);
+  	function toggleSidebar() {
+  		sidebarCollapsed = !sidebarCollapsed;
+  	}
+  	function isActiveRoute(href: string): boolean {
+  		return currentPath === href || (href !== '/' && currentPath.startsWith(href));
+  	}
 </script>
 
 <div class="gaming-layout">

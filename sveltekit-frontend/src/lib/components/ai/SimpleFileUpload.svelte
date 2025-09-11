@@ -1,6 +1,5 @@
 <!-- Enhanced File Upload Component with Full Stack Integration -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { createMachine, interpret, type ActorRefFrom } from 'xstate';
   import { Upload, Check, X, Loader2, Database, Cpu, Cloud, Zap } from 'lucide-svelte';
@@ -58,7 +57,7 @@
     queues: {},
     storage: {}
   });
-let uploadMachine = $state<ActorRefFrom<typeof fileUploadMachine> | null >(null);
+  let uploadMachine = $state<ActorRefFrom<typeof fileUploadMachine> | null >(null);
 
   // XState Machine for Upload Management
   const fileUploadMachine = createMachine({
@@ -303,7 +302,7 @@ let uploadMachine = $state<ActorRefFrom<typeof fileUploadMachine> | null >(null)
       updateResult(fileId, 'documentId', documentRecord.id);
 
       // Stage 4: OCR Processing (if enabled)
-let extractedText = $state('');
+  let extractedText = $state('');
       if (enableOCR && ['image/', 'application/pdf'].some(type => file.type.includes(type))) {
         await updateStage(fileId, 'ocr', 'processing');
         extractedText = await performOCR(file, fileId);

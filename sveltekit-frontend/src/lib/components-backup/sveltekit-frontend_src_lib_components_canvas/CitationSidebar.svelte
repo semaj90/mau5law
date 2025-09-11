@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     oncitationSelected?: (event?: any) => void;
     ondeleteCitation?: (event?: any) => void;
@@ -18,8 +17,6 @@
   import Card from '$lib/components/ui/Card.svelte';
   import Input from '$lib/components/ui/Input.svelte';
 
-  
-  
   let searchQuery = "";
   let selectedCategory = "all";
   let filteredCitations: Citation[] = [];
@@ -51,29 +48,29 @@
 
       return matchesSearch && matchesCategory;
     });
-}
+  }
   function selectCitation(citation: Citation) {
     oncitationSelected?.();
-}
+  }
   function deleteCitation(citation: Citation) {
     ondeleteCitation?.();
-}
+  }
   function copyCitation(citation: Citation) {
     const citationText = `${citation.content}\n\nSource: ${citation.source}`;
     navigator.clipboard.writeText(citationText);
-}
+  }
   function toggleFavorite(citation: Citation) {
     // Update favorite status - in real app, this would update the database
     citation.isFavorite = !citation.isFavorite;
     onupdateCitation?.();
-}
+  }
   // Drag and drop functionality
   function handleDragStart(event: DragEvent, citation: Citation) {
     if (event.dataTransfer) {
       event.dataTransfer.setData("text/plain", citation.content);
       event.dataTransfer.setData("application/json", JSON.stringify(citation));
       event.dataTransfer.effectAllowed = "copy";
-}}
+  }}
 </script>
 
 <div class="space-y-4">

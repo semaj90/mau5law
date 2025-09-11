@@ -1,17 +1,13 @@
 <!-- Evidence Upload Board Component with AI Analysis -->
 <script lang="ts">
-</script>
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Textarea } from '$lib/components/ui/textarea';
   import { AIAnalysisService } from '$lib/services/ai-analysis';
-  
   let files = $state<File[]>([]);
   let analysis = $state('');
   let isAnalyzing = $state(false);
-  
   const aiService = new AIAnalysisService();
-  
   async function handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files) {
@@ -19,10 +15,8 @@
       await analyzeEvidence();
     }
   }
-  
   async function analyzeEvidence() {
     if (!files.length) return;
-    
     isAnalyzing = true;
     try {
       const content = await files[0].text();

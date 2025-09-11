@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     data: PageData
   }
@@ -31,7 +30,6 @@
 
   import type { PageData } from "./$types";
   // ... other imports ...
-  
   // State management
   let validationModal = {
     open: false,
@@ -90,7 +88,7 @@
     // Set case context if available
     if (caseId) {
       evidenceActions.loadEvidence(caseId);
-}
+  }
   });
 
   function filterAndSortEvidence(evidence: Evidence[]) {
@@ -106,37 +104,37 @@
           e.collectedBy?.toLowerCase().includes(query) ||
           e.tags?.some((tag) => tag.toLowerCase().includes(query))
       );
-}
+  }
     // Apply type filter
     if (selectedType) {
       filtered = filtered.filter((e) => e.evidenceType === selectedType);
-}
+  }
     // Apply status filter - using isAdmissible as a simple status indicator
     if (selectedStatus) {
       if (selectedStatus === "admissible") {
         filtered = filtered.filter((e) => e.isAdmissible);
       } else if (selectedStatus === "pending") {
         filtered = filtered.filter((e) => !e.isAdmissible);
-}
-}
+  }
+  }
     // Apply collector filter
     if (selectedCollector) {
       filtered = filtered.filter((e) =>
         e.collectedBy?.toLowerCase().includes(selectedCollector.toLowerCase())
       );
-}
+  }
     // Apply date filters
     if (dateFrom) {
       const fromDate = new Date(dateFrom);
       filtered = filtered.filter(
         (e) => new Date(e.uploadedAt || 0) >= fromDate
       );
-}
+  }
     if (dateTo) {
       const toDate = new Date(dateTo);
       toDate.setHours(23, 59, 59, 999); // End of day
       filtered = filtered.filter((e) => new Date(e.uploadedAt || 0) <= toDate);
-}
+  }
     // Apply sorting
     filtered.sort((a, b) => {
       let aValue = a[sortBy as keyof Evidence];
@@ -148,28 +146,27 @@
       } else if (typeof aValue === "string") {
         aValue = aValue.toLowerCase();
         bValue = (bValue as string)?.toLowerCase();
-}
+  }
       if (sortOrder === "asc") {
         return aValue > bValue ? 1 : -1;
       } else {
         return aValue < bValue ? 1 : -1;
-}
+  }
     });
 
     totalPages = Math.ceil(filtered.length / itemsPerPage);
     currentPage = Math.min(currentPage, totalPages || 1);
 
     return filtered;
-}
+  }
   function getPaginatedEvidence() {
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     return filteredEvidence.slice(start, end);
-}
+  }
   // Enhanced AI Analysis Functions
   async function analyzeEvidence(evidence: Evidence) {
     if (analysisInProgress.has(evidence.id)) return;
-    
     analysisInProgress.add(evidence.id);
     analysisInProgress = analysisInProgress;
 
@@ -203,8 +200,8 @@
     } finally {
       analysisInProgress.delete(evidence.id);
       analysisInProgress = analysisInProgress;
-}
-}
+  }
+  }
   async function bulkAnalyzeEvidence() {
     if (selectedEvidence.size === 0) {
       notifications.add({
@@ -213,7 +210,7 @@
         message: "Please select evidence items to analyze.",
       });
       return;
-}
+  }
     bulkOperationLoading = true;
     const evidenceIds = Array.from(selectedEvidence);
     let successCount = 0;
@@ -231,8 +228,8 @@
         } catch (error) {
           console.error(`Failed to analyze evidence ${evidenceId}:`, error);
           failureCount++;
-}
-}
+  }
+  }
       notifications.add({
         type: successCount > 0 ? "success" : "error",
         title: "Bulk Analysis Complete",
@@ -241,17 +238,16 @@
 
       if (successCount > 0) {
         await refreshEvidence();
-}
+  }
     } finally {
       bulkOperationLoading = false;
       selectedEvidence.clear();
       selectedEvidence = selectedEvidence;
       showBulkActions = false;
-}
-}
+  }
+  }
   function handleThinkingToggle(event: CustomEvent<{ enabled: boolean }>) {
     thinkingStyleEnabled = event.detail.enabled;
-    
     notifications.add({
       type: "info",
       title: "Analysis Mode Changed",
@@ -259,7 +255,7 @@
         ? "🧠 Thinking Style enabled - detailed reasoning will be shown"
         : "⚡ Quick Mode enabled - concise analysis results",
     });
-}
+  }
   function closeAnalysisModal() {
     analysisModal = {
       open: false,
@@ -267,60 +263,56 @@
       result: null,
       loading: false
     };
-}
+  }
   function formatAnalysisForDisplay(analysis: any): string {
     if (!analysis) return "No analysis available";
-    
     let display = "";
-    
     if (analysis.thinking && thinkingStyleEnabled) {
       display += `**🧠 AI Reasoning Process:**\n${analysis.thinking}\n\n---\n\n`;
-}
+  }
     if (analysis.analysis) {
       display += `**📋 Analysis Results:**\n`;
       const analysisData = analysis.analysis;
-      
       if (analysisData.key_findings) {
         display += `\n**Key Findings:**\n`;
         analysisData.key_findings.forEach((finding: string) => {
           display += `• ${finding}\n`;
         });
-}
+  }
       if (analysisData.legal_implications) {
         display += `\n**Legal Implications:**\n`;
         analysisData.legal_implications.forEach((implication: string) => {
           display += `• ${implication}\n`;
         });
-}
+  }
       if (analysisData.recommendations) {
         display += `\n**Recommendations:**\n`;
         analysisData.recommendations.forEach((rec: string) => {
           display += `• ${rec}\n`;
         });
-}
-}
+  }
+  }
     display += `\n**Confidence:** ${Math.round(analysis.confidence * 100)}%`;
-    
     return display;
-}
+  }
   function toggleEvidenceSelection(evidenceId: string) {
     if (selectedEvidence.has(evidenceId)) {
       selectedEvidence.delete(evidenceId);
     } else {
       selectedEvidence.add(evidenceId);
-}
+  }
     selectedEvidence = selectedEvidence;
     showBulkActions = selectedEvidence.size > 0;
-}
+  }
   function selectAllEvidence() {
     if (selectedEvidence.size === visibleEvidence.length) {
       selectedEvidence.clear();
     } else {
       visibleEvidence.forEach((e) => selectedEvidence.add(e.id));
-}
+  }
     selectedEvidence = selectedEvidence;
     showBulkActions = selectedEvidence.size > 0;
-}
+  }
   async function bulkOperation(operation: string) {
     if (selectedEvidence.size === 0) return;
 
@@ -368,7 +360,7 @@
             message: `${evidenceIds.length} evidence items deleted successfully.`,
           });
           break;
-}
+  }
       selectedEvidence.clear();
       selectedEvidence = selectedEvidence;
       showBulkActions = false;
@@ -383,12 +375,12 @@
       });
     } finally {
       bulkOperationLoading = false;
-}
-}
+  }
+  }
   async function updateEvidenceStatus(evidenceId: string, status: string) {
     // Implementation would call API
     console.log("Updating evidence status:", evidenceId, status);
-}
+  }
   async function exportEvidence(evidenceIds: string[]) {
     const evidenceToExport = allEvidence.filter((e) =>
       evidenceIds.includes(e.id)
@@ -403,26 +395,26 @@
       link.download = `evidence_export_${new Date().toISOString().split("T")[0]}.json`;
       link.click();
       URL.revokeObjectURL(url);
-}
+  }
     // Log security event
     logSecurityEvent({
       type: "data_export",
       details: { evidenceIds, exportType: "bulk" },
       severity: "medium",
     });
-}
+  }
   async function deleteEvidence(evidenceIds: string[]) {
     // Implementation would call API
     console.log("Deleting evidence:", evidenceIds);
-}
+  }
   async function refreshEvidence() {
     if (caseId) {
       await evidenceActions.loadEvidence(caseId);
-}
-}
+  }
+  }
   function openUploadModal() {
     uploadActions.openModal(caseId);
-}
+  }
   function handleEvidenceValidation(event: CustomEvent) {
     const { evidence, aiEvent } = event.detail;
     validationModal = {
@@ -430,22 +422,22 @@
       evidence,
       aiEvent: aiEvent || null,
     };
-}
+  }
   function handleValidationComplete(event: CustomEvent) {
     validationModal.open = false;
     // Refresh evidence grid to show updated analysis
     refreshEvidence();
-}
+  }
   function handleAdvancedUpload() {
     showAdvancedUpload = true;
-}
+  }
   function handleFileUpload(event: CustomEvent) {
     const { files } = event.detail;
     // Process uploaded files
     console.log("Files uploaded:", files);
     showAdvancedUpload = false;
     refreshEvidence();
-}
+  }
   function getEvidenceTypeIcon(type: string) {
     switch (type?.toLowerCase()) {
       case "document":
@@ -458,8 +450,8 @@
         return Mic;
       default:
         return FileCheck;
-}
-}
+  }
+  }
   function getEvidenceStatusColor(status: string) {
     switch (status?.toLowerCase()) {
       case "pending":
@@ -472,8 +464,8 @@
         return "badge-error";
       default:
         return "badge-ghost";
-}
-}
+  }
+  }
   function getEvidenceStatusIcon(status: string) {
     switch (status?.toLowerCase()) {
       case "pending":
@@ -486,8 +478,8 @@
         return AlertTriangle;
       default:
         return FileCheck;
-}
-}
+  }
+  }
   // Reactive statements
   $effect(() => { if (
     searchQuery ||
@@ -500,7 +492,7 @@
     sortOrder
   ) {
     filteredEvidence = filterAndSortEvidence(allEvidence);
-}
+  }
 </script>
 
 <svelte:head>

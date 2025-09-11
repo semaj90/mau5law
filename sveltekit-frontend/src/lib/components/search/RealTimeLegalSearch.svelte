@@ -5,18 +5,14 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { derived } from 'svelte/store';
   import { debounce } from 'lodash-es';
-  
   // TODO: Replace with melt-ui equivalent when available
   // import { Combobox } from 'bits-ui';
   import * as Command from '$lib/components/ui/command/index.js';
-  
   // Real-time search service
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
-  
   // Icons
   import {
     Search,
@@ -93,7 +89,6 @@
   // Handle input changes
   function handleInputChange(value: string) {
     inputValue = value;
-    
     if (autoSearch && value.trim().length >= 2) {
       debouncedSearch(value);
     }
@@ -104,7 +99,6 @@
     selectedResult = result;
     inputValue = result.title;
     open = false;
-    
     // Dispatch custom event for parent components
     const event = new CustomEvent('select', {
       detail: { result, query: inputValue }

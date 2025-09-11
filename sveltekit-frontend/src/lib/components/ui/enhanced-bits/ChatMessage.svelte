@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     message: { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string }
     analyticsLog?: (event: any) => void;

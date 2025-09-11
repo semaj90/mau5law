@@ -1,31 +1,30 @@
 <script lang="ts">
-</script>
-	import { Tabs } from "bits-ui";
-	import type { Snippet } from "svelte";
-	import CopySimple from "phosphor-svelte/lib/CopySimple";
-	import Check from "phosphor-svelte/lib/Check";
-	import { cn } from "$lib/utils/styles.js";
-	import { useCopyToClipboard } from "$lib/utils/copy-to-clipboard.svelte.js";
+  	import { Tabs } from "bits-ui";
+  	import type { Snippet } from "svelte";
+  	import CopySimple from "phosphor-svelte/lib/CopySimple";
+  	import Check from "phosphor-svelte/lib/Check";
+  	import { cn } from "$lib/utils/styles.js";
+  	import { useCopyToClipboard } from "$lib/utils/copy-to-clipboard.svelte.js";
 
-	let {
-		value = $bindable(),
-		open = $bindable(),
-		ref = $bindable(null),
-		onValueChange = () => {},
-		items,
-		expandable = true,
-		children,
-	}: {
-		value?: string;
-		onValueChange?: (value: string) => void;
-		items: { value: string; label: string }[];
-		children: Snippet;
-		open: boolean;
-		expandable?: boolean;
-		ref?: HTMLElement | null;
-	} = $props();
+  	let {
+  		value = $bindable(),
+  		open = $bindable(),
+  		ref = $bindable(null),
+  		onValueChange = () => {},
+  		items,
+  		expandable = true,
+  		children,
+  	}: {
+  		value?: string;
+  		onValueChange?: (value: string) => void;
+  		items: { value: string; label: string }[];
+  		children: Snippet;
+  		open: boolean;
+  		expandable?: boolean;
+  		ref?: HTMLElement | null;
+  	} = $props();
 
-	const copyToClipboard = useCopyToClipboard();
+  	const copyToClipboard = useCopyToClipboard();
 </script>
 
 <Tabs.Root {value} {onValueChange}>

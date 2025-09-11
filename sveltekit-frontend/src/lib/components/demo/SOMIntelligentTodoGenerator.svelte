@@ -1,38 +1,37 @@
 <script lang="ts">
-</script>
 
   import { onMount } from 'svelte';
   import { } from 'svelte';
   import { WebGPUSOMCache, type IntelligentTodo, type NPMError, initializeSOMCache } from '$lib/webgpu/som-webgpu-cache.js';
 
   let somCache: WebGPUSOMCache;
-let isLoading = $state(false);
-let webGPUEnabled = $state(false);
-let todos = $state<IntelligentTodo[] >([]);
-let errors = $state<NPMError[] >([]);
-let processingTime = $state(0);
-let npmOutput = $state(`
-src/app.ts(1,25): error TS2307: Cannot find module '@types/node' or its corresponding type declarations.
-src/utils.ts(15,23): error TS2339: Property 'foo' does not exist on type 'Object'.
-src/api.ts(25,10): error: Service unavailable: http://localhost:8080
-src/parser.ts(42,15): error TS1005: Unexpected token ');'.
-src/index.ts(8,32): error TS2307: Module not found: Can't resolve './missing'
-src/components/Button.tsx(12,8): error TS2322: Type 'string' is not assignable to type 'number'.
-src/services/auth.ts(56,4): error: Authentication service connection failed
-src/database/models.ts(23,12): error TS2304: Cannot find name 'User'.
-src/types/global.d.ts(5,18): error TS2717: Subsequent property declarations must have the same type.
-src/hooks.server.ts(18,25): error: Database connection timeout after 5000ms
-`;
-let performanceMetrics = $state({
+  let isLoading = $state(false);
+  let webGPUEnabled = $state(false);
+  let todos = $state<IntelligentTodo[] >([]);
+  let errors = $state<NPMError[] >([]);
+  let processingTime = $state(0);
+  let npmOutput = $state(`
+  src/app.ts(1,25): error TS2307: Cannot find module '@types/node' or its corresponding type declarations.
+  src/utils.ts(15,23): error TS2339: Property 'foo' does not exist on type 'Object'.
+  src/api.ts(25,10): error: Service unavailable: http://localhost:8080
+  src/parser.ts(42,15): error TS1005: Unexpected token ');'.
+  src/index.ts(8,32): error TS2307: Module not found: Can't resolve './missing'
+  src/components/Button.tsx(12,8): error TS2322: Type 'string' is not assignable to type 'number'.
+  src/services/auth.ts(56,4): error: Authentication service connection failed
+  src/database/models.ts(23,12): error TS2304: Cannot find name 'User'.
+  src/types/global.d.ts(5,18): error TS2717: Subsequent property declarations must have the same type.
+  src/hooks.server.ts(18,25): error: Database connection timeout after 5000ms
+  `;
+  let performanceMetrics = $state({
     somTrainingTime: 0,
     webGPUProcessingTime: 0,
     pageRankIterations: 0,
     cacheHitRatio: 0,
     totalProcessingTime: 0
   });
-let filterCategory = $state('all');
-let sortBy = $state<'priority' | 'confidence' | 'effort' >('priority');
-let showDetails = $state(false);
+  let filterCategory = $state('all');
+  let sortBy = $state<'priority' | 'confidence' | 'effort' >('priority');
+  let showDetails = $state(false);
 
   onMount(async () => {
     try {

@@ -1,11 +1,10 @@
 <script lang="ts">
-</script>
-import * as monaco from 'monaco-editor';
-import { onDestroy, onMount } from 'svelte';
-let editorContainer: HTMLDivElement;
-let editor: monaco.editor.IStandaloneCodeEditor;
+  import * as monaco from 'monaco-editor';
+  import { onDestroy, onMount } from 'svelte';
+  let editorContainer: HTMLDivElement;
+  let editor: monaco.editor.IStandaloneCodeEditor;
 
-onMount(() => {
+  onMount(() => {
   // SSR safety: only run in browser
   if (typeof window !== 'undefined') {
     editor = monaco.editor.create(editorContainer, {
@@ -15,13 +14,13 @@ onMount(() => {
       automaticLayout: true
     });
   }
-});
+  });
 
-onDestroy(() => {
+  onDestroy(() => {
   if (editor) {
     editor.dispose();
   }
-});
+  });
 </script>
 
 <div bind:this={editorContainer} class="mx-auto px-4 max-w-7xl" aria-label="Monaco code editor" tabindex={0}></div>

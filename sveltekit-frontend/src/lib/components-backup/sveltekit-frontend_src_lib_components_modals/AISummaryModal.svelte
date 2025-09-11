@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onclose?: (event?: any) => void;
   }
@@ -10,7 +9,6 @@
   import Button from "$lib/components/ui/button";
   import Badge from '$lib/components/ui/Badge.svelte';
   import { Sparkles, Copy, X, AlertCircle, Check } from 'lucide-svelte';
-  
     let copied = false;
 
   // Use the Svelte store reactively
@@ -29,11 +27,11 @@
         setTimeout(() => copied = false, 2000);
       } catch (err) {
         console.error('Failed to copy text:', err);
-}}}
+  }}}
   function closeModal() {
     aiService.reset();
     onclose?.();
-}
+  }
 </script>
 
 <Dialog.Root open={isOpen} onclose={closeModal}>

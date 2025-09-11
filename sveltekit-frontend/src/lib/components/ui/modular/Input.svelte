@@ -1,6 +1,5 @@
 <!-- Modular Input Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
-</script>
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
 
@@ -109,7 +108,6 @@
 
   // Generate unique ID if not provided
   let inputId = $derived(restProps.id || `input-${Math.random().toString(36).substr(2, 9)}`);
-  
   // Computed classes
   let inputClass = $derived(cn(inputVariants({ variant, size, state }), class));
   let helperClass = $derived(helperTextVariants({ state }));

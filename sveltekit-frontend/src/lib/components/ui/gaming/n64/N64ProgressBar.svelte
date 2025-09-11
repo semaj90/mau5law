@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     value?: number;
     max?: number;

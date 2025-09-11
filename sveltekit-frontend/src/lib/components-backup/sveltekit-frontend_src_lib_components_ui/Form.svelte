@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import { createFormStore, type FormOptions } from '$lib/stores/form';
   import { notifications } from '$lib/stores/notification';
@@ -45,7 +44,7 @@
       onsubmit?.({ values, isValid: true });
       if (options.onSubmit) {
         await options.onSubmit(values);
-}
+  }
     },
   });
 
@@ -64,11 +63,11 @@
         "Form validation failed",
         "Please correct the errors and try again."
       );
-}}
+  }}
   function handleReset() {
     form.reset();
     onreset?.();
-}
+  }
   // Update formApi when form changes using $effect
   $effect(() => {
     if (formApi !== undefined) {

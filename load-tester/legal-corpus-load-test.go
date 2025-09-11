@@ -1,3 +1,6 @@
+//go:build legal_corpus
+// +build legal_corpus
+
 // Legal Document Corpus Load Testing
 // Stress tests the RabbitMQ + XState workflow with realistic legal documents
 
@@ -85,20 +88,20 @@ func generateRealisticDocument() LegalDocument {
 	// Randomly select document type
 	docTypes := []string{"contract", "evidence", "brief", "citation", "discovery"}
 	docType := docTypes[rand.Intn(len(docTypes))]
-	
+
 	// Select random template for this document type
 	templates := legalDocumentTemplates[docType]
 	template := templates[rand.Intn(len(templates))]
-	
+
 	// Fill in template variables with realistic data
 	content := fillTemplateVariables(template)
-	
+
 	// Randomly assign priority based on document type
 	priority := assignPriority(docType)
-	
+
 	// Select random case ID
 	caseID := caseTemplates[rand.Intn(len(caseTemplates))]
-	
+
 	return LegalDocument{
 		Content:      content,
 		DocumentType: docType,
@@ -132,13 +135,13 @@ func fillTemplateVariables(template string) string {
 		"[RECIPIENT]":  "development@company.com",
 		"[ATTENDEES]":  "Board Members, Legal Counsel, CTO",
 	}
-	
+
 	result := template
 	for placeholder, value := range replacements {
 		result = bytes.NewBuffer([]byte(result)).String()
 		result = fmt.Sprintf("%s", bytes.ReplaceAll([]byte(result), []byte(placeholder), []byte(value)))
 	}
-	
+
 	return result
 }
 
@@ -172,12 +175,12 @@ func assignPriority(docType string) string {
 
 func submitDocument(baseURL string, doc LegalDocument) (time.Duration, error) {
 	startTime := time.Now()
-	
+
 	payload, err := json.Marshal(doc)
 	if err != nil {
 		return 0, fmt.Errorf("failed to marshal document: %v", err)
 	}
-	
+
 	resp, err := http.Post(
 		baseURL+"/api/legal/workflow",
 		"application/json",
@@ -187,13 +190,13 @@ func submitDocument(baseURL string, doc LegalDocument) (time.Duration, error) {
 		return 0, fmt.Errorf("request failed: %v", err)
 	}
 	defer resp.Body.Close()
-	
+
 	latency := time.Since(startTime)
-	
+
 	if resp.StatusCode != http.StatusOK {
 		return latency, fmt.Errorf("HTTP %d", resp.StatusCode)
 	}
-	
+
 	return latency, nil
 }
 
@@ -205,67 +208,67 @@ func runLoadTest(config LoadTestConfig) TestResult {
 	fmt.Printf("Ramp Up: %v\n", config.RampUp)
 	fmt.Println("Document Types: contract, evidence, brief, citation, discovery")
 	fmt.Println("═══════════════════════════════════════════════")
-	
+
 	var wg sync.WaitGroup
 	var mu sync.Mutex
-	
+
 	result := TestResult{
 		DocumentTypes: make(map[string]int),
 		PriorityDist:  make(map[string]int),
 	}
-	
+
 	var latencies []time.Duration
 	startTime := time.Now()
 	endTime := startTime.Add(config.TestDuration)
-	
+
 	// Worker function
 	worker := func(workerID int) {
 		defer wg.Done()
-		
+
 		for time.Now().Before(endTime) {
 			doc := generateRealisticDocument()
-			
+
 			latency, err := submitDocument(config.BaseURL, doc)
-			
+
 			mu.Lock()
 			result.TotalRequests++
 			latencies = append(latencies, latency)
 			result.DocumentTypes[doc.DocumentType]++
 			result.PriorityDist[doc.Priority]++
-			
+
 			if err != nil {
 				result.FailedReqs++
 				fmt.Printf("❌ Worker %d: %v\n", workerID, err)
 			} else {
 				result.SuccessfulReqs++
-				fmt.Printf("✅ Worker %d: %s document (%s priority) - %v\n", 
+				fmt.Printf("✅ Worker %d: %s document (%s priority) - %v\n",
 					workerID, doc.DocumentType, doc.Priority, latency)
 			}
 			mu.Unlock()
-			
+
 			// Rate limiting
 			time.Sleep(config.RequestRate)
 		}
 	}
-	
+
 	// Start workers
 	for i := 0; i < config.ConcurrentUsers; i++ {
 		wg.Add(1)
 		go worker(i + 1)
-		
+
 		// Ramp up delay
 		if config.RampUp {
 			time.Sleep(time.Duration(1000/config.ConcurrentUsers) * time.Millisecond)
 		}
 	}
-	
+
 	wg.Wait()
-	
+
 	// Calculate statistics
 	totalDuration := time.Since(startTime)
 	result.ThroughputRPS = float64(result.TotalRequests) / totalDuration.Seconds()
 	result.ErrorRate = float64(result.FailedReqs) / float64(result.TotalRequests) * 100
-	
+
 	if len(latencies) > 0 {
 		// Sort latencies for percentile calculation
 		for i := 0; i < len(latencies)-1; i++ {
@@ -275,25 +278,25 @@ func runLoadTest(config LoadTestConfig) TestResult {
 				}
 			}
 		}
-		
+
 		// Calculate percentiles
 		sum := time.Duration(0)
 		for _, lat := range latencies {
 			sum += lat
 		}
 		result.AverageLatency = sum / time.Duration(len(latencies))
-		
+
 		p95Index := int(float64(len(latencies)) * 0.95)
 		if p95Index < len(latencies) {
 			result.P95Latency = latencies[p95Index]
 		}
-		
+
 		p99Index := int(float64(len(latencies)) * 0.99)
 		if p99Index < len(latencies) {
 			result.P99Latency = latencies[p99Index]
 		}
 	}
-	
+
 	return result
 }
 
@@ -308,13 +311,13 @@ func printResults(result TestResult) {
 	fmt.Printf("Average Latency:    %v\n", result.AverageLatency)
 	fmt.Printf("P95 Latency:        %v\n", result.P95Latency)
 	fmt.Printf("P99 Latency:        %v\n", result.P99Latency)
-	
+
 	fmt.Println("\n📄 Document Type Distribution:")
 	for docType, count := range result.DocumentTypes {
 		percentage := float64(count) / float64(result.TotalRequests) * 100
 		fmt.Printf("  %s: %d (%.1f%%)\n", docType, count, percentage)
 	}
-	
+
 	fmt.Println("\n⚡ Priority Distribution:")
 	for priority, count := range result.PriorityDist {
 		percentage := float64(count) / float64(result.TotalRequests) * 100
@@ -332,7 +335,7 @@ func main() {
 		csvOutput       = flag.String("csv", "", "CSV output file for results")
 	)
 	flag.Parse()
-	
+
 	config := LoadTestConfig{
 		BaseURL:         *baseURL,
 		ConcurrentUsers: *concurrentUsers,
@@ -341,19 +344,19 @@ func main() {
 		RampUp:          *rampUp,
 		CSVOutput:       *csvOutput,
 	}
-	
+
 	// Seed random number generator
 	rand.Seed(time.Now().UnixNano())
-	
+
 	result := runLoadTest(config)
 	printResults(result)
-	
+
 	// Save CSV if requested
 	if config.CSVOutput != "" {
 		// CSV export functionality would go here
 		fmt.Printf("\n💾 Results would be saved to: %s\n", config.CSVOutput)
 	}
-	
+
 	// Overall assessment
 	fmt.Println("\n🎯 PERFORMANCE ASSESSMENT:")
 	if result.ErrorRate < 5 && result.ThroughputRPS > 10 {

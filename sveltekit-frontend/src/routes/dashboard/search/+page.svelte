@@ -3,10 +3,8 @@
   Enhanced-Bits orchestrated components with Svelte 5 runes
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  
   // Enhanced-Bits orchestrated components
   import { 
     Button, 
@@ -21,7 +19,6 @@
     getConfidenceClass
   } from '$lib/components/ui/orchestrated';
   import * as Tabs from '$lib/components/ui/tabs';
-  
   // Icons
   import { 
     Search, Sparkles, Filter, Zap, FileText, 
@@ -29,7 +26,6 @@
     ChevronRight, Lightbulb, Database, Settings,
     BookOpen, Scale, AlertCircle, CheckCircle
   } from 'lucide-svelte';
-  
   // Enhanced types using orchestrated components
   interface VectorSearchResult {
     id: string;
@@ -47,7 +43,6 @@
     };
     highlights?: string[];
   }
-  
   interface SearchResponse {
     success: boolean;
     results: VectorSearchResult[];
@@ -60,7 +55,6 @@
     };
     suggestions?: string[];
   }
-  
   // Svelte 5 runes for reactive state
   let query = $state('');
   let loading = $state(false);
@@ -71,7 +65,6 @@
   let searchMode = $state<'semantic' | 'keyword' | 'hybrid'>('semantic');
   let selectedTypes = $state<Set<string>>(new Set();
   let similarityThreshold = $state(0.7);
-  
   // Search suggestions for different legal domains
   const searchSuggestions = [
     'Contract breach and damages analysis',
@@ -83,7 +76,6 @@
     'Criminal defense evidence evaluation',
     'Tax law regulatory compliance'
   ];
-  
   // Document type filters
   const documentTypes = [
     { value: 'evidence', label: 'Evidence', icon: FileText, color: 'bg-blue-500' },
@@ -92,16 +84,13 @@
     { value: 'brief', label: 'Briefs', icon: Target, color: 'bg-orange-500' },
     { value: 'precedent', label: 'Precedents', icon: Lightbulb, color: 'bg-yellow-500' }
   ];
-  
   // Perform vector search
   async function performSearch() {
     if (!query.trim()) return;
-    
     loading = true;
     error = null;
     results = [];
     searchInfo = null;
-    
     try {
       const requestBody = {
         query: query.trim(),
@@ -117,31 +106,23 @@
           boost_recent: true
         }
       };
-      
       console.log('Vector search request:', requestBody);
-      
       const response = await fetch('/api/unified/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
-      
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`);
       }
-      
       const data: SearchResponse = await response.json();
-      
       if (!data.success) {
         throw new Error('Search request failed');
       }
-      
       results = data.results;
       searchInfo = data.query_info;
       suggestions = data.suggestions || [];
-      
       console.log('Vector search results:', data);
-      
     } catch (err) {
       console.error('Search error:', err);
       error = err instanceof Error ? err.message : 'Search failed';
@@ -149,18 +130,15 @@
       loading = false;
     }
   }
-  
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       performSearch();
     }
   }
-  
   function setSuggestionQuery(suggestion: string) {
     query = suggestion;
     performSearch();
   }
-  
   function toggleDocumentType(type: string) {
     if (selectedTypes.has(type)) {
       selectedTypes.delete(type);
@@ -169,26 +147,22 @@
     }
     selectedTypes = new Set(selectedTypes); // Trigger reactivity
   }
-  
   function getSimilarityColor(score: number): string {
     if (score >= 0.9) return 'text-green-600 bg-green-100';
     if (score >= 0.7) return 'text-blue-600 bg-blue-100';
     if (score >= 0.5) return 'text-yellow-600 bg-yellow-100';
     return 'text-gray-600 bg-gray-100';
   }
-  
   function getSimilarityLabel(score: number): string {
     if (score >= 0.9) return 'Excellent Match';
     if (score >= 0.7) return 'Good Match';
     if (score >= 0.5) return 'Moderate Match';
     return 'Weak Match';
   }
-  
   function formatSearchTime(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }
-  
   // Initialize with example search on mount
   onMount(() => {
     // Auto-suggest based on existing RAG demo

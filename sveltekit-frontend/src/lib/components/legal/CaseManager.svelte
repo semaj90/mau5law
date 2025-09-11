@@ -5,7 +5,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { UiButton as Button, UiInput as Input, UiLabel as Label, UiCard as Card, UiCardContent as CardContent, UiCardHeader as CardHeader, UiCardTitle as CardTitle, UiBadge as Badge } from '$lib/components/ui';
@@ -59,10 +58,8 @@
   async function loadCases() {
     loading.set(true);
     error.set('');
-    
     try {
       const response = await legalPlatformClient.getAllCases();
-      
       if (response.success && response.data) {
         cases.set(response.data);
       } else {
@@ -84,10 +81,8 @@
 
     loading.set(true);
     error.set('');
-    
     try {
       const response = await legalPlatformClient.searchCases(query);
-      
       if (response.success && response.data) {
         cases.set(response.data);
       } else {
@@ -103,7 +98,6 @@
   // Create new case
   async function createCase() {
     const data = $formData;
-    
     if (!data.title?.trim()) {
       error.set('Case title is required');
       return;
@@ -111,10 +105,8 @@
 
     loading.set(true);
     error.set('');
-    
     try {
       const response = await legalPlatformClient.createCase(data as CaseData);
-      
       if (response.success) {
         isCreateDialogOpen.set(false);
         formData.set({
@@ -140,15 +132,12 @@
   async function updateCase() {
     const data = $formData;
     const selected = $selectedCase;
-    
     if (!selected?.id) return;
 
     loading.set(true);
     error.set('');
-    
     try {
       const response = await legalPlatformClient.updateCase(selected.id, data);
-      
       if (response.success) {
         isEditDialogOpen.set(false);
         selectedCase.set(null);
@@ -169,10 +158,8 @@
 
     loading.set(true);
     error.set('');
-    
     try {
       const response = await legalPlatformClient.deleteCase(caseId);
-      
       if (response.success) {
         await loadCases();
       } else {
@@ -216,7 +203,6 @@
     const debounceTimer = setTimeout(() => {
       searchCases($searchQuery)
     }, 300);
-    
     return () => clearTimeout(debounceTimer);
   }
 </script>

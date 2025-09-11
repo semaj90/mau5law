@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
@@ -36,7 +35,7 @@
       keys: ["title", "content", "tags"],
       threshold: 0.3,
     });
-}
+  }
   // Search results
   let searchResults = $derived(searchQuery && fuse)
       ? fuse.search(searchQuery).map((result) => result.item)
@@ -56,29 +55,29 @@
       loki.evidence.refreshStore();
     } else if (activeTab === "notes") {
       loki.notes.refreshStore();
-}}
+  }}
   function handleMouseEnter() {
     isHovered = true;
-}
+  }
   function handleMouseLeave() {
     isHovered = false;
-}
+  }
   function togglePin() {
     isPinned = !isPinned;
     sidebarStore.update((state) => ({ ...state, open: isPinned }));
-}
+  }
   function handleSearch(event: CustomEvent) {
     searchQuery = event.detail.query;
-}
+  }
   function handleItemClick(item: any) {
     console.log("Item clicked:", item);
     // Emit event or call parent function
-}
+  }
   function handleTabChange(tab: string) {
     activeTab = tab;
     searchQuery = "";
     refreshData();
-}
+  }
 </script>
 
 <div

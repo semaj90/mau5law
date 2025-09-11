@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button, Dialog, Select } from "bits-ui";
   import { onMount } from "svelte";
 

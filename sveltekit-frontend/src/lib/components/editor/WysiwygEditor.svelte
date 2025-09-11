@@ -2,7 +2,6 @@
 // Combines Hugerte with Melt UI components for legal document editing
 
 <script lang="ts">
-</script>
   interface Props {
     content?: unknown;
     placeholder?: unknown;
@@ -27,7 +26,7 @@
 
   // Props
               export const enableCollaboration = false;
-;
+  ;
   // Events
   const dispatch = createEventDispatcher<{
     change: { content: string; wordCount: number };
@@ -39,7 +38,7 @@
   // Stores
   let editorElement: HTMLElement;
   let hugerte: any;
-let isInitialized = $state(false);
+  let isInitialized = $state(false);
   const wordCount: Writable<number> = writable(0);
   const charCount: Writable<number> = writable(0);
 
@@ -73,14 +72,14 @@ let isInitialized = $state(false);
   } = createDialog();
 
   // AI Assistant state
-let aiQuery = $state('');
-let aiResults = $state('');
-let isProcessingAI = $state(false);
-let selectedText = $state('');
+  let aiQuery = $state('');
+  let aiResults = $state('');
+  let isProcessingAI = $state(false);
+  let selectedText = $state('');
 
   // Citation state
-let citationQuery = $state('');
-let citationResults = $state<Array<{
+  let citationQuery = $state('');
+  let citationResults = $state<Array<{
     title: string;
     citation: string;
     relevance: number;
@@ -134,27 +133,27 @@ let citationResults = $state<Array<{
               max-width: 800px;
               margin: 0 auto;
               padding: 20px;
-}
+  }
             h1, h2, h3, h4, h5, h6 {
               color: #1f2937;
               font-weight: 600;
               margin-top: 1.5em;
               margin-bottom: 0.5em;
-}
+  }
             .citation {
               background: #eff6ff;
               border-left: 4px solid #3b82f6;
               padding: 0.5em;
               margin: 1em 0;
               border-radius: 0 4px 4px 0;
-}
+  }
             .ai-suggestion {
               background: #f0fdf4;
               border: 1px solid #bbf7d0;
               padding: 0.5em;
               border-radius: 4px;
               margin: 0.5em 0;
-}
+  }
           `,
           setup: (editor: any) => {
             // Custom AI Assistant button
@@ -213,23 +212,23 @@ let citationResults = $state<Array<{
     } catch (error) {
       console.error('Failed to initialize editor:', error);
     }
-}
+  }
   function updateCounts(text: string) {
     const plainText = text.replace(/<[^>]*>/g, '');
     wordCount.set(plainText.trim().split(/\s+/).filter(word => word.length > 0).length);
     charCount.set(plainText.length);
-}
+  }
   function openAIAssistant(text: string) {
     selectedText = text;
     aiQuery = '';
     aiResults = '';
     aiOpen.set(true);
-}
+  }
   function openCitationHelper(text: string) {
     citationQuery = text;
     citationResults = [];
     citeOpen.set(true);
-}
+  }
   async function processAIRequest() {
     if (!aiQuery.trim()) return;
 
@@ -245,7 +244,7 @@ let citationResults = $state<Array<{
             maxSources: 5,
             provider: 'auto',
             enableLegalClassification: true
-}
+  }
         })
       });
 
@@ -255,13 +254,13 @@ let citationResults = $state<Array<{
         dispatch('aiRequest', { selectedText, action: aiQuery });
       } else {
         aiResults = 'Sorry, I encountered an error processing your request.';
-}
+  }
     } catch (error) {
       console.error('AI request failed:', error);
       aiResults = 'Failed to connect to AI service.';
     } finally {
       isProcessingAI = false;
-}}
+  }}
   async function searchCitations() {
     if (!citationQuery.trim()) return;
 
@@ -282,10 +281,10 @@ let citationResults = $state<Array<{
           citation: r.citation,
           relevance: r.similarity
         }));
-}
+  }
     } catch (error) {
       console.error('Citation search failed:', error);
-}}
+  }}
   function insertCitation(citation: any) {
     if (hugerte) {
       const citationHtml = `
@@ -296,7 +295,7 @@ let citationResults = $state<Array<{
       `;
       hugerte.insertContent(citationHtml);
       citeOpen.set(false);
-}}
+  }}
   function insertAIContent() {
     if (hugerte && aiResults) {
       const aiHtml = `
@@ -307,19 +306,19 @@ let citationResults = $state<Array<{
       `;
       hugerte.insertContent(aiHtml);
       aiOpen.set(false);
-}}
+  }}
   // Export content
   export function getContent(): string {
     return hugerte ? hugerte.getContent() : content;
-}
+  }
   // Import content
   export function setContent(newContent: string) {
     if (hugerte) {
       hugerte.setContent(newContent);
-}
+  }
     content = newContent;
     updateCounts(newContent);
-}
+  }
 </script>
 
 <!-- Main Editor Container -->

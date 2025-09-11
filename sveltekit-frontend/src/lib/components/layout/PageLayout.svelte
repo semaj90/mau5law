@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { cn } from '$lib/utils';
 
   interface Props {
@@ -27,7 +26,6 @@
 
   let containerClass = $derived(() => {
     const baseClass = "flex flex-col min-h-screen";
-    
     const variantClasses = {
       default: "nes-legal-container bg-gray-900 text-white",
       dashboard: "yorha-3d-panel nes-legal-container bg-gray-900 text-white",

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
   import { onMount } from 'svelte';
@@ -17,7 +16,6 @@
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs/index.js';
   import ModernAuthForm from '$lib/components/auth/ModernAuthForm.svelte';
   import AIAssistantChat from '$lib/components/ai/AIAssistantChat.svelte';
-  
   // Import all the integrated stores and managers
   import { 
     authService, 
@@ -73,13 +71,10 @@
   onMount(async () => {
     // Initialize system health monitoring
     await checkSystemHealth();
-    
     // Set up periodic health checks
     const healthCheckInterval = setInterval(checkSystemHealth, 10000); // Every 10 seconds
-    
     // Update metrics periodically
     const metricsInterval = setInterval(updateMetrics, 5000); // Every 5 seconds
-    
     // Cleanup on unmount
     return () => {
       clearInterval(healthCheckInterval);
@@ -92,16 +87,13 @@
     try {
       // Check authentication system
       const authHealthy = authService.state.isAuthenticated || !authService.state.error;
-      
       // Check session management
       const sessionHealthy = sessionHealth().isValid;
-      
       // Check AI assistant cluster
       const aiHealth = clusterHealth();
       const aiHealthy = Object.values(aiHealth).some(Boolean);
-      
       // Check production services
-let servicesHealthy = $state(false);
+  let servicesHealthy = $state(false);
       try {
         const serviceHealth = await productionServiceClient.checkAllServicesHealth();
         servicesHealthy = Object.values(serviceHealth).some(Boolean);
@@ -143,7 +135,6 @@ let servicesHealthy = $state(false);
   // Update system metrics
   function updateMetrics() {
     const now = new Date();
-    
     serviceMetrics.lastUpdate = now;
     serviceMetrics.authUptime = authenticatedUser ? 
       Math.floor((now.getTime() - (sessionAnalytics().loginTime?.getTime() || now.getTime())) / 1000) : 0;

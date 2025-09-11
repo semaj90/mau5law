@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
   import N64LoadingRing from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
@@ -32,31 +31,22 @@
 
   function startAnimation() {
     if (animationInterval) return;
-    
     mockData.isProcessing = true;
-    
     animationInterval = setInterval(() => {
       // Simulate AI confidence building up
       mockData.aiConfidence = Math.min(mockData.aiConfidence + Math.random() * 5, 95);
-      
       // Simulate tokens per second ramping up
       mockData.tokensPerSecond = Math.min(mockData.tokensPerSecond + Math.random() * 10, 150);
-      
       // Simulate cache hit rate improving
       mockData.cacheHitRate = Math.min(mockData.cacheHitRate + Math.random() * 3, 85);
-      
       // Simulate GPU utilization
       mockData.gpuUtilization = Math.min(mockData.gpuUtilization + Math.random() * 8, 92);
-      
       // Simulate VRAM usage
       mockData.vramUsage = Math.min(mockData.vramUsage + Math.random() * 0.2, 6.8);
-      
       // Improve response time
       mockData.responseTime = Math.max(mockData.responseTime - Math.random() * 100, 250);
-      
       // GPU layers loading
       mockData.gpuLayers = Math.min(mockData.gpuLayers + Math.random() * 2, 35);
-      
       // Check if we should evolve
       if (mockData.aiConfidence > 80 && mockData.evolutionStage === 'nes') {
         mockData.evolutionStage = 'snes';

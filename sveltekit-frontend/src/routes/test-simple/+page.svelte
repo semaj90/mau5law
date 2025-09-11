@@ -1,7 +1,6 @@
 <script lang="ts">
-</script>
   // $state runtime rune is provided globally
-let message = $state("SvelteKit 2 + Svelte 5 Test Page");
+  let message = $state("SvelteKit 2 + Svelte 5 Test Page");
   let count = $state(0);
 
   function increment() {

@@ -1,10 +1,8 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { io, type Socket } from 'socket.io-client';
   import { uploadStore } from '$lib/stores/upload-machine';
   import { writable } from 'svelte/store';
-  
   // Props
   interface Props {
     caseId?: string;
@@ -22,7 +20,6 @@
   // WebSocket connection
   let socket: Socket | null = null;
   let connectionStatus = writable<'disconnected' | 'connecting' | 'connected'>('disconnected');
-  
   // Progress tracking
   let progressData = writable({
     stage: 'idle',
@@ -69,7 +66,6 @@
 
   function initializeWebSocket() {
     connectionStatus.set('connecting');
-    
     // Connect to WebSocket server
     socket = io('/api/ws', {
       transports: ['websocket', 'polling'],
@@ -79,7 +75,6 @@
     socket.on('connect', () => {
       console.log('🔌 WebSocket connected');
       connectionStatus.set('connected');
-      
       // Join relevant rooms
       if (caseId) {
         socket?.emit('join-case', caseId);
@@ -134,7 +129,6 @@
     // Tensor processing results
     socket.on('tensor-result', (data) => {
       console.log('🧮 Tensor result:', data);
-      
       if (showTensorMetrics) {
         tensorResults.update(current => ({
           ...current,
@@ -218,10 +212,8 @@
     // Focus/blur tracking
     const focusHandler = () => trackEvent('focus');
     const blurHandler = () => trackEvent('blur');
-    
     window.addEventListener('focus', focusHandler);
     window.addEventListener('blur', blurHandler);
-    
     attentionListeners.push(
       () => window.removeEventListener('focus', focusHandler),
       () => window.removeEventListener('blur', blurHandler)
@@ -266,7 +258,6 @@
   // Typing event tracking
   export function trackTyping(query: string) {
     if (!socket || !enableAttentionTracking) return;
-    
     socket.emit('user-attention', {
       type: 'typing',
       timestamp: new Date().toISOString(),

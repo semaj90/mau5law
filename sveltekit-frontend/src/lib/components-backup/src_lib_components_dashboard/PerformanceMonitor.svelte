@@ -1,48 +1,37 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
-  
   // Props
   let { metrics = {}, health = {} } = $props();
-  
   // Chart data state
   let cpuData = $state<number[]>([]);
   let memoryData = $state<number[]>([]);
   let timestamps = $state<string[]>([]);
   let maxDataPoints = 50;
-  
   // Current values
   let currentCPU = $derived(Math.round((health.performance?.cpuUsage?.user || 0) / 10000));
   let currentMemory = $derived(Math.round((health.performance?.memoryUsage?.heapUsed || 0) / 1024 / 1024));
   let currentWorkers = $derived(health.performance?.activeWorkers || 0);
   let cacheHitRate = $derived(Math.round(metrics.cache?.hitRate || 0));
-  
   // Performance indicators
   let cpuStatus = $derived(currentCPU < 70 ? 'good' : currentCPU < 85 ? 'warning' : 'critical');
   let memoryStatus = $derived(currentMemory < 512 ? 'good' : currentMemory < 1024 ? 'warning' : 'critical');
   let overallStatus = $derived(cpuStatus === 'good' && memoryStatus === 'good' ? 'optimal' : 
                               cpuStatus === 'critical' || memoryStatus === 'critical' ? 'critical' : 'warning');
-  
   // Update chart data when metrics change
   $effect(() => {
     if (Object.keys(metrics).length > 0) {
       updateChartData();
     }
   });
-  
   function updateChartData() {
     const now = new Date().toLocaleTimeString();
-    
     // Update CPU data
     cpuData = [...cpuData, currentCPU].slice(-maxDataPoints);
-    
     // Update Memory data
     memoryData = [...memoryData, currentMemory].slice(-maxDataPoints);
-    
     // Update timestamps
     timestamps = [...timestamps, now].slice(-maxDataPoints);
   }
-  
   function getStatusColor(status: string) {
     switch (status) {
       case 'good': case 'optimal': return 'text-green-400';
@@ -51,7 +40,6 @@
       default: return 'text-gray-400';
     }
   }
-  
   function getStatusBg(status: string) {
     switch (status) {
       case 'good': case 'optimal': return 'bg-green-400/20 border-green-400/30';
@@ -60,38 +48,29 @@
       default: return 'bg-gray-400/20 border-gray-400/30';
     }
   }
-  
   // Mini chart SVG generation
   function generateMiniChart(data: number[], maxValue: number = 100) {
     if (data.length < 2) return '';
-    
     const width = 120;
     const height = 40;
     const padding = 2;
-    
     const maxY = Math.max(maxValue, Math.max(...data));
     const stepX = (width - padding * 2) / (data.length - 1);
-    
     let path = '';
-    
     data.forEach((value, index) => {
       const x = padding + index * stepX;
       const y = height - padding - ((value / maxY) * (height - padding * 2));
-      
       if (index === 0) {
         path += `M ${x} ${y}`;
       } else {
         path += ` L ${x} ${y}`;
       }
     });
-    
     return path;
   }
-  
   // Performance recommendations
   let recommendations = $derived(() => {
     const recs = [];
-    
     if (currentCPU > 85) {
       recs.push({
         type: 'cpu',
@@ -107,7 +86,6 @@
         action: 'Monitor'
       });
     }
-    
     if (currentMemory > 1024) {
       recs.push({
         type: 'memory',
@@ -123,7 +101,6 @@
         action: 'Optimize'
       });
     }
-    
     if (cacheHitRate < 70) {
       recs.push({
         type: 'cache',
@@ -132,7 +109,6 @@
         action: 'Review cache'
       });
     }
-    
     return recs;
   });
 </script>

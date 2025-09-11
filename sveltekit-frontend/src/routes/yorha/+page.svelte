@@ -1,6 +1,5 @@
 <!-- YoRHa Main Interface Page -->
 <script lang="ts">
-</script>
   import { goto } from '$app/navigation';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
@@ -174,7 +173,7 @@
   async function performSemanticSearch(searchTerm: string = 'contract liability') {
     isLoading = true;
     searchResults = [];
-let localResults = $state<any[] >([]);
+  let localResults = $state<any[] >([]);
     if (isLocalIndexReady() && (searchMode === 'local' || searchMode === 'hybrid')) {
       localResults = localSearch(searchTerm, 50);
       if (searchMode === 'local') {

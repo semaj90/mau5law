@@ -1,13 +1,11 @@
 // Enhanced Evidence Processing Component
 <script lang="ts">
-</script>
   import { } from 'svelte';
 
   import { createActor } from 'xstate';
   import { uploadMachine, getFileProgress, getAllFilesStatus, getOverallProgress } from '$lib/machines/uploadMachine';
   import type { ProgressMsg } from '$lib/types/progress';
   import { onMount, onDestroy } from 'svelte';
-  
   interface Props {
     evidenceId: string;
     steps?: string[];
@@ -26,7 +24,6 @@
 
   // Machine actor
   let uploadActor = createActor(uploadMachine);
-  
   // Reactive state
   let machineState = $derived(uploadActor.getSnapshot());
   let currentState = $derived(machineState.value);
@@ -40,37 +37,32 @@
   let isComplete = $derived(fileProgress.status === 'done');
 
   // Local state
-let showDetails = $state(false);
-let showLogs = $state(false);
-let processingLogs = $state<Array<{ timestamp: string; message: string; type: 'info' | 'error' | 'success' }> >([]);
+  let showDetails = $state(false);
+  let showLogs = $state(false);
+  let processingLogs = $state<Array<{ timestamp: string; message: string; type: 'info' | 'error' | 'success' }> >([]);
 
   onMount(() => {
     uploadActor.start();
-    
     // Subscribe to machine state changes
     uploadActor.subscribe((state) => {
       console.log('🎭 Machine state changed:', state.value, state.context);
-      
       // Handle completion
       if (state.context.files[evidenceId]?.status === 'done') {
         const result = state.context.files[evidenceId]?.result;
         onComplete?.(result);
         addLog('Processing completed successfully', 'success');
       }
-      
       // Handle errors
       if (state.context.lastError || state.context.files[evidenceId]?.error) {
         const error = state.context.lastError || state.context.files[evidenceId]?.error;
         onError?.(error);
         addLog(`Error: ${error}`, 'error');
       }
-      
       // Log state changes
       if (state.value !== 'idle') {
         addLog(`State: ${String(state.value)}`, 'info');
       }
     });
-    
     // Auto-start if requested
     if (autoStart) {
       startProcessing();
@@ -95,7 +87,6 @@ let processingLogs = $state<Array<{ timestamp: string; message: string; type: 'i
   async function startProcessing() {
     try {
       addLog('Starting evidence processing...', 'info');
-      
       // Make API call to start processing
       const response = await fetch('/api/evidence/process', {
         method: 'POST',
@@ -167,13 +158,10 @@ let processingLogs = $state<Array<{ timestamp: string; message: string; type: 'i
 
   function formatFragment(fragment: any): string {
     if (!fragment) return '';
-    
     if (typeof fragment === 'string') return fragment;
-    
     if (fragment.textPreview) return fragment.textPreview;
     if (fragment.snippet) return fragment.snippet;
     if (fragment.summary) return fragment.summary;
-    
     return JSON.stringify(fragment, null, 2);
   }
 </script>

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { createEventDispatcher } from 'svelte';
   import { Button } from 'bits-ui';
@@ -16,7 +15,7 @@
     description: string;
     key_dates: Array<{ date: string; description: string }>;
   };
-let validationErrors = $state<Record<string, string> >({});
+  let validationErrors = $state<Record<string, string> >({});
 
   // Case type options
   const caseTypes = [

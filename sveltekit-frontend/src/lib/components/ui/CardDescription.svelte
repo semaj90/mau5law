@@ -1,11 +1,9 @@
 <script lang="ts">
-</script>
   // Simple CardDescription component (shadcn-like) - Svelte 5
   interface Props {
     className?: string;
     children?: import('svelte').Snippet;
   }
-  
   let { className = '', children }: Props = $props();
 </script>
 

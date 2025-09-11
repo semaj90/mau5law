@@ -1,6 +1,5 @@
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button/index.js";
   import { evidenceStore, type Evidence } from "$lib/stores/evidenceStore";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";

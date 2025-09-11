@@ -2,7 +2,6 @@
 https://svelte.dev/e/component_invalid_directive -->
 <!-- NieR: Automata Themed Rich Text Editor using bits-ui -->
 <script lang="ts">
-</script>
   interface Props {
     content?: unknown;
     placeholder?: unknown;
@@ -20,9 +19,8 @@ https://svelte.dev/e/component_invalid_directive -->
   } from '$lib/components/ui/enhanced-bits';;
   import { Select } from "$lib/components/ui/select";
   import { Separator } from "$lib/components/ui/separator";
-let editor = $state<Editor | null >(null);
-let editorElement = $state<HTMLElement;
-  
+  let editor = $state<Editor | null >(null);
+  let editorElement = $state<HTMLElement;
   onMount(() >(> {
     editor = new Editor({
       element: editorElement,
@@ -35,7 +33,6 @@ let editorElement = $state<HTMLElement;
       }
     }));
   });
-  
   const fontOptions = [
     { value: "JetBrains Mono", label: "JetBrains Mono" },
     { value: "Courier New", label: "Courier New" },

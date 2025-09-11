@@ -6,7 +6,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { db, chatHistory, graphNodes } from '../db/dexie-integration';
   import { integratedSearch } from '../storage/integrated-search-engine';
@@ -17,77 +16,61 @@
   // ========================================================================
   // REACTIVE STATE
   // ========================================================================
-  
   // Reactive queries from Dexie - automatically update UI
   let messages = $derived($chatHistory || [];);
   let nodes = $derived($graphNodes || [];);
-  
   // Component state
-let searchQuery = $state('');
-let searchResults = $state<any[] >([]);
-let isSearching = $state(false);
-let selectedNode = $state<any >(null);
-let viewport = $state({ x: 0, y: 0, width: 1000, height: 1000 });
-let performanceStats = $state<any >(null);
-  
+  let searchQuery = $state('');
+  let searchResults = $state<any[] >([]);
+  let isSearching = $state(false);
+  let selectedNode = $state<any >(null);
+  let viewport = $state({ x: 0, y: 0, width: 1000, height: 1000 });
+  let performanceStats = $state<any >(null);
   // GPU canvas for visualization
-let canvas = $state<HTMLCanvasElement;
-let animationFrame = $state<number;
-  
+  let canvas = $state<HTMLCanvasElement;
+  let animationFrame = $state<number;
   // >(>(======================================================================
   // LIFECYCLE
   // ========================================================================
-  
   onMount(async () => {
     try {
       console.log('🚀 Initializing Graph Explorer...')));
-      
       // Initialize all systems
       await Promise.all([
         integratedSearch.initialize(),
         graphTextureManager.initialize(),
         unifiedDimensionalStore.initializeStorage()
       ]);
-      
       // Load initial graph data
       await loadGraphData();
-      
       // Start render loop
       startRenderLoop();
-      
       // Load performance stats
       await updatePerformanceStats();
-      
       console.log('✅ Graph Explorer ready');
     } catch (error) {
       console.error('❌ Failed to initialize Graph Explorer:', error);
     }
   });
-  
   onDestroy(() => {
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
     }
   });
-  
   // ========================================================================
   // DATA LOADING
   // ========================================================================
-  
   async function loadGraphData() {
     try {
       // Load from database
       await graphTextureManager.loadGraphData(viewport);
-      
       // Get database stats
       const stats = await db.getDatabaseStats();
       console.log('Database stats:', stats);
-      
     } catch (error) {
       console.error('Failed to load graph data:', error);
     }
   }
-  
   async function addSampleData() {
     try {
       // Add sample chat message
@@ -102,7 +85,6 @@ let animationFrame = $state<number;
           }
         }
       });
-      
       // Add sample graph node
       await db.addGraphNode({
         nodeId: `node_${Date.now()}`,
@@ -123,22 +105,17 @@ let animationFrame = $state<number;
         },
         connections: []
       });
-      
       console.log('✅ Sample data added');
       await updatePerformanceStats();
-      
     } catch (error) {
       console.error('Failed to add sample data:', error);
     }
   }
-  
   // ========================================================================
   // SEARCH FUNCTIONALITY
   // ========================================================================
-  
   async function handleSearch() {
     if (!searchQuery.trim()) return;
-    
     isSearching = true;
     try {
       // Add search to chat history
@@ -152,7 +129,6 @@ let animationFrame = $state<number;
           }
         }
       });
-      
       // Perform integrated search
       const result = await integratedSearch.search({
         text: searchQuery,
@@ -166,9 +142,7 @@ let animationFrame = $state<number;
           maxResults: 20
         }
       });
-      
       searchResults = result.results;
-      
       // Add AI response to chat
       await db.addChatMessage({
         role: 'assistant',
@@ -180,9 +154,7 @@ let animationFrame = $state<number;
           }
         }
       });
-      
       console.log('Search completed:', result);
-      
     } catch (error) {
       console.error('Search failed:', error);
       await db.addChatMessage({
@@ -193,48 +165,38 @@ let animationFrame = $state<number;
       isSearching = false;
     }
   }
-  
   // ========================================================================
   // VIEWPORT MANAGEMENT
   // ========================================================================
-  
   async function updateViewport(newViewport: typeof viewport) {
     viewport = newViewport;
     await graphTextureManager.updateViewport(viewport);
     await updatePerformanceStats();
   }
-  
   function handleCanvasInteraction(event: MouseEvent) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    
     // Convert to viewport coordinates
     const viewportX = viewport.x + (x / rect.width) * viewport.width;
     const viewportY = viewport.y + (y / rect.height) * viewport.height;
-    
     // Find closest node
     const closestNode = nodes.reduce((closest, node) => {
       if (!node.position) return closest;
-      
       const dx = node.position.x - viewportX;
       const dy = node.position.y - viewportY;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      
       return distance < (closest.distance || Infinity) 
         ? { node, distance }
         : closest;
     }, { node: null, distance: Infinity });
-    
     if (closestNode.node && closestNode.distance < 50) {
       selectedNode = closestNode.node;
     }
   }
-  
   // ========================================================================
   // PERFORMANCE MONITORING
   // ========================================================================
-  
   async function updatePerformanceStats() {
     try {
       const [
@@ -250,7 +212,6 @@ let animationFrame = $state<number;
         unifiedDimensionalStore.getStorageStats(),
         Promise.resolve(vectorQuantization.getQuantizationStats())
       ]);
-      
       performanceStats = {
         database: dbStats,
         search: searchStats,
@@ -258,16 +219,13 @@ let animationFrame = $state<number;
         storage: storageStats,
         quantization: quantizationStats
       };
-      
     } catch (error) {
       console.error('Failed to update performance stats:', error);
     }
   }
-  
   // ========================================================================
   // RENDERING
   // ========================================================================
-  
   function startRenderLoop() {
     function render() {
       if (canvas && nodes.length > 0) {
@@ -277,34 +235,26 @@ let animationFrame = $state<number;
     }
     render();
   }
-  
   function renderGraph() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
     // Set up viewport
     const scaleX = canvas.width / viewport.width;
     const scaleY = canvas.height / viewport.height;
-    
     // Render nodes
     for (const node of nodes) {
       if (!node.position) continue;
-      
       const screenX = (node.position.x - viewport.x) * scaleX;
       const screenY = (node.position.y - viewport.y) * scaleY;
-      
       // Skip nodes outside viewport
       if (screenX < -10 || screenX > canvas.width + 10 || 
           screenY < -10 || screenY > canvas.height + 10) continue;
-      
       // Node color based on confidence
       const confidence = node.metadata?.confidence || 0;
       const hue = confidence * 120; // Green = high confidence, Red = low confidence
       ctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
-      
       // Highlight selected node
       if (selectedNode?.nodeId === node.nodeId) {
         ctx.strokeStyle = '#fff';
@@ -313,12 +263,10 @@ let animationFrame = $state<number;
         ctx.arc(screenX, screenY, 12, 0, Math.PI * 2);
         ctx.stroke();
       }
-      
       // Draw node
       ctx.beginPath();
       ctx.arc(screenX, screenY, 8, 0, Math.PI * 2);
       ctx.fill();
-      
       // Label
       if (confidence > 0.8) {
         ctx.fillStyle = '#333';
@@ -327,11 +275,9 @@ let animationFrame = $state<number;
       }
     }
   }
-  
   // ========================================================================
   // CLEANUP
   // ========================================================================
-  
   async function clearAllData() {
     if (confirm('Clear all data? This cannot be undone.')) {
       await Promise.all([
@@ -343,11 +289,9 @@ let animationFrame = $state<number;
         graphTextureManager.cleanup(),
         unifiedDimensionalStore.clearAllStorage()
       ]);
-      
       searchResults = [];
       selectedNode = null;
       await updatePerformanceStats();
-      
       console.log('✅ All data cleared');
     }
   }

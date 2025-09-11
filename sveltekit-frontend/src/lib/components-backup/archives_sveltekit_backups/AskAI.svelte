@@ -1,6 +1,5 @@
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import {
     AlertCircle,
@@ -32,7 +31,7 @@
     searchResults: number;
     model: string;
     processingTime: number;
-}
+  }
   interface ConversationMessage {
     id: string;
     type: "user" | "ai";
@@ -41,7 +40,7 @@
     references?: AIResponse["references"];
     confidence?: number;
     metadata?: Record<string, any>;
-}
+  }
   // Component state
   let query = "";
   let isLoading = false;
@@ -76,7 +75,7 @@
         return stored ? JSON.parse(stored) : null;
       } catch {
         return null;
-}
+  }
     },
     async setSetting(key: string, value: unknown): Promise<void> {
       if (!browser) return;
@@ -84,7 +83,7 @@
         localStorage.setItem(key, JSON.stringify(value));
       } catch (error) {
         console.warn("Storage failed:", error);
-}
+  }
     },
   });
 
@@ -96,7 +95,7 @@
       // In a real app, this would send to analytics
     } catch (error) {
       console.warn("Activity tracking failed:", error);
-}}
+  }}
   onMount(() => {
     // Initialize speech recognition if supported and enabled
     if (enableVoiceInput && "webkitSpeechRecognition" in window) {
@@ -118,7 +117,7 @@
       recognition.onend = () => {
         isListening = false;
       };
-}
+  }
     // Load conversation history from IndexedDB
     loadConversationHistory();
   });
@@ -133,10 +132,10 @@
 
       if (history && Array.isArray(history)) {
         conversation = history.slice(-10); // Load last 10 messages
-}
+  }
     } catch (error) {
       console.warn("Failed to load conversation history:", error);
-}}
+  }}
   async function saveConversationHistory() {
     try {
       const contextKey = caseId ? `case_${caseId}` : "general";
@@ -147,7 +146,7 @@
       );
     } catch (error) {
       console.warn("Failed to save conversation history:", error);
-}}
+  }}
   async function askAI() {
     if (!query.trim() || isLoading) return;
 
@@ -168,7 +167,7 @@
     // Auto-resize textarea
     if (textareaRef) {
       textareaRef.style.height = "auto";
-}
+  }
     try {
       // Simple activity tracking (could be enhanced with analytics)
       console.log("User activity:", {
@@ -208,7 +207,7 @@
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to get AI response");
-}
+  }
       const aiResponse: AIResponse = await response.json();
 
       // Add AI message to conversation
@@ -242,22 +241,22 @@
       dispatch("error", error);
     } finally {
       isLoading = false;
-}}
+  }}
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       askAI();
-}}
+  }}
   function startVoiceInput() {
     if (recognition && !isListening) {
       isListening = true;
       recognition.start();
-}}
+  }}
   function stopVoiceInput() {
     if (recognition && isListening) {
       recognition.stop();
       isListening = false;
-}}
+  }}
   function handleReferenceClick(
     reference: NonNullable<ConversationMessage["references"]>[0]
   ) {
@@ -265,40 +264,40 @@
       id: reference.id,
       type: reference.type,
     });
-}
+  }
   function clearConversation() {
     conversation = [];
     saveConversationHistory();
-}
+  }
   function scrollToBottom() {
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}}
+  }}
   function generateId(): string {
     return Math.random().toString(36).substr(2, 9);
-}
+  }
   function formatTimestamp(timestamp: number): string {
     return new Date(timestamp).toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
     });
-}
+  }
   function getConfidenceColor(confidence: number): string {
     if (confidence >= 0.8) return "text-green-600";
     if (confidence >= 0.6) return "text-yellow-600";
     return "text-red-600";
-}
+  }
   function getConfidenceIcon(confidence: number) {
     if (confidence >= 0.8) return CheckCircle;
     if (confidence >= 0.6) return AlertCircle;
     return AlertCircle;
-}
+  }
   // Auto-resize textarea
   function autoResize(event: Event) {
     const target = event.target as HTMLTextAreaElement;
     target.style.height = "auto";
     target.style.height = target.scrollHeight + "px";
-}
+  }
 </script>
 
 <div class="mx-auto px-4 max-w-7xl">

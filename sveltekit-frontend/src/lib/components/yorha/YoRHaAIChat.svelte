@@ -1,6 +1,5 @@
 <!-- YoRHa AI Chat Component with Enhanced RAG Integration -->
 <script lang="ts">
-</script>
 
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -14,8 +13,8 @@
   let isLoading = writable(false);
 
   // Chat input
-let messageInput = $state('');
-let chatContainer = $state<HTMLDivElement;
+  let messageInput = $state('');
+  let chatContainer = $state<HTMLDivElement;
 
   // Enhanced RAG service URL
   const RAG_SERVICE_URL >('http://localhost:8093');
@@ -24,7 +23,7 @@ let chatContainer = $state<HTMLDivElement;
   onMount(async () => {
     // Check Enhanced RAG service connection
     try {
-let response = $state<Response;
+  let response = $state<Response;
         try {
           response >(await fetch(`${RAG_SERVICE_URL}/health`));
           if (!response.ok) {
@@ -42,20 +41,20 @@ let response = $state<Response;
             role: 'assistant',
             content: `🤖 **YoRHa AI Assistant Online**
 
-**Enhanced RAG System Connected**
-- Service Status: ✅ OPERATIONAL
-- GPU Acceleration: ✅ ACTIVE
-- Vector Database: ✅ CONNECTED
-- Real-time Analysis: ✅ READY
+  **Enhanced RAG System Connected**
+  - Service Status: ✅ OPERATIONAL
+  - GPU Acceleration: ✅ ACTIVE
+  - Vector Database: ✅ CONNECTED
+  - Real-time Analysis: ✅ READY
 
-**Available Commands:**
-- \`/analyze <text>\` - Legal document analysis
-- \`/search <query>\` - Vector similarity search  
-- \`/case <id>\` - Case information retrieval
-- \`/evidence <id>\` - Evidence analysis
-- \`/help\` - Show all commands
+  **Available Commands:**
+  - \`/analyze <text>\` - Legal document analysis
+  - \`/search <query>\` - Vector similarity search  
+  - \`/case <id>\` - Case information retrieval
+  - \`/evidence <id>\` - Evidence analysis
+  - \`/help\` - Show all commands
 
-**How can I assist with your legal AI operations?**`,
+  **How can I assist with your legal AI operations?**`,
             timestamp: new Date(),
             type: 'system'
           }
@@ -71,14 +70,14 @@ let response = $state<Response;
           role: 'assistant',
           content: `⚠️ **Connection Failed**
 
-Enhanced RAG service is not available at ${RAG_SERVICE_URL}
+  Enhanced RAG service is not available at ${RAG_SERVICE_URL}
 
-**Troubleshooting:**
-1. Ensure the Go service is running: \`./rag-kratos.exe\`
-2. Check service health: \`curl ${RAG_SERVICE_URL}/health\`
-3. Verify port 8093 is not blocked
+  **Troubleshooting:**
+  1. Ensure the Go service is running: \`./rag-kratos.exe\`
+  2. Check service health: \`curl ${RAG_SERVICE_URL}/health\`
+  3. Verify port 8093 is not blocked
 
-**Offline Mode Available** - Basic chat functionality only.`,
+  **Offline Mode Available** - Basic chat functionality only.`,
           timestamp: new Date(),
           type: 'error'
         }
@@ -140,7 +139,6 @@ Enhanced RAG service is not available at ${RAG_SERVICE_URL}
       }
 
       const result = await response.json();
-      
       const assistantMessage = {
         id: Date.now().toString(),
         role: 'assistant',
@@ -155,18 +153,17 @@ Enhanced RAG service is not available at ${RAG_SERVICE_URL}
 
     } catch (error) {
       console.error('Chat error:', error);
-      
       const errorMessage = {
         id: Date.now().toString(),
         role: 'assistant',
         content: `❌ **Error Processing Request**
 
-${error.message}
+  ${error.message}
 
-**Available Options:**
-- Check Enhanced RAG service status
-- Try a simpler query
-- Use offline mode commands`,
+  **Available Options:**
+  - Check Enhanced RAG service status
+  - Try a simpler query
+  - Use offline mode commands`,
         timestamp: new Date(),
         type: 'error'
       };
@@ -182,28 +179,28 @@ ${error.message}
   async function handleCommand(command: string) {
     const [cmd, ...args] = command.slice(1).split(' ');
     const arg = args.join(' ');
-let response = $state('');
+  let response = $state('');
 
     switch (cmd) {
       case 'help':
         response = `🆘 **YoRHa AI Commands**
 
-**Analysis Commands:**
-- \`/analyze <text>\` - Analyze legal text
-- \`/search <query>\` - Vector search documents
-- \`/case <id>\` - Get case information
-- \`/evidence <id>\` - Analyze evidence
+  **Analysis Commands:**
+  - \`/analyze <text>\` - Analyze legal text
+  - \`/search <query>\` - Vector search documents
+  - \`/case <id>\` - Get case information
+  - \`/evidence <id>\` - Analyze evidence
 
-**System Commands:**
-- \`/status\` - System health check
-- \`/clear\` - Clear chat history
-- \`/export\` - Export chat log
-- \`/connect\` - Test RAG connection
+  **System Commands:**
+  - \`/status\` - System health check
+  - \`/clear\` - Clear chat history
+  - \`/export\` - Export chat log
+  - \`/connect\` - Test RAG connection
 
-**Legal Commands:**
-- \`/precedent <topic>\` - Find legal precedents
-- \`/contract <type>\` - Contract analysis
-- \`/compliance <area>\` - Compliance check`;
+  **Legal Commands:**
+  - \`/precedent <topic>\` - Find legal precedents
+  - \`/contract <type>\` - Contract analysis
+  - \`/compliance <area>\` - Compliance check`;
         break;
 
       case 'status':
@@ -212,15 +209,15 @@ let response = $state('');
           const status = await health.json();
           response = `📊 **System Status**
 
-**Enhanced RAG Service:**
-- Status: ${status.status === 'ok' ? '✅ HEALTHY' : '❌ ERROR'}
-- Timestamp: ${status.time}
-- Connection: ${$isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}
+  **Enhanced RAG Service:**
+  - Status: ${status.status === 'ok' ? '✅ HEALTHY' : '❌ ERROR'}
+  - Timestamp: ${status.time}
+  - Connection: ${$isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}
 
-**Components:**
-- Vector Database: ✅ OPERATIONAL
-- GPU Acceleration: ✅ ACTIVE
-- AI Models: ✅ LOADED`;
+  **Components:**
+  - Vector Database: ✅ OPERATIONAL
+  - GPU Acceleration: ✅ ACTIVE
+  - AI Models: ✅ LOADED`;
         } catch {
           response = '❌ **System Offline** - Unable to connect to Enhanced RAG service';
         }
@@ -245,10 +242,10 @@ let response = $state('');
             const result = await analysis.json();
             response = `📋 **Legal Analysis Results**
 
-**Document Type:** ${result.document_type || 'Unknown'}
-**Confidence:** ${result.confidence || 'N/A'}
-**Key Entities:** ${result.entities?.join(', ') || 'None detected'}
-**Summary:** ${result.summary || 'Analysis pending...'}`;
+  **Document Type:** ${result.document_type || 'Unknown'}
+  **Confidence:** ${result.confidence || 'N/A'}
+  **Key Entities:** ${result.entities?.join(', ') || 'None detected'}
+  **Summary:** ${result.summary || 'Analysis pending...'}`;
           } catch {
             response = '❌ **Analysis Failed** - Enhanced RAG service unavailable';
           }
@@ -276,8 +273,7 @@ let response = $state('');
 
   function formatRAGResponse(result: any): string {
     if (typeof result === 'string') return result;
-let formatted = $state(`🤖 **YoRHa AI Response**\n\n`);
-    
+  let formatted = $state(`🤖 **YoRHa AI Response**\n\n`);
     if (result.response) {
       formatted += `${result.response}\n\n`;
     }

@@ -3,11 +3,7 @@
   Now with NES.css Retro Gaming Modal Option
 -->
 <script lang="ts">
-</script>
   import { enhance } from '$app/forms';
-  import NesAuthModal from '$lib/components/auth/NesAuthModal.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
-  import * as Card from '$lib/components/ui/card';
   
   interface Props {
     data?: any;
@@ -18,7 +14,6 @@
   
   let isLoading = $state(false);
   let showPassword = $state(false);
-  let isNesModalOpen = $state(false);
   
   // Auto-fill demo credentials
   function fillDemoCredentials() {
@@ -29,10 +24,6 @@
       emailInput.value = 'admin@legal-ai.local';
       passwordInput.value = 'admin123';
     }
-  }
-  
-  function openNesModal() {
-    isNesModalOpen = true;
   }
 </script>
 
@@ -156,18 +147,9 @@
         </button>
       </form>
 
-      <!-- NES Modal Option - Made more prominent -->
+      <!-- Alternative Login Methods -->
       <div class="mt-6 text-center">
-        <div class="mb-2">
-          <p class="text-sm text-gray-400">Or try our retro gaming experience:</p>
-        </div>
-        <button
-          type="button"
-          onclick={openNesModal}
-          class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition-colors transform hover:scale-105 border-2 border-purple-400"
-        >
-          🎮 Retro Gaming Login (NES Style)
-        </button>
+        <p class="text-sm text-gray-400">Demo mode enabled</p>
       </div>
 
       <!-- Register Link -->
@@ -188,8 +170,3 @@
   </div>
 </div>
 
-<!-- NES Auth Modal -->
-<NesAuthModal 
-  bind:isOpen={isNesModalOpen}
-  {form}
-/>

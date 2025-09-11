@@ -1,10 +1,9 @@
 <script lang="ts">
-</script>
   import { afterUpdate, createEventDispatcher, onMount, tick } from "svelte";
   import { elasticOut, quintOut } from "svelte/easing";
   import { writable } from "svelte/store";
   import { fade, fly, scale } from "svelte/transition";
-// Icons from lucide-svelte
+  // Icons from lucide-svelte
   import {
     Bot,
     Brain,

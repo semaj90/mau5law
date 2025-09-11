@@ -1,6 +1,5 @@
 <!-- Phase 3: Live Agent Integration Demo -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { 
     liveAgentOrchestrator, 
@@ -44,7 +43,6 @@
   // Subscribe to orchestrator stores
   onMount(async () => {
     console.log('🚀 Initializing Live Agent Demo');
-    
     // Subscribe to reactive stores
     connectionStats.subscribe((stats) => {
       console.log('📊 Connection stats updated:', stats);
@@ -74,13 +72,11 @@
   // Event handlers
   async function testAgentOrchestration() {
     if (!testInput.trim()) return;
-    
     isLoading = true;
     console.log(`🎼 Testing ${requestType} with agents:`, selectedAgents);
 
     try {
       let result: OrchestrationResult
-      
       switch (requestType) {
         case 'analyze':
           result = await quickAnalyze(testInput, selectedAgents);
@@ -100,7 +96,6 @@
       }
 
       results = [result, ...results.slice(0, 4)]; // Keep last 5 results
-      
     } catch (error) {
       console.error('❌ Agent orchestration error:', error);
       alert(`Error: ${error.message}`);

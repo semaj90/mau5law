@@ -1,6 +1,5 @@
 <!-- AI Chat Interface Component - SSR-safe with proper hydration -->
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { onDestroy, onMount, tick } from "svelte";
   import { aiStore, conversation, status } from "../../../lib/stores/ai-store";

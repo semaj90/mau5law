@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     formData: {
     ocrResults: OCRResult[];
@@ -25,7 +24,6 @@
     precedents: Array<{ case_name: string relevance: number summary: string }>;
   };
 
-  
   let isAnalyzing = false;
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');

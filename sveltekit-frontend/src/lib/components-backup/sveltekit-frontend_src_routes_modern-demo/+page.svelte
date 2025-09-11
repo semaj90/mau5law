@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import EvidenceCard from "$lib/components/evidence/EvidenceCard.svelte";
   import ExpandGrid from "$lib/components/ui/ExpandGrid.svelte";
   import GoldenLayout from "$lib/components/ui/GoldenLayout.svelte";
@@ -86,25 +85,25 @@
 
   function handleEvidenceView(evidence: Evidence) {
     console.log("View evidence:", evidence);
-}
+  }
   function handleEvidenceEdit(evidence: Evidence) {
     console.log("Edit evidence:", evidence);
-}
+  }
   function handleEvidenceDelete(evidence: Evidence) {
     console.log("Delete evidence:", evidence);
-}
+  }
   function handleEvidenceDownload(evidence: Evidence) {
     console.log("Download evidence:", evidence);
-}
+  }
   function handleGridExpand(event: CustomEvent) {
     console.log("Grid expand:", event.detail);
-}
+  }
   function handleTextareaInput(event: CustomEvent) {
     console.log("Textarea input:", event.detail);
-}
+  }
   function handleCommandInsert(event: CustomEvent) {
     console.log("Command insert:", event.detail);
-}
+  }
 </script>
 
 <svelte:head>

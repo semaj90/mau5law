@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { enhance } from '$app/forms';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import {
@@ -40,7 +39,6 @@
     acceptTerms: false,
     rememberMe: false
   });
-  
   let formState = $state({
     loading: false,
     error: '',
@@ -63,12 +61,10 @@
     const hasValidEmail = emailRegex.test(formData.email);
     const hasStrongPassword = formData.password.length >= 8 && 
       /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(formData.password);
-    
     if (mode === 'register') {
       const passwordsMatch = formData.confirmPassword === formData.password;
       const hasName = formData.firstName.trim().length >= 2 && formData.lastName.trim().length >= 2;
       const termsAccepted = formData.acceptTerms;
-      
       return {
         isValid: hasValidEmail && hasStrongPassword && passwordsMatch && hasName && termsAccepted,
         hasValidEmail,
@@ -78,7 +74,6 @@
         termsAccepted
       };
     }
-    
     return {
       isValid: hasValidEmail && formData.password.length >= 6,
       hasValidEmail,
@@ -93,27 +88,24 @@
   let passwordStrength = $derived(() => {
     const password = formData.password;
     if (!password) return 0;
-let strength = $state(0);
+  let strength = $state(0);
     if (password.length >= 8) strength += 25;
     if (/[a-z]/.test(password)) strength += 25;
     if (/[A-Z]/.test(password)) strength += 25;
     if (/\d/.test(password)) strength += 15;
     if (/[@$!%*?&]/.test(password)) strength += 10;
-    
     return Math.min(strength, 100);
   });
 
   // Real-time email validation
   async function checkEmailExists() {
     if (!validation.hasValidEmail) return;
-    
     try {
       const response = await fetch('/api/auth/check-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
       });
-      
       const result = await response.json();
       formState.emailExists = result.exists;
     } catch (error) {
@@ -124,7 +116,6 @@ let strength = $state(0);
   // Enhanced form submission with comprehensive security
   async function handleSubmit(event: Event) {
     const form = event.target as HTMLFormElement;
-    
     formState.loading = true;
     formState.error = '';
     formState.success = '';
@@ -169,7 +160,6 @@ let strength = $state(0);
 
       if (response.ok) {
         formState.success = result.message || `${mode === 'login' ? 'Login' : 'Registration'} successful!`;
-        
         if (mode === 'register' && result.requiresVerification) {
           formState.verificationSent = true;
           formState.success = 'Please check your email to verify your account.';
@@ -257,14 +247,12 @@ let strength = $state(0);
 
   async function handleGuestLogin() {
     if (!allowGuestMode) return;
-    
     formState.loading = true;
     try {
       const response = await fetch('/api/auth/guest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
-      
       const result = await response.json();
       if (response.ok) {
         onSuccess?.(result.user);

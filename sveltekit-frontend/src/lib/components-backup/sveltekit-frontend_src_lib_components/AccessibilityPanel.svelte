@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     showPanel?: any;
   }
@@ -22,7 +21,6 @@
   } from "lucide-svelte";
   import { onMount } from "svelte";
 
-  
   interface AccessibilityIssue {
     id: string
     severity: "error" | "warning" | "info";
@@ -31,7 +29,7 @@
     description: string
     suggestion: string
     wcagGuideline?: string;
-}
+  }
   let auditResults: AccessibilityIssue[] = [];
   let isAuditing = false;
   let auditProgress = 0;
@@ -53,7 +51,7 @@
       loadAccessibilitySettings();
       // Check for system preferences
       checkSystemPreferences();
-}
+  }
   });
 
   function loadAccessibilitySettings() {
@@ -67,11 +65,11 @@
         keyboardNavigation = settings.keyboardNavigation || false;
         screenReaderMode = settings.screenReaderMode || false;
         applyAccessibilitySettings();
-}
+  }
     } catch (error) {
       console.warn("Failed to load accessibility settings:", error);
-}
-}
+  }
+  }
   function saveAccessibilitySettings() {
     try {
       const settings = {
@@ -84,21 +82,21 @@
       localStorage.setItem("accessibility-settings", JSON.stringify(settings));
     } catch (error) {
       console.warn("Failed to save accessibility settings:", error);
-}
-}
+  }
+  }
   function checkSystemPreferences() {
     if (!browser) return;
 
     // Check for prefers-reduced-motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       reducedMotion = true;
-}
+  }
     // Check for prefers-contrast
     if (window.matchMedia("(prefers-contrast: high)").matches) {
       highContrast = true;
-}
+  }
     applyAccessibilitySettings();
-}
+  }
   function applyAccessibilitySettings() {
     if (!browser) return;
 
@@ -109,33 +107,33 @@
       root.classList.add("high-contrast");
     } else {
       root.classList.remove("high-contrast");
-}
+  }
     // Reduced motion
     if (reducedMotion) {
       root.classList.add("reduced-motion");
     } else {
       root.classList.remove("reduced-motion");
-}
+  }
     // Large text
     if (largeText) {
       root.classList.add("large-text");
     } else {
       root.classList.remove("large-text");
-}
+  }
     // Keyboard navigation
     if (keyboardNavigation) {
       root.classList.add("keyboard-navigation");
     } else {
       root.classList.remove("keyboard-navigation");
-}
+  }
     // Screen reader mode
     if (screenReaderMode) {
       root.classList.add("screen-reader-mode");
     } else {
       root.classList.remove("screen-reader-mode");
-}
+  }
     saveAccessibilitySettings();
-}
+  }
   async function runAccessibilityAudit() {
     if (!browser) return;
 
@@ -161,7 +159,7 @@
         auditProgress = ((i + 1) / checks.length) * 100;
         // Small delay to show progress
         await new Promise((resolve) => setTimeout(resolve, 200));
-}
+  }
       // Calculate stats
       totalIssues = auditResults.length;
       errorCount = auditResults.filter(
@@ -188,8 +186,8 @@
       });
     } finally {
       isAuditing = false;
-}
-}
+  }
+  }
   async function checkHeadingStructure() {
     const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
     const headingLevels: number[] = [];
@@ -210,7 +208,7 @@
         suggestion: "Add a main h1 heading to the page",
         wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
       });
-}
+  }
     // Check for skipped heading levels
     for (let i = 1; i < headingLevels.length; i++) {
       if (headingLevels[i] - headingLevels[i - 1] > 1) {
@@ -223,9 +221,9 @@
           suggestion: "Use headings in sequential order (h1, h2, h3, etc.)",
           wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
         });
-}
-}
-}
+  }
+  }
+  }
   async function checkImageAltText() {
     const images = document.querySelectorAll("img");
 
@@ -255,9 +253,9 @@
             "Verify this is a decorative image, or add descriptive alt text",
           wcagGuideline: "WCAG 2.1 - 1.1.1 Non-text Content",
         });
-}
+  }
     });
-}
+  }
   async function checkFormLabels() {
     const inputs = document.querySelectorAll("input, select, textarea");
 
@@ -284,9 +282,9 @@
             "Add a label element, aria-label, or aria-labelledby attribute",
           wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
         });
-}
+  }
     });
-}
+  }
   async function checkColorContrast() {
     // Simplified contrast check - in real implementation, you'd check computed colors
     const textElements = document.querySelectorAll(
@@ -304,7 +302,7 @@
         "Ensure text has at least 4.5:1 contrast ratio (3:1 for large text)",
       wcagGuideline: "WCAG 2.1 - 1.4.3 Contrast (Minimum)",
     });
-}
+  }
   async function checkKeyboardAccessibility() {
     const interactiveElements = document.querySelectorAll(
       "button, a, input, select, textarea, [tabindex]"
@@ -325,7 +323,7 @@
             'Use tabindex={${1" or remove tabindex to follow natural tab order',
           wcagGuideline: "WCAG 2.1 - 2.4.3 Focus Order",
         });
-}
+  }
       // Check for missing href on links
       if (element.tagName === "A" && !element.getAttribute("href")) {
         auditResults.push({
@@ -338,9 +336,9 @@
             "Add href attribute or use button element for interactions",
           wcagGuideline: "WCAG 2.1 - 2.1.1 Keyboard",
         });
-}
+  }
     });
-}
+  }
   async function checkAriaLabels() {
     const elementsWithAriaHidden = document.querySelectorAll(
       '[aria-hidden="true"]'
@@ -361,9 +359,9 @@
             "Provide descriptive aria-label text or remove the attribute",
           wcagGuideline: "WCAG 2.1 - 4.1.2 Name, Role, Value",
         });
-}
+  }
     });
-}
+  }
   async function checkFocusManagement() {
     // Check if focus indicators are visible
     auditResults.push({
@@ -376,7 +374,7 @@
         "Ensure all interactive elements have visible focus indicators",
       wcagGuideline: "WCAG 2.1 - 2.4.7 Focus Visible",
     });
-}
+  }
   async function checkSemanticHTML() {
     const hasMain = document.querySelector("main");
     const hasNav = document.querySelector("nav");
@@ -391,7 +389,7 @@
         suggestion: "Use <main> element to identify primary content",
         wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
       });
-}
+  }
     if (!hasNav) {
       auditResults.push({
         id: "missing-nav",
@@ -402,8 +400,8 @@
         suggestion: "Use <nav> element for navigation sections",
         wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
       });
-}
-}
+  }
+  }
   function exportAuditResults() {
     const report = {
       timestamp: new Date().toISOString(),
@@ -427,8 +425,8 @@
       link.download = `accessibility-audit-${new Date().toISOString().split("T")[0]}.json`;
       link.click();
       URL.revokeObjectURL(url);
-}
-}
+  }
+  }
   function getSeverityIcon(severity: string) {
     switch (severity) {
       case "error":
@@ -439,8 +437,8 @@
         return Info;
       default:
         return CheckCircle;
-}
-}
+  }
+  }
   function getSeverityColor(severity: string) {
     switch (severity) {
       case "error":
@@ -451,8 +449,8 @@
         return "text-info";
       default:
         return "text-success";
-}
-}
+  }
+  }
 </script>
 
 {#if showPanel}

@@ -1,116 +1,115 @@
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { page } from '$app/stores';
-import { Dialog } from 'bits-ui';
-// Dropzone and Superforms fallback for SvelteKit 2/Svelte 5
-// If Bits UI and Superforms are unavailable, use SvelteKit's built-in file input and Zod validation
-import { z } from 'zod';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import GoldenRatioLoader from '$lib/components/ui/enhanced-bits/GoldenRatioLoader.svelte';
-	import {
-		Upload,
-		FileText,
-		Image,
-		Search,
-		Filter,
-		MoreVertical,
-		Eye,
-		Download,
-		Trash2,
-		Brain,
-		Zap,
-		Target
-	} from 'lucide-svelte';
+  	import { onMount } from 'svelte';
+  	import { writable } from 'svelte/store';
+  	import { page } from '$app/stores';
+  import { Dialog } from 'bits-ui';
+  // Dropzone and Superforms fallback for SvelteKit 2/Svelte 5
+  // If Bits UI and Superforms are unavailable, use SvelteKit's built-in file input and Zod validation
+  import { z } from 'zod';
+  	import { Button } from '$lib/components/ui/button/index.js';
+  	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
+  	import { Badge } from '$lib/components/ui/badge/index.js';
+  	import { Input } from '$lib/components/ui/input/index.js';
+  	import { Textarea } from '$lib/components/ui/textarea/index.js';
+  	import GoldenRatioLoader from '$lib/components/ui/enhanced-bits/GoldenRatioLoader.svelte';
+  	import {
+  		Upload,
+  		FileText,
+  		Image,
+  		Search,
+  		Filter,
+  		MoreVertical,
+  		Eye,
+  		Download,
+  		Trash2,
+  		Brain,
+  		Zap,
+  		Target
+  	} from 'lucide-svelte';
 
 
-// Evidence management stores
-let evidenceItems = $state([]);
-let filteredEvidence = $state([]);
-let searchQuery = $state('');
-let selectedFilter = $state('all');
-let isUploading = $state(false);
-let uploadProgress = $state(0);
-let processingStatus = $state<'loading' | 'processing' | 'success' | 'error'>('loading');
+  // Evidence management stores
+  let evidenceItems = $state([]);
+  let filteredEvidence = $state([]);
+  let searchQuery = $state('');
+  let selectedFilter = $state('all');
+  let isUploading = $state(false);
+  let uploadProgress = $state(0);
+  let processingStatus = $state<'loading' | 'processing' | 'success' | 'error'>('loading');
 
-// Context7 integration state
-let context7Enabled = $state(true);
-let semanticSearchResults = $state([]);
-let ragEnhanced = $state(true);
+  // Context7 integration state
+  let context7Enabled = $state(true);
+  let semanticSearchResults = $state([]);
+  let ragEnhanced = $state(true);
 
-// Zod schema for evidence upload
-const evidenceSchema = z.object({
+  // Zod schema for evidence upload
+  const evidenceSchema = z.object({
   files: z.any().refine(val => val instanceof FileList && val.length > 0, {
-	message: 'Please select at least one file.'
+  	message: 'Please select at least one file.'
   }),
   context7Enabled: z.boolean(),
   ragEnhanced: z.boolean()
-});
+  });
 
-// Fallback form state
-let formErrors = $state<{ files?: string } | null>(null);
-// ...existing code...
-	interface EvidenceItem {
-		id: string
-		filename: string
-		type: 'pdf' | 'image' | 'document';
-		uploadDate: Date
-		size: number
-		status: 'processing' | 'ready' | 'error';
-		summary?: string;
-		entities?: any[];
-		prosecutionScore?: number;
-		context7Analysis?: any;
-		tags: string[];
-		embedding?: number[];
-	}
+  // Fallback form state
+  let formErrors = $state<{ files?: string } | null>(null);
+  // ...existing code...
+  	interface EvidenceItem {
+  		id: string
+  		filename: string
+  		type: 'pdf' | 'image' | 'document';
+  		uploadDate: Date
+  		size: number
+  		status: 'processing' | 'ready' | 'error';
+  		summary?: string;
+  		entities?: any[];
+  		prosecutionScore?: number;
+  		context7Analysis?: any;
+  		tags: string[];
+  		embedding?: number[];
+  	}
 
-	// Dialog state
-	let dialogOpen = $state(false);
+  	// Dialog state
+  	let dialogOpen = $state(false);
 
 
 
-// Fallback file input state
-let dropzoneFiles = $state<FileList | null>(null);
-let isDragover = $state(false);
-let formFields = $state({
+  // Fallback file input state
+  let dropzoneFiles = $state<FileList | null>(null);
+  let isDragover = $state(false);
+  let formFields = $state({
   context7Enabled: true,
   ragEnhanced: true
-});
+  });
 
-// ...existing code...
+  // ...existing code...
 
-	// Computed properties using Svelte 5 runes
-let totalEvidence = $derived(evidenceItems.length)
-let processingCount = $derived(evidenceItems.filter(item => item.status === 'processing').length);
-let readyCount = $derived(evidenceItems.filter(item => item.status === 'ready').length);
+  	// Computed properties using Svelte 5 runes
+  let totalEvidence = $derived(evidenceItems.length)
+  let processingCount = $derived(evidenceItems.filter(item => item.status === 'processing').length);
+  let readyCount = $derived(evidenceItems.filter(item => item.status === 'ready').length);
 
-	onMount(async () => {
-		await loadExistingEvidence();
-		startRealTimeUpdates();
-	});
+  	onMount(async () => {
+  		await loadExistingEvidence();
+  		startRealTimeUpdates();
+  	});
 
-	async function loadExistingEvidence() {
-		try {
-			const response = await fetch('/api/evidence/list');
-			if (response.ok) {
-				const data = await response.json();
-				evidenceItems = data.evidence || [];
-				filterEvidence();
-			}
-		} catch (error) {
-			console.error('Failed to load evidence:', error);
-		}
-	}
+  	async function loadExistingEvidence() {
+  		try {
+  			const response = await fetch('/api/evidence/list');
+  			if (response.ok) {
+  				const data = await response.json();
+  				evidenceItems = data.evidence || [];
+  				filterEvidence();
+  			}
+  		} catch (error) {
+  			console.error('Failed to load evidence:', error);
+  		}
+  	}
 
 
-// Superforms submit handler for evidence upload
-async function handleEvidenceSubmit(event) {
+  // Superforms submit handler for evidence upload
+  async function handleEvidenceSubmit(event) {
   event.preventDefault();
   isUploading = true;
   uploadProgress = 0;
@@ -118,26 +117,26 @@ async function handleEvidenceSubmit(event) {
 
   // Validate with Zod
   const result = evidenceSchema.safeParse({
-	files: dropzoneFiles,
-	context7Enabled: formFields.context7Enabled,
-	ragEnhanced: formFields.ragEnhanced
+  	files: dropzoneFiles,
+  	context7Enabled: formFields.context7Enabled,
+  	ragEnhanced: formFields.ragEnhanced
   });
   if (!result.success) {
-	// Zod error output is string[]; join for display
-	const fieldErrors = result.error.formErrors.fieldErrors;
-	formErrors = {
-	  files: Array.isArray(fieldErrors.files) ? fieldErrors.files.join(', ') : fieldErrors.files
-	};
-	isUploading = false;
-	return;
+  	// Zod error output is string[]; join for display
+  	const fieldErrors = result.error.formErrors.fieldErrors;
+  	formErrors = {
+  	  files: Array.isArray(fieldErrors.files) ? fieldErrors.files.join(', ') : fieldErrors.files
+  	};
+  	isUploading = false;
+  	return;
   }
   formErrors = null;
 
   const formData = new FormData();
   if (dropzoneFiles) {
-	Array.from(dropzoneFiles).forEach(file => {
-	  formData.append('files', file);
-	});
+  	Array.from(dropzoneFiles).forEach(file => {
+  	  formData.append('files', file);
+  	});
   }
   formData.append('context7Enabled', formFields.context7Enabled ? 'true' : 'false');
   formData.append('ragEnhanced', formFields.ragEnhanced ? 'true' : 'false');
@@ -145,179 +144,179 @@ async function handleEvidenceSubmit(event) {
   formData.append('generateSummary', 'true');
 
   try {
-	const response = await fetch('/api/evidence/upload', {
-	  method: 'POST',
-	  body: formData
-	});
+  	const response = await fetch('/api/evidence/upload', {
+  	  method: 'POST',
+  	  body: formData
+  	});
 
-	if (response.ok) {
-	  const result = await response.json();
-	  evidenceItems = [...evidenceItems, ...result.evidence];
-	  filterEvidence();
-	  processingStatus = 'success';
-	  if (context7Enabled) {
-		await triggerContext7Analysis(result.evidence);
-	  }
-	} else {
-	  throw new Error('Upload failed');
-	}
+  	if (response.ok) {
+  	  const result = await response.json();
+  	  evidenceItems = [...evidenceItems, ...result.evidence];
+  	  filterEvidence();
+  	  processingStatus = 'success';
+  	  if (context7Enabled) {
+  		await triggerContext7Analysis(result.evidence);
+  	  }
+  	} else {
+  	  throw new Error('Upload failed');
+  	}
   } catch (error) {
-	console.error('Upload error:', error);
-	processingStatus = 'error';
+  	console.error('Upload error:', error);
+  	processingStatus = 'error';
   } finally {
-	isUploading = false;
-	uploadProgress = 0;
+  	isUploading = false;
+  	uploadProgress = 0;
   }
-}
+  }
 
-	async function triggerContext7Analysis(newEvidence: EvidenceItem[]) {
-		try {
-			for (const item of newEvidence) {
-				const response = await fetch('/api/context7/analyze', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						evidenceId: item.id,
-						content: item.summary,
-						type: 'legal_evidence'
-					})
-				});
+  	async function triggerContext7Analysis(newEvidence: EvidenceItem[]) {
+  		try {
+  			for (const item of newEvidence) {
+  				const response = await fetch('/api/context7/analyze', {
+  					method: 'POST',
+  					headers: { 'Content-Type': 'application/json' },
+  					body: JSON.stringify({
+  						evidenceId: item.id,
+  						content: item.summary,
+  						type: 'legal_evidence'
+  					})
+  				});
 
-				if (response.ok) {
-					const analysis = await response.json();
+  				if (response.ok) {
+  					const analysis = await response.json();
 
-					// Update evidence item with Context7 analysis
-					const index = evidenceItems.findIndex(e => e.id === item.id);
-					if (index !== -1) {
-						evidenceItems[index].context7Analysis = analysis;
-						evidenceItems = [...evidenceItems];
-					}
-				}
-			}
-		} catch (error) {
-			console.error('Context7 analysis failed:', error);
-		}
-	}
+  					// Update evidence item with Context7 analysis
+  					const index = evidenceItems.findIndex(e => e.id === item.id);
+  					if (index !== -1) {
+  						evidenceItems[index].context7Analysis = analysis;
+  						evidenceItems = [...evidenceItems];
+  					}
+  				}
+  			}
+  		} catch (error) {
+  			console.error('Context7 analysis failed:', error);
+  		}
+  	}
 
-	async function performSemanticSearch(query: string) {
-		if (!query.trim()) {
-			semanticSearchResults = [];
-			return;
-		}
+  	async function performSemanticSearch(query: string) {
+  		if (!query.trim()) {
+  			semanticSearchResults = [];
+  			return;
+  		}
 
-		try {
-			const response = await fetch('/api/evidence/search', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					query,
-					useSemanticSearch: true,
-					includeContext7: context7Enabled,
-					maxResults: 10
-				})
-			});
+  		try {
+  			const response = await fetch('/api/evidence/search', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					query,
+  					useSemanticSearch: true,
+  					includeContext7: context7Enabled,
+  					maxResults: 10
+  				})
+  			});
 
-			if (response.ok) {
-				const results = await response.json();
-				semanticSearchResults = results.matches || [];
-			}
-		} catch (error) {
-			console.error('Semantic search failed:', error);
-		}
-	}
+  			if (response.ok) {
+  				const results = await response.json();
+  				semanticSearchResults = results.matches || [];
+  			}
+  		} catch (error) {
+  			console.error('Semantic search failed:', error);
+  		}
+  	}
 
-	function filterEvidence() {
-		let filtered = evidenceItems;
+  	function filterEvidence() {
+  		let filtered = evidenceItems;
 
-		// Apply search filter
-		if (searchQuery.trim()) {
-			filtered = filtered.filter(item =>
-				item.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				item.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-			);
-		}
+  		// Apply search filter
+  		if (searchQuery.trim()) {
+  			filtered = filtered.filter(item =>
+  				item.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  				item.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  				item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+  			);
+  		}
 
-		// Apply type filter
-		if (selectedFilter !== 'all') {
-			filtered = filtered.filter(item => item.type === selectedFilter);
-		}
+  		// Apply type filter
+  		if (selectedFilter !== 'all') {
+  			filtered = filtered.filter(item => item.type === selectedFilter);
+  		}
 
-		filteredEvidence = filtered;
-	}
+  		filteredEvidence = filtered;
+  	}
 
-	// Watch for search and filter changes
-	$effect(() => {
-		filterEvidence();
-	});
+  	// Watch for search and filter changes
+  	$effect(() => {
+  		filterEvidence();
+  	});
 
-	// Debounced semantic search
-let searchTimeout: ReturnType<typeof setTimeout>;
-	$effect(() => {
-		if (searchQuery) {
-			clearTimeout(searchTimeout);
-			searchTimeout = setTimeout(() => {
-				performSemanticSearch(searchQuery);
-			}, 500);
-		}
-	});
+  	// Debounced semantic search
+  let searchTimeout: ReturnType<typeof setTimeout>;
+  	$effect(() => {
+  		if (searchQuery) {
+  			clearTimeout(searchTimeout);
+  			searchTimeout = setTimeout(() => {
+  				performSemanticSearch(searchQuery);
+  			}, 500);
+  		}
+  	});
 
-	function startRealTimeUpdates() {
-		// Simulate real-time processing updates
-		setInterval(() => {
-			evidenceItems = evidenceItems.map(item => {
-				if (item.status === 'processing' && Math.random() > 0.7) {
-					return {
-						...item,
-						status: 'ready',
-						prosecutionScore: Math.random() * 0.4 + 0.6,
-						summary: `AI-generated summary for ${item.filename}`,
-						entities: ['entity1', 'entity2', 'entity3']
-					};
-				}
-				return item;
-			});
-		}, 3000);
-	}
+  	function startRealTimeUpdates() {
+  		// Simulate real-time processing updates
+  		setInterval(() => {
+  			evidenceItems = evidenceItems.map(item => {
+  				if (item.status === 'processing' && Math.random() > 0.7) {
+  					return {
+  						...item,
+  						status: 'ready',
+  						prosecutionScore: Math.random() * 0.4 + 0.6,
+  						summary: `AI-generated summary for ${item.filename}`,
+  						entities: ['entity1', 'entity2', 'entity3']
+  					};
+  				}
+  				return item;
+  			});
+  		}, 3000);
+  	}
 
-	async function deleteEvidence(evidenceId: string) {
-		try {
-			const response = await fetch(`/api/evidence/${evidenceId}`, {
-				method: 'DELETE'
-			});
+  	async function deleteEvidence(evidenceId: string) {
+  		try {
+  			const response = await fetch(`/api/evidence/${evidenceId}`, {
+  				method: 'DELETE'
+  			});
 
-			if (response.ok) {
-				evidenceItems = evidenceItems.filter(item => item.id !== evidenceId);
-				filterEvidence();
-			}
-		} catch (error) {
-			console.error('Delete failed:', error);
-		}
-	}
+  			if (response.ok) {
+  				evidenceItems = evidenceItems.filter(item => item.id !== evidenceId);
+  				filterEvidence();
+  			}
+  		} catch (error) {
+  			console.error('Delete failed:', error);
+  		}
+  	}
 
-	function getFileIcon(type: string) {
-		switch (type) {
-			case 'pdf': return FileText;
-			case 'image': return Image;
-			default: return FileText;
-		}
-	}
+  	function getFileIcon(type: string) {
+  		switch (type) {
+  			case 'pdf': return FileText;
+  			case 'image': return Image;
+  			default: return FileText;
+  		}
+  	}
 
-	function getStatusColor(status: string) {
-		switch (status) {
-			case 'ready': return 'bg-green-100 text-green-800';
-			case 'processing': return 'bg-yellow-100 text-yellow-800';
-			case 'error': return 'bg-red-100 text-red-800';
-			default: return 'bg-gray-100 text-gray-800';
-		}
-	}
+  	function getStatusColor(status: string) {
+  		switch (status) {
+  			case 'ready': return 'bg-green-100 text-green-800';
+  			case 'processing': return 'bg-yellow-100 text-yellow-800';
+  			case 'error': return 'bg-red-100 text-red-800';
+  			default: return 'bg-gray-100 text-gray-800';
+  		}
+  	}
 
-	function formatFileSize(bytes: number) {
-		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-		if (bytes === 0) return '0 Bytes';
-		const i = Math.floor(Math.log(bytes) / Math.log(1024));
-		return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
-	}
+  	function formatFileSize(bytes: number) {
+  		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  		if (bytes === 0) return '0 Bytes';
+  		const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  		return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+  	}
 </script>
 
 <svelte:head>

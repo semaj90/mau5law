@@ -1,6 +1,5 @@
 <!-- Enhanced AI Assistant - Simplified Version -->
 <script lang="ts">
-</script>
   interface Props {
 
   }
@@ -21,10 +20,7 @@
     Settings,
     Trash2,
   } from "lucide-svelte";
-  
     export const evidenceIds: string[] = []; // External reference for evidence context
-      
-  
   // State
   let query = "";
   let isLoading = false;
@@ -53,14 +49,14 @@
         role: "assistant",
         content: `Based on your query about "${userMessage.content}", here's my analysis:
 
-This is a legal matter that requires careful consideration of relevant statutes, case law, and regulatory frameworks. The key factors to consider include:
+  This is a legal matter that requires careful consideration of relevant statutes, case law, and regulatory frameworks. The key factors to consider include:
 
-1. Jurisdictional requirements
-2. Applicable legal precedents
-3. Statutory framework
-4. Regulatory compliance
+  1. Jurisdictional requirements
+  2. Applicable legal precedents
+  3. Statutory framework
+  4. Regulatory compliance
 
-I can provide more specific guidance if you share additional details about your case context.`,
+  I can provide more specific guidance if you share additional details about your case context.`,
         references: [
           {
             title: "Relevant Case Law",
@@ -78,18 +74,18 @@ I can provide more specific guidance if you share additional details about your 
       messages = [...messages, aiResponse];
       isLoading = false;
     }, 1500);
-}
+  }
   function handleReferenceClick(reference: any) {
     selectedCitation = `${reference.title} - ${reference.citation}`;
     showCitationDialog = true;
-}
+  }
   function insertCitation() {
     dispatch("citation-inserted", selectedCitation);
     showCitationDialog = false;
-}
+  }
   function clearMessages() {
     messages = [];
-}
+  }
 </script>
 
 <div class="space-y-4">

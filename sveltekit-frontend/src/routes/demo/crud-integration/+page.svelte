@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { createMachine, interpret } from 'xstate';
   import { caseManagementMachine } from '$lib/machines/caseManagementMachine';
@@ -40,11 +39,9 @@
     try {
       isLoading = true;
       error = null;
-      
       console.log('🔄 Loading cases from API...');
       const response = await fetch(`/api/v1/cases?userId=${DEMO_USER_ID}&limit=10`);
       const result = await response.json();
-      
       if (result.success) {
         cases = result.data.cases;
         console.log(`✅ Loaded ${cases.length} cases`);
@@ -64,7 +61,6 @@
       isLoading = true;
       error = null;
       successMessage = null;
-      
       const caseData = {
         ...newCaseForm,
         userId: DEMO_USER_ID
@@ -78,7 +74,6 @@
       });
 
       const result = await response.json();
-      
       if (result.success) {
         successMessage = `Case "${result.data.case.title}" created successfully!`;
         // Reset form
@@ -101,11 +96,9 @@
     try {
       isLoading = true;
       error = null;
-      
       console.log(`🔍 Loading case details: ${caseId}`);
       const response = await fetch(`/api/v1/cases/${caseId}`);
       const result = await response.json();
-      
       if (result.success) {
         selectedCase = result.data.case;
         console.log(`✅ Case loaded: ${selectedCase?.title}`);
@@ -122,12 +115,10 @@
 
   async function addEvidence() {
     if (!selectedCase) return;
-    
     try {
       isLoading = true;
       error = null;
       successMessage = null;
-      
       const evidenceData = {
         ...newEvidenceForm,
         tags: newEvidenceForm.tags.split(',').map(t => t.trim()).filter(Boolean)
@@ -141,7 +132,6 @@
       });
 
       const result = await response.json();
-      
       if (result.success) {
         successMessage = `Evidence added successfully!`;
         // Reset form
@@ -164,7 +154,6 @@
     try {
       isLoading = true;
       error = null;
-      
       console.log(`📝 Updating case status: ${caseId} -> ${newStatus}`);
       const response = await fetch(`/api/v1/cases/${caseId}`, {
         method: 'PUT',
@@ -173,7 +162,6 @@
       });
 
       const result = await response.json();
-      
       if (result.success) {
         successMessage = `Case status updated to ${newStatus}`;
         await loadCases(); // Refresh the list

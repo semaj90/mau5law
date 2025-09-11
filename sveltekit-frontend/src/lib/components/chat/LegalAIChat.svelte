@@ -10,7 +10,6 @@
   - Legal knowledge base integration
 -->
 <script lang="ts">
-</script>
   import { onMount, createEventDispatcher, tick } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Case, Evidence, Citation } from '$lib/server/db/schemas/cases-schema.js';
@@ -106,12 +105,10 @@
     try {
       const response = await fetch('/api/ollama/health');
       ollamaConnected = response.ok;
-      
       if (!ollamaConnected) {
         console.warn('Ollama not connected, will use WebAssembly fallback');
         webAssemblyMode = true;
       }
-      
       return ollamaConnected;
     } catch (error) {
       console.warn('Ollama connection check failed:', error);
@@ -125,55 +122,55 @@
   function buildSystemPrompt(): string {
     let prompt = `You are an advanced Legal AI Assistant specialized in criminal law, evidence analysis, and case management.
 
-CORE CAPABILITIES:
-- Legal research and case analysis
-- Evidence evaluation and chain of custody review
-- Citation verification and legal precedent analysis
-- Procedural guidance and compliance checking
-- Detective-level investigative insights
+  CORE CAPABILITIES:
+  - Legal research and case analysis
+  - Evidence evaluation and chain of custody review
+  - Citation verification and legal precedent analysis
+  - Procedural guidance and compliance checking
+  - Detective-level investigative insights
 
-INSTRUCTIONS:
-- Provide accurate, professional legal analysis
-- Reference relevant laws, procedures, and precedents
-- Maintain attorney-client privilege and confidentiality
-- Use provided case context to enhance responses
-- Consider evidence admissibility and procedural requirements
-- Flag potential issues or areas requiring further investigation
+  INSTRUCTIONS:
+  - Provide accurate, professional legal analysis
+  - Reference relevant laws, procedures, and precedents
+  - Maintain attorney-client privilege and confidentiality
+  - Use provided case context to enhance responses
+  - Consider evidence admissibility and procedural requirements
+  - Flag potential issues or areas requiring further investigation
 
-RESPONSE FORMAT:
-- Use clear, professional legal language
-- Cite relevant authorities when applicable
-- Provide actionable recommendations
-- Indicate confidence levels for assessments
-- Reference specific evidence or citations when relevant`;
+  RESPONSE FORMAT:
+  - Use clear, professional legal language
+  - Cite relevant authorities when applicable
+  - Provide actionable recommendations
+  - Indicate confidence levels for assessments
+  - Reference specific evidence or citations when relevant`;
 
     if (caseData) {
       prompt += `
 
-CURRENT CASE CONTEXT:
-- Case: ${caseData.title} (${caseData.caseNumber})
-- Status: ${caseData.status}
-- Type: ${caseData.caseType || 'Not specified'}
-- Jurisdiction: ${caseData.jurisdiction || 'Not specified'}
-- Priority: ${caseData.priority}`;
+  CURRENT CASE CONTEXT:
+  - Case: ${caseData.title} (${caseData.caseNumber})
+  - Status: ${caseData.status}
+  - Type: ${caseData.caseType || 'Not specified'}
+  - Jurisdiction: ${caseData.jurisdiction || 'Not specified'}
+  - Priority: ${caseData.priority}`;
 
       if (detectiveMode) {
         prompt += `
-- DETECTIVE MODE ACTIVE: Enhanced analytical capabilities enabled
-- Focus on pattern recognition, timeline analysis, and investigative insights
-- Cross-reference evidence for inconsistencies or connections
-- Identify gaps in the investigation or evidence collection`;
+  - DETECTIVE MODE ACTIVE: Enhanced analytical capabilities enabled
+  - Focus on pattern recognition, timeline analysis, and investigative insights
+  - Cross-reference evidence for inconsistencies or connections
+  - Identify gaps in the investigation or evidence collection`;
       }
 
       if (caseData.description) {
         prompt += `
-- Description: ${caseData.description}`;
+  - Description: ${caseData.description}`;
       }
     }
 
     prompt += `
 
-Remember: Always maintain professional standards and indicate when additional legal counsel or verification is recommended.`;
+  Remember: Always maintain professional standards and indicate when additional legal counsel or verification is recommended.`;
 
     return prompt;
   }
@@ -184,33 +181,32 @@ Remember: Always maintain professional standards and indicate when additional le
 
     if (caseData) {
       message += `\n\n📁 **Current Case**: ${caseData.title} (${caseData.caseNumber})`;
-      
       if (detectiveMode) {
         message += `\n🔍 **Detective Mode Active**: Enhanced analytical capabilities are enabled for this case.`;
       }
     }
 
     message += `\n\n**I can help you with:**
-- Legal research and precedent analysis
-- Evidence evaluation and admissibility questions
-- Case strategy and procedural guidance
-- Document review and analysis
-- Timeline reconstruction and pattern recognition`;
+  - Legal research and precedent analysis
+  - Evidence evaluation and admissibility questions
+  - Case strategy and procedural guidance
+  - Document review and analysis
+  - Timeline reconstruction and pattern recognition`;
 
     if (detectiveMode) {
       message += `
-- Cross-referencing evidence for connections
-- Identifying investigative gaps or opportunities
-- Pattern analysis and anomaly detection`;
+  - Cross-referencing evidence for connections
+  - Identifying investigative gaps or opportunities
+  - Pattern analysis and anomaly detection`;
     }
 
     message += `\n\n**How to get started:**
-- Ask specific legal questions about your case
-- Request analysis of evidence or documents  
-- Seek guidance on legal procedures or requirements
-- Use detective insights for investigative directions
+  - Ask specific legal questions about your case
+  - Request analysis of evidence or documents  
+  - Seek guidance on legal procedures or requirements
+  - Use detective insights for investigative directions
 
-Type your question below to begin!`;
+  Type your question below to begin!`;
 
     return message;
   }
@@ -227,10 +223,8 @@ Type your question below to begin!`;
     };
 
     messages.update(msgs => [...msgs, userMessage]);
-    
     const messageText = currentMessage.trim();
     currentMessage = '';
-    
     // Auto-resize textarea
     if (messageInput) {
       messageInput.style.height = 'auto';
@@ -261,7 +255,6 @@ Type your question below to begin!`;
 
     try {
       const endpoint = ollamaConnected ? '/api/ollama/chat' : '/api/wasm/chat';
-      
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -288,7 +281,6 @@ Type your question below to begin!`;
 
       if (reader) {
         let sources: any[] = [];
-        
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
@@ -303,7 +295,6 @@ Type your question below to begin!`;
 
               try {
                 const parsed = JSON.parse(data);
-                
                 if (parsed.metadata?.type === 'sources') {
                   sources = parsed.metadata.sources || [];
                 } else if (parsed.text) {
@@ -348,7 +339,6 @@ Type your question below to begin!`;
       }
     } catch (error: any) {
       console.error('Chat error:', error);
-      
       // Add error message
       const errorMessage: ChatMessage = {
         id: `error_${Date.now()}`,
@@ -448,17 +438,14 @@ Type your question below to begin!`;
   // Get source display
   function getSourceDisplay(sources: any[]): string {
     if (!sources || sources.length === 0) return '';
-    
     const evidenceSources = sources.filter(s => s.type === 'evidence').length;
     const citationSources = sources.filter(s => s.type === 'citation').length;
-    
     let display = '';
     if (evidenceSources > 0) display += `${evidenceSources} evidence`;
     if (citationSources > 0) {
       if (display) display += ', ';
       display += `${citationSources} citations`;
     }
-    
     return display ? `Referenced: ${display}` : '';
   }
 </script>

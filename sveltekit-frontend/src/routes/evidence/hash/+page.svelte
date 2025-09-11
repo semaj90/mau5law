@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/state';
-  
   let hashInput = $state('81d9c48f998f9025eb8f72e28a6c4f921ed407dd75891a9e9a8778c9ad5711bd');
   let searchResult: any = $state(null);
   let loading = $state(false);
@@ -14,14 +12,14 @@
     if (urlHash) {
       hashInput = urlHash;
       searchByHash();
-}
+  }
   });
 
   async function searchByHash() {
     if (!hashInput || hashInput.length !== 64) {
       error = 'Please enter a valid 64-character SHA256 hash';
       return;
-}
+  }
     loading = true;
     error = '';
     searchResult = null;
@@ -29,20 +27,18 @@
     try {
       const response = await fetch(`/api/evidence/hash?hash=${hashInput}`);
       const result = await response.json();
-      
       if (response.ok) {
         searchResult = result;
       } else {
         error = result.error || 'Search failed';
-}
+  }
     } catch (e) {
       error = 'Network error occurred';
     } finally {
       loading = false;
-}}
+  }}
   async function verifyIntegrity(evidenceId: string) {
     if (!evidenceId) return;
-    
     loading = true;
     error = '';
 
@@ -54,22 +50,21 @@
       });
 
       const result = await response.json();
-      
       if (response.ok) {
         alert(`Integrity Check: ${result.message}`);
       } else {
         error = result.error || 'Verification failed';
-}
+  }
     } catch (e) {
       error = 'Network error occurred';
     } finally {
       loading = false;
-}}
+  }}
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text).then(() => {
       alert('Copied to clipboard!');
     });
-}
+  }
 </script>
 
 <svelte:head>

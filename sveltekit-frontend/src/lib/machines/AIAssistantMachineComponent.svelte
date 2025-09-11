@@ -1,12 +1,10 @@
 <script lang="ts">
-</script>
   import { useMachine } from '@xstate/svelte';
   import { aiAssistantMachine, type AIAssistantContext } from './aiAssistantMachine.js';
   import DidYouMeanSuggestions from '$lib/components/recommendations/DidYouMeanSuggestions.svelte';
   import { IntelligentModelSwitcher } from '$lib/ai/intelligent-model-switcher';
   import { UserIntentPredictionSystem } from '$lib/ai/user-intent-prediction-system';
   import { Brain, Zap, Target, Cpu, Activity } from 'lucide-svelte';
-  
   interface Props {
     initialContext?: Partial<AIAssistantContext>;
     enableStreamingMode?: boolean;
@@ -14,7 +12,6 @@
     userId?: string;
     enableAIEnhancements?: boolean;
   }
-  
   let {
     initialContext = {},
     enableStreamingMode = false,
@@ -82,11 +79,9 @@
   });
 
   const { state, send } = useMachine(machineWithContext);
-  
   // AI Enhancement Services
   const modelSwitcher = enableAIEnhancements ? new IntelligentModelSwitcher() : null;
   const intentPredictionSystem = enableAIEnhancements ? new UserIntentPredictionSystem() : null;
-  
   let queryInput = $state('');
   let showSuggestions = $state(false);
   let currentModel = $state('gemma3-legal');
@@ -97,7 +92,6 @@
   async function submitQuery() {
     if (queryInput.trim()) {
       const query = queryInput.trim();
-      
       // Use intelligent model switching if available
       if (modelSwitcher && enableAIEnhancements) {
         try {
@@ -111,7 +105,6 @@
           console.error('Model switching error:', error);
         }
       }
-      
       send({ type: 'QUERY', query, model: currentModel });
       queryInput = '';
       showSuggestions = false;

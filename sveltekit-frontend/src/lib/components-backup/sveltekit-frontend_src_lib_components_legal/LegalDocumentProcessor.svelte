@@ -3,11 +3,9 @@
   Demonstrates XState integration with Svelte 5 for legal document processing
 -->
 <script lang="ts">
-</script>
   import { useMachine } from '@xstate/svelte';
   import { legalDocumentProcessingMachine, selectors } from '$lib/state/legalDocumentProcessingMachine';
   import type { LegalDocument } from '$lib/services/legalRAGEngine';
-  
   // Props
   let { 
     document = $bindable(), 
@@ -52,7 +50,6 @@
         processingDuration: $context.processingDuration
       });
     }
-    
     if (isFailed && onError && $context.errors.length > 0) {
       onError($context.errors);
     }
@@ -61,7 +58,6 @@
   // Actions
   function startProcessing() {
     if (!document) return;
-    
     send({
       type: 'START_PROCESSING',
       document,

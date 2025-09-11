@@ -1,134 +1,132 @@
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
-	import type { SemanticChunk } from '$lib/ai/frontend-rag-pipeline';
-	import { Button } from '$lib/components/ui/button';
-	import Input from '$lib/components/ui/Input.svelte';
-	import { Card } from '$lib/components/ui/card';
+  	import { onMount } from 'svelte';
+  	import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
+  	import type { SemanticChunk } from '$lib/ai/frontend-rag-pipeline';
+  	import { Button } from '$lib/components/ui/button';
+  	import Input from '$lib/components/ui/Input.svelte';
+  	import { Card } from '$lib/components/ui/card';
 
-	// State management with Svelte 5
-	let query = $state('');
-	let isSearching = $state(false);
-	let results = $state<{
-		response: string
-		sources: SemanticChunk[];
-		confidence: number
-		generationMethod: string
-		stats?: any;
-	} | null>(null);
-	let searchHistory = $state<string[]>([]);
-	let contextMode = $state<'legal' | 'technical' | 'general'>('legal');
-	let useG0llama = $state(true);
-	let useSIMD = $state(true);
+  	// State management with Svelte 5
+  	let query = $state('');
+  	let isSearching = $state(false);
+  	let results = $state<{
+  		response: string
+  		sources: SemanticChunk[];
+  		confidence: number
+  		generationMethod: string
+  		stats?: any;
+  	} | null>(null);
+  	let searchHistory = $state<string[]>([]);
+  	let contextMode = $state<'legal' | 'technical' | 'general'>('legal');
+  	let useG0llama = $state(true);
+  	let useSIMD = $state(true);
 
-	// System stats
-	let systemStats = $state<any>(null);
+  	// System stats
+  	let systemStats = $state<any>(null);
 
-	onMount(async () => {
-		// Initialize with some sample legal documents
-		await initializeSampleData();
-		updateStats();
-		
-		// Update stats every 10 seconds
-		const interval = setInterval(updateStats, 10000);
-		return () => clearInterval(interval);
-	});
+  	onMount(async () => {
+  		// Initialize with some sample legal documents
+  		await initializeSampleData();
+  		updateStats();
+  		// Update stats every 10 seconds
+  		const interval = setInterval(updateStats, 10000);
+  		return () => clearInterval(interval);
+  	});
 
-	async function initializeSampleData() {
-		const sampleDocs = [
-			{
-				text: "Contract formation requires offer, acceptance, consideration, and legal capacity. The statute of frauds requires certain contracts to be in writing.",
-				metadata: { source: "Contract Law Basics", semanticGroup: "legal", relevance: 1.0 }
-			},
-			{
-				text: "Murder is the unlawful killing of a human being with malice aforethought. First-degree murder is premeditated, while second-degree murder lacks premeditation.",
-				metadata: { source: "Criminal Law", semanticGroup: "legal", relevance: 1.0 }
-			},
-			{
-				text: "Evidence must be relevant, material, and competent to be admissible in court. Hearsay is generally excluded unless it falls under an exception.",
-				metadata: { source: "Evidence Law", semanticGroup: "legal", relevance: 1.0 }
-			},
-			{
-				text: "SvelteKit 2 with Svelte 5 uses runes for reactivity. Use $state() for reactive variables and $effect() for side effects.",
-				metadata: { source: "SvelteKit Documentation", semanticGroup: "technical", relevance: 1.0 }
-			}
-		];
+  	async function initializeSampleData() {
+  		const sampleDocs = [
+  			{
+  				text: "Contract formation requires offer, acceptance, consideration, and legal capacity. The statute of frauds requires certain contracts to be in writing.",
+  				metadata: { source: "Contract Law Basics", semanticGroup: "legal", relevance: 1.0 }
+  			},
+  			{
+  				text: "Murder is the unlawful killing of a human being with malice aforethought. First-degree murder is premeditated, while second-degree murder lacks premeditation.",
+  				metadata: { source: "Criminal Law", semanticGroup: "legal", relevance: 1.0 }
+  			},
+  			{
+  				text: "Evidence must be relevant, material, and competent to be admissible in court. Hearsay is generally excluded unless it falls under an exception.",
+  				metadata: { source: "Evidence Law", semanticGroup: "legal", relevance: 1.0 }
+  			},
+  			{
+  				text: "SvelteKit 2 with Svelte 5 uses runes for reactivity. Use $state() for reactive variables and $effect() for side effects.",
+  				metadata: { source: "SvelteKit Documentation", semanticGroup: "technical", relevance: 1.0 }
+  			}
+  		];
 
-		for (const doc of sampleDocs) {
-			await frontendRAG.addDocument(doc.text, doc.metadata);
-		}
-	}
+  		for (const doc of sampleDocs) {
+  			await frontendRAG.addDocument(doc.text, doc.metadata);
+  		}
+  	}
 
-	async function performSearch() {
-		if (!query.trim() || isSearching) return;
+  	async function performSearch() {
+  		if (!query.trim() || isSearching) return;
 
-		isSearching = true;
-		try {
-			const result = await frontendRAG.generateEnhancedResponse(query, contextMode, {
-				useG0llama,
-				maxTokens: 200,
-				temperature: 0.7,
-				useSIMDOptimization: useSIMD
-			});
+  		isSearching = true;
+  		try {
+  			const result = await frontendRAG.generateEnhancedResponse(query, contextMode, {
+  				useG0llama,
+  				maxTokens: 200,
+  				temperature: 0.7,
+  				useSIMDOptimization: useSIMD
+  			});
 
-			results = {
-				...result,
-				stats: frontendRAG.getStats()
-			};
+  			results = {
+  				...result,
+  				stats: frontendRAG.getStats()
+  			};
 
-			// Add to search history
-			if (!searchHistory.includes(query)) {
-				searchHistory = [query, ...searchHistory.slice(0, 9)]; // Keep last 10
-			}
+  			// Add to search history
+  			if (!searchHistory.includes(query)) {
+  				searchHistory = [query, ...searchHistory.slice(0, 9)]; // Keep last 10
+  			}
 
-			updateStats();
-		} catch (error) {
-			console.error('Search failed:', error);
-			results = {
-				response: `Search failed: ${error.message}`,
-				sources: [],
-				confidence: 0,
-				generationMethod: 'error'
-			};
-		} finally {
-			isSearching = false;
-		}
-	}
+  			updateStats();
+  		} catch (error) {
+  			console.error('Search failed:', error);
+  			results = {
+  				response: `Search failed: ${error.message}`,
+  				sources: [],
+  				confidence: 0,
+  				generationMethod: 'error'
+  			};
+  		} finally {
+  			isSearching = false;
+  		}
+  	}
 
-	function updateStats() {
-		systemStats = frontendRAG.getStats();
-	}
+  	function updateStats() {
+  		systemStats = frontendRAG.getStats();
+  	}
 
-	function selectHistoryItem(item: string) {
-		query = item;
-		performSearch();
-	}
+  	function selectHistoryItem(item: string) {
+  		query = item;
+  		performSearch();
+  	}
 
-	function handleKeypress(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !event.shiftKey) {
-			event.preventDefault();
-			performSearch();
-		}
-	}
+  	function handleKeypress(event: KeyboardEvent) {
+  		if (event.key === 'Enter' && !event.shiftKey) {
+  			event.preventDefault();
+  			performSearch();
+  		}
+  	}
 
-	// Reactive computed values
-	const confidenceColor = $derived(() => {
-		if (!results) return 'text-gray-500';
-		if (results.confidence > 0.8) return 'text-green-600';
-		if (results.confidence > 0.6) return 'text-yellow-600';
-		return 'text-red-600';
-	});
+  	// Reactive computed values
+  	const confidenceColor = $derived(() => {
+  		if (!results) return 'text-gray-500';
+  		if (results.confidence > 0.8) return 'text-green-600';
+  		if (results.confidence > 0.6) return 'text-yellow-600';
+  		return 'text-red-600';
+  	});
 
-	const generationMethodBadge = $derived(() => {
-		if (!results) return '';
-		switch (results.generationMethod) {
-			case 'g0llama': return 'bg-purple-100 text-purple-800';
-			case 'frontend': return 'bg-blue-100 text-blue-800';
-			case 'hybrid': return 'bg-green-100 text-green-800';
-			default: return 'bg-gray-100 text-gray-800';
-		}
-	});
+  	const generationMethodBadge = $derived(() => {
+  		if (!results) return '';
+  		switch (results.generationMethod) {
+  			case 'g0llama': return 'bg-purple-100 text-purple-800';
+  			case 'frontend': return 'bg-blue-100 text-blue-800';
+  			case 'hybrid': return 'bg-green-100 text-green-800';
+  			default: return 'bg-gray-100 text-gray-800';
+  		}
+  	});
 </script>
 
 <!-- Smart Search Interface -->

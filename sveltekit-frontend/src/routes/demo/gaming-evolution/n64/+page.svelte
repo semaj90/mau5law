@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from 'bits-ui';
   import { Badge } from 'bits-ui';

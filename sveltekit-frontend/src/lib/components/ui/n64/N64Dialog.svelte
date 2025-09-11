@@ -1,9 +1,7 @@
 <script lang="ts">
-</script>
   import { onMount, createEventDispatcher, tick } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import type { Snippet } from 'svelte';
-  
   // Svelte 5 props interface
   interface Props {
     children?: Snippet;
@@ -11,7 +9,6 @@
     description?: string;
     open?: boolean;
     class?: string;
-    
     // N64 specific props
     materialType?: 'basic' | 'phong' | 'pbr';
     meshComplexity?: 'low' | 'medium' | 'high' | 'ultra';
@@ -24,28 +21,23 @@
     lightingModel?: 'flat' | 'gouraud' | 'phong' | 'blinn-phong';
     shadowCasting?: boolean;
     backdropBlur?: boolean;
-    
     // Dialog behavior
     modal?: boolean;
     closeOnOutsideClick?: boolean;
     closeOnEscape?: boolean;
     trapFocus?: boolean;
     restoreFocus?: boolean;
-    
     // Animation props
     animationType?: 'fade' | 'fly' | 'scale' | 'slide';
     animationDuration?: number;
-    
     // Accessibility
     ariaLabel?: string;
     ariaDescribedby?: string;
     ariaLabelledby?: string;
     role?: string;
-    
     // Mobile optimizations
     mobileOptimized?: boolean;
     reducedMotion?: boolean;
-    
     // Performance settings
     gpuAcceleration?: boolean;
     webgpuMode?: boolean;
@@ -58,7 +50,6 @@
     description,
     open = $bindable(false),
     class: className = '',
-    
     // N64 specific defaults
     materialType = 'phong',
     meshComplexity = 'medium',
@@ -71,28 +62,23 @@
     lightingModel = 'phong',
     shadowCasting = true,
     backdropBlur = true,
-    
     // Dialog behavior defaults
     modal = true,
     closeOnOutsideClick = true,
     closeOnEscape = true,
     trapFocus = true,
     restoreFocus = true,
-    
     // Animation defaults
     animationType = 'scale',
     animationDuration = 300,
-    
     // Accessibility defaults
     ariaLabel,
     ariaDescribedby,
     ariaLabelledby,
     role = 'dialog',
-    
     // Mobile defaults
     mobileOptimized = true,
     reducedMotion = false,
-    
     // Performance defaults
     gpuAcceleration = true,
     webgpuMode = false,
@@ -127,7 +113,6 @@
   // Dynamic CSS classes based on props
   const dialogClasses = $derived(() => {
     const classes = ['n64-dialog'];
-    
     // Material and mesh styling
     classes.push(`material-${materialType}`);
     classes.push(`mesh-${meshComplexity}`);
@@ -137,18 +122,15 @@
     classes.push(`aa-${antiAliasing}`);
     classes.push(`lighting-${lightingModel}`);
     classes.push(`quality-${renderQuality}`);
-    
     // Feature classes
     if (depthOfField) classes.push('depth-of-field');
     if (shadowCasting) classes.push('shadow-casting');
     if (backdropBlur) classes.push('backdrop-blur');
-    
     // Performance classes
     if (gpuAcceleration) classes.push('gpu-accelerated');
     if (webgpuMode) classes.push('webgpu-active');
     if (mobileOptimized) classes.push('mobile-optimized');
     if (reducedMotion) classes.push('reduced-motion');
-    
     return classes.join(' ');
   });
 
@@ -249,14 +231,12 @@
 
   function animationLoop() {
     frameCount++;
-    
     // Update fog density based on time and effect level
     if (fogEffect !== 'none') {
       const baseIntensity = getFogIntensity(fogEffect);
       const timeVariation = Math.sin(frameCount * 0.01) * 0.1;
       fogDensity = Math.max(0.1, Math.min(1.0, baseIntensity + timeVariation));
     }
-    
     // Continue animation for fog or PBR materials
     if ((fogEffect !== 'none' || materialType === 'pbr') && !reducedMotion) {
       requestAnimationFrame(animationLoop);
@@ -389,7 +369,6 @@
 
       oscillator.type = 'triangle';
       oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-      
       gainNode.gain.setValueAtTime(0, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.02);
       gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);

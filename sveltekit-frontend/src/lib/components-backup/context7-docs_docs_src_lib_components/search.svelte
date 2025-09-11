@@ -1,49 +1,48 @@
 <script lang="ts">
-</script>
-	import MagnifyingGlass from "phosphor-svelte/lib/MagnifyingGlass";
-	import { onMount } from "svelte";
-	import { Button, Command, Dialog } from "bits-ui";
-	import {
-		type SearchContent,
-		createContentIndex,
-		searchContentIndex,
-	} from "$lib/utils/search.js";
-	import ScrollArea from "./scroll-area.svelte";
+  	import MagnifyingGlass from "phosphor-svelte/lib/MagnifyingGlass";
+  	import { onMount } from "svelte";
+  	import { Button, Command, Dialog } from "bits-ui";
+  	import {
+  		type SearchContent,
+  		createContentIndex,
+  		searchContentIndex,
+  	} from "$lib/utils/search.js";
+  	import ScrollArea from "./scroll-area.svelte";
 
-	let { showTrigger = true }: { showTrigger?: boolean } = $props();
+  	let { showTrigger = true }: { showTrigger?: boolean } = $props();
 
-	let searchState = $state<"loading" | "ready">("loading");
-	let searchQuery = $state("");
-	let results = $state<SearchContent[]>([]);
+  	let searchState = $state<"loading" | "ready">("loading");
+  	let searchQuery = $state("");
+  	let results = $state<SearchContent[]>([]);
 
-	onMount(async () => {
-		const content = await fetch("/api/search.json").then((res) => res.json());
-		createContentIndex(content);
-		searchState = "ready";
-	});
+  	onMount(async () => {
+  		const content = await fetch("/api/search.json").then((res) => res.json());
+  		createContentIndex(content);
+  		searchState = "ready";
+  	});
 
-	$effect(() => {
-		if (searchState !== "ready") return;
-		results = searchContentIndex(searchQuery);
-	});
+  	$effect(() => {
+  		if (searchState !== "ready") return;
+  		results = searchContentIndex(searchQuery);
+  	});
 
-	let dialogOpen = $state(false);
-	let clearTimeoutId: number | undefined;
+  	let dialogOpen = $state(false);
+  	let clearTimeoutId: number | undefined;
 
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-			e.preventDefault();
-			dialogOpen = true;
-		}
-	}
+  	function handleKeydown(e: KeyboardEvent) {
+  		if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+  			e.preventDefault();
+  			dialogOpen = true;
+  		}
+  	}
 
-	function clearSearchWithDelay() {
-		if (clearTimeoutId) window.clearTimeout(clearTimeoutId);
-		clearTimeoutId = window.setTimeout(() => {
-			searchQuery = "";
-			clearTimeoutId = undefined;
-		}, 300);
-	}
+  	function clearSearchWithDelay() {
+  		if (clearTimeoutId) window.clearTimeout(clearTimeoutId);
+  		clearTimeoutId = window.setTimeout(() => {
+  			searchQuery = "";
+  			clearTimeoutId = undefined;
+  		}, 300);
+  	}
 </script>
 
 <svelte:document onkeydown={handleKeydown} />

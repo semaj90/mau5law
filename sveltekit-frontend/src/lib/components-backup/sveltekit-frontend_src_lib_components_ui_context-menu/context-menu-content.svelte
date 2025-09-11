@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     className: string
   }
@@ -11,16 +10,12 @@
 
   import { getContext, onDestroy, onMount } from 'svelte';
   import type { Writable } from 'svelte/store';
-  
-    
   const { isOpen, position, close } = getContext<{
     isOpen: Writable<boolean>
     position: Writable<{ x: number y: number }>;
     close: () => void;
   }>('context-menu');
-  
   let menuElement: HTMLDivElement
-  
   function handleClickOutside(event: MouseEvent) {
     if (menuElement && !menuElement.contains(event.target as Node)) {
       close();
@@ -35,7 +30,6 @@
     document.addEventListener('click', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
   });
-  
   onDestroy(() => {
     document.removeEventListener('click', handleClickOutside);
     document.removeEventListener('keydown', handleEscape);

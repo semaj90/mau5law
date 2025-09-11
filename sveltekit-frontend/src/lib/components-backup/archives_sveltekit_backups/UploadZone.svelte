@@ -1,54 +1,42 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
-  
   const dispatch = createEventDispatcher();
-  
   export let minimal = false; // New prop for minimal canvas mode
-  
   let isDragOver = false;
   let isUploading = false;
   let uploadProgress = 0;
   let fileInput: HTMLInputElement;
-  
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     isDragOver = true;
   }
-  
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
   }
-  
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
-    
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       handleFileUpload(files);
     }
   }
-  
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
       handleFileUpload(target.files);
     }
   }
-  
   async function handleFileUpload(files: FileList) {
     isUploading = true;
     uploadProgress = 0;
-    
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         await uploadFile(file);
         uploadProgress = ((i + 1) / files.length) * 100;
       }
-      
       dispatch('upload', files);
     } catch (error) {
       console.error('Upload failed:', error);
@@ -57,18 +45,15 @@
       uploadProgress = 0;
     }
   }
-  
   async function uploadFile(file: File): Promise<void> {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      
       xhr.upload.addEventListener('progress', (event) => {
         if (event.lengthComputable) {
           const progress = (event.loaded / event.total) * 100;
           uploadProgress = progress;
         }
       });
-      
       xhr.addEventListener('load', () => {
         if (xhr.status === 200) {
           resolve();
@@ -76,19 +61,15 @@
           reject(new Error('Upload failed'));
         }
       });
-      
       xhr.addEventListener('error', () => {
         reject(new Error('Upload failed'));
       });
-      
       const formData = new FormData();
       formData.append('file', file);
-      
       xhr.open('POST', '/api/evidence/upload');
       xhr.send(formData);
     });
   }
-  
   function openFileDialog() {
     fileInput.click();
   }

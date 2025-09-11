@@ -1,31 +1,30 @@
 <script lang="ts">
-</script>
-	import { Tabs } from "bits-ui";
-	import { cubicInOut } from "svelte/easing";
-	import { crossfade } from "svelte/transition";
-	import { buttonVariants } from "./ui/button/index.js";
-	import { cn } from "$lib/utils/styles.js";
-	import type { Snippet } from "svelte";
-	import type { HTMLAttributes } from "svelte/elements";
+  	import { Tabs } from "bits-ui";
+  	import { cubicInOut } from "svelte/easing";
+  	import { crossfade } from "svelte/transition";
+  	import { buttonVariants } from "./ui/button/index.js";
+  	import { cn } from "$lib/utils/styles.js";
+  	import type { Snippet } from "svelte";
+  	import type { HTMLAttributes } from "svelte/elements";
 
-	let {
-		class: className,
-		align = "center",
-		children,
-		preview,
-		...restProps
-	}: HTMLAttributes<HTMLDivElement> & {
-		align?: "center" | "start" | "end";
-		children?: Snippet;
-		preview?: Snippet;
-	} = $props();
+  	let {
+  		class: className,
+  		align = "center",
+  		children,
+  		preview,
+  		...restProps
+  	}: HTMLAttributes<HTMLDivElement> & {
+  		align?: "center" | "start" | "end";
+  		children?: Snippet;
+  		preview?: Snippet;
+  	} = $props();
 
-	const [send, receive] = crossfade({
-		duration: 250,
-		easing: cubicInOut,
-	});
+  	const [send, receive] = crossfade({
+  		duration: 250,
+  		easing: cubicInOut,
+  	});
 
-	let value = $state("preview");
+  	let value = $state("preview");
 </script>
 
 <div

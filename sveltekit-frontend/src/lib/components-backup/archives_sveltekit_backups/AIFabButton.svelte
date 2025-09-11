@@ -1,27 +1,25 @@
 <script lang="ts">
-</script>
-	import { createEventDispatcher } from 'svelte';
-	import { aiStore } from "../stores/canvas";
-	import Dialog from './Dialog.svelte';
-	
-	import { Sparkles, Bot } from 'lucide-svelte';
+  	import { createEventDispatcher } from 'svelte';
+  	import { aiStore } from "../stores/canvas";
+  	import Dialog from './Dialog.svelte';
+  	import { Sparkles, Bot } from 'lucide-svelte';
 
-	const dispatch = createEventDispatcher();
+  	const dispatch = createEventDispatcher();
 
-	// Reactive state
-	// TODO: Convert to $derived: dialogOpen = $aiStore.dialogOpen
-	// TODO: Convert to $derived: isGenerating = $aiStore.isGenerating
+  	// Reactive state
+  	// TODO: Convert to $derived: dialogOpen = $aiStore.dialogOpen
+  	// TODO: Convert to $derived: isGenerating = $aiStore.isGenerating
 
-	function toggleDialog() {
-		aiStore.update(state => ({
-			...state,
-			dialogOpen: !state.dialogOpen
-		}));
-	}
+  	function toggleDialog() {
+  		aiStore.update(state => ({
+  			...state,
+  			dialogOpen: !state.dialogOpen
+  		}));
+  	}
 
-	function handleAIRequest(event: CustomEvent) {
-		dispatch('aiRequest', event.detail);
-	}
+  	function handleAIRequest(event: CustomEvent) {
+  		dispatch('aiRequest', event.detail);
+  	}
 </script>
 
 <!-- Floating Action Button -->

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Badge } from "$lib/components/ui/index";
   import type { Case } from "$lib/types/api";
   import { formatDistanceToNow } from "date-fns";

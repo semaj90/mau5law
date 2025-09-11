@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onloadMore?: (event?: any) => void;
     onitemClick?: (event?: any) => void;
@@ -30,7 +29,6 @@
       let { loadMoreThreshold = $bindable() } = $props(); // 100; // pixels from bottom
       let { selectedIndex = $bindable() } = $props(); // number = -1; // Index of selected item
 
-  
   let scrollContainer: HTMLElement
   let displayedItems: any[] = [];
   let currentPage = 0;
@@ -42,7 +40,7 @@
       currentPage = 0;
       displayedItems = [];
       loadMore();
-}}
+  }}
   onMount(() => {
     loadMore();
   });
@@ -57,7 +55,7 @@
     if (newItems.length === 0) {
       hasMore = false;
       return;
-}
+  }
     displayedItems = [...displayedItems, ...newItems];
     currentPage++;
 
@@ -67,7 +65,7 @@
     // Emit event for loading more data from API
     if (!hasMore && items.length >= currentPage * pageSize) {
       onloadMore?.();
-}}
+  }}
   function handleScroll() {
     if (!scrollContainer) return;
 
@@ -77,10 +75,10 @@
 
     if (scrolledToBottom) {
       loadMore();
-}}
+  }}
   function handleItemClick(item: any) {
     onitemClick?.();
-}
+  }
   function getItemIcon(item: any) {
     if (itemType === "notes") {
       return FileEdit;
@@ -94,20 +92,20 @@
       if (fileType.includes("text") || fileType.includes("pdf"))
         return FileText;
       return File;
-}}
+  }}
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
-}
+  }
   function truncateText(text: string, maxLength = 100) {
     if (!text) return "";
     return text.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;
-}
+  }
 </script>
 
 <div

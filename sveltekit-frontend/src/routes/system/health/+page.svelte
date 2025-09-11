@@ -1,348 +1,331 @@
 <script lang="ts">
-</script>
-	import { onMount, onDestroy } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { coordinatorStatus, masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
-	import { errorResolutionEngine } from '$lib/services/error-resolution-engine.js';
-	import type { ServiceStatus } from '$lib/services/master-service-coordinator.js';
+  	import { onMount, onDestroy } from 'svelte';
+  	import { writable } from 'svelte/store';
+  	import { coordinatorStatus, masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
+  	import { errorResolutionEngine } from '$lib/services/error-resolution-engine.js';
+  	import type { ServiceStatus } from '$lib/services/master-service-coordinator.js';
 
-	interface ServiceHealth {
-		name: string;
-		url: string;
-		status: 'online' | 'offline' | 'degraded';
-		responseTime?: number;
-		lastCheck: number;
-		details?: any;
-	}
+  	interface ServiceHealth {
+  		name: string;
+  		url: string;
+  		status: 'online' | 'offline' | 'degraded';
+  		responseTime?: number;
+  		lastCheck: number;
+  		details?: any;
+  	}
 
-	interface HealthData {
-		timestamp: number;
-		overall_status: 'healthy' | 'degraded' | 'critical';
-		health_percentage: number;
-		services_online: number;
-		services_total: number;
-		cuda: {
-			service_available: boolean;
-			worker_available: boolean;
-			gpu_ready: boolean;
-			response_time: number | null;
-		};
-		services: ServiceHealth[];
-		summary: {
-			critical_services: string[];
-			degraded_services: string[];
-			offline_services: string[];
-		};
-		recommendations: string[];
-	}
+  	interface HealthData {
+  		timestamp: number;
+  		overall_status: 'healthy' | 'degraded' | 'critical';
+  		health_percentage: number;
+  		services_online: number;
+  		services_total: number;
+  		cuda: {
+  			service_available: boolean;
+  			worker_available: boolean;
+  			gpu_ready: boolean;
+  			response_time: number | null;
+  		};
+  		services: ServiceHealth[];
+  		summary: {
+  			critical_services: string[];
+  			degraded_services: string[];
+  			offline_services: string[];
+  		};
+  		recommendations: string[];
+  	}
 
-	// Enhanced dashboard state
-	const healthData = writable<HealthData | null>(null);
-	const loading = writable(true);
-	const error = writable<string | null>(null);
-	let refreshInterval: number;
-let autoRefresh = $state(true);
-let refreshRate = $state(5000); // 5 seconds
-let selectedTier = $state('all');
-let showOnlyIssues = $state(false);
-	
-	// Real-time data from master coordinator
-	let systemStatus = $derived($coordinatorStatus);
-	let errorStats = $derived(errorResolutionEngine.recoveryStats);
-	let systemMetrics = $derived(errorResolutionEngine.systemMetrics);
+  	// Enhanced dashboard state
+  	const healthData = writable<HealthData | null>(null);
+  	const loading = writable(true);
+  	const error = writable<string | null>(null);
+  	let refreshInterval: number;
+  let autoRefresh = $state(true);
+  let refreshRate = $state(5000); // 5 seconds
+  let selectedTier = $state('all');
+  let showOnlyIssues = $state(false);
+  	// Real-time data from master coordinator
+  	let systemStatus = $derived($coordinatorStatus);
+  	let errorStats = $derived(errorResolutionEngine.recoveryStats);
+  	let systemMetrics = $derived(errorResolutionEngine.systemMetrics);
 
-	const fetchHealth = async () => {
-		try {
-			loading.set(true);
-			
-			// Fetch from both legacy and new coordinator APIs
-			const [legacyResponse, coordinatorResponse] = await Promise.all([
-				fetch('/api/v1/health/cuda').catch(() => null),
-				fetch('/api/v1/coordinator?action=health').catch(() => null)
-			]);
-let legacyData = $state(null);
-let coordinatorData = $state(null);
-			
-			if (legacyResponse?.ok) {
-				legacyData = await legacyResponse.json();
-			}
-			
-			if (coordinatorResponse?.ok) {
-				coordinatorData = await coordinatorResponse.json();
-			}
-			
-			// Merge data from both sources
-			const mergedData = mergeHealthData(legacyData, coordinatorData);
-			healthData.set(mergedData);
-			error.set(null);
-		} catch (err) {
-			console.error('Health check failed:', err);
-			error.set(err instanceof Error ? err.message : 'Unknown error');
-		} finally {
-			loading.set(false);
-		}
-	};
+  	const fetchHealth = async () => {
+  		try {
+  			loading.set(true);
+  			// Fetch from both legacy and new coordinator APIs
+  			const [legacyResponse, coordinatorResponse] = await Promise.all([
+  				fetch('/api/v1/health/cuda').catch(() => null),
+  				fetch('/api/v1/coordinator?action=health').catch(() => null)
+  			]);
+  let legacyData = $state(null);
+  let coordinatorData = $state(null);
+  			if (legacyResponse?.ok) {
+  				legacyData = await legacyResponse.json();
+  			}
+  			if (coordinatorResponse?.ok) {
+  				coordinatorData = await coordinatorResponse.json();
+  			}
+  			// Merge data from both sources
+  			const mergedData = mergeHealthData(legacyData, coordinatorData);
+  			healthData.set(mergedData);
+  			error.set(null);
+  		} catch (err) {
+  			console.error('Health check failed:', err);
+  			error.set(err instanceof Error ? err.message : 'Unknown error');
+  		} finally {
+  			loading.set(false);
+  		}
+  	};
 
-	const mergeHealthData = (legacy: any, coordinator: any): HealthData => {
-		const now = Date.now();
-		
-		// Use coordinator data if available, fallback to legacy
-		if (coordinator?.success && coordinator.data) {
-			const data = coordinator.data;
-			return {
-				timestamp: now,
-				overall_status: mapHealthStatus(data.systemHealth),
-				health_percentage: Math.round((data.healthyServices / data.totalServices) * 100),
-				services_online: data.healthyServices,
-				services_total: data.totalServices,
-				cuda: {
-					service_available: data.performance?.cudaUtilization > 0,
-					worker_available: true,
-					gpu_ready: data.performance?.cudaUtilization > 0,
-					response_time: data.performance?.avgResponseTime || null
-				},
-				services: mapServicesToHealthFormat(systemStatus.services),
-				summary: {
-					critical_services: systemStatus.errors.filter(e => e.priority === 'critical').map(e => e.description),
-					degraded_services: Array.from(systemStatus.services.entries())
-						.filter(([_, status]) => status.status === 'degraded')
-						.map(([id, _]) => {
-							const service = masterServiceCoordinator.services.find(s => s.id === id);
-							return service?.displayName || id;
-						}),
-					offline_services: Array.from(systemStatus.services.entries())
-						.filter(([_, status]) => status.status === 'failed')
-						.map(([id, _]) => {
-							const service = masterServiceCoordinator.services.find(s => s.id === id);
-							return service?.displayName || id;
-						})
-				},
-				recommendations: generateRecommendations()
-			};
-		}
-		
-		// Fallback to legacy data format
-		return legacy || {
-			timestamp: now,
-			overall_status: 'critical',
-			health_percentage: 0,
-			services_online: 0,
-			services_total: 38,
-			cuda: {
-				service_available: false,
-				worker_available: false,
-				gpu_ready: false,
-				response_time: null
-			},
-			services: [],
-			summary: {
-				critical_services: ['Coordinator not available'],
-				degraded_services: [],
-				offline_services: []
-			},
-			recommendations: ['Start the Master Service Coordinator']
-		};
-	};
+  	const mergeHealthData = (legacy: any, coordinator: any): HealthData => {
+  		const now = Date.now();
+  		// Use coordinator data if available, fallback to legacy
+  		if (coordinator?.success && coordinator.data) {
+  			const data = coordinator.data;
+  			return {
+  				timestamp: now,
+  				overall_status: mapHealthStatus(data.systemHealth),
+  				health_percentage: Math.round((data.healthyServices / data.totalServices) * 100),
+  				services_online: data.healthyServices,
+  				services_total: data.totalServices,
+  				cuda: {
+  					service_available: data.performance?.cudaUtilization > 0,
+  					worker_available: true,
+  					gpu_ready: data.performance?.cudaUtilization > 0,
+  					response_time: data.performance?.avgResponseTime || null
+  				},
+  				services: mapServicesToHealthFormat(systemStatus.services),
+  				summary: {
+  					critical_services: systemStatus.errors.filter(e => e.priority === 'critical').map(e => e.description),
+  					degraded_services: Array.from(systemStatus.services.entries())
+  						.filter(([_, status]) => status.status === 'degraded')
+  						.map(([id, _]) => {
+  							const service = masterServiceCoordinator.services.find(s => s.id === id);
+  							return service?.displayName || id;
+  						}),
+  					offline_services: Array.from(systemStatus.services.entries())
+  						.filter(([_, status]) => status.status === 'failed')
+  						.map(([id, _]) => {
+  							const service = masterServiceCoordinator.services.find(s => s.id === id);
+  							return service?.displayName || id;
+  						})
+  				},
+  				recommendations: generateRecommendations()
+  			};
+  		}
+  		// Fallback to legacy data format
+  		return legacy || {
+  			timestamp: now,
+  			overall_status: 'critical',
+  			health_percentage: 0,
+  			services_online: 0,
+  			services_total: 38,
+  			cuda: {
+  				service_available: false,
+  				worker_available: false,
+  				gpu_ready: false,
+  				response_time: null
+  			},
+  			services: [],
+  			summary: {
+  				critical_services: ['Coordinator not available'],
+  				degraded_services: [],
+  				offline_services: []
+  			},
+  			recommendations: ['Start the Master Service Coordinator']
+  		};
+  	};
 
-	const mapHealthStatus = (health: string): 'healthy' | 'degraded' | 'critical' => {
-		switch (health) {
-			case 'excellent':
-			case 'good':
-				return 'healthy';
-			case 'degraded':
-				return 'degraded';
-			case 'critical':
-			case 'offline':
-			default:
-				return 'critical';
-		}
-	};
+  	const mapHealthStatus = (health: string): 'healthy' | 'degraded' | 'critical' => {
+  		switch (health) {
+  			case 'excellent':
+  			case 'good':
+  				return 'healthy';
+  			case 'degraded':
+  				return 'degraded';
+  			case 'critical':
+  			case 'offline':
+  			default:
+  				return 'critical';
+  		}
+  	};
 
-	const mapServicesToHealthFormat = (services: Map<string, ServiceStatus>): ServiceHealth[] => {
-		return Array.from(services.entries()).map(([id, status]) => {
-			const service = masterServiceCoordinator.services.find(s => s.id === id);
-			return {
-				name: service?.displayName || id,
-				url: service ? `http://localhost:${service.port}` : '',
-				status: mapServiceStatus(status.status),
-				responseTime: status.responseTime,
-				lastCheck: status.lastCheck,
-				details: {
-					tier: service?.tier,
-					protocol: service?.protocol,
-					critical: service?.critical,
-					cudaAccelerated: service?.cudaAccelerated,
-					errorCount: status.errorCount,
-					uptime: status.uptime
-				}
-			};
-		});
-	};
+  	const mapServicesToHealthFormat = (services: Map<string, ServiceStatus>): ServiceHealth[] => {
+  		return Array.from(services.entries()).map(([id, status]) => {
+  			const service = masterServiceCoordinator.services.find(s => s.id === id);
+  			return {
+  				name: service?.displayName || id,
+  				url: service ? `http://localhost:${service.port}` : '',
+  				status: mapServiceStatus(status.status),
+  				responseTime: status.responseTime,
+  				lastCheck: status.lastCheck,
+  				details: {
+  					tier: service?.tier,
+  					protocol: service?.protocol,
+  					critical: service?.critical,
+  					cudaAccelerated: service?.cudaAccelerated,
+  					errorCount: status.errorCount,
+  					uptime: status.uptime
+  				}
+  			};
+  		});
+  	};
 
-	const mapServiceStatus = (status: string): 'online' | 'offline' | 'degraded' => {
-		switch (status) {
-			case 'healthy':
-				return 'online';
-			case 'degraded':
-				return 'degraded';
-			case 'failed':
-			case 'unknown':
-			default:
-				return 'offline';
-		}
-	};
+  	const mapServiceStatus = (status: string): 'online' | 'offline' | 'degraded' => {
+  		switch (status) {
+  			case 'healthy':
+  				return 'online';
+  			case 'degraded':
+  				return 'degraded';
+  			case 'failed':
+  			case 'unknown':
+  			default:
+  				return 'offline';
+  		}
+  	};
 
-	const generateRecommendations = (): string[] => {
-		const recommendations: string[] = [];
-		
-		if (systemStatus.summary.criticalErrors > 0) {
-			recommendations.push('npm run coordinator:start - Start Master Service Coordinator');
-		}
-		
-		if (systemStatus.metrics.successRate < 0.8) {
-			recommendations.push('npm run coordinator:restart-failed - Restart failed services');
-		}
-		
-		if (systemStatus.metrics.avgResponseTime > 5000) {
-			recommendations.push('npm run coordinator:optimize - Optimize service performance');
-		}
-		
-		return recommendations;
-	};
+  	const generateRecommendations = (): string[] => {
+  		const recommendations: string[] = [];
+  		if (systemStatus.summary.criticalErrors > 0) {
+  			recommendations.push('npm run coordinator:start - Start Master Service Coordinator');
+  		}
+  		if (systemStatus.metrics.successRate < 0.8) {
+  			recommendations.push('npm run coordinator:restart-failed - Restart failed services');
+  		}
+  		if (systemStatus.metrics.avgResponseTime > 5000) {
+  			recommendations.push('npm run coordinator:optimize - Optimize service performance');
+  		}
+  		return recommendations;
+  	};
 
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case 'online':
-			case 'healthy':
-				return 'text-green-600 bg-green-50 border-green-200';
-			case 'degraded':
-				return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-			case 'offline':
-			case 'critical':
-				return 'text-red-600 bg-red-50 border-red-200';
-			default:
-				return 'text-gray-600 bg-gray-50 border-gray-200';
-		}
-	};
+  	const getStatusColor = (status: string) => {
+  		switch (status) {
+  			case 'online':
+  			case 'healthy':
+  				return 'text-green-600 bg-green-50 border-green-200';
+  			case 'degraded':
+  				return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+  			case 'offline':
+  			case 'critical':
+  				return 'text-red-600 bg-red-50 border-red-200';
+  			default:
+  				return 'text-gray-600 bg-gray-50 border-gray-200';
+  		}
+  	};
 
-	const getStatusIcon = (status: string) => {
-		switch (status) {
-			case 'online':
-			case 'healthy':
-				return '✅';
-			case 'degraded':
-				return '⚠️';
-			case 'offline':
-			case 'critical':
-				return '❌';
-			default:
-				return '🔍';
-		}
-	};
+  	const getStatusIcon = (status: string) => {
+  		switch (status) {
+  			case 'online':
+  			case 'healthy':
+  				return '✅';
+  			case 'degraded':
+  				return '⚠️';
+  			case 'offline':
+  			case 'critical':
+  				return '❌';
+  			default:
+  				return '🔍';
+  		}
+  	};
 
-	const formatTimestamp = (timestamp: number) => {
-		return new Date(timestamp).toLocaleString();
-	};
+  	const formatTimestamp = (timestamp: number) => {
+  		return new Date(timestamp).toLocaleString();
+  	};
 
-	const formatResponseTime = (time?: number) => {
-		if (!time) return 'N/A';
-		return `${time}ms`;
-	};
+  	const formatResponseTime = (time?: number) => {
+  		if (!time) return 'N/A';
+  		return `${time}ms`;
+  	};
 
-	// Service actions
-	async function restartService(serviceId: string) {
-		try {
-			const response = await fetch('/api/v1/coordinator', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					action: 'restart_service',
-					target: serviceId
-				})
-			});
-			
-			if (response.ok) {
-				console.log(`Restart initiated for ${serviceId}`);
-				await fetchHealth(); // Refresh data
-			}
-		} catch (error) {
-			console.error(`Failed to restart ${serviceId}:`, error);
-		}
-	}
+  	// Service actions
+  	async function restartService(serviceId: string) {
+  		try {
+  			const response = await fetch('/api/v1/coordinator', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					action: 'restart_service',
+  					target: serviceId
+  				})
+  			});
+  			if (response.ok) {
+  				console.log(`Restart initiated for ${serviceId}`);
+  				await fetchHealth(); // Refresh data
+  			}
+  		} catch (error) {
+  			console.error(`Failed to restart ${serviceId}:`, error);
+  		}
+  	}
 
-	async function startAllServices() {
-		try {
-			const response = await fetch('/api/v1/coordinator', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'start_all' })
-			});
-			
-			if (response.ok) {
-				console.log('Starting all services...');
-				await fetchHealth(); // Refresh data
-			}
-		} catch (error) {
-			console.error('Failed to start all services:', error);
-		}
-	}
+  	async function startAllServices() {
+  		try {
+  			const response = await fetch('/api/v1/coordinator', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({ action: 'start_all' })
+  			});
+  			if (response.ok) {
+  				console.log('Starting all services...');
+  				await fetchHealth(); // Refresh data
+  			}
+  		} catch (error) {
+  			console.error('Failed to start all services:', error);
+  		}
+  	}
 
-	async function forceHealthCheck() {
-		try {
-			const response = await fetch('/api/v1/coordinator', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'force_health_check' })
-			});
-			
-			if (response.ok) {
-				console.log('Forced health check initiated');
-				await fetchHealth(); // Refresh data
-			}
-		} catch (error) {
-			console.error('Failed to force health check:', error);
-		}
-	}
+  	async function forceHealthCheck() {
+  		try {
+  			const response = await fetch('/api/v1/coordinator', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({ action: 'force_health_check' })
+  			});
+  			if (response.ok) {
+  				console.log('Forced health check initiated');
+  				await fetchHealth(); // Refresh data
+  			}
+  		} catch (error) {
+  			console.error('Failed to force health check:', error);
+  		}
+  	}
 
-	// Toggle auto-refresh
-	function toggleAutoRefresh() {
-		autoRefresh = !autoRefresh;
-		
-		if (autoRefresh) {
-			refreshInterval = setInterval(fetchHealth, refreshRate);
-		} else if (refreshInterval) {
-			clearInterval(refreshInterval);
-		}
-	}
+  	// Toggle auto-refresh
+  	function toggleAutoRefresh() {
+  		autoRefresh = !autoRefresh;
+  		if (autoRefresh) {
+  			refreshInterval = setInterval(fetchHealth, refreshRate);
+  		} else if (refreshInterval) {
+  			clearInterval(refreshInterval);
+  		}
+  	}
 
-	// Computed values for enhanced UI
-	let healthPercentage = $derived(systemStatus.summary.totalServices > 0 
-		? Math.round((systemStatus.summary.healthyServices / systemStatus.summary.totalServices) * 100) 
-		: 0);
+  	// Computed values for enhanced UI
+  	let healthPercentage = $derived(systemStatus.summary.totalServices > 0 
+  		? Math.round((systemStatus.summary.healthyServices / systemStatus.summary.totalServices) * 100) 
+  		: 0);
 
-	let tierServices = $derived(selectedTier === 'all' 
-		? Array.from(systemStatus.services.entries())
-		: Array.from(systemStatus.services.entries()).filter(([id]) => {
-			const service = masterServiceCoordinator.services.find(s => s.id === id);
-			return service?.tier === parseInt(selectedTier);
-		});
-	let filteredServices = $derived(showOnlyIssues 
-		? tierServices.filter(([_, status]) => status.status !== 'healthy')
-		: tierServices);
+  	let tierServices = $derived(selectedTier === 'all' 
+  		? Array.from(systemStatus.services.entries())
+  		: Array.from(systemStatus.services.entries()).filter(([id]) => {
+  			const service = masterServiceCoordinator.services.find(s => s.id === id);
+  			return service?.tier === parseInt(selectedTier);
+  		});
+  	let filteredServices = $derived(showOnlyIssues 
+  		? tierServices.filter(([_, status]) => status.status !== 'healthy')
+  		: tierServices);
 
-	onMount(() => {
-		fetchHealth();
-		
-		if (autoRefresh) {
-			refreshInterval = setInterval(fetchHealth, refreshRate);
-		}
-	});
+  	onMount(() => {
+  		fetchHealth();
+  		if (autoRefresh) {
+  			refreshInterval = setInterval(fetchHealth, refreshRate);
+  		}
+  	});
 
-	onDestroy(() => {
-		if (refreshInterval) {
-			clearInterval(refreshInterval);
-		}
-	});
+  	onDestroy(() => {
+  		if (refreshInterval) {
+  			clearInterval(refreshInterval);
+  		}
+  	});
 </script>
 
 <svelte:head>

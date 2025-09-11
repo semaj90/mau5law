@@ -3,21 +3,17 @@
   Demonstrates the perfect marriage of headless functionality with retro styling
 -->
 <script lang="ts">
-</script>
   import { Dialog } from "bits-ui";
-  
   interface Props {
     open?: boolean;
     title?: string;
     onClose?: () => void;
   }
-  
   let { 
     open = false, 
     title = "Dialog", 
     onClose 
   }: Props = $props();
-  
   function handleOpenChange(isOpen: boolean) {
     if (!isOpen && onClose) {
       onClose();

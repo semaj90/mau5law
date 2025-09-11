@@ -1,30 +1,24 @@
 <script lang="ts">
-</script>
   import { enhance } from '$app/forms';
   import { page } from '$app/stores';
   import type { PageData, ActionData } from './$types';
   import { goto } from '$app/navigation';
-  
   let { data }: { data: PageData } = $props();
-  
   let showProfileModal = $state(false);
   let showPasswordModal = $state(false);
   let showSessionModal = $state(false);
   let selectedSession = $state<any>(null);
   let formLoading = $state(false);
-  
   // Profile form
   let profileForm = $state({
     firstName: data.user.firstName || '',
     lastName: data.user.lastName || ''
   });
-  
   // Password form
   let passwordForm = $state({
     newPassword: '',
     confirmPassword: ''
   });
-  
   function formatDate(dateStr: string | Date) {
     const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
     return date.toLocaleDateString('en-US', {
@@ -35,16 +29,13 @@
       minute: '2-digit'
     });
   }
-  
   function formatTokens(tokens: number | null) {
     if (!tokens) return '0';
     return tokens.toLocaleString();
   }
-  
   function truncateText(text: string, maxLength: number = 100) {
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
   }
-  
   function getPriorityColor(priority: string) {
     switch (priority) {
       case 'critical': return 'text-red-400 border-red-500';
@@ -54,7 +45,6 @@
       default: return 'text-gray-400 border-gray-500';
     }
   }
-  
   function getStatusColor(status: string) {
     switch (status) {
       case 'open': return 'text-blue-400 border-blue-500';
@@ -63,28 +53,23 @@
       default: return 'text-gray-400 border-gray-500';
     }
   }
-  
   function openSessionModal(session: any) {
     selectedSession = session;
     showSessionModal = true;
   }
-  
   function closeSessionModal() {
     selectedSession = null;
     showSessionModal = false;
   }
-  
   function validatePasswordForm() {
     if (passwordForm.newPassword.length < 8) {
       alert('Password must be at least 8 characters');
       return false;
     }
-    
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       alert('Passwords do not match');
       return false;
     }
-    
     return true;
   }
 </script>

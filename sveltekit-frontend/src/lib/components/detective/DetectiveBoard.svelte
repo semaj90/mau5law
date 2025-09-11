@@ -1,412 +1,409 @@
 <!-- Detective Board - Enhanced 3-Column Grid with NES.css, RabbitMQ & GPU Integration -->
 <script lang="ts">
-</script>
-	// Badge replaced with span - not available in enhanced-bits
-	import Button from '$lib/components/ui/button/Button.svelte';
-	import {
+  	// Badge replaced with span - not available in enhanced-bits
+  	import Button from '$lib/components/ui/button/Button.svelte';
+  	import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-	import * as ContextMenu from '$lib/components/ui/context-menu';
-	import { page } from '$app/stores';
-	import Fuse from 'fuse.js';
-	import { dndzone } from 'svelte-dnd-action';
-	import { onDestroy, onMount } from 'svelte';
-	import { GPU, Activity, Database, MessageSquare, Cpu, Zap } from 'lucide-svelte';
+  	import * as ContextMenu from '$lib/components/ui/context-menu';
+  	import { page } from '$app/stores';
+  	import Fuse from 'fuse.js';
+  	import { dndzone } from 'svelte-dnd-action';
+  	import { onDestroy, onMount } from 'svelte';
+  	import { GPU, Activity, Database, MessageSquare, Cpu, Zap } from 'lucide-svelte';
 
-	// SVELTE 5: External, app-wide stores are still valid.
-	// Access page data directly
-	import { evidenceStore } from '$lib/stores/evidence-unified';
-	import { callContext7Tool, getContextAwareSuggestions } from '$lib/ai/mcp-helpers';
-	import EvidenceNode from '../canvas/EvidenceNode.svelte';
-	import EvidenceCard from './EvidenceCard.svelte';
-	import UploadZone from './UploadZone.svelte';
-	import OptimizedMinIOUpload from '../upload/OptimizedMinIOUpload.svelte';
+  	// SVELTE 5: External, app-wide stores are still valid.
+  	// Access page data directly
+  	import { evidenceStore } from '$lib/stores/evidence-unified';
+  	import { callContext7Tool, getContextAwareSuggestions } from '$lib/ai/mcp-helpers';
+  	import EvidenceNode from '../canvas/EvidenceNode.svelte';
+  	import EvidenceCard from './EvidenceCard.svelte';
+  	import UploadZone from './UploadZone.svelte';
+  	import OptimizedMinIOUpload from '../upload/OptimizedMinIOUpload.svelte';
 
-	// Enhanced integrations
-	import { rabbitMQService } from '$lib/services/rabbitmq-service';
-	import { vectorService } from '$lib/services/vector-service';
-	import { gpuService } from '$lib/services/gpu-acceleration-service';
+  	// Enhanced integrations
+  	import { rabbitMQService } from '$lib/services/rabbitmq-service';
+  	import { vectorService } from '$lib/services/vector-service';
+  	import { gpuService } from '$lib/services/gpu-acceleration-service';
 
-	// --- Svelte 5 State Management ---
-	// SVELTE 5: Subscribe to external evidenceStore manually.
-	// The evidenceStore returns a state object with evidence array
-	let evidenceStoreState = $state<any>({ evidence: [], isLoading: false, error: null, isConnected: false });
+  	// --- Svelte 5 State Management ---
+  	// SVELTE 5: Subscribe to external evidenceStore manually.
+  	// The evidenceStore returns a state object with evidence array
+  	let evidenceStoreState = $state<any>({ evidence: [], isLoading: false, error: null, isConnected: false });
 
-	// Create a derived state for just the evidence array
-	let allEvidence = $derived(evidenceStoreState.evidence || []);
+  	// Create a derived state for just the evidence array
+  	let allEvidence = $derived(evidenceStoreState.evidence || []);
 
-	// Case ID for associating uploaded evidence
-	let caseId = $state('');
+  	// Case ID for associating uploaded evidence
+  	let caseId = $state('');
 
-	// SVELTE 5: Use runes (`$state`) for all component-local state.
-	let viewMode = $state<'columns' | 'canvas'>('columns');
-	let canvasContainer: HTMLDivElement;
-	let columns = $state([
-		{ id: 'new', title: 'New Evidence', items: [] },
-		{ id: 'processing', title: 'Processing', items: [] },
-		{ id: 'verified', title: 'Verified', items: [] }
-	]);
-	let canvasEvidence = $state([]);
+  	// SVELTE 5: Use runes (`$state`) for all component-local state.
+  	let viewMode = $state<'columns' | 'canvas'>('columns');
+  	let canvasContainer: HTMLDivElement;
+  	let columns = $state([
+  		{ id: 'new', title: 'New Evidence', items: [] },
+  		{ id: 'processing', title: 'Processing', items: [] },
+  		{ id: 'verified', title: 'Verified', items: [] }
+  	]);
+  	let canvasEvidence = $state([]);
 
-	// SVELTE 5: Converted from writable store to a rune.
-	let activeUsers = $state<{ name?: string; email?: string }[]>([]);
+  	// SVELTE 5: Converted from writable store to a rune.
+  	let activeUsers = $state<{ name?: string; email?: string }[]>([]);
 
-	// Enhanced system status tracking
-	let systemStatus = $state({
-		rabbitMQ: { connected: false, health: 'unknown' },
-		postgreSQL: { connected: false, vectorCount: 0 },
-		gpu: { available: false, utilization: 0, model: 'RTX 3060 Ti' },
-		processingStats: { totalFiles: 0, processed: 0, queued: 0 }
-	});
+  	// Enhanced system status tracking
+  	let systemStatus = $state({
+  		rabbitMQ: { connected: false, health: 'unknown' },
+  		postgreSQL: { connected: false, vectorCount: 0 },
+  		gpu: { available: false, utilization: 0, model: 'RTX 3060 Ti' },
+  		processingStats: { totalFiles: 0, processed: 0, queued: 0 }
+  	});
 
-	let contextMenu = $state({
-		show: false,
-		x: 0,
-		y: 0,
-		item: null as any
-	});
+  	let contextMenu = $state({
+  		show: false,
+  		x: 0,
+  		y: 0,
+  		item: null as any
+  	});
 
-	let miniModal = $state({
-		show: false,
-		x: 0,
-		y: 0,
-		type: ''
-	});
+  	let miniModal = $state({
+  		show: false,
+  		x: 0,
+  		y: 0,
+  		type: ''
+  	});
 
-	let findModal = $state({
-		show: false,
-		query: '',
-		results: [] as any[],
-		loading: false,
-		error: '',
-		suggestions: [] as any[]
-	});
+  	let findModal = $state({
+  		show: false,
+  		query: '',
+  		results: [] as any[],
+  		loading: false,
+  		error: '',
+  		suggestions: [] as any[]
+  	});
 
-	// --- Component Logic & Functions ---
+  	// --- Component Logic & Functions ---
 
-	// Enhanced system initialization
-	onMount(async () => {
-		await initializeEnhancedSystems();
-		setupRealTimeUpdates();
-		
-		// Subscribe to evidence store
-		const unsubscribeEvidence = evidenceStore.subscribe((value) => {
-			evidenceStoreState = value;
-		});
-		
-		onDestroy(() => {
-			unsubscribeEvidence();
-		});
-	});
+  	// Enhanced system initialization
+  	onMount(async () => {
+  		await initializeEnhancedSystems();
+  		setupRealTimeUpdates();
+  		// Subscribe to evidence store
+  		const unsubscribeEvidence = evidenceStore.subscribe((value) => {
+  			evidenceStoreState = value;
+  		});
+  		onDestroy(() => {
+  			unsubscribeEvidence();
+  		});
+  	});
 
-	async function initializeEnhancedSystems() {
-		// RabbitMQ connection
-		try {
-			const rabbitMQStatus = await rabbitMQService.connect();
-			systemStatus.rabbitMQ.connected = rabbitMQStatus.connected;
-			systemStatus.rabbitMQ.health = rabbitMQStatus.health;
-		} catch (error) {
-			console.warn('RabbitMQ connection failed:', error);
-		}
+  	async function initializeEnhancedSystems() {
+  		// RabbitMQ connection
+  		try {
+  			const rabbitMQStatus = await rabbitMQService.connect();
+  			systemStatus.rabbitMQ.connected = rabbitMQStatus.connected;
+  			systemStatus.rabbitMQ.health = rabbitMQStatus.health;
+  		} catch (error) {
+  			console.warn('RabbitMQ connection failed:', error);
+  		}
 
-		// PostgreSQL vector status
-		try {
-			const vectorStatus = await vectorService.getStatus();
-			systemStatus.postgreSQL.connected = vectorStatus.connected;
-			systemStatus.postgreSQL.vectorCount = vectorStatus.vectorCount;
-		} catch (error) {
-			console.warn('PostgreSQL vector service failed:', error);
-		}
+  		// PostgreSQL vector status
+  		try {
+  			const vectorStatus = await vectorService.getStatus();
+  			systemStatus.postgreSQL.connected = vectorStatus.connected;
+  			systemStatus.postgreSQL.vectorCount = vectorStatus.vectorCount;
+  		} catch (error) {
+  			console.warn('PostgreSQL vector service failed:', error);
+  		}
 
-		// GPU service status
-		try {
-			const gpuStatus = await gpuService.getStatus();
-			systemStatus.gpu.available = gpuStatus.available;
-			systemStatus.gpu.utilization = gpuStatus.utilization;
-		} catch (error) {
-			console.warn('GPU service failed:', error);
-		}
-	}
+  		// GPU service status
+  		try {
+  			const gpuStatus = await gpuService.getStatus();
+  			systemStatus.gpu.available = gpuStatus.available;
+  			systemStatus.gpu.utilization = gpuStatus.utilization;
+  		} catch (error) {
+  			console.warn('GPU service failed:', error);
+  		}
+  	}
 
-	function setupRealTimeUpdates() {
-		// RabbitMQ real-time evidence updates
-		rabbitMQService.subscribe('evidence.processing', (message) => {
-			updateProcessingStats(message);
-		});
+  	function setupRealTimeUpdates() {
+  		// RabbitMQ real-time evidence updates
+  		rabbitMQService.subscribe('evidence.processing', (message) => {
+  			updateProcessingStats(message);
+  		});
 
-		rabbitMQService.subscribe('evidence.completed', (message) => {
-			updateEvidenceStatus(message);
-		});
-	}
+  		rabbitMQService.subscribe('evidence.completed', (message) => {
+  			updateEvidenceStatus(message);
+  		});
+  	}
 
-	function updateProcessingStats(message: any) {
-		systemStatus.processingStats.queued = message.queuedCount || 0;
-		systemStatus.processingStats.processed = message.processedCount || 0;
-	}
+  	function updateProcessingStats(message: any) {
+  		systemStatus.processingStats.queued = message.queuedCount || 0;
+  		systemStatus.processingStats.processed = message.processedCount || 0;
+  	}
 
-	function updateEvidenceStatus(message: any) {
-		// Update evidence item status based on RabbitMQ message
-		const evidenceId = message.evidenceId;
-		const newStatus = message.status;
-		// Update column positions based on processing status
-		moveEvidenceBetweenColumns(evidenceId, newStatus);
-	}
+  	function updateEvidenceStatus(message: any) {
+  		// Update evidence item status based on RabbitMQ message
+  		const evidenceId = message.evidenceId;
+  		const newStatus = message.status;
+  		// Update column positions based on processing status
+  		moveEvidenceBetweenColumns(evidenceId, newStatus);
+  	}
 
-	function moveEvidenceBetweenColumns(evidenceId: string, newStatus: string) {
-		// Logic to move evidence between columns based on processing status
-		const targetColumnId = newStatus === 'completed' ? 'verified' : 'processing';
+  	function moveEvidenceBetweenColumns(evidenceId: string, newStatus: string) {
+  		// Logic to move evidence between columns based on processing status
+  		const targetColumnId = newStatus === 'completed' ? 'verified' : 'processing';
 
-		// Find and move evidence item
-		columns.forEach(column => {
-			const itemIndex = column.items.findIndex((item: any) => item.id === evidenceId);
-			if (itemIndex !== -1) {
-				const item = column.items.splice(itemIndex, 1)[0];
-				const targetColumn = columns.find(col => col.id === targetColumnId);
-				if (targetColumn) {
-					targetColumn.items.push(item);
-				}
-			}
-		});
-	}
+  		// Find and move evidence item
+  		columns.forEach(column => {
+  			const itemIndex = column.items.findIndex((item: any) => item.id === evidenceId);
+  			if (itemIndex !== -1) {
+  				const item = column.items.splice(itemIndex, 1)[0];
+  				const targetColumn = columns.find(col => col.id === targetColumnId);
+  				if (targetColumn) {
+  					targetColumn.items.push(item);
+  				}
+  			}
+  		});
+  	}
 
-	function switchViewMode(mode: 'columns' | 'canvas') {
-		viewMode = mode;
-	}
+  	function switchViewMode(mode: 'columns' | 'canvas') {
+  		viewMode = mode;
+  	}
 
-	function handleFileUpload(result: any, columnId: string) {
-		console.log('File uploaded to MinIO:', result, 'for column:', columnId);
+  	function handleFileUpload(result: any, columnId: string) {
+  		console.log('File uploaded to MinIO:', result, 'for column:', columnId);
 
-		// Create evidence item from MinIO upload result
-		const newEvidence = {
-			id: result.id || `evidence-${Date.now()}-${Math.random()}`,
-			title: result.originalName || result.fileName,
-			fileName: result.fileName,
-			fileSize: result.fileSize,
-			type: result.metadata?.evidenceType || 'document',
-			evidenceType: result.metadata?.evidenceType || 'document',
-			createdAt: new Date(result.metadata?.uploadedAt || Date.now()),
-			tags: [],
-			x: 100 + Math.random() * 200,
-			y: 100 + Math.random() * 200,
-			// MinIO specific fields
-			url: result.url,
-			bucket: result.bucket,
-			hash: result.hash,
-			minioId: result.id,
-			caseId: result.metadata?.caseId
-		};
+  		// Create evidence item from MinIO upload result
+  		const newEvidence = {
+  			id: result.id || `evidence-${Date.now()}-${Math.random()}`,
+  			title: result.originalName || result.fileName,
+  			fileName: result.fileName,
+  			fileSize: result.fileSize,
+  			type: result.metadata?.evidenceType || 'document',
+  			evidenceType: result.metadata?.evidenceType || 'document',
+  			createdAt: new Date(result.metadata?.uploadedAt || Date.now()),
+  			tags: [],
+  			x: 100 + Math.random() * 200,
+  			y: 100 + Math.random() * 200,
+  			// MinIO specific fields
+  			url: result.url,
+  			bucket: result.bucket,
+  			hash: result.hash,
+  			minioId: result.id,
+  			caseId: result.metadata?.caseId
+  		};
 
-		// Add to the appropriate column
-		columns = columns.map(col =>
-			col.id === columnId
-				? { ...col, items: [...col.items, newEvidence] }
-				: col
-		);
+  		// Add to the appropriate column
+  		columns = columns.map(col =>
+  			col.id === columnId
+  				? { ...col, items: [...col.items, newEvidence] }
+  				: col
+  		);
 
-		// Also update the evidence store if needed
-		// evidenceStore.addEvidence(newEvidence);
-	}
+  		// Also update the evidence store if needed
+  		// evidenceStore.addEvidence(newEvidence);
+  	}
 
-	function handleUploadError(error: string, columnId: string) {
-		console.error('Upload to MinIO failed:', error);
-		// You could show a notification or alert here
-	}
+  	function handleUploadError(error: string, columnId: string) {
+  		console.error('Upload to MinIO failed:', error);
+  		// You could show a notification or alert here
+  	}
 
-	function handleDndConsider(event: any, columnId: string) {
-		console.log('DnD consider:', event, columnId);
-	}
+  	function handleDndConsider(event: any, columnId: string) {
+  		console.log('DnD consider:', event, columnId);
+  	}
 
-	function handleDndFinalize(event: any, columnId: string) {
-		console.log('DnD finalize:', event, columnId);
-	}
+  	function handleDndFinalize(event: any, columnId: string) {
+  		console.log('DnD finalize:', event, columnId);
+  	}
 
-	function handleRightClick(event: MouseEvent, item: any) {
-		event.preventDefault();
-		contextMenu.show = true;
-		contextMenu.x = event.clientX;
-		contextMenu.y = event.clientY;
-		contextMenu.item = item;
-	}
+  	function handleRightClick(event: MouseEvent, item: any) {
+  		event.preventDefault();
+  		contextMenu.show = true;
+  		contextMenu.x = event.clientX;
+  		contextMenu.y = event.clientY;
+  		contextMenu.item = item;
+  	}
 
-	function closeContextMenu() {
-		// SVELTE 5: Direct mutation is the idiomatic way to update state objects.
-		contextMenu.show = false;
-	}
+  	function closeContextMenu() {
+  		// SVELTE 5: Direct mutation is the idiomatic way to update state objects.
+  		contextMenu.show = false;
+  	}
 
-	function showMiniModal(type: string, event: MouseEvent) {
-		miniModal.show = true;
-		miniModal.type = type;
-		// Position modal near the cursor
-		miniModal.x = event.clientX + 15;
-		miniModal.y = event.clientY + 15;
-	}
+  	function showMiniModal(type: string, event: MouseEvent) {
+  		miniModal.show = true;
+  		miniModal.type = type;
+  		// Position modal near the cursor
+  		miniModal.x = event.clientX + 15;
+  		miniModal.y = event.clientY + 15;
+  	}
 
-	function hideMiniModal() {
-		miniModal.show = false;
-	}
+  	function hideMiniModal() {
+  		miniModal.show = false;
+  	}
 
-	function broadcastPositionUpdate(id: string, x: number, y: number) {
-		console.log('Position update:', id, x, y);
-	}
+  	function broadcastPositionUpdate(id: string, x: number, y: number) {
+  		console.log('Position update:', id, x, y);
+  	}
 
-	function handleViewEvidence(item: any) {
-		console.log('Viewing evidence:', item.title);
-		// Add your logic to open a modal or navigate to a details page
-		window.open(`/evidence/${item.id}`, '_blank');
-	}
+  	function handleViewEvidence(item: any) {
+  		console.log('Viewing evidence:', item.title);
+  		// Add your logic to open a modal or navigate to a details page
+  		window.open(`/evidence/${item.id}`, '_blank');
+  	}
 
-	function handleShowMoreOptions(item: any) {
-		console.log('Showing more options for:', item.title);
-		// Add your logic to show a context menu
-		contextMenu.show = true;
-		contextMenu.item = item;
-	}
+  	function handleShowMoreOptions(item: any) {
+  		console.log('Showing more options for:', item.title);
+  		// Add your logic to show a context menu
+  		contextMenu.show = true;
+  		contextMenu.item = item;
+  	}
 
-	function handleGlobalKeydown(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			closeContextMenu();
-			closeFindModal();
-		}
-	}
+  	function handleGlobalKeydown(event: KeyboardEvent) {
+  		if (event.key === 'Escape') {
+  			closeContextMenu();
+  			closeFindModal();
+  		}
+  	}
 
-	async function saveTo(target: string) {
-		if (!contextMenu.item) return closeContextMenu();
-		const itemToSave = contextMenu.item;
-		closeContextMenu(); // Close menu immediately for better UX
+  	async function saveTo(target: string) {
+  		if (!contextMenu.item) return closeContextMenu();
+  		const itemToSave = contextMenu.item;
+  		closeContextMenu(); // Close menu immediately for better UX
 
-		// Note: All API calls are stubbed and will work as before.
-		try {
-			await fetch('/api/user-activity', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					userId: $page.data?.user?.id,
-					evidenceId: itemToSave.id,
-					action: 'save',
-					target
-				})
-			});
-		} catch (e) {
-			console.warn('User activity store update failed', e);
-		}
+  		// Note: All API calls are stubbed and will work as before.
+  		try {
+  			await fetch('/api/user-activity', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					userId: $page.data?.user?.id,
+  					evidenceId: itemToSave.id,
+  					action: 'save',
+  					target
+  				})
+  			});
+  		} catch (e) {
+  			console.warn('User activity store update failed', e);
+  		}
 
-		// ... other API calls ...
-	}
+  		// ... other API calls ...
+  	}
 
-	function openFindModal() {
-		findModal.show = true;
-		findModal.query = contextMenu.item?.title || '';
-		findModal.results = [];
-		findModal.loading = false;
-		findModal.error = '';
-		findModal.suggestions = [];
-	}
-	function closeFindModal() {
-		findModal.show = false;
-		closeContextMenu();
-	}
+  	function openFindModal() {
+  		findModal.show = true;
+  		findModal.query = contextMenu.item?.title || '';
+  		findModal.results = [];
+  		findModal.loading = false;
+  		findModal.error = '';
+  		findModal.suggestions = [];
+  	}
+  	function closeFindModal() {
+  		findModal.show = false;
+  		closeContextMenu();
+  	}
 
-	async function runFindSearch() {
-		if (!contextMenu.item) return closeFindModal();
-		findModal.loading = true;
-		findModal.error = '';
-		findModal.results = [];
-		findModal.suggestions = [];
+  	async function runFindSearch() {
+  		if (!contextMenu.item) return closeFindModal();
+  		findModal.loading = true;
+  		findModal.error = '';
+  		findModal.results = [];
+  		findModal.suggestions = [];
 
-		// 1. Local fuzzy search (Fuse.js)
-		try {
-			// SVELTE 5: Use the reactive `allEvidence` rune directly. No `get()` needed.
-			const items = allEvidence || [];
-			const fuse = new Fuse(items, { keys: ['title', 'description', 'tags'] });
-			const fuseResults = fuse.search(findModal.query || contextMenu.item.title || '');
-			findModal.results = fuseResults.map((r) => r.item); // Extract the items
-		} catch (e) {
-			findModal.error = 'Local search failed';
-		}
+  		// 1. Local fuzzy search (Fuse.js)
+  		try {
+  			// SVELTE 5: Use the reactive `allEvidence` rune directly. No `get()` needed.
+  			const items = allEvidence || [];
+  			const fuse = new Fuse(items, { keys: ['title', 'description', 'tags'] });
+  			const fuseResults = fuse.search(findModal.query || contextMenu.item.title || '');
+  			findModal.results = fuseResults.map((r) => r.item); // Extract the items
+  		} catch (e) {
+  			findModal.error = 'Local search failed';
+  		}
 
-		// 2. Qdrant/Vector search (stubbed)
-		try {
-			const resp = await fetch('/api/vector-search', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					query: findModal.query || contextMenu.item.title
-				})
-			});
-			const vectorResults = await resp.json();
-			findModal.results = [...findModal.results, ...vectorResults];
-		} catch (e) {
-			findModal.error += ' Qdrant search failed.';
-		}
+  		// 2. Qdrant/Vector search (stubbed)
+  		try {
+  			const resp = await fetch('/api/vector-search', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					query: findModal.query || contextMenu.item.title
+  				})
+  			});
+  			const vectorResults = await resp.json();
+  			findModal.results = [...findModal.results, ...vectorResults];
+  		} catch (e) {
+  			findModal.error += ' Qdrant search failed.';
+  		}
 
-		findModal.loading = false;
-	}
+  		findModal.loading = false;
+  	}
 
-	// Canvas-specific handlers
-	function handleCanvasDrop(event: DragEvent) {
-		event.preventDefault();
-		// Handle dropping evidence onto canvas
-		const data = event.dataTransfer?.getData('text/plain');
-		if (data) {
-			try {
-				const item = JSON.parse(data);
-				const rect = canvasContainer?.getBoundingClientRect();
-				if (rect) {
-					item.x = event.clientX - rect.left;
-					item.y = event.clientY - rect.top;
-					canvasEvidence = [...canvasEvidence, item];
-				}
-			} catch (e) {
-				console.error('Failed to parse dropped data:', e);
-			}
-		}
-	}
+  	// Canvas-specific handlers
+  	function handleCanvasDrop(event: DragEvent) {
+  		event.preventDefault();
+  		// Handle dropping evidence onto canvas
+  		const data = event.dataTransfer?.getData('text/plain');
+  		if (data) {
+  			try {
+  				const item = JSON.parse(data);
+  				const rect = canvasContainer?.getBoundingClientRect();
+  				if (rect) {
+  					item.x = event.clientX - rect.left;
+  					item.y = event.clientY - rect.top;
+  					canvasEvidence = [...canvasEvidence, item];
+  				}
+  			} catch (e) {
+  				console.error('Failed to parse dropped data:', e);
+  			}
+  		}
+  	}
 
-	function handleCanvasDragStart(event: DragEvent, item: any) {
-		if (event.dataTransfer) {
-			event.dataTransfer.effectAllowed = 'move';
-			event.dataTransfer.setData('text/plain', JSON.stringify(item));
-		}
-	}
+  	function handleCanvasDragStart(event: DragEvent, item: any) {
+  		if (event.dataTransfer) {
+  			event.dataTransfer.effectAllowed = 'move';
+  			event.dataTransfer.setData('text/plain', JSON.stringify(item));
+  		}
+  	}
 
-	function handleCanvasDragEnd(event: DragEvent, item: any) {
-		// Update item position after drag
-		const rect = canvasContainer?.getBoundingClientRect();
-		if (rect) {
-			const newX = event.clientX - rect.left;
-			const newY = event.clientY - rect.top;
-			canvasEvidence = canvasEvidence.map(e =>
-				e.id === item.id ? { ...e, x: newX, y: newY } : e
-			);
-			broadcastPositionUpdate(item.id, newX, newY);
-		}
-	}
+  	function handleCanvasDragEnd(event: DragEvent, item: any) {
+  		// Update item position after drag
+  		const rect = canvasContainer?.getBoundingClientRect();
+  		if (rect) {
+  			const newX = event.clientX - rect.left;
+  			const newY = event.clientY - rect.top;
+  			canvasEvidence = canvasEvidence.map(e =>
+  				e.id === item.id ? { ...e, x: newX, y: newY } : e
+  			);
+  			broadcastPositionUpdate(item.id, newX, newY);
+  		}
+  	}
 
-	function getConnections() {
-		// Return an array of connection lines between related evidence
-		// This is a placeholder - you can implement actual relationship logic
-		const connections = [];
-		// Example: connect items that share tags or are related
-		for (let i = 0; i < canvasEvidence.length - 1; i++) {
-			for (let j = i + 1; j < canvasEvidence.length; j++) {
-				const item1 = canvasEvidence[i];
-				const item2 = canvasEvidence[j];
-				// Check if items are related (example logic)
-				if (item1.tags?.some(tag => item2.tags?.includes(tag))) {
-					connections.push({
-						x1: (item1.x || 100) + 100, // Center of card
-						y1: (item1.y || 100) + 50,
-						x2: (item2.x || 100) + 100,
-						y2: (item2.y || 100) + 50
-					});
-				}
-			}
-		}
-		return connections;
-	}
+  	function getConnections() {
+  		// Return an array of connection lines between related evidence
+  		// This is a placeholder - you can implement actual relationship logic
+  		const connections = [];
+  		// Example: connect items that share tags or are related
+  		for (let i = 0; i < canvasEvidence.length - 1; i++) {
+  			for (let j = i + 1; j < canvasEvidence.length; j++) {
+  				const item1 = canvasEvidence[i];
+  				const item2 = canvasEvidence[j];
+  				// Check if items are related (example logic)
+  				if (item1.tags?.some(tag => item2.tags?.includes(tag))) {
+  					connections.push({
+  						x1: (item1.x || 100) + 100, // Center of card
+  						y1: (item1.y || 100) + 50,
+  						x2: (item2.x || 100) + 100,
+  						y2: (item2.y || 100) + 50
+  					});
+  				}
+  			}
+  		}
+  		return connections;
+  	}
 </script>
 
 <svelte:window onclick={closeContextMenu} onkeydown={handleGlobalKeydown} />

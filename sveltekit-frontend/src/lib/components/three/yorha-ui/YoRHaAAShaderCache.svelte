@@ -12,7 +12,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import type {
     AntiAliasingConfig,
@@ -79,9 +78,9 @@
   }: Props = $props();
 
   // Component state
-let canvasElement = $state<HTMLCanvasElement | null >(null);
-let gpuDevice = $state<GPUDevice | null >(null);
-let gpuContext = $state<GPUCanvasContext | null >(null);
+  let canvasElement = $state<HTMLCanvasElement | null >(null);
+  let gpuDevice = $state<GPUDevice | null >(null);
+  let gpuContext = $state<GPUCanvasContext | null >(null);
   let isInitialized = $state(false);
   let isCompiling = $state(false);
   let hasError = $state(false);
@@ -113,10 +112,10 @@ let gpuContext = $state<GPUCanvasContext | null >(null);
   let qualityAdjustmentCount = $state(0);
 
   // Animation and monitoring
-let animationId = $state<number | null >(null);
-let performanceMonitorId = $state<number | null >(null);
-let lastFrameTime = $state(0);
-let frameCount = $state(0);
+  let animationId = $state<number | null >(null);
+  let performanceMonitorId = $state<number | null >(null);
+  let lastFrameTime = $state(0);
+  let frameCount = $state(0);
 
   // Shader source templates for YoRHa style
   const yorhaShaderTemplates = {
@@ -149,7 +148,7 @@ let frameCount = $state(0);
 
       @fragment
       fn fs_main(@location(0) uv: vec2<f32>) -> @location(0) vec4<f32> {
-let texelSize = $state(1.0 / resolution);
+  let texelSize = $state(1.0 / resolution);
 
         // Sample neighborhood
         let rgbNW = textureSample(inputTexture, texSampler, uv + vec2(-1.0, -1.0) * texelSize).rgb;
@@ -184,12 +183,12 @@ let texelSize = $state(1.0 / resolution);
         );
 
         let dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) * 0.03125, 0.0078125);
-let rcpDirMin = $state(1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce));
+  let rcpDirMin = $state(1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce));
 
         let finalDir = clamp(dir * rcpDirMin, vec2(-8.0), vec2(8.0)) * texelSize * patternWeight;
 
         // YoRHa-enhanced sampling with geometric consideration
-let rgbA = $state(0.5 * (
+  let rgbA = $state(0.5 * (
           textureSample(inputTexture, texSampler, uv + finalDir * (1.0/3.0 - 0.5)).rgb +
           textureSample(inputTexture, texSampler, uv + finalDir * (2.0/3.0 - 0.5)).rgb
         ));
@@ -250,7 +249,7 @@ let rgbA = $state(0.5 * (
 
       @fragment
       fn fs_main(@location(0) uv: vec2<f32>) -> @location(0) vec4<f32> {
-let texelSize = $state(1.0 / vec2<f32>(textureDimensions(currentTexture)));
+  let texelSize = $state(1.0 / vec2<f32>(textureDimensions(currentTexture)));
         let current = textureSample(currentTexture, currentSampler, uv);
 
         // Enhanced velocity calculation for YoRHa UI elements
@@ -300,7 +299,7 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(currentTexture)));
 
       fn detectYoRHaEdges(uv: vec2<f32>) -> vec2<f32> {
         // Enhanced edge detection for YoRHa UI patterns
-let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
+  let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
 
         // Sample in YoRHa hexagonal pattern
         let center = textureSample(baseTexture, texSampler, uv).rgb;
@@ -537,8 +536,8 @@ let texelSize = $state(1.0 / vec2<f32>(textureDimensions(baseTexture)));
     if (!adaptiveQuality || !performanceMetrics.fps) return;
 
     const fpsRatio = performanceMetrics.fps / targetFPS;
-let newConfig = $state({ ...aaConfig });
-let qualityChanged = $state(false);
+  let newConfig = $state({ ...aaConfig });
+  let qualityChanged = $state(false);
 
     if (fpsRatio < 0.7) {
       // Performance is poor, reduce quality
@@ -586,7 +585,7 @@ let qualityChanged = $state(false);
    * Start performance monitoring
    */
   function startPerformanceMonitoring(): void {
-let frameCount = $state(0);
+  let frameCount = $state(0);
     let lastTime = performance.now();
 
     const updateMetrics = () => {
@@ -666,7 +665,7 @@ let frameCount = $state(0);
    */
   function getShaderSource(aaType: string): string {
     const vertexShader = yorhaShaderTemplates.vertex;
-let fragmentShader = $state('');
+  let fragmentShader = $state('');
 
     switch (aaType) {
       case 'fxaa':
@@ -686,7 +685,7 @@ let fragmentShader = $state('');
   }
 
   function generateShaderHash(source: string): string {
-let hash = $state(0);
+  let hash = $state(0);
     for (let i = 0; i < source.length; i++) {
       const char = source.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
@@ -696,7 +695,7 @@ let hash = $state(0);
   }
 
   function calculateAAQualityScore(): number {
-let score = $state(0.3);
+  let score = $state(0.3);
 
     switch (aaConfig.type) {
       case 'taa': score += 0.4; break;

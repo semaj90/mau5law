@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   let testResults = $state<Array<{
     test: string;
@@ -7,13 +6,10 @@
     message: string;
     duration?: number;
   }>>([]);
-  
   let isRunning = $state(false);
-  
   async function runSystemTests() {
     isRunning = true;
     testResults = [];
-    
     // Test 1: Basic API connectivity 
     await runTest('API Health Check', async () => {
       const response = await fetch('/api/health');
@@ -24,7 +20,6 @@
         throw new Error(`API returned ${response.status}`);
       }
     });
-    
     // Test 2: Database connectivity
     await runTest('Database Connectivity', async () => {
       const response = await fetch('/api/database/health');
@@ -35,7 +30,6 @@
         throw new Error('Database connection failed');
       }
     });
-    
     // Test 3: Basic AI endpoint
     await runTest('AI Endpoint Test', async () => {
       const response = await fetch('/api/ai/health');
@@ -46,32 +40,26 @@
         throw new Error('AI endpoint unavailable');
       }
     });
-    
     // Test 4: Frontend functionality
     await runTest('Frontend Systems', async () => {
       // Test local storage
       localStorage.setItem('test-key', 'test-value');
       const retrieved = localStorage.getItem('test-key');
       localStorage.removeItem('test-key');
-      
       if (retrieved === 'test-value') {
         return 'Local storage working correctly';
       } else {
         throw new Error('Local storage failed');
       }
     });
-    
     isRunning = false;
   }
-  
   async function runTest(testName: string, testFn: () => Promise<string>) {
     const startTime = Date.now();
     testResults = [...testResults, { test: testName, status: 'pending', message: 'Running...' }];
-    
     try {
       const result = await testFn();
       const duration = Date.now() - startTime;
-      
       testResults = testResults.map(t => 
         t.test === testName 
           ? { ...t, status: 'success' as const, message: result, duration }
@@ -86,7 +74,6 @@
       );
     }
   }
-  
   onMount(() => {
     // Auto-run tests on mount
     runSystemTests();

@@ -1,6 +1,5 @@
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
-</script>
   // Svelte runes ($state, $derived, etc.) are declared globally in src/types/svelte-helpers.d.ts
 
   import {
@@ -37,27 +36,27 @@
   export let searchQuery: string = "";
   export let selectedTypes: string[] = [];
   export const showAdvancedFilters: boolean = false;
-;
+  ;
   // Store subscriptions - using $derived below
 
   // Connection status
-let connectionStatus = $state("disconnected");
-let lastUpdateTime = $state<string | null >(null);
-let syncStatus = $state({ pending: 0, failed: 0, total: 0, inProgress: false });
+  let connectionStatus = $state("disconnected");
+  let lastUpdateTime = $state<string | null >(null);
+  let syncStatus = $state({ pending: 0, failed: 0, total: 0, inProgress: false });
 
   // UI state
-let viewMode = $state<"grid" | "list" >("grid");
-let sortBy = $state<"date" | "title" | "type" | "relevance" >("date");
-let sortOrder = $state<"asc" | "desc" >("desc");
-let pageSize = $state(20);
-let currentPage = $state(0);
-let selectedEvidence = $state<Set<string> >(new Set());
-let editingEvidence = $state<string | null >(null);
+  let viewMode = $state<"grid" | "list" >("grid");
+  let sortBy = $state<"date" | "title" | "type" | "relevance" >("date");
+  let sortOrder = $state<"asc" | "desc" >("desc");
+  let pageSize = $state(20);
+  let currentPage = $state(0);
+  let selectedEvidence = $state<Set<string> >(new Set());
+  let editingEvidence = $state<string | null >(null);
 
   // Filtered and sorted evidence
-let filteredEvidence = $state<Evidence[] >([]);
-let paginatedEvidence = $state<Evidence[] >([]);
-let totalPages = $state(0);
+  let filteredEvidence = $state<Evidence[] >([]);
+  let paginatedEvidence = $state<Evidence[] >([]);
+  let totalPages = $state(0);
 
   // Subscribe to store values (use function form so the global $derived signature is satisfied)
   let evidence = $derived(() => $evidenceStore.evidence || []);
@@ -92,7 +91,7 @@ let totalPages = $state(0);
         return true;
       })
       .sort((a, b) => {
-let aVal = $state<any, bVal: any;
+  let aVal = $state<any, bVal: any;
 
         switch (sortBy) {
           case "date":

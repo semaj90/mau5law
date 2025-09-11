@@ -1,6 +1,5 @@
 <!-- QLorA Training Panel with Checkbox Toggle -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
@@ -12,7 +11,6 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  
   // Import QLorA training service
   import { 
     qloraTrainingService, 
@@ -28,7 +26,6 @@
     caseFiles?: File[];
     enabledByDefault?: boolean;
   }
-  
   let { 
     caseFiles = [],
     enabledByDefault = false 
@@ -69,7 +66,6 @@
     if (!config) return;
 
     trainingEnabled = !trainingEnabled;
-    
     // Update service configuration
     qloraTrainingService.updateConfig({
       enabled: trainingEnabled
@@ -88,7 +84,6 @@
     try {
       uploadProgress = 0;
       const job = await qloraTrainingService.startTraining(files, trainingEnabled);
-      
       // Simulate upload progress
       const progressInterval = setInterval(() => {
         uploadProgress += Math.random() * 20;
@@ -117,7 +112,6 @@
 
     if (caseFiles.length > 0) {
       selectedFiles = [...selectedFiles, ...caseFiles];
-      
       // Auto-start training if enabled
       if (trainingEnabled) {
         startTraining(caseFiles);
@@ -147,7 +141,6 @@
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
-    
     if (hours > 0) return `${hours}h ${minutes % 60}m`;
     if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
     return `${seconds}s`;

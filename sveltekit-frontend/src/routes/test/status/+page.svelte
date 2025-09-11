@@ -1,15 +1,14 @@
 <!-- Route Status Check - Verify All Routes Work -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
-let routeTests = $state([
+  let routeTests = $state([
     { name: 'Test Hub', path: '/test', status: 'pending', responseTime: null },
     { name: 'CRUD Interface', path: '/test/crud', status: 'pending', responseTime: null },
     { name: 'CRUD API Health', path: '/test/crud', method: 'GET', headers: {'Accept': 'application/json'}, status: 'pending', responseTime: null },
     { name: 'Route Status', path: '/test/status', status: 'pending', responseTime: null }
   ]);
-let isTestingRoutes = $state(false);
+  let isTestingRoutes = $state(false);
 
   const testRoute = async (test) => {
     const startTime = Date.now();

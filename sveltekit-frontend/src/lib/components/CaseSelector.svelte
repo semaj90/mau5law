@@ -1,11 +1,10 @@
 <script lang="ts">
-</script>
   import { user } from "$lib/stores/user";
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
   import Modal from "$lib/components/ui/Modal.svelte";
-let cases = $state([
+  let cases = $state([
     { id: "case-1", name: "State v. John Doe" },
     { id: "case-2", name: "People v. Jane Smith" },
   ]);
@@ -15,7 +14,7 @@ let cases = $state([
   function selectCase(caseId: string) {
     user.selectCase(caseId);
     showModal = false;
-}
+  }
 </script>
 
 <Button class="bits-btn" on:onclick={() => showModal = true}>Select Case</Button>

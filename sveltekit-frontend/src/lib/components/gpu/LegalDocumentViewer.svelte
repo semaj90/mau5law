@@ -1,9 +1,10 @@
-<!-- 🏛️ NES-GPU Integrated Legal Document Viewer
+<!-- 🏛️ NES-GPU Integrated Legal Document Viewer with MinIO Upload
      Advanced GPU-accelerated document rendering with:
      - NES memory architecture integration  
      - WebGPU texture streaming with quantization
      - Binary document processing pipeline
-     - Legal AI-optimized buffer management -->
+     - Legal AI-optimized buffer management
+     - MinIO file upload with real-time processing -->
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
@@ -11,8 +12,14 @@
   import { nesGPUIntegration, type LegalDocument, type PipelineStats } from '$lib/gpu/nes-gpu-integration';
   import { textureStreamer, type NESTexture } from '$lib/webgpu/texture-streaming';
   import { WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader';
+  import { minioService, type MinIOFile, type UploadProgress } from '$lib/services/minio-service';
+  import DocumentUploader from '$lib/components/headless/DocumentUploader.svelte';
+  import { ragIngestionWorker } from '$lib/workers/rag-ingestion-worker';
   
-  // Enhanced Props with NES integration
+  // Import N64 theme for styling
+  import '$lib/components/ui/gaming/n64/N64Theme.css';
+  
+  // Enhanced Props with MinIO integration
   interface Props {
     documents: EnhancedLegalDocument[];
     aiAnalysis?: AIAnalysisResult[];
@@ -21,6 +28,11 @@
     nesMemoryMode?: 'efficient' | 'performance' | 'balanced';
     quantizationProfile?: 'legal_critical' | 'legal_standard' | 'legal_compressed' | 'legal_storage';
     visualMemoryPalace?: boolean;
+    enableFileUpload?: boolean;
+    caseId?: string;
+    userId?: string;
+    maxUploadFiles?: number;
+    autoProcessUploads?: boolean;
   }
   
   let { 
@@ -30,7 +42,12 @@
     enableRealTimeUpdates = false,
     nesMemoryMode = 'balanced',
     quantizationProfile = 'legal_standard',
-    visualMemoryPalace = false
+    visualMemoryPalace = false,
+    enableFileUpload = true,
+    caseId,
+    userId,
+    maxUploadFiles = 10,
+    autoProcessUploads = true
   }: Props = $props();
   
   // Enhanced document type with NES-GPU integration
@@ -88,6 +105,17 @@
   let viewMode = $state<'list' | 'graph' | '3d' | 'memory-palace' | 'nes-banks'>('3d');
   let selectedDocument = $state<EnhancedLegalDocument | null>(null);
   let searchQuery = $state<string>('');
+  
+  // MinIO Upload State
+  let uploadInProgress = $state(false);
+  let uploadQueue = $state<File[]>([]);
+  let uploadProgress = $state(new Map<string, UploadProgress>());
+  let uploadedFiles = $state<MinIOFile[]>([]);
+  let showUploadArea = $state(false);
+  let dragOverUpload = $state(false);
+  
+  // Document Uploader Reference
+  let documentUploader: any;
   
   // GPU Initialization with full NES-GPU integration
   async function initializeGPU() {
@@ -679,6 +707,148 @@
     }
   }
   
+  // MinIO Upload Handlers
+  async function handleFileUpload(files: FileList | File[]) {
+    if (!enableFileUpload) return;
+    
+    uploadInProgress = true;
+    const startTime = performance.now();
+    
+    try {
+      console.log(`📤 Starting MinIO upload of ${files.length} files...`);
+      
+      // Upload files using MinIO service
+      const uploadedMinIOFiles = await minioService.uploadDocuments(files, {
+        autoProcess: autoProcessUploads,
+        priority: 200,
+        caseId,
+        documentType: 'brief' // Default type, will be auto-detected
+      });
+      
+      uploadedFiles = [...uploadedFiles, ...uploadedMinIOFiles];
+      
+      // Process through RAG ingestion worker for vector embeddings
+      if (autoProcessUploads) {
+        console.log(`🤖 Processing ${uploadedMinIOFiles.length} files through RAG pipeline...`);
+        
+        for (const minioFile of uploadedMinIOFiles) {
+          try {
+            await ragIngestionWorker.ingestDocument({
+              id: minioFile.id,
+              filename: minioFile.filename,
+              content: '', // Content will be fetched from MinIO
+              contentType: minioFile.contentType,
+              s3Key: minioFile.objectPath,
+              metadata: {
+                caseId,
+                userId,
+                uploadedAt: minioFile.uploadedAt.toISOString(),
+                documentType: minioFile.metadata?.documentType || 'brief',
+                riskLevel: minioFile.metadata?.riskLevel || 'medium'
+              }
+            });
+            console.log(`✅ RAG processing completed for ${minioFile.filename}`);
+          } catch (ragError) {
+            console.error(`❌ RAG processing failed for ${minioFile.filename}:`, ragError);
+          }
+        }
+      }
+      
+      // Convert MinIO files to enhanced legal documents
+      const newDocuments = await convertMinIOFilesToDocuments(uploadedMinIOFiles);
+      documents = [...documents, ...newDocuments];
+      
+      // Update GPU buffers
+      await createEnhancedVertexBuffers();
+      
+      const uploadTime = performance.now() - startTime;
+      console.log(`🎮📤 MinIO upload completed in ${uploadTime.toFixed(2)}ms`);
+      
+    } catch (error) {
+      console.error('❌ MinIO upload failed:', error);
+    } finally {
+      uploadInProgress = false;
+    }
+  }
+  
+  // Convert MinIO files to enhanced legal documents for GPU rendering
+  async function convertMinIOFilesToDocuments(minioFiles: MinIOFile[]): Promise<EnhancedLegalDocument[]> {
+    return minioFiles.map((file, index) => {
+      const bankAssignment = assignOptimalNESBankFromMinIO(file);
+      const quantLevel = selectQuantizationLevelFromMinIO(file);
+      
+      return {
+        id: file.id,
+        title: file.filename,
+        content: '', // Content loaded on demand
+        type: file.metadata?.documentType || 'brief',
+        size: file.size,
+        createdAt: file.uploadedAt,
+        updatedAt: file.processedAt || file.uploadedAt,
+        riskLevel: file.metadata?.riskLevel || 'medium',
+        priority: file.metadata?.priority || 128,
+        metadata: {
+          caseId: file.metadata?.caseId,
+          minioObjectPath: file.objectPath,
+          uploadedAt: file.uploadedAt.toISOString(),
+          aiProcessed: file.metadata?.aiProcessed || false,
+          vectorEmbedding: file.metadata?.vectorEmbedding
+        },
+        renderPosition: calculateMemoryPalacePosition({ 
+          id: file.id, 
+          riskLevel: file.metadata?.riskLevel || 'medium' 
+        } as LegalDocument, index),
+        vertexBufferId: `vertex_${file.id}`,
+        bankAssignment,
+        gpuTextureSlot: index % 256,
+        binarySize: estimateBinarySizeFromMinIO(file),
+        compressionRatio: calculateCompressionFromMinIO(file),
+        nesTexture: undefined, // Will be loaded on demand
+        quantizationLevel: quantLevel
+      };
+    });
+  }
+  
+  // Drag and drop handlers
+  function handleDragOver(event: DragEvent) {
+    event.preventDefault();
+    dragOverUpload = true;
+  }
+  
+  function handleDragLeave(event: DragEvent) {
+    event.preventDefault();
+    dragOverUpload = false;
+  }
+  
+  function handleDrop(event: DragEvent) {
+    event.preventDefault();
+    dragOverUpload = false;
+    
+    if (!enableFileUpload) return;
+    
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      handleFileUpload(files);
+    }
+  }
+  
+  // Upload progress tracking
+  function handleUploadProgress(progress: UploadProgress) {
+    uploadProgress.set(progress.filename, progress);
+  }
+  
+  function handleUploadComplete(event: CustomEvent<{ file: MinIOFile }>) {
+    console.log(`✅ Upload completed: ${event.detail.file.filename}`);
+    uploadProgress.delete(event.detail.file.filename);
+  }
+  
+  function handleUploadError(event: CustomEvent<{ error: string; file?: File }>) {
+    console.error(`❌ Upload error: ${event.detail.error}`, event.detail.file?.name);
+    if (event.detail.file) {
+      uploadProgress.delete(event.detail.file.name);
+    }
+  }
+  
   // High-Performance Render Loop with NES Integration
   function render() {
     if (!device || !context || !renderPipeline) return;
@@ -740,6 +910,45 @@
     if (enableRealTimeUpdates) {
       requestAnimationFrame(render);
     }
+  }
+  
+  // MinIO-specific utility functions
+  function assignOptimalNESBankFromMinIO(file: MinIOFile): string {
+    if (file.metadata?.riskLevel === 'critical' || (file.metadata?.priority && file.metadata.priority > 200)) {
+      return 'INTERNAL_RAM';
+    }
+    if (file.metadata?.documentType === 'evidence' || file.metadata?.documentType === 'contract') {
+      return 'CHR_ROM';
+    }
+    if (file.metadata?.documentType === 'brief' || file.metadata?.documentType === 'precedent') {
+      return 'PRG_ROM';
+    }
+    if (file.metadata?.caseId) {
+      return 'SAVE_RAM';
+    }
+    return 'PRG_ROM';
+  }
+  
+  function selectQuantizationLevelFromMinIO(file: MinIOFile): 'FP32' | 'FP16' | 'INT8' {
+    if (file.metadata?.riskLevel === 'critical') return 'FP32';
+    if (file.metadata?.riskLevel === 'high' || file.metadata?.documentType === 'contract') return 'FP16';
+    return 'INT8';
+  }
+  
+  function estimateBinarySizeFromMinIO(file: MinIOFile): number {
+    const baseSize = 64;
+    const embeddingSize = file.metadata?.vectorEmbedding ? file.metadata.vectorEmbedding.length * 4 : 384 * 4;
+    const matrixSize = 16 * 4;
+    const metadataSize = file.metadata ? JSON.stringify(file.metadata).length : 0;
+    return baseSize + embeddingSize + matrixSize + metadataSize;
+  }
+  
+  function calculateCompressionFromMinIO(file: MinIOFile): number {
+    const baseCompression = 1.5;
+    const typeBonus = file.metadata?.documentType === 'citation' ? 0.5 : 0;
+    const sizeBonus = file.size > 10000 ? 0.8 : 0;
+    const aiBonus = file.metadata?.aiProcessed ? 0.3 : 0;
+    return baseCompression + typeBonus + sizeBonus + aiBonus;
   }
   
   // Utility Functions (comprehensive set for NES-GPU integration)
@@ -1010,38 +1219,46 @@
   });
 </script>
 
-<div class="nes-gpu-document-viewer">
-  <div class="viewer-header">
-    <h3>🎮🏛️ NES-GPU Legal Document Viewer</h3>
-    <div class="performance-stats">
-      <span>FPS: {frameStats.fps}</span>
-      <span>Pipeline: {frameStats.binaryPipelineTime.toFixed(1)}ms</span>
-      <span>Vertices: {frameStats.verticesRendered.toLocaleString()}</span>
-      <span>Compression: {frameStats.compressionRatio.toFixed(1)}x</span>
-      <span>Quant Savings: {frameStats.quantizationSavings.toFixed(1)}%</span>
+<div class="border-2 border-gray-700 rounded-lg bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 p-4 text-gray-200 font-mono">
+  <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-600">
+    <h3 class="m-0 text-cyan-400 text-shadow-glow animate-pulse">🎮🏛️ NES-GPU Legal Document Viewer</h3>
+    <div class="flex gap-4 text-xs text-gray-400">
+      <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">FPS: {frameStats.fps}</span>
+      <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">Pipeline: {frameStats.binaryPipelineTime.toFixed(1)}ms</span>
+      <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">Vertices: {frameStats.verticesRendered.toLocaleString()}</span>
+      <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">Compression: {frameStats.compressionRatio.toFixed(1)}x</span>
+      <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">Quant Savings: {frameStats.quantizationSavings.toFixed(1)}%</span>
     </div>
   </div>
   
-  <div class="viewer-controls">
-    <div class="control-group">
-      <label>
-        <input type="checkbox" bind:checked={showAnnotations} />
+  <div class="flex flex-col gap-3 mb-4 p-3 bg-black/30 rounded-md border border-gray-600">
+    <div class="flex gap-4 items-center flex-wrap">
+      <label class="flex items-center gap-2 text-sm text-gray-300">
+        <input type="checkbox" bind:checked={showAnnotations} class="accent-cyan-400" />
         Show Annotations
       </label>
-      <label>
-        <input type="checkbox" bind:checked={enableRealTimeUpdates} />
+      <label class="flex items-center gap-2 text-sm text-gray-300">
+        <input type="checkbox" bind:checked={enableRealTimeUpdates} class="accent-cyan-400" />
         Real-time Updates
       </label>
-      <label>
-        <input type="checkbox" bind:checked={visualMemoryPalace} />
+      <label class="flex items-center gap-2 text-sm text-gray-300">
+        <input type="checkbox" bind:checked={visualMemoryPalace} class="accent-cyan-400" />
         Memory Palace 3D
+      </label>
+      <label class="flex items-center gap-2 text-sm text-gray-300">
+        <input type="checkbox" bind:checked={enableFileUpload} class="accent-cyan-400" />
+        MinIO Upload
+      </label>
+      <label class="flex items-center gap-2 text-sm text-gray-300">
+        <input type="checkbox" bind:checked={showUploadArea} class="accent-cyan-400" />
+        Upload Area
       </label>
     </div>
     
-    <div class="control-group">
-      <label>
+    <div class="flex gap-4 items-center flex-wrap">
+      <label class="flex items-center gap-2 text-sm text-gray-300">
         View Mode:
-        <select bind:value={viewMode}>
+        <select bind:value={viewMode} class="bg-black/50 border border-gray-500 rounded px-2 py-1 text-gray-200 text-sm">
           <option value="list">List</option>
           <option value="graph">Graph</option>
           <option value="3d">3D Documents</option>
@@ -1050,9 +1267,9 @@
         </select>
       </label>
       
-      <label>
+      <label class="flex items-center gap-2 text-sm text-gray-300">
         Quantization:
-        <select bind:value={quantizationProfile}>
+        <select bind:value={quantizationProfile} class="bg-black/50 border border-gray-500 rounded px-2 py-1 text-gray-200 text-sm">
           <option value="legal_critical">Critical (FP32)</option>
           <option value="legal_standard">Standard (FP16)</option>
           <option value="legal_compressed">Compressed (INT8)</option>
@@ -1061,16 +1278,26 @@
       </label>
     </div>
     
-    <div class="control-group">
+    <div class="flex gap-2 items-center">
       <input 
         type="text" 
         bind:value={searchQuery} 
         onkeydown={(e) => e.key === 'Enter' && searchDocuments(searchQuery)}
         placeholder="Search legal documents..." 
-        class="search-input"
+        class="flex-1 min-w-48 bg-black/50 border border-gray-500 rounded px-3 py-2 text-gray-200 placeholder-gray-400 text-sm"
       />
-      <button onclick={() => searchDocuments(searchQuery)}>🔍 Search</button>
-      <button onclick={() => render()}>🔄 Render</button>
+      <button 
+        onclick={() => searchDocuments(searchQuery)}
+        class="px-3 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded text-xs font-semibold hover:scale-105 transition-transform cursor-pointer border-none"
+      >
+        🔍 Search
+      </button>
+      <button 
+        onclick={() => render()}
+        class="px-3 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded text-xs font-semibold hover:scale-105 transition-transform cursor-pointer border-none"
+      >
+        🔄 Render
+      </button>
     </div>
   </div>
   
@@ -1078,52 +1305,203 @@
     bind:this={canvas}
     width="1200"
     height="800"
-    class="document-canvas"
+    class="w-full border-2 border-gray-500 rounded-md bg-radial-gradient"
+    style="background: radial-gradient(ellipse at center, #0f0f23, #0a0a1a); box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);"
   ></canvas>
   
-  <div class="stats-panels">
+  <!-- MinIO Upload Interface -->
+  {#if enableFileUpload && showUploadArea}
+    <div class="mt-4 bg-cyan-400/3 border border-cyan-400/20 rounded-lg p-4">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b border-cyan-400/10">
+        <h4 class="m-0 text-cyan-400 text-base font-semibold">📤 MinIO Document Upload</h4>
+        <div class="flex gap-4 items-center text-sm">
+          {#if uploadInProgress}
+            <span class="text-yellow-400 font-semibold">⚡ Uploading...</span>
+          {:else}
+            <span class="text-green-400 font-semibold">✅ Ready</span>
+          {/if}
+          <span class="text-gray-400">{uploadedFiles.length} files uploaded</span>
+        </div>
+      </div>
+      
+      <!-- Drag and Drop Zone -->
+      <div 
+        class="border-2 border-dashed border-cyan-400/30 rounded-lg p-8 text-center transition-all duration-300 bg-black/20 min-h-38 flex items-center justify-center"
+        class:border-cyan-400={dragOverUpload}
+        class:bg-cyan-400/10={dragOverUpload}
+        class:shadow-lg={dragOverUpload}
+        class:shadow-cyan-400/30={dragOverUpload}
+        class:border-yellow-400={uploadInProgress}
+        class:bg-yellow-400/5={uploadInProgress}
+        ondragover={handleDragOver}
+        ondragleave={handleDragLeave}
+        ondrop={handleDrop}
+      >
+        {#if uploadInProgress}
+          <div class="w-full">
+            <div class="text-center mb-4 text-yellow-400 font-semibold">
+              <span>🚀 Processing {Array.from(uploadProgress.values()).length} files...</span>
+            </div>
+            {#each Array.from(uploadProgress.entries()) as [filename, progress]}
+              <div class="mb-4 p-3 bg-black/30 rounded-md border border-yellow-400/20">
+                <div class="flex justify-between items-center mb-2 text-sm">
+                  <span class="font-semibold text-gray-200 flex-1 text-left truncate">{filename}</span>
+                  <span class="text-cyan-400 text-xs capitalize ml-2">{progress.stage}</span>
+                  <span class="text-yellow-400 font-semibold min-w-12 text-right ml-2">{progress.percentage.toFixed(1)}%</span>
+                </div>
+                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-cyan-400 to-yellow-400 transition-all duration-300" style="width: {progress.percentage}%"></div>
+                </div>
+                {#if progress.message}
+                  <div class="mt-2 text-xs text-gray-400 italic">{progress.message}</div>
+                {/if}
+              </div>
+            {/each}
+          </div>
+        {:else}
+          <div class="flex flex-col items-center gap-4">
+            <div class="text-6xl opacity-60">📁</div>
+            <div>
+              <p class="text-gray-200 mb-1">Drag & drop legal documents here</p>
+              <p class="text-xs text-gray-400">PDF, JPG, PNG, TXT files • Max {maxUploadFiles} files • 50MB each</p>
+            </div>
+            <button 
+              class="px-6 py-3 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded-md text-sm font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              onclick={() => documentUploader?.selectFiles()}
+              disabled={uploadInProgress}
+            >
+              📂 Browse Files
+            </button>
+          </div>
+        {/if}
+      </div>
+      
+      <!-- Upload Options -->
+      <div class="mt-4 flex gap-4 items-center p-3 bg-black/20 rounded-md text-sm">
+        <label class="flex items-center gap-2 text-gray-300">
+          <input type="checkbox" bind:checked={autoProcessUploads} class="accent-cyan-400" />
+          Auto-process uploads (RAG + Embeddings)
+        </label>
+        {#if caseId}
+          <span class="text-cyan-400 text-xs px-2 py-1 bg-cyan-400/10 rounded border border-cyan-400/20">📋 Case: {caseId}</span>
+        {/if}
+        {#if userId}
+          <span class="text-cyan-400 text-xs px-2 py-1 bg-cyan-400/10 rounded border border-cyan-400/20">👤 User: {userId}</span>
+        {/if}
+      </div>
+      
+      <!-- Recent Uploads -->
+      {#if uploadedFiles.length > 0}
+        <div class="mt-4 p-4 bg-black/20 rounded-md border border-cyan-400/10">
+          <h5 class="m-0 mb-3 text-cyan-400 text-sm font-semibold">📋 Recent Uploads</h5>
+          <div class="flex flex-col gap-2">
+            {#each uploadedFiles.slice(-5) as file}
+              <div class="flex items-center gap-3 p-2 bg-cyan-400/5 rounded border border-cyan-400/10">
+                <div class="text-xl flex-shrink-0">
+                  {#if file.contentType.includes('pdf')}📄
+                  {:else if file.contentType.includes('image')}🖼️
+                  {:else}📝
+                  {/if}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold text-gray-200 text-sm truncate">{file.filename}</div>
+                  <div class="flex gap-2 items-center text-xs text-gray-400 mt-1">
+                    <span>{(file.size / 1024).toFixed(1)}KB</span>
+                    <span>•</span>
+                    <span>{file.metadata?.documentType || 'unknown'}</span>
+                    <span>•</span>
+                    <span class:text-green-400={file.metadata?.riskLevel === 'low'}
+                          class:text-yellow-400={file.metadata?.riskLevel === 'medium'}
+                          class:text-orange-400={file.metadata?.riskLevel === 'high'}
+                          class:text-red-400={file.metadata?.riskLevel === 'critical'}>
+                      {file.metadata?.riskLevel || 'medium'}
+                    </span>
+                  </div>
+                </div>
+                <div class="flex-shrink-0">
+                  {#if file.metadata?.aiProcessed}
+                    <span class="text-green-400 text-xs font-semibold">🤖 Processed</span>
+                  {:else}
+                    <span class="text-yellow-400 text-xs font-semibold">⏳ Pending</span>
+                  {/if}
+                </div>
+              </div>
+            {/each}
+          </div>
+        </div>
+      {/if}
+    </div>
+  {/if}
+  
+  <!-- Headless Document Uploader Component -->
+  <DocumentUploader
+    bind:this={documentUploader}
+    {maxUploadFiles}
+    maxFileSize={50 * 1024 * 1024}
+    acceptedTypes={['application/pdf', 'image/jpeg', 'image/png', 'text/plain']}
+    {caseId}
+    priority={200}
+    autoUpload={false}
+    {autoProcessUploads}
+    onfiles-selected={(e) => console.log('Files selected:', e.detail.files)}
+    onupload-start={(e) => console.log('Upload started:', e.detail.files)}
+    onupload-progress={handleUploadProgress}
+    onupload-complete={handleUploadComplete}
+    onupload-error={handleUploadError}
+    onall-uploads-complete={(e) => handleFileUpload(e.detail.files)}
+  >
+    {#snippet children({ selectFiles, uploadFiles, getUploadStats })}
+      <!-- Slot content for custom upload UI -->
+    {/snippet}
+  </DocumentUploader>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
     <!-- NES-GPU Performance Statistics -->
-    <div class="stats-panel">
-      <h4>🎮 NES-GPU Performance</h4>
-      <div class="stat-row">
+    <div class="bg-cyan-400/5 border border-cyan-400/20 rounded-md p-4">
+      <h4 class="m-0 mb-3 text-cyan-400 text-sm font-semibold">🎮 NES-GPU Performance</h4>
+      <div class="flex justify-between my-2 text-xs text-gray-300">
         <span>Frame Time:</span>
-        <span>{frameStats.lastFrameTime.toFixed(2)}ms</span>
+        <span class="text-cyan-400 font-semibold">{frameStats.lastFrameTime.toFixed(2)}ms</span>
       </div>
-      <div class="stat-row">
+      <div class="flex justify-between my-2 text-xs text-gray-300">
         <span>Binary Pipeline:</span>
-        <span>{frameStats.binaryPipelineTime.toFixed(2)}ms</span>
+        <span class="text-cyan-400 font-semibold">{frameStats.binaryPipelineTime.toFixed(2)}ms</span>
       </div>
-      <div class="stat-row">
+      <div class="flex justify-between my-2 text-xs text-gray-300">
         <span>Texture Streaming:</span>
-        <span>{frameStats.textureStreamingTime.toFixed(2)}ms</span>
+        <span class="text-cyan-400 font-semibold">{frameStats.textureStreamingTime.toFixed(2)}ms</span>
       </div>
-      <div class="stat-row">
+      <div class="flex justify-between my-2 text-xs text-gray-300">
         <span>Documents Cached:</span>
-        <span>{frameStats.documentsCached}</span>
+        <span class="text-cyan-400 font-semibold">{frameStats.documentsCached}</span>
       </div>
-      <div class="stat-row">
+      <div class="flex justify-between my-2 text-xs text-gray-300">
         <span>Draw Calls:</span>
-        <span>{frameStats.drawCalls}</span>
+        <span class="text-cyan-400 font-semibold">{frameStats.drawCalls}</span>
       </div>
     </div>
     
     <!-- NES Memory Bank Status -->
-    <div class="memory-banks-panel">
-      <h4>🏛️ NES Memory Banks</h4>
+    <div class="bg-yellow-400/5 border border-yellow-400/20 rounded-md p-4">
+      <h4 class="m-0 mb-3 text-yellow-400 text-sm font-semibold">🏛️ NES Memory Banks</h4>
       {#each Object.entries(memoryBankStatus) as [bank, status]}
-        <div class="bank-row" class:active={status.active}>
-          <div class="bank-header">
-            <span class="bank-name">{formatNESBank(bank)}</span>
-            <span class="bank-docs">{status.documents.length} docs</span>
+        <div class="my-3 p-2 rounded transition-all duration-300 opacity-50"
+             class:opacity-100={status.active}
+             class:bg-yellow-400/10={status.active}
+             class:border={status.active}
+             class:border-yellow-400/30={status.active}>
+          <div class="flex justify-between mb-1">
+            <span class="text-yellow-400 text-xs font-semibold">{formatNESBank(bank)}</span>
+            <span class="text-gray-500 text-xs">{status.documents.length} docs</span>
           </div>
-          <div class="bank-usage">
-            <div class="usage-bar">
+          <div class="flex items-center gap-2">
+            <div class="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
               <div 
-                class="usage-fill" 
+                class="h-full bg-gradient-to-r from-yellow-400 to-orange-400 transition-all duration-500"
                 style="width: {Math.min(100, (status.used / status.capacity) * 100)}%"
               ></div>
             </div>
-            <span class="usage-text">
+            <span class="text-gray-400 text-xs min-w-20 text-right">
               {formatMemoryUsage(status.used)} / {formatMemoryUsage(status.capacity)}
             </span>
           </div>
@@ -1132,270 +1510,54 @@
     </div>
     
     <!-- Texture Streaming Stats -->
-    <div class="stats-panel">
-      <h4>🎨 Texture Streaming</h4>
-      <div class="stat-row">
+    <div class="bg-cyan-400/5 border border-cyan-400/20 rounded-md p-4">
+      <h4 class="m-0 mb-3 text-cyan-400 text-sm font-semibold">🎨 Texture Streaming</h4>
+      <div class="flex justify-between my-2 text-xs text-gray-300">
         <span>Textures Loaded:</span>
-        <span>{textureStats.textures}</span>
+        <span class="text-cyan-400 font-semibold">{textureStats.textures}</span>
       </div>
-      <div class="stat-row">
+      <div class="flex justify-between my-2 text-xs text-gray-300">
         <span>Memory Used:</span>
-        <span>{formatMemoryUsage(textureStats.memoryUsed || 0)}</span>
+        <span class="text-cyan-400 font-semibold">{formatMemoryUsage(textureStats.memoryUsed || 0)}</span>
       </div>
-      <div class="stat-row">
+      <div class="flex justify-between my-2 text-xs text-gray-300">
         <span>WebGPU Active:</span>
-        <span>{textureStats.isWebGPU ? '✅' : '❌'}</span>
+        <span class="text-cyan-400 font-semibold">{textureStats.isWebGPU ? '✅' : '❌'}</span>
       </div>
-      <div class="stat-row">
+      <div class="flex justify-between my-2 text-xs text-gray-300">
         <span>WebGL2 Fallback:</span>
-        <span>{textureStats.isWebGL2 ? '✅' : '❌'}</span>
+        <span class="text-cyan-400 font-semibold">{textureStats.isWebGL2 ? '✅' : '❌'}</span>
       </div>
     </div>
   </div>
   
-  <div class="viewer-info">
-    <p>📄 Documents: {documents.length} | 🤖 AI Analysis: {aiAnalysis.length}</p>
-    <p>⚡ Mode: {viewMode} | 🗜️ Quantization: {quantizationProfile}</p>
-    <p>🎮 NES Memory: {formatMemoryUsage(frameStats.nesMemoryUsed)} | 💾 Savings: {frameStats.quantizationSavings.toFixed(1)}%</p>
+  <div class="mt-4 p-3 bg-black/20 rounded border border-gray-700">
+    <p class="my-1 text-xs text-gray-400">📄 Documents: {documents.length} | 🤖 AI Analysis: {aiAnalysis.length}</p>
+    <p class="my-1 text-xs text-gray-400">⚡ Mode: {viewMode} | 🗜️ Quantization: {quantizationProfile}</p>
+    <p class="my-1 text-xs text-gray-400">🎮 NES Memory: {formatMemoryUsage(frameStats.nesMemoryUsed)} | 💾 Savings: {frameStats.quantizationSavings.toFixed(1)}%</p>
   </div>
 </div>
 
 <style>
-  .nes-gpu-document-viewer {
-    border: 2px solid #333;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    padding: 1rem;
-    color: #e0e0e0;
-    font-family: 'Courier New', monospace;
+  /* Essential NES-style animations using N64 theme colors */
+  @keyframes nesGlow {
+    0%, 100% { 
+      text-shadow: 0 0 5px rgba(100, 255, 218, 0.3);
+      box-shadow: 0 0 5px rgba(100, 255, 218, 0.3);
+    }
+    50% { 
+      text-shadow: 0 0 20px rgba(100, 255, 218, 0.6);
+      box-shadow: 0 0 20px rgba(100, 255, 218, 0.6);
+    }
   }
   
-  .viewer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #444;
-  }
-  
-  .viewer-header h3 {
-    margin: 0;
-    color: #64ffda;
+  .text-shadow-glow {
     text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
   }
   
-  .performance-stats {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.75rem;
-    color: #a0a0a0;
-  }
-  
-  .performance-stats span {
-    background: rgba(100, 255, 218, 0.1);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    border: 1px solid rgba(100, 255, 218, 0.2);
-  }
-  
-  .viewer-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 6px;
-    border: 1px solid #444;
-  }
-  
-  .control-group {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  
-  .viewer-controls label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: #b0b0b0;
-  }
-  
-  .viewer-controls select,
-  .search-input {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid #555;
-    border-radius: 4px;
-    color: #e0e0e0;
-    padding: 0.375rem 0.5rem;
-    font-size: 0.875rem;
-  }
-  
-  .search-input {
-    min-width: 200px;
-    flex: 1;
-  }
-  
-  .viewer-controls button {
-    padding: 0.375rem 0.75rem;
-    background: linear-gradient(135deg, #64ffda, #4fc3f7);
-    color: #1a1a2e;
-    border: none;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .viewer-controls button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(100, 255, 218, 0.3);
-  }
-  
-  .document-canvas {
-    width: 100%;
-    border: 2px solid #555;
-    border-radius: 6px;
-    background: radial-gradient(ellipse at center, #0f0f23, #0a0a1a);
-    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
-  }
-  
-  .stats-panels {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  
-  .stats-panel {
-    background: rgba(100, 255, 218, 0.05);
-    border: 1px solid rgba(100, 255, 218, 0.2);
-    border-radius: 6px;
-    padding: 1rem;
-  }
-  
-  .stats-panel h4 {
-    margin: 0 0 0.75rem 0;
-    color: #64ffda;
-    font-size: 0.875rem;
-    font-weight: 600;
-  }
-  
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 0.5rem 0;
-    font-size: 0.75rem;
-    color: #b0b0b0;
-  }
-  
-  .stat-row span:last-child {
-    color: #64ffda;
-    font-weight: 600;
-  }
-  
-  .memory-banks-panel {
-    background: rgba(255, 193, 7, 0.05);
-    border: 1px solid rgba(255, 193, 7, 0.2);
-    border-radius: 6px;
-    padding: 1rem;
-  }
-  
-  .memory-banks-panel h4 {
-    margin: 0 0 0.75rem 0;
-    color: #ffc107;
-    font-size: 0.875rem;
-    font-weight: 600;
-  }
-  
-  .bank-row {
-    margin: 0.75rem 0;
-    padding: 0.5rem;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    opacity: 0.5;
-  }
-  
-  .bank-row.active {
-    opacity: 1;
-    background: rgba(255, 193, 7, 0.1);
-    border: 1px solid rgba(255, 193, 7, 0.3);
-  }
-  
-  .bank-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.25rem;
-  }
-  
-  .bank-name {
-    font-size: 0.75rem;
-    color: #ffc107;
-    font-weight: 600;
-  }
-  
-  .bank-docs {
-    font-size: 0.7rem;
-    color: #888;
-  }
-  
-  .bank-usage {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .usage-bar {
-    flex: 1;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  
-  .usage-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #ffc107, #ff9800);
-    transition: width 0.5s ease;
-  }
-  
-  .usage-text {
-    font-size: 0.7rem;
-    color: #aaa;
-    min-width: 80px;
-    text-align: right;
-  }
-  
-  .viewer-info {
-    margin-top: 1rem;
-    padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-    border: 1px solid #333;
-  }
-  
-  .viewer-info p {
-    margin: 0.25rem 0;
-    font-size: 0.8rem;
-    color: #999;
-  }
-  
-  /* NES-style animations */
-  @keyframes nesGlow {
-    0%, 100% { box-shadow: 0 0 5px rgba(100, 255, 218, 0.3); }
-    50% { box-shadow: 0 0 20px rgba(100, 255, 218, 0.6); }
-  }
-  
-  .viewer-header h3 {
-    animation: nesGlow 2s ease-in-out infinite;
-  }
-  
-  .bank-row.active {
-    animation: nesGlow 3s ease-in-out infinite;
+  @media (prefers-reduced-motion: reduce) {
+    .animate-pulse {
+      animation: none !important;
+    }
   }
 </style>

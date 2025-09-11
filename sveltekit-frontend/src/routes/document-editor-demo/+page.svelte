@@ -1,10 +1,9 @@
 <!-- Demo page for the Legal Document Editor -->
 <script lang="ts">
-</script>
   import LegalDocumentEditor from "$lib/components/editor/LegalDocumentEditor.svelte";
 
   let documentId = $state("doc-1"); // Use sample document ID
-let caseId = $state("case-123");
+  let caseId = $state("case-123");
   let selectedDocumentType: "brief" | "contract" | "motion" | "evidence" =
     $state("brief");
   let editorTitle = $state("Criminal Case Brief Demo");
@@ -12,21 +11,21 @@ let caseId = $state("case-123");
 
   function handleSave(event: CustomEvent) {
     console.log("Document saved:", event.detail);
-}
+  }
   function handleAIRequest(event: CustomEvent) {
     console.log("AI request:", event.detail);
-}
+  }
   function handleCitationAdded(event: CustomEvent) {
     console.log("Citation added:", event.detail);
-}
+  }
   function createNewDocument() {
     documentId = `doc-${Date.now()}`;
     console.log("Created new document:", documentId);
-}
+  }
   function switchDocumentType(type: typeof selectedDocumentType) {
     selectedDocumentType = type;
     editorTitle = `${type.charAt(0).toUpperCase() + type.slice(1)} Demo`;
-}
+  }
 </script>
 
 <svelte:head>

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Bookmark, BookmarkCheck, Calendar, Edit3, Eye, Tag, User as UserIcon, X } from "lucide-svelte";
   import { marked } from "marked";
   import { fade, fly } from "svelte/transition";

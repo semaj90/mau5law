@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
 
   type Theme = 'light' | 'dark' | 'system';
@@ -8,58 +7,58 @@
   let theme: Theme = 'system';
 
   function applyTheme(t: Theme) {
-	if (t === 'system') {
-	  const prefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-	  document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-	} else {
-	  document.documentElement.setAttribute('data-theme', t);
-	}
+  	if (t === 'system') {
+  	  const prefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  	  document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+  	} else {
+  	  document.documentElement.setAttribute('data-theme', t);
+  	}
   }
 
   function setTheme(t: Theme) {
-	theme = t;
-	try {
-	  localStorage.setItem(THEME_KEY, t);
-	} catch {
-	  // ignore storage errors (e.g. private mode)
-	}
-	applyTheme(t);
+  	theme = t;
+  	try {
+  	  localStorage.setItem(THEME_KEY, t);
+  	} catch {
+  	  // ignore storage errors (e.g. private mode)
+  	}
+  	applyTheme(t);
   }
 
   onMount(() => {
-	try {
-	  const stored = localStorage.getItem(THEME_KEY) as Theme | null;
-	  if (stored === 'light' || stored === 'dark' || stored === 'system') {
-		theme = stored;
-	  }
-	} catch {
-	  // ignore
-	}
+  	try {
+  	  const stored = localStorage.getItem(THEME_KEY) as Theme | null;
+  	  if (stored === 'light' || stored === 'dark' || stored === 'system') {
+  		theme = stored;
+  	  }
+  	} catch {
+  	  // ignore
+  	}
 
-	applyTheme(theme);
+  	applyTheme(theme);
 
-	// react to system preference changes when using 'system'
-	const mq = window.matchMedia('(prefers-color-scheme: dark)');
-	const listener = () => {
-	  if (theme === 'system') applyTheme('system');
-	};
+  	// react to system preference changes when using 'system'
+  	const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  	const listener = () => {
+  	  if (theme === 'system') applyTheme('system');
+  	};
 
-	if (mq.addEventListener) {
-	  mq.addEventListener('change', listener);
-	} else {
-	  // fallback for older browsers
-	  // @ts-ignore - legacy API
-	  mq.addListener(listener);
-	}
+  	if (mq.addEventListener) {
+  	  mq.addEventListener('change', listener);
+  	} else {
+  	  // fallback for older browsers
+  	  // @ts-ignore - legacy API
+  	  mq.addListener(listener);
+  	}
 
-	return () => {
-	  if (mq.removeEventListener) {
-		mq.removeEventListener('change', listener);
-	  } else {
-		// @ts-ignore - legacy API
-		mq.removeListener(listener);
-	  }
-	};
+  	return () => {
+  	  if (mq.removeEventListener) {
+  		mq.removeEventListener('change', listener);
+  	  } else {
+  		// @ts-ignore - legacy API
+  		mq.removeListener(listener);
+  	  }
+  	};
   });
 </script>
 

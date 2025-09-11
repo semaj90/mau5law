@@ -1,6 +1,5 @@
 {#snippet default}
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath';
   import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders';
@@ -69,10 +68,8 @@
   // Initialize WebGPU systems
   async function initializeSystem() {
     isProcessing = true;
-    
     try {
       console.log('🔥 Initializing YoRHa WebGPU mipmap optimization system');
-      
       // Initialize WebGPU Math
       const webgpuInit = await yorhaWebGPU.initialize();
       if (!webgpuInit) {
@@ -96,7 +93,6 @@
 
       isInitialized = true;
       console.log('✅ YoRHa mipmap optimization system initialized successfully');
-      
     } catch (error) {
       console.error('Failed to initialize system:', error);
       alert(`System initialization failed: ${error.message}`);
@@ -128,14 +124,12 @@
 
     isProcessing = true;
     const document = legalDocuments[docIndex];
-    
     try {
       console.log(`🚀 Processing document: ${document.title}`);
 
       // Parse texture size
       const [width, height] = document.textureSize.split('x').map(Number);
       const mockTexture = createMockTexture(width, height);
-      
       if (!mockTexture) {
         throw new Error('Failed to create texture');
       }
@@ -181,7 +175,6 @@
     if (!isInitialized || isProcessing) return;
 
     isProcessing = true;
-    
     try {
       console.log('🚀 Starting batch processing of all legal documents');
 
@@ -189,7 +182,6 @@
       const documentsWithTextures = legalDocuments.map(doc => {
         const [width, height] = doc.textureSize.split('x').map(Number);
         const texture = createMockTexture(width, height);
-        
         return {
           ...doc,
           texture: texture!

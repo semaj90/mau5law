@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Simple Case Filters Component - TODO: Enhance with full functionality
   // 
   // 🚀 ENHANCEMENT ROADMAP (See: /ENHANCED_FEATURES_TODO.md)
@@ -16,9 +15,7 @@
   // - Stores: URL state management, user preferences
   // - Services: ExportService, NotificationService
   // - Components: DateRangePicker, MultiSelect, BulkActionBar
-  
   import type { Case } from '$lib/types/api';
-  
   // TODO: Enhanced filter interface
   // interface AdvancedFilters {
   //   status: string[];
@@ -30,14 +27,12 @@
   //   hasAttachments: boolean;
   //   lastActivityDays: number;
   // }
-  
   export let cases: Case[] = [];
   export let filteredCases: Case[] = [];
   export let searchQuery: string = '';
   export let statusFilter: string = 'all';
   export let sortBy: string = 'createdAt';
   export let sortOrder: 'asc' | 'desc' = 'desc';
-  
   // TODO: Convert to $derived: {
     // TODO: IMPLEMENT ADVANCED FILTERING LOGIC
     // =======================================
@@ -54,21 +49,18 @@
     //   threshold: 0.3,
     //   includeScore: true
     // })
-    
     // Simple filtering logic (STUB)
     filteredCases = cases.filter(c => {
       if (statusFilter !== 'all' && c.status !== statusFilter) return false;
       if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     });
-    
     // TODO: IMPLEMENT ADVANCED SORTING
     // ===============================
     // 1. Multi-column sorting
     // 2. Custom sort functions for complex types
     // 3. Stable sorting preservation
     // 4. Sort direction indicators in UI
-    
     // Simple sorting (STUB)
     filteredCases.sort((a, b) => {
       const aVal = a[sortBy as keyof Case];

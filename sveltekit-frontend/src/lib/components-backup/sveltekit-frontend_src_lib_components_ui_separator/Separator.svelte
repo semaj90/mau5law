@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     orientation?: 'horizontal' | 'vertical';
     decorative?: boolean;

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     cases: Case[] ;
     filteredCases: Case[] ;
@@ -35,9 +34,7 @@
   // - Stores: URL state management, user preferences
   // - Services: ExportService, NotificationService
   // - Components: DateRangePicker, MultiSelect, BulkActionBar
-  
   import type { Case } from '$lib/types/api';
-  
   // TODO: Enhanced filter interface
   // interface AdvancedFilters {
   //   status: string[];
@@ -49,8 +46,6 @@
   //   hasAttachments: boolean
   //   lastActivityDays: number
   // }
-  
-              
   $effect(() => { {
     // TODO: IMPLEMENT ADVANCED FILTERING LOGIC
     // =======================================
@@ -67,21 +62,18 @@
     //   threshold: 0.3,
     //   includeScore: true
     // });
-    
     // Simple filtering logic (STUB)
     filteredCases = cases.filter(c => {
       if (statusFilter !== 'all' && c.status !== statusFilter) return false;
       if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     });
-    
     // TODO: IMPLEMENT ADVANCED SORTING
     // ===============================
     // 1. Multi-column sorting
     // 2. Custom sort functions for complex types
     // 3. Stable sorting preservation
     // 4. Sort direction indicators in UI
-    
     // Simple sorting (STUB)
     filteredCases.sort((a, b) => {
       const aVal = a[sortBy as keyof Case];
@@ -89,7 +81,7 @@
       const compare = aVal > bVal ? 1 : -1;
       return sortOrder === 'asc' ? compare : -compare;
     });
-}
+  }
 </script>
 
 <div class="space-y-4">

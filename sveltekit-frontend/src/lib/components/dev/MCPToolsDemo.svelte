@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -20,7 +19,6 @@
   let requirements = $state('');
   let library = $state('');
   let topic = $state('');
-  
   // RAG-specific variables
   let ragQuery = $state('');
   let maxResults = $state(10);
@@ -32,7 +30,6 @@
   let documentTitle = $state('');
   let documentId = $state('');
   let integrationType = $state('api-integration');
-  
   let result = $state('');
   let loading = $state(false);
   let error = $state('');
@@ -131,7 +128,6 @@
 
     try {
       const request = buildRequest();
-      
       // Validate request
       const validation = validateMCPRequest(request);
       if (!validation.valid) {
@@ -140,11 +136,9 @@
 
       // Generate prompt
       const prompt = generateMCPPrompt(request);
-      
       // In a real implementation, this would call the actual MCP server
       // For now, simulate the response
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-      
       const mockResponse = generateMockResponse(request);
       result = formatMCPResponse(mockResponse);
 
@@ -158,7 +152,6 @@
   // Execute common query
   async function executeQuickQuery(queryFn: () => MCPToolRequest) {
     const request = queryFn();
-    
     // Update form with quick query values
     selectedTool = request.tool;
     component = request.component || '';
@@ -168,7 +161,6 @@
     requirements = request.requirements || '';
     library = request.library || '';
     topic = request.topic || '';
-    
     // RAG-specific fields
     ragQuery = request.query || '';
     maxResults = request.maxResults || 10;
@@ -193,29 +185,29 @@
             type: 'text',
             text: `# Stack Analysis: ${request.component} (${request.context})
 
-## Recommended Patterns for Legal AI
-- Use ${request.component} with legal data security best practices
-- Implement proper authentication and authorization
-- Follow legal compliance requirements (GDPR, HIPAA)
-- Optimize for prosecutor workflow efficiency
+  ## Recommended Patterns for Legal AI
+  - Use ${request.component} with legal data security best practices
+  - Implement proper authentication and authorization
+  - Follow legal compliance requirements (GDPR, HIPAA)
+  - Optimize for prosecutor workflow efficiency
 
-## Integration Points
-- Connect with case management database
-- Integrate with evidence processing pipeline
-- Support multi-agent AI workflows (Autogen + CrewAI)
-- Enable real-time collaboration features
+  ## Integration Points
+  - Connect with case management database
+  - Integrate with evidence processing pipeline
+  - Support multi-agent AI workflows (Autogen + CrewAI)
+  - Enable real-time collaboration features
 
-## Performance Considerations
-- Optimize for large legal document processing
-- Implement efficient caching strategies
-- Support offline capabilities for field work
-- Scale for multi-user prosecution teams
+  ## Performance Considerations
+  - Optimize for large legal document processing
+  - Implement efficient caching strategies
+  - Support offline capabilities for field work
+  - Scale for multi-user prosecution teams
 
-## Security Best Practices
-- Encrypt sensitive legal data at rest and in transit
-- Implement row-level security for case access
-- Use audit logging for all legal document access
-- Secure API endpoints with proper authentication`
+  ## Security Best Practices
+  - Encrypt sensitive legal data at rest and in transit
+  - Implement row-level security for case access
+  - Use audit logging for all legal document access
+  - Secure API endpoints with proper authentication`
           }]
         };
 
@@ -225,35 +217,35 @@
             type: 'text',
             text: `# ${request.area?.toUpperCase()} Best Practices for Legal AI
 
-## Key Recommendations
-${request.area === 'performance' ? `
-- Use server-side rendering for legal document pages
-- Implement progressive enhancement for offline access
-- Optimize database queries with proper indexing
-- Use Ollama for high-throughput AI inference
-- Cache frequently accessed legal precedents
-- Implement efficient vector similarity searches
-` : request.area === 'security' ? `
-- Encrypt all legal documents at rest and in transit
-- Implement row-level security (RLS) for case data
-- Use secure authentication with multi-factor auth
-- Audit all evidence access and modifications
-- Validate and sanitize all evidence uploads
-- Monitor for unusual access patterns
-` : `
-- Design case-centric navigation for prosecutors
-- Implement quick evidence search and filtering
-- Use progressive disclosure for complex legal data
-- Provide clear AI confidence indicators
-- Follow WCAG 2.1 AA accessibility standards
-- Use responsive design for mobile field work
-`}
-## Implementation Guidelines
-- Follow legal industry compliance standards
-- Implement proper error handling and user feedback
-- Use consistent design patterns throughout
-- Test with actual legal professionals
-- Document all security and compliance measures`
+  ## Key Recommendations
+  ${request.area === 'performance' ? `
+  - Use server-side rendering for legal document pages
+  - Implement progressive enhancement for offline access
+  - Optimize database queries with proper indexing
+  - Use Ollama for high-throughput AI inference
+  - Cache frequently accessed legal precedents
+  - Implement efficient vector similarity searches
+  ` : request.area === 'security' ? `
+  - Encrypt all legal documents at rest and in transit
+  - Implement row-level security (RLS) for case data
+  - Use secure authentication with multi-factor auth
+  - Audit all evidence access and modifications
+  - Validate and sanitize all evidence uploads
+  - Monitor for unusual access patterns
+  ` : `
+  - Design case-centric navigation for prosecutors
+  - Implement quick evidence search and filtering
+  - Use progressive disclosure for complex legal data
+  - Provide clear AI confidence indicators
+  - Follow WCAG 2.1 AA accessibility standards
+  - Use responsive design for mobile field work
+  `}
+  ## Implementation Guidelines
+  - Follow legal industry compliance standards
+  - Implement proper error handling and user feedback
+  - Use consistent design patterns throughout
+  - Test with actual legal professionals
+  - Document all security and compliance measures`
           }]
         };
 
@@ -263,46 +255,46 @@ ${request.area === 'performance' ? `
             type: 'text',
             text: `# Integration Suggestion: ${request.feature}
 
-## Recommended Approach
-Based on your SvelteKit legal AI stack:
+  ## Recommended Approach
+  Based on your SvelteKit legal AI stack:
 
-### File Structure
-\`\`\`
-src/
-├── routes/api/${request.feature?.toLowerCase().replace(/\s+/g, '-')}/
-│   └── +server.ts
-├── lib/components/${request.feature}/
-│   ├── ${request.feature}Component.svelte
-│   └── index.ts
-└── lib/stores/${request.feature}Store.ts
-\`\`\`
+  ### File Structure
+  \`\`\`
+  src/
+  ├── routes/api/${request.feature?.toLowerCase().replace(/\s+/g, '-')}/
+  │   └── +server.ts
+  ├── lib/components/${request.feature}/
+  │   ├── ${request.feature}Component.svelte
+  │   └── index.ts
+  └── lib/stores/${request.feature}Store.ts
+  \`\`\`
 
-### Database Schema
-- Add tables for ${request.feature} data
-- Implement proper relationships with cases/evidence
-- Add indexes for query performance
-- Consider audit trail requirements
+  ### Database Schema
+  - Add tables for ${request.feature} data
+  - Implement proper relationships with cases/evidence
+  - Add indexes for query performance
+  - Consider audit trail requirements
 
-### API Design
-- RESTful endpoints following SvelteKit conventions
-- Proper error handling and validation
-- Authentication checks for legal data access
-- Rate limiting for AI-powered features
+  ### API Design
+  - RESTful endpoints following SvelteKit conventions
+  - Proper error handling and validation
+  - Authentication checks for legal data access
+  - Rate limiting for AI-powered features
 
-### Frontend Components
-- Use Bits UI components for accessibility
-- Implement proper loading and error states
-- Follow legal UI patterns and branding
-- Ensure mobile responsiveness
+  ### Frontend Components
+  - Use Bits UI components for accessibility
+  - Implement proper loading and error states
+  - Follow legal UI patterns and branding
+  - Ensure mobile responsiveness
 
-### Requirements Analysis
-${request.requirements || 'No specific requirements provided'}
+  ### Requirements Analysis
+  ${request.requirements || 'No specific requirements provided'}
 
-### Security Considerations
-- Input validation and sanitization
-- Proper authentication for legal data access
-- Audit logging for compliance requirements
-- Data encryption for sensitive information`
+  ### Security Considerations
+  - Input validation and sanitization
+  - Proper authentication for legal data access
+  - Audit logging for compliance requirements
+  - Data encryption for sensitive information`
           }]
         };
 
@@ -317,16 +309,15 @@ ${request.requirements || 'No specific requirements provided'}
           'fabric.js': 'fabric-js'
         };
         const resolved = libraryMap[request.library?.toLowerCase() || ''] || request.library;
-        
         return {
           content: [{
             type: 'text',
             text: `# Library ID Resolution
 
-Library: ${request.library}
-Resolved ID: ${resolved}
+  Library: ${request.library}
+  Resolved ID: ${resolved}
 
-Available documentation: ${Object.keys(libraryMap).join(', ')}`
+  Available documentation: ${Object.keys(libraryMap).join(', ')}`
           }]
         };
 
@@ -336,33 +327,33 @@ Available documentation: ${Object.keys(libraryMap).join(', ')}`
             type: 'text',
             text: `# ${request.library} Documentation: ${request.topic || 'overview'}
 
-## Documentation Content
-Detailed documentation for ${request.library} covering ${request.topic || 'general usage'} in the context of legal AI applications.
+  ## Documentation Content
+  Detailed documentation for ${request.library} covering ${request.topic || 'general usage'} in the context of legal AI applications.
 
-### Key Concepts
-- Integration patterns with SvelteKit
-- Legal data handling considerations
-- Performance optimization techniques
-- Security best practices
+  ### Key Concepts
+  - Integration patterns with SvelteKit
+  - Legal data handling considerations
+  - Performance optimization techniques
+  - Security best practices
 
-### Code Examples
-\`\`\`typescript
-// Example integration code for ${request.library}
-import { ${request.library} } from '${request.library}';
+  ### Code Examples
+  \`\`\`typescript
+  // Example integration code for ${request.library}
+  import { ${request.library} } from '${request.library}';
 
-// Legal AI specific configuration
-const config = {
+  // Legal AI specific configuration
+  const config = {
   security: 'high',
   auditLogging: true,
   encryption: 'AES-256'
-};
-\`\`\`
+  };
+  \`\`\`
 
-### Best Practices
-- Follow legal compliance requirements
-- Implement proper error handling
-- Use TypeScript for type safety
-- Test with legal professional workflows`
+  ### Best Practices
+  - Follow legal compliance requirements
+  - Implement proper error handling
+  - Use TypeScript for type safety
+  - Test with legal professional workflows`
           }]
         };
 
@@ -385,7 +376,6 @@ const config = {
     requirements = '';
     library = '';
     topic = '';
-    
     // Reset RAG fields
     ragQuery = '';
     maxResults = 10;
@@ -397,7 +387,6 @@ const config = {
     documentTitle = '';
     documentId = '';
     integrationType = 'api-integration';
-    
     result = '';
     error = '';
   }

@@ -10,7 +10,6 @@
   - Accessibility support
 -->
 <script lang="ts">
-</script>
   import { Button as BitsButton } from 'bits-ui';
   import { createEventDispatcher } from 'svelte';
   import type { GamingComponentProps } from '../types/gaming-types.js';
@@ -27,13 +26,11 @@
     formtarget?: string;
     name?: string;
     value?: string;
-    
     // NES-specific styling
     nesVariant?: 'is-primary' | 'is-success' | 'is-warning' | 'is-error' | 'is-disabled';
     pressDepth?: number;
     enableSound?: boolean;
     soundVolume?: number;
-    
     // Content
     children?: any;
     class?: string;
@@ -49,7 +46,6 @@
     enableScanlines = true,
     enableCRTEffect = false,
     animationStyle = 'retro-bounce',
-    
     type = 'button',
     form,
     formaction,
@@ -59,15 +55,12 @@
     formtarget,
     name,
     value,
-    
     nesVariant = 'is-primary',
     pressDepth = 2,
     enableSound = false,
     soundVolume = 0.3,
-    
     children,
     class: className = '',
-    
     onClick,
     onHover,
     onFocus
@@ -76,32 +69,26 @@
   const dispatch = createEventDispatcher();
 
   let isPressed = $state(false);
-let audioContext = $state<AudioContext | null >(null);
-let buttonElement = $state<HTMLButtonElement | null >(null);
+  let audioContext = $state<AudioContext | null >(null);
+  let buttonElement = $state<HTMLButtonElement | null >(null);
 
   // Create 8-bit button press sound
   const playButtonSound = async () => {
     if (!enableSound) return;
-    
     try {
       if (!audioContext) {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
-      
       // Create classic NES button sound
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-      
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      
       oscillator.type = 'square'; // 8-bit square wave
       oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
       oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
-      
       gainNode.gain.setValueAtTime(soundVolume, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-      
       oscillator.start();
       oscillator.stop(audioContext.currentTime + 0.1);
     } catch (error) {
@@ -111,14 +98,11 @@ let buttonElement = $state<HTMLButtonElement | null >(null);
 
   const handleClick = async () => {
     if (disabled || loading) return;
-    
     isPressed = true;
     await playButtonSound();
-    
     setTimeout(() => {
       isPressed = false;
     }, 100);
-    
     onClick?.();
     dispatch('click');
   };

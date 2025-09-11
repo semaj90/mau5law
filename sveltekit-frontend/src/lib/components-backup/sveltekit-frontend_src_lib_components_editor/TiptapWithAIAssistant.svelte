@@ -2,7 +2,6 @@
 <!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy, tick } from 'svelte';
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';
@@ -25,7 +24,6 @@
 
   // State management
   const { state, send } = useMachine(crewAIOrchestrationMachine);
-  
   // Component state
   let editor: Editor | null = null;
   let editorElement: HTMLElement
@@ -119,10 +117,8 @@
 
   function handleKeyDown(event: KeyboardEvent) {
     userTyping = true;
-    
     // Send user activity to state machine
     send({ type: 'USER_ACTIVITY', activity: 'typing' });
-    
     // Reset typing flag after short delay
     setTimeout(() => {
       userTyping = false;
@@ -156,7 +152,6 @@
 
   function handleContentUpdate(content: string) {
     updateWordCount();
-    
     if (autoSave) {
       scheduleAutoSave();
     }
@@ -170,7 +165,6 @@
   function handleSelectionUpdate(editor: Editor) {
     const selection = editor.state.selection;
     const pos = editor.view.coordsAtPos(selection.from);
-    
     recommendationPosition = {
       x: pos.left,
       y: pos.top
@@ -202,7 +196,6 @@
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
     }
-    
     autoSaveTimer = setTimeout(() => {
       handleAutoSave();
     }, 3000); // 3 second delay
@@ -210,17 +203,13 @@
 
   async function handleAutoSave() {
     if (!editor) return;
-    
     const content = editor.getHTML();
-    
     try {
       // This would integrate with your document update system
       await saveDocument(content);
       lastSaveTime = new Date();
-      
       // Send auto-save event to state machine
       send({ type: 'AUTO_SAVE_TRIGGERED' });
-      
     } catch (error) {
       console.error('Auto-save failed:', error);
     }
@@ -228,11 +217,9 @@
 
   async function handleManualSave() {
     if (!editor) return;
-    
     const content = editor.getHTML();
     await saveDocument(content);
     lastSaveTime = new Date();
-    
     // Show save confirmation
     showNotification('Document saved', 'success');
   }
@@ -241,7 +228,6 @@
     if (idleTimer) {
       clearTimeout(idleTimer);
     }
-    
     idleTimer = setTimeout(() => {
       send({ type: 'USER_IDLE' });
     }, 300000); // 5 minutes
@@ -253,7 +239,6 @@
 
   function toggleAIAssistant() {
     aiAssistantVisible = !aiAssistantVisible;
-    
     if (aiAssistantVisible) {
       send({ type: 'FOCUS_CHANGED', schema: 'analysis_mode' });
     } else {
@@ -263,12 +248,10 @@
 
   async function generateInlineSuggestions(content: string) {
     if (!enableInlineSuggestions || content.length < 100) return;
-    
     // This would integrate with your AI suggestion system
     try {
       const suggestions = await fetchInlineSuggestions(content);
       currentSuggestions = suggestions;
-      
       if (suggestions.length > 0) {
         showSuggestions = true;
       }
@@ -279,9 +262,7 @@
 
   async function startCrewAIReview() {
     if (!editor || !documentId) return;
-    
     const content = editor.getText();
-    
     try {
       const response = await fetch('/api/crewai/review', {
         method: 'POST',
@@ -296,9 +277,7 @@
           }
         })
       });
-      
       const result = await response.json();
-      
       if (result.success) {
         // Start state machine orchestration
         send({ 
@@ -312,7 +291,6 @@
             assignedAgents: result.data.assignedAgents.map((a: any) => a.id)
           }
         });
-        
         showNotification('CrewAI review started', 'info');
       }
     } catch (error) {
@@ -323,7 +301,6 @@
 
   function applySuggestion(suggestion: any) {
     if (!editor) return;
-    
     // Apply the suggestion to the editor
     if (suggestion.position !== undefined) {
       editor.commands.setTextSelection({ 
@@ -332,10 +309,8 @@
       });
       editor.commands.insertContent(suggestion.suggestedText);
     }
-    
     // Accept recommendation in state machine
     send({ type: 'ACCEPT_RECOMMENDATION', recommendationId: suggestion.id });
-    
     showNotification('Suggestion applied', 'success');
   }
 
@@ -352,10 +327,8 @@
 
   function showInlineSuggestions() {
     if (!editor) return;
-    
     const selection = editor.state.selection;
     const selectedText = editor.state.doc.textBetween(selection.from, selection.to);
-    
     if (selectedText.length > 0) {
       generateContextualSuggestion(selectedText);
     }
@@ -381,7 +354,6 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content, type: 'inline' })
     });
-    
     const result = await response.json();
     return result.suggestions || [];
   }
@@ -398,7 +370,6 @@
   function checkForRecommendationAtSelection(selection: any): void {
     // Check if current selection contains any pending recommendations
     const recommendations = $state.context.currentRecommendations;
-    
     for (const rec of recommendations) {
       if (rec.position && selection.from <= rec.position && selection.to >= rec.position) {
         currentRecommendation = rec.text;
@@ -428,11 +399,9 @@
       }
     });
   }
-</script>
 
-<!-- Editor Container -->
-<div class="tiptap-container relative">
-  
+  <!-- Editor Container -->
+  <div class="tiptap-container relative">
   <!-- Editor Element -->
   <div 
     bind:this={editorElement}
@@ -444,11 +413,9 @@
   <div class="status-bar flex items-center justify-between mt-2 text-sm text-gray-500">
     <div class="flex items-center space-x-4">
       <span>{wordCount} words</span>
-      
       {#if lastSaveTime}
         <span>Saved {formatTime(lastSaveTime)}</span>
       {/if}
-      
       {#if isProcessing}
         <div class="flex items-center space-x-2 text-blue-600">
           <div class="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
@@ -456,7 +423,6 @@
         </div>
       {/if}
     </div>
-    
     <div class="flex items-center space-x-2">
       {#if userIntent === 'idle'}
         <span class="text-yellow-600">💤 Idle</span>
@@ -483,7 +449,6 @@
           ✕
         </button>
       </div>
-      
       <!-- Quick Actions -->
       <div class="space-y-2 mb-4">
         <button 
@@ -493,7 +458,6 @@
         >
           {isProcessing ? 'Review in Progress...' : 'Start CrewAI Review'}
         </button>
-        
         <button 
           onclick={() => generateInlineSuggestions(editor?.getHTML() || '')}
           class="w-full bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition-colors"
@@ -501,12 +465,10 @@
           Generate Suggestions
         </button>
       </div>
-      
       <!-- Current Recommendations -->
       {#if hasRecommendations}
         <div class="recommendations">
           <h4 class="font-medium text-gray-700 mb-2">Recommendations</h4>
-          
           {#each $state.context.currentRecommendations as rec (rec.id)}
             <div 
               class="recommendation-item p-2 border border-gray-200 rounded mb-2"
@@ -519,7 +481,6 @@
                     {rec.type} • {Math.round(rec.confidence * 100)}% confidence
                   </div>
                 </div>
-                
                 <div class="flex space-x-1 ml-2">
                   <button 
                     onclick={() => applySuggestion(rec)}
@@ -541,7 +502,6 @@
           {/each}
         </div>
       {/if}
-      
       <!-- Focus Schema Indicator -->
       <div class="mt-4 pt-4 border-t border-gray-200">
         <div class="text-xs text-gray-500">
@@ -559,7 +519,6 @@
       transitionfade={{ duration: 150 }}
     >
       <div class="text-sm text-gray-800 mb-2">{currentRecommendation}</div>
-      
       <div class="flex justify-end space-x-2">
         <button 
           onclick={() => showSuggestions = false}
@@ -584,18 +543,16 @@
     <span>Shift+Enter: Suggestions</span> • 
     <span>Esc: Hide suggestions</span>
   </div>
-</div>
+  </div>
 
-<style>
+  <style>
   .tiptap-editor {
     outline: none
   }
-  
   .tiptap-editor :global(.ProseMirror) {
     outline: none
     min-height: 200px;
   }
-  
   .tiptap-editor :global(.ProseMirror p.is-editor-empty:first-child::before) {
     content: attr(data-placeholder);
     float: left
@@ -603,16 +560,13 @@
     pointer-events: none
     height: 0;
   }
-  
   .ai-assistant-panel {
     max-height: 500px;
     overflow-y: auto
   }
-  
   .inline-suggestion {
     animation: slideInUp 0.2s ease-out;
   }
-  
   @keyframes slideInUp {
     from {
       opacity: 0;
@@ -623,9 +577,9 @@
       transform: translateY(0);
     }
   }
-</style>
+  </style>
 
-<script lang="ts">
+  <script lang="ts">
 </script>
   function formatTime(date: Date): string {
     const now = new Date();

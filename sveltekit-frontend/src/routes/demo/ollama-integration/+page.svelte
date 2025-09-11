@@ -11,7 +11,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import {
     ollamaIntegrationLayer,
@@ -48,34 +47,34 @@
   } from 'lucide-svelte';
 
   // State variables
-let serviceStatus = $state<OllamaServiceStatus | null >(null);
-let isInitialized = $state(false);
-let isLoading = $state(false);
-let testMessage = $state('Analyze this legal contract for key risks and opportunities.');
-let testDocument = $state(`MUTUAL NON-DISCLOSURE AGREEMENT
+  let serviceStatus = $state<OllamaServiceStatus | null >(null);
+  let isInitialized = $state(false);
+  let isLoading = $state(false);
+  let testMessage = $state('Analyze this legal contract for key risks and opportunities.');
+  let testDocument = $state(`MUTUAL NON-DISCLOSURE AGREEMENT
 
-This Mutual Non-Disclosure Agreement ("Agreement") is entered into on [DATE] by and between Company A and Company B.
+  This Mutual Non-Disclosure Agreement ("Agreement") is entered into on [DATE] by and between Company A and Company B.
 
-CONFIDENTIAL INFORMATION: Each party may disclose proprietary information, trade secrets, technical data, and business information.
+  CONFIDENTIAL INFORMATION: Each party may disclose proprietary information, trade secrets, technical data, and business information.
 
-OBLIGATIONS: Each party agrees to maintain confidentiality and use the information solely for evaluation purposes.
+  OBLIGATIONS: Each party agrees to maintain confidentiality and use the information solely for evaluation purposes.
 
-TERM: This agreement shall remain in effect for two (2) years from the date of execution.
+  TERM: This agreement shall remain in effect for two (2) years from the date of execution.
 
-NON-CIRCUMVENTION: Neither party shall directly or indirectly circumvent the other party in business dealings.`);
-let responses = $state<Array<{
+  NON-CIRCUMVENTION: Neither party shall directly or indirectly circumvent the other party in business dealings.`);
+  let responses = $state<Array<{
     type: string;
     request: any;
     response: any;
     timestamp: Date;
     processingTime: number;
   }> >([]);
-let streamingResponse = $state('');
-let isStreaming = $state(false);
+  let streamingResponse = $state('');
+  let isStreaming = $state(false);
 
   // Reactive subscriptions
-let activeRequests = $state(0);
-let stats = $state<any >(null);
+  let activeRequests = $state(0);
+  let stats = $state<any >(null);
 
   onMount(async () => {
     try {

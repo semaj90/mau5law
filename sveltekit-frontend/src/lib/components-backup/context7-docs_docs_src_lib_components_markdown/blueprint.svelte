@@ -24,8 +24,7 @@
 </script>
 
 <script lang="ts">
-</script>
-	let { title, description }: { title: string; description: string } = $props();
+  	let { title, description }: { title: string; description: string } = $props();
 </script>
 
 <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { Button } from "$lib/components/ui/button";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
@@ -42,7 +41,7 @@
           handleFullscreenChange
         );
       };
-}
+  }
   });
 
   function handleKeyboardShortcut(event: KeyboardEvent) {
@@ -53,7 +52,7 @@
       event.target instanceof HTMLSelectElement
     ) {
       return;
-}
+  }
     const { ctrlKey, metaKey, altKey, key } = event;
     const cmdOrCtrl = ctrlKey || metaKey;
 
@@ -93,11 +92,11 @@
       case key === "Escape":
         handleEscape();
         break;
-}
-}
+  }
+  }
   function handleFullscreenChange() {
     isFullscreen = !!document.fullscreenElement;
-}
+  }
   function triggerSearch() {
     // Focus search input if it exists
     const searchInput = document.querySelector(
@@ -106,37 +105,37 @@
     if (searchInput) {
       searchInput.focus();
       searchInput.select();
-}
+  }
     console.log("🔍 Search triggered");
-}
+  }
   function triggerNewEvidence() {
     // Trigger new evidence creation
     console.log("➕ New evidence triggered");
     // You would dispatch an event or call a function here
     window.dispatchEvent(new CustomEvent("new-evidence"));
-}
+  }
   function triggerSave() {
     // Save current work
     console.log("💾 Save triggered");
     window.dispatchEvent(new CustomEvent("save-work"));
-}
+  }
   function triggerExport() {
     // Navigate to export or trigger export
     console.log("📤 Export triggered");
     window.location.href = "/export";
-}
+  }
   function triggerFilter() {
     // Toggle filter panel
     console.log("🔧 Filter toggle triggered");
     window.dispatchEvent(new CustomEvent("toggle-filters"));
-}
+  }
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
     } else {
       document.exitFullscreen();
-}
-}
+  }
+  }
   function handleEscape() {
     // Close modals, exit fullscreen, etc.
     if (showShortcuts) {
@@ -145,9 +144,9 @@
       showAccessibilityPanel = false;
     } else if (document.fullscreenElement) {
       document.exitFullscreen();
-}
+  }
     console.log("⚡ Escape triggered");
-}
+  }
   export { showShortcuts, toggleFullscreen, isFullscreen };
 </script>
 

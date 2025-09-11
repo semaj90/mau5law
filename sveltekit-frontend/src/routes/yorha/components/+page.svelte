@@ -1,6 +1,5 @@
 <!-- YoRHa 3D Components Gallery -->
 <script lang="ts">
-</script>
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
   import { onMount } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
@@ -72,8 +71,8 @@
   });
 
   // UI state
-let yorhaUI = $state<any | null >(null);
-let canvasContainer = $state<HTMLElement;
+  let yorhaUI = $state<any | null >(null);
+  let canvasContainer = $state<HTMLElement;
 
   // Component variants and options
   const componentTypes >([

@@ -1,19 +1,18 @@
 <script lang="ts">
-</script>
-	import { Checkbox, Label, type WithoutChildrenOrChild, useId } from "bits-ui";
-	import Check from "phosphor-svelte/lib/Check";
-	import Minus from "phosphor-svelte/lib/Minus";
-	import DemoContainer from "../demo-container.svelte";
+  	import { Checkbox, Label, type WithoutChildrenOrChild, useId } from "bits-ui";
+  	import Check from "phosphor-svelte/lib/Check";
+  	import Minus from "phosphor-svelte/lib/Minus";
+  	import DemoContainer from "../demo-container.svelte";
 
-	let {
-		id = useId(),
-		checked = $bindable(false),
-		ref = $bindable(null),
-		labelText,
-		...restProps
-	}: WithoutChildrenOrChild<Checkbox.RootProps> & {
-		labelText: string;
-	} = $props();
+  	let {
+  		id = useId(),
+  		checked = $bindable(false),
+  		ref = $bindable(null),
+  		labelText,
+  		...restProps
+  	}: WithoutChildrenOrChild<Checkbox.RootProps> & {
+  		labelText: string;
+  	} = $props();
 </script>
 
 <DemoContainer size="xs" wrapperClass="rounded-bl-card rounded-br-card">

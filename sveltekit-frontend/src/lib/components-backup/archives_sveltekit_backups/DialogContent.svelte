@@ -1,12 +1,9 @@
 <script lang="ts">
-</script>
   import { fade, fly } from 'svelte/transition';
-  
   export let overlay: unknown;
   export let content: unknown;
   export let openState: unknown;
   export let size: 'sm' | 'md' | 'lg' | 'xl' | 'full' = 'md';
-  
   const sizeClasses = {
     sm: 'max-w-sm',
     md: 'max-w-md', 

@@ -1,23 +1,19 @@
 <!-- Enhanced ThinkingStyleToggle with Nier Automata + Harvard Crimson Theme -->
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
   import { fade, slide, scale } from 'svelte/transition';
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import { cn } from '$lib/utils';
-  
   export let enabled = false;
   export let loading = false;
   export let premium = true;
   export let size: 'sm' | 'md' | 'lg' = 'md';
-  
   const dispatch = createEventDispatcher<{
     toggle: { enabled: boolean };
     configure: void;
     upgrade: void;
   }>();
-  
   let showTooltip = false;
   let showConfig = false;
   let thinkingDepth = 'detailed';
@@ -27,7 +23,6 @@
     compliance: true,
     alternatives: false
   };
-  
   // TODO: Convert to $derived: iconSize = size === 'sm' ? 16 : size === 'md' ? 20 : 24
   // TODO: Convert to $derived: buttonClass = cn(
     "thinking-toggle",
@@ -36,7 +31,6 @@
     loading ? 'loading' : '',
     !premium ? 'premium-required' : ''
   )
-  
   function handleToggle() {
     if (!premium) {
       dispatch('upgrade');

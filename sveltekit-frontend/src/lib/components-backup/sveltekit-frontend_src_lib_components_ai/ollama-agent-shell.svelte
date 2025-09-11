@@ -1,6 +1,5 @@
 <!-- Ollama Agent Shell - Real-time Terminal Modal with Streaming Support -->
 <script lang="ts">
-</script>
   import { agentShellMachine } from "$lib/machines/agentShellMachine";
   import { cn } from "$lib/utils";
   import { useMachine } from "@xstate/svelte";
@@ -45,9 +44,9 @@
     messages.push({
       role: "system",
       content: `🚀 Ollama Agent Shell v1.0
-Connected to: nomic-embed-text, gemma:3b
-GPU: ${navigator.gpu ? "Enabled" : "Disabled"}
-Type /help for commands`,
+  Connected to: nomic-embed-text, gemma:3b
+  GPU: ${navigator.gpu ? "Enabled" : "Disabled"}
+  Type /help for commands`,
       timestamp: new Date(),
       status: "complete",
     });
@@ -207,11 +206,11 @@ Type /help for commands`,
         messages.push({
           role: "system",
           content: `Commands:
-/help - Show this help
-/clear - Clear chat
-/embed - Show embeddings
-/gpu - GPU status
-/export - Export chat`,
+  /help - Show this help
+  /clear - Clear chat
+  /embed - Show embeddings
+  /gpu - GPU status
+  /export - Export chat`,
           timestamp: new Date(),
           status: "complete",
         });

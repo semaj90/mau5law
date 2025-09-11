@@ -5,7 +5,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { ocrTensorProcessor, type ProcessingResult } from '$lib/client/ocr-tensor-processor.js';
 
@@ -49,13 +48,11 @@
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     const file = target.files?.[0];
-    
     if (file) {
       if (!file.type.startsWith('image/')) {
         addLog('❌ Please select an image file');
         return;
       }
-      
       uploadedFile = file;
       addLog(`📁 Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
     }
@@ -66,21 +63,16 @@
    */
   async function processImage() {
     if (!uploadedFile || !initialized) return;
-    
     processing = true;
     addLog('🔄 Starting image processing...');
-    
     try {
       const startTime = performance.now();
-      
       // Process the image
       const result = await ocrTensorProcessor.processImage(uploadedFile, {
         language: 'eng',
         useCache: true
       });
-      
       results = [result, ...results];
-      
       // Update performance metrics
       performanceMetrics = {
         ocrTime: result.processingTime * 0.4, // Estimated OCR portion
@@ -88,7 +80,6 @@
         tensorTime: result.processingTime * 0.2, // Estimated tensor portion
         storageTime: result.processingTime * 0.1 // Estimated storage portion
       };
-      
       // Update cache stats
       if (result.cacheHit) {
         cacheStats.hits++;
@@ -96,14 +87,11 @@
         cacheStats.misses++;
       }
       cacheStats.totalProcessingTime += result.processingTime;
-      
       addLog(`✅ Processing completed in ${result.processingTime.toFixed(2)}ms`);
       addLog(`📝 Extracted ${result.ocr.text.length} characters with ${result.ocr.confidence.toFixed(1)}% confidence`);
       addLog(`🧮 Generated ${result.embeddings.dimensions}-dimensional tensor`);
-      
       // Store results in database
       await storeResults([result]);
-      
     } catch (error: any) {
       addLog(`❌ Processing failed: ${error.message}`);
     } finally {
@@ -117,15 +105,12 @@
   async function storeResults(resultsToStore: ProcessingResult[]) {
     try {
       addLog('💾 Storing results in database...');
-      
       await ocrTensorProcessor.storeResults(resultsToStore, {
         source: 'ocr_demo',
         user_id: 'demo_user',
         session_id: crypto.randomUUID()
       });
-      
       addLog('✅ Results stored successfully');
-      
     } catch (error: any) {
       addLog(`❌ Storage failed: ${error.message}`);
     }
@@ -136,30 +121,22 @@
    */
   async function processBatchDemo() {
     if (!initialized) return;
-    
     processing = true;
     addLog('🔄 Running batch processing demo...');
-    
     try {
       // Create sample canvas images for demo
       const sampleImages = createSampleImages();
-      
       const batchResults = await ocrTensorProcessor.batchProcessImages(sampleImages);
-      
       results = [...batchResults, ...results];
-      
       // Update stats
       batchResults.forEach(result => {
         if (result.cacheHit) cacheStats.hits++;
         else cacheStats.misses++;
         cacheStats.totalProcessingTime += result.processingTime;
       });
-      
       addLog(`✅ Batch processing completed: ${batchResults.length} images processed`);
-      
       // Store batch results
       await storeResults(batchResults);
-      
     } catch (error: any) {
       addLog(`❌ Batch processing failed: ${error.message}`);
     } finally {
@@ -177,23 +154,19 @@
       'Evidence Photo',
       'Court Filing'
     ];
-    
     return samples.map(text => {
       const canvas = document.createElement('canvas');
       canvas.width = 400;
       canvas.height = 200;
       const ctx = canvas.getContext('2d')!;
-      
       // White background
       ctx.fillStyle = 'white';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
       // Black text
       ctx.fillStyle = 'black';
       ctx.font = '24px Arial';
       ctx.textAlign = 'center';
       ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-      
       return canvas;
     });
   }
@@ -222,7 +195,6 @@
       ? cacheStats.totalProcessingTime / (cacheStats.hits + cacheStats.misses)
       : 0
   );
-  
   const cacheHitRate = $derived(
     cacheStats.hits + cacheStats.misses > 0
       ? (cacheStats.hits / (cacheStats.hits + cacheStats.misses)) * 100

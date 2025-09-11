@@ -1,19 +1,18 @@
 <script lang="ts">
-</script>
-	import { Button, Card, Input } from '$lib/components/ui/enhanced';
-	import { nierClasses, animationClasses } from '$lib/components/ui/enhanced';
+  	import { Button, Card, Input } from '$lib/components/ui/enhanced';
+  	import { nierClasses, animationClasses } from '$lib/components/ui/enhanced';
 
-	let name = $state('');
-	let email = $state('');
-	let loading = $state(false);
-	let message = $state('');
+  	let name = $state('');
+  	let email = $state('');
+  	let loading = $state(false);
+  	let message = $state('');
 
-	const handleSubmit = async () => {
-		loading = true;
-		await new Promise(resolve => setTimeout(resolve, 2000));
-		message = `Hello ${name}! UnoCSS + Svelte 5 integration successful! 🎉`;
-		loading = false;
-	};
+  	const handleSubmit = async () => {
+  		loading = true;
+  		await new Promise(resolve => setTimeout(resolve, 2000));
+  		message = `Hello ${name}! UnoCSS + Svelte 5 integration successful! 🎉`;
+  		loading = false;
+  	};
 </script>
 
 <svelte:head>

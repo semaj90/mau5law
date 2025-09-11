@@ -1,17 +1,14 @@
 <script lang="ts">
-</script>
   import { Button } from 'bits-ui'
   import { createDialog, melt } from '@melt-ui/svelte'
   import { fly, fade } from 'svelte/transition'
   import { writable } from 'svelte/store'
-  
   // Demo states
   let isDarkMode = $state(false);
   let showModal = $state(false);
   let activeTab = $state('overview');
   let inputValue = $state('');
   let selectedStatus = $state('active');
-  
   // Create melt-ui dialog
   const {
     elements: { trigger, overlay, content, title, description, close },
@@ -19,7 +16,6 @@
   } = createDialog({
     forceVisible: true,
   })
-  
   // Demo data
   const demoCase = {
     id: 'CASE-2025-001',
@@ -30,7 +26,6 @@
     evidence: 12,
     witnesses: 5
   }
-  
   const statuses = ['active', 'pending', 'closed', 'archived']
   const priorities = ['critical', 'high', 'medium', 'low']
 </script>

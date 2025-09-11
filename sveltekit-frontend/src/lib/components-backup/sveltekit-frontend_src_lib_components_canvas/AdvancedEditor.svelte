@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onchange?: (event?: any) => void;
   }
@@ -15,8 +14,6 @@
   import '@toast-ui/editor/dist/toastui-editor.css';
   import type { ContentNode } from '$lib/logic/HistoryManager';
 
-  
-        
   let editorElement: HTMLElement
   let editor: Editor
   let isInitialized = false;
@@ -32,10 +29,9 @@
         if (node.color) text = `<span style="color: ${node.color}">${text}</span>`;
         if (node.fontSize) text = `<span style="font-size: ${node.fontSize}">${text}</span>`;
         return text;
-}
+  }
       if (node.children) {
         const childText = node.children.map(nodeToMd).join('');
-        
         switch (node.type) {
           case 'paragraph':
             return childText + '\n\n';
@@ -58,17 +54,17 @@
             return `![${node.alt || ''}](${node.url || ''})`;
           default:
             return childText;
-}}
+  }}
       return '';
     };
 
     return nodes.map(nodeToMd).join('');
-}
+  }
   // Convert markdown to ContentNode array (simplified)
   function markdownToContent(markdown: string): ContentNode[] {
     if (!markdown.trim()) {
       return [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
-}
+  }
     // Basic markdown parsing - in production, use a proper parser
     const lines = markdown.split('\n');
     const nodes: ContentNode[] = [];
@@ -79,9 +75,9 @@
         if (currentParagraph) {
           nodes.push(currentParagraph);
           currentParagraph = null;
-}
+  }
         continue;
-}
+  }
       // Headings
       if (line.startsWith('#')) {
         const level = line.match(/^#+/)?.[0].length || 1;
@@ -92,7 +88,7 @@
           children: [{ type: 'text', text }]
         });
         continue;
-}
+  }
       // Lists
       if (line.startsWith('- ') || line.startsWith('* ')) {
         const text = line.replace(/^[-*]\s*/, '');
@@ -101,7 +97,7 @@
           children: [{ type: 'text', text }]
         });
         continue;
-}
+  }
       // Blockquotes
       if (line.startsWith('> ')) {
         const text = line.replace(/^>\s*/, '');
@@ -110,14 +106,14 @@
           children: [{ type: 'text', text }]
         });
         continue;
-}
+  }
       // Regular paragraph
       if (!currentParagraph) {
         currentParagraph = {
           type: 'paragraph',
           children: []
         };
-}
+  }
       // Basic inline formatting
       let text = line;
       const textNode: ContentNode = { type: 'text', text };
@@ -127,20 +123,20 @@
         textNode.bold = true;
         text = text.replace(/\*\*(.*?)\*\*/g, '$1');
         textNode.text = text;
-}
+  }
       // Italic
       if (text.includes('*') && !textNode.bold) {
         textNode.italic = true;
         text = text.replace(/\*(.*?)\*/g, '$1');
         textNode.text = text;
-}
+  }
       currentParagraph.children!.push(textNode);
-}
+  }
     if (currentParagraph) {
       nodes.push(currentParagraph);
-}
+  }
     return nodes.length > 0 ? nodes : [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
-}
+  }
   onMount(() => {
     editor = new Editor({
       el: editorElement,
@@ -166,7 +162,7 @@
             callback(e.target?.result as string, 'Uploaded image');
           };
           reader.readAsDataURL(blob);
-}}
+  }}
     });
 
     // Listen for content changes
@@ -182,57 +178,54 @@
   onDestroy(() => {
     if (editor) {
       editor.destroy();
-}
+  }
   });
 
   // Reactive update when content prop changes
   $effect(() => { if (editor && isInitialized && content) {
     const currentMarkdown = editor.getMarkdown();
     const newMarkdown = contentToMarkdown(content);
-    
     if (currentMarkdown !== newMarkdown) {
       editor.setMarkdown(newMarkdown);
-}}
+  }}
   // Expose methods for parent component
   export function setContent(newContent: ContentNode[]) {
     if (editor) {
       editor.setMarkdown(contentToMarkdown(newContent));
-}}
+  }}
   export function getContent(): ContentNode[] {
     if (editor) {
       return markdownToContent(editor.getMarkdown());
-}
+  }
     return content;
-}
+  }
   export function getMarkdown(): string {
     return editor ? editor.getMarkdown() : '';
-}
+  }
   export function getHTML(): string {
     return editor ? editor.getHTML() : '';
-}
+  }
   export function insertText(text: string) {
     if (editor) {
       editor.insertText(text);
-}}
+  }}
   export function getSelectedText(): string {
     if (editor) {
       return editor.getSelectedText() || '';
-}
+  }
     return '';
-}
+  }
   export function focus() {
     if (editor) {
       editor.focus();
-}}
+  }}
   // Formatting methods
   export function toggleMark(mark: string) {
     if (!editor) return;
-    
     const selectedText = editor.getSelectedText();
     if (!selectedText) return;
 
     let formattedText = selectedText;
-    
     switch (mark) {
       case 'bold':
         formattedText = `**${selectedText}**`;
@@ -243,12 +236,11 @@
       case 'code':
         formattedText = `\`${selectedText}\``;
         break;
-}
+  }
     editor.replaceSelection(formattedText);
-}
+  }
   export function addMark(mark: string, value: string) {
     if (!editor) return;
-    
     const selectedText = editor.getSelectedText();
     if (!selectedText) return;
 
@@ -261,9 +253,9 @@
       case 'fontSize':
         formattedText = `<span style="font-size: ${value}">${selectedText}</span>`;
         break;
-}
+  }
     editor.replaceSelection(formattedText);
-}
+  }
   export function insertNode(node: any) {
     if (!editor) return;
 
@@ -278,7 +270,7 @@
         const level = '#'.repeat(node.level || 1);
         editor.insertText(`\n${level} ${node.text || 'Heading'}\n`);
         break;
-}}
+  }}
 </script>
 
 <div bind:this={editorElement} class="space-y-4"></div>

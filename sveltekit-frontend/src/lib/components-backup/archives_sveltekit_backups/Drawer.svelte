@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { X } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
 

@@ -1,7 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-</script>
   import { } from 'svelte';
 
   import { onDestroy, onMount } from "svelte";
@@ -36,13 +35,13 @@ https://svelte.dev/e/js_parse_error -->
   } from "lucide-svelte";
 
   // State
-let editorComponent = $state<RichTextEditor;
+  let editorComponent = $state<RichTextEditor;
   let cleanupAutoSave: (() >(> void) | undefined);
-let evidenceSearchResults = $state<any[] >([]);
-let selectedEvidence = $state<any >(null);
-let showEvidenceModal = $state(false);
-let showSettingsModal = $state(false);
-let evidenceFormData = $state<any >(null); // For the evidence form
+  let evidenceSearchResults = $state<any[] >([]);
+  let selectedEvidence = $state<any >(null);
+  let showEvidenceModal = $state(false);
+  let showSettingsModal = $state(false);
+  let evidenceFormData = $state<any >(null); // For the evidence form
 
   // Reactive layout classes
   let layoutClass = $derived(

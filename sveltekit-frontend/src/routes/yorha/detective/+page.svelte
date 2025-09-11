@@ -1,6 +1,5 @@
 <!-- YoRHa Detective Command Center -->
 <script lang="ts">
-</script>
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
@@ -44,7 +43,6 @@
   // Handle section navigation
   function navigateToSection(sectionId: string) {
     selectedSection = sectionId;
-    
     // Navigate to dedicated pages for complex sections
     switch (sectionId) {
       case 'evidence':
@@ -79,7 +77,6 @@
       if (response.ok) {
         const result = await response.json();
         showNewCaseModal = false;
-        
         // Reset form
         newCaseData = {
           title: '',
@@ -114,7 +111,6 @@
   function addNotification(type: string, message: string, duration: number = 5000) {
     const id = crypto.randomUUID();
     notifications.push({ id, type, message, duration });
-    
     // Auto-remove notification after duration
     setTimeout(() => {
       notifications = notifications.filter(n => n.id !== id);

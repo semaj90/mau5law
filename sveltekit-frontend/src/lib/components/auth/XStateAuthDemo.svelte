@@ -4,7 +4,6 @@
   Uses Bits UI v2 + GPU orchestrator + Context7 documentation
 -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import * as Card from '$lib/components/ui/card';
   import {
@@ -51,13 +50,13 @@
   let global = $state($globalState);
 
   // Subscribe to state changes
-let unsubscribeAuth = $state<(() => void) | null>(null);
-let unsubscribeSession = $state<(() => void) | null>(null);
-let unsubscribeAI = $state<(() => void) | null>(null);
-let unsubscribeGlobal = $state<(() => void) | null>(null);
-let unsubscribeAuth2 = $state<(() => void) | null>(null);
-let unsubscribeUser = $state<(() => void) | null>(null);
-let unsubscribeHealth = $state<(() => void) | null>(null);
+  let unsubscribeAuth = $state<(() => void) | null>(null);
+  let unsubscribeSession = $state<(() => void) | null>(null);
+  let unsubscribeAI = $state<(() => void) | null>(null);
+  let unsubscribeGlobal = $state<(() => void) | null>(null);
+  let unsubscribeAuth2 = $state<(() => void) | null>(null);
+  let unsubscribeUser = $state<(() => void) | null>(null);
+  let unsubscribeHealth = $state<(() => void) | null>(null);
 
   onMount(() => {
     // Subscribe to all relevant stores

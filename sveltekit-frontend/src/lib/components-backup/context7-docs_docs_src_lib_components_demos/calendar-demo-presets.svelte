@@ -1,52 +1,51 @@
 <script lang="ts">
-</script>
-	import { Button, Calendar, Separator } from "bits-ui";
-	import CaretLeft from "phosphor-svelte/lib/CaretLeft";
-	import CaretRight from "phosphor-svelte/lib/CaretRight";
-	import { getLocalTimeZone, today } from "@internationalized/date";
+  	import { Button, Calendar, Separator } from "bits-ui";
+  	import CaretLeft from "phosphor-svelte/lib/CaretLeft";
+  	import CaretRight from "phosphor-svelte/lib/CaretRight";
+  	import { getLocalTimeZone, today } from "@internationalized/date";
 
-	const currentDate = today(getLocalTimeZone());
+  	const currentDate = today(getLocalTimeZone());
 
-	let value = $state(currentDate);
+  	let value = $state(currentDate);
 
-	const presets = [
-		{
-			label: "Today",
-			onclick: () => {
-				value = currentDate;
-			},
-		},
-		{
-			label: "Tomorrow",
-			onclick: () => {
-				value = currentDate.add({ days: 1 });
-			},
-		},
-		{
-			label: "In 3 days",
-			onclick: () => {
-				value = currentDate.add({ days: 3 });
-			},
-		},
-		{
-			label: "In a week",
-			onclick: () => {
-				value = currentDate.add({ days: 7 });
-			},
-		},
-		{
-			label: "In a month",
-			onclick: () => {
-				value = currentDate.add({ months: 1 });
-			},
-		},
-		{
-			label: "In a year",
-			onclick: () => {
-				value = currentDate.add({ years: 1 });
-			},
-		},
-	];
+  	const presets = [
+  		{
+  			label: "Today",
+  			onclick: () => {
+  				value = currentDate;
+  			},
+  		},
+  		{
+  			label: "Tomorrow",
+  			onclick: () => {
+  				value = currentDate.add({ days: 1 });
+  			},
+  		},
+  		{
+  			label: "In 3 days",
+  			onclick: () => {
+  				value = currentDate.add({ days: 3 });
+  			},
+  		},
+  		{
+  			label: "In a week",
+  			onclick: () => {
+  				value = currentDate.add({ days: 7 });
+  			},
+  		},
+  		{
+  			label: "In a month",
+  			onclick: () => {
+  				value = currentDate.add({ months: 1 });
+  			},
+  		},
+  		{
+  			label: "In a year",
+  			onclick: () => {
+  				value = currentDate.add({ years: 1 });
+  			},
+  		},
+  	];
 </script>
 
 <div

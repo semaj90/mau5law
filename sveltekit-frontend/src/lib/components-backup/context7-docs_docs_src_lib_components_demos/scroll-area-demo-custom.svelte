@@ -1,21 +1,20 @@
 <script lang="ts">
-</script>
-	import { ScrollArea, type WithoutChild } from "bits-ui";
-	import DemoContainer from "../demo-container.svelte";
-	import { cn } from "$lib/utils/styles.js";
+  	import { ScrollArea, type WithoutChild } from "bits-ui";
+  	import DemoContainer from "../demo-container.svelte";
+  	import { cn } from "$lib/utils/styles.js";
 
-	type Props = WithoutChild<ScrollArea.RootProps> & {
-		orientation: "vertical" | "horizontal" | "both";
-		viewportClasses?: string;
-	};
+  	type Props = WithoutChild<ScrollArea.RootProps> & {
+  		orientation: "vertical" | "horizontal" | "both";
+  		viewportClasses?: string;
+  	};
 
-	let {
-		ref = $bindable(null),
-		orientation = "vertical",
-		viewportClasses,
-		children,
-		...restProps
-	}: Props = $props();
+  	let {
+  		ref = $bindable(null),
+  		orientation = "vertical",
+  		viewportClasses,
+  		children,
+  		...restProps
+  	}: Props = $props();
 </script>
 
 {#snippet Scrollbar({ orientation }: { orientation: "vertical" | "horizontal" })}

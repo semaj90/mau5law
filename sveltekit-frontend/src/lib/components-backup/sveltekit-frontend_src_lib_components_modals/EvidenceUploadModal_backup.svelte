@@ -1,12 +1,11 @@
 <script lang="ts">
-</script>
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
 
   let isOpen = $derived($uploadModal.isOpen)
 
   function closeModal() {
     uploadActions.closeModal();
-}
+  }
 </script>
 
 {#if isOpen}

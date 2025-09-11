@@ -1,9 +1,7 @@
 <!-- Observability Panel: Real-time alerts + sustained monitoring dashboard -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import type { ObservabilityState } from '$lib/services/observability-persistence';
-  
   interface Alert {
     id: string;
     type: 'p99_breach' | 'error_spike' | 'anomaly_spike' | 'baseline_drift';
@@ -13,22 +11,19 @@
     value?: number;
     threshold?: number;
   }
-  
   // State
   let state: ObservabilityState | null = $state(null);
   let alerts: Alert[] = $state([]);
   let isConnected = $state(false);
-let ws = $state<WebSocket | null >(null);
+  let ws = $state<WebSocket | null >(null);
   let autoScroll = $state(true);
   let showDetails = $state(false);
-  
   // Computed values
   let p99Badge = $derived(() => {
     if (!state) return { count: 0, status: 'normal' };
     const count = state.sustained_counters.p99_breaches;
     const budget = state.daily_budgets.max_p99_breaches;
     const ratio = count / budget;
-    
     return {
       count,
       budget,
@@ -36,13 +31,11 @@ let ws = $state<WebSocket | null >(null);
       status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal'
     };
   });
-  
   let errorBadge = $derived(() => {
     if (!state) return { count: 0, status: 'normal' };
     const count = state.sustained_counters.error_spikes;
     const budget = state.daily_budgets.max_error_spikes;
     const ratio = count / budget;
-    
     return {
       count,
       budget, 
@@ -50,13 +43,11 @@ let ws = $state<WebSocket | null >(null);
       status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal'
     };
   });
-  
   let anomalyBadge = $derived(() => {
     if (!state) return { count: 0, status: 'normal' };
     const count = state.sustained_counters.anomaly_spikes;
     const budget = state.daily_budgets.max_anomaly_spikes;
     const ratio = count / budget;
-    
     return {
       count,
       budget,
@@ -64,7 +55,6 @@ let ws = $state<WebSocket | null >(null);
       status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal'
     };
   });
-  
   // Functions
   async function loadState() {
     try {
@@ -76,20 +66,16 @@ let ws = $state<WebSocket | null >(null);
       console.error('[observability-panel] Failed to load state:', error);
     }
   }
-  
   function connectWebSocket() {
     try {
       ws = new WebSocket('ws://localhost:8080');
-      
       ws.on:open=() => {
         isConnected = true;
         console.log('[observability-panel] WebSocket connected');
       };
-      
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          
           // Handle different message types
           if (data.type === 'observability.alert') {
             const alert: Alert = {
@@ -101,9 +87,7 @@ let ws = $state<WebSocket | null >(null);
               value: data.value,
               threshold: data.threshold
             };
-            
             alerts = [alert, ...alerts].slice(0, 100); // Keep last 100 alerts
-            
             // Auto-scroll if enabled
             if (autoScroll) {
               setTimeout(() => {
@@ -120,14 +104,12 @@ let ws = $state<WebSocket | null >(null);
           console.error('[observability-panel] Failed to parse WebSocket message:', error);
         }
       };
-      
       ws.on:close=() => {
         isConnected = false;
         console.log('[observability-panel] WebSocket disconnected');
         // Reconnect after 5 seconds
         setTimeout(connectWebSocket, 5000);
       };
-      
       ws.onerror = (error) => {
         console.error('[observability-panel] WebSocket error:', error);
         isConnected = false;
@@ -137,15 +119,12 @@ let ws = $state<WebSocket | null >(null);
       setTimeout(connectWebSocket, 5000);
     }
   }
-  
   function clearAlerts() {
     alerts = [];
   }
-  
   function formatTimestamp(timestamp: string): string {
     return new Date(timestamp).toLocaleTimeString();
   }
-  
   function getBadgeClass(status: string): string {
     switch (status) {
       case 'critical': return 'badge-critical';
@@ -153,7 +132,6 @@ let ws = $state<WebSocket | null >(null);
       default: return 'badge-normal';
     }
   }
-  
   function getAlertClass(severity: string): string {
     switch (severity) {
       case 'critical': return 'alert-critical';
@@ -161,19 +139,15 @@ let ws = $state<WebSocket | null >(null);
       default: return 'alert-info';
     }
   }
-  
   onMount(async () => {
     await loadState();
     connectWebSocket();
-    
     // Refresh state every 30 seconds
     const stateInterval = setInterval(loadState, 30000);
-    
     return () => {
       clearInterval(stateInterval);
     };
   });
-  
   onDestroy(() => {
     if (ws) {
       ws.close();

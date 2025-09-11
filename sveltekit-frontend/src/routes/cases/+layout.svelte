@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { LayoutData } from "./$types";
 
   let { data = $bindable(), children } = $props(); // LayoutData;

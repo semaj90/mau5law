@@ -2,117 +2,99 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- AI Pipeline Demo -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
-	import { enhance } from '$app/forms';
-	import { writable } from 'svelte/store';
-	import { ragQuery, ragResults, ragLoading } from '$lib/services/enhancedRAGPipeline';
-	import { goMicroservice } from '$lib/services/goMicroservice';
-	
-	// Reactive state
-	let demoText = $state(`This is a sample legal document about employment contracts. 
-It contains provisions for salary, benefits, termination clauses, and confidentiality agreements. 
-The contract specifies a base salary of $75,000 per year with annual reviews. 
-Termination requires 30 days notice from either party.`);
-	
-	let autoTagResult = writable(null);
-	let isProcessing = $state(false);
-	let systemHealth = writable({});
-	let benchmarkResults = writable({});
-	
-	// Demo functions
-	async function runAutoTagging() {
-		isProcessing = true;
-		
-		try {
-			const response = await fetch('/api/ai/upload-auto-tag', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					documentId: 'demo-doc-' + Date.now(),
-					content: demoText,
-					documentType: 'contract',
-					useGPUAcceleration: true
-				})
-			});
-			
-			const result = await response.json();
-			autoTagResult.set(result);
-			
-		} catch (error) {
-			console.error('Auto-tagging demo failed:', error);
-			autoTagResult.set({ error: error.message });
-		} finally {
-			isProcessing = false;
-		}
-	}
-	
-	async function runRAGQuery() {
-		ragLoading.set(true);
-		
-		const query = 'employment contract termination clauses';
-		ragQuery.set(query);
-		
-		try {
-			const response = await fetch('/api/ai/rag-query', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					query,
-					options: {
-						useSemanticSearch: true,
-						useMemoryGraph: true,
-						maxSources: 5,
-						minConfidence: 0.7
-					}
-				})
-			});
-			
-			const result = await response.json();
-			ragResults.set(result);
-			
-		} catch (error) {
-			console.error('RAG query demo failed:', error);
-		} finally {
-			ragLoading.set(false);
-		}
-	}
-	
-	async function checkSystemHealth() {
-		try {
-			const goHealth = await goMicroservice.healthCheck();
-			const autoTagStatus = await fetch('/api/ai/upload-auto-tag');
-			const autoTagData = await autoTagStatus.json();
-			
-			systemHealth.set({
-				goMicroservice: goHealth,
-				autoTagging: autoTagData,
-				timestamp: new Date().toISOString()
-			});
-			
-		} catch (error) {
-			console.error('Health check failed:', error);
-		}
-	}
-	
-	async function runBenchmark() {
-		try {
-			const results = await goMicroservice.benchmark();
-			benchmarkResults.set(results);
-		} catch (error) {
-			console.error('Benchmark failed:', error);
-		}
-	}
-	
-	onMount(() => {
-		checkSystemHealth();
-	});
-	
-	// Reactive derived values
-	let tags = $derived($autoTagResult?.autoTags || []);
-	let entities = $derived($autoTagResult?.entities || []);
-	let confidence = $derived($autoTagResult?.confidence || 0);
-	let similarDocs = $derived($autoTagResult?.similarDocuments || []);
+  	import { enhance } from '$app/forms';
+  	import { writable } from 'svelte/store';
+  	import { ragQuery, ragResults, ragLoading } from '$lib/services/enhancedRAGPipeline';
+  	import { goMicroservice } from '$lib/services/goMicroservice';
+  	// Reactive state
+  	let demoText = $state(`This is a sample legal document about employment contracts. 
+  It contains provisions for salary, benefits, termination clauses, and confidentiality agreements. 
+  The contract specifies a base salary of $75,000 per year with annual reviews. 
+  Termination requires 30 days notice from either party.`);
+  	let autoTagResult = writable(null);
+  	let isProcessing = $state(false);
+  	let systemHealth = writable({});
+  	let benchmarkResults = writable({});
+  	// Demo functions
+  	async function runAutoTagging() {
+  		isProcessing = true;
+  		try {
+  			const response = await fetch('/api/ai/upload-auto-tag', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					documentId: 'demo-doc-' + Date.now(),
+  					content: demoText,
+  					documentType: 'contract',
+  					useGPUAcceleration: true
+  				})
+  			});
+  			const result = await response.json();
+  			autoTagResult.set(result);
+  		} catch (error) {
+  			console.error('Auto-tagging demo failed:', error);
+  			autoTagResult.set({ error: error.message });
+  		} finally {
+  			isProcessing = false;
+  		}
+  	}
+  	async function runRAGQuery() {
+  		ragLoading.set(true);
+  		const query = 'employment contract termination clauses';
+  		ragQuery.set(query);
+  		try {
+  			const response = await fetch('/api/ai/rag-query', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					query,
+  					options: {
+  						useSemanticSearch: true,
+  						useMemoryGraph: true,
+  						maxSources: 5,
+  						minConfidence: 0.7
+  					}
+  				})
+  			});
+  			const result = await response.json();
+  			ragResults.set(result);
+  		} catch (error) {
+  			console.error('RAG query demo failed:', error);
+  		} finally {
+  			ragLoading.set(false);
+  		}
+  	}
+  	async function checkSystemHealth() {
+  		try {
+  			const goHealth = await goMicroservice.healthCheck();
+  			const autoTagStatus = await fetch('/api/ai/upload-auto-tag');
+  			const autoTagData = await autoTagStatus.json();
+  			systemHealth.set({
+  				goMicroservice: goHealth,
+  				autoTagging: autoTagData,
+  				timestamp: new Date().toISOString()
+  			});
+  		} catch (error) {
+  			console.error('Health check failed:', error);
+  		}
+  	}
+  	async function runBenchmark() {
+  		try {
+  			const results = await goMicroservice.benchmark();
+  			benchmarkResults.set(results);
+  		} catch (error) {
+  			console.error('Benchmark failed:', error);
+  		}
+  	}
+  	onMount(() => {
+  		checkSystemHealth();
+  	});
+  	// Reactive derived values
+  	let tags = $derived($autoTagResult?.autoTags || []);
+  	let entities = $derived($autoTagResult?.entities || []);
+  	let confidence = $derived($autoTagResult?.confidence || 0);
+  	let similarDocs = $derived($autoTagResult?.similarDocuments || []);
 </script>
 
 <svelte:head>

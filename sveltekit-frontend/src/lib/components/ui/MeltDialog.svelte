@@ -1,83 +1,71 @@
 <script lang="ts">
-</script>
-	import type {    Snippet    } from 'svelte';
-	import { Dialog as BitsDialog } from 'bits-ui';
-	import { createEventDispatcher } from 'svelte';
-	import { cn } from '$lib/utils';
+  	import type {    Snippet    } from 'svelte';
+  	import { Dialog as BitsDialog } from 'bits-ui';
+  	import { createEventDispatcher } from 'svelte';
+  	import { cn } from '$lib/utils';
 
-	interface Props {
-		open?: boolean;
-		onOpenChange?: (open: boolean) => void;
-		
-		// Dialog configuration  
-		preventScroll?: boolean;
-		closeOnOutsideClick?: boolean;
-		closeOnEscape?: boolean;
-		
-		// Content configuration
-		title?: string;
-		description?: string;
-		
-		// Styling
-		class?: string;
-		overlayClass?: string;
-		contentClass?: string;
-		
-		// Snippets
-		trigger?: Snippet;
-		children?: Snippet;
-		footer?: Snippet;
-		
-		// Event handlers
-		onClose?: () => void;
-	}
-	
-	let {
-		open = false,
-		onOpenChange,
-		preventScroll = true,
-		closeOnOutsideClick = true,
-		closeOnEscape = true,
-		title,
-		description,
-		class: className = '',
-		overlayClass = '',
-		contentClass = '',
-		trigger,
-		children,
-		footer,
-		onClose
-	}: Props = $props();
-	
-	const dispatch = createEventDispatcher<{
-		close: void;
-		open: void;
-		'open-change': { open: boolean };
-	}>();
+  	interface Props {
+  		open?: boolean;
+  		onOpenChange?: (open: boolean) => void;
+  		// Dialog configuration  
+  		preventScroll?: boolean;
+  		closeOnOutsideClick?: boolean;
+  		closeOnEscape?: boolean;
+  		// Content configuration
+  		title?: string;
+  		description?: string;
+  		// Styling
+  		class?: string;
+  		overlayClass?: string;
+  		contentClass?: string;
+  		// Snippets
+  		trigger?: Snippet;
+  		children?: Snippet;
+  		footer?: Snippet;
+  		// Event handlers
+  		onClose?: () => void;
+  	}
+  	let {
+  		open = false,
+  		onOpenChange,
+  		preventScroll = true,
+  		closeOnOutsideClick = true,
+  		closeOnEscape = true,
+  		title,
+  		description,
+  		class: className = '',
+  		overlayClass = '',
+  		contentClass = '',
+  		trigger,
+  		children,
+  		footer,
+  		onClose
+  	}: Props = $props();
+  	const dispatch = createEventDispatcher<{
+  		close: void;
+  		open: void;
+  		'open-change': { open: boolean };
+  	}>();
 
-	function handleOpenChange(newOpen: boolean) {
-		if (onOpenChange) {
-			onOpenChange(newOpen);
-		}
-		dispatch('open-change', { open: newOpen });
-		
-		if (newOpen) {
-			dispatch('open');
-		} else {
-			dispatch('close');
-			if (onClose) {
-				onClose();
-			}
-		}
-	}
-	
-	// Default overlay styles
-	const defaultOverlayClass = 'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0';
-	
-	// Default content styles
-	const defaultContentClass = 'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-gray-200 bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full dark:border-gray-800 dark:bg-gray-950';
-	
-	type $$Props = Props;
+  	function handleOpenChange(newOpen: boolean) {
+  		if (onOpenChange) {
+  			onOpenChange(newOpen);
+  		}
+  		dispatch('open-change', { open: newOpen });
+  		if (newOpen) {
+  			dispatch('open');
+  		} else {
+  			dispatch('close');
+  			if (onClose) {
+  				onClose();
+  			}
+  		}
+  	}
+  	// Default overlay styles
+  	const defaultOverlayClass = 'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0';
+  	// Default content styles
+  	const defaultContentClass = 'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-gray-200 bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full dark:border-gray-800 dark:bg-gray-950';
+  	type $$Props = Props;
 </script>
 
 <BitsDialog.Root {open} onOpenChange={handleOpenChange}>

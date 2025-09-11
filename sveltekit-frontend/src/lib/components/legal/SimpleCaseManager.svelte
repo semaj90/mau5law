@@ -5,7 +5,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { legalPlatformClient, type CaseData, type ApiResponse } from '$lib/services/legal-platform-client';
@@ -55,10 +54,8 @@
   async function loadCases() {
     loading.set(true);
     error.set('');
-    
     try {
       const response = await legalPlatformClient.getAllCases();
-      
       if (response.success && response.data) {
         cases.set(response.data);
       } else {
@@ -72,12 +69,11 @@
   }
 
   // Search cases with debouncing
-let searchTimeout = $state<NodeJS.Timeout;
+  let searchTimeout = $state<NodeJS.Timeout;
   async function handleSearch() {
     clearTimeout(searchTimeout);
     searchTimeout >(setTimeout(async () => {
       const query = $searchQuery.trim());
-      
       if (!query) {
         await loadCases();
         return;
@@ -85,10 +81,8 @@ let searchTimeout = $state<NodeJS.Timeout;
 
       loading.set(true);
       error.set('');
-      
       try {
         const response = await legalPlatformClient.searchCases(query);
-        
         if (response.success && response.data) {
           cases.set(response.data);
         } else {
@@ -105,7 +99,6 @@ let searchTimeout = $state<NodeJS.Timeout;
   // Create new case
   async function createCase() {
     const data = $formData;
-    
     if (!data.title?.trim()) {
       error.set('Case title is required');
       return;
@@ -113,10 +106,8 @@ let searchTimeout = $state<NodeJS.Timeout;
 
     loading.set(true);
     error.set('');
-    
     try {
       const response = await legalPlatformClient.createCase(data as CaseData);
-      
       if (response.success) {
         isCreateDialogOpen.set(false);
         formData.set({
@@ -144,15 +135,12 @@ let searchTimeout = $state<NodeJS.Timeout;
   async function updateCase() {
     const data = $formData;
     const selected = $selectedCase;
-    
     if (!selected?.id) return;
 
     loading.set(true);
     error.set('');
-    
     try {
       const response = await legalPlatformClient.updateCase(selected.id, data);
-      
       if (response.success) {
         isEditDialogOpen.set(false);
         selectedCase.set(null);
@@ -175,10 +163,8 @@ let searchTimeout = $state<NodeJS.Timeout;
 
     loading.set(true);
     error.set('');
-    
     try {
       const response = await legalPlatformClient.deleteCase(caseId);
-      
       if (response.success) {
         await loadCases();
         error.set('Case deleted successfully');

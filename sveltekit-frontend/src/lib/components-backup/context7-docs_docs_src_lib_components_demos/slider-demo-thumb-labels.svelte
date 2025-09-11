@@ -1,8 +1,7 @@
 <script lang="ts">
-</script>
-	import { Slider } from "bits-ui";
+  	import { Slider } from "bits-ui";
 
-	let value = $state([5, 7, 10]);
+  	let value = $state([5, 7, 10]);
 </script>
 
 <div class="w-full md:max-w-[400px]">

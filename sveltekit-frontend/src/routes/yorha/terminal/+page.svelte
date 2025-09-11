@@ -1,6 +1,5 @@
 <!-- YoRHa Terminal Interface -->
 <script lang="ts">
-</script>
   // $state is declared globally in src/types/svelte-helpers.d.ts
   import { onMount, onDestroy } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';

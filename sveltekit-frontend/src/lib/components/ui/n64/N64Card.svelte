@@ -1,15 +1,12 @@
 <script lang="ts">
-</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import type { Snippet } from 'svelte';
-  
   // Svelte 5 props interface
   interface Props {
     children?: Snippet;
     title?: string;
     subtitle?: string;
     class?: string;
-    
     // N64 specific props
     materialType?: 'basic' | 'phong' | 'pbr';
     meshComplexity?: 'low' | 'medium' | 'high' | 'ultra';
@@ -21,23 +18,19 @@
     spatialAudio?: boolean;
     lightingModel?: 'flat' | 'gouraud' | 'phong' | 'blinn-phong';
     shadowCasting?: boolean;
-    
     // Interactive props
     hoverable?: boolean;
     clickable?: boolean;
     selectable?: boolean;
     selected?: boolean;
-    
     // Accessibility
     ariaLabel?: string;
     ariaDescribedby?: string;
     role?: string;
     tabindex?: number;
-    
     // Mobile optimizations
     mobileOptimized?: boolean;
     reducedMotion?: boolean;
-    
     // Performance settings
     gpuAcceleration?: boolean;
     webgpuMode?: boolean;
@@ -49,7 +42,6 @@
     title,
     subtitle,
     class: className = '',
-    
     // N64 specific defaults
     materialType = 'phong',
     meshComplexity = 'medium',
@@ -61,23 +53,19 @@
     spatialAudio = false,
     lightingModel = 'phong',
     shadowCasting = true,
-    
     // Interactive defaults
     hoverable = true,
     clickable = false,
     selectable = false,
     selected = false,
-    
     // Accessibility defaults
     ariaLabel,
     ariaDescribedby,
     role = 'article',
     tabindex,
-    
     // Mobile defaults
     mobileOptimized = true,
     reducedMotion = false,
-    
     // Performance defaults
     gpuAcceleration = true,
     webgpuMode = false,
@@ -112,7 +100,6 @@
   // Dynamic CSS classes based on props
   const cardClasses = $derived(() => {
     const classes = ['n64-card'];
-    
     // Material and mesh styling
     classes.push(`material-${materialType}`);
     classes.push(`mesh-${meshComplexity}`);
@@ -121,25 +108,21 @@
     classes.push(`aa-${antiAliasing}`);
     classes.push(`lighting-${lightingModel}`);
     classes.push(`distance-${renderDistance}`);
-    
     // State classes
     if (isHovered && hoverable) classes.push('hovered');
     if (isPressed && clickable) classes.push('pressed');
     if (selected && selectable) classes.push('selected');
     if (fogEffect) classes.push('fog-enabled');
     if (shadowCasting) classes.push('shadow-casting');
-    
     // Interaction classes
     if (hoverable) classes.push('hoverable');
     if (clickable) classes.push('clickable');
     if (selectable) classes.push('selectable');
-    
     // Performance classes
     if (gpuAcceleration) classes.push('gpu-accelerated');
     if (webgpuMode) classes.push('webgpu-active');
     if (mobileOptimized) classes.push('mobile-optimized');
     if (reducedMotion) classes.push('reduced-motion');
-    
     return classes.join(' ');
   });
 
@@ -147,7 +130,6 @@
   const cardStyles = $derived(() => {
     const depthZ = getDepthValue(depthEffect);
     const parallaxZ = parallaxDepth * 2;
-    
     return `
       --depth-z: ${depthZ}px;
       --parallax-depth: ${parallaxZ}px;
@@ -228,14 +210,12 @@
   function animationLoop(timestamp: number) {
     frameCount++;
     lastFrameTime = timestamp;
-    
     // Update 3D transformations for complex materials
     if (materialType === 'pbr' && !reducedMotion) {
       const time = frameCount * 0.016;
       rotationY = Math.sin(time * 0.5) * 2;
       translateZ = Math.sin(time * 0.3) * 1;
     }
-    
     // Continue animation for complex configurations
     if (materialType === 'pbr' || meshComplexity === 'ultra' || depthEffect === 'extreme') {
       requestAnimationFrame(animationLoop);
@@ -244,22 +224,17 @@
 
   function handleMouseMove(event: MouseEvent) {
     if (!hoverable || reducedMotion) return;
-    
     const rect = cardElement.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    
     const deltaX = (event.clientX - centerX) / rect.width;
     const deltaY = (event.clientY - centerY) / rect.height;
-    
     mouseX = deltaX;
     mouseY = deltaY;
-    
     // Update 3D rotation based on mouse position
     const maxRotation = 15;
     rotationY = deltaX * maxRotation;
     rotationX = -deltaY * maxRotation;
-    
     // Update depth translation
     translateZ = Math.abs(deltaX * deltaY) * 5;
 
@@ -272,7 +247,6 @@
 
   function handleMouseEnter() {
     if (!hoverable) return;
-    
     isHovered = true;
     playSpatialSound('hover', 880, 0.03);
     dispatch('mouseenter');
@@ -280,34 +254,29 @@
 
   function handleMouseLeave() {
     if (!hoverable) return;
-    
     isHovered = false;
     rotationX = 0;
     rotationY = 0;
     translateZ = 0;
     mouseX = 0;
     mouseY = 0;
-    
     dispatch('mouseleave');
   }
 
   function handleMouseDown() {
     if (!clickable) return;
-    
     isPressed = true;
     playSpatialSound('press', 220, 0.1);
   }
 
   function handleMouseUp() {
     if (!clickable) return;
-    
     isPressed = false;
     playSpatialSound('release', 440, 0.05);
   }
 
   function handleClick(event: MouseEvent) {
     if (!clickable) return;
-    
     playSpatialSound('click', 660, 0.08);
     dispatch('click', event);
   }
@@ -333,7 +302,6 @@
 
       oscillator.type = 'triangle';
       oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-      
       gainNode.gain.setValueAtTime(0, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);

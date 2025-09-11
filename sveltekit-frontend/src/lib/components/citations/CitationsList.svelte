@@ -9,7 +9,6 @@
   - Detective mode integration
 -->
 <script lang="ts">
-</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
@@ -97,7 +96,6 @@
     citations.update(items => {
       const sorted = [...items].sort((a, b) => {
         let comparison = 0;
-        
         switch (sortBy) {
           case 'relevance':
             comparison = (b.relevanceScore || 0) - (a.relevanceScore || 0);
@@ -121,7 +119,6 @@
   // Handle citation save
   function handleCitationSave(event: CustomEvent<Citation>) {
     const citation = event.detail;
-    
     if (editMode === 'create') {
       citations.update(items => [citation, ...items]);
     } else {
@@ -139,7 +136,6 @@
   // Handle citation deletion
   function handleCitationDelete(event: CustomEvent<string>) {
     const citationId = event.detail;
-    
     citations.update(items => items.filter(item => item.id !== citationId));
     applyClientSideSort();
     showEditor = false;

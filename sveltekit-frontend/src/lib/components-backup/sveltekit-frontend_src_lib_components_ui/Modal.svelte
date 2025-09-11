@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  
   interface Props {
     open?: boolean;
     title?: string;
@@ -11,7 +9,6 @@
     closeOnEscape?: boolean;
     onclose?: () => void;
   }
-  
   let {
     open = $bindable(false),
     title = '',
@@ -22,9 +19,7 @@
     children,
     footer
   }: Props & { children?: any, footer?: any } = $props();
-  
   let modalElement: HTMLDivElement = $state();
-  
   function handleClose() {
     open = false;
     onclose?.();
@@ -32,25 +27,22 @@
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape' && closeOnEscape) {
       handleClose();
-}
-}
+  }
+  }
   function handleOutsideClick(event: MouseEvent) {
     if (closeOnOutsideClick && event.target === modalElement) {
       handleClose();
-}
-}
+  }
+  }
   onMount(() => {
     const handleGlobalKeydown = (e: KeyboardEvent) => {
       if (open) handleKeydown(e);
     };
-    
     document.addEventListener('keydown', handleGlobalKeydown);
-    
     return () => {
       document.removeEventListener('keydown', handleGlobalKeydown);
     };
   });
-  
   const sizeClasses = $derived({
     sm: 'max-w-md',
     md: 'max-w-lg',

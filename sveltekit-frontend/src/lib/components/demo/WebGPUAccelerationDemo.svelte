@@ -1,6 +1,5 @@
 <!-- WebGPU Client-Side Acceleration Demo -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
   import {
@@ -247,8 +246,8 @@
       const gpuTime = performance.now() - startTime;
 
       // CPU comparison for smaller matrices
-let cpuTime = $state(0);
-let speedup = $state(0);
+  let cpuTime = $state(0);
+  let speedup = $state(0);
 
       if (matrixSize <= 128) {
         const cpuStartTime = performance.now();
@@ -281,9 +280,9 @@ let speedup = $state(0);
    * CPU vector similarity for comparison
    */
   function computeCPUSimilarity(vectorA: Float32Array, vectorB: Float32Array): number {
-let dotProduct = $state(0);
-let normA = $state(0);
-let normB = $state(0);
+  let dotProduct = $state(0);
+  let normA = $state(0);
+  let normB = $state(0);
 
     for (let i = 0; i < vectorA.length; i++) {
       dotProduct += vectorA[i] * vectorB[i];
@@ -306,7 +305,7 @@ let normB = $state(0);
 
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
-let sum = $state(0);
+  let sum = $state(0);
         for (let k = 0; k < size; k++) {
           sum += matrixA[i * size + k] * matrixB[k * size + j];
         }

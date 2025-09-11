@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { aiHistory } from "$lib/stores/aiHistoryStore";
   import Fuse from "fuse.js";
   import { onMount } from "svelte";

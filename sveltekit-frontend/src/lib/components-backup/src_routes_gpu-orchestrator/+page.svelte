@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import GPUProcessingOrchestrator from '$lib/components/GPUProcessingOrchestrator.svelte';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';

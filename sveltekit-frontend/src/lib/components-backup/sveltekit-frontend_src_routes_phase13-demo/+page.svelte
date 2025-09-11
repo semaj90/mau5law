@@ -2,7 +2,6 @@
 <!-- Complete integration of XState, WebGL, Enhanced RAG, and Context7 MCP -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import Card from '$lib/components/ui/Card.svelte';
@@ -51,10 +50,8 @@
         enableWebSocket: true,
         taskTimeout: 30000
       });
-      
       // 2. Initialize Enhanced RAG Engine
       ragEngine = createEnhancedRAGEngine(apiCoordinator.coordinator);
-      
       // 3. Initialize Context7 MCP Integration
       context7Integration = createContext7Phase13Integration({
         enableSemanticSearch: true,
@@ -66,7 +63,6 @@
       // 4. Initialize Phase 13 State Machine with WebGL
       if (canvas) {
         phase13System = createPhase13Integration(canvas);
-        
         // Subscribe to system stores
         phase13System.stores.webglStatus.subscribe((status: any) => {
           webglReady = status.initialized && status.streaming;
@@ -169,7 +165,6 @@
   // Demo functions
   async function startWebGLDemo() {
     if (!phase13System) return;
-    
     try {
       // Generate sample vertex data
       const vertices = new Float32Array([
@@ -177,7 +172,6 @@
          0.5, -0.5, 0.0,
          0.0,  0.5, 0.0
       ]);
-      
       phase13System.startVertexStreaming(vertices);
       console.log('🎮 WebGL vertex streaming started');
     } catch (error) {
@@ -187,10 +181,8 @@
 
   async function startAPICoordination() {
     if (!phase13System) return;
-    
     try {
       phase13System.startAPICoordination();
-      
       // Submit sample tasks
       if (apiCoordinator) {
         await apiCoordinator.submitTask({
@@ -202,7 +194,6 @@
           metadata: { estimatedDuration: 15000 }
         });
       }
-      
       console.log('📡 API coordination started');
     } catch (error) {
       console.error('API coordination failed:', error);
@@ -211,11 +202,9 @@
 
   async function performEnhancedRAGSearch() {
     if (!ragEngine) return;
-    
     try {
       ragActive = true;
       const startTime = Date.now();
-      
       const query = RAGHelpers.createLegalQuery(searchQuery, {
         caseId: "CASE-2024-001",
         jurisdiction: "Federal",
@@ -232,7 +221,6 @@
 
       ragQueryTime = Date.now() - startTime;
       searchResults = results.slice(0, 5);
-      
       console.log('🔍 Enhanced RAG search completed:', results.length, 'results');
     } catch (error) {
       console.error('RAG search failed:', error);
@@ -243,7 +231,6 @@
 
   async function getContext7Recommendations() {
     if (!context7Integration) return;
-    
     try {
       const recs = await context7Integration.getRecommendations(
         `Legal AI system optimization for: ${searchQuery}`,
@@ -253,7 +240,6 @@
           maxRecommendations: 5
         }
       );
-      
       recommendations = recs.slice(0, 3);
       console.log('🧠 Context7 recommendations received:', recs.length);
     } catch (error) {
@@ -263,7 +249,6 @@
 
   async function submitPositiveFeedback(resultIndex: number) {
     if (!ragEngine || !searchResults[resultIndex]) return;
-    
     try {
       await ragEngine.submitFeedback({
         queryId: "demo_query",
@@ -276,10 +261,8 @@
           timeSpentViewing: 5000
         }
       });
-      
       // Update PageRank
       phase13System.updatePageRank(searchResults[resultIndex].document.id, 0.1);
-      
       console.log('👍 Positive feedback submitted');
     } catch (error) {
       console.error('Feedback submission failed:', error);
@@ -289,18 +272,13 @@
   async function runFullDemo() {
     try {
       console.log('🚀 Starting full Phase 13 demo...');
-      
       await startWebGLDemo();
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       await startAPICoordination();
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       await performEnhancedRAGSearch();
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       await getContext7Recommendations();
-      
       console.log('✅ Full Phase 13 demo completed successfully!');
     } catch (error) {
       console.error('❌ Full demo failed:', error);

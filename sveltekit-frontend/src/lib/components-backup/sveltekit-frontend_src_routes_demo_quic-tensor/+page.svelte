@@ -1,197 +1,191 @@
 <script lang="ts">
-</script>
-	// QUIC Tensor Demo - Interactive Testing Interface
-	// Tests did-you-mean suggestions and tensor operations
-	
-	import { onMount, onDestroy } from 'svelte';
-	import { QuicTensorClient, TensorUtils, type Tensor4DInfo } from '$lib/services/quic-tensor-client';
-	import { DidYouMeanClient, SuggestionUtils, type SuggestionResponse } from '$lib/services/did-you-mean-client';
-	import Button from '$lib/components/ui/Button.svelte';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  	// QUIC Tensor Demo - Interactive Testing Interface
+  	// Tests did-you-mean suggestions and tensor operations
+  	import { onMount, onDestroy } from 'svelte';
+  	import { QuicTensorClient, TensorUtils, type Tensor4DInfo } from '$lib/services/quic-tensor-client';
+  	import { DidYouMeanClient, SuggestionUtils, type SuggestionResponse } from '$lib/services/did-you-mean-client';
+  	import Button from '$lib/components/ui/Button.svelte';
+  	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 
-	// Client instances
-	const tensorClient = new QuicTensorClient();
-	const suggestionClient = new DidYouMeanClient();
+  	// Client instances
+  	const tensorClient = new QuicTensorClient();
+  	const suggestionClient = new DidYouMeanClient();
 
-	// Reactive state
-	let searchQuery = $state('');
-	let suggestions = $state<SuggestionResponse | null>(null);
-	let tensorInfo = $state<Tensor4DInfo | null>(null);
-	let isLoading = $state(false);
-	let error = $state<string | null>(null);
-	let healthStatus = $state<any>(null);
+  	// Reactive state
+  	let searchQuery = $state('');
+  	let suggestions = $state<SuggestionResponse | null>(null);
+  	let tensorInfo = $state<Tensor4DInfo | null>(null);
+  	let isLoading = $state(false);
+  	let error = $state<string | null>(null);
+  	let healthStatus = $state<any>(null);
 
-	// Demo data
-	let selectedDocument = $state('contract');
-	const sampleDocuments = {
-		contract: {
-			text: 'This Service Agreement is entered into between the Client and the Service Provider. The Provider agrees to deliver legal services including contract review, liability assessment, and compliance verification.',
-			type: 'contract',
-			practiceArea: 'corporate'
-		},
-		litigation: {
-			text: 'The plaintiff alleges that the defendant breached their fiduciary duty, resulting in damages of $500,000. Evidence includes email correspondence and financial records.',
-			type: 'complaint',
-			practiceArea: 'civil'
-		},
-		criminal: {
-			text: 'The defendant is charged with fraud in the first degree. The prosecution will present evidence of financial misconduct and witness testimony.',
-			type: 'indictment',
-			practiceArea: 'criminal'
-		}
-	};
+  	// Demo data
+  	let selectedDocument = $state('contract');
+  	const sampleDocuments = {
+  		contract: {
+  			text: 'This Service Agreement is entered into between the Client and the Service Provider. The Provider agrees to deliver legal services including contract review, liability assessment, and compliance verification.',
+  			type: 'contract',
+  			practiceArea: 'corporate'
+  		},
+  		litigation: {
+  			text: 'The plaintiff alleges that the defendant breached their fiduciary duty, resulting in damages of $500,000. Evidence includes email correspondence and financial records.',
+  			type: 'complaint',
+  			practiceArea: 'civil'
+  		},
+  		criminal: {
+  			text: 'The defendant is charged with fraud in the first degree. The prosecution will present evidence of financial misconduct and witness testimony.',
+  			type: 'indictment',
+  			practiceArea: 'criminal'
+  		}
+  	};
 
-	// Suggestion demo queries
-	const sampleQueries = [
-		'contract liability',
-		'defendant rights',
-		'evidence admisibility',
-		'plaintif damages',
-		'legal precednt'
-	];
+  	// Suggestion demo queries
+  	const sampleQueries = [
+  		'contract liability',
+  		'defendant rights',
+  		'evidence admisibility',
+  		'plaintif damages',
+  		'legal precednt'
+  	];
 
-	let selectedQuery = $state(0);
-	let isStreaming = $state(false);
+  	let selectedQuery = $state(0);
+  	let isStreaming = $state(false);
 
-	// Auto-suggestion debounce timer
-	let debounceTimer: NodeJS.Timeout;
+  	// Auto-suggestion debounce timer
+  	let debounceTimer: NodeJS.Timeout;
 
-	// Handle search query changes
-	function handleQueryChange() {
-		if (debounceTimer) clearTimeout(debounceTimer);
-		
-		debounceTimer = setTimeout(async () => {
-			if (searchQuery.trim().length > 2) {
-				await fetchSuggestions();
-			} else {
-				suggestions = null;
-			}
-		}, 150);
-	}
+  	// Handle search query changes
+  	function handleQueryChange() {
+  		if (debounceTimer) clearTimeout(debounceTimer);
+  		debounceTimer = setTimeout(async () => {
+  			if (searchQuery.trim().length > 2) {
+  				await fetchSuggestions();
+  			} else {
+  				suggestions = null;
+  			}
+  		}, 150);
+  	}
 
-	// Fetch suggestions
-	async function fetchSuggestions() {
-		if (!searchQuery.trim()) return;
-		
-		isLoading = true;
-		error = null;
-		
-		try {
-			const result = await suggestionClient.getSuggestions(searchQuery, 'legal_research');
-			suggestions = result;
-		} catch (err) {
-			error = `Suggestion error: ${err instanceof Error ? err.message : 'Unknown error'}`;
-			console.error('Suggestion error:', err);
-		} finally {
-			isLoading = false;
-		}
-	}
+  	// Fetch suggestions
+  	async function fetchSuggestions() {
+  		if (!searchQuery.trim()) return;
+  		isLoading = true;
+  		error = null;
+  		try {
+  			const result = await suggestionClient.getSuggestions(searchQuery, 'legal_research');
+  			suggestions = result;
+  		} catch (err) {
+  			error = `Suggestion error: ${err instanceof Error ? err.message : 'Unknown error'}`;
+  			console.error('Suggestion error:', err);
+  		} finally {
+  			isLoading = false;
+  		}
+  	}
 
-	// Process document into tensor
-	async function processDocument() {
-		const doc = sampleDocuments[selectedDocument as keyof typeof sampleDocuments];
-		if (!doc) return;
+  	// Process document into tensor
+  	async function processDocument() {
+  		const doc = sampleDocuments[selectedDocument as keyof typeof sampleDocuments];
+  		if (!doc) return;
 
-		isLoading = true;
-		error = null;
+  		isLoading = true;
+  		error = null;
 
-		try {
-			const result = await tensorClient.processLegalDocument(
-				`doc_${Date.now()}`,
-				doc.text,
-				doc.type,
-				doc.practiceArea
-			);
-			tensorInfo = result;
-		} catch (err) {
-			error = `Tensor processing error: ${err instanceof Error ? err.message : 'Unknown error'}`;
-			console.error('Tensor error:', err);
-		} finally {
-			isLoading = false;
-		}
-	}
+  		try {
+  			const result = await tensorClient.processLegalDocument(
+  				`doc_${Date.now()}`,
+  				doc.text,
+  				doc.type,
+  				doc.practiceArea
+  			);
+  			tensorInfo = result;
+  		} catch (err) {
+  			error = `Tensor processing error: ${err instanceof Error ? err.message : 'Unknown error'}`;
+  			console.error('Tensor error:', err);
+  		} finally {
+  			isLoading = false;
+  		}
+  	}
 
-	// Test tricubic interpolation
-	async function testInterpolation() {
-		if (!tensorInfo) {
-			error = 'No tensor available for interpolation';
-			return;
-		}
+  	// Test tricubic interpolation
+  	async function testInterpolation() {
+  		if (!tensorInfo) {
+  			error = 'No tensor available for interpolation';
+  			return;
+  		}
 
-		isLoading = true;
-		error = null;
+  		isLoading = true;
+  		error = null;
 
-		try {
-			const result = await tensorClient.tricubicInterpolation(
-				tensorInfo.tensor_id,
-				[0.5, 0.5, 0.5],
-				{
-					points: [[[0.1, 0.2], [0.3, 0.4]], [[0.5, 0.6], [0.7, 0.8]]],
-					coordinates: [0.5, 0.5, 0.5],
-					smoothness: 0.8
-				}
-			);
-			console.log('Interpolation result:', result);
-			alert(`Interpolation completed! Result dimension: ${result.dimension}, Processing time: ${result.quic_processing_time_ms}ms`);
-		} catch (err) {
-			error = `Interpolation error: ${err instanceof Error ? err.message : 'Unknown error'}`;
-			console.error('Interpolation error:', err);
-		} finally {
-			isLoading = false;
-		}
-	}
+  		try {
+  			const result = await tensorClient.tricubicInterpolation(
+  				tensorInfo.tensor_id,
+  				[0.5, 0.5, 0.5],
+  				{
+  					points: [[[0.1, 0.2], [0.3, 0.4]], [[0.5, 0.6], [0.7, 0.8]]],
+  					coordinates: [0.5, 0.5, 0.5],
+  					smoothness: 0.8
+  				}
+  			);
+  			console.log('Interpolation result:', result);
+  			alert(`Interpolation completed! Result dimension: ${result.dimension}, Processing time: ${result.quic_processing_time_ms}ms`);
+  		} catch (err) {
+  			error = `Interpolation error: ${err instanceof Error ? err.message : 'Unknown error'}`;
+  			console.error('Interpolation error:', err);
+  		} finally {
+  			isLoading = false;
+  		}
+  	}
 
-	// Check system health
-	async function checkHealth() {
-		isLoading = true;
-		error = null;
+  	// Check system health
+  	async function checkHealth() {
+  		isLoading = true;
+  		error = null;
 
-		try {
-			const [tensorHealth, streamStatus] = await Promise.all([
-				tensorClient.checkHealth(),
-				tensorClient.getStreamStatus()
-			]);
-			
-			healthStatus = {
-				tensor: tensorHealth,
-				streams: streamStatus
-			};
-		} catch (err) {
-			error = `Health check error: ${err instanceof Error ? err.message : 'Unknown error'}`;
-			console.error('Health check error:', err);
-		} finally {
-			isLoading = false;
-		}
-	}
+  		try {
+  			const [tensorHealth, streamStatus] = await Promise.all([
+  				tensorClient.checkHealth(),
+  				tensorClient.getStreamStatus()
+  			]);
+  			healthStatus = {
+  				tensor: tensorHealth,
+  				streams: streamStatus
+  			};
+  		} catch (err) {
+  			error = `Health check error: ${err instanceof Error ? err.message : 'Unknown error'}`;
+  			console.error('Health check error:', err);
+  		} finally {
+  			isLoading = false;
+  		}
+  	}
 
-	// Use sample query
-	function useSampleQuery(index: number) {
-		selectedQuery = index;
-		searchQuery = sampleQueries[index];
-		handleQueryChange();
-	}
+  	// Use sample query
+  	function useSampleQuery(index: number) {
+  		selectedQuery = index;
+  		searchQuery = sampleQueries[index];
+  		handleQueryChange();
+  	}
 
-	// Clear cache
-	async function clearCache() {
-		try {
-			await suggestionClient.clearCache();
-			suggestions = null;
-			alert('Cache cleared successfully');
-		} catch (err) {
-			error = `Cache clear error: ${err instanceof Error ? err.message : 'Unknown error'}`;
-		}
-	}
+  	// Clear cache
+  	async function clearCache() {
+  		try {
+  			await suggestionClient.clearCache();
+  			suggestions = null;
+  			alert('Cache cleared successfully');
+  		} catch (err) {
+  			error = `Cache clear error: ${err instanceof Error ? err.message : 'Unknown error'}`;
+  		}
+  	}
 
-	// Cleanup on destroy
-	onDestroy(() => {
-		if (debounceTimer) clearTimeout(debounceTimer);
-		suggestionClient.cleanup();
-	});
+  	// Cleanup on destroy
+  	onDestroy(() => {
+  		if (debounceTimer) clearTimeout(debounceTimer);
+  		suggestionClient.cleanup();
+  	});
 
-	// Auto health check on mount
-	onMount(() => {
-		checkHealth();
-	});
+  	// Auto health check on mount
+  	onMount(() => {
+  		checkHealth();
+  	});
 </script>
 
 <svelte:head>

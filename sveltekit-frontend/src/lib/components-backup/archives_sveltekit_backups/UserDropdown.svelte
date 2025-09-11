@@ -1,39 +1,32 @@
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import { avatarStore } from "../stores/avatarStore";
-	import Avatar from './Avatar.svelte';
-	
-	export let user: unknown = null;
-	
-	let dropdownOpen = false;
-	let dropdownElement: HTMLElement;
-	
-	onMount(() => {
-		// Close dropdown when clicking outside
-		function handleClickOutside(event: MouseEvent) {
-			if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-				dropdownOpen = false;
-			}
-		}
-		
-		document.addEventListener('click', handleClickOutside);
-		return () => document.removeEventListener('click', handleClickOutside);
-	});
-	
-	function toggleDropdown() {
-		dropdownOpen = !dropdownOpen;
-	}
-	
-	function handleLogout() {
-		// Reset avatar store
-		avatarStore.reset();
-		// Navigate to logout endpoint
-		fetch('/api/auth/logout', { method: 'POST' })
-			.then(() => {
-				window.location.href = '/login';
-			});
-	}
+  	import { onMount } from 'svelte';
+  	import { avatarStore } from "../stores/avatarStore";
+  	import Avatar from './Avatar.svelte';
+  	export let user: unknown = null;
+  	let dropdownOpen = false;
+  	let dropdownElement: HTMLElement;
+  	onMount(() => {
+  		// Close dropdown when clicking outside
+  		function handleClickOutside(event: MouseEvent) {
+  			if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
+  				dropdownOpen = false;
+  			}
+  		}
+  		document.addEventListener('click', handleClickOutside);
+  		return () => document.removeEventListener('click', handleClickOutside);
+  	});
+  	function toggleDropdown() {
+  		dropdownOpen = !dropdownOpen;
+  	}
+  	function handleLogout() {
+  		// Reset avatar store
+  		avatarStore.reset();
+  		// Navigate to logout endpoint
+  		fetch('/api/auth/logout', { method: 'POST' })
+  			.then(() => {
+  				window.location.href = '/login';
+  			});
+  	}
 </script>
 
 <div class="mx-auto px-4 max-w-7xl" bind:this={dropdownElement}>

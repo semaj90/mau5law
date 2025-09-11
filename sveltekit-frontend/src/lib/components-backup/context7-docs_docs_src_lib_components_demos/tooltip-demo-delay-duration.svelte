@@ -1,9 +1,8 @@
 <script lang="ts">
-</script>
-	import DemoContainer from "../demo-container.svelte";
-	import TooltipDemoCustom from "./tooltip-demo-custom.svelte";
+  	import DemoContainer from "../demo-container.svelte";
+  	import TooltipDemoCustom from "./tooltip-demo-custom.svelte";
 
-	const durations = [200, 1000, 2500];
+  	const durations = [200, 1000, 2500];
 </script>
 
 <DemoContainer size="sm" wrapperClass="rounded-bl-card rounded-br-card">

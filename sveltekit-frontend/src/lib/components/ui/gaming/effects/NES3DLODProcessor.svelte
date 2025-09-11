@@ -1,6 +1,5 @@
 <!-- 3D NES.css LOD Effects for Document Processing -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { quintOut, elasticOut } from 'svelte/easing';
@@ -73,7 +72,6 @@
     renderComplexity: 1.0,
     lastFrameTimestamp: 0
   });
-  
   let adaptiveQuality = $state<'8BIT_NES' | '16BIT_SNES' | '32BIT_N64' | '64BIT_PS2' | 'ULTRA_YORHA'>('32BIT_N64');
   let qualityTier = $state({
     name: '32BIT_N64',
@@ -85,7 +83,6 @@
     shadowQuality: 'medium',
     textureFiltering: 'bilinear'
   });
-  
   let performanceHistory: number[] = [];
   let lastQualityAdjustment = 0;
   let frameCounter = 0;
@@ -240,11 +237,9 @@
     // Initialize GPU cache for adaptive rendering
     gpuCache = new WebGPUSOMCache();
     await gpuCache.initializeWebGPU();
-    
     if (adaptiveRendering) {
       initializeAdaptiveEngine();
     }
-    
     if (processing) {
       startProcessingAnimation();
     }
@@ -281,15 +276,12 @@
 
   function initializeParticles() {
     particles = [];
-    
     const targetParticleCount = adaptiveRendering 
       ? Math.floor(qualityTier.maxParticles * qualityTier.particleMultiplier)
       : currentLOD.particleCount;
-    
     for (let i = 0; i < targetParticleCount; i++) {
       particles.push(createParticle('data'));
     }
-    
     console.log(`🎮 Initialized ${targetParticleCount} particles for quality tier: ${qualityTier.name}`);
   }
 
@@ -321,15 +313,12 @@
 
   function animate() {
     const frameStartTime = performance.now();
-    
     updateParticles();
     updateCamera();
-    
     if (adaptiveRendering) {
       updatePerformanceMetrics(frameStartTime);
       evaluateQualityAdjustment();
     }
-    
     animationFrame = requestAnimationFrame(() => {
       if (processing) animate();
     });
@@ -337,7 +326,6 @@
 
   function updateParticles() {
     const now = Date.now();
-    
     particles.forEach((particle, index) => {
       // Update position
       particle.x += particle.velocity.x;
@@ -364,7 +352,6 @@
             const dy = Math.random() * 100 - particle.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             const force = connection.strength * 0.001;
-            
             particle.velocity.x += (dx / Math.max(distance, 1)) * force;
             particle.velocity.y += (dy / Math.max(distance, 1)) * force;
           });
@@ -385,7 +372,6 @@
 
       // Life decay
       particle.life = Math.max(0, particle.life - 0.002);
-      
       // Regenerate dead particles
       if (particle.life <= 0) {
         particles[index] = createParticle(particle.type);
@@ -404,10 +390,8 @@
     rotationX += 0.5;
     rotationY += 0.3;
     rotationZ += 0.1;
-    
     // Breathing zoom effect
     zoom = 1 + Math.sin(Date.now() * 0.001) * 0.1;
-    
     // Pulse intensity based on processing stage
     const stageIntensities = {
       parsing: 0.3,
@@ -416,7 +400,6 @@
       synthesizing: 1.0,
       complete: 0.2
     };
-    
     const targetIntensity = stageIntensities[processingStage];
     pulseIntensity += (targetIntensity - pulseIntensity) * 0.05;
   }
@@ -431,7 +414,6 @@
 
     for (const { stage, duration } of stages) {
       if (!processing) break;
-      
       processingStage = stage as any;
       await new Promise(resolve => setTimeout(resolve, duration));
     }
@@ -446,7 +428,6 @@
     const opacity = Math.min(1, particle.life * 2);
     const perspective = 1000;
     const translateZ = particle.z;
-    
     return `
       position: absolute;
       left: 50%;
@@ -473,11 +454,9 @@
     const adaptiveFilter = adaptiveRendering 
       ? `${currentStyle.filter} brightness(${1 + pulseIntensity * qualityTier.effectIntensity})`
       : `${currentStyle.filter} brightness(${1 + pulseIntensity * 0.3})`;
-    
     const imageRendering = adaptiveRendering && qualityTier.pixelated 
       ? 'pixelated'
       : qualityTier.textureFiltering === 'nearest' ? 'pixelated' : 'auto';
-    
     return `
       transform: 
         perspective(1000px)
@@ -528,11 +507,9 @@
       complexity_level: document?.complexity > 0.7 ? 'advanced' : 'intermediate',
       performance_target: performanceTarget
     });
-    
     // Set initial quality tier based on performance target
     adaptiveQuality = getInitialQualityTier(performanceTarget);
     qualityTier = qualityTiers[adaptiveQuality];
-    
     console.log('🚀 Adaptive Rendering Engine initialized:', {
       quality: adaptiveQuality,
       target: performanceTarget,
@@ -558,25 +535,20 @@
   function updatePerformanceMetrics(frameStartTime: number): void {
     const frameEndTime = performance.now();
     const frameTime = frameEndTime - frameStartTime;
-    
     // Calculate FPS
     const currentFPS = 1000 / Math.max(frameTime, 1);
-    
     // Update metrics with exponential moving average
     performanceMetrics.fps = performanceMetrics.fps * 0.9 + currentFPS * 0.1;
     performanceMetrics.frameTime = performanceMetrics.frameTime * 0.9 + frameTime * 0.1;
     performanceMetrics.lastFrameTimestamp = frameEndTime;
-    
     // Update performance history
     performanceHistory.push(currentFPS);
     if (performanceHistory.length > 60) { // Keep last 60 frames (1 second at 60fps)
       performanceHistory.shift();
     }
-    
     // Update cache hit rate from RL cache
     const cacheStats = reinforcementLearningCache.getLearningState();
     performanceMetrics.cacheHitRate = cacheStats.hitRate;
-    
     frameCounter++;
   }
 
@@ -585,22 +557,17 @@
    */
   function evaluateQualityAdjustment(): void {
     const now = Date.now();
-    
     // Only adjust every 2 seconds to avoid oscillation
     if (now - lastQualityAdjustment < 2000) return;
-    
     // Calculate average FPS over recent frames
     const avgFPS = performanceHistory.length > 0 
       ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length
       : 60;
-    
     // Calculate performance score (0-1, where 1 is perfect)
     const performanceScore = calculatePerformanceScore(avgFPS);
-    
     // Determine if adjustment is needed
     const shouldUpgrade = performanceScore > 0.85 && canUpgradeQuality();
     const shouldDowngrade = performanceScore < 0.7 && canDowngradeQuality();
-    
     if (shouldUpgrade) {
       upgradeQuality();
       lastQualityAdjustment = now;
@@ -615,7 +582,6 @@
    */
   function calculatePerformanceScore(avgFPS: number): number {
     let score = 0;
-    
     // FPS contribution (60% weight)
     const fpsTargets = {
       'smooth': 60,
@@ -625,14 +591,11 @@
     const targetFPS = fpsTargets[performanceTarget] || 55;
     const fpsScore = Math.min(avgFPS / targetFPS, 1.2); // Allow slight overclock
     score += fpsScore * 0.6;
-    
     // Cache hit rate contribution (20% weight)
     score += performanceMetrics.cacheHitRate * 0.2;
-    
     // Frame consistency contribution (20% weight)
     const frameConsistency = calculateFrameConsistency();
     score += frameConsistency * 0.2;
-    
     return Math.min(score, 1.0);
   }
 
@@ -641,11 +604,9 @@
    */
   function calculateFrameConsistency(): number {
     if (performanceHistory.length < 10) return 0.8; // Default for insufficient data
-    
     const mean = performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length;
     const variance = performanceHistory.reduce((sum, fps) => sum + Math.pow(fps - mean, 2), 0) / performanceHistory.length;
     const stdDev = Math.sqrt(variance);
-    
     // Convert to consistency score (lower std dev = higher consistency)
     return Math.max(0, 1 - (stdDev / mean));
   }
@@ -674,7 +635,6 @@
   async function upgradeQuality(): Promise<void> {
     const qualityOrder: Array<typeof adaptiveQuality> = ['8BIT_NES', '16BIT_SNES', '32BIT_N64', '64BIT_PS2', 'ULTRA_YORHA'];
     const currentIndex = qualityOrder.indexOf(adaptiveQuality);
-    
     if (currentIndex < qualityOrder.length - 1) {
       const newQuality = qualityOrder[currentIndex + 1];
       await transitionToQuality(newQuality, 'upgrade');
@@ -687,7 +647,6 @@
   async function downgradeQuality(): Promise<void> {
     const qualityOrder: Array<typeof adaptiveQuality> = ['8BIT_NES', '16BIT_SNES', '32BIT_N64', '64BIT_PS2', 'ULTRA_YORHA'];
     const currentIndex = qualityOrder.indexOf(adaptiveQuality);
-    
     if (currentIndex > 0) {
       const newQuality = qualityOrder[currentIndex - 1];
       await transitionToQuality(newQuality, 'downgrade');
@@ -699,7 +658,6 @@
    */
   async function transitionToQuality(newQuality: typeof adaptiveQuality, direction: 'upgrade' | 'downgrade'): Promise<void> {
     console.log(`🎮 Quality ${direction}: ${adaptiveQuality} → ${newQuality}`);
-    
     // Update predictive engine with quality change
     await predictiveAssetEngine.updateUserState(userId, 'rendering_session', `quality_${direction}`, {
       previous_quality: adaptiveQuality,
@@ -707,19 +665,15 @@
       performance_score: calculatePerformanceScore(performanceMetrics.fps),
       cache_hit_rate: performanceMetrics.cacheHitRate
     });
-    
     // Smooth transition: adjust particles gradually
     const oldTier = qualityTiers[adaptiveQuality];
     const newTier = qualityTiers[newQuality];
-    
     // Update quality state
     adaptiveQuality = newQuality;
     qualityTier = newTier;
-    
     // Adjust particle count smoothly
     const targetParticleCount = Math.floor(newTier.maxParticles * newTier.particleMultiplier);
     await adjustParticleCount(targetParticleCount);
-    
     // Update cache with quality preference
     await gpuCache.storeResult(`user_quality_preference_${userId}`, {
       quality: newQuality,
@@ -738,17 +692,13 @@
   async function adjustParticleCount(targetCount: number): Promise<void> {
     const currentCount = particles.length;
     const difference = targetCount - currentCount;
-    
     if (difference === 0) return;
-    
     // Gradual adjustment over 1 second
     const steps = 10;
     const stepSize = Math.ceil(Math.abs(difference) / steps);
     const stepDelay = 100; // milliseconds
-    
     for (let step = 0; step < steps; step++) {
       await new Promise(resolve => setTimeout(resolve, stepDelay));
-      
       if (difference > 0) {
         // Add particles
         const toAdd = Math.min(stepSize, targetCount - particles.length);
@@ -760,7 +710,6 @@
         const toRemove = Math.min(stepSize, particles.length - targetCount);
         particles.splice(0, toRemove);
       }
-      
       if (particles.length === targetCount) break;
     }
   }
@@ -778,7 +727,6 @@
     const avgFPS = performanceHistory.length > 0 
       ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length
       : 60;
-    
     return {
       tier: qualityTier.name,
       fps: Math.round(avgFPS),

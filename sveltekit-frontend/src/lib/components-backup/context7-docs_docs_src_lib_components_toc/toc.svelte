@@ -1,56 +1,55 @@
 <script lang="ts">
-</script>
-	import type { TableOfContents } from "$lib/utils/use-toc.svelte.js";
-	import { onMount } from "svelte";
-	import TocTree from "./toc-tree.svelte";
-	import { ScrollArea } from "bits-ui";
-	import List from "phosphor-svelte/lib/List";
+  	import type { TableOfContents } from "$lib/utils/use-toc.svelte.js";
+  	import { onMount } from "svelte";
+  	import TocTree from "./toc-tree.svelte";
+  	import { ScrollArea } from "bits-ui";
+  	import List from "phosphor-svelte/lib/List";
 
-	let { toc }: { toc: TableOfContents } = $props();
+  	let { toc }: { toc: TableOfContents } = $props();
 
-	let activeUrl = $state<string | null>(null);
+  	let activeUrl = $state<string | null>(null);
 
-	onMount(() => {
-		const root = document.getElementById("main-content");
-		if (!root) return;
-		let elements = root.querySelectorAll("h2, h3");
+  	onMount(() => {
+  		const root = document.getElementById("main-content");
+  		if (!root) return;
+  		let elements = root.querySelectorAll("h2, h3");
 
-		let sections: Map<Element, string> = new Map();
-		let currentSectionId: string | null = null;
-		for (let element of elements) {
-			if (element.id && (element.tagName === "H2" || element.tagName === "H3"))
-				currentSectionId = element.id;
-			if (!currentSectionId) continue;
+  		let sections: Map<Element, string> = new Map();
+  		let currentSectionId: string | null = null;
+  		for (let element of elements) {
+  			if (element.id && (element.tagName === "H2" || element.tagName === "H3"))
+  				currentSectionId = element.id;
+  			if (!currentSectionId) continue;
 
-			sections.set(element, `#${currentSectionId}`);
-		}
+  			sections.set(element, `#${currentSectionId}`);
+  		}
 
-		let visibleElements = new Set<Element>();
+  		let visibleElements = new Set<Element>();
 
-		const callback = (entries: IntersectionObserverEntry[]) => {
-			for (let entry of entries) {
-				if (entry.isIntersecting) {
-					visibleElements.add(entry.target);
-				} else {
-					visibleElements.delete(entry.target);
-				}
-			}
+  		const callback = (entries: IntersectionObserverEntry[]) => {
+  			for (let entry of entries) {
+  				if (entry.isIntersecting) {
+  					visibleElements.add(entry.target);
+  				} else {
+  					visibleElements.delete(entry.target);
+  				}
+  			}
 
-			let firstVisibleSection = Array.from(sections.entries()).find(([element]) =>
-				visibleElements.has(element)
-			);
-			if (!firstVisibleSection) return;
-			activeUrl = firstVisibleSection[1];
-		};
+  			let firstVisibleSection = Array.from(sections.entries()).find(([element]) =>
+  				visibleElements.has(element)
+  			);
+  			if (!firstVisibleSection) return;
+  			activeUrl = firstVisibleSection[1];
+  		};
 
-		const observer = new IntersectionObserver(callback, {
-			rootMargin: "-70px 0px",
-		});
+  		const observer = new IntersectionObserver(callback, {
+  			rootMargin: "-70px 0px",
+  		});
 
-		Array.from(sections.keys()).forEach((element) => observer.observe(element));
+  		Array.from(sections.keys()).forEach((element) => observer.observe(element));
 
-		return () => observer.disconnect();
-	});
+  		return () => observer.disconnect();
+  	});
 </script>
 
 <ScrollArea.Root>

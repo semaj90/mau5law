@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { AdvancedEvidenceCanvas } from '$lib/canvas/advanced-evidence-canvas.js';
 
@@ -48,7 +47,6 @@
         height: 800,
         backgroundColor: '#0f172a'
       });
-      
       // Render initial evidence
       renderEvidence();
       mounted = true;
@@ -57,27 +55,21 @@
 
   function renderEvidence() {
     if (!evidenceCanvas) return;
-    
     evidenceCanvas.clear();
-    
     // Render each evidence item
     evidenceData.forEach(item => {
       const ctx = evidenceCanvas.ctx;
-      
       // Draw background
       ctx.fillStyle = item.color;
       ctx.fillRect(item.x, item.y, item.width, item.height);
-      
       // Draw border
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
       ctx.strokeRect(item.x, item.y, item.width, item.height);
-      
       // Draw title
       ctx.fillStyle = '#ffffff';
       ctx.font = '14px system-ui';
       ctx.fillText(item.title, item.x + 10, item.y + 25);
-      
       // Draw type indicator
       ctx.fillStyle = '#000000';
       ctx.font = '12px system-ui';
@@ -96,7 +88,6 @@
       height: 120,
       color: '#8b5cf6'
     };
-    
     evidenceData = [...evidenceData, newItem];
     renderEvidence();
   }

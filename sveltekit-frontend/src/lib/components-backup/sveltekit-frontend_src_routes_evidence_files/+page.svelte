@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     caseId: string
   }
@@ -38,7 +37,6 @@
   import { onMount } from "svelte";
 
   // Props
-  
   // State
   let evidenceFiles: any[] = [];
   let filteredFiles: any[] = [];
@@ -76,18 +74,18 @@
   // Get caseId from URL if not provided as prop
   $effect(() => { if (!caseId) {
     caseId = $page.url.searchParams.get("caseId") || $page.params.id || "";
-}
+  }
   onMount(() => {
     if (caseId) {
       loadEvidenceFiles();
-}
+  }
   });
 
   async function loadEvidenceFiles() {
     if (!caseId) {
       error = "Case ID is required";
       return;
-}
+  }
     loading = true;
     error = null;
 
@@ -103,7 +101,7 @@
         filterAndSortFiles();
       } else {
         error = data.error || "Failed to load evidence files";
-}
+  }
     } catch (err) {
       console.error("Error loading evidence:", err);
       error = "Failed to load evidence files";
@@ -115,7 +113,7 @@
       });
     } finally {
       loading = false;
-}}
+  }}
   function filterAndSortFiles() {
     let filtered = [...evidenceFiles];
 
@@ -128,11 +126,11 @@
           f.fileName?.toLowerCase().includes(query) ||
           f.description?.toLowerCase().includes(query)
       );
-}
+  }
     // Apply category filter
     if (selectedCategory) {
       filtered = filtered.filter((f) => f.evidenceType === selectedCategory);
-}
+  }
     // Apply sorting
     filtered.sort((a, b) => {
       let aValue = a[sortBy];
@@ -147,25 +145,25 @@
       } else if (typeof aValue === "string") {
         aValue = aValue.toLowerCase();
         bValue = bValue.toLowerCase();
-}
+  }
       if (sortOrder === "asc") {
         return aValue > bValue ? 1 : -1;
       } else {
         return aValue < bValue ? 1 : -1;
-}
+  }
     });
 
     filteredFiles = filtered;
-}
+  }
   // File upload handlers
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
-}
+  }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
-}
+  }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
@@ -177,7 +175,7 @@
         showUploadModal = true;
       } else {
         uploadMultipleFiles();
-}}}
+  }}}
   function handleFileSelect(e: Event) {
     const input = e.target as HTMLInputElement;
     uploadFiles = input.files;
@@ -186,7 +184,7 @@
         showUploadModal = true;
       } else {
         uploadMultipleFiles();
-}}}
+  }}}
   async function uploadSingleFile() {
     if (!uploadFiles || uploadFiles.length === 0 || !caseId) return;
 
@@ -223,7 +221,7 @@
         await loadEvidenceFiles();
       } else {
         throw new Error(result.error || "Upload failed");
-}
+  }
     } catch (err) {
       console.error("Upload error:", err);
       notifications.add({
@@ -235,7 +233,7 @@
     } finally {
       uploading = false;
       uploadProgress = 0;
-}}
+  }}
   async function uploadMultipleFiles() {
     if (!uploadFiles || uploadFiles.length === 0 || !caseId) return;
 
@@ -270,12 +268,12 @@
             message: `${result.failureCount} files failed to upload`,
             duration: 8000,
           });
-}
+  }
         uploadFiles = null;
         await loadEvidenceFiles();
       } else {
         throw new Error(result.error || "Bulk upload failed");
-}
+  }
     } catch (err) {
       console.error("Bulk upload error:", err);
       notifications.add({
@@ -287,26 +285,26 @@
     } finally {
       uploading = false;
       uploadProgress = 0;
-}}
+  }}
   // Selection handlers
   function toggleFileSelection(fileId: string) {
     if (selectedFiles.has(fileId)) {
       selectedFiles.delete(fileId);
     } else {
       selectedFiles.add(fileId);
-}
+  }
     selectedFiles = selectedFiles;
     showBulkActions = selectedFiles.size > 0;
-}
+  }
   function selectAllFiles() {
     if (selectedFiles.size === filteredFiles.length) {
       selectedFiles.clear();
     } else {
       filteredFiles.forEach((f) => selectedFiles.add(f.id));
-}
+  }
     selectedFiles = selectedFiles;
     showBulkActions = selectedFiles.size > 0;
-}
+  }
   // Utility functions
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return "0 Bytes";
@@ -314,7 +312,7 @@
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-}
+  }
   function getFileIcon(evidenceType: string) {
     switch (evidenceType) {
       case "image":
@@ -329,14 +327,14 @@
         return Archive;
       default:
         return File;
-}}
+  }}
   function getFileUrl(file: any): string {
     return file.fileUrl || `/uploads/${caseId}/${file.fileName}`;
-}
+  }
   // Reactive statements
   $effect(() => { if (searchQuery || selectedCategory || sortBy || sortOrder) {
     filterAndSortFiles();
-}
+  }
 </script>
 
 <svelte:head>

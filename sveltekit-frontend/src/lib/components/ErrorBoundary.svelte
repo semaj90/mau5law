@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -26,9 +25,9 @@
     autoHide = true, // Auto-hide non-critical errors
     maxWidth = "max-w-lg" // Maximum width class
   } = $props();
-let currentError = $state<UserFriendlyError | null >(null);
-let showDetails = $state(false);
-let retryInProgress = $state(false);
+  let currentError = $state<UserFriendlyError | null >(null);
+  let showDetails = $state(false);
+  let retryInProgress = $state(false);
 
   onMount(() => {
     const unsubscribe = errorHandler.subscribe((error) => {
@@ -80,10 +79,10 @@ let retryInProgress = $state(false);
     if (!currentError) return;
 
     const errorText = `Error: ${currentError.title}
-Message: ${currentError.message}
-Suggestion: ${currentError.suggestion || "None"}
-Severity: ${currentError.severity}
-Timestamp: ${new Date().toISOString()}`;
+  Message: ${currentError.message}
+  Suggestion: ${currentError.suggestion || "None"}
+  Severity: ${currentError.severity}
+  Timestamp: ${new Date().toISOString()}`;
 
     navigator.clipboard
       .writeText(errorText)

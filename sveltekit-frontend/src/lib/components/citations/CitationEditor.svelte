@@ -8,7 +8,6 @@
   - Integration with case management system
 -->
 <script lang="ts">
-</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
@@ -81,7 +80,6 @@
     try {
       // Dynamic import of Quill
       const { default: Quill } = await import('quill');
-      
       // Custom toolbar configuration for legal citations
       const toolbarOptions = [
         ['bold', 'italic', 'underline'],
@@ -133,7 +131,6 @@
       default:
         formatted = `${formData.author}, "${formData.title}"${formData.source ? `, ${formData.source}` : ''}${formData.publicationDate ? ` (${new Date(formData.publicationDate).getFullYear()})` : ''}`;
     }
-    
     formData.citation = formatted;
   }
 
@@ -174,7 +171,6 @@
     try {
       const endpoint = '/api/citations';
       const method = mode === 'create' ? 'POST' : 'PUT';
-      
       const payload = {
         ...formData,
         caseId,
@@ -236,7 +232,6 @@
       event.preventDefault();
       const input = event.target as HTMLInputElement;
       const tag = input.value.trim().toLowerCase();
-      
       if (tag && !formData.tags.includes(tag)) {
         formData.tags = [...formData.tags, tag];
         input.value = '';

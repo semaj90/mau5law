@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Badge from "$lib/components/ui/Badge.svelte";
   import { Button } from "$lib/components/ui/button";
   import CardRoot from "$lib/components/ui/Card.svelte";
@@ -52,7 +51,7 @@
         updatedAt: new Date(),
         isFavorite: true,
         notes: "Landmark case establishing Miranda warnings"
-}
+  }
     ];
   });
 
@@ -96,7 +95,7 @@
 
       return matchesSearch && matchesCategory;
     });
-}
+  }
   async function saveCitation() {
     try {
       const citation = {
@@ -128,14 +127,14 @@
       showAddDialog = false;
     } catch (error) {
       console.error("Error saving citation:", error);
-}}
+  }}
   async function deleteCitation(citationId: string) {
     try {
       // In a real app, this would DELETE /api/user/saved-citations/{id}
       savedCitations = savedCitations.filter((c) => c.id !== citationId);
     } catch (error) {
       console.error("Error deleting citation:", error);
-}}
+  }}
   async function toggleFavorite(citation: any) {
     try {
       citation.isFavorite = !citation.isFavorite;
@@ -143,15 +142,15 @@
       savedCitations = [...savedCitations];
     } catch (error) {
       console.error("Error updating citation:", error);
-}}
+  }}
   function copyCitation(citation: any) {
     const citationText = `${citation.content}\n\nSource: ${citation.source}`;
     navigator.clipboard.writeText(citationText);
-}
+  }
   function editCitation(citation: any) {
     editingCitation = { ...citation };
     editingCitation.tags = citation.tags.join(", ");
-}
+  }
   async function updateCitation() {
     try {
       const updated = {
@@ -167,11 +166,11 @@
       if (index >= 0) {
         savedCitations[index] = updated;
         savedCitations = [...savedCitations];
-}
+  }
       editingCitation = null;
     } catch (error) {
       console.error("Error updating citation:", error);
-}}
+  }}
   // Stats
   let totalCitations = $derived(savedCitations.length)
   let favoriteCitations = $derived(savedCitations.filter((c) => c.isFavorite).length);
@@ -179,7 +178,6 @@
     acc[citation.category] = (acc[citation.category] || 0) + 1;
     return acc;
   }, {}));
-  
   // Helper variable for editing tags as string
   let editingTagsString = '';
   $effect(() => { 
@@ -187,7 +185,6 @@
       editingTagsString = editingCitation.tags?.join(', ') || '';
     }
   });
-  
   function updateEditingTags(tagsString: string) {
     if (editingCitation) {
       editingCitation.tags = tagsString.split(',').map(tag => tag.trim()).filter(tag => tag);

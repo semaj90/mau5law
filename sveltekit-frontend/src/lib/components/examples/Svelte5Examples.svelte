@@ -1,8 +1,6 @@
 <script lang="ts">
-</script>
   import type {     Snippet     } from 'svelte';
   import { useIsMobile, useIsTablet, useIsDesktop, useIsDark } from '$lib/utils/media-query.svelte';
-  
   // Props using Svelte 5 children pattern
   interface Props {
     title?: string;
@@ -11,7 +9,6 @@
     sidebar?: Snippet;
     footer?: Snippet;
   }
-  
   let { 
     title = 'Svelte 5 Example',
     children, 
@@ -19,13 +16,11 @@
     sidebar, 
     footer 
   }: Props = $props();
-  
   // Reactive media queries using Svelte 5 runes
   const mobile = useIsMobile();
   const tablet = useIsTablet();
   const desktop = useIsDesktop();
   const darkMode = useIsDark();
-  
   // Derived responsive layout
   let layoutClass = $derived(() => {
     if (mobile.matches) return 'layout-mobile';
@@ -33,9 +28,7 @@
     if (desktop.matches) return 'layout-desktop';
     return 'layout-default';
   });
-  
   let themeClass = $derived(darkMode.matches ? 'theme-dark' : 'theme-light');
-  
   // Reactive breakpoint info
   let breakpointInfo = $derived(() => ({
     isMobile: mobile.matches,

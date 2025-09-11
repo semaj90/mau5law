@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     caseId: string
     documents: CaseDocument[] ;
@@ -33,7 +32,6 @@
   } from 'lucide-svelte';
   import { fly, fade } from 'svelte/transition';
 
-      
   interface CaseDocument {
     id: string
     title: string
@@ -219,7 +217,6 @@
           setTimeout(() => {
             resolve({
               executiveSummary: "Comprehensive analysis of the case evidence reveals a strong foundation for prosecution with multiple corroborating sources. The digital forensics evidence provides clear proof of unauthorized access, supported by witness testimony and financial records showing systematic fraud over an 18-month period.",
-              
               timeline: [
                 {
                   date: "2023-01-15",
@@ -246,7 +243,6 @@
                   significance: "critical"
                 }
               ],
-              
               strengthAssessment: {
                 overall: 0.85,
                 evidenceQuality: 0.90,
@@ -271,7 +267,6 @@
                   }
                 ]
               },
-              
               legalStrategy: {
                 primaryCharges: [
                   "Computer Fraud and Abuse Act (18 U.S.C. § 1030)",
@@ -296,7 +291,6 @@
                   "Multiple independent sources of evidence"
                 ]
               },
-              
               riskAnalysis: {
                 challengePoints: [
                   {
@@ -320,7 +314,6 @@
                 ],
                 overallRisk: 0.35
               },
-              
               recommendations: [
                 {
                   priority: "immediate",
@@ -344,13 +337,11 @@
                   timeline: "After initial evidence presentation"
                 }
               ],
-              
               gaps: [
                 "Need additional witness interviews to establish motive",
                 "Require expert analysis of encryption methods used",
                 "Missing financial records from offshore accounts"
               ],
-              
               nextSteps: [
                 "Schedule expert depositions for digital forensics analysts",
                 "Coordinate with financial crimes unit for additional investigation",
@@ -418,31 +409,30 @@
 
   function exportSynthesis() {
     if (!$state.context.synthesisResult) return;
-    
     const synthesis = $state.context.synthesisResult;
     const content = `# Case Synthesis Report - ${caseId}
 
-## Executive Summary
-${synthesis.executiveSummary}
+  ## Executive Summary
+  ${synthesis.executiveSummary}
 
-## Strength Assessment
-- Overall: ${Math.round(synthesis.strengthAssessment.overall * 100)}%
-- Evidence Quality: ${Math.round(synthesis.strengthAssessment.evidenceQuality * 100)}%
-- Legal Basis: ${Math.round(synthesis.strengthAssessment.legalBasis * 100)}%
+  ## Strength Assessment
+  - Overall: ${Math.round(synthesis.strengthAssessment.overall * 100)}%
+  - Evidence Quality: ${Math.round(synthesis.strengthAssessment.evidenceQuality * 100)}%
+  - Legal Basis: ${Math.round(synthesis.strengthAssessment.legalBasis * 100)}%
 
-## Legal Strategy
-### Primary Charges
-${synthesis.legalStrategy.primaryCharges.map(charge => `- ${charge}`).join('\n')}
+  ## Legal Strategy
+  ### Primary Charges
+  ${synthesis.legalStrategy.primaryCharges.map(charge => `- ${charge}`).join('\n')}
 
-### Prosecution Approach
-${synthesis.legalStrategy.prosecutionApproach}
+  ### Prosecution Approach
+  ${synthesis.legalStrategy.prosecutionApproach}
 
-## Recommendations
-${synthesis.recommendations.map(rec => `### ${rec.priority.toUpperCase()} - ${rec.action}\n${rec.rationale}\n`).join('\n')}
+  ## Recommendations
+  ${synthesis.recommendations.map(rec => `### ${rec.priority.toUpperCase()} - ${rec.action}\n${rec.rationale}\n`).join('\n')}
 
-## Next Steps
-${synthesis.nextSteps.map(step => `- ${step}`).join('\n')}
-`;
+  ## Next Steps
+  ${synthesis.nextSteps.map(step => `- ${step}`).join('\n')}
+  `;
 
     const blob = new Blob([content], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);

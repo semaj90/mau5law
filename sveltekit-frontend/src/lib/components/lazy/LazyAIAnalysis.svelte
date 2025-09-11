@@ -1,6 +1,5 @@
 <!-- LazyAIAnalysis.svelte - Lazy loading wrapper for AI analysis components -->
 <script lang="ts">
-</script>
   import LazyLoader from '../LazyLoader.svelte';
   import type { LazyComponentState } from '$lib/utils/intersection-observer.js';
 
@@ -9,28 +8,22 @@
     // Analysis data and config
     analysisType = 'legal' as 'legal' | 'evidence' | 'document' | 'case',
     analysisData = {} as Record<string, any>,
-    
     // AI model configuration
     model = 'gemma3-legal',
     temperature = 0.7,
     maxTokens = 1000,
-    
     // Lazy loading options
     lazyOptions = {},
-    
     // Visual props
     height = '600px',
     width = '100%',
     class: className = '',
-    
     // Loading states
     loadingText = 'Loading AI analysis...',
     errorText = 'Failed to load AI analysis',
-    
     // Callbacks
     onAnalysisComplete = undefined as ((result: any) => void) | undefined,
     onAnalysisError = undefined as ((error: Error) => void) | undefined,
-    
     // Component state binding
     lazyState = $bindable() as LazyComponentState | undefined
   } = $props();
@@ -71,17 +64,12 @@
       }
 
       updateProgress(30, 'Preparing analysis...');
-      
       // Simulate model loading and analysis preparation
       await new Promise(resolve => setTimeout(resolve, 800));
-      
       updateProgress(60, 'Running analysis...');
-      
       // Perform the actual analysis
       const result = await performAnalysis();
-      
       updateProgress(90, 'Finalizing results...');
-      
       analysisComponent = {
         // component: componentModule.default,
         props: { 

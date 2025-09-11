@@ -1,6 +1,5 @@
 <!-- Enhanced Dialog component with custom implementation -->
 <script lang="ts">
-</script>
   import { X } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
   import { quadOut } from "svelte/easing";
@@ -21,15 +20,15 @@
   function handleClose() {
     open = false;
     dispatch("close");
-}
+  }
   function handleKeydown(event: KeyboardEvent) {
     if (closeOnEscape && event.key === "Escape") {
       handleClose();
-}}
+  }}
   function handleOutsideClick(event: MouseEvent) {
     if (closeOnOutsideClick && event.target === event.currentTarget) {
       handleClose();
-}}
+  }}
   const sizeClasses = {
     sm: "max-w-sm",
     md: "max-w-md",

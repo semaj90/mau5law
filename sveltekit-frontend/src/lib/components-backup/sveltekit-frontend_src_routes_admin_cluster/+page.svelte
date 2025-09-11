@@ -2,7 +2,6 @@
 <!-- Real-time monitoring and control for Node.js cluster architecture -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import Card from '$lib/components/ui/Card.svelte';
@@ -23,7 +22,6 @@
   let workerMetrics = $state<WorkerMetrics[]>([]);
   let isConnected = $state(false);
   let lastUpdate = $state<string>('');
-  
   // Control state
   let isScaling = $state(false);
   let isRestarting = $state(false);
@@ -46,10 +44,8 @@
     try {
       // Initial data load
       await fetchClusterStatus();
-      
       // Setup real-time updates via Server-Sent Events
       eventSource = new EventSource('/api/admin/cluster/events');
-      
       eventSource.onopen = () => {
         isConnected = true;
         console.log('🔗 Connected to cluster monitoring');
@@ -57,13 +53,11 @@
 
       eventSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        
         if (data.type === 'health') {
           clusterHealth = data.payload;
         } else if (data.type === 'workers') {
           workerMetrics = data.payload;
         }
-        
         lastUpdate = new Date().toLocaleTimeString();
       };
 
@@ -74,7 +68,6 @@
 
       // Fallback polling
       updateInterval = setInterval(fetchClusterStatus, 10000);
-      
     } catch (error) {
       console.error('Failed to initialize cluster monitoring:', error);
     }
@@ -96,9 +89,7 @@
 
   async function scaleCluster(workers: number) {
     if (isScaling) return;
-    
     isScaling = true;
-    
     try {
       const response = await fetch('/api/admin/cluster/scale', {
         method: 'POST',
@@ -122,13 +113,10 @@
 
   async function rollingRestart() {
     if (isRestarting) return;
-    
     if (!confirm('Are you sure you want to perform a rolling restart? This will restart all workers one by one.')) {
       return;
     }
-    
     isRestarting = true;
-    
     try {
       const response = await fetch('/api/admin/cluster/restart', {
         method: 'POST'

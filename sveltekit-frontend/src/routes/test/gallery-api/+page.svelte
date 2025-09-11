@@ -3,7 +3,6 @@
   Tests all gallery functionality including upload, search, and management
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
 
   let apiTests = $state([]);
@@ -95,7 +94,7 @@
       const response = await fetch(test.endpoint, options);
       const endTime = Date.now();
       const responseTime = endTime - startTime;
-let responseData = $state(null);
+  let responseData = $state(null);
       const contentType = response.headers.get('content-type');
 
       if (contentType && contentType.includes('application/json')) {

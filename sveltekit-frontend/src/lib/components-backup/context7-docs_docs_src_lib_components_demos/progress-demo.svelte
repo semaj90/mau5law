@@ -1,15 +1,14 @@
 <script lang="ts">
-</script>
-	import { Progress, useId } from "bits-ui";
-	import { onMount } from "svelte";
+  	import { Progress, useId } from "bits-ui";
+  	import { onMount } from "svelte";
 
-	let value = $state(13);
-	const labelId = useId();
+  	let value = $state(13);
+  	const labelId = useId();
 
-	onMount(() => {
-		const timer = setTimeout(() => (value = 66), 500);
-		return () => clearTimeout(timer);
-	});
+  	onMount(() => {
+  		const timer = setTimeout(() => (value = 66), 500);
+  		return () => clearTimeout(timer);
+  	});
 </script>
 
 <div class="flex w-[60%] flex-col gap-2">

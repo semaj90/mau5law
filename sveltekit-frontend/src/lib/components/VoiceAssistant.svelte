@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { onMount } from 'svelte';
   import { speak } from "./speak";
@@ -8,7 +7,7 @@
   let isListening = $state(false);
   let finalTranscript = $state('');
   let interimTranscript = $state('');
-let currentTranscript = $state('');
+  let currentTranscript = $state('');
   let recognition: any = $state();
 
   onMount(() => {
@@ -26,8 +25,8 @@ let currentTranscript = $state('');
         speak("I'm listening. You can ask me legal questions or give voice commands.");
       };
       recognition.onresult = (event: any) => {
-let interim = $state('');
-let final = $state('');
+  let interim = $state('');
+  let final = $state('');
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {

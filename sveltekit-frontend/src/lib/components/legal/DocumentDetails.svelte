@@ -1,14 +1,11 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { legalDB } from '$lib/db/client-db.js';
   import type { DocumentCache, VectorSearchCache } from '$lib/db/client-db.js';
-  
   let { documentId = $bindable() } = $props(); // string;
   let { isVisible = $bindable() } = $props(); // false;
   let { onClose = $bindable() } = $props(); // () => void = () => {};
-  
   // Reactive state management
   const documentData = writable<any>(null);
   const isLoading = writable<boolean>(false);
@@ -19,37 +16,30 @@
   const caseAssociations = writable<any[]>([]);
   const gpuAnalysis = writable<any>(null);
   const processingMetrics = writable<any>(null);
-let showGPUAnalysis = $state(false);
-let cacheHitTime = $state(0);
-let serverFetchTime = $state(0);
-  
+  let showGPUAnalysis = $state(false);
+  let cacheHitTime = $state(0);
+  let serverFetchTime = $state(0);
   // Node click handler with cache-first strategy
   async function loadDocumentDetails(docId: string, forceRefresh = false) {
     if (!docId) return;
-    
     const startTime = performance.now();
     isLoading.set(true);
     errorMessage.set(null);
-    
     try {
       // THE FAST PATH: Check IndexedDB cache first
       if (!forceRefresh) {
         loadingSource.set('cache');
         const cachedDocument = await legalDB.documentCache.get(docId);
-        
         if (cachedDocument) {
           cacheHitTime = performance.now() - startTime;
           console.log(`✅ CACHE HIT! Loaded ${docId} from IndexedDB in ${cacheHitTime.toFixed(2)}ms`);
-          
           // Update UI instantly with cached data
           displayDocumentDetails(cachedDocument);
           loadingSource.set(null);
           isLoading.set(false);
-          
           // Check if cache is still fresh (5 minutes)
           const cacheAge = Date.now() - new Date(cachedDocument.lastAccessed).getTime();
           const cacheTimeout = 5 * 60 * 1000; // 5 minutes
-          
           if (cacheAge < cacheTimeout) {
             console.log('📦 Cache is fresh, using cached data');
             return;
@@ -61,10 +51,8 @@ let serverFetchTime = $state(0);
           console.log('❌ CACHE MISS! Document not in IndexedDB');
         }
       }
-      
       // THE SLOW PATH: Fetch from server
       await fetchAndCacheDocument(docId, forceRefresh);
-      
     } catch (error) {
       console.error('Document loading failed:', error);
       errorMessage.set(error instanceof Error ? error.message : 'Failed to load document');
@@ -72,27 +60,20 @@ let serverFetchTime = $state(0);
       loadingSource.set(null);
     }
   }
-  
   // Server fetch with caching
   async function fetchAndCacheDocument(docId: string, includeGPU = false) {
     const serverStartTime = performance.now();
     loadingSource.set('server');
-    
     console.log('🌐 Fetching from server with full analysis...');
-    
     const url = `/api/document/${docId}${includeGPU ? '?gpu=true' : ''}`;
     const response = await fetch(url);
-    
     if (!response.ok) {
       throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
-    
     const data = await response.json();
     serverFetchTime = performance.now() - serverStartTime;
-    
     console.log(`🚀 Server fetch completed in ${serverFetchTime.toFixed(2)}ms`);
     console.log(`📊 Server processing: ${data.enhanced_metadata?.server_processing?.total_server_time}`);
-    
     // IMPORTANT: Cache the fetched data for next time!
     const cacheEntry: DocumentCache = {
       id: Date.now(), // Auto-increment ID for IndexedDB
@@ -112,7 +93,6 @@ let serverFetchTime = $state(0);
       lastAccessed: new Date(),
       cacheSize: JSON.stringify(data).length
     };
-    
     // Store in IndexedDB with error handling
     try {
       await legalDB.documentCache.put(cacheEntry);
@@ -120,19 +100,16 @@ let serverFetchTime = $state(0);
     } catch (cacheError) {
       console.warn('⚠️ Failed to cache document:', cacheError);
     }
-    
     // Update UI with server data
     displayDocumentDetails(data);
     loadingSource.set(null);
     isLoading.set(false);
   }
-  
   // Display document details (unified function for cache and server data)
   function displayDocumentDetails(data: any) {
     // Handle both cached format and direct server response format
     const doc = data.document || data;
     const metadata = data.metadata || {};
-    
     documentData.set({
       id: doc.id || doc.documentId,
       title: doc.title,
@@ -142,19 +119,16 @@ let serverFetchTime = $state(0);
       created_at: doc.created_at,
       updated_at: doc.updated_at
     });
-    
     relatedDocuments.set(data.related_documents || metadata.related_documents || []);
     graphConnections.set(data.graph_connections || metadata.graph_connections || []);
     caseAssociations.set(data.case_associations || metadata.case_associations || []);
     gpuAnalysis.set(data.gpu_analysis || metadata.gpu_analysis);
     processingMetrics.set(data.enhanced_metadata || metadata.enhanced_metadata);
   }
-  
   // Reactive updates when documentId changes
   // TODO: Convert to $derived: if (documentId && isVisible) {
     loadDocumentDetails(documentId)
   }
-  
   // GPU Analysis toggle
   async function toggleGPUAnalysis() {
     if (!showGPUAnalysis && documentId) {
@@ -165,7 +139,6 @@ let serverFetchTime = $state(0);
       gpuAnalysis.set(null);
     }
   }
-  
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -173,7 +146,6 @@ let serverFetchTime = $state(0);
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms.toFixed(2)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;

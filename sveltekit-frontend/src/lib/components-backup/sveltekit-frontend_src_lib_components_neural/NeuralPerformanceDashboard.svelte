@@ -2,7 +2,6 @@
 <!-- Integrates with Enhanced Neural Sprite Engine for comprehensive performance tracking -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived, type Readable } from 'svelte/store';
   import type { EnhancedNeuralSpriteEngine } from '$lib/engines/neural-sprite-engine-enhanced';
@@ -28,7 +27,6 @@
   // Derived performance indicators
   const overallGrade = derived([currentMetrics], ([$metrics]) => {
     if (!$metrics) return 'N/A';
-    
     const efficiency = $metrics.neuralEfficiency;
     if (efficiency >= 95) return { grade: 'S+', color: 'text-emerald-400', bg: 'bg-emerald-500/20' };
     if (efficiency >= 90) return { grade: 'S', color: 'text-green-400', bg: 'bg-green-500/20' };
@@ -42,7 +40,6 @@
     const services = Object.values($health);
     const connected = services.filter((s: any) => s.connected).length;
     const total = services.length;
-    
     if (total === 0) return { status: 'Initializing', color: 'text-gray-400' };
     if (connected === total) return { status: 'All Systems Operational', color: 'text-green-400' };
     if (connected > total * 0.7) return { status: 'Minor Issues Detected', color: 'text-yellow-400' };
@@ -64,10 +61,8 @@
   // Start real-time monitoring
   function startMonitoring() {
     if (!neuralEngine || isMonitoring) return;
-    
     isMonitoring = true;
     connectionStatus.set('connected');
-    
     // Subscribe to neural engine stores
     neuralEngine.enhancedPerformance.subscribe(metrics => {
       currentMetrics.set(metrics);
@@ -105,7 +100,6 @@
   function stopMonitoring() {
     isMonitoring = false;
     connectionStatus.set('disconnected');
-    
     if (monitoringInterval) {
       clearInterval(monitoringInterval);
       monitoringInterval = null;

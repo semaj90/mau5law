@@ -1,64 +1,63 @@
 <script lang="ts">
-</script>
-	import type { Component } from "svelte";
-	import { Command } from "bits-ui";
-	import {
-		AvatarIcon,
-		BadgeIcon,
-		ButtonIcon,
-		ContainerIcon,
-		InputIcon,
-		RadioIcon,
-		SearchIcon,
-		SliderIcon,
-	} from "./icons/index.js";
-	import "./framer.css";
+  	import type { Component } from "svelte";
+  	import { Command } from "bits-ui";
+  	import {
+  		AvatarIcon,
+  		BadgeIcon,
+  		ButtonIcon,
+  		ContainerIcon,
+  		InputIcon,
+  		RadioIcon,
+  		SearchIcon,
+  		SliderIcon,
+  	} from "./icons/index.js";
+  	import "./framer.css";
 
-	let value = $state("Button");
+  	let value = $state("Button");
 
-	type Comp = {
-		value: string;
-		subtitle: string;
-		icon: Component;
-	};
+  	type Comp = {
+  		value: string;
+  		subtitle: string;
+  		icon: Component;
+  	};
 
-	const components: Comp[] = [
-		{
-			value: "Button",
-			subtitle: "Trigger actions",
-			icon: ButtonIcon,
-		},
-		{
-			value: "Input",
-			subtitle: "Retrieve user input",
-			icon: InputIcon,
-		},
-		{
-			value: "Radio",
-			subtitle: "Single choice input",
-			icon: RadioIcon,
-		},
-		{
-			value: "Badge",
-			subtitle: "Annotate context",
-			icon: BadgeIcon,
-		},
-		{
-			value: "Slider",
-			subtitle: "Free range picker",
-			icon: SliderIcon,
-		},
-		{
-			value: "Avatar",
-			subtitle: "Illustrate the user",
-			icon: AvatarIcon,
-		},
-		{
-			value: "Container",
-			subtitle: "Lay out items",
-			icon: ContainerIcon,
-		},
-	];
+  	const components: Comp[] = [
+  		{
+  			value: "Button",
+  			subtitle: "Trigger actions",
+  			icon: ButtonIcon,
+  		},
+  		{
+  			value: "Input",
+  			subtitle: "Retrieve user input",
+  			icon: InputIcon,
+  		},
+  		{
+  			value: "Radio",
+  			subtitle: "Single choice input",
+  			icon: RadioIcon,
+  		},
+  		{
+  			value: "Badge",
+  			subtitle: "Annotate context",
+  			icon: BadgeIcon,
+  		},
+  		{
+  			value: "Slider",
+  			subtitle: "Free range picker",
+  			icon: SliderIcon,
+  		},
+  		{
+  			value: "Avatar",
+  			subtitle: "Illustrate the user",
+  			icon: AvatarIcon,
+  		},
+  		{
+  			value: "Container",
+  			subtitle: "Lay out items",
+  			icon: ContainerIcon,
+  		},
+  	];
 </script>
 
 <div class="framer">

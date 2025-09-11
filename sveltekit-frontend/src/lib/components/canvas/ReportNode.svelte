@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     report: Report;
   }
@@ -7,20 +6,20 @@
     report
   }: Props = $props();
 
-import { onMount } from "svelte";
-import type { Report } from '$lib/data/types';
-// UI Components
-import * as ContextMenu from '$lib/components/ui/context-menu';
-// Icons
-import { Link, Sparkles } from "lucide-svelte";
+  import { onMount } from "svelte";
+  import type { Report } from '$lib/data/types';
+  // UI Components
+  import * as ContextMenu from '$lib/components/ui/context-menu';
+  // Icons
+  import { Link, Sparkles } from "lucide-svelte";
 
-let nodeElement: HTMLDivElement;
-let isDragging = $state(false);
-let dragStartX = $state(0);
-let dragStartY = $state(0);
+  let nodeElement: HTMLDivElement;
+  let isDragging = $state(false);
+  let dragStartX = $state(0);
+  let dragStartY = $state(0);
 
   // Add local position state for drag-and-drop
-let position = $state({ x: 100, y: 100 });
+  let position = $state({ x: 100, y: 100 });
 
   function handleMouseDown(event: MouseEvent) {
     if (
@@ -30,27 +29,27 @@ let position = $state({ x: 100, y: 100 });
       isDragging = true;
       dragStartX = event.clientX - position.x;
       dragStartY = event.clientY - position.y;
-}
-}
+  }
+  }
   function handleMouseMove(event: MouseEvent) {
     if (isDragging) {
       position.x = event.clientX - dragStartX;
       position.y = event.clientY - dragStartY;
-}
-}
+  }
+  }
   function handleMouseUp() {
     isDragging = false;
-}
+  }
   async function saveCitation(text: string) {
     if (!text.trim()) return;
 
     // Implementation for saving citation
     console.log("Saving citation:", text);
-}
+  }
   async function summarizeReport() {
     // Implementation for AI summary
     console.log("Summarizing report");
-}
+  }
   onMount(() => {
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);

@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
   import { goTensorService, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client';
   import { fade, fly, scale } from 'svelte/transition';
@@ -85,7 +84,6 @@
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
-    
     if (e.dataTransfer?.files) {
       addFiles(Array.from(e.dataTransfer.files));
     }
@@ -149,7 +147,6 @@
     }));
 
     files = [...files, ...evidenceFiles];
-    
     // Start processing automatically
     if (evidenceFiles.length > 0) {
       processFiles();
@@ -167,10 +164,8 @@
   // Process all pending files
   async function processFiles() {
     if (isProcessing) return;
-    
     isProcessing = true;
     const pendingFiles = files.filter(f => f.status === 'pending');
-    
     if (pendingFiles.length === 0) {
       isProcessing = false;
       return;
@@ -182,25 +177,20 @@
     // Process files concurrently (max 3 at a time)
     const processingPromises = [];
     const maxConcurrent = 3;
-    
     for (let i = 0; i < pendingFiles.length; i += maxConcurrent) {
       const batch = pendingFiles.slice(i, i + maxConcurrent);
       const batchPromises = batch.map(file => processFile(file));
       processingPromises.push(...batchPromises);
-      
       // Wait for batch to complete before starting next batch
       await Promise.allSettled(batchPromises);
     }
 
     await Promise.allSettled(processingPromises);
-    
     // Update final stats
     processingStats.completed = files.filter(f => f.status === 'completed').length;
     processingStats.failed = files.filter(f => f.status === 'error').length;
     processingStats.processing = 0;
-    
     isProcessing = false;
-    
     dispatch('complete', { files, stats: processingStats });
   }
 
@@ -208,53 +198,41 @@
   async function processFile(evidenceFile: EvidenceFile) {
     try {
       const startTime = Date.now();
-      
       // Step 1: Upload file
       evidenceFile.status = 'uploading';
       evidenceFile.progress = 10;
       files = [...files]; // Trigger reactivity
-      
       const uploadResult = await uploadFile(evidenceFile);
       evidenceFile.uploadUrl = uploadResult.url;
       evidenceFile.progress = 30;
-      
       // Step 2: Extract metadata and text
       evidenceFile.status = 'processing';
       evidenceFile.progress = 50;
       files = [...files];
-      
       const extractionResult = await extractMetadata(evidenceFile);
       evidenceFile.metadata = { ...evidenceFile.metadata, ...extractionResult };
       evidenceFile.progress = 70;
-      
       // Step 3: AI Analysis (if enabled)
       if (enableAIAnalysis) {
         evidenceFile.status = 'analyzing';
         evidenceFile.progress = 80;
         files = [...files];
-        
         const analysisResult = await performAIAnalysis(evidenceFile);
         evidenceFile.metadata = { ...evidenceFile.metadata, ...analysisResult };
       }
-      
       // Step 4: Complete
       evidenceFile.status = 'completed';
       evidenceFile.progress = 100;
-      
       const processingTime = Date.now() - startTime;
       processingStats.averageTime = 
         (processingStats.averageTime * processingStats.completed + processingTime) / 
         (processingStats.completed + 1);
-      
       files = [...files];
-      
       dispatch('upload', { file: evidenceFile });
-      
     } catch (error) {
       evidenceFile.status = 'error';
       evidenceFile.error = error instanceof Error ? error.message : 'Processing failed';
       files = [...files];
-      
       dispatch('error', { 
         message: `Failed to process "${evidenceFile.file.name}": ${evidenceFile.error}`,
         file: evidenceFile 
@@ -267,16 +245,13 @@
     const formData = new FormData();
     formData.append('file', evidenceFile.file);
     formData.append('metadata', JSON.stringify(evidenceFile.metadata));
-    
     const response = await fetch('/api/evidence/upload', {
       method: 'POST',
       body: formData
     });
-    
     if (!response.ok) {
       throw new Error(`Upload failed: ${response.statusText}`);
     }
-    
     return await response.json();
   }
 
@@ -284,12 +259,10 @@
   async function extractMetadata(evidenceFile: EvidenceFile): Promise<any> {
     // Simulate metadata extraction
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
     const extractedMetadata: any = {
       extractedText: '',
       tags: []
     };
-    
     // Mock text extraction based on file type
     switch (evidenceFile.metadata?.type) {
       case 'document':
@@ -306,7 +279,6 @@
         extractedMetadata.tags = ['audio evidence', 'recording', 'sound'];
         break;
     }
-    
     return extractedMetadata;
   }
 
@@ -325,7 +297,6 @@
       // Generate tensor data for analysis
       const tensorData = mockTensorData(768);
       const tensorRequest = generateTensorRequest(evidenceFile.id, tensorData, 'analyze');
-      
       // Send to tensor service
       const response = await fetch('/api/tensor', {
         method: 'POST',
@@ -339,7 +310,6 @@
       });
 
       const result = await response.json();
-      
       if (result.success && result.data.result) {
         return {
           aiAnalysis: `GPU-accelerated analysis completed with ${result.data.result.metadata?.confidence || 85}% confidence`,
@@ -348,9 +318,7 @@
           processingTime: result.data.result.processingTime
         };
       }
-      
       throw new Error('Analysis failed');
-      
     } catch (error) {
       // Fallback to mock analysis
       return {

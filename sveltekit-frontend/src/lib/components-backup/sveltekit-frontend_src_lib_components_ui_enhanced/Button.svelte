@@ -1,27 +1,26 @@
 <script lang="ts">
-</script>
-	import { type ButtonVariants, buttonVariants } from './button-variants';
-	import type { HTMLButtonAttributes } from 'svelte/elements';
+  	import { type ButtonVariants, buttonVariants } from './button-variants';
+  	import type { HTMLButtonAttributes } from 'svelte/elements';
 
-	interface Props extends Omit<HTMLButtonAttributes, 'class'> {
-		variant?: ButtonVariants['variant'];
-		size?: ButtonVariants['size'];
-		loading?: boolean;
-		children?: import('svelte').Snippet;
-		class?: string;
-	}
+  	interface Props extends Omit<HTMLButtonAttributes, 'class'> {
+  		variant?: ButtonVariants['variant'];
+  		size?: ButtonVariants['size'];
+  		loading?: boolean;
+  		children?: import('svelte').Snippet;
+  		class?: string;
+  	}
 
-	let {
-		variant = 'default',
-		size = 'default',
-		loading = false,
-		children,
-		class: className,
-		disabled,
-		...props
-	} = $props();
+  	let {
+  		variant = 'default',
+  		size = 'default',
+  		loading = false,
+  		children,
+  		class: className,
+  		disabled,
+  		...props
+  	} = $props();
 
-	const isDisabled = $derived(disabled || loading)
+  	const isDisabled = $derived(disabled || loading)
 </script>
 
 <button

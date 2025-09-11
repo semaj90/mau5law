@@ -1,10 +1,8 @@
 <script lang="ts">
-</script>
   // AuthGuard component - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  
   interface Props {
     children?: import('svelte').Snippet;
     requiredRole?: string;
@@ -25,17 +23,13 @@
 
   let isAuthorized = $derived(() => {
     if (authStore.isLoading) return null; // Loading state
-    
     if (!authStore.isAuthenticated) return false;
-    
     if (requiredRole && authStore.user?.role !== requiredRole && authStore.user?.role !== 'admin') {
       return false;
     }
-    
     if (requiredPermission && !authStore.hasPermission(requiredPermission)) {
       return false;
     }
-    
     return true;
   });
 
@@ -45,7 +39,6 @@
       // Store redirect path
       const currentPath = window.location.pathname + window.location.search;
       authStore.setRedirect(currentPath);
-      
       // Redirect to login or specified page
       goto(redirectTo);
     }

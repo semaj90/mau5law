@@ -1,137 +1,130 @@
 <script lang="ts">
-</script>
-	import { tweened } from 'svelte/motion';
-	import { cubicInOut, elasticOut } from 'svelte/easing';
-	
-	import { onMount } from 'svelte';
+  	import { tweened } from 'svelte/motion';
+  	import { cubicInOut, elasticOut } from 'svelte/easing';
+  	import { onMount } from 'svelte';
 
-	// Props
-	interface Props {
-		status?: 'loading' | 'processing' | 'success' | 'error';
-		loadingText?: string;
-		successContent?: string;
-		progress?: number;
-		aiOutput?: string;
-	}
+  	// Props
+  	interface Props {
+  		status?: 'loading' | 'processing' | 'success' | 'error';
+  		loadingText?: string;
+  		successContent?: string;
+  		progress?: number;
+  		aiOutput?: string;
+  	}
 
-	let { 
-		status = $bindable('loading'),
-		loadingText = 'Processing legal documents...',
-		successContent = '',
-		progress = $bindable(0),
-		aiOutput = $bindable('')
-	} = $props();
+  	let { 
+  		status = $bindable('loading'),
+  		loadingText = 'Processing legal documents...',
+  		successContent = '',
+  		progress = $bindable(0),
+  		aiOutput = $bindable('')
+  	} = $props();
 
-	// Golden ratio constants
-	const GOLDEN_RATIO = 1.618;
-	const GOLDEN_ANGLE = 137.508; // Golden angle in degrees
+  	// Golden ratio constants
+  	const GOLDEN_RATIO = 1.618;
+  	const GOLDEN_ANGLE = 137.508; // Golden angle in degrees
 
-	// Animated properties
-	const progressValue = tweened(0, {
-		duration: 800,
-		easing: cubicInOut
-	});
+  	// Animated properties
+  	const progressValue = tweened(0, {
+  		duration: 800,
+  		easing: cubicInOut
+  	});
 
-	const containerWidth = tweened(100, {
-		duration: 1200,
-		easing: elasticOut
-	});
+  	const containerWidth = tweened(100, {
+  		duration: 1200,
+  		easing: elasticOut
+  	});
 
-	const containerHeight = tweened(8, {
-		duration: 1200,
-		easing: elasticOut
-	});
+  	const containerHeight = tweened(8, {
+  		duration: 1200,
+  		easing: elasticOut
+  	});
 
-	const borderRadius = tweened(4, {
-		duration: 1000,
-		easing: cubicInOut
-	});
+  	const borderRadius = tweened(4, {
+  		duration: 1000,
+  		easing: cubicInOut
+  	});
 
-	const opacity = tweened(1, {
-		duration: 600,
-		easing: cubicInOut
-	});
+  	const opacity = tweened(1, {
+  		duration: 600,
+  		easing: cubicInOut
+  	});
 
-	// Melt UI Progress
-	const {
-		elements: { root, indicator },
-		helpers: { isIndeterminate },
-		options: { max }
-	} = createProgress({
-		max: 100,
-		value: progress
-	});
+  	// Melt UI Progress
+  	const {
+  		elements: { root, indicator },
+  		helpers: { isIndeterminate },
+  		options: { max }
+  	} = createProgress({
+  		max: 100,
+  		value: progress
+  	});
 
-	// Reactive animations based on status
-	$effect(() => {
-		progressValue.set(progress);
+  	// Reactive animations based on status
+  	$effect(() => {
+  		progressValue.set(progress);
 
-		switch (status) {
-			case 'loading':
-				containerWidth.set(100);
-				containerHeight.set(8);
-				borderRadius.set(4);
-				opacity.set(1);
-				break;
-			
-			case 'processing':
-				containerWidth.set(100 * GOLDEN_RATIO);
-				containerHeight.set(12);
-				borderRadius.set(6);
-				opacity.set(0.9);
-				break;
-			
-			case 'success':
-				containerWidth.set(100 * GOLDEN_RATIO * GOLDEN_RATIO);
-				containerHeight.set(200);
-				borderRadius.set(12);
-				opacity.set(1);
-				break;
-			
-			case 'error':
-				containerWidth.set(80);
-				containerHeight.set(10);
-				borderRadius.set(8);
-				opacity.set(0.8);
-				break;
-		}
-	});
+  		switch (status) {
+  			case 'loading':
+  				containerWidth.set(100);
+  				containerHeight.set(8);
+  				borderRadius.set(4);
+  				opacity.set(1);
+  				break;
+  			case 'processing':
+  				containerWidth.set(100 * GOLDEN_RATIO);
+  				containerHeight.set(12);
+  				borderRadius.set(6);
+  				opacity.set(0.9);
+  				break;
+  			case 'success':
+  				containerWidth.set(100 * GOLDEN_RATIO * GOLDEN_RATIO);
+  				containerHeight.set(200);
+  				borderRadius.set(12);
+  				opacity.set(1);
+  				break;
+  			case 'error':
+  				containerWidth.set(80);
+  				containerHeight.set(10);
+  				borderRadius.set(8);
+  				opacity.set(0.8);
+  				break;
+  		}
+  	});
 
-	// Typewriter effect for AI output
-	let displayedOutput = $state('');
-	let typewriterIndex = $state(0);
+  	// Typewriter effect for AI output
+  	let displayedOutput = $state('');
+  	let typewriterIndex = $state(0);
 
-	$effect(() => {
-		if (status === 'success' && aiOutput) {
-			const interval = setInterval(() => {
-				if (typewriterIndex < aiOutput.length) {
-					displayedOutput = aiOutput.slice(0, typewriterIndex + 1);
-					typewriterIndex++;
-				} else {
-					clearInterval(interval);
-				}
-			}, 30);
+  	$effect(() => {
+  		if (status === 'success' && aiOutput) {
+  			const interval = setInterval(() => {
+  				if (typewriterIndex < aiOutput.length) {
+  					displayedOutput = aiOutput.slice(0, typewriterIndex + 1);
+  					typewriterIndex++;
+  				} else {
+  					clearInterval(interval);
+  				}
+  			}, 30);
 
-			return () => clearInterval(interval);
-		}
-	});
+  			return () => clearInterval(interval);
+  		}
+  	});
 
-	// Spiral animation for golden ratio aesthetics
-	const spiralPoints = $derived(() => {
-		const points = [];
-		const centerX = 50;
-		const centerY = 50;
-		
-		for (let i = 0; i < 21; i++) {
-			const angle = (i * GOLDEN_ANGLE) * (Math.PI / 180);
-			const radius = i * 2;
-			const x = centerX + radius * Math.cos(angle);
-			const y = centerY + radius * Math.sin(angle);
-			points.push({ x, y, delay: i * 50 });
-		}
-		
-		return points;
-	});
+  	// Spiral animation for golden ratio aesthetics
+  	const spiralPoints = $derived(() => {
+  		const points = [];
+  		const centerX = 50;
+  		const centerY = 50;
+  		for (let i = 0; i < 21; i++) {
+  			const angle = (i * GOLDEN_ANGLE) * (Math.PI / 180);
+  			const radius = i * 2;
+  			const x = centerX + radius * Math.cos(angle);
+  			const y = centerY + radius * Math.sin(angle);
+  			points.push({ x, y, delay: i * 50 });
+  		}
+  		return points;
+  	});
 </script>
 
 <div 

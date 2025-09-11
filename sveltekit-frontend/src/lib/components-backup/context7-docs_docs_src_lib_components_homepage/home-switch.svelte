@@ -1,15 +1,14 @@
 <script lang="ts">
-</script>
-	import type { ComponentProps } from "svelte";
-	import { Switch } from "bits-ui";
-	import Play from "phosphor-svelte/lib/Play";
-	import Pause from "phosphor-svelte/lib/Pause";
+  	import type { ComponentProps } from "svelte";
+  	import { Switch } from "bits-ui";
+  	import Play from "phosphor-svelte/lib/Play";
+  	import Pause from "phosphor-svelte/lib/Pause";
 
-	let {
-		checked = $bindable(true),
-		ref = $bindable(null),
-		...restProps
-	}: ComponentProps<typeof Switch.Root> = $props();
+  	let {
+  		checked = $bindable(true),
+  		ref = $bindable(null),
+  		...restProps
+  	}: ComponentProps<typeof Switch.Root> = $props();
 </script>
 
 <div class="flex items-center space-x-3">

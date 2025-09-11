@@ -24,7 +24,7 @@ type GPUClusterExecutor struct {
 	metrics          *ClusterMetrics
 	activeWorkers    sync.Map
 	shutdown         chan struct{}
-	
+
 	// Go 1.25: Enhanced concurrency with new WaitGroup methods
 	workerWG         sync.WaitGroup
 	metricsWG        sync.WaitGroup
@@ -152,7 +152,7 @@ func NewGPUClusterExecutor(config ClusterConfig) *GPUClusterExecutor {
 
 // ExecuteCluster runs the GPU cluster with Go 1.25 enhanced concurrency
 func (e *GPUClusterExecutor) ExecuteCluster(ctx context.Context) error {
-	log.Printf("🚀 Starting GPU Cluster with %d workers, %d GPU contexts", 
+	log.Printf("🚀 Starting GPU Cluster with %d workers, %d GPU contexts",
 		e.config.Workers, e.config.GPUContexts)
 
 	// Check GPU availability first
@@ -171,7 +171,7 @@ func (e *GPUClusterExecutor) ExecuteCluster(ctx context.Context) error {
 	// Start workers using Go 1.25 WaitGroup.Go for cleaner concurrency
 	for workerID := 1; workerID <= e.config.Workers; workerID++ {
 		workerID := workerID // Capture for closure
-		
+
 		// Go 1.25: Use new WaitGroup.Go method
 		e.workerWG.Go(func() {
 			e.runWorker(ctx, workerID, taskQueue, resultChan)
@@ -191,7 +191,7 @@ func (e *GPUClusterExecutor) ExecuteCluster(ctx context.Context) error {
 	// Wait for all workers to complete
 	e.workerWG.Wait()
 	close(resultChan)
-	
+
 	// Wait for metrics collection to finish
 	e.metricsWG.Wait()
 
@@ -211,21 +211,21 @@ func (e *GPUClusterExecutor) runWorker(ctx context.Context, workerID int, taskQu
 				log.Printf("🔧 Worker %d: No more tasks, shutting down", workerID)
 				return
 			}
-			
+
 			result := e.executeTask(ctx, workerID, task)
-			
+
 			// Record metrics
 			status := "success"
 			if !result.Success {
 				status = "failure"
 			}
-			
+
 			e.metrics.workerDuration.WithLabelValues(
-				task.TaskType, 
-				fmt.Sprintf("%d", workerID), 
+				task.TaskType,
+				fmt.Sprintf("%d", workerID),
 				status,
 			).Observe(result.Duration.Seconds())
-			
+
 			if result.Success {
 				e.metrics.workerSuccess.WithLabelValues(
 					task.TaskType,
@@ -238,9 +238,9 @@ func (e *GPUClusterExecutor) runWorker(ctx context.Context, workerID int, taskQu
 					"execution_error",
 				).Inc()
 			}
-			
+
 			e.metrics.taskThroughput.WithLabelValues(task.TaskType).Inc()
-			
+
 			select {
 			case resultChan <- result:
 			case <-ctx.Done():
@@ -265,7 +265,7 @@ func (e *GPUClusterExecutor) executeTask(ctx context.Context, workerID int, task
 		gpuContext := workerID % e.config.GPUContexts
 		env = append(env, fmt.Sprintf("CUDA_VISIBLE_DEVICES=%d", gpuContext))
 	}
-	
+
 	// Add task-specific environment variables
 	for key, value := range task.Environment {
 		env = append(env, fmt.Sprintf("%s=%s", key, value))
@@ -287,10 +287,10 @@ func (e *GPUClusterExecutor) executeTask(ctx context.Context, workerID int, task
 
 	if err != nil {
 		result.Error = err.Error()
-		log.Printf("❌ Worker %d: Task %s failed after %v: %v", 
+		log.Printf("❌ Worker %d: Task %s failed after %v: %v",
 			workerID, task.Name, duration, err)
 	} else {
-		log.Printf("✅ Worker %d: Task %s completed in %v", 
+		log.Printf("✅ Worker %d: Task %s completed in %v",
 			workerID, task.Name, duration)
 	}
 
@@ -320,22 +320,22 @@ func (e *GPUClusterExecutor) generateTasks(taskQueue chan<- WorkerTask) {
 
 	taskEnvs := map[string]map[string]string{
 		"legal-embeddings": {
-			"OLLAMA_URL":             "http://localhost:11435",
+			"OLLAMA_URL":             "http://localhost:11434",
 			"OLLAMA_GPU_LAYERS":      "35",
 			"RTX_3060_OPTIMIZATION":  "true",
-			"LEGAL_EMBEDDING_MODEL":  "nomic-embed-text",
+			"LEGAL_EMBEDDING_MODEL":  "embeddinggemma:latest",
 			"GPU_MEMORY_LIMIT":       "8192",
 			"BATCH_SIZE":             fmt.Sprintf("%d", e.config.BatchSize),
 		},
 		"case-similarity": {
-			"OLLAMA_URL":         "http://localhost:11435",
+			"OLLAMA_URL":         "http://localhost:11434",
 			"OLLAMA_GPU_LAYERS":  "35",
 			"RTX_3060_OPTIMIZATION": "true",
 			"PGVECTOR_ENABLED":   "true",
 			"SIMILARITY_THRESHOLD": fmt.Sprintf("%.2f", e.config.SimilarityThreshold),
 		},
 		"evidence-processing": {
-			"OLLAMA_URL":       "http://localhost:11435",
+			"OLLAMA_URL":       "http://localhost:11434",
 			"ENABLE_TRAINING":  "true",
 			"GPU_ACCELERATION": "true",
 			"MINIO_ENABLED":    "true",
@@ -355,7 +355,7 @@ func (e *GPUClusterExecutor) generateTasks(taskQueue chan<- WorkerTask) {
 				WorkerID:    workerID,
 				StartTime:   time.Now(),
 			}
-			
+
 			e.metrics.queueDepth.Inc()
 			taskQueue <- task
 			workerID++
@@ -370,28 +370,25 @@ func (e *GPUClusterExecutor) checkGPUAvailability() error {
 	}
 
 	cmd := exec.Command("nvidia-smi", "--query-gpu=name,memory.total,memory.used", "--format=csv,noheader,nounits")
-	output, err := cmd.Output()
+	out, err := cmd.Output()
 	if err != nil {
 		return fmt.Errorf("nvidia-smi failed: %w", err)
 	}
 
 	log.Println("✅ GPU detected:")
-	lines := string(output)
-	for i, line := range []string{lines} {
-		if line != "" {
-			log.Printf("   GPU %d: %s", i, line)
-		}
+	line := string(out)
+	if line != "" {
+		log.Printf("   GPU 0: %s", line)
 	}
-
 	return nil
 }
 
 func (e *GPUClusterExecutor) collectGPUStats(workerID int) (*GPUStats, error) {
-	cmd := exec.Command("nvidia-smi", 
+	cmd := exec.Command("nvidia-smi",
 		"--query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu",
 		"--format=csv,noheader,nounits")
-	
-	output, err := cmd.Output()
+
+	_, err := cmd.Output()
 	if err != nil {
 		return nil, err
 	}
@@ -424,7 +421,7 @@ func (e *GPUClusterExecutor) collectMetrics(ctx context.Context) {
 
 func (e *GPUClusterExecutor) collectResults(ctx context.Context, resultChan <-chan WorkerResult) {
 	results := []WorkerResult{}
-	
+
 	for {
 		select {
 		case result, ok := <-resultChan:
@@ -432,10 +429,10 @@ func (e *GPUClusterExecutor) collectResults(ctx context.Context, resultChan <-ch
 				e.logSummary(results)
 				return
 			}
-			
+
 			results = append(results, result)
 			e.metrics.queueDepth.Dec()
-			
+
 		case <-ctx.Done():
 			e.logSummary(results)
 			return
@@ -447,7 +444,7 @@ func (e *GPUClusterExecutor) logSummary(results []WorkerResult) {
 	successful := 0
 	failed := 0
 	totalDuration := time.Duration(0)
-	
+
 	for _, result := range results {
 		if result.Success {
 			successful++
@@ -456,12 +453,12 @@ func (e *GPUClusterExecutor) logSummary(results []WorkerResult) {
 		}
 		totalDuration += result.Duration
 	}
-	
+
 	avgDuration := time.Duration(0)
 	if len(results) > 0 {
 		avgDuration = totalDuration / time.Duration(len(results))
 	}
-	
+
 	log.Printf("📊 GPU Cluster Execution Summary:")
 	log.Printf("   ✅ Successful: %d", successful)
 	log.Printf("   ❌ Failed: %d", failed)
@@ -473,14 +470,14 @@ func (e *GPUClusterExecutor) logSummary(results []WorkerResult) {
 func (e *GPUClusterExecutor) StartHTTPServer() {
 	// Go 1.25: Create new ServeMux with enhanced security
 	mux := http.NewServeMux()
-	
-	// Go 1.25: Enable CrossOriginProtection for metrics endpoint
-	mux.Handle("/metrics", http.CrossOriginProtection(promhttp.Handler()))
-	
+
+	// Metrics endpoint
+	mux.Handle("/metrics", promhttp.Handler())
+
 	// Cluster status endpoint
 	mux.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		
+
 		status := map[string]interface{}{
 			"service":     "legal-ai-gpu-cluster-executor",
 			"version":     "1.0.0",
@@ -489,10 +486,10 @@ func (e *GPUClusterExecutor) StartHTTPServer() {
 			"gpu_enabled": e.config.EnableGPU,
 			"uptime":      time.Since(time.Now()).String(), // Would track actual uptime
 		}
-		
+
 		json.NewEncoder(w).Encode(status)
 	})
-	
+
 	// Health check endpoint
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -501,12 +498,12 @@ func (e *GPUClusterExecutor) StartHTTPServer() {
 			"status": "healthy",
 		})
 	})
-	
+
 	server := &http.Server{
 		Addr:    ":8080",
 		Handler: mux,
 	}
-	
+
 	log.Println("🌐 HTTP server starting on :8080")
 	log.Fatal(server.ListenAndServe())
 }
@@ -524,12 +521,12 @@ func main() {
 		EmbeddingDimensions:  384,
 		SimilarityThreshold:  0.7,
 	}
-	
+
 	executor := NewGPUClusterExecutor(config)
-	
+
 	// Start HTTP server in background
 	go executor.StartHTTPServer()
-	
+
 	// Execute cluster
 	ctx := context.Background()
 	if err := executor.ExecuteCluster(ctx); err != nil {

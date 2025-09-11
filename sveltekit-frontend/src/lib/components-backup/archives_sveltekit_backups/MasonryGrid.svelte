@@ -1,10 +1,8 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { dndzone } from 'svelte-dnd-action';
   import { fly } from 'svelte/transition';
   import Masonry from 'masonry-layout';
-  
   export let items: unknown[] = [];
   export let columnWidth = 300;
   export let gutter = 16;
@@ -19,11 +17,9 @@
   export let dragDisabled = false;
   export let dropTargetStyle = {};
   export let dropFromOthersDisabled = false;
-  
   let container: HTMLElement;
   let masonry: unknown;
   let isInitialized = false;
-  
   // Masonry configuration
   // TODO: Convert to $derived: masonryOptions = {
     itemSelector,
@@ -36,7 +32,6 @@
     initLayout,
     transitionDuration
   }
-  
   // Initialize Masonry
   onMount(() => {
     if (container && items.length > 0) {
@@ -46,7 +41,6 @@
       }, 100);
     }
   });
-  
   // Update layout when items change
   // TODO: Convert to $derived: if (masonry && isInitialized) {
     setTimeout(() => {
@@ -63,12 +57,10 @@
       masonry.destroy();
     }
   });
-  
   // Handle drag and drop
   const handleDndConsider = (e: CustomEvent) => {
     items = e.detail.items;
   };
-  
   const handleDndFinalize = (e: CustomEvent) => {
     items = e.detail.items;
     // Trigger layout update after reordering
@@ -78,7 +70,6 @@
       }
     }, 100);
   };
-  
   // Responsive breakpoints
   const getResponsiveColumns = () => {
     if (typeof window === 'undefined') return 3;
@@ -88,12 +79,10 @@
     if (width < 1280) return 3;
     return 4;
   };
-  
   // Auto-resize functionality
   let resizeTimeout: NodeJS.Timeout;
   const handleResize = () => {
     if (!resize || !masonry) return;
-    
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       if (masonry) {
@@ -101,7 +90,6 @@
       }
     }, 150);
   };
-  
   onMount(() => {
     if (resize) {
       window.addEventListener('resize', handleResize);

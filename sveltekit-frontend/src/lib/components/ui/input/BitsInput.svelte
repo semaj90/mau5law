@@ -1,9 +1,7 @@
 <!-- Modern Input Component for Legal AI App -->
 <script lang="ts">
-</script>
   import { cn } from '$lib/utils';
   import type { HTMLInputAttributes } from 'svelte/elements';
-  
   interface Props extends HTMLInputAttributes {
     label?: string;
     description?: string;
@@ -42,7 +40,7 @@
     search: 'border-yorha-border/50 bg-yorha-bg-primary/5 text-yorha-text-primary placeholder:text-yorha-text-secondary',
     ai: 'border-gradient-to-r from-yorha-primary to-yorha-accent bg-yorha-bg-secondary text-yorha-text-primary'
   };
-let inputElement = $state<HTMLInputElement;
+  let inputElement = $state<HTMLInputElement;
 
   // Generate unique ID for accessibility
   const inputId >(`input-${Math.random().toString(36).substr(2, 9)}`);

@@ -11,19 +11,15 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
-  
   // XState machine integration
   import { useMachine } from '@xstate/svelte';
   import { chatMachine } from '$lib/machines/chat-machine';
-  
   // Neural sprite rendering
   import NeuralSpriteRenderer from '$lib/components/three/NeuralSpriteRenderer.svelte';
-  
   // YoRHa UI components
   import {
     Button
@@ -34,16 +30,13 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  
   // Props
   export let userId: string;
   export let sessionId: string = '';
   export let preloadedData: any = null;
   export let ssrContext: any = null;
-  
   // Dispatcher
   const dispatch = createEventDispatcher();
-  
   // XState machine
   const { state, send } = useMachine(chatMachine, {
     context: {
@@ -54,7 +47,6 @@
       systemStatus: ssrContext?.systemStatus || {}
     }
   });
-  
   // Reactive state
   const messages = writable<any[]>([]);
   const currentMessage = writable('');
@@ -62,13 +54,11 @@
   const neuralSprites = writable<any[]>([]);
   const userDictionary = writable(ssrContext?.userDictionary || {});
   const systemStatus = writable(ssrContext?.systemStatus || {});
-  
   // Derived state
   const canSend = derived(
     [currentMessage, isStreaming],
     ([$currentMessage, $isStreaming]) => $currentMessage.trim().length > 0 && !$isStreaming
   );
-  
   const statusIndicator = derived(systemStatus, ($status) => ({
     nes: $status.nesMemoryReady ? '🟢' : '🔴',
     gpu: $status.gpuCacheReady ? '🟢' : '🔴', 
@@ -76,57 +66,44 @@
     wasm: $status.wasmBridgeReady ? '🟢' : '🔴',
     ollama: $status.ollamaReady ? '🟢' : '🔴'
   }));
-  
   // Event source for streaming
   let eventSource: EventSource | null = null;
   let chatContainer: HTMLElement;
   let messageInput: HTMLInputElement;
-  
   onMount(async () => {
     if (!browser) return;
-    
     // Initialize session if not provided
     if (!sessionId) {
       sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
-    
     // Load SSR context if not provided
     if (!ssrContext) {
       await loadSSRContext();
     }
-    
     // Initialize XState machine
     send({ type: 'INITIALIZE', userId, sessionId });
-    
     // Focus input
     messageInput?.focus();
-    
     console.log('🚀 SSR QLoRA Chat Interface initialized');
   });
-  
   async function loadSSRContext() {
     try {
       const response = await fetch(`/api/chat/ssr-qlora?userId=${userId}&sessionId=${sessionId}`);
       const data = await response.json();
-      
       if (data.success) {
         ssrContext = data.ssrContext;
         preloadedData = data.preloadedData;
-        
         userDictionary.set(data.ssrContext.userDictionary);
         systemStatus.set(data.ssrContext.systemStatus);
-        
         send({ type: 'CONTEXT_LOADED', context: data.ssrContext });
       }
     } catch (error) {
       console.error('❌ Failed to load SSR context:', error);
     }
   }
-  
   async function sendMessage() {
     const message = $currentMessage.trim();
     if (!message || $isStreaming) return;
-    
     // Add user message immediately
     const userMessage = {
       id: `msg_${Date.now()}`,
@@ -135,17 +112,13 @@
       timestamp: new Date(),
       processed: false
     };
-    
     messages.update(msgs => [...msgs, userMessage]);
     currentMessage.set('');
     isStreaming.set(true);
-    
     // Send to XState machine
     send({ type: 'SEND_MESSAGE', message: userMessage });
-    
     // Scroll to bottom
     setTimeout(() => scrollToBottom(), 100);
-    
     try {
       // Create AI response placeholder
       const aiMessage = {
@@ -158,15 +131,11 @@
         neuralSprite: null,
         source: 'qlora'
       };
-      
       messages.update(msgs => [...msgs, aiMessage]);
-      
       // Start streaming response
       await startStreaming(message, aiMessage);
-      
     } catch (error) {
       console.error('❌ Failed to send message:', error);
-      
       // Add error message
       messages.update(msgs => [...msgs, {
         id: `error_${Date.now()}`,
@@ -175,24 +144,20 @@
         timestamp: new Date(),
         error: true
       }]);
-      
       send({ type: 'ERROR', error: error.message });
     } finally {
       isStreaming.set(false);
     }
   }
-  
   async function startStreaming(message: string, aiMessage: any) {
     // Close existing event source
     if (eventSource) {
       eventSource.close();
     }
-    
     // Start new event source
     eventSource = new EventSource('/api/chat/ssr-qlora', {
       // Note: EventSource doesn't support POST, so we'll use fetch with streaming
     });
-    
     // Use fetch with streaming instead
     const response = await fetch('/api/chat/ssr-qlora', {
       method: 'POST',
@@ -206,22 +171,17 @@
         }
       })
     });
-    
     if (!response.body) {
       throw new Error('No response body');
     }
-    
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    
     try {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        
         const chunk = decoder.decode(value);
         const lines = chunk.split('\n');
-        
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const data = JSON.parse(line.slice(6));
@@ -233,7 +193,6 @@
       reader.releaseLock();
     }
   }
-  
   async function handleStreamData(data: any, aiMessage: any) {
     switch (data.type) {
       case 'instant':
@@ -242,54 +201,45 @@
         aiMessage.source = 'nes_memory';
         aiMessage.instant = true;
         break;
-        
       case 'cached':
         // Response from GPU cache
         aiMessage.content = data.content;
         aiMessage.source = 'gpu_cache';
         aiMessage.similarity = data.similarity;
         break;
-        
       case 'chunk':
         // Streaming chunk from QLoRA
         aiMessage.chunks.push(data.content);
         aiMessage.content = aiMessage.chunks.join(' ');
         aiMessage.source = 'qlora';
         break;
-        
       case 'glyph':
         // Neural sprite visualization
         aiMessage.neuralSprite = data.content;
         neuralSprites.update(sprites => [...sprites, data.content]);
         break;
-        
       case 'complete':
         // Streaming complete
         aiMessage.streaming = false;
         aiMessage.processed = true;
         break;
     }
-    
     // Update messages
     messages.update(msgs => [...msgs]);
-    
     // Scroll to bottom
     setTimeout(() => scrollToBottom(), 50);
   }
-  
   function scrollToBottom() {
     if (chatContainer) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
   }
-  
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-  
   function provideFeedback(messageId: string, feedback: number) {
     // Send feedback to server
     fetch('/api/chat/ssr-qlora', {
@@ -302,17 +252,14 @@
         timestamp: new Date().toISOString()
       })
     });
-    
     // Update XState machine
     send({ type: 'FEEDBACK_PROVIDED', messageId, feedback });
   }
-  
   function clearChat() {
     messages.set([]);
     neuralSprites.set([]);
     send({ type: 'CLEAR_CHAT' });
   }
-  
   // Reactive statement for XState machine state changes
   // TODO: Convert to $derived: {
     if ($state.matches('streaming')) {

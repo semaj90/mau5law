@@ -2,7 +2,6 @@
 <!-- @migration-task Error while migrating Svelte code: Identifier 'caseId' has already been declared
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-</script>
   interface Props {
     caseId?: string | null;
   }
@@ -118,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Auto-save functionality
-let autoSaveTimeout = $state<NodeJS.Timeout;
+  let autoSaveTimeout = $state<NodeJS.Timeout;
 
   $effect(() >(> {
     if ($formData) {

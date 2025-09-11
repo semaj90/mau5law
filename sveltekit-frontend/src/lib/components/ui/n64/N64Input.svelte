@@ -1,7 +1,5 @@
 <script lang="ts">
-</script>
   import { onMount, createEventDispatcher } from 'svelte';
-  
   // Svelte 5 props interface
   interface Props {
     value?: string;
@@ -16,7 +14,6 @@
     pattern?: string;
     autocomplete?: string;
     class?: string;
-    
     // N64 specific props
     materialType?: 'basic' | 'phong' | 'pbr';
     meshComplexity?: 'low' | 'medium' | 'high' | 'ultra';
@@ -26,15 +23,12 @@
     spatialAudio?: boolean;
     depthOfField?: boolean;
     enableLighting?: boolean;
-    
     // Accessibility
     ariaLabel?: string;
     ariaDescribedby?: string;
-    
     // Mobile optimizations
     mobileOptimized?: boolean;
     reducedMotion?: boolean;
-    
     // Performance settings
     gpuAcceleration?: boolean;
     webgpuMode?: boolean;
@@ -53,7 +47,6 @@
     pattern,
     autocomplete,
     class: className = '',
-    
     // N64 specific defaults
     materialType = 'phong',
     meshComplexity = 'medium',
@@ -63,15 +56,12 @@
     spatialAudio = false,
     depthOfField = false,
     enableLighting = true,
-    
     // Accessibility defaults
     ariaLabel,
     ariaDescribedby,
-    
     // Mobile defaults
     mobileOptimized = true,
     reducedMotion = false,
-    
     // Performance defaults
     gpuAcceleration = true,
     webgpuMode = false
@@ -97,13 +87,11 @@
   // Dynamic CSS classes based on props
   const inputClasses = $derived(() => {
     const classes = ['n64-input'];
-    
     // Material type styling
     classes.push(`material-${materialType}`);
     classes.push(`mesh-${meshComplexity}`);
     classes.push(`filter-${textureFiltering}`);
     classes.push(`aa-${antiAliasing}`);
-    
     // State classes
     if (isFocused) classes.push('focused');
     if (isHovered) classes.push('hovered');
@@ -111,13 +99,11 @@
     if (fogEffect) classes.push('fog-enabled');
     if (depthOfField) classes.push('depth-of-field');
     if (enableLighting) classes.push('lighting-enabled');
-    
     // Performance classes
     if (gpuAcceleration) classes.push('gpu-accelerated');
     if (webgpuMode) classes.push('webgpu-active');
     if (mobileOptimized) classes.push('mobile-optimized');
     if (reducedMotion) classes.push('reduced-motion');
-    
     return classes.join(' ');
   });
 
@@ -178,13 +164,11 @@
 
   function animationLoop() {
     frameCount++;
-    
     // Update material properties based on frame count
     if (container && materialType === 'pbr') {
       const time = frameCount * 0.016; // Approximate 60fps
       container.style.setProperty('--animation-time', time.toString());
     }
-    
     if (materialType === 'pbr' || meshComplexity === 'ultra') {
       requestAnimationFrame(animationLoop);
     }
@@ -231,7 +215,6 @@
 
       oscillator.type = 'sine';
       oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-      
       gainNode.gain.setValueAtTime(0, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);

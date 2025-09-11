@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { onMount } from 'svelte';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
@@ -93,7 +92,7 @@
 
     try {
       // Prepare context for AI
-let contextText = $state('');
+  let contextText = $state('');
       if (context) {
         contextText = `Context: ${context.title}\n${context.description || ''}\n${context.fullText || ''}`;
       }

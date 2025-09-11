@@ -1,12 +1,10 @@
 <script lang="ts">
-</script>
   import { superForm } from "sveltekit-superforms";
 
   interface Props {
     data: any;
     formType: "login" | "register";
   }
-  
   let {
     data,
     formType

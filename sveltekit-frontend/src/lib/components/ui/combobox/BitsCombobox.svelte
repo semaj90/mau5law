@@ -1,6 +1,5 @@
 <!-- Combobox Component for Legal AI App -->
 <script lang="ts">
-</script>
   import { Combobox } from 'bits-ui';
   import { Check, ChevronDown, Search, X } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -58,7 +57,6 @@
   // Filter options based on search input
   let filteredOptions = $derived(() => {
     if (!inputValue) return options;
-    
     const query = inputValue.toLowerCase();
     return options.filter(option =>
       option.label.toLowerCase().includes(query) ||
@@ -124,7 +122,6 @@
 
   async function handleCreateOption() {
     if (!canCreateOption || !onCreateOption) return;
-    
     try {
       const newOption = await onCreateOption(inputValue);
       options = [...options, newOption];

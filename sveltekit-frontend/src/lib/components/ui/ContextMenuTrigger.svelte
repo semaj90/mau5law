@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { createContextMenu, melt } from "melt";
   import { setContext } from "svelte";

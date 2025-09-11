@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import Button from "$lib/Button.svelte";
 </script>
 

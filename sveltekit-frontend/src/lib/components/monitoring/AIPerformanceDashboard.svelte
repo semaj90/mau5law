@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { aiAssistant } from '$lib/stores/ai-assistant.svelte';
   import { pgVectorSearch } from '$lib/services/pgvector-semantic-search';
@@ -69,9 +68,7 @@
     try {
       const response = await fetch('/api/ai/health');
       const healthData = await response.json();
-      
       lastHealthCheck = Date.now();
-      
       // Update backend availability based on health check
       for (const backend of availableBackends) {
         const isHealthy = getBackendHealth(backend, healthData);
@@ -128,7 +125,6 @@
     try {
       // Get conversation analytics
       const analytics = await pgVectorSearch.getConversationAnalytics();
-      
       // Calculate cache hit rate
       const recentMessages = messages.slice(-100);
       const cacheHits = recentMessages.filter(m => m.metadata?.cacheHit).length;

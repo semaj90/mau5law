@@ -67,9 +67,9 @@ export interface RoutePageData {
 
 async function checkServiceHealth(): Promise<SystemHealthData> {
   const services = [
-    { name: 'PostgreSQL', port: 5432 },
+    { name: 'PostgreSQL', port: 5433 },  // Updated to match dynamic port
     { name: 'Redis', port: 6379 },
-    { name: 'Ollama Primary', port: 11434 },
+    { name: 'Ollama Primary', port: 11436 },  // Updated to match dynamic port
     { name: 'Enhanced RAG', port: 8094 },
     { name: 'Upload Service', port: 8093 },
     { name: 'Neo4j', port: 7474 },
@@ -87,7 +87,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
         const startTime = Date.now();
 
         // For HTTP services, try a simple fetch
-        if ([8094, 8093, 7474, 9000, 6333, 11434].includes(service.port)) {
+        if ([8094, 8093, 7474, 9000, 6333, 11436].includes(service.port)) {
           const response = await fetch(`http://localhost:${service.port}/health`, {
             signal: controller.signal,
             method: 'GET',

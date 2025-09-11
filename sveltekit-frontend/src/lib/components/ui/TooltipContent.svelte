@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // runtime helper $props() is provided by the runes compiler; do not import it.
 
   import { cn } from "$lib/utils";
@@ -10,7 +9,7 @@
   let { children }: Props = $props();
 
   // `class` is a reserved identifier in runes mode; use `className` instead.
-let className = $state<string >("");
+  let className = $state<string >("");
 
 </script>
 

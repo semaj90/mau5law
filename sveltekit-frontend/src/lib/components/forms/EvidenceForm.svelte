@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { Props } from "$lib/types/global";
 
   let {
@@ -10,7 +9,7 @@
   import { invalidateAll } from "$app/navigation";
   import { createEventDispatcher } from "svelte";
   import { superForm } from "sveltekit-superforms";
-// Corrected UI component import paths
+  // Corrected UI component import paths
   import Textarea from "$lib/components/ui/Textarea.svelte";
   import Button from "$lib/components/ui/button";
   import {
@@ -39,9 +38,9 @@
         if (form.valid) {
           await invalidateAll();
           dispatch("success");
-}
+  }
       },
-}
+  }
   );
 </script>
 

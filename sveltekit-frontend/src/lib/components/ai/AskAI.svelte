@@ -1,6 +1,5 @@
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
-</script>
   interface Props {
     caseId: string | undefined ;
     evidenceIds: string[] ;
@@ -48,7 +47,7 @@
     searchResults: number;
     model: string;
     processingTime: number;
-}
+  }
   interface ConversationMessage {
     id: string;
     type: "user" | "ai";
@@ -57,12 +56,12 @@
     references?: AIResponse["references"];
     confidence?: number;
     metadata?: Record<string, any>;
-}
+  }
   // Component state
-let query = $state("");
-let isLoading = $state(false);
-let error = $state("");
-let conversation = $state<ConversationMessage[] >([]);
+  let query = $state("");
+  let isLoading = $state(false);
+  let error = $state("");
+  let conversation = $state<ConversationMessage[] >([]);
   let textareaRef: HTMLTextAreaElement;
   let messagesContainer: HTMLDivElement;
 
@@ -72,19 +71,19 @@ let conversation = $state<ConversationMessage[] >([]);
   // - searchThreshold: Adjusts the minimum relevance score for vector search results (higher = stricter).
   // - maxResults: Limits the number of context documents retrieved for the AI.
   // - temperature: Controls randomness/creativity of AI responses (higher = more creative).
-let showAdvancedOptions = $state(false);
-let selectedModel = $state<"openai" | "ollama" >("openai");
-let searchThreshold = $state(0.7);
-let maxResults = $state(10);
-let temperature = $state(0.7);
+  let showAdvancedOptions = $state(false);
+  let selectedModel = $state<"openai" | "ollama" >("openai");
+  let searchThreshold = $state(0.7);
+  let maxResults = $state(10);
+  let temperature = $state(0.7);
 
   // Voice input state
-let isListening = $state(false);
+  let isListening = $state(false);
   // Fix SpeechRecognition type for browser
-let recognition = $state<any >(null);
-let ttsLoading = $state(false);
+  let recognition = $state<any >(null);
+  let ttsLoading = $state(false);
   // Reusable AudioContext for TTS playback
-let audioContext = $state<AudioContext | null >(null);
+  let audioContext = $state<AudioContext | null >(null);
 
   const dispatch = createEventDispatcher<{
     response: AIResponse;
@@ -101,7 +100,7 @@ let audioContext = $state<AudioContext | null >(null);
         return stored ? JSON.parse(stored) : null;
       } catch {
         return null;
-}
+  }
     },
     async setSetting(key: string, value: any): Promise<void> {
       if (!browser) return;
@@ -109,7 +108,7 @@ let audioContext = $state<AudioContext | null >(null);
         localStorage.setItem(key, JSON.stringify(value));
       } catch (error) {
         console.warn("Storage failed:", error);
-}
+  }
     },
   });
 
@@ -121,7 +120,7 @@ let audioContext = $state<AudioContext | null >(null);
       // In a real app, this would send to analytics
     } catch (error) {
       console.warn("Activity tracking failed:", error);
-}}
+  }}
   onMount(() => {
     // Initialize speech recognition if supported and enabled
     if (enableVoiceInput && "webkitSpeechRecognition" in window) {
@@ -143,7 +142,7 @@ let audioContext = $state<AudioContext | null >(null);
       recognition.onend = () => {
         isListening = false;
       };
-}
+  }
     // Load conversation history from IndexedDB
     loadConversationHistory();
   });
@@ -158,10 +157,10 @@ let audioContext = $state<AudioContext | null >(null);
 
       if (history && Array.isArray(history)) {
         conversation = history.slice(-10); // Load last 10 messages
-}
+  }
     } catch (error) {
       console.warn("Failed to load conversation history:", error);
-}}
+  }}
   async function saveConversationHistory() {
     try {
       const contextKey = caseId ? `case_${caseId}` : "general";
@@ -172,7 +171,7 @@ let audioContext = $state<AudioContext | null >(null);
       );
     } catch (error) {
       console.warn("Failed to save conversation history:", error);
-}}
+  }}
   async function askAI() {
     if (!query.trim() || isLoading) return;
 
@@ -188,7 +187,7 @@ let audioContext = $state<AudioContext | null >(null);
     isLoading = true;
     error = "";
     let aiMessageId = generateId();
-let aiMessage = $state<ConversationMessage >({
+  let aiMessage = $state<ConversationMessage >({
       id: aiMessageId,
       type: "ai",
       content: "",
@@ -201,7 +200,7 @@ let aiMessage = $state<ConversationMessage >({
     // Auto-resize textarea
     if (textareaRef) {
       textareaRef.style.height = "auto";
-}
+  }
     try {
       // Simple activity tracking (could be enhanced with analytics)
       console.log("User activity:", {
@@ -241,15 +240,15 @@ let aiMessage = $state<ConversationMessage >({
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || "Failed to get AI response");
-}
+  }
       if (selectedModel === "ollama" && response.body) {
         // Streaming response (Ollama/Gemma3)
         const reader = response.body.getReader();
         let decoder = new TextDecoder();
-let done = $state(false);
-let buffer = $state("");
+  let done = $state(false);
+  let buffer = $state("");
         // In the streaming loop:
-let meta = $state<Record<string, any> >({});
+  let meta = $state<Record<string, any> >({});
         while (!done) {
           const { value, done: doneReading } = await reader.read();
           done = doneReading;
@@ -317,12 +316,12 @@ let meta = $state<Record<string, any> >({});
       dispatch("error", error);
     } finally {
       isLoading = false;
-}}
+  }}
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       askAI();
-}}
+  }}
   // Voice input (speech-to-text) with improved UX and browser compatibility
   function startVoiceInput() {
     if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
@@ -388,7 +387,7 @@ let meta = $state<Record<string, any> >({});
     } finally {
       ttsLoading = false;
     }
-}
+  }
   function handleReferenceClick(
     reference: NonNullable<ConversationMessage["references"]>[0]
   ) {
@@ -396,44 +395,44 @@ let meta = $state<Record<string, any> >({});
       id: reference.id,
       type: reference.type,
     });
-}
+  }
   function clearConversation() {
     conversation = [];
     saveConversationHistory();
-}
+  }
   function scrollToBottom() {
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}}
+  }}
   function generateId(): string {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return crypto.randomUUID();
   }
   return Math.random().toString(36).substr(2, 9);
-}
+  }
 
-function formatTime(timestamp: number): string {
+  function formatTime(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   });
-}
+  }
   function getConfidenceColor(confidence: number): string {
     if (confidence >= 0.8) return "text-green-600";
     if (confidence >= 0.6) return "text-yellow-600";
     return "text-red-600";
-}
+  }
   function getConfidenceIcon(confidence: number) {
     if (confidence >= 0.8) return CheckCircle;
     if (confidence >= 0.6) return AlertCircle;
     return AlertCircle;
-}
+  }
   // Auto-resize textarea
   function autoResize(event: Event) {
     const target = event.target as HTMLTextAreaElement;
     target.style.height = "auto";
     target.style.height = target.scrollHeight + "px";
-}
+  }
 </script>
 
 <div class="space-y-4">

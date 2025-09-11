@@ -1,8 +1,7 @@
 <script lang="ts">
-</script>
-	import { Slider } from "bits-ui";
+  	import { Slider } from "bits-ui";
 
-	let value = $state(50);
+  	let value = $state(50);
 </script>
 
 <div class="flex h-[320px] w-full justify-center">

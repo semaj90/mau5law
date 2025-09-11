@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import { createDialog, melt } from "@melt-ui/svelte";
   import { createEventDispatcher } from "svelte";

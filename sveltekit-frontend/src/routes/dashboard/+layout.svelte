@@ -3,12 +3,10 @@
   Features: Responsive grid, real-time data, vector search integration
 -->
 <script lang="ts">
-</script>
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { onMount, onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
-  
   // Modern UI Components
   import * as Card from '$lib/components/ui/card';
   import {
@@ -18,7 +16,6 @@
     Input
   } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  
   // Icons from Lucide
   import { 
     Search, Bell, Settings, User, Menu, 
@@ -26,22 +23,17 @@
     ChevronDown, Filter, Calendar,
     Activity, TrendingUp, Eye
   } from 'lucide-svelte';
-  
   // Stores and utilities
   import { browser } from '$app/environment';
-  
   interface Props {
     children: Snippet;
   }
-  
   let { children }: Props = $props();
-  
   // Dashboard state
   let sidebarOpen = $state(true);
   let searchQuery = $state('');
   let notifications = $state(3);
   let systemHealth = $state<'healthy' | 'warning' | 'critical'>('healthy');
-  
   // Real-time metrics (would connect to your API)
   let metrics = $state({
     totalCases: 1247,
@@ -49,7 +41,6 @@
     vectorQueries: 156,
     systemLoad: 67
   });
-  
   // Dashboard navigation structure
   const dashboardSections = [
     {
@@ -93,10 +84,8 @@
       status: systemHealth
     }
   ];
-  
   // Real-time updates simulation (replace with actual WebSocket/SSE)
   let updateInterval: NodeJS.Timeout;
-  
   onMount(() => {
     if (browser) {
       updateInterval = setInterval(() => {
@@ -106,21 +95,17 @@
       }, 5000);
     }
   });
-  
   onDestroy(() => {
     if (updateInterval) {
       clearInterval(updateInterval);
     }
   });
-  
   function handleNavigation(href: string) {
     goto(href);
   }
-  
   function toggleSidebar() {
     sidebarOpen = !sidebarOpen;
   }
-  
   $effect(() => {
     // Update active state based on current route
     dashboardSections.forEach(section => {

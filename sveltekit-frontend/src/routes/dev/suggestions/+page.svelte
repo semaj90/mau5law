@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from "svelte";
   let items: any[] = $state([]);
   let count = $state(0);

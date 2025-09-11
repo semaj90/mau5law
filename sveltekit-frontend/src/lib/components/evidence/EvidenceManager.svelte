@@ -10,7 +10,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
   import {
@@ -66,7 +65,6 @@
     withoutEmbeddings: 0,
     percentage: 0
   });
-  
   let loading = $state({
     files: false,
     upload: false,
@@ -94,7 +92,6 @@
     try {
       const response = await fetch('/api/evidence-files?limit=50');
       const result = await response.json();
-      
       if (result.success) {
         evidenceFiles = result.items.map((item: any) => ({
           ...item,
@@ -114,7 +111,6 @@
     try {
       const response = await fetch('/api/evidence-embeddings');
       const result = await response.json();
-      
       if (result.success) {
         embeddingStats = result.stats;
       }
@@ -127,7 +123,6 @@
 
   async function handleFileUpload(files: FileList) {
     if (!files.length) return;
-    
     loading.upload = true;
     uploadProgress = '';
     error = '';
@@ -149,7 +144,6 @@
         });
 
         const result = await response.json();
-        
         if (!result.success) {
           throw new Error(result.error || 'Upload failed');
         }
@@ -159,7 +153,6 @@
         } else {
           uploadProgress = `${file.name} uploaded successfully`;
         }
-        
       } catch (err) {
         error = `Failed to upload ${file.name}: ${err instanceof Error ? err.message : 'Unknown error'}`;
         console.error(err);
@@ -168,10 +161,8 @@
 
     loading.upload = false;
     uploadProgress = 'Upload complete!';
-    
     // Reload files and stats
     await Promise.all([loadEvidenceFiles(), loadEmbeddingStats()]);
-    
     // Clear progress after delay
     setTimeout(() => { uploadProgress = ''; }, 3000);
   }
@@ -188,7 +179,6 @@
       });
 
       const result = await response.json();
-      
       if (result.success) {
         uploadProgress = `Backfill complete! Processed: ${result.result.processed}, Success: ${result.result.success}, Failed: ${result.result.failed}`;
         await loadEmbeddingStats();
@@ -205,7 +195,6 @@
 
   async function performSemanticSearch() {
     if (!searchQuery.trim()) return;
-    
     loading.search = true;
     error = '';
 
@@ -214,12 +203,10 @@
         search: searchQuery,
         limit: '10'
       });
-      
       if (caseId) params.set('case_id', caseId);
 
       const response = await fetch(`/api/evidence-embeddings?${params}`);
       const result = await response.json();
-      
       if (result.success) {
         searchResults = result.results;
         showSearchResults = true;
@@ -279,7 +266,6 @@
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
-    
     if (e.dataTransfer?.files) {
       handleFileUpload(e.dataTransfer.files);
     }

@@ -4,10 +4,8 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
-  
   // System status and metrics stores
   const systemStatus = writable({
     status: 'unknown',
@@ -24,17 +22,14 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     uptime: 0,
     version: '2.0.0'
   });
-  
   const processingResults = writable([]);
   const isProcessing = writable(false);
-  
   // Derived stores for computed values
   const healthyServices = derived(systemStatus, ($status) => {
     const services = Object.values($status.services);
     const healthy = services.filter(s => s === 'healthy').length;
     return { healthy, total: services.length };
   });
-  
   const performanceMetrics = derived(systemStatus, ($status) => {
     const total = $status.metrics.totalProcessed || 1;
     return {
@@ -46,20 +41,16 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
       systemLoad: ($status.activeJobs.gpu + $status.activeJobs.cpu) / 20 * 100
     };
   });
-  
   let statusInterval: NodeJS.Timeout;
   let testDocument = {
     id: 'demo_doc_' + Date.now(),
     title: 'Sample Legal Contract Analysis',
     content: `This is a demonstration legal document for testing the unified processing system. 
-    
     AGREEMENT made this day between Party A and Party B, whereas the parties agree to the following terms and conditions:
-    
     1. SCOPE OF WORK: Party A shall provide legal consulting services
     2. COMPENSATION: Payment terms as specified herein
     3. CONFIDENTIALITY: All information shall remain confidential
     4. TERMINATION: This agreement may be terminated with 30 days notice
-    
     This document demonstrates the integration of GPU-accelerated processing with the standard production pipeline.`,
     metadata: {
       document_type: 'contract',
@@ -70,7 +61,6 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     },
     createdAt: new Date().toISOString()
   };
-  
   // Processing options
   let processingOptions = {
     priority: 0.8,
@@ -78,20 +68,16 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     batchMode: false,
     query: { query: 'legal contract analysis', keywords: ['contract', 'agreement'] }
   };
-  
   onMount(async () => {
     await refreshSystemStatus();
-    
     // Start periodic status updates
     statusInterval = setInterval(refreshSystemStatus, 5000);
   });
-  
   onDestroy(() => {
     if (statusInterval) {
       clearInterval(statusInterval);
     }
   });
-  
   async function refreshSystemStatus() {
     try {
       const response = await fetch('/api/unified/status');
@@ -103,10 +89,8 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
       console.error('Failed to refresh system status:', error);
     }
   }
-  
   async function processDocument() {
     isProcessing.set(true);
-    
     try {
       const response = await fetch('/api/unified/process', {
         method: 'POST',
@@ -116,10 +100,8 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
           options: processingOptions
         })
       });
-      
       if (response.ok) {
         const data = await response.json();
-        
         if (data.success) {
           // Add to results
           processingResults.update(results => [{
@@ -128,10 +110,8 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
             result: data.result,
             processingTime: data.result.processingTime
           }, ...results.slice(0, 9)]); // Keep last 10 results
-          
           // Update test document ID for next test
           testDocument.id = 'demo_doc_' + Date.now();
-          
           // Refresh system status to show updated metrics
           await refreshSystemStatus();
         }
@@ -139,16 +119,13 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     } catch (error) {
       console.error('Document processing failed:', error);
     }
-    
     isProcessing.set(false);
   }
-  
   function formatUptime(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     return `${hours}h ${minutes}m`;
   }
-  
   function getServiceStatusColor(status: string): string {
     switch (status) {
       case 'healthy': return 'text-green-400';
@@ -157,11 +134,9 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
       default: return 'text-gray-400';
     }
   }
-  
   function getProcessingPathColor(path: string): string {
     return path === 'gpu' ? 'text-purple-400' : 'text-blue-400';
   }
-  
   function getProcessingPathIcon(path: string): string {
     return path === 'gpu' ? '🔥' : '⚙️';
   }

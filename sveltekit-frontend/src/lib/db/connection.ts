@@ -5,7 +5,7 @@ import postgres from 'postgres';
 // Database configuration - using environment variables or defaults
 const DATABASE_URL = import.meta.env.DATABASE_URL || 
   import.meta.env.DEV_DATABASE_URL || 
-  'postgresql://postgres:123456@localhost:5432/legal_ai_db';
+  'postgresql://postgres:123456@localhost:5433/legal_ai_db';
 
 // Create postgres client
 const client = postgres(DATABASE_URL, {

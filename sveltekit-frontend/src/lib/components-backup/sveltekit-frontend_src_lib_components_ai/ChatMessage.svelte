@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     message: any
   }
@@ -15,7 +14,6 @@
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, User as UserIcon } from "lucide-svelte";
   import "../chat/chat-message.css";
 
-  
   // Type-safe fallback for message.role
   let isUser = $derived(message.role === "user" || message.type === "user")
   let isAssistant = $derived(message.role === "assistant" || message.type === "assistant")
@@ -29,14 +27,14 @@
       title: "Copied",
       message: "Message copied to clipboard",
     });
-}
+  }
   function toggleSaved() {
     chatActions.toggleMessageSaved(message.id);
-}
+  }
   function formatTime(timestamp: Date | string | number): string {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-}
+  }
   function getEmotionalToneColor(tone: string): string {
     switch (tone) {
       case "encouraging":
@@ -51,7 +49,7 @@
         return "text-gray-600";
       default:
         return "text-gray-500";
-}}
+  }}
   function getEmotionalToneIcon(tone: string) {
     switch (tone) {
       case "encouraging":
@@ -62,7 +60,7 @@
         return Star;
       default:
         return null;
-}}
+  }}
 </script>
 
 <div class="space-y-4">

@@ -3,10 +3,8 @@
   Real-time analytics, vector search insights, system monitoring
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  
   // Modern UI Components
   import * as Card from '$lib/components/ui/card';
   import {
@@ -14,7 +12,6 @@
   } from '$lib/components/ui/enhanced-bits';;
   import { Progress } from '$lib/components/ui/progress';
   import { Badge } from '$lib/components/ui/badge';
-  
   // Icons
   import { 
     TrendingUp, TrendingDown, Users, Search, 
@@ -22,7 +19,6 @@
     ChevronRight, Activity, Eye, Target,
     FileText, Shield, Cpu, BarChart3
   } from 'lucide-svelte';
-  
   // Real-time dashboard data
   let dashboardData = $state({
     // Legal Case Metrics
@@ -30,7 +26,6 @@
     activeCases: 89,
     closedCasesThisMonth: 156,
     caseGrowth: 12.5,
-    
     // Vector Search Analytics  
     totalVectorQueries: 23589,
     avgQueryTime: 45, // ms
@@ -41,19 +36,16 @@
       { term: 'precedent search', count: 234 },
       { term: 'liability', count: 198 }
     ],
-    
     // AI Processing Stats
     aiTasksToday: 1834,
     aiTasksCompleted: 1756,
     aiProcessingTime: 2.3, // avg seconds
     aiAccuracy: 96.8,
-    
     // System Health
     systemLoad: 67,
     databaseConnections: 23,
     apiResponseTime: 156, // ms
     uptime: '99.98%',
-    
     // Recent Activity
     recentActivities: [
       {
@@ -90,7 +82,6 @@
       }
     ]
   });
-  
   // Quick action buttons
   const quickActions = [
     {
@@ -122,7 +113,6 @@
       color: 'bg-orange-500'
     }
   ];
-  
   // Utility functions
   function formatRelativeTime(date: Date): string {
     const now = new Date();
@@ -130,14 +120,11 @@
     const minutes = Math.floor(diff / (1000 * 60);
     if (minutes < 1) return 'Just now';
     if (minutes < 60) return `${minutes}m ago`;
-    
     const hours = Math.floor(minutes / 60);
     if (hours < 24) return `${hours}h ago`;
-    
     const days = Math.floor(hours / 24);
     return `${days}d ago`;
   }
-  
   function getActivityIcon(type: string) {
     switch (type) {
       case 'case_created': return FileText;
@@ -147,7 +134,6 @@
       default: return Activity;
     }
   }
-  
   function getStatusColor(status: string): string {
     switch (status) {
       case 'active': return 'bg-blue-500';
@@ -157,7 +143,6 @@
       default: return 'bg-gray-500';
     }
   }
-  
   // Real-time updates simulation
   onMount(() => {
     const interval = setInterval(() => {
@@ -166,7 +151,6 @@
       dashboardData.apiResponseTime = Math.floor(Math.random() * 50) + 120;
       dashboardData.databaseConnections = Math.floor(Math.random() * 10) + 18;
     }, 3000);
-    
     return () => clearInterval(interval);
   });
 </script>

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
 
   export let id: string | undefined = undefined;
@@ -11,16 +10,16 @@
   const dispatch = createEventDispatcher();
 
   function handleInput(e: Event) {
-	value = (e.target as HTMLTextAreaElement).value;
-	dispatch('input', { value });
+  	value = (e.target as HTMLTextAreaElement).value;
+  	dispatch('input', { value });
   }
 
   function handleBlur() {
-	dispatch('blur');
+  	dispatch('blur');
   }
 
   function handleFocus() {
-	dispatch('focus');
+  	dispatch('focus');
   }
 </script>
 

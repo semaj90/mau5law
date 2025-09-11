@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from "svelte";
 
   interface Document {
@@ -8,7 +7,7 @@
     type: string
     created: string
     status: "draft" | "review" | "final";
-}
+  }
   let documents: Document[] = [];
   let loading = true;
 
@@ -45,7 +44,7 @@
       console.error("Error loading documents:", error);
     } finally {
       loading = false;
-}
+  }
   });
 
   function getStatusClass(status: string): string {
@@ -58,7 +57,7 @@
         return "bg-green-100 text-green-800";
       default:
         return "bg-gray-100 text-gray-800";
-}}
+  }}
 </script>
 
 <svelte:head>

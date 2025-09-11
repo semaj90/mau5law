@@ -3,7 +3,6 @@
   Triggers the NES modal from anywhere in your app
 -->
 <script lang="ts">
-</script>
   import NesAuthModal from './NesAuthModal.svelte';
 
   interface Props {

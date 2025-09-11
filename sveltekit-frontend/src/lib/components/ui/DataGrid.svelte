@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { Props } from "$lib/types/global";
   import { cn } from '$lib/utils/cn';
   import { ChevronDown, ChevronUp, MoreHorizontal, Search, Filter } from 'lucide-svelte';
@@ -21,7 +20,6 @@
     children,
     onSelectionChange
   }: DataGridProps = $props();
-  
   let selectedRows = $state<Set<string | number>>(new Set());
   let sortConfig = $state<{column: string, direction: 'asc' | 'desc'} | null>(null);
   let searchQuery = $state('');
@@ -29,7 +27,6 @@
 
   let filteredData = $derived(() => {
     let filtered = data;
-    
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -39,7 +36,6 @@
         )
       );
     }
-    
     // Apply column filters
     for (const [column, filter] of columnFilters) {
       if (filter.trim()) {
@@ -48,19 +44,15 @@
         );
       }
     }
-    
     return filtered;
   });
 
   let sortedData = $derived(() => {
     if (!sortConfig) return filteredData;
-    
     return [...filteredData].sort((a, b) => {
       const aVal = a[sortConfig.column];
       const bVal = b[sortConfig.column];
-      
       if (aVal === bVal) return 0;
-      
       const result = aVal < bVal ? -1 : 1;
       return sortConfig.direction === 'desc' ? -result : result;
     });
@@ -68,7 +60,6 @@
 
   function handleSort(column: string) {
     if (!sortable) return;
-    
     if (sortConfig?.column === column) {
       sortConfig = {
         column,
@@ -81,7 +72,6 @@
 
   function handleRowSelect(rowId: string | number) {
     if (!selectable) return;
-    
     if (multiSelect) {
       const newSelection = new Set(selectedRows);
       if (newSelection.has(rowId)) {
@@ -93,19 +83,16 @@
     } else {
       selectedRows = new Set([rowId]);
     }
-    
     onSelectionChange?.({ selectedRows: Array.from(selectedRows) });
   }
 
   function handleSelectAll() {
     if (!multiSelect) return;
-    
     if (selectedRows.size === sortedData.length) {
       selectedRows = new Set();
     } else {
       selectedRows = new Set(sortedData.map(row => row.id));
     }
-    
     onSelectionChange?.({ selectedRows: Array.from(selectedRows) });
   }
 

@@ -1,223 +1,207 @@
 <script lang="ts">
-</script>
-	import { onMount, onDestroy } from 'svelte';
-	import { useMachine } from '@xstate/svelte';
-	import { createMachine, assign } from 'xstate';
-	import { Button } from '$lib/components/ui';
-	import { chatStore } from '$lib/stores/chat';
-	import { api } from '$lib/api/client';
-	import type { ChatMessage, ChatSession } from '$lib/types/chat';
-	
-	// XState machine for chat functionality
-	const chatMachine = createMachine({
-		id: 'chat',
-		initial: 'idle',
-		context: {
-			messages: [] as ChatMessage[],
-			currentMessage: '',
-			isTyping: false,
-			session: null as ChatSession | null,
-			error: null as string | null
-		},
-		states: {
-			idle: {
-				on: {
-					TYPE: {
-						target: 'typing',
-						actions: assign({
-							isTyping: true
-						})
-					},
-					SEND: 'sending',
-					CONNECT: 'connecting'
-				}
-			},
-			connecting: {
-				invoke: {
-					src: 'connectWebSocket',
-					onDone: {
-						target: 'idle',
-						actions: assign({
-							session: ({ event }) => event.data
-						})
-					},
-					onError: {
-						target: 'error',
-						actions: assign({
-							error: ({ event }) => event.data.message
-						})
-					}
-				}
-			},
-			typing: {
-				after: {
-					2000: {
-						target: 'idle',
-						actions: assign({
-							isTyping: false
-						})
-					}
-				},
-				on: {
-					STOP_TYPING: {
-						target: 'idle',
-						actions: assign({
-							isTyping: false
-						})
-					},
-					SEND: 'sending'
-				}
-			},
-			sending: {
-				invoke: {
-					src: 'sendMessage',
-					onDone: {
-						target: 'idle',
-						actions: [
-							assign({
-								messages: ({ context, event }) => [
-									...context.messages,
-									event.data.userMessage,
-									event.data.aiResponse
-								],
-								currentMessage: ''
-							}),
-							'updateChatStore'
-						]
-					},
-					onError: {
-						target: 'error',
-						actions: assign({
-							error: ({ event }) => event.data.message
-						})
-					}
-				}
-			},
-			error: {
-				on: {
-					RETRY: 'sending',
-					CANCEL: {
-						target: 'idle',
-						actions: assign({
-							error: null
-						})
-					}
-				}
-			}
-		}
-	}, {
-		actions: {
-			updateChatStore: ({ context }) => {
-				chatStore.setMessages(context.messages);
-			}
-		},
-		services: {
-			connectWebSocket: async () => {
-				const ws = new WebSocket('ws://localhost:8094/ws/chat');
-				return new Promise((resolve, reject) => {
-					ws.onopen = () => resolve({ id: crypto.randomUUID(), ws });
-					ws.onerror = () => reject(new Error('WebSocket connection failed'));
-				});
-			},
-			sendMessage: async ({ context, event }) => {
-				const userMessage: ChatMessage = {
-					id: crypto.randomUUID(),
-					content: event.message,
-					role: 'user',
-					timestamp: new Date(),
-					sessionId: context.session?.id
-				};
-				
-				// Send to Enhanced RAG service
-				const response = await api.post('/api/rag/chat', {
-					message: event.message,
-					context: context.messages.slice(-10), // Last 10 messages for context
-					sessionId: context.session?.id
-				});
-				
-				const aiResponse: ChatMessage = {
-					id: crypto.randomUUID(),
-					content: response.data.response,
-					role: 'assistant',
-					timestamp: new Date(),
-					sessionId: context.session?.id,
-					metadata: {
-						confidence: response.data.confidence,
-						sources: response.data.sources,
-						processingTime: response.data.processingTime
-					}
-				};
-				
-				return { userMessage, aiResponse };
-			}
-		}
-	});
-	
-	const { state, send } = useMachine(chatMachine);
-	
-	let messageInput = '';
-	let chatContainer: HTMLDivElement
-	let websocket: WebSocket | null = null;
-	
-	function handleSend() {
-		if (messageInput.trim() && !$state.matches('sending')) {
-			send({ type: 'SEND', message: messageInput.trim() });
-			messageInput = '';
-		}
-	}
-	
-	function handleKeyPress(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !event.shiftKey) {
-			event.preventDefault();
-			handleSend();
-		}
-	}
-	
-	function scrollToBottom() {
-		if (chatContainer) {
-			chatContainer.scrollTop = chatContainer.scrollHeight;
-		}
-	}
-	
-	function formatTime(date: Date): string {
-		return new Intl.DateTimeFormat('en-US', {
-			hour: '2-digit',
-			minute: '2-digit'
-		}).format(date);
-	}
-	
-	function handleTyping() {
-		send({ type: 'TYPE' });
-		// Send typing indicator through WebSocket if connected
-		if (websocket && websocket.readyState === WebSocket.OPEN) {
-			websocket.send(JSON.stringify({
-				type: 'typing',
-				sessionId: $state.context.session?.id
-			}));
-		}
-	}
-	
-	onMount(() => {
-		// Connect to WebSocket for real-time features
-		send({ type: 'CONNECT' });
-		
-		// Auto-scroll to bottom when messages change
-		// TODO: Convert to $derived: if ($state.context.messages.length > 0) {
-			setTimeout(scrollToBottom, 100)
-		}
-	});
-	
-	onDestroy(() => {
-		if (websocket) {
-			websocket.close();
-		}
-	});
-	
-	// Reactive statements
-	// TODO: Convert to $derived: messages = $state.context.messages
-	// TODO: Convert to $derived: isLoading = $state.matches('sending') || $state.matches('connecting')
-	// TODO: Convert to $derived: hasError = $state.matches('error')
-	// TODO: Convert to $derived: errorMessage = $state.context.error
+  	import { onMount, onDestroy } from 'svelte';
+  	import { useMachine } from '@xstate/svelte';
+  	import { createMachine, assign } from 'xstate';
+  	import { Button } from '$lib/components/ui';
+  	import { chatStore } from '$lib/stores/chat';
+  	import { api } from '$lib/api/client';
+  	import type { ChatMessage, ChatSession } from '$lib/types/chat';
+  	// XState machine for chat functionality
+  	const chatMachine = createMachine({
+  		id: 'chat',
+  		initial: 'idle',
+  		context: {
+  			messages: [] as ChatMessage[],
+  			currentMessage: '',
+  			isTyping: false,
+  			session: null as ChatSession | null,
+  			error: null as string | null
+  		},
+  		states: {
+  			idle: {
+  				on: {
+  					TYPE: {
+  						target: 'typing',
+  						actions: assign({
+  							isTyping: true
+  						})
+  					},
+  					SEND: 'sending',
+  					CONNECT: 'connecting'
+  				}
+  			},
+  			connecting: {
+  				invoke: {
+  					src: 'connectWebSocket',
+  					onDone: {
+  						target: 'idle',
+  						actions: assign({
+  							session: ({ event }) => event.data
+  						})
+  					},
+  					onError: {
+  						target: 'error',
+  						actions: assign({
+  							error: ({ event }) => event.data.message
+  						})
+  					}
+  				}
+  			},
+  			typing: {
+  				after: {
+  					2000: {
+  						target: 'idle',
+  						actions: assign({
+  							isTyping: false
+  						})
+  					}
+  				},
+  				on: {
+  					STOP_TYPING: {
+  						target: 'idle',
+  						actions: assign({
+  							isTyping: false
+  						})
+  					},
+  					SEND: 'sending'
+  				}
+  			},
+  			sending: {
+  				invoke: {
+  					src: 'sendMessage',
+  					onDone: {
+  						target: 'idle',
+  						actions: [
+  							assign({
+  								messages: ({ context, event }) => [
+  									...context.messages,
+  									event.data.userMessage,
+  									event.data.aiResponse
+  								],
+  								currentMessage: ''
+  							}),
+  							'updateChatStore'
+  						]
+  					},
+  					onError: {
+  						target: 'error',
+  						actions: assign({
+  							error: ({ event }) => event.data.message
+  						})
+  					}
+  				}
+  			},
+  			error: {
+  				on: {
+  					RETRY: 'sending',
+  					CANCEL: {
+  						target: 'idle',
+  						actions: assign({
+  							error: null
+  						})
+  					}
+  				}
+  			}
+  		}
+  	}, {
+  		actions: {
+  			updateChatStore: ({ context }) => {
+  				chatStore.setMessages(context.messages);
+  			}
+  		},
+  		services: {
+  			connectWebSocket: async () => {
+  				const ws = new WebSocket('ws://localhost:8094/ws/chat');
+  				return new Promise((resolve, reject) => {
+  					ws.onopen = () => resolve({ id: crypto.randomUUID(), ws });
+  					ws.onerror = () => reject(new Error('WebSocket connection failed'));
+  				});
+  			},
+  			sendMessage: async ({ context, event }) => {
+  				const userMessage: ChatMessage = {
+  					id: crypto.randomUUID(),
+  					content: event.message,
+  					role: 'user',
+  					timestamp: new Date(),
+  					sessionId: context.session?.id
+  				};
+  				// Send to Enhanced RAG service
+  				const response = await api.post('/api/rag/chat', {
+  					message: event.message,
+  					context: context.messages.slice(-10), // Last 10 messages for context
+  					sessionId: context.session?.id
+  				});
+  				const aiResponse: ChatMessage = {
+  					id: crypto.randomUUID(),
+  					content: response.data.response,
+  					role: 'assistant',
+  					timestamp: new Date(),
+  					sessionId: context.session?.id,
+  					metadata: {
+  						confidence: response.data.confidence,
+  						sources: response.data.sources,
+  						processingTime: response.data.processingTime
+  					}
+  				};
+  				return { userMessage, aiResponse };
+  			}
+  		}
+  	});
+  	const { state, send } = useMachine(chatMachine);
+  	let messageInput = '';
+  	let chatContainer: HTMLDivElement
+  	let websocket: WebSocket | null = null;
+  	function handleSend() {
+  		if (messageInput.trim() && !$state.matches('sending')) {
+  			send({ type: 'SEND', message: messageInput.trim() });
+  			messageInput = '';
+  		}
+  	}
+  	function handleKeyPress(event: KeyboardEvent) {
+  		if (event.key === 'Enter' && !event.shiftKey) {
+  			event.preventDefault();
+  			handleSend();
+  		}
+  	}
+  	function scrollToBottom() {
+  		if (chatContainer) {
+  			chatContainer.scrollTop = chatContainer.scrollHeight;
+  		}
+  	}
+  	function formatTime(date: Date): string {
+  		return new Intl.DateTimeFormat('en-US', {
+  			hour: '2-digit',
+  			minute: '2-digit'
+  		}).format(date);
+  	}
+  	function handleTyping() {
+  		send({ type: 'TYPE' });
+  		// Send typing indicator through WebSocket if connected
+  		if (websocket && websocket.readyState === WebSocket.OPEN) {
+  			websocket.send(JSON.stringify({
+  				type: 'typing',
+  				sessionId: $state.context.session?.id
+  			}));
+  		}
+  	}
+  	onMount(() => {
+  		// Connect to WebSocket for real-time features
+  		send({ type: 'CONNECT' });
+  		// Auto-scroll to bottom when messages change
+  		// TODO: Convert to $derived: if ($state.context.messages.length > 0) {
+  			setTimeout(scrollToBottom, 100)
+  		}
+  	});
+  	onDestroy(() => {
+  		if (websocket) {
+  			websocket.close();
+  		}
+  	});
+  	// Reactive statements
+  	// TODO: Convert to $derived: messages = $state.context.messages
+  	// TODO: Convert to $derived: isLoading = $state.matches('sending') || $state.matches('connecting')
+  	// TODO: Convert to $derived: hasError = $state.matches('error')
+  	// TODO: Convert to $derived: errorMessage = $state.context.error
 </script>
 
 <div class="chat-container flex flex-col h-full bg-background rounded-lg border">

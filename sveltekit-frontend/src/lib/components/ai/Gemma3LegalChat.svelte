@@ -1,7 +1,6 @@
 <!-- Gemma3LegalChat.svelte -->
 <!-- Complete Gemma3 Legal Model Integration Component for SvelteKit -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { createMachine, createActor } from 'xstate';
@@ -26,7 +25,6 @@
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { Loader2, Send, Cpu, Zap, Database, Brain, FileText, Search } from 'lucide-svelte';
-  
   interface Props {
     caseId?: string;
     userId?: string;
@@ -34,7 +32,6 @@
   }
 
   let { caseId = '', userId = '', documentId = '' }: Props = $props();
-  
   // Stores
   const messages = writable<Message[]>([]);
   const isProcessing = writable(false);
@@ -46,12 +43,10 @@
     cacheHitRate: 0,
     gpuUtilization: 0
   });
-  
   // Gemma3 Bridge Instance
-let gemma3Bridge = $state<Gemma3WASMBridge | null >(null);
-let natsConnection = $state<any >(null);
-let ragMachine = $state<any >(null);
-  
+  let gemma3Bridge = $state<Gemma3WASMBridge | null >(null);
+  let natsConnection = $state<any >(null);
+  let ragMachine = $state<any >(null);
   // Types
   interface Message {
     id: string;
@@ -67,28 +62,24 @@ let ragMachine = $state<any >(null);
       citations?: string[];
     };
   }
-  
   interface Source {
     id: string;
     title: string;
     relevanceScore: number;
     excerpt: string;
   }
-  
   interface GPUStatus {
     available: boolean;
     layers: number;
     memory: number;
     temperature?: number;
   }
-  
   interface PerformanceMetrics {
     tokensPerSecond: number;
     latency: number;
     cacheHitRate: number;
     gpuUtilization: number;
   }
-  
   // State machine for chat workflow
   const chatMachine = createMachine({
     id: 'gemma3Chat',
@@ -151,7 +142,6 @@ let ragMachine = $state<any >(null);
       }
     }
   });
-  
   // Initialize on mount
   onMount(async () => {
     try {
@@ -169,22 +159,18 @@ let ragMachine = $state<any >(null);
           topK: 40,
           topP: 0.9
         });
-        
         await gemma3Bridge.initialize();
-        
         gpuStatus.set({
           available: true,
           layers: 35,
           memory: 8192
         });
       }
-      
       // Connect to NATS for real-time updates
       if (natsMessaging) {
         natsConnection = await natsMessaging.connect();
         subscribeToUpdates();
       }
-      
       // Initialize RAG machine
       ragMachine = createActor(chatMachine, {
         services: {
@@ -212,7 +198,6 @@ let ragMachine = $state<any >(null);
           generateResponse: async (context, event) => {
             const sources = event.data || [];
             const augmentedPrompt = buildAugmentedPrompt(context.currentQuery, sources);
-            
             if (gemma3Bridge && context.useGPU) {
               // Use local WebAssembly model
               const result = await gemma3Bridge.processLegalText(augmentedPrompt, {
@@ -220,7 +205,6 @@ let ragMachine = $state<any >(null);
                 temperature: context.temperature,
                 stream: context.streamResponse
               });
-              
               return {
                 content: result.text,
                 metadata: {
@@ -242,7 +226,6 @@ let ragMachine = $state<any >(null);
                   stream: context.streamResponse
                 })
               });
-              
               if (context.streamResponse) {
                 return handleStreamingResponse(response);
               } else {
@@ -252,9 +235,7 @@ let ragMachine = $state<any >(null);
           }
         }
       });
-      
       ragMachine.start();
-      
       // Add welcome message
       messages.update(m => [...m, {
         id: crypto.randomUUID(),
@@ -262,7 +243,6 @@ let ragMachine = $state<any >(null);
         content: 'Gemma3 Legal AI Assistant initialized. GPU acceleration enabled with 35 layers loaded. How can I help you with your legal analysis today?',
         timestamp: new Date()
       }]);
-      
     } catch (error) {
       console.error('Failed to initialize Gemma3:', error);
       messages.update(m => [...m, {
@@ -273,7 +253,6 @@ let ragMachine = $state<any >(null);
       }]);
     }
   });
-  
   // Cleanup on destroy
   onDestroy(() => {
     if (gemma3Bridge) {
@@ -286,29 +265,22 @@ let ragMachine = $state<any >(null);
       ragMachine.stop();
     }
   });
-  
   // Message handling
-let userInput = $state('');
-  
+  let userInput = $state('');
   async function sendMessage() {
     if (!userInput.trim() || $isProcessing) return;
-    
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: 'user',
       content: userInput,
       timestamp: new Date()
     };
-    
     messages.update(m => [...m, userMessage]);
     isProcessing.set(true);
-    
     const startTime = performance.now();
-    
     try {
       // Use state machine for processing
       ragMachine.send({ type: 'SEND_MESSAGE', query: userInput });
-      
       // Wait for completion
       await new Promise((resolve) => {
         const unsubscribe = ragMachine.subscribe((state) => {
@@ -318,7 +290,6 @@ let userInput = $state('');
           }
         });
       });
-      
     } catch (error) {
       console.error('Error processing message:', error);
       messages.update(m => [...m, {
@@ -335,10 +306,8 @@ let userInput = $state('');
       userInput = '';
     }
   }
-  
   function buildAugmentedPrompt(query: string, sources: Source[]): string {
-let prompt = $state(`Legal Query: ${query}\n\n`);
-    
+  let prompt = $state(`Legal Query: ${query}\n\n`);
     if (sources && sources.length > 0) {
       prompt += 'Relevant Legal Context:\n';
       sources.forEach((source, idx) => {
@@ -347,18 +316,14 @@ let prompt = $state(`Legal Query: ${query}\n\n`);
       });
       prompt += '\n';
     }
-    
     prompt += 'Legal Analysis:';
     return prompt;
   }
-  
   async function handleStreamingResponse(response: Response) {
     const reader = response.body?.getReader();
     const decoder = new TextDecoder();
-let fullContent = $state('');
-    
+  let fullContent = $state('');
     if (!reader) throw new Error('No response body');
-    
     const assistantMessage: Message = {
       id: crypto.randomUUID(),
       role: 'assistant',
@@ -366,16 +331,12 @@ let fullContent = $state('');
       timestamp: new Date(),
       metadata: { model: 'gemma3-legal' }
     };
-    
     messages.update(m => [...m, assistantMessage]);
-    
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      
       const chunk = decoder.decode(value);
       fullContent += chunk;
-      
       // Update message content in real-time
       messages.update(m => {
         const lastMessage = m[m.length - 1];
@@ -385,20 +346,16 @@ let fullContent = $state('');
         return [...m];
       });
     }
-    
     return { content: fullContent };
   }
-  
   function subscribeToUpdates() {
     if (!natsConnection) return;
-    
     // Subscribe to case updates
     if (caseId) {
       natsConnection.subscribe(`legal.case.${caseId}.update`, (msg: any) => {
         console.log('Case update:', msg);
       });
     }
-    
     // Subscribe to AI processing events
     natsConnection.subscribe('legal.ai.processing.*', (msg: any) => {
       if (msg.type === 'metrics') {
@@ -406,7 +363,6 @@ let fullContent = $state('');
       }
     });
   }
-  
   function updatePerformanceMetrics(processingTime: number) {
     performanceMetrics.update(m => ({
       ...m,
@@ -419,9 +375,8 @@ let fullContent = $state('');
         : 0
     }));
   }
-  
   // UI state
-let activeTab = $state('chat');
+  let activeTab = $state('chat');
 </script>
 
 <div class="gemma3-legal-chat h-full flex flex-col">

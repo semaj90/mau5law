@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     items?: string[];
   }
@@ -8,9 +7,7 @@
   }: Props = $props();
 
   import { fade } from 'svelte/transition';
-  
   export const title = 'Legal Case Manager';
-  
   let dialogOpen = $state(false);
   let selectOpen = $state(false);
   let selectedItem = $state(items[0]);

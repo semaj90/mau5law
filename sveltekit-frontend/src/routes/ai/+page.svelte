@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { page } from "$app/state";
   import ChatInterface from "$lib/components/ai/ChatInterface.svelte";
   import {
@@ -20,7 +19,8 @@
     Sparkles,
   } from "lucide-svelte";
   import { onMount } from "svelte";
-let selectedConversationId = $state<string | null >(null);
+
+  let selectedConversationId = $state<string | null >(null);
   let searchQuery = $state("");
   let showHistory = $state(true);
 
@@ -33,15 +33,18 @@ let selectedConversationId = $state<string | null >(null);
     chatActions.newConversation(caseId);
     selectedConversationId = null;
     showHistory = false;
-}
+  }
+
   async function loadConversation(conversationId: string) {
     chatActions.loadConversation(conversationId);
     selectedConversationId = conversationId;
     showHistory = false;
-}
+  }
+
   function showHistoryPanel() {
     showHistory = true;
-}
+  }
+
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
     const now = new Date();
@@ -54,14 +57,15 @@ let selectedConversationId = $state<string | null >(null);
     if (diffInDays < 7) return `${diffInDays} days ago`;
 
     return date.toLocaleDateString();
-}
+  }
+
   let filteredHistory = $derived($conversationsList.filter(
     (conv) =>
       conv.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       conv.messages?.some((msg) =>
         msg.content?.toLowerCase().includes(searchQuery.toLowerCase())
       )
-  );
+  ));
 </script>
 
 <svelte:head>

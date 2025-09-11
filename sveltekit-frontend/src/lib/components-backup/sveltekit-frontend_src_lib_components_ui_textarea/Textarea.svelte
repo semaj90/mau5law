@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     value?: string;
     placeholder?: string;
@@ -18,7 +17,6 @@
     onfocus?: (event: FocusEvent) => void;
     onblur?: (event: FocusEvent) => void;
   }
-  
   let {
     value = $bindable(""),
     placeholder = "",

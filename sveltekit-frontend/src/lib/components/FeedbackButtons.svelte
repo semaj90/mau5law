@@ -1,12 +1,11 @@
 <script lang="ts">
-</script>
 
   let { sessionId }: string;
   let { query }: string;
   let { candidateIds }: string[] = [];
   let { chosenId }: string | null = null;
-let sending = $state(false);
-let lastResp = $state<any >(null);
+  let sending = $state(false);
+  let lastResp = $state<any >(null);
 
   async function sendFeedback(reward: number) {
     sending = true;

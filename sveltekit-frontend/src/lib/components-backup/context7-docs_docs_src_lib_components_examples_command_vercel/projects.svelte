@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-	import Item from "./item.svelte";
+  	import Item from "./item.svelte";
 </script>
 
 {#each { length: 6 } as _, i (i)}

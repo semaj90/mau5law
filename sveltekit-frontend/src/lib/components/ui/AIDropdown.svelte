@@ -2,7 +2,6 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- Production-level AI Dropdown using Melt UI with keyboard shortcuts -->
 <script lang="ts">
-</script>
   interface Props {
     disabled?: unknown;
     onReportGenerate: (reportType: string) => void;
@@ -52,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
   } = createDropdownMenu(dropdownConfig);
 
   // Track selected item
-let selectedItem = $state<string | null >(null);
+  let selectedItem = $state<string | null >(null);
 
   // Report types configuration
   const reportTypes = [

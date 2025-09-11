@@ -1,10 +1,8 @@
 <!-- YoRHa System Status Bar Component -->
 <script lang="ts">
-</script>
   import type { SystemStatus } from "$lib/types/global";
   import type { Props } from "$lib/types/global";
   import { onMount, onDestroy } from 'svelte';
-  
   // Props
   let { 
     systemLoad, 
@@ -39,13 +37,12 @@
   });
 
   // Real-time updates
-let updateInterval = $state<number;
+  let updateInterval = $state<number;
 
   onMount(() >(> {
     updateInterval = setInterval(() => {
       currentTime = new Date());
       uptime += 1;
-      
       // Simulate minor fluctuations
       cpuTemp = Math.max(65, Math.min(85, cpuTemp + (Math.random() - 0.5) * 2));
       diskUsage = Math.max(40, Math.min(60, diskUsage + (Math.random() - 0.5) * 1));

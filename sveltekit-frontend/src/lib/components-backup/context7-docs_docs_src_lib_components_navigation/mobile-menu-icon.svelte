@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-	let { open }: { open: boolean } = $props();
+  	let { open }: { open: boolean } = $props();
 </script>
 
 <svg

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import debounce from 'lodash-es/debounce';
   import { } from 'svelte';
 

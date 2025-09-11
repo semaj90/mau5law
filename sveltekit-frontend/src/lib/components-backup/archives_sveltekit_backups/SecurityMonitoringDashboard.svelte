@@ -3,7 +3,6 @@
   Displays security events, system health, and security metrics
 -->
 <script lang="ts">
-</script>
   import { Button } from "$lib/components/ui/button";
   import { notifications } from "$lib/stores/notification";
   import { getSecurityEvents, type SecurityEvent } from "$lib/utils/security";

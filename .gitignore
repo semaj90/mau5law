@@ -451,9 +451,9 @@ neo4j-community-*/
 *.7z
 *.rar
 
-# Exception: Keep small build artifacts
-!go-microservice/bin/*.exe
-!sveltekit-frontend/bin/*.exe
+# (Removed previous exceptions to ensure no executables are committed)
+# !go-microservice/bin/*.exe
+# !sveltekit-frontend/bin/*.exe
 
 ########################################
 # Node and package caches
@@ -604,7 +604,8 @@ go-microservice/bin/
 go-microservice/**/bin/
 # Go binaries (no .exe binaries should be committed)
 *.exe
-!scripts/*.exe
+# (Removed scripts exe exception to avoid committing executables)
+# !scripts/*.exe
 # Go module caches
 go.sum
 # Platform-specific Go binaries
@@ -651,4 +652,7 @@ legal-gateway/legal-worker
 comprehensive-all-routes-phase-file.txt
 cognitive-service-jsonv2
 cognitive-service
+go.mod
+go.mod
+go.mod
 go.mod

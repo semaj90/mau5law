@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { aiAssistantManager, isProcessing, currentResponse, aiError } from '$lib/stores/aiAssistant.svelte.js';
   import { webAssemblyLangChainBridge } from '$lib/services/webasm-langchain-bridge.js';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter.js';
@@ -41,12 +40,9 @@
     }
 
     const startTime = performance.now();
-    
     try {
       console.log(`[Test] Running test: ${method.name}`);
-      
       await aiAssistantManager.sendMessage(testQuery, method.options);
-      
       const endTime = performance.now();
       const duration = endTime - startTime;
 
@@ -62,7 +58,6 @@
       };
 
       testResults = [result, ...testResults];
-      
       console.log(`[Test] ${method.name} completed in ${duration}ms`);
 
     } catch (error: any) {
@@ -90,7 +85,6 @@
     }
 
     testResults = [];
-    
     for (const method of testMethods) {
       await runTest(method);
       // Wait between tests to avoid overwhelming the system

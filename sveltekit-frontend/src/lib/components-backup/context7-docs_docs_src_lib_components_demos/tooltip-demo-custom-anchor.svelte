@@ -1,9 +1,8 @@
 <script lang="ts">
-</script>
-	import { Tooltip } from "bits-ui";
-	import MagicWand from "phosphor-svelte/lib/MagicWand";
+  	import { Tooltip } from "bits-ui";
+  	import MagicWand from "phosphor-svelte/lib/MagicWand";
 
-	let customAnchor = $state<HTMLElement | null>(null);
+  	let customAnchor = $state<HTMLElement | null>(null);
 </script>
 
 <div class="flex items-center gap-6">

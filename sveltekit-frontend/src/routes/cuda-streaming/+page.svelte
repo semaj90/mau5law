@@ -1,10 +1,8 @@
 <script lang="ts">
-</script>
   import type { PageData, ActionData } from './$types.js';
   import { onMount, onDestroy } from 'svelte';
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
-  
   // Enhanced-Bits orchestrated components
   import { 
     Button, 
@@ -19,7 +17,6 @@
     getConfidenceClass,
     formatAnalysisDate
   } from '$lib/components/ui/orchestrated';
-  
   // Icons for CUDA streaming
   import { 
     Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,
@@ -28,7 +25,6 @@
   } from 'lucide-svelte';
 
   let { data, form }: { data: PageData; form: ActionData } = $props();
-  
   // Svelte 5 runes for CUDA streaming state
   let selectedOperation = $state<string>('document_vectorization');
   let inputText = $state('');
@@ -56,7 +52,6 @@
   // CUDA streaming functions
   async function startCudaStream() {
     if (!canStream) return;
-    
     isStreaming = true;
     processingProgress = 0;
     streamResults = [];
@@ -71,11 +66,9 @@
         method: 'POST',
         body: formData
       });
-      
       const result = await response.json();
       if (result.success) {
         currentSession = result.sessionId;
-        
         // Start streaming updates
         startStreamingUpdates(result.sessionId);
       }
@@ -87,7 +80,6 @@
 
   async function stopCudaStream() {
     if (!currentSession) return;
-    
     const formData = new FormData();
     formData.append('sessionId', currentSession);
 
@@ -96,7 +88,6 @@
         method: 'POST',
         body: formData
       });
-      
       stopStreamingUpdates();
     } catch (error) {
       console.error('Failed to stop CUDA stream:', error);
@@ -107,10 +98,8 @@
     // Simulate real-time streaming updates
     const updateInterval = setInterval(() => {
       processingProgress += Math.random() * 15;
-      
       if (processingProgress >= 100) {
         processingProgress = 100;
-        
         // Add final result
         streamResults = [...streamResults, {
           id: Date.now(),
@@ -125,7 +114,6 @@
             confidence: 0.85 + Math.random() * 0.1
           }
         }];
-        
         stopStreamingUpdates();
       } else {
         // Add intermediate result
@@ -146,7 +134,6 @@
     isStreaming = false;
     currentSession = null;
     processingProgress = 0;
-    
     if (metricsInterval) {
       clearInterval(metricsInterval);
       metricsInterval = null;
@@ -155,9 +142,7 @@
 
   async function processSingleDocument() {
     if (!inputText.trim()) return;
-    
     const startTime = Date.now();
-    
     const formData = new FormData();
     formData.append('documentData', inputText);
     formData.append('processingType', selectedOperation);
@@ -168,7 +153,6 @@
         method: 'POST',
         body: formData
       });
-      
       const result = await response.json();
       if (result.success) {
         streamResults = [...streamResults, {
@@ -229,7 +213,6 @@
         queueSize: Math.max(0, liveMetrics.queueSize + Math.floor(Math.random() * 6) - 3)
       };
     }, 3000);
-    
     return () => clearInterval(refreshInterval);
   });
 </script>

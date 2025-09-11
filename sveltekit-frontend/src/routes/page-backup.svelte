@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -45,9 +44,9 @@
   });
 
   // Secret input tracking
-let konamiSequence = $state([]);
-let konamiCode = $state(['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA']);
-let lastSecretTime = $state(0);
+  let konamiSequence = $state([]);
+  let konamiCode = $state(['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA']);
+  let lastSecretTime = $state(0);
 
   // Cognitive visualization states
   let visualEffects = $state({
@@ -225,8 +224,8 @@ let lastSecretTime = $state(0);
     });
 
     // Secret click patterns
-let clickCount = $state(0);
-let lastClickTime = $state(0);
+  let clickCount = $state(0);
+  let lastClickTime = $state(0);
 
     document.addEventListener('click', (e) => {
       const now = Date.now();

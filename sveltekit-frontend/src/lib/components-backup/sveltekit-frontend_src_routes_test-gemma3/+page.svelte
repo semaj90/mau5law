@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from "svelte";
 
   let prompt = "Explain the legal concept of due process in criminal law.";

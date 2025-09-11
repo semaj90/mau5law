@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import TauriAPI from "$lib/tauri";
   import type { Report } from "$lib/types/index";
   import { onMount } from "svelte";
@@ -16,15 +15,15 @@
       console.error("Error:", err);
     } finally {
       loading = false;
-}
+  }
   });
 
   function formatDate(date: Date | string) {
     if (typeof date === 'string') {
       return new Date(date).toLocaleDateString();
-}
+  }
     return date.toLocaleDateString();
-}
+  }
   function getStatusBadgeClass(status: string) {
     switch (status) {
       case "published":
@@ -35,7 +34,7 @@
         return "badge-neutral";
       default:
         return "badge-info";
-}}
+  }}
 </script>
 
 <svelte:head>

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
   import { Search, X } from 'lucide-svelte';
 
@@ -22,37 +21,37 @@
   let isFocused = $state(false);
 
   function triggerSearch() {
-	dispatch('search', { query: value });
-	onsearch?.({ query: value });
+  	dispatch('search', { query: value });
+  	onsearch?.({ query: value });
   }
 
   function handleInput() {
-	if (debounceTimer) clearTimeout(debounceTimer);
-	debounceTimer = window.setTimeout(() => {
-	  triggerSearch();
-	}, debounceTime);
+  	if (debounceTimer) clearTimeout(debounceTimer);
+  	debounceTimer = window.setTimeout(() => {
+  	  triggerSearch();
+  	}, debounceTime);
   }
 
   function handleKeydown(event: KeyboardEvent) {
-	if (event.key === 'Enter') {
-	  if (debounceTimer) clearTimeout(debounceTimer);
-	  triggerSearch();
-	} else if (event.key === 'Escape') {
-	  clearValue();
-	  inputElement?.blur();
-	}
+  	if (event.key === 'Enter') {
+  	  if (debounceTimer) clearTimeout(debounceTimer);
+  	  triggerSearch();
+  	} else if (event.key === 'Escape') {
+  	  clearValue();
+  	  inputElement?.blur();
+  	}
   }
 
   function handleFocus() {
-	isFocused = true;
+  	isFocused = true;
   }
   function handleBlur() {
-	isFocused = false;
+  	isFocused = false;
   }
   function clearValue() {
-	value = '';
-	triggerSearch();
-	inputElement?.focus();
+  	value = '';
+  	triggerSearch();
+  	inputElement?.focus();
   }
 </script>
 

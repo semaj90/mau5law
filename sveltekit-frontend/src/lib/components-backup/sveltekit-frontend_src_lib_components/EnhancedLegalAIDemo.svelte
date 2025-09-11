@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // ======================================================================
   // ENHANCED LEGAL AI DEMO COMPONENT
   // Demonstrating real-time AI processing with XState + Loki.js integration

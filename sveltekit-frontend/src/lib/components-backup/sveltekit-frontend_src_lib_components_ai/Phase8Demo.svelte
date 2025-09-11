@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { MatrixUICompiler, type MatrixUINode } from '$lib/ui/matrix-compiler';
   import { MatrixLODSystem, type ViewportFocus } from '$lib/ui/matrix-lod';
@@ -11,13 +10,11 @@
   }
 
   let { className = '' } = $props();
-  
   // Phase 8 system components
   let matrixCompiler: MatrixUICompiler
   let lodSystem: MatrixLODSystem
   let reranker: LegalAIReranker
   let prefetcher: PredictivePrefetcher
-  
   // Demo state
   let canvas: HTMLCanvasElement
   let demoContainer: HTMLDivElement
@@ -29,7 +26,6 @@
     cacheHits: 0,
     aiBoosts: 0
   });
-  
   // Demo data
   const sampleUIDefinition: MatrixUINode[] = [
     {
@@ -77,7 +73,6 @@
       }
     }
   ];
-  
   const sampleUserContext: UserContext = {
     intent: 'analyze',
     timeOfDay: 'afternoon',
@@ -97,20 +92,15 @@
     try {
       // Initialize Matrix UI Compiler
       matrixCompiler = new MatrixUICompiler(canvas);
-      
       // Initialize LOD System
       lodSystem = new MatrixLODSystem(canvas);
-      
       // Initialize AI Reranker
       reranker = new LegalAIReranker();
-      
       // Initialize Predictive Prefetcher
       prefetcher = new PredictivePrefetcher();
       await prefetcher.initialize();
-      
       // Compile sample UI
       const compiledNodes = await matrixCompiler.compile(sampleUIDefinition);
-      
       // Build LOD cache for each component
       compiledNodes.forEach(node => {
         const sourceNode = sampleUIDefinition.find(n => n.id === node.element.id);
@@ -121,19 +111,15 @@
              0.5,  0.5, 0.0, 1.0, 1.0,
             -0.5,  0.5, 0.0, 0.0, 1.0
           ]);
-          
           lodSystem.buildLODCache(sourceNode.id, vertices, sourceNode.metadata || {});
         }
       });
-      
       // Render components to demo container
       compiledNodes.forEach(node => {
         demoContainer.appendChild(node.element);
       });
-      
       isSystemInitialized = true;
       console.log('✅ Phase 8 AI-Aware Matrix UI System initialized successfully');
-      
     } catch (error) {
       console.error('❌ Phase 8 system initialization failed:', error);
     }
@@ -141,27 +127,21 @@
 
   function startDemoLoop(): void {
     let frameCount = 0;
-    
     const demoLoop = () => {
       frameCount++;
-      
       // Update performance metrics
       const metrics = lodSystem.getPerformanceMetrics();
       performanceMetrics.frameRate = metrics.frameRate;
-      
       // Simulate viewport focus changes
       if (frameCount % 120 === 0) { // Every 2 seconds at 60fps
         simulateViewportFocus();
       }
-      
       // Simulate AI suggestions
       if (frameCount % 180 === 0) { // Every 3 seconds
         simulateAISuggestions();
       }
-      
       requestAnimationFrame(demoLoop);
     };
-    
     requestAnimationFrame(demoLoop);
   }
 
@@ -173,7 +153,6 @@
       aiSuggestions: ['evidence-card-1', 'analyze-btn-1'],
       confidenceScore: 0.8 + Math.random() * 0.2
     };
-    
     lodSystem.updateViewportFocus(focus);
   }
 
@@ -198,17 +177,14 @@
           confidence: 78
         }
       ];
-      
       const rerankedResults = await reranker.rerank(mockResults, sampleUserContext);
       performanceMetrics.aiBoosts = rerankedResults.filter(r => r.rerankScore > r.originalScore).length;
-      
       // Simulate predictive prefetching
       const intentPrediction = await prefetcher.predictIntent(sampleUserContext.context);
       if (intentPrediction) {
         await prefetcher.executePrefetch(intentPrediction);
         performanceMetrics.cacheHits++;
       }
-      
     } catch (error) {
       console.warn('Demo simulation error:', error);
     }
@@ -216,12 +192,10 @@
 
   function switchDemo(demo: typeof currentDemo): void {
     currentDemo = demo;
-    
     // Reset visual indicators
     document.querySelectorAll('[id^="evidence-"], [id^="analyze-"]').forEach(el => {
       el.classList.remove('demo-highlight', 'ai-enhanced', 'lod-demo');
     });
-    
     // Apply demo-specific styling
     switch (demo) {
       case 'reranker':
@@ -243,21 +217,18 @@
 
   function runPerformanceTest(): void {
     console.log('🚀 Running Phase 8 Performance Test...');
-    
     // Stress test the LOD system
     for (let i = 0; i < 100; i++) {
       setTimeout(() => {
         simulateViewportFocus();
       }, i * 10);
     }
-    
     // Stress test the reranker
     for (let i = 0; i < 50; i++) {
       setTimeout(() => {
         simulateAISuggestions();
       }, i * 20);
     }
-    
     setTimeout(() => {
       console.log('✅ Performance test completed');
       console.log('📊 Metrics:', performanceMetrics);

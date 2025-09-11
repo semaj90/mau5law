@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
   import type { OCRResult } from '$lib/services/ocr-processor';
@@ -122,7 +122,7 @@ let processingErrors = writable<Record<string, string>>({});
       }
     }
 
-    const validFiles = files.filter(file => {
+    const validFiles = slice.filter(file => {
       if (!isValidFileType(file)) {
         processingErrors.update(errors => ({
           ...errors,

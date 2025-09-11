@@ -4,7 +4,6 @@
   Date: 2025-07-20
 -->
 <script lang="ts">
-</script>
   // @ts-nocheck
   /**
    * AiAssistant.svelte

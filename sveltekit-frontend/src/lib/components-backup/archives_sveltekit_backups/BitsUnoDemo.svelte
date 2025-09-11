@@ -1,20 +1,16 @@
 <script lang="ts">
-</script>
   import { createDialog, createPopover, createDropdownMenu, melt } from '@melt-ui/svelte';
   import { fade } from 'svelte/transition';
-  
   // Create dialog state
   const {
     elements: { trigger: dialogTrigger, overlay: dialogOverlay, content: dialogContent, title: dialogTitle, description: dialogDescription, close: dialogClose, portalled: dialogPortalled },
     states: { open: dialogOpen }
   } = createDialog();
-  
   // Create popover state
   const {
     elements: { trigger: popoverTrigger, content: popoverContent, arrow: popoverArrow },
     states: { open: popoverOpen }
   } = createPopover();
-  
   // Create dropdown state
   const {
     elements: { trigger: dropdownTrigger, menu: dropdownMenu, item: dropdownItem, separator: dropdownSeparator },

@@ -1,7 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-</script>
   interface Props {
     columns?: number;
     expandedColumns?: number;
@@ -12,7 +11,6 @@ https://svelte.dev/e/js_parse_error -->
     expandOnFocus?: boolean;
     onexpand?: (event?: unknown) => void;
   }
-  
   let {
     columns = 1,
     expandedColumns = 3,
@@ -23,31 +21,31 @@ https://svelte.dev/e/js_parse_error -->
     expandOnFocus = true,
     onexpand
   }: Props = $props();
-let class = $state("");
+  let class = $state("");
   ;
-let isExpanded = $state(false);
-let containerElement = $state<HTMLDivElement;
+  let isExpanded = $state(false);
+  let containerElement = $state<HTMLDivElement;
 
   function handleMouseEnter() {
     if (expandOnHover) {
       isExpanded >(true);
       onexpand?.();
-}}
+  }}
   function handleMouseLeave() {
     if (expandOnHover) {
       isExpanded = false;
       onexpand?.();
-}}
+  }}
   function handleFocusIn() {
     if (expandOnFocus) {
       isExpanded = true;
       onexpand?.();
-}}
+  }}
   function handleFocusOut() {
     if (expandOnFocus) {
       isExpanded = false;
       onexpand?.();
-}}
+  }}
   let currentColumns = $derived(isExpanded ? expandedColumns : columns);
 </script>
 

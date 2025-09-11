@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { afterUpdate, onMount, tick } from "svelte";
   import { elasticOut, quintOut } from "svelte/easing";
   import { writable } from "svelte/store";
@@ -52,8 +51,8 @@
   let selectedMode = $state("professional");
   let showModeSelector = $state(false);
   let componentError = $state<Error | null>(null);
-let messagesContainer = $state<HTMLElement;
-let messageInput = $state<HTMLTextAreaElement;
+  let messagesContainer = $state<HTMLElement;
+  let messageInput = $state<HTMLTextAreaElement;
 
   // Messages store (keeping as writable for complex state management)
   let messages >(writable<

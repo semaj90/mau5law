@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { } from 'svelte';
 
   interface Props {
@@ -17,7 +16,6 @@
     Button
   } from '$lib/components/ui/enhanced-bits';;
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
-  
   let { analysisData = $bindable() } = $props(); // {
     evidenceAnalysis?: unknown;
     personsData?: unknown;
@@ -31,7 +29,6 @@
   let persons = $derived(analysisData?.personsData?.persons ?? []);
   let relationships = $derived(analysisData?.personsData?.relationships ?? []);
   let synthesis = $derived(analysisData?.caseSynthesis ?? {});
-  
   // Case strength styling
   let strengthColor = $derived({
     strong: 'text-green-600 bg-green-50',
@@ -47,7 +44,7 @@
     associate: 'bg-orange-100 text-orange-800',
     unknown: 'bg-gray-100 text-gray-800'
   };
-let showDetails = $state(false);
+  let showDetails = $state(false);
 </script>
 
 <Card class="w-full max-w-4xl">

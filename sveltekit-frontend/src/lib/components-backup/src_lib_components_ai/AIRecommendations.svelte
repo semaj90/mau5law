@@ -1,15 +1,10 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
-  
   // Props
   let { recommendations = [] } = $props();
-  
   const dispatch = createEventDispatcher();
-  
   // Priority ordering
   const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-  
   // Sort recommendations by priority and confidence
   let sortedRecommendations = $derived(
     recommendations.sort((a, b) => {
@@ -18,7 +13,6 @@
       return (b.confidence || 0) - (a.confidence || 0);
     })
   );
-  
   // Get priority styling
   function getPriorityStyle(priority: string) {
     switch (priority) {
@@ -34,7 +28,6 @@
         return 'bg-gray-500/20 border-gray-500/50 text-gray-300';
     }
   }
-  
   function getPriorityIcon(priority: string) {
     switch (priority) {
       case 'critical': return '🚨';
@@ -44,7 +37,6 @@
       default: return '📝';
     }
   }
-  
   function getTypeIcon(type: string) {
     switch (type) {
       case 'performance': return '⚡';
@@ -58,15 +50,12 @@
       default: return '🔧';
     }
   }
-  
   function handleAccept(recommendation: any) {
     dispatch('accept-recommendation', recommendation);
   }
-  
   function handleDismiss(recommendation: any) {
     dispatch('dismiss-recommendation', recommendation);
   }
-  
   function handleViewDetails(recommendation: any) {
     dispatch('view-details', recommendation);
   }

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Removed rune imports ($props, $effect, $state) - they are provided by the Svelte compiler and must not be imported
   import { onDestroy } from 'svelte';
   import Editor from '@tinymce/tinymce-svelte';
@@ -61,49 +60,49 @@
         line-height: 1.6;
         color: #374151;
         background: #ffffff;
-}
+  }
       p { margin-bottom: 1em; }
       h1, h2, h3, h4, h5, h6 {
         font-weight: 600;
         margin-top: 1.5em;
         margin-bottom: 0.5em;
         color: #111827;
-}
+  }
       blockquote {
         border-left: 4px solid #3B82F6;
         padding-left: 1em;
         margin: 1em 0;
         font-style: italic;
         background: #F8FAFC;
-}
+  }
       code {
         background: #F1F5F9;
         padding: 0.2em 0.4em;
         border-radius: 3px;
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.9em;
-}
+  }
       pre {
         background: #1E293B;
         color: #E2E8F0;
         padding: 1em;
         border-radius: 6px;
         overflow-x: auto;
-}
+  }
       table {
         border-collapse: collapse;
         width: 100%;
         margin: 1em 0;
-}
+  }
       th, td {
         border: 1px solid #D1D5DB;
         padding: 0.5em;
         text-align: left;
-}
+  }
       th {
         background: #F9FAFB;
         font-weight: 600;
-}
+  }
     `,
     placeholder,
     resize: true,
@@ -156,7 +155,7 @@
       editor.on('blur', () => {
         editorState.update(s => ({ ...s, isEditing: false }));
       });
-}
+  }
   };
 
   // Reactive updates

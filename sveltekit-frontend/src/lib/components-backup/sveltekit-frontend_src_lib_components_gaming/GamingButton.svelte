@@ -1,68 +1,55 @@
 <script lang="ts">
-</script>
-	import type { ComponentProps } from 'svelte';
-	
-	interface GamingButtonProps {
-		variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
-		size?: 'sm' | 'md' | 'lg';
-		disabled?: boolean;
-		loading?: boolean;
-		glowEffect?: boolean;
-		soundEnabled?: boolean;
-		onclick?: () => void;
-		children: any
-	}
-	
-	let { 
-		variant = 'primary',
-		size = 'md',
-		disabled = false,
-		loading = false,
-		glowEffect = false,
-		soundEnabled = true,
-		onclick,
-		children
-	} = $props();
-	
-	let buttonElement = $state<HTMLButtonElement>();
-	let isPressed = $state(false);
-	
-	function handleClick(event: MouseEvent) {
-		if (disabled || loading) return;
-		
-		isPressed = true;
-		setTimeout(() => isPressed = false, 150);
-		
-		// Gaming sound effect (optional)
-		if (soundEnabled) {
-			playClickSound();
-		}
-		
-		onclick?.(event);
-	}
-	
-	function playClickSound() {
-		// Create audio context for gaming click sound
-		try {
-			const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-			const oscillator = audioContext.createOscillator();
-			const gainNode = audioContext.createGain();
-			
-			oscillator.connect(gainNode);
-			gainNode.connect(audioContext.destination);
-			
-			oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-			oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
-			
-			gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-			gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-			
-			oscillator.start(audioContext.currentTime);
-			oscillator.stop(audioContext.currentTime + 0.1);
-		} catch (error) {
-			// Audio context not supported, silently fail
-		}
-	}
+  	import type { ComponentProps } from 'svelte';
+  	interface GamingButtonProps {
+  		variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
+  		size?: 'sm' | 'md' | 'lg';
+  		disabled?: boolean;
+  		loading?: boolean;
+  		glowEffect?: boolean;
+  		soundEnabled?: boolean;
+  		onclick?: () => void;
+  		children: any
+  	}
+  	let { 
+  		variant = 'primary',
+  		size = 'md',
+  		disabled = false,
+  		loading = false,
+  		glowEffect = false,
+  		soundEnabled = true,
+  		onclick,
+  		children
+  	} = $props();
+  	let buttonElement = $state<HTMLButtonElement>();
+  	let isPressed = $state(false);
+  	function handleClick(event: MouseEvent) {
+  		if (disabled || loading) return;
+  		isPressed = true;
+  		setTimeout(() => isPressed = false, 150);
+  		// Gaming sound effect (optional)
+  		if (soundEnabled) {
+  			playClickSound();
+  		}
+  		onclick?.(event);
+  	}
+  	function playClickSound() {
+  		// Create audio context for gaming click sound
+  		try {
+  			const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  			const oscillator = audioContext.createOscillator();
+  			const gainNode = audioContext.createGain();
+  			oscillator.connect(gainNode);
+  			gainNode.connect(audioContext.destination);
+  			oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+  			oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+  			gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+  			gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+  			oscillator.start(audioContext.currentTime);
+  			oscillator.stop(audioContext.currentTime + 0.1);
+  		} catch (error) {
+  			// Audio context not supported, silently fail
+  		}
+  	}
 </script>
 
 <button

@@ -3,7 +3,6 @@ Workflow Progress Component
 Visual progress indicator for the Evidence Chain of Custody workflow
 -->
 <script lang="ts">
-</script>
   interface Props {
     progress: number
     stage: string
@@ -20,7 +19,6 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   import { Progress } from '$lib/components/ui/progress';
   import { CheckCircle, Clock, AlertCircle } from 'lucide-svelte';
 
-      
   // Define workflow stages
   const workflowStages = [
     { id: 'idle', name: 'Idle', description: 'Waiting to start' },
@@ -41,7 +39,6 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   function getStageStatus(stageId: string, currentStage: string, currentProgress: number): 'completed' | 'current' | 'pending' {
     const currentIndex = getStageIndex(currentStage);
     const stageIndex = getStageIndex(stageId);
-    
     if (stageIndex < currentIndex) return 'completed';
     if (stageIndex === currentIndex) return 'current';
     return 'pending';
@@ -86,7 +83,6 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   function getConnectorColor(fromStage: string, toStage: string, currentStage: string): string {
     const fromStatus = getStageStatus(fromStage, currentStage, progress);
     const toStatus = getStageStatus(toStage, currentStage, progress);
-    
     if (fromStatus === 'completed' && toStatus === 'completed') {
       return 'bg-green-400';
     } else if (fromStatus === 'completed' && toStatus === 'current') {

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onsearch?: (event?: any) => void;
     onsortChanged?: (event?: any) => void;
@@ -14,57 +13,53 @@
 
 
 
-		import SearchInput from './SearchInput.svelte';
-	
-	import { Filter, ArrowUpDown } from 'lucide-svelte';
+  		import SearchInput from './SearchInput.svelte';
+  	import { Filter, ArrowUpDown } from 'lucide-svelte';
 
-						{ id: 'relevance', label: 'Relevance' },
-		{ id: 'date', label: 'Date' },
-		{ id: 'name', label: 'Name' },
-		{ id: 'type', label: 'Type' }
-	];
+  						{ id: 'relevance', label: 'Relevance' },
+  		{ id: 'date', label: 'Date' },
+  		{ id: 'name', label: 'Name' },
+  		{ id: 'type', label: 'Type' }
+  	];
 
-	
-	let selectedSort = 'relevance';
-	let filtersOpen = false;
-	
-	// Filter state
-	let selectedFileTypes: string[] = [];
-	let dateRange = {
-		from: '',
-		to: ''
-	};
+  	let selectedSort = 'relevance';
+  	let filtersOpen = false;
+  	// Filter state
+  	let selectedFileTypes: string[] = [];
+  	let dateRange = {
+  		from: '',
+  		to: ''
+  	};
 
-	function handleSearch(event: CustomEvent) {
-		onsearch?.();
-}
-	function handleSortChange(sortId: string) {
-		selectedSort = sortId;
-		onsortChanged?.();
-}
-	function toggleFilters() {
-		filtersOpen = !filtersOpen;
-		if (filtersOpen) {
-			// Dispatch current filter state when opening
-			dispatchFilters();
-}}
-	function handleFileTypeChange(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const value = target.value;
-		
-		if (target.checked) {
-			selectedFileTypes = [...selectedFileTypes, value];
-		} else {
-			selectedFileTypes = selectedFileTypes.filter(type => type !== value);
-}
-		dispatchFilters();
-}
-	function handleDateChange() {
-		dispatchFilters();
-}
-	function dispatchFilters() {
-		onfiltersChanged?.();
-}
+  	function handleSearch(event: CustomEvent) {
+  		onsearch?.();
+  }
+  	function handleSortChange(sortId: string) {
+  		selectedSort = sortId;
+  		onsortChanged?.();
+  }
+  	function toggleFilters() {
+  		filtersOpen = !filtersOpen;
+  		if (filtersOpen) {
+  			// Dispatch current filter state when opening
+  			dispatchFilters();
+  }}
+  	function handleFileTypeChange(event: Event) {
+  		const target = event.target as HTMLInputElement;
+  		const value = target.value;
+  		if (target.checked) {
+  			selectedFileTypes = [...selectedFileTypes, value];
+  		} else {
+  			selectedFileTypes = selectedFileTypes.filter(type => type !== value);
+  }
+  		dispatchFilters();
+  }
+  	function handleDateChange() {
+  		dispatchFilters();
+  }
+  	function dispatchFilters() {
+  		onfiltersChanged?.();
+  }
 </script>
 
 <div class="space-y-4">

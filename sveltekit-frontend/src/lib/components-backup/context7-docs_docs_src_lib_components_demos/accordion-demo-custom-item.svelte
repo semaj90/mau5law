@@ -1,15 +1,14 @@
 <script lang="ts">
-</script>
-	import { Accordion, type WithoutChildrenOrChild } from "bits-ui";
-	import CaretDown from "phosphor-svelte/lib/CaretDown";
+  	import { Accordion, type WithoutChildrenOrChild } from "bits-ui";
+  	import CaretDown from "phosphor-svelte/lib/CaretDown";
 
-	type Props = WithoutChildrenOrChild<Accordion.ItemProps> & {
-		title: string;
-		content: string;
-		disabled?: boolean;
-	};
+  	type Props = WithoutChildrenOrChild<Accordion.ItemProps> & {
+  		title: string;
+  		content: string;
+  		disabled?: boolean;
+  	};
 
-	let { title, content, ...restProps }: Props = $props();
+  	let { title, content, ...restProps }: Props = $props();
 </script>
 
 <Accordion.Item {...restProps} class="border-dark-10 group border-b px-1.5">

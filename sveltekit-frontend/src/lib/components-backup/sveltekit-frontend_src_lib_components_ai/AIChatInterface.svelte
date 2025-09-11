@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     visible?: any;
     minimized?: any;
@@ -27,350 +26,350 @@
 
 
 
-	import { onMount, createEventDispatcher, tick } from 'svelte';
-	import { fade, fly, scale } from 'svelte/transition';
-	import { quintOut, elasticOut } from 'svelte/easing';
-	import { writable } from 'svelte/store';
+  	import { onMount, createEventDispatcher, tick } from 'svelte';
+  	import { fade, fly, scale } from 'svelte/transition';
+  	import { quintOut, elasticOut } from 'svelte/easing';
+  	import { writable } from 'svelte/store';
 
-	// Types
-	interface Message {
-		id: string
-		role: 'user' | 'assistant' | 'system';
-		content: string
-		timestamp: Date
-		streaming?: boolean;
-		error?: boolean;
-	}
+  	// Types
+  	interface Message {
+  		id: string
+  		role: 'user' | 'assistant' | 'system';
+  		content: string
+  		timestamp: Date
+  		streaming?: boolean;
+  		error?: boolean;
+  	}
 
-	interface ChatSettings {
-		model: string
-		temperature: number
-		maxTokens: number
-		topP: number
-		systemPrompt: string
-	}
+  	interface ChatSettings {
+  		model: string
+  		temperature: number
+  		maxTokens: number
+  		topP: number
+  		systemPrompt: string
+  	}
 
-	// Props
-	 // false;
-	let {
+  	// Props
+  	 // false;
+  	let {
     minimized = $bindable()
   } = $props(); // true;
-	let {
+  	let {
     width = $bindable()
   } = $props(); // 600;
-	let {
+  	let {
     apiEndpoint = $bindable()
   } = $props(); // 'http://localhost:8000/v1/chat/completions';
-	let {
+  	let {
     modelName = $bindable()
   } = $props(); // 'YoRHa Legal AI';
-	let { subtitle = $bindable() } = $props(); // 'Powered by Gemma3';
+  	let { subtitle = $bindable() } = $props(); // 'Powered by Gemma3';
 
-	// State
-	let messages: Message[] = [];
-	let inputValue = '';
-	let isTyping = false;
-	let isConnected = true;
-	let isDragging = false;
-	let dragOffset = { x: 0, y: 0 };
-	let position = { x: 0, y: 0 };
-	let settingsOpen = false;
+  	// State
+  	let messages: Message[] = [];
+  	let inputValue = '';
+  	let isTyping = false;
+  	let isConnected = true;
+  	let isDragging = false;
+  	let dragOffset = { x: 0, y: 0 };
+  	let position = { x: 0, y: 0 };
+  	let settingsOpen = false;
 
-	// Settings
-	let settings: ChatSettings = {
-		model: modelName,
-		temperature: 0.1,
-		maxTokens: 512,
-		topP: 0.9,
-		systemPrompt: 'You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance.'
-	};
+  	// Settings
+  	let settings: ChatSettings = {
+  		model: modelName,
+  		temperature: 0.1,
+  		maxTokens: 512,
+  		topP: 0.9,
+  		systemPrompt: 'You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance.'
+  	};
 
-	// Elements
-	let chatContainer: HTMLDivElement
-	let messagesContainer: HTMLDivElement
-	let inputElement: HTMLTextAreaElement
-	let windowElement: HTMLDivElement
+  	// Elements
+  	let chatContainer: HTMLDivElement
+  	let messagesContainer: HTMLDivElement
+  	let inputElement: HTMLTextAreaElement
+  	let windowElement: HTMLDivElement
 
-	// Event dispatcher
-	const dispatch = createEventDispatcher<{
-		close: void
-		minimize: void
-		maximize: void
-		message: { message: Message };
-		settingsChange: { settings: ChatSettings };
-	}>();
+  	// Event dispatcher
+  	const dispatch = createEventDispatcher<{
+  		close: void
+  		minimize: void
+  		maximize: void
+  		message: { message: Message };
+  		settingsChange: { settings: ChatSettings };
+  	}>();
 
-	// Initialize welcome message
-	onMount(() => {
-		// Progressive enhancement: Only run client-side features if available
-		if (typeof window !== 'undefined') {
-			addMessage('system', `Hello! I'm your YoRHa Legal AI Assistant powered by ${modelName}. I can help you with:
+  	// Initialize welcome message
+  	onMount(() => {
+  		// Progressive enhancement: Only run client-side features if available
+  		if (typeof window !== 'undefined') {
+  			addMessage('system', `Hello! I'm your YoRHa Legal AI Assistant powered by ${modelName}. I can help you with:
 
-• Contract analysis and review
-• Legal document interpretation
-• Liability and risk assessment
-• Compliance guidance
-• Legal terminology explanation
+  • Contract analysis and review
+  • Legal document interpretation
+  • Liability and risk assessment
+  • Compliance guidance
+  • Legal terminology explanation
 
-How can I assist you with your legal needs today?`);
+  How can I assist you with your legal needs today?`);
 
-			// Set initial position (bottom-right corner)
-			position = {
-				x: window.innerWidth - width - 20,
-				y: window.innerHeight - height - 20
-			};
-		}
-	});
+  			// Set initial position (bottom-right corner)
+  			position = {
+  				x: window.innerWidth - width - 20,
+  				y: window.innerHeight - height - 20
+  			};
+  		}
+  	});
 
-	// Auto-scroll to bottom when new messages arrive (Svelte 5)
-	$effect(() => {
-		if (messages.length > 0) {
-			tick().then(() => {
-				if (messagesContainer) {
-					messagesContainer.scrollTop = messagesContainer.scrollHeight;
-				}
-			});
-		}
-	});
+  	// Auto-scroll to bottom when new messages arrive (Svelte 5)
+  	$effect(() => {
+  		if (messages.length > 0) {
+  			tick().then(() => {
+  				if (messagesContainer) {
+  					messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  				}
+  			});
+  		}
+  	});
 
-	// Add message to chat
-	function addMessage(role: Message['role'], content: string, options: Partial<Message> = {}) {
-		const message: Message = {
-			id: crypto.randomUUID(),
-			role,
-			content,
-			timestamp: new Date(),
-			...options
-		};
+  	// Add message to chat
+  	function addMessage(role: Message['role'], content: string, options: Partial<Message> = {}) {
+  		const message: Message = {
+  			id: crypto.randomUUID(),
+  			role,
+  			content,
+  			timestamp: new Date(),
+  			...options
+  		};
 
-		messages = [...messages, message];
-		dispatch('message', { message });
-		return message;
-	}
+  		messages = [...messages, message];
+  		dispatch('message', { message });
+  		return message;
+  	}
 
-	// Update message content (for streaming)
-	function updateMessage(id: string, content: string) {
-		messages = messages.map(msg =>
-			msg.id === id ? { ...msg, content } : msg
-		);
-	}
+  	// Update message content (for streaming)
+  	function updateMessage(id: string, content: string) {
+  		messages = messages.map(msg =>
+  			msg.id === id ? { ...msg, content } : msg
+  		);
+  	}
 
-	// Send message to AI
-	async function sendMessage() {
-		if (!inputValue.trim() || isTyping) return;
+  	// Send message to AI
+  	async function sendMessage() {
+  		if (!inputValue.trim() || isTyping) return;
 
-		const userMessage = inputValue.trim();
-		inputValue = '';
+  		const userMessage = inputValue.trim();
+  		inputValue = '';
 
-		// Add user message
-		addMessage('user', userMessage);
+  		// Add user message
+  		addMessage('user', userMessage);
 
-		// Show typing indicator
-		isTyping = true;
-		const typingMessage = addMessage('assistant', '', { streaming: true });
+  		// Show typing indicator
+  		isTyping = true;
+  		const typingMessage = addMessage('assistant', '', { streaming: true });
 
-		try {
-			// Try primary endpoint first
-			let response = await callGemma3API(userMessage);
+  		try {
+  			// Try primary endpoint first
+  			let response = await callGemma3API(userMessage);
 
-			if (!response) {
-				// Fallback to enhanced API
-				response = await callFallbackAPI(userMessage);
-			}
+  			if (!response) {
+  				// Fallback to enhanced API
+  				response = await callFallbackAPI(userMessage);
+  			}
 
-			if (response) {
-				// Remove typing message and add real response
-				messages = messages.filter(msg => msg.id !== typingMessage.id);
-				addMessage('assistant', response);
-			} else {
-				throw new Error('No response from AI service');
-			}
+  			if (response) {
+  				// Remove typing message and add real response
+  				messages = messages.filter(msg => msg.id !== typingMessage.id);
+  				addMessage('assistant', response);
+  			} else {
+  				throw new Error('No response from AI service');
+  			}
 
-		} catch (error) {
-			console.error('Chat error:', error);
-			messages = messages.filter(msg => msg.id !== typingMessage.id);
-			addMessage('assistant', 'Sorry, I\'m having trouble connecting. Please try again.', { error: true });
-		} finally {
-			isTyping = false;
-		}
-	}
+  		} catch (error) {
+  			console.error('Chat error:', error);
+  			messages = messages.filter(msg => msg.id !== typingMessage.id);
+  			addMessage('assistant', 'Sorry, I\'m having trouble connecting. Please try again.', { error: true });
+  		} finally {
+  			isTyping = false;
+  		}
+  	}
 
-	// Call Gemma3 API directly
-	async function callGemma3API(message: string): Promise<string | null> {
-		// Progressive enhancement: Check if fetch is available
-		if (typeof fetch === 'undefined') {
-			console.warn('Fetch API not available');
-			return null;
-		}
+  	// Call Gemma3 API directly
+  	async function callGemma3API(message: string): Promise<string | null> {
+  		// Progressive enhancement: Check if fetch is available
+  		if (typeof fetch === 'undefined') {
+  			console.warn('Fetch API not available');
+  			return null;
+  		}
 
-		try {
-			// Create AbortController for timeout (with fallback)
-			const controller = new AbortController();
-			const timeoutId = setTimeout(() => controller.abort(), 60000);
+  		try {
+  			// Create AbortController for timeout (with fallback)
+  			const controller = new AbortController();
+  			const timeoutId = setTimeout(() => controller.abort(), 60000);
 
-			const response = await fetch(apiEndpoint, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					model: settings.model,
-					prompt: formatPromptForGemma3(message),
-					stream: false,
-					options: {
-						temperature: settings.temperature,
-						num_predict: settings.maxTokens,
-						top_p: settings.topP,
-						top_k: 40,
-						repeat_penalty: 1.1,
-						stop: ['<start_of_turn>', '<end_of_turn>']
-					}
-				}),
-				signal: controller.signal
-			});
+  			const response = await fetch(apiEndpoint, {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					model: settings.model,
+  					prompt: formatPromptForGemma3(message),
+  					stream: false,
+  					options: {
+  						temperature: settings.temperature,
+  						num_predict: settings.maxTokens,
+  						top_p: settings.topP,
+  						top_k: 40,
+  						repeat_penalty: 1.1,
+  						stop: ['<start_of_turn>', '<end_of_turn>']
+  					}
+  				}),
+  				signal: controller.signal
+  			});
 
-			clearTimeout(timeoutId);
+  			clearTimeout(timeoutId);
 
-			if (response.ok) {
-				const data = await response.json();
-				return data.response?.trim() || null;
-			}
-		} catch (error) {
-			console.warn('Primary API failed:', error);
-			isConnected = false; // Update connection status
-		}
+  			if (response.ok) {
+  				const data = await response.json();
+  				return data.response?.trim() || null;
+  			}
+  		} catch (error) {
+  			console.warn('Primary API failed:', error);
+  			isConnected = false; // Update connection status
+  		}
 
-		return null;
-	}
+  		return null;
+  	}
 
-	// Call fallback API
-	async function callFallbackAPI(message: string): Promise<string | null> {
-		try {
-			const response = await fetch(fallbackEndpoint, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					messages: [
-						{ role: 'system', content: settings.systemPrompt },
-						{ role: 'user', content: message }
-					],
-					max_tokens: settings.maxTokens,
-					temperature: settings.temperature,
-					top_p: settings.topP
-				}),
-				signal: AbortSignal.timeout(60000)
-			});
+  	// Call fallback API
+  	async function callFallbackAPI(message: string): Promise<string | null> {
+  		try {
+  			const response = await fetch(fallbackEndpoint, {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					messages: [
+  						{ role: 'system', content: settings.systemPrompt },
+  						{ role: 'user', content: message }
+  					],
+  					max_tokens: settings.maxTokens,
+  					temperature: settings.temperature,
+  					top_p: settings.topP
+  				}),
+  				signal: AbortSignal.timeout(60000)
+  			});
 
-			if (response.ok) {
-				const data = await response.json();
-				return data.response || data.choices?.[0]?.message?.content || null;
-			}
-		} catch (error) {
-			console.warn('Fallback API failed:', error);
-		}
+  			if (response.ok) {
+  				const data = await response.json();
+  				return data.response || data.choices?.[0]?.message?.content || null;
+  			}
+  		} catch (error) {
+  			console.warn('Fallback API failed:', error);
+  		}
 
-		return null;
-	}
+  		return null;
+  	}
 
-	// Format prompt for Gemma3 template
-	function formatPromptForGemma3(message: string): string {
-		const conversation = messages
-			.filter(msg => msg.role !== 'system' && !msg.error)
-			.map(msg => {
-				if (msg.role === 'user') {
-					return `<start_of_turn>user\n${msg.content}<end_of_turn>`;
-				} else {
-					return `<start_of_turn>model\n${msg.content}<end_of_turn>`;
-				}
-			})
-			.join('\n');
+  	// Format prompt for Gemma3 template
+  	function formatPromptForGemma3(message: string): string {
+  		const conversation = messages
+  			.filter(msg => msg.role !== 'system' && !msg.error)
+  			.map(msg => {
+  				if (msg.role === 'user') {
+  					return `<start_of_turn>user\n${msg.content}<end_of_turn>`;
+  				} else {
+  					return `<start_of_turn>model\n${msg.content}<end_of_turn>`;
+  				}
+  			})
+  			.join('\n');
 
-		return `${settings.systemPrompt}\n\n${conversation}\n<start_of_turn>user\n${message}<end_of_turn>\n<start_of_turn>model\n`;
-	}
+  		return `${settings.systemPrompt}\n\n${conversation}\n<start_of_turn>user\n${message}<end_of_turn>\n<start_of_turn>model\n`;
+  	}
 
-	// Handle input keydown
-	function handleKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !event.shiftKey) {
-			event.preventDefault();
-			sendMessage();
-		}
-	}
+  	// Handle input keydown
+  	function handleKeyDown(event: KeyboardEvent) {
+  		if (event.key === 'Enter' && !event.shiftKey) {
+  			event.preventDefault();
+  			sendMessage();
+  		}
+  	}
 
-	// Auto-resize textarea
-	function autoResize() {
-		if (inputElement) {
-			inputElement.style.height = 'auto';
-			inputElement.style.height = Math.min(inputElement.scrollHeight, 120) + 'px';
-		}
-	}
+  	// Auto-resize textarea
+  	function autoResize() {
+  		if (inputElement) {
+  			inputElement.style.height = 'auto';
+  			inputElement.style.height = Math.min(inputElement.scrollHeight, 120) + 'px';
+  		}
+  	}
 
-	// Dragging functionality
-	function startDrag(event: MouseEvent) {
-		if (!draggable || event.target instanceof HTMLButtonElement) return;
+  	// Dragging functionality
+  	function startDrag(event: MouseEvent) {
+  		if (!draggable || event.target instanceof HTMLButtonElement) return;
 
-		isDragging = true;
-		const rect = windowElement.getBoundingClientRect();
-		dragOffset = {
-			x: event.clientX - rect.left,
-			y: event.clientY - rect.top
-		};
+  		isDragging = true;
+  		const rect = windowElement.getBoundingClientRect();
+  		dragOffset = {
+  			x: event.clientX - rect.left,
+  			y: event.clientY - rect.top
+  		};
 
-		document.addEventListener('mousemove', handleDrag);
-		document.addEventListener('mouseup', stopDrag);
-	}
+  		document.addEventListener('mousemove', handleDrag);
+  		document.addEventListener('mouseup', stopDrag);
+  	}
 
-	function handleDrag(event: MouseEvent) {
-		if (!isDragging) return;
+  	function handleDrag(event: MouseEvent) {
+  		if (!isDragging) return;
 
-		const newX = event.clientX - dragOffset.x;
-		const newY = event.clientY - dragOffset.y;
+  		const newX = event.clientX - dragOffset.x;
+  		const newY = event.clientY - dragOffset.y;
 
-		// Constrain to viewport
-		const maxX = window.innerWidth - width;
-		const maxY = window.innerHeight - height;
+  		// Constrain to viewport
+  		const maxX = window.innerWidth - width;
+  		const maxY = window.innerHeight - height;
 
-		position = {
-			x: Math.max(0, Math.min(newX, maxX)),
-			y: Math.max(0, Math.min(newY, maxY))
-		};
-	}
+  		position = {
+  			x: Math.max(0, Math.min(newX, maxX)),
+  			y: Math.max(0, Math.min(newY, maxY))
+  		};
+  	}
 
-	function stopDrag() {
-		isDragging = false;
-		document.removeEventListener('mousemove', handleDrag);
-		document.removeEventListener('mouseup', stopDrag);
-	}
+  	function stopDrag() {
+  		isDragging = false;
+  		document.removeEventListener('mousemove', handleDrag);
+  		document.removeEventListener('mouseup', stopDrag);
+  	}
 
-	// Window controls
-	function closeWindow() {
-		visible = false;
-		dispatch('close');
-	}
+  	// Window controls
+  	function closeWindow() {
+  		visible = false;
+  		dispatch('close');
+  	}
 
-	function minimizeWindow() {
-		minimized = !minimized;
-		dispatch(minimized ? 'minimize' : 'maximize');
-	}
+  	function minimizeWindow() {
+  		minimized = !minimized;
+  		dispatch(minimized ? 'minimize' : 'maximize');
+  	}
 
-	// Clear chat
-	function clearChat() {
-		messages = [];
-		addMessage('system', 'Chat cleared. How can I help you?');
-	}
+  	// Clear chat
+  	function clearChat() {
+  		messages = [];
+  		addMessage('system', 'Chat cleared. How can I help you?');
+  	}
 
-	// Toggle settings
-	function toggleSettings() {
-		settingsOpen = !settingsOpen;
-	}
+  	// Toggle settings
+  	function toggleSettings() {
+  		settingsOpen = !settingsOpen;
+  	}
 
-	// Update settings
-	function updateSettings() {
-		dispatch('settingsChange', { settings });
-		settingsOpen = false;
-	}
+  	// Update settings
+  	function updateSettings() {
+  		dispatch('settingsChange', { settings });
+  		settingsOpen = false;
+  	}
 
-	// Format timestamp
-	function formatTime(date: Date): string {
-		return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-	}
+  	// Format timestamp
+  	function formatTime(date: Date): string {
+  		return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  	}
 </script>
 
 {#if visible}

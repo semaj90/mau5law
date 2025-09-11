@@ -1,6 +1,5 @@
 <!-- Document Upload Page with MinIO Integration -->
 <script lang="ts">
-</script>
   import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
@@ -18,7 +17,6 @@
   // Upload completion handler
   function handleUploadComplete(result: any) {
     console.log('Upload completed:', result);
-    
     // Show success notification
     const notification = {
       type: 'success',
@@ -27,10 +25,8 @@
       documentId: result.documentId,
       url: result.url
     };
-    
     // Store notification in session storage for display
     sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
-    
     // Redirect to document or case view
     if (caseId) {
       goto(`/cases/${caseId}/documents`);
@@ -42,14 +38,12 @@
   // Upload error handler
   function handleUploadError(error: string) {
     console.error('Upload error:', error);
-    
     // Show error notification
     const notification = {
       type: 'error',
       title: 'Upload Failed',
       message: error
     };
-    
     sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
   }
 

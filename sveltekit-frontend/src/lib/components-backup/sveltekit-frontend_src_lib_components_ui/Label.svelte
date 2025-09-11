@@ -1,10 +1,8 @@
 <script lang="ts">
-</script>
   interface Props {
     for_?: string;
     class_?: string;
   }
-  
   let {
     for_ = '',
     class_ = '',

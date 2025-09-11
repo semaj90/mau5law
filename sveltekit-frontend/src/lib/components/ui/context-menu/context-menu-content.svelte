@@ -1,8 +1,7 @@
 <script lang="ts">
-</script>
   import { getContext, onDestroy, onMount } from 'svelte';
   import type {     Writable     } from 'svelte/store';
-<slots>
+  <slots>
   let { class = $bindable() } = $props(); // string = '';
 
   const { isOpen, position, close } = getContext<{
@@ -10,7 +9,7 @@
     position: Writable<{ x: number; y: number }>;
     close: () => void;
   }>('context-menu');
-let menuElement = $state<HTMLDivElement | null >(null);
+  let menuElement = $state<HTMLDivElement | null >(null);
 
   function handleClickOutside(event: MouseEvent) {
     if (menuElement && !menuElement.contains(event.target as Node)) {

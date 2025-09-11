@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import CaseManagerXState from '$lib/components/legal/CaseManagerXState.svelte';
 </script>
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { PageData } from './$types.js';
   import type { ActionData } from './$types.js';
   import { enhance } from '$app/forms';
@@ -20,7 +19,6 @@
   } from '$lib/components/ui/orchestrated';
 
   let { data, form }: { data: PageData; form: ActionData } = $props();
-  
   // Svelte 5 runes for reactive state
   let queryText = $state('');
   let isLoading = $state(false);
@@ -45,7 +43,6 @@
   function handleRAGSubmit() {
     isLoading = true;
     ragResponse = null;
-    
     return ({ result }) => {
       isLoading = false;
       if (result.type === 'success' && result.data?.response) {

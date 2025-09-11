@@ -3,7 +3,6 @@
   Shows neural memory prediction, ML caching, performance monitoring, and worker system
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
   import type { WorkerStats } from '$lib/workers/specialized-worker-system.js';

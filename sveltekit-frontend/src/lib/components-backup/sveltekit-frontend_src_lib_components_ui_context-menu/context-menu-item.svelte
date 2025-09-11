@@ -1,7 +1,5 @@
 <script lang="ts">
-</script>
   import { getContext } from 'svelte';
-  
   interface Props {
     disabled?: boolean;
     onclick?: (event?: any) => void;
@@ -10,13 +8,10 @@
     disabled = false,
     onclick = () => {}
   } = $props();
-    
   interface ContextMenuContext {
     close: () => void;
   }
-    
   const { close } = getContext<ContextMenuContext>('context-menu') || { close: () => {} };
-  
   function handleClick() {
     if (!disabled) {
       onclick?.();

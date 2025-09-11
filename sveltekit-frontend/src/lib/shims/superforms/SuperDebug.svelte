@@ -1,7 +1,6 @@
 <script lang="ts">
-</script>
   // Local shim: sveltekit-superforms' SuperDebug has duplicate top-level <script>
-</script> in dist build
+  </script> in dist build
   // Provide a no-op component during migration to avoid build-time parse errors.
   // Convert to Svelte 5 runes pattern
   let { debug = false } = $props<{

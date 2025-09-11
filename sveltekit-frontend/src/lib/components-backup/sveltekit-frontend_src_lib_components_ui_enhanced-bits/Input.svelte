@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { HTMLInputAttributes } from 'svelte/elements';
   import { cn } from '$lib/utils/cn';
   import { Search, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-svelte';
@@ -75,7 +74,6 @@
 
   // Determine if this is a password input
   const isPassword = $derived(variant === 'password' || type === 'password')
-  
   // Actual input type to use
   const inputType = $derived(isPassword ? (showPassword ? 'text' : 'password') : type
   );

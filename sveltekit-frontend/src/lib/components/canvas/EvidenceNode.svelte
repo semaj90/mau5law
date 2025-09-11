@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     title: string ;
     fileUrl: string ;
@@ -19,24 +18,20 @@
 
   import { Move, RotateCcw, Trash2 } from 'lucide-svelte';
   import { onDestroy, onMount } from 'svelte';
-  
   // Fabric.js types
   type FabricCanvas = any;
   type FabricImage = any;
   type FabricObject = any;
-  
   // Props - simplified for the Detective Mode interface
-let canvasEl = $state<HTMLCanvasElement;
+  let canvasEl = $state<HTMLCanvasElement;
   let fabricCanvas: FabricCanvas | null >(null); // fabric.Canvas when Fabric.js is loaded
   let nodeElement: HTMLElement;
-let canvasState = $state({});
-  
+  let canvasState = $state({});
   onMount(async () => {
     // Dynamically import Fabric.js to avoid SSR issues
     try {
       const fabric = await import('fabric');
       const { Canvas, Image } = fabric; // Fix: use fabric directly
-      
       fabricCanvas = new Canvas(canvasEl, {
         width: size.width - 20,
         height: size.height - 80,
@@ -61,15 +56,14 @@ let canvasState = $state({});
           });
           (fabricCanvas as any)?.setBackgroundImage?.(img, () => (fabricCanvas as any)?.renderAll?.());
         });
-}
+  }
       // Setup event listeners for annotations
       (fabricCanvas as any)?.on?.('object:modified', saveCanvasState);
       (fabricCanvas as any)?.on?.('object:added', saveCanvasState);
       (fabricCanvas as any)?.on?.('object:removed', saveCanvasState);
-      
     } catch (error) {
       console.warn('Fabric.js not available, canvas features disabled:', error);
-}
+  }
     // Click handling for selection
     nodeElement.addEventListener('click', () => {
       isSelected = true;
@@ -78,14 +72,14 @@ let canvasState = $state({});
     document.addEventListener('click', (e) => {
       if (!nodeElement.contains(e.target as Node)) {
         isSelected = false;
-}
+  }
     });
   });
 
   onDestroy(() => {
     if (fabricCanvas) {
       fabricCanvas.dispose();
-}
+  }
   });
 
   function saveCanvasState() {
@@ -93,7 +87,7 @@ let canvasState = $state({});
       const state = fabricCanvas.toJSON();
       canvasState = state;
       isDirty = true;
-}}
+  }}
   function addAnnotation(type: string) {
     if (!fabricCanvas) return;
 
@@ -113,7 +107,6 @@ let canvasState = $state({});
         });
         fabricCanvas.add(rect);
         break;
-        
       case 'circle':
         const circle = new fabric.Circle({
           left: 50,
@@ -125,7 +118,6 @@ let canvasState = $state({});
         });
         fabricCanvas.add(circle);
         break;
-        
       case 'arrow':
         const line = new fabric.Line([50, 50, 150, 100], {
           stroke: '#3b82f6',
@@ -134,7 +126,6 @@ let canvasState = $state({});
         });
         fabricCanvas.add(line);
         break;
-        
       case 'text':
         const text = new fabric.IText('Click to edit', {
           left: 50,
@@ -144,23 +135,23 @@ let canvasState = $state({});
         });
         fabricCanvas.add(text);
         break;
-}
+  }
     fabricCanvas.renderAll();
-}
+  }
   function clearAnnotations() {
     if (fabricCanvas) {
       fabricCanvas.getObjects().forEach((obj: FabricObject) => {
         if (obj !== fabricCanvas.backgroundImage) {
           fabricCanvas.remove(obj);
-}
+  }
       });
       fabricCanvas.renderAll();
-}}
+  }}
   function handleTitleChange(event: Event) {
     const target = event.target as HTMLInputElement;
     title = target.value;
     isDirty = true;
-}
+  }
   // Resize handling
   function handleResize(corner: string, event: MouseEvent) {
     event.preventDefault();
@@ -172,32 +163,27 @@ let canvasState = $state({});
     function onMouseMove(e: MouseEvent) {
       const deltaX = e.clientX - startX;
       const deltaY = e.clientY - startY;
-      
       let newWidth = startWidth;
       let newHeight = startHeight;
-      
       if (corner.includes('right')) newWidth = startWidth + deltaX;
       if (corner.includes('bottom')) newHeight = startHeight + deltaY;
-      
       newWidth = Math.max(200, newWidth);
       newHeight = Math.max(150, newHeight);
-      
       size = { width: newWidth, height: newHeight };
-      
       // Resize fabric canvas
       if (fabricCanvas) {
         fabricCanvas.setDimensions({
           width: newWidth - 20,
           height: newHeight - 80
         });
-}}
+  }}
     function onMouseUp() {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-}
+  }
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-}
+  }
   // Add a handler for touch events
   function handleResizeTouch(direction: string, e: TouchEvent) {
     if (e.touches && e.touches.length > 0) {
@@ -208,11 +194,11 @@ let canvasState = $state({});
         clientX: touch.clientX,
         clientY: touch.clientY
       } as unknown as MouseEvent);
-}}
+  }}
   // Draggable handler  
   function handleDrag(newX: number, newY: number) {
     position = { x: newX, y: newY };
-}
+  }
 </script>
 
 <!-- Fix: Use <section> for main node container and remove tabindex if not needed -->

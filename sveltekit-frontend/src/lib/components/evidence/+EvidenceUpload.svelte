@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { Evidence } from "$lib/data/types";
   import { createEventDispatcher } from "svelte";
 

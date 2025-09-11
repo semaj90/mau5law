@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { getAvailableModels, runInference } from "$lib/llm/tauri-llm";
 
@@ -16,7 +15,7 @@
       if (models.length > 0) selectedModel = models[0];
     } catch (e) {
       error = 'Failed to load models.';
-}
+  }
   });
 
   async function handleInference() {
@@ -30,7 +29,7 @@
       error = 'Inference failed.';
     } finally {
       loading = false;
-}}
+  }}
 </script>
 
 <div class="space-y-4">

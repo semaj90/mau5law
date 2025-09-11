@@ -1,12 +1,11 @@
 <script lang="ts">
-</script>
-	import { cn } from "$lib/utils/styles.js";
-	import { Accordion, useId, Button } from "bits-ui";
-	import CaretDown from "phosphor-svelte/lib/CaretDown";
-	import { SvelteSet } from "svelte/reactivity";
+  	import { cn } from "$lib/utils/styles.js";
+  	import { Accordion, useId, Button } from "bits-ui";
+  	import CaretDown from "phosphor-svelte/lib/CaretDown";
+  	import { SvelteSet } from "svelte/reactivity";
 
-	let activeStep = $state("");
-	let completedSteps = new SvelteSet<string>();
+  	let activeStep = $state("");
+  	let completedSteps = new SvelteSet<string>();
 </script>
 
 {#snippet MyAccordionHeader({ value, title }: { value: string; title: string })}

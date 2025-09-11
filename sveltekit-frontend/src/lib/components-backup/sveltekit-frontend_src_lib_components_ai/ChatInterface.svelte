@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     height?: any;
     caseId: string | undefined ;
@@ -30,7 +29,6 @@
   import ThinkingStyleToggle from "./ThinkingStyleToggle.svelte";
   import { ThinkingProcessor } from "$lib/ai/thinking-processor";
 
-    
   let messageInput = "";
   let messagesContainer: HTMLElement
   let inputElement: HTMLTextAreaElement
@@ -50,12 +48,12 @@
     inactivityTimer = setTimeout(() => {
       triggerProactivePrompt();
     }, IDLE_TIMEOUT);
-}
+  }
   function triggerProactivePrompt() {
     if ($currentConversation && $currentConversation.messages.length > 0) {
       showProactivePrompt.set(true);
-}
-}
+  }
+  }
   async function sendMessage() {
     if (!messageInput.trim()) return;
 
@@ -108,15 +106,15 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
         });
-}
+  }
       if (!response.ok) {
         throw new Error("Failed to get AI response");
-}
+  }
       const apiResponse = await response.json();
 
       if (!apiResponse.success) {
         throw new Error(apiResponse.error || "Invalid response format");
-}
+  }
       // Handle different response types
       if (apiResponse.analysis) {
         // This is an analysis response
@@ -136,7 +134,7 @@
           "assistant",
           apiResponse.data.metadata
         );
-}
+  }
       // Scroll to bottom
       setTimeout(scrollToBottom, 100);
     } catch (error) {
@@ -149,8 +147,8 @@
     } finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);
-}
-}
+  }
+  }
   function formatAnalysisResponse(analysis: any, metadata: any): string {
     if (!analysis) return "Analysis completed.";
 
@@ -162,7 +160,7 @@
       response += `*Showing step-by-step AI reasoning:*\n\n`;
       response += analysis.thinking.replace(/\n/g, '\n\n') + `\n\n`;
       response += `---\n\n`;
-}
+  }
     // Add main analysis
     response += `## 📋 Analysis Results\n\n`;
 
@@ -175,25 +173,25 @@
           response += `• ${finding}\n`;
         });
         response += `\n`;
-}
+  }
       if (analysisData.legal_implications) {
         response += `**Legal Implications:**\n`;
         analysisData.legal_implications.forEach((implication: string) => {
           response += `• ${implication}\n`;
         });
         response += `\n`;
-}
+  }
       if (analysisData.recommendations) {
         response += `**Recommendations:**\n`;
         analysisData.recommendations.forEach((rec: string) => {
           response += `• ${rec}\n`;
         });
         response += `\n`;
-}
+  }
       if (analysisData.raw_analysis) {
         response += analysisData.raw_analysis + `\n\n`;
-}
-}
+  }
+  }
     // Add confidence and metadata
     response += `## 📊 Analysis Metadata\n\n`;
     response += `• **Confidence:** ${Math.round(analysis.confidence * 100)}%\n`;
@@ -206,9 +204,9 @@
       analysis.reasoning_steps.forEach((step: string, index: number) => {
         response += `${index + 1}. ${step}\n`;
       });
-}
+  }
     return response;
-}
+  }
   async function handleProactiveResponse() {
     if (!$showProactivePrompt || !$currentConversation) return;
 
@@ -239,7 +237,7 @@
 
       if (!apiResponse.success || !apiResponse.data) {
         throw new Error(apiResponse.error || "Invalid response format");
-}
+  }
       chatActions.addMessage(apiResponse.data.content, "assistant", {
         ...apiResponse.data.metadata,
         proactive: true,
@@ -251,8 +249,8 @@
     } finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);
-}
-}
+  }
+  }
   function handleThinkingToggle(event: CustomEvent<{ enabled: boolean }>) {
     thinkingStyleEnabled = event.detail.enabled;
 
@@ -266,7 +264,7 @@
       title: "AI Mode Changed",
       message,
     });
-}
+  }
   async function quickAnalyzeEvidence() {
     if (!caseId) {
       notifications.add({
@@ -275,7 +273,7 @@
         message: "Please select a case to analyze evidence.",
       });
       return;
-}
+  }
     try {
       const analysis = await ThinkingProcessor.analyzeCase(caseId, {
         analysisType: 'reasoning',
@@ -297,33 +295,33 @@
         title: "Analysis Failed",
         message: "Failed to analyze case evidence.",
       });
-}
-}
+  }
+  }
   function scrollToBottom() {
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-}
+  }
+  }
   function handleKeyDown(event: CustomEvent<KeyboardEvent>) {
     const keyEvent = event.detail;
     if (keyEvent.key === "Enter" && !keyEvent.shiftKey) {
       event.preventDefault();
       sendMessage();
-}
+  }
     handleUserActivity();
-}
+  }
   function autoResize() {
     if (inputElement) {
       inputElement.style.height = "auto";
       inputElement.style.height =
         Math.min(inputElement.scrollHeight, 120) + "px";
-}
-}
+  }
+  }
   onMount(() => {
     // Initialize conversation if none exists
     if (!$currentConversation) {
       chatActions.newConversation(caseId ? `Case ${caseId}` : undefined);
-}
+  }
     // Set up activity tracking
     handleUserActivity();
 
@@ -335,7 +333,7 @@
     // Auto-focus input
     if (inputElement) {
       inputElement.focus();
-}
+  }
   });
 
   onDestroy(() => {
@@ -348,7 +346,7 @@
   // Reactive scroll to bottom when new messages arrive
   $effect(() => { if ($currentConversation?.messages) {
     tick().then(scrollToBottom);
-}
+  }
 </script>
 
 <div class="space-y-4">

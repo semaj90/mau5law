@@ -1,6 +1,5 @@
 <!-- Retro Gaming Recommendation Modal - Multi-Console CSS Styling -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
@@ -120,7 +119,6 @@
   // Sound effects for retro feel
   function playSound(type: 'open' | 'select' | 'confirm' | 'close') {
     if (!sound || !audioContext) return;
-    
     const frequencies = {
       open: [523, 659, 784],      // C-E-G chord
       select: [440],              // A note
@@ -132,16 +130,12 @@
       setTimeout(() => {
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
-        
         oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
         oscillator.type = consoleStyle === 'nes' ? 'square' : 'triangle';
-        
         gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-        
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
-        
         oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.1);
       }, i * 50);
@@ -214,7 +208,6 @@
     if (sound) {
       audioContext = new AudioContext();
     }
-    
     if (show) {
       playSound('open');
       if (autoClose > 0) {
@@ -223,7 +216,6 @@
     }
 
     document.addEventListener('keydown', handleKeydown);
-    
     return () => {
       document.removeEventListener('keydown', handleKeydown);
       if (closeTimer) clearTimeout(closeTimer);

@@ -1,31 +1,30 @@
 <script lang="ts">
-</script>
-	import { Accordion } from "bits-ui";
+  	import { Accordion } from "bits-ui";
 
-	let value = $state("item-1");
+  	let value = $state("item-1");
 
-	const items = [
-		{
-			id: "item-1",
-			title: "Mountain Range",
-			image: "https://images.unsplash.com/photo-1586589058841-f1264894a260?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3",
-			description: "Majestic mountain ranges with snow-capped peaks and lush valleys.",
-		},
-		{
-			id: "item-2",
-			title: "Ocean Views",
-			image: "https://images.unsplash.com/photo-1650300874827-7d39bc9276ea?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3",
-			description:
-				"Serene ocean scenes with crashing waves, beautiful sunsets, and sandy beaches.",
-		},
-		{
-			id: "item-3",
-			title: "Forest Retreats",
-			image: "https://images.unsplash.com/photo-1693297490324-37ee6301f6c8?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3",
-			description:
-				"Dense forests with towering trees, abundant wildlife, and peaceful streams.",
-		},
-	];
+  	const items = [
+  		{
+  			id: "item-1",
+  			title: "Mountain Range",
+  			image: "https://images.unsplash.com/photo-1586589058841-f1264894a260?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3",
+  			description: "Majestic mountain ranges with snow-capped peaks and lush valleys.",
+  		},
+  		{
+  			id: "item-2",
+  			title: "Ocean Views",
+  			image: "https://images.unsplash.com/photo-1650300874827-7d39bc9276ea?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3",
+  			description:
+  				"Serene ocean scenes with crashing waves, beautiful sunsets, and sandy beaches.",
+  		},
+  		{
+  			id: "item-3",
+  			title: "Forest Retreats",
+  			image: "https://images.unsplash.com/photo-1693297490324-37ee6301f6c8?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3",
+  			description:
+  				"Dense forests with towering trees, abundant wildlife, and peaceful streams.",
+  		},
+  	];
 </script>
 
 <Accordion.Root

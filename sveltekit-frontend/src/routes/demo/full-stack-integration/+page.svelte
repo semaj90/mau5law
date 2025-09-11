@@ -1,6 +1,5 @@
 <!-- Full-Stack Integration Test Page -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import BitsDemo from '$lib/components/BitsDemo.svelte';
@@ -227,7 +226,7 @@
 
     for (const protocol of protocols) {
       try {
-let endpoint = $state('');
+  let endpoint = $state('');
         switch (protocol) {
           case 'http':
             endpoint = '/api/comprehensive-integration';

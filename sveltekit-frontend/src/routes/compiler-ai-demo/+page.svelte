@@ -2,7 +2,6 @@
 <!-- Real-time demonstration of AI-driven development architecture -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     Button
@@ -23,8 +22,8 @@
   import { AlertCircle, CheckCircle, Cpu, Zap, Activity, Code, Brain, Target } from 'lucide-svelte';
 
   // System instances
-let ragEngine = $state<any >(null);
-let feedbackLoop = $state<any >(null);
+  let ragEngine = $state<any >(null);
+  let feedbackLoop = $state<any >(null);
   let systemInitialized = $state(false);
 
   // Real-time state

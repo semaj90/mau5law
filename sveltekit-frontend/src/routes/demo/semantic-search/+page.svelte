@@ -1,16 +1,14 @@
 <!-- Enhanced Semantic Search Demo -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
 
-  // Search state management
-  const searchQuery = writable('');
-  const searchResults = writable([]);
-  const searchAnalytics = writable(null);
-  const isSearching = writable(false);
-  const searchError = writable('');
-  const searchSuggestions = writable([]);
+  // Search state management (Svelte 5)
+  let searchQuery = $state('');
+  let searchResults = $state([]);
+  let searchAnalytics = $state(null);
+  let isSearching = $state(false);
+  let searchError = $state('');
+  let searchSuggestions = $state([]);
 
   // Search options
   let limit = 10;
@@ -45,17 +43,17 @@
   }
 
   async function performSearch() {
-    const query = $searchQuery.trim();
+    const query = searchQuery.trim();
     if (!query) {
-      searchError.set('Please enter a search query');
+      searchError = 'Please enter a search query';
       return;
     }
 
-    isSearching.set(true);
-    searchError.set('');
-    searchResults.set([]);
-    searchAnalytics.set(null);
-    searchSuggestions.set([]);
+    isSearching = true;
+    searchError = '';
+    searchResults = [];
+    searchAnalytics = null;
+    searchSuggestions = [];
 
     try {
       const searchOptions = {
@@ -92,8 +90,8 @@
       const result = await response.json();
 
       if (result.success) {
-        searchResults.set(result.results || []);
-        searchAnalytics.set(result.metadata || {});
+        searchResults = result.results || [];
+        searchAnalytics.set(result.metadata || {]);
         searchSuggestions.set(result.suggestions || []);
       } else {
         searchError.set(result.error || 'Search failed');

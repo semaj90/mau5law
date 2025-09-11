@@ -1,6 +1,5 @@
 <!-- Legal Precedent Card for Legal AI App -->
 <script lang="ts">
-</script>
   import { Scale, Calendar, MapPin, ExternalLink, BookOpen, Star, TrendingUp, Users } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   export interface LegalPrecedent {

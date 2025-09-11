@@ -1,84 +1,83 @@
 <script lang="ts">
-</script>
-	import { useMachine } from '@xstate/svelte';
-	import { onMount } from 'svelte';
-	import { chatMachine } from '$lib/machines/chatMachine';
+  	import { useMachine } from '@xstate/svelte';
+  	import { onMount } from 'svelte';
+  	import { chatMachine } from '$lib/machines/chatMachine';
 
-	let chatContainer;
-	let userInput = '';
+  	let chatContainer;
+  	let userInput = '';
 
-	const { state, send } = useMachine(chatMachine, {
-		actors: {
-			streamChatActor: ({ input }) => (sendBack, receive) => {
-				const controller = new AbortController();
+  	const { state, send } = useMachine(chatMachine, {
+  		actors: {
+  			streamChatActor: ({ input }) => (sendBack, receive) => {
+  				const controller = new AbortController();
 
-				async function stream() {
-					try {
-						const response = await fetch('/api/chat', {
-							method: 'POST',
-							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({ messages: input.messages }),
-							signal: controller.signal
-						});
+  				async function stream() {
+  					try {
+  						const response = await fetch('/api/chat', {
+  							method: 'POST',
+  							headers: { 'Content-Type': 'application/json' },
+  							body: JSON.stringify({ messages: input.messages }),
+  							signal: controller.signal
+  						});
 
-						if (!response.ok || !response.body) {
-							throw new Error('Failed to get response stream.');
-						}
+  						if (!response.ok || !response.body) {
+  							throw new Error('Failed to get response stream.');
+  						}
 
-						const reader = response.body.getReader();
-						const decoder = new TextDecoder();
+  						const reader = response.body.getReader();
+  						const decoder = new TextDecoder();
 
-						while (true) {
-							const { done, value } = await reader.read();
-							if (done) break;
+  						while (true) {
+  							const { done, value } = await reader.read();
+  							if (done) break;
 
-							const chunk = decoder.decode(value, { stream: true });
-							const lines = chunk.split('\n').filter(line => line.trim() !== '');
+  							const chunk = decoder.decode(value, { stream: true });
+  							const lines = chunk.split('\n').filter(line => line.trim() !== '');
 
-							for (const line of lines) {
-								try {
-									const jsonResponse = JSON.parse(line);
-									if (jsonResponse.message && jsonResponse.message.content) {
-										sendBack({ type: 'STREAM_CHUNK', chunk: jsonResponse.message.content });
-									}
-								} catch (e) {
-									// Ignore parsing errors for incomplete chunks
-								}
-							}
-						}
-						sendBack({ type: 'STREAM_DONE' });
-					} catch (error) {
-						if (error.name !== 'AbortError') {
-							console.error('Chat stream error:', error);
-							sendBack({ type: 'error', data: error });
-						}
-					}
-				}
+  							for (const line of lines) {
+  								try {
+  									const jsonResponse = JSON.parse(line);
+  									if (jsonResponse.message && jsonResponse.message.content) {
+  										sendBack({ type: 'STREAM_CHUNK', chunk: jsonResponse.message.content });
+  									}
+  								} catch (e) {
+  									// Ignore parsing errors for incomplete chunks
+  								}
+  							}
+  						}
+  						sendBack({ type: 'STREAM_DONE' });
+  					} catch (error) {
+  						if (error.name !== 'AbortError') {
+  							console.error('Chat stream error:', error);
+  							sendBack({ type: 'error', data: error });
+  						}
+  					}
+  				}
 
-				stream();
+  				stream();
 
-				return () => {
-					controller.abort();
-				};
-			}
-		}
-	});
+  				return () => {
+  					controller.abort();
+  				};
+  			}
+  		}
+  	});
 
-	function handleSubmit() {
-		if (!userInput.trim()) return;
-		send({ type: 'SUBMIT', message: userInput });
-		userInput = '';
-	}
+  	function handleSubmit() {
+  		if (!userInput.trim()) return;
+  		send({ type: 'SUBMIT', message: userInput });
+  		userInput = '';
+  	}
 
-	// Reactive statement to scroll down when messages change
-	$effect(() => { if ($state.context.messages && typeof window !== 'undefined') {
-		// Use a microtask to wait for the DOM to update
-		Promise.resolve().then(() => {
-			if (chatContainer) {
-				chatContainer.scrollTop = chatContainer.scrollHeight;
-			}
-		});
-	}
+  	// Reactive statement to scroll down when messages change
+  	$effect(() => { if ($state.context.messages && typeof window !== 'undefined') {
+  		// Use a microtask to wait for the DOM to update
+  		Promise.resolve().then(() => {
+  			if (chatContainer) {
+  				chatContainer.scrollTop = chatContainer.scrollHeight;
+  			}
+  		});
+  	}
 </script>
 
 <div class="flex flex-col h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900">

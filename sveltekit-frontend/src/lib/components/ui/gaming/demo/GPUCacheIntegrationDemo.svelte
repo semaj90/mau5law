@@ -11,7 +11,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { graphCacheMachine } from '../../../../machines/graph-cache-machine.js';
   import { createActor } from 'xstate';
@@ -33,7 +32,7 @@
   }: Props = $props();
 
   // XState machine actor
-let cacheActor = $state<any >(null);
+  let cacheActor = $state<any >(null);
   let machineState = $state('idle');
 
   // Demo state
@@ -72,7 +71,6 @@ let cacheActor = $state<any >(null);
       const interval = setInterval(() => {
         // Simulate queries
         cacheActor.send({ type: 'QUERY', query: `demo-query-${Date.now()}`, params: {} });
-        
         // Simulate cache hits/misses
         if (Math.random() > 0.3) {
           cacheActor.send({ 

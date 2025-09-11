@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
@@ -31,7 +30,6 @@
 
   onMount(async () => {
     await context7Service.initialize();
-    
     // Load search history from localStorage
     const saved = localStorage.getItem('vector-search-history');
     if (saved) {
@@ -46,7 +44,6 @@
 
   async function performSearch() {
     if (!searchQuery.trim()) return;
-    
     await context7Service.vectorSearch(searchQuery, {
       filters: selectedFilters,
       limit: 10

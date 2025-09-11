@@ -1,13 +1,10 @@
 <script lang="ts">
-</script>
   import { Select as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
-  
   interface SelectOption {
     value: string;
     label: string;
     disabled?: boolean;
   }
-  
   interface Props {
     value?: string;
     options: SelectOption[];
@@ -16,7 +13,6 @@
     class?: string;
     onchange?: (value: string) => void;
   }
-  
   let {
     value = $bindable(),
     options,
@@ -25,12 +21,10 @@
     class: className = "",
     onchange
   }: Props = $props();
-  
   // Helper to get selected option label
   let selectedLabel = $derived(
     options.find(option => option.value === value)?.label || placeholder
   );
-  
   function handleValueChange(newValue: string | undefined) {
     if (newValue !== undefined) {
       value = newValue;

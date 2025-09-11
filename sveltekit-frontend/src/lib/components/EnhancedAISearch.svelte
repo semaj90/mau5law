@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Enhanced AI Search Component with Bits UI and UnoCSS
   // Svelte 5 + Go Microservice + Gemma3-Legal Integration
 

@@ -1,14 +1,10 @@
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
-  
   // Props
   let { metrics = {} } = $props();
-  
   // Animation state
   let isVisible = $state(false);
   let animationFrame: number;
-  
   // Metrics display values
   let displayMetrics = $state({
     requests: 0,
@@ -18,7 +14,6 @@
     activeConnections: 0,
     queueDepth: 0
   });
-  
   // Real metrics from props
   let realMetrics = $derived({
     requests: metrics.totalRequests || Math.floor(Math.random() * 10000) + 5000,
@@ -28,90 +23,72 @@
     activeConnections: metrics.activeConnections || Math.floor(Math.random() * 50) + 10,
     queueDepth: metrics.queueDepth || Math.floor(Math.random() * 20)
   });
-  
   // Animate numbers
   function animateNumber(from: number, to: number, duration: number = 1000): Promise<void> {
     return new Promise(resolve => {
       const start = Date.now();
       const difference = to - from;
-      
       function update() {
         const elapsed = Date.now() - start;
         const progress = Math.min(elapsed / duration, 1);
-        
         // Easing function
         const easeProgress = progress < 0.5 
           ? 2 * progress * progress 
           : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-        
         const current = Math.round(from + difference * easeProgress);
-        
         if (progress < 1) {
           animationFrame = requestAnimationFrame(update);
         } else {
           resolve();
         }
       }
-      
       update();
     });
   }
-  
   // Update display metrics when real metrics change
   $effect(() => {
     if (Object.keys(realMetrics).length > 0) {
       updateDisplayMetrics();
     }
   });
-  
   async function updateDisplayMetrics() {
     // Animate each metric to its new value
     const promises = Object.entries(realMetrics).map(([key, value]) => {
       const currentValue = displayMetrics[key as keyof typeof displayMetrics];
       const targetValue = value;
-      
       return new Promise<void>(resolve => {
         const start = Date.now();
         const difference = targetValue - currentValue;
         const duration = 800;
-        
         function animate() {
           const elapsed = Date.now() - start;
           const progress = Math.min(elapsed / duration, 1);
-          
           const easeProgress = progress < 0.5 
             ? 2 * progress * progress 
             : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-          
           displayMetrics = {
             ...displayMetrics,
             [key]: Math.round(currentValue + difference * easeProgress)
           };
-          
           if (progress < 1) {
             requestAnimationFrame(animate);
           } else {
             resolve();
           }
         }
-        
         animate();
       });
     });
-    
     await Promise.all(promises);
   }
-  
   onMount(() => {
     isVisible = true;
   });
-  
   onDestroy(() => {
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
     }
   });
-  
   // Metric status indicators
   function getMetricStatus(key: string, value: number) {
     switch (key) {
@@ -127,7 +104,6 @@
         return 'good';
     }
   }
-  
   function getStatusColor(status: string) {
     switch (status) {
       case 'excellent': return 'text-green-400';
@@ -137,7 +113,6 @@
       default: return 'text-gray-400';
     }
   }
-  
   function getStatusIcon(status: string) {
     switch (status) {
       case 'excellent': return '🟢';

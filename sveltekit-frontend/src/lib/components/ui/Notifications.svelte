@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import {
     Button
@@ -48,7 +47,7 @@
   ) {
     action.action();
     notifications.remove(notification.id);
-}
+  }
 </script>
 
 <!-- Notification Container -->

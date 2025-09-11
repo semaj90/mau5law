@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { browser } from "$app/environment";
   import {
@@ -11,9 +10,9 @@
   import AccessibilityPanel from "./AccessibilityPanel.svelte";
 
   // Keyboard shortcuts state
-let showShortcuts = $state(false);
-let showAccessibilityPanel = $state(false);
-let isFullscreen = $state(false);
+  let showShortcuts = $state(false);
+  let showAccessibilityPanel = $state(false);
+  let isFullscreen = $state(false);
 
   // Keyboard shortcuts map
   const shortcuts = [

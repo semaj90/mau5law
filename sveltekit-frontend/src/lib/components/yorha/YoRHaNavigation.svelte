@@ -1,11 +1,9 @@
 <!-- YoRHa Navigation Sidebar Component -->
 <script lang="ts">
-</script>
   import type { Props } from "$lib/types/global";
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";
   import { onMount } from 'svelte';
-  
   // Props
   let { routes, collapsed, currentPage } = $props<{
     routes: Array<{

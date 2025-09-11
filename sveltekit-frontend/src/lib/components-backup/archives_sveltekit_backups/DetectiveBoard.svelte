@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { Evidence } from "$lib/types/api";
   import { onDestroy, onMount } from "svelte";
   import { dndzone } from "svelte-dnd-action";

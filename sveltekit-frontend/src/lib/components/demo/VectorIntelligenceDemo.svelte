@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
   import {
@@ -20,10 +19,10 @@
 
   // Reactive state from Context7 service
   const { vectorResults, isAnalyzing } = context7Service;
-let searchQuery = $state('');
-let selectedFilters = $state<string[] >([]);
-let searchResults = $state<VectorIntelligence | null >(null);
-let searchHistory = $state<string[] >([]);
+  let searchQuery = $state('');
+  let selectedFilters = $state<string[] >([]);
+  let searchResults = $state<VectorIntelligence | null >(null);
+  let searchHistory = $state<string[] >([]);
 
   // Demo data and filters
   const availableFilters = [

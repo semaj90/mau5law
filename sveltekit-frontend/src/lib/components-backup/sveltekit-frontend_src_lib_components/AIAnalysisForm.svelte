@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
   import { Button } from 'bits-ui';
   import { fade, slide } from 'svelte/transition';
@@ -56,7 +55,6 @@
 
   async function startAnalysis() {
     if (isAnalyzing) return;
-    
     isAnalyzing = true;
     analysisProgress.set(0);
     currentAnalysisStep.set('Initializing AI analysis...');
@@ -100,7 +98,6 @@
 
       analysisResults.set(mockResults);
       dispatch('analysisComplete', mockResults);
-      
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {

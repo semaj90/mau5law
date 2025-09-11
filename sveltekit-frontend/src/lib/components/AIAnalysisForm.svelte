@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { createEventDispatcher } from 'svelte';
   import Button from '$lib/components/ui/bitsbutton.svelte';
@@ -39,7 +38,7 @@
   }: Props = $props();
 
   const dispatch = createEventDispatcher();
-let isAnalyzing = $state(false);
+  let isAnalyzing = $state(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
   let analysisResults = writable<AnalysisResults | null>(null);

@@ -8,7 +8,7 @@
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import * as Card from '$lib/components/ui/card';
   import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 

@@ -1,6 +1,5 @@
 <!-- Modular Data-Driven Dialog Component -->
 <script lang="ts">
-</script>
   import { Dialog } from 'bits-ui';
   import { X, Loader2, AlertCircle, RefreshCw } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -16,7 +15,6 @@
     size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
     showClose?: boolean;
     class?: string;
-    
     // Data integration
     dataProvider?: DialogDataProvider;
     entityType?: 'case' | 'evidence' | 'document';
@@ -24,12 +22,10 @@
     autoLoad?: boolean;
     cacheData?: boolean;
     refreshInterval?: number;
-    
     // Event handlers
     onOpenChange?: (open: boolean) => void;
     onDataLoad?: (data: any) => void;
     onError?: (error: string) => void;
-    
     // Content slots
     children?: any;
     header?: any;
@@ -45,18 +41,15 @@
     size = 'md',
     showClose = true,
     class: className = '',
-    
     dataProvider,
     entityType,
     entityId,
     autoLoad = true,
     cacheData = true,
     refreshInterval,
-    
     onOpenChange,
     onDataLoad,
     onError,
-    
     children,
     header,
     footer,
@@ -83,7 +76,6 @@
   // Load data when dialog opens or component mounts
   async function loadData(force = false) {
     if (!entityType || !entityId) return;
-    
     // Skip if data is fresh and not forcing
     if (!force && cacheData && data && lastFetch && Date.now() - lastFetch < 60000) {
       return;
@@ -93,7 +85,7 @@
     errorMessage = null;
 
     try {
-let result = $state<any >(null);
+  let result = $state<any >(null);
 
       switch (entityType) {
         case 'case':
@@ -132,15 +124,13 @@ let result = $state<any >(null);
   function handleOpenChange(newOpen: boolean) {
     open = newOpen;
     onOpenChange?.(newOpen);
-    
     if (newOpen && autoLoad && entityType && entityId) {
       loadData();
     }
   }
 
   // Auto-refresh interval
-let refreshTimer = $state<number | null >(null);
-  
+  let refreshTimer = $state<number | null >(null);
   $effect(() => {
     if (open && refreshInterval && refreshInterval > 0) {
       refreshTimer = setInterval(() => {
@@ -149,7 +139,6 @@ let refreshTimer = $state<number | null >(null);
         }
       }, refreshInterval) as any;
     }
-    
     return () => {
       if (refreshTimer) {
         clearInterval(refreshTimer);
@@ -166,8 +155,7 @@ let refreshTimer = $state<number | null >(null);
   });
 
   // Subscribe to reactive data changes
-let unsubscribe = $state<(() => void) | null>(null);
-  
+  let unsubscribe = $state<(() => void) | null>(null);
   $effect(() => {
     if (entityType && entityId) {
       const key = `${entityType}:${entityId}`;
@@ -179,7 +167,6 @@ let unsubscribe = $state<(() => void) | null>(null);
         lastFetch = store.lastFetch;
       });
     }
-    
     return () => {
       unsubscribe?.();
     };

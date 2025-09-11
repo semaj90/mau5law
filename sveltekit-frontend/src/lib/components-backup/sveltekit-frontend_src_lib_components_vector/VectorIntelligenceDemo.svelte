@@ -3,7 +3,6 @@ Vector Intelligence Demo Component
 Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
@@ -112,40 +111,40 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     {
       content: `EMPLOYMENT AGREEMENT
 
-This Employment Agreement ("Agreement") is entered into on January 15, 2024, between TechCorp Industries, a Delaware corporation ("Company"), and John Smith ("Employee").
+  This Employment Agreement ("Agreement") is entered into on January 15, 2024, between TechCorp Industries, a Delaware corporation ("Company"), and John Smith ("Employee").
 
-1. POSITION AND DUTIES
-Employee shall serve as Senior Software Engineer and shall perform such duties as assigned by the Company. Employee agrees to devote full business time and attention to the Company's business.
+  1. POSITION AND DUTIES
+  Employee shall serve as Senior Software Engineer and shall perform such duties as assigned by the Company. Employee agrees to devote full business time and attention to the Company's business.
 
-2. COMPENSATION
-Company shall pay Employee a base salary of $150,000 per year, payable in accordance with Company's standard payroll practices.
+  2. COMPENSATION
+  Company shall pay Employee a base salary of $150,000 per year, payable in accordance with Company's standard payroll practices.
 
-3. CONFIDENTIALITY
-Employee acknowledges that during employment, Employee may have access to confidential information. Employee agrees to maintain strict confidentiality.
+  3. CONFIDENTIALITY
+  Employee acknowledges that during employment, Employee may have access to confidential information. Employee agrees to maintain strict confidentiality.
 
-4. TERMINATION
-This Agreement may be terminated by either party with thirty (30) days written notice.`,
+  4. TERMINATION
+  This Agreement may be terminated by either party with thirty (30) days written notice.`,
       description: 'Employment contract for legal analysis',
       type: 'Contract'
     },
     {
       content: `INCIDENT REPORT - Case #2024-CR-1892
 
-Date: March 8, 2024
-Location: 1425 Oak Street, Downtown District
-Reporting Officer: Detective Sarah Johnson
+  Date: March 8, 2024
+  Location: 1425 Oak Street, Downtown District
+  Reporting Officer: Detective Sarah Johnson
 
-SUMMARY:
-Responded to reports of suspected break-in at residential property. Upon arrival, discovered evidence of forced entry through rear window. Victim John Doe reported missing electronics valued at approximately $3,500.
+  SUMMARY:
+  Responded to reports of suspected break-in at residential property. Upon arrival, discovered evidence of forced entry through rear window. Victim John Doe reported missing electronics valued at approximately $3,500.
 
-EVIDENCE COLLECTED:
-- Fingerprints from window frame
-- Footprint impressions in garden
-- Security camera footage from neighboring property
-- Witness statements from two neighbors
+  EVIDENCE COLLECTED:
+  - Fingerprints from window frame
+  - Footprint impressions in garden
+  - Security camera footage from neighboring property
+  - Witness statements from two neighbors
 
-SUSPECTS:
-Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
+  SUSPECTS:
+  Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
       description: 'Criminal incident report for analysis',
       type: 'Incident Report'
     }

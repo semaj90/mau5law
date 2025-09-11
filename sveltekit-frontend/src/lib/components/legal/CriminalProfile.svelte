@@ -1,6 +1,5 @@
 <!-- Criminal Profile Component for Legal AI App -->
 <script lang="ts">
-</script>
   import { User, Calendar, MapPin, AlertTriangle, Shield, Eye, FileText, Fingerprint, Camera } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   export interface CriminalRecord {

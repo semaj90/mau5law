@@ -2,216 +2,213 @@
 <!-- Demonstrates RTX 3060 Ti CUDA acceleration for legal document similarity -->
 
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import { Button } from '$lib/components/ui/enhanced-bits';
-	
-	// Svelte 5 runes for reactive state
-	let query = $state('');
-	let isProcessing = $state(false);
-	let searchResults = $state<Array<{
-		case_id: string;
-		title: string;
-		score: number;
-		confidence: number;
-		processing_time: number;
-		gpu_accelerated: boolean;
-	}>>([]);
-	let gpuStatus = $state<{
-		available: boolean;
-		model: string;
-		utilization: number;
-		processing_speed: string;
-	} | null>(null);
-	let performanceMetrics = $state<{
-		total_time: number;
-		gpu_speedup: string;
-		vectors_processed: number;
-		cuda_operations: number;
-	} | null>(null);
+  	import { onMount } from 'svelte';
+  	import { Button } from '$lib/components/ui/enhanced-bits';
+  	// Svelte 5 runes for reactive state
+  	let query = $state('');
+  	let isProcessing = $state(false);
+  	let searchResults = $state<Array<{
+  		case_id: string;
+  		title: string;
+  		score: number;
+  		confidence: number;
+  		processing_time: number;
+  		gpu_accelerated: boolean;
+  	}>>([]);
+  	let gpuStatus = $state<{
+  		available: boolean;
+  		model: string;
+  		utilization: number;
+  		processing_speed: string;
+  	} | null>(null);
+  	let performanceMetrics = $state<{
+  		total_time: number;
+  		gpu_speedup: string;
+  		vectors_processed: number;
+  		cuda_operations: number;
+  	} | null>(null);
 
-	// Sample legal case database (in production, this would come from your PostgreSQL + pgvector)
-	const legalCaseDatabase = [
-		{
-			id: 'case-001',
-			title: 'Contract Breach - Software Licensing',
-			content: 'breach of software licensing agreement indemnification liability termination',
-			vector: [0.8, 0.2, 0.9, 0.7, 0.3, 0.6, 0.4, 0.8]
-		},
-		{
-			id: 'case-002', 
-			title: 'Employment Termination Dispute',
-			content: 'wrongful termination employment contract severance compensation',
-			vector: [0.6, 0.7, 0.4, 0.8, 0.9, 0.3, 0.7, 0.5]
-		},
-		{
-			id: 'case-003',
-			title: 'Intellectual Property Infringement',
-			content: 'patent infringement intellectual property damages royalties',
-			vector: [0.7, 0.9, 0.6, 0.4, 0.8, 0.5, 0.9, 0.6]
-		},
-		{
-			id: 'case-004',
-			title: 'Corporate Merger Compliance',
-			content: 'merger acquisition due diligence compliance regulatory approval',
-			vector: [0.5, 0.8, 0.7, 0.6, 0.4, 0.9, 0.3, 0.7]
-		},
-		{
-			id: 'case-005',
-			title: 'Data Privacy Violation',
-			content: 'data breach privacy violation GDPR compliance personal information',
-			vector: [0.9, 0.3, 0.8, 0.5, 0.7, 0.4, 0.8, 0.6]
-		}
-	];
+  	// Sample legal case database (in production, this would come from your PostgreSQL + pgvector)
+  	const legalCaseDatabase = [
+  		{
+  			id: 'case-001',
+  			title: 'Contract Breach - Software Licensing',
+  			content: 'breach of software licensing agreement indemnification liability termination',
+  			vector: [0.8, 0.2, 0.9, 0.7, 0.3, 0.6, 0.4, 0.8]
+  		},
+  		{
+  			id: 'case-002', 
+  			title: 'Employment Termination Dispute',
+  			content: 'wrongful termination employment contract severance compensation',
+  			vector: [0.6, 0.7, 0.4, 0.8, 0.9, 0.3, 0.7, 0.5]
+  		},
+  		{
+  			id: 'case-003',
+  			title: 'Intellectual Property Infringement',
+  			content: 'patent infringement intellectual property damages royalties',
+  			vector: [0.7, 0.9, 0.6, 0.4, 0.8, 0.5, 0.9, 0.6]
+  		},
+  		{
+  			id: 'case-004',
+  			title: 'Corporate Merger Compliance',
+  			content: 'merger acquisition due diligence compliance regulatory approval',
+  			vector: [0.5, 0.8, 0.7, 0.6, 0.4, 0.9, 0.3, 0.7]
+  		},
+  		{
+  			id: 'case-005',
+  			title: 'Data Privacy Violation',
+  			content: 'data breach privacy violation GDPR compliance personal information',
+  			vector: [0.9, 0.3, 0.8, 0.5, 0.7, 0.4, 0.8, 0.6]
+  		}
+  	];
 
-	// Check GPU status on component mount
-	onMount(async () => {
-		await checkGPUStatus();
-	});
+  	// Check GPU status on component mount
+  	onMount(async () => {
+  		await checkGPUStatus();
+  	});
 
-	async function checkGPUStatus() {
-		try {
-			const response = await fetch('/api/v1/gpu/status');
-			if (response.ok) {
-				const status = await response.json();
-				gpuStatus = {
-					available: status.gpu_available || false,
-					model: status.gpu_model || 'Unknown',
-					utilization: status.gpu_stats?.gpu_utilization_percent || 0,
-					processing_speed: status.capabilities?.expected_throughput || 'Unknown'
-				};
-			}
-		} catch (error) {
-			console.error('Failed to check GPU status:', error);
-			gpuStatus = {
-				available: false,
-				model: 'Not Available',
-				utilization: 0,
-				processing_speed: 'N/A'
-			};
-		}
-	}
+  	async function checkGPUStatus() {
+  		try {
+  			const response = await fetch('/api/v1/gpu/status');
+  			if (response.ok) {
+  				const status = await response.json();
+  				gpuStatus = {
+  					available: status.gpu_available || false,
+  					model: status.gpu_model || 'Unknown',
+  					utilization: status.gpu_stats?.gpu_utilization_percent || 0,
+  					processing_speed: status.capabilities?.expected_throughput || 'Unknown'
+  				};
+  			}
+  		} catch (error) {
+  			console.error('Failed to check GPU status:', error);
+  			gpuStatus = {
+  				available: false,
+  				model: 'Not Available',
+  				utilization: 0,
+  				processing_speed: 'N/A'
+  			};
+  		}
+  	}
 
-	async function performGPULegalSearch() {
-		if (!query.trim()) {
-			alert('Please enter a search query');
-			return;
-		}
+  	async function performGPULegalSearch() {
+  		if (!query.trim()) {
+  			alert('Please enter a search query');
+  			return;
+  		}
 
-		isProcessing = true;
-		searchResults = [];
-		performanceMetrics = null;
+  		isProcessing = true;
+  		searchResults = [];
+  		performanceMetrics = null;
 
-		try {
-			const startTime = Date.now();
+  		try {
+  			const startTime = Date.now();
 
-			// Convert query to vector (simplified - in production, use your embedding service)
-			const queryVector = convertQueryToVector(query);
+  			// Convert query to vector (simplified - in production, use your embedding service)
+  			const queryVector = convertQueryToVector(query);
 
-			// Prepare case vectors for GPU similarity processing
-			const caseVectors = legalCaseDatabase.map(caseData => caseData.vector);
+  			// Prepare case vectors for GPU similarity processing
+  			const caseVectors = legalCaseDatabase.map(caseData => caseData.vector);
 
-			// Call GPU-accelerated legal similarity endpoint
-			const response = await fetch('/api/v1/gpu', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					service: 'legal',
-					operation: 'similarity',
-					data: queryVector,
-					metadata: {
-						case_vectors: caseVectors,
-						threshold: 0.6,
-						gpu_acceleration: true
-					},
-					priority: 'high' // Use direct CUDA processing
-				})
-			});
+  			// Call GPU-accelerated legal similarity endpoint
+  			const response = await fetch('/api/v1/gpu', {
+  				method: 'POST',
+  				headers: {
+  					'Content-Type': 'application/json',
+  				},
+  				body: JSON.stringify({
+  					service: 'legal',
+  					operation: 'similarity',
+  					data: queryVector,
+  					metadata: {
+  						case_vectors: caseVectors,
+  						threshold: 0.6,
+  						gpu_acceleration: true
+  					},
+  					priority: 'high' // Use direct CUDA processing
+  				})
+  			});
 
-			if (!response.ok) {
-				throw new Error(`GPU processing failed: ${response.statusText}`);
-			}
+  			if (!response.ok) {
+  				throw new Error(`GPU processing failed: ${response.statusText}`);
+  			}
 
-			const result = await response.json();
-			const totalTime = Date.now() - startTime;
+  			const result = await response.json();
+  			const totalTime = Date.now() - startTime;
 
-			// Process GPU similarity results
-			if (result.success && result.result) {
-				const similarities = result.result;
-				const matches = [];
+  			// Process GPU similarity results
+  			if (result.success && result.result) {
+  				const similarities = result.result;
+  				const matches = [];
 
-				// Match similarity scores with legal cases
-				for (let i = 0; i < Math.min(similarities.length, legalCaseDatabase.length); i++) {
-					const score = similarities[i] || 0;
-					if (score >= 0.3) { // Minimum relevance threshold
-						matches.push({
-							case_id: legalCaseDatabase[i].id,
-							title: legalCaseDatabase[i].title,
-							score: Math.round(score * 100) / 100,
-							confidence: Math.min(score * 1.3, 1.0),
-							processing_time: result.processing_ms || 0,
-							gpu_accelerated: result.gpu_utilized || false
-						});
-					}
-				}
+  				// Match similarity scores with legal cases
+  				for (let i = 0; i < Math.min(similarities.length, legalCaseDatabase.length); i++) {
+  					const score = similarities[i] || 0;
+  					if (score >= 0.3) { // Minimum relevance threshold
+  						matches.push({
+  							case_id: legalCaseDatabase[i].id,
+  							title: legalCaseDatabase[i].title,
+  							score: Math.round(score * 100) / 100,
+  							confidence: Math.min(score * 1.3, 1.0),
+  							processing_time: result.processing_ms || 0,
+  							gpu_accelerated: result.gpu_utilized || false
+  						});
+  					}
+  				}
 
-				// Sort by similarity score (highest first)
-				searchResults = matches.sort((a, b) => b.score - a.score);
+  				// Sort by similarity score (highest first)
+  				searchResults = matches.sort((a, b) => b.score - a.score);
 
-				// Update performance metrics
-				performanceMetrics = {
-					total_time: totalTime,
-					gpu_speedup: result.metadata?.speedup_vs_cpu || '8.3x',
-					vectors_processed: similarities.length,
-					cuda_operations: Math.ceil(similarities.length / 16)
-				};
+  				// Update performance metrics
+  				performanceMetrics = {
+  					total_time: totalTime,
+  					gpu_speedup: result.metadata?.speedup_vs_cpu || '8.3x',
+  					vectors_processed: similarities.length,
+  					cuda_operations: Math.ceil(similarities.length / 16)
+  				};
 
-				console.log('🚀 GPU Legal Search completed:', {
-					results_found: searchResults.length,
-					processing_time: totalTime,
-					gpu_utilized: result.gpu_utilized
-				});
+  				console.log('🚀 GPU Legal Search completed:', {
+  					results_found: searchResults.length,
+  					processing_time: totalTime,
+  					gpu_utilized: result.gpu_utilized
+  				});
 
-			} else {
-				throw new Error(result.error || 'No results from GPU processing');
-			}
+  			} else {
+  				throw new Error(result.error || 'No results from GPU processing');
+  			}
 
-		} catch (error) {
-			console.error('GPU legal search error:', error);
-			alert(`Search failed: ${error.message}`);
-		} finally {
-			isProcessing = false;
-		}
-	}
+  		} catch (error) {
+  			console.error('GPU legal search error:', error);
+  			alert(`Search failed: ${error.message}`);
+  		} finally {
+  			isProcessing = false;
+  		}
+  	}
 
-	// Simplified query-to-vector conversion (in production, use your embedding service)
-	function convertQueryToVector(query: string): number[] {
-		const words = query.toLowerCase().split(' ');
-		const vector = new Array(8).fill(0);
-		
-		// Simple word-based vector generation for demo
-		words.forEach((word, index) => {
-			vector[index % 8] += 0.1 + (word.length * 0.05);
-		});
+  	// Simplified query-to-vector conversion (in production, use your embedding service)
+  	function convertQueryToVector(query: string): number[] {
+  		const words = query.toLowerCase().split(' ');
+  		const vector = new Array(8).fill(0);
+  		// Simple word-based vector generation for demo
+  		words.forEach((word, index) => {
+  			vector[index % 8] += 0.1 + (word.length * 0.05);
+  		});
 
-		// Normalize vector
-		const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
-		return magnitude > 0 ? vector.map(val => val / magnitude) : vector;
-	}
+  		// Normalize vector
+  		const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+  		return magnitude > 0 ? vector.map(val => val / magnitude) : vector;
+  	}
 
-	function getScoreColor(score: number): string {
-		if (score >= 0.8) return 'text-green-600 bg-green-50';
-		if (score >= 0.6) return 'text-blue-600 bg-blue-50';
-		if (score >= 0.4) return 'text-orange-600 bg-orange-50';
-		return 'text-gray-600 bg-gray-50';
-	}
+  	function getScoreColor(score: number): string {
+  		if (score >= 0.8) return 'text-green-600 bg-green-50';
+  		if (score >= 0.6) return 'text-blue-600 bg-blue-50';
+  		if (score >= 0.4) return 'text-orange-600 bg-orange-50';
+  		return 'text-gray-600 bg-gray-50';
+  	}
 
-	function getConfidenceBar(confidence: number): string {
-		const width = Math.round(confidence * 100);
-		return `width: ${width}%`;
-	}
+  	function getConfidenceBar(confidence: number): string {
+  		const width = Math.round(confidence * 100);
+  		return `width: ${width}%`;
+  	}
 </script>
 
 <div class="gpu-legal-search p-6 max-w-6xl mx-auto">

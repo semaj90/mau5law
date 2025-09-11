@@ -270,8 +270,7 @@
           <div class="phase-header" role="button" tabindex="0" on:click={() => selectedPhase = selectedPhase === phase.phase ? null : phase.phase}>
             <div class="phase-number">
               <span class="phase-label">Phase {phase.phase}</span>
-              {@const StatusIcon = getStatusIcon(phase.status)}
-              <StatusIcon class="status-icon w-5 h-5" />
+              <svelte:component this={getStatusIcon(phase.status)} class="status-icon w-5 h-5" />
             </div>
             <div class="phase-title">{phase.title}</div>
             <div class="phase-progress">

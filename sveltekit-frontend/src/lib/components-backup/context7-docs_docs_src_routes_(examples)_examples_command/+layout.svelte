@@ -1,10 +1,9 @@
 <script lang="ts">
-</script>
-	import "$lib/styles/command/globals.css";
-	import "$lib/styles/command/icons.css";
-	import "$lib/styles/command/command.css";
+  	import "$lib/styles/command/globals.css";
+  	import "$lib/styles/command/icons.css";
+  	import "$lib/styles/command/command.css";
 
-	let { children } = $props();
+  	let { children } = $props();
 </script>
 
 {@render children?.()}

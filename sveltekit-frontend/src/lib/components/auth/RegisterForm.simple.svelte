@@ -3,7 +3,6 @@
   Basic registration without complex dependencies
 -->
 <script lang="ts">
-</script>
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
   import {
@@ -14,7 +13,6 @@
   } from '$lib/components/ui/enhanced-bits';;
   import { Label } from '$lib/components/ui/label';
   import { Eye, EyeOff, Shield, Loader2, AlertCircle, UserPlus } from 'lucide-svelte';
-  
   interface Props {
     data?: any;
     redirectTo?: string;
@@ -97,14 +95,13 @@
 
   function calculatePasswordStrength(password: string): { score: number; feedback: string; color: string } {
     if (!password) return { score: 0, feedback: 'Enter a password', color: 'text-gray-400' };
-let score = $state(0);
+  let score = $state(0);
     if (password.length >= 8) score += 2;
     if (password.length >= 12) score += 1;
     if (/[a-z]/.test(password)) score += 1;
     if (/[A-Z]/.test(password)) score += 1;
     if (/\d/.test(password)) score += 1;
     if (/[@$!%*?&]/.test(password)) score += 1;
-    
     if (score < 3) return { score, feedback: 'Weak', color: 'text-red-500' };
     if (score < 5) return { score, feedback: 'Fair', color: 'text-yellow-500' };
     if (score < 7) return { score, feedback: 'Good', color: 'text-blue-500' };

@@ -1,11 +1,9 @@
 <script lang="ts">
-</script>
   /**
    * Enhanced AI-Powered Document Ingest Assistant
    * Integrates with your existing AI agent store and production architecture
    * Uses Bits UI + Melt UI following your established component patterns
    */
-  
   import { onMount } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -21,7 +19,6 @@
   import Separator from '$lib/components/ui/separator/Separator.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import Label from '$lib/components/ui/label/LabelCompat.svelte';
-  
   // Your established store patterns
   import { 
     aiAgentStore, 
@@ -30,34 +27,28 @@
     performanceMetrics,
     currentConversation 
   } from '$lib/stores/ai-agent';
-  
   import { enhancedIngestService } from '$lib/services/enhanced-ingest-integration';
-  
   // Component state following your patterns
-let documentTitle = $state('');
-let documentContent = $state('');
-let caseId = $state('');
-let selectedDocumentType = $state('legal');
-let batchMode = $state(false);
+  let documentTitle = $state('');
+  let documentContent = $state('');
+  let caseId = $state('');
+  let selectedDocumentType = $state('legal');
+  let batchMode = $state(false);
   let batchDocuments = writable([]);
-  
   // Processing state
   let ingestResults = writable([]);
   let currentProgress = writable(0);
   let processingStatus = writable('idle');
   let errors = writable([]);
-  
   // Derived states following your patterns
   const canIngest = derived(
     [processingStatus],
     ([$status]) => $status === 'idle' && (documentTitle.trim() && documentContent.trim())
   );
-  
   const hasResults = derived(
     ingestResults,
     ($results) => $results.length > 0
   );
-  
   // Document types following your legal AI patterns
   const documentTypes = [
     { value: 'legal', label: 'Legal Document', icon: '⚖️' },
@@ -66,14 +57,11 @@ let batchMode = $state(false);
     { value: 'contract', label: 'Contract', icon: '📜' },
     { value: 'precedent', label: 'Legal Precedent', icon: '📚' }
   ];
-  
   // Enhanced ingest function with AI integration
   async function ingestDocument() {
     if (!$canIngest) return;
-    
     processingStatus.set('processing');
     currentProgress.set(10);
-    
     try {
       const request = {
         title: documentTitle,
@@ -87,21 +75,15 @@ let batchMode = $state(false);
           ai_session_id: $aiAgentStore.activeSessionId,
         }
       };
-      
       currentProgress.set(30);
-      
       // Use your enhanced ingest service
       const result = await enhancedIngestService.ingestDocument(request);
-      
       currentProgress.set(70);
-      
       // Generate AI summary using your existing chat system
       if (result.success) {
         await generateAISummary(result.documentId, documentContent);
       }
-      
       currentProgress.set(100);
-      
       // Update results
       ingestResults.update(results => [...results, {
         ...result,
@@ -109,13 +91,10 @@ let batchMode = $state(false);
         type: selectedDocumentType,
         timestamp: new Date()
       }]);
-      
       // Clear form
       clearForm();
-      
       processingStatus.set('completed');
       setTimeout(() => processingStatus.set('idle'), 2000);
-      
     } catch (error) {
       console.error('Ingest failed:', error);
       errors.update(errs => [...errs, {
@@ -124,37 +103,30 @@ let batchMode = $state(false);
         timestamp: new Date(),
         type: 'ingest_error'
       }]);
-      
       processingStatus.set('error');
       setTimeout(() => processingStatus.set('idle'), 3000);
     }
   }
-  
   // AI summary generation using your existing chat patterns
   async function generateAISummary(documentId: string, content: string) {
     try {
       const prompt = `Please provide a concise legal analysis summary of this document:\n\n${content.substring(0, 1000)}...`;
-      
       // Use your existing AI agent for summary
       await aiAgentStore.sendMessage(prompt, {
         document_id: documentId,
         analysis_type: 'legal_summary',
         source: 'ingest_assistant'
       });
-      
     } catch (error) {
       console.warn('AI summary generation failed:', error);
     }
   }
-  
   // Batch processing following your batch patterns
   async function processBatch() {
     const documents = $batchDocuments;
     if (documents.length === 0) return;
-    
     processingStatus.set('batch_processing');
     currentProgress.set(0);
-    
     try {
       const batchRequest = documents.map(doc => ({
         title: doc.title,
@@ -166,22 +138,17 @@ let batchMode = $state(false);
           source: 'ai_assistant_batch'
         }
       }));
-      
       const result = await enhancedIngestService.ingestBatch(batchRequest);
-      
       currentProgress.set(100);
-      
       // Update results with batch information
       ingestResults.update(results => [...results, {
         ...result,
         is_batch: true,
         timestamp: new Date()
       }]);
-      
       batchDocuments.set([]);
       processingStatus.set('completed');
       setTimeout(() => processingStatus.set('idle'), 2000);
-      
     } catch (error) {
       console.error('Batch processing failed:', error);
       errors.update(errs => [...errs, {
@@ -190,21 +157,17 @@ let batchMode = $state(false);
         timestamp: new Date(),
         type: 'batch_error'
       }]);
-      
       processingStatus.set('error');
       setTimeout(() => processingStatus.set('idle'), 3000);
     }
   }
-  
   function clearForm() {
     documentTitle = '';
     documentContent = '';
     caseId = '';
   }
-  
   function addToBatch() {
     if (!documentTitle.trim() || !documentContent.trim()) return;
-    
     batchDocuments.update(docs => [...docs, {
       id: Date.now(),
       title: documentTitle,
@@ -212,18 +175,14 @@ let batchMode = $state(false);
       case_id: caseId,
       type: selectedDocumentType
     }]);
-    
     clearForm();
   }
-  
   function removeFromBatch(id: number) {
     batchDocuments.update(docs => docs.filter(doc => doc.id !== id));
   }
-  
   function dismissError(errorId: number) {
     errors.update(errs => errs.filter(err => err.id !== errorId));
   }
-  
   onMount(() => {
     // Initialize AI agent connection following your patterns
     aiAgentStore.connect().catch(console.error);

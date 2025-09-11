@@ -1,138 +1,127 @@
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	
-	// System status and metrics
-	let systemHealth = $state<any>(null);
-	let implementedFeatures = $state([
-		{
-			category: 'Core Infrastructure',
-			items: [
-				{ name: 'SvelteKit 2 + Svelte 5', status: 'complete', description: 'Modern runes system with $state, $effect, $derived' },
-				{ name: 'TypeScript Strict Mode', status: 'complete', description: 'Full type safety across the application' },
-				{ name: 'Production API Routes', status: 'complete', description: 'RESTful endpoints for cases, evidence, AI integration' },
-				{ name: 'Database Integration', status: 'complete', description: 'Drizzle ORM with PostgreSQL and pgvector' },
-				{ name: 'Authentication System', status: 'complete', description: 'Lucia Auth with secure session management' }
-			]
-		},
-		{
-			category: 'AI & Machine Learning',
-			items: [
-				{ name: 'Local LLM Integration', status: 'complete', description: 'Ollama with Gemma3 legal model' },
-				{ name: 'Vector Search', status: 'complete', description: 'Qdrant integration for semantic search' },
-				{ name: 'Context7 MCP Protocol', status: 'complete', description: 'Enhanced context sharing and memory graphs' },
-				{ name: 'Legal Document Analysis', status: 'complete', description: 'AI-powered contract and evidence analysis' },
-				{ name: 'Pattern Recognition', status: 'complete', description: 'Case similarity and precedent matching' }
-			]
-		},
-		{
-			category: 'User Interface',
-			items: [
-				{ name: 'Responsive Design', status: 'complete', description: 'Mobile-first approach with Tailwind CSS' },
-				{ name: 'Real-time Updates', status: 'complete', description: 'WebSocket integration for live collaboration' },
-				{ name: 'Interactive Dashboard', status: 'complete', description: 'Comprehensive case and evidence management' },
-				{ name: 'AI Assistant Interface', status: 'complete', description: 'Natural language query processing' },
-				{ name: 'Evidence Canvas', status: 'complete', description: 'Visual relationship mapping' }
-			]
-		},
-		{
-			category: 'Development Tools',
-			items: [
-				{ name: 'VS Code Integration', status: 'complete', description: 'Remote indexing and Context7 extension' },
-				{ name: 'MCP Server', status: 'complete', description: 'Context7 MCP server on port 40000' },
-				{ name: 'Health Monitoring', status: 'complete', description: 'Comprehensive system health checks' },
-				{ name: 'Performance Metrics', status: 'complete', description: 'Real-time performance monitoring' },
-				{ name: 'Error Tracking', status: 'complete', description: 'Systematic error logging and resolution' }
-			]
-		}
-	]);
-	
-	let totalFeatures = $derived(() => 
-		implementedFeatures.reduce((sum, category) => sum + category.items.length, 0)
-	);
-	
-	let completedFeatures = $derived(() =>
-		implementedFeatures.reduce((sum, category) => 
-			sum + category.items.filter(item => item.status === 'complete').length, 0
-		)
-	);
-	
-	let completionPercentage = $derived(() =>
-		totalFeatures > 0 ? Math.round((completedFeatures / totalFeatures) * 100) : 0
-	);
-	
-	// Performance metrics
-	let performanceStats = $state({
-		buildTime: '45.2s',
-		bundleSize: '2.1MB',
-		firstContentfulPaint: '1.2s',
-		largestContentfulPaint: '2.1s',
-		cumulativeLayoutShift: '0.05',
-		timeToInteractive: '2.8s'
-	});
-	
-	// Technology stack
-	let techStack = $state({
-		frontend: [
-			'SvelteKit 2.26.1',
-			'Svelte 5.14.2',
-			'TypeScript 5.3.3',
-			'Tailwind CSS 3.4.0',
-			'Vite 6.0.1'
-		],
-		backend: [
-			'Node.js 20.x',
-			'Drizzle ORM 0.29.5',
-			'PostgreSQL 15',
-			'Lucia Auth 3.2.2',
-			'Qdrant Vector DB'
-		],
-		ai: [
-			'Ollama 0.1.x',
-			'Gemma3 Legal Model',
-			'Nomic Embeddings',
-			'Context7 MCP',
-			'Vector Search'
-		],
-		tools: [
-			'Docker Compose',
-			'VS Code Extensions',
-			'MCP Protocol',
-			'Real-time Monitoring',
-			'Health Checks'
-		]
-	});
-	
-	onMount(async () => {
-		await loadSystemHealth();
-	});
-	
-	async function loadSystemHealth() {
-		try {
-			const response = await fetch('http://localhost:40000/health');
-			systemHealth = await response.json();
-		} catch (error) {
-			systemHealth = { status: 'offline', error: error.message };
-		}
-	}
-	
-	function getStatusColor(status: string): string {
-		switch (status) {
-			case 'complete': return 'bg-green-100 text-green-800';
-			case 'in-progress': return 'bg-yellow-100 text-yellow-800';
-			case 'pending': return 'bg-gray-100 text-gray-800';
-			default: return 'bg-gray-100 text-gray-800';
-		}
-	}
-	
-	function getStatusIcon(status: string): string {
-		switch (status) {
-			case 'complete': return '✅';
-			case 'in-progress': return '🔄';
-			case 'pending': return '⏳';
-			default: return '❓';
-		}
-	}
+  	import { onMount } from 'svelte';
+  	// System status and metrics
+  	let systemHealth = $state<any>(null);
+  	let implementedFeatures = $state([
+  		{
+  			category: 'Core Infrastructure',
+  			items: [
+  				{ name: 'SvelteKit 2 + Svelte 5', status: 'complete', description: 'Modern runes system with $state, $effect, $derived' },
+  				{ name: 'TypeScript Strict Mode', status: 'complete', description: 'Full type safety across the application' },
+  				{ name: 'Production API Routes', status: 'complete', description: 'RESTful endpoints for cases, evidence, AI integration' },
+  				{ name: 'Database Integration', status: 'complete', description: 'Drizzle ORM with PostgreSQL and pgvector' },
+  				{ name: 'Authentication System', status: 'complete', description: 'Lucia Auth with secure session management' }
+  			]
+  		},
+  		{
+  			category: 'AI & Machine Learning',
+  			items: [
+  				{ name: 'Local LLM Integration', status: 'complete', description: 'Ollama with Gemma3 legal model' },
+  				{ name: 'Vector Search', status: 'complete', description: 'Qdrant integration for semantic search' },
+  				{ name: 'Context7 MCP Protocol', status: 'complete', description: 'Enhanced context sharing and memory graphs' },
+  				{ name: 'Legal Document Analysis', status: 'complete', description: 'AI-powered contract and evidence analysis' },
+  				{ name: 'Pattern Recognition', status: 'complete', description: 'Case similarity and precedent matching' }
+  			]
+  		},
+  		{
+  			category: 'User Interface',
+  			items: [
+  				{ name: 'Responsive Design', status: 'complete', description: 'Mobile-first approach with Tailwind CSS' },
+  				{ name: 'Real-time Updates', status: 'complete', description: 'WebSocket integration for live collaboration' },
+  				{ name: 'Interactive Dashboard', status: 'complete', description: 'Comprehensive case and evidence management' },
+  				{ name: 'AI Assistant Interface', status: 'complete', description: 'Natural language query processing' },
+  				{ name: 'Evidence Canvas', status: 'complete', description: 'Visual relationship mapping' }
+  			]
+  		},
+  		{
+  			category: 'Development Tools',
+  			items: [
+  				{ name: 'VS Code Integration', status: 'complete', description: 'Remote indexing and Context7 extension' },
+  				{ name: 'MCP Server', status: 'complete', description: 'Context7 MCP server on port 40000' },
+  				{ name: 'Health Monitoring', status: 'complete', description: 'Comprehensive system health checks' },
+  				{ name: 'Performance Metrics', status: 'complete', description: 'Real-time performance monitoring' },
+  				{ name: 'Error Tracking', status: 'complete', description: 'Systematic error logging and resolution' }
+  			]
+  		}
+  	]);
+  	let totalFeatures = $derived(() => 
+  		implementedFeatures.reduce((sum, category) => sum + category.items.length, 0)
+  	);
+  	let completedFeatures = $derived(() =>
+  		implementedFeatures.reduce((sum, category) => 
+  			sum + category.items.filter(item => item.status === 'complete').length, 0
+  		)
+  	);
+  	let completionPercentage = $derived(() =>
+  		totalFeatures > 0 ? Math.round((completedFeatures / totalFeatures) * 100) : 0
+  	);
+  	// Performance metrics
+  	let performanceStats = $state({
+  		buildTime: '45.2s',
+  		bundleSize: '2.1MB',
+  		firstContentfulPaint: '1.2s',
+  		largestContentfulPaint: '2.1s',
+  		cumulativeLayoutShift: '0.05',
+  		timeToInteractive: '2.8s'
+  	});
+  	// Technology stack
+  	let techStack = $state({
+  		frontend: [
+  			'SvelteKit 2.26.1',
+  			'Svelte 5.14.2',
+  			'TypeScript 5.3.3',
+  			'Tailwind CSS 3.4.0',
+  			'Vite 6.0.1'
+  		],
+  		backend: [
+  			'Node.js 20.x',
+  			'Drizzle ORM 0.29.5',
+  			'PostgreSQL 15',
+  			'Lucia Auth 3.2.2',
+  			'Qdrant Vector DB'
+  		],
+  		ai: [
+  			'Ollama 0.1.x',
+  			'Gemma3 Legal Model',
+  			'Nomic Embeddings',
+  			'Context7 MCP',
+  			'Vector Search'
+  		],
+  		tools: [
+  			'Docker Compose',
+  			'VS Code Extensions',
+  			'MCP Protocol',
+  			'Real-time Monitoring',
+  			'Health Checks'
+  		]
+  	});
+  	onMount(async () => {
+  		await loadSystemHealth();
+  	});
+  	async function loadSystemHealth() {
+  		try {
+  			const response = await fetch('http://localhost:40000/health');
+  			systemHealth = await response.json();
+  		} catch (error) {
+  			systemHealth = { status: 'offline', error: error.message };
+  		}
+  	}
+  	function getStatusColor(status: string): string {
+  		switch (status) {
+  			case 'complete': return 'bg-green-100 text-green-800';
+  			case 'in-progress': return 'bg-yellow-100 text-yellow-800';
+  			case 'pending': return 'bg-gray-100 text-gray-800';
+  			default: return 'bg-gray-100 text-gray-800';
+  		}
+  	}
+  	function getStatusIcon(status: string): string {
+  		switch (status) {
+  			case 'complete': return '✅';
+  			case 'in-progress': return '🔄';
+  			case 'pending': return '⏳';
+  			default: return '❓';
+  		}
+  	}
 </script>
 
 <svelte:head>

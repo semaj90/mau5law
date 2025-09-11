@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import { createEventDispatcher } from 'svelte';
   let { score = $bindable() } = $props(); // number = 5; // Current attractiveness score (1-10)
@@ -7,10 +6,8 @@
   let { readOnly = $bindable() } = $props(); // boolean = false;
   let { showDescription = $bindable() } = $props(); // boolean = true;
   let { size = $bindable() } = $props(); // 'sm' | 'md' | 'lg' = 'md';
-  
   const dispatch = createEventDispatcher();
-let hoveredScore = $state<number | null >(null);
-  
+  let hoveredScore = $state<number | null >(null);
   const descriptions = {
     1: 'Very Low',
     2: 'Low', 
@@ -23,24 +20,20 @@ let hoveredScore = $state<number | null >(null);
     9: 'Very High',
     10: 'Exceptional'
   };
-  
   function handleRatingClick(rating: number) {
     if (!readOnly) {
       score = rating;
       dispatch('change', { score });
     }
   }
-  
   function handleMouseEnter(rating: number) {
     if (!readOnly) {
       hoveredScore = rating;
     }
   }
-  
   function handleMouseLeave() {
     hoveredScore = null;
   }
-  
   let displayScore = $derived(hoveredScore !== null ? hoveredScore : score);
   let sizeClasses = $derived({
     sm: 'w-4 h-4',

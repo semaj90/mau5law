@@ -1,6 +1,5 @@
 <!-- Keyboard Shortcut Provider - Initialize shortcuts system -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { initializeKeyboardShortcuts, registerShortcut } from '$lib/utils/keyboard-shortcuts';
   import { goto } from '$app/navigation';
@@ -133,7 +132,6 @@
     return () => {
       // Cleanup global shortcuts
       globalShortcuts.forEach(unregister => unregister());
-      
       // Cleanup keyboard event listeners
       if (cleanup) {
         cleanup();
@@ -146,18 +144,14 @@
     const currentTheme = document.documentElement.classList.contains('yorha-theme') 
       ? 'yorha' 
       : 'default';
-    
     const newTheme = currentTheme === 'yorha' ? 'default' : 'yorha';
-    
     if (newTheme === 'yorha') {
       document.documentElement.classList.add('yorha-theme');
     } else {
       document.documentElement.classList.remove('yorha-theme');
     }
-    
     // Store theme preference
     localStorage.setItem('theme', newTheme);
-    
     // Announce theme change for accessibility
     announceToScreenReader(`Theme changed to ${newTheme} theme`);
   }
@@ -197,7 +191,6 @@
       '.search-input',
       '#search'
     ];
-    
     for (const selector of searchSelectors) {
       const searchInput = document.querySelector(selector) as HTMLInputElement;
       if (searchInput && searchInput.offsetParent !== null) {
@@ -207,7 +200,6 @@
         return;
       }
     }
-    
     announceToScreenReader('No search field found');
   }
 
@@ -223,9 +215,7 @@
     announcement.setAttribute('aria-atomic', 'true');
     announcement.className = 'sr-only';
     announcement.textContent = message;
-    
     document.body.appendChild(announcement);
-    
     setTimeout(() => {
       document.body.removeChild(announcement);
     }, 1000);

@@ -1,6 +1,5 @@
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import Button from "$lib/components/ui/Button.svelte";
   import { notifications } from "$lib/stores/notification";

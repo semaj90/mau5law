@@ -1,433 +1,432 @@
 <script lang="ts">
-</script>
-	// Web Speech API type declarations
-	interface SpeechRecognition extends EventTarget {
-		continuous: boolean
-		interimResults: boolean
-		lang: string
-		start(): void;
-		stop(): void;
-		abort(): void;
-		onresult: (event: SpeechRecognitionEvent) => void;
-		onerror: (event: SpeechRecognitionErrorEvent) => void;
-		onend: () => void;
-	}
+  	// Web Speech API type declarations
+  	interface SpeechRecognition extends EventTarget {
+  		continuous: boolean
+  		interimResults: boolean
+  		lang: string
+  		start(): void;
+  		stop(): void;
+  		abort(): void;
+  		onresult: (event: SpeechRecognitionEvent) => void;
+  		onerror: (event: SpeechRecognitionErrorEvent) => void;
+  		onend: () => void;
+  	}
 
-	interface SpeechRecognitionEvent extends Event {
-		results: SpeechRecognitionResultList
-	}
+  	interface SpeechRecognitionEvent extends Event {
+  		results: SpeechRecognitionResultList
+  	}
 
-	interface SpeechRecognitionResultList {
-		[index: number]: SpeechRecognitionResult;
-		length: number
-	}
+  	interface SpeechRecognitionResultList {
+  		[index: number]: SpeechRecognitionResult;
+  		length: number
+  	}
 
-	interface SpeechRecognitionResult {
-		[index: number]: SpeechRecognitionAlternative;
-		isFinal: boolean
-	}
+  	interface SpeechRecognitionResult {
+  		[index: number]: SpeechRecognitionAlternative;
+  		isFinal: boolean
+  	}
 
-	interface SpeechRecognitionAlternative {
-		transcript: string
-		confidence: number
-	}
+  	interface SpeechRecognitionAlternative {
+  		transcript: string
+  		confidence: number
+  	}
 
-	interface SpeechRecognitionErrorEvent extends Event {
-		error: string
-	}
+  	interface SpeechRecognitionErrorEvent extends Event {
+  		error: string
+  	}
 
-	declare global {
-		interface Window {
-			SpeechRecognition?: typeof SpeechRecognition;
-			webkitSpeechRecognition?: typeof SpeechRecognition;
-		}
-	}
+  	declare global {
+  		interface Window {
+  			SpeechRecognition?: typeof SpeechRecognition;
+  			webkitSpeechRecognition?: typeof SpeechRecognition;
+  		}
+  	}
 
-	import { onMount, tick } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { createMachine, interpret } from 'xstate';
-	import { Dialog, Tabs, Resizable } from 'bits-ui';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import GoldenRatioLoader from '$lib/components/ui/enhanced-bits/GoldenRatioLoader.svelte';
-	import {
-		MessageSquare,
-		FileText,
-		BookOpen,
-		Brain,
-		Zap,
-		Send,
-		Mic,
-		MicOff,
-		Settings,
-		Expand,
-		Minimize,
-		RefreshCw,
-		Sparkles,
-		Target,
-		History,
-		Save,
-		Download
-	} from 'lucide-svelte';
+  	import { onMount, tick } from 'svelte';
+  	import { writable } from 'svelte/store';
+  	import { createMachine, interpret } from 'xstate';
+  	import { Dialog, Tabs, Resizable } from 'bits-ui';
+  	import { Button } from '$lib/components/ui/button/index.js';
+  	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
+  	import { Badge } from '$lib/components/ui/badge/index.js';
+  	import { Input } from '$lib/components/ui/input/index.js';
+  	import { Textarea } from '$lib/components/ui/textarea/index.js';
+  	import GoldenRatioLoader from '$lib/components/ui/enhanced-bits/GoldenRatioLoader.svelte';
+  	import {
+  		MessageSquare,
+  		FileText,
+  		BookOpen,
+  		Brain,
+  		Zap,
+  		Send,
+  		Mic,
+  		MicOff,
+  		Settings,
+  		Expand,
+  		Minimize,
+  		RefreshCw,
+  		Sparkles,
+  		Target,
+  		History,
+  		Save,
+  		Download
+  	} from 'lucide-svelte';
 
-	// Type definitions for panel layout
-	interface PanelConfig {
-		width: number
-		collapsed: boolean
-	}
+  	// Type definitions for panel layout
+  	interface PanelConfig {
+  		width: number
+  		collapsed: boolean
+  	}
 
-	interface PanelLayout {
-		reports: PanelConfig
-		summaries: PanelConfig
-		citations: PanelConfig
-		chat: PanelConfig
-	}
+  	interface PanelLayout {
+  		reports: PanelConfig
+  		summaries: PanelConfig
+  		citations: PanelConfig
+  		chat: PanelConfig
+  	}
 
-	// 4-Panel Layout State
-	let panelLayout = $state<PanelLayout>({
-		reports: { width: 25, collapsed: false },
-		summaries: { width: 25, collapsed: false },
-		citations: { width: 25, collapsed: false },
-		chat: { width: 25, collapsed: false }
-	});
+  	// 4-Panel Layout State
+  	let panelLayout = $state<PanelLayout>({
+  		reports: { width: 25, collapsed: false },
+  		summaries: { width: 25, collapsed: false },
+  		citations: { width: 25, collapsed: false },
+  		chat: { width: 25, collapsed: false }
+  	});
 
-	// AI Assistant State
-	let chatMessages = $state<ChatMessage[]>([]);
-	let currentMessage = $state('');
-	let isProcessing = $state(false);
-	let voiceEnabled = $state(false);
-	let isListening = $state(false);
+  	// AI Assistant State
+  	let chatMessages = $state<ChatMessage[]>([]);
+  	let currentMessage = $state('');
+  	let isProcessing = $state(false);
+  	let voiceEnabled = $state(false);
+  	let isListening = $state(false);
 
-	// XState Machine for AI Assistant
-	const aiAssistantMachine = createMachine({
-		id: 'aiAssistant',
-		initial: 'idle',
-		states: {
-			idle: {
-				on: {
-					START_CHAT: 'processing',
-					VOICE_INPUT: 'listening',
-					CONTEXT_SWITCH: 'contextSwitching'
-				}
-			},
-			listening: {
-				on: {
-					VOICE_COMPLETE: 'processing',
-					VOICE_CANCEL: 'idle'
-				}
-			},
-			processing: {
-				on: {
-					RESPONSE_READY: 'responding',
-					ERROR: 'error'
-				}
-			},
-			responding: {
-				on: {
-					RESPONSE_COMPLETE: 'idle',
-					STREAM_UPDATE: 'responding'
-				}
-			},
-			contextSwitching: {
-				on: {
-					CONTEXT_LOADED: 'idle',
-					ERROR: 'error'
-				}
-			},
-			error: {
-				on: {
-					RETRY: 'idle',
-					RESET: 'idle'
-				}
-			}
-		}
-	});
+  	// XState Machine for AI Assistant
+  	const aiAssistantMachine = createMachine({
+  		id: 'aiAssistant',
+  		initial: 'idle',
+  		states: {
+  			idle: {
+  				on: {
+  					START_CHAT: 'processing',
+  					VOICE_INPUT: 'listening',
+  					CONTEXT_SWITCH: 'contextSwitching'
+  				}
+  			},
+  			listening: {
+  				on: {
+  					VOICE_COMPLETE: 'processing',
+  					VOICE_CANCEL: 'idle'
+  				}
+  			},
+  			processing: {
+  				on: {
+  					RESPONSE_READY: 'responding',
+  					ERROR: 'error'
+  				}
+  			},
+  			responding: {
+  				on: {
+  					RESPONSE_COMPLETE: 'idle',
+  					STREAM_UPDATE: 'responding'
+  				}
+  			},
+  			contextSwitching: {
+  				on: {
+  					CONTEXT_LOADED: 'idle',
+  					ERROR: 'error'
+  				}
+  			},
+  			error: {
+  				on: {
+  					RETRY: 'idle',
+  					RESET: 'idle'
+  				}
+  			}
+  		}
+  	});
 
-	let aiService = interpret(aiAssistantMachine);
+  	let aiService = interpret(aiAssistantMachine);
 
-	interface ChatMessage {
-		id: string
-		type: 'user' | 'assistant' | 'system';
-		content: string
-		timestamp: Date
-		context?: any;
-		suggestions?: string[];
-		metadata?: any;
-	}
+  	interface ChatMessage {
+  		id: string
+  		type: 'user' | 'assistant' | 'system';
+  		content: string
+  		timestamp: Date
+  		context?: any;
+  		suggestions?: string[];
+  		metadata?: any;
+  	}
 
-	interface Report {
-		id: string
-		title: string
-		type: 'analysis' | 'summary' | 'research';
-		date: Date
-		summary: string
-		status: 'draft' | 'completed' | 'archived';
-	}
+  	interface Report {
+  		id: string
+  		title: string
+  		type: 'analysis' | 'summary' | 'research';
+  		date: Date
+  		summary: string
+  		status: 'draft' | 'completed' | 'archived';
+  	}
 
-	interface Citation {
-		id: string
-		title: string
-		source: string
-		date: Date
-		relevance: number
-		tags: string[];
-	}
+  	interface Citation {
+  		id: string
+  		title: string
+  		source: string
+  		date: Date
+  		relevance: number
+  		tags: string[];
+  	}
 
-	// Data stores
-	let reports = $state<Report[]>([]);
-	let summaries = $state<any[]>([]);
-	let citations = $state<Citation[]>([]);
-	let chatHistory = $state<any[]>([]);
+  	// Data stores
+  	let reports = $state<Report[]>([]);
+  	let summaries = $state<any[]>([]);
+  	let citations = $state<Citation[]>([]);
+  	let chatHistory = $state<any[]>([]);
 
-	// AI Suggestions
-	let aiSuggestions = $state<string[]>([]);
-	let contextualSuggestions = $state<string[]>([]);
+  	// AI Suggestions
+  	let aiSuggestions = $state<string[]>([]);
+  	let contextualSuggestions = $state<string[]>([]);
 
-	// Melt UI Components
-	const {
-		elements: { root: tabsRoot, list: tabsList, content: tabsContent, trigger: tabsTrigger }
-	} = createTabs({
-		defaultValue: 'reports'
-	});
+  	// Melt UI Components
+  	const {
+  		elements: { root: tabsRoot, list: tabsList, content: tabsContent, trigger: tabsTrigger }
+  	} = createTabs({
+  		defaultValue: 'reports'
+  	});
 
-	const {
-		elements: { trigger: settingsDialogTrigger, overlay, content: dialogContent, close }
-	} = createDialog();
+  	const {
+  		elements: { trigger: settingsDialogTrigger, overlay, content: dialogContent, close }
+  	} = createDialog();
 
-	onMount(async () => {
-		aiService.start();
-		await loadInitialData();
-		initializeWebSpeech();
-		startRealTimeUpdates();
-	});
+  	onMount(async () => {
+  		aiService.start();
+  		await loadInitialData();
+  		initializeWebSpeech();
+  		startRealTimeUpdates();
+  	});
 
-	async function loadInitialData() {
-		try {
-			// Load reports
-			const reportsResponse = await fetch('/api/reports');
-			if (reportsResponse.ok) {
-				reports = await reportsResponse.json();
-			}
+  	async function loadInitialData() {
+  		try {
+  			// Load reports
+  			const reportsResponse = await fetch('/api/reports');
+  			if (reportsResponse.ok) {
+  				reports = await reportsResponse.json();
+  			}
 
-			// Load summaries
-			const summariesResponse = await fetch('/api/summaries');
-			if (summariesResponse.ok) {
-				summaries = await summariesResponse.json();
-			}
+  			// Load summaries
+  			const summariesResponse = await fetch('/api/summaries');
+  			if (summariesResponse.ok) {
+  				summaries = await summariesResponse.json();
+  			}
 
-			// Load citations
-			const citationsResponse = await fetch('/api/citations');
-			if (citationsResponse.ok) {
-				citations = await citationsResponse.json();
-			}
+  			// Load citations
+  			const citationsResponse = await fetch('/api/citations');
+  			if (citationsResponse.ok) {
+  				citations = await citationsResponse.json();
+  			}
 
-			// Load chat history
-			const historyResponse = await fetch('/api/chat/history');
-			if (historyResponse.ok) {
-				chatHistory = await historyResponse.json();
-			}
+  			// Load chat history
+  			const historyResponse = await fetch('/api/chat/history');
+  			if (historyResponse.ok) {
+  				chatHistory = await historyResponse.json();
+  			}
 
-		} catch (error) {
-			console.error('Failed to load initial data:', error);
-		}
-	}
+  		} catch (error) {
+  			console.error('Failed to load initial data:', error);
+  		}
+  	}
 
-	function initializeWebSpeech() {
-		if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-			voiceEnabled = true;
-		}
-	}
+  	function initializeWebSpeech() {
+  		if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  			voiceEnabled = true;
+  		}
+  	}
 
-	async function sendMessage() {
-		if (!currentMessage.trim()) return;
+  	async function sendMessage() {
+  		if (!currentMessage.trim()) return;
 
-		const userMessage: ChatMessage = {
-			id: `msg_${Date.now()}`,
-			type: 'user',
-			content: currentMessage,
-			timestamp: new Date()
-		};
+  		const userMessage: ChatMessage = {
+  			id: `msg_${Date.now()}`,
+  			type: 'user',
+  			content: currentMessage,
+  			timestamp: new Date()
+  		};
 
-		chatMessages = [...chatMessages, userMessage];
-		const messageToSend = currentMessage;
-		currentMessage = '';
+  		chatMessages = [...chatMessages, userMessage];
+  		const messageToSend = currentMessage;
+  		currentMessage = '';
 
-		isProcessing = true;
-		aiService.send('START_CHAT');
+  		isProcessing = true;
+  		aiService.send('START_CHAT');
 
-		try {
-			const response = await fetch('/api/ai/chat', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					message: messageToSend,
-					context: getRelevantContext(),
-					chatHistory: chatMessages.slice(-10)
-				})
-			});
+  		try {
+  			const response = await fetch('/api/ai/chat', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify({
+  					message: messageToSend,
+  					context: getRelevantContext(),
+  					chatHistory: chatMessages.slice(-10)
+  				})
+  			});
 
-			if (response.ok) {
-				const data = await response.json();
+  			if (response.ok) {
+  				const data = await response.json();
 
-				const assistantMessage: ChatMessage = {
-					id: `msg_${Date.now()}_ai`,
-					type: 'assistant',
-					content: data.response,
-					timestamp: new Date(),
-					suggestions: data.suggestions || [],
-					metadata: data.metadata
-				};
+  				const assistantMessage: ChatMessage = {
+  					id: `msg_${Date.now()}_ai`,
+  					type: 'assistant',
+  					content: data.response,
+  					timestamp: new Date(),
+  					suggestions: data.suggestions || [],
+  					metadata: data.metadata
+  				};
 
-				chatMessages = [...chatMessages, assistantMessage];
-				aiSuggestions = data.suggestions || [];
+  				chatMessages = [...chatMessages, assistantMessage];
+  				aiSuggestions = data.suggestions || [];
 
-				aiService.send('RESPONSE_COMPLETE');
+  				aiService.send('RESPONSE_COMPLETE');
 
-			} else {
-				throw new Error('Chat request failed');
-			}
+  			} else {
+  				throw new Error('Chat request failed');
+  			}
 
-		} catch (error) {
-			console.error('Chat error:', error);
+  		} catch (error) {
+  			console.error('Chat error:', error);
 
-			const errorMessage: ChatMessage = {
-				id: `msg_${Date.now()}_error`,
-				type: 'system',
-				content: 'Sorry, I encountered an error. Please try again.',
-				timestamp: new Date()
-			};
+  			const errorMessage: ChatMessage = {
+  				id: `msg_${Date.now()}_error`,
+  				type: 'system',
+  				content: 'Sorry, I encountered an error. Please try again.',
+  				timestamp: new Date()
+  			};
 
-			chatMessages = [...chatMessages, errorMessage];
-			aiService.send('ERROR');
-		} finally {
-			isProcessing = false;
-		}
-	}
+  			chatMessages = [...chatMessages, errorMessage];
+  			aiService.send('ERROR');
+  		} finally {
+  			isProcessing = false;
+  		}
+  	}
 
-	function getRelevantContext() {
-		return {
-			recentReports: reports.slice(0, 3),
-			recentSummaries: summaries.slice(0, 3),
-			topCitations: citations.sort((a, b) => b.relevance - a.relevance).slice(0, 5)
-		};
-	}
+  	function getRelevantContext() {
+  		return {
+  			recentReports: reports.slice(0, 3),
+  			recentSummaries: summaries.slice(0, 3),
+  			topCitations: citations.sort((a, b) => b.relevance - a.relevance).slice(0, 5)
+  		};
+  	}
 
-	async function startVoiceInput() {
-		if (!voiceEnabled) return;
+  	async function startVoiceInput() {
+  		if (!voiceEnabled) return;
 
-		try {
-			const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-			if (!SpeechRecognitionAPI) {
-				throw new Error('Speech recognition not supported');
-			}
-			const recognition = new SpeechRecognitionAPI();
+  		try {
+  			const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  			if (!SpeechRecognitionAPI) {
+  				throw new Error('Speech recognition not supported');
+  			}
+  			const recognition = new SpeechRecognitionAPI();
 
-			recognition.continuous = false;
-			recognition.interimResults = false;
-			recognition.lang = 'en-US';
+  			recognition.continuous = false;
+  			recognition.interimResults = false;
+  			recognition.lang = 'en-US';
 
-			isListening = true;
-			aiService.send('VOICE_INPUT');
+  			isListening = true;
+  			aiService.send('VOICE_INPUT');
 
-			recognition.onresult = (event) => {
-				const transcript = event.results[0][0].transcript;
-				currentMessage = transcript;
-				isListening = false;
-				aiService.send('VOICE_COMPLETE');
-				sendMessage();
-			};
+  			recognition.onresult = (event) => {
+  				const transcript = event.results[0][0].transcript;
+  				currentMessage = transcript;
+  				isListening = false;
+  				aiService.send('VOICE_COMPLETE');
+  				sendMessage();
+  			};
 
-			recognition.onerror = () => {
-				isListening = false;
-				aiService.send('VOICE_CANCEL');
-			};
+  			recognition.onerror = () => {
+  				isListening = false;
+  				aiService.send('VOICE_CANCEL');
+  			};
 
-			recognition.start();
+  			recognition.start();
 
-		} catch (error) {
-			console.error('Voice input error:', error);
-			isListening = false;
-		}
-	}
+  		} catch (error) {
+  			console.error('Voice input error:', error);
+  			isListening = false;
+  		}
+  	}
 
-	function startRealTimeUpdates() {
-		// Generate contextual suggestions based on current context
-		setInterval(() => {
-			generateContextualSuggestions();
-		}, 5000);
-	}
+  	function startRealTimeUpdates() {
+  		// Generate contextual suggestions based on current context
+  		setInterval(() => {
+  			generateContextualSuggestions();
+  		}, 5000);
+  	}
 
-	function generateContextualSuggestions() {
-		const suggestions = [
-			"Summarize the latest evidence",
-			"Find similar legal cases",
-			"Generate prosecution timeline",
-			"Analyze contract vulnerabilities",
-			"Compare case precedents"
-		];
+  	function generateContextualSuggestions() {
+  		const suggestions = [
+  			"Summarize the latest evidence",
+  			"Find similar legal cases",
+  			"Generate prosecution timeline",
+  			"Analyze contract vulnerabilities",
+  			"Compare case precedents"
+  		];
 
-		contextualSuggestions = suggestions.slice(0, 3);
-	}
+  		contextualSuggestions = suggestions.slice(0, 3);
+  	}
 
-	async function switchContext(contextId: string) {
-		aiService.send('CONTEXT_SWITCH');
+  	async function switchContext(contextId: string) {
+  		aiService.send('CONTEXT_SWITCH');
 
-		try {
-			const response = await fetch(`/api/context/${contextId}`);
-			if (response.ok) {
-				const contextData = await response.json();
+  		try {
+  			const response = await fetch(`/api/context/${contextId}`);
+  			if (response.ok) {
+  				const contextData = await response.json();
 
-				// Update relevant panels with new context
-				// This would load specific reports, summaries, etc.
+  				// Update relevant panels with new context
+  				// This would load specific reports, summaries, etc.
 
-				aiService.send('CONTEXT_LOADED');
-			}
-		} catch (error) {
-			console.error('Context switch error:', error);
-			aiService.send('ERROR');
-		}
-	}
+  				aiService.send('CONTEXT_LOADED');
+  			}
+  		} catch (error) {
+  			console.error('Context switch error:', error);
+  			aiService.send('ERROR');
+  		}
+  	}
 
-	function togglePanel(panelName: keyof PanelLayout) {
-		panelLayout[panelName].collapsed = !panelLayout[panelName].collapsed;
-	}
+  	function togglePanel(panelName: keyof PanelLayout) {
+  		panelLayout[panelName].collapsed = !panelLayout[panelName].collapsed;
+  	}
 
-	function adjustPanelWidth(panelName: keyof PanelLayout, delta: number) {
-		const current = panelLayout[panelName].width;
-		const newWidth = Math.max(15, Math.min(50, current + delta));
-		panelLayout[panelName].width = newWidth;
+  	function adjustPanelWidth(panelName: keyof PanelLayout, delta: number) {
+  		const current = panelLayout[panelName].width;
+  		const newWidth = Math.max(15, Math.min(50, current + delta));
+  		panelLayout[panelName].width = newWidth;
 
-		// Redistribute remaining width
-		const remaining = 100 - newWidth;
-		const otherPanels = Object.keys(panelLayout).filter(p => p !== panelName);
-		otherPanels.forEach(panel => {
-			panelLayout[panel].width = remaining / otherPanels.length;
-		});
-	}
+  		// Redistribute remaining width
+  		const remaining = 100 - newWidth;
+  		const otherPanels = Object.keys(panelLayout).filter(p => p !== panelName);
+  		otherPanels.forEach(panel => {
+  			panelLayout[panel].width = remaining / otherPanels.length;
+  		});
+  	}
 
-	async function exportChatHistory() {
-		const data = {
-			messages: chatMessages,
-			timestamp: new Date(),
-			context: getRelevantContext()
-		};
+  	async function exportChatHistory() {
+  		const data = {
+  			messages: chatMessages,
+  			timestamp: new Date(),
+  			context: getRelevantContext()
+  		};
 
-		const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = `chat-history-${Date.now()}.json`;
-		a.click();
-		URL.revokeObjectURL(url);
-	}
+  		const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  		const url = URL.createObjectURL(blob);
+  		const a = document.createElement('a');
+  		a.href = url;
+  		a.download = `chat-history-${Date.now()}.json`;
+  		a.click();
+  		URL.revokeObjectURL(url);
+  	}
 
-	function useSuggestion(suggestion: string) {
-		currentMessage = suggestion;
-		sendMessage();
-	}
+  	function useSuggestion(suggestion: string) {
+  		currentMessage = suggestion;
+  		sendMessage();
+  	}
 </script>
 
 <svelte:head>

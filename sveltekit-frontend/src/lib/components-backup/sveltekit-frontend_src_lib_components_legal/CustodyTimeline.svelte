@@ -3,7 +3,6 @@ Custody Timeline Component
 Displays the chronological chain of custody events with detailed audit trail
 -->
 <script lang="ts">
-</script>
   interface Props {
     events: Array<{;
     currentStage: string
@@ -25,7 +24,6 @@ Displays the chronological chain of custody events with detailed audit trail
     details: Record<string, any>;
     signature?: string;
   }>;
-  
   function getEventIcon(eventType: string) {
     switch (eventType) {
       case 'intake':

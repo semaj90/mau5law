@@ -1,21 +1,20 @@
 <script lang="ts">
-</script>
-	import { Command, Dialog } from "bits-ui";
-	import CalendarBlank from "phosphor-svelte/lib/CalendarBlank";
-	import CodeBlock from "phosphor-svelte/lib/CodeBlock";
-	import Palette from "phosphor-svelte/lib/Palette";
-	import RadioButton from "phosphor-svelte/lib/RadioButton";
-	import Sticker from "phosphor-svelte/lib/Sticker";
-	import Textbox from "phosphor-svelte/lib/Textbox";
+  	import { Command, Dialog } from "bits-ui";
+  	import CalendarBlank from "phosphor-svelte/lib/CalendarBlank";
+  	import CodeBlock from "phosphor-svelte/lib/CodeBlock";
+  	import Palette from "phosphor-svelte/lib/Palette";
+  	import RadioButton from "phosphor-svelte/lib/RadioButton";
+  	import Sticker from "phosphor-svelte/lib/Sticker";
+  	import Textbox from "phosphor-svelte/lib/Textbox";
 
-	let dialogOpen = $state(false);
+  	let dialogOpen = $state(false);
 
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
-			e.preventDefault();
-			dialogOpen = true;
-		}
-	}
+  	function handleKeydown(e: KeyboardEvent) {
+  		if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
+  			e.preventDefault();
+  			dialogOpen = true;
+  		}
+  	}
 </script>
 
 <svelte:document onkeydown={handleKeydown} />

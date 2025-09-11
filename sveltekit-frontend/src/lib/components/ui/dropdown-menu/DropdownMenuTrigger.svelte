@@ -1,12 +1,10 @@
 <script lang="ts">
-</script>
   import { DropdownMenu } from 'bits-ui';
 
   interface Props {
     children?: import('svelte').Snippet;
     class?: string;
   }
-  
   let { 
     children, 
     class: className = ''

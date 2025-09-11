@@ -1,8 +1,7 @@
 <script lang="ts">
-</script>
-	import { Dialog, Label, Separator } from "bits-ui";
-	import LockKeyOpen from "phosphor-svelte/lib/LockKeyOpen";
-	import X from "phosphor-svelte/lib/X";
+  	import { Dialog, Label, Separator } from "bits-ui";
+  	import LockKeyOpen from "phosphor-svelte/lib/LockKeyOpen";
+  	import X from "phosphor-svelte/lib/X";
 </script>
 
 <Dialog.Root>

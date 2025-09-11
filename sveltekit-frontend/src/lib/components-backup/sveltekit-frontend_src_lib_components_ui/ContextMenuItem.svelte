@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     onselect?: (event?: any) => void;
   }
@@ -10,9 +9,6 @@
 
 
 
-  
-  
-    
     const contextMenu = (getContext("contextMenu") as any) || {
     elements: { item: { subscribe: () => {}, set: () => {} } },
   };

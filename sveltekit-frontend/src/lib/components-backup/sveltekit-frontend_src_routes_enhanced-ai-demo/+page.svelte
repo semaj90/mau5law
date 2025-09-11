@@ -4,7 +4,6 @@
 <!-- ====================================================================== -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import Card from '$lib/components/ui/Card.svelte';

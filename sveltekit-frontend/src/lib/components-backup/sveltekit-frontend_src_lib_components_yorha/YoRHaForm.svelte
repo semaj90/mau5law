@@ -1,6 +1,5 @@
 <!-- YoRHa Form Component with Terminal Styling -->
 <script lang="ts">
-</script>
 
   interface FormField {
     id: string
@@ -65,16 +64,13 @@
 
     if (field.validation && value) {
       const { pattern, min, max, minLength, maxLength } = field.validation;
-      
       if (pattern && typeof value === 'string' && !new RegExp(pattern).test(value)) {
         return `${field.label} format is invalid`;
       }
-      
       if (typeof value === 'number') {
         if (min !== undefined && value < min) return `${field.label} must be at least ${min}`;
         if (max !== undefined && value > max) return `${field.label} must be at most ${max}`;
       }
-      
       if (typeof value === 'string') {
         if (minLength !== undefined && value.length < minLength) {
           return `${field.label} must be at least ${minLength} characters`;

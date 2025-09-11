@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     data?: unknown;
   }
@@ -7,24 +6,24 @@
     data
   }: Props = $props();
 
-import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
-import { semanticSearch } from '$lib/ai/mcp-helpers';
+  import { writable } from 'svelte/store';
+  import { browser } from '$app/environment';
+  import { semanticSearch } from '$lib/ai/mcp-helpers';
 
-// Simple debounce utility
-function debounce<T extends (...args: any[]) => void>(fn: T, ms: number) {
-let timeout = $state<ReturnType<typeof setTimeout>;
+  // Simple debounce utility
+  function debounce<T extends (...args: any[]) => void>(fn: T, ms: number) {
+  let timeout = $state<ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>) => { {
     clearTimeout(timeout);
     timeout = setTimeout(() => fn(...args), ms);
   };
-}
+  }
 
-const query = writable(data?.initialQuery || '');
-const results = writable(data?.initialResults || []);
-const loading = writable(false);
+  const query = writable(data?.initialQuery || '');
+  const results = writable(data?.initialResults || []);
+  const loading = writable(false);
 
-if (browser) {
+  if (browser) {
   const debouncedSearch = debounce(async (q: string) => {
     if (!q) { results.set([]); return; }
     loading.set(true);
@@ -36,7 +35,7 @@ if (browser) {
   query.subscribe((q) => {
     debouncedSearch(q);
   });
-}
+  }
 </script>
 
 <h1>Semantic Search Demo (SSR + Hydration + Debounce)</h1>

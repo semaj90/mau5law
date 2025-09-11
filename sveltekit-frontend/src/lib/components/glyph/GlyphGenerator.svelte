@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Button } from '$lib/components/ui/enhanced-bits';
   import {
     Card,
@@ -7,7 +6,6 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  
   // GRPMO Extended Thinking Integration
   import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations';
   import type { SimilarityResult } from '$lib/server/db/vector-operations';
@@ -27,7 +25,6 @@
   let conditioningTensors = $state<string[]>([]);
   let result = $state<any>(null);
   let error = $state<string | null>(null);
-  
   // GRPMO Extended Thinking state
   let extendedThinkingEnabled = $state(true);
   let thinkingStages = $state<ExtendedThinkingStage[]>([]);
@@ -69,38 +66,31 @@
     result = null;
     thinkingStages = [];
     currentStage = null;
-    
     try {
       let finalResult: any;
-      
       if (extendedThinkingEnabled) {
         // GRPMO Extended Thinking Mode
         const mockEmbedding = generateMockEmbedding(prompt);
         glyphEmbedding = mockEmbedding;
-        
         const extendedThinkingResult = await grpmoOrchestrator.processExtendedThinking(
           prompt.trim(),
           mockEmbedding,
           'current-user',
           evidenceId ? `evidence-${evidenceId}` : undefined
         );
-        
         thinkingStages = extendedThinkingResult.thinkingStages;
         cachePerformance = extendedThinkingResult.cachePerformance;
-        
         // Simulate progressive thinking stages
         for (const stage of extendedThinkingResult.thinkingStages) {
           currentStage = stage;
           await new Promise(resolve => setTimeout(resolve, Math.min(stage.duration, 500)));
         }
-        
         // Enhanced generation with GRPMO context
         finalResult = await generateWithGRPMOContext(extendedThinkingResult);
       } else {
         // Standard generation
         finalResult = await generateStandard();
       }
-      
       if (finalResult.success) {
         result = {
           ...finalResult.data,
@@ -123,20 +113,17 @@
       currentStage = null;
     }
   }
-  
   function generateMockEmbedding(text: string): number[] {
     // Generate deterministic embedding from text
     const hash = text.split('').reduce((a, b) => {
       a = ((a << 5) - a) + b.charCodeAt(0);
       return a & a;
     }, 0);
-    
     return Array.from({ length: 768 }, (_, i) => {
       const seed = hash + i;
       return (Math.sin(seed) * 10000 - Math.floor(Math.sin(seed) * 10000)) * 2 - 1;
     });
   }
-  
   async function generateWithGRPMOContext(grpmoResult: any): Promise<any> {
     // Enhanced generation request with GRPMO context
     const response = await fetch('/api/glyph/generate', {
@@ -162,10 +149,8 @@
         }
       })
     });
-    
     return response.json();
   }
-  
   async function generateStandard(): Promise<any> {
     // Standard generation without GRPMO
     const response = await fetch('/api/glyph/generate', {
@@ -185,7 +170,6 @@
         } : undefined
       })
     });
-    
     return response.json();
   }
 

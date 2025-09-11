@@ -1,61 +1,60 @@
 <script lang="ts">
-</script>
-	import type { Component } from "svelte";
-	import { Command } from "bits-ui";
-	import {
-		AssignToIcon,
-		AssignToMeIcon,
-		ChangeLabelsIcon,
-		ChangePriorityIcon,
-		ChangeStatusIcon,
-		RemoveLabelIcon,
-		SetDueDateIcon,
-	} from "./icons/index.js";
-	import "./linear.css";
+  	import type { Component } from "svelte";
+  	import { Command } from "bits-ui";
+  	import {
+  		AssignToIcon,
+  		AssignToMeIcon,
+  		ChangeLabelsIcon,
+  		ChangePriorityIcon,
+  		ChangeStatusIcon,
+  		RemoveLabelIcon,
+  		SetDueDateIcon,
+  	} from "./icons/index.js";
+  	import "./linear.css";
 
-	type Item = {
-		icon: Component;
-		label: string;
-		shortcut: string[];
-	};
+  	type Item = {
+  		icon: Component;
+  		label: string;
+  		shortcut: string[];
+  	};
 
-	const items: Item[] = [
-		{
-			icon: AssignToIcon,
-			label: "Assign to...",
-			shortcut: ["A"],
-		},
-		{
-			icon: AssignToMeIcon,
-			label: "Assign to me",
-			shortcut: ["I"],
-		},
-		{
-			icon: ChangeStatusIcon,
-			label: "Change status...",
-			shortcut: ["S"],
-		},
-		{
-			icon: ChangePriorityIcon,
-			label: "Change priority...",
-			shortcut: ["P"],
-		},
-		{
-			icon: ChangeLabelsIcon,
-			label: "Change labels...",
-			shortcut: ["L"],
-		},
-		{
-			icon: RemoveLabelIcon,
-			label: "Remove label...",
-			shortcut: ["⇧", "L"],
-		},
-		{
-			icon: SetDueDateIcon,
-			label: "Set due date...",
-			shortcut: ["⇧", "D"],
-		},
-	];
+  	const items: Item[] = [
+  		{
+  			icon: AssignToIcon,
+  			label: "Assign to...",
+  			shortcut: ["A"],
+  		},
+  		{
+  			icon: AssignToMeIcon,
+  			label: "Assign to me",
+  			shortcut: ["I"],
+  		},
+  		{
+  			icon: ChangeStatusIcon,
+  			label: "Change status...",
+  			shortcut: ["S"],
+  		},
+  		{
+  			icon: ChangePriorityIcon,
+  			label: "Change priority...",
+  			shortcut: ["P"],
+  		},
+  		{
+  			icon: ChangeLabelsIcon,
+  			label: "Change labels...",
+  			shortcut: ["L"],
+  		},
+  		{
+  			icon: RemoveLabelIcon,
+  			label: "Remove label...",
+  			shortcut: ["⇧", "L"],
+  		},
+  		{
+  			icon: SetDueDateIcon,
+  			label: "Set due date...",
+  			shortcut: ["⇧", "D"],
+  		},
+  	];
 </script>
 
 <div class="linear">

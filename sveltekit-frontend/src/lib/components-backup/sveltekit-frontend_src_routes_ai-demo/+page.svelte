@@ -1,6 +1,5 @@
 <!-- AI Demo Page - SvelteKit 2.0 + Svelte 5 + Ollama Integration -->
 <script lang="ts">
-</script>
   import OllamaChatInterface from "$lib/components/OllamaChatInterface.svelte";
   import { Alert, AlertDescription } from "$lib/components/ui/alert";
   import { Badge } from "$lib/components/ui/badge";

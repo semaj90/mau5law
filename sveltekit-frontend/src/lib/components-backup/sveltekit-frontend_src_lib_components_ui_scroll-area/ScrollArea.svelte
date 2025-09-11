@@ -1,14 +1,13 @@
 <script lang="ts">
-</script>
-	import { ScrollArea as ScrollAreaPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils.js";
-	import type { ScrollAreaRootProps } from "bits-ui";
+  	import { ScrollArea as ScrollAreaPrimitive } from "bits-ui";
+  	import { cn } from "$lib/utils.js";
+  	import type { ScrollAreaRootProps } from "bits-ui";
 
-	type Props = ScrollAreaRootProps & {
-		class?: string;
-	};
+  	type Props = ScrollAreaRootProps & {
+  		class?: string;
+  	};
 
-	let { class: className, ...rest } = $props();
+  	let { class: className, ...rest } = $props();
 </script>
 
 <ScrollAreaPrimitive.Root

@@ -1,6 +1,5 @@
 <!-- AI Integration Demo - Complete System Showcase -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { prefetchMachine } from '$lib/machines/prefetchMachine';

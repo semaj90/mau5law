@@ -3,7 +3,6 @@
   Displays security events, system health, and security metrics
 -->
 <script lang="ts">
-</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -32,13 +31,13 @@
   } from "lucide-svelte";
   import { onDestroy, onMount } from "svelte";
   import { writable } from "svelte/store";
-let securityEvents = $state<SecurityEvent[] >([]);
-let filteredEvents = $state<SecurityEvent[] >([]);
-let selectedSeverity = $state("");
-let selectedType = $state("");
+  let securityEvents = $state<SecurityEvent[] >([]);
+  let filteredEvents = $state<SecurityEvent[] >([]);
+  let selectedSeverity = $state("");
+  let selectedType = $state("");
   let showDetails = new Set<number>();
-let refreshInterval = $state<number | null >(null);
-let loading = $state(false);
+  let refreshInterval = $state<number | null >(null);
+  let loading = $state(false);
 
   // Security metrics
   // runtime helpers like $derived are provided by the runes compiler; don't import them.
@@ -64,7 +63,7 @@ let loading = $state(false);
   onDestroy(() => {
     if (refreshInterval) {
       clearInterval(refreshInterval);
-}
+  }
   });
 
   function loadSecurityEvents() {
@@ -81,34 +80,34 @@ let loading = $state(false);
       });
     } finally {
       loading = false;
-}}
+  }}
   function filterEvents() {
-let filtered = $state([...securityEvents]);
+  let filtered = $state([...securityEvents]);
 
     if (selectedSeverity) {
       filtered = filtered.filter((e) => e.severity === selectedSeverity);
-}
+  }
     if (selectedType) {
       filtered = filtered.filter((e) => e.type === selectedType);
-}
+  }
     // Sort by timestamp (most recent first)
     filtered.sort((a, b) => b.timestamp - a.timestamp);
 
     filteredEvents = filtered;
-}
+  }
   function startAutoRefresh() {
     refreshInterval = window.setInterval(() => {
       loadSecurityEvents();
     }, 30000); // Refresh every 30 seconds
-}
+  }
   function toggleEventDetails(index: number) {
     if (showDetails.has(index)) {
       showDetails.delete(index);
     } else {
       showDetails.add(index);
-}
+  }
     showDetails = showDetails;
-}
+  }
   function clearAllEvents() {
     if (
       confirm(
@@ -123,7 +122,7 @@ let filtered = $state([...securityEvents]);
         title: "Security Events Cleared",
         message: "All security events have been cleared.",
       });
-}}
+  }}
   function exportEvents() {
     const dataStr = JSON.stringify(securityEvents, null, 2);
     const dataBlob = new Blob([dataStr], { type: "application/json" });
@@ -133,7 +132,7 @@ let filtered = $state([...securityEvents]);
     link.download = `security_events_${new Date().toISOString().split("T")[0]}.json`;
     link.click();
     URL.revokeObjectURL(url);
-}
+  }
   function getSeverityIcon(severity: string) {
     switch (severity) {
       case "critical":
@@ -146,7 +145,7 @@ let filtered = $state([...securityEvents]);
         return CheckCircle;
       default:
         return Info;
-}}
+  }}
   function getSeverityColor(severity: string) {
     switch (severity) {
       case "critical":
@@ -159,7 +158,7 @@ let filtered = $state([...securityEvents]);
         return "text-success bg-success/10 border-success/20";
       default:
         return "text-base-content bg-base-200 border-base-300";
-}}
+  }}
   function getTypeIcon(type: string) {
     switch (type) {
       case "login":
@@ -176,10 +175,10 @@ let filtered = $state([...securityEvents]);
         return Download;
       default:
         return Activity;
-}}
+  }}
   function formatTimestamp(timestamp: number) {
     return new Date(timestamp).toLocaleString();
-}
+  }
   function getSystemHealthIcon(status: string) {
     switch (status) {
       case "healthy":
@@ -190,7 +189,7 @@ let filtered = $state([...securityEvents]);
         return XCircle;
       default:
         return Info;
-}}
+  }}
   function getSystemHealthColor(status: string) {
     switch (status) {
       case "healthy":
@@ -201,7 +200,7 @@ let filtered = $state([...securityEvents]);
         return "text-error";
       default:
         return "text-base-content";
-}}
+  }}
   // Reactive effect (runes mode): run filterEvents whenever severity/type selections change
   $effect(() => {
     if (selectedSeverity || selectedType) {

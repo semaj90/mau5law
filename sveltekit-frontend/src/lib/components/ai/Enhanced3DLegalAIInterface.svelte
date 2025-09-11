@@ -5,14 +5,12 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { createIdleDetectionService, type IdleDetectionActor } from '$lib/machines/idle-detection-rabbitmq-machine';
   import { EnhancedVLLMCudaIntegration, type StreamingRequest, type StreamingResponse } from '$lib/services/enhanced-vllm-cuda-integration';
   import { SIMDGPUParserIntegration, type ParsedDocument } from '$lib/services/simd-gpu-parser-integration';
   import { Neo4jRecommendationEngine, type Recommendation } from '$lib/services/neo4j-recommendation-engine';
-  
   // Props for component configuration
   let { 
     enableGPUAcceleration = true,
@@ -34,18 +32,15 @@
   let containerRef: HTMLDivElement;
   let canvasRef: HTMLCanvasElement;
   let progressCanvasRef: HTMLCanvasElement;
-  
   // 3D Rendering context
   let gl: WebGLRenderingContext | null = null;
   let vertexBuffer: WebGLBuffer | null = null;
   let shaderProgram: WebGLProgram | null = null;
-  
   // Service integrations
   let vllmIntegration: EnhancedVLLMCudaIntegration | null = null;
   let simdParser: SIMDGPUParserIntegration | null = null;
   let neo4jEngine: Neo4jRecommendationEngine | null = null;
   let idleDetectionService: IdleDetectionActor | null = null;
-  
   // Component state
   let isInitialized = false;
   let isProcessing = false;
@@ -58,13 +53,11 @@
     { name: 'XState Machine Start', progress: 0, status: 'pending' },
     { name: 'System Ready', progress: 0, status: 'pending' }
   ];
-  
   // User interaction state
   let userInput = '';
   let chatMessages: Array<{ id: string; type: 'user' | 'ai' | 'system'; content: string; timestamp: number }> = [];
   let recommendations: Recommendation[] = [];
   let parsedDocument: ParsedDocument | null = null;
-  
   // Performance metrics
   let performanceMetrics = {
     fps: 0,
@@ -74,20 +67,16 @@
     cacheHitRate: 0,
     aiResponseTime: 0
   };
-  
   // Bit-encoding streaming state
   let streamingChunks: Array<{ id: string; data: ArrayBuffer; progress: number; status: string }> = [];
   let totalBytesTransferred = 0;
   let compressionRatio = 0;
-  
   // Animation frame
   let animationFrame: number;
   let lastFrameTime = 0;
   let deltaTime = 0;
-  
   onMount(async () => {
     if (!browser) return;
-    
     try {
       await initializeSystem();
     } catch (error) {
@@ -95,23 +84,17 @@
       addSystemMessage('System initialization failed. Running in degraded mode.');
     }
   });
-  
   onDestroy(() => {
     cleanup();
   });
-  
   async function initializeSystem() {
     console.log('🚀 Initializing Enhanced 3D Legal AI Interface...');
-    
     // Initialize 3D rendering context
     await initializeWebGL();
-    
     // Initialize service integrations with progress tracking
     await initializeServicesWithProgress();
-    
     // Start animation loop
     startAnimationLoop();
-    
     // Initialize idle detection if enabled
     if (enableIdleProcessing) {
       idleDetectionService = createIdleDetectionService({
@@ -119,131 +102,101 @@
         backgroundJobsEnabled: true
       });
     }
-    
     isInitialized = true;
     addSystemMessage('System initialized successfully. All services operational.');
     console.log('✅ Enhanced 3D Legal AI Interface initialized');
   }
-  
   async function initializeWebGL() {
     if (!canvasRef) return;
-    
     gl = canvasRef.getContext('webgl2') || canvasRef.getContext('webgl');
     if (!gl) {
       throw new Error('WebGL not supported');
     }
-    
     // Create shader program for 3D vertex buffer visualization
     const vertexShaderSource = `
       attribute vec3 position;
       attribute vec3 color;
       attribute float progress;
-      
       uniform mat4 mvpMatrix;
       uniform float time;
       uniform float globalProgress;
-      
       varying vec3 vColor;
       varying float vProgress;
-      
       void main() {
         // Animate vertices based on progress and time
         vec3 animatedPosition = position;
         animatedPosition.y += sin(time + position.x * 0.1) * progress * 0.1;
-        
         // Scale based on global progress
         animatedPosition *= mix(0.1, 1.0, globalProgress);
-        
         gl_Position = mvpMatrix * vec4(animatedPosition, 1.0);
         gl_PointSize = mix(2.0, 8.0, progress);
-        
         vColor = mix(vec3(0.3, 0.3, 0.3), color, progress);
         vProgress = progress;
       }
     `;
-    
     const fragmentShaderSource = `
       precision mediump float;
-      
       varying vec3 vColor;
       varying float vProgress;
-      
       uniform float time;
-      
       void main() {
         // Pulsing effect based on progress
         float pulse = sin(time * 3.0) * 0.1 + 0.9;
         vec3 finalColor = vColor * pulse;
-        
         // Add glow effect for high progress
         if (vProgress > 0.8) {
           finalColor += vec3(0.2, 0.4, 0.8) * sin(time * 5.0) * 0.3;
         }
-        
         gl_FragColor = vec4(finalColor, mix(0.3, 1.0, vProgress));
       }
     `;
-    
     // Compile shaders
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-    
     // Create program
     shaderProgram = createProgram(gl, vertexShader, fragmentShader);
-    
     // Create vertex buffer for legal AI visualization
     createVertexBuffer();
-    
     // Enable depth testing and blending
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   }
-  
   function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader {
     const shader = gl.createShader(type)!;
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-    
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
       const error = gl.getShaderInfoLog(shader);
       gl.deleteShader(shader);
       throw new Error(`Shader compilation error: ${error}`);
     }
-    
     return shader;
   }
-  
   function createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader): WebGLProgram {
     const program = gl.createProgram()!;
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
-    
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       const error = gl.getProgramInfoLog(program);
       gl.deleteProgram(program);
       throw new Error(`Program linking error: ${error}`);
     }
-    
     return program;
   }
-  
   function createVertexBuffer() {
     if (!gl) return;
-    
     // Create a 3D grid representing legal AI processing nodes
     const vertices: number[] = [];
     const colors: number[] = [];
     const progressValues: number[] = [];
-    
     const gridSize = 20;
     for (let x = 0; x < gridSize; x++) {
       for (let y = 0; y < gridSize; y++) {
         for (let z = 0; z < 5; z++) {
           // Position
           vertices.push((x - gridSize/2) * 0.1, (y - gridSize/2) * 0.1, z * 0.05);
-          
           // Color based on position (YoRHa-style)
           const hue = (x + y + z) / (gridSize * 2 + 5);
           colors.push(
@@ -251,21 +204,17 @@
             0.4 + hue * 0.4,  // G
             0.8 + hue * 0.2   // B
           );
-          
           // Initial progress (will be animated)
           progressValues.push(Math.random() * 0.1);
         }
       }
     }
-    
     // Create vertex buffer
     vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    
     // Interleave vertex data (position + color + progress)
     const interleavedData: number[] = [];
     const vertexCount = vertices.length / 3;
-    
     for (let i = 0; i < vertexCount; i++) {
       interleavedData.push(
         vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2], // position
@@ -273,18 +222,14 @@
         progressValues[i]                                           // progress
       );
     }
-    
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(interleavedData), gl.DYNAMIC_DRAW);
   }
-  
   async function initializeServicesWithProgress() {
     const stages = progressStages;
-    
     try {
       // Stage 1: GPU Initialization
       stages[0].status = 'active';
       stages[0].progress = 0.1;
-      
       // Stage 2: SIMD Parser Setup
       stages[1].status = 'active';
       if (enableGPUAcceleration) {
@@ -302,7 +247,6 @@
       }
       stages[1].progress = 1.0;
       stages[1].status = 'completed';
-      
       // Stage 3: vLLM CUDA Integration
       stages[2].status = 'active';
       vllmIntegration = new EnhancedVLLMCudaIntegration({
@@ -317,7 +261,6 @@
       await vllmIntegration.initializeGPU();
       stages[2].progress = 1.0;
       stages[2].status = 'completed';
-      
       // Stage 4: Neo4j Connection
       stages[3].status = 'active';
       if (enableAIRecommendations) {
@@ -326,22 +269,18 @@
       }
       stages[3].progress = 1.0;
       stages[3].status = 'completed';
-      
       // Stage 5: XState Machine Start
       stages[4].status = 'active';
       // XState machine initialized in onMount
       stages[4].progress = 1.0;
       stages[4].status = 'completed';
-      
       // Stage 6: System Ready
       stages[5].status = 'active';
       stages[5].progress = 1.0;
       stages[5].status = 'completed';
-      
       // Mark stage 1 as completed after all others
       stages[0].progress = 1.0;
       stages[0].status = 'completed';
-      
     } catch (error) {
       console.error('Service initialization failed:', error);
       // Mark failed stages
@@ -354,45 +293,33 @@
       throw error;
     }
   }
-  
   function startAnimationLoop() {
     const animate = (currentTime: number) => {
       deltaTime = currentTime - lastFrameTime;
       lastFrameTime = currentTime;
-      
       // Update performance metrics
       performanceMetrics.fps = 1000 / deltaTime;
-      
       // Render 3D scene
       render3DScene(currentTime);
-      
       // Update progress animations
       updateProgressAnimations(currentTime);
-      
       // Update streaming visualizations
       updateStreamingVisualizations();
-      
       animationFrame = requestAnimationFrame(animate);
     };
-    
     animationFrame = requestAnimationFrame(animate);
   }
-  
   function render3DScene(time: number) {
     if (!gl || !shaderProgram || !vertexBuffer) return;
-    
     // Clear the canvas
     gl.clearColor(0.05, 0.05, 0.1, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    
     // Use shader program
     gl.useProgram(shaderProgram);
-    
     // Set uniforms
     const mvpMatrixLocation = gl.getUniformLocation(shaderProgram, 'mvpMatrix');
     const timeLocation = gl.getUniformLocation(shaderProgram, 'time');
     const globalProgressLocation = gl.getUniformLocation(shaderProgram, 'globalProgress');
-    
     // Create MVP matrix (simplified orthographic projection)
     const mvpMatrix = new Float32Array([
       1, 0, 0, 0,
@@ -400,40 +327,30 @@
       0, 0, 1, 0,
       0, 0, 0, 1
     ]);
-    
     gl.uniformMatrix4fv(mvpMatrixLocation, false, mvpMatrix);
     gl.uniform1f(timeLocation, time * 0.001);
     gl.uniform1f(globalProgressLocation, currentProgress);
-    
     // Bind vertex buffer and set attributes
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    
     const positionLocation = gl.getAttribLocation(shaderProgram, 'position');
     const colorLocation = gl.getAttribLocation(shaderProgram, 'color');
     const progressLocation = gl.getAttribLocation(shaderProgram, 'progress');
-    
     const stride = 7 * 4; // 7 floats per vertex * 4 bytes per float
-    
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, stride, 0);
-    
     gl.enableVertexAttribArray(colorLocation);
     gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, stride, 3 * 4);
-    
     gl.enableVertexAttribArray(progressLocation);
     gl.vertexAttribPointer(progressLocation, 1, gl.FLOAT, false, stride, 6 * 4);
-    
     // Draw points
     const vertexCount = 20 * 20 * 5; // Grid size from createVertexBuffer
     gl.drawArrays(gl.POINTS, 0, vertexCount);
   }
-  
   function updateProgressAnimations(time: number) {
     // Calculate overall progress
     const completedStages = progressStages.filter(s => s.status === 'completed').length;
     const totalStages = progressStages.length;
     currentProgress = completedStages / totalStages;
-    
     // Animate progress bars with easing
     progressStages.forEach((stage, index) => {
       if (stage.status === 'active') {
@@ -443,21 +360,17 @@
         stage.progress = animatedProgress * progressAnimationSpeed;
       }
     });
-    
     // Update vertex buffer with new progress values if processing
     if (isProcessing) {
       updateVertexProgress(time);
     }
   }
-  
   function updateVertexProgress(time: number) {
     if (!gl || !vertexBuffer) return;
-    
     // Create wave-like progress pattern
     const timeOffset = time * 0.001;
     const gridSize = 20;
     const progressData: number[] = [];
-    
     for (let x = 0; x < gridSize; x++) {
       for (let y = 0; y < gridSize; y++) {
         for (let z = 0; z < 5; z++) {
@@ -468,17 +381,14 @@
         }
       }
     }
-    
     // Update the progress values in the vertex buffer
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
     const vertexCount = progressData.length;
-    
     for (let i = 0; i < vertexCount; i++) {
       const offset = i * 7 * 4 + 6 * 4; // Skip to progress value
       gl.bufferSubData(gl.ARRAY_BUFFER, offset, new Float32Array([progressData[i]]));
     }
   }
-  
   function updateStreamingVisualizations() {
     // Update streaming chunks progress
     streamingChunks.forEach(chunk => {
@@ -489,29 +399,22 @@
         }
       }
     });
-    
     // Clean up completed chunks
     streamingChunks = streamingChunks.filter(chunk => chunk.status !== 'completed' || chunk.progress < 1.0);
   }
-  
   async function handleUserInput() {
     if (!userInput.trim() || !isInitialized) return;
-    
     const message = userInput.trim();
     userInput = '';
-    
     // Add user message to chat
     addUserMessage(message);
-    
     try {
       isProcessing = true;
-      
       // Parse input with SIMD GPU parser
       if (simdParser) {
         parsedDocument = await simdParser.parseDocument(message);
         addSystemMessage(`Parsed ${parsedDocument.entities.length} entities with ${(parsedDocument.confidence * 100).toFixed(1)}% confidence`);
       }
-      
       // Get AI recommendations from Neo4j
       if (neo4jEngine) {
         recommendations = await neo4jEngine.getRecommendations({
@@ -521,12 +424,10 @@
           useAI: true,
           limit: 3
         });
-        
         if (recommendations.length > 0) {
           addSystemMessage(`Generated ${recommendations.length} AI recommendations`);
         }
       }
-      
       // Process with vLLM CUDA integration
       if (vllmIntegration) {
         const streamRequest: StreamingRequest = {
@@ -539,7 +440,6 @@
           useCache: true,
           priority: 'high'
         };
-        
         // Add streaming chunk visualization
         streamingChunks.push({
           id: streamRequest.id,
@@ -547,15 +447,12 @@
           progress: 0,
           status: 'streaming'
         });
-        
         // Process streaming response
         const responseGenerator = vllmIntegration.streamWithEnhancedQUIC([streamRequest]);
         let aiResponse = '';
-        
         for await (const response of responseGenerator) {
           if (response.choices?.[0]?.delta?.content) {
             aiResponse += response.choices[0].delta.content;
-            
             // Update streaming progress
             const chunk = streamingChunks.find(c => c.id === response.id);
             if (chunk) {
@@ -563,12 +460,10 @@
             }
           }
         }
-        
         if (aiResponse) {
           addAIMessage(aiResponse);
         }
       }
-      
     } catch (error) {
       console.error('Processing failed:', error);
       addSystemMessage(`Processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -576,7 +471,6 @@
       isProcessing = false;
     }
   }
-  
   function addUserMessage(content: string) {
     chatMessages = [...chatMessages, {
       id: crypto.randomUUID(),
@@ -585,7 +479,6 @@
       timestamp: Date.now()
     }];
   }
-  
   function addAIMessage(content: string) {
     chatMessages = [...chatMessages, {
       id: crypto.randomUUID(),
@@ -594,7 +487,6 @@
       timestamp: Date.now()
     }];
   }
-  
   function addSystemMessage(content: string) {
     chatMessages = [...chatMessages, {
       id: crypto.randomUUID(),
@@ -603,24 +495,19 @@
       timestamp: Date.now()
     }];
   }
-  
   function cleanup() {
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
     }
-    
     if (vllmIntegration) {
       vllmIntegration.cleanup();
     }
-    
     if (simdParser) {
       simdParser.cleanup();
     }
-    
     if (neo4jEngine) {
       neo4jEngine.cleanup();
     }
-    
     if (idleDetectionService) {
       idleDetectionService.stop();
     }

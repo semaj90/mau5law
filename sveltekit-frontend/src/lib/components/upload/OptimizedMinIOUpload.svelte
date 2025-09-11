@@ -1,6 +1,5 @@
 <!-- Optimized MinIO Upload with Parallel Processing, Toast Notifications & Redis Sync -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
   import { Progress } from 'bits-ui/components/progress';

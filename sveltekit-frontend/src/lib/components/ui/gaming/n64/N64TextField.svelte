@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { createEventDispatcher } from 'svelte';
   export let value: string = '';
   export let placeholder: string = '';
@@ -11,15 +10,15 @@
   const dispatch = createEventDispatcher();
 
   function onInput(e: Event) {
-	const target = e.target as HTMLInputElement;
-	value = target.value;
-	dispatch('input', { value });
+  	const target = e.target as HTMLInputElement;
+  	value = target.value;
+  	dispatch('input', { value });
   }
 
   function onChange(e: Event) {
-	const target = e.target as HTMLInputElement;
-	value = target.value;
-	dispatch('change', { value });
+  	const target = e.target as HTMLInputElement;
+  	value = target.value;
+  	dispatch('change', { value });
   }
 </script>
 

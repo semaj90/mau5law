@@ -1,7 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: Identifier 'aiEvent' has already been declared
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-</script>
   interface Props {
     open?: boolean;
     evidence?: unknown;
@@ -26,16 +25,16 @@ https://svelte.dev/e/js_parse_error -->
     XCircle,
   } from "lucide-svelte";
     import type { Evidence } from '$lib/stores/evidence-store';
-let validationChoice = $state<"approve" | "reject" | null >(null);
-let feedback = $state<string >("");
-let corrections = $state({
+  let validationChoice = $state<"approve" | "reject" | null >(null);
+  let feedback = $state<string >("");
+  let corrections = $state({
     summary: "",
     tags: [] as string[],
     evidenceType: "",
     analysis: "",
   });
-let isSubmitting = $state(false);
-let showCorrections = $state(false);
+  let isSubmitting = $state(false);
+  let showCorrections = $state(false);
 
   // Initialize corrections with current AI analysis
   $effect(() => { 
@@ -109,7 +108,6 @@ let showCorrections = $state(false);
       isSubmitting = false;
     }
   }
-  
   function closeModal() {
     validationChoice = null;
     feedback = "";

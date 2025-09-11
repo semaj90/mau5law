@@ -1,36 +1,35 @@
 <script lang="ts">
-</script>
 
-	import type { HTMLInputAttributes } from 'svelte/elements';
+  	import type { HTMLInputAttributes } from 'svelte/elements';
   interface Props extends Omit<HTMLInputAttributes, 'class' | 'value'> {
-		label?: string;
-		error?: string;
-		hint?: string;
-		icon?: string;
-		loading?: boolean;
-		class?: string;
-		value?: string;
-	}
+  		label?: string;
+  		error?: string;
+  		hint?: string;
+  		icon?: string;
+  		loading?: boolean;
+  		class?: string;
+  		value?: string;
+  	}
 
-	let {
-		label,
-		error,
-		hint,
-		icon,
-		loading = false,
-		class: className = '',
-		id = crypto.randomUUID(),
-		value = $bindable(''),
-		...props
-	}: Props = $props();
+  	let {
+  		label,
+  		error,
+  		hint,
+  		icon,
+  		loading = false,
+  		class: className = '',
+  		id = crypto.randomUUID(),
+  		value = $bindable(''),
+  		...props
+  	}: Props = $props();
 
-	let inputClasses = $derived([
-		'yorha-input bits-input',
-		error && 'border-destructive focus:border-destructive',
-		icon && 'pl-10',
-		loading && 'pr-10',
-		class
-	].filter(Boolean).join(' '));
+  	let inputClasses = $derived([
+  		'yorha-input bits-input',
+  		error && 'border-destructive focus:border-destructive',
+  		icon && 'pl-10',
+  		loading && 'pr-10',
+  		class
+  	].filter(Boolean).join(' '));
 </script>
 
 <div class="space-y-2">

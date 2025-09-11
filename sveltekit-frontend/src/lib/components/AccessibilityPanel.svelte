@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import {
     Button
@@ -26,20 +25,20 @@
     suggestion: string;
     wcagGuideline?: string;
   }
-let auditResults = $state<AccessibilityIssue[] >([]);
-let isAuditing = $state(false);
-let auditProgress = $state(0);
-let totalIssues = $state(0);
-let errorCount = $state(0);
-let warningCount = $state(0);
-let infoCount = $state(0);
+  let auditResults = $state<AccessibilityIssue[] >([]);
+  let isAuditing = $state(false);
+  let auditProgress = $state(0);
+  let totalIssues = $state(0);
+  let errorCount = $state(0);
+  let warningCount = $state(0);
+  let infoCount = $state(0);
 
   // Accessibility settings
-let highContrast = $state(false);
-let reducedMotion = $state(false);
-let largeText = $state(false);
-let keyboardNavigation = $state(false);
-let screenReaderMode = $state(false);
+  let highContrast = $state(false);
+  let reducedMotion = $state(false);
+  let largeText = $state(false);
+  let keyboardNavigation = $state(false);
+  let screenReaderMode = $state(false);
 
   onMount(() => {
     // Load saved accessibility preferences

@@ -1,6 +1,5 @@
 <!-- Recommendation Container - Bits-UI Integration Under Nav-Bar -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { fly, fade } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
@@ -305,14 +304,12 @@
 
     } catch (error) {
       console.error('Failed to submit feedback:', error);
-      
       // Revert UI state on error
       const recIndex = recommendations.findIndex(r => r.id === recommendationId);
       if (recIndex !== -1) {
         recommendations[recIndex].feedback = null;
         recommendations[recIndex].feedbackTimestamp = undefined;
       }
-      
       feedbackCooldown.delete(recommendationId);
     } finally {
       processingFeedback = false;
@@ -322,18 +319,15 @@
   function getFeedbackButtonClass(recId: string, feedbackType: 'positive' | 'negative', currentFeedback?: string) {
     const isSelected = currentFeedback === feedbackType;
     const inCooldown = feedbackCooldown.has(recId);
-    
     let baseClass = 'feedback-btn';
     if (feedbackType === 'positive') {
       baseClass += isSelected ? ' feedback-positive-selected' : ' feedback-positive';
     } else {
       baseClass += isSelected ? ' feedback-negative-selected' : ' feedback-negative';
     }
-    
     if (inCooldown || processingFeedback) {
       baseClass += ' feedback-disabled';
     }
-    
     return baseClass;
   }
 
@@ -348,12 +342,10 @@
   async function updateRecommendationContext(newContext: Partial<RecommendationContext>) {
     if (enableEnhancedMode && enhancedRecommendationIntegration) {
       recommendationContext = { ...recommendationContext, ...newContext };
-      
       await enhancedRecommendationIntegration.updateRecommendationContext(
         recommendationContext,
         userProfile || createDefaultUserProfile()
       );
-      
       // Regenerate recommendations with new context
       if (documents && query) {
         generateEnhancedRecommendations();
@@ -369,16 +361,13 @@
           recommendationContext || {},
           userProfile || createDefaultUserProfile()
         );
-        
         console.log('Predicted recommendation needs:', prediction);
-        
         // Dispatch event for external listeners
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('recommendations:predicted', {
             detail: prediction
           }));
         }
-        
       } catch (error) {
         console.error('Recommendation needs prediction failed:', error);
       }
@@ -394,7 +383,6 @@
 
   onDestroy(() => {
     if (hideTimer) clearTimeout(hideTimer);
-    
     // Cleanup enhanced integration if needed
     if (enhancedRecommendationIntegration) {
       // The singleton will handle cleanup on page unload

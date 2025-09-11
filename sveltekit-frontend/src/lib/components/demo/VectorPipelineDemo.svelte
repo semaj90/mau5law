@@ -1,6 +1,5 @@
 <!-- Vector Pipeline Demo Component -->
 <script lang="ts">
-</script>
   import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import {

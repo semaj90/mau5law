@@ -1,14 +1,13 @@
 <script lang="ts">
-</script>
-	import MobileLink from "./mobile-link.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { navigation } from "$lib/config/index.js";
-	import { Popover } from "bits-ui";
-	import ScrollArea from "../scroll-area.svelte";
-	import { page } from "$app/state";
-	import MobileMenuIcon from "./mobile-menu-icon.svelte";
+  	import MobileLink from "./mobile-link.svelte";
+  	import { Button } from "$lib/components/ui/button/index.js";
+  	import { navigation } from "$lib/config/index.js";
+  	import { Popover } from "bits-ui";
+  	import ScrollArea from "../scroll-area.svelte";
+  	import { page } from "$app/state";
+  	import MobileMenuIcon from "./mobile-menu-icon.svelte";
 
-	let open = $state(false);
+  	let open = $state(false);
 </script>
 
 <Popover.Root bind:open>

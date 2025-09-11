@@ -1,6 +1,5 @@
 <!-- Enhanced RAG Demo with Local LLM Support -->
 <script lang="ts">
-</script>
   import AskAI from "$lib/components/ai/AskAI.svelte";
   import { aiService } from "$lib/services/ai-service";
   import { tauriLLM, type LocalModel } from "$lib/services/tauri-llm";
@@ -24,7 +23,7 @@
     vectorSearch: boolean
     tauriLLM: boolean
     localModels: LocalModel[];
-}
+  }
   let systemStatus: SystemStatus = {
     database: false,
     qdrant: false,
@@ -48,7 +47,7 @@
     }>;
     executionTime?: number;
     source?: string;
-}
+  }
   let testResults: TestResults | null = null;
   let isTestingSearch = false;
   let selectedProvider: "auto" | "local" | "cloud" = "auto";
@@ -67,7 +66,7 @@
       type: string
       confidence: number
     }>;
-}
+  }
   let analysisResults: AnalysisResults | null = null;
   let isAnalyzing = false;
 
@@ -120,7 +119,7 @@
       console.error("Status check failed:", error);
     } finally {
       isLoadingStatus = false;
-}}
+  }}
   async function testVectorSearch() {
     if (!testQuery.trim()) return;
 
@@ -148,12 +147,12 @@
       } else {
         const error = await response.json();
         testResults = { error: error.error };
-}
+  }
     } catch (error) {
       testResults = { error: "Network error" };
     } finally {
       isTestingSearch = false;
-}}
+  }}
   async function analyzeLegalDocument() {
     if (!legalAnalysisText.trim()) return;
 
@@ -196,7 +195,7 @@
             keyEntities: ["Legal Document"].map(entity => ({ text: entity, type: "document", confidence: 1.0 })),
             riskAssessment: "Analysis completed using cloud AI",
           };
-}}
+  }}
     } catch (error) {
       analysisResults = {
         error: error instanceof Error ? error.message : "Unknown error",
@@ -208,26 +207,26 @@
       };
     } finally {
       isAnalyzing = false;
-}}
+  }}
   async function loadLocalModel(modelId: string) {
     try {
       await tauriLLM.loadModel(modelId);
       await checkSystemStatus(); // Refresh status
     } catch (error) {
       console.error("Failed to load model:", error);
-}}
+  }}
   function handleAIResponse(event: CustomEvent) {
     console.log("AI Response:", event.detail);
-}
+  }
   function handleReferenceClick(event: CustomEvent) {
     console.log("Reference clicked:", event.detail);
-}
+  }
   function getStatusIcon(status: boolean) {
     return status ? CheckCircle: AlertTriangle
-}
+  }
   function getStatusColor(status: boolean) {
     return status ? "text-green-600" : "text-red-600";
-}
+  }
   function getProviderIcon(provider: string) {
     switch (provider) {
       case "local":
@@ -236,7 +235,7 @@
         return Cloud;
       default:
         return Brain;
-}}
+  }}
 </script>
 
 <svelte:head>

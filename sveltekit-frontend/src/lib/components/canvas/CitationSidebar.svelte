@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -13,9 +12,9 @@
   let { citations = $bindable() } = $props(); // Citation[] = [];
 
   const dispatch = createEventDispatcher();
-let searchQuery = $state("");
-let selectedCategory = $state("all");
-let filteredCitations = $state<Citation[] >([]);
+  let searchQuery = $state("");
+  let selectedCategory = $state("all");
+  let filteredCitations = $state<Citation[] >([]);
 
   // Categories for filtering
   const categories = [
@@ -44,29 +43,29 @@ let filteredCitations = $state<Citation[] >([]);
 
       return matchesSearch && matchesCategory;
     });
-}
+  }
   function selectCitation(citation: Citation) {
     dispatch("citationSelected", citation);
-}
+  }
   function deleteCitation(citation: Citation) {
     dispatch("deleteCitation", citation);
-}
+  }
   function copyCitation(citation: Citation) {
     const citationText = `${citation.content}\n\nSource: ${citation.source}`;
     navigator.clipboard.writeText(citationText);
-}
+  }
   function toggleFavorite(citation: Citation) {
     // Update favorite status - in real app, this would update the database
     citation.isFavorite = !citation.isFavorite;
     dispatch("updateCitation", citation);
-}
+  }
   // Drag and drop functionality
   function handleDragStart(event: DragEvent, citation: Citation) {
     if (event.dataTransfer) {
       event.dataTransfer.setData("text/plain", citation.content);
       event.dataTransfer.setData("application/json", JSON.stringify(citation));
       event.dataTransfer.effectAllowed = "copy";
-}}
+  }}
 </script>
 
 <div class="container mx-auto px-4">

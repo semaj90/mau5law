@@ -1,22 +1,21 @@
 <script lang="ts">
-</script>
-	import { Meter, useId } from "bits-ui";
+  	import { Meter, useId } from "bits-ui";
 
-	let value = $state(2000);
-	const labelId = useId();
+  	let value = $state(2000);
+  	const labelId = useId();
 
-	const max = 4000;
-	const min = 0;
+  	const max = 4000;
+  	const min = 0;
 
-	const usedPercentage = $derived((value / max) * 100);
-	const percentageRemaining = $derived(100 - usedPercentage);
+  	const usedPercentage = $derived((value / max) * 100);
+  	const percentageRemaining = $derived(100 - usedPercentage);
 
-	const color = $derived.by(() => {
-		if (percentageRemaining < 15) return "bg-red-500 dark:bg-red-400";
-		if (percentageRemaining < 35) return "bg-orange-500 dark:bg-orange-400";
-		if (percentageRemaining < 50) return "bg-yellow-500 dark:bg-yellow-400";
-		return "bg-green-500 dark:bg-green-400";
-	});
+  	const color = $derived.by(() => {
+  		if (percentageRemaining < 15) return "bg-red-500 dark:bg-red-400";
+  		if (percentageRemaining < 35) return "bg-orange-500 dark:bg-orange-400";
+  		if (percentageRemaining < 50) return "bg-yellow-500 dark:bg-yellow-400";
+  		return "bg-green-500 dark:bg-green-400";
+  	});
 </script>
 
 <div class="flex w-[60%] flex-col gap-2">

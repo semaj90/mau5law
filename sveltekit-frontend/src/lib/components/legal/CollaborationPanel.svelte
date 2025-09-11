@@ -3,7 +3,6 @@ Collaboration Panel Component
 Real-time collaboration interface for multiple investigators working on evidence custody
 -->
 <script lang="ts">
-</script>
   interface Props {
     collaborationSession: {;
     activeCollaborators: string[];
@@ -43,7 +42,6 @@ Real-time collaboration interface for multiple investigators working on evidence
     chatHistory: Array<{ userId: string message: string timestamp: string }>;
     annotations: Array<{ userId: string content: string position: any timestamp: string }>;
   } | undefined;
-          
   // Local state
   let newMessage = $state('');
   let newAnnotation = $state('');

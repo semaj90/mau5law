@@ -1,11 +1,10 @@
 <script lang="ts">
-</script>
-	import { ToggleGroup } from "bits-ui";
-	import TextB from "phosphor-svelte/lib/TextB";
-	import TextItalic from "phosphor-svelte/lib/TextItalic";
-	import TextStrikethrough from "phosphor-svelte/lib/TextStrikethrough";
+  	import { ToggleGroup } from "bits-ui";
+  	import TextB from "phosphor-svelte/lib/TextB";
+  	import TextItalic from "phosphor-svelte/lib/TextItalic";
+  	import TextStrikethrough from "phosphor-svelte/lib/TextStrikethrough";
 
-	let value: string[] = $state(["bold"]);
+  	let value: string[] = $state(["bold"]);
 </script>
 
 <ToggleGroup.Root

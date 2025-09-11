@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Updated to use melt-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';

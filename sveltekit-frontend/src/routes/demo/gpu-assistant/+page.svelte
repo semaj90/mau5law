@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
 

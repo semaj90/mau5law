@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface TableColumn {
     key: string
     title: string
@@ -60,7 +59,6 @@
 
   const filteredData = $derived.by(() => {
     let filtered = data;
-    
     if (searchQuery) {
       filtered = data.filter(row => 
         Object.values(row).some(value => 
@@ -73,14 +71,11 @@
       filtered.sort((a, b) => {
         const aVal = a[sortColumn];
         const bVal = b[sortColumn];
-        
         if (typeof aVal === 'number' && typeof bVal === 'number') {
           return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
         }
-        
         const aStr = String(aVal).toLowerCase();
         const bStr = String(bVal).toLowerCase();
-        
         return sortDirection === 'asc' 
           ? aStr.localeCompare(bStr)
           : bStr.localeCompare(aStr);
@@ -101,7 +96,6 @@
 
   function handleSort(column: TableColumn) {
     if (!column.sortable || !sortable) return;
-    
     if (sortColumn === column.key) {
       sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
     } else {

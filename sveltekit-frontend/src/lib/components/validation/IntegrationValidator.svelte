@@ -1,9 +1,7 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { goTensorService } from '$lib/services/go-tensor-service-client';
   import { gpuPerformanceOptimizer } from '$lib/services/gpu-performance-optimizer';
-  
   interface ValidationTest {
     id: string;
     name: string;
@@ -13,7 +11,6 @@
     details?: string;
     error?: string;
   }
-  
   interface ValidationSuite {
     name: string;
     description: string;
@@ -23,13 +20,11 @@
     warnings: number;
     totalDuration: number;
   }
-  
   let validationSuites = $state<ValidationSuite[]>([]);
   let isRunning = $state(false);
   let overallStatus = $state<'idle' | 'running' | 'completed' | 'failed'>('idle');
   let startTime: number;
   let totalDuration = $state(0);
-  
   // Test suites configuration
   const suiteConfigs = [
     {
@@ -70,12 +65,10 @@
       ]
     }
   ];
-  
   // Initialize validation suites
   onMount(() => {
     initializeValidationSuites();
   });
-  
   function initializeValidationSuites() {
     validationSuites = suiteConfigs.map(config => ({
       name: config.name,
@@ -90,23 +83,18 @@
       totalDuration: 0
     }));
   }
-  
   // Run all validation tests
   async function runAllValidationTests() {
     if (isRunning) return;
-    
     isRunning = true;
     overallStatus = 'running';
     startTime = Date.now();
-    
     try {
       for (const suite of validationSuites) {
         await runValidationSuite(suite);
       }
-      
       const hasFailures = validationSuites.some(suite => suite.failed > 0);
       overallStatus = hasFailures ? 'failed' : 'completed';
-      
     } catch (error) {
       console.error('Validation run failed:', error);
       overallStatus = 'failed';
@@ -115,22 +103,18 @@
       isRunning = false;
     }
   }
-  
   // Run individual validation suite
   async function runValidationSuite(suite: ValidationSuite) {
     const suiteStartTime = Date.now();
     suite.passed = 0;
     suite.failed = 0;
     suite.warnings = 0;
-    
     for (const test of suite.tests) {
       test.status = 'running';
       const testStartTime = Date.now();
-      
       try {
         await runIndividualTest(test);
         test.duration = Date.now() - testStartTime;
-        
         if (test.status === 'passed') {
           suite.passed++;
         } else if (test.status === 'warning') {
@@ -144,14 +128,11 @@
         test.duration = Date.now() - testStartTime;
         suite.failed++;
       }
-      
       // Force reactivity update
       validationSuites = [...validationSuites];
     }
-    
     suite.totalDuration = Date.now() - suiteStartTime;
   }
-  
   // Run individual test
   async function runIndividualTest(test: ValidationTest) {
     switch (test.id) {
@@ -198,11 +179,9 @@
         throw new Error(`Unknown test: ${test.id}`);
     }
   }
-  
   // Individual test implementations
   async function testDropdownComponent(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 500));
-    
     // Simulate dropdown component testing
     const dropdownExists = document.querySelector('select') !== null;
     if (dropdownExists) {
@@ -213,25 +192,19 @@
       test.details = 'Dropdown component not found on page, but class exists in codebase';
     }
   }
-  
   async function testCheckboxComponent(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 400));
-    
     test.status = 'passed';
     test.details = 'Checkbox component state management and accessibility features working correctly';
   }
-  
   async function testSearchBarComponent(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 600));
-    
     test.status = 'passed';
     test.details = 'SearchBar debouncing (300ms), filtering, and event handling working correctly';
   }
-  
   async function testTensorService(test: ValidationTest) {
     try {
       const health = await goTensorService.healthCheck();
-      
       if (health.status === 'healthy') {
         test.status = 'passed';
         test.details = `Tensor service healthy - latency: ${health.latency}ms`;
@@ -247,10 +220,8 @@
       test.details = 'Tensor service using fallback mode - Go service not available';
     }
   }
-  
   async function testGPUProcessing(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
     try {
       // Test GPU processing pipeline
       const testData = new Float32Array(768).fill(0.5);
@@ -261,9 +232,7 @@
         operation: 'process' as const,
         options: { timeout: 5000 }
       };
-      
       const response = await goTensorService.processTensor(tensorRequest);
-      
       if (response.success) {
         test.status = 'passed';
         test.details = 'GPU batch processing pipeline functional with real tensor operations';
@@ -276,12 +245,9 @@
       test.details = 'GPU processing fallback mode - mock processing successful';
     }
   }
-  
   async function testPerformanceMonitoring(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 800));
-    
     const isMonitoring = gpuPerformanceOptimizer.monitoring;
-    
     if (isMonitoring) {
       test.status = 'passed';
       test.details = 'GPU performance monitoring active with real-time metrics collection';
@@ -290,17 +256,13 @@
       test.details = 'Performance monitoring available but not currently active';
     }
   }
-  
   async function testEvidenceUpload(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 700));
-    
     test.status = 'passed';
     test.details = 'Evidence upload system with AI processing and GPU acceleration ready';
   }
-  
   async function testCaseAutomation(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 900));
-    
     // Test case automation API endpoint
     try {
       const testConfig = {
@@ -314,13 +276,11 @@
         processingOptions: ['entity_extraction'],
         createdAt: new Date().toISOString()
       };
-      
       const response = await fetch('/api/legal/automation/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(testConfig)
       });
-      
       if (response.ok) {
         test.status = 'passed';
         test.details = 'Legal case automation workflows and API endpoints functional';
@@ -333,26 +293,20 @@
       test.error = `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`;
     }
   }
-  
   async function testDocumentClassification(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 1200));
-    
     test.status = 'passed';
     test.details = 'AI document classification with 7 processing options and GPU acceleration ready';
   }
-  
   async function testAPIEndpoints(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
     // Test multiple API endpoints
     const endpoints = [
       '/api/tensor?endpoint=health',
       '/api/legal/automation/config'
     ];
-    
     let passedEndpoints = 0;
     const results = [];
-    
     for (const endpoint of endpoints) {
       try {
         const response = await fetch(endpoint);
@@ -366,7 +320,6 @@
         results.push(`${endpoint}: Error`);
       }
     }
-    
     if (passedEndpoints === endpoints.length) {
       test.status = 'passed';
       test.details = `All ${endpoints.length} API endpoints responding correctly`;
@@ -378,37 +331,29 @@
       test.details = 'API endpoints not responding correctly';
     }
   }
-  
   async function testDatabaseIntegration(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 800));
-    
     // Simulate database connectivity test
     test.status = 'passed';
     test.details = 'Database integration ready - PostgreSQL schema and connections configured';
   }
-  
   async function testErrorHandling(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 500));
-    
     test.status = 'passed';
     test.details = 'Error handling and fallback mechanisms implemented across all systems';
   }
-  
   async function testPerformanceBenchmarks(test: ValidationTest) {
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
     // Simulate performance benchmarking
     const metrics = {
       apiResponseTime: Math.random() * 200 + 50,
       tensorProcessingTime: Math.random() * 1000 + 200,
       memoryUsage: Math.random() * 50 + 30
     };
-    
     const benchmarksPassed = 
       metrics.apiResponseTime < 500 &&
       metrics.tensorProcessingTime < 2000 &&
       metrics.memoryUsage < 80;
-    
     if (benchmarksPassed) {
       test.status = 'passed';
       test.details = `Performance benchmarks met - API: ${Math.round(metrics.apiResponseTime)}ms, Tensor: ${Math.round(metrics.tensorProcessingTime)}ms`;
@@ -417,7 +362,6 @@
       test.details = 'Some performance benchmarks exceeded thresholds but system functional';
     }
   }
-  
   // Utility functions
   function getStatusIcon(status: string) {
     switch (status) {
@@ -428,7 +372,6 @@
       default: return '⭕';
     }
   }
-  
   function getStatusColor(status: string) {
     switch (status) {
       case 'passed': return 'text-green-400';
@@ -438,7 +381,6 @@
       default: return 'text-gray-400';
     }
   }
-  
   function getStatusBg(status: string) {
     switch (status) {
       case 'passed': return 'bg-green-400/20 border-green-400/30';
@@ -448,7 +390,6 @@
       default: return 'bg-gray-400/20 border-gray-400/30';
     }
   }
-  
   // Summary calculations
   let totalTests = $derived(validationSuites.reduce((sum, suite) => sum + suite.tests.length, 0));
   let totalPassed = $derived(validationSuites.reduce((sum, suite) => sum + suite.passed, 0));

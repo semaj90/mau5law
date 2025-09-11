@@ -1,6 +1,5 @@
 <!-- Updated AI Chat for GPU Ollama -->
 <script lang="ts">
-</script>
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -13,14 +12,12 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
-  
   let messages = $state<{role: string, content: string}[]>([]);
   let input = $state('');
   let isLoading = $state(false);
 
   async function sendMessage() {
     if (!input.trim()) return;
-    
     messages.push({ role: 'user', content: input });
     const userMessage = input;
     input = '';
@@ -40,9 +37,7 @@
           }
         })
       });
-      
       if (!response.ok) throw new Error('AI service unavailable');
-      
       const data = await response.json();
       messages.push({ role: 'assistant', content: data.response });
     } catch (error) {

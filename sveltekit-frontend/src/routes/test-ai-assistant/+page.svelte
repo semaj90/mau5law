@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced/Button.svelte';
   import {
@@ -63,7 +62,6 @@
 
   async function runTest(test: any) {
     currentTest = test.name;
-    
     try {
       const options: RequestInit = {
         method: test.method || 'GET',
@@ -115,7 +113,6 @@
 
   async function testSSEStream() {
     currentTest = 'SSE Streaming Test';
-    
     try {
       const response = await fetch('/api/ai/chat-sse', {
         method: 'POST',

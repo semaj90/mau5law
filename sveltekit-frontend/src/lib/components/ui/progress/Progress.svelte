@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { cn } from '$lib/utils';
 
   interface Props {
@@ -13,7 +12,7 @@
     class: className = ''
   }: Props = $props();
 
-	let percentage = $derived(Math.min((value / max) * 100, 100));
+  	let percentage = $derived(Math.min((value / max) * 100, 100));
 </script>
 
 <div

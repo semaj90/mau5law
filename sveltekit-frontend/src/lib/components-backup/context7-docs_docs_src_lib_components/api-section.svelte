@@ -1,14 +1,13 @@
 <script lang="ts">
-</script>
-	import { page } from "$app/state";
-	import CSSVarsTable from "$lib/components/api-ref/css-vars/css-vars-table.svelte";
-	import DataAttrsTable from "$lib/components/api-ref/data-attrs/data-attrs-table.svelte";
-	import PropsTable from "$lib/components/api-ref/props/props-table.svelte";
-	import { h2 as H2, p as P } from "$lib/components/markdown/index.js";
-	import type { APISchema } from "$lib/types/index.js";
-	import { parseMarkdown } from "$lib/utils/index.js";
+  	import { page } from "$app/state";
+  	import CSSVarsTable from "$lib/components/api-ref/css-vars/css-vars-table.svelte";
+  	import DataAttrsTable from "$lib/components/api-ref/data-attrs/data-attrs-table.svelte";
+  	import PropsTable from "$lib/components/api-ref/props/props-table.svelte";
+  	import { h2 as H2, p as P } from "$lib/components/markdown/index.js";
+  	import type { APISchema } from "$lib/types/index.js";
+  	import { parseMarkdown } from "$lib/utils/index.js";
 
-	let { schemas = [] }: { schemas: APISchema[] } = $props();
+  	let { schemas = [] }: { schemas: APISchema[] } = $props();
 </script>
 
 <H2 id="api-reference">API Reference</H2>

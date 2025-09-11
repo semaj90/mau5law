@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     userId: string;
     canvasId: string | null ;
@@ -19,7 +18,6 @@
   import type { Evidence } from '$lib/types';
 
   // Component props with validation
-        
   // Event dispatcher for parent communication
   const dispatch = createEventDispatcher<{
     nodeCreated: EditableNode;
@@ -39,11 +37,11 @@
   const canCreateNode = derived(nodeCount, ($nodeCount) => $nodeCount < maxNodes);
 
   // Component state
-let mounted = $state(false);
-let canvasElement = $state<HTMLCanvasElement;
+  let mounted = $state(false);
+  let canvasElement = $state<HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
   let ws: WebSocket | null >(null);
-let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
+  let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
 
   // Lifecycle management
   onMount(async () >(> {
@@ -58,30 +56,24 @@ let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
 
   async function initializeCanvas() {
     if (!canvasElement) return;
-    
     ctx = canvasElement.getContext('2d')!;
     canvas.set({
       id: canvasId || Date.now().toString(),
       nodes: [],
       connections: []
     });
-    
     renderCanvas();
   }
 
   function initializeWebSocket() {
     if (!mounted) return;
-    
     try {
       const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsUrl = `${protocol}//${location.host}/ws`;
-      
       ws = new WebSocket(wsUrl);
-      
       ws.on:open=() => {
         console.log('WebSocket connected');
         isOnline.set(true);
-        
         if (canvasId) {
           ws?.send(JSON.stringify({
             type: 'JOIN_ROOM',
@@ -119,7 +111,6 @@ let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
 
   function scheduleReconnect() {
     if (reconnectTimeout) clearTimeout(reconnectTimeout);
-    
     reconnectTimeout = setTimeout(() => {
       if (mounted) {
         initializeWebSocket();
@@ -156,24 +147,19 @@ let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
 
   function renderCanvas() {
     if (!ctx || !canvasElement) return;
-    
     // Clear canvas
     ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    
     // Get current canvas state
     const currentCanvas = $canvas;
     if (!currentCanvas) return;
-    
     currentCanvas.nodes.forEach(node => {
       // Node background
       ctx.fillStyle = node.type === 'evidence' ? '#f0f8ff' : '#f9f9f9';
       ctx.fillRect(node.x, node.y, node.width, node.height);
-      
       // Node border
       ctx.strokeStyle = '#e1e5e9';
       ctx.lineWidth = 1;
       ctx.strokeRect(node.x, node.y, node.width, node.height);
-      
       // Node content
       ctx.fillStyle = '#2d3748';
       ctx.font = '14px system-ui, sans-serif';
@@ -183,7 +169,6 @@ let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
 
   function createNode(x: number, y: number) {
     if (readonly || !$canCreateNode) return;
-    
     const newNode: EditableNode = {
       id: `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       x,
@@ -216,7 +201,6 @@ let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
 
   function handleCanvasClick(event: MouseEvent) {
     if (readonly) return;
-    
     const rect = canvasElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -228,7 +212,6 @@ let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
 
   async function uploadEvidence(file: File) {
     if (readonly) return;
-    
     const formData = new FormData();
     formData.append('file', file);
     formData.append('userId', userId);
@@ -246,7 +229,6 @@ let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
       const newEvidence: Evidence = await response.json();
       evidence.update(list => [...list, newEvidence]);
       dispatch('evidenceUploaded', newEvidence);
-      
     } catch (error) {
       console.error('Upload failed:', error);
       dispatch('error', `Upload failed: ${error.message}`);
@@ -255,7 +237,6 @@ let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
 
   function handleFileDrop(event: DragEvent) {
     event.preventDefault();
-    
     const files = event.dataTransfer?.files;
     if (files?.length) {
       uploadEvidence(files[0]);
@@ -272,23 +253,19 @@ let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
       ws.close();
       ws = null;
     }
-    
     if (reconnectTimeout) {
       clearTimeout(reconnectTimeout);
     }
-    
     mounted = false;
   }
 
   function resetCanvas() {
     if (readonly) return;
-    
     canvas.set({
       id: Date.now().toString(),
       nodes: [],
       connections: []
     });
-    
     renderCanvas();
   }
 </script>

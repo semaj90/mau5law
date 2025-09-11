@@ -1,21 +1,20 @@
 <script lang="ts">
-</script>
-	import "$lib/styles/app.css";
-	import { Button } from "bits-ui";
-	import Sparkle from "phosphor-svelte/lib/Sparkle";
-	import CardAir from "$lib/components/homepage/card-air.svelte";
-	import CardSound from "$lib/components/homepage/card-sound.svelte";
-	import CardTimer from "$lib/components/homepage/card-timer.svelte";
-	import CardToggle from "$lib/components/homepage/card-toggle.svelte";
-	import { Logo } from "$icons/index.js";
-	import LightSwitch from "$lib/components/light-switch.svelte";
+  	import "$lib/styles/app.css";
+  	import { Button } from "bits-ui";
+  	import Sparkle from "phosphor-svelte/lib/Sparkle";
+  	import CardAir from "$lib/components/homepage/card-air.svelte";
+  	import CardSound from "$lib/components/homepage/card-sound.svelte";
+  	import CardTimer from "$lib/components/homepage/card-timer.svelte";
+  	import CardToggle from "$lib/components/homepage/card-toggle.svelte";
+  	import { Logo } from "$icons/index.js";
+  	import LightSwitch from "$lib/components/light-switch.svelte";
 
-	import Customizable from "$lib/components/homepage/svg-customizable.svelte";
-	import Accessible from "$lib/components/homepage/svg-accessible.svelte";
-	import AccessibleDark from "$lib/components/homepage/svg-accessible-dark.svelte";
-	import Consistent from "$lib/components/homepage/svg-consistent.svelte";
-	import { goto } from "$app/navigation";
-	import Search from "$lib/components/search.svelte";
+  	import Customizable from "$lib/components/homepage/svg-customizable.svelte";
+  	import Accessible from "$lib/components/homepage/svg-accessible.svelte";
+  	import AccessibleDark from "$lib/components/homepage/svg-accessible-dark.svelte";
+  	import Consistent from "$lib/components/homepage/svg-consistent.svelte";
+  	import { goto } from "$app/navigation";
+  	import Search from "$lib/components/search.svelte";
 </script>
 
 <svelte:window

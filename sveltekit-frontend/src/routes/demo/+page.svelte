@@ -3,7 +3,6 @@
   Comprehensive navigation for all demonstrations and testing interfaces
 -->
 <script lang="ts">
-</script>
   import { goto } from '$app/navigation';
   import * as Card from '$lib/components/ui/card';
   import {

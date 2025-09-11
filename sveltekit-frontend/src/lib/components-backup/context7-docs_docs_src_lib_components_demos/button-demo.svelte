@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-	import { Button } from "bits-ui";
+  	import { Button } from "bits-ui";
 </script>
 
 <Button.Root

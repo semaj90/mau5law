@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
 
   interface Props {
@@ -68,7 +67,6 @@
   // 3D Matrix operations for N64-style rendering
   class Matrix4 {
     matrix: number[][];
-    
     constructor() {
       this.matrix = [
         [1, 0, 0, 0],
@@ -140,7 +138,6 @@
         currentStageIndex++;
         stage = stages[currentStageIndex];
         evolutionProgress = 0;
-        
         // Gradual progress for smooth transition
         const progressInterval = setInterval(() => {
           evolutionProgress += 2;
@@ -157,18 +154,14 @@
   function startAnimation() {
     function animate() {
       if (!ctx) return;
-      
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
       const currentStage = stages[currentStageIndex];
       const config = evolutionConfig[currentStage];
-      
       // Background with evolution-based gradient
       const bgGradient = ctx.createRadialGradient(
         canvas.width/2, canvas.height/2, 0,
         canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)
       );
-      
       switch (currentStage) {
         case 'nes':
           bgGradient.addColorStop(0, '#000000');
@@ -187,10 +180,8 @@
           bgGradient.addColorStop(1, '#16213e');
           break;
       }
-      
       ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
       // Render based on current stage
       if (currentStage === 'nes') {
         renderNESStyle();
@@ -199,21 +190,17 @@
       } else if (currentStage === 'n64' || currentStage === 'modern') {
         renderN64Style(currentStage === 'modern');
       }
-      
       // RAG integration overlay
       if (ragIntegration) {
         renderRAGOverlay();
       }
-      
       // YoRHa mode effects
       if (yorhaMode) {
         renderYoRHaEffects();
       }
-      
       rotation += 0.02;
       animationId = requestAnimationFrame(animate);
     }
-    
     animate();
   }
 
@@ -221,7 +208,6 @@
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const pixelSize = evolutionConfig.nes.pixelSize;
-    
     // Simple pixelated square
     ctx.fillStyle = '#FF0000';
     for (let x = -32; x < 32; x += pixelSize) {
@@ -242,14 +228,11 @@
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const pixelSize = evolutionConfig.snes.pixelSize;
-    
     // Enhanced pixelated cube with basic shading
     const colors = ['#FF0000', '#CC0000', '#990000'];
-    
     for (let z = -20; z < 20; z += 10) {
       const colorIndex = Math.floor((z + 20) / 13.33);
       ctx.fillStyle = colors[Math.min(colorIndex, 2)];
-      
       for (let x = -24; x < 24; x += pixelSize) {
         for (let y = -24; y < 24; y += pixelSize) {
           const rotatedX = x * Math.cos(rotation) - y * Math.sin(rotation);
@@ -270,31 +253,25 @@
     const centerY = canvas.height / 2;
     const matrix = new Matrix4();
     matrix.rotateY(rotation);
-    
     // Render cube faces with N64-style low-poly 3D
     const faceColors = [
       '#FFD700', '#FF6B35', '#004E89', 
       '#1A936F', '#88D4AB', '#FFFFFF'
     ];
-    
     cubeFaces.forEach((face, faceIndex) => {
       const faceVertices = face.map(vertexIndex => {
         const vertex = cubeVertices[vertexIndex];
         return matrix.project(vertex);
       });
-      
       ctx.beginPath();
       ctx.moveTo(
         centerX + faceVertices[0][0], 
         centerY + faceVertices[0][1]
       );
-      
       faceVertices.slice(1).forEach(([x, y]) => {
         ctx.lineTo(centerX + x, centerY + y);
       });
-      
       ctx.closePath();
-      
       // N64-style flat shading vs modern gradient
       if (isModern) {
         const gradient = ctx.createLinearGradient(
@@ -307,9 +284,7 @@
       } else {
         ctx.fillStyle = faceColors[faceIndex];
       }
-      
       ctx.fill();
-      
       // N64-style chunky outlines
       if (!isModern) {
         ctx.strokeStyle = '#000000';
@@ -317,7 +292,6 @@
         ctx.stroke();
       }
     });
-    
     // Particles for modern stage
     if (isModern) {
       renderParticles();
@@ -328,18 +302,15 @@
     const particleCount = evolutionConfig.modern.particles;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    
     for (let i = 0; i < particleCount; i++) {
       const angle = (i / particleCount) * Math.PI * 2 + rotation * 0.5;
       const radius = 100 + Math.sin(rotation * 2 + i) * 20;
       const x = centerX + Math.cos(angle) * radius;
       const y = centerY + Math.sin(angle) * radius;
-      
       ctx.beginPath();
       ctx.arc(x, y, 2, 0, Math.PI * 2);
       ctx.fillStyle = `hsl(${(i * 360 / particleCount + rotation * 50) % 360}, 70%, 70%)`;
       ctx.fill();
-      
       // Particle glow
       ctx.shadowColor = ctx.fillStyle as string;
       ctx.shadowBlur = 4;
@@ -352,29 +323,24 @@
     // Enhanced RAG integration visual feedback
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    
     ctx.strokeStyle = '#00FF41';
     ctx.lineWidth = 1;
     ctx.setLineDash([5, 5]);
-    
     // RAG processing indicator
     const ragRadius = 80 + Math.sin(rotation * 3) * 10;
     ctx.beginPath();
     ctx.arc(centerX, centerY, ragRadius, 0, Math.PI * 2);
     ctx.stroke();
-    
     // RAG data nodes
     for (let i = 0; i < 6; i++) {
       const angle = (i / 6) * Math.PI * 2 + rotation;
       const x = centerX + Math.cos(angle) * ragRadius;
       const y = centerY + Math.sin(angle) * ragRadius;
-      
       ctx.fillStyle = '#00FF41';
       ctx.beginPath();
       ctx.arc(x, y, 3, 0, Math.PI * 2);
       ctx.fill();
     }
-    
     ctx.setLineDash([]);
   }
 
@@ -382,7 +348,6 @@
     // YoRHa-style glitch effects and UI elements
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    
     // Glitch lines
     if (Math.random() < 0.1) {
       ctx.strokeStyle = '#FFFFFF';
@@ -393,12 +358,10 @@
       ctx.lineTo(canvas.width, glitchY + Math.random() * 4 - 2);
       ctx.stroke();
     }
-    
     // YoRHa corner brackets
     const bracketSize = 20;
     ctx.strokeStyle = '#FFFFFF';
     ctx.lineWidth = 2;
-    
     // Top-left
     ctx.beginPath();
     ctx.moveTo(50, 50);
@@ -406,7 +369,6 @@
     ctx.moveTo(50, 50);
     ctx.lineTo(50, 50 + bracketSize);
     ctx.stroke();
-    
     // Top-right
     ctx.beginPath();
     ctx.moveTo(canvas.width - 50, 50);
@@ -414,7 +376,6 @@
     ctx.moveTo(canvas.width - 50, 50);
     ctx.lineTo(canvas.width - 50, 50 + bracketSize);
     ctx.stroke();
-    
     // Bottom corners...
     ctx.beginPath();
     ctx.moveTo(50, canvas.height - 50);
@@ -422,7 +383,6 @@
     ctx.moveTo(50, canvas.height - 50);
     ctx.lineTo(50, canvas.height - 50 - bracketSize);
     ctx.stroke();
-    
     ctx.beginPath();
     ctx.moveTo(canvas.width - 50, canvas.height - 50);
     ctx.lineTo(canvas.width - 50 - bracketSize, canvas.height - 50);

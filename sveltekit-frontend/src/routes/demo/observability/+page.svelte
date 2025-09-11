@@ -1,6 +1,5 @@
 <!-- Observability Integration Demo -->
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { 
@@ -21,13 +20,10 @@
   onMount(async () => {
     // Initialize observability status
     observabilityStatus = getObservabilityStatus();
-    
     // Perform initial health check
     await checkServerHealth();
-    
     // Load initial metrics
     await loadClientMetrics();
-    
     console.log('🔍 Observability Demo Loaded:', {
       status: observabilityStatus,
       timestamp: new Date().toISOString()
@@ -36,26 +32,20 @@
 
   async function checkServerHealth() {
     if (!browser) return;
-    
     isLoading = true;
     const startTime = performance.now();
-    
     try {
       const response = await observableFetch('/api/v1/observability/client?action=health');
       const data = await response.json();
-      
       serverHealth = data;
-      
       const duration = performance.now() - startTime;
       addDemoResult('Health Check', `${data.status} (${Math.round(duration)}ms)`, 'success');
-      
       // Track custom event
       trackCustomEvent('health-check-completed', { 
         status: data.status, 
         score: data.score,
         duration 
       });
-      
     } catch (error) {
       console.error('Health check failed:', error);
       addDemoResult('Health Check', `Failed: ${error.message}`, 'error');
@@ -67,19 +57,14 @@
 
   async function loadClientMetrics() {
     if (!browser) return;
-    
     isLoading = true;
     const startTime = performance.now();
-    
     try {
       const response = await observableFetch('/api/v1/observability/client?action=stats');
       const data = await response.json();
-      
       clientMetrics = data;
-      
       const duration = performance.now() - startTime;
       addDemoResult('Load Metrics', `${data.totalStoredMetrics} metrics (${Math.round(duration)}ms)`, 'info');
-      
     } catch (error) {
       console.error('Failed to load metrics:', error);
       addDemoResult('Load Metrics', `Failed: ${error.message}`, 'error');
@@ -91,26 +76,20 @@
   async function simulateSlowOperation() {
     isLoading = true;
     const startTime = performance.now();
-    
     // Track the start of custom operation
     trackCustomEvent('slow-operation-start');
-    
     try {
       // Simulate a slow operation
       await new Promise(resolve => setTimeout(resolve, 2000);
       // Make an API call to test Server-Timing headers
       const response = await observableFetch('/api/v1/observability/client?action=performance');
       const data = await response.json();
-      
       const duration = performance.now() - startTime;
       addDemoResult('Slow Operation', `Completed in ${Math.round(duration)}ms`, 'success');
-      
       // Track completion
       trackCustomEvent('slow-operation-complete', { duration });
-      
       // Trigger metrics update
       await loadClientMetrics();
-      
     } catch (error) {
       const duration = performance.now() - startTime;
       addDemoResult('Slow Operation', `Failed after ${Math.round(duration)}ms`, 'error');
@@ -121,20 +100,15 @@
 
   async function clearMetrics() {
     if (!browser) return;
-    
     isLoading = true;
-    
     try {
       const response = await observableFetch('/api/v1/observability/client?action=clear', {
         method: 'GET'
       });
       const data = await response.json();
-      
       addDemoResult('Clear Metrics', data.message || 'Success', 'info');
-      
       // Reload metrics
       await loadClientMetrics();
-      
     } catch (error) {
       addDemoResult('Clear Metrics', `Failed: ${error.message}`, 'error');
     } finally {
@@ -150,7 +124,6 @@
       type,
       timestamp: new Date().toLocaleTimeString()
     }];
-    
     // Keep only last 10 results
     if (demoResults.length > 10) {
       demoResults = demoResults.slice(-10);

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     reportId: string
     acceptedTypes: string[] ;
@@ -17,256 +16,256 @@
 
 
 
-	import { browser } from '$app/environment';
-	import {
-	  AlertCircle,
-	  CheckCircle,
-	  CloudUpload,
-	  File as FileIcon,
-	  FileText,
-	  Image,
-	  Upload,
-	  X
-	} from 'lucide-svelte';
-	import { createEventDispatcher } from 'svelte';
-	import { loki } from "../stores/lokiStore";
-	import TagList from './TagList.svelte';
+  	import { browser } from '$app/environment';
+  	import {
+  	  AlertCircle,
+  	  CheckCircle,
+  	  CloudUpload,
+  	  File as FileIcon,
+  	  FileText,
+  	  Image,
+  	  Upload,
+  	  X
+  	} from 'lucide-svelte';
+  	import { createEventDispatcher } from 'svelte';
+  	import { loki } from "../stores/lokiStore";
+  	import TagList from './TagList.svelte';
 
-			let { maxFileSize = $bindable() } = $props(); // 10 * 1024 * 1024; // 10MB
+  			let { maxFileSize = $bindable() } = $props(); // 10 * 1024 * 1024; // 10MB
 
-	const dispatch = createEventDispatcher<{
-		upload: { files: globalThis.File[]; tags: string[] };
-		filesChanged: FileUpload[];
-		error: string
-	}>();
+  	const dispatch = createEventDispatcher<{
+  		upload: { files: globalThis.File[]; tags: string[] };
+  		filesChanged: FileUpload[];
+  		error: string
+  	}>();
 
-	interface FileUpload {
-		id: string
-		file: globalThis.File;
-		preview?: string;
-		tags: string[];
-		progress: number
-		status: 'pending' | 'uploading' | 'success' | 'error';
-		error?: string;
-		hash?: string;
-}
-	let fileInput: HTMLInputElement
-	let dragActive = false;
-	let uploads: FileUpload[] = [];
-	let availableTags: string[] = [];
+  	interface FileUpload {
+  		id: string
+  		file: globalThis.File;
+  		preview?: string;
+  		tags: string[];
+  		progress: number
+  		status: 'pending' | 'uploading' | 'success' | 'error';
+  		error?: string;
+  		hash?: string;
+  }
+  	let fileInput: HTMLInputElement
+  	let dragActive = false;
+  	let uploads: FileUpload[] = [];
+  	let availableTags: string[] = [];
 
-	// Load available tags
-	$effect(() => { if (browser) {
-		loadAvailableTags();
-}
-	async function loadAvailableTags() {
-		try {
-			const evidence = loki.evidence.getAll();
-			const allTags = evidence.flatMap((e: any) => e.tags || []);
-			availableTags = [...new Set(allTags as string[])].sort();
-		} catch (error) {
-			console.error('Failed to load available tags:', error);
-}
-}
-	function getFileIcon(file: globalThis.File) {
-		const type = file.type.toLowerCase();
-		const name = file.name.toLowerCase();
+  	// Load available tags
+  	$effect(() => { if (browser) {
+  		loadAvailableTags();
+  }
+  	async function loadAvailableTags() {
+  		try {
+  			const evidence = loki.evidence.getAll();
+  			const allTags = evidence.flatMap((e: any) => e.tags || []);
+  			availableTags = [...new Set(allTags as string[])].sort();
+  		} catch (error) {
+  			console.error('Failed to load available tags:', error);
+  }
+  }
+  	function getFileIcon(file: globalThis.File) {
+  		const type = file.type.toLowerCase();
+  		const name = file.name.toLowerCase();
 
-		if (type.startsWith('image/')) {
-			return Image;
-		} else if (type === 'application/pdf' || name.endsWith('.pdf')) {
-			return FileText; // Using FileText for PDF since lucide doesn't have a specific PDF icon
-		} else if (type.startsWith('text/') || name.endsWith('.txt') || name.endsWith('.doc') || name.endsWith('.docx')) {
-			return FileText;
-}
-		return FileIcon;
-}
-	function formatFileSize(bytes: number): string {
-		if (bytes === 0) return '0 Bytes';
-		const k = 1024;
-		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-		const i = Math.floor(Math.log(bytes) / Math.log(k));
-		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-	function isFileValid(file: globalThis.File): { valid: boolean error?: string } {
-		// Check file size
-		if (file.size > maxFileSize) {
-			return {
-				valid: false,
-				error: `File size exceeds ${formatFileSize(maxFileSize)} limit`
-			};
-}
-		// Check file type
-		const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
-		if (!acceptedTypes.some(type => type.toLowerCase() === fileExtension)) {
-			return {
-				valid: false,
-				error: `File type not supported. Accepted types: ${acceptedTypes.join(', ')}`
-			};
-}
-		return { valid: true };
-}
-	async function createFilePreview(file: globalThis.File): Promise<string | undefined> {
-		if (!file.type.startsWith('image/')) return undefined;
+  		if (type.startsWith('image/')) {
+  			return Image;
+  		} else if (type === 'application/pdf' || name.endsWith('.pdf')) {
+  			return FileText; // Using FileText for PDF since lucide doesn't have a specific PDF icon
+  		} else if (type.startsWith('text/') || name.endsWith('.txt') || name.endsWith('.doc') || name.endsWith('.docx')) {
+  			return FileText;
+  }
+  		return FileIcon;
+  }
+  	function formatFileSize(bytes: number): string {
+  		if (bytes === 0) return '0 Bytes';
+  		const k = 1024;
+  		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  		const i = Math.floor(Math.log(bytes) / Math.log(k));
+  		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+  	function isFileValid(file: globalThis.File): { valid: boolean error?: string } {
+  		// Check file size
+  		if (file.size > maxFileSize) {
+  			return {
+  				valid: false,
+  				error: `File size exceeds ${formatFileSize(maxFileSize)} limit`
+  			};
+  }
+  		// Check file type
+  		const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+  		if (!acceptedTypes.some(type => type.toLowerCase() === fileExtension)) {
+  			return {
+  				valid: false,
+  				error: `File type not supported. Accepted types: ${acceptedTypes.join(', ')}`
+  			};
+  }
+  		return { valid: true };
+  }
+  	async function createFilePreview(file: globalThis.File): Promise<string | undefined> {
+  		if (!file.type.startsWith('image/')) return undefined;
 
-		return new Promise((resolve) => {
-			const reader = new FileReader();
-			reader.onload = (e) => resolve(e.target?.result as string);
-			reader.onerror = () => resolve(undefined);
-			reader.readAsDataURL(file);
-		});
-}
-	async function processFiles(files: FileList | globalThis.File[]) {
-		const fileArray = Array.from(files);
+  		return new Promise((resolve) => {
+  			const reader = new FileReader();
+  			reader.onload = (e) => resolve(e.target?.result as string);
+  			reader.onerror = () => resolve(undefined);
+  			reader.readAsDataURL(file);
+  		});
+  }
+  	async function processFiles(files: FileList | globalThis.File[]) {
+  		const fileArray = Array.from(files);
 
-		// Check total file limit
-		if (uploads.length + fileArray.length > maxFiles) {
-			dispatch('error', `Maximum ${maxFiles} files allowed`);
-			return;
-}
-		for (const file of fileArray) {
-			const validation = isFileValid(file);
+  		// Check total file limit
+  		if (uploads.length + fileArray.length > maxFiles) {
+  			dispatch('error', `Maximum ${maxFiles} files allowed`);
+  			return;
+  }
+  		for (const file of fileArray) {
+  			const validation = isFileValid(file);
 
-			if (!validation.valid) {
-				dispatch('error', validation.error!);
-				continue;
-}
-			const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-			const preview = await createFilePreview(file);
+  			if (!validation.valid) {
+  				dispatch('error', validation.error!);
+  				continue;
+  }
+  			const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  			const preview = await createFilePreview(file);
 
-			const upload: FileUpload = {
-				id,
-				file,
-				preview,
-				tags: [],
-				progress: 0,
-				status: 'pending'
-			};
+  			const upload: FileUpload = {
+  				id,
+  				file,
+  				preview,
+  				tags: [],
+  				progress: 0,
+  				status: 'pending'
+  			};
 
-			uploads = [...uploads, upload];
-}
-		dispatch('filesChanged', uploads);
-}
-	function handleFileSelect(event: Event) {
-		const target = event.target as HTMLInputElement;
-		if (target.files && target.files.length > 0) {
-			processFiles(target.files);
-}
-		// Reset input value to allow selecting the same file again
-		target.value = '';
-}
-	function handleDragOver(event: DragEvent) {
-		event.preventDefault();
-		dragActive = true;
-}
-	function handleDragLeave(event: DragEvent) {
-		event.preventDefault();
-		dragActive = false;
-}
-	async function handleDrop(event: DragEvent) {
-		event.preventDefault();
-		dragActive = false;
+  			uploads = [...uploads, upload];
+  }
+  		dispatch('filesChanged', uploads);
+  }
+  	function handleFileSelect(event: Event) {
+  		const target = event.target as HTMLInputElement;
+  		if (target.files && target.files.length > 0) {
+  			processFiles(target.files);
+  }
+  		// Reset input value to allow selecting the same file again
+  		target.value = '';
+  }
+  	function handleDragOver(event: DragEvent) {
+  		event.preventDefault();
+  		dragActive = true;
+  }
+  	function handleDragLeave(event: DragEvent) {
+  		event.preventDefault();
+  		dragActive = false;
+  }
+  	async function handleDrop(event: DragEvent) {
+  		event.preventDefault();
+  		dragActive = false;
 
-		const files = event.dataTransfer?.files;
-		if (files && files.length > 0) {
-			await processFiles(files);
-}
-}
-	function removeFile(id: string) {
-		uploads = uploads.filter(upload => upload.id !== id);
-		dispatch('filesChanged', uploads);
-}
-	function updateFileTags(id: string, tags: string[]) {
-		uploads = uploads.map(upload =>
-			upload.id === id ? { ...upload, tags } : upload
-		);
-		dispatch('filesChanged', uploads);
-}
-	async function uploadFiles() {
-		const pendingUploads = uploads.filter(u => u.status === 'pending');
+  		const files = event.dataTransfer?.files;
+  		if (files && files.length > 0) {
+  			await processFiles(files);
+  }
+  }
+  	function removeFile(id: string) {
+  		uploads = uploads.filter(upload => upload.id !== id);
+  		dispatch('filesChanged', uploads);
+  }
+  	function updateFileTags(id: string, tags: string[]) {
+  		uploads = uploads.map(upload =>
+  			upload.id === id ? { ...upload, tags } : upload
+  		);
+  		dispatch('filesChanged', uploads);
+  }
+  	async function uploadFiles() {
+  		const pendingUploads = uploads.filter(u => u.status === 'pending');
 
-		if (pendingUploads.length === 0) {
-			dispatch('error', 'No files to upload');
-			return;
-}
-		// Start uploading files
-		for (const upload of pendingUploads) {
-			upload.status = 'uploading';
-			uploads = [...uploads];
+  		if (pendingUploads.length === 0) {
+  			dispatch('error', 'No files to upload');
+  			return;
+  }
+  		// Start uploading files
+  		for (const upload of pendingUploads) {
+  			upload.status = 'uploading';
+  			uploads = [...uploads];
 
-			try {
-				// Simulate progress
-				for (let progress = 0; progress <= 100; progress += 10) {
-					upload.progress = progress;
-					uploads = [...uploads];
-					await new Promise(resolve => setTimeout(resolve, 100));
-}
-				// Store in Loki.js for now (would normally upload to server)
-				const evidenceData = {
-					id: upload.id,
-					caseId: reportId,
-					criminalId: null,
-					title: upload.file.name,
-					description: `Uploaded file: ${upload.file.name}`,
-					evidenceType: upload.file.type.includes('image') ? 'photo' :
-						upload.file.type.includes('video') ? 'video' :
-						upload.file.type.includes('audio') ? 'audio' : 'document',
-					fileType: upload.file.type,
-					subType: null,
-					fileUrl: upload.preview || `file://${upload.file.name}`,
-					fileName: upload.file.name,
-					fileSize: upload.file.size,
-					mimeType: upload.file.type,
-					hash: upload.hash || null,
-					tags: upload.tags,
-					chainOfCustody: [],
-					collectedAt: null,
-					collectedBy: null,
-					location: null,
-					labAnalysis: {},
-					aiAnalysis: {},
-					aiTags: [],
-					aiSummary: null,
-					summary: null,
-					isAdmissible: true,
-					confidentialityLevel: 'standard',
-					canvasPosition: {},
-					uploadedBy: 'current-user', // TODO: get from auth context
-					uploadedAt: new Date(),
-					updatedAt: new Date()
-				};
+  			try {
+  				// Simulate progress
+  				for (let progress = 0; progress <= 100; progress += 10) {
+  					upload.progress = progress;
+  					uploads = [...uploads];
+  					await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  				// Store in Loki.js for now (would normally upload to server)
+  				const evidenceData = {
+  					id: upload.id,
+  					caseId: reportId,
+  					criminalId: null,
+  					title: upload.file.name,
+  					description: `Uploaded file: ${upload.file.name}`,
+  					evidenceType: upload.file.type.includes('image') ? 'photo' :
+  						upload.file.type.includes('video') ? 'video' :
+  						upload.file.type.includes('audio') ? 'audio' : 'document',
+  					fileType: upload.file.type,
+  					subType: null,
+  					fileUrl: upload.preview || `file://${upload.file.name}`,
+  					fileName: upload.file.name,
+  					fileSize: upload.file.size,
+  					mimeType: upload.file.type,
+  					hash: upload.hash || null,
+  					tags: upload.tags,
+  					chainOfCustody: [],
+  					collectedAt: null,
+  					collectedBy: null,
+  					location: null,
+  					labAnalysis: {},
+  					aiAnalysis: {},
+  					aiTags: [],
+  					aiSummary: null,
+  					summary: null,
+  					isAdmissible: true,
+  					confidentialityLevel: 'standard',
+  					canvasPosition: {},
+  					uploadedBy: 'current-user', // TODO: get from auth context
+  					uploadedAt: new Date(),
+  					updatedAt: new Date()
+  				};
 
-				loki.evidence.add(evidenceData);
+  				loki.evidence.add(evidenceData);
 
-				upload.status = 'success';
-				upload.progress = 100;
-			} catch (error) {
-				upload.status = 'error';
-				upload.error = error instanceof Error ? error.message : 'Upload failed';
-}
-}
-		uploads = [...uploads];
+  				upload.status = 'success';
+  				upload.progress = 100;
+  			} catch (error) {
+  				upload.status = 'error';
+  				upload.error = error instanceof Error ? error.message : 'Upload failed';
+  }
+  }
+  		uploads = [...uploads];
 
-		// Notify parent component
-		const successfulFiles = uploads
-			.filter(u => u.status === 'success')
-			.map(u => u.file);
+  		// Notify parent component
+  		const successfulFiles = uploads
+  			.filter(u => u.status === 'success')
+  			.map(u => u.file);
 
-		if (successfulFiles.length > 0) {
-			const allTags = uploads
-				.filter(u => u.status === 'success')
-				.flatMap(u => u.tags);
+  		if (successfulFiles.length > 0) {
+  			const allTags = uploads
+  				.filter(u => u.status === 'success')
+  				.flatMap(u => u.tags);
 
-			dispatch('upload', { files: successfulFiles, tags: [...new Set(allTags)] });
-}
-}
-	function clearCompleted() {
-		uploads = uploads.filter(u => u.status !== 'success');
-		dispatch('filesChanged', uploads);
-}
-	function triggerFileSelect() {
-		fileInput?.click();
-}
+  			dispatch('upload', { files: successfulFiles, tags: [...new Set(allTags)] });
+  }
+  }
+  	function clearCompleted() {
+  		uploads = uploads.filter(u => u.status !== 'success');
+  		dispatch('filesChanged', uploads);
+  }
+  	function triggerFileSelect() {
+  		fileInput?.click();
+  }
 </script>
 
 <div class="space-y-4">

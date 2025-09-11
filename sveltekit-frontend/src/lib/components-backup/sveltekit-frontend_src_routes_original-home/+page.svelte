@@ -1,53 +1,46 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import Typewriter from "$lib/components/Typewriter.svelte";
   import UploadArea from "$lib/components/UploadArea.svelte";
   import { browser } from '$app/environment';
-  
   let recentCases: any[] = [];
   let heroText = "Advanced Legal Case Management";
-  
   onMount(async () => {
     // Load recent cases
     try {
       const casesRes = await fetch('/api/cases/recent');
-      
       if (casesRes.ok) {
         recentCases = await casesRes.json();
-}
+  }
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
-}
+  }
     // Setup AI search functionality
     if (browser) {
       const aiSearchBtn = document.getElementById('aiSearchBtn');
       const aiSearchInputEl = document.getElementById('aiSearchInput') as HTMLInputElement;
-      
       if (aiSearchBtn && aiSearchInputEl) {
         aiSearchBtn.addEventListener('click', () => handleAiSearch(aiSearchInputEl.value));
         aiSearchInputEl.addEventListener('keypress', (e) => {
           if (e.key === 'Enter') {
             handleAiSearch(aiSearchInputEl.value);
-}
+  }
         });
-}}
+  }}
   });
-  
   function handleQuickUpload(files: any) {
     // Handle quick upload from homepage
     if (files.length > 0) {
       window.location.href = `/upload?files=${files.length}`;
-}}
+  }}
   async function handleAiSearch(query: string) {
     if (!query.trim()) return;
-    
     try {
       // Navigate to AI search results page
       window.location.href = `/ai/search?q=${encodeURIComponent(query)}`;
     } catch (error) {
       console.error('AI search failed:', error);
-}}
+  }}
 </script>
 
 <svelte:head>

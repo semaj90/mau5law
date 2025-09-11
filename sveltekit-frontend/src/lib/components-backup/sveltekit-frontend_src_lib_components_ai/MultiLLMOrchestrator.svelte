@@ -3,7 +3,6 @@ Multi-LLM Orchestration Component
 Provides UI for managing multiple AI workers and orchestrating parallel processing
 -->
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
   import { Badge } from '$lib/components/ui/badge';
@@ -27,7 +26,6 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     AlertCircle,
     X
   } from 'lucide-svelte';
-  
   import { aiWorkerManager } from '$lib/services/ai-worker-manager.js';
   import type { 
     AITask, 
@@ -77,7 +75,6 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       status: 'unknown',
       models: ['gemma3-legal', 'llama3:8b-instruct', 'nomic-embed-text']
     },
-    
     {
       id: 'autogen',
       name: 'AutoGen',
@@ -109,12 +106,10 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     if (autoStart) {
       await initializeOrchestrator();
     }
-    
     // Set up event handlers
     aiWorkerManager.onTaskComplete = handleTaskComplete;
     aiWorkerManager.onTaskError = handleTaskError;
     aiWorkerManager.onStatusUpdate = handleStatusUpdate;
-    
     // Start status monitoring
     startStatusMonitoring();
   });
@@ -128,12 +123,9 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   async function initializeOrchestrator() {
     try {
       isProcessing = true;
-      
       await aiWorkerManager.initialize();
-      
       isInitialized = true;
       await refreshStatus();
-      
       console.log('Multi-LLM Orchestrator initialized successfully');
     } catch (error) {
       console.error('Failed to initialize orchestrator:', error);
@@ -148,9 +140,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
         aiWorkerManager.getStatus(),
         Promise.resolve(aiWorkerManager.getWorkerPoolStatus())
       ]);
-      
       processingMetrics = aiWorkerManager.getMetrics();
-      
       // Check provider health
       await checkProviderHealth();
     } catch (error) {
@@ -179,7 +169,6 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   function handleTaskComplete(taskId: string, response: AIResponse) {
     activeTasks.delete(taskId);
     completedTasks.set(taskId, response);
-    
     // Trigger reactivity
     activeTasks = new Map(activeTasks);
     completedTasks = new Map(completedTasks);
@@ -188,7 +177,6 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   function handleTaskError(taskId: string, error: Error) {
     activeTasks.delete(taskId);
     taskErrors.set(taskId, error);
-    
     // Trigger reactivity
     activeTasks = new Map(activeTasks);
     taskErrors = new Map(taskErrors);
@@ -214,7 +202,6 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     try {
       activeTasks.set(testTask.taskId, testTask);
       activeTasks = new Map(activeTasks);
-      
       await aiWorkerManager.submitTask(testTask);
       console.log(`Test task submitted to ${providerId}`);
     } catch (error) {

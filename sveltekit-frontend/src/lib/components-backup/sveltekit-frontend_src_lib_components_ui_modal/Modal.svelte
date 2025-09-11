@@ -1,12 +1,10 @@
 <script lang="ts">
-</script>
-	import type { Snippet } from 'svelte';
-	
-	let { open = false, title, children }: {
-		open?: boolean;
-		title: string
-		children?: Snippet;
-	} = $props();
+  	import type { Snippet } from 'svelte';
+  	let { open = false, title, children }: {
+  		open?: boolean;
+  		title: string
+  		children?: Snippet;
+  	} = $props();
 </script>
 
 {#if open}

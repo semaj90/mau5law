@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
 
   import Dialog from 'bits-ui/Dialog.svelte';
   import Button from 'bits-ui/Button.svelte';
@@ -23,11 +22,11 @@
     };
     open?: boolean;
   } = $props();
-let form = $state<any >(null);
-let title = $state('');
-let description = $state('');
-let tagsString = $state('');
-let type = $state('');
+  let form = $state<any >(null);
+  let title = $state('');
+  let description = $state('');
+  let tagsString = $state('');
+  let type = $state('');
 
   // XState machine for tag/type grouping
   const evidenceMachine = createMachine({

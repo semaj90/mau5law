@@ -1,163 +1,161 @@
 <script lang="ts">
-</script>
   import type { Evidence } from '$lib/types/api';
-	import { onMount } from 'svelte';
-	import { page } from '$app/state';
-	import ReportEditor from "$lib/components/ReportEditor.svelte";
-	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
-	import type { Report, CanvasState, CitationPoint } from "$lib/data/types";
+  	import { onMount } from 'svelte';
+  	import { page } from '$app/state';
+  	import ReportEditor from "$lib/components/ReportEditor.svelte";
+  	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
+  	import type { Report, CanvasState, CitationPoint } from "$lib/data/types";
 
-	let currentReport: Report | null = $state(null);
-	let currentCanvasState: CanvasState | null = $state(null);
-	let evidence: Evidence[] = $state([]);
-	let citationPoints: CitationPoint[] = $state([]);
-	let activeTab: 'editor' | 'canvas' = $state('editor');
-	let isLoading = $state(false);
-	let error = $state('');
+  	let currentReport: Report | null = $state(null);
+  	let currentCanvasState: CanvasState | null = $state(null);
+  	let evidence: Evidence[] = $state([]);
+  	let citationPoints: CitationPoint[] = $state([]);
+  	let activeTab: 'editor' | 'canvas' = $state('editor');
+  	let isLoading = $state(false);
+  	let error = $state('');
 
-	// Demo case ID - in real app this would come from the route
-	const caseId = page.params.caseId || 'demo-case-123';
+  	// Demo case ID - in real app this would come from the route
+  	const caseId = page.params.caseId || 'demo-case-123';
 
-	onMount(async () => {
-		await loadDemoData();
-	});
+  	onMount(async () => {
+  		await loadDemoData();
+  	});
 
-	async function loadDemoData() {
-		try {
-			isLoading = true;
-			
-			// Load sample citation points
-			const citationsResponse = await fetch(`/api/citations?caseId=${caseId}`);
-			if (citationsResponse.ok) {
-				citationPoints = await citationsResponse.json();
-}
-			// Load sample evidence (mock for now)
-			evidence = [
-				{
-					id: '1',
-					caseId,
-					criminalId: null,
-					title: 'Security Camera Footage',
-					description: 'CCTV footage from main entrance',
-					evidenceType: 'video',
-					fileType: 'video/mp4',
-					subType: null,
-					fileUrl: null,
-					fileName: 'security_footage.mp4',
-					fileSize: null,
-					mimeType: 'video/mp4',
-					hash: 'abc123def456',
-					tags: [],
-					chainOfCustody: [],
-					collectedAt: null,
-					collectedBy: null,
-					location: null,
-					labAnalysis: {},
-					aiAnalysis: {},
-					aiTags: [],
-					aiSummary: null,
-					summary: null,
-					isAdmissible: true,
-					confidentialityLevel: 'standard',
-					canvasPosition: {},
-					uploadedBy: '1',
-					uploadedAt: new Date(),
-					updatedAt: new Date()
-				},
-				{
-					id: '2',
-					caseId,
-					criminalId: null,
-					title: 'Witness Statement - John Doe',
-					description: 'Eyewitness account of the incident',
-					evidenceType: 'document',
-					fileType: 'application/pdf',
-					subType: null,
-					fileUrl: null,
-					fileName: 'witness_statement.pdf',
-					fileSize: null,
-					mimeType: 'application/pdf',
-					hash: 'def456ghi789',
-					tags: [],
-					chainOfCustody: [],
-					collectedAt: null,
-					collectedBy: null,
-					location: null,
-					labAnalysis: {},
-					aiAnalysis: {},
-					aiTags: [],
-					aiSummary: null,
-					summary: null,
-					isAdmissible: true,
-					confidentialityLevel: 'standard',
-					canvasPosition: {},
-					uploadedBy: '1',
-					uploadedAt: new Date(),
-					updatedAt: new Date()
-				},
-				{
-					id: '3',
-					caseId,
-					criminalId: null,
-					title: 'Physical Evidence - Weapon',
-					description: 'Photograph of recovered weapon',
-					evidenceType: 'photo',
-					fileType: 'image/jpeg',
-					subType: null,
-					fileUrl: null,
-					fileName: 'weapon_photo.jpg',
-					fileSize: null,
-					mimeType: 'image/jpeg',
-					hash: 'ghi789jkl012',
-					tags: [],
-					chainOfCustody: [],
-					collectedAt: null,
-					collectedBy: null,
-					location: null,
-					labAnalysis: {},
-					aiAnalysis: {},
-					aiTags: [],
-					aiSummary: null,
-					summary: null,
-					isAdmissible: true,
-					confidentialityLevel: 'standard',
-					canvasPosition: {},
-					uploadedBy: '1',
-					uploadedAt: new Date(),
-					updatedAt: new Date()
-}
-			];
+  	async function loadDemoData() {
+  		try {
+  			isLoading = true;
+  			// Load sample citation points
+  			const citationsResponse = await fetch(`/api/citations?caseId=${caseId}`);
+  			if (citationsResponse.ok) {
+  				citationPoints = await citationsResponse.json();
+  }
+  			// Load sample evidence (mock for now)
+  			evidence = [
+  				{
+  					id: '1',
+  					caseId,
+  					criminalId: null,
+  					title: 'Security Camera Footage',
+  					description: 'CCTV footage from main entrance',
+  					evidenceType: 'video',
+  					fileType: 'video/mp4',
+  					subType: null,
+  					fileUrl: null,
+  					fileName: 'security_footage.mp4',
+  					fileSize: null,
+  					mimeType: 'video/mp4',
+  					hash: 'abc123def456',
+  					tags: [],
+  					chainOfCustody: [],
+  					collectedAt: null,
+  					collectedBy: null,
+  					location: null,
+  					labAnalysis: {},
+  					aiAnalysis: {},
+  					aiTags: [],
+  					aiSummary: null,
+  					summary: null,
+  					isAdmissible: true,
+  					confidentialityLevel: 'standard',
+  					canvasPosition: {},
+  					uploadedBy: '1',
+  					uploadedAt: new Date(),
+  					updatedAt: new Date()
+  				},
+  				{
+  					id: '2',
+  					caseId,
+  					criminalId: null,
+  					title: 'Witness Statement - John Doe',
+  					description: 'Eyewitness account of the incident',
+  					evidenceType: 'document',
+  					fileType: 'application/pdf',
+  					subType: null,
+  					fileUrl: null,
+  					fileName: 'witness_statement.pdf',
+  					fileSize: null,
+  					mimeType: 'application/pdf',
+  					hash: 'def456ghi789',
+  					tags: [],
+  					chainOfCustody: [],
+  					collectedAt: null,
+  					collectedBy: null,
+  					location: null,
+  					labAnalysis: {},
+  					aiAnalysis: {},
+  					aiTags: [],
+  					aiSummary: null,
+  					summary: null,
+  					isAdmissible: true,
+  					confidentialityLevel: 'standard',
+  					canvasPosition: {},
+  					uploadedBy: '1',
+  					uploadedAt: new Date(),
+  					updatedAt: new Date()
+  				},
+  				{
+  					id: '3',
+  					caseId,
+  					criminalId: null,
+  					title: 'Physical Evidence - Weapon',
+  					description: 'Photograph of recovered weapon',
+  					evidenceType: 'photo',
+  					fileType: 'image/jpeg',
+  					subType: null,
+  					fileUrl: null,
+  					fileName: 'weapon_photo.jpg',
+  					fileSize: null,
+  					mimeType: 'image/jpeg',
+  					hash: 'ghi789jkl012',
+  					tags: [],
+  					chainOfCustody: [],
+  					collectedAt: null,
+  					collectedBy: null,
+  					location: null,
+  					labAnalysis: {},
+  					aiAnalysis: {},
+  					aiTags: [],
+  					aiSummary: null,
+  					summary: null,
+  					isAdmissible: true,
+  					confidentialityLevel: 'standard',
+  					canvasPosition: {},
+  					uploadedBy: '1',
+  					uploadedAt: new Date(),
+  					updatedAt: new Date()
+  }
+  			];
 
-		} catch (err) {
-			console.error('Failed to load demo data:', err);
-			error = 'Failed to load demo data';
-		} finally {
-			isLoading = false;
-}}
-	async function handleReportSave(report: Report) {
-		try {
-			currentReport = report;
-			console.log('Report saved:', report);
-		} catch (err) {
-			console.error('Failed to save report:', err);
-			error = 'Failed to save report';
-}}
-	async function handleCanvasSave(canvasState: CanvasState) {
-		try {
-			currentCanvasState = canvasState;
-			console.log('Canvas saved:', canvasState);
-		} catch (err) {
-			console.error('Failed to save canvas:', err);
-			error = 'Failed to save canvas';
-}}
-	function createNewReport() {
-		currentReport = null;
-		activeTab = 'editor';
-}
-	function createNewCanvas() {
-		currentCanvasState = null;
-		activeTab = 'canvas';
-}
+  		} catch (err) {
+  			console.error('Failed to load demo data:', err);
+  			error = 'Failed to load demo data';
+  		} finally {
+  			isLoading = false;
+  }}
+  	async function handleReportSave(report: Report) {
+  		try {
+  			currentReport = report;
+  			console.log('Report saved:', report);
+  		} catch (err) {
+  			console.error('Failed to save report:', err);
+  			error = 'Failed to save report';
+  }}
+  	async function handleCanvasSave(canvasState: CanvasState) {
+  		try {
+  			currentCanvasState = canvasState;
+  			console.log('Canvas saved:', canvasState);
+  		} catch (err) {
+  			console.error('Failed to save canvas:', err);
+  			error = 'Failed to save canvas';
+  }}
+  	function createNewReport() {
+  		currentReport = null;
+  		activeTab = 'editor';
+  }
+  	function createNewCanvas() {
+  		currentCanvasState = null;
+  		activeTab = 'canvas';
+  }
 </script>
 
 <svelte:head>

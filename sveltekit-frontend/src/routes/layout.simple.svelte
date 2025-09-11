@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import '../app.css';
   import type { Snippet } from 'svelte';
   interface Props { children: Snippet }

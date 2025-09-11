@@ -1,26 +1,25 @@
 <script lang="ts">
-</script>
-	import type { Snippet } from "svelte";
-	import { cn } from "$lib/utils/styles.js";
-	import OpenInStackblitz from "./open-in-stackblitz.svelte";
+  	import type { Snippet } from "svelte";
+  	import { cn } from "$lib/utils/styles.js";
+  	import OpenInStackblitz from "./open-in-stackblitz.svelte";
 
-	let {
-		align = "center",
-		size = "default",
-		class: className,
-		name,
-		componentName = name,
-		wrapperClass,
-		children,
-	}: {
-		align?: "start" | "center" | "end";
-		size?: "xs" | "sm" | "default" | "lg";
-		class?: string;
-		wrapperClass?: string;
-		componentName?: string;
-		name?: string;
-		children: Snippet;
-	} = $props();
+  	let {
+  		align = "center",
+  		size = "default",
+  		class: className,
+  		name,
+  		componentName = name,
+  		wrapperClass,
+  		children,
+  	}: {
+  		align?: "start" | "center" | "end";
+  		size?: "xs" | "sm" | "default" | "lg";
+  		class?: string;
+  		wrapperClass?: string;
+  		componentName?: string;
+  		name?: string;
+  		children: Snippet;
+  	} = $props();
 </script>
 
 <div

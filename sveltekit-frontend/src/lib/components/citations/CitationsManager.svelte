@@ -1,333 +1,328 @@
 <!-- Citations Manager - Legal Citation System with AI-powered search -->
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import {
+  	import { onMount } from 'svelte';
+  	import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-	import Button from '$lib/components/ui/button/Button.svelte';
-	// Badge replaced with span - not available in enhanced-bits
-	import {
+  	import Button from '$lib/components/ui/button/Button.svelte';
+  	// Badge replaced with span - not available in enhanced-bits
+  	import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
-	import { 
-		Search, BookOpen, ExternalLink, Download, 
-		Plus, FileText, Calendar, User, Tags,
-		Filter, SortAsc, Eye, Edit, Trash2
-	} from 'lucide-svelte';
+  	import { 
+  		Search, BookOpen, ExternalLink, Download, 
+  		Plus, FileText, Calendar, User, Tags,
+  		Filter, SortAsc, Eye, Edit, Trash2
+  	} from 'lucide-svelte';
 
-	// Svelte 5 state management
-	let citations = $state<any[]>([]);
-	let filteredCitations = $state<any[]>([]);
-	let searchQuery = $state('');
-	let selectedCategory = $state('all');
-	let sortBy = $state<'date' | 'title' | 'relevance'>('date');
-	let isLoading = $state(false);
-	
-	let citationCategories = $state([
-		{ id: 'all', label: 'All Citations', count: 0 },
-		{ id: 'cases', label: 'Case Law', count: 0 },
-		{ id: 'statutes', label: 'Statutes', count: 0 },
-		{ id: 'regulations', label: 'Regulations', count: 0 },
-		{ id: 'articles', label: 'Articles', count: 0 },
-		{ id: 'evidence', label: 'Evidence', count: 0 }
-	]);
+  	// Svelte 5 state management
+  	let citations = $state<any[]>([]);
+  	let filteredCitations = $state<any[]>([]);
+  	let searchQuery = $state('');
+  	let selectedCategory = $state('all');
+  	let sortBy = $state<'date' | 'title' | 'relevance'>('date');
+  	let isLoading = $state(false);
+  	let citationCategories = $state([
+  		{ id: 'all', label: 'All Citations', count: 0 },
+  		{ id: 'cases', label: 'Case Law', count: 0 },
+  		{ id: 'statutes', label: 'Statutes', count: 0 },
+  		{ id: 'regulations', label: 'Regulations', count: 0 },
+  		{ id: 'articles', label: 'Articles', count: 0 },
+  		{ id: 'evidence', label: 'Evidence', count: 0 }
+  	]);
 
-	let newCitation = $state({
-		title: '',
-		authors: '',
-		year: new Date().getFullYear(),
-		source: '',
-		category: 'cases',
-		pages: '',
-		url: '',
-		notes: '',
-		tags: [] as string[],
-		relevanceScore: 0
-	});
+  	let newCitation = $state({
+  		title: '',
+  		authors: '',
+  		year: new Date().getFullYear(),
+  		source: '',
+  		category: 'cases',
+  		pages: '',
+  		url: '',
+  		notes: '',
+  		tags: [] as string[],
+  		relevanceScore: 0
+  	});
 
-	let showAddForm = $state(false);
-	let selectedCitation = $state<any>(null);
-	let showDetailModal = $state(false);
+  	let showAddForm = $state(false);
+  	let selectedCitation = $state<any>(null);
+  	let showDetailModal = $state(false);
 
-	// Component props
-	let { 
-		caseId = '',
-		readonly = false
-	} = $props<{
-		caseId?: string;
-		readonly?: boolean;
-	}>();
+  	// Component props
+  	let { 
+  		caseId = '',
+  		readonly = false
+  	} = $props<{
+  		caseId?: string;
+  		readonly?: boolean;
+  	}>();
 
-	// Initialize citations
-	onMount(async () => {
-		await loadCitations();
-		updateCategoryCounts();
-	});
+  	// Initialize citations
+  	onMount(async () => {
+  		await loadCitations();
+  		updateCategoryCounts();
+  	});
 
-	async function loadCitations() {
-		isLoading = true;
-		console.log('📚 Loading citations for caseItem:', caseId);
+  	async function loadCitations() {
+  		isLoading = true;
+  		console.log('📚 Loading citations for caseItem:', caseId);
 
-		try {
-			// Load sample citations data
-			citations = [
-				{
-					id: 'citation-1',
-					title: 'Brown v. Board of Education',
-					authors: 'Supreme Court of the United States',
-					year: 1954,
-					source: '347 U.S. 483',
-					category: 'cases',
-					pages: '483-496',
-					url: 'https://supreme.justia.com/cases/federal/us/347/483/',
-					notes: 'Landmark case establishing that racial segregation in public schools is unconstitutional',
-					tags: ['constitutional-law', 'education', 'civil-rights', 'segregation'],
-					relevanceScore: 95,
-					dateAdded: new Date('2024-01-15'),
-					caseId
-				},
-				{
-					id: 'citation-2',
-					title: 'Federal Rules of Evidence',
-					authors: 'U.S. Congress',
-					year: 2023,
-					source: 'Fed. R. Evid.',
-					category: 'statutes',
-					pages: 'Rule 401-403',
-					url: 'https://www.law.cornell.edu/rules/fre',
-					notes: 'Rules governing admissibility of evidence in federal court proceedings',
-					tags: ['evidence-law', 'federal-rules', 'admissibility', 'relevance'],
-					relevanceScore: 88,
-					dateAdded: new Date('2024-01-16'),
-					caseId
-				},
-				{
-					id: 'citation-3',
-					title: 'Miranda v. Arizona',
-					authors: 'Supreme Court of the United States',
-					year: 1966,
-					source: '384 U.S. 436',
-					category: 'cases',
-					pages: '436-526',
-					url: 'https://supreme.justia.com/cases/federal/us/384/436/',
-					notes: 'Established Miranda rights - suspects must be informed of rights before interrogation',
-					tags: ['criminal-law', 'constitutional-rights', 'interrogation', 'fifth-amendment'],
-					relevanceScore: 92,
-					dateAdded: new Date('2024-01-17'),
-					caseId
-				},
-				{
-					id: 'citation-4',
-					title: 'Digital Evidence and Computer Crime',
-					authors: 'Casey, E. & Rose, C.',
-					year: 2022,
-					source: 'Academic Press',
-					category: 'articles',
-					pages: '1-45',
-					url: 'https://doi.org/example',
-					notes: 'Comprehensive guide to handling digital evidence in modern legal proceedings',
-					tags: ['digital-forensics', 'computer-crime', 'evidence-handling', 'technology'],
-					relevanceScore: 78,
-					dateAdded: new Date('2024-01-18'),
-					caseId
-				}
-			];
+  		try {
+  			// Load sample citations data
+  			citations = [
+  				{
+  					id: 'citation-1',
+  					title: 'Brown v. Board of Education',
+  					authors: 'Supreme Court of the United States',
+  					year: 1954,
+  					source: '347 U.S. 483',
+  					category: 'cases',
+  					pages: '483-496',
+  					url: 'https://supreme.justia.com/cases/federal/us/347/483/',
+  					notes: 'Landmark case establishing that racial segregation in public schools is unconstitutional',
+  					tags: ['constitutional-law', 'education', 'civil-rights', 'segregation'],
+  					relevanceScore: 95,
+  					dateAdded: new Date('2024-01-15'),
+  					caseId
+  				},
+  				{
+  					id: 'citation-2',
+  					title: 'Federal Rules of Evidence',
+  					authors: 'U.S. Congress',
+  					year: 2023,
+  					source: 'Fed. R. Evid.',
+  					category: 'statutes',
+  					pages: 'Rule 401-403',
+  					url: 'https://www.law.cornell.edu/rules/fre',
+  					notes: 'Rules governing admissibility of evidence in federal court proceedings',
+  					tags: ['evidence-law', 'federal-rules', 'admissibility', 'relevance'],
+  					relevanceScore: 88,
+  					dateAdded: new Date('2024-01-16'),
+  					caseId
+  				},
+  				{
+  					id: 'citation-3',
+  					title: 'Miranda v. Arizona',
+  					authors: 'Supreme Court of the United States',
+  					year: 1966,
+  					source: '384 U.S. 436',
+  					category: 'cases',
+  					pages: '436-526',
+  					url: 'https://supreme.justia.com/cases/federal/us/384/436/',
+  					notes: 'Established Miranda rights - suspects must be informed of rights before interrogation',
+  					tags: ['criminal-law', 'constitutional-rights', 'interrogation', 'fifth-amendment'],
+  					relevanceScore: 92,
+  					dateAdded: new Date('2024-01-17'),
+  					caseId
+  				},
+  				{
+  					id: 'citation-4',
+  					title: 'Digital Evidence and Computer Crime',
+  					authors: 'Casey, E. & Rose, C.',
+  					year: 2022,
+  					source: 'Academic Press',
+  					category: 'articles',
+  					pages: '1-45',
+  					url: 'https://doi.org/example',
+  					notes: 'Comprehensive guide to handling digital evidence in modern legal proceedings',
+  					tags: ['digital-forensics', 'computer-crime', 'evidence-handling', 'technology'],
+  					relevanceScore: 78,
+  					dateAdded: new Date('2024-01-18'),
+  					caseId
+  				}
+  			];
 
-			filteredCitations = citations;
-			updateCategoryCounts();
-			console.log(`✅ Loaded ${citations.length} citations`);
-		} catch (error) {
-			console.error('❌ Failed to load citations:', error);
-		} finally {
-			isLoading = false;
-		}
-	}
+  			filteredCitations = citations;
+  			updateCategoryCounts();
+  			console.log(`✅ Loaded ${citations.length} citations`);
+  		} catch (error) {
+  			console.error('❌ Failed to load citations:', error);
+  		} finally {
+  			isLoading = false;
+  		}
+  	}
 
-	function updateCategoryCounts() {
-		citationCategories = citationCategories.map(category => ({
-			...category,
-			count: category.id === 'all' 
-				? citations.length 
-				: citations.filter(c => c.category === category.id).length
-		}));
-	}
+  	function updateCategoryCounts() {
+  		citationCategories = citationCategories.map(category => ({
+  			...category,
+  			count: category.id === 'all' 
+  				? citations.length 
+  				: citations.filter(c => c.category === category.id).length
+  		}));
+  	}
 
-	function filterCitations() {
-		let filtered = citations;
+  	function filterCitations() {
+  		let filtered = citations;
 
-		// Filter by category
-		if (selectedCategory !== 'all') {
-			filtered = filtered.filter(c => c.category === selectedCategory);
-		}
+  		// Filter by category
+  		if (selectedCategory !== 'all') {
+  			filtered = filtered.filter(c => c.category === selectedCategory);
+  		}
 
-		// Filter by search query
-		if (searchQuery.trim()) {
-			const query = searchQuery.toLowerCase();
-			filtered = filtered.filter(c => 
-				c.title.toLowerCase().includes(query) ||
-				c.authors.toLowerCase().includes(query) ||
-				c.source.toLowerCase().includes(query) ||
-				c.notes.toLowerCase().includes(query) ||
-				c.tags.some(tag => tag.toLowerCase().includes(query))
-			);
-		}
+  		// Filter by search query
+  		if (searchQuery.trim()) {
+  			const query = searchQuery.toLowerCase();
+  			filtered = filtered.filter(c => 
+  				c.title.toLowerCase().includes(query) ||
+  				c.authors.toLowerCase().includes(query) ||
+  				c.source.toLowerCase().includes(query) ||
+  				c.notes.toLowerCase().includes(query) ||
+  				c.tags.some(tag => tag.toLowerCase().includes(query))
+  			);
+  		}
 
-		// Sort results
-		filtered.sort((a, b) => {
-			switch (sortBy) {
-				case 'title':
-					return a.title.localeCompare(b.title);
-				case 'relevance':
-					return b.relevanceScore - a.relevanceScore;
-				case 'date':
-				default:
-					return b.dateAdded.getTime() - a.dateAdded.getTime();
-			}
-		});
+  		// Sort results
+  		filtered.sort((a, b) => {
+  			switch (sortBy) {
+  				case 'title':
+  					return a.title.localeCompare(b.title);
+  				case 'relevance':
+  					return b.relevanceScore - a.relevanceScore;
+  				case 'date':
+  				default:
+  					return b.dateAdded.getTime() - a.dateAdded.getTime();
+  			}
+  		});
 
-		filteredCitations = filtered;
-	}
+  		filteredCitations = filtered;
+  	}
 
-	function handleSearch(event: Event) {
-		const target = event.target as HTMLInputElement;
-		searchQuery = target.value;
-		filterCitations();
-	}
+  	function handleSearch(event: Event) {
+  		const target = event.target as HTMLInputElement;
+  		searchQuery = target.value;
+  		filterCitations();
+  	}
 
-	function selectCategory(categoryId: string) {
-		selectedCategory = categoryId;
-		filterCitations();
-	}
+  	function selectCategory(categoryId: string) {
+  		selectedCategory = categoryId;
+  		filterCitations();
+  	}
 
-	function changeSortBy(newSortBy: 'date' | 'title' | 'relevance') {
-		sortBy = newSortBy;
-		filterCitations();
-	}
+  	function changeSortBy(newSortBy: 'date' | 'title' | 'relevance') {
+  		sortBy = newSortBy;
+  		filterCitations();
+  	}
 
-	function showAddCitationForm() {
-		showAddForm = true;
-		newCitation = {
-			title: '',
-			authors: '',
-			year: new Date().getFullYear(),
-			source: '',
-			category: 'cases',
-			pages: '',
-			url: '',
-			notes: '',
-			tags: [],
-			relevanceScore: 0
-		};
-	}
+  	function showAddCitationForm() {
+  		showAddForm = true;
+  		newCitation = {
+  			title: '',
+  			authors: '',
+  			year: new Date().getFullYear(),
+  			source: '',
+  			category: 'cases',
+  			pages: '',
+  			url: '',
+  			notes: '',
+  			tags: [],
+  			relevanceScore: 0
+  		};
+  	}
 
-	function hideAddCitationForm() {
-		showAddForm = false;
-	}
+  	function hideAddCitationForm() {
+  		showAddForm = false;
+  	}
 
-	async function saveCitation() {
-		if (!newCitation.title.trim() || !newCitation.authors.trim()) {
-			console.error('❌ Title and authors are required');
-			return;
-		}
+  	async function saveCitation() {
+  		if (!newCitation.title.trim() || !newCitation.authors.trim()) {
+  			console.error('❌ Title and authors are required');
+  			return;
+  		}
 
-		const citation = {
-			...newCitation,
-			id: `citation-${Date.now()}`,
-			dateAdded: new Date(),
-			caseId
-		};
+  		const citation = {
+  			...newCitation,
+  			id: `citation-${Date.now()}`,
+  			dateAdded: new Date(),
+  			caseId
+  		};
 
-		try {
-			console.log('💾 Saving citation:', citation.title);
-			
-			// Save to server (stubbed)
-			const response = await fetch('/api/legal/citations', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(citation)
-			});
+  		try {
+  			console.log('💾 Saving citation:', citation.title);
+  			// Save to server (stubbed)
+  			const response = await fetch('/api/legal/citations', {
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
+  				body: JSON.stringify(citation)
+  			});
 
-			if (response.ok) {
-				citations = [...citations, citation];
-				updateCategoryCounts();
-				filterCitations();
-				hideAddCitationForm();
-				console.log('✅ Citation saved successfully');
-			}
-		} catch (error) {
-			console.error('❌ Failed to save citation:', error);
-		}
-	}
+  			if (response.ok) {
+  				citations = [...citations, citation];
+  				updateCategoryCounts();
+  				filterCitations();
+  				hideAddCitationForm();
+  				console.log('✅ Citation saved successfully');
+  			}
+  		} catch (error) {
+  			console.error('❌ Failed to save citation:', error);
+  		}
+  	}
 
-	function viewCitationDetails(citation: any) {
-		selectedCitation = citation;
-		showDetailModal = true;
-	}
+  	function viewCitationDetails(citation: any) {
+  		selectedCitation = citation;
+  		showDetailModal = true;
+  	}
 
-	function hideDetailModal() {
-		showDetailModal = false;
-		selectedCitation = null;
-	}
+  	function hideDetailModal() {
+  		showDetailModal = false;
+  		selectedCitation = null;
+  	}
 
-	async function deleteCitation(citationId: string) {
-		if (!confirm('Are you sure you want to delete this citation?')) {
-			return;
-		}
+  	async function deleteCitation(citationId: string) {
+  		if (!confirm('Are you sure you want to delete this citation?')) {
+  			return;
+  		}
 
-		try {
-			const response = await fetch(`/api/legal/citations/${citationId}`, {
-				method: 'DELETE'
-			});
+  		try {
+  			const response = await fetch(`/api/legal/citations/${citationId}`, {
+  				method: 'DELETE'
+  			});
 
-			if (response.ok) {
-				citations = citations.filter(c => c.id !== citationId);
-				updateCategoryCounts();
-				filterCitations();
-				console.log('✅ Citation deleted successfully');
-			}
-		} catch (error) {
-			console.error('❌ Failed to delete citation:', error);
-		}
-	}
+  			if (response.ok) {
+  				citations = citations.filter(c => c.id !== citationId);
+  				updateCategoryCounts();
+  				filterCitations();
+  				console.log('✅ Citation deleted successfully');
+  			}
+  		} catch (error) {
+  			console.error('❌ Failed to delete citation:', error);
+  		}
+  	}
 
-	function formatCitation(citation: any): string {
-		// Generate proper legal citation format
-		switch (citation.category) {
-			case 'cases':
-				return `${citation.title}, ${citation.source} (${citation.year})`;
-			case 'statutes':
-				return `${citation.source} (${citation.year})`;
-			case 'articles':
-				return `${citation.authors}, ${citation.title}, ${citation.source} (${citation.year})`;
-			default:
-				return `${citation.authors}, ${citation.title}, ${citation.source} (${citation.year})`;
-		}
-	}
+  	function formatCitation(citation: any): string {
+  		// Generate proper legal citation format
+  		switch (citation.category) {
+  			case 'cases':
+  				return `${citation.title}, ${citation.source} (${citation.year})`;
+  			case 'statutes':
+  				return `${citation.source} (${citation.year})`;
+  			case 'articles':
+  				return `${citation.authors}, ${citation.title}, ${citation.source} (${citation.year})`;
+  			default:
+  				return `${citation.authors}, ${citation.title}, ${citation.source} (${citation.year})`;
+  		}
+  	}
 
-	async function exportCitations() {
-		console.log('📄 Exporting citations...');
-		
-		const exportData = filteredCitations.map(citation => ({
-			formattedCitation: formatCitation(citation),
-			...citation
-		}));
+  	async function exportCitations() {
+  		console.log('📄 Exporting citations...');
+  		const exportData = filteredCitations.map(citation => ({
+  			formattedCitation: formatCitation(citation),
+  			...citation
+  		}));
 
-		// Create downloadable file
-		const blob = new Blob([JSON.stringify(exportData, null, 2)], { 
-			type: 'application/json' 
-		});
-		
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = `citations-${caseId || 'export'}-${new Date().toISOString().split('T')[0]}.json`;
-		a.click();
-		URL.revokeObjectURL(url);
-	}
+  		// Create downloadable file
+  		const blob = new Blob([JSON.stringify(exportData, null, 2)], { 
+  			type: 'application/json' 
+  		});
+  		const url = URL.createObjectURL(blob);
+  		const a = document.createElement('a');
+  		a.href = url;
+  		a.download = `citations-${caseId || 'export'}-${new Date().toISOString().split('T')[0]}.json`;
+  		a.click();
+  		URL.revokeObjectURL(url);
+  	}
 </script>
 
 <!-- Citations Manager Interface -->

@@ -3,19 +3,17 @@
   Tests SuperForms + Enhanced Actions pattern
 -->
 <script lang="ts">
-</script>
   import { enhance } from '$app/forms';
   import { page } from '$app/stores';
   import type { PageData } from './$types';
 
   let { data = $bindable() } = $props(); // PageData;
-let isSubmitting = $state(false);
+  let isSubmitting = $state(false);
 
   // Enhanced form submission
   function createEnhancedSubmit() {
     return enhance(({ formData, action, cancel }) => {
       isSubmitting = true;
-      
       // Add metadata to form submission
       formData.append('metadata', JSON.stringify({
         submitTime: new Date().toISOString(),
@@ -23,7 +21,6 @@ let isSubmitting = $state(false);
       });
       return async ({ result, update }) => {
         isSubmitting = false;
-        
         if (result.type === 'success') {
           console.log('✅ Form submitted successfully:', result.data);
         } else if (result.type === 'failure') {

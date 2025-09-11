@@ -1,64 +1,63 @@
 <script lang="ts">
-</script>
-	import { Menubar } from "bits-ui";
-	import CaretRight from "phosphor-svelte/lib/CaretRight";
-	import Cat from "phosphor-svelte/lib/Cat";
-	import Check from "phosphor-svelte/lib/Check";
+  	import { Menubar } from "bits-ui";
+  	import CaretRight from "phosphor-svelte/lib/CaretRight";
+  	import Cat from "phosphor-svelte/lib/Cat";
+  	import Check from "phosphor-svelte/lib/Check";
 
-	let selectedView = $state("table");
-	let selectedProfile = $state("pavel");
+  	let selectedView = $state("table");
+  	let selectedProfile = $state("pavel");
 
-	let grids = $state([
-		{
-			checked: true,
-			label: "Pixel",
-		},
-		{
-			checked: false,
-			label: "Layout",
-		},
-	]);
+  	let grids = $state([
+  		{
+  			checked: true,
+  			label: "Pixel",
+  		},
+  		{
+  			checked: false,
+  			label: "Layout",
+  		},
+  	]);
 
-	let showConfigs = $state([
-		{
-			checked: true,
-			label: "Show Bookmarks",
-		},
-		{
-			checked: false,
-			label: "Show Full URLs",
-		},
-	]);
+  	let showConfigs = $state([
+  		{
+  			checked: true,
+  			label: "Show Bookmarks",
+  		},
+  		{
+  			checked: false,
+  			label: "Show Full URLs",
+  		},
+  	]);
 
-	const profiles = [
-		{
-			value: "hunter",
-			label: "Hunter",
-		},
-		{
-			value: "pavel",
-			label: "Pavel",
-		},
-		{
-			value: "adrian",
-			label: "Adrian",
-		},
-	];
+  	const profiles = [
+  		{
+  			value: "hunter",
+  			label: "Hunter",
+  		},
+  		{
+  			value: "pavel",
+  			label: "Pavel",
+  		},
+  		{
+  			value: "adrian",
+  			label: "Adrian",
+  		},
+  	];
 
-	const views = [
-		{
-			value: "table",
-			label: "Table",
-		},
-		{
-			value: "board",
-			label: "Board",
-		},
-		{
-			value: "gallery",
-			label: "Gallery",
-		},
-	];
+  	const views = [
+  		{
+  			value: "table",
+  			label: "Table",
+  		},
+  		{
+  			value: "board",
+  			label: "Board",
+  		},
+  		{
+  			value: "gallery",
+  			label: "Gallery",
+  		},
+  	];
 </script>
 
 <Menubar.Root

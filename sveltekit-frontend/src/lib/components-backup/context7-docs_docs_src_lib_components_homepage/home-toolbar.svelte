@@ -1,11 +1,10 @@
 <script lang="ts">
-</script>
-	import { Toolbar } from "bits-ui";
-	import WaveSine from "phosphor-svelte/lib/WaveSine";
-	import WaveSquare from "phosphor-svelte/lib/WaveSquare";
-	import WaveTriangle from "phosphor-svelte/lib/WaveTriangle";
+  	import { Toolbar } from "bits-ui";
+  	import WaveSine from "phosphor-svelte/lib/WaveSine";
+  	import WaveSquare from "phosphor-svelte/lib/WaveSquare";
+  	import WaveTriangle from "phosphor-svelte/lib/WaveTriangle";
 
-	let wave = $state("sine");
+  	let wave = $state("sine");
 </script>
 
 <Toolbar.Root

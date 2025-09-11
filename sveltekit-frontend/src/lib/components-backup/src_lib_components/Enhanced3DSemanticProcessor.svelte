@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import { createGPUProcessingActor, type DocumentInput } from '$lib/state/gpu-processing-machine';
   import { wasmTextProcessor } from '$lib/services/wasm-text-processor.js';
@@ -12,14 +11,12 @@
   import { Button } from 'bits-ui';
   import { Badge } from 'bits-ui';
   import { fade, fly, scale } from 'svelte/transition';
-  
   // Props
   export let maxConcurrent = 5;
   export let embeddingDimensions = 768;
   export let spatialScale = 1.0;
   export let lodThreshold = 10.0;
   export let enableAutocomplete = true;
-  
   // State
   let fileInput: HTMLInputElement;
   let textInput = $state('');
@@ -35,11 +32,9 @@
     spatialPoints: 0,
     memoryUsage: 0
   });
-  
   // GPU Processing Actor
   const gpuActor = createGPUProcessingActor();
   let actorState = $state(gpuActor.getSnapshot());
-  
   // 3D Scene Variables
   let canvas3D: HTMLCanvasElement;
   let scene3D: any = null;
@@ -47,43 +42,34 @@
   let pointCloud: any = null;
   let camera3D: any = null;
   let controls3D: any = null;
-  
   // Processing pipeline state
   let currentLOD = $state(0);
   let viewportBounds = $state({ min: [-10, -10, -10], max: [10, 10, 10] });
   let shaderCache = $state(new Map());
-  
   onMount(async () => {
     // Initialize WebAssembly text processor
     await wasmTextProcessor.initialize();
-    
     // Start GPU processing actor
     gpuActor.start();
-    
     // Subscribe to GPU actor state changes
     const subscription = gpuActor.subscribe((snapshot) => {
       actorState = snapshot;
     });
-    
     // Initialize 3D scene
     await initialize3DScene();
-    
     // Setup autocomplete if enabled
     if (enableAutocomplete) {
       setupAutocomplete();
     }
-    
     return () => {
       subscription.unsubscribe();
       cleanup3DScene();
     };
   });
-  
   onDestroy(() => {
     gpuActor.stop();
     cleanup3DScene();
   });
-  
   // Initialize 3D scene with Three.js
   async function initialize3DScene() {
     try {
@@ -93,11 +79,9 @@
         console.warn('Three.js not available, 3D visualization disabled');
         return;
       }
-      
       // Setup scene
       scene3D = new THREE.Scene();
       scene3D.background = new THREE.Color(0x0a0a0a);
-      
       // Setup camera
       camera3D = new THREE.PerspectiveCamera(
         75,
@@ -106,7 +90,6 @@
         1000
       );
       camera3D.position.set(20, 20, 20);
-      
       // Setup renderer
       renderer3D = new THREE.WebGLRenderer({ 
         canvas: canvas3D,
@@ -114,87 +97,69 @@
         alpha: true
       });
       renderer3D.setSize(canvas3D.clientWidth, canvas3D.clientHeight);
-      
       // Add controls (if OrbitControls available)
       if (THREE.OrbitControls) {
         controls3D = new THREE.OrbitControls(camera3D, canvas3D);
         controls3D.enableDamping = true;
       }
-      
       // Add lighting
       const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
       const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
       directionalLight.position.set(50, 50, 50);
       scene3D.add(ambientLight);
       scene3D.add(directionalLight);
-      
       // Start render loop
       animate3D();
-      
       console.log('🎮 3D Scene initialized');
     } catch (error) {
       console.error('❌ Error initializing 3D scene:', error);
     }
   }
-  
   // Animation loop for 3D scene
   function animate3D() {
     if (!renderer3D || !scene3D || !camera3D) return;
-    
     requestAnimationFrame(animate3D);
-    
     // Update controls
     if (controls3D) {
       controls3D.update();
     }
-    
     // Animate point cloud if exists
     if (pointCloud) {
       pointCloud.rotation.y += 0.005;
     }
-    
     // Render the scene
     renderer3D.render(scene3D, camera3D);
   }
-  
   // Handle file selection and processing
   async function handleFileSelect(event: Event) {
     const files = (event.target as HTMLInputElement).files;
     if (!files || files.length === 0) return;
-    
     isProcessing = true;
-    
     try {
       for (const file of Array.from(files)) {
         if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
           await processTextFile(file);
         }
       }
-      
       // Update 3D visualization
       updateSpatialVisualization();
-      
     } catch (error) {
       console.error('❌ Error processing files:', error);
     } finally {
       isProcessing = false;
     }
   }
-  
   // Process a single text file through the pipeline
   async function processTextFile(file: File) {
     console.log(`🔄 Processing file: ${file.name}`);
-    
     // Step 1: WebAssembly text processing
     const textResult = await wasmTextProcessor.processTextFile(file);
     processedFiles.set(textResult.fileId, textResult);
-    
     // Step 2: Get embedding requests for GPU processing
     const embeddingRequests = await wasmTextProcessor.getEmbeddingsForChunks(
       textResult.fileId, 
       embeddingDimensions
     );
-    
     // Step 3: Process through GPU pipeline
     for (const request of embeddingRequests) {
       gpuActor.send({ 
@@ -202,37 +167,29 @@
         ...request 
       });
     }
-    
     // Step 4: Create spatial embeddings (simulated for now)
     const spatial = await createSpatialEmbeddings(textResult.chunks);
     spatialEmbeddings.push(...spatial);
-    
     // Update stats
     stats.filesProcessed++;
     stats.totalChunks += textResult.totalChunks;
     stats.totalTokens += textResult.totalTokens;
     stats.spatialPoints = spatialEmbeddings.length;
     stats.memoryUsage = textResult.memoryUsage?.heapUsed || 0;
-    
     console.log(`✅ Processed ${file.name}: ${textResult.totalChunks} chunks, ${textResult.totalTokens} tokens`);
   }
-  
   // Create spatial embeddings from text chunks
   async function createSpatialEmbeddings(chunks: any[]) {
     const spatial = [];
-    
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
-      
       // Generate 3D coordinates (simplified - in practice this would use PCA/t-SNE)
       const x = (Math.random() - 0.5) * spatialScale * 20;
       const y = (Math.random() - 0.5) * spatialScale * 20;
       const z = (Math.random() - 0.5) * spatialScale * 20;
-      
       // Determine LOD based on distance from origin
       const distance = Math.sqrt(x*x + y*y + z*z);
       const lodLevel = Math.min(3, Math.floor(distance / lodThreshold));
-      
       spatial.push({
         id: chunk.id,
         position: { x, y, z },
@@ -245,35 +202,28 @@
         confidence: Math.random()
       });
     }
-    
     return spatial;
   }
-  
   // Update 3D visualization with spatial embeddings
   function updateSpatialVisualization() {
     if (!scene3D || spatialEmbeddings.length === 0) return;
-    
     try {
       const THREE = (window as any).THREE;
       if (!THREE) return;
-      
       // Remove existing point cloud
       if (pointCloud) {
         scene3D.remove(pointCloud);
       }
-      
       // Create geometry for points
       const geometry = new THREE.BufferGeometry();
       const positions = new Float32Array(spatialEmbeddings.length * 3);
       const colors = new Float32Array(spatialEmbeddings.length * 3);
       const sizes = new Float32Array(spatialEmbeddings.length);
-      
       spatialEmbeddings.forEach((embedding, i) => {
         // Position
         positions[i * 3] = embedding.position.x;
         positions[i * 3 + 1] = embedding.position.y;
         positions[i * 3 + 2] = embedding.position.z;
-        
         // Color based on LOD level
         const lodColors = [
           [1, 0.2, 0.2], // LOD 0: Red (high detail)
@@ -285,15 +235,12 @@
         colors[i * 3] = color[0];
         colors[i * 3 + 1] = color[1];
         colors[i * 3 + 2] = color[2];
-        
         // Size based on confidence
         sizes[i] = 2 + embedding.confidence * 8;
       });
-      
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
       geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
       geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-      
       // Create point cloud material
       const material = new THREE.ShaderMaterial({
         uniforms: {
@@ -304,11 +251,9 @@
           attribute vec3 color;
           varying vec3 vColor;
           uniform float time;
-          
           void main() {
             vColor = color;
             vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-            
             // Animate based on time
             float pulse = sin(time * 2.0 + position.x * 0.1) * 0.1 + 1.0;
             gl_PointSize = size * pulse * (300.0 / -mvPosition.z);
@@ -317,11 +262,9 @@
         `,
         fragmentShader: `
           varying vec3 vColor;
-          
           void main() {
             float dist = length(gl_PointCoord - vec2(0.5));
             if (dist > 0.5) discard;
-            
             float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
             gl_FragColor = vec4(vColor, alpha);
           }
@@ -329,23 +272,18 @@
         transparent: true,
         vertexColors: true
       });
-      
       pointCloud = new THREE.Points(geometry, material);
       scene3D.add(pointCloud);
-      
       console.log(`🎯 Updated 3D visualization with ${spatialEmbeddings.length} points`);
     } catch (error) {
       console.error('❌ Error updating 3D visualization:', error);
     }
   }
-  
   // Setup autocomplete functionality
   function setupAutocomplete() {
     let debounceTimer: NodeJS.Timeout;
-    
     const handleInput = async () => {
       clearTimeout(debounceTimer);
-      
       debounceTimer = setTimeout(async () => {
         if (autocompleteInput.trim().length > 1) {
           const suggestions = await wasmTextProcessor.getAutocompleteSuggestions(
@@ -358,29 +296,24 @@
         }
       }, 200);
     };
-    
     // This would be attached to an input element
     return handleInput;
   }
-  
   // Apply autocomplete suggestion
   function applyAutocompleteSuggestion(suggestion: any) {
     autocompleteInput = suggestion.text;
     autocompleteSuggestions = [];
   }
-  
   // Clear all data and reset
   function clearAll() {
     processedFiles.clear();
     spatialEmbeddings = [];
     autocompleteSuggestions = [];
     wasmTextProcessor.clearCache();
-    
     if (pointCloud && scene3D) {
       scene3D.remove(pointCloud);
       pointCloud = null;
     }
-    
     stats = {
       filesProcessed: 0,
       totalChunks: 0,
@@ -389,7 +322,6 @@
       memoryUsage: 0
     };
   }
-  
   // Cleanup 3D scene
   function cleanup3DScene() {
     if (renderer3D) {
@@ -399,7 +331,6 @@
       controls3D.dispose();
     }
   }
-  
   // Format bytes
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 B';

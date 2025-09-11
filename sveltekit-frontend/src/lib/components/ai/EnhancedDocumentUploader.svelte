@@ -1,6 +1,5 @@
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
-</script>
   // Updated to use melt-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
@@ -117,8 +116,8 @@
   );
 
   // File input reference
-let fileInput = $state<HTMLInputElement;
-let dropZone = $state<HTMLDivElement;
+  let fileInput = $state<HTMLInputElement;
+  let dropZone = $state<HTMLDivElement;
 
   // Document types for legal AI
   const documentTypes >([

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import Badge from '$lib/components/ui/Badge.svelte';
@@ -9,7 +8,6 @@
     Zap, Brain, Database, Canvas, Search, Settings, 
     CheckCircle, ArrowRight, Sparkles, Cpu, Server
   } from 'lucide-svelte';
-  
   // Import Phase 5 components
   import VectorIntelligenceDemo from '$lib/components/demo/VectorIntelligenceDemo.svelte';
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
@@ -99,7 +97,6 @@
 
   onMount(async () => {
     systemStatus = 'ready';
-    
     // Initialize Context7 service
     await context7Service.initialize();
     context7Stats = context7Service.getCacheStats();

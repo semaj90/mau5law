@@ -1,20 +1,15 @@
 <script lang="ts">
-</script>
   export let text: string = '';
   export let speed: number = 50;
-  
   let output = '';
   let i = 0;
   let intervalId: NodeJS.Timeout | null = null;
-  
   // TODO: Convert to $derived: if (text && i === 0) {
     output = ''
     i = 0;
-    
     if (intervalId) {
       clearInterval(intervalId);
     }
-    
     intervalId = setInterval(() => {
       if (i < text.length) {
         output += text[i];

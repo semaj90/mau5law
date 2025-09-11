@@ -1,6 +1,5 @@
 <script lang="ts">
-</script>
-	import { TimeRangeField } from "bits-ui";
+  	import { TimeRangeField } from "bits-ui";
 </script>
 
 <TimeRangeField.Root class="group flex w-full max-w-[320px] flex-col gap-1.5">

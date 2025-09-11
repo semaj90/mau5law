@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { Dialog } from 'bits-ui';
   import { fade, fly } from 'svelte/transition';
   import { Button } from '$lib/components/ui/enhanced-bits';

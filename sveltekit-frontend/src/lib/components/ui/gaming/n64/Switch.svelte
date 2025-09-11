@@ -11,7 +11,6 @@
   - Integration with YoRHa design system
 -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
@@ -53,7 +52,6 @@
     // Animation settings
     animationDuration?: number;
     springTension?: number;
-    
     class?: string;
   }
 
@@ -174,7 +172,6 @@
         oscillator1.type = 'square';
         oscillator1.frequency.setValueAtTime(220, audioContext.currentTime);
         oscillator1.frequency.exponentialRampToValueAtTime(330, audioContext.currentTime + 0.05);
-        
         oscillator2.type = 'sawtooth';
         oscillator2.frequency.setValueAtTime(660, audioContext.currentTime);
         oscillator2.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.08);
@@ -183,7 +180,6 @@
         oscillator1.type = 'square';
         oscillator1.frequency.setValueAtTime(330, audioContext.currentTime);
         oscillator1.frequency.exponentialRampToValueAtTime(220, audioContext.currentTime + 0.05);
-        
         oscillator2.type = 'sawtooth';
         oscillator2.frequency.setValueAtTime(880, audioContext.currentTime);
         oscillator2.frequency.exponentialRampToValueAtTime(550, audioContext.currentTime + 0.08);
@@ -207,10 +203,8 @@
 
     isPressed = true;
     isAnimating = true;
-    
     const newValue = !checked;
     checked = newValue;
-    
     await playSwitchSound(newValue);
 
     // Create particle effect

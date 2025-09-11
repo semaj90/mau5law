@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import type { Snippet } from 'svelte';
 
   import Button from '$lib/components/ui/button/Button.svelte';
@@ -24,7 +23,7 @@
       onUpdated: ({ form }) => {
         if (form.valid) onsuccess?.();
       },
-}
+  }
   );
 
   function handleOpenChange(isOpen: boolean) {

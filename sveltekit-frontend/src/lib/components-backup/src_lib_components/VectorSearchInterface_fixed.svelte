@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import * as Button from "$lib/components/ui/button";
   import * as Card from "$lib/components/ui/card";
   import * as Input from "$lib/components/ui/input";

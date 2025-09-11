@@ -1,6 +1,5 @@
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
-</script>
   interface Props {
     onevidenceUpdated?: (event?: any) => void;
     onsave?: (event?: any) => void;
@@ -24,8 +23,6 @@
     ZoomIn,
     ZoomOut,
   } from "lucide-svelte";
-  
-  
   // --- XState workflow state machine ---
   // Dynamically imported in onMount for SSR safety
   let canvasService: any = null;
@@ -43,7 +40,7 @@
   let evidenceItems: Array<any> = [];
   function setWorkflowMode(mode: string) {
     if (canvasService) canvasService.send(mode.toUpperCase());
-}
+  }
   onMount(async () => {
     if (!browser) return;
     try {
@@ -87,9 +84,9 @@
       if (evidenceItems && evidenceItems.length) {
         for (const item of evidenceItems) {
           await addEvidenceToCanvas(item);
-}
+  }
         fabricCanvas.renderAll();
-}
+  }
       // Save initial state
       saveCanvasState();
     } catch (error) {
@@ -100,7 +97,7 @@
         message:
           "Failed to initialize canvas or workflow state. Some features may not work.",
       });
-}
+  }
   });
 
   onDestroy(() => {
@@ -143,7 +140,7 @@
             selectable: !readonly,
             evented: !readonly,
           });
-}
+  }
       } else {
         // Add as text/document representation
         const text = `${getTypeIcon(item.type)} ${item.title}`;
@@ -161,7 +158,7 @@
           selectable: !readonly,
           evented: !readonly,
         });
-}
+  }
       // Add metadata
       fabricObject.set({
         evidenceId: item.id,
@@ -172,7 +169,7 @@
       fabricCanvas.add(fabricObject);
     } catch (error) {
       console.error("Error adding evidence to canvas:", error);
-}}
+  }}
   function getTypeIcon(type: string): string {
     switch (type) {
       case "image":
@@ -185,7 +182,7 @@
         return "🎵";
       default:
         return "📎";
-}}
+  }}
   function selectTool(tool: string) {
     selectedTool = tool;
 
@@ -205,7 +202,7 @@
         fabricCanvas.selection = true;
         addTextBox();
         break;
-}}
+  }}
   async function addShape(shape: "rectangle" | "circle") {
     if (!fabricCanvas) return;
 
@@ -234,7 +231,7 @@
           stroke: "#10b981",
           strokeWidth: 2,
         });
-}
+  }
       fabricObject.set({
         customType: "shape",
       });
@@ -244,7 +241,7 @@
       saveCanvasState();
     } catch (error) {
       console.error("Error adding shape:", error);
-}}
+  }}
   async function addTextBox() {
     if (!fabricCanvas) return;
 
@@ -272,18 +269,18 @@
       saveCanvasState();
     } catch (error) {
       console.error("Error adding text:", error);
-}}
+  }}
   let currentPath: any = null;
 
   function startDrawing(pointer: { x: number y: number }) {
     // Drawing implementation
-}
+  }
   function continueDrawing(pointer: { x: number y: number }) {
     // Continue drawing implementation
-}
+  }
   function finishDrawing() {
     saveCanvasState();
-}
+  }
   function saveCanvasState() {
     if (!fabricCanvas) return;
 
@@ -294,7 +291,7 @@
     // Manage history
     if (historyIndex < canvasHistory.length - 1) {
       canvasHistory = canvasHistory.slice(0, historyIndex + 1);
-}
+  }
     canvasHistory.push(state);
     historyIndex++;
 
@@ -302,17 +299,17 @@
     if (canvasHistory.length > 50) {
       canvasHistory = canvasHistory.slice(1);
       historyIndex--;
-}}
+  }}
   function undo() {
     if (historyIndex > 0) {
       historyIndex--;
       loadCanvasState(canvasHistory[historyIndex]);
-}}
+  }}
   function redo() {
     if (historyIndex < canvasHistory.length - 1) {
       historyIndex++;
       loadCanvasState(canvasHistory[historyIndex]);
-}}
+  }}
   async function loadCanvasState(state: string) {
     if (!fabricCanvas) return;
 
@@ -323,7 +320,7 @@
       });
     } catch (error) {
       console.error("Error loading canvas state:", error);
-}}
+  }}
   function updateEvidencePositions() {
     if (!fabricCanvas) return;
 
@@ -332,25 +329,25 @@
     objects.forEach((obj: any) => {
       if (obj.evidenceId) {
         onevidenceUpdated?.();
-}
+  }
     });
-}
+  }
   function zoomIn() {
     if (!fabricCanvas) return;
     zoom = Math.min(zoom * 1.2, 3);
     fabricCanvas.setZoom(zoom);
-}
+  }
   function zoomOut() {
     if (!fabricCanvas) return;
     zoom = Math.max(zoom / 1.2, 0.1);
     fabricCanvas.setZoom(zoom);
-}
+  }
   function resetZoom() {
     if (!fabricCanvas) return;
     zoom = 1;
     fabricCanvas.setZoom(1);
     fabricCanvas.viewportTransform = [1, 0, 0, 1, 0, 0];
-}
+  }
   function deleteSelected() {
     if (!fabricCanvas || readonly) return;
 
@@ -361,7 +358,7 @@
       });
       fabricCanvas.discardActiveObject();
       saveCanvasState();
-}}
+  }}
   async function saveCanvas() {
     if (!fabricCanvas) return;
 
@@ -394,7 +391,7 @@
       });
       if (!response.ok) {
         throw new Error("Failed to save canvas");
-}
+  }
       notifications.add({
         type: "success",
         title: "Canvas Saved",
@@ -406,9 +403,9 @@
         title: "Save Failed",
         message: "Failed to save evidence board.",
       });
-}
+  }
     onsave?.();
-}
+  }
   async function exportCanvas() {
     if (!fabricCanvas) return;
 
@@ -437,7 +434,7 @@
         title: "Export Failed",
         message: "Failed to export evidence board.",
       });
-}}
+  }}
   function clearCanvas() {
     if (!fabricCanvas || readonly) return;
 
@@ -445,7 +442,7 @@
       fabricCanvas.clear();
       fabricCanvas.backgroundColor = "#f8fafc";
       saveCanvasState();
-}}
+  }}
 </script>
 
 <div class="space-y-4">

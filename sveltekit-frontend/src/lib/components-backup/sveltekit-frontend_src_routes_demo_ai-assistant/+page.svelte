@@ -1,276 +1,249 @@
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	import type { AIResponse } from '$lib/types/ai';
-	
-	// Modern Svelte 5 patterns
-	let aiResponses = $state<AIResponse[]>([]);
-	let currentQuery = $state('');
-	let isLoading = $state(false);
-	let systemStatus = $state<any>(null);
-	let mcpMetrics = $state<any>(null);
-	let selectedCase = $state('CASE-2024-001');
-	
-	// Demo queries for different AI capabilities
-	const demoQueries = [
-		{
-			title: 'Legal Document Analysis',
-			query: 'Analyze contract liability clauses in evidence files',
-			category: 'document-analysis'
-		},
-		{
-			title: 'Case Pattern Recognition',
-			query: 'Find similar cases with employment disputes and contract violations',
-			category: 'pattern-matching'
-		},
-		{
-			title: 'Evidence Correlation',
-			query: 'Correlate digital evidence timestamps with witness testimonies',
-			category: 'evidence-analysis'
-		},
-		{
-			title: 'Legal Research Assistant',
-			query: 'Summarize relevant case law for intellectual property disputes',
-			category: 'research'
-		},
-		{
-			title: 'Context7 Integration',
-			query: 'Get SvelteKit best practices for legal AI applications',
-			category: 'context7'
-		}
-	];
-	
-	// Real-time metrics
-	let performanceMetrics = $derived({
-		totalQueries: aiResponses.length,
-		averageConfidence: aiResponses.length > 0 
-			? aiResponses.reduce((sum, r) => sum + (r.confidence || 0), 0) / aiResponses.length 
-			: 0,
-		averageResponseTime: aiResponses.length > 0
-			? aiResponses.reduce((sum, r) => sum + (r.processingTime || 0), 0) / aiResponses.length
-			: 0,
-		gpuProcessed: aiResponses.filter(r => r.gpuProcessed).length
-	});
-	
-	onMount(async () => {
-		await loadSystemStatus();
-		await loadMCPMetrics();
-	});
-	
-	async function loadSystemStatus() {
-		try {
-			const response = await fetch('http://localhost:40000/health');
-			systemStatus = await response.json();
-		} catch (error) {
-			systemStatus = { status: 'unavailable', error: error.message };
-		}
-	}
-	
-	async function loadMCPMetrics() {
-		try {
-			const response = await fetch('http://localhost:40000/mcp/metrics');
-			mcpMetrics = await response.json();
-		} catch (error) {
-			mcpMetrics = { error: error.message };
-		}
-	}
-	
-	async function runAIQuery(query: string, category: string = 'general') {
-		isLoading = true;
-		
-		try {
-			// Simulate AI processing with Context7 MCP integration
-			const startTime = Date.now();
-			
-			// Mock AI response with realistic data
-			const mockResponse: AIResponse = {
-				output: generateMockAIResponse(query, category),
-				confidence: Math.random() * 0.3 + 0.7, // 70-100% confidence
-				keyTerms: extractKeyTerms(query),
-				processingTime: Math.random() * 2000 + 500, // 500-2500ms
-				gpuProcessed: Math.random() > 0.3, // 70% GPU processed
-				legalRisk: assessLegalRisk(query),
-				contextEnhanced: true,
-				mcpIntegration: {
-					context7Used: category === 'context7',
-					memoryGraphUpdated: true,
-					bestPracticesApplied: true
-				}
-			};
-			
-			// Simulate processing delay
-			await new Promise(resolve => setTimeout(resolve, mockResponse.processingTime));
-			
-			aiResponses = [...aiResponses, {
-				...mockResponse,
-				query,
-				category,
-				timestamp: new Date().toISOString()
-			}];
-			
-		} catch (error) {
-			aiResponses = [...aiResponses, {
-				output: `Error: ${error.message}`,
-				confidence: 0,
-				keyTerms: [],
-				processingTime: Date.now() - Date.now(),
-				gpuProcessed: false,
-				legalRisk: 'unknown',
-				query,
-				category,
-				timestamp: new Date().toISOString(),
-				error: true
-			}];
-		} finally {
-			isLoading = false;
-		}
-	}
-	
-	function generateMockAIResponse(query: string, category: string): string {
-		const responses = {
-			'document-analysis': `📄 **Document Analysis Complete**
-			
-Analyzed ${Math.floor(Math.random() * 20) + 5} documents in case ${selectedCase}.
+  	import { onMount } from 'svelte';
+  	import type { AIResponse } from '$lib/types/ai';
+  	// Modern Svelte 5 patterns
+  	let aiResponses = $state<AIResponse[]>([]);
+  	let currentQuery = $state('');
+  	let isLoading = $state(false);
+  	let systemStatus = $state<any>(null);
+  	let mcpMetrics = $state<any>(null);
+  	let selectedCase = $state('CASE-2024-001');
+  	// Demo queries for different AI capabilities
+  	const demoQueries = [
+  		{
+  			title: 'Legal Document Analysis',
+  			query: 'Analyze contract liability clauses in evidence files',
+  			category: 'document-analysis'
+  		},
+  		{
+  			title: 'Case Pattern Recognition',
+  			query: 'Find similar cases with employment disputes and contract violations',
+  			category: 'pattern-matching'
+  		},
+  		{
+  			title: 'Evidence Correlation',
+  			query: 'Correlate digital evidence timestamps with witness testimonies',
+  			category: 'evidence-analysis'
+  		},
+  		{
+  			title: 'Legal Research Assistant',
+  			query: 'Summarize relevant case law for intellectual property disputes',
+  			category: 'research'
+  		},
+  		{
+  			title: 'Context7 Integration',
+  			query: 'Get SvelteKit best practices for legal AI applications',
+  			category: 'context7'
+  		}
+  	];
+  	// Real-time metrics
+  	let performanceMetrics = $derived({
+  		totalQueries: aiResponses.length,
+  		averageConfidence: aiResponses.length > 0 
+  			? aiResponses.reduce((sum, r) => sum + (r.confidence || 0), 0) / aiResponses.length 
+  			: 0,
+  		averageResponseTime: aiResponses.length > 0
+  			? aiResponses.reduce((sum, r) => sum + (r.processingTime || 0), 0) / aiResponses.length
+  			: 0,
+  		gpuProcessed: aiResponses.filter(r => r.gpuProcessed).length
+  	});
+  	onMount(async () => {
+  		await loadSystemStatus();
+  		await loadMCPMetrics();
+  	});
+  	async function loadSystemStatus() {
+  		try {
+  			const response = await fetch('http://localhost:40000/health');
+  			systemStatus = await response.json();
+  		} catch (error) {
+  			systemStatus = { status: 'unavailable', error: error.message };
+  		}
+  	}
+  	async function loadMCPMetrics() {
+  		try {
+  			const response = await fetch('http://localhost:40000/mcp/metrics');
+  			mcpMetrics = await response.json();
+  		} catch (error) {
+  			mcpMetrics = { error: error.message };
+  		}
+  	}
+  	async function runAIQuery(query: string, category: string = 'general') {
+  		isLoading = true;
+  		try {
+  			// Simulate AI processing with Context7 MCP integration
+  			const startTime = Date.now();
+  			// Mock AI response with realistic data
+  			const mockResponse: AIResponse = {
+  				output: generateMockAIResponse(query, category),
+  				confidence: Math.random() * 0.3 + 0.7, // 70-100% confidence
+  				keyTerms: extractKeyTerms(query),
+  				processingTime: Math.random() * 2000 + 500, // 500-2500ms
+  				gpuProcessed: Math.random() > 0.3, // 70% GPU processed
+  				legalRisk: assessLegalRisk(query),
+  				contextEnhanced: true,
+  				mcpIntegration: {
+  					context7Used: category === 'context7',
+  					memoryGraphUpdated: true,
+  					bestPracticesApplied: true
+  				}
+  			};
+  			// Simulate processing delay
+  			await new Promise(resolve => setTimeout(resolve, mockResponse.processingTime));
+  			aiResponses = [...aiResponses, {
+  				...mockResponse,
+  				query,
+  				category,
+  				timestamp: new Date().toISOString()
+  			}];
+  		} catch (error) {
+  			aiResponses = [...aiResponses, {
+  				output: `Error: ${error.message}`,
+  				confidence: 0,
+  				keyTerms: [],
+  				processingTime: Date.now() - Date.now(),
+  				gpuProcessed: false,
+  				legalRisk: 'unknown',
+  				query,
+  				category,
+  				timestamp: new Date().toISOString(),
+  				error: true
+  			}];
+  		} finally {
+  			isLoading = false;
+  		}
+  	}
+  	function generateMockAIResponse(query: string, category: string): string {
+  		const responses = {
+  			'document-analysis': `📄 **Document Analysis Complete**
+  Analyzed ${Math.floor(Math.random() * 20) + 5} documents in case ${selectedCase}.
 
-**Key Findings:**
-• Found 3 liability clauses requiring review
-• Identified potential contract ambiguities in sections 4.2 and 7.1
-• Recommended legal precedent review for similar cases
-• Flagged 2 documents for expert witness consultation
+  **Key Findings:**
+  • Found 3 liability clauses requiring review
+  • Identified potential contract ambiguities in sections 4.2 and 7.1
+  • Recommended legal precedent review for similar cases
+  • Flagged 2 documents for expert witness consultation
 
-**Risk Assessment:** Medium - requires legal review
-**Confidence:** 89% based on legal pattern matching`,
+  **Risk Assessment:** Medium - requires legal review
+  **Confidence:** 89% based on legal pattern matching`,
 
-			'pattern-matching': `🔍 **Pattern Analysis Results**
-			
-Found ${Math.floor(Math.random() * 15) + 3} similar cases in database.
+  			'pattern-matching': `🔍 **Pattern Analysis Results**
+  Found ${Math.floor(Math.random() * 15) + 3} similar cases in database.
 
-**Matching Patterns:**
-• Employment dispute involving non-compete clauses
-• Contract violation with damages $50K-$500K range
-• Similar industry sector (Technology/Software)
-• Comparable resolution timeframe (6-18 months)
+  **Matching Patterns:**
+  • Employment dispute involving non-compete clauses
+  • Contract violation with damages $50K-$500K range
+  • Similar industry sector (Technology/Software)
+  • Comparable resolution timeframe (6-18 months)
 
-**Case Precedents:**
-• Case #2023-445: Similar outcome, $340K settlement
-• Case #2022-891: Court ruling favorable for plaintiff
-• Case #2023-002: Mediation successful, 8-month resolution
+  **Case Precedents:**
+  • Case #2023-445: Similar outcome, $340K settlement
+  • Case #2022-891: Court ruling favorable for plaintiff
+  • Case #2023-002: Mediation successful, 8-month resolution
 
-**Strategic Recommendation:** Consider mediation based on pattern analysis`,
+  **Strategic Recommendation:** Consider mediation based on pattern analysis`,
 
-			'evidence-analysis': `⚖️ **Evidence Correlation Analysis**
-			
-Cross-referenced ${Math.floor(Math.random() * 50) + 20} evidence items.
+  			'evidence-analysis': `⚖️ **Evidence Correlation Analysis**
+  Cross-referenced ${Math.floor(Math.random() * 50) + 20} evidence items.
 
-**Timeline Correlations:**
-• Digital timestamps align with witness testimony A (95% match)
-• Email chain supports timeline in depositions B & C
-• Security footage confirms presence at key meeting
-• Phone records validate communication patterns
+  **Timeline Correlations:**
+  • Digital timestamps align with witness testimony A (95% match)
+  • Email chain supports timeline in depositions B & C
+  • Security footage confirms presence at key meeting
+  • Phone records validate communication patterns
 
-**Inconsistencies Found:**
-• 2-hour gap in digital evidence on 2024-03-15
-• Conflicting statements in witness testimonies D & E
+  **Inconsistencies Found:**
+  • 2-hour gap in digital evidence on 2024-03-15
+  • Conflicting statements in witness testimonies D & E
 
-**Recommendation:** Focus on evidence gaps during cross-examination`,
+  **Recommendation:** Focus on evidence gaps during cross-examination`,
 
-			'research': `📚 **Legal Research Summary**
-			
-Researched ${Math.floor(Math.random() * 100) + 50} relevant cases and statutes.
+  			'research': `📚 **Legal Research Summary**
+  Researched ${Math.floor(Math.random() * 100) + 50} relevant cases and statutes.
 
-**Key Legal Precedents:**
-• *Smith v. TechCorp* (2023): Established precedent for IP disputes
-• *Johnson v. Innovation Inc* (2022): Similar fact pattern, plaintiff victory
-• Federal Code §1234.5: Relevant statutory framework
-• State Regulation §456.7: Additional compliance requirements
+  **Key Legal Precedents:**
+  • *Smith v. TechCorp* (2023): Established precedent for IP disputes
+  • *Johnson v. Innovation Inc* (2022): Similar fact pattern, plaintiff victory
+  • Federal Code §1234.5: Relevant statutory framework
+  • State Regulation §456.7: Additional compliance requirements
 
-**Legal Strategy Insights:**
-• 78% success rate for similar cases in this jurisdiction
-• Average settlement: $425K (range: $200K-$850K)
-• Typical resolution time: 14 months
+  **Legal Strategy Insights:**
+  • 78% success rate for similar cases in this jurisdiction
+  • Average settlement: $425K (range: $200K-$850K)
+  • Typical resolution time: 14 months
 
-**Next Steps:** File preliminary injunction, gather expert testimony`,
+  **Next Steps:** File preliminary injunction, gather expert testimony`,
 
-			'context7': `🤖 **Context7 MCP Integration Results**
-			
-Analyzed SvelteKit legal AI application architecture.
+  			'context7': `🤖 **Context7 MCP Integration Results**
+  Analyzed SvelteKit legal AI application architecture.
 
-**Best Practices Applied:**
-• Modern Svelte 5 runes ($state, $effect, $derived)
-• Type-safe API design with Drizzle ORM
-• Proper authentication with Lucia Auth
-• Vector search integration with Qdrant
-• Real-time collaboration features
+  **Best Practices Applied:**
+  • Modern Svelte 5 runes ($state, $effect, $derived)
+  • Type-safe API design with Drizzle ORM
+  • Proper authentication with Lucia Auth
+  • Vector search integration with Qdrant
+  • Real-time collaboration features
 
-**Performance Optimizations:**
-• Code splitting for large legal document viewers
-• Efficient caching strategies for case data
-• WebGL acceleration for evidence canvas
-• Service worker for offline case access
+  **Performance Optimizations:**
+  • Code splitting for large legal document viewers
+  • Efficient caching strategies for case data
+  • WebGL acceleration for evidence canvas
+  • Service worker for offline case access
 
-**Security Recommendations:**
-• Implement proper RBAC for legal data
-• Use encrypted evidence storage
-• Audit trails for all case modifications
-• Secure API endpoints with rate limiting
+  **Security Recommendations:**
+  • Implement proper RBAC for legal data
+  • Use encrypted evidence storage
+  • Audit trails for all case modifications
+  • Secure API endpoints with rate limiting
 
-Generated via Context7 MCP analysis tools`,
+  Generated via Context7 MCP analysis tools`,
 
-			'general': `🧠 **AI Analysis Complete**
-			
-Processed query using advanced legal AI models.
+  			'general': `🧠 **AI Analysis Complete**
+  Processed query using advanced legal AI models.
 
-**Analysis Summary:**
-• Applied legal domain expertise
-• Cross-referenced case databases
-• Validated against current legal standards
-• Generated actionable recommendations
+  **Analysis Summary:**
+  • Applied legal domain expertise
+  • Cross-referenced case databases
+  • Validated against current legal standards
+  • Generated actionable recommendations
 
-**Key Insights:**
-• High confidence in legal reasoning
-• Multiple validation sources confirmed
-• Recommended next steps identified
-• Risk assessment completed
+  **Key Insights:**
+  • High confidence in legal reasoning
+  • Multiple validation sources confirmed
+  • Recommended next steps identified
+  • Risk assessment completed
 
-This analysis leverages the full Legal AI system capabilities including Context7 MCP integration, vector search, and legal pattern matching.`
-		};
-		
-		return responses[category] || responses['general'];
-	}
-	
-	function extractKeyTerms(query: string): string[] {
-		const legalTerms = ['contract', 'liability', 'evidence', 'case', 'legal', 'dispute', 'clause', 'testimony', 'precedent'];
-		return query.toLowerCase().split(' ')
-			.filter(word => legalTerms.some(term => word.includes(term)))
-			.slice(0, 5);
-	}
-	
-	function assessLegalRisk(query: string): string {
-		const riskKeywords = {
-			high: ['violation', 'criminal', 'fraud', 'breach'],
-			medium: ['dispute', 'contract', 'liability', 'damages'],
-			low: ['research', 'analysis', 'review', 'summary']
-		};
-		
-		const queryLower = query.toLowerCase();
-		
-		if (riskKeywords.high.some(term => queryLower.includes(term))) return 'high';
-		if (riskKeywords.medium.some(term => queryLower.includes(term))) return 'medium';
-		return 'low';
-	}
-	
-	function getRiskColor(risk: string): string {
-		switch (risk) {
-			case 'high': return 'text-red-600 bg-red-50';
-			case 'medium': return 'text-yellow-600 bg-yellow-50';
-			case 'low': return 'text-green-600 bg-green-50';
-			default: return 'text-gray-600 bg-gray-50';
-		}
-	}
-	
-	function clearResponses() {
-		aiResponses = [];
-	}
+  This analysis leverages the full Legal AI system capabilities including Context7 MCP integration, vector search, and legal pattern matching.`
+  		};
+  		return responses[category] || responses['general'];
+  	}
+  	function extractKeyTerms(query: string): string[] {
+  		const legalTerms = ['contract', 'liability', 'evidence', 'case', 'legal', 'dispute', 'clause', 'testimony', 'precedent'];
+  		return query.toLowerCase().split(' ')
+  			.filter(word => legalTerms.some(term => word.includes(term)))
+  			.slice(0, 5);
+  	}
+  	function assessLegalRisk(query: string): string {
+  		const riskKeywords = {
+  			high: ['violation', 'criminal', 'fraud', 'breach'],
+  			medium: ['dispute', 'contract', 'liability', 'damages'],
+  			low: ['research', 'analysis', 'review', 'summary']
+  		};
+  		const queryLower = query.toLowerCase();
+  		if (riskKeywords.high.some(term => queryLower.includes(term))) return 'high';
+  		if (riskKeywords.medium.some(term => queryLower.includes(term))) return 'medium';
+  		return 'low';
+  	}
+  	function getRiskColor(risk: string): string {
+  		switch (risk) {
+  			case 'high': return 'text-red-600 bg-red-50';
+  			case 'medium': return 'text-yellow-600 bg-yellow-50';
+  			case 'low': return 'text-green-600 bg-green-50';
+  			default: return 'text-gray-600 bg-gray-50';
+  		}
+  	}
+  	function clearResponses() {
+  		aiResponses = [];
+  	}
 </script>
 
 <svelte:head>

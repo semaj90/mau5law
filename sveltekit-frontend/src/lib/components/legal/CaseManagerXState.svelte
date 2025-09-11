@@ -1,6 +1,5 @@
 /// <reference types="vite/client" />
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { useMachine } from '@xstate/svelte';
@@ -11,7 +10,6 @@
 
   // Get caseId from route params
   let caseId = $state<string | null>(null);
-  
   // Initialize XState machine with proper service binding
   const { state, send } = useMachine(legalCaseMachine, {
     context: {
@@ -109,7 +107,7 @@
   }
 
   // File upload handler
-let fileInput = $state<HTMLInputElement;
+  let fileInput = $state<HTMLInputElement;
 
   function triggerFileUpload() {
     fileInput?.click();

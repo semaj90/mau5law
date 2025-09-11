@@ -3,7 +3,6 @@
   Combines EvidenceCanvas with YoRHa CanvasBoard for comprehensive evidence visualization
 -->
 <script lang="ts">
-</script>
   import { createEventDispatcher, onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
@@ -11,9 +10,7 @@
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
-  
   const dispatch = createEventDispatcher();
-  
   interface Props {
     caseId?: string;
     enableYoRHaBoard?: boolean;
@@ -22,7 +19,6 @@
     syncCanvases?: boolean;
     initialMode?: 'evidence' | 'drawing' | 'both';
   }
-  
   let {
     caseId = '',
     enableYoRHaBoard = true,
@@ -31,11 +27,9 @@
     syncCanvases = true,
     initialMode = 'both'
   }: Props = $props();
-  
   // Component references
   let evidenceCanvasRef: any;
   let yorhaCanvasBoardRef: any;
-  
   // State management
   const canvasState = writable({
     mode: initialMode,
@@ -44,27 +38,20 @@
     selectedObjects: [],
     lastSync: 0
   });
-  
   let currentMode = $state(initialMode);
   let showYoRHaBoard = $state(false);
   let canvasObjects = $state([]);
   let syncInProgress = $state(false);
-  
   // Canvas synchronization
   async function syncCanvasBoards() {
     if (!syncCanvases || syncInProgress) return;
-    
     syncInProgress = true;
-    
     try {
       console.log('🔄 Syncing canvas boards...');
-      
       // Get objects from evidence canvas
       const evidenceObjects = evidenceCanvasRef?.collectObjects() || [];
-      
       // Get drawings from YoRHa board (if available)
       const yorhaDrawings = yorhaCanvasBoardRef?.getDrawingObjects() || [];
-      
       // Update unified state
       canvasState.update(state => ({
         ...state,
@@ -72,9 +59,7 @@
         drawingObjects: yorhaDrawings,
         lastSync: Date.now()
       }));
-      
       canvasObjects = [...evidenceObjects, ...yorhaDrawings];
-      
       // Dispatch sync event
       dispatch('canvasSynced', {
         evidenceObjects,
@@ -82,94 +67,72 @@
         totalObjects: canvasObjects.length,
         timestamp: Date.now()
       });
-      
       console.log(`✅ Canvas sync complete: ${canvasObjects.length} objects`);
-      
     } catch (error) {
       console.error('❌ Canvas sync failed:', error);
     } finally {
       syncInProgress = false;
     }
   }
-  
   // Mode switching
   function switchMode(newMode: 'evidence' | 'drawing' | 'both') {
     currentMode = newMode;
-    
     if (newMode === 'drawing' || newMode === 'both') {
       showYoRHaBoard = true;
     } else {
       showYoRHaBoard = false;
     }
-    
     canvasState.update(state => ({
       ...state,
       mode: newMode
     }));
-    
     dispatch('modeChanged', { mode: newMode });
   }
-  
   // Event handlers
   function handleEvidenceUploaded(event: CustomEvent) {
     console.log('📁 Evidence uploaded:', event.detail);
-    
     // Sync canvases after evidence upload
     setTimeout(syncCanvasBoards, 500);
-    
     dispatch('evidenceUploaded', event.detail);
   }
-  
   function handleAnalysisComplete(event: CustomEvent) {
     console.log('🔍 Analysis complete:', event.detail);
-    
     // Update canvas state with analysis results
     canvasState.update(state => ({
       ...state,
       analysisResults: event.detail
     }));
-    
     dispatch('analysisComplete', event.detail);
   }
-  
   function handleYoRHaDrawing(event: CustomEvent) {
     console.log('🎨 YoRHa drawing update:', event.detail);
-    
     // Sync canvases after drawing
     if (syncCanvases) {
       setTimeout(syncCanvasBoards, 100);
     }
-    
     dispatch('drawingUpdated', event.detail);
   }
-  
   function handleNeuralEngineReady(event: CustomEvent) {
     console.log('🧠 Neural engine ready:', event.detail);
     dispatch('neuralEngineReady', event.detail);
   }
-  
   // Canvas operations
   function clearAllCanvases() {
     if (evidenceCanvasRef?.clearCanvas) {
       evidenceCanvasRef.clearCanvas();
     }
-    
     if (yorhaCanvasBoardRef?.clearCanvas) {
       yorhaCanvasBoardRef.clearCanvas();
     }
-    
     canvasObjects = [];
-    
     canvasState.update(state => ({
       ...state,
       evidenceObjects: [],
       drawingObjects: [],
       selectedObjects: []
     }));
-    
     dispatch('canvasCleared');
   }
-  
   function exportCanvasState() {
     const state = {
       timestamp: Date.now(),
@@ -184,19 +147,15 @@
         version: '1.0'
       }
     };
-    
     dispatch('canvasExported', state);
     return state;
   }
-  
   // Initialize
   onMount(() => {
     console.log('🎮 Unified Canvas Integration initialized');
-    
     // Set up periodic sync if enabled
     if (syncCanvases) {
       const syncInterval = setInterval(syncCanvasBoards, 5000);
-      
       return () => {
         clearInterval(syncInterval);
       };

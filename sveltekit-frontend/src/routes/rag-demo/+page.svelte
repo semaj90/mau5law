@@ -1,6 +1,5 @@
 <!-- RAG System Demo Page -->
 <script lang="ts">
-</script>
   import AskAI from "$lib/components/ai/AskAI.svelte";
   import {
     AlertTriangle,
@@ -17,7 +16,7 @@
     qdrant: boolean;
     embeddings: boolean;
     vectorSearch: boolean;
-}
+  }
   let systemStatus: SystemStatus = $state({
     database: false,
     qdrant: false,
@@ -39,7 +38,7 @@
     }>;
     executionTime?: number;
     source?: string;
-}
+  }
   let testResults: TestResults | null = $state(null);
   let isTestingSearch = $state(false);
 
@@ -86,7 +85,7 @@
       console.error("Status check failed:", error);
     } finally {
       isLoadingStatus = false;
-}}
+  }}
   async function testVectorSearch() {
     if (!testQuery.trim()) return;
 
@@ -113,24 +112,24 @@
       } else {
         const error = await response.json();
         testResults = { error: error.error };
-}
+  }
     } catch (error) {
       testResults = { error: "Network error" };
     } finally {
       isTestingSearch = false;
-}}
+  }}
   function handleAIResponse(event: CustomEvent) {
     console.log("AI Response:", event.detail);
-}
+  }
   function handleReferenceClick(event: CustomEvent) {
     console.log("Reference clicked:", event.detail);
-}
+  }
   function getStatusIcon(status: boolean) {
     return status ? CheckCircle : AlertTriangle;
-}
+  }
   function getStatusColor(status: boolean) {
     return status ? "text-green-600" : "text-red-600";
-}
+  }
 </script>
 
 <svelte:head>

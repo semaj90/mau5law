@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   /**
    * Document Ingest Assistant Demo
    * Showcases the complete ingest integration with Go microservice,
@@ -17,11 +16,11 @@
     Button
   } from '$lib/components/ui/enhanced-bits';;
   import { onMount } from 'svelte';
-type ServiceHealth = { upstream?: { port?: number; config?: { embed_model?: string; batch_size?: number } } };
-type IngestItem = { id: string; title: string; type: string; status: string; timestamp: string; processingTime: number };
-let serviceStatus = $state<'checking...' | 'healthy' | 'unhealthy' | 'error'>('checking...');
-let serviceHealth = $state<ServiceHealth | null>(null);
-let recentIngests = $state<IngestItem[]>([]);
+  type ServiceHealth = { upstream?: { port?: number; config?: { embed_model?: string; batch_size?: number } } };
+  type IngestItem = { id: string; title: string; type: string; status: string; timestamp: string; processingTime: number };
+  let serviceStatus = $state<'checking...' | 'healthy' | 'unhealthy' | 'error'>('checking...');
+  let serviceHealth = $state<ServiceHealth | null>(null);
+  let recentIngests = $state<IngestItem[]>([]);
 
   async function checkServiceHealth() {
     try {

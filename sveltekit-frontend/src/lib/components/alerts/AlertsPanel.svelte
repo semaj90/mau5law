@@ -1,17 +1,16 @@
 <script lang="ts">
-</script>
 
   interface Props {
     class?: string;
     children?: import('svelte').Snippet;
   }
   import { onMount } from 'svelte';
-let alerts = $state<any[] >([]);
-let sustained = $state<{ sustainedP99Breaches:number; threshold:number; lastP99OkTs:number } | null >(null);
-let loading = $state(true);
-let error = $state<string | null >(null);
-let autoRefresh = $state(true);
-let interval = $state<any;
+  let alerts = $state<any[] >([]);
+  let sustained = $state<{ sustainedP99Breaches:number; threshold:number; lastP99OkTs:number } | null >(null);
+  let loading = $state(true);
+  let error = $state<string | null >(null);
+  let autoRefresh = $state(true);
+  let interval = $state<any;
 
   async function load(){
     try {

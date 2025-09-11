@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { run } from 'svelte/legacy';
   // Badge replaced with span - not available in enhanced-bits
   import { Button } from '$lib/components/ui/enhanced-bits';

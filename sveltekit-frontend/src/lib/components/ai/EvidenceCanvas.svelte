@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from "svelte";
   import { apiFetch } from "$lib/api/clients/api-client";
   import { concurrencyOrchestrator } from '$lib/services/concurrency-orchestrator';
@@ -27,11 +26,9 @@
   onMount(async () => {
     const { fabric } = await import("fabric");
     fabricCanvas = new fabric.Canvas(canvasEl);
-    
     // Register canvas with concurrency orchestrator
     const canvasId = `evidence-canvas-${Date.now()}`;
     concurrencyOrchestrator.createCanvas(canvasId, canvasEl);
-    
     // Example: Add a rectangle
     fabricCanvas.add(
       new fabric.Rect({
@@ -42,7 +39,6 @@
         height: 60,
       })
     );
-    
     // Example: Add evidence annotation text
     fabricCanvas.add(
       new fabric.Text('Evidence Item #1', {
@@ -70,7 +66,6 @@
     analyzing = true;
     error = null;
     result = null;
-    
     try {
       // Use concurrency orchestrator for analysis
       const analysisTaskId = await concurrencyOrchestrator.submitAnalysisTask(
@@ -82,13 +77,11 @@
         },
         'legal'
       );
-      
       // Subscribe to task completion
       const unsubscribe = concurrencyOrchestrator.subscribe((snapshot: any) => {
         const completedResult = snapshot.context.results.find(
           (r: any) => r.taskId === analysisTaskId && r.success
         );
-        
         if (completedResult) {
           result = {
             analysis: completedResult.data.response || completedResult.data.analysis || 'Analysis completed',
@@ -100,18 +93,15 @@
           unsubscribe();
           analyzing = false;
         }
-        
         const failedResult = snapshot.context.results.find(
           (r: any) => r.taskId === analysisTaskId && !r.success
         );
-        
         if (failedResult) {
           error = failedResult.error || 'Analysis failed';
           unsubscribe();
           analyzing = false;
         }
       });
-      
       // Fallback timeout
       setTimeout(() => {
         if (analyzing) {
@@ -120,7 +110,6 @@
           unsubscribe();
         }
       }, 30000);
-      
     } catch (e: any) {
       error = e instanceof Error ? e.message : String(e);
       analyzing = false;

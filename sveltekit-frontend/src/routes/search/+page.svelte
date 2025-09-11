@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
@@ -33,7 +32,7 @@
     relevance?: number;
     score?: number;
     metadata?: Record<string, unknown>;
-}
+  }
   interface SearchResults {
     query: string;
     results: SearchResult[];
@@ -42,7 +41,7 @@
     hasMore: boolean;
     executionTime?: number;
     source?: string;
-}
+  }
   // Search state
   let searchQuery = $state("");
   let searchResults: SearchResults | null = $state(null);
@@ -58,7 +57,7 @@
   let showAdvancedFilters = $state(false);
 
   // Recent searches (simulated)
-let recentSearches = $state([
+  let recentSearches = $state([
     "contract fraud investigation",
     "witness testimony evidence",
     "financial records analysis",
@@ -67,7 +66,7 @@ let recentSearches = $state([
   ]);
 
   // Popular searches (simulated)
-let popularSearches = $state([
+  let popularSearches = $state([
     "fraud cases",
     "evidence analysis",
     "witness statements",
@@ -81,14 +80,14 @@ let popularSearches = $state([
     if (urlQuery) {
       searchQuery = urlQuery;
       performSearch();
-}
+  }
     // Load search history from localStorage
     if (browser) {
       const savedHistory = localStorage.getItem("searchHistory");
       if (savedHistory) {
         searchHistory = JSON.parse(savedHistory);
-}
-}
+  }
+  }
   });
 
   async function performSearch() {
@@ -132,11 +131,11 @@ let popularSearches = $state([
               "searchHistory",
               JSON.stringify(searchHistory)
             );
-}
-}
+  }
+  }
       } else {
         throw new Error(result.error || "Search failed");
-}
+  }
     } catch (error) {
       console.error("Search error:", error);
       searchError = error instanceof Error ? error.message : "Search failed";
@@ -147,26 +146,26 @@ let popularSearches = $state([
       });
     } finally {
       isSearching = false;
-}
-}
+  }
+  }
   function handleSearchSubmit(e: Event) {
     e.preventDefault();
     performSearch();
-}
+  }
   function selectQuickSearch(query: string) {
     searchQuery = query;
     performSearch();
-}
+  }
   function clearFilters() {
     selectedType = "";
     selectedCaseId = "";
     threshold = 0.7;
     limit = 20;
     showAdvancedFilters = false;
-}
+  }
   function formatScore(score: number): string {
     return `${(score * 100).toFixed(1)}%`;
-}
+  }
   function getResultIcon(type: string) {
     switch (type) {
       case "case":
@@ -177,8 +176,8 @@ let popularSearches = $state([
         return Users;
       default:
         return FileText;
-}
-}
+  }
+  }
   function handleResultClick(result: SearchResult) {
     // Navigate to the appropriate page based on result type
     switch (result.type) {
@@ -191,8 +190,8 @@ let popularSearches = $state([
       default:
         // Handle other types or show details modal
         break;
-}
-}
+  }
+  }
 </script>
 
 <svelte:head>

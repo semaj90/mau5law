@@ -1,10 +1,8 @@
 <!-- FOAF Recommendations Modal - SSR compatible with Svelte 5 runes + Melt-UI -->
 <script lang="ts">
-</script>
   import { createDialog, melt } from 'melt';
   import { fade, fly } from 'svelte/transition';
   import { X, Users, UserCheck, Briefcase, Mail } from 'lucide-svelte';
-  
   interface Person {
     id: string;
     name: string;
@@ -22,7 +20,6 @@
   }
 
   let { open = $bindable(false), personId, onClose }: Props = $props();
-  
   // Svelte 5 runes for reactive state
   let loading = $state(false);
   let foafData = $state<{ people: Person[]; summary: string; totalFound: number } | null>(null);
@@ -50,11 +47,9 @@
     if (open && personId && !foafData) {
       loading = true;
       error = null;
-      
       try {
         const response = await fetch(`/api/foaf/${personId}?limit=5`);
         if (!response.ok) throw new Error('Failed to load recommendations');
-        
         foafData = await response.json();
       } catch (err) {
         error = err instanceof Error ? err.message : 'Unknown error';

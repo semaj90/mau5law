@@ -1,20 +1,19 @@
 <script lang="ts">
-</script>
-	import type { BitsPrimitiveElementAttributes, WithChildren } from "bits-ui";
-	import * as Alert from "$lib/components/ui/alert/index.js";
-	import { cn } from "$lib/utils/styles.js";
+  	import type { BitsPrimitiveElementAttributes, WithChildren } from "bits-ui";
+  	import * as Alert from "$lib/components/ui/alert/index.js";
+  	import { cn } from "$lib/utils/styles.js";
 
-	let {
-		children,
-		type = "note",
-		class: className,
-		title = type
-			.split("")
-			.map((c, i) => (i === 0 ? c.toUpperCase() : c))
-			.join(""),
-	}: WithChildren<BitsPrimitiveElementAttributes> & {
-		type?: "note" | "warning" | "danger" | "tip";
-	} = $props();
+  	let {
+  		children,
+  		type = "note",
+  		class: className,
+  		title = type
+  			.split("")
+  			.map((c, i) => (i === 0 ? c.toUpperCase() : c))
+  			.join(""),
+  	}: WithChildren<BitsPrimitiveElementAttributes> & {
+  		type?: "note" | "warning" | "danger" | "tip";
+  	} = $props();
 </script>
 
 <Alert.Root class={cn("mt-6", className)} variant={type}>

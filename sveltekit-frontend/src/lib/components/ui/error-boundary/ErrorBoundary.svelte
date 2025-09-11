@@ -1,23 +1,18 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { Button } from 'bits-ui';
   import { Card } from 'bits-ui';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
-  
   interface Props {
     fallback?: any;
     children: any;
     onError?: (error: Error, errorInfo?: any) => void;
   }
-  
   let { fallback, children, onError }: Props = $props();
-  
   let hasError = $state(false);
   let error = $state<Error | null>(null);
   let errorId = $state<string>('');
-  
   // Error logging
   function logError(err: Error, context?: any) {
     const errorData = {
@@ -29,59 +24,46 @@
       userAgent: globalThis.navigator?.userAgent,
       context
     };
-    
     console.error('YoRHa Error Boundary:', errorData);
-    
     // In production, send to error tracking service
     // fetch('/api/errors', { method: 'POST', body: JSON.stringify(errorData) });
-    
     onError?.(err, errorData);
   }
-  
   // Global error handler
   function handleGlobalError(event: ErrorEvent) {
     if (!hasError) {
       const err = new Error(event.message);
       err.stack = `${event.filename}:${event.lineno}:${event.colno}`;
-      
       hasError = true;
       error = err;
       errorId = `ERR_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
       logError(err, { type: 'global', event });
     }
   }
-  
   // Unhandled promise rejection handler
   function handleUnhandledRejection(event: PromiseRejectionEvent) {
     if (!hasError) {
       const err = new Error(event.reason?.message || 'Unhandled promise rejection');
-      
       hasError = true;
       error = err;
       errorId = `ERR_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
       logError(err, { type: 'unhandled_rejection', reason: event.reason });
     }
   }
-  
   // Reset error state
   function resetError() {
     hasError = false;
     error = null;
     errorId = '';
   }
-  
   // Reload page
   function reloadPage() {
     globalThis.location?.reload();
   }
-  
   onMount(() => {
     // Add global error listeners
     globalThis.addEventListener('error', handleGlobalError);
     globalThis.addEventListener('unhandledrejection', handleUnhandledRejection);
-    
     return () => {
       globalThis.removeEventListener('error', handleGlobalError);
       globalThis.removeEventListener('unhandledrejection', handleUnhandledRejection);

@@ -1,6 +1,5 @@
 <!-- Modular File Upload Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
-</script>
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
   import Progress from './Progress.svelte';
@@ -120,14 +119,12 @@
     if (file.size > maxSize) {
       return `File size exceeds ${formatFileSize(maxSize)}`;
     }
-    
     if (accept !== '*/*' && !accept.split(',').some(type => 
       type.trim() === file.type || 
       file.name.toLowerCase().endsWith(type.trim().replace('*', ''))
     )) {
       return `File type not supported`;
     }
-    
     return null;
   }
 
@@ -141,27 +138,21 @@
 
   function handleFiles(fileList: FileList) {
     const newFiles: UploadFile[] = [];
-    
     for (let i = 0; i < fileList.length; i++) {
       const file = fileList[i];
-      
       // Check max files limit
       if (files.length + newFiles.length >= maxFiles) {
         break;
       }
-      
       // Validate file
       const error = validateFile(file);
       const uploadFile = createUploadFile(file);
-      
       if (error) {
         uploadFile.status = 'error';
         uploadFile.error = error;
       }
-      
       newFiles.push(uploadFile);
     }
-    
     files = [...files, ...newFiles];
     onfileschange?.(files);
 
@@ -197,9 +188,7 @@
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
-    
     if (disabled || !event.dataTransfer?.files) return;
-    
     handleFiles(event.dataTransfer.files);
   }
 

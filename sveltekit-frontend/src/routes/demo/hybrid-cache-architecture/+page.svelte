@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import LegalDocumentGraphViewer from '$lib/components/visualization/LegalDocumentGraphViewer.svelte';
@@ -23,8 +22,8 @@
   });
 
   let graphViewer: LegalDocumentGraphViewer;
-let showPerformanceMetrics = $state(true);
-let showArchitectureOverview = $state(true);
+  let showPerformanceMetrics = $state(true);
+  let showArchitectureOverview = $state(true);
 
   onMount(async () => {
     await initializeDemo();

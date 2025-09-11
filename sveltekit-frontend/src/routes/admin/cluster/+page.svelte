@@ -2,7 +2,6 @@
 <!-- Real-time monitoring and control for Node.js cluster architecture -->
 
 <script lang="ts">
-</script>
   import { onMount, onDestroy } from 'svelte';
   import {
     Button
@@ -48,8 +47,8 @@
   let targetWorkers = $state(4);
 
   // Real-time updates
-let updateInterval = $state<NodeJS.Timeout | null>(null);
-let eventSource = $state<EventSource | null>(null);
+  let updateInterval = $state<NodeJS.Timeout | null>(null);
+  let eventSource = $state<EventSource | null>(null);
 
   onMount(() => {
     initializeClusterMonitoring();

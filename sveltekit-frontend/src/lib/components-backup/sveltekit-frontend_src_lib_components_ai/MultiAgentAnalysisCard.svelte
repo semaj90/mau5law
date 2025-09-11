@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   interface Props {
     analysisData: {;
   }
@@ -13,7 +12,6 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
-  
       evidenceAnalysis?: any;
     personsData?: any;
     caseSynthesis?: any;
@@ -26,7 +24,6 @@
   let persons = $derived(analysisData?.personsData?.persons ?? [])
   let relationships = $derived(analysisData?.personsData?.relationships ?? [])
   let synthesis = $derived(analysisData?.caseSynthesis ?? {})
-  
   // Case strength styling
   let strengthColor = $derived({)
     strong: 'text-green-600 bg-green-50',

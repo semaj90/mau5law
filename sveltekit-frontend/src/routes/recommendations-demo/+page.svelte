@@ -1,13 +1,11 @@
 <!-- Legal AI Recommendations Demo - SSR with Svelte 5 + Melt-UI + Bits-UI v2 -->
 <script lang="ts">
-</script>
   import { page } from '$app/stores';
   import FOAFModal from '$lib/components/recommendations/FOAFModal.svelte';
   import DidYouMeanSuggestions from '$lib/components/recommendations/DidYouMeanSuggestions.svelte';
   import { Users, Search, Sparkles, Database, Brain, Network } from 'lucide-svelte';
 
   let { data } = $props();
-  
   // Svelte 5 runes for component state
   let foafModalOpen = $state(false);
   let searchQuery = $state('');

@@ -1,5 +1,4 @@
 <script lang="ts">
-</script>
   // Svelte 5 runes pattern
   let inputText = '';
   let result: string | null = null;
