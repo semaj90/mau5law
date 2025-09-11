@@ -97,7 +97,7 @@
 
     for (const test of tests) {
       await runTest(test);
-      await new Promise(resolve => setTimeout(resolve, 300);
+      await new Promise(resolve => setTimeout(resolve, 300));
     }
 
     isRunning = false;

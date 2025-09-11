@@ -136,9 +136,9 @@ export const ORCHESTRATED_COMPONENTS = {
   Input,
 } as const;
 
-// Type exports
-export type {
-  LegalEvidenceItem,
-  AIAnalysisResult,
-  OrchestrationState
-};
+// Type exports already defined above - no need to re-export
+// export type {
+//   LegalEvidenceItem,
+//   AIAnalysisResult,
+//   OrchestrationState
+// };

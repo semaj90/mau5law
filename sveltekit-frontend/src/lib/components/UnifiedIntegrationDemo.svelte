@@ -287,10 +287,9 @@
         <div class="space-y-4">
           <!-- Operation Selection -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2" for="-operation-type-">
               Operation Type
-            </label>
-            <select 
+            </label><select id="-operation-type-" 
               bind:value={selectedOperation}
               change={onOperationChange}
               class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -305,10 +304,9 @@
 
           <!-- Input Data -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2" for="-input-data-">
               Input Data
-            </label>
-            <textarea 
+            </label><textarea id="-input-data-" 
               bind:value={testInput}
               rows="8"
               class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"

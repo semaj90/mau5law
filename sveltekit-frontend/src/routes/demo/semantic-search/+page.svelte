@@ -221,8 +221,7 @@
           <!-- Basic options -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Limit</label>
-              <input
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="limit">Limit</label><input id="limit"
                 type="number"
                 bind:value={limit}
                 min="1"
@@ -231,8 +230,7 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Threshold</label>
-              <input
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="threshold">Threshold</label><input id="threshold"
                 type="number"
                 bind:value={threshold}
                 min="0.1"
@@ -242,8 +240,7 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Document Type</label>
-              <select
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="document-type">Document Type</label><select id="document-type"
                 bind:value={documentTypeFilter}
                 class="w-full px-3 py-1 border border-gray-300 rounded text-sm"
               >
@@ -255,8 +252,7 @@
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Source</label>
-              <select
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="source">Source</label><select id="source"
                 bind:value={sourceFilter}
                 class="w-full px-3 py-1 border border-gray-300 rounded text-sm"
               >
@@ -271,16 +267,14 @@
           <!-- Date range -->
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-              <input
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="start-date">Start Date</label><input id="start-date"
                 type="date"
                 bind:value={startDate}
                 class="w-full px-3 py-1 border border-gray-300 rounded text-sm"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-              <input
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="end-date">End Date</label><input id="end-date"
                 type="date"
                 bind:value={endDate}
                 class="w-full px-3 py-1 border border-gray-300 rounded text-sm"

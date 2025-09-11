@@ -31,32 +31,7 @@
 
   	// Real-time evidence subscription
   let realtimeEvidence = $state<Evidence[] >([]);
-  let unsubscribeEvidence = $state<(() >(> void) | undefined);
-
-  	let canvasElement: HTMLCanvasElement;
-  	let fabricCanvas: any;
-  let isLoading = $state(false);
-  let isDirty = $state(false);
-  let selectedTool = $state('select');
-  let selectedObject = $state<any >(null);
-  let clipboardData = $state<any >(null);
-  let autoSaveTimer = $state<NodeJS.Timeout | null >(null);
-
-  	// Drawing state
-  let isDrawing = $state(false);
-  let drawingPath = $state<any >(null);
-  let currentColor = $state('#000000');
-  let currentStrokeWidth = $state(2);
-  let currentFontSize = $state(16);
-
-  	// Zoom and pan state
-  let zoomLevel = $state(1);
-  let panX = $state(0);
-  let panY = $state(0);
-
-  	// Tool options
-  	const tools = [
-  		{ id: 'select', name: 'Select', icon: '🔍' },
+  let unsubscribeEvidence = $state<(() => { id: 'select', name: 'Select', icon: '🔍' },
   		{ id: 'text', name: 'Text', icon: 'T' },
   		{ id: 'rectangle', name: 'Rectangle', icon: '⬜' },
   		{ id: 'circle', name: 'Circle', icon: '⭕' },

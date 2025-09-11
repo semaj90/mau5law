@@ -225,8 +225,7 @@
       <!-- Service Selection -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Service</label>
-          <select bind:value={selectedService} class="w-full border border-gray-300 rounded-md px-3 py-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="service">Service</label><select id="service" bind:value={selectedService} class="w-full border border-gray-300 rounded-md px-3 py-2">
             {#each availableServices as service}
               <option value={service.value}>{service.label}</option>
             {/each}
@@ -234,8 +233,7 @@
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Operation</label>
-          <select bind:value={selectedOperation} class="w-full border border-gray-300 rounded-md px-3 py-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="operation">Operation</label><select id="operation" bind:value={selectedOperation} class="w-full border border-gray-300 rounded-md px-3 py-2">
             {#each availableOperations as operation}
               <option value={operation.value}>{operation.label}</option>
             {/each}
@@ -243,8 +241,7 @@
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-          <select bind:value={selectedPriority} class="w-full border border-gray-300 rounded-md px-3 py-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="priority">Priority</label><select id="priority" bind:value={selectedPriority} class="w-full border border-gray-300 rounded-md px-3 py-2">
             <option value="high">High (Direct CUDA)</option>
             <option value="normal">Normal (Service Route)</option>
             <option value="low">Low (Queue)</option>

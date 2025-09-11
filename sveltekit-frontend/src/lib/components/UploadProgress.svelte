@@ -197,9 +197,7 @@
   }
 
   // Attention tracking setup
-  let attentionListeners = $state<Array<() >(> void> = []);
-
-  function setupAttentionTracking() {
+  let attentionListeners = $state<Array<() => {
     if (!socket) return;
 
     const trackEvent = (type: string, metadata?: unknown) => {

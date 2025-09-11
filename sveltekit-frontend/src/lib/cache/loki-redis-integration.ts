@@ -690,7 +690,7 @@ export class LokiRedisCache extends EventEmitter {
     try {
       // Clear all search cache keys matching criteria
       const pattern = `${CACHE_CONFIG.redis.keyPrefix}search:*`;
-      const keys = await this.redis.keys(pattern);
+      const keys = await (this.redis as any).keys(pattern);
 
       if (keys.length > 0) {
         await this.redis.del(keys);
@@ -835,7 +835,7 @@ export class LokiRedisCache extends EventEmitter {
       // Clear Redis cache
       if (this.redis) {
         const pattern = `${CACHE_CONFIG.redis.keyPrefix}*`;
-        const keys = await this.redis.keys(pattern);
+        const keys = await (this.redis as any).keys(pattern);
         if (keys.length > 0) {
           await this.redis.del(keys);
         }

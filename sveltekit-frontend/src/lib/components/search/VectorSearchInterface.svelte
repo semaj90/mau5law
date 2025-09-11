@@ -134,8 +134,7 @@
   <div class="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Ranking Strategy -->
     <div>
-      <label class="block text-sm font-medium text-cyan-400 mb-2">Ranking Strategy</label>
-      <select
+      <label class="block text-sm font-medium text-cyan-400 mb-2" for="ranking-strategy">Ranking Strategy</label><select id="ranking-strategy"
         bind:value={rankingStrategy}
         class="w-full bg-gray-800/50 border border-cyan-400/30 rounded-lg px-3 py-2 text-gray-200 focus:border-cyan-400 focus:outline-none"
       >
@@ -219,10 +218,9 @@
 
         <!-- Confidence Threshold -->
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">
+          <label class="block text-sm font-medium text-gray-300 mb-2" for="-min-confidence-sele">
             Min Confidence: {(selectedFilters.minimumConfidence * 100).toFixed(0)}%
-          </label>
-          <input
+          </label><input id="-min-confidence-sele"
             type="range"
             min="0"
             max="1"

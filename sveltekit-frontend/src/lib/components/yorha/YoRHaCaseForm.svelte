@@ -33,12 +33,7 @@
   let formIntegration: any = $state(null);
   let currentStep = $state(0);
   let totalSteps = $state(3); // Basic Info, Legal Details, Review
-  let unsubscribe = $state<(() >(> void) | null = null);
-  // Reactive derived state from form integration
-  let isSubmitting = $derived(formIntegration?.isSubmitting?.get() || false);
-  let isValid = $derived(formIntegration?.isValid?.get() || false);
-  let progress = $derived(formIntegration?.progress?.get() || 0);
-  let errors = $derived(formIntegration?.errors?.get() || {});
+  let unsubscribe = $state<(() => {});
   let formState = $derived(formIntegration?.state?.get() || 'idle');
   let formContext = $derived(formIntegration?.context?.get() || {});
 

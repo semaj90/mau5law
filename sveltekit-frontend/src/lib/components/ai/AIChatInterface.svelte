@@ -467,21 +467,18 @@
 				<div class="border-b border-yorha-border bg-yorha-bg-primary p-4" transitifly={{ y: -50, duration: 200 }}>
 					<div class="space-y-3">
 						<div>
-							<label class="block text-xs text-yorha-text-secondary mb-1">Model</label>
-							<select bind:value={settings.model} class="w-full bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-xs p-2 focus:border-yorha-primary">
+							<label class="block text-xs text-yorha-text-secondary mb-1" for="model">Model</label><select id="model" bind:value={settings.model} class="w-full bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-xs p-2 focus:border-yorha-primary">
 								<option value="gemma3-legal:latest">Gemma3 Legal (11.8B)</option>
 								<option value="gemma3-legal:7b">Gemma3 Legal (7B)</option>
 							</select>
 						</div>
 
 						<div>
-							<label class="block text-xs text-yorha-text-secondary mb-1">Temperature: {settings.temperature}</label>
-							<input type="range" min="0" max="1" step="0.1" bind:value={settings.temperature} class="w-full">
+							<label class="block text-xs text-yorha-text-secondary mb-1" for="temperature-settings">Temperature: {settings.temperature}</label><input id="temperature-settings" type="range" min="0" max="1" step="0.1" bind:value={settings.temperature} class="w-full">
 						</div>
 
 						<div>
-							<label class="block text-xs text-yorha-text-secondary mb-1">Max Tokens</label>
-							<input type="number" min="100" max="2048" bind:value={settings.maxTokens} class="w-full bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-xs p-2 focus:border-yorha-primary">
+							<label class="block text-xs text-yorha-text-secondary mb-1" for="max-tokens">Max Tokens</label><input id="max-tokens" type="number" min="100" max="2048" bind:value={settings.maxTokens} class="w-full bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-xs p-2 focus:border-yorha-primary">
 						</div>
 
 						<div class="flex space-x-2">

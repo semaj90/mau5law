@@ -190,8 +190,7 @@
   <div class="space-y-4 mb-6">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-300 mb-2">Evidence ID</label>
-        <input 
+        <label class="block text-sm font-medium text-gray-300 mb-2" for="evidence-id">Evidence ID</label><input id="evidence-id" 
           bind:value={evidenceId}
           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="evidence_001"
@@ -224,8 +223,7 @@
     </div>
     
     <div>
-      <label class="block text-sm font-medium text-gray-300 mb-2">Prompt</label>
-      <textarea 
+      <label class="block text-sm font-medium text-gray-300 mb-2" for="prompt">Prompt</label><textarea id="prompt" 
         bind:value={prompt}
         rows="3"
         class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -305,8 +303,7 @@
       
       <div class="space-y-3">
         <div>
-          <label class="block text-sm text-gray-300 mb-1">Tile Size: {simdConfig.tile_size}px</label>
-          <input 
+          <label class="block text-sm text-gray-300 mb-1" for="tile-size-simdconfig">Tile Size: {simdConfig.tile_size}px</label><input id="tile-size-simdconfig" 
             type="range" 
             bind:value={simdConfig.tile_size}
             min="8" 
@@ -318,8 +315,7 @@
         </div>
         
         <div>
-          <label class="block text-sm text-gray-300 mb-1">Compression: {simdConfig.compression_target}:1</label>
-          <input 
+          <label class="block text-sm text-gray-300 mb-1" for="compression-simdconf">Compression: {simdConfig.compression_target}:1</label><input id="compression-simdconf" 
             type="range" 
             bind:value={simdConfig.compression_target}
             min="10" 
@@ -334,8 +330,7 @@
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <div>
-        <label class="block text-sm text-gray-300 mb-1">Shader Format</label>
-        <select 
+        <label class="block text-sm text-gray-300 mb-1" for="shader-format">Shader Format</label><select id="shader-format" 
           bind:value={simdConfig.shader_format}
           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
         >
@@ -347,8 +342,7 @@
       </div>
       
       <div>
-        <label class="block text-sm text-gray-300 mb-1">Performance Tier</label>
-        <select 
+        <label class="block text-sm text-gray-300 mb-1" for="performance-tier">Performance Tier</label><select id="performance-tier" 
           bind:value={simdConfig.performance_tier}
           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
         >
@@ -373,8 +367,7 @@
     {#if showAdvanced}
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Seed (Optional)</label>
-          <input 
+          <label class="block text-sm font-medium text-gray-300 mb-2" for="seed-optional">Seed (Optional)</label><input id="seed-optional" 
             bind:value={seed}
             type="number"
             class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -395,8 +388,7 @@
           </div>
           
           <div>
-            <label class="block text-sm text-gray-300 mb-1">Target Ratio: {neuralSpriteConfig.target_ratio.toFixed(1)}:1</label>
-            <input 
+            <label class="block text-sm text-gray-300 mb-1" for="target-ratio-neurals">Target Ratio: {neuralSpriteConfig.target_ratio.toFixed(1)}:1</label><input id="target-ratio-neurals" 
               type="range" 
               bind:value={neuralSpriteConfig.target_ratio}
               min="1.5" 
@@ -408,8 +400,7 @@
           </div>
           
           <div>
-            <label class="block text-sm text-gray-300 mb-1">Predictive Frames: {neuralSpriteConfig.predictive_frames}</label>
-            <input 
+            <label class="block text-sm text-gray-300 mb-1" for="predictive-frames-ne">Predictive Frames: {neuralSpriteConfig.predictive_frames}</label><input id="predictive-frames-ne" 
               type="range" 
               bind:value={neuralSpriteConfig.predictive_frames}
               min="0" 

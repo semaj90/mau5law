@@ -204,7 +204,7 @@
     <!-- File Upload Area -->
     <div 
       class="border-2 border-dashed border-cyan-500/30 rounded-lg p-8 text-center transition-all duration-200 {dragActive ? 'border-cyan-400 bg-cyan-500/10' : 'hover:border-cyan-500/50'}"
-      ondragover={(e) => { e.preventDefault(); dragActive = true; }}
+      role="region" aria-label="Drop zone" ondragover={(e) => { e.preventDefault(); dragActive = true; }}
       ondragleave={() => dragActive = false}
       ondrop={handleFileDrop}
     >
@@ -387,8 +387,7 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
-            <label class="text-sm font-medium text-gray-300">LoRA Rank</label>
-            <input
+            <label class="text-sm font-medium text-gray-300" for="lora-rank">LoRA Rank</label><input id="lora-rank"
               type="number"
               value={config?.rank || 16}
               min="1"
@@ -399,8 +398,7 @@
           </div>
           
           <div class="space-y-2">
-            <label class="text-sm font-medium text-gray-300">Learning Rate</label>
-            <input
+            <label class="text-sm font-medium text-gray-300" for="learning-rate">Learning Rate</label><input id="learning-rate"
               type="number"
               value={config?.trainingParams.learningRate || 2e-4}
               step="0.0001"
@@ -414,8 +412,7 @@
           </div>
           
           <div class="space-y-2">
-            <label class="text-sm font-medium text-gray-300">Batch Size</label>
-            <select 
+            <label class="text-sm font-medium text-gray-300" for="batch-size">Batch Size</label><select id="batch-size" 
               value={config?.trainingParams.batchSize || 4}
               class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white focus:border-cyan-500 focus:outline-none"
               onchange={(e) => qloraTrainingService.updateConfig({ 
@@ -430,8 +427,7 @@
           </div>
           
           <div class="space-y-2">
-            <label class="text-sm font-medium text-gray-300">Epochs</label>
-            <input
+            <label class="text-sm font-medium text-gray-300" for="epochs">Epochs</label><input id="epochs"
               type="number"
               value={config?.trainingParams.epochs || 3}
               min="1"

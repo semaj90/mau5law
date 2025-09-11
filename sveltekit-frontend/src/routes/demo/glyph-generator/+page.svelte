@@ -88,8 +88,7 @@
         <CardContent>
           <div class="space-y-3">
             <div>
-              <label class="block text-sm font-medium mb-1">Evidence ID</label>
-              <input 
+              <label class="block text-sm font-medium mb-1" for="evidence-id">Evidence ID</label><input id="evidence-id" 
                 type="number" 
                 bind:value={selectedEvidenceId}
                 class="w-full px-3 py-2 border rounded-lg"

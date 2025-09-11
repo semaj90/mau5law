@@ -51,7 +51,7 @@ export class FastJSON {
       return result;
     } catch (error) {
       console.error('FastJSON stringify error:', error);
-      throw new Error(`JSON stringify failed: ${error.message}`);
+      throw new Error(`JSON stringify failed: ${(error as any)?.message || 'Unknown error'}`);
     }
   }
 
@@ -75,7 +75,7 @@ export class FastJSON {
         return JSON.parse(recovered, options?.reviver);
       }
       
-      throw new Error(`JSON parse failed: ${error.message}`);
+      throw new Error(`JSON parse failed: ${(error as any)?.message || 'Unknown error'}`);
     }
   }
 
@@ -101,7 +101,7 @@ export class FastJSON {
       return JSON.parse(JSON.stringify(obj));
     } catch (error) {
       console.error('FastJSON clone error:', error);
-      throw new Error(`JSON clone failed: ${error.message}`);
+      throw new Error(`JSON clone failed: ${(error as any)?.message || 'Unknown error'}`);
     }
   }
 

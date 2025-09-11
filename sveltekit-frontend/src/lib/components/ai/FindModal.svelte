@@ -408,8 +408,7 @@
                 
                 <!-- AI Confidence Threshold -->
                 <div class="space-y-2">
-                  <label class="text-yellow-400 font-mono text-sm">AI CONFIDENCE: {Math.round(aiConfidenceThreshold * 100)}%</label>
-                  <input
+                  <label class="text-yellow-400 font-mono text-sm" for="ai-confidence-mathro">AI CONFIDENCE: {Math.round(aiConfidenceThreshold * 100)}%</label><input id="ai-confidence-mathro"
                     type="range"
                     bind:value={aiConfidenceThreshold}
                     min="0.1"

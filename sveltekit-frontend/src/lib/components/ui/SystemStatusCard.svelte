@@ -1,8 +1,10 @@
 <script>
+  const { title = "System status", status = "OK", updatedAt = null } = $props();
+
 </script>
-  export let title = "System status";
-  export let status = "OK"; // e.g. "OK", "WARN", "ERROR"
-  export let updatedAt = null; // optional Date or ISO string
+  
+   // e.g. "OK", "WARN", "ERROR"
+   // optional Date or ISO string
 
   const statusClass = () => {
 	const s = String(status ?? "").toUpperCase();

@@ -239,8 +239,7 @@
 		<h3>🎛️ Parallax Controls</h3>
 		
 		<div class="control-row">
-			<label>Mouse Sensitivity:</label>
-			<input 
+			<label for="mouse-sensitivity">Mouse Sensitivity:</label><input id="mouse-sensitivity" 
 				type="range" 
 				bind:value={parallaxConfig.mouseSensitivity} 
 				min="0.001" 
@@ -252,8 +251,7 @@
 		</div>
 		
 		<div class="control-row">
-			<label>Gyro Sensitivity:</label>
-			<input 
+			<label for="gyro-sensitivity">Gyro Sensitivity:</label><input id="gyro-sensitivity" 
 				type="range" 
 				bind:value={parallaxConfig.gyroSensitivity} 
 				min="0.1" 
@@ -266,8 +264,7 @@
 		</div>
 		
 		<div class="control-row">
-			<label>Max Offset:</label>
-			<input 
+			<label for="max-offset">Max Offset:</label><input id="max-offset" 
 				type="range" 
 				bind:value={parallaxConfig.maxOffset} 
 				min="20" 
@@ -279,8 +276,7 @@
 		</div>
 		
 		<div class="control-row">
-			<label>Smoothing:</label>
-			<input 
+			<label for="smoothing">Smoothing:</label><input id="smoothing" 
 				type="range" 
 				bind:value={parallaxConfig.smoothing} 
 				min="0.01" 

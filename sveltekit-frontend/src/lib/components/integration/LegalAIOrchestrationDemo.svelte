@@ -277,8 +277,7 @@
           {#if selectedWorkflow === 'legal-research'}
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Research Query</label>
-                <textarea 
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="research-query">Research Query</label><textarea id="research-query" 
                   bind:value={legalResearchForm.query}
                   placeholder="Enter your legal research question..."
                   class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -288,8 +287,7 @@
               
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Jurisdiction</label>
-                  <select bind:value={legalResearchForm.jurisdiction} class="w-full p-2 border border-gray-300 rounded-md">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="jurisdiction">Jurisdiction</label><select id="jurisdiction" bind:value={legalResearchForm.jurisdiction} class="w-full p-2 border border-gray-300 rounded-md">
                     <option value="federal">Federal</option>
                     <option value="state">State</option>
                     <option value="local">Local</option>
@@ -298,8 +296,7 @@
                 </div>
                 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">User Role</label>
-                  <select bind:value={legalResearchForm.userRole} class="w-full p-2 border border-gray-300 rounded-md">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="user-role">User Role</label><select id="user-role" bind:value={legalResearchForm.userRole} class="w-full p-2 border border-gray-300 rounded-md">
                     <option value="attorney">Attorney</option>
                     <option value="paralegal">Paralegal</option>
                     <option value="judge">Judge</option>
@@ -313,8 +310,7 @@
           {#if selectedWorkflow === 'document-processing'}
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Document Content</label>
-                <textarea 
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="document-content">Document Content</label><textarea id="document-content" 
                   bind:value={documentProcessingForm.content}
                   placeholder="Paste your document content here..."
                   class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -323,8 +319,7 @@
               </div>
               
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Document Type</label>
-                <select bind:value={documentProcessingForm.documentType} class="w-full p-2 border border-gray-300 rounded-md">
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="document-type">Document Type</label><select id="document-type" bind:value={documentProcessingForm.documentType} class="w-full p-2 border border-gray-300 rounded-md">
                   <option value="contract">Contract</option>
                   <option value="brief">Legal Brief</option>
                   <option value="evidence">Evidence</option>
@@ -338,8 +333,7 @@
           {#if selectedWorkflow === 'case-creation'}
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Case Title</label>
-                <input 
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="case-title">Case Title</label><input id="case-title" 
                   type="text"
                   bind:value={caseCreationForm.title}
                   placeholder="Enter case title..."
@@ -348,8 +342,7 @@
               </div>
               
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Case Description</label>
-                <textarea 
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="case-description">Case Description</label><textarea id="case-description" 
                   bind:value={caseCreationForm.description}
                   placeholder="Describe the case details..."
                   class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -359,8 +352,7 @@
               
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Case Type</label>
-                  <select bind:value={caseCreationForm.caseType} class="w-full p-2 border border-gray-300 rounded-md">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="case-type">Case Type</label><select id="case-type" bind:value={caseCreationForm.caseType} class="w-full p-2 border border-gray-300 rounded-md">
                     <option value="civil">Civil</option>
                     <option value="criminal">Criminal</option>
                     <option value="corporate">Corporate</option>
@@ -370,8 +362,7 @@
                 </div>
                 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Jurisdiction</label>
-                  <select bind:value={caseCreationForm.jurisdiction} class="w-full p-2 border border-gray-300 rounded-md">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="jurisdiction">Jurisdiction</label><select id="jurisdiction" bind:value={caseCreationForm.jurisdiction} class="w-full p-2 border border-gray-300 rounded-md">
                     <option value="federal">Federal</option>
                     <option value="state">State</option>
                     <option value="local">Local</option>

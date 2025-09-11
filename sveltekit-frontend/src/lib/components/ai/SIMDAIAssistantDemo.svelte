@@ -315,8 +315,7 @@
       <!-- Configuration Controls -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Compression Target</label>
-          <select bind:value={compressionTarget} class="w-full p-2 border rounded-md text-sm">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="compression-target">Compression Target</label><select id="compression-target" bind:value={compressionTarget} class="w-full p-2 border rounded-md text-sm">
             <option value={7}>7:1 (Ultra Quality)</option>
             <option value={25}>25:1 (High Quality)</option>
             <option value={50}>50:1 (Balanced)</option>
@@ -326,8 +325,7 @@
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Quality Tier</label>
-          <select bind:value={qualityTier} class="w-full p-2 border rounded-md text-sm">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="quality-tier">Quality Tier</label><select id="quality-tier" bind:value={qualityTier} class="w-full p-2 border rounded-md text-sm">
             <option value="nes">NES (8-bit)</option>
             <option value="snes">SNES (16-bit)</option>
             <option value="n64">N64 (64-bit)</option>

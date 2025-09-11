@@ -1,4 +1,6 @@
 <script lang="ts">
+  const { data } = $props();
+
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
   import { currentUser } from '$lib/auth/auth-store';
@@ -402,7 +404,7 @@
 
   3. In this +page.svelte script:
     - import { enhance } from 'sveltekit-superforms/client';
-    - get `export let data;` then `const form = data.form;`
+    - get `` then `const form = data.form;`
     - remove the old createUser() fetch logic (server action replaces it).
 
   4. Replace the existing manual create form (below) with:

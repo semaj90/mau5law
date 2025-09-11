@@ -195,7 +195,7 @@ async function generateFallbackEmbedding(text: string, dimensions: number) {
       .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter((w) => w.length > 2);
+      .filter((w: string) => w.length > 2);
 
     // Create a basic embedding based on text features
     const embedding = new Array(dimensions).fill(0);

@@ -4,6 +4,8 @@
 -->
 
 <script lang="ts">
+  const { nodeId: string = '', nodeType: string = 'Case', maxNodes: number = 100, maxDepth: number = 3, autoStart: boolean = true, enableStreaming: boolean = true, showProgress: boolean = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' } = $props();
+
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { idleDetectionMachine } from '$lib/machines/idle-detection-rabbitmq-machine.js';
@@ -11,14 +13,14 @@
   import { webgpuSOMCache } from '$lib/services/webgpu-som-enhanced-cache.js';
 
   // Props
-  export let nodeId: string = '';
-  export let nodeType: string = 'Case';
-  export let maxNodes: number = 100;
-  export let maxDepth: number = 3;
-  export let autoStart: boolean = true;
-  export let enableStreaming: boolean = true;
-  export let showProgress: boolean = true;
-  export let theme: 'light' | 'dark' | 'yorha' = 'yorha';
+  
+  
+  
+  
+  
+  
+  
+  
 
   // Component state
   let canvasRef: HTMLCanvasElement;

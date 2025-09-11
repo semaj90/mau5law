@@ -1,10 +1,12 @@
 <script lang="ts">
+  const { title: string, description: string, path: string, icon: any, ariaLabel: string = title } = $props();
+
   import { goto } from '$app/navigation';
-  export let title: string;
-  export let description: string;
-  export let path: string;
-  export let icon: any; // Svelte component constructor;
-  export let ariaLabel: string = title;
+  
+  
+  
+   // Svelte component constructor;
+  
   ;
   function handleNavigate() {
     if (path) goto(path);

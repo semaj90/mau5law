@@ -107,8 +107,7 @@
       <CardContent>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-2">Case ID:</label>
-            <input
+            <label class="block text-sm font-medium mb-2" for="case-id">Case ID:</label><input id="case-id"
               bind:value={caseId}
               class="w-full p-2 border rounded"
               placeholder="Enter case ID"
@@ -116,8 +115,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-2">Evidence Text:</label>
-            <textarea
+            <label class="block text-sm font-medium mb-2" for="evidence-text">Evidence Text:</label><textarea id="evidence-text"
               bind:value={evidenceText}
               class="w-full p-2 border rounded h-32"
               placeholder="Enter evidence text for embedding generation"

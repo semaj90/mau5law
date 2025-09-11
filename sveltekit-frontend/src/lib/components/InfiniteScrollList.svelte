@@ -136,7 +136,8 @@
         <div
           class="list-item"
           transition:slide={{ duration: 300, easing: quintOut }}
-          onclick={() => handleItemClick(item)}
+          role="button" tabindex="0"
+                onclick={() => handleItemClick(item)}
           onkeydown={(e) => e.key === "Enter" && handleItemClick(item)}
           role="option"
           tabindex={0}

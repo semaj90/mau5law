@@ -1,4 +1,6 @@
 <script lang="ts">
+  const { items: Evidence[] = [], onResults: (results: Evidence[]) = > void = () => {}, onSelect: (item: Evidence) = > void = () => {}, placeholder = 'Search evidence...', maxResults = 10, showFilters = true, showTags = true } = $props();
+
 
   import { createCombobox, melt } from 'melt';
   // Global Svelte runes are declared in src/types/svelte-helpers.d.ts
@@ -7,13 +9,13 @@
   import { Search, X, Tag, Calendar, FileType } from 'lucide-svelte';
   import type { Evidence } from '$lib/stores/report';
 
-  export let items: Evidence[] = [];
-  export let onResults: (results: Evidence[]) => void = () => {};
-  export let onSelect: (item: Evidence) => void = () => {};
-  export let placeholder = 'Search evidence...';
-  export let maxResults = 10;
-  export let showFilters = true;
-  export let showTags = true;
+  
+  
+  
+  
+  
+  
+  
   ;
   let searchValue = $state('');
   let fuse = $state<Fuse<Evidence>;

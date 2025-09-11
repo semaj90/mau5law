@@ -205,8 +205,7 @@
       <!-- Input Section -->
       <div class="space-y-4 mb-6">
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Test Input</label>
-          <textarea
+          <label class="block text-sm font-medium text-gray-300 mb-2" for="test-input">Test Input</label><textarea id="test-input"
             bind:value={testInput}
             class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             rows="3"
@@ -216,8 +215,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2">Request Type</label>
-            <select
+            <label class="block text-sm font-medium text-gray-300 mb-2" for="request-type">Request Type</label><select id="request-type"
               bind:value={requestType}
               class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500"
             >

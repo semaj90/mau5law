@@ -766,7 +766,7 @@ export class WebGPUSOMCache {
     // Clear Redis cache keys if connected
     if (this.redisConnected && this.redisClient) {
       try {
-        const keys = await this.redisClient.keys(`${this.redisConfig.keyPrefix}*`);
+        const keys = await (this.redisClient as any).keys(`${this.redisConfig.keyPrefix}*`);
         if (keys.length > 0) {
           await this.redisClient.del(...keys);
         }
@@ -992,7 +992,7 @@ export class WebGPUSOMCache {
           if (!cached) {
             // Generate embedding using WebGPU if available
             const embeddings = await this.computeErrorEmbeddingsGPU([
-              { message: errorMessage, timestamp: Date.now(), level: 'error' } as NPMError,
+              { message: errorMessage, timestamp: Date.now(), level: 'error' } as any,
             ]);
             const embedding = embeddings[0];
             await this.storeResult(embeddingKey, embedding, {

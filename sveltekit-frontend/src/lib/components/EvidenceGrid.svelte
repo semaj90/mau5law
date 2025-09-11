@@ -346,7 +346,8 @@
           {#each filteredData as item (item.id)}
             <div
               class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer {selectedItems.has(item.id) ? 'ring-2 ring-blue-500' : ''}"
-              onclick={() => toggleSelection(item)}
+              role="button" tabindex="0"
+                onclick={() => toggleSelection(item)}
               oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
             >
               <!-- Preview/Thumbnail -->
@@ -438,7 +439,8 @@
             {@const SvelteComponent_1 = getFileIcon(item.evidenceType, item.mimeType)}
             <div
               class="space-y-4"
-              onclick={() => toggleSelection(item)}
+              role="button" tabindex="0"
+                onclick={() => toggleSelection(item)}
               oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
             >
               <!-- Selection checkbox -->

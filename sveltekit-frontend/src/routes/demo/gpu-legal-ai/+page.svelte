@@ -609,7 +609,7 @@
         <CardContent class="space-y-4">
           <div class="grid grid-cols-2 gap-4 text-center">
             <div>
-              <p class="text-lg font-semibold">{Math.round(gpuMetrics.temperature)}°C</p>
+              <p class="text-lg font-semibold">{Math.round(gpuMetrics.temperature)}ï¿½C</p>
               <p class="text-xs text-muted-foreground">Temperature</p>
             </div>
             <div>
@@ -645,8 +645,8 @@
       <CardContent class="space-y-6">
         <div class="space-y-4">
           <div>
-            <label class="text-sm font-medium mb-2 block">AI Model</label>
-            <select 
+            <label class="text-sm font-medium mb-2 block" for="ai-model">AI Model</label>
+            <select id="ai-model" 
               bind:value={selectedModel} 
               class="w-full p-2 border rounded-md bg-background"
             >

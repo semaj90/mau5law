@@ -354,8 +354,7 @@
 
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-2">Target Workers</label>
-            <input
+            <label class="block text-sm font-medium mb-2" for="target-workers">Target Workers</label><input id="target-workers"
               type="number"
               bind:value={targetWorkers}
               min="1"

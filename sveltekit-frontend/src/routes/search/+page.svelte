@@ -395,7 +395,8 @@
                 {@const SvelteComponent = getResultIcon(result.type)}
                 <div
                   class="space-y-4"
-                  onclick={() => handleResultClick(result)}
+                  role="button" tabindex="0"
+                onclick={() => handleResultClick(result)}
                   keydown={(e) =>
                     e.key === "Enter" && handleResultClick(result)}
                   role="button"

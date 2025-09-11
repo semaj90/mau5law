@@ -234,7 +234,7 @@ export class Report {
     return text
       .trim()
       .split(/\s+/)
-      .filter((word) => word.length > 0).length;
+      .filter((word: string) => word.length > 0).length;
   }
   /**
    * Clone this report

@@ -186,8 +186,7 @@
       <!-- Pipeline Selection -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block text-sm font-medium mb-2">Pipeline Type</label>
-          <select 
+          <label class="block text-sm font-medium mb-2" for="pipeline-type">Pipeline Type</label><select id="pipeline-type" 
             bind:value={selectedPipeline}
             class="w-full p-2 border rounded-md"
             disabled={isProcessing}
@@ -199,8 +198,7 @@
         </div>
         
         <div>
-          <label class="block text-sm font-medium mb-2">Cache Key</label>
-          <input 
+          <label class="block text-sm font-medium mb-2" for="cache-key">Cache Key</label><input id="cache-key" 
             type="text" 
             bind:value={cacheKey}
             class="w-full p-2 border rounded-md"

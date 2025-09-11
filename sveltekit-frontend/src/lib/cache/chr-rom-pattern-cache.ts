@@ -102,7 +102,7 @@ export class CHRROMPatternCache {
     tileIndex: number
   ): void {
     // Generate NES-style 8x8 tile patterns
-    const patterns = {
+    const patterns: { [key: number]: number[] } = {
       0: [0x3C, 0x42, 0x81, 0x81, 0x81, 0x81, 0x42, 0x3C], // Circle
       1: [0xFF, 0x81, 0x81, 0xBD, 0xBD, 0x81, 0x81, 0xFF], // Rectangle with border
       2: [0x18, 0x3C, 0x7E, 0xFF, 0xFF, 0x7E, 0x3C, 0x18], // Diamond
@@ -224,7 +224,7 @@ export class CHRROMPatternCache {
       // Cache in Redis with expiration
       const redisKey = `${this.CACHE_PREFIX}pattern:${patternId}`;
       const serializedPattern = this.serializePattern(pattern);
-      await this.redis.setex(redisKey, 3600, serializedPattern); // 1 hour TTL
+      await this.redis?.setex(redisKey, 3600, serializedPattern); // 1 hour TTL
       
       // Store in L1 cache
       this.cache.patterns.set(patternId, pattern);
@@ -406,7 +406,7 @@ export class CHRROMPatternCache {
   }
 
   private getRiskColor(riskLevel: string): [number, number, number, number] {
-    const colors = {
+    const colors: { [key: string]: [number, number, number, number] } = {
       low: [0.2, 0.8, 0.2, 1.0] as [number, number, number, number],
       medium: [1.0, 1.0, 0.4, 1.0] as [number, number, number, number],
       high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],

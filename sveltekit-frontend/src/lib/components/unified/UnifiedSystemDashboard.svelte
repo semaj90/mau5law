@@ -277,8 +277,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
         
         <div class="space-y-4">
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Priority (affects GPU routing)</label>
-            <input type="range" min="0" max="1" step="0.1" bind:value={processingOptions.priority}
+            <label class="block text-sm text-gray-400 mb-2" for="priority-affects-gpu">Priority (affects GPU routing)</label><input id="priority-affects-gpu" type="range" min="0" max="1" step="0.1" bind:value={processingOptions.priority}
                    class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
             <div class="flex justify-between text-xs text-gray-500 mt-1">
               <span>Low (CPU)</span>
@@ -288,15 +287,13 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
           </div>
           
           <div>
-            <label class="block text-sm text-gray-400 mb-2">Document Title</label>
-            <input type="text" bind:value={testDocument.title}
+            <label class="block text-sm text-gray-400 mb-2" for="document-title">Document Title</label><input id="document-title" type="text" bind:value={testDocument.title}
                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white">
           </div>
           
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm text-gray-400 mb-2">Document Type</label>
-              <select bind:value={testDocument.metadata.document_type}
+              <label class="block text-sm text-gray-400 mb-2" for="document-type">Document Type</label><select id="document-type" bind:value={testDocument.metadata.document_type}
                       class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white">
                 <option value="contract">Contract</option>
                 <option value="brief">Legal Brief</option>
@@ -307,8 +304,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
             </div>
             
             <div>
-              <label class="block text-sm text-gray-400 mb-2">Court Level</label>
-              <select bind:value={testDocument.metadata.court_level}
+              <label class="block text-sm text-gray-400 mb-2" for="court-level">Court Level</label><select id="court-level" bind:value={testDocument.metadata.court_level}
                       class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white">
                 <option value="supreme">Supreme Court</option>
                 <option value="appellate">Appellate Court</option>

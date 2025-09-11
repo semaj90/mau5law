@@ -128,7 +128,7 @@ function extractSuggestions(response: string, prompt: string): string[] {
           .replace(/^(suggest|recommend|consider|try|should|could)\s*/i, "")
           .trim(),
       )
-      .filter((s) => s.length > 10 && s.length < 100);
+      .filter((s: string) => s.length > 10 && s.length < 100);
 
     if (extracted.length > 0) {
       return extracted;
@@ -305,7 +305,7 @@ function extractKeywords(text: string): string[] {
     .toLowerCase()
     .replace(/[^\w\s]/g, " ")
     .split(/\s+/)
-    .filter((word) => word.length > 3 && !commonWords.includes(word));
+    .filter((word: string) => word.length > 3 && !commonWords.includes(word));
 
   return [...new Set(words)].slice(0, 5);
 }

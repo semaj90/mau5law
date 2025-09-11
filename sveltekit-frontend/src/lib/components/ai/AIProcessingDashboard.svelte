@@ -280,10 +280,9 @@
 		<CardContent class="space-y-4">
 			<!-- Test Input -->
 			<div>
-				<label class="block text-sm font-medium text-yorha-text-primary mb-2">
+				<label class="block text-sm font-medium text-yorha-text-primary mb-2" for="-test-input-">
 					Test Input
-				</label>
-				<textarea 
+				</label><textarea id="-test-input-" 
 					bind:value={testInput}
 					class="w-full h-20 px-3 py-2 bg-yorha-bg-secondary border border-yorha-border rounded-md text-yorha-text-primary placeholder-yorha-text-tertiary focus:outline-none focus:ring-2 focus:ring-yorha-primary"
 					placeholder="Enter text to process..."

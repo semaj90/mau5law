@@ -11,6 +11,8 @@
 -->
 
 <script lang="ts">
+  const { userId: string, sessionId: string = '', preloadedData: any = null, ssrContext: any = null } = $props();
+
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { browser } from '$app/environment';
@@ -31,10 +33,10 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
   // Props
-  export let userId: string;
-  export let sessionId: string = '';
-  export let preloadedData: any = null;
-  export let ssrContext: any = null;
+  
+  
+  
+  
   // Dispatcher
   const dispatch = createEventDispatcher();
   // XState machine

@@ -743,8 +743,7 @@
     <!-- Advanced Sorting Controls -->
     <div class="flex items-center justify-between mt-4">
       <div class="flex items-center gap-4">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Sort by:</label>
-        <select
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="sort-by">Sort by:</label><select id="sort-by"
           bind:value={sortBy}
           class="nes-select"
           aria-label="Sort by field"

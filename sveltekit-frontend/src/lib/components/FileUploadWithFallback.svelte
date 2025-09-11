@@ -184,7 +184,7 @@ Automatically handles server upload with localStorage fallback
     class:drag-over={isDragOver}
     class:uploading={isUploading}
     ondrop={handleDrop}
-    ondragover={handleDragOver}
+    role="region" aria-label="Drop zone" ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     role="button"
     tabindex="0"

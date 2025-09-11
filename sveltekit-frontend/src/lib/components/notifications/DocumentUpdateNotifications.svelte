@@ -29,9 +29,7 @@
   let notificationPermissionGranted = $state(false);
 
   // Subscribe to notifications store
-  let unsubscribe = $state<(() >(> void) | null = null);
-
-  onMount(async () => {
+  let unsubscribe = $state<(() => {
     // Subscribe to notification updates
     unsubscribe = documentUpdateNotifications.subscribe((state) => {
       notifications = state.notifications;

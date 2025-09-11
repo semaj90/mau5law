@@ -1,4 +1,40 @@
 <script lang="ts">
+  interface Props {
+    noteId?: string;
+    title?: string;
+    content?: string;
+    markdown?: string;
+    html?: string;
+    contentJson?: any;
+    noteType?: string;
+    tags?: string[];
+    userId?: string;
+    caseId?: string;
+    createdAt?: Date;
+    isOpen?: boolean;
+    mode?: "view" | "edit";
+    canEdit?: boolean;
+    onSave?: (data: any) => void;
+  }
+
+  const { 
+    noteId = "", 
+    title = "", 
+    content = "", 
+    markdown = "", 
+    html = "", 
+    contentJson = null, 
+    noteType = "general", 
+    tags = [], 
+    userId = "", 
+    caseId = undefined, 
+    createdAt = new Date(), 
+    isOpen = false, 
+    mode = "view", 
+    canEdit = true, 
+    onSave = undefined 
+  }: Props = $props();
+
   import { Bookmark, BookmarkCheck, Calendar, Edit3, Eye, Tag, User as UserIcon, X } from "lucide-svelte";
   import { marked } from "marked";
   import { fade, fly } from "svelte/transition";
@@ -8,22 +44,32 @@
   } from '$lib/stores/saved-notes';
   import RichTextEditor from "./RichTextEditor.svelte";
 
+  // Local state for mutable values that need to change
+  let localMode = $state(mode);
+  let localTitle = $state(title);
+  let localContent = $state(content);
+  let localMarkdown = $state(markdown);
+  let localHtml = $state(html);
+  let localTags = $state([...tags]);
+  let localContentJson = $state(contentJson);
+  let localIsOpen = $state(isOpen);
+
   // Props
-  export let noteId: string = "";
-  export let title: string = "";
-  export let content: string = "";
-  export let markdown: string = "";
-  export let html: string = "";
-  export let contentJson: any = null;
-  export let noteType: string = "general";
-  export let tags: string[] = [];
-  export let userId: string = "";
-  export let caseId: string | undefined = undefined;
-  export let createdAt: Date = new Date();
-  export let isOpen: boolean = false;
-  export let mode: "view" | "edit" = "view";
-  export let canEdit: boolean = true;
-  export let onSave: ((data: any) => void) | undefined = undefined;
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   let isSaved = false;
   let editedContent = content;
@@ -97,43 +143,43 @@
     };
 
     onSave?.(updatedNote);
-    mode = "view";
+    localMode = "view";
 
     // Update local data
-    title = editedTitle;
-    content = newMarkdown || newHtml;
-    markdown = newMarkdown;
-    html = newHtml;
-    contentJson = newJson;
-    tags = [...editedTags];
+    localTitle = editedTitle;
+    localContent = newMarkdown || newHtml;
+    localMarkdown = newMarkdown;
+    localHtml = newHtml;
+    localContentJson = newJson;
+    localTags = [...editedTags];
   }
 
   function startEdit() {
-    mode = "edit";
+    localMode = "edit";
     editedContent = content;
     editedTitle = title;
     editedTags = [...tags];
   }
 
   function cancelEdit() {
-    mode = "view";
+    localMode = "view";
     editedContent = content;
     editedTitle = title;
     editedTags = [...tags];
   }
 
   function closeModal() {
-    isOpen = false;
+    localIsOpen = false;
   }
 </script>
 
-{#if isOpen}
+{#if localIsOpen}
   <div class="space-y-4" transition:fade={{ duration: 150 }}>
     <div class="space-y-4" transition:fly={{ y: -20, duration: 200 }}>
       <!-- Header -->
       <div class="space-y-4">
         <div class="space-y-4">
-          {#if mode === "edit"}
+          {#if localMode === "edit"}
             <input
               bind:value={editedTitle}
               class="space-y-4"
@@ -141,7 +187,7 @@
             />
           {:else}
             <h2 class="space-y-4">
-              {title || "Untitled Note"}
+              {localTitle || "Untitled Note"}
             </h2>
           {/if}
 
@@ -160,7 +206,7 @@
 
         <div class="space-y-4">
           {#if canEdit}
-            {#if mode === "view"}
+            {#if localMode === "view"}
               <button
                 type="button"
                 class="space-y-4"
@@ -209,7 +255,7 @@
         <div class="space-y-4">
           <Tag class="space-y-4" />
 
-          {#if mode === "edit"}
+          {#if localMode === "edit"}
             {#each editedTags as tag}
               <span class="space-y-4">
                 {tag}
@@ -230,7 +276,7 @@
               placeholder="Add tag..."
             />
           {:else}
-            {#each tags as tag}
+            {#each localTags as tag}
               <span class="space-y-4">{tag}</span>
             {/each}
           {/if}
@@ -239,7 +285,7 @@
 
       <!-- Content -->
       <div class="space-y-4">
-        {#if mode === "edit"}
+        {#if localMode === "edit"}
           <RichTextEditor
             content={editedContent}
             placeholder="Edit your note..."
@@ -251,14 +297,14 @@
             {@html displayHtml}
           </div>
         {:else if content}
-          <div class="space-y-4">{content}</div>
+          <div class="space-y-4">{localContent}</div>
         {:else}
           <div class="space-y-4">No content available</div>
         {/if}
       </div>
 
       <!-- Footer -->
-      {#if mode === "view"}
+      {#if localMode === "view"}
         <div class="space-y-4">
           <div class="space-y-4">
             {#if caseId}

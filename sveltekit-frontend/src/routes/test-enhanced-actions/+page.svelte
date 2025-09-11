@@ -18,7 +18,7 @@
       formData.append('metadata', JSON.stringify({
         submitTime: new Date().toISOString(),
         userAgent: navigator.userAgent
-      });
+      }));
       return async ({ result, update }) => {
         isSubmitting = false;
         if (result.type === 'success') {

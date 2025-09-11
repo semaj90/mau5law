@@ -300,6 +300,7 @@
 					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 						{#each data.searchCategories as category}
 							<div class="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
+								 role="button" tabindex="0"
 								 onclick={() => { selectedCategory = category.id; activeTab = 'search'; }}>
 								<div class="flex items-center gap-4 mb-4">
 									<div class="text-3xl">{category.icon}</div>

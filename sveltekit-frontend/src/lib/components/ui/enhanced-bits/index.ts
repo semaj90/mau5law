@@ -55,6 +55,11 @@ export const Select = Object.assign(SelectComponent, {
   Value: SelectComponent,
 });
 
+// Compound Button for consistency
+export const CompoundButton = Object.assign(ButtonComponent, {
+  Root: ButtonComponent,
+});
+
 // Demo components
 export { default as EnhancedBitsDemo } from "./EnhancedBitsDemo.svelte";
 export { default as VectorIntelligenceDemo } from "./VectorIntelligenceDemo.svelte";

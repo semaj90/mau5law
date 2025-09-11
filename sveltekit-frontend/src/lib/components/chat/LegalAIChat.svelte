@@ -10,16 +10,18 @@
   - Legal knowledge base integration
 -->
 <script lang="ts">
+  const { caseId: string | null = null, caseData: Case | null = null, detectiveMode = false, readonly = false, height = '600px' } = $props();
+
   import { onMount, createEventDispatcher, tick } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Case, Evidence, Citation } from '$lib/server/db/schemas/cases-schema.js';
 
   // Props
-  export let caseId: string | null = null;
-  export let caseData: Case | null = null;
-  export let detectiveMode = false;
-  export let readonly = false;
-  export let height = '600px';
+  
+  
+  
+  
+  
 
   // Event dispatcher
   const dispatch = createEventDispatcher<{

@@ -52,7 +52,7 @@
   // WebSocket for real-time updates
   let ws: WebSocket | null >(null);
 
-  onMount(() >(> {
+  onMount(() => {
     // Initialize with system message
     messages.push({
       role: "system",

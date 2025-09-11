@@ -206,8 +206,9 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 				class:uploading={uploadStatus === 'uploading'}
 				class:processing={uploadStatus === 'processing'}
 				ondrop={handleDrop}
-				ondragover={handleDragOver}
-				onclick={() => fileInput?.click()}
+			 role="region" aria-label="Drop zone" ondragover={handleDragOver}
+			 role="button" tabindex="0"
+                onclick={() => fileInput?.click()}
 				role="button"
 				tabindex="0"
 			>

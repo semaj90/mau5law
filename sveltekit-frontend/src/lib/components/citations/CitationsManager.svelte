@@ -535,7 +535,8 @@
 
 <!-- Add Citation Modal -->
 {#if showAddForm}
-	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onclick={(e) => { if (e.target === e.currentTarget) hideAddCitationForm(); }}>
+	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" role="button" tabindex="0"
+                onclick={(e) => { if (e.target === e.currentTarget) hideAddCitationForm(); }}>
 		<Card class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
 			<CardHeader>
 				<CardTitle>Add New Citation</CardTitle>
@@ -558,8 +559,7 @@
 						<Input type="number" bind:value={newCitation.year} />
 					</div>
 					<div>
-						<label class="block text-sm font-medium mb-1">Category</label>
-						<select bind:value={newCitation.category} class="w-full p-2 border rounded">
+						<label class="block text-sm font-medium mb-1" for="category">Category</label><select id="category" bind:value={newCitation.category} class="w-full p-2 border rounded">
 							<option value="cases">Case Law</option>
 							<option value="statutes">Statutes</option>
 							<option value="regulations">Regulations</option>
@@ -584,8 +584,7 @@
 				</div>
 				
 				<div>
-					<label class="block text-sm font-medium mb-1">Notes</label>
-					<textarea 
+					<label class="block text-sm font-medium mb-1" for="notes">Notes</label><textarea id="notes" 
 						bind:value={newCitation.notes}
 						placeholder="Brief description or notes about this citation"
 						class="w-full p-2 border rounded min-h-[80px]"

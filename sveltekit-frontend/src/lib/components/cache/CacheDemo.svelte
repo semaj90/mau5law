@@ -399,8 +399,7 @@
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium mb-2">TTL</label>
-                <select bind:value={selectedTTL} class="w-full p-2 border rounded">
+                <label class="block text-sm font-medium mb-2" for="ttl">TTL</label><select id="ttl" bind:value={selectedTTL} class="w-full p-2 border rounded">
                   {#each ttlOptions as option}
                     <option value={option.value}>{option.label}</option>
                   {/each}
@@ -408,8 +407,7 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium mb-2">Priority</label>
-                <select bind:value={selectedPriority} class="w-full p-2 border rounded">
+                <label class="block text-sm font-medium mb-2" for="priority">Priority</label><select id="priority" bind:value={selectedPriority} class="w-full p-2 border rounded">
                   {#each priorityOptions as option}
                     <option value={option.value}>{option.label}</option>
                   {/each}

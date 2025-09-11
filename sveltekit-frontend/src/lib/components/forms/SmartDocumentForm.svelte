@@ -256,7 +256,7 @@
 					class="border-2 border-dashed border-yorha-border rounded-lg p-8 text-center transition-colors duration-200 hover:border-yorha-primary hover:bg-yorha-bg-secondary/50"
 				 class:border-yorha-primary={uploadedFile}
 					ondrop={handleDrop}
-					ondragover={handleDragOver}
+				 role="region" aria-label="Drop zone" ondragover={handleDragOver}
 					role="button"
 					tabindex="0"
 				>

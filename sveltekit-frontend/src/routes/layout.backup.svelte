@@ -1,5 +1,7 @@
 <script lang="ts">
   import '../app.css';
+  
+  const { children } = $props();
 </script>
 
 <div class="app-layout">
@@ -9,7 +11,7 @@
 
   <main class="app-main">
     <!-- named 'snippet' slot plus a default fallback slot -->
-    {@render snippet()}
+    {@render children?.()}
   </main>
 </div>
 

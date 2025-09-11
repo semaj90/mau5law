@@ -278,8 +278,7 @@
       {#if !useT5}
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-2">Input Data (comma-separated)</label>
-            <input 
+            <label class="block text-sm font-medium mb-2" for="input-data-commasepa">Input Data (comma-separated)</label><input id="input-data-commasepa" 
               type="text" 
               bind:value={inputData}
               class="w-full p-3 border border-gray-300 rounded-lg"
@@ -288,8 +287,7 @@
           </div>
           
           <div>
-            <label class="block text-sm font-medium mb-2">Attention Weights</label>
-            <input 
+            <label class="block text-sm font-medium mb-2" for="attention-weights">Attention Weights</label><input id="attention-weights" 
               type="text" 
               bind:value={attentionWeights}
               class="w-full p-3 border border-gray-300 rounded-lg"
@@ -298,8 +296,7 @@
           </div>
           
           <div>
-            <label class="block text-sm font-medium mb-2">Kernel Size: {kernelSize}</label>
-            <input 
+            <label class="block text-sm font-medium mb-2" for="kernel-size-kernelsi">Kernel Size: {kernelSize}</label><input id="kernel-size-kernelsi" 
               type="range" 
               bind:value={kernelSize}
               min="2" 
@@ -311,8 +308,7 @@
       {:else}
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-2">T5 Task</label>
-            <select bind:value={t5Task} class="w-full p-3 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium mb-2" for="t5-task">T5 Task</label><select id="t5-task" bind:value={t5Task} class="w-full p-3 border border-gray-300 rounded-lg">
               <option value="summarize">Summarize</option>
               <option value="translate">Translate</option>
               <option value="qa">Question Answering</option>
@@ -320,8 +316,7 @@
           </div>
           
           <div>
-            <label class="block text-sm font-medium mb-2">Input Text</label>
-            <textarea 
+            <label class="block text-sm font-medium mb-2" for="input-text">Input Text</label><textarea id="input-text" 
               bind:value={t5Text}
               rows="4"
               class="w-full p-3 border border-gray-300 rounded-lg"

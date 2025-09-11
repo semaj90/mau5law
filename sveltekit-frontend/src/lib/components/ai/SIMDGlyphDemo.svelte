@@ -207,10 +207,9 @@
       <!-- Configuration Panel -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="-shader-format-">
             Shader Format
-          </label>
-          <select bind:value={selectedFormat} class="w-full p-2 border rounded-md">
+          </label><select id="-shader-format-" bind:value={selectedFormat} class="w-full p-2 border rounded-md">
             <option value="webgpu">WebGPU Compute</option>
             <option value="webgl">WebGL Fragment</option>
             <option value="css">CSS Animation</option>
@@ -219,10 +218,9 @@
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="-quality-tier-">
             Quality Tier
-          </label>
-          <select bind:value={selectedTier} class="w-full p-2 border rounded-md">
+          </label><select id="-quality-tier-" bind:value={selectedTier} class="w-full p-2 border rounded-md">
             <option value="nes">NES (8-bit)</option>
             <option value="snes">SNES (16-bit)</option>
             <option value="n64">N64 (64-bit)</option>
@@ -230,10 +228,9 @@
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="-compression-target-">
             Compression Target
-          </label>
-          <select bind:value={compressionTarget} class="w-full p-2 border rounded-md">
+          </label><select id="-compression-target-" bind:value={compressionTarget} class="w-full p-2 border rounded-md">
             <option value={10}>10:1 (High Quality)</option>
             <option value={25}>25:1 (Balanced)</option>
             <option value={50}>50:1 (High Compression)</option>

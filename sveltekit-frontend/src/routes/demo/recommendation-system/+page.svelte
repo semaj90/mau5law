@@ -1,7 +1,9 @@
 <!-- Recommendation System Demo - Gaming CSS Modals Integration -->
 <script lang="ts">
-  import { } from 'svelte';
-  import { onMount, onDestroy } from 'svelte';
+  import { , onMount, onDestroy } from 'svelte';
+
+  
+  
   import RecommendationContainer from '$lib/components/ui/gaming/RecommendationContainer.svelte';
   import { recommendationOrchestrator, recommendations } from '$lib/services/recommendation-orchestrator';
   import Button from '$lib/components/ui/button/Button.svelte';

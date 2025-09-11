@@ -52,7 +52,8 @@
         {#each items as item}
           <div 
             class="p-2 hover:bg-gray-100 cursor-pointer"
-            onclick={() => selectItem(item)}
+            role="button" tabindex="0"
+                onclick={() => selectItem(item)}
           >
             {item}
           </div>

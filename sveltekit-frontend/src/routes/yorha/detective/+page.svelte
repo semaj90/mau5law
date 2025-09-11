@@ -281,7 +281,8 @@
               <div class="space-y-3">
                 {#each data.recentCases.slice(0, 5) as case_}
                   <div class="case-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300 cursor-pointer"
-                       onclick={() => goto(`/cases/${case_.id}`)}>
+                       role="button" tabindex="0"
+                onclick={() => goto(`/cases/${case_.id}`)}>
                     <div class="flex justify-between items-start">
                       <div>
                         <div class="font-medium text-amber-300">{case_.title}</div>

@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { , createEventDispatcher } from 'svelte';
+
 
   import { Button } from '$lib/components/ui/enhanced-bits';
-  import { } from 'svelte';
+  
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
   import { formatFileSize } from "$lib/utils/file-utils";
   import {
@@ -12,7 +14,7 @@
     Upload,
     X,
   } from "lucide-svelte";
-  import { createEventDispatcher } from "svelte";
+  
 
   const dispatch = createEventDispatcher();
 

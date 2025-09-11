@@ -361,8 +361,7 @@
         </div>
         
         <div>
-          <label class="block text-sm text-gray-300 mb-1">Learning Rate</label>
-          <input 
+          <label class="block text-sm text-gray-300 mb-1" for="learning-rate">Learning Rate</label><input id="learning-rate" 
             bind:value={somConfig.learningRate}
             type="number" 
             step="0.01" 
@@ -374,8 +373,7 @@
         </div>
         
         <div>
-          <label class="block text-sm text-gray-300 mb-1">Clusters</label>
-          <input 
+          <label class="block text-sm text-gray-300 mb-1" for="clusters">Clusters</label><input id="clusters" 
             bind:value={somConfig.clusterCount}
             change={updateSOMConfig}
             type="number" 
@@ -387,8 +385,7 @@
         </div>
         
         <div>
-          <label class="block text-sm text-gray-300 mb-1">Epochs</label>
-          <input 
+          <label class="block text-sm text-gray-300 mb-1" for="epochs">Epochs</label><input id="epochs" 
             bind:value={somConfig.maxEpochs}
             type="number" 
             min="100" 

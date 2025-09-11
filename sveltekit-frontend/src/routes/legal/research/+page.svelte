@@ -384,8 +384,7 @@
             {#if advancedSearch}
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Jurisdiction</label>
-                  <select bind:value={selectedFilters.jurisdiction} class="w-full rounded-md border-gray-300 text-sm">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="jurisdiction">Jurisdiction</label><select id="jurisdiction" bind:value={selectedFilters.jurisdiction} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Jurisdictions</option>
                     {#each filterOptions.jurisdictions as jurisdiction}
                       <option value={jurisdiction}>{jurisdiction}</option>
@@ -394,8 +393,7 @@
                 </div>
                 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Court</label>
-                  <select bind:value={selectedFilters.court} class="w-full rounded-md border-gray-300 text-sm">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="court">Court</label><select id="court" bind:value={selectedFilters.court} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Courts</option>
                     {#each filterOptions.courts as court}
                       <option value={court}>{court}</option>
@@ -404,8 +402,7 @@
                 </div>
                 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Document Type</label>
-                  <select bind:value={selectedFilters.documentType} class="w-full rounded-md border-gray-300 text-sm">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="document-type">Document Type</label><select id="document-type" bind:value={selectedFilters.documentType} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Types</option>
                     {#each filterOptions.documentTypes as type}
                       <option value={type}>{type}</option>
@@ -414,8 +411,7 @@
                 </div>
                 
                 <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Precedential Value</label>
-                  <select bind:value={selectedFilters.precedentialValue} class="w-full rounded-md border-gray-300 text-sm">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="precedential-value">Precedential Value</label><select id="precedential-value" bind:value={selectedFilters.precedentialValue} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Values</option>
                     {#each filterOptions.precedentialValues as value}
                       <option value={value}>{value}</option>

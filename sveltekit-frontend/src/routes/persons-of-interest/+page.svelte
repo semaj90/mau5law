@@ -390,8 +390,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <!-- Role Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Role</label>
-            <select
+            <label class="block text-sm font-medium text-gray-700 mb-2" for="role">Role</label><select id="role"
               bind:value={selectedRole}
               onchange={filterPersons}
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
@@ -407,8 +406,7 @@
 
           <!-- Threat Level Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Threat Level</label>
-            <select
+            <label class="block text-sm font-medium text-gray-700 mb-2" for="threat-level">Threat Level</label><select id="threat-level"
               bind:value={selectedThreatLevel}
               onchange={filterPersons}
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
@@ -423,8 +421,7 @@
 
           <!-- Status Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <select
+            <label class="block text-sm font-medium text-gray-700 mb-2" for="status">Status</label><select id="status"
               bind:value={selectedStatus}
               onchange={filterPersons}
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"

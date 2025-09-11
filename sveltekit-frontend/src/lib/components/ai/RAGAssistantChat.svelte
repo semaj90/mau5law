@@ -103,13 +103,13 @@
 
 	// Message types
 	function addMessage(content: string, type: 'user' | 'assistant' | 'system' = 'assistant', metadata = {}) {
-		messages.push({
+		messages = [...messages, {
 			id: crypto.randomUUID(),
 			content,
 			type,
 			timestamp: new Date().toISOString(),
 			metadata
-		});
+		}];
 		scrollToBottom();
 	}
 
@@ -118,13 +118,13 @@
 		isTyping = true;
 		const messageId = crypto.randomUUID();
 
-		messages.push({
+		messages = [...messages, {
 			id: messageId,
 			content: '',
 			type: 'assistant',
 			timestamp: new Date().toISOString(),
 			metadata
-		});
+		}];
 
 		await tick();
 		scrollToBottom();
@@ -164,18 +164,20 @@
 
 			if (i === steps.length - 1) {
 				// Simulate finding relevant context
-				ragContext.push({
-					type: 'precedent',
-					title: 'Similar Case: State v. Johnson (2023)',
-					relevance: 0.89,
-					summary: 'Similar MO and evidence patterns'
-				});
-				ragContext.push({
-					type: 'statute',
-					title: 'Federal Criminal Code § 1341',
-					relevance: 0.76,
-					summary: 'Relevant fraud statutes and penalties'
-				});
+				ragContext = [...ragContext, 
+					{
+						type: 'precedent',
+						title: 'Similar Case: State v. Johnson (2023)',
+						relevance: 0.89,
+						summary: 'Similar MO and evidence patterns'
+					},
+					{
+						type: 'statute',
+						title: 'Federal Criminal Code § 1341',
+						relevance: 0.76,
+						summary: 'Relevant fraud statutes and penalties'
+					}
+				];
 			}
 		}
 

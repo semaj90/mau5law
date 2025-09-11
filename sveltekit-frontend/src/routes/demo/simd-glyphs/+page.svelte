@@ -198,8 +198,7 @@
           <!-- Basic Settings -->
           <div class="space-y-4 mb-6">
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">Evidence ID</label>
-              <input 
+              <label class="block text-sm font-medium text-gray-300 mb-2" for="evidence-id">Evidence ID</label><input id="evidence-id" 
                 bind:value={evidenceId}
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="evidence_001"
@@ -207,8 +206,7 @@
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">Prompt</label>
-              <textarea 
+              <label class="block text-sm font-medium text-gray-300 mb-2" for="prompt">Prompt</label><textarea id="prompt" 
                 bind:value={prompt}
                 rows="3"
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -272,8 +270,7 @@
             </label>
             
             <div>
-              <label class="block text-sm text-gray-300 mb-1">Tile Size: {simdConfig.tile_size}px</label>
-              <input 
+              <label class="block text-sm text-gray-300 mb-1" for="tile-size-simdconfig">Tile Size: {simdConfig.tile_size}px</label><input id="tile-size-simdconfig" 
                 type="range" 
                 bind:value={simdConfig.tile_size}
                 min="8" 
@@ -284,8 +281,7 @@
             </div>
             
             <div>
-              <label class="block text-sm text-gray-300 mb-1">Compression: {simdConfig.compression_target}:1</label>
-              <input 
+              <label class="block text-sm text-gray-300 mb-1" for="compression-simdconf">Compression: {simdConfig.compression_target}:1</label><input id="compression-simdconf" 
                 type="range" 
                 bind:value={simdConfig.compression_target}
                 min="10" 
@@ -296,8 +292,7 @@
             </div>
             
             <div>
-              <label class="block text-sm text-gray-300 mb-1">Shader Format</label>
-              <select 
+              <label class="block text-sm text-gray-300 mb-1" for="shader-format">Shader Format</label><select id="shader-format" 
                 bind:value={simdConfig.shader_format}
                 class="w-full px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white"
               >
@@ -309,8 +304,7 @@
             </div>
             
             <div>
-              <label class="block text-sm text-gray-300 mb-1">Performance Tier</label>
-              <select 
+              <label class="block text-sm text-gray-300 mb-1" for="performance-tier">Performance Tier</label><select id="performance-tier" 
                 bind:value={simdConfig.performance_tier}
                 class="w-full px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white"
               >

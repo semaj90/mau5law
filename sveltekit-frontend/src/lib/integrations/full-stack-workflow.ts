@@ -210,12 +210,7 @@ export class FullStackLegalAIWorkflow {
     // 2. GPU-accelerated error analysis
     if (this.systemStatus.flashattention && request.options?.useGPU !== false) {
       const codeContext = [
-        'export let prop = "default"',
-        'let { prop = "default" } = $props()',
-        '<CardRoot class="card">',
-        '<CardRoot className="card">',
-        '<DialogRoot bind:open={showDialog}>',
-        'unused .container { display: flex; }'
+        ' }'
       ];
 
       analysisPromises.push(

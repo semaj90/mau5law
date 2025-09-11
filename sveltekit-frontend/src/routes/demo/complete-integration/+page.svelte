@@ -274,10 +274,9 @@
             <!-- Input Interface -->
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-green-400 mb-2 font-mono">
+                <label class="block text-sm font-medium text-green-400 mb-2 font-mono" for="-input-for-gemma-270">
                   Input for Gemma 270MB:
-                </label>
-                <textarea 
+                </label><textarea id="-input-for-gemma-270" 
                   bind:value={aiInput}
                   class="w-full p-3 bg-gray-900 border border-gray-600 rounded-md text-green-300 font-mono resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
                   rows="3"
@@ -369,8 +368,7 @@
               </div>
               
               <div>
-                <label class="block text-sm text-purple-400 font-mono mb-2">LOD Level:</label>
-                <select bind:value={lodLevel} class="w-full p-2 bg-gray-800 border border-gray-600 text-purple-300 font-mono rounded-md">
+                <label class="block text-sm text-purple-400 font-mono mb-2" for="lod-level">LOD Level:</label><select id="lod-level" bind:value={lodLevel} class="w-full p-2 bg-gray-800 border border-gray-600 text-purple-300 font-mono rounded-md">
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
@@ -379,8 +377,7 @@
               </div>
               
               <div>
-                <label class="block text-sm text-purple-400 font-mono mb-2">Style:</label>
-                <select bind:value={renderStyle} class="w-full p-2 bg-gray-800 border border-gray-600 text-purple-300 font-mono rounded-md">
+                <label class="block text-sm text-purple-400 font-mono mb-2" for="style">Style:</label><select id="style" bind:value={renderStyle} class="w-full p-2 bg-gray-800 border border-gray-600 text-purple-300 font-mono rounded-md">
                   <option value="nes">NES (8-bit)</option>
                   <option value="snes">SNES (16-bit)</option>
                   <option value="n64">N64 (32-bit)</option>

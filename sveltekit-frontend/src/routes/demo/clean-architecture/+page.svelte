@@ -470,7 +470,8 @@
             <div
               class="case-card p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors"
               class:selected={selectedCase?.id === caseItem.id}
-              onclick={() => loadCase(caseItem.id)}
+              role="button" tabindex="0"
+                onclick={() => loadCase(caseItem.id)}
             >
               <div class="flex justify-between items-start mb-2">
                 <h3 class="font-medium text-gray-900">{caseItem.title}</h3>
@@ -619,10 +620,9 @@
       
       <form submit={async (e) => { e.preventDefault(); await createCase(); }}>
         <div class="form-group mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="-case-title-">
             Case Title *
-          </label>
-          <input
+          </label><input id="-case-title-"
             type="text"
             bind:value={createFormData.title}
             required
@@ -632,10 +632,9 @@
         </div>
 
         <div class="form-group mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="-description-">
             Description *
-          </label>
-          <textarea
+          </label><textarea id="-description-"
             bind:value={createFormData.description}
             required
             rows="3"
@@ -646,10 +645,9 @@
 
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div class="form-group">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2" for="-priority-">
               Priority
-            </label>
-            <select 
+            </label><select id="-priority-" 
               bind:value={createFormData.priority}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
@@ -661,10 +659,9 @@
           </div>
 
           <div class="form-group">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2" for="-status-">
               Status
-            </label>
-            <select 
+            </label><select id="-status-" 
               bind:value={createFormData.status}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
@@ -705,10 +702,9 @@
       
       <form submit={async (e) => { e.preventDefault(); await handleFileUpload(); }}>
         <div class="form-group mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="-select-file-">
             Select File *
-          </label>
-          <input
+          </label><input id="-select-file-"
             type="file"
             change={handleFileSelect}
             required

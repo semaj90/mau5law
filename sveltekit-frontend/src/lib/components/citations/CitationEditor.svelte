@@ -8,15 +8,17 @@
   - Integration with case management system
 -->
 <script lang="ts">
+  const { caseId: string, citation: Partial<Citation> | null = null, mode: 'create' | 'edit' = 'create', disabled = false } = $props();
+
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
 
   // Props
-  export let caseId: string;
-  export let citation: Partial<Citation> | null = null;
-  export let mode: 'create' | 'edit' = 'create';
-  export let disabled = false;
+  
+  
+  
+  
 
   // Event dispatcher
   const dispatch = createEventDispatcher<{
@@ -273,10 +275,9 @@
     <!-- Basic Information -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-title-">
           Title *
-        </label>
-        <input
+        </label><input id="-title-"
           type="text"
           bind:value={formData.title}
           disabled={disabled || isLoading}
@@ -290,10 +291,9 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-citation-type-">
           Citation Type *
-        </label>
-        <select
+        </label><select id="-citation-type-"
           bind:value={formData.citationType}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -308,10 +308,9 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-author-">
           Author
-        </label>
-        <input
+        </label><input id="-author-"
           type="text"
           bind:value={formData.author}
           disabled={disabled || isLoading}
@@ -321,10 +320,9 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-source-">
           Source
-        </label>
-        <input
+        </label><input id="-source-"
           type="text"
           bind:value={formData.source}
           disabled={disabled || isLoading}
@@ -336,10 +334,9 @@
 
     <!-- Auto-formatted Citation -->
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">
+      <label class="block text-sm font-medium text-gray-700 mb-1" for="-formatted-citation-">
         Formatted Citation
-      </label>
-      <input
+      </label><input id="-formatted-citation-"
         type="text"
         bind:value={formData.citation}
         disabled={disabled || isLoading}
@@ -351,10 +348,9 @@
     <!-- URLs and Identifiers -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-url-">
           URL
-        </label>
-        <input
+        </label><input id="-url-"
           type="url"
           bind:value={formData.url}
           disabled={disabled || isLoading}
@@ -367,10 +363,9 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-doi-">
           DOI
-        </label>
-        <input
+        </label><input id="-doi-"
           type="text"
           bind:value={formData.doi}
           disabled={disabled || isLoading}
@@ -383,10 +378,9 @@
     <!-- Legal Details -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-jurisdiction-">
           Jurisdiction
-        </label>
-        <input
+        </label><input id="-jurisdiction-"
           type="text"
           bind:value={formData.jurisdiction}
           disabled={disabled || isLoading}
@@ -396,10 +390,9 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-court-">
           Court
-        </label>
-        <input
+        </label><input id="-court-"
           type="text"
           bind:value={formData.court}
           disabled={disabled || isLoading}
@@ -409,10 +402,9 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-publication-date-">
           Publication Date
-        </label>
-        <input
+        </label><input id="-publication-date-"
           type="date"
           bind:value={formData.publicationDate}
           disabled={disabled || isLoading}
@@ -423,10 +415,9 @@
 
     <!-- Abstract and Quotes -->
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">
+      <label class="block text-sm font-medium text-gray-700 mb-1" for="-abstract-">
         Abstract
-      </label>
-      <textarea
+      </label><textarea id="-abstract-"
         bind:value={formData.abstract}
         disabled={disabled || isLoading}
         rows="3"
@@ -436,10 +427,9 @@
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">
+      <label class="block text-sm font-medium text-gray-700 mb-1" for="-relevant-quote-">
         Relevant Quote
-      </label>
-      <textarea
+      </label><textarea id="-relevant-quote-"
         bind:value={formData.relevantQuote}
         disabled={disabled || isLoading}
         rows="2"
@@ -461,10 +451,9 @@
     <!-- Citation Purpose and Relevance -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-citation-purpose-">
           Citation Purpose
-        </label>
-        <select
+        </label><select id="-citation-purpose-"
           bind:value={formData.citationPurpose}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -476,10 +465,9 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="-relevance-score-110">
           Relevance Score (1-10)
-        </label>
-        <input
+        </label><input id="-relevance-score-110"
           type="range"
           min="1"
           max="10"
@@ -496,10 +484,9 @@
 
     <!-- Tags -->
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">
+      <label class="block text-sm font-medium text-gray-700 mb-1" for="-tags-">
         Tags
-      </label>
-      <input
+      </label><input id="-tags-"
         type="text"
         onkeydown={addTag}
         disabled={disabled || isLoading}

@@ -156,7 +156,8 @@
     <div class="flex min-h-full items-center justify-center p-4">
       <div 
         class="relative w-full max-w-lg transform overflow-hidden rounded-lg bg-white shadow-xl transition-all"
-        onclick={handleContentClick}
+        role="button" tabindex="0"
+                onclick={handleContentClick}
         style="animation: slideIn 0.2s ease-out;"
       >
         <!-- Dialog header -->

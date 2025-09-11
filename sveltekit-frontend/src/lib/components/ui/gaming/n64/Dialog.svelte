@@ -394,7 +394,8 @@
     bind:this={backdropElement}
     class="n64-dialog-backdrop"
     class:backdrop-blur={enableBackdropBlur}
-    onclick={handleBackdropClick}
+    role="button" tabindex="0"
+                onclick={handleBackdropClick}
     style="
       --atmosphere-intensity: {atmosphereIntensity};
       --fog-color: {effectiveRenderOptions.fogColor};

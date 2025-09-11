@@ -126,7 +126,8 @@
 {#if open}
   <div
     class="yorha-dialog-backdrop"
-    onclick={handleBackdropClick}
+    role="button" tabindex="0"
+                onclick={handleBackdropClick}
     onkeydown={handleKeydown}
     transition:fade={{ duration: 150 }}
     role="dialog"
@@ -180,10 +181,9 @@
       <div class="dialog-content">
         {#if type === "prompt"}
           <div class="prompt-input-group">
-            <label class="prompt-label" for="dialog-input">
+            <label class="prompt-label" for="-enter-value-">
               Enter value:
-            </label>
-            <input
+            </label><input id="-enter-value-"
               bind:this={inputElement}
               bind:value={promptValue}
               id="dialog-input"

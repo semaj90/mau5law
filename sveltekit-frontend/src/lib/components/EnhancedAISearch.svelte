@@ -155,7 +155,7 @@
     const terms = query
       .toLowerCase()
       .split(" ")
-      .filter((term) => term.length > 2);
+      .filter((term: string) => term.length > 2);
     let highlighted = content;
 
     terms.forEach((term) => {

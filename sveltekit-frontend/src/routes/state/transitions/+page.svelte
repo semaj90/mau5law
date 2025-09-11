@@ -202,7 +202,8 @@
         <div class="timeline-container">
           {#each transitions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as transition, index}
             <div class="transition-card {getTransitionColor(transition)} {selectedTransition?.id === transition.id ? 'selected' : ''}"
-                 onclick={() => selectedTransition = selectedTransition?.id === transition.id ? null : transition}>
+                 role="button" tabindex="0"
+                onclick={() => selectedTransition = selectedTransition?.id === transition.id ? null : transition}>
               <div class="transition-header">
                 <div class="transition-flow">
                   <span class="state-from">{transition.from}</span>

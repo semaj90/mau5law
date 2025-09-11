@@ -253,8 +253,7 @@
       
       <!-- Custom dimensions -->
       <div class="flex gap-2 items-center">
-        <label class="text-sm">Custom:</label>
-        <input 
+        <label class="text-sm" for="custom">Custom:</label><input id="custom" 
           type="number" 
           bind:value={dimensions[0]}
           min="64" 
@@ -417,8 +416,7 @@
             
             {#if enableCompression}
               <div class="ml-6 flex items-center gap-2">
-                <label class="text-sm text-gray-600">Target ratio:</label>
-                <input 
+                <label class="text-sm text-gray-600" for="target-ratio">Target ratio:</label><input id="target-ratio" 
                   type="range" 
                   min="10" 
                   max="100" 

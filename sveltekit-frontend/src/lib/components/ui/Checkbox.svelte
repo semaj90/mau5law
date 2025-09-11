@@ -1,7 +1,9 @@
 <script lang="ts">
-  export let checked: boolean = false;
-  export let label: string = '';
-  export let id: string = '';
+  const { checked: boolean = false, label: string = '', id: string = '' } = $props();
+
+  
+  
+  
 
   // Generate a unique ID if not provided
   if (!id) {

@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { onMount,  } from 'svelte';
 
-  import { onMount } from 'svelte';
-  import { } from 'svelte';
+
+  
+  
   import { WebGPUSOMCache, type IntelligentTodo, type NPMError, initializeSOMCache } from '$lib/webgpu/som-webgpu-cache.js';
 
   let somCache: WebGPUSOMCache;

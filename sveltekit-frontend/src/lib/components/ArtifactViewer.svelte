@@ -1,4 +1,6 @@
 <script lang="ts">
+  const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true, onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
+
   import { onMount } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps } from '$lib/stores/evidence-workflow';
@@ -30,10 +32,10 @@
   } from 'lucide-svelte';
 
   // Props
-  export let evidenceId: string;
-  export let showMetadata: boolean = true;
-  export let allowDownload: boolean = true;
-  export let onMetadataExtracted: ((metadata: LegalAIMetadata) => void) | undefined = undefined;
+  
+  
+  
+  
 
   // Component state
   let artifact: any = null;

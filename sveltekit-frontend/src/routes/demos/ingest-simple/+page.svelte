@@ -83,8 +83,7 @@
     
     <div class="space-y-4">
       <div>
-        <label class="block text-sm font-medium mb-2">Document Title</label>
-        <input 
+        <label class="block text-sm font-medium mb-2" for="document-title">Document Title</label><input id="document-title" 
           type="text" 
           bind:value={documentTitle}
           class="w-full p-2 border rounded"
@@ -93,8 +92,7 @@
       </div>
       
       <div>
-        <label class="block text-sm font-medium mb-2">Document Content</label>
-        <textarea 
+        <label class="block text-sm font-medium mb-2" for="document-content">Document Content</label><textarea id="document-content" 
           bind:value={documentContent}
           rows="4"
           class="w-full p-2 border rounded"

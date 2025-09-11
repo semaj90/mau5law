@@ -139,14 +139,20 @@
 
   function handleFeedbackError(event: CustomEvent) {
     console.error('❌ Feedback submission failed:', event.detail ?? event);
-    showFeedback = false;
-    currentFeedbackTrigger = null;
+    if (browser) {
+      showFeedback = false;
+      currentFeedbackTrigger = null;
+    }
   }
 
   function handleFeedbackClosed() {
-    showFeedback = false;
-    currentFeedbackTrigger = null;
-    store?.cancelFeedback();
+    if (browser) {
+      showFeedback = false;
+      currentFeedbackTrigger = null;
+      if (store && typeof store.cancelFeedback === 'function') {
+        store.cancelFeedback();
+      }
+    }
   }
 </script>
 
@@ -328,12 +334,12 @@
 <!-- TODO: Update FeedbackWidget to use Svelte 5 event patterns -->
 {#if false && mounted && currentFeedbackTrigger}
   <FeedbackWidget
-    interactionId={currentFeedbackTrigger.interactionId}
+    interactionId={currentFeedbackTrigger?.interactionId}
     sessionId={store?.userContext?.sessionId || ''}
     userId={store?.userContext?.userId || ''}
-    context={currentFeedbackTrigger.context}
+    context={currentFeedbackTrigger?.context}
     show={showFeedback}
-    ratingType={currentFeedbackTrigger.type}
+    ratingType={currentFeedbackTrigger?.type}
     on:submitted={handleFeedbackSubmitted}
     on:error={handleFeedbackError}
     on:closed={handleFeedbackClosed}

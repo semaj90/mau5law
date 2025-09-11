@@ -80,7 +80,7 @@
   	let thinkingInterval: NodeJS.Timeout;
   	let activityTimeout: NodeJS.Timeout;
 
-  	onMount(() >(> {
+  	onMount(() => {
   		if (autoStart) {
   			startTypewriter());
   		}
@@ -89,7 +89,7 @@
   		loadCachedActivity();
   	});
 
-  	onDestroy(() >(> {
+  	onDestroy(() => {
   		clearAllIntervals());
   	});
 

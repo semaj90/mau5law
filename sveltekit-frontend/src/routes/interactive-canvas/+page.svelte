@@ -187,7 +187,7 @@
 			class="space-y-4"
 		 class:sidebar-open={sidebarOpen}
 			ondrop={handleFileDrop}
-			ondragover={handleDragOver}
+		 role="region" aria-label="Drop zone" ondragover={handleDragOver}
 			role="main"
 			aria-label="Interactive canvas workspace"
 		>

@@ -1,5 +1,7 @@
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
+  const { content: any = null, placeholder = "Start writing your legal report...", autosave = true, reportId: string = "", caseId: string = "" } = $props();
+
   import { Editor } from "@tiptap/core";
   import Color from "@tiptap/extension-color";
   import FontFamily from "@tiptap/extension-font-family";
@@ -46,11 +48,11 @@
   import { onDestroy, onMount } from "svelte";
   import { get, writable } from "svelte/store";
 
-  export let content: any = null;
-  export let placeholder = "Start writing your legal report...";
-  export let autosave = true;
-  export let reportId: string = "";
-  export let caseId: string = "";
+  
+  
+  
+  
+  
 
   let editor: Editor | null = null;
   let editorElement: HTMLElement
@@ -235,7 +237,7 @@
   function updateWordCount() {
     if (!editor) return;
     const text = editor.getText();
-    wordCount = text.split(/\s+/).filter((word) => word.length > 0).length;
+    wordCount = text.split(/\s+/).filter((word: string) => word.length > 0).length;
     characterCount = text.length;
   }
 

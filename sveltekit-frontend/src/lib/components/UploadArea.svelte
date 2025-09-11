@@ -35,7 +35,7 @@
   class:border-blue-500={dragActive}
   class:bg-blue-50={dragActive}
   ondrop={handleDrop}
-  ondragover={preventDefault(() => dragActive = true)}
+  role="region" aria-label="Drop zone" ondragover={preventDefault(() => dragActive = true)}
   dragleave={() => dragActive = false}
 >
   <input

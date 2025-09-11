@@ -284,8 +284,7 @@ https://svelte.dev/e/bind_invalid_expression -->
 
             <!-- AI Model Selection -->
             <div>
-              <label class="text-sm font-medium mb-2 block">AI Model</label>
-              <select
+              <label class="text-sm font-medium mb-2 block" for="ai-model">AI Model</label><select id="ai-model"
                 bind:value={serviceOptions.aiModel}
                 class="w-full p-2 border rounded-md bg-white"
               >

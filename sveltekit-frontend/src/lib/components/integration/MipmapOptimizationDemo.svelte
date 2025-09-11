@@ -349,8 +349,7 @@
     <CardContent>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block text-sm font-medium mb-2">Max Mip Levels</label>
-          <input 
+          <label class="block text-sm font-medium mb-2" for="max-mip-levels">Max Mip Levels</label><input id="max-mip-levels" 
             type="number" 
             bind:value={mipmapConfig.maxMipLevels}
             min="1" 
@@ -361,8 +360,7 @@
         </div>
         
         <div>
-          <label class="block text-sm font-medium mb-2">Filter Mode</label>
-          <select 
+          <label class="block text-sm font-medium mb-2" for="filter-mode">Filter Mode</label><select id="filter-mode" 
             bind:value={mipmapConfig.filterMode}
             class="w-full p-2 border rounded-md"
             disabled={isProcessing}

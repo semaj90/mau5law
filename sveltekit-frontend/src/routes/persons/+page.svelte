@@ -318,8 +318,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-yellow-600/30">
           <!-- Threat Level Filter -->
           <div>
-            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Threat Level</label>
-            <select
+            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="threat-level">Threat Level</label><select id="threat-level"
               bind:value={selectedThreatLevel}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >
@@ -333,8 +332,7 @@
 
           <!-- Status Filter -->
           <div>
-            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Status</label>
-            <select
+            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="status">Status</label><select id="status"
               bind:value={selectedStatus}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >
@@ -347,8 +345,7 @@
 
           <!-- Relationship Filter -->
           <div>
-            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Relationship</label>
-            <select
+            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="relationship">Relationship</label><select id="relationship"
               bind:value={selectedRelationship}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >

@@ -277,8 +277,7 @@
       </div>
       
       <div class="setting-group">
-        <label>Temperature: {config.temperature}</label>
-        <input
+        <label for="temperature-configte">Temperature: {config.temperature}</label><input id="temperature-configte"
           type="range"
           min="0"
           max="1"
@@ -414,7 +413,8 @@
         {#each searchResults as result}
           <div 
             class="search-result"
-            onclick={() => insertSearchResult(result)}
+            role="button" tabindex="0"
+                onclick={() => insertSearchResult(result)}
           >
             <div class="result-content">{result.content}</div>
             <div class="result-meta">

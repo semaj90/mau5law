@@ -74,21 +74,21 @@ async function* streamQLoRAResponse(request: StreamingQLoRARequest): AsyncGenera
     // Construct full response
     const qloraResponse: QLoRAProtobufTopologyResponse = {
       prediction: {
-        type: result.prediction?.type || 'legal_document',
-        confidence: result.accuracy / 100,
-        vectors: new Float32Array(result.prediction?.vectors || Array(1536).fill(0)),
-        clusters: result.prediction?.clusters || [0, 1, 2],
+        type: (result as any).prediction?.type || 'legal_document',
+        confidence: (result as any).accuracy / 100,
+        vectors: new Float32Array((result as any).prediction?.vectors || Array(1536).fill(0)),
+        clusters: (result as any).prediction?.clusters || [0, 1, 2],
         topology: {
-          nodes: result.topology?.nodes || 10,
-          edges: result.topology?.edges || 15,
-          connectivity: result.topology?.connectivity || 0.75
+          nodes: (result as any).topology?.nodes || 10,
+          edges: (result as any).topology?.edges || 15,
+          connectivity: (result as any).topology?.connectivity || 0.75
         }
       },
-      accuracy: result.accuracy,
+      accuracy: (result as any).accuracy,
       topology: {
-        structure: result.topology?.structure || 'hierarchical',
-        complexity: result.topology?.complexity || 0.68,
-        patternMatch: result.topology?.patternMatch || 0.82
+        structure: (result as any).topology?.structure || 'hierarchical',
+        complexity: (result as any).topology?.complexity || 0.68,
+        patternMatch: (result as any).topology?.patternMatch || 0.82
       },
       cacheHit: result.cacheHit,
       processingTime,
@@ -135,7 +135,7 @@ async function* streamQLoRAResponse(request: StreamingQLoRARequest): AsyncGenera
       };
     } else {
       // Stream as JSON tokens for demonstration
-      const responseText = `QLoRA Prediction: ${result.accuracy}% accuracy, ${result.cacheHit ? 'cache hit' : 'cache miss'}, ${processingTime}ms processing time. Topology: ${qloraResponse.topology.structure} structure with ${qloraResponse.prediction.topology.nodes} nodes.`;
+      const responseText = `QLoRA Prediction: ${(result as any).accuracy}% accuracy, ${result.cacheHit ? 'cache hit' : 'cache miss'}, ${processingTime}ms processing time. Topology: ${qloraResponse.topology.structure} structure with ${qloraResponse.prediction.topology.nodes} nodes.`;
       
       const tokens = responseText.split(' ');
       
@@ -145,11 +145,11 @@ async function* streamQLoRAResponse(request: StreamingQLoRARequest): AsyncGenera
       }
     }
 
-    yield { type: 'end', message: 'QLoRA processing complete', metadata: { accuracy: result.accuracy, processingTime } };
+    yield { type: 'end', message: 'QLoRA processing complete', metadata: { accuracy: (result as any).accuracy, processingTime } };
 
   } catch (error: any) {
     console.error('[WebSocket] QLoRA streaming error:', error);
-    yield { type: 'error', message: `QLoRA processing failed: ${error.message}` };
+    yield { type: 'error', message: `QLoRA processing failed: ${(error as any)?.message || 'Unknown error'}` };
   }
 }
 

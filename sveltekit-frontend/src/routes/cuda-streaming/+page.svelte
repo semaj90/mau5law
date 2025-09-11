@@ -292,8 +292,8 @@
         <Card.Content class="space-y-6">
           <!-- Operation Selection -->
           <div class="space-y-3">
-            <label class="text-sm font-medium">Processing Operation</label>
-            <select 
+            <label class="text-sm font-medium" for="processing-operation">Processing Operation</label>
+            <select id="processing-operation" 
               bind:value={selectedOperation}
               class="w-full p-2 border rounded-md"
               disabled={isStreaming}
@@ -308,8 +308,8 @@
 
           <!-- Input Data -->
           <div class="space-y-3">
-            <label class="text-sm font-medium">Input Data</label>
-            <textarea
+            <label class="text-sm font-medium" for="input-data">Input Data</label>
+            <textarea id="input-data"
               bind:value={inputText}
               placeholder="Enter legal document text for processing..."
               class="w-full h-32 p-3 border rounded-md"

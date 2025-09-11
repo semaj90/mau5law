@@ -1,5 +1,7 @@
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
+  const { caseId: string | undefined = undefined, searchQuery: string = "", selectedTypes: string[] = [] } = $props();
+
   // Svelte runes ($state, $derived, etc.) are declared globally in src/types/svelte-helpers.d.ts
 
   import {
@@ -32,9 +34,9 @@
   import { onMount } from "svelte";
 
   // Props
-  export let caseId: string | undefined = undefined;
-  export let searchQuery: string = "";
-  export let selectedTypes: string[] = [];
+  
+  
+  
   export const showAdvancedFilters: boolean = false;
   ;
   // Store subscriptions - using $derived below

@@ -1,21 +1,17 @@
 <script lang="ts">
-  	import { cva, type VariantProps } from 'class-variance-authority';
-  	import { cn } from '$lib/utils';
-  	import { createEventDispatcher } from 'svelte';
-  	import { browser } from '$app/environment';
-  	// NES.css now imported globally in +layout.svelte to avoid duplicate CSS injection
+  import { cva, type VariantProps } from 'class-variance-authority';
+  import { cn } from '$lib/utils';
+  import { createEventDispatcher } from 'svelte';
+  import { browser } from '$app/environment';
+  import { userAnalyticsStore } from '$lib/stores/analytics';
+  import { lokiButtonCache } from '$lib/services/loki-cache';
+  import { searchableButtonIndex } from '$lib/services/fuse-search';
+  import type { UIJsonSSRConfig, ButtonAnalyticsEvent } from '$lib/types/ui-json-ssr';
 
-  	import { userAnalyticsStore } from '$lib/stores/analytics';
-  	import { lokiButtonCache } from '$lib/services/loki-cache';
-  	import { searchableButtonIndex } from '$lib/services/fuse-search';
+  // NES.css now imported globally in +layout.svelte to avoid duplicate CSS injection
 
-  	import type { UIJsonSSRConfig, ButtonAnalyticsEvent } from '$lib/types/ui-json-ssr';
-
-  	// (Optional) If you want to leverage Bits UI's Button component, import it.
-  	// Here we keep native <button>/<a> to preserve existing structure.
-  	// import { Button as BitsButton } from 'bits-ui';
-
-  	const buttonVariants = cva(
+  // Define buttonVariants before using it in props
+  const buttonVariants = cva(
   		'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none nes-focus disabled:opacity-50 disabled:pointer-events-none cursor-pointer',
   		{
   			variants: {
@@ -50,29 +46,30 @@
   		}
   	);
 
-  	// Props
-  	export let variant: VariantProps<typeof buttonVariants>['variant'] = 'default';
-  	export let size: VariantProps<typeof buttonVariants>['size'] = 'default';
-  	export let disabled = false;
-  	export let type: 'button' | 'submit' | 'reset' = 'button';
-  	export let href: string | undefined = undefined;
-  	export let target: string | undefined = undefined;
-  	export let loading = false;
-  	export let loadingText = 'Loading...';
-  	export let className = '';
-  	export let onclick: ((event: MouseEvent) => void) | undefined = undefined;
-  	export let id: string = (typeof globalThis !== 'undefined' && (globalThis.crypto as any)?.randomUUID)
+  	// Props destructuring using Svelte 5 $props() with simplified types
+  	const { variant = 'default', size = 'default', disabled = false, type = 'button', href = undefined, target = undefined, loading = false, loadingText = 'Loading...', className = '', onclick = undefined, id = (typeof globalThis !== 'undefined' && (globalThis.crypto as any)?.randomUUID)
   		? (globalThis.crypto as any).randomUUID()
-  		: `bits-btn-${Math.random().toString(36).slice(2, 9)}`;
-  	export let analyticsCategory = 'ui';
-  	export let analyticsAction = 'click';
-  	export let analyticsLabel = '';
-  	export let xstateContext: any = undefined; // eslint-disable-line @typescript-eslint/no-explicit-any
-  	export let uiJsonConfig: UIJsonSSRConfig | undefined = undefined;
-  	export let searchKeywords: string[] = [];
-  	export let cacheKey: string | undefined = undefined;
-  	export let role: string = 'button';
-  	export let dataTestid: string | undefined = undefined;
+  		: `bits-btn-${Math.random().toString(36).slice(2, 9)}`, analyticsCategory = 'ui', analyticsAction = 'click', analyticsLabel = '', xstateContext = undefined, uiJsonConfig = undefined, searchKeywords = [], cacheKey = undefined, role = 'button', dataTestid = undefined } = $props();
+
+  	// (Optional) If you want to leverage Bits UI's Button component, import it.
+  	// Here we keep native <button>/<a> to preserve existing structure.
+  	// import { Button as BitsButton } from 'bits-ui';
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	 // eslint-disable-line @typescript-eslint/no-explicit-any
+  	
+  	
+  	
+  	
+  	
 
   	const dispatch = createEventDispatcher<{
   		click: ButtonAnalyticsEvent;
@@ -128,7 +125,6 @@
 		aria-disabled={isDisabled}
 		data-testid={dataTestid || 'bits-button'}
 		onclick={handleClick}
-		{...$$restProps}
 	>
 		{#if loading}
 			<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -148,7 +144,6 @@
 		class={buttonClass}
 		data-testid={dataTestid || 'bits-button'}
 		onclick={handleClick}
-		{...$$restProps}
 	>
 		{#if loading}
 			<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">

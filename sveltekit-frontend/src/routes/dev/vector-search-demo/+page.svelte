@@ -1,9 +1,11 @@
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
+  import { onMount } from 'svelte';
+
 </script>` element and/or a single top-level `<script module>
 </script>` element
 https://svelte.dev/e/script_duplicate -->
 <script lang="ts">
-  import { onMount } from 'svelte';
+  
   let query = 'contract liability terms'
   let results: any[] = []
   let wsMsg = ''
@@ -53,7 +55,7 @@ https://svelte.dev/e/script_duplicate -->
   </style>
   <script lang="ts">
 </script>
-  import { onMount } from 'svelte';
+  
 
   interface SearchResult {
     id: string;

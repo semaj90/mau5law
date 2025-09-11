@@ -25,6 +25,8 @@ export interface ProcessingResult {
   processingTime: number;
 }
 
+export type MessageHandler = (message: any, originalMessage?: any) => Promise<any> | any;
+
 class RabbitMQService extends EventEmitter {
   private connection: amqp.Connection | null = null;
   private channel: amqp.Channel | null = null;

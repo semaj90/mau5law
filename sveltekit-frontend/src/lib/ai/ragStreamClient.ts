@@ -724,7 +724,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     const sentences = text
       .split(/(?<=[.!?])\s+/)
       .map((s) => s.trim())
-      .filter((s) => s.length);
+      .filter((s: string) => s.length);
     const maxSent = cfg?.maxSentences ?? 3;
     const minLen = cfg?.minSentenceLength ?? 20;
     if (!sentences.length) return text.slice(0, 300);

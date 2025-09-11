@@ -2,6 +2,8 @@
 <script lang="ts">
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
 
+  
+
   import { aiSummarizationService } from "$lib/services/aiSummarizationService";
   import { evidenceStore } from "$lib/stores/evidenceStore";
   import * as fabric from "fabric";
@@ -33,7 +35,7 @@
     ZoomIn,
     ZoomOut,
   } from "lucide-svelte";
-  import { onDestroy, onMount } from "svelte";
+  
   import { get, writable } from "svelte/store";
 
   // Svelte 5 props

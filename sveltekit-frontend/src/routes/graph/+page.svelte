@@ -239,10 +239,9 @@
     <div class="space-y-4">
       <!-- Query Input -->
       <div>
-        <label class="block text-sm font-medium text-nier-text-secondary mb-2">
+        <label class="block text-sm font-medium text-nier-text-secondary mb-2" for="-cypher-query-">
           Cypher Query
-        </label>
-        <textarea
+        </label><textarea id="-cypher-query-"
           bind:value={queryInput}
           placeholder="Enter your Cypher query..."
           rows="3"

@@ -238,7 +238,8 @@
     class="modal-backdrop"
     style:background-color="rgba(0, 0, 0, 0.8)"
     transition:fade={{ duration: 300 }}
-    onclick={handleClose}
+    role="button" tabindex="0"
+                onclick={handleClose}
     role="presentation"
   ></div>
 
@@ -289,7 +290,8 @@
               class:selected={index === selectedIndex}
               style:border-color={index === selectedIndex ? currentTheme.colors.selected : 'transparent'}
               style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20` : 'transparent'}
-              onclick={() => { selectedIndex = index; rec.action?.(); handleClose(); }}
+              role="button" tabindex="0"
+                onclick={() => { selectedIndex = index; rec.action?.(); handleClose(); }}
               role="button"
               tabindex={index === selectedIndex ? 0 : -1}
               transition:scale={{ duration: 200, delay: index * 50 }}

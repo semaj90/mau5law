@@ -965,8 +965,7 @@
   <!-- Filters Panel -->
   <div class="filters-panel nes-container">
     <div class="filter-section">
-      <label class="nes-label">Search Events:</label>
-      <input 
+      <label class="nes-label" for="search-events">Search Events:</label><input id="search-events" 
         type="text" 
         class="nes-input"
         placeholder="Search timeline events..."
@@ -992,10 +991,9 @@
     </div>
     
     <div class="filter-section">
-      <label class="nes-label">
+      <label class="nes-label" for="-min-importance-impo">
         Min Importance: {importanceThreshold.toFixed(2)}
-      </label>
-      <input 
+      </label><input id="-min-importance-impo" 
         type="range" 
         class="nes-range"
         min="0" 

@@ -27,14 +27,14 @@
   const { form, errors, enhance: formEnhance, submitting } = superForm(data, {
     validators: zod(testSchema),
     onSubmit: ({ formData }) => {
-      console.log('Form submitted:', Object.fromEntries(formData);
+      console.log('Form submitted:', Object.fromEntries(formData));
     }
   });
 
   // Enhanced action
   function createEnhancedAction() {
     return enhance(({ formData }) => {
-      console.log('Enhanced action:', Object.fromEntries(formData);
+      console.log('Enhanced action:', Object.fromEntries(formData));
       return async ({ result, update }) => {
         console.log('Result:', result);
         await update();

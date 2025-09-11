@@ -4,6 +4,8 @@
   import { onMount, setContext } from 'svelte';
   import Navigation from '$lib/components/Navigation.svelte';
 
+  const { children } = $props();
+
   // Simplified state management for compatibility
   let theme = $state<'dark' | 'light' >('dark');
   let sidebarOpen = $state(false);

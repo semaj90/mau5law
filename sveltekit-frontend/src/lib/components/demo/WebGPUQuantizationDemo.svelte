@@ -429,10 +429,9 @@
       <h3 class="font-semibold text-gray-800 mb-4">📋 Configuration</h3>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="-document-count-">
             Document Count
-          </label>
-          <input 
+          </label><input id="-document-count-" 
             type="number" 
             bind:value={documentCount} 
             min="1" 
@@ -441,10 +440,9 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="-embedding-dimension">
             Embedding Dimensions
-          </label>
-          <select 
+          </label><select id="-embedding-dimension" 
             bind:value={embeddingDimensions}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -456,10 +454,9 @@
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="-legal-ai-profile-">
             Legal AI Profile
-          </label>
-          <select 
+          </label><select id="-legal-ai-profile-" 
             bind:value={selectedProfile}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >

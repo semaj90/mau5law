@@ -83,5 +83,39 @@ export async function getXStateDocs(topic?: string, fetchFn?: typeof fetch): Pro
   }, fetchFn);
 }
 
+// Additional specialized helpers
+/**
+ * WebGPU documentation helper (TypeScript snippets preferred).
+ * Useful for WebGPU / WebAssembly integration guidance.
+ */
+export async function getWebGPUDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs('/webgpu/webgpu', topic, {
+    format: 'typescript',
+    tokens: 10000
+  }, fetchFn);
+}
+
+/**
+ * WebAssembly (wasm) documentation helper.
+ * Returns practical guides and TS/markdown examples for wasm + JS interop.
+ */
+export async function getWebAssemblyDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs('/webassembly/wasm', topic, {
+    format: 'markdown',
+    tokens: 8000
+  }, fetchFn);
+}
+
+/**
+ * SvelteKit v2 documentation helper.
+ * Targets SvelteKit-specific APIs, routing and adapter guidance.
+ */
+export async function getSvelteKitV2Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
+  return mcpContext72GetLibraryDocs('/sveltejs/kit', topic, {
+    format: 'typescript',
+    tokens: 12000
+  }, fetchFn);
+}
+
 // Tag: #mcp_context72_get-library-docs
 // Keywords: #context7 #get-library-docs #svelte5 #bitsui #meltui #xstate

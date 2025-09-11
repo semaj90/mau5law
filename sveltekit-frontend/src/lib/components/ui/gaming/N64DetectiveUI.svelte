@@ -448,7 +448,8 @@
             <h4>RECENT EVIDENCE</h4>
             <div class="history-grid">
               {#each evidenceHistory.slice(0, 6) as evidence}
-                <div class="history-item" onclick={() => currentEvidence = evidence}>
+                <div class="history-item" role="button" tabindex="0"
+                onclick={() => currentEvidence = evidence}>
                   <div class="history-id">#{evidence.id.slice(-6)}</div>
                   <div class="history-type">{evidence.type.toUpperCase()}</div>
                   <div class="history-relevance" class:high={evidence.analysis.legalRelevance === 'high'}>

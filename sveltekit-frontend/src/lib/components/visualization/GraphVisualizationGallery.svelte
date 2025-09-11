@@ -317,7 +317,8 @@
     {#each filteredVisualizations as visualization, index}
       <div class="gallery-item nes-container is-rounded" data-algorithm={visualization.metadata.algorithm}>
         <!-- Preview Image -->
-        <div class="item-preview" onclick={() => openVisualization(visualization)}>
+        <div class="item-preview" role="button" tabindex="0"
+                onclick={() => openVisualization(visualization)}>
           <img 
             src={getVisualizationPreview(visualization)} 
             alt="Graph visualization using {visualization.metadata.algorithm}"
@@ -387,8 +388,10 @@
 
 <!-- Modal for Full-Size Viewing -->
 {#if $showModal && $selectedVisualization}
-  <div class="modal-overlay" onclick={closeModal}>
-    <div class="modal-content nes-container is-dark" onclick={(e) => e.stopPropagation()}>
+  <div class="modal-overlay" role="button" tabindex="0"
+                onclick={closeModal}>
+    <div class="modal-content nes-container is-dark" role="button" tabindex="0"
+                onclick={(e) => e.stopPropagation()}>
       <button class="modal-close nes-btn is-error" onclick={closeModal}>×</button>
       
       <div class="modal-header">
