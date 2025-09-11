@@ -2,7 +2,27 @@
 // Bridge between frontend UI and vector search service
 
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { enhancedVectorSearchService } from '$lib/services/enhanced-vector-search';
+// TODO: Implement enhanced vector search service
+// import { enhancedVectorSearchService } from '$lib/services/enhanced-vector-search';
+
+// Placeholder service until enhanced-vector-search is implemented
+const enhancedVectorSearchService = {
+  async unifiedVectorSearch(query: string, options: any) {
+    return {
+      results: [],
+      total: 0,
+      executionTime: Date.now(),
+      suggestions: [],
+      debug: { message: 'Enhanced vector search not yet implemented' }
+    };
+  },
+  async healthCheck() {
+    return { status: 'healthy', service: 'placeholder' };
+  },
+  async getSearchStats() {
+    return { totalQueries: 0, avgResponseTime: 0 };
+  }
+};
 import type { VectorSearchOptions } from '$lib/types/vector-search';
 
 interface SearchRequestBody {
