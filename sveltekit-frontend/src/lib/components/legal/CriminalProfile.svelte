@@ -174,7 +174,7 @@
       <div class="shrink-0">
         {#if profile.identification.mugshots?.length}
           <button
-            on:onclick={() => onViewMugshot?.(profile.identification.mugshots[0])}
+            onclick={() => onViewMugshot?.(profile.identification.mugshots[0])}
             class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded overflow-hidden hover:border-yorha-primary/30 transition-colors group"
           >
             <div class="w-full h-full flex items-center justify-center text-yorha-text-secondary group-hover:text-yorha-primary">
@@ -425,7 +425,7 @@
 
                 {#if interactive && onViewFullRecord}
                   <button
-                    on:onclick={() => onViewFullRecord?.(record.id)}
+                    onclick={() => onViewFullRecord?.(record.id)}
                     class="mt-2 text-xs font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
                   >
                     View Full Record
@@ -466,7 +466,7 @@
     <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
       <div class="flex justify-end">
         <button
-          on:onclick={() => onUpdateProfile?.(profile)}
+          onclick={() => onUpdateProfile?.(profile)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
         >
           Update Profile

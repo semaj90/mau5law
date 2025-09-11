@@ -143,7 +143,7 @@
 				<button
 					class="container mx-auto px-4"
 				 class:active={selectedTool === tool.id}
-					on:onclick={() => selectTool(tool.id)}
+					onclick={() => selectTool(tool.id)}
 					aria-label={tool.label}
 					title={tool.label}
 				>
@@ -162,7 +162,7 @@
 				<button
 					class="container mx-auto px-4"
 				 class:active={(formatting as any)[action.id]}
-					on:onclick={() => toggleFormatting(action.id)}
+					onclick={() => toggleFormatting(action.id)}
 					aria-label={action.label}
 					title={action.label}
 					disabled={selectedTool !== 'text'}
@@ -177,7 +177,7 @@
 				<button
 					class="container mx-auto px-4"
 				 class:active={formatting.textAlign === action.id}
-					on:onclick={() => setAlignment(action.id)}
+					onclick={() => setAlignment(action.id)}
 					aria-label={action.label}
 					title={action.label}
 					disabled={selectedTool !== 'text'}
@@ -252,7 +252,7 @@
 		<div class="container mx-auto px-4">
 			<button
 				class="container mx-auto px-4"
-				on:onclick={() => handleAction('undo')}
+				onclick={() => handleAction('undo')}
 				disabled={!canUndo}
 				aria-label="Undo"
 				title="Undo"
@@ -262,7 +262,7 @@
 
 			<button
 				class="container mx-auto px-4"
-				on:onclick={() => handleAction('redo')}
+				onclick={() => handleAction('redo')}
 				disabled={!canRedo}
 				aria-label="Redo"
 				title="Redo"
@@ -274,7 +274,7 @@
 		<div class="container mx-auto px-4">
 			<button
 				class="container mx-auto px-4"
-				on:onclick={() => handleAction('copy')}
+				onclick={() => handleAction('copy')}
 				aria-label="Copy"
 				title="Copy"
 			>
@@ -283,7 +283,7 @@
 
 			<button
 				class="container mx-auto px-4"
-				on:onclick={() => handleAction('delete')}
+				onclick={() => handleAction('delete')}
 				aria-label="Delete"
 				title="Delete"
 			>
@@ -299,7 +299,7 @@
 		<div class="container mx-auto px-4">
 			<button
 				class="container mx-auto px-4"
-				on:onclick={() => handleZoom(-10)}
+				onclick={() => handleZoom(-10)}
 				aria-label="Zoom Out"
 				title="Zoom Out"
 			>
@@ -310,7 +310,7 @@
 
 			<button
 				class="container mx-auto px-4"
-				on:onclick={() => handleZoom(10)}
+				onclick={() => handleZoom(10)}
 				aria-label="Zoom In"
 				title="Zoom In"
 			>

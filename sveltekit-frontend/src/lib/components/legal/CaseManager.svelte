@@ -301,7 +301,7 @@
             <Button class="bits-btn" 
               type="button" 
               variant="outline"
-              on:onclick={() => isCreateDialogOpen.set(false)}
+              onclick={() => isCreateDialogOpen.set(false)}
             >
               Cancel
             </Button>
@@ -392,14 +392,14 @@
               <Button class="bits-btn" 
                 size="sm" 
                 variant="outline"
-                on:onclick={() => openEditDialog(caseData)}
+                onclick={() => openEditDialog(caseData)}
               >
                 Edit
               </Button>
               <Button class="bits-btn" 
                 size="sm" 
                 variant="destructive"
-                on:onclick={() => deleteCase(caseData.id!)}
+                onclick={() => deleteCase(caseData.id!)}
               >
                 Delete
               </Button>
@@ -422,7 +422,7 @@
         {#if !$searchQuery}
           <Button 
             class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
-            on:onclick={() => isCreateDialogOpen.set(true)}
+            onclick={() => isCreateDialogOpen.set(true)}
           >
             Create First Case
           </Button>
@@ -513,7 +513,7 @@
           <Button class="bits-btn" 
             type="button" 
             variant="outline"
-            on:onclick={() => isEditDialogOpen.set(false)}
+            onclick={() => isEditDialogOpen.set(false)}
           >
             Cancel
           </Button>

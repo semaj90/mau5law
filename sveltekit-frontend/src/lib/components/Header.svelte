@@ -76,7 +76,7 @@
     <div class="brand-section">
       <button
         class="brand-button"
-        on:onclick={() => handleNavigation("/")}
+        onclick={() => handleNavigation("/")}
         aria-label="Go to homepage"
       >
         <Palette size={24} aria-hidden="true" />
@@ -89,7 +89,7 @@
       <button
         class="nav-button"
         class:active={isActiveRoute('/dashboard')}
-        on:onclick={() => handleNavigation("/dashboard")}
+        onclick={() => handleNavigation("/dashboard")}
         aria-label="Dashboard"
         aria-current={isActiveRoute('/dashboard') ? 'page' : undefined}
       >
@@ -100,7 +100,7 @@
       <button
         class="nav-button"
         class:active={isActiveRoute('/cases')}
-        on:onclick={() => handleNavigation("/cases")}
+        onclick={() => handleNavigation("/cases")}
         aria-label="Cases"
         aria-current={isActiveRoute('/cases') ? 'page' : undefined}
       >
@@ -111,7 +111,7 @@
       <button
         class="nav-button"
         class:active={isActiveRoute('/interactive-canvas')}
-        on:onclick={() => handleNavigation("/interactive-canvas")}
+        onclick={() => handleNavigation("/interactive-canvas")}
         aria-label="Interactive Canvas"
         aria-current={isActiveRoute('/interactive-canvas') ? 'page' : undefined}
       >
@@ -122,7 +122,7 @@
       <button
         class="nav-button"
         class:active={isActiveRoute('/evidence/hash')}
-        on:onclick={() => handleNavigation("/evidence/hash")}
+        onclick={() => handleNavigation("/evidence/hash")}
         aria-label="Hash Verification"
         aria-current={isActiveRoute('/evidence/hash') ? 'page' : undefined}
         title="Verify evidence file integrity"
@@ -147,7 +147,7 @@
         <div class="user-menu-container">
           <button
             class="user-button"
-            on:onclick={toggleUserMenu}
+            onclick={toggleUserMenu}
             aria-label="User menu"
             aria-expanded={userMenuOpen}
             aria-haspopup="menu"
@@ -169,7 +169,7 @@
             <div class="user-menu" role="menu" aria-labelledby="user-button">
               <button
                 class="menu-item"
-                on:onclick={() => handleNavigation("/profile")}
+                onclick={() => handleNavigation("/profile")}
                 role="menuitem"
                 tabindex="0"
               >
@@ -179,7 +179,7 @@
 
               <button
                 class="menu-item"
-                on:onclick={() => handleNavigation("/settings")}
+                onclick={() => handleNavigation("/settings")}
                 role="menuitem"
                 tabindex="0"
               >
@@ -191,7 +191,7 @@
 
               <button
                 class="menu-item"
-                on:onclick={handleLogout}
+                onclick={handleLogout}
                 role="menuitem"
                 tabindex="0"
               >
@@ -204,7 +204,7 @@
       {:else}
         <button
           class="sign-in-button"
-          on:onclick={() => handleNavigation("/login")}
+          onclick={() => handleNavigation("/login")}
           aria-label="Sign in"
         >
           Sign In
@@ -218,7 +218,7 @@
 {#if userMenuOpen}
   <div
     class="menu-overlay"
-    on:onclick={closeUserMenu}
+    onclick={closeUserMenu}
     keydown={(e) => e.key === "Escape" && closeUserMenu()}
     role="button"
     tabindex="-1"

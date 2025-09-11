@@ -257,7 +257,7 @@
             </div>
 
             <Button
-              on:onclick={demonstrateLogin}
+              onclick={demonstrateLogin}
               disabled={isLoading || authenticated}
               class="w-full bits-btn bits-btn"
             >
@@ -299,23 +299,23 @@
           </Alert>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button class="bits-btn" on:onclick={demonstrateAI} variant="outline">
+            <Button class="bits-btn" onclick={demonstrateAI} variant="outline">
               <Brain class="h-4 w-4 mr-2" />
               Test AI Assistant
             </Button>
 
-            <Button class="bits-btn" on:onclick={demonstrateUpload} variant="outline">
+            <Button class="bits-btn" onclick={demonstrateUpload} variant="outline">
               <Zap class="h-4 w-4 mr-2" />
               Demo File Upload
             </Button>
 
-            <Button class="bits-btn" on:onclick={demonstrateSessionActivity} variant="outline">
+            <Button class="bits-btn" onclick={demonstrateSessionActivity} variant="outline">
               <Settings class="h-4 w-4 mr-2" />
               Record Activity
             </Button>
           </div>
 
-          <Button on:onclick={demonstrateLogout} variant="destructive" class="w-full bits-btn bits-btn">
+          <Button onclick={demonstrateLogout} variant="destructive" class="w-full bits-btn bits-btn">
             <LogOut class="h-4 w-4 mr-2" />
             Demonstrate Logout
           </Button>
@@ -364,10 +364,10 @@
             {/if}
 
             <div class="flex gap-2">
-              <Button class="bits-btn" on:onclick={() => demoStep = 'dashboard'} variant="outline">
+              <Button class="bits-btn" onclick={() => demoStep = 'dashboard'} variant="outline">
                 Back to Dashboard
               </Button>
-              <Button class="bits-btn" on:onclick={demonstrateLogout} variant="destructive">
+              <Button class="bits-btn" onclick={demonstrateLogout} variant="destructive">
                 <LogOut class="h-4 w-4 mr-2" />
                 Complete Demo
               </Button>

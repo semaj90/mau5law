@@ -3,9 +3,7 @@
   import type { RoutePageData } from './+page.server';
   import { CheckCircle, AlertTriangle, Clock, Target } from 'lucide-svelte';
 
-  // Runes mode: access page data via $props instead of `export let`.
-  const { data } = $props<{ data: RoutePageData }>();
-
+  export let data: RoutePageData;
   const inv = data.routeInventory;
 
   // Phase 1-15 Implementation Status
@@ -160,14 +158,10 @@
     }
   ];
 
-  let selectedPhase = $state<number | null>(null);
-  let showOnlyIncomplete = $state<boolean>(false);
-
-  // Filter phases based on toggle
-  let filteredPhases = $derived(() => {
-    if (!showOnlyIncomplete) return phaseData;
-    return phaseData.filter(phase => phase.status !== 'complete');
-  });
+  let selectedPhase: number | null = null;
+  let showOnlyIncomplete = false;
+  let filteredPhases: Phase[] = phaseData;
+  $: filteredPhases = showOnlyIncomplete ? phaseData.filter(p => p.status !== 'complete') : phaseData;
 
   function getStatusColor(status: PhaseStatus): string {
     switch (status) {
@@ -194,21 +188,21 @@
     return 'bg-gray-500';
   }
 
-  // Overall completion statistics
-  let overallStats = $derived(() => {
+  interface OverallStats { totalPhases: number; completedPhases: number; inProgressPhases: number; avgProgress: number; completionRate: number }
+  let overallStats: OverallStats;
+  $: {
     const totalPhases = phaseData.length;
     const completedPhases = phaseData.filter(p => p.status === 'complete').length;
     const inProgressPhases = phaseData.filter(p => p.status === 'in-progress').length;
     const avgProgress = phaseData.reduce((sum, p) => sum + p.progress, 0) / totalPhases;
-
-    return {
+    overallStats = {
       totalPhases,
       completedPhases,
       inProgressPhases,
       avgProgress: Math.round(avgProgress),
       completionRate: Math.round((completedPhases / totalPhases) * 100)
     };
-  });
+  }
 </script>
 
 <svelte:head>
@@ -267,10 +261,18 @@
     <div class="phases-grid">
       {#each filteredPhases as phase}
         <div class="phase-card {phase.status}" class:selected={selectedPhase === phase.phase}>
-          <div class="phase-header" role="button" tabindex="0" on:click={() => selectedPhase = selectedPhase === phase.phase ? null : phase.phase}>
+          <button type="button" class="phase-header" onclick={() => selectedPhase = selectedPhase === phase.phase ? null : phase.phase}>
             <div class="phase-number">
               <span class="phase-label">Phase {phase.phase}</span>
-              <svelte:component this={getStatusIcon(phase.status)} class="status-icon w-5 h-5" />
+              {#if phase.status === 'complete'}
+                <CheckCircle class="status-icon w-5 h-5" />
+              {:else if phase.status === 'in-progress'}
+                <Clock class="status-icon w-5 h-5" />
+              {:else if phase.status === 'planned'}
+                <Target class="status-icon w-5 h-5" />
+              {:else}
+                <AlertTriangle class="status-icon w-5 h-5" />
+              {/if}
             </div>
             <div class="phase-title">{phase.title}</div>
             <div class="phase-progress">
@@ -279,7 +281,7 @@
               </div>
               <span class="progress-percentage">{phase.progress}%</span>
             </div>
-          </div>
+          </button>
 
           <div class="phase-description">{phase.description}</div>
 

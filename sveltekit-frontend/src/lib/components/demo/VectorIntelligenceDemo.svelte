@@ -134,7 +134,7 @@
           keydown={(e) => e.key === 'Enter' && performSearch()}
         />
         <Button
-          on:onclick={performSearch}
+          onclick={performSearch}
           disabled={$isAnalyzing || !searchQuery.trim()}
           class="px-6 bits-btn bits-btn"
         >
@@ -156,7 +156,7 @@
             <Badge
               variant={selectedFilters.includes(filter) ? 'default' : 'outline'}
               class="cursor-pointer hover:bg-blue-100 transition-colors"
-              on:onclick={() => toggleFilter(filter)}
+              onclick={() => toggleFilter(filter)}
             >
               {filter}
             </Badge>
@@ -173,7 +173,7 @@
               variant="outline"
               size="sm"
               class="text-xs bits-btn bits-btn"
-              on:onclick={() => useSampleQuery(query)}
+              onclick={() => useSampleQuery(query)}
             >
               {query}
             </Button>
@@ -284,7 +284,7 @@
           <CardHeader>
             <div class="flex items-center justify-between">
               <CardTitle class="text-lg">Recent Searches</CardTitle>
-              <Button class="bits-btn" variant="ghost" size="sm" on:onclick={clearHistory}>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearHistory}>
                 Clear
               </Button>
             </div>
@@ -294,7 +294,7 @@
               {#each searchHistory as query}
                 <button
                   class="w-full text-left p-2 text-sm rounded hover:bg-gray-100 transition-colors"
-                  on:onclick={() => useHistoryQuery(query)}
+                  onclick={() => useHistoryQuery(query)}
                 >
                   {query}
                 </button>

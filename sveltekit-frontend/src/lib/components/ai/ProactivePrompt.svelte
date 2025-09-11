@@ -78,7 +78,7 @@
           variant="outline"
           size="sm"
           class="space-y-4 bits-btn bits-btn"
-          on:onclick={() => handleAccept()}
+          onclick={() => handleAccept()}
         >
           <MessageCircle class="space-y-4" />
           Yes, help me
@@ -89,7 +89,7 @@
           variant="ghost"
           size="sm"
           class="space-y-4 bits-btn bits-btn"
-          on:onclick={() => onquickResponse?.()}
+          onclick={() => onquickResponse?.()}
         >
           <Lightbulb class="space-y-4" />
           Summarize
@@ -100,7 +100,7 @@
           variant="ghost"
           size="sm"
           class="space-y-4 bits-btn bits-btn"
-          on:onclick={() => handleDismiss()}
+          onclick={() => handleDismiss()}
           title="Not now"
         >
           <X class="space-y-4" />

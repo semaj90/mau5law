@@ -46,7 +46,7 @@ import type { User } from '$lib/types/user';
     <div class="space-y-4">
       <button
         class="space-y-4"
-        on:onclick={() => handleNavigation("/")}
+        onclick={() => handleNavigation("/")}
         aria-label="Go to homepage"
       >
         <Palette size={24} />
@@ -58,7 +58,7 @@ import type { User } from '$lib/types/user';
     <nav class="space-y-4" aria-label="Main navigation">
       <button
         class="space-y-4"
-        on:onclick={() => handleNavigation("/dashboard")}
+        onclick={() => handleNavigation("/dashboard")}
         aria-label="Dashboard"
       >
         <Home size={18} />
@@ -67,7 +67,7 @@ import type { User } from '$lib/types/user';
 
       <button
         class="space-y-4"
-        on:onclick={() => handleNavigation("/cases")}
+        onclick={() => handleNavigation("/cases")}
         aria-label="Cases"
       >
         <FolderOpen size={18} />
@@ -76,7 +76,7 @@ import type { User } from '$lib/types/user';
 
       <button
         class="space-y-4"
-        on:onclick={() => handleNavigation("/interactive-canvas")}
+        onclick={() => handleNavigation("/interactive-canvas")}
         aria-label="Interactive Canvas"
       >
         <Palette size={18} />
@@ -85,7 +85,7 @@ import type { User } from '$lib/types/user';
 
       <button
         class="space-y-4"
-        on:onclick={() => handleNavigation("/evidence/hash")}
+        onclick={() => handleNavigation("/evidence/hash")}
         aria-label="Hash Verification"
         title="Verify evidence file integrity"
       >
@@ -109,7 +109,7 @@ import type { User } from '$lib/types/user';
         <div class="space-y-4">
           <button
             class="space-y-4"
-            on:onclick={() => toggleUserMenu()}
+            onclick={() => toggleUserMenu()}
             aria-label="User menu"
             aria-expanded={userMenuOpen}
           >
@@ -130,7 +130,7 @@ import type { User } from '$lib/types/user';
             <div class="space-y-4" role="menu">
               <button
                 class="space-y-4"
-                on:onclick={() => handleNavigation("/profile")}
+                onclick={() => handleNavigation("/profile")}
                 role="menuitem"
               >
                 <UserIcon size={16} />
@@ -139,7 +139,7 @@ import type { User } from '$lib/types/user';
 
               <button
                 class="space-y-4"
-                on:onclick={() => handleNavigation("/settings")}
+                onclick={() => handleNavigation("/settings")}
                 role="menuitem"
               >
                 <Settings size={16} />
@@ -150,7 +150,7 @@ import type { User } from '$lib/types/user';
 
               <button
                 class="space-y-4"
-                on:onclick={() => handleLogout()}
+                onclick={() => handleLogout()}
                 role="menuitem"
               >
                 <LogOut size={16} />
@@ -162,7 +162,7 @@ import type { User } from '$lib/types/user';
       {:else}
         <button
           class="space-y-4"
-          on:onclick={() => handleNavigation("/login")}
+          onclick={() => handleNavigation("/login")}
           aria-label="Sign in"
         >
           Sign In
@@ -176,7 +176,7 @@ import type { User } from '$lib/types/user';
 {#if userMenuOpen}
   <div
     class="space-y-4"
-    on:onclick={() => closeUserMenu()}
+    onclick={() => closeUserMenu()}
     keydown={(e) => e.key === "Escape" && closeUserMenu()}
     role="button"
     tabindex={-1}

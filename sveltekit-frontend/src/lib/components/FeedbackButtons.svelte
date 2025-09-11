@@ -32,8 +32,8 @@
 </script>
 
 <div class="feedback-buttons">
-  <button class="up" on:onclick={() => sendFeedback(1)} disabled={sending}>👍 Helpful</button>
-  <button class="down" on:onclick={() => sendFeedback(0)} disabled={sending}>👎 Not helpful</button>
+  <button class="up" onclick={() => sendFeedback(1)} disabled={sending}>👍 Helpful</button>
+  <button class="down" onclick={() => sendFeedback(0)} disabled={sending}>👎 Not helpful</button>
   {#if sending}
     <span>sending…</span>
   {:else if lastResp}

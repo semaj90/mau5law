@@ -355,13 +355,13 @@
             <div class="space-y-2">
               <h4 class="font-semibold">🎯 Demo Actions:</h4>
               <div class="space-y-2">
-                <Button class="bits-btn" on:onclick={demoLogin} disabled={authenticatedUser !== null}>
+                <Button class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
                   Demo Login
                 </Button>
-                <Button class="bits-btn" on:onclick={demoAIInteraction} disabled={!authenticatedUser}>
+                <Button class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
                   Test AI Assistant
                 </Button>
-                <Button class="bits-btn" on:onclick={demoLogout} disabled={!authenticatedUser} variant="outline">
+                <Button class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="outline">
                   Demo Logout
                 </Button>
               </div>
@@ -383,7 +383,7 @@
               <p class="text-gray-600">
                 Demonstrate the modern authentication system with Svelte 5 runes and XState integration.
               </p>
-              <Button class="bits-btn" on:onclick={() => showAuthDialog = true}>
+              <Button class="bits-btn" onclick={() => showAuthDialog = true}>
                 Open Authentication Dialog
               </Button>
             </div>
@@ -397,7 +397,7 @@
                   <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}</p>
                 </div>
               </div>
-              <Button class="bits-btn" on:onclick={demoLogout} variant="outline">
+              <Button class="bits-btn" onclick={demoLogout} variant="outline">
                 Logout
               </Button>
             </div>
@@ -437,13 +437,13 @@
               
               <div class="flex gap-2">
                 <Button class="bits-btn" 
-                  on:onclick={() => sessionManager.performSecurityCheck()} 
+                  onclick={() => sessionManager.performSecurityCheck()} 
                   size="sm"
                 >
                   Security Check
                 </Button>
                 <Button class="bits-btn" 
-                  on:onclick={() => sessionManager.refreshSession()} 
+                  onclick={() => sessionManager.refreshSession()} 
                   size="sm" 
                   variant="outline"
                 >
@@ -510,7 +510,7 @@
               </div>
             </div>
             
-            <Button class="bits-btn" on:onclick={checkSystemHealth}>
+            <Button class="bits-btn" onclick={checkSystemHealth}>
               Refresh System Health
             </Button>
           </div>

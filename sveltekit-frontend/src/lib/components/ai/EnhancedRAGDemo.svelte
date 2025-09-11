@@ -213,7 +213,7 @@
                 )} words
               </div>
               <Button
-                on:onclick={analyzeDocument}
+                onclick={analyzeDocument}
                 disabled={isAnalyzing || !sampleLegalText.trim()}
                 class="px-6 bits-btn bits-btn">
                 {isAnalyzing ? 'Analyzing...' : 'Analyze Document'}
@@ -413,7 +413,7 @@
 
             <div class="flex justify-end">
               <Button
-                on:onclick={performRAGQuery}
+                onclick={performRAGQuery}
                 disabled={isAnalyzing || !queryText.trim()}
                 class="px-6 bits-btn bits-btn">
                 {isAnalyzing ? 'Querying...' : 'Execute RAG Query'}

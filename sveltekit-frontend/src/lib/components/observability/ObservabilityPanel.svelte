@@ -164,7 +164,7 @@
         <span class="status-indicator {isConnected ? 'connected' : 'disconnected'}"></span>
         {isConnected ? 'Live' : 'Disconnected'}
       </div>
-      <button class="btn-toggle" on:onclick={() => showDetails = !showDetails}>
+      <button class="btn-toggle" onclick={() => showDetails = !showDetails}>
         {showDetails ? 'Hide' : 'Show'} Details
       </button>
     </div>
@@ -231,7 +231,7 @@
           <input type="checkbox" bind:checked={autoScroll} />
           Auto-scroll
         </label>
-        <button class="btn-clear" on:onclick={clearAlerts}>Clear</button>
+        <button class="btn-clear" onclick={clearAlerts}>Clear</button>
       </div>
     </div>
     

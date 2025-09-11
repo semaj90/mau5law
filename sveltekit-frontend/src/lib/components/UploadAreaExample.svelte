@@ -157,7 +157,7 @@
             type="button"
             class="space-y-4"
             aria-label="Clear status"
-            on:onclick={() => clearStatus()}
+            onclick={() => clearStatus()}
           ></button>
         </div>
       {/if}
@@ -171,7 +171,7 @@
             <button
               type="button"
               class="space-y-4"
-              on:onclick={() => clearStatus()}
+              onclick={() => clearStatus()}
             >
               Clear
             </button>

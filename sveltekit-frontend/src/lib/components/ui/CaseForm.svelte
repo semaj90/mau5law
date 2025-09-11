@@ -325,7 +325,7 @@
                   variant="secondary"
                   size="md"
                   data-icon="${1}"
-                  on:onclick={() => addTag()}
+                  onclick={() => addTag()}
                 >
                   Add
                 </Button>

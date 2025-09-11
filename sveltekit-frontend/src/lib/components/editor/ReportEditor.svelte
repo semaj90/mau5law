@@ -205,7 +205,7 @@ https://svelte.dev/e/js_parse_error -->
           <div>
             <h3>Evidence Library</h3>
             <button
-              on:onclick={() => handleAddNewEvidence()}
+              onclick={() => handleAddNewEvidence()}
               title="Add new evidence"
             >
               <Plus size={16} />
@@ -296,7 +296,7 @@ https://svelte.dev/e/js_parse_error -->
         <div>
           {#if !$reportUI.sidebarOpen}
             <button
-              on:onclick={() => toggleSidebar()}
+              onclick={() => toggleSidebar()}
               title="Show sidebar"
             >
               <PanelLeftOpen size={20} />
@@ -313,7 +313,7 @@ https://svelte.dev/e/js_parse_error -->
 
         <div>
           <button
-            on:onclick={() => switchLayout()}
+            onclick={() => switchLayout()}
             title="Switch layout ({$report.settings.layout})"
           >
             {#if $report.settings.layout === "single"}
@@ -326,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
 
           <button
-            on:onclick={() => toggleFullscreen()}
+            onclick={() => toggleFullscreen()}
             title="Toggle fullscreen"
           >
             {#if $reportUI.fullscreen}
@@ -337,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
 
           <button
-            on:onclick={() => (showSettingsModal = true)}
+            onclick={() => (showSettingsModal = true)}
             title="Settings"
           >
             <Settings size={18} />
@@ -359,7 +359,7 @@ https://svelte.dev/e/js_parse_error -->
       >
         <div class="panel-header"></div>
           <h3>Evidence</h3>
-          <button class="add-evidence-btn" on:onclick={() => handleAddNewEvidence()}>
+          <button class="add-evidence-btn" onclick={() => handleAddNewEvidence()}>
             <Plus size={16} />
           </button>
         </div>

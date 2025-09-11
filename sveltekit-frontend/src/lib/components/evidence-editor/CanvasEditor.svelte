@@ -757,7 +757,7 @@
     class="container mx-auto px-4"
     ondrop={handleDrop}
     ondragover={handleDragOver}
-    on:onclick={handleCanvasClick}
+    onclick={handleCanvasClick}
     onmousedown={handleMouseDown}
     on:mousemove={handleMouseMove}
     mouseup={handleMouseUp}

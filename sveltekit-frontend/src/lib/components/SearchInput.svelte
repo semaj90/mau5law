@@ -76,7 +76,7 @@
   {#if value}
 	<button
 	  class="clear-button"
-	  on:onclick={clearValue}
+	  onclick={clearValue}
 	  aria-label="Clear search"
 	  type="button"
 	>

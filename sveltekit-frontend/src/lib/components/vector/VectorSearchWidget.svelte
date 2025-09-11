@@ -157,7 +157,7 @@ Compact searchable component for embedding in other interfaces
       <button
         type="button"
         class="absolute inset-y-0 right-0 pr-3 flex items-center"
-        on:onclick={clearSearch}
+        onclick={clearSearch}
       >
         <X class="h-4 w-4 text-muted-foreground hover:text-foreground" />
       </button>
@@ -177,7 +177,7 @@ Compact searchable component for embedding in other interfaces
             <button
               type="button"
               class="w-full text-left p-3 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
-              on:onclick={() => selectResult(result)}
+              onclick={() => selectResult(result)}
             >
               <div class="flex items-start justify-between mb-2">
                 <div class="flex items-center gap-2">

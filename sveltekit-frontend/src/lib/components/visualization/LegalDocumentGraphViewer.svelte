@@ -573,7 +573,7 @@
       <div class="error-icon">⚠️</div>
       <h3>WebGPU Error</h3>
       <p>{$error}</p>
-      <button on:onclick={() => window.location.reload()}>Reload Page</button>
+      <button onclick={() => window.location.reload()}>Reload Page</button>
     </div>
   {/if}
 
@@ -611,15 +611,15 @@
   <!-- Controls Panel -->
   {#if $canInteract}
     <div class="controls-panel">
-      <button on:onclick={resetCamera} title="Reset Camera">
+      <button onclick={resetCamera} title="Reset Camera">
         🎯
       </button>
       
-      <button on:onclick={togglePhysics} title="Toggle Physics" class:active={enablePhysics}>
+      <button onclick={togglePhysics} title="Toggle Physics" class:active={enablePhysics}>
         ⚡
       </button>
       
-      <button on:onclick={() => $renderState.autoRotate = !$renderState.autoRotate} 
+      <button onclick={() => $renderState.autoRotate = !$renderState.autoRotate} 
               title="Auto Rotate" 
               class:active={$renderState.autoRotate}>
         🔄
@@ -633,11 +633,11 @@
         <option value="precedent">Precedents</option>
       </select>
 
-      <button on:onclick={saveGraphState} title="Save State">
+      <button onclick={saveGraphState} title="Save State">
         💾
       </button>
 
-      <button on:onclick={async () => {
+      <button onclick={async () => {
         const blob = await exportImage();
         if (blob) {
           const url = URL.createObjectURL(blob);

@@ -1289,13 +1289,127 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
 
   /* Gaming mode enhancements */
-  .nes-yorha-evidence-board.retro-glow .evidence-canvas-container {
+  /* Glow effect when the container that actually gets class:retro-glow wraps the canvas */
+  /* Enhanced NES × N64 hybrid glow + CRT / pixel layering */
+  :global(.retro-glow) .evidence-canvas-container {
+    position: relative;
+    --accent-a: 59 130 246;   /* blue */
+    --accent-b: 139 92 246;   /* purple */
+    --accent-c: 6 182 212;    /* cyan */
+    --accent-d: 16 185 129;   /* emerald */
+    border-color: rgb(var(--accent-a) / 0.9);
     box-shadow:
-      0 0 20px rgba(59, 130, 246, 0.3),
-      0 0 40px rgba(139, 92, 246, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border-color: #3b82f6;
-    animation: canvasGlow 3s ease-in-out infinite alternate;
+      0 0 4px 2px rgb(var(--accent-a) / 0.35),
+      0 0 18px 4px rgb(var(--accent-b) / 0.30),
+      0 0 34px 6px rgb(var(--accent-c) / 0.25),
+      0 0 52px 10px rgb(var(--accent-d) / 0.22),
+      inset 0 0 0 1px rgba(255 255 255 / 0.12),
+      inset 0 0 6px 2px rgb(var(--accent-b) / 0.25);
+    animation: canvasGlow 3.4s ease-in-out infinite alternate;
+    transition: box-shadow 350ms ease, border-color 350ms ease, transform 400ms;
+    will-change: box-shadow, transform;
+  }
+
+  /* Pixel / scanline / chromatic edge layering */
+  :global(.retro-glow) .evidence-canvas-container::after,
+  :global(.retro-glow) .evidence-canvas-container::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+  }
+
+  /* Subtle animated radial / scanline hybrid (N64 + CRT feel) */
+  :global(.retro-glow) .evidence-canvas-container::before {
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255 255 255 / 0.04) 0px,
+        rgba(255 255 255 / 0.04) 2px,
+        transparent 2px,
+        transparent 4px
+      ),
+      radial-gradient(circle at 25% 18%, rgba(var(--accent-b) / 0.18), transparent 65%),
+      radial-gradient(circle at 80% 70%, rgba(var(--accent-c) / 0.18), transparent 70%);
+    mix-blend-mode: overlay;
+    opacity: 0.55;
+    animation: scanDrift 9s linear infinite;
+  }
+
+  /* NES-style pixel grid & edge glow */
+  :global(.retro-glow) .evidence-canvas-container::after {
+    background:
+      linear-gradient(145deg,
+        rgba(var(--accent-a) / 0.18),
+        rgba(var(--accent-b) / 0.12),
+        rgba(var(--accent-c) / 0.10)),
+      repeating-linear-gradient(
+        45deg,
+        rgba(255 255 255 / 0.05) 0 2px,
+        rgba(0 0 0 / 0.05) 2px 4px
+      );
+    filter: brightness(1.05) saturate(1.15);
+    mix-blend-mode: soft-light;
+    opacity: 0.75;
+    animation: hueShift 12s ease-in-out infinite;
+  }
+
+  /* Depth pop for N64 'cartridge slot' vibe when combined with .n64-depth parent */
+  :global(.retro-glow .n64-depth) .evidence-canvas-container {
+    transform: translateZ(0) scale(1.012);
+  }
+  :global(.retro-glow .n64-depth:hover) .evidence-canvas-container {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow:
+      0 6px 10px -2px rgba(0 0 0 / 0.35),
+      0 0 8px 2px rgb(var(--accent-a) / 0.55),
+      0 0 26px 10px rgb(var(--accent-b) / 0.35),
+      inset 0 0 0 1px rgba(255 255 255 / 0.18);
+  }
+
+  /* YoRHa highlight pulse when drag active (parent toggles .yorha-glow) */
+  :global(.yorha-glow) .evidence-canvas-container {
+    outline: 2px solid rgba(var(--accent-c) / 0.8);
+    animation: canvasGlow 2.1s ease-in-out infinite alternate,
+               pulseRing 1.8s ease-in-out infinite;
+  }
+
+  /* Reduce intensity in retro terminal mode */
+  :global(.retro-terminal) .evidence-canvas-container,
+  :global(.retro-terminal.retro-glow) .evidence-canvas-container {
+    box-shadow:
+      0 0 0 1px rgba(0 255 120 / 0.4),
+      0 0 12px 2px rgba(0 255 120 / 0.25),
+      inset 0 0 8px rgba(0 255 120 / 0.2);
+    animation: none;
+    filter: contrast(1.05) saturate(0.85);
+  }
+
+  /* Accessibility: respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    :global(.retro-glow) .evidence-canvas-container,
+    :global(.retro-glow) .evidence-canvas-container::before,
+    :global(.retro-glow) .evidence-canvas-container::after {
+      animation: none !important;
+    }
+  }
+
+  @keyframes scanDrift {
+    0% { transform: translateY(0); opacity: 0.55; }
+    50% { transform: translateY(-6px); opacity: 0.42; }
+    100% { transform: translateY(0); opacity: 0.55; }
+  }
+
+  @keyframes hueShift {
+    0% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg); }
+    50% { filter: brightness(1.1) saturate(1.25) hue-rotate(25deg); }
+    100% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg); }
+  }
+
+  @keyframes pulseRing {
+    0% { outline-offset: 0; }
+    100% { outline-offset: 4px; }
   }
 
   @keyframes canvasGlow {

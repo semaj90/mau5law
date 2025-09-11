@@ -1,252 +1,204 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types';
 import { apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
 import { ollamaService } from '$lib/server/services/OllamaService.js';
 import { logger } from '$lib/server/production-logger.js';
 import { conversationService } from '$lib/server/services/conversation-service';
 
-/*
- * Enhanced Server-Sent Events (SSE) Chat API
- * Provides real-time streaming responses for Legal AI Assistant
- * Compatible with SvelteKit 2 + Svelte 5 + Enhanced RAG
- */
+interface StreamLine {
+  response?: string;
+  done?: boolean;
+  [k: string]: any;
+}
 
 export const POST: RequestHandler = withErrorHandling(async (event) => {
   const requestId = getRequestId(event);
-  
+  const body = await event.request.json().catch(() => ({}));
   const {
     message,
-    model = "gemma3-legal:latest", 
+    model = 'gemma3-legal:latest',
     temperature = 0.7,
     conversationId,
     userId = 'mock-user-id',
     caseId,
-    useRAG = true
-  } = await event.request.json();
+    useRAG = true,
+  } = body;
 
-  // Validate input
-  if (!message?.trim()) {
-    return apiError("Message is required", 400, 'INVALID_INPUT', undefined, requestId);
-  }
+  if (!message || !message.trim())
+    return apiError('Message is required', 400, 'INVALID_INPUT', undefined, requestId);
 
-  // Check Ollama health
-  const isHealthy = await ollamaService.isHealthy();
-  if (!isHealthy) {
-    logger.error("Ollama service is not healthy");
-    return apiError("AI service is currently unavailable", 503, 'SERVICE_UNAVAILABLE', undefined, requestId);
-  }
+  if (!(await ollamaService.isHealthy()))
+    return apiError(
+      'AI service is currently unavailable',
+      503,
+      'SERVICE_UNAVAILABLE',
+      undefined,
+      requestId
+    );
 
-  // Handle conversation creation/continuation
   let currentConversationId = conversationId;
   if (!currentConversationId) {
-    const conversationTitle = message.length > 50 ? 
-      message.substring(0, 47) + '...' : message;
-    
-    const newConversation = await conversationService.create({
+    const title = message.length > 50 ? message.slice(0, 47) + '...' : message;
+    const created = await conversationService.create({
       userId,
-      title: conversationTitle,
+      title,
       caseId,
-      context: { model, temperature, useRAG }
+      context: { model, temperature, useRAG },
     });
-    currentConversationId = newConversation.id;
+    currentConversationId = created.id;
   }
 
-  // Save user message
   await conversationService.addMessage({
     conversationId: currentConversationId,
     role: 'user',
     content: message,
-    metadata: { requestId, useRAG }
+    metadata: { requestId, useRAG },
   });
 
-  // Enhanced system prompt with RAG context
-  let systemPrompt = `You are an expert legal AI assistant. Provide accurate, professional legal information.
-
-User question: ${message}`;
-
-  // Add RAG context if enabled
+  let prompt = `You are an expert legal AI assistant. Provide accurate, professional legal information.\n\nUser question: ${message}`;
   if (useRAG) {
     try {
-      const ragResponse = await fetch('http://localhost:8094/api/rag', {
+      const ragResp = await fetch('http://localhost:8094/api/rag', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: message,
-          limit: 5,
-          threshold: 0.7
-        })
+        body: JSON.stringify({ query: message, limit: 5, threshold: 0.7 }),
       });
-
-      if (ragResponse.ok) {
-        const ragData = await ragResponse.json();
-        if (ragData.results && ragData.results.length > 0) {
-          const contextDocs = ragData.results
+      if (ragResp.ok) {
+        const ragData = await ragResp.json();
+        if (Array.isArray(ragData.results) && ragData.results.length) {
+          const ctx = ragData.results
             .map((r: any) => `- ${r.content || r.text || 'Relevant legal information'}`)
             .join('\n');
-          
-          systemPrompt += `\n\nRelevant legal context from your knowledge base:\n${contextDocs}\n\nUse this context to provide more accurate and specific answers.`;
+          prompt += `\n\nRelevant legal context from your knowledge base:\n${ctx}\n\nUse this context to provide more accurate and specific answers.`;
         }
       }
-    } catch (ragError) {
-      logger.warn('RAG service unavailable, proceeding without context', { requestId, ragError });
+    } catch (e) {
+      logger.warn(
+        `RAG context fetch failed (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`
+      );
     }
   }
 
-  // Create SSE stream
-  return new Response(
-    new ReadableStream({
-      async start(controller) {
-        const encoder = new TextEncoder();
-        
-        // Helper function to send SSE data
-        const sendSSEData = (data: any) => {
-          const sseData = `data: ${JSON.stringify(data)}\n\n`;
-          controller.enqueue(encoder.encode(sseData));
-        };
+  const stream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder();
+      const send = (d: any) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(d)}\n\n`));
+      let buffer = '';
+      let tokens = 0;
+      let finished = false;
 
+      const persist = async (incomplete = false) => {
+        if (!buffer) return;
         try {
-          // Send initial connection confirmation
-          sendSSEData({
-            type: 'connection',
-            conversationId: currentConversationId,
-            requestId,
-            timestamp: new Date().toISOString()
+          await conversationService.addMessage({
+            conversationId: currentConversationId!,
+            role: 'assistant',
+            content: buffer,
+            metadata: { requestId, model, temperature, tokenCount: tokens, useRAG, incomplete },
           });
+        } catch (e) {
+          logger.error(
+            `Persist assistant message failed (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`
+          );
+        }
+      };
 
-          // Call Ollama streaming API
-          const response = await fetch("http://localhost:11436/api/generate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              model,
-              prompt: systemPrompt,
-              stream: true,
-              options: {
-                temperature,
-                num_predict: 2048,
-                top_k: 40,
-                top_p: 0.9,
-                repeat_penalty: 1.1
-              }
-            })
-          });
+      send({
+        type: 'connection',
+        conversationId: currentConversationId,
+        requestId,
+        timestamp: new Date().toISOString(),
+      });
 
-          if (!response.ok) {
-            throw new Error(`Ollama API error: ${response.status}`);
-          }
-
-          const reader = response.body?.getReader();
-          if (!reader) {
-            throw new Error("Failed to get response reader");
-          }
-
-          let assistantMessage = '';
-          let tokenCount = 0;
-
-          // Process streaming chunks
-          while (true) {
-            const { done, value } = await reader.read();
-            
-            if (done) {
-              break;
-            }
-
-            const chunk = new TextDecoder().decode(value);
-            const lines = chunk.split('\n').filter(line => line.trim());
-
-            for (const line of lines) {
-              try {
-                const data = JSON.parse(line);
-                
-                if (data.response) {
-                  assistantMessage += data.response;
-                  tokenCount++;
-                  
-                  // Send token update
-                  sendSSEData({
-                    type: 'token',
-                    content: data.response,
-                    fullResponse: assistantMessage,
-                    tokenCount,
-                    timestamp: new Date().toISOString()
-                  });
-                }
-
-                if (data.done) {
-                  // Save assistant message to conversation
-                  await conversationService.addMessage({
-                    conversationId: currentConversationId,
-                    role: 'assistant',
-                    content: assistantMessage,
-                    metadata: {
-                      requestId,
-                      model,
-                      temperature,
-                      tokenCount,
-                      useRAG
-                    }
-                  });
-
-                  // Send completion signal
-                  sendSSEData({
-                    type: 'complete',
-                    fullResponse: assistantMessage,
-                    tokenCount,
-                    conversationId: currentConversationId,
-                    timestamp: new Date().toISOString()
-                  });
-                  
-                  break;
-                }
-              } catch (parseError) {
-                logger.warn('Failed to parse Ollama response chunk', { 
-                  requestId, 
-                  chunk: line.substring(0, 100),
-                  parseError 
+      try {
+        const resp = await fetch('http://localhost:11436/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            prompt,
+            stream: true,
+            options: { temperature, num_predict: 2048, top_k: 40, top_p: 0.9, repeat_penalty: 1.1 },
+          }),
+        });
+        if (!resp.ok) throw new Error(`Ollama API error ${resp.status}`);
+        const reader = resp.body?.getReader();
+        if (!reader) throw new Error('Streaming response body not available');
+        const td = new TextDecoder();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = td.decode(value, { stream: true });
+          const lines = chunk
+            .split('\n')
+            .map((l) => l.trim())
+            .filter(Boolean);
+          for (const raw of lines) {
+            let line = raw.startsWith('data:') ? raw.slice(5).trim() : raw;
+            try {
+              const data: StreamLine = JSON.parse(line);
+              if (data.response) {
+                buffer += data.response;
+                tokens++;
+                send({
+                  type: 'token',
+                  content: data.response,
+                  fullResponse: buffer,
+                  tokenCount: tokens,
                 });
               }
+              if (data.done) {
+                finished = true;
+                await persist(false);
+                send({
+                  type: 'complete',
+                  fullResponse: buffer,
+                  tokenCount: tokens,
+                  conversationId: currentConversationId,
+                  timestamp: new Date().toISOString(),
+                });
+              }
+            } catch (e) {
+              logger.warn(
+                `Stream parse error (requestId=${requestId}) lineSnippet='${line.slice(0, 120)}' err=${e instanceof Error ? e.message : String(e)}`
+              );
             }
           }
-
-        } catch (error) {
-          logger.error('SSE streaming error', { requestId, error });
-          
-          // Send error to client
-          sendSSEData({
-            type: 'error',
-            error: error instanceof Error ? error.message : 'Stream processing failed',
-            timestamp: new Date().toISOString()
-          });
-        } finally {
-          // Close the stream
-          sendSSEData({
-            type: 'close',
-            timestamp: new Date().toISOString()
-          });
-          
-          controller.close();
+          if (finished) break;
         }
+      } catch (e) {
+        logger.error(
+          `Streaming failure (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`
+        );
+        await persist(true);
+        send({
+          type: 'error',
+          error: e instanceof Error ? e.message : 'Streaming failed',
+          timestamp: new Date().toISOString(),
+        });
+      } finally {
+        if (!finished) await persist(true);
+        send({ type: 'close', timestamp: new Date().toISOString() });
+        controller.close();
       }
-    }),
-    {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Cache-Control'
-      }
-    }
-  );
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
 });
 
-// Handle CORS preflight requests
-export const OPTIONS: RequestHandler = async () => {
-  return new Response(null, {
+export const OPTIONS: RequestHandler = async () =>
+  new Response(null, {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    }
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
   });
-};

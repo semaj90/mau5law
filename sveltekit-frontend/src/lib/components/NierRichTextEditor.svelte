@@ -48,7 +48,7 @@ https://svelte.dev/e/component_invalid_directive -->
         variant="ghost" 
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
-        on:onclick={() => editor?.commands.undo()}
+        onclick={() => editor?.commands.undo()}
       >
         ↶
       </Button>
@@ -56,7 +56,7 @@ https://svelte.dev/e/component_invalid_directive -->
         variant="ghost" 
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
-        on:onclick={() => editor?.commands.redo()}
+        onclick={() => editor?.commands.redo()}
       >
         ↷
       </Button>
@@ -90,7 +90,7 @@ https://svelte.dev/e/component_invalid_directive -->
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('bold')}
-        on:onclick={() => editor?.chain().focus().toggleBold().run()}
+        onclick={() => editor?.chain().focus().toggleBold().run()}
       >
         <strong>B</strong>
       </Button>
@@ -99,7 +99,7 @@ https://svelte.dev/e/component_invalid_directive -->
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('italic')}
-        on:onclick={() => editor?.chain().focus().toggleItalic().run()}
+        onclick={() => editor?.chain().focus().toggleItalic().run()}
       >
         <em>I</em>
       </Button>

@@ -168,7 +168,7 @@
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <h4>Settings</h4>
-        <button class="container mx-auto px-4" on:onclick={() => (showSettings = false)}
+        <button class="container mx-auto px-4" onclick={() => (showSettings = false)}
           >×</button
         >
       </div>
@@ -229,7 +229,7 @@
       aria-modal="true"
       aria-labelledby="citation-dialog-title"
       tabindex={-1}
-      on:onclick={() => (showCitationDialog = false)}
+      onclick={() => (showCitationDialog = false)}
       keydown={(e) => e.key === "Escape" && (showCitationDialog = false)}
     >
       <div

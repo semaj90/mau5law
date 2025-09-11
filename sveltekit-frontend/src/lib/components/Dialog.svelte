@@ -177,7 +177,7 @@
 	<div 
 		class="mx-auto px-4 max-w-7xl"
 		transitifade={{ duration: 200  "
-		on:onclick={() => handleBackdropClick()}
+		onclick={() => handleBackdropClick()}
 		keydown={handleKeydown}
 		role="dialog"
 		aria-modal="true"
@@ -194,7 +194,7 @@
 				<h2 id="dialog-title" class="mx-auto px-4 max-w-7xl">{title}</h2>
 				<button
 					class="mx-auto px-4 max-w-7xl"
-					on:onclick={() => handleClose()}
+					onclick={() => handleClose()}
 					aria-label="Close dialog"
 				>
 					<X size={20} />
@@ -209,7 +209,7 @@
 						<button
 							class="mx-auto px-4 max-w-7xl"
 						 class:active={selectedVibe === vibe.id}
-							on:onclick={() => handleVibeChange(vibe.id)}
+							onclick={() => handleVibeChange(vibe.id)}
 							title={vibe.description}
 						>
 							{vibe.label}
@@ -298,7 +298,7 @@
 					></textarea>
 					<button
 						class="mx-auto px-4 max-w-7xl"
-						on:onclick={() => handleSubmit()}
+						onclick={() => handleSubmit()}
 						disabled={!currentPrompt.trim() || isGenerating}
 						aria-label="Send message"
 					>
@@ -308,7 +308,7 @@
 				<div class="mx-auto px-4 max-w-7xl">
 					<span>Press Ctrl+Enter to send</span>
 					{#if history.length > 0}
-						<button class="mx-auto px-4 max-w-7xl" on:onclick={() => clearHistory()}>
+						<button class="mx-auto px-4 max-w-7xl" onclick={() => clearHistory()}>
 							Clear History
 						</button>
 					{/if}

@@ -260,7 +260,7 @@
 				disabled={isProcessing}
 			/>
 			<Button
-				on:onclick={performGPULegalSearch}
+				onclick={performGPULegalSearch}
 				disabled={isProcessing || !gpuStatus?.available}
 				class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 min-w-[140px] bits-btn bits-btn"
 			>

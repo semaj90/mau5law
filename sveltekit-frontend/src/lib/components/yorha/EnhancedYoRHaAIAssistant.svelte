@@ -205,12 +205,12 @@
 </script>
 
 {#if isOpen}
-  <div class="ai-assistant-overlay" transitifade={{ duration: 200 }} on:onclick={onClose}>
+  <div class="ai-assistant-overlay" transitifade={{ duration: 200 }} onclick={onClose}>
     <div
       class="ai-assistant-container"
       style="width: {containerWidth}px; height: {containerHeight}px;"
       transitifly={{ y: -50, duration: 400, easing: quintOut }}
-      on:onclick={(e) => e.stopPropagation()}>
+      onclick={(e) => e.stopPropagation()}>
       <!-- Header -->
       <header class="assistant-header">
         <div class="header-left">
@@ -226,24 +226,24 @@
             <button
               class="mode-btn"
               class:active={currentMode === 'chat'}
-              on:onclick={() => switchMode('chat')}>
+              onclick={() => switchMode('chat')}>
               💬 Chat
             </button>
             <button
               class="mode-btn"
               class:active={currentMode === 'evidence'}
-              on:onclick={() => switchMode('evidence')}>
+              onclick={() => switchMode('evidence')}>
               📁 Evidence
             </button>
             <button
               class="mode-btn"
               class:active={currentMode === 'analysis'}
-              on:onclick={() => switchMode('analysis')}>
+              onclick={() => switchMode('analysis')}>
               📊 Analysis
             </button>
           </div>
 
-          <button class="close-btn" on:onclick={onClose}>✕</button>
+          <button class="close-btn" onclick={onClose}>✕</button>
         </div>
       </header>
 
@@ -263,7 +263,7 @@
             disabled={isProcessing} />
           <button
             class="search-btn"
-            on:onclick={handleSearch}
+            onclick={handleSearch}
             disabled={isProcessing || !searchQuery.trim()}>
             {isProcessing ? '⚡' : '🔍'}
           </button>
@@ -271,7 +271,7 @@
 
         <!-- Context Toggle -->
         <div class="context-controls">
-          <button class="context-toggle" on:onclick={() => (contextExpanded = !contextExpanded)}>
+          <button class="context-toggle" onclick={() => (contextExpanded = !contextExpanded)}>
             📋 Context ({evidenceItems.length})
           </button>
 
@@ -288,7 +288,7 @@
         <div class="context-panel" transitifly={{ y: -20, duration: 200 }}>
           <div class="context-header">
             <h3>Active Context</h3>
-            <button on:onclick={() => (contextExpanded = false)}>✕</button>
+            <button onclick={() => (contextExpanded = false)}>✕</button>
           </div>
           <div class="context-items">
             {#each evidenceItems.slice(0, 3) as item}
@@ -350,11 +350,11 @@
                     const file = e.target?.files?.[0];
                     if (file) addEvidence(file);
                   }} />
-                <button on:onclick={() => document.getElementById('evidence-upload')?.click()}>
+                <button onclick={() => document.getElementById('evidence-upload')?.click()}>
                   📁 Upload
                 </button>
-                <button on:onclick={() => addEvidence()}> ➕ Add Item </button>
-                <button on:onclick={exportEvidence}> 💾 Export </button>
+                <button onclick={() => addEvidence()}> ➕ Add Item </button>
+                <button onclick={exportEvidence}> 💾 Export </button>
               </div>
             </div>
 
@@ -363,7 +363,7 @@
                 <div class="evidence-item" transitiscale={{ duration: 200, delay: index * 50 }}>
                   <div class="evidence-header">
                     <h3>{evidence.name}</h3>
-                    <button on:onclick={() => removeEvidence(evidence.id)}>🗑️</button>
+                    <button onclick={() => removeEvidence(evidence.id)}>🗑️</button>
                   </div>
                   <div class="evidence-content">
                     <div class="evidence-type">{evidence.type}</div>
@@ -381,7 +381,7 @@
                 <div class="evidence-empty">
                   <div class="empty-icon">📁</div>
                   <p>No evidence items yet</p>
-                  <button on:onclick={() => addEvidence()}>Add your first evidence item</button>
+                  <button onclick={() => addEvidence()}>Add your first evidence item</button>
                 </div>
               {/if}
             </div>
@@ -447,8 +447,8 @@
         </div>
 
         <div class="footer-controls">
-          <button on:onclick={() => ragStore.clear()}>Clear Session</button>
-          <button on:onclick={exportEvidence}>Export All</button>
+          <button onclick={() => ragStore.clear()}>Clear Session</button>
+          <button onclick={exportEvidence}>Export All</button>
         </div>
       </footer>
     </div>

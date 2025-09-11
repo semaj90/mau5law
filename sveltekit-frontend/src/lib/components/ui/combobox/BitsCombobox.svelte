@@ -250,7 +250,7 @@
           {option.label}
           <button
             type="button"
-            on:onclick={() => removeValue(option.value)}
+            onclick={() => removeValue(option.value)}
             class="hover:bg-yorha-primary/20 rounded p-0.5"
           >
             <X class="w-3 h-3" />

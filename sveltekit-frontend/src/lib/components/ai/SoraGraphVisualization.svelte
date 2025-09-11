@@ -469,7 +469,7 @@
     <div class="error-overlay">
       <h3>⚠️ Visualization Error</h3>
       <p>{$error}</p>
-      <button on:onclick={() => error.set(null)}>Dismiss</button>
+      <button onclick={() => error.set(null)}>Dismiss</button>
     </div>
   {/if}
 
@@ -481,7 +481,7 @@
         width={width}
         height={height}
         class="visualization-canvas canvas-2d"
-        on:onclick={(e) => handleCanvasClick(e, false)}
+        onclick={(e) => handleCanvasClick(e, false)}
       ></canvas>
       
       <!-- 2D Controls -->
@@ -502,7 +502,7 @@
         width={width}
         height={height}
         class="visualization-canvas canvas-3d"
-        on:onclick={(e) => handleCanvasClick(e, true)}
+        onclick={(e) => handleCanvasClick(e, true)}
       ></canvas>
       
       <!-- 3D Controls -->
@@ -532,7 +532,7 @@
           <div 
             class="path-item"
             class:high-score={path.totalScore > 0.8}
-            on:onclick={() => handlePathSelection(index)}
+            onclick={() => handlePathSelection(index)}
           >
             <div class="path-header">
               <span class="path-score">Score: {path.totalScore.toFixed(3)}</span>

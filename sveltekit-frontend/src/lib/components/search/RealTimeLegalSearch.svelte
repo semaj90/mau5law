@@ -220,7 +220,7 @@
           <button
             type="button"
             class="p-1 hover:bg-gray-100 rounded"
-            on:onclick={handleSearch}
+            onclick={handleSearch}
             disabled={!inputValue.trim()}
           >
             <Search class="h-4 w-4 text-gray-500" />
@@ -372,7 +372,7 @@
             <button
               type="button"
               class="block w-full text-left text-xs text-gray-600 hover:text-gray-900 py-1"
-              on:onclick={() => handleInputChange(query)}
+              onclick={() => handleInputChange(query)}
             >
               {query}
             </button>

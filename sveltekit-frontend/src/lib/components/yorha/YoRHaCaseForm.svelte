@@ -301,7 +301,7 @@
       <div class="step-navigation flex justify-end pt-4">
         <button
           type="button"
-          on:onclick={nextStep}
+          onclick={nextStep}
           disabled={!formIntegration.form.get().title || !formIntegration.form.get().description}
           class="next-btn px-6 py-3 bg-yorha-accent-warm text-yorha-dark rounded font-bold hover:bg-yorha-accent-warm/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -404,14 +404,14 @@
       <div class="step-navigation flex justify-between pt-4">
         <button
           type="button"
-          on:onclick={previousStep}
+          onclick={previousStep}
           class="prev-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors"
         >
           ← Back: Basic Info
         </button>
         <button
           type="button"
-          on:onclick={nextStep}
+          onclick={nextStep}
           class="next-btn px-6 py-3 bg-yorha-accent-warm text-yorha-dark rounded font-bold hover:bg-yorha-accent-warm/90 transition-colors"
         >
           Next: Review →
@@ -480,7 +480,7 @@
       <div class="step-navigation flex justify-between pt-4">
         <button
           type="button"
-          on:onclick={previousStep}
+          onclick={previousStep}
           disabled={isSubmitting}
           class="prev-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -489,7 +489,7 @@
         <div class="final-actions flex space-x-4">
           <button
             type="button"
-            on:onclick={() => dispatch('close')}
+            onclick={() => dispatch('close')}
             disabled={isSubmitting}
             class="cancel-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >

@@ -201,7 +201,7 @@
         </div>
 
         <button 
-          on:onclick={() => loadDashboardData(true)} 
+          onclick={() => loadDashboardData(true)} 
           disabled={refreshing}
           class="action-button refresh-button"
         >
@@ -209,7 +209,7 @@
           {refreshing ? 'Refreshing...' : 'Refresh'}
         </button>
 
-        <button on:onclick={exportData} class="action-button export-button">
+        <button onclick={exportData} class="action-button export-button">
           <Download class="w-4 h-4" />
           Export Data
         </button>
@@ -224,7 +224,7 @@
         <h3 class="font-semibold">Error Loading Analytics</h3>
         <p>{error}</p>
       </div>
-      <button on:onclick={() => loadDashboardData()} class="retry-button">
+      <button onclick={() => loadDashboardData()} class="retry-button">
         <RefreshCw class="w-4 h-4" />
         Retry
       </button>

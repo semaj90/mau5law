@@ -174,7 +174,7 @@
           </p>
         </div>
         <button 
-          on:onclick={onClose}
+          onclick={onClose}
           class="text-white hover:text-blue-200 text-2xl font-bold"
           aria-label="Close"
         >
@@ -204,7 +204,7 @@
           <div class="text-red-600 text-xl mb-4">❌ Error</div>
           <p class="text-red-700 mb-4">{$errorMessage}</p>
           <button 
-            on:onclick={() => loadDocumentDetails(documentId, true)}
+            onclick={() => loadDocumentDetails(documentId, true)}
             class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
           >
             Retry
@@ -246,13 +246,13 @@
                   <h3 class="text-xl font-semibold text-gray-800">Document Content</h3>
                   <div class="flex gap-2">
                     <button 
-                      on:onclick={() => loadDocumentDetails(documentId, true)}
+                      onclick={() => loadDocumentDetails(documentId, true)}
                       class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded"
                     >
                       🔄 Refresh
                     </button>
                     <button 
-                      on:onclick={toggleGPUAnalysis}
+                      onclick={toggleGPUAnalysis}
                       class="text-sm {showGPUAnalysis ? 'bg-purple-100 text-purple-700' : 'bg-gray-100'} hover:bg-purple-200 px-3 py-1 rounded"
                     >
                       {showGPUAnalysis ? '🧠 GPU Active' : '⚡ GPU Analysis'}
