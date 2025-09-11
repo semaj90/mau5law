@@ -906,7 +906,7 @@ export type NewDocumentChunk = typeof documentChunks.$inferInsert;
 
 // === RELATIONS ===
 
-export const usersRelations = relations(users, ({ many }: { many: any }) => ({
+export const usersRelations = relations(users, ({ many }) => ({
   casesAsLead: many(cases, { relationName: "leadProsecutor" }),
   casesCreated: many(cases, { relationName: "createdBy" }),
   evidenceUploaded: many(evidence),
@@ -916,14 +916,14 @@ export const usersRelations = relations(users, ({ many }: { many: any }) => ({
   sessions: many(sessions),
 }));
 
-export const sessionsRelations = relations(sessions, ({ one }: { one: any }) => ({
+export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id],
   }),
 }));
 
-export const casesRelations = relations(cases, ({ one, many }: { one: any; many: any }) => ({
+export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
     references: [users.id],
@@ -938,7 +938,7 @@ export const casesRelations = relations(cases, ({ one, many }: { one: any; many:
   activities: many(caseActivities),
 }));
 
-export const criminalsRelations = relations(criminals, ({ one, many }: { one: any; many: any }) => ({
+export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
     references: [users.id],
@@ -946,7 +946,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }: { one: an
   evidence: many(evidence),
 }));
 
-export const evidenceRelations = relations(evidence, ({ one }: { one: any }) => ({
+export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
     fields: [evidence.uploadedBy],
     references: [users.id],
@@ -957,7 +957,7 @@ export const evidenceRelations = relations(evidence, ({ one }: { one: any }) => 
   }),
 }));
 
-export const caseActivitiesRelations = relations(caseActivities, ({ one }: { one: any }) => ({
+export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
   case: one(cases, {
     fields: [caseActivities.caseId],
     references: [cases.id],
@@ -974,7 +974,7 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }: { one
   }),
 }));
 
-export const aiReportsRelations = relations(aiReports, ({ one }: { one: any }) => ({
+export const aiReportsRelations = relations(aiReports, ({ one }) => ({
   case: one(cases, {
     fields: [aiReports.caseId],
     references: [cases.id],
@@ -987,7 +987,7 @@ export const aiReportsRelations = relations(aiReports, ({ one }: { one: any }) =
 
 export const personsOfInterestRelations = relations(
   personsOfInterest,
-  ({ one }: { one: any }) => ({
+  ({ one }) => ({
     case: one(cases, {
       fields: [personsOfInterest.caseId],
       references: [cases.id],
@@ -999,7 +999,7 @@ export const personsOfInterestRelations = relations(
   })
 );
 
-export const legalDocumentsRelations = relations(legalDocuments, ({ one }: { one: any }) => ({
+export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
   case: one(cases, {
     fields: [legalDocuments.caseId],
     references: [cases.id],
@@ -1010,14 +1010,14 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one }: { one
   }),
 }));
 
-export const ragSessionsRelations = relations(ragSessions, ({ one }: { one: any }) => ({
+export const ragSessionsRelations = relations(ragSessions, ({ one }) => ({
   user: one(users, {
     fields: [ragSessions.userId],
     references: [users.id],
   }),
 }));
 
-export const userAiQueriesRelations = relations(userAiQueries, ({ one }: { one: any }) => ({
+export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
   user: one(users, {
     fields: [userAiQueries.userId],
     references: [users.id],
@@ -1028,7 +1028,7 @@ export const userAiQueriesRelations = relations(userAiQueries, ({ one }: { one: 
   }),
 }));
 
-export const autoTagsRelations = relations(autoTags, ({ one }: { one: any }) => ({
+export const autoTagsRelations = relations(autoTags, ({ one }) => ({
   confirmedBy: one(users, {
     fields: [autoTags.confirmedBy],
     references: [users.id],

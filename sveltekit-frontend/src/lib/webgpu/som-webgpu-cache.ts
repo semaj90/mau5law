@@ -1195,7 +1195,7 @@ export class WebGPUSOMCache {
   private async trainSOM(trainingData: any[]): Promise<any> {
     // This is a simplified implementation
     // In a real system, you would use a proper SOM algorithm
-    const clusters: Record<string, any[]> = {};
+    const clusters: Record<string, any[]> = {} as Record<string, any[]>;
 
     for (const data of trainingData) {
       const key = data.features.map((f: number) => Math.round(f * 10)).join(',');
