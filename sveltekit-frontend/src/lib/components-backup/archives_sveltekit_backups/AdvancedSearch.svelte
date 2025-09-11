@@ -125,7 +125,7 @@
     <div class="mx-auto px-4 max-w-7xl">
       <Search size={20} class="mx-auto px-4 max-w-7xl" />
       <input
-        use:melt={$input}
+        
         class="mx-auto px-4 max-w-7xl"
         type="text"
         {placeholder}
@@ -145,13 +145,13 @@
     <!-- Results dropdown -->
     {#if $open && searchResults.length > 0}
       <div
-        use:melt={$menu}
+        
         class="mx-auto px-4 max-w-7xl"
         transition:fly={{ y: -5, duration: 150  "
       >
         {#each filteredResults as item, index (item.id)}
           <button
-            use:melt={$option({ value: item.id, label: item.title })}
+            )}
             class="mx-auto px-4 max-w-7xl"
             class:highlighted={$isSelected(item.id)}
             onclick={() => handleSelect(item)}

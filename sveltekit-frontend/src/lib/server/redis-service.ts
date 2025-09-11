@@ -55,7 +55,7 @@ class RedisService {
   async initialize(): Promise<boolean> {
     try {
       // Prevent multiple initialization attempts
-      if (this.initialized || this.pool?.primary?.status === 'connecting' || this.pool?.primary?.status === 'connected') {
+      if (this.initialized || (this.pool?.primary && (this.pool.primary.status === 'connecting' || this.pool.primary.status === 'connected'))) {
         console.log('[RedisService] Already initialized or connecting');
         return this.initialized;
       }
@@ -281,7 +281,7 @@ class RedisService {
   }
 
   /**
-   * Cache operations with automatic serialization
+   * Cache operations with intelligent TTL for legal AI workloads
    */
   async set(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
     const client = this.getClient();
@@ -290,8 +290,32 @@ class RedisService {
     try {
       const serialized = typeof value === 'string' ? value : JSON.stringify(value);
 
-      if (ttlSeconds) {
-        await client.setex(key, ttlSeconds, serialized);
+      // Intelligent TTL based on key patterns for legal AI optimization
+      let smartTtl = ttlSeconds;
+      if (!ttlSeconds) {
+        if (key.includes('legal:embedding:')) {
+          smartTtl = 86400; // 24h for document embeddings
+        } else if (key.includes('legal:case:')) {
+          smartTtl = 43200; // 12h for case data
+        } else if (key.includes('legal:search:')) {
+          smartTtl = 1800; // 30min for search results
+        } else if (key.includes('legal:chat:')) {
+          smartTtl = 3600; // 1h for chat sessions
+        } else if (key.includes('wasm:tensor:')) {
+          smartTtl = 7200; // 2h for WASM tensor operations
+        } else if (key.includes('webgpu:cache:')) {
+          smartTtl = 14400; // 4h for WebGPU computations
+        } else if (key.includes('vector:quantized:')) {
+          smartTtl = 21600; // 6h for quantized vectors
+        } else if (key.includes('legal:metadata:')) {
+          smartTtl = 10800; // 3h for legal document metadata
+        } else {
+          smartTtl = 3600; // Default 1h
+        }
+      }
+
+      if (smartTtl) {
+        await client.setex(key, smartTtl, serialized);
       } else {
         await client.set(key, serialized);
       }
@@ -425,7 +449,7 @@ class RedisService {
     }
   }
 
-  async pipeline(): Promise<any> {
+  async pipeline(): any {
     const client = this.getClient();
     if (!client) return null;
 
@@ -435,6 +459,86 @@ class RedisService {
       console.error(`[RedisService] Failed to create pipeline:`, error);
       return null;
     }
+  }
+
+  /**
+   * Legal AI specific caching methods
+   */
+  async cacheEmbedding(documentId: string, embedding: number[], metadata?: any): Promise<boolean> {
+    const key = `legal:embedding:${documentId}`;
+    const data = {
+      embedding,
+      metadata,
+      cached_at: new Date().toISOString(),
+      dimension: embedding.length
+    };
+    return await this.set(key, data);
+  }
+
+  async getCachedEmbedding(documentId: string): Promise<{ embedding: number[], metadata?: any } | null> {
+    const key = `legal:embedding:${documentId}`;
+    return await this.get(key);
+  }
+
+  async cacheSearchResults(query: string, results: any[], ttl: number = 1800): Promise<boolean> {
+    const queryHash = Buffer.from(query).toString('base64url');
+    const key = `legal:search:${queryHash}`;
+    const data = {
+      query,
+      results,
+      cached_at: new Date().toISOString(),
+      result_count: results.length
+    };
+    return await this.set(key, data, ttl);
+  }
+
+  async getCachedSearch(query: string): Promise<{ results: any[], cached_at: string } | null> {
+    const queryHash = Buffer.from(query).toString('base64url');
+    const key = `legal:search:${queryHash}`;
+    return await this.get(key);
+  }
+
+  async cacheWasmTensor(operation: string, input: ArrayBuffer, result: ArrayBuffer): Promise<boolean> {
+    const inputHash = Buffer.from(input).toString('base64', 0, 32); // First 32 bytes for key
+    const key = `wasm:tensor:${operation}:${inputHash}`;
+    const data = {
+      operation,
+      input_size: input.byteLength,
+      result: Buffer.from(result).toString('base64'),
+      cached_at: new Date().toISOString()
+    };
+    return await this.set(key, data);
+  }
+
+  async getCachedWasmTensor(operation: string, input: ArrayBuffer): Promise<ArrayBuffer | null> {
+    const inputHash = Buffer.from(input).toString('base64', 0, 32);
+    const key = `wasm:tensor:${operation}:${inputHash}`;
+    const cached = await this.get(key);
+    if (cached?.result) {
+      return Buffer.from(cached.result, 'base64').buffer;
+    }
+    return null;
+  }
+
+  async cacheQuantizedVectors(batchId: string, vectors: Float32Array, quantized: Int8Array): Promise<boolean> {
+    const key = `vector:quantized:${batchId}`;
+    const data = {
+      original_size: vectors.byteLength,
+      quantized_size: quantized.byteLength,
+      compression_ratio: vectors.byteLength / quantized.byteLength,
+      quantized: Buffer.from(quantized).toString('base64'),
+      cached_at: new Date().toISOString()
+    };
+    return await this.set(key, data);
+  }
+
+  async getQuantizedVectors(batchId: string): Promise<Int8Array | null> {
+    const key = `vector:quantized:${batchId}`;
+    const cached = await this.get(key);
+    if (cached?.quantized) {
+      return new Int8Array(Buffer.from(cached.quantized, 'base64'));
+    }
+    return null;
   }
 
   // Redis Streams methods

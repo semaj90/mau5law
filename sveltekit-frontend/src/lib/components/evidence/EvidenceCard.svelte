@@ -199,7 +199,7 @@
 
     <!-- Title and Description -->
     <div class="flex flex-col gap-2">
-      <h3 class="font-semibold text-base text-gray-900 leading-tight line-clamp-2" use:melt={ $tooltipTrigger }>
+      <h3 class="font-semibold text-base text-gray-900 leading-tight line-clamp-2" >
         { evidence.title }
       </h3>
 
@@ -266,7 +266,7 @@
 <!-- Tooltip -->
 { #if $tooltipOpen }
   <div
-    use:melt={ $tooltipContent }
+    
     class="mx-auto px-4"
     transition:fly={{ y: -5, duration: 150 }}
   >

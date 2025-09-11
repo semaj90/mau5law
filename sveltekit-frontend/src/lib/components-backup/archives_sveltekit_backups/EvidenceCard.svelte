@@ -168,7 +168,7 @@
 
     <!-- Title and Description -->
     <div class="mx-auto px-4 max-w-7xl">
-      <h3 class="mx-auto px-4 max-w-7xl" use:melt={$tooltipTrigger}>
+      <h3 class="mx-auto px-4 max-w-7xl" >
         {evidence.title}
       </h3>
 
@@ -235,7 +235,7 @@
 <!-- Tooltip -->
 {#if $tooltipOpen}
   <div
-    use:melt={$tooltipContent}
+    
     class="mx-auto px-4 max-w-7xl"
     transition:fly={{ y: -5, duration: 150 "
   >

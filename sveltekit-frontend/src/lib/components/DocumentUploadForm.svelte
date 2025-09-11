@@ -26,7 +26,7 @@
       processing_status: 'pending'
     };
   }
-  // Svelte 5 $props() destructure  
+  // Use: formData = $bindable(createDefaultFormData()) in the $props destructure if no parent value
   let {
     caseId,
     allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'],
@@ -41,7 +41,7 @@
     id,
     'data-testid': testId,
     formData = $bindable(createDefaultFormData())
-  } = $props<DocumentUploadFormProps & {
+  }: DocumentUploadFormProps & {
     formData?: {
       uploaded_files: File[];
       ocr_results: OCRResult[];
@@ -50,7 +50,7 @@
     onNext?: (event: DocumentUploadEvents['next']) => void;
     onPrevious?: (event: DocumentUploadEvents['previous']) => void;
     onSaveDraft?: (event: DocumentUploadEvents['saveDraft']) => void;
-  }>();
+  } = $props();
 let dragActive = $state(false);
 let fileInput = $state<HTMLInputElement>();
 let uploadProgress = $state<Record<string, number>>({});
@@ -273,7 +273,8 @@ let processingErrors = $state<Record<string, string>>({});
     class:bg-gray-50={!dragActive}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    role="button" aria-label="Drop zone for file upload" ondrop={handleDrop}
+    ondrop={handleDrop}
+    role="button"
     tabindex="0"
     onclick={() => fileInput?.click()}
     onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}

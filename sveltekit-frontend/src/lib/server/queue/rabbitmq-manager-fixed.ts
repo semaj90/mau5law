@@ -2,6 +2,8 @@ import amqp from 'amqplib';
 import type { Connection, Channel } from 'amqplib';
 import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama';
 import { EventEmitter } from 'events';
+import { ollamaConfig } from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from '$lib/config/environment.js';
 
 // Import using module syntax to avoid circular dependencies
 const redisServicePromise = import('../redis-service.js').then(m => m.redisService).catch(() => null);
@@ -48,9 +50,9 @@ export class RabbitMQManager extends EventEmitter {
   constructor(private url = 'amqp://localhost:5672') {
     super();
     
-    // Initialize Gemma embeddings
+    // Initialize Gemma embeddings with centralized config
     this.embeddings = new OllamaEmbeddings({
-      baseUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
+      baseUrl: ENV_CONFIG.OLLAMA_URL,
       model: 'embeddinggemma:latest', // Primary Gemma embedding model
     });
 

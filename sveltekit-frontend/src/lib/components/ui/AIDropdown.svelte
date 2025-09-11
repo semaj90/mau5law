@@ -168,10 +168,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <!-- Trigger Button -->
 <button
-  <!-- <!-- use:melt={$trigger}
-  class="ai-trigger"
-  class:ai-trigger--active={$open}
-  class:ai-trigger--disabled={disabled || isGenerating}
+  class="ai-trigger {$open ? 'ai-trigger--active' : ''} {disabled || isGenerating ? 'ai-trigger--disabled' : ''}"
   {disabled}
   aria-label="AI Tools Menu"
   title="AI Tools (Press ? for shortcuts)"
@@ -190,7 +187,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Dropdown Menu -->
 {#if $open}
   <div
-    <!-- <!-- use:melt={$menu}
+    
     class="ai-menu"
     transitifly={{ duration: 150, y: -8 }}
   >
@@ -203,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
 
       {#each reportTypes as reportType}
         <button
-          <!-- <!-- use:melt={$item}
+          
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === reportType.id}
           on:onclick={() => handleItemSelect(reportType.id)}
@@ -229,7 +226,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <!-- Separator -->
-    <div <!-- <!-- use:melt={$separator} class="ai-menu__separator"></div>
+    <div  class="ai-menu__separator"></div>
 
     <!-- AI Tools Section -->
     <div class="ai-menu__section">
@@ -240,7 +237,7 @@ https://svelte.dev/e/js_parse_error -->
 
       {#each aiTools as tool}
         <button
-          <!-- <!-- use:melt={$item}
+          
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === tool.id}
           class:ai-menu__item--disabled={tool.requiresContent && !hasContent}
@@ -270,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <!-- Keyboard Shortcuts Help -->
-    <div <!-- <!-- use:melt={$separator} class="ai-menu__separator"></div>
+    <div  class="ai-menu__separator"></div>
     <div class="ai-menu__footer">
       <Keyboard size={12} />
       <span class="ai-menu__footer-text"

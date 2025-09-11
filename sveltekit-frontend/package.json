@@ -5,9 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently -n \"Redis,Vite\" -c \"red,cyan\" \"node scripts/start-redis.js\" \"vite dev\"",
-    "dev:dynamic": "node scripts/dynamic-port-manager.mjs && npm run dev",
-    "ports:allocate": "node scripts/dynamic-port-manager.mjs",
-    "ports:check": "node scripts/dynamic-port-manager.mjs && echo 'Port allocation complete'",
     "dev:gpu": "cross-env NODE_OPTIONS=--max-old-space-size=3072 ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev",
     "dev:gpu:quic": "cross-env NODE_OPTIONS=--max-old-space-size=3072 ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev --port 5174 --strictPort --host 127.0.0.1",
     "dev:gpu:8g": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev",
@@ -533,7 +530,6 @@
     "onnxruntime-web": "^1.22.0",
     "oslo": "^1.2.1",
     "pako": "^2.1.0",
-    "pdf-lib": "^1.17.1",
     "pdf-parse": "^1.1.1",
     "pdf2pic": "^3.2.0",
     "pdfjs-dist": "^5.4.54",

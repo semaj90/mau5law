@@ -4,7 +4,7 @@
   export let selectedLabel: unknown;
 </script>
 
-<button use:melt={trigger} class="mx-auto px-4 max-w-7xl">
+<button  class="mx-auto px-4 max-w-7xl">
   <slot {selectedLabel} />
 </button>
 

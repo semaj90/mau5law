@@ -48,7 +48,7 @@
       message: error
     };
     
-    sessionStorage.setItem('uploadNotification', JSON.stringify(notification);
+    sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
   }
 
   // Recent uploads state
@@ -366,7 +366,7 @@
 
   .help-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
   }
 

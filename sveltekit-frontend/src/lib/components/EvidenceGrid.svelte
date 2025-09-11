@@ -248,11 +248,11 @@
         </select>
 
         <!-- Sort direction -->
-        <Button class="bits-btn"
+        <Button 
+          class="bits-btn flex items-center gap-2"
           variant="secondary"
           size="sm"
           onclick={() => toggleSort(sortBy)}
-          class="flex items-center gap-2"
         >
           {#if sortOrder === "asc"}
             <SortAsc class="w-4 h-4" />

@@ -21,7 +21,7 @@
 
 {#if $menu}
   <div
-    use:melt={$menu}
+    
     class="space-y-4"
     transitionfly={{ duration: 150, y: -10 }}
   >

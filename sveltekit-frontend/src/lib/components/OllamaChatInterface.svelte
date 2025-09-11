@@ -455,11 +455,11 @@
             {#if msg.suggestions && msg.suggestions.length > 0}
               <div class="mt-3 flex flex-wrap gap-2">
                 {#each msg.suggestions as suggestion}
-                  <Button class="bits-btn"
+                  <Button 
+                    class="bits-btn text-xs"
                     variant="outline"
                     size="sm"
                     onclick={() => selectSuggestion(suggestion)}
-                    class="text-xs"
                   >
                     {suggestion}
                   </Button>

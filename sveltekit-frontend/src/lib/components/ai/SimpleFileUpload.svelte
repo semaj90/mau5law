@@ -740,11 +740,10 @@
     class="relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 {isDragOver ? 'border-blue-400 bg-blue-50 scale-102' : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'}"
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    role="region" aria-label="Drop zone" ondrop={handleDrop}
-    role="button"
+    role="button" aria-label="Drop zone" ondrop={handleDrop}
     tabindex="0"
-    on:onclick={() => fileInput?.click()}
-    keydown={(e) => e.key === 'Enter' && fileInput?.click()}
+    onclick={() => fileInput?.click()}
+    onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
   >
     <div class="flex flex-col items-center">
       <div class="mb-4 p-3 bg-gray-100 rounded-full">

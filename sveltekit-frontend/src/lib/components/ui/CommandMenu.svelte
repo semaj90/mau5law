@@ -224,57 +224,56 @@
 <svelte:window keydown={handleKeydown} />
 
 <!-- Hidden trigger (we'll open programmatically) -->
-<button <!-- <!-- <!-- use:melt={$trigger} --> style="display: none;">Trigger</button>
+<button style="display: none;">Trigger</button>
 
 {#if isOpen}
   <div
-    <!-- <!-- <!-- use:melt={$content} -->
-    class="container mx-auto px-4"
+    class="command-menu-overlay"
     transitifly={{ y: -10, duration: 150 }}
   >
-    <div class="container mx-auto px-4">
+    <div class="command-menu-search">
       <Search size={16} />
       <input
         bind:this={inputElement}
         bind:value={searchQuery}
         {placeholder}
-        class="container mx-auto px-4"
+        class="command-menu-input"
         autocomplete="off"
         spellcheck="false"
       />
     </div>
 
-    <div class="container mx-auto px-4">
+    <div class="command-menu-results">
       {#each Object.entries(groupedCommands) as [category, categoryCommands], categoryIndex}
-        <div class="container mx-auto px-4">
-          <div class="container mx-auto px-4">{category}</div>
+        <div class="command-menu-category">
+          <div class="command-menu-category-header">{category}</div>
           {#each categoryCommands as command, commandIndex}
             {@const globalIndex = filteredCommands.findIndex(
               (c) => c.id === command.id
             )}
             <button
-              class="container mx-auto px-4"
+              class="command-menu-item"
               class:selected={globalIndex === selectedIndex}
               on:onclick={() => executeCommand(command)}
               on:on:mouseenter={() => (selectedIndex = globalIndex)}
             >
               <svelte:component this={command.icon} size={16} />
-              <span class="container mx-auto px-4">{command.label}</span>
+              <span class="command-menu-item-label">{command.label}</span>
             </button>
           {/each}
         </div>
       {/each}
 
       {#if filteredCommands.length === 0}
-        <div class="container mx-auto px-4">
+        <div class="command-menu-empty">
           <Search size={24} />
           <p>No commands found for "{searchQuery}"</p>
         </div>
       {/if}
     </div>
 
-    <div class="container mx-auto px-4">
-      <div class="container mx-auto px-4">
+    <div class="command-menu-footer">
+      <div class="command-menu-shortcuts">
         <kbd>↑↓</kbd> Navigate
         <kbd>Enter</kbd> Select
         <kbd>Esc</kbd> Close

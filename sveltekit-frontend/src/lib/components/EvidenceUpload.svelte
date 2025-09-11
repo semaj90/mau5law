@@ -181,10 +181,10 @@
         class="hidden"
       />
 
-      <Button class="bits-btn"
+      <Button 
+        class="bits-btn mt-2"
         variant="outline"
         onclick={() => fileInput?.click()}
-        class="mt-2"
       >
         Select File
       </Button>

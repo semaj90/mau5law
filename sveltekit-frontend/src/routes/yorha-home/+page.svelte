@@ -94,7 +94,7 @@
           relevance: Math.round(((item && (item.relevance ?? item.score)) ?? Math.random()) * 100),
           status: (item && item.status) || 'active',
           metadata: item
-        });
+        }));
   activeSection = 'search-results';
       }
     } catch (error) {
@@ -193,6 +193,7 @@
             {/each}
           </ul>
         </div>
+    <!-- @ts-ignore: Svelte component prop typing varies by build -->
     <YoRHaTable title="Cited Sources" columns={tableColumns} data={ragResult.sources} />
       </section>
     {/if}
@@ -200,6 +201,7 @@
   {#if activeSection === 'search-results' && searchResults.length > 0}
       <section id="search-results">
         <h2 class="section-title">Semantic Search Results</h2>
+    <!-- @ts-ignore: Allow binding to data for interactive table -->
     <YoRHaTable title="Found Documents" columns={tableColumns} bind:data={searchResults} />
       </section>
     {/if}

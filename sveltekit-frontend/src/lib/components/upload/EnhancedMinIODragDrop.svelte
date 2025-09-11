@@ -410,11 +410,11 @@
     class:bg-gray-50={!dragOver}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    role="region" aria-label="Drop zone" ondrop={handleDrop}
-    role="button" tabindex="0"
-                onclick={handleClickToSelect}
-    role="button"
+    role="button" 
+    aria-label="Drop zone" 
+    ondrop={handleDrop}
     tabindex="0"
+    onclick={handleClickToSelect}
   >
     <!-- Drag overlay -->
     {#if dragOver}

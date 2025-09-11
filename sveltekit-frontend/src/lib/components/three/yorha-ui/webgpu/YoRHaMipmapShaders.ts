@@ -72,6 +72,52 @@ export class YoRHaMipmapShaders {
     }
   }
 
+  /**
+   * Initialize headless WebGPU device for server-side processing
+   * Based on https://eliemichel.github.io/LearnWebGPU/advanced-techniques/headless.html
+   */
+  async initializeHeadless(): Promise<boolean> {
+    if (this.isInitialized) return true;
+
+    try {
+      // Headless WebGPU initialization without surface dependencies
+      if (!navigator.gpu) {
+        console.warn('WebGPU not available - falling back to CPU processing');
+        return false;
+      }
+
+      const adapter = await navigator.gpu.requestAdapter({
+        compatibleSurface: null, // Explicitly no surface for headless mode
+        powerPreference: 'high-performance'
+      });
+
+      if (!adapter) {
+        console.warn('WebGPU adapter not available for headless mode');
+        return false;
+      }
+
+      this.device = await adapter.requestDevice({
+        requiredFeatures: ['timestamp-query'],
+        requiredLimits: {
+          maxBufferSize: 256 * 1024 * 1024, // 256MB for large legal documents
+          maxComputeWorkgroupStorageSize: 16384,
+          maxComputeInvocationsPerWorkgroup: 256,
+          maxStorageBufferBindingSize: 128 * 1024 * 1024 // 128MB storage buffers
+        }
+      });
+
+      await this.setupMipmapPipelines();
+      this.isInitialized = true;
+
+      console.log('🎯 YoRHa Headless Mipmap Shaders initialized for server processing');
+      return true;
+
+    } catch (error) {
+      console.error('Failed to initialize headless mipmap shaders:', error);
+      return false;
+    }
+  }
+
   private async getWebGPUDevice(): Promise<GPUDevice | null> {
     try {
       if (typeof yorhaWebGPU !== 'undefined') {

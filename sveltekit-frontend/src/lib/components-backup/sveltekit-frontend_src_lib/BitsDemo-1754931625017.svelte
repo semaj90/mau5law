@@ -215,20 +215,20 @@
       animate:flip={{ duration: 500 }}
       in:fly={{ duration: 150, x: '100%' }}
       out:fly={{ duration: 150, x: '100%'  }}
-      use:melt={$content(id)}
+      
     >
       <div class="container mx-auto px-4">
         {#if (data as ToastData).title}
-          <div class="container mx-auto px-4" use:melt={$title(id)}>
+          <div class="container mx-auto px-4" >
             {(data as ToastData).title}
           </div>
         {/if}
-        <button class="container mx-auto px-4" use:melt={$close(id)} aria-label="Close notification">
+        <button class="container mx-auto px-4"  aria-label="Close notification">
           ✕
         </button>
       </div>
       {#if (data as ToastData).description}
-        <div class="container mx-auto px-4" use:melt={$description(id)}>
+        <div class="container mx-auto px-4" >
           {(data as ToastData).description}
         </div>
       {/if}

@@ -562,11 +562,11 @@
         <div class="mx-auto px-4 max-w-7xl">
           <div class="mx-auto px-4 max-w-7xl">
             <h3 class="mx-auto px-4 max-w-7xl">Accessibility Audit</h3>
-            <Button class="bits-btn"
+            <Button 
+              class="bits-btn mx-auto px-4 max-w-7xl"
               size="sm"
               onclick={() => runAccessibilityAudit()}
               disabled={isAuditing}
-              class="mx-auto px-4 max-w-7xl"
             >
               {#if isAuditing}
                 <div class="mx-auto px-4 max-w-7xl"></div>

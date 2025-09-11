@@ -425,7 +425,7 @@
         <!-- Document Actions Dropdown -->
         <div class="mx-auto px-4 max-w-7xl">
           <button
-            use:melt={$helpTrigger}
+            
             class="mx-auto px-4 max-w-7xl"
             aria-label="Help"
           >
@@ -433,7 +433,7 @@
           </button>
 
           <button
-            use:melt={$actionsTrigger}
+            
             class="mx-auto px-4 max-w-7xl"
           >
             <Settings class="mx-auto px-4 max-w-7xl" />
@@ -485,7 +485,7 @@
                     📚
                   </button>
                   <button
-                    use:melt={$aiTrigger}
+                    
                     class="mx-auto px-4 max-w-7xl"
                     title="AI Assistant"
                   >
@@ -629,30 +629,30 @@
 
 <!-- AI Assistant Dialog -->
 {#if $aiOpen}
-  <div use:melt={$aiPortalled}>
+  <div >
     <div
-      use:melt={$aiOverlay}
+      
       class="mx-auto px-4 max-w-7xl"
       transition:fade={{ duration: 150 "
     ></div>
     <div
       class="mx-auto px-4 max-w-7xl"
       transition:flyAndScale={{ duration: 150, y: 8, start: 0.96 "
-      use:melt={$aiContent}
+      
     >
       <div class="mx-auto px-4 max-w-7xl">
         <h2
-          use:melt={$aiTitle}
+          
           class="mx-auto px-4 max-w-7xl"
         >
           <Brain class="mx-auto px-4 max-w-7xl" />
           AI Legal Assistant
         </h2>
-        <p use:melt={$aiDescription} class="mx-auto px-4 max-w-7xl">
+        <p  class="mx-auto px-4 max-w-7xl">
           Ask for help with legal research, drafting, or analysis
         </p>
         <button
-          use:melt={$aiClose}
+          
           class="mx-auto px-4 max-w-7xl"
         >
           <X class="mx-auto px-4 max-w-7xl" />
@@ -688,7 +688,7 @@
 
           <div class="mx-auto px-4 max-w-7xl">
             <button
-              use:melt={$aiClose}
+              
               class="mx-auto px-4 max-w-7xl"
               disabled={isProcessingAI}
             >
@@ -717,18 +717,18 @@
 <!-- Actions Dropdown Menu -->
 {#if $actionsOpen}
   <div
-    use:melt={$actionsMenu}
+    
     class="mx-auto px-4 max-w-7xl"
   >
     <button
-      use:melt={$actionsItem}
+      
       class="mx-auto px-4 max-w-7xl"
     >
       <Eye class="mx-auto px-4 max-w-7xl" />
       Preview
     </button>
     <button
-      use:melt={$actionsItem}
+      
       class="mx-auto px-4 max-w-7xl"
     >
       <Share2 class="mx-auto px-4 max-w-7xl" />
@@ -736,7 +736,7 @@
     </button>
     <div class="mx-auto px-4 max-w-7xl"></div>
     <button
-      use:melt={$actionsItem}
+      
       class="mx-auto px-4 max-w-7xl"
     >
       <X class="mx-auto px-4 max-w-7xl" />
@@ -748,7 +748,7 @@
 <!-- Help Tooltip -->
 {#if $helpOpen}
   <div
-    use:melt={$helpContent}
+    
     class="mx-auto px-4 max-w-7xl"
   >
     Use the AI assistant for legal research and drafting help. Click the

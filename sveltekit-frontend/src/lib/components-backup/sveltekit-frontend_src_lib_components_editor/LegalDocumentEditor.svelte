@@ -359,7 +359,7 @@
         <!-- Document Actions Dropdown -->
         <div class="space-y-4">
           <button
-            use:melt={ $helpTrigger }
+            
             class="space-y-4"
             aria-label="Help"
           >
@@ -367,7 +367,7 @@
           </button>
 
           <button
-            use:melt={ $actionsTrigger }
+            
             class="space-y-4"
           >
             <Settings class="space-y-4" />
@@ -419,7 +419,7 @@
                     📚
                   </button>
                   <button
-                    use:melt={ $aiTrigger }
+                    
                     class="space-y-4"
                     title="AI Assistant"
                   >
@@ -563,30 +563,30 @@
 
 <!-- AI Assistant Dialog -->
 { #if $aiOpen }
-  <div use:melt={ $aiPortalled }>
+  <div >
     <div
-      use:melt={ $aiOverlay }
+      
       class="space-y-4"
       transitionfade={ { duration: 150  }}
     ></div>
     <div
       class="space-y-4"
       transition:flyAndScale={ { duration: 150, y: 8, start: 0.96  }}
-      use:melt={ $aiContent }
+      
     >
       <div class="space-y-4">
         <h2
-          use:melt={ $aiTitle }
+          
           class="space-y-4"
         >
           <Brain class="space-y-4" />
           AI Legal Assistant
         </h2>
-        <p use:melt={ $aiDescription } class="space-y-4">
+        <p  class="space-y-4">
           Ask for help with legal research, drafting, or analysis
         </p>
         <button
-          use:melt={ $aiClose }
+          
           class="space-y-4"
         >
           <X class="space-y-4" />
@@ -622,7 +622,7 @@
 
           <div class="space-y-4">
             <button
-              use:melt={ $aiClose }
+              
               class="space-y-4"
               disabled={ isProcessingAI }
             >
@@ -651,18 +651,18 @@
 <!-- Actions Dropdown Menu -->
 { #if $actionsOpen }
   <div
-    use:melt={ $actionsMenu }
+    
     class="space-y-4"
   >
     <button
-      use:melt={ $actionsItem }
+      
       class="space-y-4"
     >
       <Eye class="space-y-4" />
       Preview
     </button>
     <button
-      use:melt={ $actionsItem }
+      
       class="space-y-4"
     >
       <Share2 class="space-y-4" />
@@ -670,7 +670,7 @@
     </button>
     <div class="space-y-4"></div>
     <button
-      use:melt={ $actionsItem }
+      
       class="space-y-4"
     >
       <X class="space-y-4" />
@@ -682,7 +682,7 @@
 <!-- Help Tooltip -->
 { #if $helpOpen }
   <div
-    use:melt={ $helpContent }
+    
     class="space-y-4"
   >
     Use the AI assistant for legal research and drafting help. Click the

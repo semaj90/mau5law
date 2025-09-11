@@ -1,5 +1,7 @@
 import { logger } from './logger.js';
 import crypto from "crypto";
+import { ollamaConfig } from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from '$lib/config/environment.js';
 
 // lib/server/ai/legalbert-middleware.ts
 // LegalBERT middleware for specialized legal embeddings and analysis
@@ -42,7 +44,7 @@ const LEGALBERT_MODELS = {
   local: {
     embedding: 'nomic-embed-text:latest',
     analysis: 'gemma3-legal:latest',
-    baseUrl: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
+    baseUrl: ENV_CONFIG.OLLAMA_URL,
   },
   // Remote API endpoints
   huggingface: {

@@ -1,6 +1,9 @@
 /// <reference types="vite/client" />
 
 import type { RequestHandler } from './$types';
+import { json, error } from '@sveltejs/kit';
+import { ollamaConfig } from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from '$lib/config/environment.js';
 
 /*
  * Evidence Enhancement API
@@ -23,7 +26,7 @@ const CONFIG = {
         url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
     },
     ollama: {
-        url: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
+        url: ENV_CONFIG.OLLAMA_URL,
         model: import.meta.env.LLM_MODEL || 'gemma3-legal',
         embeddingModel: 'nomic-embed-text'
     },
@@ -247,7 +250,7 @@ Consider:
 - How legally relevant is this evidence?
 - Rate the overall quality and reliability`;
 
-    const response = await fetch(`${CONFIG.ollama.url}/api/generate`, {
+    const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -362,7 +365,7 @@ async function extractEntities(evidenceText: string): Promise<any> {
 Text to analyze:
 ${evidenceText}`;
 
-    const response = await fetch(`${CONFIG.ollama.url}/api/generate`, {
+    const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -506,7 +509,7 @@ Focus on:
 - Strategic recommendations for using this evidence
 - How well does this align with legal precedents?`;
 
-    const response = await fetch(`${CONFIG.ollama.url}/api/generate`, {
+    const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -544,7 +547,7 @@ Focus on:
 
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
-    const response = await fetch(`${CONFIG.ollama.url}/api/embeddings`, {
+    const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -21,7 +21,6 @@
 	// Workflow state
 	let workflowActive = $state(false);
 	let currentStep = $state(0);
-	let workflowAnswer = $state('');
 	let workflowData = $state({
 		what: '',
 		who: '',
@@ -104,13 +103,13 @@
 
 	// Message types
 	function addMessage(content: string, type: 'user' | 'assistant' | 'system' = 'assistant', metadata = {}) {
-		messages = [...messages, {
+		messages.push({
 			id: crypto.randomUUID(),
 			content,
 			type,
 			timestamp: new Date().toISOString(),
 			metadata
-		}];
+		});
 		scrollToBottom();
 	}
 
@@ -119,13 +118,13 @@
 		isTyping = true;
 		const messageId = crypto.randomUUID();
 
-		messages = [...messages, {
+		messages.push({
 			id: messageId,
 			content: '',
 			type: 'assistant',
 			timestamp: new Date().toISOString(),
 			metadata
-		}];
+		});
 
 		await tick();
 		scrollToBottom();
@@ -134,11 +133,7 @@
 		for (let i = 0; i <= content.length; i++) {
 			const messageIndex = messages.findIndex(m => m.id === messageId);
 			if (messageIndex !== -1) {
-				messages = messages.map((msg, idx) => 
-					idx === messageIndex 
-						? { ...msg, content: content.slice(0, i) }
-						: msg
-				);
+				messages[messageIndex].content = content.slice(0, i);
 				await new Promise(resolve => setTimeout(resolve, 30 + Math.random() * 20));
 			}
 		}
@@ -169,20 +164,18 @@
 
 			if (i === steps.length - 1) {
 				// Simulate finding relevant context
-				ragContext = [...ragContext, 
-					{
-						type: 'precedent',
-						title: 'Similar Case: State v. Johnson (2023)',
-						relevance: 0.89,
-						summary: 'Similar MO and evidence patterns'
-					},
-					{
-						type: 'statute',
-						title: 'Federal Criminal Code § 1341',
-						relevance: 0.76,
-						summary: 'Relevant fraud statutes and penalties'
-					}
-				];
+				ragContext.push({
+					type: 'precedent',
+					title: 'Similar Case: State v. Johnson (2023)',
+					relevance: 0.89,
+					summary: 'Similar MO and evidence patterns'
+				});
+				ragContext.push({
+					type: 'statute',
+					title: 'Federal Criminal Code § 1341',
+					relevance: 0.76,
+					summary: 'Relevant fraud statutes and penalties'
+				});
 			}
 		}
 
@@ -208,10 +201,7 @@
 		addMessage(answer, 'user');
 
 		// Store answer
-		workflowData = {
-			...workflowData,
-			[workflowSteps[currentStep].key]: answer
-		};
+		workflowData[workflowSteps[currentStep].key] = answer;
 
 		// Perform RAG ingestion
 		await performRAGIngestion(answer);
@@ -414,12 +404,10 @@
 				class="workflow-input"
 				placeholder={workflowSteps[currentStep].placeholder}
 				rows="3"
-				bind:value={workflowAnswer}
 				onkeydown={(e) => {
 					if (e.key === 'Enter' && e.ctrlKey) {
-						e.preventDefault();
-						handleQuickAnswer(workflowAnswer);
-						workflowAnswer = '';
+						handleQuickAnswer(e.target.value);
+						e.target.value = '';
 					}
 				}}
 			></textarea>
@@ -427,9 +415,10 @@
 			<div class="workflow-actions">
 				<button
 					class="workflow-btn primary"
-					onclick={() => {
-						handleQuickAnswer(workflowAnswer);
-						workflowAnswer = '';
+					onclick={(e) => {
+						const textarea = e.target.closest('.workflow-interface').querySelector('.workflow-input');
+						handleQuickAnswer(textarea.value);
+						textarea.value = '';
 					}}
 				>
 					Answer & Continue

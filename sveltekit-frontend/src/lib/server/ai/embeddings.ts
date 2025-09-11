@@ -5,6 +5,8 @@
 import { db } from '$lib/server/db/index.js';
 import { cases, evidence } from "$lib/server/db/schema-postgres";
 import { eq } from 'drizzle-orm';
+import { ollamaConfig } from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from '$lib/config/environment.js';
 
 export interface EmbeddingOptions {
   model?: string;
@@ -59,7 +61,7 @@ export async function generateEmbedding(
 }
 // Local Ollama embedding generation
 async function generateLocalEmbedding(text: string, model: string = "embeddinggemma"): Promise<number[]> {
-  const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434";
+  const ollamaUrl = ollamaConfig.getBaseUrl();
   
   try {
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {

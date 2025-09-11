@@ -71,8 +71,8 @@
         if (response.ok) {
           const data = await response.json();
           const models = data.models?.map((m: any) => m.name) || [];
-          const hasGemma3Legal = models.some((m: string) => m.includes('gemma3-legal');
-          const hasGemma = models.some((m: string) => m.includes('gemma');
+          const hasGemma3Legal = models.some((m: string) => m.includes('gemma3-legal'));
+          const hasGemma = models.some((m: string) => m.includes('gemma'));
           if (hasGemma3Legal) {
             modelStatus = 'ready';
             addLog(`✅ Gemma3 Legal model available`);

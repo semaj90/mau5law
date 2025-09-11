@@ -336,7 +336,6 @@
 
     <!-- Overlay -->
     <div
-      <!-- <!-- use:melt={$overlay}
       class="fixed inset-0 bg-black/50 backdrop-blur-sm"
       transitifade={{ duration: 150 }}
     />
@@ -345,7 +344,7 @@
     <div class={dialogClasses}>
       <!-- Dialog Content -->
       <div
-        <!-- <!-- use:melt={$dialogContent}
+        
         class={contentClasses}
         transitiscale={{ 
           duration: 200, 
@@ -379,7 +378,7 @@
         {#if title}
           <div class="px-6 py-4 border-b border-gray-200">
             <h2 
-              <!-- <!-- use:melt={$dialogTitle}
+              
               class="text-lg font-semibold text-gray-900 flex items-center gap-3"
             >
               {@render title()}
@@ -433,7 +432,7 @@
           <!-- Default footer with close button -->
           <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
             <UnifiedButton
-              <!-- <!-- use:melt={$close}
+              
               variant="secondary"
               size="sm"
             >
@@ -444,7 +443,7 @@
 
         <!-- Close button -->
         <button
-          <!-- <!-- use:melt={$close}
+          
           class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

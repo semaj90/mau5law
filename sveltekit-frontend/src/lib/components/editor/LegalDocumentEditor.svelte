@@ -403,7 +403,7 @@
         <!-- Document Actions Dropdown -->
         <div class="container mx-auto px-4">
           <button
-            <!-- <!-- use:melt={$helpTrigger}
+            
             class="container mx-auto px-4"
             aria-label="Help"
           >
@@ -411,7 +411,7 @@
           </button>
 
           <button
-            <!-- <!-- use:melt={$actionsTrigger}
+            
             class="container mx-auto px-4"
           >
             <Settings class="container mx-auto px-4" />
@@ -463,7 +463,7 @@
                     📚
                   </button>
                   <button
-                    <!-- <!-- use:melt={$aiTrigger}
+                    
                     class="container mx-auto px-4"
                     title="AI Assistant"
                   >
@@ -607,30 +607,30 @@
 
 <!-- AI Assistant Dialog -->
 {#if $aiOpen}
-  <div <!-- <!-- use:melt={$aiPortalled}>
+  <div >
     <div
-      <!-- <!-- use:melt={$aiOverlay}
+      
       class="container mx-auto px-4"
       transitifade={{ duration: 150 }}
     ></div>
     <div
       class="container mx-auto px-4"
       transitiflyAndScale={{ duration: 150, y: 8, start: 0.96 }}
-      <!-- <!-- use:melt={$aiContent}
+      
     >
       <div class="container mx-auto px-4">
         <h2
-          <!-- <!-- use:melt={$aiTitle}
+          
           class="container mx-auto px-4"
         >
           <Brain class="container mx-auto px-4" />
           AI Legal Assistant
         </h2>
-        <p <!-- <!-- use:melt={$aiDescription} class="container mx-auto px-4">
+        <p  class="container mx-auto px-4">
           Ask for help with legal research, drafting, or analysis
         </p>
         <button
-          <!-- <!-- use:melt={$aiClose}
+          
           class="container mx-auto px-4"
         >
           <X class="container mx-auto px-4" />
@@ -666,7 +666,7 @@
 
           <div class="container mx-auto px-4">
             <button
-              <!-- <!-- use:melt={$aiClose}
+              
               class="container mx-auto px-4"
               disabled={isProcessingAI}
             >
@@ -695,18 +695,18 @@
 <!-- Actions Dropdown Menu -->
 {#if $actionsOpen}
   <div
-    <!-- <!-- use:melt={$actionsMenu}
+    
     class="container mx-auto px-4"
   >
     <button
-      <!-- <!-- use:melt={$actionsItem}
+      
       class="container mx-auto px-4"
     >
       <Eye class="container mx-auto px-4" />
       Preview
     </button>
     <button
-      <!-- <!-- use:melt={$actionsItem}
+      
       class="container mx-auto px-4"
     >
       <Share2 class="container mx-auto px-4" />
@@ -714,7 +714,7 @@
     </button>
     <div class="container mx-auto px-4"></div>
     <button
-      <!-- <!-- use:melt={$actionsItem}
+      
       class="container mx-auto px-4"
     >
       <X class="container mx-auto px-4" />
@@ -726,7 +726,7 @@
 <!-- Help Tooltip -->
 {#if $helpOpen}
   <div
-    <!-- <!-- use:melt={$helpContent}
+    
     class="container mx-auto px-4"
   >
     Use the AI assistant for legal research and drafting help. Click the

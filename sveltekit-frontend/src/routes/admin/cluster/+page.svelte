@@ -363,10 +363,9 @@
           </div>
 
           <div class="flex gap-2">
-            <Button class="bits-btn"
+            <Button class="bits-btn flex-1"
               onclick={() => scaleCluster(targetWorkers)}
-              disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}
-              class="flex-1">
+              disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}>
               {#if isScaling}
                 <RefreshCw class="h-4 w-4 mr-2 animate-spin" />
                 Scaling...
@@ -376,19 +375,17 @@
               {/if}
             </Button>
 
-            <Button class="bits-btn"
+            <Button class="bits-btn px-3"
               onclick={() => scaleCluster(clusterHealth.totalWorkers + 1)}
               disabled={isScaling}
-              variant="outline"
-              class="px-3">
+              variant="outline">
               +1
             </Button>
 
-            <Button class="bits-btn"
+            <Button class="bits-btn px-3"
               onclick={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               disabled={isScaling || clusterHealth.totalWorkers <= 1}
-              variant="outline"
-              class="px-3">
+              variant="outline">
               -1
             </Button>
           </div>

@@ -225,7 +225,7 @@
   <!-- Search Input -->
   <div class="relative">
     <input
-      <!-- <!-- use:melt={$input}
+      
       class="w-full px-4 py-3 pl-10 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       {placeholder}
       autocomplete="off"
@@ -265,7 +265,7 @@
   <!-- AI-Enhanced Suggestions Dropdown -->
   {#if $open && (suggestions.length > 0 || taskSuggestions.length > 0)}
     <div
-      use:melt={$menu}
+      
       class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-auto"
       transition:fly={{ y: -5, duration: 150 }}
     >
@@ -279,7 +279,7 @@
             {@const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || ''}
             {@const confidence = suggestion.confidence || suggestion.score || 0}
             <button
-              use:melt={$option({ value: suggestion, label: suggestionText })}
+              )}
               class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
               on:click={() => handleSelection(suggestion)}
             >

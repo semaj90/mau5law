@@ -207,7 +207,7 @@
     if (evidenceReports.length === 0) {
       await loadEvidenceReports();
     }
-    
+
     timelineLoading = true;
     try {
       // Semantic RAG analysis to extract POI from evidence reports
@@ -223,7 +223,7 @@
 
       if (ragResponse.ok) {
         ragAnalysisResults = await ragResponse.json();
-        
+
         // Extract POI timeline data from semantic analysis
         poiTimelineData = ragAnalysisResults.persons?.map((person: any) => ({
           id: person.id,
@@ -234,7 +234,7 @@
           evidenceSources: person.sources || [],
           relationships: person.relationships || []
         })) || [];
-        
+
         showTimeline = true;
       }
     } catch (e) {
@@ -377,7 +377,7 @@
                 <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
                   {isStreaming ? 'Streaming...' : 'Ready'}
                 </span>
-                <Button variant="outline" size="sm" class="bits-btn bits-btn-outline" onclick={clearChat} disabled={isStreaming}>
+                <Button variant="outline" size="sm" class="bits-btn bits-btn-outline bits-btn bits-btn" onclick={clearChat} disabled={isStreaming}>
                   {#snippet children()}Clear{/snippet}
                 </Button>
               </div>
@@ -438,7 +438,7 @@
                 <Button
                   onclick={sendMessage}
                   disabled={!currentMessage.trim() || isStreaming}
-                  class="px-6 bits-btn"
+                  class="px-6 bits-btn bits-btn"
                 >
                   {#snippet children()}
                     {#if isStreaming}
@@ -479,7 +479,7 @@
                   {/snippet}
                 </Button>
               </div>
-              
+
               <div class="space-y-4">
                 {#each poiTimelineData as poi (poi.id)}
                   <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -506,7 +506,7 @@
                         {/snippet}
                       </Button>
                     </div>
-                    
+
                     {#if poi.activities.length > 0}
                       <div class="mt-3">
                         <h4 class="font-medium mb-2">Recent Activity</h4>
@@ -530,7 +530,7 @@
                         </div>
                       </div>
                     {/if}
-                    
+
                     {#if poi.evidenceSources.length > 0}
                       <div class="mt-3 pt-3 border-t border-gray-100">
                         <h4 class="font-medium mb-2">Evidence Sources</h4>
@@ -565,7 +565,7 @@
                 </svg>
                 Your Activity Timeline - Stay Focused
               </h2>
-              
+
               <div class="space-y-3">
                 {#each userActivityTimeline.slice(0, 10) as activity}
                   <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
@@ -647,7 +647,7 @@
                   variant="outline"
                   size="sm"
                   onclick={checkSystemStatus}
-                  class="w-full justify-start bits-btn"
+                  class="w-full justify-start bits-btn bits-btn"
                   fullWidth={true}
                 >
                   {#snippet children()}
@@ -657,11 +657,11 @@
                     Refresh Status
                   {/snippet}
                 </Button>
-                <Button 
-                  class="bits-btn w-full justify-start"
+                <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => window.open('/api/v1/cluster/health', '_blank')}
+                  class="w-full justify-start"
                   fullWidth={true}
                 >
                   {#snippet children()}

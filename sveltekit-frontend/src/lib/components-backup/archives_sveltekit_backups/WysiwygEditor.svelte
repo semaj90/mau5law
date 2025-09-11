@@ -30,7 +30,7 @@
   const charCount: Writable<number> = writable(0);
 
   // Simple bits-ui v2 compatible dialog action wrappers for existing markup
-  // (The markup expects stores that unwrap to Svelte actions, e.g. use:melt={$aiTrigger})
+  // (The markup expects stores that unwrap to Svelte actions, e.g. )
   function createDialogActions(openStore: Writable<boolean>) {
     const trigger = writable((node: HTMLElement) => {
       const onClick = () => openStore.set(true);
@@ -375,7 +375,7 @@
   <div class="mx-auto px-4 max-w-7xl">
     <div class="mx-auto px-4 max-w-7xl">
       <button
-        use:melt={$aiTrigger}
+        
         class="mx-auto px-4 max-w-7xl"
         disabled={!enableAI}
       >
@@ -383,7 +383,7 @@
       </button>
 
       <button
-        use:melt={$citeTrigger}
+        
         class="mx-auto px-4 max-w-7xl"
         disabled={!enableCitation}
       >
@@ -406,11 +406,11 @@
 </div>
 
 <!-- AI Assistant Dialog -->
-<div use:melt={$aiPortalled}>
+<div >
   {#if $aiOpen}
-    <div use:melt={$aiOverlay} class="mx-auto px-4 max-w-7xl"></div>
-    <div use:melt={$aiContent} class="mx-auto px-4 max-w-7xl">
-      <h2 use:melt={$aiTitle} class="mx-auto px-4 max-w-7xl">AI Legal Assistant</h2>
+    <div  class="mx-auto px-4 max-w-7xl"></div>
+    <div  class="mx-auto px-4 max-w-7xl">
+      <h2  class="mx-auto px-4 max-w-7xl">AI Legal Assistant</h2>
 
       {#if selectedText}
         <div class="mx-auto px-4 max-w-7xl">
@@ -452,17 +452,17 @@
         {/if}
       </div>
 
-      <button use:melt={$aiClose} class="mx-auto px-4 max-w-7xl">×</button>
+      <button  class="mx-auto px-4 max-w-7xl">×</button>
     </div>
   {/if}
 </div>
 
 <!-- Citation Helper Dialog -->
-<div use:melt={$citePortalled}>
+<div >
   {#if $citeOpen}
-    <div use:melt={$citeOverlay} class="mx-auto px-4 max-w-7xl"></div>
-    <div use:melt={$citeContent} class="mx-auto px-4 max-w-7xl">
-      <h2 use:melt={$citeTitle} class="mx-auto px-4 max-w-7xl">Citation Helper</h2>
+    <div  class="mx-auto px-4 max-w-7xl"></div>
+    <div  class="mx-auto px-4 max-w-7xl">
+      <h2  class="mx-auto px-4 max-w-7xl">Citation Helper</h2>
 
       <div class="mx-auto px-4 max-w-7xl">
         <label for="cite-query">Search for citations:</label>
@@ -503,7 +503,7 @@
         {/if}
       </div>
 
-      <button use:melt={$citeClose} class="mx-auto px-4 max-w-7xl">×</button>
+      <button  class="mx-auto px-4 max-w-7xl">×</button>
     </div>
   {/if}
 </div>

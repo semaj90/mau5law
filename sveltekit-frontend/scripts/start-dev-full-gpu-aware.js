@@ -353,40 +353,88 @@ class DevFullManager {
   }
 
   async startOllama() {
-    this.log('Ollama', '🤖 Starting Ollama AI service...', 'yellow');
+    this.log('Ollama', '🤖 Detecting Ollama AI service...', 'yellow');
 
+    // Check common Ollama ports for existing instances
+    const testPorts = [11434, 11435, 11436, 11437];
+    let runningInstance = null;
+
+    for (const port of testPorts) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        
+        const response = await fetch(`http://localhost:${port}/api/tags`, {
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          const data = await response.json();
+          runningInstance = { port, models: data.models || [] };
+          break;
+        }
+      } catch (error) {
+        // Continue checking other ports
+      }
+    }
+
+    if (runningInstance) {
+      this.log('Ollama', `✅ Found running Ollama instance on port ${runningInstance.port}`, 'green');
+      this.log('Ollama', `📚 Available models: ${runningInstance.models.length}`, 'cyan');
+      
+      // Update configuration to use the running instance
+      this.discoveredPorts.ollama = runningInstance.port;
+      process.env.OLLAMA_URL = `http://localhost:${runningInstance.port}`;
+      
+      return { port: runningInstance.port, models: runningInstance.models };
+    }
+
+    // If no running instance found, try to start one
+    this.log('Ollama', '🚀 No running instance found, attempting to start...', 'yellow');
+    
     const ollamaPort = this.discoveredPorts.ollama;
     this.log('Ollama', `📍 Using port ${ollamaPort}`, 'yellow');
 
-    const ollamaProcess = spawn('ollama', ['serve'], {
-      stdio: 'pipe',
-      env: {
-        ...process.env,
-        OLLAMA_HOST: `0.0.0.0:${ollamaPort}`,
-      },
-    });
+    try {
+      const ollamaProcess = spawn('ollama', ['serve'], {
+        stdio: 'pipe',
+        env: {
+          ...process.env,
+          OLLAMA_HOST: `0.0.0.0:${ollamaPort}`,
+        },
+      });
 
-    ollamaProcess.stdout.on('data', (data) => {
-      this.log('Ollama', data.toString().trim(), 'yellow');
-    });
+      ollamaProcess.stdout.on('data', (data) => {
+        this.log('Ollama', data.toString().trim(), 'yellow');
+      });
 
-    ollamaProcess.stderr.on('data', (data) => {
-      const error = data.toString().trim();
-      if (error.includes('server already running')) {
-        this.log('Ollama', '✅ Ollama server already running', 'green');
-      } else {
-        this.log('Ollama', `⚠️  ${error}`, 'yellow');
-      }
-    });
+      ollamaProcess.stderr.on('data', (data) => {
+        const error = data.toString().trim();
+        if (error.includes('server already running')) {
+          this.log('Ollama', '✅ Ollama server already running', 'green');
+        } else if (error.includes('ENOENT') || error.includes('not found')) {
+          this.log('Ollama', '❌ Ollama executable not found in PATH', 'red');
+          this.log('Ollama', '💡 Please install Ollama from https://ollama.ai/', 'cyan');
+        } else {
+          this.log('Ollama', `⚠️  ${error}`, 'yellow');
+        }
+      });
 
-    ollamaProcess.on('close', (code) => {
-      if (code !== 0 && !this.isShuttingDown) {
-        this.log('Ollama', `❌ Ollama service exited with code ${code}`, 'red');
-      }
-    });
+      ollamaProcess.on('close', (code) => {
+        if (code !== 0 && !this.isShuttingDown) {
+          this.log('Ollama', `❌ Ollama service exited with code ${code}`, 'red');
+        }
+      });
 
-    this.processes.push(ollamaProcess);
-    return ollamaProcess;
+      this.processes.push(ollamaProcess);
+      return ollamaProcess;
+    } catch (error) {
+      this.log('Ollama', `❌ Failed to start Ollama: ${error.message}`, 'red');
+      this.log('Ollama', '💡 Continuing without Ollama - some features may be limited', 'cyan');
+      return null;
+    }
   }
 
   async startRedis() {

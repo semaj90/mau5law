@@ -117,7 +117,7 @@
   }
 
   function isActivePath(path: string): boolean {
-    return currentPath === path || (path !== '/yorha' && currentPath.startsWith(path);
+    return currentPath === path || (path !== '/yorha' && currentPath.startsWith(path));
   }
 </script>
 

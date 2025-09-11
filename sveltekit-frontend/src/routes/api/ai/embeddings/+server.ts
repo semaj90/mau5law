@@ -5,8 +5,9 @@
 
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { ollamaConfig } from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from '$lib/config/environment.js';
 
-const OLLAMA_ENDPOINT = process.env.OLLAMA_ENDPOINT || 'http://localhost:11434';
 const VLLM_ENDPOINT = process.env.VLLM_ENDPOINT || 'http://localhost:8000/v1';
 
 interface EmbeddingRequest {
@@ -117,7 +118,7 @@ async function generateEmbedding(
  */
 async function generateOllamaEmbedding(text: string, model: string) {
   try {
-    const response = await fetch(`${OLLAMA_ENDPOINT}/api/embeddings`, {
+    const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -260,7 +261,7 @@ function simpleHash(str: string): number {
  */
 async function checkOllamaHealth(): Promise<{ healthy: boolean; models?: string[]; error?: string; hasEmbeddingModel?: boolean }> {
   try {
-    const response = await fetch(`${OLLAMA_ENDPOINT}/api/tags`, {
+    const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/tags`, {
       signal: AbortSignal.timeout(5000)
     });
 

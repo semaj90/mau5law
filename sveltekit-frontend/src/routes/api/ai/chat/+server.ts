@@ -4,8 +4,8 @@ import { json } from '@sveltejs/kit';
 import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
 import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js';
 import { dev } from '$app/environment';
-
-const DEFAULT_OLLAMA_URL = 'http://localhost:11434'; // Fallback for direct Ollama calls
+import { ollamaConfig } from '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from '$lib/config/environment.js';
 
 export const POST: RequestHandler = async (event) => {
   const { request, fetch, url } = event;
