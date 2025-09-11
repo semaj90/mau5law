@@ -794,8 +794,14 @@ class PlannerMemoryManager {
         handle = (this.lastAllocation + 1) % this.capacity;
         this.free(handle);
       }
-      this.records[handle] = { handle, graphNodeId, parentHandle, depth };
     }
+    
+    // Ensure handle is always assigned
+    if (handle === -1) {
+      throw new Error('Failed to allocate handle in memory architecture');
+    }
+    
+    this.records[handle] = { handle, graphNodeId, parentHandle, depth };
 
     this.handleByGraphId.set(graphNodeId, handle);
     this.insertionOrder.push(handle);

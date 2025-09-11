@@ -1,0 +1,13 @@
+# Go binaries
+*.exe
+*.out
+/go-services/**/bin/
+/go-services/**/*.exe
+/go-services/**/*.out
+
+# Compiled binary addons
+*.node
+
+# Distribution files
+dist/
+build/
