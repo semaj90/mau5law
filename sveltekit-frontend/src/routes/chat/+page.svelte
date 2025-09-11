@@ -124,7 +124,7 @@
   						...m,
   						timestamp: new Date(m.timestamp)
   					}))
-  				});
+  				}));
   				// Load the most recent session
   				if (chatSessions.length > 0) {
   					const recent = chatSessions.sort((a, b) => b.updated.getTime() - a.updated.getTime())[0];
@@ -138,7 +138,7 @@
   	}
 
   	function saveChatSessions() {
-  		localStorage.setItem('legal-ai-chat-sessions', JSON.stringify(chatSessions);
+  		localStorage.setItem('legal-ai-chat-sessions', JSON.stringify(chatSessions));
   	}
 
   	function createNewSession() {
@@ -496,8 +496,8 @@
 								</button>
 							{/each}
 						</div>
-					</CardContent>
-				</Card>
+					</Card.Content>
+				</Card.Root>
 
 				<!-- Current Mode Info -->
 				<Card.Root>
@@ -532,8 +532,8 @@
 								<span class="text-blue-400">Context Search: {enableContextualSearch ? 'On' : 'Off'}</span>
 							</div>
 						</div>
-					</CardContent>
-				</Card>
+					</Card.Content>
+				</Card.Root>
 			</div>
 
 			<!-- Main Chat Area -->
@@ -728,7 +728,7 @@
 							</div>
 						{/if}
 					</div>
-				</Card>
+				</Card.Root>
 			</div>
 		</div>
 	</div>

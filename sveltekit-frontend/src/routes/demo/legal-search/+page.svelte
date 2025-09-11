@@ -45,7 +45,7 @@
     const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
     if (searchInput) {
       searchInput.value = searchText;
-      searchInput.dispatchEvent(new Event('input', { bubbles: true });
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
     }
     currentDemo = (currentDemo + 1) % demoSearches.length;
   }
@@ -335,7 +335,7 @@
                   const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
                   if (searchInput) {
                     searchInput.value = searchTerm;
-                    searchInput.dispatchEvent(new Event('input', { bubbles: true });
+                    searchInput.dispatchEvent(new Event('input', { bubbles: true }));
                   }
                 }}
               >

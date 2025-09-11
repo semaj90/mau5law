@@ -296,8 +296,8 @@
           {/if}
         </Button>
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 
   <!-- Main Testing Interface -->
   <Tabs.Root bind:value={currentTab}>
@@ -336,8 +336,8 @@
               enableGPUAuth={true}
               showRegistration={false}
             />
-          </CardContent>
-        </Card>
+          </Card.Content>
+        </Card.Root>
 
         <!-- Registration Testing -->
         <Card.Root>
@@ -364,8 +364,8 @@
               enableGPUValidation={true}
               showLogin={false}
             />
-          </CardContent>
-        </Card>
+          </Card.Content>
+        </Card.Root>
       </div>
 
       <!-- Auth Store Status -->
@@ -395,8 +395,8 @@
               </Badge>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </Tabs.Content>
 
     <!-- GPU Testing -->
@@ -457,8 +457,8 @@
               <p>Loading cluster status...</p>
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </Tabs.Content>
 
     <!-- Context7 Documentation -->
@@ -500,8 +500,8 @@
               <p>Loading Context7 documentation...</p>
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </Tabs.Content>
 
     <!-- Test Results -->
@@ -532,8 +532,8 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </Tabs.Content>
   </Tabs.Root>
 </div>

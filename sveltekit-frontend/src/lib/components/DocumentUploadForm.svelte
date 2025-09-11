@@ -1,7 +1,6 @@
 <script lang="ts">
   import Button from '$lib/components/ui/button/Button.svelte';
   import { fade, slide } from 'svelte/transition';
-  import { writable } from 'svelte/store';
   import type { OCRResult } from '$lib/services/ocr-processor';
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
 
@@ -54,8 +53,8 @@
   } = $props();
 let dragActive = $state(false);
 let fileInput = $state<HTMLInputElement>();
-let uploadProgress = writable<Record<string, number>>({});
-let processingErrors = writable<Record<string, string>>({});
+let uploadProgress = $state<Record<string, number>>({});
+let processingErrors = $state<Record<string, string>>({});
 
   // Accepted file types (combine user allowedTypes with a canonical set; de-dupe)
   const canonicalTypes = [
@@ -118,23 +117,23 @@ let processingErrors = writable<Record<string, string>>({});
     if (rejectedForOverflow > 0) {
       // mark overflow as errors
       for (const f of files.slice(slice.length)) {
-        processingErrors.update(errors => ({ ...errors, [f.name]: `Exceeded maximum file limit (${maxFiles})` }));
+        processingErrors = { ...processingErrors, [f.name]: `Exceeded maximum file limit (${maxFiles})` };
       }
     }
 
     const validFiles = slice.filter(file => {
       if (!isValidFileType(file)) {
-        processingErrors.update(errors => ({
-          ...errors,
+        processingErrors = {
+          ...processingErrors,
           [file.name]: `Unsupported file type: ${file.type}`
-        }));
+        };
         return false;
       }
       if (file.size > maxFileSize) {
-        processingErrors.update(errors => ({
-          ...errors,
+        processingErrors = {
+          ...processingErrors,
           [file.name]: `File size exceeds limit (${formatFileSize(maxFileSize)} max)`
-        }));
+        };
         return false;
       }
       return true;
@@ -158,12 +157,12 @@ let processingErrors = writable<Record<string, string>>({});
     }
 
     try {
-      uploadProgress.update(progress => ({ ...progress, [file.name]: 0 }));
+      uploadProgress = { ...uploadProgress, [file.name]: 0 };
 
       // Simulate progress updates (non-leaky loop)
       for (let p = 10; p <= 90; p += 10) {
         await new Promise(r => setTimeout(r, 150));
-        uploadProgress.update(progress => ({ ...progress, [file.name]: p }));
+        uploadProgress = { ...uploadProgress, [file.name]: p };
       }
 
       // Create mock OCR result for File object (browser environment)
@@ -181,22 +180,20 @@ let processingErrors = writable<Record<string, string>>({});
         processing_time: 100
       };
 
-      uploadProgress.update(progress => ({ ...progress, [file.name]: 100 }));
+      uploadProgress = { ...uploadProgress, [file.name]: 100 };
 
       formData.ocr_results = [...formData.ocr_results, ocrResult];
 
-      processingErrors.update(errors => {
-        const newErrors = { ...errors };
-        delete newErrors[file.name];
-        return newErrors;
-      });
+      const newErrors = { ...processingErrors };
+      delete newErrors[file.name];
+      processingErrors = newErrors;
 
     } catch (error) {
       console.error('OCR processing failed:', error);
-      processingErrors.update(errors => ({
-        ...errors,
+      processingErrors = {
+        ...processingErrors,
         [file.name]: `Processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-      }));
+      };
     }
 
     // Check if all files are processed
@@ -221,11 +218,9 @@ let processingErrors = writable<Record<string, string>>({});
     );
 
     // Clear any errors for this file
-    processingErrors.update(errors => {
-      const newErrors = { ...errors };
-      delete newErrors[removedFile.name];
-      return newErrors;
-    });
+    const newErrors = { ...processingErrors };
+    delete newErrors[removedFile.name];
+    processingErrors = newErrors;
   }
 
   function handleNext() {
@@ -281,8 +276,8 @@ let processingErrors = writable<Record<string, string>>({});
     ondrop={handleDrop}
     role="button"
     tabindex="0"
-    onclick={() => fileInput.click()}
-    onkeydown={(e) => e.key === 'Enter' && fileInput.click()}
+    onclick={() => fileInput?.click()}
+    onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
   >
     <div class="space-y-4">
     <div class="text-4xl">📁</div>
@@ -315,8 +310,8 @@ let processingErrors = writable<Record<string, string>>({});
 
       <div class="space-y-3">
         {#each formData.uploaded_files as file, index}
-          {@const progress = $uploadProgress[file.name] || 0}
-          {@const error = $processingErrors[file.name]}
+          {@const progress = uploadProgress[file.name] || 0}
+          {@const error = processingErrors[file.name]}
 
           <div class="border border-gray-200 rounded-lg p-4" transition:fade>
             <div class="flex items-center justify-between">
@@ -417,11 +412,11 @@ let processingErrors = writable<Record<string, string>>({});
   {/if}
 
   <!-- Error Summary -->
-  {#if Object.keys($processingErrors).length > 0}
+  {#if Object.keys(processingErrors).length > 0}
     <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4" transition:fade>
       <h4 class="text-sm font-medium text-red-800 mb-2">Processing Errors:</h4>
       <ul class="text-xs text-red-600 space-y-1">
-        {#each Object.entries($processingErrors) as [filename, error]}
+        {#each Object.entries(processingErrors) as [filename, error]}
           <li>• {filename}: {error}</li>
         {/each}
       </ul>

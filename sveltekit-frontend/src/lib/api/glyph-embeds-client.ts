@@ -25,6 +25,21 @@ export interface GlyphEmbedRequest {
     predictive_frames: number;
   };
   simd_config?: Partial<SIMDGlyphConfig>;
+  // RAG enhancement fields
+  rag_config?: {
+    enable_chunking: boolean;
+    chunk_size: number;
+    overlap_size: number;
+    enable_summarization: boolean;
+    enable_vector_store: boolean;
+  };
+  article_urls?: string[];
+  content_sources?: Array<{
+    type: 'article' | 'document' | 'text';
+    url?: string;
+    content?: string;
+    metadata?: Record<string, unknown>;
+  }>;
 }
 
 export interface SIMDShaderData {
@@ -52,6 +67,25 @@ export interface GlyphEmbedResult {
   generation_time_ms: number;
   cache_hits: number;
   enhanced_artifact_url?: string;
+  // RAG enhancement results
+  rag_results?: {
+    chunks_processed: number;
+    embeddings_generated: number;
+    vector_store_updates: number;
+    summary_tokens: number;
+    semantic_matches: Array<{
+      content: string;
+      score: number;
+      chunk_id: string;
+      metadata?: Record<string, unknown>;
+    }>;
+  };
+  synthesized_glyphs?: Array<{
+    base_glyph_id: string;
+    combined_glyph_id: string;
+    synthesis_confidence: number;
+    did_you_mean_suggestions: string[];
+  }>;
 }
 
 export interface GlyphEmbedResponse {
@@ -205,6 +239,361 @@ export class GlyphEmbedsClient {
         ? result.value 
         : { success: false, error: result.reason?.message || 'Generation failed' }
     );
+  }
+
+  /**
+   * Fetch articles and process with RAG chunking for glyph synthesis
+   */
+  async processArticlesWithRAG(
+    articles: Array<{url?: string, content?: string, metadata?: Record<string, unknown>}>,
+    options: {
+      chunk_size?: number;
+      overlap_size?: number;
+      enable_summarization?: boolean;
+      enable_vector_store?: boolean;
+    } = {}
+  ): Promise<{
+    success: boolean;
+    chunks?: Array<{
+      id: string;
+      content: string;
+      embedding?: number[];
+      summary?: string;
+      metadata?: Record<string, unknown>;
+    }>;
+    error?: string;
+  }> {
+    try {
+      const {
+        chunk_size = 512,
+        overlap_size = 50,
+        enable_summarization = true,
+        enable_vector_store = true
+      } = options;
+
+      const processedChunks = [];
+
+      for (const article of articles) {
+        let content = article.content;
+        
+        // Fetch article if URL provided
+        if (article.url && !content) {
+          try {
+            const response = await fetch(article.url);
+            content = await response.text();
+          } catch (error) {
+            console.warn(`Failed to fetch article: ${article.url}`, error);
+            continue;
+          }
+        }
+
+        if (!content) continue;
+
+        // Chunk the content
+        const chunks = this.chunkText(content, chunk_size, overlap_size);
+        
+        for (let i = 0; i < chunks.length; i++) {
+          const chunk = chunks[i];
+          const chunkId = `${article.url || 'text'}_chunk_${i}_${Date.now()}`;
+          
+          let summary = '';
+          let embedding: number[] | undefined;
+
+          // Generate summary using gemma3:legal-latest
+          if (enable_summarization) {
+            try {
+              const summaryResponse = await fetch(`${this.baseUrl}/api/llm/gemma3-legal/summarize`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  content: chunk,
+                  max_tokens: 150,
+                  legal_context: true
+                })
+              });
+              
+              if (summaryResponse.ok) {
+                const summaryResult = await summaryResponse.json();
+                summary = summaryResult.summary || '';
+              }
+            } catch (error) {
+              console.warn('Summarization failed:', error);
+            }
+          }
+
+          // Generate embeddings using gemma embeds
+          try {
+            const embedResponse = await fetch(`${this.baseUrl}/api/embeddings/gemma`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                text: summary || chunk,
+                model: 'embeddinggemma:latest'
+              })
+            });
+            
+            if (embedResponse.ok) {
+              const embedResult = await embedResponse.json();
+              embedding = embedResult.embedding;
+            }
+          } catch (error) {
+            console.warn('Embedding generation failed:', error);
+          }
+
+          // Update pgvector store
+          if (enable_vector_store && embedding) {
+            try {
+              await fetch(`${this.baseUrl}/api/vector/pgvector/store`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  id: chunkId,
+                  content: chunk,
+                  summary: summary,
+                  embedding: embedding,
+                  metadata: {
+                    ...article.metadata,
+                    source_url: article.url,
+                    chunk_index: i,
+                    processed_at: new Date().toISOString(),
+                    content_type: 'article_chunk'
+                  }
+                })
+              });
+            } catch (error) {
+              console.warn('Vector store update failed:', error);
+            }
+          }
+
+          processedChunks.push({
+            id: chunkId,
+            content: chunk,
+            embedding,
+            summary,
+            metadata: {
+              ...article.metadata,
+              source_url: article.url,
+              chunk_index: i
+            }
+          });
+        }
+      }
+
+      return {
+        success: true,
+        chunks: processedChunks
+      };
+
+    } catch (error) {
+      console.error('RAG processing failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'RAG processing failed'
+      };
+    }
+  }
+
+  /**
+   * Synthesize glyphs from multiple base glyphs with 'did you mean' suggestions
+   */
+  async synthesizeGlyphs(
+    baseGlyphIds: string[],
+    prompt: string,
+    options: {
+      enable_did_you_mean?: boolean;
+      max_suggestions?: number;
+      cache_synthesized?: boolean;
+    } = {}
+  ): Promise<{
+    success: boolean;
+    synthesized_glyph?: {
+      id: string;
+      glyph_url: string;
+      base_glyph_ids: string[];
+      confidence: number;
+      generation_time_ms: number;
+    };
+    did_you_mean_suggestions?: string[];
+    error?: string;
+  }> {
+    try {
+      const {
+        enable_did_you_mean = true,
+        max_suggestions = 5,
+        cache_synthesized = true
+      } = options;
+
+      // Generate synthesis request
+      const synthesisResponse = await fetch(`${this.baseUrl}/api/glyph/synthesize`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          base_glyph_ids: baseGlyphIds,
+          prompt: prompt,
+          synthesis_config: {
+            enable_neural_blending: true,
+            preserve_legal_semantics: true,
+            target_format: 'webgpu'
+          }
+        })
+      });
+
+      if (!synthesisResponse.ok) {
+        throw new Error(`Synthesis failed: ${synthesisResponse.statusText}`);
+      }
+
+      const synthesisResult = await synthesisResponse.json();
+      let didYouMeanSuggestions: string[] = [];
+
+      // Generate 'did you mean' suggestions using gemma3:legal-latest
+      if (enable_did_you_mean) {
+        try {
+          const suggestionsResponse = await fetch(`${this.baseUrl}/api/llm/gemma3-legal/suggest`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              original_prompt: prompt,
+              base_glyphs: baseGlyphIds,
+              max_suggestions: max_suggestions,
+              context_type: 'legal_synthesis'
+            })
+          });
+          
+          if (suggestionsResponse.ok) {
+            const suggestionsResult = await suggestionsResponse.json();
+            didYouMeanSuggestions = suggestionsResult.suggestions || [];
+          }
+        } catch (error) {
+          console.warn('Did you mean suggestions failed:', error);
+        }
+      }
+
+      // Cache synthesized glyph if enabled
+      if (cache_synthesized && synthesisResult.success) {
+        try {
+          await fetch(`${this.baseUrl}/api/glyph/cache`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              glyph_id: synthesisResult.synthesized_glyph.id,
+              glyph_data: synthesisResult.synthesized_glyph,
+              synthesis_metadata: {
+                base_glyphs: baseGlyphIds,
+                prompt: prompt,
+                suggestions: didYouMeanSuggestions,
+                cached_at: new Date().toISOString()
+              }
+            })
+          });
+        } catch (error) {
+          console.warn('Glyph caching failed:', error);
+        }
+      }
+
+      return {
+        success: true,
+        synthesized_glyph: synthesisResult.synthesized_glyph,
+        did_you_mean_suggestions: didYouMeanSuggestions
+      };
+
+    } catch (error) {
+      console.error('Glyph synthesis failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Synthesis failed'
+      };
+    }
+  }
+
+  /**
+   * Search cached glyphs using semantic similarity
+   */
+  async searchGlyphsSemanticly(
+    query: string,
+    options: {
+      limit?: number;
+      threshold?: number;
+      include_synthesized?: boolean;
+    } = {}
+  ): Promise<{
+    success: boolean;
+    matches?: Array<{
+      glyph_id: string;
+      score: number;
+      metadata?: Record<string, unknown>;
+    }>;
+    error?: string;
+  }> {
+    try {
+      const { limit = 10, threshold = 0.7, include_synthesized = true } = options;
+
+      // Generate query embedding
+      const embedResponse = await fetch(`${this.baseUrl}/api/embeddings/gemma`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: query,
+          model: 'embeddinggemma:latest'
+        })
+      });
+
+      if (!embedResponse.ok) {
+        throw new Error('Failed to generate query embedding');
+      }
+
+      const { embedding } = await embedResponse.json();
+
+      // Search pgvector store
+      const searchResponse = await fetch(`${this.baseUrl}/api/vector/pgvector/search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          embedding: embedding,
+          limit: limit,
+          threshold: threshold,
+          filter: {
+            content_type: include_synthesized ? ['glyph', 'synthesized_glyph'] : ['glyph']
+          }
+        })
+      });
+
+      if (!searchResponse.ok) {
+        throw new Error('Vector search failed');
+      }
+
+      const searchResults = await searchResponse.json();
+
+      return {
+        success: true,
+        matches: searchResults.matches || []
+      };
+
+    } catch (error) {
+      console.error('Semantic glyph search failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Search failed'
+      };
+    }
+  }
+
+  /**
+   * Chunk text content for RAG processing
+   */
+  private chunkText(text: string, chunkSize: number, overlapSize: number): string[] {
+    const chunks: string[] = [];
+    const words = text.split(/\s+/);
+    
+    for (let i = 0; i < words.length; i += chunkSize - overlapSize) {
+      const chunk = words.slice(i, i + chunkSize).join(' ');
+      if (chunk.trim().length > 0) {
+        chunks.push(chunk.trim());
+      }
+      
+      if (i + chunkSize >= words.length) break;
+    }
+    
+    return chunks;
   }
 
   /**

@@ -5,7 +5,8 @@
     Card,
     CardHeader,
     CardTitle,
-    CardContent
+    CardContent,
+    Dialog
   } from '$lib/components/ui/enhanced-bits';
   import { cn } from '$lib/utils';
   import type { ChatMessage, SystemStatus } from '$lib/types/ai';
@@ -23,6 +24,24 @@
     enhancedRAG: false,
     postgres: false,
     neo4j: false
+  });
+
+  // POI Timeline State
+  let poiTimelineData = $state([]);
+  let selectedPOI = $state(null);
+  let timelineLoading = $state(false);
+  let showTimeline = $state(false);
+  let evidenceReports = $state([]);
+  let ragAnalysisResults = $state([]);
+
+  // User Activity Timeline State
+  let userActivityTimeline = $state([]);
+  let activityLoading = $state(false);
+  let focusMetrics = $state({
+    sessionsToday: 0,
+    totalTime: 0,
+    casesAnalyzed: 0,
+    evidenceReviewed: 0
   });
 
   async function checkSystemStatus() {
@@ -172,8 +191,92 @@
     error = '';
   }
 
+  // Semantic RAG-based POI Timeline Functions
+  async function loadEvidenceReports() {
+    try {
+      const response = await fetch('/api/v1/evidence/reports');
+      if (response.ok) {
+        evidenceReports = await response.json();
+      }
+    } catch (e) {
+      console.error('Failed to load evidence reports:', e);
+    }
+  }
+
+  async function analyzePersonsOfInterest() {
+    if (evidenceReports.length === 0) {
+      await loadEvidenceReports();
+    }
+    
+    timelineLoading = true;
+    try {
+      // Semantic RAG analysis to extract POI from evidence reports
+      const ragResponse = await fetch('/api/v1/rag/analyze-poi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          evidenceReports: evidenceReports,
+          analysisType: 'semantic_entity_extraction',
+          includeTimeline: true
+        })
+      });
+
+      if (ragResponse.ok) {
+        ragAnalysisResults = await ragResponse.json();
+        
+        // Extract POI timeline data from semantic analysis
+        poiTimelineData = ragAnalysisResults.persons?.map((person: any) => ({
+          id: person.id,
+          name: person.name,
+          type: person.type || 'person',
+          activities: person.timeline || [],
+          confidence: person.confidence || 0.8,
+          evidenceSources: person.sources || [],
+          relationships: person.relationships || []
+        })) || [];
+        
+        showTimeline = true;
+      }
+    } catch (e) {
+      error = 'Failed to analyze persons of interest';
+      console.error('POI analysis error:', e);
+    } finally {
+      timelineLoading = false;
+    }
+  }
+
+  async function generateUserActivityTimeline() {
+    activityLoading = true;
+    try {
+      const response = await fetch(`/api/v1/users/${userId}/activity-timeline`);
+      if (response.ok) {
+        const data = await response.json();
+        userActivityTimeline = data.timeline || [];
+        focusMetrics = {
+          sessionsToday: data.metrics?.sessionsToday || 0,
+          totalTime: data.metrics?.totalTime || 0,
+          casesAnalyzed: data.metrics?.casesAnalyzed || 0,
+          evidenceReviewed: data.metrics?.evidenceReviewed || 0
+        };
+      }
+    } catch (e) {
+      console.error('Failed to generate user activity timeline:', e);
+    } finally {
+      activityLoading = false;
+    }
+  }
+
+  function selectPOI(poi: any) {
+    selectedPOI = poi;
+  }
+
+  function closePOIDetails() {
+    selectedPOI = null;
+  }
+
   onMount(() => {
     checkSystemStatus();
+    loadEvidenceReports();
 
     // Check system status every 30 seconds
     const interval = setInterval(checkSystemStatus, 30000);
@@ -351,6 +454,137 @@
             </div>
           {/snippet}
         </Card>
+
+        <!-- POI Timeline Visualization -->
+        {#if showTimeline && poiTimelineData.length > 0}
+          <Card class="mt-6 p-6">
+            {#snippet children()}
+              <div class="mb-4 flex justify-between items-center">
+                <h2 class="text-xl font-semibold flex items-center gap-2">
+                  <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  Persons of Interest Timeline
+                </h2>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onclick={() => showTimeline = false}
+                  class="bits-btn"
+                >
+                  {#snippet children()}
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  {/snippet}
+                </Button>
+              </div>
+              
+              <div class="space-y-4">
+                {#each poiTimelineData as poi (poi.id)}
+                  <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-3">
+                      <div>
+                        <h3 class="font-semibold text-lg">{poi.name}</h3>
+                        <div class="flex items-center gap-2 mt-1">
+                          <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                            {poi.type}
+                          </span>
+                          <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                            {Math.round(poi.confidence * 100)}% confidence
+                          </span>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onclick={() => selectPOI(poi)}
+                        class="bits-btn"
+                      >
+                        {#snippet children()}
+                          View Details
+                        {/snippet}
+                      </Button>
+                    </div>
+                    
+                    {#if poi.activities.length > 0}
+                      <div class="mt-3">
+                        <h4 class="font-medium mb-2">Recent Activity</h4>
+                        <div class="space-y-2">
+                          {#each poi.activities.slice(0, 3) as activity}
+                            <div class="flex items-start gap-3 text-sm">
+                              <div class="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <div>
+                                <div class="font-medium">{activity.description || activity.type}</div>
+                                <div class="text-gray-500">
+                                  {new Date(activity.timestamp).toLocaleDateString()}
+                                </div>
+                              </div>
+                            </div>
+                          {/each}
+                          {#if poi.activities.length > 3}
+                            <div class="text-xs text-gray-500 mt-2">
+                              +{poi.activities.length - 3} more activities
+                            </div>
+                          {/if}
+                        </div>
+                      </div>
+                    {/if}
+                    
+                    {#if poi.evidenceSources.length > 0}
+                      <div class="mt-3 pt-3 border-t border-gray-100">
+                        <h4 class="font-medium mb-2">Evidence Sources</h4>
+                        <div class="flex flex-wrap gap-1">
+                          {#each poi.evidenceSources.slice(0, 3) as source}
+                            <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                              {source.type || 'Document'}
+                            </span>
+                          {/each}
+                          {#if poi.evidenceSources.length > 3}
+                            <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded">
+                              +{poi.evidenceSources.length - 3} more
+                            </span>
+                          {/if}
+                        </div>
+                      </div>
+                    {/if}
+                  </div>
+                {/each}
+              </div>
+            {/snippet}
+          </Card>
+        {/if}
+
+        <!-- User Activity Timeline -->
+        {#if userActivityTimeline.length > 0}
+          <Card class="mt-6 p-6">
+            {#snippet children()}
+              <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                Your Activity Timeline - Stay Focused
+              </h2>
+              
+              <div class="space-y-3">
+                {#each userActivityTimeline.slice(0, 10) as activity}
+                  <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <div class="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
+                    <div class="flex-1">
+                      <div class="font-medium">{activity.action}</div>
+                      <div class="text-sm text-gray-600">
+                        {activity.description || activity.details}
+                      </div>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      {new Date(activity.timestamp).toLocaleTimeString()}
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            {/snippet}
+          </Card>
+        {/if}
       </div>
 
       <!-- Sidebar - Features & Controls -->
@@ -440,11 +674,250 @@
               </div>
             {/snippet}
           </Card>
+
+          <!-- POI Timeline Analysis -->
+          <Card class="p-6">
+            {#snippet children()}
+              <h3 class="font-semibold mb-3 flex items-center gap-2">
+                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                POI Timeline
+              </h3>
+              <div class="space-y-2">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onclick={analyzePersonsOfInterest}
+                  disabled={timelineLoading}
+                  class="w-full justify-start bits-btn"
+                  fullWidth={true}
+                >
+                  {#snippet children()}
+                    {#if timelineLoading}
+                      <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                      </svg>
+                    {:else}
+                      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                      </svg>
+                    {/if}
+                    Analyze Evidence
+                  {/snippet}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onclick={generateUserActivityTimeline}
+                  disabled={activityLoading}
+                  class="w-full justify-start bits-btn"
+                  fullWidth={true}
+                >
+                  {#snippet children()}
+                    {#if activityLoading}
+                      <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                      </svg>
+                    {:else}
+                      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                      </svg>
+                    {/if}
+                    User Activity
+                  {/snippet}
+                </Button>
+              </div>
+            {/snippet}
+          </Card>
+
+          <!-- Focus Metrics -->
+          {#if focusMetrics.sessionsToday > 0}
+            <Card class="p-6">
+              {#snippet children()}
+                <h3 class="font-semibold mb-3 text-green-600">Focus Tracking</h3>
+                <div class="space-y-3">
+                  <div class="flex justify-between text-sm">
+                    <span>Sessions Today</span>
+                    <span class="font-medium">{focusMetrics.sessionsToday}</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span>Total Time</span>
+                    <span class="font-medium">{Math.floor(focusMetrics.totalTime / 60)}m</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span>Cases Analyzed</span>
+                    <span class="font-medium">{focusMetrics.casesAnalyzed}</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span>Evidence Reviewed</span>
+                    <span class="font-medium">{focusMetrics.evidenceReviewed}</span>
+                  </div>
+                </div>
+              {/snippet}
+            </Card>
+          {/if}
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- POI Details Modal -->
+{#if selectedPOI}
+  <Dialog bind:open={!!selectedPOI} legal={true} size="lg">
+    {#snippet content()}
+      <div class="p-6 max-h-[80vh] overflow-y-auto">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-nier-text-primary flex items-center gap-2">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              {selectedPOI.name}
+            </h2>
+            <div class="flex items-center gap-2 mt-2">
+              <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                {selectedPOI.type}
+              </span>
+              <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                {Math.round(selectedPOI.confidence * 100)}% confidence
+              </span>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onclick={closePOIDetails}
+            class="bits-btn"
+          >
+            {#snippet children()}
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            {/snippet}
+          </Button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Activity Timeline -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Activity Timeline
+            </h3>
+            <div class="space-y-3 max-h-64 overflow-y-auto">
+              {#each selectedPOI.activities || [] as activity}
+                <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div class="w-3 h-3 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <div class="flex-1">
+                    <div class="font-medium">{activity.description || activity.type}</div>
+                    <div class="text-sm text-gray-600 mt-1">
+                      {activity.details || 'Activity details from evidence analysis'}
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">
+                      {new Date(activity.timestamp).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              {/each}
+              {#if !selectedPOI.activities || selectedPOI.activities.length === 0}
+                <div class="text-gray-500 italic text-center py-4">
+                  No activity data available
+                </div>
+              {/if}
+            </div>
+          </div>
+
+          <!-- Evidence Sources -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.665 2.665 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
+              </svg>
+              Evidence Sources
+            </h3>
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+              {#each selectedPOI.evidenceSources || [] as source}
+                <div class="p-3 border border-gray-200 rounded-lg">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="font-medium">{source.title || source.name || 'Document'}</span>
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                      {source.type || 'Evidence'}
+                    </span>
+                  </div>
+                  <div class="text-sm text-gray-600">
+                    {source.description || source.content || 'Evidence source from semantic analysis'}
+                  </div>
+                  {#if source.confidence}
+                    <div class="text-xs text-gray-500 mt-2">
+                      Confidence: {Math.round(source.confidence * 100)}%
+                    </div>
+                  {/if}
+                </div>
+              {/each}
+              {#if !selectedPOI.evidenceSources || selectedPOI.evidenceSources.length === 0}
+                <div class="text-gray-500 italic text-center py-4">
+                  No evidence sources available
+                </div>
+              {/if}
+            </div>
+          </div>
+        </div>
+
+        <!-- Relationships -->
+        {#if selectedPOI.relationships && selectedPOI.relationships.length > 0}
+          <div class="mt-6">
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+              </svg>
+              Relationships
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {#each selectedPOI.relationships as relationship}
+                <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div class="font-medium">{relationship.target}</div>
+                  <div class="text-sm text-green-700">{relationship.type}</div>
+                  {#if relationship.properties}
+                    <div class="text-xs text-gray-600 mt-1">
+                      {JSON.stringify(relationship.properties)}
+                    </div>
+                  {/if}
+                </div>
+              {/each}
+            </div>
+          </div>
+        {/if}
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+          <Button
+            variant="outline"
+            onclick={closePOIDetails}
+            class="bits-btn"
+          >
+            {#snippet children()}
+              Close
+            {/snippet}
+          </Button>
+          <Button
+            variant="primary"
+            onclick={() => handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`)}
+            class="bits-btn"
+          >
+            {#snippet children()}
+              Ask AI About This Person
+            {/snippet}
+          </Button>
+        </div>
+      </div>
+    {/snippet}
+  </Dialog>
+{/if}
 
 <style>
   /* Custom scrollbar for chat */

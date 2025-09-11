@@ -177,7 +177,7 @@
             </div>
             <Scale class="w-8 h-8 text-primary/60" />
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
@@ -189,7 +189,7 @@
             </div>
             <FileText class="w-8 h-8 text-primary/60" />
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
@@ -201,7 +201,7 @@
             </div>
             <Brain class="w-8 h-8 text-primary/60" />
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
@@ -213,7 +213,7 @@
             </div>
             <Clock class="w-8 h-8 text-primary/60" />
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
     </div>
 
@@ -246,7 +246,7 @@
             </div>
           {/each}
         </div>
-      </CardContent>
+      </Card.Content>
     </OrchestratedCard.Analysis>
   {/if}
 
@@ -290,7 +290,7 @@
             <pre class="text-sm overflow-auto">{JSON.stringify(demoResults, null, 2)}</pre>
           </div>
         {/if}
-      </CardContent>
+      </Card.Content>
     </OrchestratedCard.AIInsight>
   {/if}
 
@@ -350,7 +350,7 @@
             <p class="text-sm text-muted-foreground">Avg Response Time</p>
           </div>
         </div>
-      </CardContent>
+      </Card.Content>
     </OrchestratedCard.Analysis>
   {/if}
 
@@ -369,15 +369,15 @@
         </Card.Header>
         <Card.Content>
           <div class="grid gap-4">
-            {#each data.sampleCases as case}
+            {#each data.sampleCases as caseItem}
               <div class="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow">
                 <div class="flex-1">
-                  <h3 class="font-medium">{case.title}</h3>
+                  <h3 class="font-medium">{caseItem.title}</h3>
                   <div class="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                    <span class="capitalize">{case.status}</span>
-                    <span>{case.documentsCount} documents</span>
-                    <span class={getConfidenceClass(case.confidence)}>
-                      {Math.round(case.confidence * 100)}% AI confidence
+                    <span class="capitalize">{caseItem.status}</span>
+                    <span>{caseItem.documentsCount} documents</span>
+                    <span class={getConfidenceClass(caseItem.confidence)}>
+                      {Math.round(caseItem.confidence * 100)}% AI confidence
                     </span>
                   </div>
                 </div>
@@ -385,14 +385,14 @@
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onclick={() => navigateToCase(case.id)}
+                    onclick={() => navigateToCase(caseItem.id)}
                   >
                     <Eye class="w-4 h-4 mr-1" />
                     View
                   </Button>
                   <OrchestratedButton.AnalyzeEvidence
                     size="sm"
-                    onclick={() => navigateToRAG(case.id)}
+                    onclick={() => navigateToRAG(caseItem.id)}
                   >
                     <Brain class="w-4 h-4 mr-1" />
                     RAG
@@ -401,7 +401,7 @@
               </div>
             {/each}
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.CaseFile>
 
       <!-- Recent Analyses -->
@@ -432,7 +432,7 @@
               </div>
             {/each}
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
     </div>
   {/if}

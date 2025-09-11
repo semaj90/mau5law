@@ -117,7 +117,7 @@
   function formatRelativeTime(date: Date): string {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / (1000 * 60);
+    const minutes = Math.floor(diff / (1000 * 60));
     if (minutes < 1) return 'Just now';
     if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
@@ -196,7 +196,7 @@
       </div>
       <Progress value={(dashboardData.activeCases / dashboardData.totalCases) * 100} class="mt-4" />
       <p class="text-xs text-nier-text-muted mt-2">{dashboardData.activeCases} active cases</p>
-    </Card>
+    </Card.Root>
     
     <!-- Vector Queries -->
     <Card.Root class="p-6">
@@ -214,7 +214,7 @@
       </div>
       <Progress value={dashboardData.searchAccuracy} class="mt-4" />
       <p class="text-xs text-nier-text-muted mt-2">{dashboardData.searchAccuracy}% accuracy rate</p>
-    </Card>
+    </Card.Root>
     
     <!-- AI Processing -->
     <Card.Root class="p-6">
@@ -232,7 +232,7 @@
       </div>
       <Progress value={(dashboardData.aiTasksCompleted / dashboardData.aiTasksToday) * 100} class="mt-4" />
       <p class="text-xs text-nier-text-muted mt-2">{dashboardData.aiAccuracy}% accuracy rate</p>
-    </Card>
+    </Card.Root>
     
     <!-- System Health -->
     <Card.Root class="p-6">
@@ -250,7 +250,7 @@
       </div>
       <Progress value={dashboardData.systemLoad} class="mt-4" />
       <p class="text-xs text-nier-text-muted mt-2">{dashboardData.databaseConnections} DB connections</p>
-    </Card>
+    </Card.Root>
   </div>
   
   <!-- Quick Actions -->
@@ -287,8 +287,8 @@
           </button>
         {/each}
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
   
   <!-- Two Column Layout -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -335,8 +335,8 @@
               <ChevronRight class="w-4 h-4 ml-2" />
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </div>
     
     <!-- Popular Search Terms -->
@@ -366,8 +366,8 @@
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
   </div>
   
   <!-- Performance Chart Placeholder -->
@@ -389,7 +389,7 @@
           <p class="text-xs text-nier-text-muted mt-1">Integrate Chart.js or D3 for visualization</p>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>
 

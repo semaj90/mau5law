@@ -205,7 +205,7 @@
     const now = new Date();
     const then = new Date(date);
     const diff = now.getTime() - then.getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24);
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     if (days === 0) return 'Today';
     if (days === 1) return 'Yesterday';
     if (days < 7) return `${days} days ago`;
@@ -251,8 +251,8 @@
         <div class="mt-2 flex items-center gap-2">
           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">+{caseStats.thisWeek} this week</span>
         </div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
     
     <Card.Root>
       <Card.Content class="p-6">
@@ -268,8 +268,8 @@
         <div class="mt-2 flex items-center gap-2">
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{((caseStats.active / caseStats.total) * 100).toFixed(1)}% of total</span>
         </div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
     
     <Card.Root>
       <Card.Content class="p-6">
@@ -282,8 +282,8 @@
             <Clock class="w-6 h-6 text-yellow-500" />
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
     
     <Card.Root>
       <Card.Content class="p-6">
@@ -296,8 +296,8 @@
             <XCircle class="w-6 h-6 text-gray-500" />
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
   </div>
   
   <!-- Filters and Search -->
@@ -336,8 +336,8 @@
           </Button>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
   
   <!-- Cases Table -->
   <Card.Root>
@@ -446,8 +446,8 @@
           </Table.Body>
         </Table.Root>
       {/if}
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
 </div>
 
 <!-- New Case Dialog -->

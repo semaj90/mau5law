@@ -63,7 +63,7 @@
   let suggestions = $state<string[]>([]);
   let error = $state<string | null>(null);
   let searchMode = $state<'semantic' | 'keyword' | 'hybrid'>('semantic');
-  let selectedTypes = $state<Set<string>>(new Set();
+  let selectedTypes = $state<Set<string>>(new Set());
   let similarityThreshold = $state(0.7);
   // Search suggestions for different legal domains
   const searchSuggestions = [
@@ -279,7 +279,7 @@
           </div>
         </div>
       </div>
-    </CardContent>
+    </Card.Content>
   </OrchestratedCard.Analysis>
   
   <!-- Search Results -->
@@ -401,7 +401,7 @@
             </div>
           {/each}
         {/if}
-      </CardContent>
+      </Card.Content>
     </OrchestratedCard.Evidence>
   {/if}
   
@@ -432,8 +432,8 @@
           </button>
         {/each}
       </div>
-    </CardContent>
-  </Card>
+    </Card.Content>
+  </Card.Root>
   
   <!-- Performance Metrics -->
   {#if searchInfo}
@@ -463,7 +463,7 @@
             <div class="font-medium capitalize">{searchMode}</div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </Card.Content>
+    </Card.Root>
   {/if}
 </div>

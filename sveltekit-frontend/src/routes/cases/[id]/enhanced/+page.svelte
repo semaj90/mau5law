@@ -220,24 +220,24 @@
 										</tr>
 									</thead>
 									<tbody>
-										{#each data.analysisResults.comprehensive.similar_cases as case}
+										{#each data.analysisResults.comprehensive.similar_cases as caseItem}
 											<tr class="border-b">
-												<td class="py-2">{case.id}</td>
+												<td class="py-2">{caseItem.id}</td>
 												<td class="py-2">
 													<span class="font-medium text-green-600">
-														{formatPercentage(case.similarity)}
+														{formatPercentage(caseItem.similarity)}
 													</span>
 												</td>
 												<td class="py-2">
 													<span class="px-2 py-1 text-xs rounded-full {
-														case.outcome === 'Plaintiff Victory' ? 'bg-green-100 text-green-800' :
-														case.outcome === 'Settlement' ? 'bg-yellow-100 text-yellow-800' :
+														caseItem.outcome === 'Plaintiff Victory' ? 'bg-green-100 text-green-800' :
+														caseItem.outcome === 'Settlement' ? 'bg-yellow-100 text-yellow-800' :
 														'bg-red-100 text-red-800'
 													}">
-														{case.outcome}
+														{caseItem.outcome}
 													</span>
 												</td>
-												<td class="py-2">{case.settlement > 0 ? formatCurrency(case.settlement) : 'N/A'}</td>
+												<td class="py-2">{caseItem.settlement > 0 ? formatCurrency(caseItem.settlement) : 'N/A'}</td>
 											</tr>
 										{/each}
 									</tbody>

@@ -9,7 +9,7 @@ console.log(chalk.cyan('⚖️  Legal Case Similarity Analysis v1.0'));
 
 const config = {
   databaseUrl: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
-  ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11436',
+  ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11435',
   embeddingModel: process.env.LEGAL_EMBEDDING_MODEL || 'nomic-embed-text',
   similarityThreshold: parseFloat(process.env.SIMILARITY_THRESHOLD) || 0.7,
   batchSize: parseInt(process.env.BATCH_SIZE) || 16,

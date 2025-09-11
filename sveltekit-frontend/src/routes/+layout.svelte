@@ -313,9 +313,9 @@
 
   <!-- Main Content with Golden Ratio Spacing -->
   <main id="main-content" class="container mx-auto px-golden-lg py-golden-xl min-h-[calc(100vh-theme(spacing.16))]" aria-label="Main content">
-  {#if children}
+  {#if mounted && children}
     {@render children()}
-  {:else}
+  {:else if mounted}
     <!-- Fallback content when no children provided -->
     <div class="text-center text-nier-text-muted">
       <p>Loading...</p>

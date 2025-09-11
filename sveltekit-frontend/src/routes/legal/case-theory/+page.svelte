@@ -31,7 +31,7 @@
   // Theory building components
   let evidenceItems = $state([]);
   let precedents = $state([]);
-  let arguments = $state([]);
+  let legalArguments = $state([]);
   let counterarguments = $state([]);
   let strengthAnalysis = $state(null);
   let timelineEvents = $state([]);
@@ -142,7 +142,7 @@
           strategy: 'evidence-based',
           description: 'Client acted in self-defense under reasonable fear of imminent harm',
           strength: 0.87,
-          arguments: ['Evidence of threat', 'Witness testimony', 'Prior incidents'],
+          legalArguments: ['Evidence of threat', 'Witness testimony', 'Prior incidents'],
           counterarguments: ['No imminent danger', 'Excessive force'],
           createdAt: new Date(Date.now() - 86400000),
           updatedAt: new Date(Date.now() - 3600000)
@@ -182,7 +182,7 @@
         const builtTheory = {
           id: `theory_${Date.now()}`,
           ...theoryData,
-          arguments: result.arguments || [],
+          legalArguments: result.legalArguments || [],
           counterarguments: result.counterarguments || [],
           logicalChain: result.logicalChain || [],
           strength: result.strengthScore || 0.5,
@@ -225,7 +225,7 @@
     return {
       id: `theory_${Date.now()}`,
       ...theoryData,
-      arguments: [
+      legalArguments: [
         'Strong physical evidence supports the theory',
         'Multiple witness testimonies align with narrative',
         'Precedent cases establish legal foundation',
@@ -262,7 +262,7 @@
   }
 
   async function loadTheoryAnalysis(theory) {
-    arguments = theory.arguments || [];
+    legalArguments = theory.legalArguments || [];
     counterarguments = theory.counterarguments || [];
     logicalChain = theory.logicalChain || [];
     riskAssessment = theory.riskAssessment || null;
@@ -280,7 +280,8 @@
     };
   }
 
-  async function submitTheory() {
+  async function submitTheory(event) {
+    event.preventDefault();
     if (!newTheoryForm.name.trim()) {
       newTheoryForm.errors = { name: ['Theory name is required'] };
       return;
@@ -506,7 +507,7 @@
               </div>
             {/if}
 
-            <!-- Arguments and Counter-arguments -->
+            <!-- Arguments and Counter-legalArguments -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <!-- Arguments -->
               <div class="bg-white rounded-lg shadow p-6">
@@ -516,7 +517,7 @@
                 </h3>
                 
                 <div class="space-y-3">
-                  {#each arguments as argument, index}
+                  {#each legalArguments as argument, index}
                     <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
                       <div class="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-medium">
                         {index + 1}
@@ -527,11 +528,11 @@
                 </div>
               </div>
 
-              <!-- Counter-arguments -->
+              <!-- Counter-legalArguments -->
               <div class="bg-white rounded-lg shadow p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
                   <AlertTriangle class="h-5 w-5 mr-2 text-red-600" />
-                  Counter-arguments
+                  Counter-legalArguments
                 </h3>
                 
                 <div class="space-y-3">
@@ -687,10 +688,10 @@
     <div class="bg-white rounded-lg shadow-xl max-w-lg w-full">
       <div class="px-6 py-4 border-b border-gray-200">
         <h2 class="text-lg font-semibold text-gray-900">Build New Case Theory</h2>
-        <p class="text-sm text-gray-600">AI will analyze evidence and build logical arguments</p>
+        <p class="text-sm text-gray-600">AI will analyze evidence and build logical legalArguments</p>
       </div>
       
-      <form onsubmit|preventDefault={submitTheory} class="p-6 space-y-4">
+      <form onsubmit={submitTheory} class="p-6 space-y-4">
         <div>
           <label for="theoryName" class="block text-sm font-medium text-gray-700 mb-1">
             Theory Name
