@@ -1,5 +1,9 @@
 <script lang="ts">
-  export let onPress: (button: string) => void = () => {};
+  interface Props {
+    onPress?: (button: string) => void;
+  }
+
+  let { onPress = () => {} }: Props = $props();
 </script>
 
 <style>

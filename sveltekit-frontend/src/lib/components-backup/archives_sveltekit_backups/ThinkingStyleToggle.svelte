@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced ThinkingStyleToggle with Nier Automata + Harvard Crimson Theme -->
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';

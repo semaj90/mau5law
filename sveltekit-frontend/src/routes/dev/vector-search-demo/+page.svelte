@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
   import { onMount } from 'svelte';
 

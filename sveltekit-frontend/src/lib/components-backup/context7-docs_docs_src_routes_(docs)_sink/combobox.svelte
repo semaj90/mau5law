@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression -->
 <script lang="ts">
   	import { Combobox, type WithoutChildrenOrChild, mergeProps } from "bits-ui";
   	import ChevronUpDown from "phosphor-svelte/lib/CaretUpDown";

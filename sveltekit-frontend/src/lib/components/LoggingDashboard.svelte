@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `<div>` was left open -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts

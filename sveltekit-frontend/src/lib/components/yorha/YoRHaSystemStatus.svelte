@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa System Status Bar Component -->
 <script lang="ts">
   import type { SystemStatus } from "$lib/types/global";

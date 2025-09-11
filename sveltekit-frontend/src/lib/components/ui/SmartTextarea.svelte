@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
 
   import CommandMenu from "./CommandMenu.svelte";

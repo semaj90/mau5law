@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
   import * as Button from "$lib/components/ui/button";
   import * as Card from "$lib/components/ui/card";

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
   interface Props {
     message: { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string }

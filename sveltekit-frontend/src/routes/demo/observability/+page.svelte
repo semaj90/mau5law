@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Observability Integration Demo -->
 <script lang="ts">
   import { onMount } from 'svelte';

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- AI Status Indicator Component -->
 <script lang="ts">
   export let isReady = false;

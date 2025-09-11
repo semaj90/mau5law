@@ -2,8 +2,8 @@
   import { onDestroy } from 'svelte';
 
   let file = null;
-  let previewUrl = '';
-  let error = '';
+  let previewUrl = $state('');
+  let error = $state('');
 
   function onFileChange(event) {
   	error = '';

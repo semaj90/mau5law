@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <!-- Gemma3LegalChat.svelte -->
 <!-- Complete Gemma3 Legal Model Integration Component for SvelteKit -->
 <script lang="ts">

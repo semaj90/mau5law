@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions -->
 <script lang="ts">
   import { cn } from '$lib/utils';
 

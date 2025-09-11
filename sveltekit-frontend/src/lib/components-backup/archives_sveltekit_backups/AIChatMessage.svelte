@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
 <script context="module">
 </script>
   import { slide } from "svelte/transition";

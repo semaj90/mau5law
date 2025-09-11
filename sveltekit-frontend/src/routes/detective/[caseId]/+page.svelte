@@ -164,7 +164,7 @@
     <div class="error-icon">⚠️</div>
     <h1>Error</h1>
     <p>{error}</p>
-    <button type="button" on:click={refreshCase}>Try Again</button>
+    <button type="button" onclick={refreshCase}>Try Again</button>
   </div>
 {:else if caseData}
   <div class="detective-page">
@@ -183,7 +183,7 @@
       </div>
       
       <div class="case-actions">
-        <button type="button" on:click={refreshCase}>Refresh</button>
+        <button type="button" onclick={refreshCase}>Refresh</button>
         <a href="/cases/{caseId}" class="view-case-btn">View Case Details</a>
       </div>
     </header>

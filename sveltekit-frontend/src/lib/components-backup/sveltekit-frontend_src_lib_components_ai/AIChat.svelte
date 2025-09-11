@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
   import { Card } from '$lib/components/ui/card';

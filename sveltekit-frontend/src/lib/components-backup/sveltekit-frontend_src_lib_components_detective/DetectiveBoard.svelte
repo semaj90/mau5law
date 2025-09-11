@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `$evidenceStore` is an illegal variable name. To reference a global variable called `$evidenceStore`, use `globalThis.$evidenceStore` -->
 <script lang="ts">
   import Badge from "$lib/components/ui/Badge.svelte";
   import Button from "$lib/components/ui/button/Button.svelte";

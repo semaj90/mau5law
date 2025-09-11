@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import DropdownMenuContent from "$lib/components/ui/dropdown-menu/DropdownMenuContent.svelte";
   import DropdownMenuItem from "$lib/components/ui/dropdown-menu/DropdownMenuItem.svelte";

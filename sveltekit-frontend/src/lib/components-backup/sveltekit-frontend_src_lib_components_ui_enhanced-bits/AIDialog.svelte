@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- AI Dialog: Svelte 5, Bits UI, UnoCSS, transitions, analytics logging -->
 <script lang="ts">
   interface Props {

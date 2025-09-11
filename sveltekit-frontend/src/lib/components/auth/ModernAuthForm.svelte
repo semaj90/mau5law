@@ -155,7 +155,7 @@
 </script>
 
 {#if open}
-  <div class="fixed inset-0 z-50 bg-black/80 animate-in fade-in-0" />
+  <div class="fixed inset-0 z-50 bg-black/80 animate-in fade-in-0"></div>
   <div class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 animate-in fade-in-0 zoom-in-95 slide-in-from-left-1/2 slide-in-from-top-[48%] sm:rounded-lg">
     <h2 class="text-lg font-semibold leading-none tracking-tight">
       {mode === 'login' ? 'Login to Legal AI' : 'Create Legal AI Account'}

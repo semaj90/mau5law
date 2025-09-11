@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <!--
   Real-Time Legal Search Component
   Optimized for Svelte 5 + SvelteKit 2 + bits-ui v2

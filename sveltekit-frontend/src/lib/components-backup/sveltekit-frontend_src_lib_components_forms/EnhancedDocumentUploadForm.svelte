@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!-- Enhanced Document Upload Form with XState + Superforms + Zod -->
 <!-- Production-ready form with state management, validation, and progress tracking -->
 

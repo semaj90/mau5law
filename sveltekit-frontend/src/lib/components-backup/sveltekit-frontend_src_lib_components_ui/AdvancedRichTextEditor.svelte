@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:change) and new syntaxes for event handling is not allowed. Use only the onchange syntax -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
   import { Editor } from "@tiptap/core";

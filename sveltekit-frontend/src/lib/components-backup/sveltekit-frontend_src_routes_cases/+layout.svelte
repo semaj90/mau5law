@@ -21,7 +21,7 @@ import type { Case } from '$lib/types';
   import { casesStore } from "$lib/stores/casesStore";
   import { Filter, Plus, RefreshCw, Search, SortAsc, SortDesc } from 'lucide-svelte';
   import { writable } from 'svelte/store';
-  import type { LayoutData } from "./$types";
+  import type { LayoutData } from "./$types"; children,
 
   // Sync server data with client store
   $effect(() => {
@@ -308,7 +308,7 @@ import type { Case } from '$lib/types';
 
     <!-- Main Content Area -->
     <main class="space-y-4">
-      <slot></slot>
+      {@render children?.()}
     </main>
 
 

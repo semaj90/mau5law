@@ -7,7 +7,7 @@
   import { createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
-  let copied = false;
+  let copied = $state(false);
 
   // Use the Svelte store reactively
   // TODO: Convert to $derived: summary = $aiService.summary
@@ -36,13 +36,15 @@
 </script>
 
 <Dialog open={isOpen} on:close={closeModal} size="lg" title="AI Summary" description="AI-generated summary of your content">
-  <div slot="header" class="mx-auto px-4 max-w-7xl">
-    <Sparkles class="mx-auto px-4 max-w-7xl" />
-    <span>AI Summary</span>
-    {#if model}
-      <Badge variant="secondary" class="mx-auto px-4 max-w-7xl">{model}</Badge>
-    {/if}
-  </div>
+  {#snippet header()}
+    <div  class="mx-auto px-4 max-w-7xl">
+      <Sparkles class="mx-auto px-4 max-w-7xl" />
+      <span>AI Summary</span>
+      {#if model}
+        <Badge variant="secondary" class="mx-auto px-4 max-w-7xl">{model}</Badge>
+      {/if}
+    </div>
+  {/snippet}
 
   <div class="mx-auto px-4 max-w-7xl">
     {#if isLoading}
@@ -88,12 +90,14 @@
     {/if}
   </div>
 
-  <div slot="footer" class="mx-auto px-4 max-w-7xl">
-    <Button onclick={() => closeModal()} variant="secondary" aria-label="Close summary modal">
-      <X class="mx-auto px-4 max-w-7xl" />
-      <span class="mx-auto px-4 max-w-7xl">Close</span>
-    </Button>
-  </div>
+  {#snippet footer()}
+    <div  class="mx-auto px-4 max-w-7xl">
+      <Button onclick={() => closeModal()} variant="secondary" aria-label="Close summary modal">
+        <X class="mx-auto px-4 max-w-7xl" />
+        <span class="mx-auto px-4 max-w-7xl">Close</span>
+      </Button>
+    </div>
+  {/snippet}
 </Dialog>
 
 <style>

@@ -1,11 +1,21 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  export let value: string = '';
-  export let placeholder: string = '';
-  export let type: string = 'text';
-  export let disabled: boolean = false;
-  export let id: string | undefined = undefined;
+  interface Props {
+    value?: string;
+    placeholder?: string;
+    type?: string;
+    disabled?: boolean;
+    id?: string | undefined;
+  }
+
+  let {
+    value = $bindable(''),
+    placeholder = '',
+    type = 'text',
+    disabled = false,
+    id = undefined
+  }: Props = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -62,9 +72,9 @@
 	{placeholder}
 	{type}
 	{disabled}
-	on:input={handleInput}
-	on:blur={handleBlur}
-	on:focus={handleFocus}
+	oninput={handleInput}
+	onblur={handleBlur}
+	onfocus={handleFocus}
   />
 </div>
 

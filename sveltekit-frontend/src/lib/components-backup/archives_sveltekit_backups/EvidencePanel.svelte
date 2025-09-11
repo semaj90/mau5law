@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragstart) and new syntaxes for event handling is not allowed. Use only the ondragstart syntax -->
 <script lang="ts">
   import type { Evidence } from "$lib/data/types";
   import { createEventDispatcher, onMount } from 'svelte';

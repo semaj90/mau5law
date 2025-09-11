@@ -1,8 +1,13 @@
 <script lang="ts">
   import { createDialog } from '@melt-ui/svelte';
   import { writable } from 'svelte/store';
-  export let open: boolean = false;
-  export let onOpenChange: ((open: boolean) => void) | undefined = undefined;
+  interface Props {
+    open?: boolean;
+    onOpenChange?: ((open: boolean) => void) | undefined;
+    children?: import('svelte').Snippet<[any]>;
+  }
+
+  let { open = $bindable(false), onOpenChange = undefined, children }: Props = $props();
   const openWritable = writable(open);
   // Keep the writable in sync with the prop
   // TODO: Convert to $derived: openWritable.set(open)
@@ -20,5 +25,5 @@
   export { trigger, overlay, content, title, description, close, openState };
 </script>
 
-<slot {trigger} {overlay} {content} {title} {description} {close} {openState} />
+{@render children?.({ trigger, overlay, content, title, description, close, openState, })}
 

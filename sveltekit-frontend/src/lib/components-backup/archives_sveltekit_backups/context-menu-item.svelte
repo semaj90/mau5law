@@ -3,7 +3,12 @@
   interface ContextMenuContext {
     close: () => void;
   }
-  export let disabled = false;
+  interface Props {
+    disabled?: boolean;
+    children?: import('svelte').Snippet;
+  }
+
+  let { disabled = false, children }: Props = $props();
   const dispatch = createEventDispatcher();
   const { close } = getContext<ContextMenuContext>('context-menu') || { close: () => {} };
   function handleClick() {
@@ -22,7 +27,7 @@
   onclick={() => handleClick()}
   {disabled}
 >
-  <slot />
+  {@render children?.()}
 </button>
 
 <style>

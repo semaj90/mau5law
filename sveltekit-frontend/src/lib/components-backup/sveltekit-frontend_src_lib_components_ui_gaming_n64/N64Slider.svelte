@@ -1,14 +1,27 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  export let id: string | undefined = undefined;
-  export let value: number = 0;
-  export let min: number = 0;
-  export let max: number = 100;
-  export let step: number = 1;
-  export let disabled: boolean = false;
-  export let vertical: boolean = false;
-  export let ariaLabel: string | undefined = undefined;
+	interface Props {
+		id?: string | undefined;
+		value?: number;
+		min?: number;
+		max?: number;
+		step?: number;
+		disabled?: boolean;
+		vertical?: boolean;
+		ariaLabel?: string | undefined;
+	}
+
+	let {
+		id = undefined,
+		value = $bindable(0),
+		min = 0,
+		max = 100,
+		step = 1,
+		disabled = false,
+		vertical = false,
+		ariaLabel = undefined
+	}: Props = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -110,10 +123,10 @@
 	{disabled}
 	{ariaLabel}
 	aria-label={ariaLabel}
-	on:input={handleInput}
-	on:change={handleChange}
-	on:blur={handleBlur}
-	on:focus={handleFocus}
+	oninput={handleInput}
+	onchange={handleChange}
+	onblur={handleBlur}
+	onfocus={handleFocus}
   />
 </div>
 

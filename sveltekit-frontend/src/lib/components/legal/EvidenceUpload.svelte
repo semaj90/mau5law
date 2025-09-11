@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax -->
 <!--
   Advanced Evidence Upload Component - Legal AI Platform
   Integrates with GPU processing, metadata extraction, and legal document analysis

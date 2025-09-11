@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
   import type { Report } from "../../../lib/data/types";

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- EnhancedRAGInterface.svelte - SvelteKit 2.0 Advanced RAG Interface -->
 <script lang="ts">
   import { onMount, tick } from 'svelte';

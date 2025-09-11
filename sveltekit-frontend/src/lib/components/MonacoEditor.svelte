@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import * as monaco from 'monaco-editor';
   import { onDestroy, onMount } from 'svelte';

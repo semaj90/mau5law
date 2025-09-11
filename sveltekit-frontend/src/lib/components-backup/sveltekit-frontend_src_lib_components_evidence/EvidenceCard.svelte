@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   interface Props { evidence: ExtendedEvidence; onView: (evidence: Evidence) => void;,
     onEdit: (evidence: Evidence) => void;,

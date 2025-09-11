@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import Fuse from "fuse.js";
   import { onMount } from "svelte";

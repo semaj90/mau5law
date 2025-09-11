@@ -7,7 +7,7 @@
   		class?: string;
   	};
 
-  	let { class: className, ...rest } = $props();
+  	let { children, class: className, ...rest } = $props();
 </script>
 
 <ScrollAreaPrimitive.Root
@@ -15,7 +15,7 @@
 	{...rest}
 >
 	<ScrollAreaPrimitive.Viewport class="h-full w-full rounded-[inherit]">
-		<slot></slot>
+		{@render children?.()}
 	</ScrollAreaPrimitive.Viewport>
 	<ScrollAreaPrimitive.Scrollbar orientation="vertical" />
 	<ScrollAreaPrimitive.Scrollbar orientation="horizontal" />

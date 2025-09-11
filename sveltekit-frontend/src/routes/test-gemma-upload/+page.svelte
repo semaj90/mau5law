@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Gemma Embeddings Test Upload Page -->
 <script lang="ts">
 	import { onMount } from 'svelte';

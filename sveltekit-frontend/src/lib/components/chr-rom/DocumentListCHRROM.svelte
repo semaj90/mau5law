@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Zero-Latency Document List with CHR-ROM Patterns
   Demonstrates instant UI rendering with pre-computed patterns

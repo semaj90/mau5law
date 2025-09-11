@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Navigation Sidebar Component -->
 <script lang="ts">
   import type { Props } from "$lib/types/global";

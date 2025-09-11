@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:keydown) and new syntaxes for event handling is not allowed. Use only the onkeydown syntax -->
 <script lang="ts">
   import { caseFormSchema, type CaseForm } from "$lib/schemas/forms";
   import { getAuthContext } from "$lib/stores/auth";

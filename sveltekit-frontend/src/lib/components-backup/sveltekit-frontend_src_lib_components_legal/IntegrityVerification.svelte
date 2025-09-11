@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
 Integrity Verification Component
 Displays detailed integrity verification results with AI analysis

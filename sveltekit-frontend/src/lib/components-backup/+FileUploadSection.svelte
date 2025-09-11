@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:change) and new syntaxes for event handling is not allowed. Use only the onchange syntax -->
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import Dropdown from '$lib/components/+Dropdown.svelte';

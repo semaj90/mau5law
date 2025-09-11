@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Comprehensive Legal Components Demo -->
 <script lang="ts">
   import {

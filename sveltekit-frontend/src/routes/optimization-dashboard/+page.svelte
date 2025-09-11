@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Optimization Dashboard - Real-time monitoring of advanced features
   Shows neural memory prediction, ML caching, performance monitoring, and worker system

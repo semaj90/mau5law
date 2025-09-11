@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot read properties of undefined (reading 'end') -->
 <script lang="ts">
   import { page } from '$app/stores';
   import { goto, invalidateAll } from '$app/navigation';

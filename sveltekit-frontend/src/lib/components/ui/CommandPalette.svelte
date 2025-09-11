@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import type { User } from '$lib/types';
   import { onMount, createEventDispatcher } from 'svelte';

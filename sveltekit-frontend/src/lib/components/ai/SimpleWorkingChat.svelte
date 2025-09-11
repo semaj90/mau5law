@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression -->
 <!-- Simple Working Chat Component for CUDA AI Backend -->
 <script lang="ts">
 </script>

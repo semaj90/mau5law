@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:input) and new syntaxes for event handling is not allowed. Use only the oninput syntax -->
 <!-- AI Chat Input Component -->
 <script lang="ts">
   import { browser } from "$app/environment";

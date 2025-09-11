@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Advanced Performance Dashboard
   Real-time monitoring and analytics

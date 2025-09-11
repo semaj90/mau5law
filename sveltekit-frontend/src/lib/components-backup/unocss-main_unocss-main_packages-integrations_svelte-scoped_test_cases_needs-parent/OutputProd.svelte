@@ -1,10 +1,15 @@
 <script lang="ts">
-  export let onclick: () => any;
+  interface Props {
+    onclick: () => any;
+    children?: import('svelte').Snippet;
+  }
+
+  let { onclick, children }: Props = $props();
 </script>
 
 <button class="usp-n69tx1" onclick={onclick} type="button">
-  <span class="usp-g9gauz" />
-  <slot /></button
+  <span class="usp-g9gauz"></span>
+  {@render children?.()}</button
 >
 
 <style>

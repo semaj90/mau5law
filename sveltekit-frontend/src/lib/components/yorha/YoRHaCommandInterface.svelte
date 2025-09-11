@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Advanced Command Interface - Complete 3D System -->
 <script lang="ts">
   import { onMount } from 'svelte';

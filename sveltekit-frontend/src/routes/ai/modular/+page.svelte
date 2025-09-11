@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Modular AI Experience Demo Page
   Showcases cutting-edge AI features: dimensional arrays, kernel attention, T5, WebGPU

@@ -238,9 +238,9 @@
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {@const SvelteComponent = getStatusIcon(embeddingWorkerStatus)}
         <div class="flex items-center gap-2">
-          <svelte:component 
-            this={getStatusIcon(embeddingWorkerStatus)} 
+          <SvelteComponent 
             class="w-5 h-5 {getStatusColor(embeddingWorkerStatus)}"
           />
           <span class="text-sm font-medium capitalize">{embeddingWorkerStatus}</span>
@@ -256,9 +256,9 @@
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {@const SvelteComponent_1 = getStatusIcon(gpuStatus)}
         <div class="flex items-center gap-2">
-          <svelte:component 
-            this={getStatusIcon(gpuStatus)} 
+          <SvelteComponent_1 
             class="w-5 h-5 {getStatusColor(gpuStatus)}"
           />
           <span class="text-sm font-medium capitalize">{gpuStatus}</span>
@@ -450,9 +450,9 @@
       <CardContent>
         <div class="space-y-4">
           {#each results as result}
+            {@const SvelteComponent_2 = getTestIcon(result)}
             <div class="flex items-start gap-4 p-4 border rounded-lg">
-              <svelte:component 
-                this={getTestIcon(result)} 
+              <SvelteComponent_2 
                 class="w-5 h-5 mt-0.5 {result.success ? 'text-green-600' : 'text-red-600'}"
               />
               

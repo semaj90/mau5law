@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Grid Item Component -->
 <script lang="ts" context="module">
 </script>

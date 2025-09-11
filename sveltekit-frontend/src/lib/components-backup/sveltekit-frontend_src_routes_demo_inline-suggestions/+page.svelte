@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression -->
 <!--
   Enhanced Claude Inline Suggestions Demo
   Demonstrates real-time AI-powered editing with comprehensive suggestion types

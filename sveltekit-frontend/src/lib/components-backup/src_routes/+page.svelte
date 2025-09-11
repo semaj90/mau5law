@@ -154,7 +154,7 @@
   const userActions = quickActions[currentUserRole];
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
   <!-- Header with System Status -->

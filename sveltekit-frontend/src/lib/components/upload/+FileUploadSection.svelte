@@ -5,11 +5,11 @@
 
   const dispatch = createEventDispatcher();
 
-  let selectedCase: string = '';
-  let selectedPoi: string = '';
+  let selectedCase: string = $state('');
+  let selectedPoi: string = $state('');
   let file: File | null = null;
-  let summarize: boolean = false;
-  let tag: boolean = false;
+  let summarize: boolean = $state(false);
+  let tag: boolean = $state(false);
 
   const handleFileChange = (event: Event) => {
     const input = event.target as HTMLInputElement;

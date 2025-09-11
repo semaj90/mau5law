@@ -681,9 +681,9 @@
                 <img src={file.preview} alt={file.name} />
               </div>
             {:else}
+              {@const SvelteComponent = getFileIcon(file.type)}
               <div class="container mx-auto px-4">
-                <svelte:component
-                  this={getFileIcon(file.type)}
+                <SvelteComponent
                   class="container mx-auto px-4"
                 />
               </div>

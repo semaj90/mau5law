@@ -3,8 +3,8 @@
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
   import { UiButton as Button } from '$lib/components/ui';
   import { onMount } from 'svelte';
-  let caseId: string | null = null;
-  let readOnly = false;
+  let caseId: string | null = $state(null);
+  let readOnly = $state(false);
   onMount(() => {
     // Get case ID from URL params if provided
     caseId = $page.url.searchParams.get('caseId');

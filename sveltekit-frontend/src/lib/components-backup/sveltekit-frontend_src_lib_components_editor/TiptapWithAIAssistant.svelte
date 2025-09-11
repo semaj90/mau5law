@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Tiptap Editor with AI Assistant Integration -->
 <!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
 

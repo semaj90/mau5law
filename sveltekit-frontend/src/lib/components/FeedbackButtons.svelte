@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an initialization value -->
 <script lang="ts">
 
   let { sessionId }: string;

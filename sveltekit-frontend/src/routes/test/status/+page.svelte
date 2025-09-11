@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Route Status Check - Verify All Routes Work -->
 <script lang="ts">
   import { onMount } from 'svelte';

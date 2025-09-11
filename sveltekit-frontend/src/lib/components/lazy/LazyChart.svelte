@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: {:...} block is invalid at this position (did you forget to close the preceeding element or block?) -->
 <!-- LazyChart.svelte - Lazy loading wrapper for heavy chart components -->
 <script lang="ts">
   import LazyLoader from '../LazyLoader.svelte';

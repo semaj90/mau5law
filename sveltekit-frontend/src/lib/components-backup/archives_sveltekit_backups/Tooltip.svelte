@@ -1,9 +1,19 @@
 <script lang="ts">
-  export let content: string = "";
-  export let placement: "top" | "bottom" | "left" | "right" = "top";
-  export let disabled: boolean = false;
+  interface Props {
+    content?: string;
+    placement?: "top" | "bottom" | "left" | "right";
+    disabled?: boolean;
+    children?: import('svelte').Snippet;
+  }
 
-  let showTooltip = false;
+  let {
+    content = "",
+    placement = "top",
+    disabled = false,
+    children
+  }: Props = $props();
+
+  let showTooltip = $state(false);
   let timeoutId: ReturnType<typeof setTimeout>;
 
   function handleMouseEnter() {
@@ -25,7 +35,7 @@
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
 >
-  <slot />
+  {@render children?.()}
   {#if showTooltip && content}
     <div class="mx-auto px-4 max-w-7xl" role="tooltip">
       {content}

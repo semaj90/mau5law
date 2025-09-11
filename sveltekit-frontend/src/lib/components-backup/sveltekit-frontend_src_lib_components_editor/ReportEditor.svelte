@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'editorHeight' has already been declared -->
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { quintOut } from "svelte/easing";

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'Card' has already been declared -->
 <!-- Real-time Communication Demo Component -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';

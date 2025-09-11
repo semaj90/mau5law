@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { run } from 'svelte/legacy';
   // Badge replaced with span - not available in enhanced-bits

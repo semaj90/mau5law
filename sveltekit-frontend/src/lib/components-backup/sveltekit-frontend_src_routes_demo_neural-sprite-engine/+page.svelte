@@ -7,27 +7,27 @@
   import InteractionManager from '$lib/InteractionManager';
   import { Play, Pause, Square, Zap, Cpu, HardDrive, Gamepad2, Brain, Gauge } from 'lucide-svelte';
 
-  let canvasElement: HTMLCanvasElement
+  let canvasElement: HTMLCanvasElement = $state()
   let fabricCanvas: fabric.Canvas;
   let neuralEngine: any
   let performanceStores: any
   let animationId: number
 
   // Demo state
-  let isPlaying = false;
-  let selectedDemo = 'legal-workflow';
-  let aiPredictionEnabled = true;
-  let gpuAcceleration = true;
+  let isPlaying = $state(false);
+  let selectedDemo = $state('legal-workflow');
+  let aiPredictionEnabled = $state(true);
+  let gpuAcceleration = $state(true);
   // Interaction manager for nearest-neighbor queries
   const interactionManager = new InteractionManager();
-  let frameCount = 0;
+  let frameCount = $state(0);
   let lastFrameTime = performance.now();
 
   // Performance metrics
-  let fps = 60;
-  let gpuMemoryUsage = 0;
-  let cacheEfficiency = 100;
-  let aiConfidence = 0;
+  let fps = $state(60);
+  let gpuMemoryUsage = $state(0);
+  let cacheEfficiency = $state(100);
+  let aiConfidence = $state(0);
 
   // Demo scenarios
   const demoScenarios = [
@@ -63,7 +63,7 @@
 
   // AI prediction simulation
   let predictedNextStates = writable<string[]>([]);
-  let currentPredictionAccuracy = 85;
+  let currentPredictionAccuracy = $state(85);
 
   onMount(async () => {
     initializeNeuralSpriteEngine();

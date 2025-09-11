@@ -2,7 +2,7 @@
   interface Props {
     onselect?: (event?: any) => void;
   }
-  let {
+  let { children,
     class_ = "",
     disabled = false
   } = $props();
@@ -27,6 +27,6 @@
   {disabled}
   onclick={() => handleSelect()}
 >
-  <slot></slot>
+  {@render children?.()}
 </button>
 

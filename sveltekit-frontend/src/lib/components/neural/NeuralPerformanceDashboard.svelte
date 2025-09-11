@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'number' has already been declared -->
 <!--
   Neural Performance Dashboard - Real-time GPU & Neural Network Monitoring
   Integrates with Legal AI Platform GPU acceleration and neural processing

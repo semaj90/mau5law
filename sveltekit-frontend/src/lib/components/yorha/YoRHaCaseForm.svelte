@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <!-- Enhanced YoRHa Case Creation Form with Superforms + XState Integration -->
 <script lang="ts">
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';

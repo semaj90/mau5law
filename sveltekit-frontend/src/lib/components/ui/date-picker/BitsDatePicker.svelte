@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!-- Date Picker Component for Legal AI App -->
 <script lang="ts">
   import { DatePicker } from 'bits-ui';

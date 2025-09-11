@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!--
   Dynamic Routing Test Page - Simplified Version
   Basic route testing without complex imports

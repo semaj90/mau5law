@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { getContext, onDestroy, onMount } from 'svelte';
   import type {     Writable     } from 'svelte/store';

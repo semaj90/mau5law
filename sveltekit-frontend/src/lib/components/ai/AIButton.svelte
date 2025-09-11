@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   interface Props {
     position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' ;

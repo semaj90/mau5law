@@ -1,4 +1,9 @@
 <script lang="ts">
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();
   // Context menu item component
 </script>
 
@@ -6,6 +11,6 @@
   class="space-y-4"
   
 >
-  <slot></slot>
+  {@render children?.()}
 </button>
 

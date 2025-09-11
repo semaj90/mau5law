@@ -1,4 +1,4 @@
-<div class="_bg-red-500_vxas4i _font-semibold_vxas4i" />
+<div class="_bg-red-500_vxas4i _font-semibold_vxas4i"></div>
 
 <style>
   :global(._bg-red-500_vxas4i) {

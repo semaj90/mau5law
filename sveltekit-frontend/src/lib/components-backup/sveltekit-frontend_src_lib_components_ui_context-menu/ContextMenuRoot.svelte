@@ -1,8 +1,13 @@
 <script lang="ts">
+  interface Props {
+    children?: import('svelte').Snippet<[any]>;
+  }
+
+  let { children }: Props = $props();
   const { elements, states } = createContextMenu();
   const { menu, trigger } = elements;
   export { menu, trigger, states };
 </script>
 
-<slot {menu} {trigger} {states} />
+{@render children?.({ menu, trigger, states, })}
 

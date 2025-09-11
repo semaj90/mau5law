@@ -13,7 +13,7 @@
     type PerformanceSnapshot 
   } from '$lib/monitoring/legal-performance-metrics.js';
   
-  let metricsHistory: PerformanceSnapshot[] = [];
+  let metricsHistory: PerformanceSnapshot[] = $state([]);
   let refreshInterval: number;
   
   onMount(() => {

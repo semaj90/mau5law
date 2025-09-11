@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!--
   NieR-Themed Rich Text Editor Page
   Legal AI Platform - Text Editor

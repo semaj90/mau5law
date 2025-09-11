@@ -1,5 +1,9 @@
 <script lang="ts">
-  export let class_: string = '';
+  interface Props {
+    class_?: string;
+  }
+
+  let { class_ = '' }: Props = $props();
 </script>
 
 <div className="${1}"></div>

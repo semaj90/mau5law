@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import { Move, RotateCcw, Trash2 } from 'lucide-svelte';
   import { onDestroy, onMount } from 'svelte';

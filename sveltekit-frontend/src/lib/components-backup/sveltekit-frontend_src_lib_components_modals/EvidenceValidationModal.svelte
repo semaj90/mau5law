@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'aiEvent' has already been declared -->
 <script lang="ts">
   interface Props {
     onvalidated?: (event?: any) => void;

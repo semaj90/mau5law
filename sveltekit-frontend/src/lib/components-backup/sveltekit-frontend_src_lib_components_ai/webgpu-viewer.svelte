@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- WebGPU Embedding Visualization - 3D Vector Space with Real-time Updates -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';

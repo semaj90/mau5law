@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <!-- Enhanced Dialog component with custom implementation -->
 <script lang="ts">
   import { X } from "lucide-svelte";

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
   	import { onMount, tick } from 'svelte';
   	import { fade, fly, scale } from 'svelte/transition';

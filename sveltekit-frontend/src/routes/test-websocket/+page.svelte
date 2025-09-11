@@ -222,7 +222,7 @@
       <span class="status-indicator" class:connected={isConnected}></span>
       <span class="status-text">{connectionStatus}</span>
       {#if !isConnected}
-        <button type="button" on:click={reconnect} class="reconnect-btn">Reconnect</button>
+        <button type="button" onclick={reconnect} class="reconnect-btn">Reconnect</button>
       {/if}
     </div>
   </header>
@@ -258,7 +258,7 @@
               <input type="checkbox" bind:checked={sendTyping} />
               Simulate typing state
             </label>
-            <button type="button" on:click={sendTestTyping} disabled={!isConnected}>
+            <button type="button" onclick={sendTestTyping} disabled={!isConnected}>
               Send Typing Update
             </button>
           </div>
@@ -266,21 +266,21 @@
         
         <div class="action-group">
           <h3>Connection Map</h3>
-          <button type="button" on:click={sendTestConnectionMap} disabled={!isConnected}>
+          <button type="button" onclick={sendTestConnectionMap} disabled={!isConnected}>
             Send Test Connection Map
           </button>
         </div>
         
         <div class="action-group">
           <h3>Evidence Analysis</h3>
-          <button type="button" on:click={sendTestEvidenceAnalysis} disabled={!isConnected}>
+          <button type="button" onclick={sendTestEvidenceAnalysis} disabled={!isConnected}>
             Send Test Evidence Analysis
           </button>
         </div>
         
         <div class="action-group">
           <h3>Contextual Prompts</h3>
-          <button type="button" on:click={sendTestContextualPrompt} disabled={!isConnected}>
+          <button type="button" onclick={sendTestContextualPrompt} disabled={!isConnected}>
             Send Test Contextual Prompts
           </button>
         </div>
@@ -318,7 +318,7 @@
     <section class="message-log">
       <div class="log-header">
         <h2>Message Log ({messageLog.length})</h2>
-        <button type="button" on:click={clearLog} class="clear-btn">Clear Log</button>
+        <button type="button" onclick={clearLog} class="clear-btn">Clear Log</button>
       </div>
       <div class="log-content">
         {#if messageLog.length > 0}

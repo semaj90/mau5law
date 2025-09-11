@@ -411,39 +411,41 @@
           <div class="p-6">
             <OptimisticList 
               items={theories}
-              let:item={theory}
-              let:optimistic
+              
+              
             >
-              <div 
-                class="p-4 border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md mb-3
-                       {currentTheory?.id === theory.id ? 'border-purple-500 bg-purple-50' : 'hover:border-gray-300'}
-                       {optimistic ? 'opacity-50' : ''}"
-                role="button" tabindex="0"
-                onclick={() => selectTheory(theory)}
-              >
-                <div class="flex items-start justify-between mb-2">
-                  <h4 class="font-medium text-gray-900">{theory.name}</h4>
-                  <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getTheoryTypeColor(theory.type)}">
-                    {theory.type}
-                  </span>
-                </div>
-                
-                <p class="text-sm text-gray-600 mb-3">{theory.description}</p>
-                
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center text-sm">
-                    <span class="text-gray-500">Strength:</span>
-                    <span class="ml-1 font-medium {getStrengthColor(theory.strength)}">
-                      {Math.round(theory.strength * 100)}%
+              {#snippet children({ item: theory, optimistic })}
+                            <div 
+                  class="p-4 border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md mb-3
+                         {currentTheory?.id === theory.id ? 'border-purple-500 bg-purple-50' : 'hover:border-gray-300'}
+                         {optimistic ? 'opacity-50' : ''}"
+                  role="button" tabindex="0"
+                  onclick={() => selectTheory(theory)}
+                >
+                  <div class="flex items-start justify-between mb-2">
+                    <h4 class="font-medium text-gray-900">{theory.name}</h4>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getTheoryTypeColor(theory.type)}">
+                      {theory.type}
                     </span>
                   </div>
                   
-                  <div class="text-xs text-gray-400">
-                    {new Date(theory.updatedAt).toLocaleDateString()}
+                  <p class="text-sm text-gray-600 mb-3">{theory.description}</p>
+                  
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center text-sm">
+                      <span class="text-gray-500">Strength:</span>
+                      <span class="ml-1 font-medium {getStrengthColor(theory.strength)}">
+                        {Math.round(theory.strength * 100)}%
+                      </span>
+                    </div>
+                    
+                    <div class="text-xs text-gray-400">
+                      {new Date(theory.updatedAt).toLocaleDateString()}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </OptimisticList>
+                                        {/snippet}
+                        </OptimisticList>
 
             {#if theories.length === 0}
               <div class="text-center py-8 text-gray-500">

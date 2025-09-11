@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <!--
   Enhanced Claude Inline Suggestion Loop
   Real-time AI-powered editing with mini text box suggestions

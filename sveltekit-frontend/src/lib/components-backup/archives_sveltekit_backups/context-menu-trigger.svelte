@@ -4,7 +4,12 @@
   interface BuilderAction {
     action: (node: HTMLElement) => void;
   }
-  export let asChild = false;
+  interface Props {
+    asChild?: boolean;
+    children?: import('svelte').Snippet<[any]>;
+  }
+
+  let { asChild = false, children }: Props = $props();
   const { open } = getContext<{
     isOpen: Writable<boolean>;
     position: Writable<{ x: number; y: number }>;
@@ -28,10 +33,10 @@
 </script>
 
 {#if asChild}
-  <slot {builder} />
+  {@render children?.({ builder, })}
 {:else}
   <div use:builder.action>
-    <slot />
+    {@render children?.()}
   </div>
 {/if}
 

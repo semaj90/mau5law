@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token > -->
 <!-- Legal AI Recommendations Demo - SSR with Svelte 5 + Melt-UI + Bits-UI v2 -->
 <script lang="ts">
   import { page } from '$app/stores';

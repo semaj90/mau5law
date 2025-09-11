@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open -->
 <script lang="ts">
   interface Props {
     caseId?: string;

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level
 https://svelte.dev/e/js_parse_error -->
 <!-- WebGPU Tensor Processing Component for SvelteKit 2 -->

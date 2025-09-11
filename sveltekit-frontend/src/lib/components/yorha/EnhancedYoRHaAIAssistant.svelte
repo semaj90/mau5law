@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced YoRHa AI Assistant with RAG Integration & Evidence Mode -->
 <script lang="ts">
   import type { Props } from "$lib/types/global";

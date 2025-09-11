@@ -13,10 +13,10 @@
   ];
 
   // Component state
-  let selectedCaseType = '';
-  let acceptTerms = false;
-  let searchQuery = '';
-  let urgentCaseOnly = false;
+  let selectedCaseType = $state('');
+  let acceptTerms = $state(false);
+  let searchQuery = $state('');
+  let urgentCaseOnly = $state(false);
 
   // Event handlers
   function handleSearch(event: CustomEvent<string>) {

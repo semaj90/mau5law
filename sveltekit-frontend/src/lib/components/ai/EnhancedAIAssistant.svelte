@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `$effect()` can only be used as an expression statement -->
 <!--
   Enhanced AI Assistant - Multi-backend AI chat with intelligent routing
   Integrates with the global AI assistant store and pgvector semantic search

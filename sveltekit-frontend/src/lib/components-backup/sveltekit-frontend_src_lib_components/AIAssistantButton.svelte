@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 // Production AI Assistant Component - bits-ui Implementation
 // File: AIAssistantButton.svelte
 

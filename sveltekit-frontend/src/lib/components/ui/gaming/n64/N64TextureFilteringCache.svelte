@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   N64 Texture Filtering Cache Integration Component
   Enhances N643DButton with advanced texture caching and filtering

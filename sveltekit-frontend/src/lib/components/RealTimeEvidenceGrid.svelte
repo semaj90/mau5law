@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
   const { caseId: string | undefined = undefined, searchQuery: string = "", selectedTypes: string[] = [] } = $props();

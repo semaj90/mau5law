@@ -129,7 +129,7 @@
             handleQuerySubmit();
           }
         }}
-      />
+></textarea>
       
       <button
         type="button"

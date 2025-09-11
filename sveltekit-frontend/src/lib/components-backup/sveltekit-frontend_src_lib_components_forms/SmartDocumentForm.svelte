@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Smart Document Form with OCR Auto-Population -->
 <script lang="ts">
   interface Props {

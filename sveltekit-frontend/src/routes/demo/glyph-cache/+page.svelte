@@ -5,6 +5,8 @@
 -->
 
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import NESTyepwriterStream from '$lib/components/chat/nes-typewriter-stream.svelte';
@@ -22,18 +24,18 @@
   const systemValidation = writable<any>(null);
   
   // Demo controls
-  let selectedFontStyle: 'classic' | 'modern' | 'legal' | 'retro' = 'legal';
-  let selectedCharacter = 'A';
-  let demoTextInput = 'The quick brown fox jumps over the lazy dog. § Legal symbols ¶ work perfectly!';
-  let typewriterSpeed = 50;
-  let showGlyphDetails = false;
-  let showEmbeddingData = false;
-  let showSystemMetrics = false;
+  let selectedFontStyle: 'classic' | 'modern' | 'legal' | 'retro' = $state('legal');
+  let selectedCharacter = $state('A');
+  let demoTextInput = $state('The quick brown fox jumps over the lazy dog. § Legal symbols ¶ work perfectly!');
+  let typewriterSpeed = $state(50);
+  let showGlyphDetails = $state(false);
+  let showEmbeddingData = $state(false);
+  let showSystemMetrics = $state(false);
   
   // Visual state
-  let glyphCanvas: HTMLCanvasElement;
-  let patternCanvas: HTMLCanvasElement;
-  let embeddingVisualization: HTMLCanvasElement;
+  let glyphCanvas: HTMLCanvasElement = $state();
+  let patternCanvas: HTMLCanvasElement = $state();
+  let embeddingVisualization: HTMLCanvasElement = $state();
   
   // Demo messages for contextual engineering
   const DEMO_LEGAL_MESSAGES = [
@@ -48,7 +50,7 @@
   ];
   
   let currentMessageIndex = 0;
-  let orchestrationLog: string[] = [];
+  let orchestrationLog: string[] = $state([]);
   
   onMount(async () => {
     await initializeDemo();
@@ -281,13 +283,17 @@
   }
   
   // Reactive updates
-  $: if (selectedCharacter || selectedFontStyle) {
-    loadGlyph(selectedCharacter, selectedFontStyle);
-  }
+  run(() => {
+    if (selectedCharacter || selectedFontStyle) {
+      loadGlyph(selectedCharacter, selectedFontStyle);
+    }
+  });
   
-  $: if (demoTextInput) {
-    $demoText = demoTextInput;
-  }
+  run(() => {
+    if (demoTextInput) {
+      $demoText = demoTextInput;
+    }
+  });
 </script>
 
 <svelte:head>
@@ -453,21 +459,21 @@
         <div class="orchestration-controls">
           <button 
             class="nes-btn is-primary"
-            on:click={processWithGemma}
+            onclick={processWithGemma}
           >
             Process Legal Query
           </button>
           
           <button 
             class="nes-btn is-warning"
-            on:click={clearOrchestrationLog}
+            onclick={clearOrchestrationLog}
           >
             Clear Log
           </button>
           
           <button 
             class="nes-btn is-success"
-            on:click={runSystemValidation}
+            onclick={runSystemValidation}
           >
             Validate Systems
           </button>

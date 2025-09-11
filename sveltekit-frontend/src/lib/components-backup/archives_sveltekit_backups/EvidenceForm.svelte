@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: ')}' is not a valid attribute name -->
 <script lang="ts">
   import { invalidateAll } from "$app/navigation";
   import { createEventDispatcher } from "svelte";

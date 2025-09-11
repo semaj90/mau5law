@@ -488,7 +488,7 @@
 						<CardHeader class="pb-3">
 							<div class="flex justify-between items-center">
 								<CardTitle class="text-lg flex items-center gap-2">
-									<div class="w-3 h-3 bg-primary rounded-full" />
+									<div class="w-3 h-3 bg-primary rounded-full"></div>
 									{column.title}
 								</CardTitle>
 								<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{column.items.length}</span>

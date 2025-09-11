@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: 'return' outside of function -->
 <!-- 
   Legal Case Manager Component
   Bits UI v2 + Svelte 5 implementation for comprehensive case management

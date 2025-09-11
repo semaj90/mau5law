@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Compiler AI Feedback Loop Demo -->
 <!-- Real-time demonstration of AI-driven development architecture -->
 

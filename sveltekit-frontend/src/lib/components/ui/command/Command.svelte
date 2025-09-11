@@ -91,7 +91,7 @@
     {#each mockCommands as group}
       <Command.Group class="legal-command-group">
         <Command.GroupHeading class="px-2 py-1.5 text-xs font-medium text-muted-foreground font-mono uppercase tracking-wider flex items-center gap-2">
-          <svelte:component this={group.icon} class="h-3 w-3" />
+          <group.icon class="h-3 w-3" />
           {group.group}
         </Command.GroupHeading>
 
@@ -102,7 +102,7 @@
             class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 legal-command-item font-mono"
           >
             <div class="flex items-start gap-3 w-full">
-              <svelte:component this={group.icon} class="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+              <group.icon class="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
               <div class="flex flex-col gap-1 min-w-0 flex-1">
                 <div class="font-medium text-sm">{item.title}</div>
                 <div class="text-xs text-muted-foreground">{item.description}</div>

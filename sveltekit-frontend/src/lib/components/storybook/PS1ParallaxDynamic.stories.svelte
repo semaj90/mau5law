@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
 </script>
 	import { onMount, onDestroy } from 'svelte';

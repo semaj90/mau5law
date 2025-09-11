@@ -170,6 +170,7 @@ Compact searchable component for embedding in other interfaces
 
         <div class="space-y-1">
           {#each searchResults as result}
+            {@const SvelteComponent = getEntityIcon(result.source)}
             <button
               type="button"
               class="w-full text-left p-3 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
@@ -177,7 +178,7 @@ Compact searchable component for embedding in other interfaces
             >
               <div class="flex items-start justify-between mb-2">
                 <div class="flex items-center gap-2">
-                  <svelte:component this={getEntityIcon(result.source)} class="h-4 w-4 text-muted-foreground" />
+                  <SvelteComponent class="h-4 w-4 text-muted-foreground" />
                   <span class="text-sm font-medium truncate">{result.id}</span>
                 </div>
                 <div class="flex items-center gap-1">

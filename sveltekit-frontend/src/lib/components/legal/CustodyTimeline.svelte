@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
 Custody Timeline Component
 Displays the chronological chain of custody events with detailed audit trail

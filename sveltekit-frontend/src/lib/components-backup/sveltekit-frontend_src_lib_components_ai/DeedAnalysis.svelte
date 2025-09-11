@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'searchQuery' has already been declared -->
 <script lang="ts">
   interface Props {
     selectedDocument: Document | null ;

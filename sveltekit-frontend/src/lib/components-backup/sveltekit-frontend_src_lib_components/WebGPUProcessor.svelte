@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- WebGPU Tensor Processing Component for SvelteKit 2 -->
 <!-- Real-time GPU acceleration for legal document processing -->
 <!-- Integrates with QUIC streaming and attention tracking -->

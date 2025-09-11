@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!--
   Canvas Integration Demo Page
   Showcases the complete Evidence Canvas with YoRHa integration

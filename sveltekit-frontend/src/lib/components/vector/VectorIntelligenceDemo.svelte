@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!--
 Vector Intelligence Demo Component
 Comprehensive showcase of Phase 4 Vector Intelligence capabilities

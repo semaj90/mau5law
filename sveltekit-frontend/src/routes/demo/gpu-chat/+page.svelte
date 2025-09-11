@@ -1,7 +1,7 @@
 <script lang="ts">
-  let messages: { role: 'user' | 'assistant'; content: string }[] = [];
-  let userInput = '';
-  let isLoading = false;
+  let messages: { role: 'user' | 'assistant'; content: string }[] = $state([]);
+  let userInput = $state('');
+  let isLoading = $state(false);
 
   async function handleSubmit() {
     if (!userInput.trim() || isLoading) return;

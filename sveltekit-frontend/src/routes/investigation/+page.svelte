@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open -->
 <!--
   Integrated Legal Investigation Workspace
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant

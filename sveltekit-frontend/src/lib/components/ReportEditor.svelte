@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
   import { browser } from "$app/environment";
   import type { CitationPoint, Report, ReportSection } from "$lib/data/types";

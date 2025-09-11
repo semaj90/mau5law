@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token > -->
 <!-- 🏛️ NES-GPU Integrated Legal Document Viewer with MinIO Upload
      Advanced GPU-accelerated document rendering with:
      - NES memory architecture integration  

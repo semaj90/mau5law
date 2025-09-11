@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'autoHide' has already been declared -->
 <script lang="ts">
   interface Props {
     showInline?: any;

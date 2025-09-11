@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { Badge } from "$lib/components/ui/index";
   import type { Case } from "$lib/types/api";

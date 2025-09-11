@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:keydown) and new syntaxes for event handling is not allowed. Use only the onkeydown syntax -->
 <!-- YoRHa Legal AI Dashboard - Complete Integration -->
 <script lang="ts">
   // Using Svelte 5 runes ($state/$derived) without importing $derived at runtime

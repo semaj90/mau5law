@@ -233,11 +233,14 @@
     </Card.Header>
     <Card.Content>
       {#if systemHealth}
+        {@const SvelteComponent = getStatusIcon(systemHealth.components?.redis?.connected ? 'connected' : 'error')}
+        {@const SvelteComponent_1 = getStatusIcon(systemHealth.components?.loki?.initialized ? 'working' : 'error')}
+        {@const SvelteComponent_2 = getStatusIcon(systemHealth.components?.instantSearch?.available ? 'healthy' : 'error')}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <!-- Redis Status -->
           <div class="space-y-2">
             <div class="flex items-center gap-2">
-              <svelte:component this={getStatusIcon(systemHealth.components?.redis?.connected ? 'connected' : 'error')} class="h-4 w-4 {getStatusColor(systemHealth.components?.redis?.connected ? 'connected' : 'error')}" 
+              <SvelteComponent class="h-4 w-4 {getStatusColor(systemHealth.components?.redis?.connected ? 'connected' : 'error')}" 
               />
               <span class="font-medium">Redis Cache</span>
             </div>
@@ -249,7 +252,7 @@
           <!-- Loki Status -->
           <div class="space-y-2">
             <div class="flex items-center gap-2">
-              <svelte:component this={getStatusIcon(systemHealth.components?.loki?.initialized ? 'working' : 'error')} class="h-4 w-4 {getStatusColor(systemHealth.components?.loki?.initialized ? 'working' : 'error')}" 
+              <SvelteComponent_1 class="h-4 w-4 {getStatusColor(systemHealth.components?.loki?.initialized ? 'working' : 'error')}" 
               />
               <span class="font-medium">Loki.js Database</span>
             </div>
@@ -261,7 +264,7 @@
           <!-- Search Engine Status -->
           <div class="space-y-2">
             <div class="flex items-center gap-2">
-              <svelte:component this={getStatusIcon(systemHealth.components?.instantSearch?.available ? 'healthy' : 'error')} class="h-4 w-4 {getStatusColor(systemHealth.components?.instantSearch?.available ? 'healthy' : 'error')}" 
+              <SvelteComponent_2 class="h-4 w-4 {getStatusColor(systemHealth.components?.instantSearch?.available ? 'healthy' : 'error')}" 
               />
               <span class="font-medium">Search Engine</span>
             </div>
@@ -272,9 +275,10 @@
         </div>
 
         <!-- Integration Status -->
+        {@const SvelteComponent_3 = getStatusIcon(systemHealth.status)}
         <div class="mt-4 p-3 rounded-lg border">
           <div class="flex items-center gap-2 mb-2">
-            <svelte:component this={getStatusIcon(systemHealth.status)} class="h-4 w-4 {getStatusColor(systemHealth.status)}" 
+            <SvelteComponent_3 class="h-4 w-4 {getStatusColor(systemHealth.status)}" 
             />
             <span class="font-medium">Full Pipeline Integration</span>
             <Badge class="{systemHealth.status === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
@@ -398,7 +402,8 @@
         <Card.Root>
           <Card.Header>
             <Card.Title class="flex items-center gap-2">
-              <svelte:component this={getStatusIcon(testResults.status)} class="h-5 w-5 {getStatusColor(testResults.status)}" />
+              {@const SvelteComponent_4 = getStatusIcon(testResults.status)}
+              <SvelteComponent_4 class="h-5 w-5 {getStatusColor(testResults.status)}" />
               Test Results
               <Badge class="{testResults.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                 {testResults.status}
@@ -430,9 +435,10 @@
             {#if testResults.results}
               <div class="space-y-4">
                 {#each Object.entries(testResults.results) as [component, result]}
+                  {@const SvelteComponent_5 = getStatusIcon(result.status)}
                   <div class="border rounded-lg p-4">
                     <div class="flex items-center gap-2 mb-2">
-                      <svelte:component this={getStatusIcon(result.status)} class="h-4 w-4 {getStatusColor(result.status)}" 
+                      <SvelteComponent_5 class="h-4 w-4 {getStatusColor(result.status)}" 
                       />
                       <span class="font-medium capitalize">{component}</span>
                       <Badge class="{result.status === 'working' || result.status === 'connected' || result.status === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Simple HTML5 Drag and Drop Component
   Modern Svelte 5 implementation with gaming aesthetics

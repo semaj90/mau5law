@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:contextmenu) and new syntaxes for event handling is not allowed. Use only the oncontextmenu syntax -->
 <script lang="ts">
   interface Props {
     onnodeUpdate?: (event?: any) => void;

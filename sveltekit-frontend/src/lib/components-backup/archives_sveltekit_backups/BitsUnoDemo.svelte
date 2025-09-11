@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { createDialog, createPopover, createDropdownMenu, melt } from '@melt-ui/svelte';
   import { fade } from 'svelte/transition';

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/button';

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!--
   WebGPU Buffer Quantization Demo
   Interactive demo showing the complete buffer conversion and quantization system

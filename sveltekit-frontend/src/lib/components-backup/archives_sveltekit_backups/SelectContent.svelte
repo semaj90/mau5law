@@ -3,7 +3,12 @@
   import { writable } from "svelte/store";
   import type { SelectContext } from "./types";
 
-  export let class_: string = "";
+  interface Props {
+    class_?: string;
+    children?: import('svelte').Snippet;
+  }
+
+  let { class_ = "", children }: Props = $props();
 
   const context =
     getContext<SelectContext>("select") ||
@@ -18,7 +23,7 @@
 
 {#if $open}
   <div class="mx-auto px-4 max-w-7xl" role="listbox">
-    <slot />
+    {@render children?.()}
   </div>
 {/if}
 

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Chat Component with bits-ui, melt-ui, shadcn-svelte integration -->
 <script lang="ts">
   	import { onMount, onDestroy } from 'svelte';

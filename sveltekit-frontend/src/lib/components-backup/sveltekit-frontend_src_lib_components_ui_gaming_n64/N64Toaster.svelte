@@ -3,7 +3,7 @@
   import N64ToastStore from './N64ToastStore';
   import type { N64Toast } from './N64ToastStore';
 
-  let toasts: N64Toast[] = [];
+  let toasts: N64Toast[] = $state([]);
   let unsubscribe: () => void = () => {};
 
   onMount(() => {

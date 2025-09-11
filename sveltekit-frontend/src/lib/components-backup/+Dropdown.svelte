@@ -1,9 +1,19 @@
 <script lang="ts">
-  export let options: { value: string; label: string }[] = [];
-  export let selected: string = '';
-  export let placeholder: string = 'Select an option';
-  export let label: string = '';
-  export let id: string = ''; // Add id prop
+  interface Props {
+    options?: { value: string; label: string }[];
+    selected?: string;
+    placeholder?: string;
+    label?: string;
+    id?: string;
+  }
+
+  let {
+    options = [],
+    selected = $bindable(''),
+    placeholder = 'Select an option',
+    label = '',
+    id = ''
+  }: Props = $props();
 </script>
 
 <div class="dropdown-container">

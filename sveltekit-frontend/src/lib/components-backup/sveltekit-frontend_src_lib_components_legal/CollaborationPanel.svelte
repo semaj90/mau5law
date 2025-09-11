@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
 Collaboration Panel Component
 Real-time collaboration interface for multiple investigators working on evidence custody

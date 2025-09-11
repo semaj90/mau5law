@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Universal Search Bar - Svelte 5 Component
   Modern search interface with AI-powered suggestions and vector search

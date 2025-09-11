@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'autoSaveInterval' has already been declared -->
 <script lang="ts">
   interface Props {
     onsave?: (event?: any) => void;

@@ -12,9 +12,9 @@
   } from '$lib/components/ui/enhanced-bits';;
   import { Checkbox } from '$lib/components/ui/checkbox';
 
-  let dialogOpen = false;
-  let health = 3;
-  let score = 1250;
+  let dialogOpen = $state(false);
+  let health = $state(3);
+  let score = $state(1250);
   let level = 1;
 
   function decreaseHealth() {
@@ -174,55 +174,57 @@
 
   <!-- Game Selection Menu -->
   <Dialog bind:open={dialogOpen}>
-    <div slot="content" class="nes-dialog game-menu">
-      <h2 class="nes-text is-primary">GAME SELECT</h2>
-      <div class="game-selection-description">
-          <div class="game-list">
-            <Card class="nes-container game-card">
-              <div class="game-preview">
-                <div class="game-icon mario-icon"></div>
-                <div class="game-info">
-                  <h3>SUPER MARIO BROS</h3>
-                  <p>WORLD 1-1</p>
-                  <Badge class="nes-badge">
-                    <span class="is-success">CLASSIC</span>
-                  </Badge>
+    {#snippet content()}
+        <div  class="nes-dialog game-menu">
+        <h2 class="nes-text is-primary">GAME SELECT</h2>
+        <div class="game-selection-description">
+            <div class="game-list">
+              <Card class="nes-container game-card">
+                <div class="game-preview">
+                  <div class="game-icon mario-icon"></div>
+                  <div class="game-info">
+                    <h3>SUPER MARIO BROS</h3>
+                    <p>WORLD 1-1</p>
+                    <Badge class="nes-badge">
+                      <span class="is-success">CLASSIC</span>
+                    </Badge>
+                  </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
 
-            <Card class="nes-container game-card">
-              <div class="game-preview">
-                <div class="game-icon zelda-icon"></div>
-                <div class="game-info">
-                  <h3>THE LEGEND OF ZELDA</h3>
-                  <p>ADVENTURE</p>
-                  <Badge class="nes-badge">
-                    <span class="is-warning">RPG</span>
-                  </Badge>
+              <Card class="nes-container game-card">
+                <div class="game-preview">
+                  <div class="game-icon zelda-icon"></div>
+                  <div class="game-info">
+                    <h3>THE LEGEND OF ZELDA</h3>
+                    <p>ADVENTURE</p>
+                    <Badge class="nes-badge">
+                      <span class="is-warning">RPG</span>
+                    </Badge>
+                  </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
 
-            <Card class="nes-container game-card">
-              <div class="game-preview">
-                <div class="game-icon metroid-icon"></div>
-                <div class="game-info">
-                  <h3>METROID</h3>
-                  <p>PLANET ZEBES</p>
-                  <Badge class="nes-badge">
-                    <span class="is-error">ACTION</span>
-                  </Badge>
+              <Card class="nes-container game-card">
+                <div class="game-preview">
+                  <div class="game-icon metroid-icon"></div>
+                  <div class="game-info">
+                    <h3>METROID</h3>
+                    <p>PLANET ZEBES</p>
+                    <Badge class="nes-badge">
+                      <span class="is-error">ACTION</span>
+                    </Badge>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          </div>
+              </Card>
+            </div>
+        </div>
+        <div class="menu-actions">
+          <Button class="nes-btn is-primary bits-btn bits-btn" onclick={() => dialogOpen = false}>START GAME</Button>
+          <Button class="nes-btn bits-btn bits-btn" onclick={() => dialogOpen = false}>CANCEL</Button>
+        </div>
       </div>
-      <div class="menu-actions">
-        <Button class="nes-btn is-primary bits-btn bits-btn" onclick={() => dialogOpen = false}>START GAME</Button>
-        <Button class="nes-btn bits-btn bits-btn" onclick={() => dialogOpen = false}>CANCEL</Button>
-      </div>
-    </div>
+      {/snippet}
   </Dialog>
 
   <!-- 8-bit Color Analysis -->

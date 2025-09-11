@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
 Prosecutor Dashboard - Complete Legal AI Workflow
 Features: Case management, evidence upload, AI chat, vector search

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
   let { currentStep = $bindable() } = $props(); // number;
   let { totalSteps = $bindable() } = $props(); // number;

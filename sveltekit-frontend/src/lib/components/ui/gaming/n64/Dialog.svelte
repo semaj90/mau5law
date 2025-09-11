@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!--
   N64 Dialog/Modal Component
   Advanced 3D modal with atmospheric depth, layered effects, and spatial transitions

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   WebAssembly GPU Initialization Demo
   Real-time monitoring and testing interface for the WASM GPU system

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Enhanced Case Form with SuperForms + Zod + Actions Enhancement
   Demonstrates complete form enhancement pattern with validation
@@ -536,17 +537,4 @@
   </div>
 {/if}
 
-<style lang="postcss">
-  /* Custom styles for enhanced form interactions */
-  .form-field-error {
-    @apply border-destructive focus:ring-destructive;
-  }
-
-  .form-field-valid {
-    @apply border-green-500 focus:ring-green-500;
-  }
-
-  .upload-zone:hover {
-    @apply border-primary/50 bg-primary/5;
-  }
-</style>
+<style lang="postcss">/*$$__STYLE_CONTENT__$$*/</style>

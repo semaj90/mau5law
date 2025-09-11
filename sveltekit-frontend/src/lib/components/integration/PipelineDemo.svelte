@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here -->
 {#snippet default}
 <script lang="ts">
   import { pipelineManager, type PipelineType, type PipelineResult } from '$lib/services/pipeline-manager';

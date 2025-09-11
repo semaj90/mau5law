@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  let items: any[] = [];
-  let q = '';
-  let busy = false;
+  let items: any[] = $state([]);
+  let q = $state('');
+  let busy = $state(false);
 
   async function load(): Promise<void> {
     busy = true;

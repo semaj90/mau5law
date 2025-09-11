@@ -1,7 +1,12 @@
 <script lang="ts">
   import { createSelect, melt } from '@melt-ui/svelte';
   import { setContext } from 'svelte';
-  export let selected = undefined;
+  interface Props {
+    selected?: any;
+    children?: import('svelte').Snippet<[any]>;
+  }
+
+  let { selected = $bindable(undefined), children }: Props = $props();
   const {
     elements: { trigger, menu, option },
     states: { selectedLabel, open },
@@ -24,5 +29,5 @@
   export { trigger, menu, option, selectedLabel, open, isSelected };
 </script>
 
-<slot {trigger} {menu} {option} {selectedLabel} {open} {isSelected} />
+{@render children?.({ trigger, menu, option, selectedLabel, open, isSelected, })}
 

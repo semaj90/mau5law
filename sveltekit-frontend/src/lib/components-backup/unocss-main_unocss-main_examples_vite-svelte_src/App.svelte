@@ -1,8 +1,10 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
     import { fade, fly } from 'svelte/transition'
     import Footer from './Footer.svelte'
-    let logo = false
-    let red = false
+    let logo = $state(false)
+    let red = $state(false)
     let x = 'abc?cbd'
     function toggleLogo() {
         logo = !logo
@@ -11,8 +13,10 @@
         red = !red
     }
     // TODO: Convert to $derived: button = logo ? 'Hide logo' : 'Show logo'
-    $: span = red ? 'Normal' : 'Red'
-    $: console.log(x)
+    let span = $derived(red ? 'Normal' : 'Red')
+    run(() => {
+    console.log(x)
+  });
 </script>
 
 <main>

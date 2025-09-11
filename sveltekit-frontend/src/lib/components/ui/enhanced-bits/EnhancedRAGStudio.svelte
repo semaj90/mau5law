@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- EnhancedRAG:Studio UI - Complete RAG Management Dashboard -->
 <script lang="ts">
   interface Props {

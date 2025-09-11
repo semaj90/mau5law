@@ -1,11 +1,16 @@
 <script lang="ts">
   import { melt } from '@melt-ui/svelte';
-  export let trigger: unknown;
-  export let selectedLabel: unknown;
+  interface Props {
+    trigger: unknown;
+    selectedLabel: unknown;
+    children?: import('svelte').Snippet<[any]>;
+  }
+
+  let { trigger, selectedLabel, children }: Props = $props();
 </script>
 
 <button  class="mx-auto px-4 max-w-7xl">
-  <slot {selectedLabel} />
+  {@render children?.({ selectedLabel, })}
 </button>
 
 <style>

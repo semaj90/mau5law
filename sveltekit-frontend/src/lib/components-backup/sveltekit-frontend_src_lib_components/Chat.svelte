@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   	import { onMount, onDestroy } from 'svelte';
   	import { useMachine } from '@xstate/svelte';

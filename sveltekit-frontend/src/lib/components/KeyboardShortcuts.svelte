@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
 
   import { browser } from "$app/environment";

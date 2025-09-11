@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true, onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
 

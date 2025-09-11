@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
 </script>
   import { user } from "$lib/stores/user";

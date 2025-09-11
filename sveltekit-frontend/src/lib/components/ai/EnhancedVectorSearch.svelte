@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <!-- Enhanced Vector Search Interface with Ranking, Analytics, and Real-time Results -->

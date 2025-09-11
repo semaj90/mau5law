@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 /// <reference types="vite/client" />
 <script lang="ts">
   import { onMount } from 'svelte';

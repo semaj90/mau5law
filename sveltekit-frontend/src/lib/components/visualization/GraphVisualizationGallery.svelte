@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: 'return' outside of function -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'disabled' has already been declared -->
 <!-- LLM Provider Selector with Bits UI v2 and Real-time Status -->
 <script lang="ts">
   interface Props {

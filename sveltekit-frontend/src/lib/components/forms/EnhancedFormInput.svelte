@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Enhanced Form Input Component with comprehensive validation
   Demonstrates the validation utilities in practice

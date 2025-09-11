@@ -180,7 +180,7 @@
   }
 </script>
 
-<svelte:window on:mousemove={handleMouseMove} on:mouseup={handleMouseUp} />
+<svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
 
 <!-- Main Evidence Board Layout -->
 <div class="flex h-screen bg-gray-100 font-mono">
@@ -309,8 +309,8 @@
             <div
               class="absolute cursor-pointer select-none"
               style="left: {item.position.x}px; top: {item.position.y}px; z-index: 2;"
-              on:mousedown={(e) => handleMouseDown(e, item)}
-              on:click={() => startConnection(item)}
+              onmousedown={(e) => handleMouseDown(e, item)}
+              onclick={() => startConnection(item)}
             >
               <Card.Root class="w-60 bg-white border-2 {selectedItem?.id === item.id ? 'border-blue-500' : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all">
                 <Card.Header class="pb-2">

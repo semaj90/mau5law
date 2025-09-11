@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">

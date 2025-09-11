@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!--
   NieR Rich Text Editor Test Page
   Quick test to verify editor functionality

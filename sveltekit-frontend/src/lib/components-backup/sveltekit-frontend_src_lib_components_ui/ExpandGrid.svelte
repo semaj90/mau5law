@@ -9,7 +9,7 @@
     expandOnFocus?: boolean;
     onexpand?: (event?: any) => void;
   }
-  let {
+  let { children,
     columns = 1,
     expandedColumns = 3,
     gap = "1rem",
@@ -67,7 +67,7 @@
   role="grid"
   tabindex={0}
 >
-  <slot></slot>
+  {@render children?.()}
 </div>
 
 <style>

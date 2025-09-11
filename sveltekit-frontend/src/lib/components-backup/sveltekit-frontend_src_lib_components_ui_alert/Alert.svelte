@@ -1,5 +1,5 @@
 <script lang="ts">
-  let {
+  let { children,
     variant = 'default',
     class: className = '',
     children,
@@ -18,6 +18,6 @@
   role="alert"
   {...restProps}
 >
-  <slot></slot>
+  {@render children?.()}
 </div>
 

@@ -3,9 +3,9 @@
 
   const dispatch = createEventDispatcher();
 
-  let notesContent: string = '';
-  let selectedCaseForNotes: string = ''; // Assuming notes can be linked to a case
-  let selectedPoiForNotes: string = ''; // Assuming notes can be linked to a POI
+  let notesContent: string = $state('');
+  let selectedCaseForNotes: string = $state(''); // Assuming notes can be linked to a case
+  let selectedPoiForNotes: string = $state(''); // Assuming notes can be linked to a POI
 
   // Dummy data for dropdowns - replace with actual data fetched from API
   const caseOptions = [

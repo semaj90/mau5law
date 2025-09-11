@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Recommendation System Demo - Gaming CSS Modals Integration -->
 <script lang="ts">
   import { , onMount, onDestroy } from 'svelte';

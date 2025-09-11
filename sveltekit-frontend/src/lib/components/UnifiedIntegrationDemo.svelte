@@ -311,7 +311,7 @@
               rows="8"
               class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
               placeholder="Enter test data..."
-            />
+></textarea>
           </div>
 
           <!-- Error Display -->

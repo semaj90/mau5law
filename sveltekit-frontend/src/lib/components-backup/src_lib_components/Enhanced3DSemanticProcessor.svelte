@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `export let` in runes mode — use `$props()` instead -->
 <!--
   Enhanced 3D Semantic Processor - WebAssembly + WebGPU integration
   Combines text processing, 3D spatial embeddings, and autocomplete

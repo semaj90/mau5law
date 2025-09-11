@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
   import Modal from "../ui/Modal.svelte";
   // Adjust path to melt-ui or bits-ui as needed

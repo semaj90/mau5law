@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
   const { title = "System status", status = "OK", updatedAt = null } = $props();
 

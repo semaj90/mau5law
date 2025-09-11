@@ -126,11 +126,12 @@
           {#if foafData.people.length > 0}
             <div class="space-y-3">
               {#each foafData.people as person (person.id)}
+                {@const SvelteComponent = getRoleIcon(person.role)}
                 <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                   <div class="flex items-start justify-between">
                     <div class="flex items-center gap-3">
                       <div class="p-2 bg-blue-100 rounded-full">
-                        <svelte:component this={getRoleIcon(person.role)} class="w-4 h-4 text-blue-600" />
+                        <SvelteComponent class="w-4 h-4 text-blue-600" />
                       </div>
                       <div>
                         <h3 class="font-medium text-gray-900">{person.name}</h3>

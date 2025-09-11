@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Phase 3: Live Agent Integration Demo -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated JSX contents -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { ollama, MODELS } from '$lib/ai/ollama';

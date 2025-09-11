@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import { AlertCircle, FileText, Image, Upload } from 'lucide-svelte';
   import { createEventDispatcher } from 'svelte';

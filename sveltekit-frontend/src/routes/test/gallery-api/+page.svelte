@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Test page for Gallery API endpoints
   Tests all gallery functionality including upload, search, and management

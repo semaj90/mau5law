@@ -118,9 +118,11 @@ https://svelte.dev/e/js_parse_error -->
   description="AI-powered legal evidence analysis and tagging"
   size="xl"
 >
-  <svelte:fragment slot="trigger">
-    {@render trigger?.()}
-  </svelte:fragment>
+  {#snippet trigger()}
+  
+      {@render trigger?.()}
+    
+  {/snippet}
 
   {#if evidence}
     <div class="space-y-4">
@@ -307,13 +309,15 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 
-  <svelte:fragment slot="footer" let:close>
-    <Button class="bits-btn" variant="secondary" onclick={() => close()}>
-      Close
-    </Button>
-    <Button class="bits-btn" variant="primary" onclick={() => onsaveAnalysis?.()}>
-      Save Analysis
-    </Button>
-  </svelte:fragment>
+  {#snippet footer({ close })}
+  
+      <Button class="bits-btn" variant="secondary" onclick={() => close()}>
+        Close
+      </Button>
+      <Button class="bits-btn" variant="primary" onclick={() => onsaveAnalysis?.()}>
+        Save Analysis
+      </Button>
+    
+  {/snippet}
 </Dialog>
 

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Modular AI Experience Component
   Integrates all AI systems: dimensional arrays, kernel attention, T5, WebGPU

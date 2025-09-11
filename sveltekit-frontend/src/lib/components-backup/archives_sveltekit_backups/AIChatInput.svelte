@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!-- AI Chat Input Component -->
 <script lang="ts">
   import { browser } from "$app/environment";

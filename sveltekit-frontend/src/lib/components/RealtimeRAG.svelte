@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Real-time RAG Interface Component -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';

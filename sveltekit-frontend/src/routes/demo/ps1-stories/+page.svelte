@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
 <script lang="ts">
 </script>
 	import PS1Surface from '../../../stories/PS1Surface.stories.svelte';

@@ -2,11 +2,23 @@
   import { X } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
 
-  export let open = false;
-  export let title = "";
-  export let description = "";
-  export let side: "left" | "right" | "top" | "bottom" = "right";
-  export let size: "sm" | "md" | "lg" | "xl" = "md";
+  interface Props {
+    open?: boolean;
+    title?: string;
+    description?: string;
+    side?: "left" | "right" | "top" | "bottom";
+    size?: "sm" | "md" | "lg" | "xl";
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    open = $bindable(false),
+    title = "",
+    description = "",
+    side = "right",
+    size = "md",
+    children
+  }: Props = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -47,7 +59,7 @@
         </button>
       </div>
       <div class="mx-auto px-4 max-w-7xl">
-        <slot />
+        {@render children?.()}
       </div>
     </div>
   </div>

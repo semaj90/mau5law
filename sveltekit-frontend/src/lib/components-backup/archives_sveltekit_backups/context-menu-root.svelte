@@ -1,7 +1,12 @@
 <script lang="ts">
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
-  export let onOpenChange: ((open: boolean) => void) | undefined = undefined;
+  interface Props {
+    onOpenChange?: ((open: boolean) => void) | undefined;
+    children?: import('svelte').Snippet;
+  }
+
+  let { onOpenChange = undefined, children }: Props = $props();
   const isOpen = writable(false);
   const position = writable({ x: 0, y: 0 });
   setContext('context-menu', {
@@ -20,7 +25,7 @@
 </script>
 
 <div class="mx-auto px-4 max-w-7xl">
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

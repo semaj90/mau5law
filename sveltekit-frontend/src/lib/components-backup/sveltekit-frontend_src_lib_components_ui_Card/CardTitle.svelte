@@ -1,5 +1,10 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();
 
   let className: string = "";
 
@@ -9,6 +14,6 @@
   class={cn("text-2xl font-semibold leading-none tracking-tight", className)}
   
 >
-  <slot></slot>
+  {@render children?.()}
 </h3>
 

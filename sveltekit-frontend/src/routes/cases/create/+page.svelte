@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Case Creation Page - SuperForms + Zod + Enhanced Actions
   Demonstrates complete form enhancement pattern

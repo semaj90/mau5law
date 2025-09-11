@@ -2,12 +2,12 @@
   import { goto } from '$app/navigation';
 
   // Use standard Svelte reactive variables instead of a nonexistent $state helper
-  let message = '';
-  let selectedOS = 'windows';
-  let isDialogOpen = false;
-  let isLoading = false;
-  let progress = 0;
-  let radioSelected = 'option1';
+  let message = $state('');
+  let selectedOS = $state('windows');
+  let isDialogOpen = $state(false);
+  let isLoading = $state(false);
+  let progress = $state(0);
+  let radioSelected = $state('option1');
 
   function startProcess() {
     isLoading = true;

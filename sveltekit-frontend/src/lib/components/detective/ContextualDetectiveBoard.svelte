@@ -426,10 +426,10 @@
       ></textarea>
       
       <div class="input-actions">
-        <button type="button" on:click={generateConnectionMap} disabled={isGeneratingMap}>
+        <button type="button" onclick={generateConnectionMap} disabled={isGeneratingMap}>
           {isGeneratingMap ? 'Generating...' : 'Generate Connection Map'}
         </button>
-        <button type="button" on:click={clearInput}>Clear</button>
+        <button type="button" onclick={clearInput}>Clear</button>
       </div>
     </section>
 
@@ -442,7 +442,7 @@
             <button 
               type="button" 
               class="prompt-button"
-              on:click={() => selectContextualPrompt(prompt)}
+              onclick={() => selectContextualPrompt(prompt)}
             >
               {prompt}
             </button>

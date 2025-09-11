@@ -3,8 +3,13 @@
   import { writable } from "svelte/store";
   import type { SelectContext } from "./types";
 
-  export let value: unknown;
-  export let class_: string = "";
+  interface Props {
+    value: unknown;
+    class_?: string;
+    children?: import('svelte').Snippet;
+  }
+
+  let { value, class_ = "", children }: Props = $props();
 
   const context =
     getContext<SelectContext>("select") ||
@@ -32,7 +37,7 @@
   onkeydown={(e) => e.key === "Enter" && handleClick()}
   tabindex={0}
 >
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

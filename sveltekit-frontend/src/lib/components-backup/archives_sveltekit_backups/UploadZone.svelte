@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragover) and new syntaxes for event handling is not allowed. Use only the ondragover syntax -->
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();

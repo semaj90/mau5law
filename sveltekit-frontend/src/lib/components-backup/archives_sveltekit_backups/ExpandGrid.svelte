@@ -1,21 +1,36 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  export let columns = 1;
-  export let expandedColumns = 3;
-  export let gap = "1rem";
-  export let expandDuration = "0.4s";
-  export let easing = "ease";
-  export let expandOnHover = true;
-  export let expandOnFocus = true;
 
-  let className = "";
-  export { className as class };
+  interface Props {
+    columns?: number;
+    expandedColumns?: number;
+    gap?: string;
+    expandDuration?: string;
+    easing?: string;
+    expandOnHover?: boolean;
+    expandOnFocus?: boolean;
+    class?: string;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    columns = 1,
+    expandedColumns = 3,
+    gap = "1rem",
+    expandDuration = "0.4s",
+    easing = "ease",
+    expandOnHover = true,
+    expandOnFocus = true,
+    class: className = "",
+    children
+  }: Props = $props();
+  
 
   const dispatch = createEventDispatcher();
 
-  let isExpanded = false;
-  let containerElement: HTMLDivElement;
+  let isExpanded = $state(false);
+  let containerElement: HTMLDivElement = $state();
 
   function handleMouseEnter() {
     if (expandOnHover) {
@@ -65,7 +80,7 @@
   role="grid"
   tabindex={0}
 >
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

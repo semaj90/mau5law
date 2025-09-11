@@ -2,8 +2,13 @@
   import { melt } from "@melt-ui/svelte";
   import { createEventDispatcher, getContext } from "svelte";
 
-  export let class_: string = "";
-  export let disabled: boolean = false;
+  interface Props {
+    class_?: string;
+    disabled?: boolean;
+    children?: import('svelte').Snippet;
+  }
+
+  let { class_ = "", disabled = false, children }: Props = $props();
 
   const dispatch = createEventDispatcher();
   const contextMenu = (getContext("contextMenu") as any) || {
@@ -24,6 +29,6 @@
   {disabled}
   onclick={() => handleSelect()}
 >
-  <slot />
+  {@render children?.()}
 </button>
 

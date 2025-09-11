@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import { createTooltip, melt } from "@melt-ui/svelte";
   import {

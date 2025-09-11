@@ -150,7 +150,7 @@
 					aria-label={tool.label}
 					title={tool.label}
 				>
-					<svelte:component this={tool.icon} size={18} />
+					<tool.icon size={18} />
 				</button>
 			{/each}
 		</div>
@@ -170,7 +170,7 @@
 					title={action.label}
 					disabled={selectedTool !== 'text'}
 				>
-					<svelte:component this={action.icon} size={16} />
+					<action.icon size={16} />
 				</button>
 			{/each}
 		</div>
@@ -185,7 +185,7 @@
 					title={action.label}
 					disabled={selectedTool !== 'text'}
 				>
-					<svelte:component this={action.icon} size={16} />
+					<action.icon size={16} />
 				</button>
 			{/each}
 		</div>

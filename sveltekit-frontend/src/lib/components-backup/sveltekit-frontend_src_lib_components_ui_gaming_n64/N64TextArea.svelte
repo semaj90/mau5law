@@ -1,11 +1,21 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  export let id: string | undefined = undefined;
-  export let value: string = '';
-  export let placeholder: string = '';
-  export let rows: number = 4;
-  export let disabled: boolean = false;
+	interface Props {
+		id?: string | undefined;
+		value?: string;
+		placeholder?: string;
+		rows?: number;
+		disabled?: boolean;
+	}
+
+	let {
+		id = undefined,
+		value = $bindable(''),
+		placeholder = '',
+		rows = 4,
+		disabled = false
+	}: Props = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -63,9 +73,9 @@
 	{placeholder}
 	rows={rows}
 	{disabled}
-	on:input={handleInput}
-	on:blur={handleBlur}
-	on:focus={handleFocus}
-  />
+	oninput={handleInput}
+	onblur={handleBlur}
+	onfocus={handleFocus}
+></textarea>
 </div>
 

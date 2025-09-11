@@ -1,4 +1,4 @@
-<div class="uno-prose" />
+<div class="uno-prose"></div>
 
 <style uno-preflights uno-safelist>
   *,

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Production-level AI Dropdown using Melt UI with keyboard shortcuts -->
 <script lang="ts">
   interface Props { disabled?: any;

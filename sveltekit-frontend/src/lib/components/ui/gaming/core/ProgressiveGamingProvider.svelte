@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use keyword 'await' outside an async function -->
 <!--
   Progressive Gaming Provider
   Manages gaming era evolution and provides context to child components

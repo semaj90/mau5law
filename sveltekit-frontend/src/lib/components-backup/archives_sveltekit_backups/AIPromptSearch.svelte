@@ -3,7 +3,7 @@
   import Fuse from "fuse.js";
   import { onMount } from "svelte";
 
-  let query = "";
+  let query = $state("");
   let results: unknown[] = [];
   let fuse: Fuse<any>;
 

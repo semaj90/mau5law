@@ -26,7 +26,7 @@
   const health = writable<SystemHealth | null>(null);
   const logs = writable<unknown[]>([]);
   let refreshInterval: NodeJS.Timeout;
-  let autoRefresh = true;
+  let autoRefresh = $state(true);
 
   onMount(() => {
     loadMetrics();

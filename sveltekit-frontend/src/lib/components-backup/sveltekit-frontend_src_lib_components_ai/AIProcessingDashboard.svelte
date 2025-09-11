@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- AI Processing Dashboard - Integration Demo -->
 <script lang="ts">
   	import { onMount, onDestroy } from 'svelte';

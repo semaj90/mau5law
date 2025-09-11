@@ -12,7 +12,7 @@
 
 
 
-  import { X } from "lucide-svelte";
+  import { X } from "lucide-svelte"; children,
   function handleClose() {
     open = false;
     onclose?.();
@@ -48,7 +48,7 @@
         </button>
       </div>
       <div class="space-y-4">
-        <slot></slot>
+        {@render children?.()}
       </div>
     </div>
   </div>

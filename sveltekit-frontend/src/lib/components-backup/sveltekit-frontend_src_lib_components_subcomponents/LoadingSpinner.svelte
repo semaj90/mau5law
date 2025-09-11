@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'color' has already been declared -->
 <!-- Loading Spinner Component -->
 <script lang="ts">
   interface Props {

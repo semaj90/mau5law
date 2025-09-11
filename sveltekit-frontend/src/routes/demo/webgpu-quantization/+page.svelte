@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   WebGPU Quantization Demo Page
   Showcase the complete buffer quantization system integration

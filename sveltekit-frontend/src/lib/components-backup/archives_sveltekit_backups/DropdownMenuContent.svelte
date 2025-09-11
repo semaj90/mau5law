@@ -1,12 +1,18 @@
 <script lang="ts">
-  export let menu: unknown;
+  interface Props {
+    menu: unknown;
+    children?: import('svelte').Snippet;
+    [key: string]: any
+  }
+
+  let { menu, children, ...rest }: Props = $props();
 </script>
 
 <div 
   use:menu 
   className="${1}"
-  {...$$restProps}
+  {...rest}
 >
-  <slot />
+  {@render children?.()}
 </div>
 

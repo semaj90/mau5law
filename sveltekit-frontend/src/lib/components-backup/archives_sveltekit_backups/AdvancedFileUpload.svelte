@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import { browser } from "$app/environment";
   import Button from "$lib/components/ui/Button.svelte";

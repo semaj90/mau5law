@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   YoRHa Anti-Aliasing Shader Cache Component
   Advanced shader compilation and caching system for YoRHa 3D components

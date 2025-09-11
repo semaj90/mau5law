@@ -1,6 +1,11 @@
 <script lang="ts">
-  export let variant: 'default' | 'secondary' | 'destructive' | 'outline' = 'default';
-  export let size: 'default' | 'sm' | 'lg' = 'default';
+  interface Props {
+    variant?: 'default' | 'secondary' | 'destructive' | 'outline';
+    size?: 'default' | 'sm' | 'lg';
+    children?: import('svelte').Snippet;
+  }
+
+  let { variant = 'default', size = 'default', children }: Props = $props();
   const variants = {
     default: 'bg-primary text-primary-foreground',
     secondary: 'bg-secondary text-secondary-foreground',
@@ -15,5 +20,5 @@
 </script>
 
 <span className="${1}">
-  <slot />
+  {@render children?.()}
 </span>

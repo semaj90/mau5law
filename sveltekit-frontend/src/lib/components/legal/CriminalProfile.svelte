@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
 <!-- Criminal Profile Component for Legal AI App -->
 <script lang="ts">
   import { User, Calendar, MapPin, AlertTriangle, Shield, Eye, FileText, Fingerprint, Camera } from 'lucide-svelte';

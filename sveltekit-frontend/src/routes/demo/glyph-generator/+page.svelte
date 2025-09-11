@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   import GlyphGenerator from '$lib/components/glyph/GlyphGenerator.svelte';
   import {

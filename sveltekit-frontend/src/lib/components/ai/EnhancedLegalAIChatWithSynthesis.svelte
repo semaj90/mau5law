@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'Props' has already been declared -->
 <!--
 Enhanced Legal AI Chat with Input Synthesis and LegalBERT Integration
 Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipeline, and streaming

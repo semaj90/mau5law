@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   import GoldenRatioGrid from '$lib/components/ui/layout/GoldenRatioGrid.svelte';
   import {

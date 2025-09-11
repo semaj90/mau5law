@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Document Editor with UnoCSS + Melt UI -->
 <script lang="ts">
   import {

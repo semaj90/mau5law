@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token ; -->
 <script lang="ts">
   import { onMount, onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';

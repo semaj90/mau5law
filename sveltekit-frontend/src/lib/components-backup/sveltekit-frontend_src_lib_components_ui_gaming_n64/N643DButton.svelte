@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:keydown) and new syntaxes for event handling is not allowed. Use only the onkeydown syntax -->
 <script lang="ts">
     import { onMount, onDestroy, createEventDispatcher } from 'svelte';
     import createParallax from './parallaxDynamic.js';

@@ -207,8 +207,7 @@
           data-value={reportType.id}
         >
           <div class="ai-menu__item-content">
-            <svelte:component
-              this={reportType.icon}
+            <reportType.icon
               size={14}
               class="ai-menu__item-icon"
             />
@@ -250,8 +249,7 @@
             : ""}
         >
           <div class="ai-menu__item-content">
-            <svelte:component
-              this={tool.icon}
+            <tool.icon
               size={14}
               class="ai-menu__item-icon"
             />

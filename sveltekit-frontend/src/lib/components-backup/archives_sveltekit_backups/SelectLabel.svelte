@@ -1,9 +1,14 @@
 <script lang="ts">
-  export let class_: string = '';
+  interface Props {
+    class_?: string;
+    children?: import('svelte').Snippet;
+  }
+
+  let { class_ = '', children }: Props = $props();
 </script>
 
 <span class="mx-auto px-4 max-w-7xl">
-  <slot />
+  {@render children?.()}
 </span>
 
 <style>

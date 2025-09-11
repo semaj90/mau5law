@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <!-- Simplified Enhanced AI Assistant -->
 <script lang="ts">
   import {

@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:onclick) and new syntaxes for event handling is not allowed. Use only the ononclick syntax -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { initializeGPUCache, initializePerformanceMonitor, GPUCacheUtils } from '$lib/services/gpu-cache-integration';

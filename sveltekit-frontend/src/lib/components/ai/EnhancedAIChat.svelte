@@ -295,16 +295,18 @@
         <div class="flex items-center gap-2">
           {#if showAnalysisPanel}
             <Tooltip.Root>
-              <Tooltip.Trigger asChild let:builder>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  builders={[builder]}
-                  class="p-2 bits-btn bits-btn"
-                >
-                  <MagnifyingGlassIcon class="w-4 h-4" />
-                </Button>
-              </Tooltip.Trigger>
+              <Tooltip.Trigger asChild >
+                {#snippet children({ builder })}
+                                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    builders={[builder]}
+                    class="p-2 bits-btn bits-btn"
+                  >
+                    <MagnifyingGlassIcon class="w-4 h-4" />
+                  </Button>
+                                              {/snippet}
+                            </Tooltip.Trigger>
               <Tooltip.Content>
                 <p>View Analysis</p>
               </Tooltip.Content>

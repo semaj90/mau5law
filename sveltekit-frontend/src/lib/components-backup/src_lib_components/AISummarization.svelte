@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use `export let` in runes mode — use `$props()` instead -->
 <script lang="ts">
   // @ts-nocheck
   import { Button } from 'bits-ui';
@@ -696,8 +697,4 @@
   </Card.Root>
 </div>
 
-<style lang="postcss">
-  .ai-summarization {
-    @apply max-w-5xl mx-auto;
-  }
-</style>
+<style lang="postcss">/*$$__STYLE_CONTENT__$$*/</style>

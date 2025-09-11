@@ -639,7 +639,7 @@
                 type="text"
                 placeholder="Ask AI to help with specific content..."
                 class="ai-prompt-input"
-                on:keydown={(e) => {
+                onkeydown={(e) => {
                   if (e.key === 'Enter' && e.target.value.trim()) {
                     generateContent(e.target.value);
                     e.target.value = '';

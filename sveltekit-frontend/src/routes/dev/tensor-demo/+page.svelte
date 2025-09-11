@@ -2,10 +2,10 @@
   import { onMount } from 'svelte';
   import { embedText } from '$lib/ai/tensor-client';
 
-  let input = 'Contracts and liabilities in commercial agreements.';
-  let result: any = null;
-  let error: string | null = null;
-  let busy = false;
+  let input = $state('Contracts and liabilities in commercial agreements.');
+  let result: any = $state(null);
+  let error: string | null = $state(null);
+  let busy = $state(false);
 
   async function run() {
     busy = true; error = null; result = null;

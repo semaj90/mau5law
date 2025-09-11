@@ -103,20 +103,22 @@
 </script>
 
 <FormField name={name} errors={errors}>
-  <div slot="control" class={className} {...rest}>
-    <SelectRoot bind:value={current} disabled={disabled} onValueChange={handleValueChange}>
-      <SelectTrigger>
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {#if emptyOptionLabel}
-          <SelectItem value="">{emptyOptionLabel}</SelectItem>
-        {/if}
-        {#each normalized as opt (opt.value)}
-          <SelectItem value={opt.value}>{opt.label}</SelectItem>
-        {/each}
-      </SelectContent>
-    </SelectRoot>
-    <input type="hidden" name={name} value={current || ''} />
-  </div>
+  {#snippet control()}
+    <div  class={className} {...rest}>
+      <SelectRoot bind:value={current} disabled={disabled} onValueChange={handleValueChange}>
+        <SelectTrigger>
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {#if emptyOptionLabel}
+            <SelectItem value="">{emptyOptionLabel}</SelectItem>
+          {/if}
+          {#each normalized as opt (opt.value)}
+            <SelectItem value={opt.value}>{opt.label}</SelectItem>
+          {/each}
+        </SelectContent>
+      </SelectRoot>
+      <input type="hidden" name={name} value={current || ''} />
+    </div>
+  {/snippet}
 </FormField>

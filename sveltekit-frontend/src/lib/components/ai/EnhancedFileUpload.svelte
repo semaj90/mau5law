@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced File Upload with Real OCR, Embeddings, and Database Integration -->
 <script lang="ts">
   import { createUploadMachine } from '$lib/machines/uploadMachine';

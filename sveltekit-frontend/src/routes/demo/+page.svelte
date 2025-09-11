@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!--
   Demo Hub - Legal AI Platform
   Comprehensive navigation for all demonstrations and testing interfaces

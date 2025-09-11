@@ -1,9 +1,21 @@
 <script lang="ts">
-  export let id: string | undefined = undefined;
-  export let extraClass: string = '';
-  export let padding: string = '12px';
-  export let elevation: number = 0;
-  export let role: string | undefined = undefined;
+  interface Props {
+    id?: string | undefined;
+    extraClass?: string;
+    padding?: string;
+    elevation?: number;
+    role?: string | undefined;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    id = undefined,
+    extraClass = '',
+    padding = '12px',
+    elevation = 0,
+    role = undefined,
+    children
+  }: Props = $props();
 </script>
 
 <style>
@@ -36,6 +48,6 @@
   role={role}
   style="padding: {padding};"
 >
-  <slot />
+  {@render children?.()}
 </div>
 

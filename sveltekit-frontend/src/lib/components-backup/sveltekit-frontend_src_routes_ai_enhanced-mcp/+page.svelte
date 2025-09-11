@@ -27,10 +27,10 @@
   		message: string
   		source: string
   	}>>([]);
-  	let selectedCaseId = 'demo-case-001';
-  	let enableRealtimeUpdates = true;
-  	let showMetrics = true;
-  	let enableClusterMode = true;
+  	let selectedCaseId = $state('demo-case-001');
+  	let enableRealtimeUpdates = $state(true);
+  	let showMetrics = $state(true);
+  	let enableClusterMode = $state(true);
   	onMount(async () => {
   		await checkSystemStatus();
   		startSystemMonitoring();

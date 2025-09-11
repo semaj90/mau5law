@@ -4,7 +4,7 @@
   type Theme = 'light' | 'dark' | 'system';
   const THEME_KEY = 'theme';
 
-  let theme: Theme = 'system';
+  let theme: Theme = $state('system');
 
   function applyTheme(t: Theme) {
   	if (t === 'system') {

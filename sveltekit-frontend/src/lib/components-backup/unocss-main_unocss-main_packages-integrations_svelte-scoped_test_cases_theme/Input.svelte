@@ -1,4 +1,4 @@
-<div class="mr-1" />
+<div class="mr-1"></div>
 
 <style>
   div {

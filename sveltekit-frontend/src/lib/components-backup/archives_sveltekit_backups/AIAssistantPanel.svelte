@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { Badge, Button, Input } from "$lib/components/ui";
   import Fuse from "fuse.js";

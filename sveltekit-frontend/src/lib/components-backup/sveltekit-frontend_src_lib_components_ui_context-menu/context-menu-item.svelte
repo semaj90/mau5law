@@ -4,7 +4,7 @@
     disabled?: boolean;
     onclick?: (event?: any) => void;
   }
-  let {
+  let { children,
     disabled = false,
     onclick = () => {}
   } = $props();
@@ -28,7 +28,7 @@
   onclick={() => handleClick()}
   {disabled}
 >
-  <slot></slot>
+  {@render children?.()}
 </button>
 
 <style>

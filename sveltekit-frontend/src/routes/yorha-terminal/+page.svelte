@@ -1,5 +1,7 @@
 <!-- YoRHa Terminal Interface with AI Commands -->
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { onMount } from "svelte";
 	import {
     Button
@@ -8,35 +10,39 @@
 	import type { Writable } from "svelte/store";
 
 	// Terminal state (component-local)
-	let terminalInput: string = "";
-	let terminalHistory: string[] = [
+	let terminalInput: string = $state("");
+	let terminalHistory: string[] = $state([
 		"> YoRHa Legal AI Terminal v5.0.0 (Multi-Core Enabled)",
 		"> Copyright (c) 2025 YoRHa Command Division",
 		"> Legal Analysis Module Loaded. Type 'help' for commands.",
 		"",
-	];
+	]);
 	let commandHistory: string[] = [];
 	let historyIndex: number = -1;
-	let cursor: boolean = true;
+	let cursor: boolean = $state(true);
 
 	// AI and Context7 integration state from global store
 	// Access the global store value reactively via $aiGlobalStore
 	// currentSnapshot will update whenever the store changes
-	let currentSnapshot: any = null;
-	$: currentSnapshot = $aiGlobalStore;
+	let currentSnapshot: any = $state(null);
+	run(() => {
+		currentSnapshot = $aiGlobalStore;
+	});
 
 	// Simple derived status
-	let aiStatus: string = "READY";
-	$: aiStatus = (currentSnapshot && typeof currentSnapshot.matches === "function" && currentSnapshot.matches("failure"))
-		? "ERROR"
-		: "READY";
+	let aiStatus: string = $state("READY");
+	run(() => {
+		aiStatus = (currentSnapshot && typeof currentSnapshot.matches === "function" && currentSnapshot.matches("failure"))
+			? "ERROR"
+			: "READY";
+	});
 
-	let context7Status: string = "CONNECTED"; // Assuming connected for now
+	let context7Status: string = $state("CONNECTED"); // Assuming connected for now
 	let lastAnalysis: any = null;
 
 	// Terminal DOM references
-	let terminalElement: HTMLDivElement | null = null;
-	let inputElement: HTMLInputElement | null = null;
+	let terminalElement: HTMLDivElement | null = $state(null);
+	let inputElement: HTMLInputElement | null = $state(null);
 	let cursorInterval: ReturnType<typeof setInterval> | null = null;
 
 	onMount(() => {
@@ -114,7 +120,7 @@
 		}
 	}
 
-	let isProcessing = false;
+	let isProcessing = $state(false);
 
 	async function executeCommand() {
 		if (!terminalInput.trim()) return;
@@ -308,7 +314,7 @@
 	}
 
 	// Role-based functionality
-	let currentRole = "detective"; // detective, prosecutor, admin
+	let currentRole = $state("detective"); // detective, prosecutor, admin
 	function switchRole(role: string) {
 		currentRole = role;
 		addToHistory(`Role switched to: ${role.toUpperCase()}`);
