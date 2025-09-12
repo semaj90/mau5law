@@ -167,19 +167,19 @@
 
   const filteredRoutes = $derived(() => {
     let filtered = routes;
-    
+
     if (filter !== 'all') {
       filtered = filtered.filter(route => route.category === filter);
     }
-    
+
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(route => 
-        route.path.toLowerCase().includes(query) || 
+      filtered = filtered.filter(route =>
+        route.path.toLowerCase().includes(query) ||
         route.description.toLowerCase().includes(query)
       );
     }
-    
+
     return filtered;
   });
 
@@ -188,21 +188,21 @@
     const working = routes.filter(r => r.status >= 200 && r.status < 300).length;
     const redirects = routes.filter(r => r.status >= 300 && r.status < 400).length;
     const errors = routes.filter(r => r.status >= 400).length;
-    
+
     return { total, working, redirects, errors };
   });
 
   async function testRoute(route: typeof ALL_ROUTES[0]): Promise<RouteStatus> {
     const startTime = Date.now();
-    
+
     try {
-      const response = await fetch(route.path, { 
+      const response = await fetch(route.path, {
         method: 'GET',
         headers: { 'Accept': 'text/html,*/*' }
       });
-      
+
       const loadTime = Date.now() - startTime;
-      
+
       return {
         path: route.path,
         status: response.status,
@@ -212,7 +212,7 @@
       };
     } catch (error) {
       const loadTime = Date.now() - startTime;
-      
+
       return {
         path: route.path,
         status: 0,
@@ -226,34 +226,34 @@
 
   async function testAllRoutes() {
     if (!browser || isLoading) return;
-    
+
     isLoading = true;
     routes = [];
     progress = 0;
-    
+
     const batchSize = 5; // Test 5 routes at a time
     const batches: typeof ALL_ROUTES[][] = [];
-    
+
     for (let i = 0; i < ALL_ROUTES.length; i += batchSize) {
       batches.push(ALL_ROUTES.slice(i, i + batchSize));
     }
-    
+
     for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
       const batch = batches[batchIndex];
-      
+
       const batchResults = await Promise.all(
         batch.map(route => testRoute(route))
       );
-      
+
       routes = [...routes, ...batchResults];
       progress = Math.round(((batchIndex + 1) / batches.length) * 100);
-      
+
       // Small delay between batches to avoid overwhelming the server
       if (batchIndex < batches.length - 1) {
         await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
-    
+
     isLoading = false;
   }
 
@@ -292,7 +292,7 @@
       <p class="text-nier-text-secondary mb-6">
         Comprehensive testing and monitoring of all application routes
       </p>
-      
+
       <!-- Stats -->
       {#if routes.length > 0}
         <div class="flex justify-center gap-6 mb-6">
@@ -318,7 +318,7 @@
         <!-- Test Button -->
         <button
           class="nes-btn is-success"
-          onclick={testAllRoutes}
+          on:click={testAllRoutes}
           disabled={isLoading}
         >
           {#if isLoading}
@@ -344,10 +344,10 @@
       <div class="flex flex-wrap gap-2 justify-center">
         {#each categories as category}
           <button
-            class="px-3 py-1 rounded text-sm border transition-colors {filter === category.id 
-              ? `${category.color} text-white` 
+            class="px-3 py-1 rounded text-sm border transition-colors {filter === category.id
+              ? `${category.color} text-white`
               : 'bg-nier-bg-secondary text-nier-text-secondary border-nier-border-muted hover:bg-nier-bg-tertiary'}"
-            onclick={() => filter = category.id}
+            on:click={() => filter = category.id}
           >
             {category.name}
             {#if routes.length > 0}
@@ -362,7 +362,7 @@
     {#if isLoading}
       <div class="mb-6">
         <div class="bg-nier-bg-secondary rounded-full h-4 overflow-hidden">
-          <div 
+          <div
             class="bg-nier-accent-warm h-full transition-all duration-300"
             style="width: {progress}%"
           ></div>
@@ -377,7 +377,7 @@
     {#if routes.length > 0}
       <div class="nes-container with-title">
         <h3 class="title">Route Test Results ({filteredRoutes.length} routes)</h3>
-        
+
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
@@ -417,8 +417,8 @@
                   <td class="py-3 px-3">
                     <div class="flex gap-2">
                       {#if route.status >= 200 && route.status < 400}
-                        <a 
-                          href={route.path} 
+                        <a
+                          href={route.path}
                           target="_blank"
                           class="text-nier-accent-cool hover:text-nier-accent-warm text-sm underline"
                         >
@@ -427,7 +427,7 @@
                       {/if}
                       <button
                         class="text-nier-text-secondary hover:text-nier-text-primary text-sm underline"
-                        onclick={() => testRoute(route).then(result => {
+                        on:click={() => testRoute(route).then(result => {
                           const index = routes.findIndex(r => r.path === route.path);
                           if (index >= 0) routes[index] = result;
                         })}
@@ -445,7 +445,7 @@
     {:else if !isLoading}
       <div class="text-center py-12">
         <p class="text-nier-text-secondary mb-4">No routes tested yet.</p>
-        <button class="nes-btn is-primary" onclick={testAllRoutes}>
+        <button class="nes-btn is-primary" on:click={testAllRoutes}>
           🚀 Start Testing Routes
         </button>
       </div>
@@ -463,11 +463,11 @@
   .nes-input {
     width: 250px;
   }
-  
+
   table {
     border-collapse: collapse;
   }
-  
+
   .nes-container {
     margin: 0;
   }

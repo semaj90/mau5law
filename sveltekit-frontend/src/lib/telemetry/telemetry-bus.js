@@ -2,30 +2,42 @@
  * Telemetry Bus - Event System for GPU Processing Telemetry
  */
 
-export interface TelemetryEvent {
-  type: string;
-  timestamp: number;
-  data: any;
-  source?: string;
-  level?: 'info' | 'warn' | 'error' | 'debug';
-}
+/**
+ * @typedef {Object} TelemetryEvent
+ * @property {string} type
+ * @property {number} timestamp
+ * @property {any} data
+ * @property {string} [source]
+ * @property {'info' | 'warn' | 'error' | 'debug'} [level]
+ */
 
-export interface TelemetrySubscriber {
-  (event: TelemetryEvent): void;
-}
+/**
+ * @callback TelemetrySubscriber
+ * @param {TelemetryEvent} event
+ */
 
 class TelemetryBus {
-  private subscribers: Map<string, Set<TelemetrySubscriber>> = new Map();
-  private globalSubscribers: Set<TelemetrySubscriber> = new Set();
+  /**
+   * @constructor
+   */
+  constructor() {
+    /** @type {Map<string, Set<TelemetrySubscriber>>} */
+    this.subscribers = new Map();
+    /** @type {Set<TelemetrySubscriber>} */
+    this.globalSubscribers = new Set();
+  }
 
   /**
    * Subscribe to specific event types
+   * @param {string} eventType
+   * @param {TelemetrySubscriber} callback
+   * @returns {() => void}
    */
-  subscribe(eventType: string, callback: TelemetrySubscriber): () => void {
+  subscribe(eventType, callback) {
     if (!this.subscribers.has(eventType)) {
       this.subscribers.set(eventType, new Set());
     }
-    this.subscribers.get(eventType)!.add(callback);
+    this.subscribers.get(eventType).add(callback);
 
     return () => {
       const typeSubscribers = this.subscribers.get(eventType);
@@ -40,8 +52,10 @@ class TelemetryBus {
 
   /**
    * Subscribe to all events
+   * @param {TelemetrySubscriber} callback
+   * @returns {() => void}
    */
-  subscribeAll(callback: TelemetrySubscriber): () => void {
+  subscribeAll(callback) {
     this.globalSubscribers.add(callback);
     return () => {
       this.globalSubscribers.delete(callback);
@@ -50,9 +64,14 @@ class TelemetryBus {
 
   /**
    * Emit an event
+   * @param {string} type
+   * @param {any} data
+   * @param {string} [source]
+   * @param {'info' | 'warn' | 'error' | 'debug'} [level='info']
    */
-  emit(type: string, data: any, source?: string, level: 'info' | 'warn' | 'error' | 'debug' = 'info'): void {
-    const event: TelemetryEvent = {
+  emit(type, data, source, level = 'info') {
+    /** @type {TelemetryEvent} */
+    const event = {
       type,
       timestamp: Date.now(),
       data,
@@ -60,7 +79,6 @@ class TelemetryBus {
       level
     };
 
-    // Notify type-specific subscribers
     const typeSubscribers = this.subscribers.get(type);
     if (typeSubscribers) {
       typeSubscribers.forEach(callback => {
@@ -72,7 +90,6 @@ class TelemetryBus {
       });
     }
 
-    // Notify global subscribers
     this.globalSubscribers.forEach(callback => {
       try {
         callback(event);
@@ -85,15 +102,16 @@ class TelemetryBus {
   /**
    * Clear all subscribers
    */
-  clear(): void {
+  clear() {
     this.subscribers.clear();
     this.globalSubscribers.clear();
   }
 
   /**
    * Get current subscriber counts
+   * @returns {{ typeSubscribers: number; globalSubscribers: number; eventTypes: string[] }}
    */
-  getStats(): { typeSubscribers: number; globalSubscribers: number; eventTypes: string[] } {
+  getStats() {
     return {
       typeSubscribers: Array.from(this.subscribers.values()).reduce((sum, set) => sum + set.size, 0),
       globalSubscribers: this.globalSubscribers.size,
@@ -105,16 +123,30 @@ class TelemetryBus {
 // Create singleton instance
 export const telemetryBus = new TelemetryBus();
 
-// Export convenience functions
-export function emitGpuEvent(type: string, data: any): void {
+/**
+ * Emit GPU event
+ * @param {string} type
+ * @param {any} data
+ */
+export function emitGpuEvent(type, data) {
   telemetryBus.emit(type, data, 'gpu');
 }
 
-export function emitPerformanceEvent(type: string, data: any): void {
+/**
+ * Emit performance event
+ * @param {string} type
+ * @param {any} data
+ */
+export function emitPerformanceEvent(type, data) {
   telemetryBus.emit(type, data, 'performance', 'info');
 }
 
-export function emitErrorEvent(type: string, error: any): void {
+/**
+ * Emit error event
+ * @param {string} type
+ * @param {any} error
+ */
+export function emitErrorEvent(type, error) {
   telemetryBus.emit(type, error, 'error', 'error');
 }
 

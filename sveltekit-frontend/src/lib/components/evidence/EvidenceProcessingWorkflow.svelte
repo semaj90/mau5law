@@ -51,45 +51,38 @@
     matches: (state: string) => boolean;
   }
 
-  // Classic props
-  interface Props {
-    evidenceId?: string;
-    autoStart?: boolean;
-    neuralSpriteEnabled?: boolean;
-    onCompleted: ((result: any) => void) | undefined;
-    onError: ((error: string) => void) | undefined;
-    sessionId?: string | null;
-    endpoint?: string;
-  }
-
-  let {
-    evidenceId = `evidence_${Date.now()}`,
-    autoStart = false,
-    neuralSpriteEnabled = true,
-    onCompleted,
-    onError,
-    sessionId = null,
-    endpoint = '/api/evidence/process/stream'
-  }: Props = $props();
+  // Svelte props (exported)
+  export let evidenceId: string = `evidence_${Date.now()}`;
+  export let autoStart: boolean = false;
+  export let neuralSpriteEnabled: boolean = true;
+  export let onCompleted: ((result: any) => void) | undefined;
+  export let onError: ((error: string) => void) | undefined;
+  export let sessionId: string | null = null;
+  export let endpoint: string = '/api/evidence/process/stream';
 
   const dispatch = createEventDispatcher();
 
   // xState actor for client-side state management
   const actor = createActor(evidenceProcessingMachine);
 
-  // Prepare initial snapshot with safe context access (cast due to generic inference limits)
-  const initialSnapshot = actor.getSnapshot() as any;
+  // Prepare initial snapshot with safe context access (actor may not have started yet)
+  const rawSnapshot = (actor.getSnapshot && (actor.getSnapshot() as any)) || null;
+  const initialSnapshot: any = rawSnapshot || {
+    context: {},
+    value: 'idle',
+    matches: (_: string) => false
+  };
 
   // Local snapshot (augmented)
-  let currentState: EvidenceActorState = $state({
+  let currentState: EvidenceActorState = {
     ...initialSnapshot,
     context: {
-      ...initialSnapshot.context,
-      streamingUpdates: [],
-      errors: [],
-      processingTimeMs: 0
+      ...(initialSnapshot.context || {}),
+      streamingUpdates: initialSnapshot?.context?.streamingUpdates || [],
+      errors: initialSnapshot?.context?.errors || [],
+      processingTimeMs: initialSnapshot?.context?.processingTimeMs || 0
     }
-  } as EvidenceActorState);
+  } as EvidenceActorState;
 
   // SSE (existing path)
   let eventSource: EventSource | null = null;
@@ -184,24 +177,24 @@
   }
 
   // UI state
-  let dragOver = $state(false);
-  let selectedFile: File | null = $state(null);
-  let neuralSpriteConfig = $state({
+  let dragOver = false;
+  let selectedFile: File | null = null;
+  let neuralSpriteConfig = {
     enable_compression: neuralSpriteEnabled,
     predictive_frames: 3,
     ui_layout_compression: false,
     target_compression_ratio: 50
-  });
+  };
 
   // Reactive values with safe fallbacks
   // Derived replacements
-  let progress = $state(0);
+  let progress = 0;
   let currentStepName: string = 'idle';
-  let isProcessing = $state(false);
-  let canCancel = $state(false);
-  let hasError = $state(false);
-  let isCompleted = $state(false);
-  let isCancelled = $state(false);
+  let isProcessing = false;
+  let canCancel = false;
+  let hasError = false;
+  let isCompleted = false;
+  let isCancelled = false;
 
   function recomputeDerived() {
     try {
@@ -210,16 +203,17 @@
     try {
       currentStepName = getCurrentStep(currentState.context) || 'idle';
     } catch { currentStepName = 'idle'; }
+    const matches = (s: string) => typeof currentState.matches === 'function' ? currentState.matches(s) : false;
     isProcessing =
-      currentState.matches('uploading') ||
-      currentState.matches('analyzing') ||
-      currentState.matches('generatingGlyph') ||
-      currentState.matches('embeddingPNG') ||
-      currentState.matches('storingInMinIO');
+      matches('uploading') ||
+      matches('analyzing') ||
+      matches('generatingGlyph') ||
+      matches('embeddingPNG') ||
+      matches('storingInMinIO');
     canCancel = isProcessing;
-    hasError = currentState.matches('error');
-    isCompleted = currentState.matches('completed');
-    isCancelled = currentState.matches('cancelled');
+    hasError = matches('error');
+    isCompleted = matches('completed');
+    isCancelled = matches('cancelled');
   }
   // Initial compute
   recomputeDerived();
@@ -233,13 +227,13 @@
       currentState = state as EvidenceActorState;
       recomputeDerived();
 
-      if (currentState.matches('completed')) {
+      if (typeof currentState.matches === 'function' && currentState.matches('completed')) {
         onCompleted?.(currentState.context);
         dispatch('completed', currentState.context);
         disconnectStream();
       }
-      if (currentState.matches('error')) {
-        const msg = currentState.context.errors.join(', ');
+      if (typeof currentState.matches === 'function' && currentState.matches('error')) {
+        const msg = (currentState.context.errors || []).join(', ');
         onError?.(msg);
         dispatch('error', msg);
       }
@@ -251,13 +245,13 @@
     }
 
     return () => {
-      subscription.unsubscribe();
+      subscription?.unsubscribe && subscription.unsubscribe();
       disconnectStream();
     };
   });
 
   onDestroy(() => {
-    actor?.stop();
+    actor?.stop && actor.stop();
     disconnectStream();
   });
 
@@ -296,7 +290,7 @@
 
     try {
       // Start streaming API connection
-      const response = await fetch('/api/evidence/process/stream', {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -315,7 +309,7 @@
       }
 
       // Connect to SSE stream
-      eventSource = new EventSource(`/api/evidence/process/stream?evidenceId=${evidenceId}`);
+      eventSource = new EventSource(`${endpoint}?evidenceId=${encodeURIComponent(evidenceId)}`);
 
       eventSource.onmessage = (event) => {
         try {
@@ -335,7 +329,7 @@
           }
 
           // Full state sync from server
-            if (data.currentState && data.context) {
+          if (data.currentState && data.context) {
             updateClientFromServer(data);
           }
         } catch (err) {
@@ -362,12 +356,12 @@
     // Sync client state with server state
     if (serverState !== currentState.value) {
       // Map server events to client events based on state transitions
-      if (serverState === 'analyzing' && !currentState.matches('analyzing')) {
+      if (serverState === 'analyzing' && !(currentState.matches && currentState.matches('analyzing'))) {
         actor.send({ type: 'START_ANALYSIS' });
       }
 
       // Update context with server context
-      currentState = { ...currentState, context: { ...serverContext } };
+      currentState = { ...currentState, context: { ...serverContext } } as EvidenceActorState;
       recomputeDerived();
     }
   }
@@ -381,7 +375,7 @@
 
   async function cancelProcessing() {
     try {
-      await fetch(`/api/evidence/process/stream?evidenceId=${evidenceId}`, {
+      await fetch(`${endpoint}?evidenceId=${encodeURIComponent(evidenceId)}`, {
         method: 'DELETE'
       });
 
@@ -403,6 +397,17 @@
     actor.send({ type: 'RESET' });
     selectedFile = null;
     disconnectStream();
+  }
+
+  // Helper handlers moved out of markup to avoid inline-expression parsing issues
+  function openPortableArtifact() {
+    const url = currentState.context.portableArtifact?.enhancedPngUrl;
+    if (url) window.open(url, '_blank');
+  }
+
+  function openMinioStorage() {
+    const url = currentState.context.minioStorage?.storageUrl;
+    if (url) window.open(url, '_blank');
   }
 </script>
 
@@ -426,10 +431,12 @@
         role="button"
         tabindex="0"
         aria-label="Drop files here to upload or click to select files"
-        class="border-2 border-dashed rounded-lg p-8 text-center transition-colors {dragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}"
-        ondrop={handleFileDrop}
-        ondragover={handleDragOver}
-        ondragleave={handleDragLeave}
+        class="border-2 border-dashed rounded-lg p-8 text-center transition-colors border-gray-300"
+        class:border-blue-500={dragOver}
+        class:bg-blue-50={dragOver}
+        on:drop={handleFileDrop}
+        on:dragover={handleDragOver}
+        on:dragleave={handleDragLeave}
       >
         <div class="space-y-4">
           <div class="text-4xl">📄</div>
@@ -439,17 +446,16 @@
               Drag and drop a file here, or click to select
             </p>
           </div>
-          <input
-            type="file"
-            onchange={handleFileSelect}
-            accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
-            class="hidden"
-            id="file-upload"
-          />
-          <label for="file-upload">
-            <button type="button" class="cursor-pointer bits-btn">
-              Choose File
-            </button>
+
+          <!-- wrap the input inside the label to avoid separate id/for and potential attribute duplication -->
+          <label class="cursor-pointer inline-flex items-center justify-center px-4 py-2 rounded bg-white border">
+            <input
+              type="file"
+              on:change={handleFileSelect}
+              accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
+              class="hidden"
+            />
+            <span class="text-sm">Select a file</span>
           </label>
         </div>
       </div>
@@ -469,7 +475,7 @@
         </div>
 
         {#if !isProcessing && !isCompleted}
-          <button type="button" class="bits-btn" onclick={resetWorkflow}>
+          <button type="button" class="bits-btn" on:click={resetWorkflow}>
             Change File
           </button>
         {/if}
@@ -545,7 +551,7 @@
     <!-- Processing Controls -->
     {#if selectedFile && !isProcessing && !isCompleted && !hasError}
       <div class="flex justify-center">
-        <button type="button" onclick={startProcessing} class="px-8 py-3 bits-btn">
+        <button type="button" on:click={startProcessing} class="px-8 py-3 bits-btn">
           🚀 Start Processing Workflow
         </button>
       </div>
@@ -594,7 +600,7 @@
 
         {#if canCancel}
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" onclick={cancelProcessing}>
+            <button type="button" class="bits-btn" on:click={cancelProcessing}>
               Cancel Processing
             </button>
           </div>
@@ -615,16 +621,15 @@
           {/each}
         </div>
         <div class="flex gap-2 mt-3">
-          <button type="button" class="bits-btn" onclick={retryProcessing}>
+          <button type="button" class="bits-btn" on:click={retryProcessing}>
             Retry
           </button>
-          <button type="button" class="bits-btn" onclick={resetWorkflow}>
+          <button type="button" class="bits-btn" on:click={resetWorkflow}>
             Reset
           </button>
         </div>
       </div>
     {/if}
-
     <!-- Completion State -->
     {#if isCompleted}
       <div class="p-6 bg-green-50 border border-green-200 rounded-lg">
@@ -639,23 +644,26 @@
           {#if currentState.context.portableArtifact}
             <div class="space-y-3">
               <div class="flex items-center justify-center gap-4">
+                <!-- ensure each element has unique attributes and no duplicate handlers -->
                 <button
                   type="button"
                   class="bits-btn px-4 py-2"
-                  onclick={() => window.open(currentState.context.portableArtifact?.enhancedPngUrl, '_blank')}
+                  on:click={openPortableArtifact}
                 >
                   📦 Download Portable Artifact
                 </button>
+
                 {#if currentState.context.minioStorage}
                   <button
                     type="button"
                     class="bits-btn"
-                    onclick={() => window.open(currentState.context.minioStorage?.storageUrl, '_blank')}
+                    on:click={openMinioStorage}
                   >
                     🗄️ View in Archive
                   </button>
                 {/if}
               </div>
+
               {#if currentState.context.portableArtifact?.compressionRatio}
                 <div class="text-sm text-gray-600">
                   Neural Sprite Compression: {currentState.context.portableArtifact.compressionRatio}:1 ratio
@@ -665,12 +673,13 @@
           {/if}
 
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" onclick={resetWorkflow}>
+            <button type="button" class="bits-btn" on:click={resetWorkflow}>
               Process Another Evidence
             </button>
           </div>
         </div>
       </div>
+    {/if}
     {/if}
 
     <!-- Cancelled State -->
@@ -681,7 +690,7 @@
           <h3 class="font-medium text-yellow-800">Processing Cancelled</h3>
           <p class="text-sm text-yellow-700">Workflow was cancelled by user</p>
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" onclick={resetWorkflow}>
+            <button type="button" class="bits-btn" on:click={resetWorkflow}>
               Start New Workflow
             </button>
           </div>
