@@ -1,5 +1,8 @@
-import { LRUCache } from "lru-cache";
+import LRU from "lru-cache";
 import * as crypto from "crypto";
+
+// Fix LRUCache import for CommonJS compatibility
+const LRUCache = LRU;
 
 // Define Redis interface since we don't have the actual Redis client
 export interface RedisPipeline {

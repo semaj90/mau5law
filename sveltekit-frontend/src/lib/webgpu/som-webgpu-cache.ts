@@ -1678,8 +1678,8 @@ export class WebGPUSOMCache {
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
 
-      // Write data
-      this.device.queue.writeBuffer(queryBuffer, 0, queryEmbedding);
+      // Write data - fix buffer type compatibility
+      this.device.queue.writeBuffer(queryBuffer, 0, queryEmbedding.buffer);
 
       const docsData = new Float32Array(numDocs * vectorDim);
       documentEmbeddings.forEach((doc, i) => {

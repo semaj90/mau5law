@@ -1,13 +1,30 @@
 {
+  "name": "legal-ai-platform",
+  "version": "1.0.0",
+  "description": "Nintendo-Style Legal AI Platform with Multi-Model Orchestration",
+  "type": "module",
   "scripts": {
     "typecheck:changed": "node scripts/typecheck-changed.mjs",
     "typecheck:changed:win": "powershell -NoLogo -NoProfile -Command \"$f=(git diff --name-only origin/main...HEAD); $ts=$f | Where-Object { $_ -match '\\.ts$' }; if($ts.Count -eq 0){ Write-Output '[typecheck:changed] No TS files'; exit 0 }; foreach($file in $ts){ npx tsc --noEmit --skipLibCheck $file };\"",
-    "ci:health": "node scripts/ci-deep-health-check.mjs"
+    "ci:health": "node scripts/ci-deep-health-check.mjs",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:routes": "playwright test tests/all-routes.spec.ts",
+    "test:routes:headed": "playwright test tests/all-routes.spec.ts --headed",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "playwright:install": "playwright install",
+    "playwright:install-deps": "playwright install-deps"
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.1.0",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/jwt": "^0.3.0",
     "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "glob": "^10.4.5"
   }
 }

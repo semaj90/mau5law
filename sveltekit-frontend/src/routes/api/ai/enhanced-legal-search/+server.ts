@@ -1,3 +1,21 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: enhanced-legal-search
+ * Category: aggressive
+ * Memory Bank: CHR_ROM
+ * Priority: 170
+ * Redis Type: aiSearch
+ * 
+ * Performance Impact:
+ * - Cache Strategy: aggressive
+ * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 import type { RequestHandler } from './$types.js';
 
 // Enhanced Legal AI Search API with LangChain.js, Nomic Embed, and Vector Search
@@ -5,6 +23,7 @@ import type { RequestHandler } from './$types.js';
 
 import { enhancedLegalSearch, type LegalSearchResult } from '../../../../lib/server/ai/enhanced-legal-search.js';
 import { URL } from "url";
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 // Rate limiting configuration
 // Simple rate limiter stub that returns the expected format
@@ -15,7 +34,7 @@ const rateLimiter = {
   message: 'Too many search requests, please try again later.'
 };
 
-export const GET: RequestHandler = async ({ url, getClientAddress }) => {
+const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => {
   try {
     // Apply rate limiting
     const clientAddress = getClientAddress();
@@ -88,7 +107,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   }
 };
 
-export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     // Apply rate limiting
     const clientAddress = getClientAddress();
@@ -295,3 +314,6 @@ export const OPTIONS: RequestHandler = async () => {
     timestamp: new Date().toISOString()
   });
 };
+
+export const GET = redisOptimized.aiSearch(originalGETHandler);
+export const POST = redisOptimized.aiSearch(originalPOSTHandler);

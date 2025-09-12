@@ -1,7 +1,26 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: cuda-accelerated
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 // Enhanced CUDA-Accelerated Legal AI API
 // Bridges SvelteKit frontend with Go CUDA server for maximum performance
 
 import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types';
 
 const CUDA_SERVER_URL = 'http://localhost:8085';
@@ -82,7 +101,7 @@ async function checkCudaServerHealth(): Promise<boolean> {
 }
 
 // POST endpoint for CUDA-accelerated inference
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
 	try {
 		const startTime = Date.now();
 		const requestData: CudaInferenceRequest = await request.json();
@@ -181,7 +200,7 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 // GET endpoint for CUDA server status and metrics
-export const GET: RequestHandler = async ({ url }) => {
+const originalGETHandler: RequestHandler = async ({ url }) => {
 	try {
 		const operation = url.searchParams.get('operation') || 'status';
 		
@@ -255,7 +274,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // PATCH endpoint for vector search
-export const PATCH: RequestHandler = async ({ request }) => {
+const originalPATCHHandler: RequestHandler = async ({ request }) => {
 	try {
 		const searchRequest: VectorSearchRequest = await request.json();
 
@@ -311,7 +330,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
 };
 
 // PUT endpoint for batch inference
-export const PUT: RequestHandler = async ({ request }) => {
+const originalPUTHandler: RequestHandler = async ({ request }) => {
 	try {
 		const batchRequest: BatchInferenceRequest = await request.json();
 
@@ -376,7 +395,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 };
 
 // DELETE endpoint for cleanup and memory optimization
-export const DELETE: RequestHandler = async () => {
+const originalDELETEHandler: RequestHandler = async () => {
 	try {
 		const response = await fetch(`${CUDA_SERVER_URL}/api/gpu/optimize`, {
 			method: 'POST',
@@ -404,3 +423,9 @@ export const DELETE: RequestHandler = async () => {
 		}, { status: 500 });
 	}
 };
+
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);
+export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler);
+export const PUT = redisOptimized.aiAnalysis(originalPUTHandler);
+export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);

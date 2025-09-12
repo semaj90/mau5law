@@ -1,4 +1,22 @@
 /**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: vector-search-cached
+ * Category: aggressive
+ * Memory Bank: CHR_ROM
+ * Priority: 170
+ * Redis Type: aiSearch
+ * 
+ * Performance Impact:
+ * - Cache Strategy: aggressive
+ * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
+/**
  * Cached Vector Search API Endpoint
  * High-performance vector similarity search with Redis+Memory caching
  * Optimizes pgvector queries for legal document search
@@ -8,6 +26,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { pgVectorService } from '$lib/server/db/pgvector-service';
 import { 
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
   getVectorCache, 
   setVectorCache, 
   getEmbeddingCache, 
@@ -16,7 +35,7 @@ import {
 } from '$lib/server/vector-cache';
 
 // POST: Cached vector similarity search
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
   
   try {
@@ -158,7 +177,7 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 // GET: Cache statistics and health check
-export const GET: RequestHandler = async ({ url }) => {
+const originalGETHandler: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'stats';
 
   switch (action) {
@@ -220,7 +239,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // DELETE: Clear vector cache
-export const DELETE: RequestHandler = async () => {
+const originalDELETEHandler: RequestHandler = async () => {
   try {
     const { clearVectorCache } = await import('$lib/server/vector-cache');
     await clearVectorCache();
@@ -239,3 +258,7 @@ export const DELETE: RequestHandler = async () => {
     }, { status: 500 });
   }
 };
+
+export const POST = redisOptimized.aiSearch(originalPOSTHandler);
+export const GET = redisOptimized.aiSearch(originalGETHandler);
+export const DELETE = redisOptimized.aiSearch(originalDELETEHandler);

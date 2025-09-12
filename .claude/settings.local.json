@@ -123,7 +123,18 @@
       "Bash(fi)",
       "Bash(npx sv migrate:*)",
       "Bash(npx @svelte/migrate@latest:*)",
-      "Bash(npx @svelte/cli migrate:*)"
+      "Bash(npx @svelte/cli migrate:*)",
+      "Bash(npx playwright install:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(python:*)",
+      "Bash(REDIS_PASSWORD=redis npm run dev)",
+      "Bash(PORT=5173 npm run dev:full)",
+      "Bash(REDIS_PASSWORD=\"redis\" npm run dev)",
+      "Bash(REDIS_URL=\"redis://:redis@localhost:6379\" npm run dev)",
+      "Bash(REDIS_PASSWORD=redis npm run dev -- --port 5173)",
+      "Bash(REDIS_URL=\"redis://:redis@localhost:6379\" npx vite dev --port 5173)",
+      "Bash(REDIS_PASSWORD=\"redis\" npm run dev -- --port 5173)",
+      "Bash(REDIS_PASSWORD=\"redis\" npm run dev:full)"
     ],
     "deny": [],
     "ask": []

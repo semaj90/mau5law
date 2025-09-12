@@ -31,6 +31,7 @@ try {
   redis = new Redis({
     host: 'localhost',
     port: 6379,
+    password: process.env.REDIS_PASSWORD || 'redis',
     lazyConnect: false,
     connectionName: 'redis-gpu-bridge',
     maxRetriesPerRequest: 3,

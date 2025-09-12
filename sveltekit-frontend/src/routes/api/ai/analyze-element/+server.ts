@@ -1,3 +1,21 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: analyze-element
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 import type { RequestHandler } from './$types';
 
 /*
@@ -5,8 +23,9 @@ import type { RequestHandler } from './$types';
  * Provides legal context for any UI element when hovered
  */
 import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const payload = await request.json();
     const elementType = payload?.elementType ?? 'unknown';
@@ -78,3 +97,5 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
     return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 });
   }
 };
+
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

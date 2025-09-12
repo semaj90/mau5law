@@ -1,5 +1,24 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: multi-agent
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 import { json } from "@sveltejs/kit";
 import { URL } from "url";
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { LegalAnalysisRequest } from '$lib/ai/autogen-legal-agents';
 import type { RequestHandler } from './$types';
 
@@ -158,7 +177,7 @@ function initializeAISystems(memoryProfile: string, useVLLM: boolean = false) {
   }
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const requestData: MultiAgentRequest = await request.json();
 
@@ -503,7 +522,7 @@ function generateNextSteps(
   return steps;
 }
 
-export const GET: RequestHandler = async ({ url }) => {
+const originalGETHandler: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get("action");
 
   switch (action) {
@@ -541,3 +560,7 @@ export const GET: RequestHandler = async ({ url }) => {
       );
   }
 };
+
+
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);

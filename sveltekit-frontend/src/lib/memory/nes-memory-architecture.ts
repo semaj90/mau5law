@@ -153,7 +153,7 @@ export class NESMemoryArchitecture {
     // Internal RAM bank (2KB - most frequently accessed)
     this.memoryBanks.set('INTERNAL_RAM', {
       id: 0,
-      type: 'RAM',
+      type: 'INTERNAL_RAM',
       startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start,
       endAddress: NES_MEMORY_MAP.INTERNAL_RAM.end,
       size: NES_MEMORY_MAP.INTERNAL_RAM.size,
@@ -450,7 +450,8 @@ export class NESMemoryArchitecture {
 
   private async performBankSwitch(bankName: string, document: Omit<LegalDocument, 'lastAccessed'>): Promise<boolean> {
     const bank = this.memoryBanks.get(bankName);
-    if (!bank || !NES_MEMORY_MAP[bank.type].bankSwitchable) {
+    const memoryMapEntry = NES_MEMORY_MAP[bank?.type as keyof typeof NES_MEMORY_MAP];
+    if (!bank || !('bankSwitchable' in memoryMapEntry) || !memoryMapEntry.bankSwitchable) {
       return false;
     }
 

@@ -1,3 +1,21 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: enhanced-grpo
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 // Enhanced GRPO-thinking API endpoint - Simplified working version
 // Integrates with existing infrastructure and new GRPO database tables
 
@@ -5,6 +23,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/db/connection';
 import { sql } from 'drizzle-orm';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 // Generate embedding using nomic-embed-text
 async function generateEmbedding(text: string): Promise<number[]> {
@@ -221,7 +240,7 @@ async function saveEnhancedResponse(data: {
   }
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const startTime = Date.now();
     const requestData = await request.json();
@@ -381,7 +400,7 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 // GET endpoint for retrieving recommendations and trends
-export const GET: RequestHandler = async ({ url }) => {
+const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const operation = url.searchParams.get('operation') || 'trending';
     const limit = parseInt(url.searchParams.get('limit') || '10');
@@ -464,7 +483,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // PATCH endpoint for recording feedback
-export const PATCH: RequestHandler = async ({ request }) => {
+const originalPATCHHandler: RequestHandler = async ({ request }) => {
   try {
     const feedbackData = await request.json();
     
@@ -540,3 +559,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     }, { status: 500 });
   }
 };
+
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);
+export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler);

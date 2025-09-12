@@ -9,7 +9,19 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq, sql, and, or, desc, asc } from 'drizzle-orm';
 import { dev } from '$app/environment';
 import * as schema from './db/schema-postgres.js';
-import { cognitiveCache, type JsonbDocument } from '../services/cognitive-cache-integration.js';
+import { cognitiveCache } from '../services/cognitive-cache-integration.js';
+
+// Inline JsonbDocument type to avoid import issues
+interface JsonbDocument {
+  id: string;
+  content: any;
+  metadata: {
+    lastModified: number;
+    accessCount: number;
+    gpuProcessed: boolean;
+    threadId?: string;
+  };
+}
 
 // Thread-safe connection pool configuration
 const pool = new Pool({

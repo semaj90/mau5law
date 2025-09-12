@@ -1,8 +1,27 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: ollama-simd
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { ollamaService } from '$lib/server/ai/ollama-service.js';
 import { langchainSIMDBridge, type SIMDLangChainConfig } from '$lib/ai/langchain-simd-bridge.js';
 import { simdTextTilingEngine } from '$lib/ai/simd-text-tiling-engine.js';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 /**
  * Enhanced Ollama-SIMD Integration API
@@ -87,7 +106,7 @@ interface OllamaSIMDResponse {
 }
 
 // POST - Enhanced Ollama generation with SIMD processing
-export const POST: RequestHandler = async ({ request, url }) => {
+const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
   try {
     const requestData: OllamaSIMDRequest = await request.json();
     
@@ -249,7 +268,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 };
 
 // GET - System status and capabilities
-export const GET: RequestHandler = async () => {
+const originalGETHandler: RequestHandler = async () => {
   try {
     const [ollamaStatus, simdStats, bridgeStats] = await Promise.all([
       ollamaService.getSystemStatus(),
@@ -410,7 +429,7 @@ function calculateTokensPerSecond(text: string, timeMs: number): number {
 }
 
 // PUT - Update SIMD configuration
-export const PUT: RequestHandler = async ({ request }) => {
+const originalPUTHandler: RequestHandler = async ({ request }) => {
   try {
     const config: Partial<SIMDLangChainConfig> = await request.json();
     
@@ -432,7 +451,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 };
 
 // DELETE - Clear caches
-export const DELETE: RequestHandler = async () => {
+const originalDELETEHandler: RequestHandler = async () => {
   try {
     // Clear Ollama service cache
     ollamaService.clearCache();
@@ -453,3 +472,8 @@ export const DELETE: RequestHandler = async () => {
     }, { status: 500 });
   }
 };
+
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);
+export const PUT = redisOptimized.aiAnalysis(originalPUTHandler);
+export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);

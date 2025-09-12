@@ -1,3 +1,21 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: find
+ * Category: aggressive
+ * Memory Bank: CHR_ROM
+ * Priority: 170
+ * Redis Type: aiSearch
+ * 
+ * Performance Impact:
+ * - Cache Strategy: aggressive
+ * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 
 import type { RequestHandler } from './$types.js';
 
@@ -36,6 +54,7 @@ export interface AutoMCPSuggestion {
 // { db } from '$lib/server/db';
 import { or, like, desc, sql, and, gte } from "drizzle-orm";
 import { URL } from "url";
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 // Mock Redis for testing without Redis connection
 // import { Redis } from 'ioredis';
 
@@ -516,7 +535,7 @@ async function updateMemoryGraph(query: string, results: any[], metadata: any): 
 /*
  * Main POST handler for AI Find
  */
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   let fromCache = false;
 
@@ -775,7 +794,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /*
  * GET handler for search suggestions
  */
-export const GET: RequestHandler = async ({ url, request }) => {
+const originalGETHandler: RequestHandler = async ({ url, request }) => {
   const startTime = Date.now();
   
   try {
@@ -978,3 +997,6 @@ async function checkRedisHealth(): Promise<boolean> {
     return false;
   }
 }
+
+export const POST = redisOptimized.aiSearch(originalPOSTHandler);
+export const GET = redisOptimized.aiSearch(originalGETHandler);
