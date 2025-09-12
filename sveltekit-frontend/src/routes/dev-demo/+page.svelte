@@ -11,7 +11,7 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
   import Input from '$lib/components/ui/enhanced/Input.svelte';
-  import { Badge } from '$lib/components/ui/modular/Badge.svelte';
+  import Badge from '$lib/components/ui/modular/Badge.svelte';
   import { cn } from '$lib/utils';
 
   // Svelte 5 runes for state management

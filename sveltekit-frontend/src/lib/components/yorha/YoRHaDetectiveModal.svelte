@@ -151,15 +151,13 @@
       opacity: 1;
     }
   }
-
-  /* Responsive */
+/* Responsive */ {}
   @media (max-width: 640px) {
     .modal-panel {
       max-width: 95vw;
       margin: 1rem;
     }
-    
-    .modal-header,
+.modal-header, {}
     .modal-content {
       padding: 1rem;
     }

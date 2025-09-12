@@ -133,8 +133,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: inherit;
     opacity: 0.7;
   }
-
-  /* Required asterisk styling */
+/* Required asterisk styling */ {}
   .required::after {
     content: '';
   }

@@ -1,10 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
+<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
 <script>
   const { width = '560px', height = '420px', variant = 'info', ariaLabel = 'N64 Screen' } = $props();
 
-</script>
+
   import './N64Theme.css';
 
   // Dimensions can be strings like "320px" or "100%"
@@ -15,7 +15,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   
 
   
-</script>
+
 
 <div
   class="n64-screen {variant}"

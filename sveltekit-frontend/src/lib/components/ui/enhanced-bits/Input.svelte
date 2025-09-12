@@ -48,6 +48,14 @@ https://svelte.dev/e/js_parse_error -->
     /** Icon position */
     iconPosition?: 'left' | 'right';
     class?: string;
+    
+    // Accessibility props
+    /** ARIA label for screen readers */
+    'aria-label'?: string;
+    /** ID of element that describes this input */
+    'aria-describedby'?: string;
+    /** Screen reader text for password toggle */
+    passwordToggleText?: string;
   }
 
   let {
@@ -72,8 +80,31 @@ https://svelte.dev/e/js_parse_error -->
     class: className = '',
     type = 'text',
     value = $bindable(''),
+    passwordToggleText,
     ...restProps
   }: InputProps = $props();
+
+  // Extract accessibility props for explicit handling
+  const ariaLabel = $$props['aria-label'];
+  const ariaDescribedby = $$props['aria-describedby'];
+
+  // Generate unique IDs for accessibility
+  const inputId = restProps.id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  const errorId = `${inputId}-error`;
+  const helpId = `${inputId}-help`;
+  const charCountId = `${inputId}-count`;
+  const aiIndicatorId = `${inputId}-ai`;
+
+  // Build aria-describedby string
+  let describedByIds = $derived(() => {
+    const ids = [];
+    if (ariaDescribedby) ids.push(ariaDescribedby);
+    if (errorMessage && error) ids.push(errorId);
+    else if (helpText) ids.push(helpId);
+    if (showCharCount && maxlength) ids.push(charCountId);
+    if (aiAssisted) ids.push(aiIndicatorId);
+    return ids.join(' ') || undefined;
+  });
 
   // Password visibility toggle for password inputs
   let showPassword = $state(false);
@@ -149,7 +180,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="relative">
     <!-- Left icon -->
     {#if icon && iconPosition === 'left'}
-      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
         {#if icon}
           {@const IconComponent = icon}
           <IconComponent class="h-4 w-4 text-muted-foreground" />
@@ -159,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Search icon for search variant -->
     {#if variant === 'search'}
-      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
         <Search class="h-4 w-4 text-muted-foreground" />
       </div>
     {/if}
@@ -171,6 +202,12 @@ https://svelte.dev/e/js_parse_error -->
       type={inputType}
       class={inputClasses}
       {maxlength}
+      id={inputId}
+      aria-label={ariaLabel}
+      aria-describedby={describedByIds()}
+      aria-invalid={error}
+      aria-required={required}
+      data-success={success}
       {...restProps}
     />
 
@@ -178,21 +215,23 @@ https://svelte.dev/e/js_parse_error -->
     {#if isPassword}
       <button
         type="button"
-        class="absolute inset-y-0 right-0 pr-3 flex items-center"
+        class="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded transition-colors"
         onclick={() => showPassword = !showPassword}
-        tabindex="-1"
+        aria-label={passwordToggleText || (showPassword ? 'Hide password' : 'Show password')}
+        tabindex="0"
       >
         {#if showPassword}
-          <EyeOff class="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+          <EyeOff class="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" aria-hidden="true" />
         {:else}
-          <Eye class="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+          <Eye class="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" aria-hidden="true" />
         {/if}
+        <span class="sr-only">{passwordToggleText || (showPassword ? 'Hide password' : 'Show password')}</span>
       </button>
     {/if}
 
     <!-- Right icon -->
     {#if icon && iconPosition === 'right' && !isPassword}
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" aria-hidden="true">
         {#if icon}
           {@const IconComponent = icon}
           <IconComponent class="h-4 w-4 text-muted-foreground" />
@@ -202,54 +241,63 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Status indicators -->
     {#if error}
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" aria-hidden="true">
         <AlertCircle class="h-4 w-4 text-red-500" />
       </div>
     {:else if success}
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" aria-hidden="true">
         <CheckCircle class="h-4 w-4 text-green-500" />
       </div>
     {/if}
 
     <!-- Character count -->
     {#if showCharCount && maxlength}
-      <div class={cn(
-        'absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-xs',
-        {
-          'text-red-500': charCount > maxlength * 0.9,
-          'text-yellow-600': charCount > maxlength * 0.8,
-          'text-muted-foreground': charCount <= maxlength * 0.8,
-          'pr-12': isPassword
-        }
-      )}>
-        {charCount}/{maxlength}
+      <div 
+        id={charCountId}
+        class={cn(
+          'absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-xs',
+          {
+            'text-red-500': charCount > maxlength * 0.9,
+            'text-yellow-600': charCount > maxlength * 0.8,
+            'text-muted-foreground': charCount <= maxlength * 0.8,
+            'pr-12': isPassword
+          }
+        )}
+        aria-live="polite"
+      >
+        <span class="sr-only">
+          {charCount} of {maxlength} characters used
+          {#if charCount > maxlength * 0.9}, nearing limit{/if}
+        </span>
+        <span aria-hidden="true">{charCount}/{maxlength}</span>
       </div>
     {/if}
 
     <!-- Loading indicator -->
     {#if loading}
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" aria-hidden="true">
         <div class="ai-status-indicator ai-status-processing w-4 h-4"></div>
+        <span class="sr-only">Processing...</span>
       </div>
     {/if}
   </div>
 
   <!-- Help text or error message -->
   {#if errorMessage && error}
-    <div class="mt-1 text-xs text-red-600 font-medium flex items-center gap-1">
-      <AlertCircle class="h-3 w-3" />
+    <div id={errorId} class="mt-1 text-xs text-red-600 font-medium flex items-center gap-1" role="alert">
+      <AlertCircle class="h-3 w-3" aria-hidden="true" />
       {errorMessage}
     </div>
   {:else if helpText}
-    <div class="mt-1 text-xs text-muted-foreground">
+    <div id={helpId} class="mt-1 text-xs text-muted-foreground">
       {helpText}
     </div>
   {/if}
 
   <!-- AI assistance indicator -->
   {#if aiAssisted}
-    <div class="mt-1 text-xs text-blue-600 font-medium flex items-center gap-1">
-      <div class="ai-status-indicator ai-status-online w-2 h-2"></div>
+    <div id={aiIndicatorId} class="mt-1 text-xs text-blue-600 font-medium flex items-center gap-1" role="status" aria-live="polite">
+      <div class="ai-status-indicator ai-status-online w-2 h-2" aria-hidden="true"></div>
       AI-assisted field
     </div>
   {/if}
@@ -390,5 +438,18 @@ https://svelte.dev/e/js_parse_error -->
     100% {
       box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
     }
+  }
+
+  /* Screen reader only utility for accessibility */
+  :global(.sr-only) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

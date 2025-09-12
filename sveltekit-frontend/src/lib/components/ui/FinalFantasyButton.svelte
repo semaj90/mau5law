@@ -82,11 +82,11 @@
 
 <style>
   .ff-button {
-    clip-path: polygon(
-      0% 6px, 6px 0%, 
-      calc(100% - 6px) 0%, 100% 6px,
-      100% calc(100% - 6px), calc(100% - 6px) 100%,
-      6px 100%, 0% calc(100% - 6px)
+clip-path: polygon( {}
+0% 6px, 6px 0%, {}
+calc(100% - 6px) 0%, 100% 6px, {}
+100% calc(100% - 6px), calc(100% - 6px) 100%, {}
+6px 100%, 0% calc(100% - 6px) {}
     );
   }
 

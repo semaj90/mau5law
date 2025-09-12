@@ -340,8 +340,7 @@
   />
 {/if}
 
-<style>
-  /* Golden Ratio Custom CSS Properties */
+<style>/* Golden Ratio Custom CSS Properties */
   :global(:root) {
     --golden-base: 1rem;
     --golden-xs: calc(var(--golden-base) / 2.618); /* ~0.382rem */
@@ -351,8 +350,7 @@
     --golden-xl: calc(var(--golden-base) * 2.618); /* ~2.618rem */
     --golden-2xl: calc(var(--golden-base) * 4.236); /* ~4.236rem */
   }
-
-  /* UnoCSS Golden Ratio Utilities */
+/* UnoCSS Golden Ratio Utilities */
   :global(.p-golden-xs) { padding: var(--golden-xs); }
   :global(.p-golden-sm) { padding: var(--golden-sm); }
   :global(.p-golden-md) { padding: var(--golden-md); }
@@ -390,14 +388,12 @@
   :global(.gap-golden-md) { gap: var(--golden-md); }
   :global(.gap-golden-lg) { gap: var(--golden-lg); }
   :global(.gap-golden-xl) { gap: var(--golden-xl); }
-
-  /* Container responsive spacing with golden ratio */
+/* Container responsive spacing with golden ratio */
   :global(.container) {
     max-width: 90rem;
     margin: 0 auto;
   }
-
-  /* CSS Stretch-to-Fit Utilities */
+/* CSS Stretch-to-Fit Utilities */
   :global(.stretch-fit) {
     width: 100% !important;
     height: 100% !important;
@@ -424,13 +420,11 @@
     flex: 1;
     align-items: stretch;
   }
-
-  /* Smooth transitions for YoRHa theme */
+/* Smooth transitions for YoRHa theme */
   :global(*) {
     transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
   }
-
-  /* Typography enhancements */
+/* Typography enhancements */
   :global(.font-mono) {
     font-family: 'JetBrains Mono', 'Roboto Mono', 'SF Mono', monospace;
   }

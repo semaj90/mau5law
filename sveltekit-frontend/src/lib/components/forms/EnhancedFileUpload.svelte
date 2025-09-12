@@ -374,7 +374,7 @@ https://svelte.dev/e/expected_token -->
                 {/if}
               </div>
 
-              <Button class="bits-btn" variant="ghost" size="sm" onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
+              <Button variant="ghost" size="sm" onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
                 <X class="h-4 w-4" />
               </Button>
             </div>
@@ -485,7 +485,7 @@ https://svelte.dev/e/expected_token -->
       <div class="flex gap-2">
         <Button class="bits-btn" variant="outline" onclick={() => oncancel?.()} disabled={isUploading}>Cancel</Button>
 
-        <Button class="bits-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
+        <Button onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
           {#if isUploading}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />Uploading...
           {:else}

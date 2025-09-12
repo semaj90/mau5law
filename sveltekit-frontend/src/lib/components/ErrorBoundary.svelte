@@ -197,15 +197,15 @@ https://svelte.dev/e/attribute_duplicate -->
         {#if showDetails && currentError.showDetails}
           <div class="mx-auto px-4 max-w-7xl">
             <div class="mx-auto px-4 max-w-7xl">
-              <span class="mx-auto px-4 max-w-7xl">Technical Details</span>
+              <span>Technical Details</span>
               <Button 
-                class="bits-btn mx-auto px-4 max-w-7xl"
+                class="bits-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => copyErrorDetails()}
                 aria-label="Copy error details"
               >
-                <Copy class="mx-auto px-4 max-w-7xl" />
+                <Copy class="w-4 h-4" />
               </Button>
             </div>
             <div class="mx-auto px-4 max-w-7xl">

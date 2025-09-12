@@ -67,7 +67,7 @@ https://svelte.dev/e/attribute_duplicate -->
   <div class="text-center">
     <h1 class="text-4xl font-bold text-gray-900 mb-2">🎨 Legal Evidence Glyph Generator</h1>
     <p class="text-gray-600 max-w-2xl mx-auto">
-      Transform legal evidence into stylized visual representations using advanced tensor-cached diffusion models. 
+      Transform legal evidence into stylized visual representations using advanced tensor-cached diffusion models.
       Generate professional glyphs with GPU acceleration and intelligent caching for lightning-fast results.
     </p>
   </div>
@@ -75,7 +75,7 @@ https://svelte.dev/e/attribute_duplicate -->
   <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
     <!-- Main Generator -->
     <div class="xl:col-span-2">
-      <GlyphGenerator 
+      <GlyphGenerator
         evidenceId={selectedEvidenceId}
         onGlyphGenerated={onGlyphGenerated}
       />
@@ -91,8 +91,8 @@ https://svelte.dev/e/attribute_duplicate -->
         <CardContent>
           <div class="space-y-3">
             <div>
-              <label class="block text-sm font-medium mb-1" for="evidence-id">Evidence ID</label><input id="evidence-id" 
-                type="number" 
+              <label class="block text-sm font-medium mb-1" for="evidence-id">Evidence ID</label><input id="evidence-id"
+                type="number"
                 bind:value={selectedEvidenceId}
                 class="w-full px-3 py-2 border rounded-lg"
                 placeholder="Enter evidence ID"
@@ -111,10 +111,10 @@ https://svelte.dev/e/attribute_duplicate -->
         <CardHeader>
           <CardTitle class="text-lg flex items-center justify-between">
             🔍 Tensor Search
-            <Button class="bits-btn"
+            <Button
+              class="bits-btn text-xs px-2 py-1"
               variant="outline"
               onclick={() => showAdvanced = !showAdvanced}
-              class="text-xs px-2 py-1"
             >
               {showAdvanced ? 'Hide' : 'Advanced'}
             </Button>
@@ -123,8 +123,8 @@ https://svelte.dev/e/attribute_duplicate -->
         <CardContent>
           <div class="space-y-3">
             <div class="flex gap-2">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 bind:value={tensorSearchQuery}
                 class="flex-1 px-3 py-2 border rounded-lg text-sm"
                 placeholder="Search cached tensors..."
@@ -211,13 +211,13 @@ https://svelte.dev/e/attribute_duplicate -->
           {#each recentGlyphs as glyph}
             <div class="group relative">
               <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden border">
-                <img 
-                  src={glyph.glyph_url} 
+                <img
+                  src={glyph.glyph_url}
                   alt="Generated glyph"
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                 />
               </div>
-              
+
               <!-- Overlay with stats -->
               <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-75 transition-all duration-200 rounded-lg flex items-center justify-center">
                 <div class="text-white text-xs text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-2">
@@ -246,26 +246,26 @@ https://svelte.dev/e/attribute_duplicate -->
           <div class="font-medium">GPU Acceleration</div>
           <div class="text-xs text-gray-600 mt-1">VRAM tensor caching for sub-second generation</div>
         </div>
-        
+
         <div class="text-center p-4 border rounded-lg">
           <div class="text-2xl mb-2">📦</div>
           <div class="font-medium">PNG Embedding</div>
           <div class="text-xs text-gray-600 mt-1">Tensors embedded directly in image files</div>
         </div>
-        
+
         <div class="text-center p-4 border rounded-lg">
           <div class="text-2xl mb-2">🔍</div>
           <div class="font-medium">Vector Search</div>
           <div class="text-xs text-gray-600 mt-1">Find similar tensors and reuse conditioning</div>
         </div>
-        
+
         <div class="text-center p-4 border rounded-lg">
           <div class="text-2xl mb-2">🎨</div>
           <div class="font-medium">Legal Styles</div>
           <div class="text-xs text-gray-600 mt-1">Detective, corporate, forensic, and legal themes</div>
         </div>
       </div>
-      
+
       <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <h3 class="font-medium text-blue-900 mb-2">💡 Pro Tips</h3>
         <ul class="text-sm text-blue-800 space-y-1">
@@ -283,22 +283,22 @@ https://svelte.dev/e/attribute_duplicate -->
   .container {
     max-width: 1400px;
   }
-  
+
   /* Custom scrollbar for recent glyphs */
   .overflow-y-auto::-webkit-scrollbar {
     width: 4px;
   }
-  
+
   .overflow-y-auto::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 2px;
   }
-  
+
   .overflow-y-auto::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 2px;
   }
-  
+
   .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }

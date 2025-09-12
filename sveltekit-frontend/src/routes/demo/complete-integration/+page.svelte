@@ -7,7 +7,6 @@ https://svelte.dev/e/tag_invalid_name -->
 -->
 
 <script lang="ts">
-</script>
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
@@ -23,14 +22,14 @@ https://svelte.dev/e/tag_invalid_name -->
 
   let pageTitle = 'Complete Integration Demo';
   let pageDescription = 'NES + YoRHa 3D UI with WebAssembly AI Assistant (Gemma 270MB) and LOD Processing';
-  
+
   // AI Assistant State
   let aiInput = $state('Analyze the legal implications of AI-generated content ownership.');
   let aiResponse = $state<string | null>(null);
   let aiProcessing = $state(false);
   let aiError = $state<string | null>(null);
   let conversationHistory = $state<Array<{role: 'user' | 'assistant', content: string}>>([]);
-  
+
   // Document Processing State
   let currentDocument = $state<any>({
     id: 'demo_doc_001',
@@ -42,7 +41,7 @@ https://svelte.dev/e/tag_invalid_name -->
   let processingActive = $state(false);
   let lodLevel = $state<'low' | 'medium' | 'high' | 'ultra'>('high');
   let renderStyle = $state<'nes' | 'snes' | 'n64' | 'ps1' | 'yorha'>('yorha');
-  
+
   // Connection data for LOD processor
   let connections = $state([
     { id: 'conn1', source: 'clause_1', target: 'clause_5', strength: 0.8 },
@@ -71,7 +70,7 @@ https://svelte.dev/e/tag_invalid_name -->
       icon: '📋'
     },
     {
-      category: 'Risk Assessment', 
+      category: 'Risk Assessment',
       prompt: 'Identify potential compliance issues with EU AI Act for a document processing system.',
       icon: '🔍'
     },
@@ -84,18 +83,18 @@ https://svelte.dev/e/tag_invalid_name -->
 
   async function initializeSystem() {
     console.log('🚀 Initializing complete integration system...');
-    
+
     try {
       // Initialize AI adapter
       const adapterReady = await webAssemblyAIAdapter.initialize();
       systemStatus.aiAdapter = adapterReady;
-      
+
       if (adapterReady) {
         const health = webAssemblyAIAdapter.getHealthStatus();
         systemStatus.webgpu = health.webgpuEnabled;
         systemStatus.webassembly = health.wasmSupported;
         systemStatus.gemmaModel = health.modelLoaded;
-        
+
         console.log('✅ AI System Status:', health);
       }
     } catch (error) {
@@ -106,17 +105,17 @@ https://svelte.dev/e/tag_invalid_name -->
   async function sendToAI(prompt?: string) {
     const message = prompt || aiInput.trim();
     if (!message) return;
-    
+
     aiProcessing = true;
     aiError = null;
     aiResponse = null;
-    
+
     try {
       console.log('🤖 Sending to Gemma 270MB:', message);
-      
+
       // Add user message to history
       conversationHistory.push({ role: 'user', content: message });
-      
+
       // Send to WebAssembly AI adapter
       const response = await webAssemblyAIAdapter.sendMessage(message, {
         maxTokens: 512,
@@ -128,22 +127,22 @@ https://svelte.dev/e/tag_invalid_name -->
           timestamp: Date.now()
         }))
       });
-      
+
       aiResponse = response.content;
       conversationHistory.push({ role: 'assistant', content: response.content });
-      
+
       console.log('✅ AI Response received:', {
         method: response.metadata?.method,
         processingTime: response.metadata?.processingTime,
         tokensGenerated: response.metadata?.tokensGenerated,
         fromCache: response.metadata?.fromCache
       });
-      
+
       // Clear input if it was user-typed
       if (!prompt) {
         aiInput = '';
       }
-      
+
     } catch (error) {
       aiError = error instanceof Error ? error.message : 'Unknown error occurred';
       console.error('❌ AI request failed:', error);
@@ -154,7 +153,7 @@ https://svelte.dev/e/tag_invalid_name -->
 
   function toggleProcessing() {
     processingActive = !processingActive;
-    
+
     if (processingActive) {
       // Simulate document progress
       const interval = setInterval(() => {
@@ -181,7 +180,7 @@ https://svelte.dev/e/tag_invalid_name -->
     document.title = `${pageTitle} | Legal AI System`;
     initializeSystem();
   });
-</script>
+ </script>
 
 <svelte:head>
   <title>{pageTitle} | Legal AI System</title>
@@ -201,7 +200,7 @@ https://svelte.dev/e/tag_invalid_name -->
           <span class="mx-2 text-gray-400">/</span>
           <span class="text-gray-300">Integration Demo</span>
         </div>
-        
+
         <!-- System Status Indicators -->
         <div class="flex items-center space-x-2">
           <Badge class={systemStatus.webgpu ? 'bg-green-500' : 'bg-red-500'}>
@@ -239,7 +238,7 @@ https://svelte.dev/e/tag_invalid_name -->
           <CardTitle class="text-yellow-400 font-mono">🔗 WebGPU + WebAssembly Bridge</CardTitle>
         </CardHeader>
         <CardContent>
-          <WebGPUWebAssemblyBridge 
+          <WebGPUWebAssemblyBridge
             enableGPU={true}
             enableWebAssembly={true}
             modelSize="270m"
@@ -279,7 +278,7 @@ https://svelte.dev/e/tag_invalid_name -->
               <div>
                 <label class="block text-sm font-medium text-green-400 mb-2 font-mono" for="-input-for-gemma-270">
                   Input for Gemma 270MB:
-                </label><textarea id="-input-for-gemma-270" 
+                </label><textarea id="-input-for-gemma-270"
                   bind:value={aiInput}
                   class="w-full p-3 bg-gray-900 border border-gray-600 rounded-md text-green-300 font-mono resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
                   rows="3"
@@ -287,7 +286,7 @@ https://svelte.dev/e/tag_invalid_name -->
                   disabled={aiProcessing}
                 ></textarea>
               </div>
-              
+
               <div class="flex items-center gap-4">
                 <button
                   onclick={() => sendToAI()}
@@ -301,14 +300,14 @@ https://svelte.dev/e/tag_invalid_name -->
                     🚀 Send to Gemma 270MB
                   {/if}
                 </button>
-                
+
                 <button
                   onclick={clearConversation}
                   class="px-4 py-2 bg-gray-600 text-white font-mono rounded-md hover:bg-gray-700"
                 >
                   Clear
                 </button>
-                
+
                 <div class="text-sm text-gray-400 font-mono">
                   History: {conversationHistory.length} messages
                 </div>
@@ -369,7 +368,7 @@ https://svelte.dev/e/tag_invalid_name -->
                   {processingActive ? 'Stop' : 'Start'}
                 </button>
               </div>
-              
+
               <div>
                 <label class="block text-sm text-purple-400 font-mono mb-2" for="lod-level">LOD Level:</label><select id="lod-level" bind:value={lodLevel} class="w-full p-2 bg-gray-800 border border-gray-600 text-purple-300 font-mono rounded-md">
                   <option value="low">Low</option>
@@ -378,7 +377,7 @@ https://svelte.dev/e/tag_invalid_name -->
                   <option value="ultra">Ultra</option>
                 </select>
               </div>
-              
+
               <div>
                 <label class="block text-sm text-purple-400 font-mono mb-2" for="style">Style:</label><select id="style" bind:value={renderStyle} class="w-full p-2 bg-gray-800 border border-gray-600 text-purple-300 font-mono rounded-md">
                   <option value="nes">NES (8-bit)</option>
@@ -388,7 +387,7 @@ https://svelte.dev/e/tag_invalid_name -->
                   <option value="yorha">YoRHa (Ultra)</option>
                 </select>
               </div>
-              
+
               <div>
                 <label class="block text-sm text-purple-400 font-mono mb-2">Progress:</label>
                 <div class="text-purple-300 font-mono">
@@ -399,7 +398,7 @@ https://svelte.dev/e/tag_invalid_name -->
           </div>
 
           <!-- LOD Processor Component -->
-          <NES3DLODProcessor 
+          <NES3DLODProcessor
             processing={processingActive}
             document={currentDocument}
             connections={connections}
@@ -428,45 +427,45 @@ https://svelte.dev/e/tag_invalid_name -->
                 <div class="font-semibold text-blue-300 font-mono">User Input</div>
                 <div class="text-xs text-blue-400">Legal Query</div>
               </div>
-              
+
               <div class="text-2xl text-yellow-400">→</div>
-              
+
               <!-- WebAssembly Processing -->
               <div class="flex flex-col items-center p-4 border border-green-500 rounded-lg bg-green-900 bg-opacity-30 min-w-32">
                 <div class="text-3xl mb-2">⚡</div>
                 <div class="font-semibold text-green-300 font-mono">WebAssembly</div>
                 <div class="text-xs text-green-400">Gemma 270MB</div>
               </div>
-              
+
               <div class="text-2xl text-yellow-400">→</div>
-              
+
               <!-- WebGPU Acceleration -->
               <div class="flex flex-col items-center p-4 border border-purple-500 rounded-lg bg-purple-900 bg-opacity-30 min-w-32">
                 <div class="text-3xl mb-2">🎮</div>
                 <div class="font-semibold text-purple-300 font-mono">WebGPU</div>
                 <div class="text-xs text-purple-400">GPU Compute</div>
               </div>
-              
+
               <div class="text-2xl text-yellow-400">→</div>
-              
+
               <!-- LOD Processing -->
               <div class="flex flex-col items-center p-4 border border-pink-500 rounded-lg bg-pink-900 bg-opacity-30 min-w-32">
                 <div class="text-3xl mb-2">🔄</div>
                 <div class="font-semibold text-pink-300 font-mono">LOD Engine</div>
                 <div class="text-xs text-pink-400">Adaptive</div>
               </div>
-              
+
               <div class="text-2xl text-yellow-400">→</div>
-              
+
               <!-- NES + YoRHa UI -->
               <div class="flex flex-col items-center p-4 border border-yellow-500 rounded-lg bg-yellow-900 bg-opacity-30 min-w-32">
                 <div class="text-3xl mb-2">🎯</div>
                 <div class="font-semibold text-yellow-300 font-mono">YoRHa UI</div>
                 <div class="text-xs text-yellow-400">3D Interface</div>
               </div>
-              
+
               <div class="text-2xl text-yellow-400">→</div>
-              
+
               <!-- Output -->
               <div class="flex flex-col items-center p-4 border border-orange-500 rounded-lg bg-orange-900 bg-opacity-30 min-w-32">
                 <div class="text-3xl mb-2">📤</div>
@@ -475,7 +474,7 @@ https://svelte.dev/e/tag_invalid_name -->
               </div>
             </div>
           </div>
-          
+
           <div class="mt-6 p-4 bg-gray-900 bg-opacity-50 rounded-lg">
             <h4 class="font-semibold text-yellow-400 mb-2 font-mono">🚀 Integration Features:</h4>
             <ul class="text-sm text-gray-300 space-y-1 grid grid-cols-1 md:grid-cols-2 gap-2 font-mono">
@@ -484,7 +483,7 @@ https://svelte.dev/e/tag_invalid_name -->
               <li>• <strong>Adaptive LOD:</strong> Performance-based quality scaling</li>
               <li>• <strong>Retro Aesthetics:</strong> NES + YoRHa hybrid styling</li>
               <li>• <strong>Real-time Processing:</strong> Sub-second response times</li>
-              <li>• <strong>Memory Efficient:</strong> < 300MB total footprint</li>
+              <li>• <strong>Memory Efficient:</strong> &lt; 300MB total footprint</li>
             </ul>
           </div>
         </CardContent>
@@ -514,7 +513,7 @@ https://svelte.dev/e/tag_invalid_name -->
   .animate-spin {
     animation: spin 1s linear infinite;
   }
-  
+
   @keyframes spin {
     from {
       transform: rotate(0deg);

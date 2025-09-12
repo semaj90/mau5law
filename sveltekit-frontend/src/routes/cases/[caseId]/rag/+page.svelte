@@ -5,15 +5,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   import type { PageData } from './$types.js';
   import type { ActionData } from './$types.js';
   import { enhance } from '$app/forms';
-  import { page } from '$app/state';
-  import { 
-    Button, 
-    Card, 
+  import { page } from '$app/stores';
+  import {
+    Button,
+    Card,
     Input,
     type EvidenceItem,
     type AIAnalysis
   } from '$lib/components/ui/enhanced-bits';
-  import { 
+  import {
     OrchestratedDialog,
     OrchestratedCard,
     OrchestratedButton,
@@ -86,16 +86,16 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     <Card.Header>
       <Card.Title>Legal Document Analysis</Card.Title>
       <Card.Description>
-        Query case documents using advanced RAG (Retrieval-Augmented Generation) 
+        Query case documents using advanced RAG (Retrieval-Augmented Generation)
         powered by legal AI models
       </Card.Description>
     </Card.Header>
-    
-    <Card.Content class="space-y-4">
+
+  <Card.Content class="space-y-4">
       <!-- Query Form -->
       <form method="POST" action="?/query" use:enhance={handleRAGSubmit}>
         <div class="flex gap-3">
-          <Input 
+          <Input
             bind:value={queryText}
             name="query"
             placeholder="Ask questions about case documents..."
@@ -134,7 +134,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               </span>
             </div>
           </div>
-          
+
           <!-- Answer -->
           <div class="prose prose-sm max-w-none">
             <div class="whitespace-pre-wrap">{ragResponse.answer}</div>
@@ -161,7 +161,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           {/if}
         </div>
       {/if}
-    </CardContent>
+    </Card.Content>
   </OrchestratedCard.Analysis>
 
   <!-- Case Documents -->
@@ -172,15 +172,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <Card.Title>Case Documents ({evidenceItems.length})</Card.Title>
           <Card.Description>Documents available for RAG analysis</Card.Description>
         </div>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onclick={() => showDocuments = !showDocuments}
         >
           {showDocuments ? 'Hide' : 'Show'} Documents
         </Button>
       </div>
     </Card.Header>
-    
+
     {#if showDocuments}
       <Card.Content>
         <div class="grid gap-3">
@@ -189,7 +189,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               <div class="flex-1">
                 <div class="font-medium">{evidence.title}</div>
                 <div class="text-sm text-muted-foreground capitalize">
-                  Type: {evidence.type} " 
+                  Type: {evidence.type}
                   Status: {evidence.metadata.processed ? 'Processed' : 'Processing...'}
                 </div>
               </div>
@@ -204,7 +204,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </div>
           {/each}
         </div>
-      </CardContent>
+      </Card.Content>
     {/if}
   </OrchestratedCard.Evidence>
 
@@ -221,13 +221,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             <div class="p-3 border rounded-lg">
               <div class="font-medium text-sm mb-1">{history.query}</div>
               <div class="text-xs text-muted-foreground">
-                {new Date(history.timestamp).toLocaleString()} " 
+                {new Date(history.timestamp).toLocaleString()}
                 {history.sources?.length || 0} sources referenced
               </div>
             </div>
           {/each}
         </div>
-      </CardContent>
+      </Card.Content>
     </Card>
   {/if}
 </div>

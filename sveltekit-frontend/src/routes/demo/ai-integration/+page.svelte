@@ -185,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Generated embedding:', data.embedding?.slice(0, 5);
+  console.log('Generated embedding:', data.embedding?.slice(0, 5));
         performanceMetrics.embeddingsGenerated++;
 
         // Cache hit simulation
@@ -502,10 +502,10 @@ https://svelte.dev/e/js_parse_error -->
 
             <!-- Control Buttons -->
             <div class="flex gap-4">
-              <Button class="bits-btn" onclick={() => prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm" class="bg-green-600 hover:bg-green-700">
+              <Button class="bits-btn bg-green-600 hover:bg-green-700" onclick={() => prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm">
                 Simulate Cache Hit
               </Button>
-              <Button class="bits-btn" onclick={() => prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm" class="bg-red-600 hover:bg-red-700">
+              <Button class="bits-btn bg-red-600 hover:bg-red-700" onclick={() => prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm">
                 Simulate Cache Miss
               </Button>
               <Button class="bits-btn" onclick={() => prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">

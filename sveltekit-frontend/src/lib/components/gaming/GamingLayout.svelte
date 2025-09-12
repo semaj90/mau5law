@@ -145,13 +145,13 @@
 
 <style>
 	.gaming-layout {
-		position: relative
+position: relative {}
 		min-height: 100vh;
 		font-family: var(--gaming-font-secondary);
 	}
 	
 	.main-container {
-		display: flex
+display: flex {}
 		min-height: 100vh;
 		transition: padding-top 0.3s ease;
 	}
@@ -159,22 +159,21 @@
 	.main-container.hud-offset {
 		padding-top: 120px; /* Adjust based on HUD height */
 	}
-	
-	/* YoRHa Terminal Sidebar */
+/* YoRHa Terminal Sidebar */ {}
 	.sidebar {
-		position: fixed
+position: fixed {}
 		left: 0;
 		top: 0;
 		bottom: 0;
 		width: 280px;
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border-right: 3px solid var(--yorha-secondary, #ffd700);
-		box-shadow: 
-			3px 0 0 0 var(--yorha-secondary, #ffd700),
+box-shadow: {}
+3px 0 0 0 var(--yorha-secondary, #ffd700), {}
 			6px 0 20px rgba(0, 0, 0, 0.8);
 		transition: all 0.2s ease;
 		z-index: 900;
-		overflow-y: auto
+overflow-y: auto {}
 	}
 	
 	.sidebar.collapsed {
@@ -182,8 +181,8 @@
 	}
 	
 	.sidebar-header {
-		display: flex
-		align-items: center
+display: flex {}
+align-items: center {}
 		justify-content: space-between;
 		padding: 20px;
 		border-bottom: 2px solid var(--yorha-secondary, #ffd700);
@@ -192,16 +191,16 @@
 	}
 	
 	.logo-section {
-		display: flex
-		align-items: center
+display: flex {}
+align-items: center {}
 		gap: 12px;
 	}
 	
 	.logo-icon {
 		font-size: 24px;
-		display: flex
-		align-items: center
-		justify-content: center
+display: flex {}
+align-items: center {}
+justify-content: center {}
 		width: 40px;
 		height: 40px;
 		background: var(--yorha-secondary, #ffd700);
@@ -213,7 +212,7 @@
 	
 	.logo-text {
 		flex: 1;
-		overflow: hidden
+overflow: hidden {}
 	}
 	
 	.app-name {
@@ -221,29 +220,29 @@
 		font-size: 14px;
 		font-weight: 700;
 		color: var(--yorha-secondary, #ffd700);
-		text-transform: uppercase
+text-transform: uppercase {}
 		letter-spacing: 2px;
-		white-space: nowrap
+white-space: nowrap {}
 	}
 	
 	.app-subtitle {
 		font-size: 11px;
 		color: var(--yorha-text-muted, #808080);
-		white-space: nowrap
+white-space: nowrap {}
 		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
 	}
 	
 	.collapse-button {
-		display: flex
-		align-items: center
-		justify-content: center
+display: flex {}
+align-items: center {}
+justify-content: center {}
 		width: 32px;
 		height: 32px;
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-text-muted, #808080);
 		border-radius: 0;
 		color: var(--yorha-text-secondary, #b0b0b0);
-		cursor: pointer
+cursor: pointer {}
 		transition: all 0.2s ease;
 		font-size: 12px;
 	}
@@ -254,28 +253,27 @@
 		color: var(--yorha-bg-primary, #0a0a0a);
 		box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700);
 	}
-	
-	/* Navigation */
+/* Navigation */ {}
 	.navigation {
 		flex: 1;
 		padding: 20px 12px;
 	}
 	
 	.nav-item {
-		position: relative
-		display: flex
-		align-items: center
+position: relative {}
+display: flex {}
+align-items: center {}
 		gap: 12px;
 		padding: 12px 16px;
 		margin-bottom: 8px;
 		color: var(--yorha-text-secondary, #b0b0b0);
-		text-decoration: none
+text-decoration: none {}
 		border-radius: 0;
 		border: 2px solid transparent;
 		transition: all 0.2s ease;
-		overflow: hidden
+overflow: hidden {}
 		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
-		text-transform: uppercase
+text-transform: uppercase {}
 		letter-spacing: 1px;
 	}
 	
@@ -290,25 +288,25 @@
 		background: var(--yorha-bg-tertiary, #2a2a2a);
 		border-color: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-secondary, #ffd700);
-		box-shadow: 
-			inset 3px 0 0 var(--yorha-secondary, #ffd700),
+box-shadow: {}
+inset 3px 0 0 var(--yorha-secondary, #ffd700), {}
 			0 0 10px rgba(255, 215, 0, 0.2);
 	}
 	
 	.nav-icon {
 		font-size: 18px;
 		width: 24px;
-		text-align: center
+text-align: center {}
 	}
 	
 	.nav-label {
 		font-weight: 500;
 		letter-spacing: 0.5px;
-		white-space: nowrap
+white-space: nowrap {}
 	}
 	
 	.active-indicator {
-		position: absolute
+position: absolute {}
 		right: 8px;
 		top: 50%;
 		transform: translateY(-50%);
@@ -316,12 +314,11 @@
 		height: 20px;
 		background: var(--yorha-secondary, #ffd700);
 		border-radius: 0;
-		box-shadow: 
-			0 0 0 1px var(--yorha-bg-secondary, #1a1a1a),
+box-shadow: {}
+0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), {}
 			0 0 8px rgba(255, 215, 0, 0.5);
 	}
-	
-	/* Sidebar Footer */
+/* Sidebar Footer */ {}
 	.sidebar-footer {
 		padding: 20px;
 		border-top: 2px solid var(--yorha-secondary, #ffd700);
@@ -329,19 +326,19 @@
 	}
 	
 	.system-status {
-		display: flex
-		flex-direction: column
+display: flex {}
+flex-direction: column {}
 		gap: 8px;
 	}
 	
 	.status-item {
-		display: flex
-		align-items: center
+display: flex {}
+align-items: center {}
 		gap: 8px;
 		font-size: 12px;
 		color: var(--yorha-text-muted, #808080);
 		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
-		text-transform: uppercase
+text-transform: uppercase {}
 		letter-spacing: 1px;
 	}
 	
@@ -356,12 +353,11 @@
 	.status-dot.online {
 		background: var(--yorha-accent, #00ff41);
 		border-color: var(--yorha-accent, #00ff41);
-		box-shadow: 
-			0 0 0 1px var(--yorha-bg-secondary, #1a1a1a),
+box-shadow: {}
+0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), {}
 			0 0 8px rgba(0, 255, 65, 0.5);
 	}
-	
-	/* Content Area */
+/* Content Area */ {}
 	.content-area {
 		flex: 1;
 		margin-left: 280px;
@@ -375,10 +371,9 @@
 	.content-area.sidebar-collapsed {
 		margin-left: 80px;
 	}
-	
-	/* YoRHa Terminal Effects */
+/* YoRHa Terminal Effects */ {}
 	.scan-overlay {
-		position: fixed
+position: fixed {}
 		top: 0;
 		left: 0;
 		right: 0;
@@ -386,11 +381,10 @@
 		background: linear-gradient(90deg, transparent 0%, var(--yorha-secondary, #ffd700) 50%, transparent 100%);
 		opacity: 0.8;
 		animation: scan-horizontal 6s ease-in-out infinite;
-		pointer-events: none
+pointer-events: none {}
 		z-index: 1100;
 	}
-	
-	/* Animations */
+/* Animations */ {}
 	@keyframes pulse {
 		0%, 100% {
 			opacity: 1;
@@ -410,8 +404,7 @@
 			opacity: 0.6;
 		}
 	}
-	
-	/* Responsive Design */
+/* Responsive Design */ {}
 	@media (max-width: 1024px) {
 		.main-container.hud-offset {
 			padding-top: 100px;
@@ -451,7 +444,6 @@
 		.content-area.sidebar-collapsed {
 			margin-left: 0;
 		}
-		
-		/* Mobile sidebar toggle would need JavaScript implementation */
+/* Mobile sidebar toggle would need JavaScript implementation */ {}
 	}
 </style>

@@ -266,7 +266,10 @@
     <!-- GPU Validation Status -->
     {#if enableGPUValidation && gpuValidationStatus !== 'idle'}
       <div class="mb-4 gpu-validation {gpuValidationStatus}" role="status" aria-live="polite">
-        <div class="flex items-center gap-2 font-mono text-sm"><Zap class="h-4 w-4" /><strong>AI-Enhanced Validation</strong></div>
+        <div class="flex items-center gap-2 font-mono text-sm">
+          <Zap class="h-4 w-4" />
+          <strong>AI-Enhanced Validation</strong>
+        </div>
         <div class="mt-1 text-xs">
           {#if gpuValidationStatus === 'processing'}
             Running advanced credential verification...
@@ -284,7 +287,10 @@
     <!-- Error Message -->
     {#if errorMessage}
       <div class="mb-4 alert alert-error" role="alert">
-        <div class="flex items-center gap-2"><AlertCircle class="h-4 w-4" /><strong>Error</strong></div>
+        <div class="flex items-center gap-2">
+          <AlertCircle class="h-4 w-4" />
+          <strong>Error</strong>
+        </div>
         <p class="mt-1 text-sm">{errorMessage}</p>
       </div>
     {/if}
@@ -292,7 +298,10 @@
     <!-- Success Message -->
     {#if successMessage}
       <div class="mb-4 alert alert-success" role="status" aria-live="polite">
-        <div class="flex items-center gap-2"><Shield class="h-4 w-4" /><strong>Success</strong></div>
+        <div class="flex items-center gap-2">
+          <Shield class="h-4 w-4" />
+          <strong>Success</strong>
+        </div>
         <p class="mt-1 text-sm">{successMessage}</p>
       </div>
     {/if}
@@ -446,7 +455,11 @@
           <div class="relative">
             <input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Enter secure password" bind:value={$form.password} disabled={isLoading} class="input pr-10" />
             <button type="button" class="pw-toggle" onclick={togglePasswordVisibility} disabled={isLoading} aria-label="Toggle password visibility">
-              {#if showPassword}<EyeOff class="h-4 w-4 text-gray-400" />{:else}<Eye class="h-4 w-4 text-gray-400" />{/if}
+              {#if showPassword}
+                <EyeOff class="h-4 w-4 text-gray-400" />
+              {:else}
+                <Eye class="h-4 w-4 text-gray-400" />
+              {/if}
             </button>
           </div>
           {#if $form.password}
@@ -464,7 +477,11 @@
           <div class="relative">
             <input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} placeholder="Confirm your password" bind:value={$form.confirmPassword} disabled={isLoading} class="input pr-10" />
             <button type="button" class="pw-toggle" onclick={toggleConfirmPasswordVisibility} disabled={isLoading} aria-label="Toggle confirm password visibility">
-              {#if showConfirmPassword}<EyeOff class="h-4 w-4 text-gray-400" />{:else}<Eye class="h-4 w-4 text-gray-400" />{/if}
+              {#if showConfirmPassword}
+                <EyeOff class="h-4 w-4 text-gray-400" />
+              {:else}
+                <Eye class="h-4 w-4 text-gray-400" />
+              {/if}
             </button>
           </div>
           {#if getErr('confirmPassword')}<p class="error-text">{getErr('confirmPassword')}</p>{/if}
@@ -491,14 +508,52 @@
         </label>
       </div>
 
-      <!-- Submit Button -->
-      <button type="submit" class="w-full nes-btn nes-legal-priority-medium submit-btn" disabled={isLoading || $submitting}>
+      <!-- Submit Button - Enhanced with enhanced-bits-ui, NES styling, and a11y -->
+      <button 
+        type="submit" 
+        class="w-full enhanced-bits-btn nes-legal-submit n64-enhanced lod-optimized retro-legal-btn" 
+        disabled={isLoading || $submitting}
+        aria-label={isLoading || $submitting ? 'Creating your legal professional account, please wait' : 'Create legal professional account'}
+        aria-describedby="submit-button-help"
+        role="button"
+        tabindex={isLoading || $submitting ? -1 : 0}
+        data-loading={isLoading || $submitting}
+        data-nes-theme="legal-priority"
+        data-enhanced-bits="true"
+      >
         {#if isLoading || $submitting}
-          <span class="inline-flex items-center gap-2"><Loader2 class="h-4 w-4 animate-spin" /> Creating Account...</span>
+          <span 
+            class="inline-flex items-center gap-2" 
+            aria-live="polite" 
+            aria-atomic="true"
+          >
+            <Loader2 
+              class="h-4 w-4 animate-spin" 
+              aria-hidden="true"
+              role="img"
+              aria-label="Loading spinner"
+            />
+            <span class="sr-only">Processing: </span>
+            Creating Account...
+          </span>
         {:else}
-          <span class="inline-flex items-center gap-2"><UserPlus class="h-4 w-4" /> Create Legal Professional Account</span>
+          <span 
+            class="inline-flex items-center gap-2"
+            aria-hidden="false"
+          >
+            <UserPlus 
+              class="h-4 w-4" 
+              aria-hidden="true"
+              role="img"
+              aria-label="User creation icon"
+            />
+            Create Legal Professional Account
+          </span>
         {/if}
       </button>
+      <div id="submit-button-help" class="sr-only">
+        This button will create your legal professional account with GPU-accelerated AI features
+      </div>
     </form>
 
     <!-- Login Link -->

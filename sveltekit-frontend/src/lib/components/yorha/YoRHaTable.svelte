@@ -349,7 +349,7 @@
 
   .yorha-table-container::before {
     content: '';
-    position: absolute
+position: absolute {}
     top: 0;
     left: 0;
     right: 0;
@@ -407,7 +407,7 @@
 
   .yorha-table {
     @apply w-full text-amber-400 font-mono text-sm;
-    border-collapse: separate
+border-collapse: separate {}
     border-spacing: 0;
   }
 
@@ -447,8 +447,7 @@
   .yorha-sortable {
     @apply cursor-pointer hover:bg-amber-300 transition-colors;
   }
-
-  .yorha-sorted-asc,
+.yorha-sorted-asc, {}
   .yorha-sorted-desc {
     @apply bg-amber-300;
   }
@@ -481,20 +480,17 @@
   .yorha-status {
     @apply inline-block px-2 py-1 text-xs font-mono rounded border;
   }
-
-  .yorha-status-active,
-  .yorha-status-online,
+.yorha-status-active, {}
+.yorha-status-online, {}
   .yorha-status-success {
     @apply bg-green-600 text-green-100 border-green-400;
   }
-
-  .yorha-status-inactive,
-  .yorha-status-offline,
+.yorha-status-inactive, {}
+.yorha-status-offline, {}
   .yorha-status-failed {
     @apply bg-red-600 text-red-100 border-red-400;
   }
-
-  .yorha-status-pending,
+.yorha-status-pending, {}
   .yorha-status-processing {
     @apply bg-yellow-600 text-yellow-100 border-yellow-400;
     animation: pulse 1.5s infinite;
@@ -520,13 +516,11 @@
     @apply bg-amber-400 text-black px-2 py-1 text-xs font-mono hover:bg-amber-300 transition-colors;
     border: 1px solid #ffbf00;
   }
-
-  .yorha-loading-row,
+.yorha-loading-row, {}
   .yorha-empty-row {
     @apply border-none;
   }
-
-  .yorha-loading-cell,
+.yorha-loading-cell, {}
   .yorha-empty-cell {
     @apply py-8 text-center border-none;
   }

@@ -42,8 +42,8 @@ https://svelte.dev/e/js_parse_error -->
   	// Real-time metrics
   	let performanceMetrics = $derived({
   		totalQueries: aiResponses.length,
-  		averageConfidence: aiResponses.length > 0 
-  			? aiResponses.reduce((sum, r) => sum + (r.confidence || 0), 0) / aiResponses.length 
+  		averageConfidence: aiResponses.length > 0
+  			? aiResponses.reduce((sum, r) => sum + (r.confidence || 0), 0) / aiResponses.length
   			: 0,
   		averageResponseTime: aiResponses.length > 0
   			? aiResponses.reduce((sum, r) => sum + (r.processingTime || 0), 0) / aiResponses.length
@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
   				}
   			};
   			// Simulate processing delay
-  			await new Promise(resolve => setTimeout(resolve, mockResponse.processingTime);
+			await new Promise(resolve => setTimeout(resolve, mockResponse.processingTime));
   			aiResponses = [...aiResponses, {
   				...mockResponse,
   				query,
@@ -351,13 +351,13 @@ https://svelte.dev/e/js_parse_error -->
 			<!-- Input Panel -->
 			<div class="bg-white rounded-lg shadow-md p-6">
 				<h2 class="text-2xl font-semibold text-gray-900 mb-6">AI Query Interface</h2>
-				
+
 				<!-- Case Selection -->
 				<div class="mb-4">
 					<label for="case-select" class="block text-sm font-medium text-gray-700 mb-2">
 						Select Case
 					</label>
-					<select 
+					<select
 						bind:value={selectedCase}
 						id="case-select"
 						class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -420,7 +420,7 @@ https://svelte.dev/e/js_parse_error -->
 			<!-- Results Panel -->
 			<div class="bg-white rounded-lg shadow-md p-6">
 				<h2 class="text-2xl font-semibold text-gray-900 mb-6">AI Responses</h2>
-				
+
 				{#if isLoading}
 					<div class="flex items-center justify-center py-12">
 						<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -487,7 +487,7 @@ https://svelte.dev/e/js_parse_error -->
 		<!-- Feature Showcase -->
 		<div class="mt-12 bg-white rounded-lg shadow-md p-6">
 			<h2 class="text-2xl font-semibold text-gray-900 mb-6">System Capabilities</h2>
-			
+
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 				<div class="text-center">
 					<div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
@@ -554,23 +554,23 @@ https://svelte.dev/e/js_parse_error -->
 	.prose {
 		max-width: none;
 	}
-	
+
 	.prose h1, .prose h2, .prose h3 {
 		margin-top: 0;
 		margin-bottom: 0.5rem;
 	}
-	
+
 	.prose p {
 		margin-top: 0;
 		margin-bottom: 0.5rem;
 	}
-	
+
 	.prose ul {
 		margin-top: 0.5rem;
 		margin-bottom: 0.5rem;
 		padding-left: 1.5rem;
 	}
-	
+
 	.prose strong {
 		font-weight: 600;
 	}

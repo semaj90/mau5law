@@ -55,8 +55,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 </div>
 
-<style>
-  /* Enhanced fallback styling for better compatibility */
+<style>/* Enhanced fallback styling for better compatibility */ {}
   :global(.bits-ui-fallback) {
     display: contents;
   }
@@ -80,8 +79,7 @@ https://svelte.dev/e/js_parse_error -->
     opacity: 0.5;
     pointer-events: none;
   }
-
-  /* Button-like fallback */
+/* Button-like fallback */ {}
   :global(.bits-ui-fallback[role="button"]) {
     cursor: pointer;
     padding: 0.5rem 1rem;

@@ -237,8 +237,7 @@
       radial-gradient(circle at 20% 50%, rgba(255, 191, 0, 0.03) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, rgba(255, 191, 0, 0.03) 0%, transparent 50%);
   }
-
-  /* Header */
+/* Header */
   .yorha-header {
     @apply fixed top-0 left-0 right-0 z-40 bg-black border-b border-amber-400 border-opacity-30;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
@@ -290,8 +289,7 @@
     @apply px-3 py-2 bg-amber-400 text-black text-xs font-mono tracking-wider;
     @apply hover:bg-amber-300 transition-colors flex items-center gap-2;
   }
-
-  /* Sidebar */
+/* Sidebar */
   .yorha-sidebar {
     @apply fixed top-[73px] left-0 bottom-0 w-80 bg-gray-900 border-r border-amber-400 border-opacity-30;
     @apply transform -translate-x-full transition-transform duration-300 z-30;
@@ -355,8 +353,7 @@
   .yorha-nav-link:hover .yorha-nav-arrow {
     @apply opacity-100;
   }
-
-  /* Main Content */
+/* Main Content */
   .yorha-main {
     @apply pt-[73px] min-h-screen transition-all duration-300;
   }
@@ -364,13 +361,11 @@
   .yorha-main-sidebar-open {
     @apply lg:pl-80;
   }
-
-  /* Overlay */
+/* Overlay */
   .yorha-overlay {
     @apply fixed inset-0 bg-black bg-opacity-50 z-20;
   }
-
-  /* Responsive */
+/* Responsive */
   @media (max-width: 1024px) {
     .yorha-main-sidebar-open {
       @apply pl-0;

@@ -59,8 +59,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   </div>
 {/if}
 
-<style>
-  /* @unocss-include */
+<style>/* @unocss-include */ {}
   .drawer-overlay {
     position: fixed;
     top: 0;

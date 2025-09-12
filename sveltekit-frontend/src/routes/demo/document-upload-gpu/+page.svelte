@@ -63,11 +63,11 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('enable_gpu', String(enableGpu);
-      formData.append('use_tensor_cores', String(useTensorCores);
+  formData.append('enable_gpu', String(enableGpu));
+  formData.append('use_tensor_cores', String(useTensorCores));
       formData.append('quantization', quantization);
-      formData.append('negative_latent_space', String(negativeLatentSpace);
-      formData.append('extract_embeddings', String(extractEmbeddings);
+  formData.append('negative_latent_space', String(negativeLatentSpace));
+  formData.append('extract_embeddings', String(extractEmbeddings));
       formData.append('processing_priority', processingPriority);
 
       const response = await fetch('/api/upload/gpu-process', {
@@ -94,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k);
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
       <p class="text-nier-text-secondary mb-golden-md">
         Upload legal documents for RTX tensor core processing with 4-bit quantization and negative latent space analysis
       </p>
-      
+
       {#if loading}
         <div class="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 border px-golden-md py-golden-sm rounded">
           🔄 Loading pipeline status...
@@ -132,20 +132,20 @@ https://svelte.dev/e/js_parse_error -->
           <h2 class="text-xl font-bold text-nier-accent-warm mb-golden-md uppercase">
             🔧 Pipeline Status
           </h2>
-          
+
           {#if pipelineStatus}
             <div class="space-y-golden-sm">
               {#if pipelineStatus.services}
                 <div class="space-y-golden-xs">
                   <h3 class="font-bold text-nier-accent-cool text-sm uppercase">Services</h3>
-                  
+
                   <div class="flex justify-between items-center">
                     <span class="text-nier-text-secondary text-sm">Upload Service:</span>
                     <span class="text-xs px-2 py-1 rounded font-mono {pipelineStatus.services.upload_service.available ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
                       {pipelineStatus.services.upload_service.available ? 'ONLINE' : 'OFFLINE'}
                     </span>
                   </div>
-                  
+
                   <div class="flex justify-between items-center">
                     <span class="text-nier-text-secondary text-sm">CUDA Service:</span>
                     <span class="text-xs px-2 py-1 rounded font-mono {pipelineStatus.services.cuda_service.available ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
                 {#if pipelineStatus.features}
                   <div class="space-y-golden-xs pt-golden-sm border-t border-nier-border-muted">
                     <h3 class="font-bold text-nier-accent-cool text-sm uppercase">Features</h3>
-                    
+
                     {#each Object.entries(pipelineStatus.features) as [feature, available]}
                       {#if typeof available === 'boolean'}
                         <div class="flex justify-between items-center">
@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
           <h2 class="text-xl font-bold text-nier-accent-warm mb-golden-md uppercase">
             ⚡ GPU-Accelerated Upload
           </h2>
-          
+
           <!-- File Selection -->
           <div class="mb-golden-md">
             <label class="block text-nier-text-secondary mb-golden-sm font-bold text-sm uppercase" for="-select-document-">
@@ -206,7 +206,7 @@ https://svelte.dev/e/js_parse_error -->
             <h3 class="text-lg font-bold text-nier-accent-cool mb-golden-sm uppercase">
               🎯 Processing Options
             </h3>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-golden-md">
               <div class="space-y-golden-sm">
                 <label class="flex items-center space-x-2">
@@ -218,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
                   />
                   <span class="text-sm">Enable GPU Processing</span>
                 </label>
-                
+
                 <label class="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -228,7 +228,7 @@ https://svelte.dev/e/js_parse_error -->
                   />
                   <span class="text-sm">Use RTX Tensor Cores</span>
                 </label>
-                
+
                 <label class="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -238,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
                   />
                   <span class="text-sm">Negative Latent Space</span>
                 </label>
-                
+
                 <label class="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -249,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
                   <span class="text-sm">Extract Embeddings</span>
                 </label>
               </div>
-              
+
               <div class="space-y-golden-sm">
                 <div>
                   <label class="block text-nier-text-secondary text-sm mb-1" for="quantization">Quantization:</label><select id="quantization"
@@ -263,7 +263,7 @@ https://svelte.dev/e/js_parse_error -->
                     <option value="fp32">FP32 (Full precision)</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <label class="block text-nier-text-secondary text-sm mb-1" for="priority">Priority:</label><select id="priority"
                     bind:value={processingPriority}
@@ -300,7 +300,7 @@ https://svelte.dev/e/js_parse_error -->
         <h2 class="text-xl font-bold text-nier-accent-warm mb-golden-md uppercase">
           📋 Processing Results
         </h2>
-        
+
         {#if uploadError}
           <div class="bg-red-500/20 text-red-400 border-red-500/30 border rounded p-golden-md">
             <strong>❌ Error:</strong> {uploadError}
@@ -391,7 +391,7 @@ https://svelte.dev/e/js_parse_error -->
   input[type="file"] {
     cursor: pointer;
   }
-  
+
   input[type="file"]::-webkit-file-upload-button {
     background: linear-gradient(to right, #d5b678, #c0a571);
     color: #2b2b2b;
@@ -402,22 +402,22 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     margin-right: 1rem;
   }
-  
+
   /* Custom scrollbar for code blocks */
   pre::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-  
+
   pre::-webkit-scrollbar-track {
     background: rgba(61, 61, 61, 0.2);
   }
-  
+
   pre::-webkit-scrollbar-thumb {
     background: rgba(213, 182, 120, 0.5);
     border-radius: 4px;
   }
-  
+
   pre::-webkit-scrollbar-thumb:hover {
     background: rgba(213, 182, 120, 0.8);
   }

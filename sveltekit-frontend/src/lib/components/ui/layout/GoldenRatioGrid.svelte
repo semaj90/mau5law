@@ -150,76 +150,64 @@
   {/if}
 </div>
 
-<style>
-  /* @unocss-include */
-
-  /* Base Golden Ratio Grid */
+<style>/* @unocss-include */ {}/* Base Golden Ratio Grid */ {}
   :global(.golden-ratio-grid) {
     display: grid;
     width: 100%;
     height: 100%;
     position: relative;
   }
-
-  /* Horizontal Golden Ratio Layout */
+/* Horizontal Golden Ratio Layout */ {}
   :global(.golden-horizontal) {
     grid-template-columns: var(--primary-proportion) var(--secondary-proportion);
     grid-template-rows: auto 1fr auto;
   }
-
-  /* Vertical Golden Ratio Layout */
+/* Vertical Golden Ratio Layout */ {}
   :global(.golden-vertical) {
     grid-template-columns: 1fr;
     grid-template-rows: auto var(--primary-proportion) var(--secondary-proportion) auto;
   }
-
-  /* Both Directions Golden Ratio */
+/* Both Directions Golden Ratio */ {}
   :global(.golden-both) {
     grid-template-columns: var(--secondary-proportion) var(--primary-proportion) var(--tertiary-proportion);
     grid-template-rows: auto var(--primary-proportion) var(--secondary-proportion) auto;
   }
-
-  /* Grid Template Areas - Sidebar Layout */
+/* Grid Template Areas - Sidebar Layout */ {}
   :global(.grid-template-areas-sidebar) {
-    grid-template-areas:
-      "header header"
-      "sidebar main"
+grid-template-areas: {}
+"header header" {}
+"sidebar main" {}
       "footer footer";
   }
-
-  /* Grid Template Areas - Dashboard Layout */
+/* Grid Template Areas - Dashboard Layout */ {}
   :global(.grid-template-areas-dashboard) {
-    grid-template-areas:
-      "header header header"
-      "sidebar main secondary"
+grid-template-areas: {}
+"header header header" {}
+"sidebar main secondary" {}
       "footer footer footer";
   }
-
-  /* Grid Template Areas - Split Layout */
+/* Grid Template Areas - Split Layout */ {}
   :global(.grid-template-areas-split) {
-    grid-template-areas:
-      "header header"
-      "main secondary"
+grid-template-areas: {}
+"header header" {}
+"main secondary" {}
       "footer footer";
   }
-
-  /* Grid Template Areas - Content Layout */
+/* Grid Template Areas - Content Layout */ {}
   :global(.grid-template-areas-content) {
-    grid-template-areas:
-      "header"
-      "main"
+grid-template-areas: {}
+"header" {}
+"main" {}
       "footer";
   }
-
-  /* Grid Template Areas - Legal Document Layout */
+/* Grid Template Areas - Legal Document Layout */ {}
   :global(.grid-template-areas-legal-document) {
-    grid-template-areas:
-      "header header header"
-      "sidebar main secondary"
+grid-template-areas: {}
+"header header header" {}
+"sidebar main secondary" {}
       "sidebar footer footer";
   }
-
-  /* Grid Area Assignments */
+/* Grid Area Assignments */ {}
   :global(.golden-header) {
     grid-area: header;
     display: flex;
@@ -252,22 +240,21 @@
     align-items: center;
     min-height: calc(var(--inverse-golden-ratio) * 3rem);
   }
-
-  /* Legal AI Specific Styling */
+/* Legal AI Specific Styling */ {}
   :global(.nier-golden-grid) {
-    background: linear-gradient(
-      135deg,
-      var(--color-nier-bg-primary) 0%,
-      var(--color-nier-bg-secondary) 100%
+background: linear-gradient( {}
+135deg, {}
+var(--color-nier-bg-primary) 0%, {}
+var(--color-nier-bg-secondary) 100% {}
     );
     border: 1px solid var(--color-nier-border-primary);
   }
 
   :global(.nier-golden-grid .golden-header) {
-    background: linear-gradient(
-      90deg,
-      var(--color-nier-accent-warm),
-      var(--color-nier-accent-cool)
+background: linear-gradient( {}
+90deg, {}
+var(--color-nier-accent-warm), {}
+var(--color-nier-accent-cool) {}
     );
     border-bottom: 2px solid var(--color-nier-border-primary);
   }
@@ -281,13 +268,12 @@
     background: var(--color-nier-bg-tertiary);
     border-top: 1px solid var(--color-nier-border-secondary);
   }
-
-  /* Evidence Analysis Layout */
+/* Evidence Analysis Layout */ {}
   :global(.yorha-evidence-grid) {
-    background-image:
-      linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%),
-      linear-gradient(-45deg, transparent 25%, rgba(0,0,0,0.02) 25%),
-      linear-gradient(45deg, rgba(0,0,0,0.02) 75%, transparent 75%),
+background-image: {}
+linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%), {}
+linear-gradient(-45deg, transparent 25%, rgba(0,0,0,0.02) 25%), {}
+linear-gradient(45deg, rgba(0,0,0,0.02) 75%, transparent 75%), {}
       linear-gradient(-45deg, rgba(0,0,0,0.02) 75%, transparent 75%);
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
@@ -304,16 +290,15 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(
-      90deg,
-      var(--color-nier-accent-cool),
-      var(--color-nier-accent-warm),
-      var(--color-nier-accent-cool)
+background: linear-gradient( {}
+90deg, {}
+var(--color-nier-accent-cool), {}
+var(--color-nier-accent-warm), {}
+var(--color-nier-accent-cool) {}
     );
     z-index: 1;
   }
-
-  /* Case Management Layout */
+/* Case Management Layout */ {}
   :global(.yorha-case-grid .golden-sidebar) {
     border-left: 4px solid var(--color-nier-accent-warm);
   }
@@ -321,54 +306,52 @@
   :global(.yorha-case-grid .golden-secondary) {
     border-right: 4px solid var(--color-nier-accent-cool);
   }
-
-  /* AI Analysis Panels */
+/* AI Analysis Panels */ {}
   :global(.ai-analysis-grid .golden-main) {
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.03) 0%,
-      rgba(16, 185, 129, 0.03) 100%
+background: linear-gradient( {}
+135deg, {}
+rgba(59, 130, 246, 0.03) 0%, {}
+rgba(16, 185, 129, 0.03) 100% {}
     );
     border: 1px solid rgba(59, 130, 246, 0.1);
   }
 
   :global(.ai-analysis-grid .golden-secondary) {
-    background: linear-gradient(
-      135deg,
-      rgba(16, 185, 129, 0.03) 0%,
-      rgba(245, 158, 11, 0.03) 100%
+background: linear-gradient( {}
+135deg, {}
+rgba(16, 185, 129, 0.03) 0%, {}
+rgba(245, 158, 11, 0.03) 100% {}
     );
     border: 1px solid rgba(16, 185, 129, 0.1);
   }
-
-  /* Responsive Golden Ratio Grid */
+/* Responsive Golden Ratio Grid */ {}
   @media (max-width: 768px) {
     :global(.golden-responsive.grid-template-areas-sidebar) {
-      grid-template-areas:
-        "header"
-        "main"
-        "sidebar"
+grid-template-areas: {}
+"header" {}
+"main" {}
+"sidebar" {}
         "footer";
       grid-template-columns: 1fr;
       grid-template-rows: auto var(--primary-proportion) var(--secondary-proportion) auto;
     }
 
     :global(.golden-responsive.grid-template-areas-dashboard) {
-      grid-template-areas:
-        "header"
-        "main"
-        "secondary"
-        "sidebar"
+grid-template-areas: {}
+"header" {}
+"main" {}
+"secondary" {}
+"sidebar" {}
         "footer";
       grid-template-columns: 1fr;
       grid-template-rows: auto var(--primary-proportion) var(--secondary-proportion) var(--tertiary-proportion) auto;
     }
 
     :global(.golden-responsive.grid-template-areas-split) {
-      grid-template-areas:
-        "header"
-        "main"
-        "secondary"
+grid-template-areas: {}
+"header" {}
+"main" {}
+"secondary" {}
         "footer";
       grid-template-columns: 1fr;
       grid-template-rows: auto var(--primary-proportion) var(--secondary-proportion) auto;
@@ -379,28 +362,25 @@
     :global(.golden-responsive) {
       gap: 0.5rem;
     }
-
-    :global(.golden-responsive .golden-header),
+:global(.golden-responsive .golden-header), {}
     :global(.golden-responsive .golden-footer) {
       min-height: 3rem;
     }
   }
-
-  /* Focus and Accessibility */
+/* Focus and Accessibility */ {}
   :global(.golden-ratio-grid [tabindex]:focus-visible) {
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: 2px;
   }
-
-  /* Print Styles */
+/* Print Styles */ {}
   @media print {
     :global(.golden-ratio-grid) {
       background: white !important;
       color: black !important;
-      grid-template-areas:
-        "header"
-        "main"
-        "secondary"
+grid-template-areas: {}
+"header" {}
+"main" {}
+"secondary" {}
         "footer" !important;
       grid-template-columns: 1fr !important;
     }
@@ -409,20 +389,17 @@
       display: none !important;
     }
   }
-
-  /* High Contrast Mode */
+/* High Contrast Mode */ {}
   @media (prefers-contrast: high) {
     :global(.nier-golden-grid) {
       border-width: 2px;
     }
-
-    :global(.nier-golden-grid .golden-header),
+:global(.nier-golden-grid .golden-header), {}
     :global(.nier-golden-grid .golden-footer) {
       border-width: 2px;
     }
   }
-
-  /* Reduced Motion */
+/* Reduced Motion */ {}
   @media (prefers-reduced-motion: reduce) {
     :global(.golden-ratio-grid *) {
       transition: none !important;

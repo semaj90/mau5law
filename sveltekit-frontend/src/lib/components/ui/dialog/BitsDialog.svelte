@@ -107,8 +107,7 @@
   </Dialog.Portal>
 </Dialog.Root>
 
-<style>
-  /* Legal AI App Specific Styling */
+<style>/* Legal AI App Specific Styling */ {}
   :global(.legal-dialog) {
     @apply border-yorha-border bg-yorha-bg-secondary;
   }

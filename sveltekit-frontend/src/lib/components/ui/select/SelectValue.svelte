@@ -34,7 +34,5 @@
   {/if}
 </span>
 
-<style>
-  /* @unocss-include */
-</style>
+<style>/* @unocss-include */ {}</style>
 

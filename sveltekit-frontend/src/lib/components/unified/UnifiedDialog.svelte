@@ -484,14 +484,12 @@ https://svelte.dev/e/js_parse_error -->
     image-rendering: pixelated;
     image-rendering: crisp-edges;
   }
-
-  /* WebGPU canvas optimization */
+/* WebGPU canvas optimization */ {}
   canvas {
     will-change: transform;
     transform: translateZ(0);
   }
-
-  /* NES-style shadows */
+/* NES-style shadows */ {}
   .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {
     box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
   }

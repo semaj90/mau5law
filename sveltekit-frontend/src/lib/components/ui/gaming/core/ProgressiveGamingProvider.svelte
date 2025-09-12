@@ -272,30 +272,26 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .progressive-gaming-provider {
-    /* Base provider styles */
+/* Base provider styles */ {}
     position: relative;
     display: block;
     min-height: 100%;
-    
-    /* Era-specific base styling */
+/* Era-specific base styling */ {}
     --current-era: var(--gaming-current-era, '8bit');
     --pixel-rendering: var(--gaming-pixel-rendering, pixelated);
     --font-smoothing: var(--gaming-font-smoothing, none);
     --border-radius: var(--gaming-border-radius, 0px);
     --transition-speed: var(--gaming-transition-speed, 0ms);
-    
-    /* Apply era-specific rendering */
+/* Apply era-specific rendering */ {}
     image-rendering: var(--pixel-rendering);
     -webkit-font-smoothing: var(--font-smoothing);
     -moz-osx-font-smoothing: var(--font-smoothing);
-    
-    /* Transitions */
+/* Transitions */ {}
     transition: all var(--transition-speed) ease;
   }
-
-  /* Era-specific provider styles */
+/* Era-specific provider styles */ {}
   .progressive-gaming-provider.era-8bit {
-    /* 8-bit NES styling */
+/* 8-bit NES styling */ {}
     font-family: 'Press Start 2P', monospace;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
@@ -307,62 +303,59 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .progressive-gaming-provider.era-16bit {
-    /* 16-bit SNES styling */
+/* 16-bit SNES styling */ {}
     font-family: 'Orbitron', sans-serif;
     image-rendering: auto;
     -webkit-font-smoothing: antialiased;
   }
 
   .progressive-gaming-provider.era-n64 {
-    /* N64 3D styling */
+/* N64 3D styling */ {}
     font-family: 'Rajdhani', sans-serif;
     font-weight: 500;
     image-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-
-  /* YoRHa integration styles */
+/* YoRHa integration styles */ {}
   .progressive-gaming-provider.yorha-integration {
     background: var(--yorha-bg-primary, #0a0a0a);
     color: var(--yorha-text-primary, #e0e0e0);
   }
 
   .progressive-gaming-provider.yorha-integration.era-8bit {
-    /* Blend YoRHa with 8-bit aesthetic */
-    background: linear-gradient(
-      135deg, 
-      var(--yorha-bg-primary, #0a0a0a) 0%, 
-      #0a0a1a 100%
+/* Blend YoRHa with 8-bit aesthetic */ {}
+background: linear-gradient( {}
+135deg, {}
+var(--yorha-bg-primary, #0a0a0a) 0%, {}
+#0a0a1a 100% {}
     );
   }
 
   .progressive-gaming-provider.yorha-integration.era-16bit {
-    /* Blend YoRHa with 16-bit aesthetic */
-    background: linear-gradient(
-      135deg,
-      var(--yorha-bg-primary, #0a0a0a) 0%,
-      var(--yorha-bg-secondary, #1a1a1a) 50%,
-      var(--yorha-bg-tertiary, #2a2a2a) 100%
+/* Blend YoRHa with 16-bit aesthetic */ {}
+background: linear-gradient( {}
+135deg, {}
+var(--yorha-bg-primary, #0a0a0a) 0%, {}
+var(--yorha-bg-secondary, #1a1a1a) 50%, {}
+var(--yorha-bg-tertiary, #2a2a2a) 100% {}
     );
   }
 
   .progressive-gaming-provider.yorha-integration.era-n64 {
-    /* Full YoRHa theming for N64 era */
+/* Full YoRHa theming for N64 era */ {}
     background: var(--yorha-bg-primary, #0a0a0a);
-    background-image: 
-      linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+background-image: {}
+linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px), {}
       linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
     background-size: 24px 24px;
   }
-
-  /* Main content area */
+/* Main content area */ {}
   .gaming-content {
     position: relative;
     z-index: 1;
   }
-
-  /* Transition overlay */
+/* Transition overlay */ {}
   .transition-overlay {
     position: fixed;
     top: 0;
@@ -413,8 +406,7 @@ https://svelte.dev/e/js_parse_error -->
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
-  /* Debug panel */
+/* Debug panel */ {}
   .debug-panel {
     position: fixed;
     top: 10px;
@@ -476,8 +468,7 @@ https://svelte.dev/e/js_parse_error -->
     background: var(--yorha-secondary, #ffd700);
     color: black;
   }
-
-  /* Transitioning state */
+/* Transitioning state */ {}
   .progressive-gaming-provider.transitioning {
     pointer-events: none;
   }
@@ -486,8 +477,7 @@ https://svelte.dev/e/js_parse_error -->
     filter: blur(1px);
     opacity: 0.8;
   }
-
-  /* Responsive adjustments */
+/* Responsive adjustments */ {}
   @media (max-width: 768px) {
     .debug-panel {
       position: static;
@@ -504,11 +494,10 @@ https://svelte.dev/e/js_parse_error -->
       margin-bottom: 1rem;
     }
   }
-
-  /* Reduced motion support */
+/* Reduced motion support */ {}
   @media (prefers-reduced-motion: reduce) {
-    .progressive-gaming-provider,
-    .transition-overlay,
+.progressive-gaming-provider, {}
+.transition-overlay, {}
     .transition-spinner {
       animation: none !important;
       transition: none !important;
@@ -519,8 +508,7 @@ https://svelte.dev/e/js_parse_error -->
       opacity: 1;
     }
   }
-
-  /* High contrast mode */
+/* High contrast mode */ {}
   @media (prefers-contrast: high) {
     .debug-panel {
       background: black;

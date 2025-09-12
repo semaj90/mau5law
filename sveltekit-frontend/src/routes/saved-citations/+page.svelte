@@ -79,8 +79,8 @@ https://svelte.dev/e/js_parse_error -->
         citation.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         citation.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
         citation.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (citation.notes && citation.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        citation.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase());
+  (citation.notes && citation.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
+  citation.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesCategory = selectedCategory === 'all' || citation.category === selectedCategory;
 
       return matchesSearch && matchesCategory;
@@ -223,10 +223,22 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <div class="space-y-4">
-  <Button class="bits-btn" onclick={() => (showAddDialog = true)}>
-        <Plus class="space-y-4" />
+  <Button 
+        class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
+        onclick={() => (showAddDialog = true)}
+        aria-label="Open dialog to add a new legal citation"
+        aria-describedby="add-citation-help"
+        role="button"
+        data-nes-theme="citation-primary"
+        data-enhanced-bits="true"
+        data-operation="add-citation"
+      >
+        <Plus class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon" />
         Add Citation
       </Button>
+      <div id="add-citation-help" class="sr-only">
+        Create a new legal citation with title, content, source, category, and tags
+      </div>
     </div>
   </div>
 
@@ -241,9 +253,22 @@ https://svelte.dev/e/js_parse_error -->
             <DropdownMenuRoot>
               {#snippet children({ trigger, menu })}
                 <DropdownMenuTrigger {trigger}>
-                  <Button class="bits-btn" variant="ghost" size="sm">
-                    <MoreVertical class="w-4 h-4" />
+                  <Button 
+                    class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-menu-btn"
+                    variant="ghost" 
+                    size="sm"
+                    aria-label="Open citation actions menu"
+                    aria-describedby="citation-menu-help"
+                    role="button"
+                    data-nes-theme="citation-menu"
+                    data-enhanced-bits="true"
+                    data-citation-id={citation.id}
+                  >
+                    <MoreVertical class="w-4 h-4" aria-hidden="true" role="img" aria-label="Menu options icon" />
                   </Button>
+                  <div id="citation-menu-help" class="sr-only">
+                    Access citation actions: favorite, copy, edit, or delete
+                  </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent {menu}>
                   <DropdownMenuItem onclick={() => toggleFavorite(citation)}>
@@ -321,24 +346,47 @@ https://svelte.dev/e/js_parse_error -->
           {#if searchQuery || selectedCategory !== 'all'}
             <h3 class="space-y-4">No citations found</h3>
             <p class="space-y-4">No citations match your current search criteria.</p>
-            <Button class="bits-btn"
+            <Button 
+              class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-filter-btn"
               variant="secondary"
               onclick={() => {
                 searchQuery = '';
                 selectedCategory = 'all';
-              }}>
+              }}
+              aria-label="Clear all search filters and show all citations"
+              aria-describedby="clear-filters-help"
+              role="button"
+              data-nes-theme="citation-secondary"
+              data-enhanced-bits="true"
+              data-operation="clear-filters"
+            >
               Clear filters
             </Button>
+            <div id="clear-filters-help" class="sr-only">
+              Remove search query and category filters to display all saved citations
+            </div>
           {:else}
             <h3 class="space-y-4">No saved citations</h3>
             <p class="space-y-4">
               You haven't saved any citations yet. Start by adding citations from reports or create
               new ones.
             </p>
-            <Button class="bits-btn" onclick={() => (showAddDialog = true)}>
-              <Plus class="space-y-4" />
+            <Button 
+              class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
+              onclick={() => (showAddDialog = true)}
+              aria-label="Create your first legal citation"
+              aria-describedby="first-citation-help"
+              role="button"
+              data-nes-theme="citation-primary"
+              data-enhanced-bits="true"
+              data-operation="add-first-citation"
+            >
+              <Plus class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon" />
               Add your first citation
             </Button>
+            <div id="first-citation-help" class="sr-only">
+              Start your citation collection by creating your first legal citation with source and notes
+            </div>
           {/if}
         </div>
       </div>
@@ -401,10 +449,32 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <DialogFooter>
-  <Button class="bits-btn" variant="secondary" onclick={() => (showAddDialog = false)}>Cancel</Button>
-  <Button class="bits-btn" onclick={() => saveCitation()} disabled={!newCitation.title || !newCitation.content}>
+  <Button 
+    class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
+    variant="secondary" 
+    onclick={() => (showAddDialog = false)}
+    aria-label="Cancel citation creation and close dialog"
+    role="button"
+    data-nes-theme="dialog-secondary"
+    data-enhanced-bits="true"
+  >Cancel</Button>
+  <Button 
+    class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
+    onclick={() => saveCitation()} 
+    disabled={!newCitation.title || !newCitation.content}
+    aria-label={!newCitation.title || !newCitation.content ? 'Save citation - Title and content required' : 'Save new legal citation'}
+    aria-describedby="save-citation-help"
+    role="button"
+    tabindex={!newCitation.title || !newCitation.content ? -1 : 0}
+    data-nes-theme="dialog-primary"
+    data-enhanced-bits="true"
+    data-operation="save-citation"
+  >
         Save Citation
       </Button>
+      <div id="save-citation-help" class="sr-only">
+        Save the new citation with all entered information to your collection
+      </div>
     </DialogFooter>
   </DialogContent>
 </DialogRoot>
@@ -456,8 +526,28 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <DialogFooter>
-  <Button class="bits-btn" variant="secondary" onclick={() => (editingCitation = null)}>Cancel</Button>
-  <Button class="bits-btn" onclick={() => updateCitation()}>Update Citation</Button>
+  <Button 
+    class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
+    variant="secondary" 
+    onclick={() => (editingCitation = null)}
+    aria-label="Cancel editing and close dialog"
+    role="button"
+    data-nes-theme="dialog-secondary"
+    data-enhanced-bits="true"
+  >Cancel</Button>
+  <Button 
+    class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
+    onclick={() => updateCitation()}
+    aria-label="Save changes to citation"
+    aria-describedby="update-citation-help"
+    role="button"
+    data-nes-theme="dialog-primary"
+    data-enhanced-bits="true"
+    data-operation="update-citation"
+  >Update Citation</Button>
+  <div id="update-citation-help" class="sr-only">
+    Apply changes to the citation and update your collection
+  </div>
       </DialogFooter>
     </DialogContent>
   </DialogRoot>

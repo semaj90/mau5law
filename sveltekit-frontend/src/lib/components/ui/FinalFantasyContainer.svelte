@@ -90,25 +90,24 @@
   }
 
   .ff-corners-classic {
-    clip-path: polygon(
-      0% 8px, 8px 0%, 
-      calc(100% - 8px) 0%, 100% 8px,
-      100% calc(100% - 8px), calc(100% - 8px) 100%,
-      8px 100%, 0% calc(100% - 8px)
+clip-path: polygon( {}
+0% 8px, 8px 0%, {}
+calc(100% - 8px) 0%, 100% 8px, {}
+100% calc(100% - 8px), calc(100% - 8px) 100%, {}
+8px 100%, 0% calc(100% - 8px) {}
     );
   }
 
   .text-shadow-lg {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   }
-
-  /* Subtle background pattern */
+/* Subtle background pattern */ {}
   .ff-container::before {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: 
-      radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+background-image: {}
+radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%), {}
       radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
     pointer-events: none;
   }

@@ -330,7 +330,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
   // Reactive stats exposed to template
   let stats = getTestStats();
-  $: stats = getTestStats();
+  let stats = $derived(getTestStats());
 
   // Auto-run tests on mount
   onMount(() => {

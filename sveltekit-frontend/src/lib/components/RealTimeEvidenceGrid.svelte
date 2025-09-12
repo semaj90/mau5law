@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
-  const { caseId: string | undefined = undefined, searchQuery: string = "", selectedTypes: string[] = [] } = $props();
+  let { caseId | undefined = undefined, searchQuery = "", selectedTypes[] = [] } = $props();
 
   // Svelte runes ($state, $derived, etc.) are declared globally in src/types/svelte-helpers.d.ts
 

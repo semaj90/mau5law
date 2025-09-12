@@ -1,11 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
+<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
 <script context="module">
-</script>
+
 
   import { slide } from "svelte/transition";
-  </script>
+  
 
 <!-- AI Chat Message Component -->
 <script lang="ts">
@@ -75,7 +75,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(1)}s`;
   }
-</script>
+
 
 <div
   class="container mx-auto px-4"
@@ -259,8 +259,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   </div>
 </div>
 
-<style>
-  /* @unocss-include */
+<style>/* @unocss-include */ {}
   .chat-message {
     margin: 16px 0;
     padding: 16px;
@@ -352,13 +351,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     white-space: pre-wrap;
     word-wrap: break-word;
 }
-  .sources-section,
+.sources-section, {}
   .metadata-section {
     margin-top: 16px;
     border-top: 1px solid var(--border-color, #e2e8f0);
     padding-top: 12px;
 }
-  .sources-toggle,
+.sources-toggle, {}
   .metadata-toggle {
     display: flex;
     align-items: center;
@@ -371,15 +370,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     cursor: pointer;
     transition: color 0.2s ease;
 }
-  .sources-toggle:hover,
+.sources-toggle:hover, {}
   .metadata-toggle:hover {
     color: var(--text-primary, #1e293b);
 }
-  .sources-toggle svg,
+.sources-toggle svg, {}
   .metadata-toggle svg {
     transition: transform 0.2s ease;
 }
-  .sources-toggle svg.rotated,
+.sources-toggle svg.rotated, {}
   .metadata-toggle svg.rotated {
     transform: rotate(180deg);
 }
@@ -447,7 +446,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   .metadata-item .value.cache {
     color: var(--text-info, #0369a1);
 }
-  /* Dark mode support */
+/* Dark mode support */ {}
   @media (prefers-color-scheme: dark) {
     .chat-message {
       background: var(--bg-primary, #1e293b);
@@ -457,12 +456,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       background: var(--bg-assistant, #0f172a);
       border-color: var(--border-assistant, #334155);
 }
-    .source-item,
+.source-item, {}
     .metadata-item {
       background: var(--bg-secondary, #334155);
     }
   }
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 768px) {
     .chat-message.user {
       margin-left: 10%;

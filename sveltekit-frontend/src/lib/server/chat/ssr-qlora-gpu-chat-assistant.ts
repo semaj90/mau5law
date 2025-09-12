@@ -9,10 +9,10 @@
  * - Real-time streaming with chunked tokenization
  */
 
-import { qloraRLOrchestrator } from '../services/qlora-rl-langextract-integration';
-import { NESMemoryArchitecture } from '../memory/nes-memory-architecture';
-import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache';
-import { lokiRedisCache } from '../cache/loki-redis-integration';
+import { qloraRLOrchestrator } from '$lib/services/qlora-rl-langextract-integration';
+import { NESMemoryArchitecture } from '../../memory/nes-memory-architecture';
+import { WebGPUSOMCache } from '../../webgpu/som-webgpu-cache';
+import { lokiRedisCache } from '$lib/cache/loki-redis-integration';
 import type { RequestEvent } from '@sveltejs/kit';
 
 export interface UserDictionary {

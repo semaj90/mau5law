@@ -136,8 +136,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 </div>
 
-<style>
-  /* @unocss-include */
+<style>/* @unocss-include */ {}
   .golden-layout {
     display: flex;
     height: 100%;
@@ -210,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
   .collapsed .sidebar-toggle:hover {
     background: var(--pico-primary-background, #f3f4f6);
 }
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 768px) {
     .golden-layout {
       flex-direction: column;
@@ -235,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
       left: 50%;
       transform: translateX(-50%);
 }
-    .sidebar-toggle.left,
+.sidebar-toggle.left, {}
     .sidebar-toggle.right {
       left: 50%;
       right: auto;
@@ -247,7 +246,7 @@ https://svelte.dev/e/js_parse_error -->
       left: auto;
       transform: none;
 }}
-  /* Smooth scrollbar for sidebar */
+/* Smooth scrollbar for sidebar */ {}
   .sidebar-content::-webkit-scrollbar {
     width: 6px;
 }

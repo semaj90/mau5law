@@ -286,9 +286,6 @@ https://svelte.dev/e/attribute_duplicate -->
             <Textarea
               bind:value={evidenceText}
               placeholder="Enter evidence content..."
-            <Textarea
-              bind:value={evidenceText}
-              placeholder="Enter evidence content..."
               rows={4}
               class="w-full"
             />

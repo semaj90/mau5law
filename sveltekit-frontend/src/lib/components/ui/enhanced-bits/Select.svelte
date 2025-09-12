@@ -215,13 +215,11 @@
   </SelectItem>
 {/snippet}
 
-<style>
-  /* @unocss-include */
+<style>/* @unocss-include */ {}
   .select-wrapper {
     position: relative;
   }
-
-  /* Enhanced select animations for legal AI context */
+/* Enhanced select animations for legal AI context */ {}
   :global(.bits-select-content) {
     animation: select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -236,13 +234,12 @@
       transform: scale(1) translateY(0);
     }
   }
-
-  /* Legal AI specific styling */
+/* Legal AI specific styling */ {}
   :global(.nier-bits-select) {
-    background: linear-gradient(
-      135deg,
-      var(--color-nier-bg-primary) 0%,
-      var(--color-nier-bg-secondary) 100%
+background: linear-gradient( {}
+135deg, {}
+var(--color-nier-bg-primary) 0%, {}
+var(--color-nier-bg-secondary) 100% {}
     );
     border: 2px solid var(--color-nier-border-secondary);
     transition: all 0.2s ease;
@@ -254,13 +251,12 @@
   }
 
   :global(.nier-panel-elevated) {
-    box-shadow:
-      0 10px 15px -3px rgba(0, 0, 0, 0.1),
-      0 4px 6px -2px rgba(0, 0, 0, 0.05),
+box-shadow: {}
+0 10px 15px -3px rgba(0, 0, 0, 0.1), {}
+0 4px 6px -2px rgba(0, 0, 0, 0.05), {}
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-
-  /* Evidence category specific styling */
+/* Evidence category specific styling */ {}
   :global([data-evidence-category] .bits-select-item) {
     position: relative;
   }
@@ -282,28 +278,25 @@
   :global([data-evidence-category] .bits-select-item[data-highlighted]::before) {
     opacity: 1;
   }
-
-  /* Case type specific styling */
+/* Case type specific styling */ {}
   :global([data-case-type] .bits-select-content) {
-    background-image:
-      radial-gradient(circle at 20% 80%, rgba(58, 55, 47, 0.05) 0%, transparent 50%),
+background-image: {}
+radial-gradient(circle at 20% 80%, rgba(58, 55, 47, 0.05) 0%, transparent 50%), {}
       radial-gradient(circle at 80% 20%, rgba(58, 55, 47, 0.05) 0%, transparent 50%);
   }
-
-  /* AI recommendations styling */
+/* AI recommendations styling */ {}
   :global([data-ai-recommendations] .bits-select-item) {
     transition: all 0.2s ease;
   }
 
   :global([data-ai-recommendations] .bits-select-item:hover) {
-    background: linear-gradient(
-      90deg,
-      rgba(16, 185, 129, 0.1) 0%,
-      transparent 100%
+background: linear-gradient( {}
+90deg, {}
+rgba(16, 185, 129, 0.1) 0%, {}
+transparent 100% {}
     );
   }
-
-  /* Enhanced focus states for accessibility */
+/* Enhanced focus states for accessibility */ {}
   :global(.bits-select-trigger:focus-visible) {
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: 2px;
@@ -313,8 +306,7 @@
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: -2px;
   }
-
-  /* Responsive adjustments */
+/* Responsive adjustments */ {}
   @media (max-width: 640px) {
     :global(.bits-select-content) {
       max-height: 60vh;

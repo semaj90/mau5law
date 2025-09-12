@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
+<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
 <script lang="ts">
   interface Props {
     class?: string;
@@ -96,7 +96,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     open = newOpen;
     onOpenChange?.(newOpen);
   }
-</script>
+
 
 <BitsDialog.Root {open} openchange={handleOpenChange}>
   {@render children?.()}
@@ -116,7 +116,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
 <!-- Export sub-components for easy use -->
 <script lang="ts" module>
-</script>
+
   export { BitsDialog as Dialog };
 
   // Re-export commonly used sub-components
@@ -131,11 +131,10 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   // Create custom header and footer components since they don't exist in newer Bits UI
   export const DialogHeader = 'div';
   export const DialogFooter = 'div';
-</script>
 
-<style>
-  /* @unocss-include */
-  /* Enhanced dialog animations for legal AI context */
+
+<style>/* @unocss-include */ {}
+/* Enhanced dialog animations for legal AI context */ {}
   :global(.bits-dialog-overlay) {
     animation: overlay-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -163,13 +162,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       transform: translate(-50%, -50%) scale(1);
     }
   }
-
-  /* Legal AI specific styling */
+/* Legal AI specific styling */ {}
   :global(.nier-bits-dialog) {
-    background: linear-gradient(
-      135deg,
-      var(--color-nier-bg-primary) 0%,
-      var(--color-nier-bg-secondary) 100%
+background: linear-gradient( {}
+135deg, {}
+var(--color-nier-bg-primary) 0%, {}
+var(--color-nier-bg-secondary) 100% {}
     );
     border: 2px solid var(--color-nier-border-primary);
   }
@@ -181,40 +179,36 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(
-      90deg,
-      var(--color-nier-accent-warm),
-      var(--color-nier-accent-cool),
-      var(--color-nier-accent-warm)
+background: linear-gradient( {}
+90deg, {}
+var(--color-nier-accent-warm), {}
+var(--color-nier-accent-cool), {}
+var(--color-nier-accent-warm) {}
     );
   }
-
-  /* Evidence analysis specific styling */
+/* Evidence analysis specific styling */ {}
   :global([data-evidence-analysis] .bits-dialog-content) {
-    background-image:
-      linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%),
-      linear-gradient(-45deg, transparent 25%, rgba(0,0,0,0.02) 25%),
-      linear-gradient(45deg, rgba(0,0,0,0.02) 75%, transparent 75%),
+background-image: {}
+linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%), {}
+linear-gradient(-45deg, transparent 25%, rgba(0,0,0,0.02) 25%), {}
+linear-gradient(45deg, rgba(0,0,0,0.02) 75%, transparent 75%), {}
       linear-gradient(-45deg, rgba(0,0,0,0.02) 75%, transparent 75%);
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
   }
-
-  /* Case management specific styling */
+/* Case management specific styling */ {}
   :global([data-case-management] .bits-dialog-content) {
-    box-shadow:
-      0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04),
+box-shadow: {}
+0 20px 25px -5px rgba(0, 0, 0, 0.1), {}
+0 10px 10px -5px rgba(0, 0, 0, 0.04), {}
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-
-  /* Enhanced focus and accessibility */
+/* Enhanced focus and accessibility */ {}
   :global(.bits-dialog-content:focus) {
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: 2px;
   }
-
-  /* Responsive adjustments */
+/* Responsive adjustments */ {}
   @media (max-width: 640px) {
     :global(.bits-dialog-content) {
       margin: 1rem;

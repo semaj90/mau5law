@@ -129,14 +129,12 @@
   .error-message {
     font-weight: 500;
   }
-  
-  .optimistic-list__loading,
+.optimistic-list__loading, {}
   .optimistic-list__empty {
     padding: 2rem;
     text-align: center;
   }
-  
-  .loading-placeholder,
+.loading-placeholder, {}
   .empty-placeholder {
     display: flex;
     flex-direction: column;
@@ -209,8 +207,7 @@
       transform: rotate(360deg);
     }
   }
-  
-  /* Animation for optimistic items */
+/* Animation for optimistic items */ {}
   .optimistic-list__item--optimistic {
     animation: optimisticPulse 2s ease-in-out infinite;
   }

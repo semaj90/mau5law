@@ -554,7 +554,7 @@ https://svelte.dev/e/js_parse_error -->
             spellcheck="false"
             aria-label="Command search"
           />
-          <Button class="bits-btn"
+          <Button
             variant="ghost"
             size="sm"
             onclick={() => (open = false)}
@@ -631,8 +631,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Shortcut definitions for screen readers -->
 <div class="space-y-4" aria-live="polite" id="shortcuts-announcements"></div>
 
-<style>
-  /* @unocss-include */
+<style>/* @unocss-include */ {}
   .command-palette-overlay {
     position: fixed;
     top: 0;
@@ -658,8 +657,8 @@ https://svelte.dev/e/js_parse_error -->
   .command-palette {
     background: white;
     border-radius: 12px;
-    box-shadow:
-      0 25px 50px -12px rgba(0, 0, 0, 0.25),
+box-shadow: {}
+0 25px 50px -12px rgba(0, 0, 0, 0.25), {}
       0 0 0 1px rgba(0, 0, 0, 0.05);
     width: 100%;
     max-width: 600px;
@@ -720,7 +719,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     transition: background-color 0.1s ease;
 }
-  .command-item:hover,
+.command-item:hover, {}
   .command-item.selected {
     background: #f3f4f6;
 }
@@ -786,7 +785,7 @@ https://svelte.dev/e/js_parse_error -->
   .shortcuts-help.hidden {
     display: none;
 }
-  /* Screen reader only content */
+/* Screen reader only content */ {}
   .sr-only {
     position: absolute;
     width: 1px;
@@ -798,7 +797,7 @@ https://svelte.dev/e/js_parse_error -->
     white-space: nowrap;
     border: 0;
 }
-  /* Dark mode */
+/* Dark mode */ {}
   @media (prefers-color-scheme: dark) {
     .command-palette {
       background: #1f2937;
@@ -813,7 +812,7 @@ https://svelte.dev/e/js_parse_error -->
     .search-input::placeholder {
       color: #9ca3af;
 }
-    .command-item:hover,
+.command-item:hover, {}
     .command-item.selected {
       background: #374151;
 }
@@ -835,7 +834,7 @@ https://svelte.dev/e/js_parse_error -->
       background: #4b5563;
       color: #f9fafb;
 }}
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 640px) {
     .command-palette-overlay {
       padding: 1rem;
@@ -851,7 +850,7 @@ https://svelte.dev/e/js_parse_error -->
       flex-wrap: wrap;
       gap: 0.5rem;
 }}
-  /* High contrast mode */
+/* High contrast mode */ {}
   @media (prefers-contrast: high) {
     .command-palette {
       border: 2px solid #000;
@@ -860,9 +859,9 @@ https://svelte.dev/e/js_parse_error -->
       background: #000;
       color: #fff;
 }}
-  /* Reduced motion */
+/* Reduced motion */ {}
   @media (prefers-reduced-motion: reduce) {
-    .command-palette-overlay,
+.command-palette-overlay, {}
     .command-palette {
       animation: none;
 }

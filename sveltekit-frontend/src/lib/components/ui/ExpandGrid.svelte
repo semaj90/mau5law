@@ -72,8 +72,7 @@ https://svelte.dev/e/js_parse_error -->
   {@render children}
 </div>
 
-<style>
-  /* @unocss-include */
+<style>/* @unocss-include */ {}
   .expand-grid {
     display: grid;
     grid-template-columns: repeat(var(--columns), 1fr);
@@ -94,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #e5e7eb;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
-  /* Grid item styling */
+/* Grid item styling */ {}
   .expand-grid :global(.grid-item) {
     transition: all var(--expand-duration) var(--easing);
     border-radius: 0.375rem;
@@ -108,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
     transform: scale(1.05);
     z-index: 10;
 }
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 768px) {
     .expand-grid {
       grid-template-columns: 1fr;
@@ -117,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
       grid-template-columns: repeat(2, 1fr);
 }}
   @media (max-width: 480px) {
-    .expand-grid,
+.expand-grid, {}
     .expand-grid.expanded {
       grid-template-columns: 1fr;
 }}

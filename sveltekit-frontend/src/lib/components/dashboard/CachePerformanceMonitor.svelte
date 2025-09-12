@@ -1,8 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
+<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
 <script>
-</script>
+
   // Basic CachePerformanceMonitor component
   let { data = {} } = $props();
 
@@ -11,7 +11,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   let cacheHits = $derived(data.hits || 0);
   let cacheMisses = $derived(data.misses || 0);
   let hitRate = $derived(cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses) * 100).toFixed(2) : '0.00');
-</script>
+
 
 <div class="cache-performance-monitor">
   <h3>Cache Performance Monitor</h3>

@@ -328,8 +328,7 @@
   </div>
 {/snippet}
 
-<style>
-  /* Enhanced Nier theme styles */
+<style>/* Enhanced Nier theme styles */ {}
   :global(:root) {
     --nier-bg: #0a0a0a;
     --nier-surface: #1a1a1a;

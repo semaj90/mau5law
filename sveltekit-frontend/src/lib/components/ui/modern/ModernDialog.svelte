@@ -216,8 +216,7 @@
     border-top: 1px solid var(--yorha-border-secondary);
     flex-shrink: 0;
   }
-
-  /* Animations */
+/* Animations */ {}
   @keyframes overlayShow {
     from {
       opacity: 0;
@@ -237,17 +236,15 @@
       transform: translate(-50%, -50%) scale(1);
     }
   }
-
-  /* Responsive adjustments */
+/* Responsive adjustments */ {}
   @media (max-width: 768px) {
     .dialog-content {
       width: calc(100vw - var(--golden-lg));
       max-height: calc(100vh - var(--golden-lg));
       border-radius: 0.75rem;
     }
-
-    .dialog-header,
-    .dialog-body,
+.dialog-header, {}
+.dialog-body, {}
     .dialog-footer {
       padding: var(--golden-lg);
     }
@@ -256,8 +253,7 @@
       font-size: var(--text-lg);
     }
   }
-
-  /* Full size variant */
+/* Full size variant */ {}
   .dialog-content:has(:global(.max-w-7xl)) {
     width: calc(100vw - var(--golden-md));
     height: calc(100vh - var(--golden-md));

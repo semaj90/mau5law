@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   import Button from '$lib/components/ui/enhanced-bits';
   import { ArrowLeft, Save, AlertCircle, CheckCircle } from 'lucide-svelte';
   import type { PageData } from './$types';
-  { CaseForm } from '$lib/schemas/forms';
+  import type { CaseForm } from '$lib/schemas/forms';
 
   let { data = $bindable() } = $props(); // PageData;
   let isSubmitting = $state(false);
@@ -107,11 +107,11 @@ https://svelte.dev/e/js_parse_error -->
   <div class="mb-8">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
-        <Button class="bits-btn"
+        <Button
+          class="bits-btn flex items-center space-x-2"
           variant="ghost"
           size="sm"
           onclick={() => goto('/cases')}
-          class="flex items-center space-x-2"
         >
           <ArrowLeft class="h-4 w-4" />
           <span>Back to Cases</span>
@@ -135,10 +135,10 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Quick Actions -->
       <div class="flex items-center space-x-3">
         {#if !data.editMode}
-          <Button class="bits-btn"
+          <Button
+            class="bits-btn flex items-center space-x-2"
             variant="outline"
             onclick={() => goto('/cases/templates')}
-            class="flex items-center space-x-2"
           >
             <Save class="h-4 w-4" />
             <span>Use Template</span>

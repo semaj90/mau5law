@@ -227,19 +227,24 @@ Production-ready with native Windows support
 
         <div class="parameter-row">
           <div class="param-group">
-            <label class="nes-text" for="width">Width:</label><input id="width" class="nes-input" type="number" bind:value={width} min="256" max="1024" step="64">
+            <label class="nes-text" for="width">Width:</label>
+            <input id="width" class="nes-input" type="number" bind:value={width} min="256" max="1024" step="64">
           </div>
           <div class="param-group">
-            <label class="nes-text" for="height">Height:</label><input id="height" class="nes-input" type="number" bind:value={height} min="256" max="1024" step="64">
+            <label class="nes-text" for="height">Height:</label>
+            <input id="height" class="nes-input" type="number" bind:value={height} min="256" max="1024" step="64">
           </div>
           <div class="param-group">
-            <label class="nes-text" for="steps">Steps:</label><input id="steps" class="nes-input" type="number" bind:value={steps} min="1" max="100">
+            <label class="nes-text" for="steps">Steps:</label>
+            <input id="steps" class="nes-input" type="number" bind:value={steps} min="1" max="100">
           </div>
           <div class="param-group">
-            <label class="nes-text" for="cfg-scale">CFG Scale:</label><input id="cfg-scale" class="nes-input" type="number" bind:value={cfgScale} min="1" max="30" step="0.5">
+            <label class="nes-text" for="cfg-scale">CFG Scale:</label>
+            <input id="cfg-scale" class="nes-input" type="number" bind:value={cfgScale} min="1" max="30" step="0.5">
           </div>
           <div class="param-group">
-            <label class="nes-text" for="seed-1-for-random">Seed (-1 for random):</label><input id="seed-1-for-random" class="nes-input" type="number" bind:value={seed} min="-1" max="999999999">
+            <label class="nes-text" for="seed-1-for-random">Seed (-1 for random):</label>
+            <input id="seed-1-for-random" class="nes-input" type="number" bind:value={seed} min="-1" max="999999999">
           </div>
         </div>
       </div>

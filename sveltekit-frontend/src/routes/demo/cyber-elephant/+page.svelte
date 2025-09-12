@@ -19,7 +19,7 @@ https://svelte.dev/e/js_parse_error -->
   	// Color palette for clusters
   	const clusterColors = [
   		0x00ff88, // legal_contracts - bright green
-  		0x8800ff, // case_precedents - purple  
+  		0x8800ff, // case_precedents - purple
   		0xff4400, // regulatory_compliance - orange
   		0x0088ff, // additional clusters - blue
   		0xff0088, // pink
@@ -126,9 +126,9 @@ https://svelte.dev/e/js_parse_error -->
   			// Size based on confidence
   			sizes.push(doc.projected_3d.confidence * 0.1 + 0.05);
   		});
-  		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3);
-  		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3);
-  		geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1);
+		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+		geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
   		// Custom shader material for better point rendering
   		const material = new THREE.ShaderMaterial({
   			uniforms: {
@@ -240,8 +240,8 @@ https://svelte.dev/e/js_parse_error -->
   			positions.push(doc.projected_3d.x, doc.projected_3d.y, doc.projected_3d.z);
   			colors.push(1, 1, 0); // Yellow highlight
   		});
-  		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3);
-  		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3);
+		geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
   		const material = new THREE.PointsMaterial({
   			size: 0.2,
   			vertexColors: true,
@@ -273,14 +273,14 @@ https://svelte.dev/e/js_parse_error -->
 			<h1>🐘 Cyber Elephant</h1>
 			<p>Ancient Psychic Tandem War Elephant - Knowledge Discovery Interface</p>
 		</div>
-		
+
 		{#if isLoading}
 			<div class="loading">
 				<div class="spinner"></div>
 				<p>Awakening the Cyber Elephant...</p>
 			</div>
 		{/if}
-		
+
 		{#if error}
 			<div class="error">
 				<h3>⚠️ Initialization Failed</h3>
@@ -295,7 +295,7 @@ https://svelte.dev/e/js_parse_error -->
 				</details>
 			</div>
 		{/if}
-		
+
 		{#if stats && !isLoading}
 			<div class="stats">
 				<div class="stat">
@@ -312,7 +312,7 @@ https://svelte.dev/e/js_parse_error -->
 				</div>
 			</div>
 		{/if}
-		
+
 		{#if selectedPoint}
 			<div class="selection-panel">
 				<h3>📄 Selected Document</h3>
@@ -322,7 +322,7 @@ https://svelte.dev/e/js_parse_error -->
 					<span class="type">{selectedPoint.document_type}</span>
 					<span class="confidence">Confidence: {(selectedPoint.projected_3d.confidence * 100).toFixed(1)}%</span>
 				</div>
-				
+
 				{#if nearestNeighbors.length > 0}
 					<h4>🔍 Similar Documents ({nearestNeighbors.length})</h4>
 					<div class="neighbors">
@@ -336,13 +336,13 @@ https://svelte.dev/e/js_parse_error -->
 				{/if}
 			</div>
 		{/if}
-		
+
 		<div class="controls">
 			<p>🖱️ Click on points to explore similar documents</p>
 			<p>🎮 Mouse: Orbit | Wheel: Zoom | Drag: Pan</p>
 		</div>
 	</div>
-	
+
 	<canvas bind:this={canvas}></canvas>
 </main>
 
@@ -355,7 +355,7 @@ https://svelte.dev/e/js_parse_error -->
 		background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f23 100%);
 		font-family: 'Courier New', monospace;
 	}
-	
+
 	canvas {
 		display: block;
 		position: absolute;
@@ -363,7 +363,7 @@ https://svelte.dev/e/js_parse_error -->
 		left: 0;
 		z-index: 1;
 	}
-	
+
 	.ui-overlay {
 		position: absolute;
 		top: 0;
@@ -377,11 +377,11 @@ https://svelte.dev/e/js_parse_error -->
 		padding: 20px;
 		box-sizing: border-box;
 	}
-	
+
 	.ui-overlay > * {
 		pointer-events: auto;
 	}
-	
+
 	.header {
 		background: rgba(0, 0, 0, 0.8);
 		border: 2px solid #00ff88;
@@ -391,20 +391,20 @@ https://svelte.dev/e/js_parse_error -->
 		max-width: 400px;
 		box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
 	}
-	
+
 	.header h1 {
 		margin: 0;
 		color: #00ff88;
 		font-size: 24px;
 		text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
 	}
-	
+
 	.header p {
 		margin: 8px 0 0 0;
 		color: #888;
 		font-size: 14px;
 	}
-	
+
 	.loading {
 		position: absolute;
 		top: 50%;
@@ -417,7 +417,7 @@ https://svelte.dev/e/js_parse_error -->
 		border: 2px solid #8800ff;
 		color: #8800ff;
 	}
-	
+
 	.spinner {
 		width: 40px;
 		height: 40px;
@@ -427,12 +427,12 @@ https://svelte.dev/e/js_parse_error -->
 		animation: spin 1s linear infinite;
 		margin: 0 auto 15px;
 	}
-	
+
 	@keyframes spin {
 		0% { transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }
 	}
-	
+
 	.error {
 		position: absolute;
 		top: 50%;
@@ -445,19 +445,19 @@ https://svelte.dev/e/js_parse_error -->
 		max-width: 500px;
 		color: #ff8866;
 	}
-	
+
 	.error h3 {
 		margin: 0 0 15px 0;
 		color: #ff4400;
 	}
-	
+
 	.error code {
 		background: rgba(0, 0, 0, 0.5);
 		padding: 2px 6px;
 		border-radius: 4px;
 		font-family: 'Courier New', monospace;
 	}
-	
+
 	.stats {
 		position: absolute;
 		top: 20px;
@@ -468,26 +468,26 @@ https://svelte.dev/e/js_parse_error -->
 		padding: 15px;
 		min-width: 200px;
 	}
-	
+
 	.stat {
 		display: flex;
 		justify-content: space-between;
 		margin-bottom: 8px;
 		color: #0088ff;
 	}
-	
+
 	.stat:last-child {
 		margin-bottom: 0;
 	}
-	
+
 	.stat .label {
 		color: #888;
 	}
-	
+
 	.stat .value {
 		font-weight: bold;
 	}
-	
+
 	.selection-panel {
 		position: absolute;
 		bottom: 20px;
@@ -501,42 +501,42 @@ https://svelte.dev/e/js_parse_error -->
 		overflow-y: auto;
 		color: #ffff88;
 	}
-	
+
 	.selection-panel h3, .selection-panel h4 {
 		margin: 0 0 10px 0;
 		color: #ffff00;
 	}
-	
+
 	.content-snippet {
 		font-size: 13px;
 		line-height: 1.4;
 		margin-bottom: 15px;
 		color: #ccc;
 	}
-	
+
 	.metadata {
 		display: flex;
 		gap: 15px;
 		margin-bottom: 15px;
 		font-size: 12px;
 	}
-	
+
 	.type {
 		background: #333;
 		padding: 4px 8px;
 		border-radius: 4px;
 		color: #fff;
 	}
-	
+
 	.confidence {
 		color: #888;
 	}
-	
+
 	.neighbors {
 		max-height: 120px;
 		overflow-y: auto;
 	}
-	
+
 	.neighbor {
 		display: flex;
 		justify-content: space-between;
@@ -547,7 +547,7 @@ https://svelte.dev/e/js_parse_error -->
 		border-radius: 4px;
 		font-size: 12px;
 	}
-	
+
 	.type-badge {
 		background: #666;
 		padding: 2px 6px;
@@ -555,7 +555,7 @@ https://svelte.dev/e/js_parse_error -->
 		font-size: 10px;
 		color: #fff;
 	}
-	
+
 	.controls {
 		position: absolute;
 		bottom: 20px;
@@ -568,11 +568,11 @@ https://svelte.dev/e/js_parse_error -->
 		font-size: 12px;
 		max-width: 250px;
 	}
-	
+
 	.controls p {
 		margin: 0 0 5px 0;
 	}
-	
+
 	.controls p:last-child {
 		margin-bottom: 0;
 	}

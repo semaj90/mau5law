@@ -155,39 +155,33 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
 <style>
   :global(.nes-8bit-container) {
-    /* Base container styling */
+/* Base container styling */ {}
     background-color: var(--container-bg);
     border: 2px solid var(--container-border);
     border-radius: 0;
     padding: var(--container-padding);
     color: var(--container-text);
-    
-    /* Typography */
+/* Typography */ {}
     font-family: 'Press Start 2P', 'Courier New', monospace;
     font-size: 12px;
     line-height: 1.5;
-    
-    /* Pixel perfect rendering */
+/* Pixel perfect rendering */ {}
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
-    
-    /* Layout */
+/* Layout */ {}
     position: relative;
     display: block;
     box-sizing: border-box;
-    
-    /* Optional constraints */
+/* Optional constraints */ {}
     max-width: var(--container-max-width, none);
     min-height: var(--container-min-height, auto);
-    
-    /* Disable text selection for interactive containers */
+/* Disable text selection for interactive containers */ {}
     -webkit-user-select: text;
     -moz-user-select: text;
     user-select: text;
   }
-
-  /* Container variants */
+/* Container variants */ {}
   :global(.nes-8bit-container.with-title) {
     margin-top: 1rem;
   }
@@ -204,8 +198,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     letter-spacing: 1px;
     margin: 0;
     z-index: 1;
-    
-    /* Ensure title has proper background */
+/* Ensure title has proper background */ {}
     border: 1px solid var(--container-border);
     border-radius: 0;
   }
@@ -233,8 +226,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     align-items: center;
     justify-content: center;
   }
-
-  /* Success variant */
+/* Success variant */ {}
   :global(.nes-8bit-container.is-success) {
     border-color: #92cc41;
     background-color: rgba(146, 204, 65, 0.1);
@@ -242,8 +234,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     --container-border: #92cc41;
     --container-text: #92cc41;
   }
-
-  /* Warning variant */
+/* Warning variant */ {}
   :global(.nes-8bit-container.is-warning) {
     border-color: #f7d51d;
     background-color: rgba(247, 213, 29, 0.1);
@@ -251,8 +242,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     --container-border: #f7d51d;
     --container-text: #f7d51d;
   }
-
-  /* Error variant */
+/* Error variant */ {}
   :global(.nes-8bit-container.is-error) {
     border-color: #f83800;
     background-color: rgba(248, 56, 0, 0.1);
@@ -260,14 +250,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     --container-border: #f83800;
     --container-text: #f83800;
   }
-
-  /* Container content wrapper */
+/* Container content wrapper */ {}
   .container-content {
     position: relative;
     z-index: 0;
   }
-
-  /* Interactive container styles */
+/* Interactive container styles */ {}
   :global(.nes-8bit-container[role="button"]) {
     cursor: pointer;
     -webkit-user-select: none;
@@ -290,14 +278,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     cursor: not-allowed;
     pointer-events: none;
   }
-
-  /* Focus styles for accessibility */
+/* Focus styles for accessibility */ {}
   :global(.nes-8bit-container[tabindex]:focus-visible) {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
-
-  /* Scanlines effect */
+/* Scanlines effect */ {}
   :global(.nes-8bit-container.enable-scanlines::after) {
     content: '';
     position: absolute;
@@ -305,33 +291,30 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     left: 0;
     right: 0;
     bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.1) 2px,
-      rgba(0, 0, 0, 0.1) 4px
+background: repeating-linear-gradient( {}
+0deg, {}
+transparent, {}
+transparent 2px, {}
+rgba(0, 0, 0, 0.1) 2px, {}
+rgba(0, 0, 0, 0.1) 4px {}
     );
     pointer-events: none;
     z-index: 1;
   }
-
-  /* CRT effect */
+/* CRT effect */ {}
   :global(.nes-8bit-container.enable-crt) {
     filter: contrast(1.2) brightness(1.1);
-    box-shadow: 
-      inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+box-shadow: {}
+inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
       0 0 8px rgba(0, 0, 0, 0.3);
     border-radius: 2px;
   }
-
-  /* Nested containers */
+/* Nested containers */ {}
   :global(.nes-8bit-container .nes-8bit-container) {
     margin: 8px 0;
     font-size: 10px;
   }
-
-  /* Content spacing */
+/* Content spacing */ {}
   .container-content > :global(*:first-child) {
     margin-top: 0;
   }
@@ -339,13 +322,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   .container-content > :global(*:last-child) {
     margin-bottom: 0;
   }
-
-  /* Typography within containers */
-  :global(.nes-8bit-container h1),
-  :global(.nes-8bit-container h2),
-  :global(.nes-8bit-container h3),
-  :global(.nes-8bit-container h4),
-  :global(.nes-8bit-container h5),
+/* Typography within containers */ {}
+:global(.nes-8bit-container h1), {}
+:global(.nes-8bit-container h2), {}
+:global(.nes-8bit-container h3), {}
+:global(.nes-8bit-container h4), {}
+:global(.nes-8bit-container h5), {}
   :global(.nes-8bit-container h6) {
     color: var(--container-text);
     font-family: 'Press Start 2P', 'Courier New', monospace;
@@ -358,17 +340,16 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   :global(.nes-8bit-container h1) { font-size: 14px; }
   :global(.nes-8bit-container h2) { font-size: 12px; }
   :global(.nes-8bit-container h3) { font-size: 11px; }
-  :global(.nes-8bit-container h4),
-  :global(.nes-8bit-container h5),
+:global(.nes-8bit-container h4), {}
+:global(.nes-8bit-container h5), {}
   :global(.nes-8bit-container h6) { font-size: 10px; }
 
   :global(.nes-8bit-container p) {
     margin: 0.5rem 0;
     line-height: 1.6;
   }
-
-  /* List styling */
-  :global(.nes-8bit-container ul),
+/* List styling */ {}
+:global(.nes-8bit-container ul), {}
   :global(.nes-8bit-container ol) {
     margin: 0.5rem 0;
     padding-left: 2rem;
@@ -378,8 +359,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     margin: 0.25rem 0;
     line-height: 1.4;
   }
-
-  /* Code blocks */
+/* Code blocks */ {}
   :global(.nes-8bit-container code) {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--container-border);
@@ -401,8 +381,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     border: none;
     padding: 0;
   }
-
-  /* Mobile optimizations */
+/* Mobile optimizations */ {}
   @media (max-width: 480px) {
     :global(.nes-8bit-container) {
       font-size: 10px;
@@ -418,8 +397,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     :global(.nes-8bit-container h2) { font-size: 11px; }
     :global(.nes-8bit-container h3) { font-size: 10px; }
   }
-
-  /* High DPI displays */
+/* High DPI displays */ {}
   @media (-webkit-min-device-pixel-ratio: 2) {
     :global(.nes-8bit-container) {
       border-width: 1px;

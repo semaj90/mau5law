@@ -239,21 +239,21 @@ https://svelte.dev/e/attribute_duplicate -->
 
 <style>
   .yorha-dialog-backdrop {
-    position: fixed
+position: fixed {}
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 10001;
-    display: flex
-    align-items: center
-    justify-content: center
+display: flex {}
+align-items: center {}
+justify-content: center {}
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(1px);
   }
 
   .yorha-dialog {
-    position: relative
+position: relative {}
     background: var(--yorha-bg-secondary, #1a1a1a);
     border: 2px solid;
     font-family: var(--yorha-font-primary, "JetBrains Mono", monospace);
@@ -262,15 +262,14 @@ https://svelte.dev/e/attribute_duplicate -->
     max-width: 500px;
     width: 90vw;
     max-height: 80vh;
-    overflow: hidden
-    box-shadow:
-      0 0 0 1px var(--yorha-bg-primary, #0a0a0a),
+overflow: hidden {}
+box-shadow: {}
+0 0 0 1px var(--yorha-bg-primary, #0a0a0a), {}
       0 10px 40px rgba(0, 0, 0, 0.8);
   }
-
-  /* Positioning */
+/* Positioning */ {}
   .dialog-center {
-    align-self: center
+align-self: center {}
   }
 
   .dialog-top {
@@ -282,19 +281,18 @@ https://svelte.dev/e/attribute_duplicate -->
     align-self: flex-end;
     margin-bottom: 10vh;
   }
-
-  /* Header */
+/* Header */ {}
   .dialog-header {
     background: var(--yorha-bg-primary, #0a0a0a);
     border-bottom: 1px solid;
     padding: 12px 16px;
-    display: flex
+display: flex {}
     align-items: flex-start;
     justify-content: space-between;
   }
 
   .header-left {
-    display: flex
+display: flex {}
     align-items: flex-start;
     gap: 12px;
     flex: 1;
@@ -305,9 +303,9 @@ https://svelte.dev/e/attribute_duplicate -->
     width: 24px;
     height: 24px;
     border: 1px solid;
-    display: flex
-    align-items: center
-    justify-content: center
+display: flex {}
+align-items: center {}
+justify-content: center {}
     font-size: 14px;
     font-weight: 700;
     flex-shrink: 0;
@@ -323,7 +321,7 @@ https://svelte.dev/e/attribute_duplicate -->
     color: var(--yorha-secondary, #ffd700);
     font-size: 14px;
     font-weight: 700;
-    text-transform: uppercase
+text-transform: uppercase {}
     letter-spacing: 1px;
     margin: 0 0 4px 0;
   }
@@ -338,13 +336,13 @@ https://svelte.dev/e/attribute_duplicate -->
   .dialog-close {
     width: 24px;
     height: 24px;
-    background: transparent
+background: transparent {}
     border: 1px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
-    cursor: pointer
-    display: flex
-    align-items: center
-    justify-content: center
+cursor: pointer {}
+display: flex {}
+align-items: center {}
+justify-content: center {}
     font-size: 12px;
     transition: all 0.2s ease;
     flex-shrink: 0;
@@ -355,17 +353,16 @@ https://svelte.dev/e/attribute_duplicate -->
     color: var(--yorha-danger, #ff0041);
     background: rgba(255, 0, 65, 0.1);
   }
-
-  /* Content */
+/* Content */ {}
   .dialog-content {
     padding: 16px;
     max-height: 60vh;
-    overflow-y: auto
+overflow-y: auto {}
   }
 
   .prompt-input-group {
-    display: flex
-    flex-direction: column
+display: flex {}
+flex-direction: column {}
     gap: 8px;
   }
 
@@ -373,7 +370,7 @@ https://svelte.dev/e/attribute_duplicate -->
     font-size: 12px;
     font-weight: 600;
     color: var(--yorha-text-secondary, #b0b0b0);
-    text-transform: uppercase
+text-transform: uppercase {}
     letter-spacing: 1px;
   }
 
@@ -382,56 +379,54 @@ https://svelte.dev/e/attribute_duplicate -->
     background: var(--yorha-bg-primary, #0a0a0a);
     border: 2px solid;
     color: var(--yorha-text-primary, #e0e0e0);
-    font-family: inherit
+font-family: inherit {}
     font-size: 14px;
     padding: 8px 12px;
     transition: all 0.2s ease;
   }
 
   .prompt-input:focus {
-    outline: none
-    box-shadow:
-      0 0 0 1px currentColor,
+outline: none {}
+box-shadow: {}
+0 0 0 1px currentColor, {}
       inset 0 0 8px rgba(255, 215, 0, 0.1);
   }
-
-  /* Actions */
+/* Actions */ {}
   .dialog-actions {
     background: var(--yorha-bg-primary, #0a0a0a);
     border-top: 1px solid var(--yorha-text-muted, #808080);
     padding: 12px 16px;
-    display: flex
+display: flex {}
     justify-content: flex-end;
     gap: 8px;
   }
 
   .dialog-button {
-    display: flex
-    align-items: center
+display: flex {}
+align-items: center {}
     gap: 6px;
     padding: 8px 12px;
-    background: transparent
+background: transparent {}
     border: 1px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
-    font-family: inherit
+font-family: inherit {}
     font-size: 11px;
     font-weight: 600;
-    text-transform: uppercase
+text-transform: uppercase {}
     letter-spacing: 1px;
-    cursor: pointer
+cursor: pointer {}
     transition: all 0.2s ease;
     min-width: 80px;
-    justify-content: center
+justify-content: center {}
   }
 
   .dialog-button:hover {
     background: rgba(255, 255, 255, 0.05);
     transform: translateY(-1px);
   }
-
-  .dialog-button.confirm:hover,
+.dialog-button.confirm:hover, {}
   .dialog-button.acknowledge:hover {
-    background: currentColor
+background: currentColor {}
     color: var(--yorha-bg-primary, #0a0a0a);
   }
 
@@ -444,10 +439,9 @@ https://svelte.dev/e/attribute_duplicate -->
   .button-icon {
     font-size: 12px;
   }
-
-  /* Terminal Scan Effect */
+/* Terminal Scan Effect */ {}
   .scan-effect {
-    position: absolute
+position: absolute {}
     top: 0;
     left: -100%;
     width: 100%;
@@ -469,13 +463,12 @@ https://svelte.dev/e/attribute_duplicate -->
       opacity: 0;
     }
   }
-
-  /* Responsive Design */
+/* Responsive Design */ {}
   @media (max-width: 768px) {
     .yorha-dialog {
       min-width: 280px;
       width: 95vw;
-      max-width: none
+max-width: none {}
     }
 
     .dialog-header {
@@ -488,11 +481,11 @@ https://svelte.dev/e/attribute_duplicate -->
 
     .dialog-actions {
       padding: 10px 12px;
-      flex-direction: column
+flex-direction: column {}
     }
 
     .dialog-button {
-      min-width: auto
+min-width: auto {}
     }
 
     .dialog-top {

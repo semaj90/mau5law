@@ -399,7 +399,8 @@
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium mb-2" for="ttl">TTL</label><select id="ttl" bind:value={selectedTTL} class="w-full p-2 border rounded">
+                <label class="block text-sm font-medium mb-2" for="ttl">TTL</label>
+                <select id="ttl" bind:value={selectedTTL} class="w-full p-2 border rounded">
                   {#each ttlOptions as option}
                     <option value={option.value}>{option.label}</option>
                   {/each}
@@ -407,7 +408,8 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium mb-2" for="priority">Priority</label><select id="priority" bind:value={selectedPriority} class="w-full p-2 border rounded">
+                <label class="block text-sm font-medium mb-2" for="priority">Priority</label>
+                <select id="priority" bind:value={selectedPriority} class="w-full p-2 border rounded">
                   {#each priorityOptions as option}
                     <option value={option.value}>{option.label}</option>
                   {/each}
@@ -425,25 +427,89 @@
             </div>
 
             <div class="flex flex-wrap gap-2">
-              <Button class="bits-btn" onclick={setCacheValue} disabled={$isLoading}>
-                <Database class="mr-2" size={16} />
+              <Button 
+                class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn"
+                onclick={setCacheValue} 
+                disabled={$isLoading}
+                aria-label={$isLoading ? 'Setting cache value, please wait' : 'Store value in multi-layer cache system'}
+                aria-describedby="set-cache-help"
+                role="button"
+                tabindex={$isLoading ? -1 : 0}
+                data-loading={$isLoading}
+                data-nes-theme="cache-priority"
+                data-enhanced-bits="true"
+                data-operation="set"
+              >
+                <Database class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Database icon" />
                 Set Value
               </Button>
+              <div id="set-cache-help" class="sr-only">
+                Store the entered key-value pair in the multi-layer cache system with specified TTL and priority
+              </div>
               
-              <Button class="bits-btn" variant="outline" onclick={getCacheValue} disabled={$isLoading}>
-                <RefreshCw class="mr-2" size={16} />
+              <Button 
+                class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn"
+                variant="outline" 
+                onclick={getCacheValue} 
+                disabled={$isLoading}
+                aria-label={$isLoading ? 'Retrieving cache value, please wait' : 'Retrieve value from multi-layer cache'}
+                aria-describedby="get-cache-help"
+                role="button"
+                tabindex={$isLoading ? -1 : 0}
+                data-loading={$isLoading}
+                data-nes-theme="cache-secondary"
+                data-enhanced-bits="true"
+                data-operation="get"
+              >
+                <RefreshCw class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Refresh icon" />
                 Get Value
               </Button>
+              <div id="get-cache-help" class="sr-only">
+                Retrieve the value associated with the entered key from the cache layers
+              </div>
               
-              <Button class="bits-btn" variant="destructive" onclick={deleteCacheValue} disabled={$isLoading}>
-                <Trash2 class="mr-2" size={16} />
+              <Button 
+                class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn danger-variant"
+                variant="destructive" 
+                onclick={deleteCacheValue} 
+                disabled={$isLoading}
+                aria-label={$isLoading ? 'Deleting cache entry, please wait' : 'Delete cache entry from all layers'}
+                aria-describedby="delete-cache-help"
+                role="button"
+                tabindex={$isLoading ? -1 : 0}
+                data-loading={$isLoading}
+                data-nes-theme="cache-destructive"
+                data-enhanced-bits="true"
+                data-operation="delete"
+              >
+                <Trash2 class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Delete icon" />
                 Delete
               </Button>
+              <div id="delete-cache-help" class="sr-only">
+                Remove the specified cache entry from all cache layers permanently
+              </div>
               
-              <Button class="bits-btn" variant="destructive" onclick={clearCache} disabled={$isLoading}>
-                <XCircle class="mr-2" size={16} />
+              <Button 
+                class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn danger-variant critical-action"
+                variant="destructive" 
+                onclick={clearCache} 
+                disabled={$isLoading}
+                aria-label={$isLoading ? 'Clearing all cache data, please wait' : 'Clear entire cache - WARNING: This will remove all cached data'}
+                aria-describedby="clear-cache-help"
+                role="button"
+                tabindex={$isLoading ? -1 : 0}
+                data-loading={$isLoading}
+                data-nes-theme="cache-critical"
+                data-enhanced-bits="true"
+                data-operation="clear-all"
+                data-critical="true"
+              >
+                <XCircle class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Clear all icon" />
                 Clear All
               </Button>
+              <div id="clear-cache-help" class="sr-only">
+                WARNING: This will permanently remove ALL cached data from all cache layers. This action cannot be undone.
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -453,13 +519,23 @@
           <CardHeader>
             <CardTitle class="flex items-center justify-between">
               Test Results
-              <Button class="bits-btn" 
+              <Button 
+                class="enhanced-bits-btn nes-cache-control n64-enhanced lod-optimized retro-control-btn"
                 variant="ghost" 
                 size="sm" 
                 onclick={() => testResults.set([])}
+                aria-label="Clear test results display"
+                aria-describedby="clear-results-help"
+                role="button"
+                data-nes-theme="control-ghost"
+                data-enhanced-bits="true"
+                data-operation="clear-results"
               >
                 Clear
               </Button>
+              <div id="clear-results-help" class="sr-only">
+                Clear the test results display panel
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -677,11 +753,22 @@
               <Button 
                 onclick={runPerformanceTest} 
                 disabled={$isLoading}
-                class="w-full bits-btn bits-btn"
+                class="w-full enhanced-bits-btn nes-performance-test n64-enhanced lod-optimized retro-test-btn"
+                aria-label={$isLoading ? 'Running batch performance test, please wait' : 'Execute batch performance test with 100 cache entries'}
+                aria-describedby="perf-test-help"
+                role="button"
+                tabindex={$isLoading ? -1 : 0}
+                data-loading={$isLoading}
+                data-nes-theme="performance-primary"
+                data-enhanced-bits="true"
+                data-test-type="performance"
               >
-                <Zap class="mr-2" size={16} />
+                <Zap class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Performance test icon" />
                 Run Batch Performance Test
               </Button>
+              <div id="perf-test-help" class="sr-only">
+                Execute a comprehensive performance test using 100 cache entries across all cache layers
+              </div>
               <p class="text-sm text-muted-foreground">
                 Tests batch operations with 100 cache entries
               </p>
@@ -692,11 +779,22 @@
                 variant="outline"
                 onclick={testCacheHitMiss} 
                 disabled={$isLoading}
-                class="w-full bits-btn bits-btn"
+                class="w-full enhanced-bits-btn nes-performance-test n64-enhanced lod-optimized retro-test-btn"
+                aria-label={$isLoading ? 'Running cache hit/miss test, please wait' : 'Test cache hit and miss behavior patterns'}
+                aria-describedby="hitmiss-test-help"
+                role="button"
+                tabindex={$isLoading ? -1 : 0}
+                data-loading={$isLoading}
+                data-nes-theme="performance-secondary"
+                data-enhanced-bits="true"
+                data-test-type="hit-miss"
               >
-                <BarChart3 class="mr-2" size={16} />
+                <BarChart3 class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Analytics icon" />
                 Test Cache Hit/Miss
               </Button>
+              <div id="hitmiss-test-help" class="sr-only">
+                Validate proper cache hit and miss behavior across the cache layer hierarchy
+              </div>
               <p class="text-sm text-muted-foreground">
                 Validates cache hit and miss behavior
               </p>
@@ -707,11 +805,22 @@
                 variant="outline"
                 onclick={refreshStats} 
                 disabled={$isLoading}
-                class="w-full bits-btn bits-btn"
+                class="w-full enhanced-bits-btn nes-performance-test n64-enhanced lod-optimized retro-test-btn"
+                aria-label={$isLoading ? 'Refreshing cache statistics, please wait' : 'Update all cache statistics and health monitoring data'}
+                aria-describedby="refresh-stats-help"
+                role="button"
+                tabindex={$isLoading ? -1 : 0}
+                data-loading={$isLoading}
+                data-nes-theme="performance-refresh"
+                data-enhanced-bits="true"
+                data-operation="refresh-stats"
               >
-                <RefreshCw class="mr-2" size={16} />
+                <RefreshCw class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Refresh statistics icon" />
                 Refresh Statistics
               </Button>
+              <div id="refresh-stats-help" class="sr-only">
+                Update all cache layer statistics, health status, and performance monitoring data
+              </div>
               <p class="text-sm text-muted-foreground">
                 Updates all cache statistics and health status
               </p>

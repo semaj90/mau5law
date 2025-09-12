@@ -229,7 +229,14 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
     ];
 
     // Import routes dynamically to avoid circular dependencies
-    const { allRoutes } = await import('$lib/data/routes-config');
+    let allRoutes = [];
+    try {
+      const { allRoutes: importedRoutes } = await import('$lib/data/routes-config');
+      allRoutes = importedRoutes || [];
+    } catch (error) {
+      console.error('Failed to import routes config:', error);
+      allRoutes = [];
+    }
 
     // Attempt to read the exported route map JSON (one level above sveltekit-frontend)
     let routeInventory: RoutePageData['routeInventory'] = null;

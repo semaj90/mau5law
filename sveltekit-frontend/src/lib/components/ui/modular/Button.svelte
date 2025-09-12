@@ -94,7 +94,7 @@
 
 <style>
   .yorha-shadow {
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3),
+box-shadow: 0 0 10px rgba(212, 175, 55, 0.3), {}
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   .hover-lift {

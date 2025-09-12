@@ -62,13 +62,11 @@ NES-styled label with legal AI theming
   .bits-label:hover {
     color: rgb(59, 130, 246);
   }
-  
-  /* NES-style text shadow for retro effect */
+/* NES-style text shadow for retro effect */ {}
   .bits-label {
     text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
   }
-  
-  /* Legal AI specific styling */
+/* Legal AI specific styling */ {}
   .bits-label {
     position: relative;
   }

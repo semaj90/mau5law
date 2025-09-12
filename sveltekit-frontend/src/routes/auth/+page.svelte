@@ -61,8 +61,8 @@ https://svelte.dev/e/js_parse_error -->
         form.append('department', formData.department);
         form.append('jurisdiction', formData.jurisdiction);
         form.append('badgeNumber', formData.badgeNumber);
-        form.append('agreeToTerms', formData.agreeToTerms.toString();
-        form.append('agreeToPrivacy', formData.agreeToPrivacy.toString();
+  form.append('agreeToTerms', formData.agreeToTerms.toString());
+  form.append('agreeToPrivacy', formData.agreeToPrivacy.toString());
       }
 
       const endpoint = authMode === 'login' ? '/auth/login' : '/auth/register';
@@ -92,8 +92,22 @@ https://svelte.dev/e/js_parse_error -->
   // Validate form
   let isFormValid = $state(false);
 
-  // Use a reactive statement to compute form validity instead of $derived
-  let isFormValid = $derived((authMode);
+  // Compute form validity reactively
+  $effect(() => {
+    if (authMode === 'login') {
+      isFormValid = !!formData.email && !!formData.password;
+    } else {
+      isFormValid = !!formData.email &&
+        !!formData.password &&
+        formData.password === formData.confirmPassword &&
+        !!formData.firstName &&
+        !!formData.lastName &&
+        !!formData.department &&
+        !!formData.jurisdiction &&
+        formData.agreeToTerms &&
+        formData.agreeToPrivacy;
+    }
+  });
 </script>
 
 <svelte:head>
