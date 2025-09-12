@@ -63,7 +63,7 @@ export interface GamingThemeState {
   soundEnabled: boolean;
   particleEffects: boolean;
   retroShaders: boolean;
-  performanceLevel?: number;
+  performanceLevel?: 'low' | 'medium' | 'high';
   availableEras?: GamingEra[];
   isTransitioning?: boolean;
   transitionDuration?: number;

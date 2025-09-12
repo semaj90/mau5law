@@ -1,7 +1,6 @@
 <script lang="ts">
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
-  import * as Card from '$lib/components/ui/card';
+  import { Button, Card } from '$lib/components/ui/enhanced-bits';
   import { onMount } from 'svelte';
 
   let pageLoaded = $state(false);
@@ -22,14 +21,14 @@
 <div class="evidence-page-container">
   {#if showWelcome && pageLoaded}
     <div class="welcome-banner animate-fade-in">
-      <Card.Root>
-      <Card.Header>
-        <Card.Title>🎯 Evidence Board Ready</Card.Title>
-        <Card.Description>
-          AI-powered evidence management with RTX 3060 Ti acceleration
-        </Card.Description>
-      </Card.Header>
-      <Card.Content>
+      <Card variant="evidence" hoverable fullWidth>
+        <div class="card-header">
+          <h3 class="card-title">🎯 Evidence Board Ready</h3>
+          <p class="card-description">
+            AI-powered evidence management with RTX 3060 Ti acceleration
+          </p>
+        </div>
+        <div class="card-content">
         <div class="welcome-stats">
           <div class="stat">
             <span class="stat-label">GPU</span>
@@ -44,8 +43,8 @@
             <span class="stat-value">Connected</span>
           </div>
         </div>
-      </Card.Content>
-      <Card.Footer>
+        </div>
+        <div class="card-footer">
         <Button
           variant="outline"
           size="sm"
@@ -53,8 +52,8 @@
         >
           Get Started →
         </Button>
-      </Card.Footer>
-      </Card.Root>
+        </div>
+      </Card>
     </div>
   {/if}
 

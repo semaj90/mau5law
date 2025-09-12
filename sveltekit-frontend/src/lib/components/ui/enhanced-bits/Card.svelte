@@ -169,18 +169,18 @@
   {/if}
 </div>
 
-<style>/* @unocss-include */ {}
-/* Enhanced card animations for legal AI context */ {}
+<style>/* @unocss-include */
+/* Enhanced card animations for legal AI context */
   :global(.shadcn-card) {
     position: relative;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-/* Legal AI specific styling */ {}
+/* Legal AI specific styling */
   :global(.nier-bits-card) {
-background: linear-gradient( {}
-135deg, {}
-var(--color-nier-bg-primary) 0%, {}
-var(--color-nier-bg-secondary) 100% {}
+background: linear-gradient(
+135deg,
+var(--color-nier-bg-primary) 0%,
+var(--color-nier-bg-secondary) 100%
     );
     border: 1px solid var(--color-nier-border-secondary);
   }

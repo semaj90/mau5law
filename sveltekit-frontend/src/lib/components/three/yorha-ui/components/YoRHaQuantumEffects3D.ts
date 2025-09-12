@@ -178,7 +178,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         },
         waveFunction: new Complex(Math.random(), Math.random()),
         entangled: Math.random() < this.quantumOptions.entanglementStrength,
-        entanglementPartner: undefined,
+        entanglementPartner: undefined as number | undefined,
         probability: Math.random(),
         collapsed: false,
         spin: Math.random() * Math.PI * 2,
@@ -188,7 +188,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       // Set entanglement partners
       if (particle.entangled && i > 0) {
         const partnerIndex = Math.floor(Math.random() * i);
-        particle.entanglementPartner = partnerIndex;
+        particle.entanglementPartner = partnerIndex as number;
         if (this.quantumParticles[partnerIndex]) {
           this.quantumParticles[partnerIndex].entanglementPartner = i;
         }
@@ -250,7 +250,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
           z: (Math.random() - 0.5) * this.quantumOptions.fieldSize.z * 0.8
         },
         activation: Math.random() * this.consciousnessOptions.awarenessLevel,
-        connections: [],
+        connections: [] as number[],
         thought: this.generateRandomThought(),
         awareness: Math.random() * this.consciousnessOptions.awarenessLevel,
         firing: false,
@@ -301,7 +301,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
           });
 
           const connectionLine = new THREE.Line(connectionGeometry, connectionMaterial);
-          this.consciousnessNetwork.add(connectionLine);
+          this.consciousnessNetwork?.add(connectionLine);
         }
       });
     });

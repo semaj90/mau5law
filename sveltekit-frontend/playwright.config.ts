@@ -19,7 +19,7 @@ export default defineConfig({
   globalSetup: './test/global-setup.mjs',
   globalTeardown: './test/global-teardown.mjs',
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:5177',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure'
@@ -47,13 +47,8 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-    env: {
-      // Use test database for integration tests
-      DATABASE_URL: 'postgresql://legal_admin:testpass123@localhost:5434/legal_ai_test',
-      REDIS_URL: 'redis://localhost:6380'
-    }
+    url: 'http://localhost:5177',
+    reuseExistingServer: true, // Use existing server
+    timeout: 120000
   }
 });

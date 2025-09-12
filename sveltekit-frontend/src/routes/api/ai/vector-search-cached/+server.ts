@@ -25,8 +25,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { pgVectorService } from '$lib/server/db/pgvector-service';
-import { 
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { 
   getVectorCache, 
   setVectorCache, 
   getEmbeddingCache, 

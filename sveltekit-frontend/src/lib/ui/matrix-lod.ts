@@ -45,6 +45,10 @@ export class MatrixLODSystem {
   private viewportFocus: ViewportFocus | null = null;
   private gpuMetrics: GPULoadMetrics;
   private aiAwarenessEnabled = true;
+  
+  // Hybrid GPU Context Integration
+  private hybridGPU: import('../gpu/hybrid-gpu-context').HybridGPUContext | null = null;
+  private useHybridAcceleration = true;
 
   // GLSL Shaders for cubic filter blending
   private vertexShaderSource = `#version 300 es
@@ -151,6 +155,33 @@ export class MatrixLODSystem {
     this.initializeShaders();
     this.initializeGPUMetrics();
     this.startPerformanceMonitoring();
+    
+    // Initialize hybrid GPU acceleration
+    this.initializeHybridGPU(canvas);
+  }
+
+  /**
+   * Initialize hybrid GPU context for WebGPU/WebGL fallback
+   */
+  private async initializeHybridGPU(canvas: HTMLCanvasElement): Promise<void> {
+    if (!this.useHybridAcceleration) return;
+    
+    try {
+      const { createHybridGPUContext } = await import('../gpu/hybrid-gpu-context');
+      this.hybridGPU = await createHybridGPUContext(canvas, {
+        preferWebGPU: true,
+        allowWebGL2: true,
+        allowWebGL1: true,
+        requireCompute: false,
+        lodSystemIntegration: true,
+        nesMemoryOptimization: true
+      });
+      
+      console.log(`🚀 Matrix LOD System using ${this.hybridGPU.getActiveContextType()} acceleration`);
+    } catch (error) {
+      console.warn('⚠️ Hybrid GPU initialization failed, using WebGL2 fallback:', error);
+      this.useHybridAcceleration = false;
+    }
   }
 
   /**
@@ -328,17 +359,128 @@ export class MatrixLODSystem {
   /**
    * Update viewport focus based on user interaction and AI suggestions
    */
-  updateViewportFocus(focus: ViewportFocus): void {
+  async updateViewportFocus(focus: ViewportFocus): Promise<void> {
     this.viewportFocus = focus;
 
     // Adjust LOD levels based on focus area
-    this.recalculateLODLevels();
+    await this.recalculateLODLevels();
   }
 
   /**
    * Recalculate LOD levels based on current state
+   * Uses hybrid GPU acceleration when available
    */
-  private recalculateLODLevels(): void {
+  private async recalculateLODLevels(): Promise<void> {
+    if (!this.viewportFocus) return;
+
+    // Use hybrid GPU acceleration for LOD calculations when available
+    if (this.hybridGPU && this.useHybridAcceleration) {
+      await this.recalculateLODLevelsGPU();
+      return;
+    }
+
+    // Fallback to CPU-based calculations
+    this.recalculateLODLevelsCPU();
+  }
+
+  /**
+   * GPU-accelerated LOD level calculation
+   */
+  private async recalculateLODLevelsGPU(): Promise<void> {
+    if (!this.hybridGPU || !this.viewportFocus) return;
+
+    const componentIds = Object.keys(this.lodCache);
+    const positions = new Float32Array(componentIds.length * 2);
+    
+    // Collect element positions
+    componentIds.forEach((componentId, index) => {
+      const element = document.getElementById(componentId);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        positions[index * 2] = rect.left + rect.width / 2;
+        positions[index * 2 + 1] = rect.top + rect.height / 2;
+      }
+    });
+
+    // GPU compute shader for distance calculation and LOD assignment
+    const computeShader = `
+      @group(0) @binding(0) var<storage, read> positions: array<vec2f>;
+      @group(0) @binding(1) var<storage, read_write> lodLevels: array<f32>;
+      @group(0) @binding(2) var<uniform> viewportFocus: vec3f; // x, y, radius
+      @group(0) @binding(3) var<uniform> aiSuggestions: array<i32, 64>;
+      
+      @compute @workgroup_size(64)
+      fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
+        let index = global_id.x;
+        if (index >= arrayLength(&positions)) { return; }
+        
+        let pos = positions[index];
+        let focusCenter = viewportFocus.xy;
+        let focusRadius = viewportFocus.z;
+        
+        let distance = length(pos - focusCenter);
+        let normalizedDistance = distance / focusRadius;
+        
+        // Base LOD calculation
+        var lodLevel: f32 = 0.0; // low
+        if (normalizedDistance < 0.3) {
+          lodLevel = 2.0; // high
+        } else if (normalizedDistance < 0.7) {
+          lodLevel = 1.0; // mid
+        }
+        
+        // AI boost logic (simplified for GPU)
+        if (aiSuggestions[index % 64] > 0) {
+          lodLevel = min(lodLevel + 1.0, 2.0);
+        }
+        
+        lodLevels[index] = lodLevel;
+      }
+    `;
+
+    try {
+      // Create AI suggestions buffer (simplified)
+      const aiSuggestionIndices = new Int32Array(64);
+      componentIds.forEach((componentId, index) => {
+        if (index < 64 && this.viewportFocus!.aiSuggestions.includes(componentId)) {
+          aiSuggestionIndices[index] = 1;
+        }
+      });
+
+      const results = await this.hybridGPU.runComputeShader(computeShader, {
+        positions,
+        viewportFocus: new Float32Array([
+          this.viewportFocus.centerX,
+          this.viewportFocus.centerY,
+          this.viewportFocus.radius
+        ]),
+        aiSuggestions: aiSuggestionIndices
+      });
+
+      const lodLevels = results.lodLevels as Float32Array;
+
+      // Apply calculated LOD levels
+      componentIds.forEach((componentId, index) => {
+        const levelValue = lodLevels[index];
+        let lodLevel: "low" | "mid" | "high";
+        
+        if (levelValue >= 2.0) lodLevel = "high";
+        else if (levelValue >= 1.0) lodLevel = "mid";
+        else lodLevel = "low";
+
+        this.applyLODLevel(componentId, lodLevel);
+      });
+
+    } catch (error) {
+      console.warn('🔄 GPU LOD calculation failed, falling back to CPU:', error);
+      this.recalculateLODLevelsCPU();
+    }
+  }
+
+  /**
+   * CPU fallback LOD level calculation
+   */
+  private recalculateLODLevelsCPU(): void {
     if (!this.viewportFocus) return;
 
     Object.keys(this.lodCache).forEach((componentId) => {
@@ -502,11 +644,11 @@ export class MatrixLODSystem {
   /**
    * Toggle AI awareness features
    */
-  setAIAwareness(enabled: boolean): void {
+  async setAIAwareness(enabled: boolean): Promise<void> {
     this.aiAwarenessEnabled = enabled;
     if (!enabled) {
       // Reset to standard LOD calculation without AI boosts
-      this.recalculateLODLevels();
+      await this.recalculateLODLevels();
     }
   }
 

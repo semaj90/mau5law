@@ -52,7 +52,7 @@ async function getNvidiaStats() {
         const cmd = spawn('nvidia-smi', [
             '--query-gpu=name,utilization.gpu,memory.used,memory.total,temperature.gpu,power.draw,power.limit',
             '--format=csv,noheader,nounits'
-        ]);
+        ], { shell: true });
 
         let output = '';
         cmd.stdout.on('data', (data) => {
@@ -77,8 +77,9 @@ async function getNvidiaStats() {
             }
         });
 
-        cmd.on('error', () => {
-            resolve({ success: false, error: 'NVIDIA drivers not installed' });
+        cmd.on('error', (err) => {
+            console.error('GPU Monitor Error:', err.message);
+            resolve({ success: false, error: 'nvidia-smi not available or NVIDIA drivers not installed' });
         });
     });
 }

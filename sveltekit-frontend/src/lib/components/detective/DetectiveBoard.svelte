@@ -27,7 +27,7 @@
   	// Enhanced integrations
   	import { rabbitMQService } from '$lib/services/rabbitmq-service';
   	import { vectorService } from '$lib/services/vector-service';
-  	import { gpuService } from '$lib/services/gpu-acceleration-service';
+  	import { gpuAccelerationService as gpuService } from '$lib/services/gpu-acceleration-service';
 
   	// --- Svelte 5 State Management ---
   	// SVELTE 5: Subscribe to external evidenceStore manually.

@@ -1,13 +1,11 @@
 <script lang="ts">
-  interface Props {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
   import { Button as BitsButton } from 'bits-ui';
   import type { HTMLButtonAttributes } from 'svelte/elements';
   import { cn } from '$lib/utils/cn';
 
   interface ButtonProps extends HTMLButtonAttributes {
+    /** Children content */
+    children?: import('svelte').Snippet;
     /** Button variant styling */
     variant?: 'default' | 'primary' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'yorha' | 'crimson' | 'gold';
     /** Button size */
@@ -22,8 +20,7 @@
     fullWidth?: boolean;
     /** Priority for evidence-related actions */
     priority?: 'critical' | 'high' | 'medium' | 'low';
-    class?: string;
-    
+
     // Accessibility props
     /** ARIA label for screen readers (especially important for icon-only buttons) */
     'aria-label'?: string;
@@ -47,18 +44,21 @@
     legal = false,
     fullWidth = false,
     priority,
+    // ensure explicit default button type (prevents unintended form submit)
+    type: typeProp = 'button',
+    disabled = false,
     class: classNameVar = '',
     children,
     srOnlyText,
     loadingText,
+    'aria-label': ariaLabel,
+    'aria-describedby': ariaDescribedby,
+    'aria-expanded': ariaExpanded,
+    'aria-controls': ariaControls,
     ...restProps
   }: ButtonProps = $props();
 
-  // Extract accessibility props for explicit handling
-  const ariaLabel = $$props['aria-label'];
-  const ariaDescribedby = $$props['aria-describedby'];
-  const ariaExpanded = $$props['aria-expanded'];
-  const ariaControls = $$props['aria-controls'];
+  // aria* props are pulled via destructuring above
 
   // Generate unique ID for loading announcement
   const loadingAnnouncementId = `loading-${Math.random().toString(36).substr(2, 9)}`;
@@ -101,7 +101,10 @@
 
 <BitsButton.Root
   class={buttonClasses}
-  disabled={loading}
+  type={typeProp}
+  disabled={loading || disabled}
+  data-variant={variant}
+  data-size={size}
   aria-label={ariaLabel}
   aria-describedby={ariaDescribedby ? `${ariaDescribedby} ${loading ? loadingAnnouncementId : ''}`.trim() : (loading ? loadingAnnouncementId : undefined)}
   aria-expanded={ariaExpanded}
@@ -113,7 +116,7 @@
     <div class="ai-status-indicator ai-status-processing w-4 h-4 mr-2" aria-hidden="true"></div>
   {/if}
   {@render children?.()}
-  
+
   {#if srOnlyText}
     <span class="sr-only">{srOnlyText}</span>
   {/if}
@@ -126,8 +129,8 @@
   </div>
 {/if}
 
-<style>/* @unocss-include */ {}
-/* Enhanced button animations for legal AI context */ {}
+<style>/* @unocss-include */
+/* Enhanced button animations for legal AI context */
   :global(.bits-btn) {
     position: relative;
     overflow: hidden;
@@ -140,25 +143,20 @@
     left: -100%;
     width: 100%;
     height: 100%;
-background: linear-gradient( {}
-90deg, {}
-transparent, {}
-rgba(255, 255, 255, 0.2), {}
-transparent {}
-    );
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transition: left 0.5s ease;
   }
 
   :global(.bits-btn:hover::before) {
     left: 100%;
   }
-/* Legal AI specific styling */ {}
+/* Legal AI specific styling */
   :global(.nier-bits-button) {
     font-family: var(--font-gothic);
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
-/* Confidence indicators */ {}
+/* Confidence indicators */
   :global(.ai-confidence-90) {
     box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
   }

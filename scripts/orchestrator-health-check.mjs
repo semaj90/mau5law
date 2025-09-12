@@ -43,12 +43,12 @@ async function checkHttpService(name, url) {
 
 async function checkRedisService() {
   try {
-    const { stdout } = await execAsync('docker exec legal-ai-redis redis-cli -a redis ping 2>/dev/null || echo "FAILED"');
+    const { stdout } = await execAsync('docker exec legal-ai-redis redis-cli -a redis ping 2>&1 | grep "PONG" || echo "FAILED"');
     const isHealthy = stdout.trim() === 'PONG';
     
     if (isHealthy) {
-      // Get Nintendo memory bank status
-      const { stdout: memInfo } = await execAsync('docker exec legal-ai-redis redis-cli -a redis info memory 2>/dev/null || echo "failed"');
+      // Get Nintendo memory bank status  
+      const { stdout: memInfo } = await execAsync('docker exec legal-ai-redis redis-cli -a redis info memory 2>&1 | grep -E "used_memory_human|used_memory_peak_human" || echo "failed"');
       const memoryUsed = memInfo.match(/used_memory_human:(\S+)/)?.[1] || 'unknown';
       const memoryPeak = memInfo.match(/used_memory_peak_human:(\S+)/)?.[1] || 'unknown';
       
@@ -66,11 +66,18 @@ async function checkRedisService() {
 
 async function checkPostgresService() {
   try {
-    const { stdout } = await execAsync('docker exec legal-db pg_isready -U legal_admin -d legal_ai_db 2>/dev/null || echo "FAILED"');
-    const isHealthy = stdout.includes('accepting connections');
+    const { stdout } = await execAsync('docker exec legal-ai-postgres pg_isready -U legal_admin -d legal_ai_db 2>&1 || echo "FAILED"');
+    const isHealthy = stdout.includes('accepting connections') || stdout.trim().endsWith('- accepting connections');
     
     if (isHealthy) {
-      console.log(`🟢 HEALTHY Legal DB                 | postgresql://localhost:5433 | pgvector ready`);
+      // Get database stats
+      try {
+        const { stdout: dbStats } = await execAsync('docker exec legal-ai-postgres psql -U legal_admin -d legal_ai_db -c "SELECT COUNT(*) as table_count FROM information_schema.tables WHERE table_schema = \'public\';" -t 2>/dev/null || echo "0"');
+        const tableCount = parseInt(dbStats.trim()) || 0;
+        console.log(`🟢 HEALTHY Legal DB                 | postgresql://localhost:5433 | ${tableCount} tables, pgvector ready`);
+      } catch {
+        console.log(`🟢 HEALTHY Legal DB                 | postgresql://localhost:5433 | pgvector ready`);
+      }
     } else {
       console.log(`🔴 DOWN    Legal DB                 | postgresql://localhost:5433 | Connection failed`);
     }
@@ -152,8 +159,6 @@ async function main() {
 
   // Check HTTP services
   const httpChecks = [
-    checkHttpService('Legal Expert (vLLM)', 'http://localhost:8000/health'),
-    checkHttpService('Fast Router (vLLM)', 'http://localhost:8001/health'),
     checkHttpService('Embedding Service', 'http://localhost:11434/api/tags')
   ];
   
@@ -184,8 +189,6 @@ async function main() {
   }
   
   console.log('\n🔗 Service Endpoints:');
-  console.log('   Legal Expert API:  http://localhost:8000/v1/chat/completions');
-  console.log('   Fast Router API:   http://localhost:8001/v1/chat/completions');
   console.log('   Embedding API:     http://localhost:11434/api/embeddings');
   console.log('   Redis Insight:     http://localhost:8002');
   console.log('   Legal Database:    postgresql://legal_admin:123456@localhost:5433/legal_ai_db');

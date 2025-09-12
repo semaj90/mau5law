@@ -365,8 +365,8 @@ export class NESGPUIntegration {
     // Legal importance weights
     const riskWeight = this.riskLevelToWeight(document.riskLevel || 'low');
     const typeWeight = this.documentTypeToWeight(document.type || 'unknown');
-    const priorityWeight = document.priority / 255.0;
-    const confidenceWeight = document.confidenceLevel;
+    const priorityWeight = (document.priority ?? 0) / 255.0;
+    const confidenceWeight = document.confidenceLevel ?? 0;
 
     // Create 4x4 ranking matrix
     matrix[0] = riskWeight;     matrix[1] = typeWeight;     matrix[2] = priorityWeight; matrix[3] = confidenceWeight;

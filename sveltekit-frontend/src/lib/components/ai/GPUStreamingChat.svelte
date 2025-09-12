@@ -260,11 +260,11 @@
   
   <!-- Input Area -->
   <div class="input-area">
-    <form on:submit|preventDefault={handleSubmit}>
+    <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
       <div class="input-wrapper">
         <textarea
           bind:value={prompt}
-          on:input={handleInputChange}
+          oninput={handleInputChange}
           placeholder="Ask anything... (GPU-accelerated with VRAM chunking)"
           rows="3"
           disabled={isStreaming}

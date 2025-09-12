@@ -4,6 +4,12 @@
   "description": "Nintendo-Style Legal AI Platform with Multi-Model Orchestration",
   "type": "module",
   "scripts": {
+    "dev": "node start-development.js",
+    "dev:full": "cd sveltekit-frontend && npm run dev:full",
+    "start": "node start-production.js",
+    "start:development": "node start-development.js",
+    "start:production": "node start-production.js",
+    "health": "node scripts/orchestrator-health-check.mjs",
     "typecheck:changed": "node scripts/typecheck-changed.mjs",
     "typecheck:changed:win": "powershell -NoLogo -NoProfile -Command \"$f=(git diff --name-only origin/main...HEAD); $ts=$f | Where-Object { $_ -match '\\.ts$' }; if($ts.Count -eq 0){ Write-Output '[typecheck:changed] No TS files'; exit 0 }; foreach($file in $ts){ npx tsc --noEmit --skipLibCheck $file };\"",
     "ci:health": "node scripts/ci-deep-health-check.mjs",

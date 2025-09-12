@@ -8,9 +8,10 @@ https://svelte.dev/e/props_duplicate -->
   import { createEventDispatcher } from "svelte";
   import type { Case } from "$lib/types/index";
 
-  let { case_ = $bindable() } = $props(); // Case| null = null; // Edit mode if provided
-
-  let { user = $bindable() } = $props(); // User;
+  let { case_ = $bindable(), user = $bindable() } = $props<{
+    case_?: Case | null;
+    user?: User;
+  }>();
 
   const dispatch = createEventDispatcher();
 
@@ -171,7 +172,7 @@ https://svelte.dev/e/props_duplicate -->
   }
 </script>
 
-<form onsubmit|preventDefault={handleSubmit} class="container mx-auto px-4">
+<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="container mx-auto px-4">
   <div class="container mx-auto px-4">
     <!-- Basic Information -->
     <section class="container mx-auto px-4">

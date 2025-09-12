@@ -8,10 +8,19 @@ https://svelte.dev/e/js_parse_error -->
   import { Save, Maximize, Minimize, Eye, EyeOff, FileText, Keyboard } from 'lucide-svelte';
 
   // Props
-  let { content = $bindable() } = $props(); // string = '';
-  let { title = $bindable() } = $props(); // string = 'Untitled Document';
-  let { autoSave = $bindable() } = $props(); // boolean = true;
-  let { autoSaveInterval = $bindable() } = $props(); // number = 5000; // 5 seconds
+  interface Props {
+    content?: string;
+    title?: string;
+    autoSave?: boolean;
+    autoSaveInterval?: number;
+  }
+  
+  let {
+    content = $bindable(''),
+    title = $bindable('Untitled Document'),
+    autoSave = $bindable(true),
+    autoSaveInterval = $bindable(5000)
+  }: Props = $props();
 
   // State management
   let editorElement: HTMLDivElement;
@@ -27,12 +36,12 @@ https://svelte.dev/e/js_parse_error -->
   const dispatch = createEventDispatcher();
 
   // Auto-save functionality
-  let autoSaveTimer = $state<NodeJS.Timeout;
+  let autoSaveTimer = $state<NodeJS.Timeout | null>(null);
   function startAutoSave() {
     if (autoSaveTimer) clearInterval(autoSaveTimer);
-    autoSaveTimer >(setInterval(() => {
+    autoSaveTimer = setInterval(() => {
       if (hasUnsavedChanges) {
-        saveDocument());
+        saveDocument();
       }
     }, autoSaveInterval);
   }
@@ -144,7 +153,7 @@ https://svelte.dev/e/js_parse_error -->
   ];
 </script>
 
-<svelte:window keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div 
   class="professional-editor {isFullscreen ? 'fullscreen' : ''} {isFocusMode ? 'focus-mode' : ''}"
