@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k);
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
   function formatDuration(ms: number): string {
@@ -160,36 +160,36 @@ https://svelte.dev/e/js_parse_error -->
     <p class="text-xl text-gray-600 mb-6">
       RTX 3060 Ti CUDA Integration with 37+ Go Microservices
     </p>
-    
+
     <!-- GPU Status Card -->
     <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
       <h2 class="text-2xl font-semibold mb-4 flex items-center gap-2">
         <span class="w-3 h-3 rounded-full {$cudaHealth ? 'bg-green-500' : 'bg-red-500'}"></span>
         GPU & CUDA Status
       </h2>
-      
+
       {#if $gpuStatus}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-gray-50 rounded p-4">
             <h3 class="font-semibold text-gray-700 mb-2">Memory Usage</h3>
             <p class="text-lg">
-              {formatBytes($gpuStatus.memoryUsage.total - $gpuStatus.memoryUsage.available)} / 
+              {formatBytes($gpuStatus.memoryUsage.total - $gpuStatus.memoryUsage.available)} /
               {formatBytes($gpuStatus.memoryUsage.total)}
             </p>
             <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-              <div 
-                class="bg-blue-600 h-2 rounded-full" 
+              <div
+                class="bg-blue-600 h-2 rounded-full"
                 style="width: {((($gpuStatus.memoryUsage.total - $gpuStatus.memoryUsage.available) / $gpuStatus.memoryUsage.total) * 100).toFixed(1)}%"
               ></div>
             </div>
           </div>
-          
+
           <div class="bg-gray-50 rounded p-4">
             <h3 class="font-semibold text-gray-700 mb-2">Active Services</h3>
             <p class="text-lg">{$gpuStatus.activeServices.length} Services</p>
             <p class="text-sm text-gray-600">GPU-accelerated microservices</p>
           </div>
-          
+
           <div class="bg-gray-50 rounded p-4">
             <h3 class="font-semibold text-gray-700 mb-2">CUDA Worker</h3>
             <p class="text-sm font-mono break-all">{$gpuStatus.cudaWorkerPath}</p>
@@ -203,14 +203,14 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   </div>
-  
+
   <!-- GPU Processing Interface -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    
+
     <!-- Control Panel -->
     <div class="bg-white rounded-lg shadow-lg p-6">
       <h2 class="text-2xl font-semibold mb-6">🎛️ GPU Processing Control</h2>
-      
+
       <!-- Test Text Input -->
       <div class="mb-4">
         <label for="test-text" class="block text-sm font-medium text-gray-700 mb-2">
@@ -224,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
           placeholder="Enter legal text for GPU processing..."
         ></textarea>
       </div>
-      
+
       <!-- Service Selection -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div>
@@ -234,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </select>
         </div>
-        
+
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2" for="operation">Operation</label><select id="operation" bind:value={selectedOperation} class="w-full border border-gray-300 rounded-md px-3 py-2">
             {#each availableOperations as operation}
@@ -242,7 +242,7 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </select>
         </div>
-        
+
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2" for="priority">Priority</label><select id="priority" bind:value={selectedPriority} class="w-full border border-gray-300 rounded-md px-3 py-2">
             <option value="high">High (Direct CUDA)</option>
@@ -251,7 +251,7 @@ https://svelte.dev/e/js_parse_error -->
           </select>
         </div>
       </div>
-      
+
       <!-- Processing Buttons -->
       <div class="space-y-4">
         <button
@@ -266,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
             ⚡ Process with CUDA Worker
           {/if}
         </button>
-        
+
         <button
           onclick={testFlashAttention2}
           disabled={$isProcessing}
@@ -274,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
         >
           🧠 Test FlashAttention2 RTX 3060 Ti
         </button>
-        
+
         <button
           onclick={checkGPUStatus}
           class="w-full bg-gray-600 text-white py-3 px-4 rounded-md hover:bg-gray-700"
@@ -283,11 +283,11 @@ https://svelte.dev/e/js_parse_error -->
         </button>
       </div>
     </div>
-    
+
     <!-- Results Panel -->
     <div class="bg-white rounded-lg shadow-lg p-6">
       <h2 class="text-2xl font-semibold mb-6">📊 Processing Results</h2>
-      
+
       {#if $performanceMetrics && $performanceMetrics.length > 0}
         <div class="mb-6 p-4 bg-blue-50 rounded-lg">
           <h3 class="font-semibold text-blue-800 mb-2">Recent Performance Metrics</h3>
@@ -296,7 +296,7 @@ https://svelte.dev/e/js_parse_error -->
               <div>
                 <p class="text-blue-600 font-medium">{metric.service}</p>
                 <p class="text-gray-600">
-                  {formatDuration(metric.duration)} | 
+                  {formatDuration(metric.duration)} |
                   {formatBytes(metric.memoryUsed)}
                 </p>
               </div>
@@ -304,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/if}
-      
+
       <div class="space-y-4 max-h-96 overflow-y-auto">
         {#each $processingResults as result, i}
           <div class="border border-gray-200 rounded-lg p-4 {result.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
@@ -323,7 +323,7 @@ https://svelte.dev/e/js_parse_error -->
                 {result.priority}
               </span>
             </div>
-            
+
             {#if result.success}
               <div class="grid grid-cols-2 gap-4 text-sm">
                 {#if result.processingTime}
@@ -333,7 +333,7 @@ https://svelte.dev/e/js_parse_error -->
                   <p><span class="font-medium">Memory:</span> {formatBytes(result.memoryUsed)}</p>
                 {/if}
               </div>
-              
+
               {#if result.result && result.result.vector}
                 <p class="text-xs text-gray-600 mt-2">
                   Vector Result: [{result.result.vector.slice(0, 5).map(v => v.toFixed(3)).join(', ')}...]
@@ -344,18 +344,18 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         {/each}
-        
+
         {#if $processingResults.length === 0}
           <p class="text-gray-500 text-center py-8">No processing results yet. Run a GPU operation to see results.</p>
         {/if}
       </div>
     </div>
   </div>
-  
+
   <!-- Service Architecture Overview -->
   <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
     <h2 class="text-2xl font-semibold mb-6">🏗️ GPU Service Architecture</h2>
-    
+
     {#if $gpuStatus}
       <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {#each $gpuStatus.activeServices as service}
@@ -365,7 +365,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-      
+
       <div class="mt-6 p-4 bg-blue-50 rounded-lg">
         <h3 class="font-semibold text-blue-800 mb-2">🎯 Integration Status</h3>
         <ul class="text-sm text-blue-700 space-y-1">

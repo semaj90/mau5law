@@ -38,11 +38,11 @@ export const GET: RequestHandler = async () => {
   try {
     // Get stats from both WebGPU and WebGL caches
     const webgpuStats = await shaderCacheManager.getShaderStats();
-    
+
     // Get WebGL shader count
     const unifiedIndex = await cache.get<string[]>('unified_shader_index') || [];
     const webglShaderCount = unifiedIndex.filter(id => id.startsWith('webgl:')).length;
-    
+
     const capabilities = {
       endpoint: '/api/shaders/unified',
       description: 'Unified search across WebGPU and WebGL shader caches with semantic similarity',
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async () => {
       },
       supportedOperations: [
         'vector_similarity',
-        'attention_visualization', 
+        'attention_visualization',
         'document_network',
         'text_flow',
         'evidence_timeline',
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   try {
     const query: UnifiedShaderQuery = await request.json();
-    
+
     // Validate query
     if (query.limit && (query.limit < 1 || query.limit > 100)) {
       return json({ error: 'limit must be between 1 and 100' }, { status: 400 });
@@ -155,9 +155,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
           // Apply filters
           if (query.operation && shaderData.operation !== query.operation) continue;
-          
+
           if (query.tags && query.tags.length > 0) {
-            const matchingTags = shaderData.metadata.tags.filter((tag: string) => 
+            const matchingTags = shaderData.metadata.tags.filter((tag: string) =>
               query.tags!.some(queryTag => tag.toLowerCase().includes(queryTag.toLowerCase()))
             );
             if (matchingTags.length === 0) continue;
@@ -225,7 +225,7 @@ export const POST: RequestHandler = async ({ request }) => {
     results.sort((a, b) => {
       switch (query.sortBy) {
         case 'performance':
-          return (a.metadata.averageExecutionTime || Number.MAX_VALUE) - 
+          return (a.metadata.averageExecutionTime || Number.MAX_VALUE) -
                  (b.metadata.averageExecutionTime || Number.MAX_VALUE);
         case 'usage':
           return b.metadata.usageCount - a.metadata.usageCount;
@@ -239,14 +239,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Apply limit
     const limitedResults = results.slice(0, query.limit || 20);
-    
+
     const searchTime = performance.now() - startTime;
 
     const response = {
       shaders: limitedResults.map(shader => ({
         ...shader,
         // Truncate shader code for list view
-        shaderCodePreview: shader.shaderCode.length > 500 ? 
+        shaderCodePreview: shader.shaderCode.length > 500 ?
           shader.shaderCode.substring(0, 500) + '...' : shader.shaderCode
       })),
       metadata: {
@@ -264,9 +264,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (error: any) {
     const searchTime = performance.now() - startTime;
-    
+
     console.error('Unified shader search error:', error);
-    
+
     return json({
       shaders: [],
       metadata: {
@@ -281,35 +281,71 @@ export const POST: RequestHandler = async ({ request }) => {
 
 // DELETE endpoint - Clean up shader caches
 export const DELETE: RequestHandler = async ({ url }) => {
+  // Helper to safely delete a key regardless of underlying cache implementation
+  const safeDelete = async (key: string) => {
+    const c: any = cache as any;
+    if (c && typeof c.delete === 'function') return c.delete(key);
+    if (c && typeof c.del === 'function') return c.del(key);
+    if (c && typeof c.remove === 'function') return c.remove(key);
+    if (c && typeof c.removeItem === 'function') return c.removeItem(key);
+    // Fallback: set to a short-lived empty value (TTL 1ms) if no delete method exists
+    if (c && typeof c.set === 'function') return c.set(key, null, 1);
+  };
+
   try {
-    const shaderType = url.searchParams.get('type') as 'webgpu' | 'webgl' | 'all' || 'all';
+    const shaderTypeParam = url.searchParams.get('type');
+    const shaderType: 'webgpu' | 'webgl' | 'all' =
+      shaderTypeParam === 'webgpu' || shaderTypeParam === 'webgl' || shaderTypeParam === 'all'
+        ? shaderTypeParam
+        : 'all';
+
     let cleanedCount = 0;
 
     if (shaderType === 'webgpu' || shaderType === 'all') {
       // Clear WebGPU shaders
-      const webgpuIndex = await cache.get<string[]>('webgpu_shader_index') || [];
-      
+      const webgpuIndexRaw = await cache.get<any>('webgpu_shader_index');
+      const webgpuIndex: string[] = Array.isArray(webgpuIndexRaw) ? webgpuIndexRaw : [];
+
       for (const id of webgpuIndex) {
-        await cache.delete(`webgpu_shader:${id}`);
+        await safeDelete(`webgpu_shader:${id}`);
         cleanedCount++;
       }
-      
-      await cache.delete('webgpu_shader_index');
+
+      await safeDelete('webgpu_shader_index');
     }
 
     if (shaderType === 'webgl' || shaderType === 'all') {
       // Clear WebGL shaders
-      const unifiedIndex = await cache.get<string[]>('unified_shader_index') || [];
-      const webglShaderIds = unifiedIndex.filter(id => id.startsWith('webgl:')).map(id => id.replace('webgl:', ''));
-      
+      const unifiedIndexRaw = await cache.get<any>('unified_shader_index');
+      const unifiedIndex: string[] = Array.isArray(unifiedIndexRaw)
+        ? unifiedIndexRaw
+        : (typeof unifiedIndexRaw === 'string'
+            ? (() => {
+                try {
+                  const parsed = JSON.parse(unifiedIndexRaw);
+                  return Array.isArray(parsed) ? parsed : [];
+                } catch {
+                  return [];
+                }
+              })()
+            : []);
+
+      const webglShaderIds = unifiedIndex
+        .filter(id => typeof id === 'string' && id.startsWith('webgl:'))
+        .map(id => id.replace('webgl:', ''));
+
       for (const id of webglShaderIds) {
-        await cache.delete(`webgl_shader:${id}`);
+        await safeDelete(`webgl_shader:${id}`);
         cleanedCount++;
       }
-      
-      // Update unified index
+
+      // Update unified index (remove webgl:* entries)
       const remainingIndex = unifiedIndex.filter(id => !id.startsWith('webgl:'));
-      await cache.set('unified_shader_index', remainingIndex, 24 * 60 * 60 * 1000);
+      if (remainingIndex.length > 0) {
+        await cache.set('unified_shader_index', remainingIndex, 24 * 60 * 60 * 1000);
+      } else {
+        await safeDelete('unified_shader_index');
+      }
     }
 
     return json({

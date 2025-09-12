@@ -2,20 +2,19 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
-</script>
   import type { PageData, ActionData } from './$types.js';
   import { onMount } from 'svelte';
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
-  
+
   // Enhanced-Bits orchestrated components
-  import { 
-    Button, 
-    Card, 
+  import {
+    Button,
+    Card,
     Input,
     Badge
   } from '$lib/components/ui/enhanced-bits';
-  import { 
+  import {
     OrchestratedCard,
     OrchestratedButton,
     OrchestratedDialog,
@@ -24,23 +23,23 @@ https://svelte.dev/e/expected_token -->
     getPriorityClass,
     formatAnalysisDate
   } from '$lib/components/ui/orchestrated';
-  
+
   // Icons for multi-modal analysis
-  import { 
+  import {
     Brain, Zap, Eye, BarChart3, Target, Sparkles, Settings,
     FileText, Scale, Search, Activity, Clock, CheckCircle,
     AlertTriangle, TrendingUp, Layers, Network, Cpu, Database
   } from 'lucide-svelte';
 
   let { data, form }: { data: PageData; form: ActionData } = $props();
-  
+
   // Svelte 5 runes for hybrid analysis state
   let selectedDocument = $state<any>(null);
-  let selectedAnalysisTypes = $state<Set<string>>(new Set(['semantic_similarity', 'entity_extraction']);
+  let selectedAnalysisTypes = $state<Set<string>>(new Set(['semantic_similarity', 'entity_extraction']));
   let analysisResults = $state<any>(null);
   let isAnalyzing = $state(false);
   let comparisonMode = $state(false);
-  let selectedDocuments = $state<Set<string>>(new Set();
+  let selectedDocuments = $state<Set<string>>(new Set());
   let visualizationMode = $state<'graph' | 'timeline' | 'heatmap'>('graph');
   let currentTab = $state<'analysis' | 'comparison' | 'batch' | 'visualization'>('analysis');
 
@@ -59,7 +58,7 @@ https://svelte.dev/e/expected_token -->
   // Multi-modal analysis functions
   async function runHybridAnalysis() {
     if (!selectedDocument || selectedAnalysisTypes.size === 0) return;
-    
+
     isAnalyzing = true;
     analysisProgress = 0;
     processingSteps = [];
@@ -70,13 +69,13 @@ https://svelte.dev/e/expected_token -->
     for (let i = 0; i < steps.length; i++) {
       processingSteps = [...processingSteps, `Processing ${steps[i]}...`];
       analysisProgress = ((i + 1) / steps.length) * 100;
-      await new Promise(resolve => setTimeout(resolve, 800);
+      await new Promise(resolve => setTimeout(resolve, 800));
     }
 
     // Submit the actual analysis
     const formData = new FormData();
     formData.append('documentId', selectedDocument.id);
-    formData.append('analysisTypes', JSON.stringify(Array.from(selectedAnalysisTypes));
+    formData.append('analysisTypes', JSON.stringify(Array.from(selectedAnalysisTypes)));
     formData.append('includeVisualization', 'true');
 
     try {
@@ -84,7 +83,7 @@ https://svelte.dev/e/expected_token -->
         method: 'POST',
         body: formData
       });
-      
+
       const result = await response.json();
       if (result.success) {
         analysisResults = result.results;
@@ -124,14 +123,14 @@ https://svelte.dev/e/expected_token -->
       'risk_assessment': 'bg-red-100 text-red-800',
       'precedent_matching': 'bg-orange-100 text-orange-800',
       'compliance_check': 'bg-yellow-100 text-yellow-800'
-    };
+    } as Record<string, string>;
     return colorMap[type] || 'bg-gray-100 text-gray-800';
   }
 
   function getRiskLevelColor(level: string): string {
     switch (level) {
       case 'low': return 'text-green-600';
-      case 'medium': return 'text-yellow-600';  
+      case 'medium': return 'text-yellow-600';
       case 'high': return 'text-orange-600';
       case 'critical': return 'text-red-600';
       default: return 'text-gray-600';
@@ -161,7 +160,7 @@ https://svelte.dev/e/expected_token -->
       Hybrid Legal Analysis
     </h1>
     <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
-      Multi-modal AI-powered legal document analysis combining semantic search, 
+      Multi-modal AI-powered legal document analysis combining semantic search,
       entity extraction, risk assessment, and precedent matching
     </p>
     <div class="flex justify-center gap-2 mt-6">
@@ -171,7 +170,7 @@ https://svelte.dev/e/expected_token -->
       </Badge>
       <Badge variant="secondary" class="gap-1">
         <Network class="w-3 h-3" />
-        Vector Analysis  
+        Vector Analysis
       </Badge>
       <Badge variant="secondary" class="gap-1">
         <Cpu class="w-3 h-3" />
@@ -224,7 +223,7 @@ https://svelte.dev/e/expected_token -->
             {#each data.sampleDocuments as document}
               <button
                 onclick={() => selectedDocument = document}
-                class="p-4 border rounded-lg text-left transition-all hover:shadow-md 
+                class="p-4 border rounded-lg text-left transition-all hover:shadow-md
                        {selectedDocument?.id === document.id ? 'border-primary bg-primary/5' : 'hover:border-primary/50'}"
               >
                 <div class="flex items-center justify-between mb-2">
@@ -250,7 +249,7 @@ https://svelte.dev/e/expected_token -->
               </button>
             {/each}
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.CaseFile>
 
       <!-- Analysis Configuration -->
@@ -311,7 +310,7 @@ https://svelte.dev/e/expected_token -->
             {#if isAnalyzing && processingSteps.length > 0}
               <div class="mt-4 space-y-2">
                 <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div 
+                  <div
                     class="bg-primary h-2 rounded-full transition-all duration-300"
                     style="width: {analysisProgress}%"
                   ></div>
@@ -327,7 +326,7 @@ https://svelte.dev/e/expected_token -->
               </div>
             {/if}
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.Analysis>
     </div>
 
@@ -408,7 +407,7 @@ https://svelte.dev/e/expected_token -->
                       </Badge>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
-                      <div 
+                      <div
                         class="h-2 rounded-full {result.riskScore > 0.7 ? 'bg-red-500' : result.riskScore > 0.4 ? 'bg-yellow-500' : 'bg-green-500'}"
                         style="width: {result.riskScore * 100}%"
                       ></div>
@@ -444,7 +443,7 @@ https://svelte.dev/e/expected_token -->
               Search Similar
             </Button>
           </div>
-        </CardContent>
+        </Card.Content>
       </OrchestratedCard.AIInsight>
     {/if}
   {/if}
@@ -481,15 +480,15 @@ https://svelte.dev/e/expected_token -->
             </label>
           {/each}
         </div>
-        
-        <Button 
+
+        <Button
           disabled={selectedDocuments.size < 2}
           class="w-full gap-2"
         >
           <BarChart3 class="w-4 h-4" />
           Compare Selected Documents ({selectedDocuments.size})
         </Button>
-      </CardContent>
+      </Card.Content>
     </OrchestratedCard.Analysis>
   {/if}
 
@@ -518,7 +517,7 @@ https://svelte.dev/e/expected_token -->
                 </div>
               </div>
               <div class="text-sm text-muted-foreground">
-                {formatAnalysisDate(new Date(analysis.timestamp))} • 
+                {formatAnalysisDate(new Date(analysis.timestamp))} •
                 Processed in {analysis.processingTime}ms
               </div>
             </div>
@@ -535,7 +534,7 @@ https://svelte.dev/e/expected_token -->
           </div>
         {/each}
       </div>
-    </CardContent>
+    </Card.Content>
   </OrchestratedCard.Analysis>
 </div>
 
@@ -546,7 +545,7 @@ https://svelte.dev/e/expected_token -->
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
+
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;

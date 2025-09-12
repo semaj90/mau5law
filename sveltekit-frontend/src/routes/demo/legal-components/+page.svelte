@@ -3,19 +3,25 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Comprehensive Legal Components Demo -->
 <script lang="ts">
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+    BitsDataTable,
+    BitsCombobox,
+    BitsDatePicker,
+    ToastProvider,
+    CaseTimeline,
+    ChainOfCustodyTracker,
+    LegalPrecedentCard,
+    CriminalProfile
+  } from '$lib/components/ui/bits';
+  import type { DataTableColumn, ComboboxOption } from '$lib/components/ui/bits';
   import { Calendar, FileText, Users, Scale, Shield, AlertTriangle } from 'lucide-svelte';
   // Page state
   let activeTab = $state('data-table');
-  let toastProvider = $state<any;
+  let toastProvider: any;
 
   // Sample data for components
-  const evidenceData >([
+  const evidenceData = [
     {
       id: 'EV001',
       itemNumber: 'EV-2024-001',
@@ -27,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
       status: 'analyzed'
     },
     {
-      id: 'EV002', 
+      id: 'EV002',
       itemNumber: 'EV-2024-002',
       description: 'Security footage USB drive',
       category: 'digital',
@@ -38,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
     },
     {
       id: 'EV003',
-      itemNumber: 'EV-2024-003', 
+      itemNumber: 'EV-2024-003',
       description: 'Fingerprints from door handle',
       category: 'physical',
       dateCollected: '2024-01-15',
@@ -46,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
       custodian: 'CSI Team Lead',
       status: 'processed'
     }
-  ]);
+  ];
 
   const evidenceColumns: DataTableColumn[] = [
     { key: 'itemNumber', label: 'Item #', sortable: true, width: '120px' },
@@ -54,10 +60,10 @@ https://svelte.dev/e/js_parse_error -->
     { key: 'category', label: 'Category', sortable: true, width: '100px' },
     { key: 'dateCollected', label: 'Date Collected', sortable: true, width: '120px' },
     { key: 'custodian', label: 'Current Custodian', sortable: true, width: '150px' },
-    { 
-      key: 'status', 
-      label: 'Status', 
-      sortable: true, 
+    {
+      key: 'status',
+      label: 'Status',
+      sortable: true,
       width: '100px',
       render: (value) => `<span class="px-2 py-1 text-xs rounded ${
         value === 'analyzed' ? 'bg-green-500/20 text-green-400' :
@@ -89,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
       participants: ['John Doe', 'Attorney Wilson']
     },
     {
-      id: '2', 
+      id: '2',
       date: new Date('2024-01-22'),
       title: 'Discovery Phase Begin',
       description: 'Discovery period initiated',
@@ -271,7 +277,7 @@ https://svelte.dev/e/js_parse_error -->
   function handleDeadlineChange(date: Date | undefined) {
     selectedDeadline = date;
     if (date) {
-      const daysUntil = Math.ceil((date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24);
+  const daysUntil = Math.ceil((date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
       toastProvider?.showLegalDeadlineWarning('Discovery Deadline', daysUntil);
     }
   }
@@ -326,7 +332,7 @@ https://svelte.dev/e/js_parse_error -->
         {#each tabs as tab}
           {@const IconComponent = tab.icon}
           <button
-            onclick={() => activeTab = tab.id}
+            on:click={() => activeTab = tab.id}
             class={`flex items-center gap-2 px-4 py-2 text-sm font-mono rounded transition-colors ${
               activeTab === tab.id
                 ? 'bg-yorha-primary text-yorha-bg-primary'

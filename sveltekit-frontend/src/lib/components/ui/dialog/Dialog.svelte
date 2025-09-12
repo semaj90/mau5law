@@ -2,22 +2,21 @@
   import { createEventDispatcher } from "svelte";
   import { X } from "lucide-svelte";
   import { quadOut } from "svelte/easing";
-  import { fade, fly } from "svelte/transition";
   import { cn } from '$lib/utils';
-  import { getMeltUIDocs } from "../../../mcp-context72-get-library-docs";
 
   const dispatch = createEventDispatcher();
 
-  let { 
-    open = $bindable(), 
-    title = $bindable(), 
-    description = $bindable(), 
-    size = $bindable(), 
-    showClose = $bindable(), 
-    closeOnOutsideClick = $bindable(), 
+  let {
+    open = $bindable(),
+    title = $bindable(),
+    description = $bindable(),
+    size = $bindable(),
+    showClose = $bindable(),
+    closeOnOutsideClick = $bindable(),
     closeOnEscape = $bindable(),
     children,
-    footer
+    footer,
+    trigger
   } = $props();
 
   const sizeClasses = {
@@ -48,7 +47,7 @@
 </script>
 
 <!-- keyboard handling on window for accessibility -->
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} />
 
 <!-- optional trigger -->
 {@render trigger?.()}
@@ -58,15 +57,14 @@
   <div
     class="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
     transitifade={{ duration: 200, easing: quadOut }}
-    tabindex="0"
-                onclick={handleOutsideClick}
+    on:click={handleOutsideClick}
     role="presentation"
+    aria-hidden="true"
   >
-    <melt>  <!-- window-handle-keydown --></melt>
     <!-- dialog content -->
     <div
       class={cn(
-        "relative z-50 w-full max-h-[95vh] overflow-auto rounded-lg border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-800 dark:bg-slate-950 sm:mx-4",
+        "relative z-50 w-full max-h-[95vh] overflow-auto rounded-lg border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-800 dark:bg-slate-950 sm:mx-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
         sizeClasses[size]
       )}
       transitifly={{ y: -8, duration: 200, easing: quadOut }}
@@ -74,8 +72,8 @@
       aria-modal="true"
       aria-labelledby={title ? "dialog-title" : undefined}
       aria-describedby={description ? "dialog-description" : undefined}
-      tabindex={-1}
-      onclick={(e) => e.stopPropagation()}
+      tabindex={0}
+      on:click|stopPropagation
     >
       <!-- header -->
       <div class="flex items-start justify-between gap-4">
@@ -94,8 +92,9 @@
 
         {#if showClose}
           <button
-            class="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
-            onclick={close}
+            type="button"
+            class="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            on:click={close}
             aria-label="Close dialog"
           >
             <X size="20" />

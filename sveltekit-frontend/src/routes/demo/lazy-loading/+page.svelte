@@ -3,9 +3,9 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Lazy Loading Demo - Shows how to use the lazy loading system -->
 <script lang="ts">
-  import { 
-    LazyLoader, 
-    LazyChart, 
+  import {
+    LazyLoader,
+    LazyChart,
     LazyAIAnalysis,
     createLazyStore,
     LAZY_LOAD_PRESETS
@@ -44,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
       title: `${type} Item ${i + 1}`,
       description: `This is a mock ${type} item for demonstration purposes.`,
       timestamp: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString()
-    });
+    }));
   }
 
   const mockDocuments = generateMockContent('Document');
@@ -62,13 +62,14 @@ https://svelte.dev/e/js_parse_error -->
     analysisLazyState?.isVisible,
     customLazyState?.isVisible
   ].filter(Boolean).length);
+ </script>
 
-  <svelte:head>
+<svelte:head>
   <title>Lazy Loading Demo - Legal AI Platform</title>
   <meta name="description" content="Demonstration of lazy loading system for performance optimization" />
-  </svelte:head>
+</svelte:head>
 
-  <div class="demo-container">
+<div class="demo-container">
   <header class="demo-header">
     <h1>Lazy Loading System Demo</h1>
     <p>Performance optimization through intelligent component loading</p>
@@ -93,8 +94,8 @@ https://svelte.dev/e/js_parse_error -->
     <section class="intro-section">
       <h2>How It Works</h2>
       <p>
-        The lazy loading system uses the Intersection Observer API to defer rendering 
-        of heavy components until they're about to come into view. This improves initial 
+        The lazy loading system uses the Intersection Observer API to defer rendering
+        of heavy components until they're about to come into view. This improves initial
         page load times and reduces memory usage.
       </p>
       <div class="benefits-grid">
@@ -137,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
     <section class="demo-section">
       <h2>1. Lazy Chart Component</h2>
       <p>
-        Charts can be resource-intensive, especially with large datasets. 
+        Charts can be resource-intensive, especially with large datasets.
         This chart component loads only when visible.
       </p>
       <LazyChart
@@ -174,7 +175,7 @@ https://svelte.dev/e/js_parse_error -->
     <section class="demo-section">
       <h2>2. Lazy AI Analysis Component</h2>
       <p>
-        AI analysis components are particularly heavy as they may load models 
+        AI analysis components are particularly heavy as they may load models
         and perform complex computations. Lazy loading prevents unnecessary processing.
       </p>
       <LazyAIAnalysis
@@ -215,7 +216,7 @@ https://svelte.dev/e/js_parse_error -->
     <section class="demo-section">
       <h2>3. Custom Lazy Content</h2>
       <p>
-        The base LazyLoader component can wrap any content. Here's a custom 
+        The base LazyLoader component can wrap any content. Here's a custom
         implementation showing a document list.
       </p>
       <LazyLoader
@@ -414,7 +415,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .benefits-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
   }
 
@@ -519,7 +520,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .document-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
   }
 
@@ -555,7 +556,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .config-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 16px;
   }
 
