@@ -7,6 +7,7 @@
     placeholder?: unknown;
     readonly?: unknown;
     height?: unknown;
+    theme?: 'default' | 'nes' | 'dark' | 'retro';
     enableAI?: unknown;
     enableCitation?: unknown;
   }

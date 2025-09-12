@@ -1,39 +1,35 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Document Upload Form with XState + Superforms + Zod -->
 <!-- Production-ready form with state management, validation, and progress tracking -->
 
 <script lang="ts">
-</script>
   import {
     createDocumentUploadForm,
     FORM_STORAGE_KEYS,
     FormStatePersistence,
   } from "$lib/forms/superforms-xstate-integration";
   import { DocumentUploadSchema } from "$lib/state/legal-form-machines";
-  // Updated to use melt-ui components
-  import Button from '$lib/components/ui/bitsbutton.svelte';
-  import Card from '$lib/components/ui/MeltCard.svelte';
-  import Select from '$lib/components/ui/MeltSelect.svelte';
 
-  // TODO: Replace with melt-ui equivalents when available
-  // import {
-  //   Alert,
-  //   AlertDescription,
-  //   Badge,
-  //   CardContent,
-  //   CardHeader,
-  //   CardTitle,
-  //   Checkbox,
-  //   Input,
-  //   Progress,
-  //   SelectContent,
-  //   SelectItem,
-  //   SelectTrigger,
-  //   SelectValue,
-  //   Textarea,
-  // } from "bits-ui";
+  // Use bits-ui (or enhanced-bits-ui) components
+  import {
+    Alert,
+    AlertDescription,
+    Badge,
+    Button,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    Checkbox,
+    Input,
+    Progress,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    Textarea,
+  } from "bits-ui";
+
   import {
     AlertTriangle,
     CheckCircle,
@@ -47,6 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   } from "lucide-svelte";
   import { onMount } from "svelte";
   import type { Infer, SuperValidated } from "sveltekit-superforms";
+</script>
 
   // Props
   let { data = $bindable() } = $props(); // SuperValidated<Infer<typeof DocumentUploadSchema>>;
@@ -209,14 +206,16 @@ https://svelte.dev/e/js_parse_error -->
     stateValue === "failed");
 
   // Ensure default form shape to prevent runtime errors
-  // TODO: Convert to $derived: if ($formData) {
+  // Ensure default form shape to prevent runtime errors
+  // TODO: Convert to $derived
+  if ($formData) {
     if (!$formData.aiProcessing) {
       $formData.aiProcessing = {
         generateSummary: true,
         extractEntities: true,
         riskAssessment: true,
         generateRecommendations: false,
-      }
+      };
     }
     if (!$formData.tags) {
       $formData.tags = [];
@@ -225,68 +224,70 @@ https://svelte.dev/e/js_parse_error -->
       $formData.documentType = "other";
     }
   }
+    // ============================================================================
+    // LIFECYCLE
+    // ============================================================================
 
-  // ============================================================================
-  // LIFECYCLE
-  // ============================================================================
+    onMount(() => {
+      // Load draft if available
+      loadDraft();
+    });
+  </script>
+            <Badge
+              variant={isCompleted
+                ? "default"
+                : isError
+                  ? "destructive"
+                  : "secondary"}
+            >
+              {isCompleted
+                ? "Completed"
+                : isError
+                  ? "Error"
+                  : $isSubmitting
+                    ? "Processing"
+                    : "Ready"}
+            </Badge>
+          <div class="flex items-center gap-2">
+            <Upload size={24} />
+            Document Upload
+            <Badge
+              variant={isCompleted
+                ? "default"
+                : isError
+                  ? "destructive"
+                  : "secondary"}
+            >
+              {isCompleted
+                ? "Completed"
+                : isError
+                  ? "Error"
+                  : isSubmitting
+                    ? "Processing"
+                    : "Ready"}
+            </Badge>
+          </div>
 
-  onMount(() => {
-    // Load draft if available
-          <Badge
-            variant={isCompleted
-              ? "default"
-              : isError
-                ? "destructive"
-                : "secondary"}
-          >
-            {isCompleted
-              ? "Completed"
-              : isError
-                ? "Error"
-                : $isSubmitting
-                  ? "Processing"
-                  : "Ready"}
-          </Badge>
-        <div class="flex items-center gap-2">
-          <Upload size={24} />
-          Document Upload
-          <Badge
-            variant={isCompleted
-              ? "default"
-              : isError
-                ? "destructive"
-                : "secondary"}
-          >
-            {isCompleted
-              ? "Completed"
-              : isError
-                ? "Error"
-                : isSubmitting
-                  ? "Processing"
-                  : "Ready"}
-          </Badge>
-        </div>
-
-        <div class="flex gap-2">
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={handleSaveDraft}
-            disabled={$isSubmitting}
-          >
-            <Save size={16} />
-          </Button>
-          <Button class="bits-btn"
-            variant="ghost"
-            size="sm"
-            onclick={handleReset}
-            disabled={$isSubmitting}
-          >
-            <RotateCcw size={16} />
-          </Button>
-        </div>
-      </CardTitle>
-    </CardHeader>
+          <div class="flex gap-2">
+            <Button class="bits-btn"
+              variant="ghost"
+              size="sm"
+              onclick={handleSaveDraft}
+              disabled={$isSubmitting}
+            >
+              <Save size={16} />
+            </Button>
+            <Button class="bits-btn"
+              variant="ghost"
+              size="sm"
+              onclick={handleReset}
+              disabled={$isSubmitting}
+            >
+              <RotateCcw size={16} />
+            </Button>
+          </div>
+        </CardTitle>
+      </CardHeader>
 
     {#if showProgress}
       <CardContent>
