@@ -6,7 +6,6 @@ https://svelte.dev/e/js_parse_error -->
   import Input from "$lib/components/ui/Input.svelte";
   import Label from "$lib/components/ui/Label.svelte";
   import Progress from "$lib/components/ui/progress/Progress.svelte";
-  import Card from "$lib/components/ui/Card/Card.svelte";
   import Alert from "$lib/components/ui/alert/Alert.svelte";
   import AlertDescription from "$lib/components/ui/alert/AlertDescription.svelte";
   import AlertTitle from "$lib/components/ui/alert/AlertTitle.svelte";
