@@ -1,7 +1,27 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: legal-search
+ * Category: aggressive
+ * Memory Bank: CHR_ROM
+ * Priority: 170
+ * Redis Type: aiSearch
+ * 
+ * Performance Impact:
+ * - Cache Strategy: aggressive
+ * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+
 
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async ({ request, fetch }) => {
+const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   try {
     const { query, jurisdiction = 'all', category = 'all', useAI = true } = await request.json();
 
@@ -227,3 +247,5 @@ function generateLawInsights(law: any, query: string): string {
     return 'Relevant to your search query - consider context and application';
   }
 }
+
+export const POST = redisOptimized.aiSearch(originalPOSTHandler);

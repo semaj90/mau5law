@@ -74,14 +74,14 @@
     {/if}
   </button>
 {/if}
-<style>:global(.nier-btn[disabled]), {}
+<style>:global(.nier-btn[disabled]),
   :global(.nier-btn.btn-loading) {
     opacity: 0.6;
     cursor: not-allowed;
     background: #23272e;
     color: #bcbcbc;
   }
-/* Variant styles */ {}
+/* Variant styles */
   :global(.btn-default) { background: linear-gradient(90deg, #23272e 0%, #393e46 100%); color: #fff; }
   :global(.btn-primary) { background: linear-gradient(90deg, #23272e 0%, #393e46 100%); color: #fff; }
   :global(.btn-secondary) { background: #f3f3f3; color: #23272e; border: 1px solid #393e46; }
@@ -96,7 +96,7 @@
   :global(.btn-nier) { background: linear-gradient(90deg, #181a1b 0%, #393e46 100%); color: #e0e0e0; }
   :global(.btn-crimson) { background: linear-gradient(90deg, #8B0000 0%, #DC143C 100%); color: #fff; }
   :global(.btn-gold) { background: linear-gradient(90deg, #B8860B 0%, #FFD700 100%); color: #000; }
-/* Size styles */ {}
+/* Size styles */
   :global(.btn-xs) { font-size: 0.75rem; padding: 0.25rem 0.75rem; }
   :global(.btn-sm) { font-size: 0.875rem; padding: 0.375rem 1rem; }
   :global(.btn-md) { font-size: 1rem; padding: 0.5rem 1.25rem; }

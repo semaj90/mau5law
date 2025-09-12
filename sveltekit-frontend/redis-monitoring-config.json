@@ -1,0 +1,1473 @@
+{
+  "endpoints": [
+    {
+      "name": "analyze-element",
+      "path": "src\\routes\\api\\ai\\analyze-element\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "analyze-evidence",
+      "path": "src\\routes\\api\\ai\\analyze-evidence\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "analyze",
+      "path": "src\\routes\\api\\ai\\analyze\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "ask",
+      "path": "src\\routes\\api\\ai\\ask\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "case-scoring",
+      "path": "src\\routes\\api\\ai\\case-scoring\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "chat-mock",
+      "path": "src\\routes\\api\\ai\\chat-mock\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "chat-sse",
+      "path": "src\\routes\\api\\ai\\chat-sse\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "chat",
+      "path": "src\\routes\\api\\ai\\chat\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "connect-mock",
+      "path": "src\\routes\\api\\ai\\connect-mock\\+server.ts",
+      "complexity": "medium",
+      "methods": [
+        "POST"
+      ],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "connect",
+      "path": "src\\routes\\api\\ai\\connect\\+server.ts",
+      "complexity": "low",
+      "methods": [
+        "POST"
+      ],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "context",
+      "path": "src\\routes\\api\\ai\\context\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "conversation\\[conversationId]",
+      "path": "src\\routes\\api\\ai\\conversation\\[conversationId]\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "conversation\\save",
+      "path": "src\\routes\\api\\ai\\conversation\\save\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "cuda-accelerated",
+      "path": "src\\routes\\api\\ai\\cuda-accelerated\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "deep-analysis",
+      "path": "src\\routes\\api\\ai\\deep-analysis\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "document-drafting",
+      "path": "src\\routes\\api\\ai\\document-drafting\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "document-drafting\\history",
+      "path": "src\\routes\\api\\ai\\document-drafting\\history\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "document-drafting\\recent",
+      "path": "src\\routes\\api\\ai\\document-drafting\\recent\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "document-drafting\\templates",
+      "path": "src\\routes\\api\\ai\\document-drafting\\templates\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "document-drafting\\types",
+      "path": "src\\routes\\api\\ai\\document-drafting\\types\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "embed",
+      "path": "src\\routes\\api\\ai\\embed\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "embedding",
+      "path": "src\\routes\\api\\ai\\embedding\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "embeddings",
+      "path": "src\\routes\\api\\ai\\embeddings\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "enhanced-chat",
+      "path": "src\\routes\\api\\ai\\enhanced-chat\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "enhanced-grpo",
+      "path": "src\\routes\\api\\ai\\enhanced-grpo\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "enhanced-legal-search",
+      "path": "src\\routes\\api\\ai\\enhanced-legal-search\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "enhanced-microservice",
+      "path": "src\\routes\\api\\ai\\enhanced-microservice\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "evidence-search",
+      "path": "src\\routes\\api\\ai\\evidence-search\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "find",
+      "path": "src\\routes\\api\\ai\\find\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "generate-report",
+      "path": "src\\routes\\api\\ai\\generate-report\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "generate",
+      "path": "src\\routes\\api\\ai\\generate\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "gpu",
+      "path": "src\\routes\\api\\ai\\gpu\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "health-mock",
+      "path": "src\\routes\\api\\ai\\health-mock\\+server.ts",
+      "complexity": "medium",
+      "methods": [
+        "GET"
+      ],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "health",
+      "path": "src\\routes\\api\\ai\\health\\+server.ts",
+      "complexity": "low",
+      "methods": [
+        "GET"
+      ],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "health\\cloud",
+      "path": "src\\routes\\api\\ai\\health\\cloud\\+server.ts",
+      "complexity": "low",
+      "methods": [
+        "GET"
+      ],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "health\\local-fixed",
+      "path": "src\\routes\\api\\ai\\health\\local-fixed\\+server.ts",
+      "complexity": "high",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "health\\local",
+      "path": "src\\routes\\api\\ai\\health\\local\\+server.ts",
+      "complexity": "high",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "history",
+      "path": "src\\routes\\api\\ai\\history\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "inference",
+      "path": "src\\routes\\api\\ai\\inference\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "ingest",
+      "path": "src\\routes\\api\\ai\\ingest\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "lawpdfs",
+      "path": "src\\routes\\api\\ai\\lawpdfs\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "legal-bert",
+      "path": "src\\routes\\api\\ai\\legal-bert\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "legal-research",
+      "path": "src\\routes\\api\\ai\\legal-research\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "legal-search-cached",
+      "path": "src\\routes\\api\\ai\\legal-search-cached\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "legal-search",
+      "path": "src\\routes\\api\\ai\\legal-search\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "legal\\analyze",
+      "path": "src\\routes\\api\\ai\\legal\\analyze\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "load-model",
+      "path": "src\\routes\\api\\ai\\load-model\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "multi-agent",
+      "path": "src\\routes\\api\\ai\\multi-agent\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "ollama-gemma3",
+      "path": "src\\routes\\api\\ai\\ollama-gemma3\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "ollama-simd",
+      "path": "src\\routes\\api\\ai\\ollama-simd\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "ollama\\analyze-behavior",
+      "path": "src\\routes\\api\\ai\\ollama\\analyze-behavior\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "ollama\\analyze-legal-document",
+      "path": "src\\routes\\api\\ai\\ollama\\analyze-legal-document\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "ollama\\generate-prompts",
+      "path": "src\\routes\\api\\ai\\ollama\\generate-prompts\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "predictive-typing",
+      "path": "src\\routes\\api\\ai\\predictive-typing\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "process-document",
+      "path": "src\\routes\\api\\ai\\process-document\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "process-enhanced",
+      "path": "src\\routes\\api\\ai\\process-enhanced\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "process-evidence",
+      "path": "src\\routes\\api\\ai\\process-evidence\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "prompt",
+      "path": "src\\routes\\api\\ai\\prompt\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "qlora-topology",
+      "path": "src\\routes\\api\\ai\\qlora-topology\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "query",
+      "path": "src\\routes\\api\\ai\\query\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "redis-optimized-analyze",
+      "path": "src\\routes\\api\\ai\\redis-optimized-analyze\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "redis-optimized-chat",
+      "path": "src\\routes\\api\\ai\\redis-optimized-chat\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "rl-rag",
+      "path": "src\\routes\\api\\ai\\rl-rag\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "search",
+      "path": "src\\routes\\api\\ai\\search\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "self-prompt",
+      "path": "src\\routes\\api\\ai\\self-prompt\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "status",
+      "path": "src\\routes\\api\\ai\\status\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "suggest",
+      "path": "src\\routes\\api\\ai\\suggest\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "suggestions",
+      "path": "src\\routes\\api\\ai\\suggestions\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "suggestions\\health",
+      "path": "src\\routes\\api\\ai\\suggestions\\health\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "suggestions\\rate",
+      "path": "src\\routes\\api\\ai\\suggestions\\rate\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "suggestions\\stream",
+      "path": "src\\routes\\api\\ai\\suggestions\\stream\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "summarize",
+      "path": "src\\routes\\api\\ai\\summarize\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "summarize\\cache\\[key]",
+      "path": "src\\routes\\api\\ai\\summarize\\cache\\[key]\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "summarize\\stream",
+      "path": "src\\routes\\api\\ai\\summarize\\stream\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "tag",
+      "path": "src\\routes\\api\\ai\\tag\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "tensor",
+      "path": "src\\routes\\api\\ai\\tensor\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "test-gemma3",
+      "path": "src\\routes\\api\\ai\\test-gemma3\\+server.ts",
+      "complexity": "medium",
+      "methods": [
+        "POST",
+        "GET"
+      ],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "test-ollama",
+      "path": "src\\routes\\api\\ai\\test-ollama\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "test-orchestrator",
+      "path": "src\\routes\\api\\ai\\test-orchestrator\\+server.ts",
+      "complexity": "high",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "unified-orchestrator",
+      "path": "src\\routes\\api\\ai\\unified-orchestrator\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "unified",
+      "path": "src\\routes\\api\\ai\\unified\\+server.ts",
+      "complexity": "medium",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 80,
+        "responseTimeTarget": 100,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "upload-auto-tag",
+      "path": "src\\routes\\api\\ai\\upload-auto-tag\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "vector-index",
+      "path": "src\\routes\\api\\ai\\vector-index\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "vector-knn",
+      "path": "src\\routes\\api\\ai\\vector-knn\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "vector-search-cached",
+      "path": "src\\routes\\api\\ai\\vector-search-cached\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "vector-search",
+      "path": "src\\routes\\api\\ai\\vector-search\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "vector-search\\index",
+      "path": "src\\routes\\api\\ai\\vector-search\\index\\+server.ts",
+      "complexity": "high",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 70,
+        "responseTimeTarget": 200,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "vector-search\\stream",
+      "path": "src\\routes\\api\\ai\\vector-search\\stream\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "voice",
+      "path": "src\\routes\\api\\ai\\voice\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    },
+    {
+      "name": "webasm-search",
+      "path": "src\\routes\\api\\ai\\webasm-search\\+server.ts",
+      "complexity": "low",
+      "methods": [],
+      "monitoring": {
+        "cacheHitTarget": 90,
+        "responseTimeTarget": 50,
+        "alertThresholds": {
+          "cacheHitWarning": 70,
+          "cacheHitCritical": 50,
+          "responseTimeWarning": 500,
+          "responseTimeCritical": 2000
+        }
+      }
+    }
+  ],
+  "dashboards": {
+    "overview": "/admin/redis",
+    "detailed": "/admin/redis/detailed",
+    "performance": "/admin/redis/performance",
+    "alerts": "/admin/redis/alerts"
+  },
+  "alerting": {}
+}

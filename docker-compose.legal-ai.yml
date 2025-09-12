@@ -1,0 +1,138 @@
+# Docker Compose for Legal AI Multi-Model Orchestration
+version: '3.8'
+
+services:
+  # Legal Expert Model - Large specialized model for complex legal analysis
+  vllm-legal-expert:
+    image: vllm/vllm-openai:latest
+    command: >
+      --model ollama/gemma-3-legal-2b-instruct-q6_k
+      --host 0.0.0.0
+      --port 8000
+      --gpu-memory-utilization 0.6
+      --max-model-len 8192
+      --tensor-parallel-size 1
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ./ollama_models:/root/.ollama/models
+      - ./logs/vllm-legal:/logs
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  # Fast Router Model - Small quick model for routing and simple queries
+  vllm-fast-router:
+    image: vllm/vllm-openai:latest
+    command: >
+      --model ollama/gemma-3-270m-instruct-q6_k
+      --host 0.0.0.0
+      --port 8000
+      --gpu-memory-utilization 0.2
+      --max-model-len 4096
+    ports:
+      - "8001:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ./ollama_models:/root/.ollama/models
+      - ./logs/vllm-router:/logs
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+  # Redis with Nintendo Memory Budgeting
+  legal-ai-redis:
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8002:8001" # RedisInsight UI
+    volumes:
+      - redis_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_ARGS="--maxmemory 1gb --maxmemory-policy allkeys-lru"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Embedding Service - Dedicated embedding generation
+  ollama-embeddings:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ./ollama_models:/root/.ollama/models
+      - ./logs/ollama:/logs
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL with pgvector for document storage
+  legal-db:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=legal_ai_db
+      - POSTGRES_USER=legal_admin
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_INITDB_ARGS="--encoding=UTF-8"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U legal_admin -d legal_ai_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  redis_data:
+  postgres_data:
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

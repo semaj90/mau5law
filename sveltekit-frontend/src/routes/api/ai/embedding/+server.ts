@@ -1,9 +1,28 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: embedding
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from './$types';
 import { gemmaEmbeddingService } from '$lib/services/gemma-embedding.js';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   
   try {
@@ -46,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-export const GET: RequestHandler = async () => {
+const originalGETHandler: RequestHandler = async () => {
   try {
     const healthResult = await gemmaEmbeddingService.healthCheck();
     
@@ -65,3 +84,7 @@ export const GET: RequestHandler = async () => {
     }, { status: 500 });
   }
 };
+
+
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);

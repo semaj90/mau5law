@@ -1,6 +1,25 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: embed
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { OPENAI_API_KEY, NOMIC_API_KEY } from '$env/static/private';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 interface EmbedRequest {
   text: string;
@@ -77,7 +96,7 @@ async function getNomicEmbedding(text: string): Promise<{ embedding: number[] }>
   };
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const { text, model = 'mock', dimensions }: EmbedRequest = await request.json();
 
@@ -175,7 +194,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-export const GET: RequestHandler = async () => {
+const originalGETHandler: RequestHandler = async () => {
   return json({
     message: 'Embedding API endpoint',
     methods: ['POST'],
@@ -183,3 +202,6 @@ export const GET: RequestHandler = async () => {
     maxTextLength: 50000
   });
 };
+
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);

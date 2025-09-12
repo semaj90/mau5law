@@ -31,11 +31,12 @@ class CacheService {
   }
 
   private async initializeRedis() {
-    const url =
-      process.env.REDIS_URL ||
-      (process.env.REDIS_HOST
-        ? `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || '6379'}`
-        : 'redis://127.0.0.1:6379');
+    const password = process.env.REDIS_PASSWORD;
+    const host = process.env.REDIS_HOST || '127.0.0.1';
+    const port = process.env.REDIS_PORT || '6379';
+    
+    const url = process.env.REDIS_URL || 
+      (password ? `redis://:${password}@${host}:${port}` : `redis://${host}:${port}`);
 
     try {
       // Dynamic import so builds don’t fail if ioredis is missing in some environments

@@ -5,10 +5,10 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import { 
-    getObservabilityStatus, 
-    trackCustomEvent, 
-    createObservableFetch 
+  import {
+    getObservabilityStatus,
+    trackCustomEvent,
+    createObservableFetch
   } from '$lib/utils/observability-init.js';
 
   let observabilityStatus = $state(null);
@@ -44,10 +44,10 @@ https://svelte.dev/e/js_parse_error -->
       const duration = performance.now() - startTime;
       addDemoResult('Health Check', `${data.status} (${Math.round(duration)}ms)`, 'success');
       // Track custom event
-      trackCustomEvent('health-check-completed', { 
-        status: data.status, 
+      trackCustomEvent('health-check-completed', {
+        status: data.status,
         score: data.score,
-        duration 
+        duration
       });
     } catch (error) {
       console.error('Health check failed:', error);
@@ -83,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
     trackCustomEvent('slow-operation-start');
     try {
       // Simulate a slow operation
-      await new Promise(resolve => setTimeout(resolve, 2000);
+  await new Promise(resolve => setTimeout(resolve, 2000));
       // Make an API call to test Server-Timing headers
       const response = await observableFetch('/api/v1/observability/client?action=performance');
       const data = await response.json();
@@ -241,8 +241,8 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex justify-between">
               <span class="text-gray-400">Avg Load Time:</span>
               <span class="text-blue-400">
-                {clientMetrics.aggregatedStats?.averageLoadTime 
-                  ? Math.round(clientMetrics.aggregatedStats.averageLoadTime) + 'ms' 
+                {clientMetrics.aggregatedStats?.averageLoadTime
+                  ? Math.round(clientMetrics.aggregatedStats.averageLoadTime) + 'ms'
                   : 'N/A'}
               </span>
             </div>
@@ -263,39 +263,39 @@ https://svelte.dev/e/js_parse_error -->
     <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-yellow-400 mb-4">Demo Actions</h3>
       <div class="flex flex-wrap gap-4">
-        <button 
-          onclick={checkServerHealth}
+        <button
+          on:click={checkServerHealth}
           disabled={isLoading}
           class="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
           🏥 Check Health
         </button>
-        
-        <button 
-          onclick={loadClientMetrics}
+
+        <button
+          on:click={loadClientMetrics}
           disabled={isLoading}
           class="bg-green-600 hover:bg-green-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
           📊 Load Metrics
         </button>
-        
-        <button 
-          onclick={simulateSlowOperation}
+
+        <button
+          on:click={simulateSlowOperation}
           disabled={isLoading}
           class="bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
           🐌 Slow Operation
         </button>
-        
-        <button 
-          onclick={clearMetrics}
+
+        <button
+          on:click={clearMetrics}
           disabled={isLoading}
           class="bg-red-600 hover:bg-red-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
           🧹 Clear Metrics
         </button>
       </div>
-      
+
       {#if isLoading}
         <div class="mt-4 flex items-center text-yellow-400">
           <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-400 mr-2"></div>
@@ -309,7 +309,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
         <h3 class="text-xl font-semibold text-yellow-400 mb-4">Recent Operations</h3>
         <div class="space-y-2 max-h-64 overflow-y-auto">
-          {#each demoResults.reverse() as result (result.id)}
+          {#each demoResults.slice().reverse() as result (result.id)}
             <div class="flex justify-between items-center py-2 border-b border-gray-700 last:border-b-0">
               <div class="flex items-center space-x-3">
                 <span class="text-gray-400 text-sm">{result.timestamp}</span>
@@ -356,8 +356,8 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Footer -->
     <div class="text-center text-gray-500 text-sm">
       <p>
-        🔍 Observability System Integrated • 
-        Server: <span class="text-yellow-400">Port 5181</span> • 
+        🔍 Observability System Integrated •
+        Server: <span class="text-yellow-400">Port 5181</span> •
         API: <span class="text-blue-400">/api/v1/observability/client</span>
       </p>
     </div>
@@ -369,16 +369,16 @@ https://svelte.dev/e/js_parse_error -->
   ::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   ::-webkit-scrollbar-track {
     background: #374151;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     background: #6B7280;
     border-radius: 3px;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     background: #9CA3AF;
   }

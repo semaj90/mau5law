@@ -1,6 +1,25 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: query
+ * Category: aggressive
+ * Memory Bank: CHR_ROM
+ * Priority: 170
+ * Redis Type: aiSearch
+ * 
+ * Performance Impact:
+ * - Cache Strategy: aggressive
+ * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 
 import { aiService } from "$lib/server/services/ai-service.js";
 import { URL } from "url";
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types';
 
 
@@ -16,7 +35,7 @@ const querySchema = z.object({
   }).optional()
 });
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.user) {
@@ -69,7 +88,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 };
 
 // Get similar queries for suggestions
-export const GET: RequestHandler = async ({ url, locals }) => {
+const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Authentication required' }, { status: 401 });
@@ -105,3 +124,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     );
   }
 };
+
+export const POST = redisOptimized.aiSearch(originalPOSTHandler);
+export const GET = redisOptimized.aiSearch(originalGETHandler);

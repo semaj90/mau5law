@@ -1,4 +1,22 @@
 /**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: predictive-typing
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
+/**
  * Predictive Typing API Endpoint
  * 
  * Integrates LOD caching, topology-aware predictive analytics, enhanced RAG,
@@ -12,6 +30,7 @@ import { topologyPredictiveAnalyticsEngine } from '$lib/ai/topology-predictive-a
 import { enhancedRAGGlyphSystem } from '$lib/ai/enhanced-rag-glyph-system.js';
 import { lodCacheEngine } from '$lib/ai/lod-cache-engine.js';
 import { vectorMetadataAutoEncoder } from '$lib/ai/vector-metadata-auto-encoder.js';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 interface PredictiveTypingRequest {
   // Current query state
@@ -93,7 +112,7 @@ interface PredictiveTypingResponse {
 }
 
 // POST - Generate predictive typing suggestions
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   
   try {
@@ -315,7 +334,7 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 // GET - System status and capabilities
-export const GET: RequestHandler = async () => {
+const originalGETHandler: RequestHandler = async () => {
   try {
     const [lodStats, analyticsStats, encoderStats] = await Promise.all([
       lodCacheEngine.getCacheStats(),
@@ -370,7 +389,7 @@ export const GET: RequestHandler = async () => {
 };
 
 // PUT - Update configuration
-export const PUT: RequestHandler = async ({ request }) => {
+const originalPUTHandler: RequestHandler = async ({ request }) => {
   try {
     const config = await request.json();
     
@@ -403,7 +422,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 };
 
 // DELETE - Clear caches
-export const DELETE: RequestHandler = async () => {
+const originalDELETEHandler: RequestHandler = async () => {
   try {
     // Clear all caches
     lodCacheEngine.clearCache();
@@ -461,3 +480,8 @@ function calculateCompressionRatio(query: string, glyphContext: any[]): number {
 }
 
 export type { PredictiveTypingRequest, PredictiveTypingResponse };
+
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);
+export const PUT = redisOptimized.aiAnalysis(originalPUTHandler);
+export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);

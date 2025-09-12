@@ -12,7 +12,7 @@
 
 import { cache } from './cache/redis.js';
 import { gpuCoordinator } from './gpu-thread-coordinator.js';
-import { webgpuTextureStreamer } from '../gpu/texture-streaming-service.js';
+import { textureStreamer } from '../gpu/texture-streaming-service.js';
 
 interface GPUMetrics {
   gpuUtilization: number;

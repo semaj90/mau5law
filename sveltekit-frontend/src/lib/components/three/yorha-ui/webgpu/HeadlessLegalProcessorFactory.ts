@@ -122,7 +122,6 @@ export class HeadlessLegalProcessorFactory {
       }
 
       const adapter = await navigator.gpu.requestAdapter({
-        compatibleSurface: null, // Explicitly headless
         powerPreference: 'high-performance',
         forceFallbackAdapter: false
       });

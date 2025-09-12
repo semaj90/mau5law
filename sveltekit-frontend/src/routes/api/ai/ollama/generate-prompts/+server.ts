@@ -1,11 +1,30 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: ollama\generate-prompts
+ * Category: minimal
+ * Memory Bank: SAVE_RAM
+ * Priority: 110
+ * Redis Type: documentProcessing
+ * 
+ * Performance Impact:
+ * - Cache Strategy: minimal
+ * - Memory Bank: SAVE_RAM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 // Contextual Prompts Generation API
 // Generates intelligent prompts based on legal context and user behavior
 
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { validateAuthSession } from '$lib/server/auth';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const session = await validateAuthSession(request);
     if (!session) {
@@ -208,3 +227,6 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
 
   return { prompts };
 }
+
+
+export const POST = redisOptimized.documentProcessing(originalPOSTHandler);

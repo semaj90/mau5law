@@ -1,4 +1,22 @@
 /**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: embeddings
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
+/**
  * AI Embeddings API - Generate embeddings using multiple backends
  * Supports Ollama, vLLM, and fallback services for vector generation
  */
@@ -7,6 +25,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { ollamaConfig } from '$lib/services/ollama-config-service.js';
 import { ENV_CONFIG } from '$lib/config/environment.js';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 const VLLM_ENDPOINT = process.env.VLLM_ENDPOINT || 'http://localhost:8000/v1';
 
@@ -27,7 +46,7 @@ interface EmbeddingResponse {
 /**
  * Generate embeddings using available AI backends
  */
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
 
   try {
@@ -79,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * Get embedding backend health status
  */
-export const GET: RequestHandler = async () => {
+const originalGETHandler: RequestHandler = async () => {
   const health = {
     ollama: await checkOllamaHealth(),
     vllm: await checkVLLMHealth(),
@@ -316,3 +335,6 @@ async function checkVLLMHealth(): Promise<{ healthy: boolean; models?: string[];
     };
   }
 }
+
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);

@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 
 /*
  * Session Validation API Endpoint

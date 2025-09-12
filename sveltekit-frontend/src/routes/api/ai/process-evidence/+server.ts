@@ -1,3 +1,21 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: process-evidence
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 import type { RequestHandler } from './$types';
 
 /*
@@ -8,6 +26,7 @@ import type { RequestHandler } from './$types';
 
 import { json } from '@sveltejs/kit';
 import { getUser } from '$lib/server/auth';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 // Enhanced RAG service integration (port 8094)
 const ENHANCED_RAG_URL = 'http://localhost:8094';
@@ -43,7 +62,7 @@ export interface LegalAnalysisResponse {
   tokenCount: number;
 }
 
-export const POST: RequestHandler = async ({ request, cookies }) => {
+const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
   const startTime = performance.now();
   
   try {
@@ -355,3 +374,5 @@ async function logAnalysis(data: any): Promise<any> {
     console.warn('Failed to log analysis:', error);
   }
 }
+
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

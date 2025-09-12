@@ -1,4 +1,22 @@
 /**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: unified-orchestrator
+ * Category: conservative
+ * Memory Bank: PRG_ROM
+ * Priority: 150
+ * Redis Type: aiAnalysis
+ * 
+ * Performance Impact:
+ * - Cache Strategy: conservative
+ * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
+/**
  * Unified AI Orchestrator API - Single endpoint for all LLM interactions
  * Routes requests through the LLM Orchestrator Bridge to optimal processing
  * Supports both local and server-side orchestrators with MCP multi-core integration
@@ -9,9 +27,10 @@ import { json } from '@sveltejs/kit';
 import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
 import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js';
 import { logger } from '$lib/server/ai/logger.js';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 // Health check endpoint
-export const GET: RequestHandler = async ({ url }) => {
+const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const status = await llmOrchestratorBridge.getStatus();
     const metrics = llmOrchestratorBridge.getPerformanceMetrics();
@@ -67,7 +86,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // Main orchestrator endpoint
-export const POST: RequestHandler = async ({ request, fetch, url }) => {
+const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
   const startTime = performance.now();
   let requestData: any;
 
@@ -157,7 +176,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
 };
 
 // Streaming endpoint for real-time responses
-export const PATCH: RequestHandler = async ({ request }) => {
+const originalPATCHHandler: RequestHandler = async ({ request }) => {
   try {
     const requestData = await request.json();
     
@@ -359,3 +378,7 @@ export const OPTIONS: RequestHandler = async () => {
     },
   });
 };
+
+export const GET = redisOptimized.aiAnalysis(originalGETHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler);

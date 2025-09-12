@@ -87,7 +87,6 @@ export class YoRHaMipmapShaders {
       }
 
       const adapter = await navigator.gpu.requestAdapter({
-        compatibleSurface: null, // Explicitly no surface for headless mode
         powerPreference: 'high-performance'
       });
 

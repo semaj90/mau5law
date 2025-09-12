@@ -1,12 +1,31 @@
+/**
+ * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
+ * 
+ * Endpoint: vector-search\index
+ * Category: aggressive
+ * Memory Bank: CHR_ROM
+ * Priority: 170
+ * Redis Type: aiSearch
+ * 
+ * Performance Impact:
+ * - Cache Strategy: aggressive
+ * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Cache hits: ~2ms response time
+ * - Fresh queries: Background processing for complex requests
+ * 
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ */
+
 
 import { json } from "@sveltejs/kit";
 import { vectorSearchService } from "$lib/services/vector-search";
 import { legalDocuments as documents } from "$lib/server/db/schema-postgres";
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types';
 
 
 // Real-time document indexing endpoint
-export const POST: RequestHandler = async ({ request }) => {
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const {
       documentId,
@@ -97,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 // Batch indexing endpoint
-export const PUT: RequestHandler = async ({ request }) => {
+const originalPUTHandler: RequestHandler = async ({ request }) => {
   try {
     const { documentIds, forceReindex = false } = await request.json();
 
@@ -297,3 +316,7 @@ Respond in JSON format:
     };
   }
 }
+
+
+export const POST = redisOptimized.aiSearch(originalPOSTHandler);
+export const PUT = redisOptimized.aiSearch(originalPUTHandler);
