@@ -47,10 +47,11 @@ https://svelte.dev/e/expected_token -->
   });
 
   // File upload handling
-  let fileInput = $state<HTMLInputElement;
+  // Using a plain element reference for bind:this; no reactive rune needed
+  let fileInput: HTMLInputElement | null = null;
 
-  const handleFileUpload >(async (event: Event) => {
-    const target = event.target as HTMLInputElement);
+  const handleFileUpload = async (event: Event) => {
+    const target = event.target as HTMLInputElement;
     const files = Array.from(target.files || []);
 
     if (files.length === 0) return;

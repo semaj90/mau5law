@@ -15,7 +15,8 @@ https://svelte.dev/e/bind_invalid_expression -->
     Card,
     CardHeader,
     CardTitle,
-    CardContent
+    CardContent,
+    CardDescription
   } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import {
@@ -42,6 +43,18 @@ https://svelte.dev/e/bind_invalid_expression -->
     maxSuggestions: 5,
     suggestionDelay: 800,
     aiModel: 'gemma3-legal'
+  });
+
+  // Slider intermediary bindings (Slider expects array; Svelte bind cannot use array literal)
+  let minCharactersValue = $state([serviceOptions.minCharacters]);
+  let maxSuggestionsValue = $state([serviceOptions.maxSuggestions]);
+  let suggestionDelayValue = $state([serviceOptions.suggestionDelay]);
+
+  // Sync slider arrays back into serviceOptions
+  $effect(() => {
+    serviceOptions.minCharacters = minCharactersValue[0];
+    serviceOptions.maxSuggestions = maxSuggestionsValue[0];
+    serviceOptions.suggestionDelay = suggestionDelayValue[0];
   });
 
   // Demo stats
@@ -190,11 +203,10 @@ https://svelte.dev/e/bind_invalid_expression -->
           <CardContent>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               {#each demoScenarios as scenario}
-                <Button class="bits-btn"
+                <Button class="bits-btn justify-start text-left"
                   variant="outline"
                   size="sm"
                   onclick={() => loadScenario(scenario)}
-                  class="justify-start text-left"
                 >
                   {scenario.title}
                 </Button>
@@ -335,7 +347,7 @@ https://svelte.dev/e/bind_invalid_expression -->
                   Min Characters ({serviceOptions.minCharacters})
                 </label>
                 <Slider
-                  bind:value={[serviceOptions.minCharacters]}
+                  bind:value={minCharactersValue}
                   min={5}
                   max={50}
                   step={5}
@@ -348,7 +360,7 @@ https://svelte.dev/e/bind_invalid_expression -->
                   Max Suggestions ({serviceOptions.maxSuggestions})
                 </label>
                 <Slider
-                  bind:value={[serviceOptions.maxSuggestions]}
+                  bind:value={maxSuggestionsValue}
                   min={1}
                   max={10}
                   step={1}
@@ -361,7 +373,7 @@ https://svelte.dev/e/bind_invalid_expression -->
                   Delay (ms) ({serviceOptions.suggestionDelay})
                 </label>
                 <Slider
-                  bind:value={[serviceOptions.suggestionDelay]}
+                  bind:value={suggestionDelayValue}
                   min={200}
                   max={2000}
                   step={100}

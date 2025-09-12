@@ -30,9 +30,9 @@ https://svelte.dev/e/js_parse_error -->
   let showHybridModal = $state(false);
 
   // 3D Components
-  let nesButtons = $state<NESYoRHaHybrid3D[] >([]);
-  let nesContainers = $state<NESYoRHaHybrid3D[] >([]);
-  let nesProgressBars = $state<NESYoRHaHybrid3D[] >([]);
+  let nesButtons = $state<NESYoRHaHybrid3D[]>([]);
+  let nesContainers = $state<NESYoRHaHybrid3D[]>([]);
+  let nesProgressBars = $state<NESYoRHaHybrid3D[]>([]);
 
   onMount(() => {
     initializeScene();
@@ -179,9 +179,9 @@ https://svelte.dev/e/js_parse_error -->
       // Update all hybrid components
       const deltaTime = 0.016; // ~60fps
 
-      nesButtons.forEach(button => button.update(deltaTime);
-      nesContainers.forEach(container => container.update(deltaTime);
-      nesProgressBars.forEach(bar => bar.update(deltaTime);
+  nesButtons.forEach(button => button.update(deltaTime));
+  nesContainers.forEach(container => container.update(deltaTime));
+  nesProgressBars.forEach(bar => bar.update(deltaTime));
       // Gentle rotation for demo purposes
       scene.rotation.y += 0.001;
 

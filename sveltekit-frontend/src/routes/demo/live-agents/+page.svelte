@@ -4,19 +4,19 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Phase 3: Live Agent Integration Demo -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { 
-    liveAgentOrchestrator, 
+  import {
+    liveAgentOrchestrator,
     createAgentRequest,
     quickAnalyze,
     quickSummarize,
     quickEmbed,
     quickSearch,
     type AgentRequest,
-    type OrchestrationResult 
+    type OrchestrationResult
   } from '$lib/services/live-agent-orchestrator.js';
 
-  // Reactive state
-  let connectionStats = $state(liveAgentOrchestrator.getConnectionStats(););
+  // Reactive state / stores
+  const connectionStats = liveAgentOrchestrator.getConnectionStats();
   let connectionStatus = $state('');
   let agentHealth = $state({});
   let activeRequests = $state([]);
@@ -79,10 +79,10 @@ https://svelte.dev/e/js_parse_error -->
     console.log(`🎼 Testing ${requestType} with agents:`, selectedAgents);
 
     try {
-  let result = $state<OrchestrationResult;
+    let result: OrchestrationResult;
       switch (requestType) {
         case 'analyze':
-          result >(await quickAnalyze(testInput, selectedAgents);
+          result = await quickAnalyze(testInput, selectedAgents);
           break;
         case 'summarize':
           result = await quickSummarize(testInput, selectedAgents);
@@ -170,7 +170,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="bg-gray-800 p-4 rounded-lg">
         <h3 class="text-sm font-medium text-gray-400 mb-2">Agent Health</h3>
         <div class="text-lg font-semibold">
-          {Object.entries(agentHealth).filter(([_, status]) => status === 'healthy').length} / 
+          {Object.entries(agentHealth).filter(([_, status]) => status === 'healthy').length} /
           {Object.keys(agentHealth).length} Healthy
         </div>
       </div>
@@ -204,7 +204,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Demo Interface -->
     <div class="bg-gray-800 p-6 rounded-lg mb-8">
       <h2 class="text-xl font-semibold mb-4">Test Agent Orchestration</h2>
-      
+
       <!-- Input Section -->
       <div class="space-y-4 mb-6">
         <div>
@@ -272,7 +272,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if results.length > 0}
       <div class="space-y-6">
         <h2 class="text-xl font-semibold">Orchestration Results</h2>
-        
+
         {#each results as result, index}
           <div class="bg-gray-800 p-6 rounded-lg">
             <div class="flex items-center justify-between mb-4">
@@ -331,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
                       </span>
                     </div>
                   </div>
-                  
+
                   {#if response.error}
                     <div class="text-red-300 text-sm">Error: {response.error}</div>
                   {:else if response.result}
@@ -364,16 +364,16 @@ https://svelte.dev/e/js_parse_error -->
   pre::-webkit-scrollbar {
     height: 8px;
   }
-  
+
   pre::-webkit-scrollbar-track {
     background: #374151;
   }
-  
+
   pre::-webkit-scrollbar-thumb {
     background: #6B7280;
     border-radius: 4px;
   }
-  
+
   pre::-webkit-scrollbar-thumb:hover {
     background: #9CA3AF;
   }
