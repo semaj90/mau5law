@@ -166,7 +166,6 @@
 
 <!-- Trigger Button -->
 <button
-  use:melt={$trigger}
   class="ai-trigger {$open ? 'ai-trigger--active' : ''} {disabled || isGenerating ? 'ai-trigger--disabled' : ''}"
   {disabled}
   aria-label="AI Tools Menu"
@@ -186,7 +185,6 @@
 <!-- Dropdown Menu -->
 {#if $open}
   <div
-    use:melt={$menu}
     class="ai-menu"
     transition:fly={{ duration: 150, y: -8 }}
   >
@@ -199,7 +197,6 @@
 
       {#each reportTypes as reportType}
         <button
-          use:melt={$item}
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === reportType.id}
           onclick={() => handleItemSelect(reportType.id)}
@@ -224,7 +221,7 @@
     </div>
 
     <!-- Separator -->
-    <div use:melt={$separator} class="ai-menu__separator"></div>
+    <div class="ai-menu__separator"></div>
 
     <!-- AI Tools Section -->
     <div class="ai-menu__section">
@@ -235,7 +232,6 @@
 
       {#each aiTools as tool}
         <button
-          use:melt={$item}
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === tool.id}
           class:ai-menu__item--disabled={tool.requiresContent && !hasContent}
@@ -264,7 +260,7 @@
     </div>
 
     <!-- Keyboard Shortcuts Help -->
-    <div use:melt={$separator} class="ai-menu__separator"></div>
+    <div class="ai-menu__separator"></div>
     <div class="ai-menu__footer">
       <Keyboard size={12} />
       <span class="ai-menu__footer-text"

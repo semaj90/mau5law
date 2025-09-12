@@ -91,8 +91,7 @@
   {/if}
 </span>
 
-<style>
-  /* YoRHa-specific animations */
+<style>/* YoRHa-specific animations */ {}
   .yorha-badge {
     position: relative;
     overflow: hidden;
@@ -105,11 +104,11 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(212, 175, 55, 0.2),
-      transparent
+background: linear-gradient( {}
+90deg, {}
+transparent, {}
+rgba(212, 175, 55, 0.2), {}
+transparent {}
     );
     transition: left 0.5s;
   }
@@ -117,8 +116,7 @@
   .yorha-badge:hover::before {
     left: 100%;
   }
-
-  /* Pulse animation for critical badges */
+/* Pulse animation for critical badges */ {}
   .badge-critical {
     animation: badge-pulse 2s infinite;
   }
@@ -131,8 +129,7 @@
       opacity: 0.7;
     }
   }
-
-  /* Priority indicators */
+/* Priority indicators */ {}
   .badge-high-priority {
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
   }

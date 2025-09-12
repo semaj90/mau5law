@@ -357,10 +357,10 @@ https://svelte.dev/e/js_parse_error -->
             Cancel
           </Button>
 
-          <Button class="bits-btn"
+          <Button 
+            class="bits-btn"
             onclick={() => submitValidation()}
             disabled={!validationChoice || isSubmitting}
-            class="space-y-4"
           >
             {#if isSubmitting}
               <div

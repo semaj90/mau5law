@@ -411,107 +411,99 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     position: relative;
     display: inline-block;
     font-family: 'Press Start 2P', monospace;
-    
-    /* 3D perspective for N64 depth */
+/* 3D perspective for N64 depth */ {}
     perspective: 1000px;
     perspective-origin: center center;
     transform-style: preserve-3d;
   }
-
-  /* Base card styling */
+/* Base card styling */ {}
   .n64-card {
     position: relative;
     padding: 20px;
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
     color: #e0e0e0;
     border: 2px solid #505050;
-    
-    /* N64-style 3D depth transformation */
-    transform: 
-      perspective(1000px)
-      rotateX(var(--rotation-x, 0deg))
-      rotateY(var(--rotation-y, 0deg))
+/* N64-style 3D depth transformation */ {}
+transform: {}
+perspective(1000px) {}
+rotateX(var(--rotation-x, 0deg)) {}
+rotateY(var(--rotation-y, 0deg)) {}
       translateZ(var(--translate-z, 0px));
     
     transform-origin: center center;
     transform-style: preserve-3d;
     
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    box-shadow: 
-      0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 2) rgba(0, 0, 0, 0.3),
-      inset 0 2px 4px rgba(255, 255, 255, 0.1),
+box-shadow: {}
+0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 2) rgba(0, 0, 0, 0.3), {}
+inset 0 2px 4px rgba(255, 255, 255, 0.1), {}
       inset 0 -2px 4px rgba(0, 0, 0, 0.2);
   }
-
-  /* Material variations */
+/* Material variations */ {}
   .material-basic .n64-card {
     background: #1a1a1a;
     border-color: #505050;
-    box-shadow: 
-      0 8px 16px rgba(0, 0, 0, 0.2),
+box-shadow: {}
+0 8px 16px rgba(0, 0, 0, 0.2), {}
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   .material-phong .n64-card {
-    background: linear-gradient(145deg, 
-      #2a2a2a 0%, 
-      #1a1a1a 50%, 
+background: linear-gradient(145deg, {}
+#2a2a2a 0%, {}
+#1a1a1a 50%, {}
       #0a0a0a 100%);
     border-color: #707070;
-    box-shadow: 
-      0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 2) rgba(0, 0, 0, 0.4),
-      inset 0 3px 6px rgba(255, 255, 255, 0.15),
+box-shadow: {}
+0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 2) rgba(0, 0, 0, 0.4), {}
+inset 0 3px 6px rgba(255, 255, 255, 0.15), {}
       inset 0 -3px 6px rgba(0, 0, 0, 0.3);
   }
 
   .material-pbr .n64-card {
-    background: linear-gradient(145deg, 
-      hsl(calc(var(--frame-time, 0) * 10 + 240), 20%, 16%) 0%,
-      hsl(calc(var(--frame-time, 0) * 10 + 240), 25%, 10%) 50%,
+background: linear-gradient(145deg, {}
+hsl(calc(var(--frame-time, 0) * 10 + 240), 20%, 16%) 0%, {}
+hsl(calc(var(--frame-time, 0) * 10 + 240), 25%, 10%) 50%, {}
       hsl(calc(var(--frame-time, 0) * 10 + 240), 30%, 6%) 100%);
     border-color: hsl(calc(var(--frame-time, 0) * 10 + 240), 50%, 50%);
-    box-shadow: 
-      0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 3) rgba(0, 0, 0, 0.5),
-      inset 0 4px 8px rgba(255, 255, 255, 0.2),
+box-shadow: {}
+0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 3) rgba(0, 0, 0, 0.5), {}
+inset 0 4px 8px rgba(255, 255, 255, 0.2), {}
       inset 0 -4px 8px rgba(0, 0, 0, 0.4);
   }
-
-  /* Mesh complexity variations */
+/* Mesh complexity variations */ {}
   .mesh-low .n64-card {
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   }
 
   .mesh-medium .n64-card {
-    clip-path: polygon(
-      0% 0%, 95% 0%, 100% 5%, 100% 95%, 
-      95% 100%, 5% 100%, 0% 95%, 0% 5%
+clip-path: polygon( {}
+0% 0%, 95% 0%, 100% 5%, 100% 95%, {}
+95% 100%, 5% 100%, 0% 95%, 0% 5% {}
     );
   }
 
   .mesh-high .n64-card {
-    clip-path: polygon(
-      0% 0%, 90% 0%, 95% 3%, 100% 10%, 100% 90%, 
-      97% 95%, 90% 100%, 10% 100%, 5% 97%, 
-      0% 90%, 0% 10%, 3% 5%
+clip-path: polygon( {}
+0% 0%, 90% 0%, 95% 3%, 100% 10%, 100% 90%, {}
+97% 95%, 90% 100%, 10% 100%, 5% 97%, {}
+0% 90%, 0% 10%, 3% 5% {}
     );
   }
 
   .mesh-ultra .n64-card {
-    clip-path: polygon(
-      0% 0%, 80% 0%, 85% 2%, 90% 5%, 95% 8%, 98% 12%, 100% 20%, 100% 80%, 
-      98% 88%, 95% 92%, 90% 95%, 85% 98%, 80% 100%, 20% 100%, 15% 98%, 
-      10% 95%, 5% 92%, 2% 88%, 0% 80%, 0% 20%, 2% 12%, 5% 8%, 10% 5%, 15% 2%
+clip-path: polygon( {}
+0% 0%, 80% 0%, 85% 2%, 90% 5%, 95% 8%, 98% 12%, 100% 20%, 100% 80%, {}
+98% 88%, 95% 92%, 90% 95%, 85% 98%, 80% 100%, 20% 100%, 15% 98%, {}
+10% 95%, 5% 92%, 2% 88%, 0% 80%, 0% 20%, 2% 12%, 5% 8%, 10% 5%, 15% 2% {}
     );
   }
-
-  /* Depth effect variations */
+/* Depth effect variations */ {}
   .depth-shallow { --depth-z: 5px; }
   .depth-medium { --depth-z: 15px; }
   .depth-deep { --depth-z: 30px; }
   .depth-extreme { --depth-z: 50px; }
-
-  /* Visual enhancement layers */
+/* Visual enhancement layers */ {}
   .n64-card-overlay {
     position: absolute;
     top: 0;
@@ -528,12 +520,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      transparent 30%,
-      transparent 70%,
-      rgba(0, 0, 0, 0.2) 100%
+background: linear-gradient( {}
+135deg, {}
+rgba(255, 255, 255, 0.1) 0%, {}
+transparent 30%, {}
+transparent 70%, {}
+rgba(0, 0, 0, 0.2) 100% {}
     );
   }
 
@@ -546,55 +538,54 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 
   .filter-nearest .texture-filter-layer {
-    background: 
-      repeating-linear-gradient(
-        45deg,
-        transparent 0px,
-        rgba(255, 255, 255, 0.01) 1px,
-        transparent 2px
+background: {}
+repeating-linear-gradient( {}
+45deg, {}
+transparent 0px, {}
+rgba(255, 255, 255, 0.01) 1px, {}
+transparent 2px {}
       );
   }
 
   .filter-bilinear .texture-filter-layer {
-    background: 
-      radial-gradient(
-        circle at 25% 25%,
-        rgba(255, 255, 255, 0.02) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 75% 75%,
-        rgba(255, 255, 255, 0.02) 0%,
-        transparent 50%
+background: {}
+radial-gradient( {}
+circle at 25% 25%, {}
+rgba(255, 255, 255, 0.02) 0%, {}
+transparent 50% {}
+), {}
+radial-gradient( {}
+circle at 75% 75%, {}
+rgba(255, 255, 255, 0.02) 0%, {}
+transparent 50% {}
       );
   }
 
   .filter-trilinear .texture-filter-layer {
-    background: 
-      conic-gradient(
-        from 0deg at 50% 50%,
-        rgba(255, 215, 0, 0.02),
-        rgba(0, 255, 65, 0.02),
-        rgba(255, 0, 65, 0.02),
-        rgba(0, 127, 255, 0.02),
-        rgba(255, 215, 0, 0.02)
+background: {}
+conic-gradient( {}
+from 0deg at 50% 50%, {}
+rgba(255, 215, 0, 0.02), {}
+rgba(0, 255, 65, 0.02), {}
+rgba(255, 0, 65, 0.02), {}
+rgba(0, 127, 255, 0.02), {}
+rgba(255, 215, 0, 0.02) {}
       );
   }
 
   .filter-anisotropic .texture-filter-layer {
-    background: 
-      linear-gradient(
-        calc(var(--mouse-x, 0) * 45deg + 45deg),
-        rgba(255, 215, 0, 0.03) 0%,
-        transparent 25%,
-        rgba(0, 255, 65, 0.03) 50%,
-        transparent 75%,
-        rgba(255, 0, 65, 0.03) 100%
+background: {}
+linear-gradient( {}
+calc(var(--mouse-x, 0) * 45deg + 45deg), {}
+rgba(255, 215, 0, 0.03) 0%, {}
+transparent 25%, {}
+rgba(0, 255, 65, 0.03) 50%, {}
+transparent 75%, {}
+rgba(255, 0, 65, 0.03) 100% {}
       );
     animation: anisotropic-sweep 4s ease-in-out infinite;
   }
-
-  /* Anti-aliasing layers */
+/* Anti-aliasing layers */ {}
   .aa-layer {
     position: absolute;
     top: -1px;
@@ -604,73 +595,70 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 
   .aa-fxaa .aa-layer {
-    background: 
-      linear-gradient(45deg, rgba(255, 255, 255, 0.005) 0%, transparent 50%),
+background: {}
+linear-gradient(45deg, rgba(255, 255, 255, 0.005) 0%, transparent 50%), {}
       linear-gradient(-45deg, rgba(255, 255, 255, 0.005) 0%, transparent 50%);
   }
 
   .aa-msaa .aa-layer {
-    background: 
-      radial-gradient(
-        ellipse at top left,
-        rgba(255, 255, 255, 0.01) 0%,
-        transparent 25%
-      ),
-      radial-gradient(
-        ellipse at top right,
-        rgba(255, 255, 255, 0.01) 0%,
-        transparent 25%
-      ),
-      radial-gradient(
-        ellipse at bottom left,
-        rgba(255, 255, 255, 0.01) 0%,
-        transparent 25%
-      ),
-      radial-gradient(
-        ellipse at bottom right,
-        rgba(255, 255, 255, 0.01) 0%,
-        transparent 25%
+background: {}
+radial-gradient( {}
+ellipse at top left, {}
+rgba(255, 255, 255, 0.01) 0%, {}
+transparent 25% {}
+), {}
+radial-gradient( {}
+ellipse at top right, {}
+rgba(255, 255, 255, 0.01) 0%, {}
+transparent 25% {}
+), {}
+radial-gradient( {}
+ellipse at bottom left, {}
+rgba(255, 255, 255, 0.01) 0%, {}
+transparent 25% {}
+), {}
+radial-gradient( {}
+ellipse at bottom right, {}
+rgba(255, 255, 255, 0.01) 0%, {}
+transparent 25% {}
       );
   }
-
-  /* Fog effect */
+/* Fog effect */ {}
   .fog-layer {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(200, 200, 255, 0.08) 0%,
-      transparent 25%,
-      transparent 75%,
-      rgba(200, 200, 255, 0.04) 100%
+background: linear-gradient( {}
+180deg, {}
+rgba(200, 200, 255, 0.08) 0%, {}
+transparent 25%, {}
+transparent 75%, {}
+rgba(200, 200, 255, 0.04) 100% {}
     );
     animation: fog-drift 8s ease-in-out infinite;
   }
-
-  /* Shadow layer */
+/* Shadow layer */ {}
   .shadow-layer {
     position: absolute;
     top: 100%;
     left: 10%;
     right: 10%;
     height: var(--depth-z, 15px);
-    background: linear-gradient(
-      ellipse at center,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.2) 50%,
-      transparent 100%
+background: linear-gradient( {}
+ellipse at center, {}
+rgba(0, 0, 0, 0.4) 0%, {}
+rgba(0, 0, 0, 0.2) 50%, {}
+transparent 100% {}
     );
-    transform: 
-      translateY(5px)
-      rotateX(90deg)
+transform: {}
+translateY(5px) {}
+rotateX(90deg) {}
       translateZ(calc(var(--depth-z, 15px) * -1));
     transform-origin: center top;
   }
-
-  /* Card header */
+/* Card header */ {}
   .n64-card-header {
     position: relative;
     z-index: 2;
@@ -695,16 +683,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     margin: 0;
     line-height: 1.4;
   }
-
-  /* Card content */
+/* Card content */ {}
   .n64-card-content {
     position: relative;
     z-index: 2;
     font-size: 12px;
     line-height: 1.6;
   }
-
-  /* Parallax layers */
+/* Parallax layers */ {}
   .parallax-indicators {
     position: absolute;
     top: 0;
@@ -724,8 +710,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: inherit;
   }
-
-  /* Selection indicator */
+/* Selection indicator */ {}
   .selection-indicator {
     position: absolute;
     top: -4px;
@@ -739,9 +724,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
     z-index: 10;
-    
-    box-shadow: 
-      0 0 15px rgba(0, 255, 65, 0.5),
+box-shadow: {}
+0 0 15px rgba(0, 255, 65, 0.5), {}
       inset 0 0 15px rgba(0, 255, 65, 0.2);
   }
 
@@ -749,34 +733,32 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     opacity: 1;
     transform: scale(1);
   }
-
-  /* State variations */
+/* State variations */ {}
   .n64-card.hoverable:hover {
     border-color: #909090;
-    box-shadow: 
-      0 calc(var(--depth-z, 15px) + 5px) calc((var(--depth-z, 15px) + 5px) * 2) rgba(0, 0, 0, 0.4),
-      inset 0 3px 6px rgba(255, 255, 255, 0.2),
+box-shadow: {}
+0 calc(var(--depth-z, 15px) + 5px) calc((var(--depth-z, 15px) + 5px) * 2) rgba(0, 0, 0, 0.4), {}
+inset 0 3px 6px rgba(255, 255, 255, 0.2), {}
       inset 0 -3px 6px rgba(0, 0, 0, 0.3);
   }
 
   .n64-card.clickable:active {
-    transform: 
-      perspective(1000px)
-      rotateX(calc(var(--rotation-x, 0deg) + 2deg))
-      rotateY(var(--rotation-y, 0deg))
+transform: {}
+perspective(1000px) {}
+rotateX(calc(var(--rotation-x, 0deg) + 2deg)) {}
+rotateY(var(--rotation-y, 0deg)) {}
       translateZ(calc(var(--translate-z, 0px) - 3px));
   }
 
   .n64-card.selected {
     border-color: #00ff41;
     color: #ffffff;
-    box-shadow: 
-      0 calc(var(--depth-z, 15px) + 3px) calc((var(--depth-z, 15px) + 3px) * 2) rgba(0, 255, 65, 0.3),
-      inset 0 3px 6px rgba(0, 255, 65, 0.2),
+box-shadow: {}
+0 calc(var(--depth-z, 15px) + 3px) calc((var(--depth-z, 15px) + 3px) * 2) rgba(0, 255, 65, 0.3), {}
+inset 0 3px 6px rgba(0, 255, 65, 0.2), {}
       inset 0 -3px 6px rgba(0, 0, 0, 0.3);
   }
-
-  /* Lighting model variations */
+/* Lighting model variations */ {}
   .lighting-flat .n64-card {
     background: #1a1a1a;
     box-shadow: 0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 2) rgba(0, 0, 0, 0.3);
@@ -787,19 +769,18 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 
   .lighting-phong .n64-card {
-    background: 
-      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+background: {}
+radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), {}
       linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
   }
 
   .lighting-blinn-phong .n64-card {
-    background: 
-      radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
-      radial-gradient(ellipse at 75% 75%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
+background: {}
+radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, transparent 40%), {}
+radial-gradient(ellipse at 75% 75%, rgba(255, 255, 255, 0.08) 0%, transparent 60%), {}
       linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
   }
-
-  /* Render distance optimizations */
+/* Render distance optimizations */ {}
   .distance-near {
     will-change: transform;
   }
@@ -807,13 +788,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   .distance-medium {
     will-change: transform, box-shadow;
   }
-
-  .distance-far .texture-filter-layer,
+.distance-far .texture-filter-layer, {}
   .distance-far .aa-layer {
     display: none;
   }
-
-  /* GPU acceleration classes */
+/* GPU acceleration classes */ {}
   .gpu-accelerated .n64-card {
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -826,8 +805,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
   }
-
-  /* Mobile optimizations */
+/* Mobile optimizations */ {}
   .mobile-optimized .n64-card {
     padding: 16px;
   }
@@ -839,19 +817,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   .mobile-optimized .n64-card-content {
     font-size: 11px;
   }
-
-  /* Reduced motion */
-  .reduced-motion .n64-card,
-  .reduced-motion .selection-indicator,
-  .reduced-motion .texture-filter-layer,
-  .reduced-motion .aa-layer,
+/* Reduced motion */ {}
+.reduced-motion .n64-card, {}
+.reduced-motion .selection-indicator, {}
+.reduced-motion .texture-filter-layer, {}
+.reduced-motion .aa-layer, {}
   .reduced-motion .fog-layer {
     animation: none !important;
     transition: none !important;
     transform: none !important;
   }
-
-  /* Interactive states */
+/* Interactive states */ {}
   .n64-card.clickable {
     cursor: pointer;
   }
@@ -864,8 +840,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     outline: 2px solid #ffd700;
     outline-offset: 4px;
   }
-
-  /* Animations */
+/* Animations */ {}
   @keyframes anisotropic-sweep {
     0% { filter: hue-rotate(0deg); }
     25% { filter: hue-rotate(90deg); }

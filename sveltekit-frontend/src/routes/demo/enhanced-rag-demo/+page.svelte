@@ -1,20 +1,20 @@
 <!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression
 https://svelte.dev/e/tag_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression -->
+
 <script lang="ts">
-</script>
-	import { onMount } from 'svelte';
-	
-	// Modern Svelte 5 patterns for Enhanced RAG Demo
-	let ragResponses = $state<any[]>([]);
-	let currentQuery = $state('');
-	let isLoading = $state(false);
-	let ragServiceStatus = $state<any>(null);
-	let cacheMetrics = $state<any>(null);
-	let selectedCase = $state('CASE-2024-001');
-	let useGPUAcceleration = $state(true);
-	let enableMemoryContext = $state(true);
-	
+  import { onMount } from 'svelte';
+
+  // Modern Svelte 5 patterns for Enhanced RAG Demo
+  let ragResponses = $state<any[]>([]);
+  let currentQuery = $state('');
+  let isLoading = $state(false);
+  let ragServiceStatus = $state<any>(null);
+  let cacheMetrics = $state<any>(null);
+  let selectedCase = $state('CASE-2024-001');
+  let useGPUAcceleration = $state(true);
+  let enableMemoryContext = $state(true);
+
 	// Enhanced RAG Demo queries specifically for the new CUDA service
 	const enhancedRagQueries = [
 		{
@@ -48,7 +48,7 @@ https://svelte.dev/e/tag_invalid_name -->
 			expectedSpeedup: 'GPU-accelerated'
 		}
 	];
-	
+
 	// Real-time performance metrics
 	let performanceMetrics = $derived({
 		totalQueries: ragResponses.length,
@@ -61,28 +61,28 @@ https://svelte.dev/e/tag_invalid_name -->
 			? ragResponses.reduce((sum, r) => sum + (r.confidence || 0), 0) / ragResponses.length
 			: 0
 	});
-	
-	onMount(async () => {
-		await loadRAGServiceStatus();
-		await loadCacheMetrics();
-	});
-	
-	async function loadRAGServiceStatus() {
+
+  onMount(async () => {
+    await loadRAGServiceStatus();
+    await loadCacheMetrics();
+  });
+
+  async function loadRAGServiceStatus() {
 		try {
 			// Check if Enhanced RAG service is running on port 8080
 			const response = await fetch('http://localhost:8080/api/rag/health');
 			ragServiceStatus = await response.json();
 		} catch (error) {
-			ragServiceStatus = { 
-				status: 'unavailable', 
+			ragServiceStatus = {
+				status: 'unavailable',
 				error: 'Enhanced RAG service not running. Start with: docker run enhanced-rag-service:latest',
 				cuda: false,
 				cache: false
 			};
 		}
 	}
-	
-	async function loadCacheMetrics() {
+
+  async function loadCacheMetrics() {
 		try {
 			const response = await fetch('http://localhost:8080/api/rag/cache/metrics');
 			cacheMetrics = await response.json();
@@ -90,11 +90,11 @@ https://svelte.dev/e/tag_invalid_name -->
 			cacheMetrics = { error: 'Cache metrics unavailable' };
 		}
 	}
-	
-	async function runEnhancedRAGQuery(query: string, category: string = 'general') {
+
+  async function runEnhancedRAGQuery(query: string, category: string = 'general') {
 		isLoading = true;
 		const startTime = Date.now();
-		
+
 		try {
 			// Call the actual Enhanced RAG service
 			const ragRequest = {
@@ -106,10 +106,10 @@ https://svelte.dev/e/tag_invalid_name -->
 				threshold: 0.7,
 				cudaEnabled: useGPUAcceleration
 			};
-			
+
 			let response;
 			let ragResult;
-			
+
 			// Try Enhanced RAG service first, fallback to mock if unavailable
 			try {
 				response = await fetch('http://localhost:8080/api/rag/query', {
@@ -122,9 +122,9 @@ https://svelte.dev/e/tag_invalid_name -->
 				// Fallback to mock response for demo purposes
 				ragResult = generateMockEnhancedRAGResponse(query, category);
 			}
-			
+
 			const responseTime = Date.now() - startTime;
-			
+
 			ragResponses = [...ragResponses, {
 				...ragResult,
 				query,
@@ -133,7 +133,7 @@ https://svelte.dev/e/tag_invalid_name -->
 				timestamp: new Date().toISOString(),
 				serviceMock: !response?.ok
 			}];
-			
+
 		} catch (error) {
 			ragResponses = [...ragResponses, {
 				response: `Error: ${error.message}`,
@@ -150,15 +150,15 @@ https://svelte.dev/e/tag_invalid_name -->
 			isLoading = false;
 		}
 	}
-	
-	function generateMockEnhancedRAGResponse(query: string, category: string) {
+
+  function generateMockEnhancedRAGResponse(query: string, category: string) {
 		// Simulate Enhanced RAG service response format
 		const mockDocuments = [
 			{ id: 'doc_1', title: 'Employment Contract Template', similarity: 0.94 },
 			{ id: 'doc_2', title: 'Non-Disclosure Agreement', similarity: 0.87 },
 			{ id: 'doc_3', title: 'Liability Clause Analysis', similarity: 0.82 }
 		];
-		
+
 		const responses = {
 			'gpu-search': {
 				response: `🚀 **CUDA-Accelerated Search Complete**\n\nProcessed ${Math.floor(Math.random() * 1000 + 500)} documents using GPU acceleration.\n\n**Performance:**\n• Vector operations: 15x faster than CPU\n• Embedding generation: 30ms vs 900ms\n• Total search time: ${Math.floor(Math.random() * 100 + 50)}ms\n\n**Results Found:**\n${mockDocuments.map(doc => `• ${doc.title} (similarity: ${doc.similarity})`).join('\n')}\n\n**CUDA Details:**\n• GPU: RTX 3060 Ti\n• CUDA Cores: 4864\n• Compute Capability: 8.6`,
@@ -191,7 +191,7 @@ https://svelte.dev/e/tag_invalid_name -->
 				confidence: 0.88
 			}
 		};
-		
+
 		return responses[category] || {
 			response: `🔍 **Enhanced RAG Analysis**\n\nProcessed query using production-ready CUDA-enhanced RAG service.\n\n**Analysis Results:**\n${mockDocuments.map(doc => `• ${doc.title} (relevance: ${doc.similarity})`).join('\n')}\n\n**System Performance:**\n• CUDA acceleration: Active\n• PyTorch cache: Integrated\n• Memory context: Enhanced\n• Processing time: Optimized`,
 			cudaProcessed: useGPUAcceleration,
@@ -199,13 +199,13 @@ https://svelte.dev/e/tag_invalid_name -->
 			confidence: Math.random() * 0.2 + 0.8
 		};
 	}
-	
+
 	function getPerformanceColor(time: number): string {
 		if (time < 100) return 'text-green-600 bg-green-50';
 		if (time < 500) return 'text-yellow-600 bg-yellow-50';
 		return 'text-red-600 bg-red-50';
 	}
-	
+
 	function clearResponses() {
 		ragResponses = [];
 	}
@@ -325,7 +325,7 @@ https://svelte.dev/e/tag_invalid_name -->
 			<!-- Input Panel -->
 			<div class="bg-white rounded-lg shadow-md p-6">
 				<h2 class="text-2xl font-semibold text-gray-900 mb-6">Enhanced RAG Query Interface</h2>
-				
+
 				<!-- Settings -->
 				<div class="mb-6 p-4 bg-gray-50 rounded-lg">
 					<h3 class="text-sm font-semibold text-gray-900 mb-3">Query Settings</h3>
@@ -346,13 +346,13 @@ https://svelte.dev/e/tag_invalid_name -->
 						</div>
 					</div>
 				</div>
-				
+
 				<!-- Case Selection -->
 				<div class="mb-4">
 					<label for="case-select" class="block text-sm font-medium text-gray-700 mb-2">
 						Target Case
 					</label>
-					<select 
+					<select
 						bind:value={selectedCase}
 						id="case-select"
 						class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -418,7 +418,7 @@ https://svelte.dev/e/tag_invalid_name -->
 			<!-- Results Panel -->
 			<div class="bg-white rounded-lg shadow-md p-6">
 				<h2 class="text-2xl font-semibold text-gray-900 mb-6">🎯 Enhanced RAG Results</h2>
-				
+
 				{#if isLoading}
 					<div class="flex items-center justify-center py-12">
 						<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -527,23 +527,23 @@ https://svelte.dev/e/tag_invalid_name -->
 	.prose {
 		max-width: none;
 	}
-	
+
 	.prose h1, .prose h2, .prose h3 {
 		margin-top: 0;
 		margin-bottom: 0.5rem;
 	}
-	
+
 	.prose p {
 		margin-top: 0;
 		margin-bottom: 0.5rem;
 	}
-	
+
 	.prose ul {
 		margin-top: 0.5rem;
 		margin-bottom: 0.5rem;
 		padding-left: 1.5rem;
 	}
-	
+
 	.prose strong {
 		font-weight: 600;
 	}

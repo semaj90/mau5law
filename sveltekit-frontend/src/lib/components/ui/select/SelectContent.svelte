@@ -32,8 +32,7 @@
   </div>
 {/if}
 
-<style>
-  /* @unocss-include */
+<style>/* @unocss-include */ {}
   .select-content {
     position: absolute;
     top: 100%;

@@ -20,8 +20,8 @@ https://svelte.dev/e/tag_invalid_name -->
   } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   // Icons from Lucide
-  import { 
-    Search, Bell, Settings, User, Menu, 
+  import {
+    Search, Bell, Settings, User, Menu,
     BarChart3, Database, Zap, Shield,
     ChevronDown, Filter, Calendar,
     Activity, TrendingUp, Eye
@@ -120,7 +120,7 @@ https://svelte.dev/e/tag_invalid_name -->
 <!-- Dashboard Shell -->
 <div class="min-h-screen bg-nier-bg-primary flex">
   <!-- Sidebar -->
-  <aside 
+  <aside
     class="bg-nier-bg-secondary border-r border-nier-border-primary transition-all duration-300 {sidebarOpen ? 'w-64' : 'w-16'}"
     class:shadow-xl={sidebarOpen}
   >
@@ -138,7 +138,7 @@ https://svelte.dev/e/tag_invalid_name -->
         {/if}
       </div>
     </div>
-    
+
     <!-- Navigation -->
     <nav class="p-2 space-y-1">
       {#each dashboardSections as section}
@@ -148,31 +148,31 @@ https://svelte.dev/e/tag_invalid_name -->
                  hover:bg-nier-bg-tertiary group relative
                  {section.active ? 'bg-nier-accent-warm/10 text-nier-accent-warm border-l-2 border-nier-accent-warm' : 'text-nier-text-secondary'}"
         >
-          <{section.icon} class="w-5 h-5 flex-shrink-0" />
-          
+          <svelte:component this={section.icon} class="w-5 h-5 flex-shrink-0" />
+
           {#if sidebarOpen}
             <span class="flex-1 font-medium">{section.title}</span>
-            
+
             {#if section.badge}
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{section.badge}</span>
             {/if}
-            
+
             {#if section.status}
               <div class="w-2 h-2 rounded-full
-                          {section.status === 'healthy' ? 'bg-green-500' : 
+                          {section.status === 'healthy' ? 'bg-green-500' :
                            section.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'}">
               </div>
             {/if}
           {:else}
             <!-- Tooltip for collapsed sidebar -->
-            <div class="absolute left-full ml-2 px-2 py-1 bg-nier-bg-secondary text-nier-text-primary 
+            <div class="absolute left-full ml-2 px-2 py-1 bg-nier-bg-secondary text-nier-text-primary
                         text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none
                         transition-opacity z-50">
               {section.title}
             </div>
-            
+
             {#if section.badge}
-              <div class="absolute -top-1 -right-1 w-4 h-4 bg-nier-accent-warm text-nier-bg-primary 
+              <div class="absolute -top-1 -right-1 w-4 h-4 bg-nier-accent-warm text-nier-bg-primary
                           text-xs rounded-full flex items-center justify-center">
                 {section.badge > 99 ? '99+' : section.badge}
               </div>
@@ -181,7 +181,7 @@ https://svelte.dev/e/tag_invalid_name -->
         </button>
       {/each}
     </nav>
-    
+
     <!-- Sidebar Footer -->
     <div class="absolute bottom-4 left-2 right-2">
       <div class="p-2 bg-nier-bg-tertiary rounded-lg">
@@ -199,7 +199,7 @@ https://svelte.dev/e/tag_invalid_name -->
       </div>
     </div>
   </aside>
-  
+
   <!-- Main Content Area -->
   <div class="flex-1 flex flex-col min-w-0">
     <!-- Top Header -->
@@ -210,11 +210,20 @@ https://svelte.dev/e/tag_invalid_name -->
             variant="ghost"
             size="sm"
             onclick={toggleSidebar}
-            class="p-2 bits-btn bits-btn"
+            class="p-2 enhanced-bits-btn nes-dashboard-control n64-enhanced lod-optimized retro-nav-btn"
+            aria-label={sidebarOpen ? 'Collapse sidebar navigation' : 'Expand sidebar navigation'}
+            aria-describedby="sidebar-toggle-help"
+            role="button"
+            data-nes-theme="dashboard-nav"
+            data-enhanced-bits="true"
+            data-sidebar-state={sidebarOpen ? 'open' : 'closed'}
           >
-            <Menu class="w-5 h-5" />
+            <Menu class="w-5 h-5" aria-hidden="true" role="img" aria-label="Menu toggle icon" />
           </Button>
-          
+          <div id="sidebar-toggle-help" class="sr-only">
+            Toggle sidebar navigation panel visibility
+          </div>
+
           <!-- Breadcrumb -->
           <div class="flex items-center gap-2 text-sm">
             <span class="text-nier-text-muted">Dashboard</span>
@@ -224,7 +233,7 @@ https://svelte.dev/e/tag_invalid_name -->
             </span>
           </div>
         </div>
-        
+
         <!-- Top Actions -->
         <div class="flex items-center gap-4">
           <!-- Global Search -->
@@ -237,28 +246,71 @@ https://svelte.dev/e/tag_invalid_name -->
               class="pl-10 w-64 bg-nier-bg-primary border-nier-border-muted"
             />
           </div>
-          
+
           <!-- Quick Actions -->
-          <Button variant="ghost" size="sm" class="relative bits-btn bits-btn">
-            <Bell class="w-5 h-5" />
+          <Button
+            variant="ghost"
+            size="sm"
+            class="relative enhanced-bits-btn nes-dashboard-control n64-enhanced lod-optimized retro-notification-btn"
+            aria-label={notifications > 0 ? `${notifications} new notifications available` : 'No new notifications'}
+            aria-describedby="notifications-help"
+            role="button"
+            data-nes-theme="dashboard-notifications"
+            data-enhanced-bits="true"
+            data-notification-count={notifications}
+            data-has-notifications={notifications > 0}
+          >
+            <Bell class="w-5 h-5" aria-hidden="true" role="img" aria-label="Notification bell icon" />
             {#if notifications > 0}
-              <span class="px-2 py-1 rounded text-xs font-medium bg-red-500 text-white">{notifications}</span>
+              <span
+                class="px-2 py-1 rounded text-xs font-medium bg-red-500 text-white"
+                aria-live="polite"
+                aria-atomic="true"
+                role="status"
+              >{notifications}</span>
             {/if}
           </Button>
-          
-          <Button class="bits-btn" variant="ghost" size="sm">
-            <Settings class="w-5 h-5" />
+          <div id="notifications-help" class="sr-only">
+            View system notifications and alerts
+          </div>
+
+          <Button
+            class="enhanced-bits-btn nes-dashboard-control n64-enhanced lod-optimized retro-settings-btn"
+            variant="ghost"
+            size="sm"
+            aria-label="Open settings and configuration panel"
+            aria-describedby="settings-help"
+            role="button"
+            data-nes-theme="dashboard-settings"
+            data-enhanced-bits="true"
+          >
+            <Settings class="w-5 h-5" aria-hidden="true" role="img" aria-label="Settings icon" />
           </Button>
-          
-          <Button class="bits-btn" variant="ghost" size="sm">
-            <User class="w-5 h-5" />
+          <div id="settings-help" class="sr-only">
+            Access system settings, preferences, and configuration options
+          </div>
+
+          <Button
+            class="enhanced-bits-btn nes-dashboard-control n64-enhanced lod-optimized retro-user-btn"
+            variant="ghost"
+            size="sm"
+            aria-label="Open user profile and account options"
+            aria-describedby="user-profile-help"
+            role="button"
+            data-nes-theme="dashboard-user"
+            data-enhanced-bits="true"
+          >
+            <User class="w-5 h-5" aria-hidden="true" role="img" aria-label="User profile icon" />
           </Button>
+          <div id="user-profile-help" class="sr-only">
+            View user profile, account settings, and authentication options
+          </div>
         </div>
       </div>
-      
+
       <!-- Quick Stats Bar -->
       <div class="mt-4 grid grid-cols-4 gap-4">
-        <Card.Root class="p-3">
+  <Card.Root class="p-3">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-xs text-nier-text-muted">Total Cases</p>
@@ -266,8 +318,8 @@ https://svelte.dev/e/tag_invalid_name -->
             </div>
             <Database class="w-5 h-5 text-nier-accent-warm" />
           </div>
-        </Card>
-        
+  </Card.Root>
+
         <Card.Root class="p-3">
           <div class="flex items-center justify-between">
             <div>
@@ -276,8 +328,8 @@ https://svelte.dev/e/tag_invalid_name -->
             </div>
             <Eye class="w-5 h-5 text-nier-accent-cool" />
           </div>
-        </Card>
-        
+        </Card.Root>
+
         <Card.Root class="p-3">
           <div class="flex items-center justify-between">
             <div>
@@ -286,8 +338,8 @@ https://svelte.dev/e/tag_invalid_name -->
             </div>
             <Zap class="w-5 h-5 text-purple-400" />
           </div>
-        </Card>
-        
+        </Card.Root>
+
         <Card.Root class="p-3">
           <div class="flex items-center justify-between">
             <div>
@@ -296,10 +348,10 @@ https://svelte.dev/e/tag_invalid_name -->
             </div>
             <Activity class="w-5 h-5 text-green-400" />
           </div>
-        </Card>
+        </Card.Root>
       </div>
     </header>
-    
+
     <!-- Page Content -->
     <main class="flex-1 p-6 bg-nier-bg-primary overflow-auto">
       <div class="max-w-7xl mx-auto">
@@ -309,26 +361,25 @@ https://svelte.dev/e/tag_invalid_name -->
   </div>
 </div>
 
-<style>
-  /* Custom scrollbar styling */
+<style>/* Custom scrollbar styling */
   :global(.dashboard-content) {
     scrollbar-width: thin;
     scrollbar-color: var(--nier-accent-warm) var(--nier-bg-tertiary);
   }
-  
+
   :global(.dashboard-content::-webkit-scrollbar) {
     width: 6px;
   }
-  
+
   :global(.dashboard-content::-webkit-scrollbar-track) {
     background: var(--nier-bg-tertiary);
   }
-  
+
   :global(.dashboard-content::-webkit-scrollbar-thumb) {
     background: var(--nier-accent-warm);
     border-radius: 3px;
   }
-  
+
   :global(.dashboard-content::-webkit-scrollbar-thumb:hover) {
     background: var(--nier-accent-cool);
   }

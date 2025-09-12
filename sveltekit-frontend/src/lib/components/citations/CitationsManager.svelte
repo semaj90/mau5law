@@ -346,15 +346,43 @@ https://svelte.dev/e/attribute_duplicate -->
 				
 				<div class="flex items-center gap-2">
 					{#if !readonly}
-						<Button class="bits-btn" variant="outline" size="sm" onclick={showAddCitationForm}>
-							<Plus class="w-4 h-4 mr-1" />
+						<Button 
+							class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
+							variant="outline" 
+							size="sm" 
+							onclick={showAddCitationForm}
+							aria-label="Open dialog to add a new legal citation"
+							aria-describedby="add-citation-help"
+							role="button"
+							data-nes-theme="citation-add"
+							data-enhanced-bits="true"
+							data-operation="add-citation"
+						>
+							<Plus class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Plus icon" />
 							Add Citation
 						</Button>
+						<div id="add-citation-help" class="sr-only">
+							Create a new legal citation with complete source information
+						</div>
 					{/if}
-					<Button class="bits-btn" variant="outline" size="sm" onclick={exportCitations}>
-						<Download class="w-4 h-4 mr-1" />
+					<Button 
+						class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-export-btn"
+						variant="outline" 
+						size="sm" 
+						onclick={exportCitations}
+						aria-label="Export citations to downloadable file"
+						aria-describedby="export-help"
+						role="button"
+						data-nes-theme="citation-export"
+						data-enhanced-bits="true"
+						data-operation="export-citations"
+					>
+						<Download class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Download icon" />
 						Export
 					</Button>
+					<div id="export-help" class="sr-only">
+						Download all filtered citations as a JSON file for backup or sharing
+					</div>
 				</div>
 			</div>
 		</CardHeader>
@@ -379,30 +407,63 @@ https://svelte.dev/e/attribute_duplicate -->
 				
 				<!-- Sort Options -->
 				<div class="flex gap-2">
-					<Button class="bits-btn"
+					<Button 
+						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'date' ? 'default' : 'outline'}
 						size="sm"
 						onclick={() => changeSortBy('date')}
+						aria-label={sortBy === 'date' ? 'Currently sorting by date' : 'Sort citations by date added'}
+						aria-describedby="sort-date-help"
+						role="button"
+						data-nes-theme="citation-sort"
+						data-enhanced-bits="true"
+						data-sort-type="date"
+						data-active={sortBy === 'date'}
 					>
-						<Calendar class="w-4 h-4 mr-1" />
+						<Calendar class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Calendar icon" />
 						Date
 					</Button>
-					<Button class="bits-btn"
+					<div id="sort-date-help" class="sr-only">
+						Sort citations by the date they were added to the system
+					</div>
+					<Button 
+						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'title' ? 'default' : 'outline'}
 						size="sm"
 						onclick={() => changeSortBy('title')}
+						aria-label={sortBy === 'title' ? 'Currently sorting by title' : 'Sort citations alphabetically by title'}
+						aria-describedby="sort-title-help"
+						role="button"
+						data-nes-theme="citation-sort"
+						data-enhanced-bits="true"
+						data-sort-type="title"
+						data-active={sortBy === 'title'}
 					>
-						<SortAsc class="w-4 h-4 mr-1" />
+						<SortAsc class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Sort ascending icon" />
 						Title
 					</Button>
-					<Button class="bits-btn"
+					<div id="sort-title-help" class="sr-only">
+						Sort citations alphabetically by title
+					</div>
+					<Button 
+						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'relevance' ? 'default' : 'outline'}
 						size="sm"
 						onclick={() => changeSortBy('relevance')}
+						aria-label={sortBy === 'relevance' ? 'Currently sorting by relevance score' : 'Sort citations by relevance score'}
+						aria-describedby="sort-relevance-help"
+						role="button"
+						data-nes-theme="citation-sort"
+						data-enhanced-bits="true"
+						data-sort-type="relevance"
+						data-active={sortBy === 'relevance'}
 					>
-						<Filter class="w-4 h-4 mr-1" />
+						<Filter class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Filter icon" />
 						Relevance
 					</Button>
+					<div id="sort-relevance-help" class="sr-only">
+						Sort citations by their calculated relevance score to your case
+					</div>
 				</div>
 			</div>
 		</CardContent>
@@ -502,26 +563,39 @@ https://svelte.dev/e/attribute_duplicate -->
 										variant="ghost"
 										size="sm"
 										onclick={() => viewCitationDetails(citation)}
-										class="bits-btn h-8 w-8 p-0"
+										class="h-8 w-8 p-0"
 									>
 										<Eye class="w-4 h-4" />
 									</Button>
 									{#if citation.url}
-										<Button class="bits-btn"
+										<Button 
+											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-external-btn h-8 w-8 p-0"
 											variant="ghost"
 											size="sm"
 											onclick={() => window.open(citation.url, '_blank')}
-											class="h-8 w-8 p-0"
+											aria-label="Open citation source in new tab"
+											aria-describedby={`external-${citation.id}-help`}
+											role="button"
+											data-nes-theme="citation-external"
+											data-enhanced-bits="true"
+											data-operation="external-link"
 										>
 											<ExternalLink class="w-4 h-4" />
 										</Button>
 									{/if}
 									{#if !readonly}
-										<Button class="bits-btn"
+										<Button 
+											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-delete-btn danger-variant h-8 w-8 p-0 text-destructive hover:text-destructive"
 											variant="ghost"
 											size="sm"
 											onclick={() => deleteCitation(citation.id)}
-											class="h-8 w-8 p-0 text-destructive hover:text-destructive"
+											aria-label="Delete this citation permanently"
+											aria-describedby={`delete-${citation.id}-help`}
+											role="button"
+											data-nes-theme="citation-destructive"
+											data-enhanced-bits="true"
+											data-operation="delete-citation"
+											data-critical="true"
 										>
 											<Trash2 class="w-4 h-4" />
 										</Button>
@@ -562,7 +636,8 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Input type="number" bind:value={newCitation.year} />
 					</div>
 					<div>
-						<label class="block text-sm font-medium mb-1" for="category">Category</label><select id="category" bind:value={newCitation.category} class="w-full p-2 border rounded">
+						<label class="block text-sm font-medium mb-1" for="category">Category</label>
+						<select id="category" bind:value={newCitation.category} class="w-full p-2 border rounded">
 							<option value="cases">Case Law</option>
 							<option value="statutes">Statutes</option>
 							<option value="regulations">Regulations</option>
@@ -595,12 +670,32 @@ https://svelte.dev/e/attribute_duplicate -->
 				</div>
 				
 				<div class="flex justify-end gap-2 pt-4">
-					<Button class="bits-btn" variant="outline" onclick={hideAddCitationForm}>
+					<Button 
+						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
+						variant="outline" 
+						onclick={hideAddCitationForm}
+						aria-label="Cancel adding citation and close dialog"
+						role="button"
+						data-nes-theme="dialog-secondary"
+						data-enhanced-bits="true"
+					>
 						Cancel
 					</Button>
-					<Button class="bits-btn" onclick={saveCitation}>
+					<Button 
+						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
+						onclick={saveCitation}
+						aria-label="Save new citation to collection"
+						aria-describedby="save-citation-help"
+						role="button"
+						data-nes-theme="dialog-primary"
+						data-enhanced-bits="true"
+						data-operation="save-citation"
+					>
 						Save Citation
 					</Button>
+					<div id="save-citation-help" class="sr-only">
+						Add this citation to your legal reference collection
+					</div>
 				</div>
 			</CardContent>
 		</Card>
@@ -660,12 +755,28 @@ https://svelte.dev/e/attribute_duplicate -->
 					</div>
 					<div class="flex gap-2">
 						{#if selectedCitation.url}
-							<Button class="bits-btn" variant="outline" onclick={() => window.open(selectedCitation.url, '_blank')}>
-								<ExternalLink class="w-4 h-4 mr-1" />
+							<Button 
+								class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-external-btn"
+								variant="outline" 
+								onclick={() => window.open(selectedCitation.url, '_blank')}
+								aria-label="Open citation source link in new tab"
+								role="button"
+								data-nes-theme="dialog-external"
+								data-enhanced-bits="true"
+								data-operation="open-external"
+							>
+								<ExternalLink class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="External link icon" />
 								Open Link
 							</Button>
 						{/if}
-						<Button class="bits-btn" onclick={hideDetailModal}>
+						<Button 
+							class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-close-btn"
+							onclick={hideDetailModal}
+							aria-label="Close citation details dialog"
+							role="button"
+							data-nes-theme="dialog-primary"
+							data-enhanced-bits="true"
+						>
 							Close
 						</Button>
 					</div>

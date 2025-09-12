@@ -1,12 +1,13 @@
-// Form component barrel exports for shadcn-svelte compatibility
-export { default as Form } from '$lib/Form.svelte';
-export { default as FormRoot } from '$lib/Form.svelte';
-export { default as FormStandard } from '$lib/forms/FormStandard.svelte';
+// Form component barrel exports (fixed paths)
+// Using relative paths because Form.svelte lives in the parent ui directory, not at $lib/Form.svelte
+export { default as Form } from '../Form.svelte';
+export { default as FormRoot } from '../Form.svelte';
+export { default as FormStandard } from '../forms/FormStandard.svelte';
 
-// Form field components (create aliases for compatibility)
-export { default as FormField } from '$lib/Form.svelte';
-export { default as FormControl } from '$lib/Form.svelte';
-export { default as FormLabel } from '$lib/Label.svelte';
-export { default as FormMessage } from '$lib/Form.svelte';
-export { default as FormDescription } from '$lib/Form.svelte';
-export { default as FormItem } from '$lib/Form.svelte';
+// Field/component aliases for API compatibility with libraries expecting shadcn-style exports
+export { default as FormField } from '../Form.svelte';
+export { default as FormControl } from '../Form.svelte';
+export { default as FormLabel } from '../Label.svelte';
+export { default as FormMessage } from '../Form.svelte';
+export { default as FormDescription } from '../Form.svelte';
+export { default as FormItem } from '../Form.svelte';

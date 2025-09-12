@@ -1,24 +1,11 @@
 // Shim module to select between real Context7 WASM and the mock implementation
 // Usage: import context7 from '$lib/integrations/context7-wasm';
 
-const useMock = Boolean(import.meta.env.VITE_USE_CONTEXT7_WASM_MOCK || import.meta.env.USE_CONTEXT7_WASM_MOCK);
+// Always prefer mock unless a future real binding is added to dependencies.
+// This avoids build-time unresolved module errors for '@context7/wasm'.
+let impl: any = await import('./context7-wasm-mock').then(m => m.default);
 
-let impl: any = null;
-
-if (useMock) {
-  // dynamic import of the mock to keep bundle small
-  impl = await import('./context7-wasm-mock').then(m => m.default);
-} else {
-  try {
-    // attempt to load a real WASM binding (may not exist in this repo)
-    impl = await import('@context7/wasm').then(m => m.default).catch(() => null);
-    if (!impl) {
-      // fallback to mock automatically
-      impl = await import('./context7-wasm-mock').then(m => m.default);
-    }
-  } catch {
-    impl = await import('./context7-wasm-mock').then(m => m.default);
-  }
-}
+// Placeholder: if a real wasm package is later installed, this conditional
+// can be reintroduced with proper try/catch.
 
 export default impl;

@@ -513,8 +513,7 @@
   </dialog>
 {/if}
 
-<style>
-  /* Dialog backdrop */
+<style>/* Dialog backdrop */ {}
   .n64-dialog-backdrop {
     position: fixed;
     top: 0;
@@ -523,8 +522,7 @@
     bottom: 0;
     z-index: 1000;
     background: rgba(0, 0, 0, 0.7);
-    
-    /* N64 perspective setup */
+/* N64 perspective setup */ {}
     perspective: 2000px;
     perspective-origin: center center;
   }
@@ -533,8 +531,7 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
-
-  /* Fog layers */
+/* Fog layers */ {}
   .fog-layer {
     position: absolute;
     top: 0;
@@ -545,48 +542,45 @@
   }
 
   .fog-layer-1 {
-    background: linear-gradient(
-      45deg,
-      rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.3)) 0%,
-      transparent 50%,
-      rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.2)) 100%
+background: linear-gradient( {}
+45deg, {}
+rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.3)) 0%, {}
+transparent 50%, {}
+rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.2)) 100% {}
     );
     animation: fog-drift-1 12s ease-in-out infinite;
   }
 
   .fog-layer-2 {
-    background: radial-gradient(
-      ellipse at 30% 70%,
-      rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.4)) 0%,
-      transparent 60%
+background: radial-gradient( {}
+ellipse at 30% 70%, {}
+rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.4)) 0%, {}
+transparent 60% {}
     );
     animation: fog-drift-2 15s ease-in-out infinite;
   }
 
   .fog-layer-3 {
-    background: radial-gradient(
-      ellipse at 70% 30%,
-      rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.25)) 0%,
-      transparent 70%
+background: radial-gradient( {}
+ellipse at 70% 30%, {}
+rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.25)) 0%, {}
+transparent 70% {}
     );
     animation: fog-drift-3 18s ease-in-out infinite;
   }
-
-  /* Fog color variations */
+/* Fog color variations */ {}
   .fog-color-blue { --fog-color-rgb: 100, 150, 255; }
   .fog-color-purple { --fog-color-rgb: 150, 100, 255; }
   .fog-color-green { --fog-color-rgb: 100, 255, 150; }
   .fog-color-orange { --fog-color-rgb: 255, 150, 100; }
   .fog-color-red { --fog-color-rgb: 255, 100, 100; }
   .fog-color-white { --fog-color-rgb: 255, 255, 255; }
-
-  /* Fog intensity variations */
+/* Fog intensity variations */ {}
   .fog-light { --fog-density: 0.2; }
   .fog-medium { --fog-density: 0.5; }
   .fog-heavy { --fog-density: 0.7; }
   .fog-dense { --fog-density: 0.9; }
-
-  /* Depth of field layers */
+/* Depth of field layers */ {}
   .dof-layer {
     position: absolute;
     pointer-events: none;
@@ -597,10 +591,10 @@
     left: 0;
     right: 0;
     height: 20%;
-    background: linear-gradient(
-      to bottom,
-      rgba(var(--fog-color-rgb, 100, 150, 255), 0.1) 0%,
-      transparent 100%
+background: linear-gradient( {}
+to bottom, {}
+rgba(var(--fog-color-rgb, 100, 150, 255), 0.1) 0%, {}
+transparent 100% {}
     );
     filter: blur(2px);
   }
@@ -610,15 +604,14 @@
     left: 0;
     right: 0;
     height: 20%;
-    background: linear-gradient(
-      to top,
-      rgba(var(--fog-color-rgb, 100, 150, 255), 0.1) 0%,
-      transparent 100%
+background: linear-gradient( {}
+to top, {}
+rgba(var(--fog-color-rgb, 100, 150, 255), 0.1) 0%, {}
+transparent 100% {}
     );
     filter: blur(2px);
   }
-
-  /* Dialog element */
+/* Dialog element */ {}
   .n64-dialog {
     position: fixed;
     top: 0;
@@ -630,8 +623,7 @@
     padding: 0;
     margin: 0;
     z-index: 1001;
-    
-    /* Center dialog content */
+/* Center dialog content */ {}
     display: flex;
     align-items: center;
     justify-content: center;
@@ -646,13 +638,11 @@
     max-width: 90vw;
     max-height: 90vh;
     font-family: 'Press Start 2P', monospace;
-    
-    /* N64-style 3D transformation */
+/* N64-style 3D transformation */ {}
     transform: perspective(1000px) rotateX(2deg) translateZ(10px);
     transform-style: preserve-3d;
   }
-
-  /* Dialog content styling */
+/* Dialog content styling */ {}
   .n64-dialog-content {
     position: relative;
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
@@ -661,70 +651,65 @@
     padding: 24px;
     min-width: 320px;
     max-width: 600px;
-    
-    box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.6),
-      inset 0 3px 6px rgba(255, 255, 255, 0.1),
+box-shadow: {}
+0 20px 40px rgba(0, 0, 0, 0.6), {}
+inset 0 3px 6px rgba(255, 255, 255, 0.1), {}
       inset 0 -3px 6px rgba(0, 0, 0, 0.3);
-    
-    /* Ensure content is above overlay layers */
+/* Ensure content is above overlay layers */ {}
     z-index: 10;
   }
-
-  /* Material variations */
+/* Material variations */ {}
   .material-basic .n64-dialog-content {
     background: #1a1a1a;
     border-color: #505050;
-    box-shadow: 
-      0 15px 30px rgba(0, 0, 0, 0.4),
+box-shadow: {}
+0 15px 30px rgba(0, 0, 0, 0.4), {}
       inset 0 2px 4px rgba(255, 255, 255, 0.1);
   }
 
   .material-phong .n64-dialog-content {
-    background: linear-gradient(145deg, 
-      #2a2a2a 0%, 
-      #1a1a1a 50%, 
+background: linear-gradient(145deg, {}
+#2a2a2a 0%, {}
+#1a1a1a 50%, {}
       #0a0a0a 100%);
     border-color: #707070;
   }
 
   .material-pbr .n64-dialog-content {
-    background: linear-gradient(145deg, 
-      hsl(calc(var(--fog-animation-time, 0) * 30 + 240), 20%, 16%) 0%,
-      hsl(calc(var(--fog-animation-time, 0) * 30 + 240), 25%, 10%) 50%,
+background: linear-gradient(145deg, {}
+hsl(calc(var(--fog-animation-time, 0) * 30 + 240), 20%, 16%) 0%, {}
+hsl(calc(var(--fog-animation-time, 0) * 30 + 240), 25%, 10%) 50%, {}
       hsl(calc(var(--fog-animation-time, 0) * 30 + 240), 30%, 6%) 100%);
     border-color: hsl(calc(var(--fog-animation-time, 0) * 30 + 240), 50%, 50%);
   }
-
-  /* Mesh complexity variations */
+/* Mesh complexity variations */ {}
   .mesh-low .n64-dialog-content {
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   }
 
   .mesh-medium .n64-dialog-content {
-    clip-path: polygon(
-      0% 0%, 95% 0%, 100% 5%, 100% 95%, 
-      95% 100%, 5% 100%, 0% 95%, 0% 5%
+clip-path: polygon( {}
+0% 0%, 95% 0%, 100% 5%, 100% 95%, {}
+95% 100%, 5% 100%, 0% 95%, 0% 5% {}
     );
   }
 
   .mesh-high .n64-dialog-content {
-    clip-path: polygon(
-      0% 0%, 90% 0%, 95% 3%, 100% 10%, 100% 90%, 
-      97% 95%, 90% 100%, 10% 100%, 5% 97%, 
-      0% 90%, 0% 10%, 3% 5%
+clip-path: polygon( {}
+0% 0%, 90% 0%, 95% 3%, 100% 10%, 100% 90%, {}
+97% 95%, 90% 100%, 10% 100%, 5% 97%, {}
+0% 90%, 0% 10%, 3% 5% {}
     );
   }
 
   .mesh-ultra .n64-dialog-content {
-    clip-path: polygon(
-      0% 0%, 85% 0%, 90% 2%, 95% 5%, 98% 10%, 100% 15%, 100% 85%, 
-      98% 90%, 95% 95%, 90% 98%, 85% 100%, 15% 100%, 10% 98%, 
-      5% 95%, 2% 90%, 0% 85%, 0% 15%, 2% 10%, 5% 5%, 10% 2%
+clip-path: polygon( {}
+0% 0%, 85% 0%, 90% 2%, 95% 5%, 98% 10%, 100% 15%, 100% 85%, {}
+98% 90%, 95% 95%, 90% 98%, 85% 100%, 15% 100%, 10% 98%, {}
+5% 95%, 2% 90%, 0% 85%, 0% 15%, 2% 10%, 5% 5%, 10% 2% {}
     );
   }
-
-  /* Visual enhancement layers */
+/* Visual enhancement layers */ {}
   .n64-dialog-overlay {
     position: absolute;
     top: 0;
@@ -734,10 +719,9 @@
     pointer-events: none;
     z-index: 1;
   }
-
-  .texture-filter-layer,
-  .aa-layer,
-  .internal-fog-layer,
+.texture-filter-layer, {}
+.aa-layer, {}
+.internal-fog-layer, {}
   .shadow-layer {
     position: absolute;
     top: 0;
@@ -745,117 +729,112 @@
     right: 0;
     bottom: 0;
   }
-
-  /* Texture filtering effects */
+/* Texture filtering effects */ {}
   .filter-nearest .texture-filter-layer {
-    background: 
-      repeating-linear-gradient(
-        0deg,
-        transparent 0px,
-        rgba(255, 255, 255, 0.02) 1px,
-        transparent 2px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent 0px,
-        rgba(255, 255, 255, 0.02) 1px,
-        transparent 2px
+background: {}
+repeating-linear-gradient( {}
+0deg, {}
+transparent 0px, {}
+rgba(255, 255, 255, 0.02) 1px, {}
+transparent 2px {}
+), {}
+repeating-linear-gradient( {}
+90deg, {}
+transparent 0px, {}
+rgba(255, 255, 255, 0.02) 1px, {}
+transparent 2px {}
       );
   }
 
   .filter-bilinear .texture-filter-layer {
-    background: 
-      radial-gradient(
-        circle at 25% 25%,
-        rgba(255, 255, 255, 0.03) 0%,
-        transparent 40%
-      ),
-      radial-gradient(
-        circle at 75% 75%,
-        rgba(255, 255, 255, 0.03) 0%,
-        transparent 40%
+background: {}
+radial-gradient( {}
+circle at 25% 25%, {}
+rgba(255, 255, 255, 0.03) 0%, {}
+transparent 40% {}
+), {}
+radial-gradient( {}
+circle at 75% 75%, {}
+rgba(255, 255, 255, 0.03) 0%, {}
+transparent 40% {}
       );
   }
 
   .filter-trilinear .texture-filter-layer {
-    background: 
-      conic-gradient(
-        from 0deg at 50% 50%,
-        rgba(255, 215, 0, 0.02),
-        rgba(0, 255, 65, 0.02),
-        rgba(255, 0, 65, 0.02),
-        rgba(0, 127, 255, 0.02),
-        rgba(255, 215, 0, 0.02)
+background: {}
+conic-gradient( {}
+from 0deg at 50% 50%, {}
+rgba(255, 215, 0, 0.02), {}
+rgba(0, 255, 65, 0.02), {}
+rgba(255, 0, 65, 0.02), {}
+rgba(0, 127, 255, 0.02), {}
+rgba(255, 215, 0, 0.02) {}
       );
   }
 
   .filter-anisotropic .texture-filter-layer {
-    background: 
-      linear-gradient(
-        calc(var(--fog-animation-time, 0) * 10deg + 45deg),
-        rgba(255, 215, 0, 0.03) 0%,
-        transparent 30%,
-        rgba(0, 255, 65, 0.03) 50%,
-        transparent 70%,
-        rgba(255, 0, 65, 0.03) 100%
+background: {}
+linear-gradient( {}
+calc(var(--fog-animation-time, 0) * 10deg + 45deg), {}
+rgba(255, 215, 0, 0.03) 0%, {}
+transparent 30%, {}
+rgba(0, 255, 65, 0.03) 50%, {}
+transparent 70%, {}
+rgba(255, 0, 65, 0.03) 100% {}
       );
   }
-
-  /* Anti-aliasing layers */
+/* Anti-aliasing layers */ {}
   .aa-fxaa .aa-layer {
-    background: 
-      linear-gradient(45deg, rgba(255, 255, 255, 0.008) 0%, transparent 50%),
+background: {}
+linear-gradient(45deg, rgba(255, 255, 255, 0.008) 0%, transparent 50%), {}
       linear-gradient(-45deg, rgba(255, 255, 255, 0.008) 0%, transparent 50%);
   }
 
   .aa-msaa .aa-layer {
-    background: 
-      radial-gradient(
-        circle at top left,
-        rgba(255, 255, 255, 0.01) 0%,
-        transparent 20%
-      ),
-      radial-gradient(
-        circle at top right,
-        rgba(255, 255, 255, 0.01) 0%,
-        transparent 20%
-      ),
-      radial-gradient(
-        circle at bottom left,
-        rgba(255, 255, 255, 0.01) 0%,
-        transparent 20%
-      ),
-      radial-gradient(
-        circle at bottom right,
-        rgba(255, 255, 255, 0.01) 0%,
-        transparent 20%
+background: {}
+radial-gradient( {}
+circle at top left, {}
+rgba(255, 255, 255, 0.01) 0%, {}
+transparent 20% {}
+), {}
+radial-gradient( {}
+circle at top right, {}
+rgba(255, 255, 255, 0.01) 0%, {}
+transparent 20% {}
+), {}
+radial-gradient( {}
+circle at bottom left, {}
+rgba(255, 255, 255, 0.01) 0%, {}
+transparent 20% {}
+), {}
+radial-gradient( {}
+circle at bottom right, {}
+rgba(255, 255, 255, 0.01) 0%, {}
+transparent 20% {}
       );
   }
-
-  /* Internal fog layer */
+/* Internal fog layer */ {}
   .internal-fog-layer {
-    background: linear-gradient(
-      180deg,
-      rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.1)) 0%,
-      transparent 30%,
-      transparent 70%,
-      rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.05)) 100%
+background: linear-gradient( {}
+180deg, {}
+rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.1)) 0%, {}
+transparent 30%, {}
+transparent 70%, {}
+rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.05)) 100% {}
     );
     animation: internal-fog-drift 10s ease-in-out infinite;
   }
-
-  /* Shadow layer */
+/* Shadow layer */ {}
   .shadow-layer {
-    background: radial-gradient(
-      ellipse at bottom center,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.1) 50%,
-      transparent 100%
+background: radial-gradient( {}
+ellipse at bottom center, {}
+rgba(0, 0, 0, 0.3) 0%, {}
+rgba(0, 0, 0, 0.1) 50%, {}
+transparent 100% {}
     );
     transform: translateY(2px);
   }
-
-  /* Dialog header */
+/* Dialog header */ {}
   .n64-dialog-header {
     position: relative;
     z-index: 11;
@@ -880,8 +859,7 @@
     margin: 0;
     line-height: 1.6;
   }
-
-  /* Dialog body */
+/* Dialog body */ {}
   .n64-dialog-body {
     position: relative;
     z-index: 11;
@@ -889,8 +867,7 @@
     line-height: 1.6;
     margin-bottom: 20px;
   }
-
-  /* Close button */
+/* Close button */ {}
   .n64-dialog-close {
     position: absolute;
     top: 12px;
@@ -912,8 +889,8 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     
     transform: perspective(100px) rotateX(2deg);
-    box-shadow: 
-      0 4px 8px rgba(0, 0, 0, 0.3),
+box-shadow: {}
+0 4px 8px rgba(0, 0, 0, 0.3), {}
       inset 0 1px 2px rgba(255, 255, 255, 0.1);
   }
 
@@ -926,8 +903,8 @@
 
   .n64-dialog-close:active {
     transform: perspective(100px) rotateX(3deg) translateY(1px);
-    box-shadow: 
-      0 2px 4px rgba(0, 0, 0, 0.4),
+box-shadow: {}
+0 2px 4px rgba(0, 0, 0, 0.4), {}
       inset 0 1px 2px rgba(255, 255, 255, 0.1);
   }
 
@@ -935,8 +912,7 @@
     outline: 2px solid #ffd700;
     outline-offset: 2px;
   }
-
-  /* Lighting model variations */
+/* Lighting model variations */ {}
   .lighting-flat .n64-dialog-content {
     background: #1a1a1a;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
@@ -947,20 +923,19 @@
   }
 
   .lighting-phong .n64-dialog-content {
-    background: 
-      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+background: {}
+radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), {}
       linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
   }
 
   .lighting-blinn-phong .n64-dialog-content {
-    background: 
-      radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
-      radial-gradient(ellipse at 75% 75%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
+background: {}
+radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, transparent 40%), {}
+radial-gradient(ellipse at 75% 75%, rgba(255, 255, 255, 0.08) 0%, transparent 60%), {}
       linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
   }
-
-  /* Quality optimizations */
-  .quality-low .texture-filter-layer,
+/* Quality optimizations */ {}
+.quality-low .texture-filter-layer, {}
   .quality-low .aa-layer {
     display: none;
   }
@@ -972,8 +947,7 @@
   .quality-ultra {
     filter: contrast(1.1) brightness(1.05);
   }
-
-  /* GPU acceleration classes */
+/* GPU acceleration classes */ {}
   .gpu-accelerated .n64-dialog-content {
     will-change: transform, box-shadow, border-color;
     transform: translateZ(0);
@@ -986,8 +960,7 @@
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
   }
-
-  /* Mobile optimizations */
+/* Mobile optimizations */ {}
   .mobile-optimized .n64-dialog-container {
     max-width: 95vw;
     max-height: 95vh;
@@ -1005,18 +978,16 @@
   .mobile-optimized .n64-dialog-body {
     font-size: 11px;
   }
-
-  /* Reduced motion */
-  .reduced-motion .n64-dialog,
-  .reduced-motion .fog-layer,
-  .reduced-motion .internal-fog-layer,
+/* Reduced motion */ {}
+.reduced-motion .n64-dialog, {}
+.reduced-motion .fog-layer, {}
+.reduced-motion .internal-fog-layer, {}
   .reduced-motion .n64-dialog-close {
     animation: none !important;
     transition: none !important;
     transform: none !important;
   }
-
-  /* Animations */
+/* Animations */ {}
   @keyframes fog-drift-1 {
     0% { transform: translateX(-10px) translateY(0px); }
     33% { transform: translateX(5px) translateY(-5px); }

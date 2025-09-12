@@ -1,10 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
+<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
 <script>
   const { theme = 'light' } = $props();
 
-</script>
+
   import { setContext } from 'svelte';
 
   // supported themes: "light" or "dark"
@@ -12,7 +12,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
   // expose theme to descendants via context
   // TODO: Convert to $derived: setContext('theme', theme)
-</script>
+
 
 <style>
   .theme-provider {

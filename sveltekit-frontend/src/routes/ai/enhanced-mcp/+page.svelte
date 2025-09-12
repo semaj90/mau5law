@@ -6,12 +6,12 @@ https://svelte.dev/e/js_parse_error -->
 	 * Enhanced MCP Integration Demo Page
 	 * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit
 	 */
-	
+
 	import { onMount } from 'svelte';
 	import EnhancedMCPIntegration from '$lib/components/ai/EnhancedMCPIntegration.svelte';
-	import { page } from '$app/state';
+	import { page } from '$app/stores';
 	import { writable } from 'svelte/store';
-	
+
 	// Page state
 	const integrationStatus = writable<{
 		mcpServerRunning: boolean;
@@ -26,84 +26,84 @@ https://svelte.dev/e/js_parse_error -->
 		ollamaModelsLoaded: false,
 		contextualAnalysisReady: false
 	});
-	
+
 	const systemLogs = writable<Array<{
 		timestamp: Date;
 		level: 'info' | 'success' | 'warning' | 'error';
 		message: string;
 		source: string;
 	}>>([]);
-	
+
 	let selectedCaseId = $state('demo-case-001');
 	let enableRealtimeUpdates = $state(true);
 	let showMetrics = $state(true);
 	let enableClusterMode = $state(true);
-	
+
 	onMount(async () => {
 		await checkSystemStatus();
 		startSystemMonitoring();
 		logMessage('info', 'Enhanced MCP Integration Demo loaded', 'system');
 	});
-	
+
 	async function checkSystemStatus() {
 		logMessage('info', 'Checking system status...', 'health-check');
-		
+
 		// Check MCP Server
 		try {
 			const mcpResponse = await fetch('http://localhost:40000/health');
 			if (mcpResponse.ok) {
-				integrationStatus.update(status => ({ ...status, mcpServerRunning: true });
+				integrationStatus.update(status => ({ ...status, mcpServerRunning: true }));
 				logMessage('success', 'Context7 MCP Server is online', 'mcp-server');
 			}
 		} catch (error) {
 			logMessage('error', 'Context7 MCP Server is offline', 'mcp-server');
 		}
-		
+
 		// Check cluster performance results
 		try {
 			const clusterResponse = await fetch('/cluster-performance-simple.json');
 			if (clusterResponse.ok) {
 				const data = await clusterResponse.json();
 				if (data.status === 'working') {
-					integrationStatus.update(status => ({ ...status, clusterSystemOnline: true });
+					integrationStatus.update(status => ({ ...status, clusterSystemOnline: true }));
 					logMessage('success', `Cluster system validated - ${data.results.successfulRequests} successful requests`, 'cluster');
 				}
 			}
 		} catch (error) {
 			logMessage('warning', 'Cluster performance data not available', 'cluster');
 		}
-		
+
 		// Check Ollama models
 		try {
 			const ollamaResponse = await fetch('http://localhost:11434/api/tags');
 			if (ollamaResponse.ok) {
 				const models = await ollamaResponse.json();
 				if (models.models && models.models.length > 0) {
-					integrationStatus.update(status => ({ ...status, ollamaModelsLoaded: true });
+					integrationStatus.update(status => ({ ...status, ollamaModelsLoaded: true }));
 					logMessage('success', `Ollama models loaded: ${models.models.length} models`, 'ollama');
 				}
 			}
 		} catch (error) {
 			logMessage('warning', 'Ollama service not available', 'ollama');
 		}
-		
+
 		// Check VS Code extension (simulated)
 		const hasVSCodeExtension = Math.random() > 0.3; // Simulate extension check
 		if (hasVSCodeExtension) {
-			integrationStatus.update(status => ({ ...status, vsCodeExtensionActive: true });
+			integrationStatus.update(status => ({ ...status, vsCodeExtensionActive: true }));
 			logMessage('success', 'VS Code Context7 MCP Assistant extension detected', 'vscode');
 		} else {
 			logMessage('info', 'VS Code extension not detected (running in browser)', 'vscode');
 		}
-		
+
 		// All systems check
 		const allSystemsReady = $integrationStatus.mcpServerRunning && $integrationStatus.clusterSystemOnline;
 		if (allSystemsReady) {
-			integrationStatus.update(status => ({ ...status, contextualAnalysisReady: true });
+			integrationStatus.update(status => ({ ...status, contextualAnalysisReady: true }));
 			logMessage('success', 'Enhanced MCP Integration fully operational!', 'system');
 		}
 	}
-	
+
 	function startSystemMonitoring() {
 		setInterval(async () => {
 			// Periodic health checks
@@ -120,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
 			}
 		}, 30000); // Every 30 seconds
 	}
-	
+
 	function logMessage(level: 'info' | 'success' | 'warning' | 'error', message: string, source: string) {
 		systemLogs.update(logs => [{
 			timestamp: new Date(),
@@ -129,10 +129,10 @@ https://svelte.dev/e/js_parse_error -->
 			source
 		}, ...logs.slice(0, 49)]); // Keep last 50 logs
 	}
-	
+
 	async function runSystemDiagnostics() {
 		logMessage('info', 'Running comprehensive system diagnostics...', 'diagnostics');
-		
+
 		const diagnostics = [
 			{
 				name: 'MCP Server Health',
@@ -193,10 +193,10 @@ let passedTests = $state(0);
 				logMessage('error', `❌ ${diagnostic.name} - ERROR: ${error.message}`, 'diagnostics');
 			}
 		}
-		
+
 		logMessage('info', `Diagnostics complete: ${passedTests}/${diagnostics.length} tests passed`, 'diagnostics');
 	}
-	
+
 	function clearLogs() {
 		systemLogs.set([]);
 		logMessage('info', 'System logs cleared', 'system');
@@ -212,7 +212,7 @@ let passedTests = $state(0);
 	<header class="demo-header">
 		<h1>🤖 Enhanced MCP Integration Demo</h1>
 		<p class="demo-subtitle">
-			Comprehensive integration of cluster system, MCP tools, Context7 documentation, 
+			Comprehensive integration of cluster system, MCP tools, Context7 documentation,
 			and multi-agent orchestration for legal AI workflows
 		</p>
 	</header>
@@ -229,7 +229,7 @@ let passedTests = $state(0);
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="status-card status-{$integrationStatus.clusterSystemOnline ? 'online' : 'offline'}">
 				<div class="status-icon">⚡</div>
 				<div class="status-info">
@@ -239,7 +239,7 @@ let passedTests = $state(0);
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="status-card status-{$integrationStatus.ollamaModelsLoaded ? 'online' : 'offline'}">
 				<div class="status-icon">🧠</div>
 				<div class="status-info">
@@ -249,7 +249,7 @@ let passedTests = $state(0);
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="status-card status-{$integrationStatus.vsCodeExtensionActive ? 'online' : 'offline'}">
 				<div class="status-icon">💻</div>
 				<div class="status-info">
@@ -259,7 +259,7 @@ let passedTests = $state(0);
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="status-card status-{$integrationStatus.contextualAnalysisReady ? 'online' : 'offline'}">
 				<div class="status-icon">🎯</div>
 				<div class="status-info">
@@ -283,21 +283,21 @@ let passedTests = $state(0);
 					<option value="complex-case-003">Complex Case 003</option>
 				</select>
 			</div>
-			
+
 			<div class="control-group">
 				<label>
 					<input type="checkbox" bind:checked={enableRealtimeUpdates} />
 					Enable Real-time Updates
 				</label>
 			</div>
-			
+
 			<div class="control-group">
 				<label>
 					<input type="checkbox" bind:checked={showMetrics} />
 					Show Performance Metrics
 				</label>
 			</div>
-			
+
 			<div class="control-group">
 				<label>
 					<input type="checkbox" bind:checked={enableClusterMode} />
@@ -305,7 +305,7 @@ let passedTests = $state(0);
 				</label>
 			</div>
 		</div>
-		
+
 		<div class="action-buttons">
 			<button onclick={runSystemDiagnostics} class="diagnostic-button">
 				🔬 Run System Diagnostics
@@ -335,7 +335,7 @@ let passedTests = $state(0);
 					<span class="log-message">{log.message}</span>
 				</div>
 			{/each}
-			
+
 			{#if $systemLogs.length === 0}
 				<div class="no-logs">No system logs available</div>
 			{/if}
@@ -352,7 +352,7 @@ let passedTests = $state(0);
 					Multi-worker cluster system with load balancing and performance monitoring
 				</div>
 			</div>
-			
+
 			<div class="feature-card">
 				<div class="feature-icon">🤖</div>
 				<div class="feature-title">Multi-Agent Orchestration</div>
@@ -360,7 +360,7 @@ let passedTests = $state(0);
 					Claude, CrewAI, and AutoGen agents with intelligent routing and coordination
 				</div>
 			</div>
-			
+
 			<div class="feature-card">
 				<div class="feature-icon">🧠</div>
 				<div class="feature-title">Enhanced RAG System</div>
@@ -368,7 +368,7 @@ let passedTests = $state(0);
 					Semantic search with Context7 integration and intelligent caching
 				</div>
 			</div>
-			
+
 			<div class="feature-card">
 				<div class="feature-icon">📚</div>
 				<div class="feature-title">Context7 Documentation</div>
@@ -376,7 +376,7 @@ let passedTests = $state(0);
 					Real-time access to library documentation and best practices
 				</div>
 			</div>
-			
+
 			<div class="feature-card">
 				<div class="feature-icon">🕸️</div>
 				<div class="feature-title">Memory Graph</div>
@@ -384,7 +384,7 @@ let passedTests = $state(0);
 					Knowledge graph with entity relations and contextual memory
 				</div>
 			</div>
-			
+
 			<div class="feature-card">
 				<div class="feature-icon">📡</div>
 				<div class="feature-title">Real-time WebSocket</div>

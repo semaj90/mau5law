@@ -241,9 +241,10 @@ https://svelte.dev/e/attribute_duplicate -->
     class="modal-backdrop"
     style:background-color="rgba(0, 0, 0, 0.8)"
     transition:fade={{ duration: 300 }}
-    role="button" tabindex="0"
-                onclick={handleClose}
-    role="presentation"
+    role="button" 
+    tabindex="0"
+    onclick={handleClose}
+    aria-label="Close modal"
   ></div>
 
   <!-- Modal Container -->
@@ -293,9 +294,8 @@ https://svelte.dev/e/attribute_duplicate -->
               class:selected={index === selectedIndex}
               style:border-color={index === selectedIndex ? currentTheme.colors.selected : 'transparent'}
               style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20` : 'transparent'}
-              role="button" tabindex="0"
+              role="button" 
                 onclick={() => { selectedIndex = index; rec.action?.(); handleClose(); }}
-              role="button"
               tabindex={index === selectedIndex ? 0 : -1}
               transition:scale={{ duration: 200, delay: index * 50 }}
             >

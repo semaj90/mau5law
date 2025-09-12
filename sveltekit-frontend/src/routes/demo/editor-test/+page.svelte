@@ -6,9 +6,8 @@ https://svelte.dev/e/expected_token -->
   Quick test to verify editor functionality
 -->
 <script lang="ts">
-</script>
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
-  
+
   let editorValue = $state('');
   let testCaseId = $state('TEST-CASE-001');
 
@@ -30,7 +29,7 @@ https://svelte.dev/e/expected_token -->
 
   <div class="editor-test-section">
     <h2>Editor Component</h2>
-    
+
     <NierRichTextEditor
       bind:value={editorValue}
       placeholder="Begin your investigation notes here..."
@@ -38,7 +37,7 @@ https://svelte.dev/e/expected_token -->
       readonly={false}
       autosave={true}
     />
-    
+
     {#if editorValue}
       <div class="output-preview">
         <h3>Editor Output:</h3>

@@ -97,18 +97,17 @@
 
 <style>
 	.gaming-panel {
-		position: relative
+position: relative {}
 		background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
 		border: 2px solid;
 		border-radius: 8px;
-		overflow: hidden
+overflow: hidden {}
 		font-family: 'Orbitron', 'Courier New', monospace;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 		backdrop-filter: blur(5px);
 		transition: all 0.3s ease;
 	}
-	
-	/* Panel Variants */
+/* Panel Variants */ {}
 	.gaming-panel.default {
 		border-color: #333;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -133,8 +132,7 @@
 		border-color: #ff4444;
 		box-shadow: 0 4px 20px rgba(255, 68, 68, 0.2);
 	}
-	
-	/* Glow Effect */
+/* Glow Effect */ {}
 	.gaming-panel.glow {
 		animation: panel-glow 3s ease-in-out infinite alternate;
 	}
@@ -154,17 +152,15 @@
 	.gaming-panel.glow.danger {
 		animation: panel-glow-danger 3s ease-in-out infinite alternate;
 	}
-	
-	/* Minimized State */
+/* Minimized State */ {}
 	.gaming-panel.minimized {
-		overflow: visible
+overflow: visible {}
 	}
-	
-	/* Panel Header */
+/* Panel Header */ {}
 	.panel-header {
-		display: flex
+display: flex {}
 		justify-content: space-between;
-		align-items: center
+align-items: center {}
 		padding: 12px 16px;
 		background: rgba(0, 0, 0, 0.4);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -175,16 +171,16 @@
 	}
 	
 	.panel-title {
-		display: flex
-		flex-direction: column
+display: flex {}
+flex-direction: column {}
 		gap: 2px;
 	}
 	
 	.title-text {
 		font-size: 14px;
-		font-weight: bold
+font-weight: bold {}
 		color: #fff;
-		text-transform: uppercase
+text-transform: uppercase {}
 		letter-spacing: 1px;
 	}
 	
@@ -193,17 +189,16 @@
 		color: #888;
 		letter-spacing: 0.5px;
 	}
-	
-	/* Header Controls */
+/* Header Controls */ {}
 	.header-controls {
-		display: flex
+display: flex {}
 		gap: 8px;
 	}
 	
 	.control-button {
-		display: flex
-		align-items: center
-		justify-content: center
+display: flex {}
+align-items: center {}
+justify-content: center {}
 		width: 24px;
 		height: 24px;
 		background: rgba(255, 255, 255, 0.1);
@@ -211,7 +206,7 @@
 		border-radius: 4px;
 		color: #fff;
 		font-size: 12px;
-		cursor: pointer
+cursor: pointer {}
 		transition: all 0.2s ease;
 	}
 	
@@ -232,17 +227,15 @@
 		border-color: #ff4444;
 		box-shadow: 0 0 8px rgba(255, 68, 68, 0.3);
 	}
-	
-	/* Panel Content */
+/* Panel Content */ {}
 	.panel-content {
 		padding: 16px;
-		position: relative
+position: relative {}
 		z-index: 1;
 	}
-	
-	/* Corner Decorations */
+/* Corner Decorations */ {}
 	.corner-decoration {
-		position: absolute
+position: absolute {}
 		width: 16px;
 		height: 16px;
 		border: 2px solid currentColor;
@@ -253,34 +246,33 @@
 	.corner-decoration.top-left {
 		top: 8px;
 		left: 8px;
-		border-bottom: none
-		border-right: none
+border-bottom: none {}
+border-right: none {}
 	}
 	
 	.corner-decoration.top-right {
 		top: 8px;
 		right: 8px;
-		border-bottom: none
-		border-left: none
+border-bottom: none {}
+border-left: none {}
 	}
 	
 	.corner-decoration.bottom-left {
 		bottom: 8px;
 		left: 8px;
-		border-top: none
-		border-right: none
+border-top: none {}
+border-right: none {}
 	}
 	
 	.corner-decoration.bottom-right {
 		bottom: 8px;
 		right: 8px;
-		border-top: none
-		border-left: none
+border-top: none {}
+border-left: none {}
 	}
-	
-	/* Scan Effects */
+/* Scan Effects */ {}
 	.scan-line-horizontal {
-		position: absolute
+position: absolute {}
 		top: 0;
 		left: 0;
 		right: 0;
@@ -292,7 +284,7 @@
 	}
 	
 	.scan-line-vertical {
-		position: absolute
+position: absolute {}
 		top: 0;
 		bottom: 0;
 		left: 0;
@@ -302,8 +294,7 @@
 		animation: scan-vertical 3s ease-in-out infinite reverse;
 		z-index: 0;
 	}
-	
-	/* Animations */
+/* Animations */ {}
 	@keyframes panel-glow {
 		0% {
 			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -370,8 +361,7 @@
 			opacity: 0.4;
 		}
 	}
-	
-	/* Responsive Design */
+/* Responsive Design */ {}
 	@media (max-width: 768px) {
 		.panel-header {
 			padding: 10px 12px;

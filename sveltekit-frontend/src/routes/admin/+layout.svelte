@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
   let currentPath = $state('');
 
   function isActivePath(itemPath: string) {
-    return currentPath === itemPath || (itemPath !== '/admin' && currentPath.startsWith(itemPath + '/');
+    return currentPath === itemPath || (itemPath !== '/admin' && currentPath.startsWith(itemPath + '/'));
   }
 
   function navClass(item: { path: string; label: string; icon: string; permission: Permission }) {
@@ -241,8 +241,7 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 {/if}
 
-<style>
-  /* YoRHa Terminal Effects */
+<style>/* YoRHa Terminal Effects */
   @keyframes glitch {
     0% { transform: translateX(0); }
     20% { transform: translateX(-2px); }
@@ -255,8 +254,7 @@ https://svelte.dev/e/js_parse_error -->
   .glitch {
     animation: glitch 0.3s ease-in-out infinite;
   }
-
-  /* Custom scrollbar for YoRHa theme */
+/* Custom scrollbar for YoRHa theme */
   :global(::-webkit-scrollbar) {
     width: 8px;
   }
@@ -273,8 +271,7 @@ https://svelte.dev/e/js_parse_error -->
   :global(::-webkit-scrollbar-thumb:hover) {
     background: #555555;
   }
-
-  /* Terminal cursor effect */
+/* Terminal cursor effect */
   @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }

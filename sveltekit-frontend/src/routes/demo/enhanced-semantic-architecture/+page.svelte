@@ -5,9 +5,9 @@ https://svelte.dev/e/js_parse_error -->
   	import { onMount } from 'svelte';
   	import EnhancedSemanticIntegration from '$lib/components/demo/EnhancedSemanticIntegration.svelte';
   let pageTitle = $state('🧠 Enhanced Semantic Architecture - Complete Integration Demo');
-  let integrationComponent = $state<any;
-  	// Demo state
-  	let lastTodosUpdate: any >(null);
+  let integrationComponent: any;
+	// Demo state
+	let lastTodosUpdate = $state<any>(null);
   let lastTextAnalysis = $state<any >(null);
   let lastPageRankUpdate = $state<any >(null);
   let lastSOMUpdate = $state<any >(null);
@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
   	function handleSOMUpdated(event: CustomEvent) {
   		lastSOMUpdate = {
   			grid_size: '20x20',
-  			active_cluster: event.detail.find((row: any) => 
+  			active_cluster: event.detail.find((row: any) =>
   				row.find((cell: any) => cell.active)
   			),
   			timestamp: new Date().toLocaleTimeString()
@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <!-- Main Demo Page -->
 <div class="demo-page bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 min-h-screen">
-	
+
 	<!-- Hero Section -->
 	<section class="hero py-16 px-6 text-center">
 		<div class="max-w-6xl mx-auto">
@@ -81,11 +81,11 @@ https://svelte.dev/e/js_parse_error -->
 				🧠 Enhanced Semantic Architecture
 			</h1>
 			<p class="text-xl text-slate-300 mb-8 max-w-4xl mx-auto">
-				Complete integration of next-generation technologies: PostgreSQL pgvector, SOM clustering, 
-				PageRank algorithms, WebGPU acceleration, deep learning Go modules, Redis caching, 
+				Complete integration of next-generation technologies: PostgreSQL pgvector, SOM clustering,
+				PageRank algorithms, WebGPU acceleration, deep learning Go modules, Redis caching,
 				Neo4j context graphs, and MinIO object storage.
 			</p>
-			
+
 			<!-- Technology Showcase -->
 			<div class="technology-showcase grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-12">
 				{#each [
@@ -104,7 +104,7 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 				{/each}
 			</div>
-			
+
 			<!-- Quick Stats -->
 			<div class="quick-stats grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 				{#if lastTodosUpdate}
@@ -114,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
 						<div class="text-xs text-slate-500">Updated: {lastTodosUpdate.timestamp}</div>
 					</div>
 				{/if}
-				
+
 				{#if lastTextAnalysis}
 					<div class="stat-card bg-slate-800/30 backdrop-blur-sm border border-blue-500/30 rounded-lg p-4">
 						<div class="text-2xl font-bold text-blue-400">SOM</div>
@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
 						<div class="text-xs text-slate-500">Analyzed: {lastTextAnalysis.timestamp}</div>
 					</div>
 				{/if}
-				
+
 				{#if lastPageRankUpdate}
 					<div class="stat-card bg-slate-800/30 backdrop-blur-sm border border-purple-500/30 rounded-lg p-4">
 						<div class="text-2xl font-bold text-purple-400">{lastPageRankUpdate.nodes}</div>
@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
 						<div class="text-xs text-slate-500">Updated: {lastPageRankUpdate.timestamp}</div>
 					</div>
 				{/if}
-				
+
 				{#if lastSOMUpdate}
 					<div class="stat-card bg-slate-800/30 backdrop-blur-sm border border-yellow-500/30 rounded-lg p-4">
 						<div class="text-2xl font-bold text-yellow-400">20×20</div>
@@ -141,11 +141,11 @@ https://svelte.dev/e/js_parse_error -->
 			</div>
 		</div>
 	</section>
-	
+
 	<!-- Main Integration Component -->
 	<section class="main-demo px-6 pb-16">
 		<div class="max-w-7xl mx-auto">
-			<EnhancedSemanticIntegration 
+			<EnhancedSemanticIntegration
 				bind:this={integrationComponent}
 				todos-updated={handleTodosUpdated}
 				text-analyzed={handleTextAnalyzed}
@@ -154,14 +154,14 @@ https://svelte.dev/e/js_parse_error -->
 			/>
 		</div>
 	</section>
-	
+
 	<!-- Technical Architecture Overview -->
 	<section class="architecture-overview bg-slate-800/30 backdrop-blur-sm py-16 px-6 mt-16">
 		<div class="max-w-6xl mx-auto">
 			<h2 class="text-4xl font-bold text-center mb-12 text-white">
 				🏗️ Technical Architecture
 			</h2>
-			
+
 			<div class="architecture-grid grid grid-cols-1 lg:grid-cols-2 gap-8">
 				<!-- Backend Services -->
 				<div class="service-layer bg-slate-900/50 border border-slate-700 rounded-lg p-6">
@@ -190,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
 						{/each}
 					</div>
 				</div>
-				
+
 				<!-- AI/ML Components -->
 				<div class="ai-ml-layer bg-slate-900/50 border border-slate-700 rounded-lg p-6">
 					<h3 class="text-2xl font-semibold mb-6 text-purple-400">AI/ML Components</h3>
@@ -216,7 +216,7 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 				</div>
 			</div>
-			
+
 			<!-- Data Flow -->
 			<div class="data-flow mt-12 bg-slate-900/50 border border-slate-700 rounded-lg p-6">
 				<h3 class="text-2xl font-semibent mb-6 text-green-400">🔄 Data Flow & Processing Pipeline</h3>
@@ -243,14 +243,14 @@ https://svelte.dev/e/js_parse_error -->
 			</div>
 		</div>
 	</section>
-	
+
 	<!-- Performance Metrics -->
 	<section class="performance-metrics py-16 px-6">
 		<div class="max-w-6xl mx-auto">
 			<h2 class="text-4xl font-bold text-center mb-12 text-white">
 				⚡ Performance & Capabilities
 			</h2>
-			
+
 			<div class="metrics-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 				{#each [
 					{ metric: '<1ms', label: 'Response Time', desc: 'WebGPU optimized', icon: '⏱️', color: 'green' },
@@ -268,7 +268,7 @@ https://svelte.dev/e/js_parse_error -->
 			</div>
 		</div>
 	</section>
-	
+
 	<!-- Footer -->
 	<footer class="footer bg-slate-900/50 backdrop-blur-sm border-t border-slate-700 py-8 px-6">
 		<div class="max-w-6xl mx-auto text-center">
@@ -296,56 +296,56 @@ https://svelte.dev/e/js_parse_error -->
 		font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 		min-height: 100vh;
 	}
-	
+
 	.tech-badge:hover {
 		transform: scale(1.05) translateY(-2px);
 		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 	}
-	
+
 	.stat-card {
 		transition: all 0.3s ease;
 	}
-	
+
 	.stat-card:hover {
 		transform: translateY(-5px);
 		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 	}
-	
+
 	.service-item {
 		transition: all 0.2s ease;
 	}
-	
+
 	.service-item:hover {
 		transform: translateX(5px);
 		background-color: rgba(51, 65, 85, 0.7);
 	}
-	
+
 	.component-item {
 		transition: all 0.2s ease;
 	}
-	
+
 	.component-item:hover {
 		transform: translateX(3px);
 		background-color: rgba(51, 65, 85, 0.7);
 	}
-	
+
 	.metric-card {
 		transition: all 0.3s ease;
 	}
-	
+
 	.metric-card:hover {
 		transform: scale(1.05) translateY(-5px);
 		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
 	}
-	
+
 	.flow-arrow {
 		transition: transform 0.2s ease;
 	}
-	
+
 	.flow-step:hover .flow-arrow {
 		transform: translateX(3px);
 	}
-	
+
 	@media (max-width: 768px) {
 		.flow-arrow {
 			display: none;

@@ -397,14 +397,14 @@ https://svelte.dev/e/attribute_duplicate -->
     bind:this={backdropElement}
     class="n64-dialog-backdrop"
     class:backdrop-blur={enableBackdropBlur}
-    role="button" tabindex="0"
-                onclick={handleBackdropClick}
+    role="button" 
+    tabindex="0"
+    onclick={handleBackdropClick}
     style="
       --atmosphere-intensity: {atmosphereIntensity};
       --fog-color: {effectiveRenderOptions.fogColor};
     "
-    role="presentation"
-    aria-hidden="true"
+    aria-label="Close dialog"
   >
     {#if enableAtmosphere}
       <div class="atmosphere-layer"></div>
@@ -494,8 +494,7 @@ https://svelte.dev/e/attribute_duplicate -->
   </div>
 {/if}
 
-<style>
-  /* Backdrop styling */
+<style>/* Backdrop styling */ {}
   .n64-dialog-backdrop {
     position: fixed;
     top: 0;
@@ -508,8 +507,7 @@ https://svelte.dev/e/attribute_duplicate -->
     justify-content: center;
     z-index: 1000;
     padding: 20px;
-    
-    /* 3D perspective for dialog */
+/* 3D perspective for dialog */ {}
     perspective: var(--perspective);
     perspective-origin: center center;
   }
@@ -525,9 +523,9 @@ https://svelte.dev/e/attribute_duplicate -->
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
-      radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, transparent 50%),
-      radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%),
+background: {}
+radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, transparent 50%), {}
+radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%), {}
       radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
     opacity: var(--atmosphere-intensity);
     pointer-events: none;
@@ -552,8 +550,7 @@ https://svelte.dev/e/attribute_duplicate -->
       opacity: calc(var(--atmosphere-intensity) * 1.1);
     }
   }
-
-  /* Dialog styling */
+/* Dialog styling */ {}
   .n64-dialog {
     font-family: 'Rajdhani', 'Arial', sans-serif;
     background: var(--material-bg);
@@ -567,25 +564,20 @@ https://svelte.dev/e/attribute_duplicate -->
     flex-direction: column;
     overflow: hidden;
     position: relative;
-
-    /* 3D transformations */
+/* 3D transformations */ {}
     transform-style: preserve-3d;
-
-    /* Enhanced rendering */
+/* Enhanced rendering */ {}
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-
-    /* Advanced shadows and lighting */
+/* Advanced shadows and lighting */ {}
     box-shadow: var(--material-shadow);
-
-    /* Remove default styles */
+/* Remove default styles */ {}
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     outline: none;
-
-    /* Text styling */
+/* Text styling */ {}
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   }
 
@@ -596,8 +588,7 @@ https://svelte.dev/e/attribute_duplicate -->
     height: 100vh;
     border-radius: 0;
   }
-
-  /* Entrance animations */
+/* Entrance animations */ {}
   .n64-dialog.entrance-zoom {
     animation: dialogZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
@@ -679,8 +670,7 @@ https://svelte.dev/e/attribute_duplicate -->
       filter: blur(0px);
     }
   }
-
-  /* Dialog sections */
+/* Dialog sections */ {}
   .dialog-header {
     padding: 24px 28px 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -749,8 +739,7 @@ https://svelte.dev/e/attribute_duplicate -->
     gap: 12px;
     justify-content: flex-end;
   }
-
-  /* Loading overlay */
+/* Loading overlay */ {}
   .loading-overlay {
     position: absolute;
     top: 0;
@@ -805,46 +794,43 @@ https://svelte.dev/e/attribute_duplicate -->
     0%, 100% { opacity: 1; }
     50% { opacity: 0.6; }
   }
-
-  /* Lighting overlay */
+/* Lighting overlay */ {}
   .lighting-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.2) 0%,
-      rgba(255, 255, 255, 0.05) 30%,
-      transparent 60%,
-      rgba(0, 0, 0, 0.3) 100%
+background: linear-gradient( {}
+135deg, {}
+rgba(255, 255, 255, 0.2) 0%, {}
+rgba(255, 255, 255, 0.05) 30%, {}
+transparent 60%, {}
+rgba(0, 0, 0, 0.3) 100% {}
     );
     pointer-events: none;
     z-index: 1;
     border-radius: 8px;
   }
-
-  /* Reflection overlay */
+/* Reflection overlay */ {}
   .reflection-overlay {
     position: absolute;
     top: 15%;
     left: 20%;
     right: 60%;
     bottom: 60%;
-    background: linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.4) 0%,
-      rgba(255, 255, 255, 0.1) 50%,
-      transparent 100%
+background: linear-gradient( {}
+45deg, {}
+rgba(255, 255, 255, 0.4) 0%, {}
+rgba(255, 255, 255, 0.1) 50%, {}
+transparent 100% {}
     );
     border-radius: 6px;
     pointer-events: none;
     z-index: 3;
     opacity: 0.8;
   }
-
-  /* Particle overlay */
+/* Particle overlay */ {}
   .particle-overlay {
     position: absolute;
     top: 0;
@@ -856,8 +842,7 @@ https://svelte.dev/e/attribute_duplicate -->
     overflow: hidden;
     border-radius: 8px;
   }
-
-  .particle-overlay::before,
+.particle-overlay::before, {}
   .particle-overlay::after {
     content: '';
     position: absolute;
@@ -894,22 +879,20 @@ https://svelte.dev/e/attribute_duplicate -->
       opacity: 0.4;
     }
   }
-
-  /* Material type variations */
+/* Material type variations */ {}
   .n64-dialog.pbr {
     background-blend-mode: overlay, normal;
   }
-
-  /* Mesh complexity variations */
+/* Mesh complexity variations */ {}
   .n64-dialog.mesh-ultra {
     border-radius: 12px;
   }
 
   .n64-dialog.mesh-ultra .lighting-overlay {
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 40%),
-      linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%),
-      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25) 0%, transparent 50%),
+background: {}
+linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 40%), {}
+linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), {}
+radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), {}
       radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%);
   }
 
@@ -917,14 +900,13 @@ https://svelte.dev/e/attribute_duplicate -->
     border-radius: 4px;
     transform-style: flat;
   }
-
-  /* Enhanced texture filtering */
+/* Enhanced texture filtering */ {}
   .n64-dialog.texture-ultra {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    filter:
-      contrast(1.03)
-      brightness(1.02)
+filter: {}
+contrast(1.03) {}
+brightness(1.02) {}
       saturate(1.08);
   }
 
@@ -939,8 +921,7 @@ https://svelte.dev/e/attribute_duplicate -->
   .n64-dialog.anisotropic-16x {
     filter: contrast(1.1) brightness(1.03);
   }
-
-  /* Fog effects */
+/* Fog effects */ {}
   .n64-dialog::before {
     content: '';
     position: absolute;
@@ -948,18 +929,17 @@ https://svelte.dev/e/attribute_duplicate -->
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      ellipse at center,
-      transparent 0%,
-      var(--fog-color, #404040) 100%
+background: radial-gradient( {}
+ellipse at center, {}
+transparent 0%, {}
+var(--fog-color, #404040) 100% {}
     );
     opacity: 0.1;
     pointer-events: none;
     z-index: 0;
     border-radius: 8px;
   }
-
-  /* Mobile optimizations */
+/* Mobile optimizations */ {}
   @media (max-width: 480px) {
     .n64-dialog-backdrop {
       padding: 10px;
@@ -983,10 +963,9 @@ https://svelte.dev/e/attribute_duplicate -->
     .dialog-footer {
       padding: 12px 20px 20px;
     }
-
-    .lighting-overlay,
-    .reflection-overlay,
-    .particle-overlay,
+.lighting-overlay, {}
+.reflection-overlay, {}
+.particle-overlay, {}
     .atmosphere-layer {
       display: none;
     }
@@ -995,8 +974,7 @@ https://svelte.dev/e/attribute_duplicate -->
       display: none;
     }
   }
-
-  /* Reduced motion support */
+/* Reduced motion support */ {}
   @media (prefers-reduced-motion: reduce) {
     .n64-dialog {
       animation: none !important;
@@ -1010,8 +988,7 @@ https://svelte.dev/e/attribute_duplicate -->
     .atmosphere-layer {
       animation: none;
     }
-
-    .particle-overlay::before,
+.particle-overlay::before, {}
     .particle-overlay::after {
       animation: none;
     }
@@ -1026,8 +1003,7 @@ https://svelte.dev/e/attribute_duplicate -->
       animation: none;
     }
   }
-
-  /* High contrast mode */
+/* High contrast mode */ {}
   @media (prefers-contrast: high) {
     .n64-dialog {
       border: 3px solid currentColor;
@@ -1037,16 +1013,14 @@ https://svelte.dev/e/attribute_duplicate -->
     .n64-dialog-backdrop {
       background: rgba(0, 0, 0, 0.95);
     }
-
-    .lighting-overlay,
-    .reflection-overlay,
-    .particle-overlay,
+.lighting-overlay, {}
+.reflection-overlay, {}
+.particle-overlay, {}
     .atmosphere-layer {
       display: none;
     }
   }
-
-  /* Performance optimization for low-end devices */
+/* Performance optimization for low-end devices */ {}
   @media (max-device-memory: 2GB) {
     .n64-dialog {
       transform: none;
@@ -1057,11 +1031,10 @@ https://svelte.dev/e/attribute_duplicate -->
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
-
-    .lighting-overlay,
-    .reflection-overlay,
-    .particle-overlay,
-    .atmosphere-layer,
+.lighting-overlay, {}
+.reflection-overlay, {}
+.particle-overlay, {}
+.atmosphere-layer, {}
     .n64-dialog::before {
       display: none;
     }

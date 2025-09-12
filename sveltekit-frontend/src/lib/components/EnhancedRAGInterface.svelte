@@ -267,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex flex-wrap gap-2">
             {#each intelligentSuggestions as suggestion}
               <Button 
-                class="bits-btn h-8 px-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border border-yellow-200"
+                class="h-8 px-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border border-yellow-200"
                 variant="ghost"
                 size="sm"
                 onclick={() => selectSuggestion(suggestion)}
@@ -304,7 +304,8 @@ https://svelte.dev/e/js_parse_error -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Optimization Level -->
             <div>
-              <label class="block text-sm font-medium mb-2" for="optimization-level">Optimization Level</label><select id="optimization-level" bind:value={optimizationLevel} class="w-full p-2 border rounded">
+              <label class="block text-sm font-medium mb-2" for="optimization-level">Optimization Level</label>
+              <select id="optimization-level" bind:value={optimizationLevel} class="w-full p-2 border rounded">
                 <option value="basic">Basic</option>
                 <option value="enhanced">Enhanced</option>
                 <option value="neural">Neural</option>
@@ -313,7 +314,8 @@ https://svelte.dev/e/js_parse_error -->
 
             <!-- Visualization Mode -->
             <div>
-              <label class="block text-sm font-medium mb-2" for="view-mode">View Mode</label><select id="view-mode" bind:value={visualizationMode} class="w-full p-2 border rounded">
+              <label class="block text-sm font-medium mb-2" for="view-mode">View Mode</label>
+              <select id="view-mode" bind:value={visualizationMode} class="w-full p-2 border rounded">
                 <option value="list">List View</option>
                 <option value="clusters">Cluster View</option>
                 <option value="neural">Neural View</option>

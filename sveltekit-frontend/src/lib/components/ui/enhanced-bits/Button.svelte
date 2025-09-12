@@ -23,6 +23,20 @@
     /** Priority for evidence-related actions */
     priority?: 'critical' | 'high' | 'medium' | 'low';
     class?: string;
+    
+    // Accessibility props
+    /** ARIA label for screen readers (especially important for icon-only buttons) */
+    'aria-label'?: string;
+    /** ID of element that describes this button */
+    'aria-describedby'?: string;
+    /** Whether button controls expanded state (for dropdowns, etc.) */
+    'aria-expanded'?: boolean;
+    /** ID of element controlled by this button */
+    'aria-controls'?: string;
+    /** Screen reader only text for additional context */
+    srOnlyText?: string;
+    /** Custom loading announcement text */
+    loadingText?: string;
   }
 
   let {
@@ -35,8 +49,19 @@
     priority,
     class: classNameVar = '',
     children,
+    srOnlyText,
+    loadingText,
     ...restProps
   }: ButtonProps = $props();
+
+  // Extract accessibility props for explicit handling
+  const ariaLabel = $$props['aria-label'];
+  const ariaDescribedby = $$props['aria-describedby'];
+  const ariaExpanded = $$props['aria-expanded'];
+  const ariaControls = $$props['aria-controls'];
+
+  // Generate unique ID for loading announcement
+  const loadingAnnouncementId = `loading-${Math.random().toString(36).substr(2, 9)}`;
 
   // Reactive class computation using $derived
   let buttonClasses = $derived(cn(
@@ -77,17 +102,32 @@
 <BitsButton.Root
   class={buttonClasses}
   disabled={loading}
+  aria-label={ariaLabel}
+  aria-describedby={ariaDescribedby ? `${ariaDescribedby} ${loading ? loadingAnnouncementId : ''}`.trim() : (loading ? loadingAnnouncementId : undefined)}
+  aria-expanded={ariaExpanded}
+  aria-controls={ariaControls}
+  aria-busy={loading}
   {...restProps}
 >
   {#if loading}
-    <div class="ai-status-indicator ai-status-processing w-4 h-4 mr-2"></div>
+    <div class="ai-status-indicator ai-status-processing w-4 h-4 mr-2" aria-hidden="true"></div>
   {/if}
   {@render children?.()}
+  
+  {#if srOnlyText}
+    <span class="sr-only">{srOnlyText}</span>
+  {/if}
 </BitsButton.Root>
 
-<style>
-  /* @unocss-include */
-  /* Enhanced button animations for legal AI context */
+<!-- Screen reader loading announcement -->
+{#if loading}
+  <div id={loadingAnnouncementId} class="sr-only" aria-live="polite">
+    {loadingText || 'Loading, please wait...'}
+  </div>
+{/if}
+
+<style>/* @unocss-include */ {}
+/* Enhanced button animations for legal AI context */ {}
   :global(.bits-btn) {
     position: relative;
     overflow: hidden;
@@ -100,11 +140,11 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent
+background: linear-gradient( {}
+90deg, {}
+transparent, {}
+rgba(255, 255, 255, 0.2), {}
+transparent {}
     );
     transition: left 0.5s ease;
   }
@@ -112,15 +152,13 @@
   :global(.bits-btn:hover::before) {
     left: 100%;
   }
-
-  /* Legal AI specific styling */
+/* Legal AI specific styling */ {}
   :global(.nier-bits-button) {
     font-family: var(--font-gothic);
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
-
-  /* Confidence indicators */
+/* Confidence indicators */ {}
   :global(.ai-confidence-90) {
     box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
   }
@@ -131,5 +169,18 @@
 
   :global(.ai-confidence-40) {
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+  }
+
+/* Screen reader only utility for accessibility */
+  :global(.sr-only) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

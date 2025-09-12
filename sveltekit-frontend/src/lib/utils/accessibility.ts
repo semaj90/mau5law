@@ -113,6 +113,47 @@ export class FocusManager {
       document.body.removeChild(announcement);
     }, 1000);
   }
+
+  // Loading state announcement utilities
+  static announceLoadingState(
+    isLoading: boolean,
+    loadingText: string = "Loading, please wait...",
+    completedText: string = "Loading complete"
+  ) {
+    if (isLoading) {
+      this.announceToScreenReader(loadingText, "polite");
+    } else {
+      this.announceToScreenReader(completedText, "polite");
+    }
+  }
+
+  static announceFileUpload(stage: 'starting' | 'progress' | 'complete' | 'error', context?: string) {
+    const messages = {
+      starting: `File upload starting${context ? ` for ${context}` : ''}`,
+      progress: `File upload in progress${context ? ` for ${context}` : ''}`,
+      complete: `File upload completed successfully${context ? ` for ${context}` : ''}`,
+      error: `File upload failed${context ? ` for ${context}` : ''}`
+    };
+    
+    const priority = stage === 'error' ? 'assertive' : 'polite';
+    this.announceToScreenReader(messages[stage], priority);
+  }
+
+  static announceProcessingState(
+    stage: 'analyzing' | 'processing' | 'generating' | 'complete' | 'error',
+    context?: string
+  ) {
+    const messages = {
+      analyzing: `Analyzing${context ? ` ${context}` : ''}, please wait...`,
+      processing: `Processing${context ? ` ${context}` : ''}, please wait...`,
+      generating: `Generating${context ? ` ${context}` : ''}, please wait...`,
+      complete: `Processing completed${context ? ` for ${context}` : ''}`,
+      error: `Processing failed${context ? ` for ${context}` : ''}`
+    };
+    
+    const priority = stage === 'error' ? 'assertive' : 'polite';
+    this.announceToScreenReader(messages[stage], priority);
+  }
 }
 // Keyboard navigation utilities
 export class KeyboardNavigation {

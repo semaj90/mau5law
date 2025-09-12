@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: 'return' outside of function -->
 <!--
   Evidence Board with Detective Mode
-  
+
   Advanced evidence management system featuring:
   - Interactive evidence visualization
   - Detective mode with pattern analysis
@@ -17,9 +17,9 @@ https://svelte.dev/e/js_parse_error -->
   import { writable } from 'svelte/store';
   import { caseManagementService } from '$lib/services/case-management-service.js';
   import { apiFetch } from '$lib/api/clients/api-client.js';
-  import { 
-    Eye, EyeOff, Search, Filter, Plus, Link, Clock, 
-    AlertTriangle, CheckCircle, FileText, Image, 
+  import {
+    Eye, EyeOff, Search, Filter, Plus, Link, Clock,
+    AlertTriangle, CheckCircle, FileText, Image,
     Video, Music, Archive, Settings, Zap, Target,
     Network, Brain, Lightbulb, BookOpen
   } from 'lucide-svelte';
@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
     confidenceThreshold: 7,
   };
 
-  let canvas: HTMLCanvasElement;
+  let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null;
   let networkLayout: any = {};
 
@@ -154,15 +154,18 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  // Filter evidence based on search and type
-  // TODO: Convert to $derived: filteredEvidence = $evidenceItems.filter(evidence => {
-    const matchesSearch = !searchQuery || 
-      evidence.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      evidence.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      evidence.evidenceNumber.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesType = filterType === 'all' || evidence.evidenceType === filterType;
-    return matchesSearch && matchesType;
-  });
+  // Derived evidence list filtered by search and type
+    let filteredEvidence: any[] = [];
+    let filteredEvidence = $derived($evidenceItems.filter((evidence: any) => {
+      const query = searchQuery?.toLowerCase?.() || '');
+      const matchesSearch =
+        !query ||
+        evidence.title?.toLowerCase().includes(query) ||
+        evidence.description?.toLowerCase().includes(query) ||
+        evidence.evidenceNumber?.toLowerCase().includes(query);
+      const matchesType = filterType === 'all' || evidence.evidenceType === filterType;
+      return matchesSearch && matchesType;
+    });
 
   // Toggle detective mode
   async function toggleDetectiveMode() {
@@ -179,13 +182,9 @@ https://svelte.dev/e/js_parse_error -->
     loadingAnalysis = true;
     try {
       for (const evidenceId of $selectedEvidence) {
-        await caseManagementService.analyzeEvidence({
-          evidenceId,
-          analysisTypes: ['ocr', 'entity_extraction', 'pattern_detection', 'forensic'],
-          detectiveMode: detectiveMode,
-        });
+        // API expects a string id; extend if options are supported
+        await caseManagementService.analyzeEvidence(evidenceId);
       }
-      // Reload evidence and insights
       await loadEvidence();
       if (detectiveMode) {
         await loadDetectiveInsights();
@@ -199,9 +198,9 @@ https://svelte.dev/e/js_parse_error -->
 
   // Handle evidence selection
   function toggleEvidenceSelection(evidenceId: string) {
-    selectedEvidence.update(selected => {
+    selectedEvidence.update((selected: string[]) => {
       if (selected.includes(evidenceId)) {
-        return selected.filter(id => id !== evidenceId);
+        return selected.filter((id: string) => id !== evidenceId);
       } else {
         return [...selected, evidenceId];
       }
@@ -227,10 +226,8 @@ https://svelte.dev/e/js_parse_error -->
   // Create connection between evidence items
   async function createEvidenceConnection(sourceId: string, targetId: string) {
     try {
-      // This would update the database to create a connection
       console.log(`Creating connection: ${sourceId} -> ${targetId}`);
-      // Update UI to show new connection
-      connectionMap.update(connections => [
+      connectionMap.update((connections: any[]) => [
         ...connections,
         {
           type: 'manual',
@@ -310,10 +307,11 @@ https://svelte.dev/e/js_parse_error -->
     ctx.textAlign = 'center';
     ctx.fillText(evidence.evidenceType.charAt(0).toUpperCase(), x, y + 4);
   }
-
   // Reactive updates for network view
-  // TODO: Convert to $derived: if (viewMode === 'network' && canvas) {
-    setTimeout(() => renderNetworkView(), 100)
+  // Reactive: re-render when network view is active and canvas is ready
+  $effect(() => { if (viewMode === 'network' && canvas) {
+    // slight delay to ensure canvas size is bound
+    setTimeout(() => renderNetworkView(), 0); });
   }
 </script>
 
@@ -328,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
           <span class="detective-badge">🕵️ DETECTIVE MODE</span>
         {/if}
       </h2>
-      
+
       <div class="evidence-stats">
         <span class="stat">
           {$evidenceItems.length} Evidence Items
@@ -347,7 +345,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="header-controls">
       <!-- View Mode Toggle -->
       <div class="view-toggle">
-        <button 
+        <button
           class="view-btn"
           class:active={viewMode === 'grid'}
           onclick={() => viewMode = 'grid'}
@@ -355,7 +353,7 @@ https://svelte.dev/e/js_parse_error -->
         >
           <Archive class="w-4 h-4" />
         </button>
-        <button 
+        <button
           class="view-btn"
           class:active={viewMode === 'timeline'}
           onclick={() => viewMode = 'timeline'}
@@ -363,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
         >
           <Clock class="w-4 h-4" />
         </button>
-        <button 
+        <button
           class="view-btn"
           class:active={viewMode === 'network'}
           onclick={() => viewMode = 'network'}
@@ -374,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <!-- Detective Mode Toggle -->
-      <button 
+      <button
         class="detective-toggle"
         class:active={detectiveMode}
         onclick={toggleDetectiveMode}
@@ -391,7 +389,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Analysis Controls -->
       {#if $selectedEvidence.length > 0}
-        <button 
+        <button
           class="analyze-btn"
           onclick={analyzeSelectedEvidence}
           disabled={loadingAnalysis}
@@ -408,7 +406,7 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
 
       <!-- Filters Toggle -->
-      <button 
+      <button
         class="filter-toggle"
         class:active={showFilters}
         onclick={() => showFilters = !showFilters}
@@ -424,9 +422,9 @@ https://svelte.dev/e/js_parse_error -->
     <div class="filters-panel">
       <div class="filter-group">
         <label for="search">Search Evidence:</label>
-        <input 
+        <input
           id="search"
-          type="text" 
+          type="text"
           bind:value={searchQuery}
           placeholder="Search by title, description, or number..."
           class="search-input"
@@ -447,22 +445,22 @@ https://svelte.dev/e/js_parse_error -->
           <label>Detective Analysis:</label>
           <div class="checkbox-group">
             <label class="checkbox-label">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 bind:checked={detectiveConfig.enableSuspiciousPatternDetection}
               />
               Pattern Detection
             </label>
             <label class="checkbox-label">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 bind:checked={detectiveConfig.enableCrossReferenceAnalysis}
               />
               Cross References
             </label>
             <label class="checkbox-label">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 bind:checked={detectiveConfig.enableEntityMapping}
               />
               Entity Mapping
@@ -478,7 +476,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="insights-panel">
       <div class="insights-header">
         <h3>🕵️ Detective Insights</h3>
-        <button 
+        <button
           class="insights-toggle"
           onclick={() => showInsights = !showInsights}
         >
@@ -509,7 +507,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Grid View -->
       <div class="evidence-grid">
         {#each filteredEvidence as evidence (evidence.id)}
-          <div 
+          <div
             class="evidence-card"
             class:selected={$selectedEvidence.includes(evidence.id)}
             class:analyzed={evidence.analyzed}
@@ -545,7 +543,7 @@ https://svelte.dev/e/js_parse_error -->
               {#if evidence.description}
                 <p class="evidence-description">{evidence.description}</p>
               {/if}
-              
+
               {#if evidence.evidenceType === 'photo' && evidence.filePath}
                 <div class="evidence-preview">
                   <img src={evidence.filePath} alt={evidence.title} class="preview-image" />
@@ -593,7 +591,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-    
+
     {:else if viewMode === 'timeline'}
       <!-- Timeline View -->
       <div class="evidence-timeline">
@@ -614,17 +612,17 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-    
+
     {:else if viewMode === 'network'}
       <!-- Network View -->
       <div class="network-view">
-        <canvas 
+        <canvas
           bind:this={canvas}
           class="network-canvas"
-          width="800" 
+          width="800"
           height="600"
         ></canvas>
-        
+
         <div class="network-legend">
           <div class="legend-item">
             <div class="legend-color entity"></div>

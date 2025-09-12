@@ -177,8 +177,7 @@ https://svelte.dev/e/expected_token -->
     font-weight: bold;
     margin-top: 2px;
   }
-  
-  .status-active,
+.status-active, {}
   .status-ready {
     color: #00ff41;
   }
@@ -245,7 +244,7 @@ https://svelte.dev/e/expected_token -->
   }
   
   @media (max-width: 768px) {
-    .gpu-status-overlay,
+.gpu-status-overlay, {}
     .welcome-overlay {
       position: relative;
       top: auto;
@@ -253,8 +252,7 @@ https://svelte.dev/e/expected_token -->
       right: auto;
       margin: 10px;
     }
-    
-    .gpu-status-card,
+.gpu-status-card, {}
     .welcome-card {
       width: 100%;
       max-width: none;

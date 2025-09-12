@@ -13,13 +13,13 @@ https://svelte.dev/e/js_parse_error -->
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  
+
   let caseId = $state('');
   let contextItems = $state([]);
   let evidenceText = $state('');
   let activeTab = $state('assistant');
   // Mock user context
-  
+
   const mockUser = {
     id: 'user-123',
     name: 'Legal Assistant User',
@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
           title: item.title,
           content: `${item.evidence_type} - ${item.mime_type}`,
           uploadedAt: item.uploaded_at
-        });
+        }));
       }
     } catch (error) {
       console.error('Failed to load evidence context:', error);
@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
         title: result.title,
         content: `${result.evidenceType} - Similarity: ${(result.similarity * 100).toFixed(1)}%`,
         similarity: result.similarity
-      });
+      }));
       // Switch to assistant tab to use the search context
       activeTab = 'assistant';
     }
@@ -105,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
               </p>
             </CardHeader>
             <CardContent>
-              <AiAssistant 
+              <AiAssistant
                 {caseId}
                 {contextItems}
                 {evidenceText}
@@ -124,15 +124,15 @@ https://svelte.dev/e/js_parse_error -->
             <CardContent>
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium mb-2" for="case-id">Case ID:</label><input id="case-id" 
+                  <label class="block text-sm font-medium mb-2" for="case-id">Case ID:</label><input id="case-id"
                     bind:value={caseId}
                     class="w-full p-2 border rounded-md"
                     placeholder="Enter case identifier"
                   />
                 </div>
-                
+
                 <div>
-                  <label class="block text-sm font-medium mb-2" for="additional-context">Additional Context:</label><textarea id="additional-context" 
+                  <label class="block text-sm font-medium mb-2" for="additional-context">Additional Context:</label><textarea id="additional-context"
                     bind:value={evidenceText}
                     class="w-full p-2 border rounded-md h-24 text-sm"
                     placeholder="Add any additional context for the AI assistant..."
@@ -182,14 +182,14 @@ https://svelte.dev/e/js_parse_error -->
             </CardHeader>
             <CardContent>
               <div class="space-y-2">
-                <button 
+                <button
                   onclick={() => activeTab = 'evidence'}
                   class="w-full p-2 text-left bg-blue-50 hover:bg-blue-100 rounded-md text-sm border border-blue-200 transition-colors"
                 >
                   📁 Manage Evidence Files
                 </button>
-                
-                <button 
+
+                <button
                   onclick={async () => {
                     try {
                       const response = await fetch('/api/evidence-embeddings', {
@@ -217,7 +217,7 @@ https://svelte.dev/e/js_parse_error -->
     </TabsContent>
 
     <TabsContent value="evidence" class="mt-6">
-      <EvidenceManager 
+      <EvidenceManager
         on:evidenceUploaded={onEvidenceUploaded}
         on:searchResults={onSemanticSearchResults}
       />

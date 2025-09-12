@@ -168,8 +168,7 @@
   {@render children()}
 {/if}
 
-<style>
-  /* Ensure error boundary styles don't interfere with global styles */
+<style>/* Ensure error boundary styles don't interfere with global styles */ {}
   details summary::-webkit-details-marker {
     display: none;
   }

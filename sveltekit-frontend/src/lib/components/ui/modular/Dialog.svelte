@@ -151,8 +151,7 @@ https://svelte.dev/e/js_parse_error -->
   </DialogPrimitive.Portal>
 </DialogPrimitive.Root>
 
-<style>
-  /* YoRHa-specific dialog styling */
+<style>/* YoRHa-specific dialog styling */ {}
   :global(.yorha-dialog) {
     font-family: 'JetBrains Mono', monospace;
   }
@@ -160,8 +159,7 @@ https://svelte.dev/e/js_parse_error -->
   :global(.yorha-dialog .dialog-body) {
     color: rgb(212, 175, 55);
   }
-
-  /* Animate dialog entrance */
+/* Animate dialog entrance */ {}
   :global([data-state="open"]) {
     animation: dialog-content-show 0.2s ease-out;
   }

@@ -472,8 +472,9 @@ https://svelte.dev/e/attribute_duplicate -->
             <div class="flex items-center gap-4 mb-6">
               <div class="flex items-center gap-3">
                 <div class="p-2 rounded-lg bg-primary/10 text-primary">
-                  {@const IconComponent = category.icon}
-                  <IconComponent class="h-6 w-6" />
+                  {#if category.icon}
+                    <svelte:component this={category.icon} class="h-6 w-6" />
+                  {/if}
                 </div>
                 <div>
                   <h2 class="text-2xl font-semibold">{category.title}</h2>
@@ -518,16 +519,16 @@ https://svelte.dev/e/attribute_duplicate -->
                         {/if}
                       </div>
 
-                      <Button class="bits-btn"
+                      <Button
                         onclick={() => navigateToDemo(demo.path)}
-                        class="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                        class="bits-btn w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
                         variant="outline"
                       >
                         <Play class="h-4 w-4 mr-2" />
                         Launch Demo
-                      </Button>
-                    </CardContent>
-                  </Card>
+            </Button>
+            </Card.Content>
+          </Card.Root>
                 {/each}
               </div>
             {:else}
@@ -568,8 +569,8 @@ https://svelte.dev/e/attribute_duplicate -->
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </Card.Content>
+                  </Card.Root>
                 {/each}
               </div>
             {/if}

@@ -252,37 +252,37 @@ https://svelte.dev/e/unexpected_reserved_word -->
           <span class="mr-2">🆕</span>
           Create New Case
         </h2>
-        
+
         <form onsubmit={createCase}>
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-1" for="-case-title-">
                 Case Title *
-              </label><input id="-case-title-" 
+              </label><input id="-case-title-"
                 bind:value={newCaseForm.title}
-                type="text" 
+                type="text"
                 required
                 class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter case title..."
               />
             </div>
-            
+
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-1" for="-description-">
                 Description
-              </label><textarea id="-description-" 
+              </label><textarea id="-description-"
                 bind:value={newCaseForm.description}
                 rows="3"
                 class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter case description..."
               ></textarea>
             </div>
-            
+
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1" for="-priority-">
                   Priority
-                </label><select id="-priority-" 
+                </label><select id="-priority-"
                   bind:value={newCaseForm.priority}
                   class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -291,11 +291,11 @@ https://svelte.dev/e/unexpected_reserved_word -->
                   <option value="high">High</option>
                 </select>
               </div>
-              
+
               <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1" for="-status-">
                   Status
-                </label><select id="-status-" 
+                </label><select id="-status-"
                   bind:value={newCaseForm.status}
                   class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -306,9 +306,9 @@ https://svelte.dev/e/unexpected_reserved_word -->
               </div>
             </div>
           </div>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             disabled={isLoading || !newCaseForm.title.trim()}
             class="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
@@ -328,7 +328,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             <span class="mr-2">📋</span>
             Active Cases ({cases.length})
           </h2>
-          <button 
+          <button
             onclick={loadCases}
             disabled={isLoading}
             class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 disabled:opacity-50"
@@ -336,7 +336,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             🔄 Refresh
           </button>
         </div>
-        
+
         {#if isLoading && cases.length === 0}
           <div class="text-center py-8 text-slate-500">
             <span class="text-2xl">⏳</span>
@@ -349,33 +349,33 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </div>
         {:else}
           <div class="space-y-3 max-h-96 overflow-y-auto">
-            {#each cases as case (case.id)}
+            {#each cases as caseItem (caseItem.id)}
               <div class="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors">
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
-                    <h3 class="font-medium text-slate-900">{case.title}</h3>
-                    {#if case.description}
-                      <p class="text-sm text-slate-600 mt-1">{case.description.substring(0, 100)}{case.description.length > 100 ? '...' : ''}</p>
+                    <h3 class="font-medium text-slate-900">{caseItem.title}</h3>
+                    {#if caseItem.description}
+                      <p class="text-sm text-slate-600 mt-1">{caseItem.description.substring(0, 100)}{caseItem.description.length > 100 ? '...' : ''}</p>
                     {/if}
                     <div class="flex items-center gap-2 mt-2">
-                      <span class="px-2 py-1 bg-{case.priority === 'high' ? 'red' : case.priority === 'medium' ? 'yellow' : 'green'}-100 text-{case.priority === 'high' ? 'red' : case.priority === 'medium' ? 'yellow' : 'green'}-800 rounded text-xs">
-                        {case.priority}
+                      <span class="px-2 py-1 bg-{caseItem.priority === 'high' ? 'red' : caseItem.priority === 'medium' ? 'yellow' : 'green'}-100 text-{caseItem.priority === 'high' ? 'red' : caseItem.priority === 'medium' ? 'yellow' : 'green'}-800 rounded text-xs">
+                        {caseItem.priority}
                       </span>
                       <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
-                        {case.status}
+                        {caseItem.status}
                       </span>
                     </div>
                   </div>
                   <div class="flex gap-2 ml-4">
-                    <button 
-                      onclick={() => loadCaseDetails(case.id)}
+                    <button
+                      onclick={() => loadCaseDetails(caseItem.id)}
                       class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs hover:bg-blue-200"
                     >
                       👁️ View
                     </button>
-                    <select 
-                      value={case.status}
-                      change={(e) => updateCaseStatus(case.id, (e.target as HTMLSelectElement).value)}
+                    <select
+                      value={caseItem.status}
+                      change={(e) => updateCaseStatus(caseItem.id, (e.target as HTMLSelectElement).value)}
                       class="text-xs border border-slate-300 rounded px-1 py-1"
                     >
                       <option value="open">Open</option>
@@ -399,7 +399,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           <span class="mr-2">🔍</span>
           Case Details: {selectedCase.title}
         </h2>
-        
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <!-- Case Information -->
           <div>
@@ -413,14 +413,14 @@ https://svelte.dev/e/unexpected_reserved_word -->
               <p><strong>Created:</strong> {new Date(selectedCase.createdAt || Date.now()).toLocaleString()}</p>
             </div>
           </div>
-          
+
           <!-- Add Evidence Form -->
           <div>
             <h3 class="text-lg font-medium text-slate-900 mb-3">Add Evidence</h3>
             <form onsubmit={addEvidence}>
               <div class="space-y-3">
                 <div>
-                  <label class="block text-xs font-medium text-slate-700 mb-1" for="evidence-content-">Evidence Content *</label><textarea id="evidence-content-" 
+                  <label class="block text-xs font-medium text-slate-700 mb-1" for="evidence-content-">Evidence Content *</label><textarea id="evidence-content-"
                     bind:value={newEvidenceForm.content}
                     rows="3"
                     required
@@ -428,10 +428,10 @@ https://svelte.dev/e/unexpected_reserved_word -->
                     placeholder="Enter evidence details..."
                   ></textarea>
                 </div>
-                
+
                 <div class="grid grid-cols-2 gap-2">
                   <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1" for="type">Type</label><select id="type" 
+                    <label class="block text-xs font-medium text-slate-700 mb-1" for="type">Type</label><select id="type"
                       bind:value={newEvidenceForm.evidenceType}
                       class="w-full px-2 py-1 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     >
@@ -441,29 +441,29 @@ https://svelte.dev/e/unexpected_reserved_word -->
                       <option value="digital">Digital</option>
                     </select>
                   </div>
-                  
+
                   <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1" for="source">Source</label><input id="source" 
+                    <label class="block text-xs font-medium text-slate-700 mb-1" for="source">Source</label><input id="source"
                       bind:value={newEvidenceForm.source}
-                      type="text" 
+                      type="text"
                       class="w-full px-2 py-1 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                       placeholder="Evidence source..."
                     />
                   </div>
                 </div>
-                
+
                 <div>
-                  <label class="block text-xs font-medium text-slate-700 mb-1" for="tags-commaseparated">Tags (comma-separated)</label><input id="tags-commaseparated" 
+                  <label class="block text-xs font-medium text-slate-700 mb-1" for="tags-commaseparated">Tags (comma-separated)</label><input id="tags-commaseparated"
                     bind:value={newEvidenceForm.tags}
-                    type="text" 
+                    type="text"
                     class="w-full px-2 py-1 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="tag1, tag2, tag3..."
                   />
                 </div>
               </div>
-              
-              <button 
-                type="submit" 
+
+              <button
+                type="submit"
                 disabled={isLoading || !newEvidenceForm.content.trim()}
                 class="mt-4 w-full bg-green-600 text-white py-1 px-3 text-sm rounded-md hover:bg-green-700 disabled:opacity-50"
               >
@@ -476,7 +476,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             </form>
           </div>
         </div>
-        
+
         <!-- Evidence List -->
         {#if selectedCase.evidence && selectedCase.evidence.length > 0}
           <div class="mt-6">
@@ -517,17 +517,17 @@ https://svelte.dev/e/unexpected_reserved_word -->
   .max-h-96::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .max-h-96::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 3px;
   }
-  
+
   .max-h-96::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
   }
-  
+
   .max-h-96::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }

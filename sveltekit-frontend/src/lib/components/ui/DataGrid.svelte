@@ -479,8 +479,7 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-
-  /* Responsive design */
+/* Responsive design */ {}
   @media (max-width: 768px) {
     .grid-toolbar {
       flex-direction: column;

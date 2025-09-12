@@ -2,7 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  const { value: string = '', placeholder: string = '', disabled: boolean = false, id: string | undefined, name: string | undefined, className: string = '' } = $props();
+  let { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = '' } = $props();
 
   import { createEventDispatcher } from 'svelte';
   

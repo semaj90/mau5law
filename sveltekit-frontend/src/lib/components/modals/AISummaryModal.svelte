@@ -68,11 +68,11 @@ https://svelte.dev/e/js_parse_error -->
       <div class="space-y-4">
         <div class="space-y-4">
           <Button class="bits-btn" onclick={() => copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
-            <Copy class="space-y-4" />
-            <span class="space-y-4">Copy</span>
+            <Copy class="w-4 h-4" />
+            <span>Copy</span>
           </Button>
           {#if copied}
-            <span class="space-y-4"><Check class="space-y-4" />Copied!</span>
+            <span class="inline-flex items-center gap-1"><Check class="w-4 h-4" />Copied!</span>
           {/if}
         </div>
         <div class="space-y-4">

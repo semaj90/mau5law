@@ -15,6 +15,4 @@
   <!-- No <slot> usage to avoid slot/snippet conflict -->
 </Select.Trigger>
 
-<style>
-  /* @unocss-include */
-</style>
+<style>/* @unocss-include */ {}</style>

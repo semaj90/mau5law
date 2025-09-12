@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
-  const { userId: string, sessionId: string = '', preloadedData: any = null, ssrContext: any = null } = $props();
+  let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null } = $props();
 
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable, derived } from 'svelte/store';

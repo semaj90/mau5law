@@ -9,12 +9,12 @@ https://svelte.dev/e/js_parse_error -->
   let graphData = $state<any >({ nodes: [], links: [] });
   const client = new YoRHaAPIClient({ onData: (id, data) => { if (id === 'brainGraph') { graphData = data; updateScene(); } }});
   let canvasContainer = $state<HTMLDivElement | null >(null);
-  let renderer = $state<THREE.WebGLRenderer;
+  let renderer = $state<THREE.WebGLRenderer | null>(null);
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
   let animationId: number;
-  let nodeMeshes: Record<string, THREE.Mesh> >({});
-  let linkLines = $state<THREE.Line[] >([]);
+  let nodeMeshes = $state<Record<string, THREE.Mesh>>({});
+  let linkLines = $state<THREE.Line[]>([]);
 
   const nodeGeometry = new THREE.SphereGeometry(0.25, 24, 24);
   const typeColor: Record<string, number> = {
@@ -43,13 +43,13 @@ https://svelte.dev/e/js_parse_error -->
     const light = new THREE.DirectionalLight(0xffffff, 0.8);
     light.position.set(4, 6, 5);
     scene.add(light);
-    scene.add(new THREE.AmbientLight(0x404040);
+  scene.add(new THREE.AmbientLight(0x404040));
   }
 
   function buildGraph() {
     // Clear existing
-    Object.values(nodeMeshes).forEach(m => scene.remove(m);
-    linkLines.forEach(l => scene.remove(l);
+  Object.values(nodeMeshes).forEach(m => scene.remove(m));
+  linkLines.forEach(l => scene.remove(l));
     nodeMeshes = {};
     linkLines = [];
 
@@ -59,7 +59,11 @@ https://svelte.dev/e/js_parse_error -->
       const mesh = new THREE.Mesh(nodeGeometry, mat);
       // Initial circular placement; slight random Z for depth
       const a = (idx / graphData.nodes.length) * Math.PI * 2;
-      mesh.position.set(Math.cos(a) * radius, (Math.sin(a * 2) * 0.5), Math.sin(a) * radius * 0.5 + (Math.random() - 0.5);
+      mesh.position.set(
+        Math.cos(a) * radius,
+        Math.sin(a * 2) * 0.5,
+        Math.sin(a) * radius * 0.5 + (Math.random() - 0.5)
+      );
       scene.add(mesh);
       nodeMeshes[n.id] = mesh;
     });
@@ -71,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
       if (!from || !to) return;
       const pts = [from.position, to.position];
       const geom = new THREE.BufferGeometry().setFromPoints(pts);
-      const line = new THREE.Line(geom, new THREE.LineBasicMaterial({ color: 0x334155 });
+  const line = new THREE.Line(geom, new THREE.LineBasicMaterial({ color: 0x334155 }));
       scene.add(line);
       linkLines.push(line);
     });
@@ -87,7 +91,9 @@ https://svelte.dev/e/js_parse_error -->
     Object.values(nodeMeshes).forEach(m => {
       m.rotation.y += 0.005;
     });
-    renderer.render(scene, camera);
+    if (renderer) {
+      renderer.render(scene, camera);
+    }
   }
 
   onMount(async () => {

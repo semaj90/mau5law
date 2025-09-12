@@ -1,694 +1,900 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
-  import RoutesList from '../RoutesList.svelte';
+  import { onMount } from 'svelte';
+  import { CheckCircle, AlertTriangle, Clock, Target, ExternalLink, Info, Code, BookOpen, X, Gamepad2, Zap, Brain } from 'lucide-svelte';
+  import Dialog from '$lib/components/ui/enhanced-bits/Dialog.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
+  import Card from '$lib/components/ui/Card.svelte';
+  import CardContent from '$lib/components/ui/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/CardTitle.svelte';
   import type { RoutePageData } from './+page.server';
-  import { CheckCircle, AlertTriangle, Clock, Target } from 'lucide-svelte';
 
   interface Props {
     data: RoutePageData;
   }
 
   let { data }: Props = $props();
-  const inv = data.routeInventory;
 
-  // Phase 1-15 Implementation Status
-  type PhaseStatus = 'complete' | 'in-progress' | 'planned';
-  interface Phase {
-    phase: number;
-    title: string;
-    description: string;
-    status: PhaseStatus;
-    routes: string[];
-    completedFeatures: string[];
-    progress: number;
-    note?: string;
-  }
+  // Modal state
+  let showModal = $state(false);
+  let selectedRoute = $state<any>(null);
+  let searchQuery = $state('');
+  let selectedCategory = $state<string>('all');
 
-  let phaseData: Phase[] = [
+  // Modal functions
+  const openModal = (route: any, category: string) => {
+    selectedRoute = { ...route, category };
+    showModal = true;
+  };
+
+  const closeModal = () => {
+    showModal = false;
+    selectedRoute = null;
+  };
+
+  // Search and filter functionality
+  const filteredRoutes = $derived(() => {
+    return data.routesByCategory.filter(category => {
+      if (selectedCategory !== 'all' && category.name !== selectedCategory) return false;
+      if (!searchQuery) return true;
+
+      const searchLower = searchQuery.toLowerCase();
+      return category.name.toLowerCase().includes(searchLower) ||
+             category.routes.some(route =>
+               route.path.toLowerCase().includes(searchLower) ||
+               route.description?.toLowerCase().includes(searchLower)
+             );
+    });
+  });
+
+  // Keyboard event handling for modal
+  $effect(() => {
+    if (showModal) {
+      const handleKeydown = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          closeModal();
+        }
+      };
+
+      document.addEventListener('keydown', handleKeydown);
+
+      return () => {
+        document.removeEventListener('keydown', handleKeydown);
+      };
+    }
+  });
+
+  // Route documentation and scaffolding data
+  const getRouteInfo = (path: string) => {
+    const routeInfoMap: Record<string, any> = {
+      '/': {
+        description: 'Main dashboard providing overview of legal cases, recent activity, and quick access to AI tools.',
+        purpose: 'Central hub for legal professionals to access all platform features',
+        scaffold: `<!-- Home Dashboard Page -->
+<script lang="ts">
+  import DashboardStats from '$lib/components/DashboardStats.svelte';
+  import RecentCases from '$lib/components/RecentCases.svelte';
+  import QuickActions from '$lib/components/QuickActions.svelte';
+
+  let stats = $state({ cases: 0, documents: 0, analyses: 0 });
+<\/script>
+
+<div class="dashboard-container">
+  <DashboardStats {stats} />
+  <RecentCases />
+  <QuickActions />
+</div>`,
+        features: ['Dashboard statistics', 'Recent case preview', 'Quick action shortcuts', 'Activity feed']
+      },
+      '/ai': {
+        description: 'AI assistant interface for legal research, document analysis, and case insights.',
+        purpose: 'Provide intelligent AI-powered legal assistance with chat interface',
+        scaffold: `<!-- AI Assistant Page -->
+<script lang="ts">
+  import ChatInterface from '$lib/components/ai/ChatInterface.svelte';
+  import AIModelSelector from '$lib/components/ai/ModelSelector.svelte';
+
+  let selectedModel = $state('gemma-3');
+  let conversationId = $state(null);
+<\/script>
+
+<div class="ai-container">
+  <AIModelSelector bind:selectedModel />
+  <ChatInterface {conversationId} {selectedModel} />
+</div>`,
+        features: ['Multi-model chat interface', 'Legal research assistance', 'Document analysis', 'Case insights']
+      },
+      '/cases': {
+        description: 'Comprehensive case management system with AI-powered insights and document organization.',
+        purpose: 'Manage legal cases with evidence tracking, timeline, and AI analysis',
+        scaffold: `<!-- Case Management Page -->
+<script lang="ts">
+  import CaseList from '$lib/components/cases/CaseList.svelte';
+  import CaseFilters from '$lib/components/cases/CaseFilters.svelte';
+  import CreateCaseButton from '$lib/components/cases/CreateCaseButton.svelte';
+
+  let cases = $state([]);
+  let filters = $state({ status: 'all', priority: 'all' });
+<\/script>
+
+<div class="cases-container">
+  <div class="cases-header">
+    <CaseFilters bind:filters />
+    <CreateCaseButton />
+  </div>
+  <CaseList {cases} {filters} />
+</div>`,
+        features: ['Case CRUD operations', 'Evidence attachments', 'Timeline tracking', 'AI case scoring']
+      },
+      '/evidence': {
+        description: 'Evidence processing and analysis with AI-powered insights and secure document handling.',
+        purpose: 'Manage and analyze evidence with GPU-accelerated processing',
+        scaffold: `<!-- Evidence Management Page -->
+<script lang="ts">
+  import EvidenceUploader from '$lib/components/evidence/Uploader.svelte';
+  import EvidenceProcessor from '$lib/components/evidence/Processor.svelte';
+  import EvidenceViewer from '$lib/components/evidence/Viewer.svelte';
+
+  let evidenceList = $state([]);
+  let processingQueue = $state([]);
+<\/script>
+
+<div class="evidence-container">
+  <EvidenceUploader bind:evidenceList />
+  <EvidenceProcessor bind:processingQueue />
+  <EvidenceViewer {evidenceList} />
+</div>`,
+        features: ['Secure file upload', 'GPU-accelerated processing', 'AI content analysis', 'Metadata extraction']
+      },
+      '/admin': {
+        description: 'Administrative dashboard for system monitoring, user management, and platform configuration.',
+        purpose: 'System administration and monitoring for legal AI platform',
+        scaffold: `<!-- Admin Dashboard Page -->
+<script lang="ts">
+  import SystemHealth from '$lib/components/admin/SystemHealth.svelte';
+  import UserManagement from '$lib/components/admin/UserManagement.svelte';
+  import PerformanceMetrics from '$lib/components/admin/PerformanceMetrics.svelte';
+
+  let systemStatus = $state({ healthy: true, services: {} });
+<\/script>
+
+<div class="admin-container">
+  <SystemHealth bind:systemStatus />
+  <UserManagement />
+  <PerformanceMetrics />
+</div>`,
+        features: ['System health monitoring', 'User management', 'Performance metrics', 'Service configuration']
+      },
+      '/upload': {
+        description: 'Document upload interface with drag-and-drop, batch processing, and AI preprocessing.',
+        purpose: 'Secure document upload with AI-powered preprocessing and metadata extraction',
+        scaffold: `<!-- Document Upload Page -->
+<script lang="ts">
+  import FileDropzone from '$lib/components/upload/FileDropzone.svelte';
+  import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
+  import ProcessingQueue from '$lib/components/upload/ProcessingQueue.svelte';
+
+  let uploadQueue = $state([]);
+  let processingStatus = $state({});
+<\/script>
+
+<div class="upload-container">
+  <FileDropzone bind:uploadQueue />
+  <UploadProgress {uploadQueue} />
+  <ProcessingQueue {processingStatus} />
+</div>`,
+        features: ['Drag-and-drop upload', 'Batch processing', 'AI preprocessing', 'Progress tracking']
+      },
+      '/webgpu': {
+        description: 'WebGPU demonstration showcasing browser-based GPU acceleration for legal computations.',
+        purpose: 'Demonstrate WebGPU capabilities for legal AI processing',
+        scaffold: `<!-- WebGPU Demo Page -->
+<script lang="ts">
+  import WebGPURenderer from '$lib/components/gpu/WebGPURenderer.svelte';
+  import ComputeShaderDemo from '$lib/components/gpu/ComputeShaderDemo.svelte';
+  import PerformanceBenchmark from '$lib/components/gpu/PerformanceBenchmark.svelte';
+
+  let gpuSupported = $state(false);
+  let computeResults = $state([]);
+
+  onMount(async () => {
+    gpuSupported = !!navigator.gpu;
+  });
+<\/script>
+
+<div class="webgpu-container">
+  {#if gpuSupported}
+    <WebGPURenderer />
+    <ComputeShaderDemo bind:computeResults />
+    <PerformanceBenchmark />
+  {:else}
+    <p>WebGPU not supported in this browser</p>
+  {/if}
+</div>`,
+        features: ['GPU detection', 'Compute shaders', 'Performance benchmarking', 'Browser compatibility']
+      }
+    };
+
+    return routeInfoMap[path] || {
+      description: 'This route provides specialized functionality for the Legal AI platform.',
+      purpose: 'Part of the comprehensive legal technology suite',
+      scaffold: `<!-- ${path} Page -->
+<script lang="ts">
+  // Import required components
+  import { onMount } from 'svelte';
+
+  let pageData = $state({});
+
+  onMount(async () => {
+    // Initialize page
+  });
+<\/script>
+
+<div class="page-container">
+  <h1>Page Title</h1>
+  <p>Page content goes here</p>
+</div>`,
+      features: ['Custom functionality', 'Svelte 5 implementation', 'TypeScript support']
+    };
+  };
+
+  // Comprehensive route categories based on your Legal AI platform
+  const routeCategories = [
     {
-      phase: 1,
-      title: "Core SvelteKit Foundation",
-      description: "Basic routing, layout, error handling",
-      status: "complete",
-      routes: ["/", "/+layout.svelte", "/+error.svelte"],
-      completedFeatures: ["SvelteKit setup", "Routing", "Error boundaries"],
-      progress: 100
+      category: "🏠 Core Pages",
+      routes: [
+        { path: "/", title: "Home Dashboard", status: "working" },
+        { path: "/all-routes", title: "Route Manager", status: "working" }
+      ]
     },
     {
-      phase: 2,
-      title: "Authentication System",
-      description: "User login, registration, session management",
-      status: "complete",
-      routes: ["/auth/login", "/auth/register", "/auth/logout"],
-      completedFeatures: ["Login system", "Registration", "Session handling"],
-      progress: 100
+      category: "🤖 AI Features",
+      routes: [
+        { path: "/ai", title: "AI Overview", status: "working" },
+        { path: "/ai/dashboard", title: "AI Dashboard", status: "working" },
+        { path: "/ai/modular", title: "Modular AI Experience", status: "working" },
+        { path: "/ai/orchestrator", title: "AI Orchestrator", status: "working" },
+        { path: "/ai/enhanced-mcp", title: "Enhanced MCP", status: "working" },
+        { path: "/ai/case-scoring", title: "Case Scoring", status: "demo" },
+        { path: "/ai/document-drafting", title: "Document Drafting", status: "demo" },
+        { path: "/ai/pattern-detection", title: "Pattern Detection", status: "demo" },
+        { path: "/ai/recommendations", title: "AI Recommendations", status: "demo" },
+        { path: "/ai/processing", title: "AI Processing", status: "demo" },
+        { path: "/ai-assistant", title: "AI Assistant", status: "working" }
+      ]
     },
     {
-      phase: 3,
-      title: "Legal Document Management",
-      description: "Document upload, storage, basic metadata",
-      status: "complete",
-      routes: ["/legal/documents", "/cases", "/cases/create"],
-      completedFeatures: ["Document upload", "Case management", "File storage"],
-      progress: 100
+      category: "⚖️ Legal Operations",
+      routes: [
+        { path: "/cases", title: "Case Management", status: "working" },
+        { path: "/cases/create", title: "Create Case", status: "demo" },
+        { path: "/cases/[caseId]", title: "Case Details", status: "working" },
+        { path: "/cases/[caseId]/rag", title: "Case RAG Analysis", status: "demo" },
+        { path: "/evidence", title: "Evidence Management", status: "working" },
+        { path: "/evidence/analysis", title: "Evidence Analysis", status: "demo" },
+        { path: "/evidence/processing", title: "Evidence Processing", status: "demo" },
+        { path: "/legal", title: "Legal Tools", status: "working" },
+        { path: "/legal/research", title: "Legal Research", status: "demo" },
+        { path: "/legal/templates", title: "Legal Templates", status: "demo" }
+      ]
     },
     {
-      phase: 4,
-      title: "AI Integration - Basic",
-      description: "OpenAI/Ollama integration, basic chat",
-      status: "complete",
-      routes: ["/ai", "/ai-assistant", "/chat"],
-      completedFeatures: ["OpenAI integration", "Ollama local models", "Chat interface"],
-      progress: 100
+      category: "📄 Document Management",
+      routes: [
+        { path: "/upload", title: "Document Upload", status: "working" },
+        { path: "/documents", title: "Document Library", status: "working" },
+        { path: "/documents/viewer", title: "Document Viewer", status: "demo" },
+        { path: "/documents/editor", title: "Document Editor", status: "demo" },
+        { path: "/pdf-viewer", title: "PDF Viewer", status: "working" }
+      ]
     },
     {
-      phase: 5,
-      title: "Vector Search & RAG",
-      description: "pgvector, embedding search, RAG implementation",
-      status: "complete",
-      routes: ["/demo/legal-search", "/dashboard/search", "/api/ai/vector-search"],
-      completedFeatures: ["pgvector integration", "Semantic search", "RAG pipeline"],
-      progress: 100
+      category: "🔐 Authentication & Admin",
+      routes: [
+        { path: "/auth", title: "Authentication", status: "working" },
+        { path: "/auth/login", title: "Login", status: "working" },
+        { path: "/auth/login/simple", title: "Simple Login", status: "working" },
+        { path: "/admin", title: "Admin Dashboard", status: "working" },
+        { path: "/admin/cluster", title: "Cluster Management", status: "working" },
+        { path: "/admin/gpu-demo", title: "GPU Demo", status: "working" },
+        { path: "/admin/performance-dashboard", title: "Performance", status: "working" },
+        { path: "/admin/users", title: "User Management", status: "working" }
+      ]
     },
     {
-      phase: 6,
-      title: "Advanced AI Processing",
-      description: "Document analysis, entity extraction, risk assessment",
-      status: "complete",
-      routes: ["/ai/processing", "/demo/hybrid-legal-analysis"],
-      completedFeatures: ["Document analysis", "Entity extraction", "Risk assessment"],
-      progress: 100
+      category: "🎮 YoRHa Interface",
+      routes: [
+        { path: "/yorha", title: "YoRHa Main", status: "working" },
+        { path: "/yorha-dashboard", title: "YoRHa Dashboard", status: "working" },
+        { path: "/yorha-demo", title: "YoRHa Demo", status: "working" },
+        { path: "/yorha-home", title: "YoRHa Home", status: "working" },
+        { path: "/yorha-terminal", title: "YoRHa Terminal", status: "working" },
+        { path: "/yorha-test", title: "YoRHa Test", status: "working" }
+      ]
     },
     {
-      phase: 7,
-      title: "GPU Acceleration",
-      description: "WebGPU integration, CUDA support, performance optimization",
-      status: "complete",
-      routes: ["/demo/gpu-legal-ai", "/cuda-streaming"],
-      completedFeatures: ["WebGPU integration", "GPU benchmarking", "NES-GPU bridge"],
-      progress: 100
+      category: "🔬 Technical Demos",
+      routes: [
+        { path: "/demo", title: "Demo Overview", status: "demo" },
+        { path: "/demo/ai-assistant", title: "AI Assistant Demo", status: "demo" },
+        { path: "/demo/ai-complete-test", title: "AI Complete Test", status: "demo" },
+        { path: "/demo/ai-integration", title: "AI Integration", status: "demo" },
+        { path: "/demo/clean-architecture", title: "Clean Architecture", status: "demo" },
+        { path: "/demo/component-gallery", title: "Component Gallery", status: "demo" },
+        { path: "/demo/crud-integration", title: "CRUD Integration", status: "demo" },
+        { path: "/demo/cyber-elephant", title: "Cyber Elephant", status: "demo" },
+        { path: "/demo/document-upload-gpu", title: "GPU Document Upload", status: "demo" },
+        { path: "/demo/enhanced-rag-demo", title: "Enhanced RAG", status: "demo" },
+        { path: "/demo/full-stack-integration", title: "Full Stack Demo", status: "demo" },
+        { path: "/canvas-demo", title: "Canvas Demo", status: "demo" },
+        { path: "/cache-demo", title: "Cache Demo", status: "demo" },
+        { path: "/brain", title: "Brain Demo", status: "demo" }
+      ]
     },
     {
-      phase: 8,
-      title: "Real-time Features",
-      description: "WebSocket connections, live updates, streaming",
-      status: "complete",
-      routes: ["/system-status", "/cache/redis-admin"],
-      completedFeatures: ["WebSocket support", "Real-time updates", "Redis integration"],
-      progress: 100
+      category: "⚡ Performance & GPU",
+      routes: [
+        { path: "/cuda-streaming", title: "CUDA Streaming", status: "working" },
+        { path: "/gpu-compute", title: "GPU Compute", status: "working" },
+        { path: "/webgpu", title: "WebGPU Demo", status: "working" },
+        { path: "/vector-demo", title: "Vector Demo", status: "working" },
+        { path: "/test-integration", title: "Integration Tests", status: "working" }
+      ]
     },
     {
-      phase: 9,
-      title: "Admin Dashboard",
-      description: "System administration, user management, monitoring",
-      status: "complete",
-      routes: ["/admin", "/admin/users", "/admin/cluster"],
-      completedFeatures: ["Admin interface", "User management", "System monitoring"],
-      progress: 100
-    },
-    {
-      phase: 10,
-      title: "Advanced UI Components",
-      description: "Headless UI, gaming-inspired components, accessibility",
-      status: "complete",
-      routes: ["/test/n64-legal-progress", "/demo/component-gallery"],
-      completedFeatures: ["Headless UI library", "N64-inspired components", "Accessibility features"],
-      progress: 100
-    },
-    {
-      phase: 11,
-      title: "Data Visualization",
-      description: "Charts, graphs, legal document visualization",
-      status: "complete",
-      routes: ["/demo/webgpu-graph", "/demo/glyph-generator"],
-      completedFeatures: ["WebGPU visualization", "Glyph generation", "Interactive graphs"],
-      progress: 100
-    },
-    {
-      phase: 12,
-      title: "Caching & Performance",
-      description: "Redis caching, query optimization, CDN integration",
-      status: "complete",
-      routes: ["/cache-demo", "/api/cache/metrics"],
-      completedFeatures: ["Redis caching", "Query optimization", "Performance monitoring"],
-      progress: 100
-    },
-    {
-      phase: 13,
-      title: "Testing & Quality Assurance",
-      description: "Unit tests, integration tests, performance testing",
-      status: "in-progress",
-      routes: ["/auth/test", "/test-integration", "/validation"],
-      completedFeatures: ["Test infrastructure", "Integration testing", "Validation system"],
-      progress: 85
-    },
-    {
-      phase: 14,
-      title: "Production Deployment",
-      description: "Docker, CI/CD, monitoring, logging",
-      status: "in-progress",
-      routes: ["/admin/cluster", "/system-status"],
-      completedFeatures: ["Docker setup", "Health monitoring"],
-      progress: 70
-    },
-    {
-      phase: 15,
-      title: "Advanced Features & Polish",
-      description: "Recommendations system, advanced analytics, mobile optimization",
-      status: "planned",
-      routes: ["/demo/recommendation-system"],
-      completedFeatures: ["Recommendation framework"],
-      progress: 40,
-      note: "Neo4j integration deferred as requested"
+      category: "🧪 Experimental & Testing",
+      routes: [
+        { path: "/copilot", title: "Copilot", status: "experimental" },
+        { path: "/copilot/autonomous", title: "Autonomous Copilot", status: "experimental" },
+        { path: "/compiler-ai-demo", title: "Compiler AI", status: "experimental" },
+        { path: "/complete-demo", title: "Complete Demo", status: "experimental" },
+        { path: "/crud-dashboard", title: "CRUD Dashboard", status: "experimental" },
+        { path: "/gaming-evolution", title: "Gaming Evolution", status: "experimental" },
+        { path: "/simple-test", title: "Simple Test", status: "experimental" }
+      ]
     }
   ];
 
-  let selectedPhase: number | null = $state(null);
-  let showOnlyIncomplete = $state(false);
-  let filteredPhases: Phase[] = $state(phaseData);
-  run(() => {
-    filteredPhases = showOnlyIncomplete ? phaseData.filter(p => p.status !== 'complete') : phaseData;
-  });
-
-  function getStatusColor(status: PhaseStatus): string {
+  // Status color mapping
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case 'complete': return 'text-green-600 bg-green-100';
-      case 'in-progress': return 'text-yellow-600 bg-yellow-100';
-      case 'planned': return 'text-blue-600 bg-blue-100';
+      case 'working': return 'text-green-600 bg-green-100';
+      case 'demo': return 'text-blue-600 bg-blue-100';
+      case 'experimental': return 'text-purple-600 bg-purple-100';
+      case 'broken': return 'text-red-600 bg-red-100';
       default: return 'text-gray-600 bg-gray-100';
     }
-  }
+  };
 
-  function getStatusIcon(status: PhaseStatus) {
+  const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'complete': return CheckCircle;
-      case 'in-progress': return Clock;
-      case 'planned': return Target;
-      default: return AlertTriangle;
+      case 'working': return CheckCircle;
+      case 'demo': return Target;
+      case 'experimental': return Clock;
+      case 'broken': return AlertTriangle;
+      default: return Clock;
     }
-  }
+  };
 
-  function getProgressColor(progress: number): string {
-    if (progress >= 90) return 'bg-green-500';
-    if (progress >= 70) return 'bg-yellow-500';
-    if (progress >= 50) return 'bg-blue-500';
-    return 'bg-gray-500';
-  }
+  // Modal status icon (dynamic component)
+  let ModalStatusIcon: any = null;
+  let routeInfo: any = null;
+  $effect(() => {
+    if (selectedRoute) {
+      ModalStatusIcon = getStatusIcon(selectedRoute.status);
+      routeInfo = getRouteInfo(selectedRoute.path);
+    } else {
+      ModalStatusIcon = null;
+      routeInfo = null;
+    }
+  });
 
-  interface OverallStats { totalPhases: number; completedPhases: number; inProgressPhases: number; avgProgress: number; completionRate: number }
-  let overallStats: OverallStats = $state();
-  run(() => {
-    const totalPhases = phaseData.length;
-    const completedPhases = phaseData.filter(p => p.status === 'complete').length;
-    const inProgressPhases = phaseData.filter(p => p.status === 'in-progress').length;
-    const avgProgress = phaseData.reduce((sum, p) => sum + p.progress, 0) / totalPhases;
-    overallStats = {
-      totalPhases,
-      completedPhases,
-      inProgressPhases,
-      avgProgress: Math.round(avgProgress),
-      completionRate: Math.round((completedPhases / totalPhases) * 100)
-    };
+  // Calculate totals
+  let totalRoutes = $state(0);
+  let workingRoutes = $state(0);
+  let demoRoutes = $state(0);
+  let experimentalRoutes = $state(0);
+
+  $effect(() => {
+    totalRoutes = routeCategories.reduce((sum, cat) => sum + cat.routes.length, 0);
+    workingRoutes = routeCategories.reduce((sum, cat) => sum + cat.routes.filter(r => r.status === 'working').length, 0);
+    demoRoutes = routeCategories.reduce((sum, cat) => sum + cat.routes.filter(r => r.status === 'demo').length, 0);
+    experimentalRoutes = routeCategories.reduce((sum, cat) => sum + cat.routes.filter(r => r.status === 'experimental').length, 0);
   });
 </script>
 
-<svelte:head>
-  <title>All Routes - Legal AI Platform</title>
-  <meta name="description" content="Browse all available routes and pages in the Legal AI Platform" />
-</svelte:head>
+<style>
+  /* N64/NES Gaming Animations */
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+    }
+    50% {
+      box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+    }
+  }
 
-<div class="page-container">
-  <header class="page-header">
-    <h1>Legal AI Platform - Phase Implementation Status</h1>
-    <p>Comprehensive tracking of Phase 1-15 implementation progress and route inventory</p>
+  @keyframes matrix-flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
 
-    <!-- Overall Progress Summary -->
-    <div class="progress-summary">
-      <div class="summary-stats">
-        <div class="stat">
-          <div class="stat-value">{overallStats.completedPhases}/{overallStats.totalPhases}</div>
-          <div class="stat-label">Phases Complete</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">{overallStats.avgProgress}%</div>
-          <div class="stat-label">Overall Progress</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">{overallStats.inProgressPhases}</div>
-          <div class="stat-label">In Progress</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">{inv?.counts?.fileBased || 0}</div>
-          <div class="stat-label">Routes Built</div>
-        </div>
+  @keyframes console-boot {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .animation-delay-1000 {
+    animation-delay: 1s;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  /* Custom scrollbar for gaming feel */
+  .overflow-y-auto::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-track {
+    background: #1a1a1a;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #00ffff, #0080ff);
+    border-radius: 4px;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #00ffff, #00ff80);
+  }
+
+  /* Gaming card hover effects */
+  .group:hover {
+    animation: glow-pulse 2s infinite;
+  }
+
+  /* Terminal text effect */
+  .font-mono {
+    font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  /* Retro scan lines effect */
+  .bg-gradient-to-br::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      transparent 50%,
+      rgba(0, 255, 255, 0.02) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    animation: matrix-flicker 3s infinite;
+  }
+
+  /* Gaming button press effect */
+  button:active {
+    transform: scale(0.95);
+  }
+
+  /* Matrix-style text selection */
+  ::selection {
+    background: rgba(0, 255, 255, 0.3);
+    color: #00ff00;
+  }
+
+  /* Shared transition utility */
+  .transition-colors {
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  }
+</style>
+
+<!-- N64/NES Gaming-Inspired Routes Dashboard -->
+<div class="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-black relative overflow-hidden">
+  <!-- Animated background elements -->
+  <div class="absolute inset-0">
+    <div class="absolute top-0 left-0 w-full h-full opacity-10">
+      <div class="animate-pulse absolute top-10 left-10 w-32 h-32 bg-green-400 rounded-full blur-xl"></div>
+      <div class="animate-pulse absolute top-20 right-20 w-24 h-24 bg-blue-400 rounded-full blur-xl animation-delay-1000"></div>
+      <div class="animate-pulse absolute bottom-20 left-1/4 w-40 h-40 bg-purple-400 rounded-full blur-xl animation-delay-2000"></div>
+    </div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Gaming-Style Header -->
+    <div class="mb-8 text-center">
+      <div class="inline-block bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-transparent bg-clip-text mb-4">
+        <h1 class="text-5xl font-black tracking-wider mb-2 drop-shadow-lg">⚡ ROUTE MATRIX ⚡</h1>
       </div>
-
-      <!-- Overall Progress Bar -->
-      <div class="overall-progress">
-        <div class="progress-bar-container">
-          <div class="progress-bar {getProgressColor(overallStats.avgProgress)}" style="width: {overallStats.avgProgress}%"></div>
-        </div>
-        <div class="progress-text">{overallStats.avgProgress}% Complete - {overallStats.completedPhases} of {overallStats.totalPhases} phases finished</div>
+      <div class="bg-black/50 backdrop-blur-sm rounded-lg p-4 border border-cyan-400/30 shadow-lg shadow-cyan-500/20">
+        <p class="text-cyan-300 text-lg font-mono tracking-wide">
+          <span class="text-yellow-400">></span> SYSTEM ONLINE • {totalRoutes} ROUTES DETECTED • AI LEGAL PLATFORM ACTIVE
+        </p>
       </div>
     </div>
-  </header>
 
-  <!-- Phase Implementation Tracker -->
-  <section class="phase-tracker">
-    <div class="tracker-header">
-      <h2>Phase Implementation Status</h2>
-      <div class="tracker-controls">
-        <label class="toggle">
-          <input type="checkbox" bind:checked={showOnlyIncomplete} />
-          Show only incomplete phases
-        </label>
-      </div>
-    </div>
-
-    <div class="phases-grid">
-      {#each filteredPhases as phase}
-        <div class="phase-card {phase.status}" class:selected={selectedPhase === phase.phase}>
-          <button type="button" class="phase-header" onclick={() => selectedPhase = selectedPhase === phase.phase ? null : phase.phase}>
-            <div class="phase-number">
-              <span class="phase-label">Phase {phase.phase}</span>
-              {#if phase.status === 'complete'}
-                <CheckCircle class="status-icon w-5 h-5" />
-              {:else if phase.status === 'in-progress'}
-                <Clock class="status-icon w-5 h-5" />
-              {:else if phase.status === 'planned'}
-                <Target class="status-icon w-5 h-5" />
-              {:else}
-                <AlertTriangle class="status-icon w-5 h-5" />
-              {/if}
-            </div>
-            <div class="phase-title">{phase.title}</div>
-            <div class="phase-progress">
-              <div class="progress-bar-small">
-                <div class="progress-fill {getProgressColor(phase.progress)}" style="width: {phase.progress}%"></div>
-              </div>
-              <span class="progress-percentage">{phase.progress}%</span>
-            </div>
-          </button>
-
-          <div class="phase-description">{phase.description}</div>
-
-          <div class="phase-status">
-            <span class="status-badge {getStatusColor(phase.status)}">
-              {phase.status === 'complete' ? 'Complete' : phase.status === 'in-progress' ? 'In Progress' : 'Planned'}
-            </span>
-            {#if phase.note}
-              <span class="phase-note">{phase.note}</span>
-            {/if}
+    <!-- Search & Filter Bar -->
+    <div class="mb-8">
+      <div class="bg-black/70 backdrop-blur-sm rounded-lg p-6 border border-green-400/30 shadow-lg shadow-green-500/20">
+        <div class="flex flex-col md:flex-row gap-4">
+          <!-- Search Input -->
+          <div class="flex-1">
+            <input
+              bind:value={searchQuery}
+              type="text"
+              placeholder="🔍 Search routes, demos, AI features..."
+              class="w-full bg-gray-900/80 border border-cyan-400/50 rounded-lg px-4 py-3 text-cyan-300 placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 font-mono"
+            />
           </div>
 
-          {#if selectedPhase === phase.phase}
-            <div class="phase-details">
-              <div class="features-section">
-                <h4>Completed Features:</h4>
-                <ul class="features-list">
-                  {#each phase.completedFeatures as feature}
-                    <li class="feature-item">
-                      <CheckCircle class="feature-icon w-4 h-4 text-green-600" />
-                      {feature}
-                    </li>
-                  {/each}
-                </ul>
-              </div>
+          <!-- Category Filter -->
+          <div class="min-w-48">
+            <select
+              bind:value={selectedCategory}
+              class="w-full bg-gray-900/80 border border-purple-400/50 rounded-lg px-4 py-3 text-purple-300 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20 font-mono"
+            >
+              <option value="all">🎯 All Categories</option>
+              {#each data.routesByCategory as category}
+                <option value={category.name}>🔥 {category.name}</option>
+              {/each}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
 
-              <div class="routes-section">
-                <h4>Key Routes:</h4>
-                <ul class="routes-list">
-                  {#each phase.routes as route}
-                    <li class="route-item">
-                      <a href={route} class="route-link">{route}</a>
-                    </li>
-                  {/each}
-                </ul>
+    <!-- Gaming Stats Panel -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-gradient-to-br from-green-600/20 to-green-800/20 backdrop-blur-sm rounded-lg p-4 border border-green-400/30 shadow-lg">
+        <div class="flex items-center">
+          <CheckCircle class="w-8 h-8 text-green-400 mr-3 animate-pulse" />
+          <div>
+            <p class="text-green-300 text-sm font-mono">ACTIVE</p>
+            <p class="text-2xl font-black text-white">{workingRoutes}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-blue-600/20 to-blue-800/20 backdrop-blur-sm rounded-lg p-4 border border-blue-400/30 shadow-lg">
+        <div class="flex items-center">
+          <Gamepad2 class="w-8 h-8 text-blue-400 mr-3 animate-bounce" />
+          <div>
+            <p class="text-blue-300 text-sm font-mono">DEMOS</p>
+            <p class="text-2xl font-black text-white">{demoRoutes}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-purple-600/20 to-purple-800/20 backdrop-blur-sm rounded-lg p-4 border border-purple-400/30 shadow-lg">
+        <div class="flex items-center">
+          <Zap class="w-8 h-8 text-purple-400 mr-3 animate-pulse" />
+          <div>
+            <p class="text-purple-300 text-sm font-mono">BETA</p>
+            <p class="text-2xl font-black text-white">{experimentalRoutes}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-yellow-600/20 to-orange-800/20 backdrop-blur-sm rounded-lg p-4 border border-yellow-400/30 shadow-lg">
+        <div class="flex items-center">
+          <Brain class="w-8 h-8 text-yellow-400 mr-3 animate-pulse" />
+          <div>
+            <p class="text-yellow-300 text-sm font-mono">TOTAL</p>
+            <p class="text-2xl font-black text-white">{totalRoutes}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced 3-Column Gaming Grid -->
+    <div class="space-y-8">
+      {#each filteredRoutes as category}
+        <div class="bg-black/50 backdrop-blur-sm rounded-lg overflow-hidden border border-cyan-400/30 shadow-xl shadow-cyan-500/10">
+          <!-- Category Header -->
+          <div class="px-6 py-4 bg-gradient-to-r from-cyan-900/50 to-blue-900/50 border-b border-cyan-400/20">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-black text-cyan-300 tracking-wider">
+                  🎮 {category.name.toUpperCase()}
+                </h2>
+                <p class="text-cyan-400/70 text-sm font-mono mt-1">
+                  {category.routes.length} modules • Ready for deployment
+                </p>
+              </div>
+              <div class="text-right">
+                <div class="bg-cyan-400/20 px-3 py-1 rounded-full border border-cyan-400/30">
+                  <span class="text-cyan-300 text-sm font-mono font-bold">{category.routes.length}</span>
+                </div>
               </div>
             </div>
-          {/if}
+          </div>
+
+          <!-- 3-Column Route Grid -->
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {#each category.routes as route}
+                {@const StatusIcon = getStatusIcon(route.status)}
+                <Card class="group bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm border border-gray-600/50 hover:border-cyan-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/20 hover:scale-105">
+                  <CardHeader class="pb-3">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center space-x-2">
+                        <StatusIcon class="w-5 h-5 text-cyan-400 group-hover:animate-pulse" />
+                        <span class="px-2 py-1 text-xs font-mono font-bold rounded-full {getStatusColor(route.status)} border">
+                          {route.status.toUpperCase()}
+                        </span>
+                      </div>
+                      <div class="text-gray-400 group-hover:text-cyan-400 transition-colors">
+                        <Gamepad2 class="w-4 h-4" />
+                      </div>
+                    </div>
+                    <CardTitle class="text-white group-hover:text-cyan-300 transition-colors font-mono text-lg leading-tight">
+                      {route.title}
+                    </CardTitle>
+                  </CardHeader>
+
+                  <CardContent class="pt-0">
+                    <div class="space-y-3">
+                      <!-- Route Path -->
+                      <div class="bg-black/60 rounded-lg p-3 border border-gray-700/50">
+                        <code class="text-sm text-green-400 font-mono break-all">
+                          {route.path}
+                        </code>
+                      </div>
+
+                      <!-- Route Description -->
+                      {#if route.description}
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                          {route.description.slice(0, 80)}...
+                        </p>
+                      {/if}
+
+                      <!-- Action Buttons -->
+                      <div class="flex items-center gap-2 pt-2">
+                        <Button
+                          onclick={() => openModal(route, category.name)}
+                          variant="outline"
+                          size="sm"
+                          class="flex-1 bg-blue-900/30 border-blue-400/50 text-blue-300 hover:bg-blue-800/50 hover:border-blue-400 transition-all duration-200 font-mono"
+                        >
+                          <Info class="w-4 h-4 mr-2" />
+                          INFO
+                        </Button>
+
+                        <Button
+                          onclick={() => window.open(route.path, '_blank')}
+                          variant="outline"
+                          size="sm"
+                          class="flex-1 bg-green-900/30 border-green-400/50 text-green-300 hover:bg-green-800/50 hover:border-green-400 transition-all duration-200 font-mono"
+                        >
+                          <ExternalLink class="w-4 h-4 mr-2" />
+                          VISIT
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              {/each}
+            </div>
+          </div>
         </div>
       {/each}
     </div>
-  </section>
 
-  <!-- Route Discovery System -->
-  <section class="route-discovery">
-    <h2>Route Discovery & Inventory</h2>
-    <RoutesList />
-  </section>
-
-  {#if inv}
-    <section class="inventory-summary">
-      <h2>Route Inventory Snapshot</h2>
-      <p class="generated">Generated: {new Date(inv.generated).toLocaleString()}</p>
-      <div class="counts-grid">
-        <div><strong>Config</strong><span>{inv.counts.config}</span></div>
-        <div><strong>File-based</strong><span>{inv.counts.fileBased}</span></div>
-        <div><strong>API</strong><span>{inv.counts.api}</span></div>
-        <div class="warn"><strong>Config Missing File</strong><span>{inv.counts.configMissingFiles}</span></div>
-        <div class="warn"><strong>File Missing Config</strong><span>{inv.counts.filesMissingConfig}</span></div>
+    <!-- Gaming System Status Panel -->
+    <div class="mt-8 bg-black/60 backdrop-blur-sm rounded-lg overflow-hidden border border-yellow-400/30 shadow-xl shadow-yellow-500/10">
+      <div class="px-6 py-4 bg-gradient-to-r from-yellow-900/50 to-orange-900/50 border-b border-yellow-400/20">
+        <h2 class="text-2xl font-black text-yellow-300 tracking-wider">
+          ⚙️ SYSTEM STATUS
+        </h2>
+        <p class="text-yellow-400/70 text-sm font-mono mt-1">
+          Platform diagnostics • All systems operational
+        </p>
       </div>
-      {#if inv.configMissingFiles.length || inv.filesMissingConfig.length}
-        <details class="diff-block" open>
-          <summary>Differences</summary>
-          {#if inv.configMissingFiles.length}
-            <h3>Config routes without page file ({inv.configMissingFiles.length})</h3>
-            <ul>
-              {#each inv.configMissingFiles as r}<li>{r}</li>{/each}
+
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-gradient-to-br from-green-900/20 to-green-700/20 rounded-lg p-4 border border-green-400/30">
+            <h3 class="text-green-300 font-mono font-bold mb-3">🎯 AI MODULES</h3>
+            <ul class="text-sm text-green-200 space-y-2 font-mono">
+              <li class="flex items-center"><span class="text-green-400 mr-2">●</span> Document Processing Engine</li>
+              <li class="flex items-center"><span class="text-green-400 mr-2">●</span> Case Analysis Neural Net</li>
+              <li class="flex items-center"><span class="text-green-400 mr-2">●</span> Evidence Processing Matrix</li>
+              <li class="flex items-center"><span class="text-green-400 mr-2">●</span> Legal Research AI Core</li>
+              <li class="flex items-center"><span class="text-green-400 mr-2">●</span> GPU Tensor Acceleration</li>
             </ul>
-          {/if}
-          {#if inv.filesMissingConfig.length}
-            <h3>File-based routes not in config ({inv.filesMissingConfig.length})</h3>
-            <ul>
-              {#each inv.filesMissingConfig.slice(0,50) as r}<li>{r}</li>{/each}
+          </div>
+
+          <div class="bg-gradient-to-br from-cyan-900/20 to-blue-700/20 rounded-lg p-4 border border-cyan-400/30">
+            <h3 class="text-cyan-300 font-mono font-bold mb-3">⚡ TECH STACK</h3>
+            <ul class="text-sm text-cyan-200 space-y-2 font-mono">
+              <li class="flex items-center"><span class="text-cyan-400 mr-2">●</span> SvelteKit 5.0 + Runes</li>
+              <li class="flex items-center"><span class="text-cyan-400 mr-2">●</span> WebGPU + CUDA Cores</li>
+              <li class="flex items-center"><span class="text-cyan-400 mr-2">●</span> PostgreSQL + Redis</li>
+              <li class="flex items-center"><span class="text-cyan-400 mr-2">●</span> Ollama + LangChain</li>
+              <li class="flex items-center"><span class="text-cyan-400 mr-2">●</span> N64/NES UI Framework</li>
             </ul>
-            {#if inv.filesMissingConfig.length > 50}
-              <p class="truncate-note">Showing first 50 of {inv.filesMissingConfig.length}.</p>
-            {/if}
-          {/if}
-        </details>
-      {/if}
-      <details class="sample" open>
-        <summary>Sample File-based Routes (first {inv.fileRoutesSample.length})</summary>
-        <ul>
-          {#each inv.fileRoutesSample as fr}
-            <li>{fr.route}{fr.title ? ` — ${fr.title}` : ''}</li>
-          {/each}
-        </ul>
-      </details>
-    </section>
-  {/if}
+          </div>
+
+          <div class="bg-gradient-to-br from-purple-900/20 to-purple-700/20 rounded-lg p-4 border border-purple-400/30">
+            <h3 class="text-purple-300 font-mono font-bold mb-3">🚀 METRICS</h3>
+            <ul class="text-sm text-purple-200 space-y-2 font-mono">
+              <li class="flex items-center justify-between"><span>PORT:</span><span class="text-purple-400">5173</span></li>
+              <li class="flex items-center justify-between"><span>ROUTES:</span><span class="text-purple-400">{totalRoutes}</span></li>
+              <li class="flex items-center justify-between"><span>ACTIVE:</span><span class="text-green-400">{workingRoutes}</span></li>
+              <li class="flex items-center justify-between"><span>DEMOS:</span><span class="text-blue-400">{demoRoutes}</span></li>
+              <li class="flex items-center justify-between"><span>BETA:</span><span class="text-yellow-400">{experimentalRoutes}</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gaming Footer -->
+    <div class="mt-8 text-center">
+      <div class="bg-black/60 backdrop-blur-sm rounded-lg p-4 border border-gray-600/30">
+        <p class="text-green-400 font-mono text-sm mb-1">
+          <span class="text-yellow-400">></span> LEGAL.AI.PLATFORM.EXE - ROUTE.MATRIX.ACTIVE
+        </p>
+        <p class="text-cyan-400 font-mono text-xs">
+          SYSTEM.ONLINE • DYNAMIC.PORT.5173 • AI.NEURAL.CORES.READY
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<style>
-  .page-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
+<!-- Enhanced Gaming Modal -->
+{#if showModal && selectedRoute}
+  <div
+    class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    onclick={closeModal}
+  >
+    <div
+      class="bg-gradient-to-br from-gray-900 to-black border-2 border-cyan-400/50 rounded-lg shadow-2xl shadow-cyan-500/25 max-w-5xl max-h-[90vh] overflow-hidden"
+      onclick={(e) => e.stopPropagation()}
+    >
+      <!-- Gaming Modal Header -->
+      <div class="flex items-center justify-between p-6 bg-gradient-to-r from-cyan-900/50 to-blue-900/50 border-b border-cyan-400/20">
+        <div class="flex items-center gap-4">
+          {#if ModalStatusIcon}
+            <ModalStatusIcon class="w-8 h-8 text-cyan-400 animate-pulse" />
+          {/if}
+          <div>
+            <h2 class="text-2xl font-black text-white tracking-wider">{selectedRoute.title}</h2>
+            <p class="text-cyan-300 font-mono text-sm">{selectedRoute.category} MODULE</p>
+          </div>
+          <span class="px-3 py-1 text-xs font-mono font-bold rounded-full {getStatusColor(selectedRoute.status)} border uppercase">
+            {selectedRoute.status}
+          </span>
+        </div>
+        <Button
+          onclick={closeModal}
+          variant="outline"
+          size="sm"
+          class="bg-red-900/30 border-red-400/50 text-red-300 hover:bg-red-800/50 hover:border-red-400"
+        >
+          <X class="w-5 h-5" />
+        </Button>
+      </div>
 
-  .page-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
+      <!-- Modal Content -->
+  <div class="overflow-y-auto max-h-[calc(90vh-200px)]">
 
-  .page-header h1 {
-    font-size: 2.5rem;
-    color: #1f2937;
-    margin-bottom: 0.5rem;
-  }
+        <div class="p-6 space-y-6 bg-gradient-to-b from-gray-900/50 to-black/50">
+          <!-- Gaming Route Path Display -->
+          <div class="bg-black/60 rounded-lg p-4 border border-green-400/30 shadow-lg shadow-green-400/10">
+            <div class="flex items-center gap-3 mb-3">
+              <Code class="w-6 h-6 text-green-400 animate-pulse" />
+              <h3 class="text-green-300 font-mono font-bold tracking-wider">ROUTE.PATHWAY</h3>
+            </div>
+            <div class="bg-gray-900/80 rounded-lg p-4 border border-gray-600/50">
+              <code class="text-lg text-green-400 font-mono tracking-wide block">
+                {selectedRoute.path}
+              </code>
+            </div>
+          </div>
 
-  .page-header p {
-    font-size: 1.125rem;
-    color: #6b7280;
-  }
+          {#if routeInfo}
+            <!-- Description & Purpose -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex items-center gap-2 mb-3">
+                  <BookOpen class="w-5 h-5 text-blue-600" />
+                  <h3 class="font-medium text-gray-900">Description</h3>
+                </div>
+                <p class="text-gray-700 leading-relaxed">{routeInfo.description}</p>
+              </div>
 
-  /* Progress Summary Styles */
-  .progress-summary {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 1rem;
-    color: white;
-  }
+              <div>
+                <div class="flex items-center gap-2 mb-3">
+                  <Target class="w-5 h-5 text-purple-600" />
+                  <h3 class="font-medium text-gray-900">Purpose</h3>
+                </div>
+                <p class="text-gray-700 leading-relaxed">{routeInfo.purpose}</p>
+              </div>
+            </div>
 
-  .summary-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
+            <!-- Features -->
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <CheckCircle class="w-5 h-5 text-green-600" />
+                <h3 class="font-medium text-gray-900">Key Features</h3>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {#each routeInfo.features as feature}
+                  <div class="flex items-center gap-2 text-sm text-gray-600">
+                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                    {feature}
+                  </div>
+                {/each}
+              </div>
+            </div>
 
-  .stat {
-    text-align: center;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 0.5rem;
-    backdrop-filter: blur(10px);
-  }
+            <!-- Scaffolding Code -->
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <Code class="w-5 h-5 text-orange-600" />
+                <h3 class="font-medium text-gray-900">Scaffolding Template</h3>
+              </div>
+              <div class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto">
+                <pre class="text-sm font-mono whitespace-pre-wrap">{routeInfo.scaffold}</pre>
+              </div>
+            </div>
+          {/if}
 
-  .stat-value {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 0.25rem;
-  }
+          <!-- Implementation Notes -->
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <div class="flex items-center gap-2 mb-2">
+              <Info class="w-5 h-5 text-blue-600" />
+              <h3 class="font-medium text-blue-900">Implementation Notes</h3>
+            </div>
+            <ul class="text-sm text-blue-800 space-y-1">
+              <li>• Uses Svelte 5 runes ($state, $props, $effect)</li>
+              <li>• TypeScript support with proper type definitions</li>
+              <li>• Follows Legal AI platform architecture patterns</li>
+              <li>• Integrates with existing component library</li>
+              {#if selectedRoute.status === 'working'}
+                <li>• ✅ Production ready and fully functional</li>
+              {:else if selectedRoute.status === 'demo'}
+                <li>• 🧪 Demo/prototype - may need additional implementation</li>
+              {:else if selectedRoute.status === 'experimental'}
+                <li>• ⚗️ Experimental - under active development</li>
+              {/if}
+            </ul>
+          </div>
+        </div>
+      </div>
 
-  .stat-label {
-    font-size: 0.875rem;
-    opacity: 0.9;
-  }
-
-  .overall-progress {
-    margin-top: 1rem;
-  }
-
-  .progress-bar-container {
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 0.5rem;
-  }
-
-  .progress-bar {
-    height: 100%;
-    transition: width 0.3s ease;
-    border-radius: 4px;
-  }
-
-  .progress-text {
-    font-size: 0.875rem;
-    text-align: center;
-    opacity: 0.9;
-  }
-
-  /* Phase Tracker Styles */
-  .phase-tracker {
-    margin: 3rem 0;
-  }
-
-  .tracker-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-
-  .tracker-header h2 {
-    font-size: 1.75rem;
-    color: #1f2937;
-    margin: 0;
-  }
-
-  .toggle {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
-
-  .phases-grid {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  }
-
-  .phase-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
-
-  .phase-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: #3b82f6;
-  }
-
-  .phase-card.selected {
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-  }
-
-  .phase-card.complete {
-    border-left: 4px solid #10b981;
-  }
-
-  .phase-card.in-progress {
-    border-left: 4px solid #f59e0b;
-  }
-
-  .phase-card.planned {
-    border-left: 4px solid #6b7280;
-  }
-
-  .phase-header {
-    margin-bottom: 1rem;
-  }
-
-  .phase-number {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-
-  .phase-label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .status-icon {
-    opacity: 0.7;
-  }
-
-  .phase-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 0.75rem;
-  }
-
-  .phase-progress {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .progress-bar-small {
-    flex: 1;
-    height: 6px;
-    background: #e5e7eb;
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    transition: width 0.3s ease;
-  }
-
-  .progress-percentage {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #6b7280;
-    min-width: 3rem;
-    text-align: right;
-  }
-
-  .phase-description {
-    color: #6b7280;
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-    line-height: 1.5;
-  }
-
-  .phase-status {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-
-  .phase-note {
-    font-size: 0.75rem;
-    font-style: italic;
-    color: #6b7280;
-  }
-
-  .phase-details {
-    border-top: 1px solid #e5e7eb;
-    padding-top: 1rem;
-    margin-top: 1rem;
-    display: grid;
-    gap: 1.5rem;
-  }
-
-  .features-section h4,
-  .routes-section h4 {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .features-list,
-  .routes-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 0.5rem;
-  }
-
-  .feature-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: #4b5563;
-  }
-
-  .feature-icon {
-    flex-shrink: 0;
-  }
-
-  .route-item {
-    font-size: 0.875rem;
-  }
-
-  .route-link {
-    color: #3b82f6;
-    text-decoration: none;
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-    padding: 0.25rem 0.5rem;
-    background: #f3f4f6;
-    border-radius: 0.375rem;
-    transition: all 0.2s ease;
-  }
-
-  .route-link:hover {
-    background: #e5e7eb;
-    color: #1d4ed8;
-  }
-
-  .route-discovery {
-    margin: 3rem 0;
-  }
-
-  .route-discovery h2 {
-    font-size: 1.75rem;
-    color: #1f2937;
-    margin-bottom: 1.5rem;
-  }
-
-  .inventory-summary { margin-top: 3rem; border-top: 1px solid #e5e7eb; padding-top: 2rem; }
-  .inventory-summary h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }
-  .counts-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 0.75rem; margin: 1rem 0 1.5rem; }
-  .counts-grid div { background:#f3f4f6; padding:0.75rem 0.9rem; border-radius:8px; display:flex; flex-direction:column; gap:0.25rem; }
-  .counts-grid div span { font-size:1.25rem; font-weight:600; color:#111827; }
-  .counts-grid div.warn { background:#fff7ed; border:1px solid #fdba74; }
-  details.diff-block, details.sample { background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:0.75rem 1rem; margin-bottom:1rem; }
-  details.diff-block summary, details.sample summary { cursor:pointer; font-weight:600; }
-  details ul { list-style:disc; padding-left:1.25rem; margin:0.5rem 0 1rem; max-height:260px; overflow:auto; }
-  .truncate-note { font-size:0.85rem; color:#6b7280; }
-  .generated { font-size:0.8rem; color:#6b7280; }
-</style>
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-between p-6 border-t bg-gray-50">
+        <div class="text-sm text-gray-500">
+          Click outside the modal or press ESC to close
+        </div>
+        <div class="flex items-center gap-3">
+          <a
+            href={selectedRoute.path}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <ExternalLink class="w-4 h-4" />
+            Test Route
+          </a>
+          <button
+            onclick={closeModal}
+            class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+{/if}

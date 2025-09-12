@@ -76,6 +76,18 @@
 		cacheKey?: string;
 		role?: string;
 		'data-testid'?: string;
+
+		// Accessibility props
+		/** ARIA label for screen readers (especially important for icon-only buttons) */
+		'aria-label'?: string;
+		/** ID of element that describes this button */
+		'aria-describedby'?: string;
+		/** Whether button controls expanded state (for dropdowns, etc.) */
+		'aria-expanded'?: boolean;
+		/** ID of element controlled by this button */
+		'aria-controls'?: string;
+		/** Screen reader only text for additional context */
+		srOnlyText?: string;
 	}
 
 	let {
@@ -103,8 +115,25 @@
 		cacheKey,
 		role = 'button',
 		'data-testid': testId,
+		// Accessibility props (explicit so we can reference directly in runes mode)
+		'aria-label': ariaLabel,
+		'aria-describedby': ariaDescribedby,
+		'aria-expanded': ariaExpanded,
+		'aria-controls': ariaControls,
+		srOnlyText,
 		...restProps
 	}: Props = $props();
+
+	// Build proper aria-describedby string including loading announcement
+	let finalAriaDescribedby = $derived(() => {
+		const ids = [];
+		if (ariaDescribedby) ids.push(ariaDescribedby);
+		if (loading) ids.push(loadingAnnouncementId);
+		return ids.join(' ') || undefined;
+	});
+
+	// Generate unique ID for loading announcement
+	const loadingAnnouncementId = `loading-${id}`;
 
 	// Remove potential className from rest props to avoid invalid DOM attribute
 	if ('className' in restProps) {
@@ -184,6 +213,11 @@
 		role="button"
 		tabindex="0"
 		aria-disabled={isDisabled}
+		aria-label={ariaLabel}
+		aria-describedby={finalAriaDescribedby()}
+		aria-expanded={ariaExpanded}
+		aria-controls={ariaControls}
+		aria-busy={loading}
 		data-testid="button"
 		{...restProps}
 	>
@@ -213,12 +247,21 @@
 		{:else}
 			{@render children?.()}
 		{/if}
+
+		{#if srOnlyText}
+			<span class="sr-only">{srOnlyText}</span>
+		{/if}
 	</a>
 {:else}
 	<button
 		{type}
 		disabled={isDisabled}
 		class={buttonClass}
+		aria-label={ariaLabel}
+		aria-describedby={finalAriaDescribedby()}
+		aria-expanded={ariaExpanded}
+		aria-controls={ariaControls}
+		aria-busy={loading}
 		data-testid="button"
 		onclick={handleClick}
 		{...restProps}
@@ -249,7 +292,18 @@
 		{:else}
 			{@render children?.()}
 		{/if}
+
+		{#if srOnlyText}
+			<span class="sr-only">{srOnlyText}</span>
+		{/if}
 	</button>
+{/if}
+
+<!-- Screen reader loading announcement -->
+{#if loading}
+	<div id={loadingAnnouncementId} class="sr-only" aria-live="polite">
+		{loadingText}
+	</div>
 {/if}
 
 

@@ -311,7 +311,8 @@ https://svelte.dev/e/js_parse_error -->
       {:else}
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-2" for="t5-task">T5 Task</label><select id="t5-task" bind:value={t5Task} class="w-full p-3 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium mb-2" for="t5-task">T5 Task</label>
+            <select id="t5-task" bind:value={t5Task} class="w-full p-3 border border-gray-300 rounded-lg">
               <option value="summarize">Summarize</option>
               <option value="translate">Translate</option>
               <option value="qa">Question Answering</option>

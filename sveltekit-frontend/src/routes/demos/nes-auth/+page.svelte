@@ -4,9 +4,6 @@ https://svelte.dev/e/props_duplicate -->
 <script lang="ts">
   import { Button, Card, Dialog, Input, Label, Alert, AlertDescription } from '$lib/components/ui/enhanced-bits';
 
-  // SvelteKit passes 'form' when you use form actions
-  let { form = $bindable() }: { form?: any } = $props();
-
   // Page data (passed from +page.ts load). Define explicitly instead of inline interface in markup.
   interface ChatMessage {
     id: string;
@@ -22,7 +19,12 @@ https://svelte.dev/e/props_duplicate -->
     confidence: number;
   }
 
-  let { data = $bindable({ chat: [], recommendations: [] }) }: {
+  // Combined $props() call - only one allowed per component in Svelte 5
+  let { 
+    form = $bindable(),
+    data = $bindable({ chat: [], recommendations: [] }) 
+  }: {
+    form?: any;
     data?: {
       chat?: ChatMessage[];
       recommendations?: Recommendation[];

@@ -299,8 +299,8 @@ https://svelte.dev/e/tag_invalid_name -->
         <h4 class="font-semibold text-nier-text-primary mb-2">Cache Hierarchy</h4>
         <div class="text-sm space-y-1 text-nier-text-secondary">
           <div>1. 🧠 WASM Memory Cache (instant)</div>
-          <div>2. 🔴 Redis Cache (< 5ms)</div>
-          <div>3. 🐘 PostgreSQL + pgvector (< 50ms)</div>
+          <div>2. 🔴 Redis Cache (&lt; 5ms)</div>
+          <div>3. 🐘 PostgreSQL + pgvector (&lt; 50ms)</div>
           <div>4. 🌐 Remote Neo4j (100ms+)</div>
         </div>
       </div>

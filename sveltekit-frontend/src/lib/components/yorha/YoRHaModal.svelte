@@ -206,41 +206,40 @@
 
 <style>
   .yorha-modal-backdrop {
-    position: fixed
+position: fixed {}
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 10000;
-    display: flex
-    align-items: center
-    justify-content: center
+display: flex {}
+align-items: center {}
+justify-content: center {}
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(2px);
   }
 
   .yorha-modal {
-    position: relative
+position: relative {}
     background: var(--yorha-bg-secondary, #1a1a1a);
     border: 2px solid var(--yorha-text-muted, #808080);
     font-family: var(--yorha-font-primary, "JetBrains Mono", monospace);
     color: var(--yorha-text-primary, #e0e0e0);
     max-height: calc(100vh - 2rem);
-    display: flex
-    flex-direction: column
-    overflow: hidden
-    box-shadow:
-      0 0 0 1px var(--yorha-bg-primary, #0a0a0a),
+display: flex {}
+flex-direction: column {}
+overflow: hidden {}
+box-shadow: {}
+0 0 0 1px var(--yorha-bg-primary, #0a0a0a), {}
       0 20px 80px rgba(0, 0, 0, 0.9);
   }
-
-  /* Modal Types */
+/* Modal Types */ {}
   .yorha-modal.system {
     border-color: var(--yorha-secondary, #ffd700);
-    box-shadow:
-      0 0 0 1px var(--yorha-secondary, #ffd700),
-      0 0 30px rgba(255, 215, 0, 0.4),
-      0 20px 80px rgba(0, 0, 0, 0.9),
+box-shadow: {}
+0 0 0 1px var(--yorha-secondary, #ffd700), {}
+0 0 30px rgba(255, 215, 0, 0.4), {}
+0 20px 80px rgba(0, 0, 0, 0.9), {}
       inset 0 0 30px rgba(255, 215, 0, 0.1);
   }
 
@@ -251,16 +250,15 @@
   .yorha-modal.alert {
     border-left: 4px solid var(--yorha-danger, #ff0041);
   }
-
-  /* Header */
+/* Header */ {}
   .modal-header {
     background: var(--yorha-bg-primary, #0a0a0a);
     border-bottom: 2px solid var(--yorha-secondary, #ffd700);
     padding: 16px 20px;
-    display: flex
+display: flex {}
     align-items: flex-start;
     justify-content: space-between;
-    position: relative
+position: relative {}
   }
 
   .header-content {
@@ -272,7 +270,7 @@
     color: var(--yorha-secondary, #ffd700);
     font-size: 16px;
     font-weight: 700;
-    text-transform: uppercase
+text-transform: uppercase {}
     letter-spacing: 2px;
     margin: 0 0 4px 0;
   }
@@ -281,19 +279,19 @@
     color: var(--yorha-text-muted, #808080);
     font-size: 12px;
     margin: 0;
-    text-transform: uppercase
+text-transform: uppercase {}
     letter-spacing: 1px;
   }
 
   .system-status {
-    display: flex
-    align-items: center
+display: flex {}
+align-items: center {}
     gap: 8px;
     margin-right: 16px;
   }
 
   .status-indicator {
-    position: relative
+position: relative {}
     width: 12px;
     height: 12px;
   }
@@ -309,20 +307,20 @@
     font-size: 10px;
     font-weight: 600;
     color: var(--yorha-secondary, #ffd700);
-    text-transform: uppercase
+text-transform: uppercase {}
     letter-spacing: 1px;
   }
 
   .modal-close {
     width: 32px;
     height: 32px;
-    background: transparent
+background: transparent {}
     border: 2px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
-    cursor: pointer
-    display: flex
-    align-items: center
-    justify-content: center
+cursor: pointer {}
+display: flex {}
+align-items: center {}
+justify-content: center {}
     transition: all 0.2s ease;
     flex-shrink: 0;
   }
@@ -338,14 +336,13 @@
     font-size: 14px;
     font-weight: 700;
   }
-
-  /* Content */
+/* Content */ {}
   .modal-content {
     padding: 20px;
     flex: 1;
-    overflow-y: auto
-    scrollbar-width: thin
-    scrollbar-color: var(--yorha-secondary, #ffd700)
+overflow-y: auto {}
+scrollbar-width: thin {}
+scrollbar-color: var(--yorha-secondary, #ffd700) {}
       var(--yorha-bg-primary, #0a0a0a);
   }
 
@@ -361,8 +358,7 @@
     background: var(--yorha-secondary, #ffd700);
     border: 1px solid var(--yorha-bg-primary, #0a0a0a);
   }
-
-  /* Footer */
+/* Footer */ {}
   .modal-footer {
     background: var(--yorha-bg-primary, #0a0a0a);
     border-top: 1px solid var(--yorha-text-muted, #808080);
@@ -370,25 +366,25 @@
   }
 
   .modal-actions {
-    display: flex
+display: flex {}
     justify-content: flex-end;
     gap: 12px;
   }
 
   .modal-button {
-    display: flex
-    align-items: center
+display: flex {}
+align-items: center {}
     gap: 8px;
     padding: 10px 16px;
     background: var(--yorha-bg-secondary, #1a1a1a);
     border: 2px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-secondary, #b0b0b0);
-    font-family: inherit
+font-family: inherit {}
     font-size: 12px;
     font-weight: 600;
-    text-transform: uppercase
+text-transform: uppercase {}
     letter-spacing: 1px;
-    cursor: pointer
+cursor: pointer {}
     transition: all 0.2s ease;
   }
 
@@ -430,31 +426,29 @@
   .button-icon {
     font-size: 14px;
   }
-
-  /* Terminal Border Effect */
+/* Terminal Border Effect */ {}
   .terminal-borders {
-    position: absolute
+position: absolute {}
     inset: 0;
-    pointer-events: none
-    overflow: hidden
+pointer-events: none {}
+overflow: hidden {}
   }
 
   .terminal-borders::before {
     content: "";
-    position: absolute
+position: absolute {}
     inset: 0;
-    background: linear-gradient(
-      45deg,
-      transparent 49%,
-      rgba(255, 215, 0, 0.1) 50%,
-      transparent 51%
+background: linear-gradient( {}
+45deg, {}
+transparent 49%, {}
+rgba(255, 215, 0, 0.1) 50%, {}
+transparent 51% {}
     );
     animation: scanlines 2s linear infinite;
   }
-
-  /* Animations */
+/* Animations */ {}
   @keyframes systemPulse {
-    0%,
+0%, {}
     100% {
       opacity: 1;
       box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
@@ -473,8 +467,7 @@
       transform: translateY(100vh);
     }
   }
-
-  /* Responsive Design */
+/* Responsive Design */ {}
   @media (max-width: 768px) {
     .yorha-modal-backdrop {
       padding: 1rem;
@@ -486,7 +479,7 @@
 
     .modal-header {
       padding: 12px 16px;
-      flex-direction: column
+flex-direction: column {}
       align-items: flex-start;
       gap: 8px;
     }
@@ -497,7 +490,7 @@
     }
 
     .modal-close {
-      position: absolute
+position: absolute {}
       top: 8px;
       right: 8px;
     }
@@ -511,15 +504,14 @@
     }
 
     .modal-actions {
-      flex-direction: column
+flex-direction: column {}
     }
 
     .modal-button {
-      justify-content: center
+justify-content: center {}
     }
   }
-
-  /* Fullscreen variant */
+/* Fullscreen variant */ {}
   .yorha-modal.max-w-none {
     border-radius: 0;
     max-height: 100vh;

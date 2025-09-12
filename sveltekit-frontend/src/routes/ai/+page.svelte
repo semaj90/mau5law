@@ -1,9 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import ChatInterface from "$lib/components/ai/ChatInterface.svelte";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/Button.svelte';
   import {
     chatActions,
     chatStore,
@@ -59,7 +57,7 @@
     return date.toLocaleDateString();
   }
 
-  let filteredHistory = $derived($conversationsList.filter(
+  let filteredHistory = $derived(conversationsList.filter(
     (conv) =>
       conv.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       conv.messages?.some((msg) =>
@@ -121,9 +119,9 @@
               <Button class="bits-btn"
                 variant="outline"
                 size="sm"
-                on:onclick={() => startNewChat()}
+                onclick={() => startNewChat()}
               >
-                <Plus class="space-y-4" />
+                <Plus class="w-4 h-4" />
                 New
               </Button>
             </div>
@@ -188,9 +186,9 @@
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  on:onclick={() => showHistoryPanel()}
+                  onclick={() => showHistoryPanel()}
                 >
-                  <Clock class="space-y-4" />
+                  <Clock class="w-4 h-4" />
                   History
                 </Button>
               {/if}
@@ -212,9 +210,9 @@
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  on:onclick={() => chatActions.saveToStorage()}
+                  onclick={() => chatActions.saveToStorage()}
                 >
-                  <Save class="space-y-4" />
+                  <Save class="w-4 h-4" />
                   Save
                 </Button>
               {/if}
@@ -222,9 +220,9 @@
               <Button class="bits-btn"
                 variant="outline"
                 size="sm"
-                on:onclick={() => startNewChat()}
+                onclick={() => startNewChat()}
               >
-                <Plus class="space-y-4" />
+                <Plus class="w-4 h-4" />
                 New Chat
               </Button>
             </div>
@@ -251,15 +249,15 @@
               {#each ["Analyze this case for legal precedents", "Generate a prosecution strategy", "Summarize evidence findings", "Draft a legal brief outline", "Research similar cases", "Identify key witnesses to interview"] as prompt}
                 <Button
                   variant="outline"
-                  class="space-y-4 bits-btn bits-btn"
-                  on:onclick={() => {
+                  class="bits-btn"
+                  onclick={() => {
                     if (!$chatStore.currentConversation)
                       chatActions.newConversation();
                     // Add the prompt to the conversation
                     chatActions.addMessage(prompt, "user");
                   }}
                 >
-                  <span class="space-y-4">{prompt}</span>
+                  <span>{prompt}</span>
                 </Button>
               {/each}
             </div>

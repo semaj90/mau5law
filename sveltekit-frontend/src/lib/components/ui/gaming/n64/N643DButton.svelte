@@ -381,7 +381,7 @@
 
 <style>
   :global(.n64-3d-button) {
-    /* Base N64 button styling */
+/* Base N64 button styling */ {}
     font-family: 'Rajdhani', 'Arial', sans-serif;
     background: var(--material-bg);
     color: white;
@@ -391,112 +391,98 @@
     font-size: var(--button-font-size);
     min-height: var(--button-min-height);
     font-weight: 600;
-    
-    /* 3D transformations */
+/* 3D transformations */ {}
     transform: var(--transform-3d);
     transform-origin: center center;
     transform-style: preserve-3d;
-    
-    /* Enhanced rendering */
+/* Enhanced rendering */ {}
     image-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    
-    /* Advanced shadows and lighting */
+/* Advanced shadows and lighting */ {}
     box-shadow: var(--material-shadow);
     
     transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
-    
-    /* Remove default button styles */
+/* Remove default button styles */ {}
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     outline: none;
-    
-    /* Prevent text selection */
+/* Prevent text selection */ {}
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-    
-    /* Cursor */
+/* Cursor */ {}
     cursor: pointer;
-    
-    /* Text styling */
+/* Text styling */ {}
     text-transform: uppercase;
     letter-spacing: 0.8px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-    
-    /* Layout */
+/* Layout */ {}
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     overflow: hidden;
-    
-    /* Fog effect */
-    background-image: 
-      var(--material-bg),
+/* Fog effect */ {}
+background-image: {}
+var(--material-bg), {}
       radial-gradient(circle at 50% 120%, var(--fog-color, #404040) 0%, transparent 70%);
   }
-
-  /* Button content wrapper */
+/* Button content wrapper */ {}
   .button-content {
     position: relative;
     z-index: 2;
   }
-
-  /* Lighting overlay */
+/* Lighting overlay */ {}
   .lighting-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.4) 0%,
-      rgba(255, 255, 255, 0.1) 30%,
-      transparent 60%,
-      rgba(0, 0, 0, 0.2) 100%
+background: linear-gradient( {}
+135deg, {}
+rgba(255, 255, 255, 0.4) 0%, {}
+rgba(255, 255, 255, 0.1) 30%, {}
+transparent 60%, {}
+rgba(0, 0, 0, 0.2) 100% {}
     );
     pointer-events: none;
     z-index: 1;
   }
-
-  /* Reflection overlay */
+/* Reflection overlay */ {}
   .reflection-overlay {
     position: absolute;
     top: 10%;
     left: 10%;
     right: 60%;
     bottom: 60%;
-    background: linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.6) 0%,
-      rgba(255, 255, 255, 0.2) 50%,
-      transparent 100%
+background: linear-gradient( {}
+45deg, {}
+rgba(255, 255, 255, 0.6) 0%, {}
+rgba(255, 255, 255, 0.2) 50%, {}
+transparent 100% {}
     );
     border-radius: 2px;
     pointer-events: none;
     z-index: 3;
     opacity: 0.8;
   }
-
-  /* Material type variations */
+/* Material type variations */ {}
   :global(.n64-3d-button.pbr) {
     background-blend-mode: overlay, normal;
   }
-
-  /* Mesh complexity variations */
+/* Mesh complexity variations */ {}
   :global(.n64-3d-button.mesh-high) {
     border-radius: 6px;
   }
 
   :global(.n64-3d-button.mesh-high .lighting-overlay) {
-    background: 
-      linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 40%),
-      linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%),
+background: {}
+linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 40%), {}
+linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), {}
       radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
   }
 
@@ -504,37 +490,33 @@
     border-radius: 2px;
     transform-style: flat;
   }
-
-  /* Disabled state */
+/* Disabled state */ {}
   :global(.n64-3d-button:disabled) {
     background: linear-gradient(145deg, #6c757d 0%, #495057 50%, #343a40 100%);
     color: #adb5bd;
     cursor: not-allowed;
     opacity: 0.7;
     transform: perspective(1000px) scale(0.98);
-    box-shadow: 
-      0 2px 0 #343a40,
-      inset 0 1px 0 rgba(255,255,255,0.1),
+box-shadow: {}
+0 2px 0 #343a40, {}
+inset 0 1px 0 rgba(255,255,255,0.1), {}
       0 4px 8px rgba(0,0,0,0.2);
   }
-
-  /* Focus styles for accessibility */
+/* Focus styles for accessibility */ {}
   :global(.n64-3d-button:focus-visible) {
     outline: 2px solid #ffffff;
     outline-offset: 3px;
-    box-shadow: 
-      var(--material-shadow),
+box-shadow: {}
+var(--material-shadow), {}
       0 0 0 3px rgba(255, 255, 255, 0.3);
   }
-
-  /* Glow effect */
+/* Glow effect */ {}
   :global(.n64-3d-button:hover) {
-    box-shadow: 
-      var(--material-shadow),
+box-shadow: {}
+var(--material-shadow), {}
       0 0 20px rgba(255, 255, 255, calc(var(--glow-intensity) * 0.5));
   }
-
-  /* Enhanced loading spinner */
+/* Enhanced loading spinner */ {}
   .loading-spinner {
     display: inline-flex;
     align-items: center;
@@ -567,48 +549,40 @@
       border-width: 3px 2px 1px 3px;
     }
   }
-
-  /* Enhanced anti-aliasing and texture filtering */
+/* Enhanced anti-aliasing and texture filtering */ {}
   :global(.n64-3d-button) {
     -webkit-transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     -webkit-perspective: 1000;
-    
-    /* Enhanced texture filtering */
+/* Enhanced texture filtering */ {}
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
-    
-    /* Advanced anti-aliasing */
+/* Advanced anti-aliasing */ {}
     -webkit-font-smoothing: subpixel-antialiased;
     text-rendering: optimizeLegibility;
   }
-  
-  /* Ultra quality texture filtering */
+/* Ultra quality texture filtering */ {}
   :global(.n64-3d-button.texture-ultra) {
     image-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    
-    /* Advanced filtering effects */
-    filter: 
-      contrast(1.02)
-      brightness(1.01)
+/* Advanced filtering effects */ {}
+filter: {}
+contrast(1.02) {}
+brightness(1.01) {}
       saturate(1.05);
   }
-  
-  /* Bilinear filtering simulation */
+/* Bilinear filtering simulation */ {}
   :global(.n64-3d-button.filtering-bilinear) {
     image-rendering: auto;
     filter: blur(0.25px) contrast(1.1);
   }
-  
-  /* Trilinear filtering simulation */
+/* Trilinear filtering simulation */ {}
   :global(.n64-3d-button.filtering-trilinear) {
     image-rendering: auto;
     filter: blur(0.15px) contrast(1.05) sharpen(0.1px);
   }
-  
-  /* Anisotropic filtering levels */
+/* Anisotropic filtering levels */ {}
   :global(.n64-3d-button.anisotropic-4x) {
     filter: blur(0.1px) sharpen(0.3px) contrast(1.03);
   }
@@ -620,8 +594,7 @@
   :global(.n64-3d-button.anisotropic-16x) {
     filter: sharpen(0.8px) contrast(1.08) brightness(1.02);
   }
-
-  /* Fog effects */
+/* Fog effects */ {}
   :global(.n64-3d-button::before) {
     content: '';
     position: absolute;
@@ -629,26 +602,24 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      ellipse at center bottom,
-      var(--fog-color, #404040) 0%,
-      transparent 70%
+background: radial-gradient( {}
+ellipse at center bottom, {}
+var(--fog-color, #404040) 0%, {}
+transparent 70% {}
     );
     opacity: 0.3;
     pointer-events: none;
     z-index: 0;
   }
-
-  /* Mobile optimizations */
+/* Mobile optimizations */ {}
   @media (max-width: 480px) {
     :global(.n64-3d-button) {
       min-height: 44px;
       font-size: 12px;
-      /* Reduce 3D effects on mobile for performance */
+/* Reduce 3D effects on mobile for performance */ {}
       transform: scale(var(--dynamic-scale, 1));
     }
-    
-    .lighting-overlay,
+.lighting-overlay, {}
     .reflection-overlay {
       display: none;
     }
@@ -657,8 +628,7 @@
       display: none;
     }
   }
-
-  /* Reduced motion support */
+/* Reduced motion support */ {}
   @media (prefers-reduced-motion: reduce) {
     :global(.n64-3d-button) {
       transform: none !important;
@@ -671,29 +641,25 @@
       border-right-color: transparent;
     }
   }
-
-  /* High contrast mode */
+/* High contrast mode */ {}
   @media (prefers-contrast: high) {
     :global(.n64-3d-button) {
       border: 2px solid currentColor;
       text-shadow: none;
     }
-    
-    .lighting-overlay,
+.lighting-overlay, {}
     .reflection-overlay {
       display: none;
     }
   }
-
-  /* Performance optimization for low-end devices */
+/* Performance optimization for low-end devices */ {}
   @media (max-device-memory: 2GB) {
     :global(.n64-3d-button) {
       transform: none;
       box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
     }
-    
-    .lighting-overlay,
-    .reflection-overlay,
+.lighting-overlay, {}
+.reflection-overlay, {}
     :global(.n64-3d-button::before) {
       display: none;
     }

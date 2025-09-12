@@ -6,9 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   import { page } from "$app/stores";
   import EvidenceUploadModal from "$lib/components/modals/EvidenceUploadModal.svelte";
   import EvidenceValidationModal from "$lib/components/modals/EvidenceValidationModal.svelte";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
@@ -102,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
   let evidenceUploadFeedback: any;
 
   // Filtering and selection
-  let selectedEvidence = $state<Set<string>>(new Set();
+  let selectedEvidence = $state<Set<string>>(new Set());
   let selectedType = $state("");
   let selectedStatus = $state("");
   let selectedCollector = $state("");
@@ -124,8 +122,8 @@ https://svelte.dev/e/js_parse_error -->
   // Reactive values from SSR data and store
   let ({ isLoading: loading, error } = $derived($evidenceGrid));
   let allEvidence = $derived(data.evidence || []);
-  let filteredEvidence = $derived(filterAndSortEvidence(allEvidence);
-  let visibleEvidence = $derived(getPaginatedEvidence();
+  let filteredEvidence = $derived(filterAndSortEvidence(allEvidence));
+  let visibleEvidence = $derived(getPaginatedEvidence());
   onMount(() => {
     // Initialize store with SSR data
     evidenceActions.setItems(data.evidence || []);
@@ -136,7 +134,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   function filterAndSortEvidence(evidence: Evidence[]) {
-  let filtered = $state([...evidence]);
+  let filtered = [...evidence];
 
     // Apply search filter
     if (searchQuery.trim()) {
@@ -269,8 +267,8 @@ https://svelte.dev/e/js_parse_error -->
 
     bulkOperationLoading = true;
     const evidenceIds = Array.from(selectedEvidence);
-  let successCount = $state(0);
-  let failureCount = $state(0);
+  let successCount = 0;
+  let failureCount = 0;
 
     try {
       for (const evidenceId of evidenceIds) {
@@ -328,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function formatAnalysisForDisplay(analysis: any): string {
     if (!analysis) return "No analysis available";
-  let display = $state("");
+  let display = "";
 
     if (analysis.thinking && thinkingStyleEnabled) {
       display += `**🧠 AI Reasoning Process:**\n${analysis.thinking}\n\n---\n\n`;
@@ -997,8 +995,8 @@ https://svelte.dev/e/js_parse_error -->
               <div class="space-y-4">
                 <!-- Header with Icon -->
                 <div class="flex items-center gap-3">
-                  <{getEvidenceTypeIcon(evidence.evidenceType)} class="w-8 h-8 text-blue-500 nes-memory-active"
-                  />
+                  {@const EvidenceIcon = getEvidenceTypeIcon(evidence.evidenceType)}
+                <EvidenceIcon class="w-8 h-8 text-blue-500 nes-memory-active" />
                   <div>
                     <h2 class="nes-text-pixelated font-bold text-lg line-clamp-2">
                       {evidence.title || "Untitled Evidence"}
@@ -1108,8 +1106,8 @@ https://svelte.dev/e/js_parse_error -->
                     'Untitled Evidence'}"
                 />
 
-                <{getEvidenceTypeIcon(evidence.evidenceType)} class="mx-auto px-4 max-w-7xl"
-                />
+                {@const EvidenceIconList = getEvidenceTypeIcon(evidence.evidenceType)}
+                <EvidenceIconList class="w-4 h-4 text-muted-foreground" />
 
                 <div class="mx-auto px-4 max-w-7xl">
                   <div class="mx-auto px-4 max-w-7xl">

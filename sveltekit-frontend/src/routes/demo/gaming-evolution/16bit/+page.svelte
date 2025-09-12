@@ -198,22 +198,22 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </div>
           </div>
 
-        </Card.Content>
-      </Card.Root>
+        </Card.CardContent>
+      </Card.Card>
     </section>
 
     <!-- Game UI Recreation -->
     <section class="game-ui-panel">
-      <Card.Root class="snes-card">
-        <Card.Header>
-          <Card.Title class="snes-title">
+      <Card.Card class="snes-card">
+        <Card.CardHeader>
+          <Card.CardTitle class="snes-title">
             👾 16-bit Game Interface
-          </Card.Title>
-          <Card.Description class="snes-subtitle">
+          </Card.CardTitle>
+          <Card.CardDescription class="snes-subtitle">
             Classic SNES Menu & Dialog Recreation
-          </Card.Description>
-        </Card.Header>
-        <Card.Content class="game-interface">
+          </Card.CardDescription>
+        </Card.CardHeader>
+        <Card.CardContent class="game-interface">
 
           <!-- RPG-style Tabs -->
           <Tabs.Root bind:value={activeTab} class="snes-tabs">
@@ -306,8 +306,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </Dialog.Root>
           </div>
 
-        </Card.Content>
-      </Card.Root>
+        </Card.CardContent>
+      </Card.Card>
     </section>
 
   </main>

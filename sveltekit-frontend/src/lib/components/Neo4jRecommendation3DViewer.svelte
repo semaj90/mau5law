@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
-  const { nodeId: string = '', nodeType: string = 'Case', maxNodes: number = 100, maxDepth: number = 3, autoStart: boolean = true, enableStreaming: boolean = true, showProgress: boolean = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' } = $props();
+  let { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' } = $props();
 
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { useMachine } from '@xstate/svelte';

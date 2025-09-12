@@ -213,9 +213,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
             </div>
 
-          </CardContent>
-        </Card>
-      </Card>
+          </Card.Content>
+        </Card.Root>
     </section>
 
     <!-- Interactive 3D Components -->
@@ -310,8 +309,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </div>
           </div>
 
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </section>
 
     <!-- 3D Game Interface -->
@@ -450,8 +449,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </Dialog.Root>
           </div>
 
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </section>
 
   </main>

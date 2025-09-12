@@ -85,8 +85,8 @@ https://svelte.dev/e/js_parse_error -->
       }
       const data = await response.json();
       const models = data.models || [];
-      const hasGemma = models.some((m: any) => m.name.includes('gemma3-legal');
-      const hasEmbedding = models.some((m: any) => m.name.includes('nomic-embed-text');
+  const hasGemma = models.some((m: any) => m.name.includes('gemma3-legal'));
+  const hasEmbedding = models.some((m: any) => m.name.includes('nomic-embed-text'));
       if (!hasGemma || !hasEmbedding) {
         throw new Error(`Missing models - gemma3-legal: ${hasGemma}, nomic-embed-text: ${hasEmbedding}`);
       }
@@ -145,15 +145,15 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const result = await testFn();
       const duration = Date.now() - startTime;
-      testResults = testResults.map(t => 
-        t.test === testName 
+      testResults = testResults.map(t =>
+        t.test === testName
           ? { ...t, status: 'success' as const, message: result, duration }
           : t
       );
     } catch (error) {
       const duration = Date.now() - startTime;
-      testResults = testResults.map(t => 
-        t.test === testName 
+      testResults = testResults.map(t =>
+        t.test === testName
           ? { ...t, status: 'error' as const, message: error.message, duration }
           : t
       );
@@ -176,7 +176,7 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <div class="mb-6">
-    <button 
+    <button
       onclick={runCompleteAITest}
       disabled={isRunning}
       class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -215,14 +215,14 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/each}
   </div>
-  
+
   {#if testResults.length === 0 && !isRunning}
     <div class="text-center py-12 text-gray-500">
       <div class="text-6xl mb-4">🚀</div>
       <p class="text-lg">Click "Run Complete AI Test" to start comprehensive testing</p>
     </div>
   {/if}
-  
+
   {#if !isRunning && testResults.length > 0}
     <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
       <div class="flex items-center gap-2 mb-2">
@@ -244,7 +244,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-    
+
     {#if testResults.filter(t => t.status === 'success').length === testResults.length}
       <div class="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg">
         <div class="flex items-center gap-2">

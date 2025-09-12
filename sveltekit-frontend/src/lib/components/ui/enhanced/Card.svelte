@@ -31,10 +31,9 @@
 	{@render children?.()}
 </div>
 
-<style>
-	/* Enhanced Card with NieR styling */
+<style>/* Enhanced Card with NieR styling */ {}
 	.yorha-card {
-		/* Base styles from UnoCSS shortcuts */
+/* Base styles from UnoCSS shortcuts */ {}
 		position: relative;
 	}
 	
@@ -45,11 +44,11 @@
 		left: 0;
 		right: 0;
 		height: 2px;
-		background: linear-gradient(90deg, 
-			transparent 0%, 
-			var(--color-nier-border-primary) 10%, 
-			var(--color-nier-border-primary) 90%, 
-			transparent 100%
+background: linear-gradient(90deg, {}
+transparent 0%, {}
+var(--color-nier-border-primary) 10%, {}
+var(--color-nier-border-primary) 90%, {}
+transparent 100% {}
 		);
 		opacity: 0;
 		transition: opacity 0.3s ease;

@@ -393,14 +393,12 @@ https://svelte.dev/e/js_parse_error -->
   .rounded-inherit {
     border-radius: inherit;
   }
-
-  /* GPU animation performance optimizations */
+/* GPU animation performance optimizations */ {}
   canvas {
     will-change: transform;
     transform: translateZ(0);
   }
-  
-  /* NES-style font rendering */
+/* NES-style font rendering */ {}
   .font-mono {
     font-family: 'Courier New', 'Monaco', monospace;
     font-feature-settings: normal;

@@ -46,8 +46,7 @@
   {/if}
 </div>
 
-<style>
-  /* @unocss-include */
+<style>/* @unocss-include */ {}
   .select-item {
     padding: 8px 12px;
     cursor: pointer;

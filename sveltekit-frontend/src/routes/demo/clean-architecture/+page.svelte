@@ -305,7 +305,7 @@ https://svelte.dev/e/js_parse_error -->
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k);
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
@@ -574,7 +574,7 @@ https://svelte.dev/e/js_parse_error -->
                   <span>{uploadProgress}%</span>
                 </div>
                 <div class="w-full bg-blue-200 rounded-full h-2 mt-1">
-                  <div 
+                  <div
                     class="bg-blue-600 h-2 rounded-full transition-all duration-300"
                     style="width: {uploadProgress}%"
                   ></div>
@@ -620,7 +620,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
     <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md">
       <h2 class="text-xl font-semibold mb-4">Create New Case</h2>
-      
+
       <form submit={async (e) => { e.preventDefault(); await createCase(); }}>
         <div class="form-group mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2" for="-case-title-">
@@ -650,7 +650,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="form-group">
             <label class="block text-sm font-medium text-gray-700 mb-2" for="-priority-">
               Priority
-            </label><select id="-priority-" 
+            </label><select id="-priority-"
               bind:value={createFormData.priority}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
@@ -664,7 +664,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="form-group">
             <label class="block text-sm font-medium text-gray-700 mb-2" for="-status-">
               Status
-            </label><select id="-status-" 
+            </label><select id="-status-"
               bind:value={createFormData.status}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
@@ -702,7 +702,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
     <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md">
       <h2 class="text-xl font-semibold mb-4">Upload Evidence</h2>
-      
+
       <form submit={async (e) => { e.preventDefault(); await handleFileUpload(); }}>
         <div class="form-group mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2" for="-select-file-">
@@ -728,7 +728,7 @@ https://svelte.dev/e/js_parse_error -->
               <span>{uploadProgress}%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 class="bg-blue-600 h-2 rounded-full transition-all duration-300"
                 style="width: {uploadProgress}%"
               ></div>
@@ -767,7 +767,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="modal-content bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-semibold">Search Evidence - {selectedCase?.title}</h2>
-        <button 
+        <button
           onclick={() => { showSearchModal = false; clearSearch(); }}
           class="text-gray-500 hover:text-black text-2xl"
         >
@@ -851,13 +851,13 @@ https://svelte.dev/e/js_parse_error -->
                     </span>
                   </div>
                 </div>
-                
+
                 <div class="content mb-3">
                   <p class="text-sm text-gray-700 line-clamp-4">
                     {result.content.substring(0, 300)}...
                   </p>
                 </div>
-                
+
                 <div class="metadata text-xs text-gray-500 flex justify-between">
                   <span>
                     Created: {formatDate(result.createdAt)}

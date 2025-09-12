@@ -110,32 +110,28 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 </form>
 
-<style>
-  /* YoRHa-specific styling */
-  :global(.yorha-form input),
-  :global(.yorha-form textarea),
+<style>/* YoRHa-specific styling */ {}
+:global(.yorha-form input), {}
+:global(.yorha-form textarea), {}
   :global(.yorha-form select) {
     background-color: rgba(0, 0, 0, 0.8);
     border: 1px solid rgba(212, 175, 55, 0.6);
     color: rgb(212, 175, 55);
     font-family: 'JetBrains Mono', monospace;
   }
-
-  :global(.yorha-form input:focus),
-  :global(.yorha-form textarea:focus),
+:global(.yorha-form input:focus), {}
+:global(.yorha-form textarea:focus), {}
   :global(.yorha-form select:focus) {
     border-color: rgb(212, 175, 55);
     box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
   }
-
-  /* Legal form styling */
+/* Legal form styling */ {}
   :global(.legal-form label) {
     color: rgb(29, 78, 216);
     font-weight: 600;
   }
-
-  :global(.legal-form input[required] + label::after),
-  :global(.legal-form textarea[required] + label::after),
+:global(.legal-form input[required] + label::after), {}
+:global(.legal-form textarea[required] + label::after), {}
   :global(.legal-form select[required] + label::after) {
     content: ' *';
     color: rgb(239, 68, 68);

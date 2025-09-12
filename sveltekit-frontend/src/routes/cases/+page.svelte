@@ -7,8 +7,8 @@
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
+  import Button from '$lib/components/ui/Button.svelte';
   import {
-    Button,
     Card,
     Dialog,
     Input,

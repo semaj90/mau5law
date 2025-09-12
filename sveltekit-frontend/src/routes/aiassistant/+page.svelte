@@ -429,7 +429,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function adjustPanelWidth(panelName: keyof PanelLayout, delta: number) {
     const current = panelLayout[panelName].width;
-    const newWidth = Math.max(15, Math.min(50, current + delta);
+    const newWidth = Math.max(15, Math.min(50, current + delta));
     panelLayout[panelName].width = newWidth;
 
     // Redistribute remaining width

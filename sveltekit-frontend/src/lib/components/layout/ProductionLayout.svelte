@@ -514,8 +514,7 @@
     @apply min-h-screen bg-yorha-bg-primary text-white;
     font-family: 'JetBrains Mono', 'Courier New', monospace;
   }
-
-  /* Enhanced scrollbars for better UX */
+/* Enhanced scrollbars for better UX */ {}
   :global(.yorha-production-layout *::-webkit-scrollbar) {
     width: 8px;
     height: 8px;
@@ -534,8 +533,7 @@
   :global(.yorha-production-layout *::-webkit-scrollbar-thumb:hover) {
     background: rgba(255, 215, 0, 0.6);
   }
-
-  /* Animation for neural sprite effects */
+/* Animation for neural sprite effects */ {}
   :global(.neural-sprite-active) {
     animation: neural-pulse 2s ease-in-out infinite;
   }
@@ -544,8 +542,7 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
   }
-
-  /* Responsive typography */
+/* Responsive typography */ {}
   @media (max-width: 768px) {
     .yorha-production-layout {
       font-size: 14px;
