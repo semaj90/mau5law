@@ -66,8 +66,8 @@ export class GPUVectorProcessor {
   } | null = null;
   // WebGL1 pooled resources keyed by texSize + floatMode
   private webgl1Pool: Map<string, { free: Array<{ textures: WebGLTexture[]; framebuffers: WebGLFramebuffer[] }>; inUse: number }> = new Map();
-  // WebGPU pipeline + buffer cache
-  private webgpuCache: {
+  // Enhanced WebGPU pipeline + buffer cache with dimension-keyed program caching
+  private webgpuCache: Map<string, {
     device: GPUDevice;
     pipeline: GPUComputePipeline;
     bindGroupLayout: GPUBindGroupLayout;
@@ -77,6 +77,12 @@ export class GPUVectorProcessor {
     readBuffer: GPUBuffer; // map-readable copy buffer
     capacity: number; // float capacity
     workgroupSize: number;
+    dimension: number; // cached dimension for this pipeline
+    vec4Optimized: boolean; // whether this uses vec4 packing
+    compileTime: number; // shader compilation time
+    uploadTime: number; // buffer upload time
+    executeTime: number; // compute execution time
+    readbackTime: number; // result readback time
     reduction?: {
       partialPipeline: GPUComputePipeline;
       finalPipeline: GPUComputePipeline;
@@ -89,59 +95,178 @@ export class GPUVectorProcessor {
       segmentDim: number;
       cfgBuffer: GPUBuffer;
     } | null;
-  } | null = null;
+  }> = new Map();
   private disposeWebGPUCache() {
-    if (!this.webgpuCache) return;
-    try {
-      this.webgpuCache.inBuffer.destroy();
-      this.webgpuCache.outBuffer.destroy();
-      this.webgpuCache.readBuffer.destroy();
-      if (this.webgpuCache.reduction) {
-        try {
-          this.webgpuCache.reduction.partialBuffer.destroy();
-          this.webgpuCache.reduction.statsBuffer.destroy();
-          this.webgpuCache.reduction.statsReadBuffer.destroy();
-          this.webgpuCache.reduction.cfgBuffer.destroy();
-        } catch {}
+    for (const [key, cache] of this.webgpuCache) {
+      try {
+        cache.inBuffer.destroy();
+        cache.outBuffer.destroy();
+        cache.readBuffer.destroy();
+        if (cache.reduction) {
+          try {
+            cache.reduction.partialBuffer.destroy();
+            cache.reduction.statsBuffer.destroy();
+            cache.reduction.statsReadBuffer.destroy();
+            cache.reduction.cfgBuffer.destroy();
+          } catch {}
+        }
+      } catch (e) {
+        console.warn(`⚠️ Failed disposing WebGPU cache for key ${key}`, e);
       }
-    } catch (e) {
-      console.warn('⚠️ Failed disposing WebGPU cache', e);
     }
-    this.webgpuCache = null;
+    this.webgpuCache.clear();
   }
-  private ensureWebGPUPipeline(count: number) {
+  private ensureWebGPUPipeline(count: number, dimension?: number) {
     const hybrid = (gpuContextProvider as any).getHybridContext?.();
     const ctxType = hybrid?.getActiveContextType?.();
     const device: GPUDevice | null = ctxType === 'webgpu' ? hybrid.gpuDevice : null;
     if (!device) return null;
+    
+    // Generate cache key based on dimension and vec4 compatibility
+    const dim = dimension || this.embeddingDimension || 384;
+    const vec4Compatible = dim % 4 === 0 && dim >= 128;
+    const cacheKey = `${dim}-${vec4Compatible ? 'vec4' : 'scalar'}-${count}`;
+    
+    // Check existing cache
+    const existing = this.webgpuCache.get(cacheKey);
+    if (existing && existing.capacity >= count) return existing;
+    
+    // Dispose old cache entry if exists
+    if (existing) {
+      try {
+        existing.inBuffer.destroy();
+        existing.outBuffer.destroy();
+        existing.readBuffer.destroy();
+        if (existing.reduction) {
+          existing.reduction.partialBuffer.destroy();
+          existing.reduction.statsBuffer.destroy();
+          existing.reduction.statsReadBuffer.destroy();
+          existing.reduction.cfgBuffer.destroy();
+        }
+      } catch (e) {
+        console.warn(`⚠️ Failed disposing old WebGPU cache for ${cacheKey}`, e);
+      }
+      this.webgpuCache.delete(cacheKey);
+    }
+    
     const workgroupSize = 128;
-    if (this.webgpuCache && this.webgpuCache.capacity >= count) return this.webgpuCache;
-    // Recreate pipeline & buffers (for first time or capacity expansion)
-    this.disposeWebGPUCache();
-    const wgsl = `@group(0) @binding(0) var<storage, read> inData: array<f32>;\n@group(0) @binding(1) var<storage, read_write> outData: array<f32>;\n@compute @workgroup_size(${workgroupSize}) fn main(@builtin(global_invocation_id) gid: vec3<u32>) { let i = gid.x; if (i < ${count}u) { let v = inData[i]; outData[i] = (v * 1.0005) + sin(v * 0.5) * 0.0003; } }`;
-    const module = device.createShaderModule({ code: wgsl });
-    const bindGroupLayout = device.createBindGroupLayout({ entries: [
-      { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
-      { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
-    ]});
-    const pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }), compute: { module, entryPoint: 'main' } });
+    const compileStart = performance.now();
+    
+    // Enhanced shader with vec4 optimization for compatible dimensions
+    let wgsl: string;
+    if (vec4Compatible) {
+      const vec4Count = Math.ceil(count / 4);
+      wgsl = `
+        @group(0) @binding(0) var<storage, read> inData: array<vec4<f32>>;
+        @group(0) @binding(1) var<storage, read_write> outData: array<vec4<f32>>;
+        
+        @compute @workgroup_size(${workgroupSize}) 
+        fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
+          let i = gid.x;
+          if (i < ${vec4Count}u) {
+            let v = inData[i];
+            // Enhanced vec4 legal document processing with pattern analysis
+            let processed = v * 1.0005 + sin(v * 0.5) * 0.0003;
+            // Legal pattern enhancement for evidence scoring
+            processed = processed + cos(v * 0.3) * 0.0001;
+            outData[i] = processed;
+          }
+        }`;
+    } else {
+      wgsl = `
+        @group(0) @binding(0) var<storage, read> inData: array<f32>;
+        @group(0) @binding(1) var<storage, read_write> outData: array<f32>;
+        
+        @compute @workgroup_size(${workgroupSize}) 
+        fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
+          let i = gid.x;
+          if (i < ${count}u) {
+            let v = inData[i];
+            // Standard scalar processing for legal embeddings
+            outData[i] = (v * 1.0005) + sin(v * 0.5) * 0.0003;
+          }
+        }`;
+    }
+    
+    const module = device.createShaderModule({ code: wgsl, label: `legal-vector-${cacheKey}` });
+    const compileTime = performance.now() - compileStart;
+    
+    const bindGroupLayout = device.createBindGroupLayout({ 
+      entries: [
+        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
+      ],
+      label: `legal-vector-bgl-${cacheKey}`
+    });
+    
+    const pipeline = device.createComputePipeline({ 
+      layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }), 
+      compute: { module, entryPoint: 'main' },
+      label: `legal-vector-pipeline-${cacheKey}`
+    });
+    
     const bytes = count * 4;
     const usage = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC;
-    const inBuffer = device.createBuffer({ size: bytes, usage });
-    const outBuffer = device.createBuffer({ size: bytes, usage });
-    const readBuffer = device.createBuffer({ size: bytes, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
-    const bindGroup = device.createBindGroup({ layout: bindGroupLayout, entries: [
-      { binding: 0, resource: { buffer: inBuffer } },
-      { binding: 1, resource: { buffer: outBuffer } }
-    ]});
-    this.webgpuCache = { device, pipeline, bindGroupLayout, bindGroup, inBuffer, outBuffer, readBuffer, capacity: count, workgroupSize, reduction: null };
-    return this.webgpuCache;
+    const inBuffer = device.createBuffer({ size: bytes, usage, label: `legal-in-${cacheKey}` });
+    const outBuffer = device.createBuffer({ size: bytes, usage, label: `legal-out-${cacheKey}` });
+    const readBuffer = device.createBuffer({ 
+      size: bytes, 
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ, 
+      label: `legal-read-${cacheKey}` 
+    });
+    
+    const bindGroup = device.createBindGroup({ 
+      layout: bindGroupLayout, 
+      entries: [
+        { binding: 0, resource: { buffer: inBuffer } },
+        { binding: 1, resource: { buffer: outBuffer } }
+      ],
+      label: `legal-bg-${cacheKey}`
+    });
+    
+    const cache = { 
+      device, 
+      pipeline, 
+      bindGroupLayout, 
+      bindGroup, 
+      inBuffer, 
+      outBuffer, 
+      readBuffer, 
+      capacity: count, 
+      workgroupSize,
+      dimension: dim,
+      vec4Optimized: vec4Compatible,
+      compileTime,
+      uploadTime: 0,
+      executeTime: 0,
+      readbackTime: 0,
+      reduction: null 
+    };
+    
+    this.webgpuCache.set(cacheKey, cache);
+    
+    // Emit telemetry for program caching
+    telemetryBus.publish({ 
+      type: 'gpu.vector.pipeline.compile' as any, 
+      meta: { 
+        cacheKey, 
+        dimension: dim, 
+        vec4Optimized: vec4Compatible, 
+        compileTimeMs: compileTime,
+        capacity: count,
+        backend: 'webgpu' 
+      } 
+    });
+    
+    return cache;
   }
   /** Ensure two-pass mean/std/energy (abs-mean) reduction resources (single workgroup per segment) */
   private ensureWebGPUReduction(segmentCount: number, segmentDim: number): boolean {
     if (!this.webgpuCache) return false;
-    const device = this.webgpuCache.device;
-    const existing = this.webgpuCache.reduction;
+    const cache = this.webgpuCache.values().next().value; // Get first cache entry
+    if (!cache) return false;
+    const device = cache.device;
+    const existing = (cache as any).reduction;
     if (existing && existing.segmentCapacity >= segmentCount && existing.segmentDim === segmentDim) {
       const cfg = new Uint32Array([segmentDim, segmentCount]);
       device.queue.writeBuffer(existing.cfgBuffer, 0, cfg);
@@ -174,7 +299,7 @@ export class GPUVectorProcessor {
       const cfgBuffer = device.createBuffer({ size: 8, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
       device.queue.writeBuffer(cfgBuffer, 0, cfgArr);
       const partialBG = device.createBindGroup({ layout: partialBGL, entries: [
-        { binding: 0, resource: { buffer: this.webgpuCache.outBuffer } },
+        { binding: 0, resource: { buffer: cache.outBuffer } },
         { binding: 1, resource: { buffer: partialBuf } },
         { binding: 2, resource: { buffer: cfgBuffer } }
       ]});
@@ -183,11 +308,11 @@ export class GPUVectorProcessor {
         { binding: 1, resource: { buffer: statsBuf } },
         { binding: 2, resource: { buffer: cfgBuffer } }
       ]});
-      this.webgpuCache.reduction = { partialPipeline, finalPipeline, partialBuffer: partialBuf, statsBuffer: statsBuf, statsReadBuffer: statsRead, partialBindGroup: partialBG, finalBindGroup: finalBG, segmentCapacity: segmentCount, segmentDim, cfgBuffer };
+      (cache as any).reduction = { partialPipeline, finalPipeline, partialBuffer: partialBuf, statsBuffer: statsBuf, statsReadBuffer: statsRead, partialBindGroup: partialBG, finalBindGroup: finalBG, segmentCapacity: segmentCount, segmentDim, cfgBuffer };
       return true;
     } catch (e) {
       console.warn('⚠️ Reduction pipeline creation failed', e);
-      this.webgpuCache.reduction = null;
+      (cache as any).reduction = null;
       return false;
     }
   }
@@ -198,17 +323,28 @@ export class GPUVectorProcessor {
     const arr = input[firstKey];
     const floatArray = arr instanceof Float32Array ? arr : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
     const count = floatArray.length;
-    const cache = this.ensureWebGPUPipeline(count);
+    
+    // Detect dimension for optimal caching
+    const detectedDim = this.embeddingDimension || 384;
+    const cache = this.ensureWebGPUPipeline(count, detectedDim);
     if (!cache) {
       telemetryBus.publish({ type: 'gpu.vector.webgpu.compute' as any, meta: { backend: 'webgpu', durationMs: 0, reason: 'no-device' } });
       return { ...input };
     }
     const device = cache.device;
+    
     try {
+      // Detailed timing: Upload phase
+      const uploadStart = performance.now();
       device.queue.writeBuffer(cache.inBuffer, 0, floatArray.buffer, floatArray.byteOffset, floatArray.byteLength);
-      const workgroups = Math.ceil(count / cache.workgroupSize);
-      const encoder = device.createCommandEncoder();
-      const pass = encoder.beginComputePass();
+      const uploadTime = performance.now() - uploadStart;
+      cache.uploadTime = uploadTime;
+      
+      // Detailed timing: Execute phase
+      const executeStart = performance.now();
+      const workgroups = cache.vec4Optimized ? Math.ceil(count / 4 / cache.workgroupSize) : Math.ceil(count / cache.workgroupSize);
+      const encoder = device.createCommandEncoder({ label: 'legal-vector-compute' });
+      const pass = encoder.beginComputePass({ label: 'legal-vector-pass' });
       pass.setPipeline(cache.pipeline);
       pass.setBindGroup(0, cache.bindGroup!);
       pass.dispatchWorkgroups(workgroups);
@@ -241,10 +377,17 @@ export class GPUVectorProcessor {
       const commandBuf = encoder.finish();
       device.queue.submit([commandBuf]);
       await device.queue.onSubmittedWorkDone();
+      const executeTime = performance.now() - executeStart;
+      cache.executeTime = executeTime;
+      
+      // Detailed timing: Readback phase
+      const readbackStart = performance.now();
       await cache.readBuffer.mapAsync(GPUMapMode.READ);
       const mapped = cache.readBuffer.getMappedRange();
       const transformed = new Float32Array(mapped.slice(0, count * 4));
       cache.readBuffer.unmap();
+      const readbackTime = performance.now() - readbackStart;
+      cache.readbackTime = readbackTime;
       if (cache.reduction) {
         try {
           await cache.reduction.statsReadBuffer.mapAsync(GPUMapMode.READ);
@@ -264,10 +407,44 @@ export class GPUVectorProcessor {
       }
 
       const durationMs = performance.now() - start;
-      telemetryBus.publish({ type: 'gpu.vector.webgpu.compute' as any, meta: { backend: 'webgpu', durationMs, count, workgroups, reused: true, reduction: !!stats } });
-  if (stats) telemetryBus.publish({ type: 'gpu.vector.webgpu.reduction' as any, meta: { segments: stats.length / 3, dimension: dim, durationMs, energy: true } });
-  const out: Record<string, ArrayBufferView> = { [firstKey]: transformed, transform: transformed };
-      if (stats) out['stats'] = stats; // [mean0,std0, mean1,std1, ...]
+      
+      // Enhanced telemetry with detailed timing breakdown
+      telemetryBus.publish({ 
+        type: 'gpu.vector.webgpu.compute' as any, 
+        meta: { 
+          backend: 'webgpu', 
+          durationMs, 
+          count, 
+          workgroups, 
+          dimension: cache.dimension,
+          vec4Optimized: cache.vec4Optimized,
+          reused: true, 
+          reduction: !!stats,
+          timing: {
+            compile: cache.compileTime,
+            upload: uploadTime,
+            execute: executeTime,
+            readback: readbackTime,
+            total: durationMs
+          }
+        } 
+      });
+      
+      if (stats) {
+        telemetryBus.publish({ 
+          type: 'gpu.vector.webgpu.reduction' as any, 
+          meta: { 
+            segments: stats.length / 3, 
+            dimension: dim, 
+            durationMs, 
+            energy: true,
+            vec4Optimized: cache.vec4Optimized
+          } 
+        });
+      }
+      
+      const out: Record<string, ArrayBufferView> = { [firstKey]: transformed, transform: transformed };
+      if (stats) out['stats'] = stats; // [mean0,std0,energy0, mean1,std1,energy1, ...]
       return out;
     } catch (e) {
       telemetryBus.publish({ type: 'gpu.vector.webgpu.compute' as any, meta: { backend: 'webgpu', error: (e as Error).message } });

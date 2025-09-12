@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open -->
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open -->
 <!--
   Integrated Legal Investigation Workspace
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
@@ -412,14 +412,14 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       <Tabs.Content value="evidence" class="tab-content">
         <div class="evidence-layout">
           <div class="evidence-canvas-section">
-            <Card.Root class="h-full">
-              <Card.Header>
-                <Card.Title>Enhanced Evidence Canvas</Card.Title>
-                <Card.Description>
+            <div.Root class="h-full">
+              <div.Header>
+                <div.Title>Enhanced Evidence Canvas</Card.Title>
+                <div.Description>
                   Upload and analyze evidence with AI-powered detection and CUDA acceleration
                 </Card.Description>
               </Card.Header>
-              <Card.Content class="h-full p-0">
+              <div.Content class="h-full p-0">
                 <UnifiedCanvasIntegration
                   caseId={currentCase?.id || 'demo-case'}
                   enableYoRHaBoard={true}
@@ -431,17 +431,17 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                   on:analysisComplete={handleAnalysisComplete}
                   on:detectiveInsights={handleDetectiveInsights}
                 />
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
           <div class="evidence-sidebar">
-            <Card.Root>
-              <Card.Header>
-                <Card.Title>Evidence Items</Card.Title>
-                <Card.Description>{evidence.length} items</Card.Description>
+            <div.Root>
+              <div.Header>
+                <div.Title>Evidence Items</Card.Title>
+                <div.Description>{evidence.length} items</Card.Description>
               </Card.Header>
-              <Card.Content>
+              <div.Content>
                 <div class="evidence-list">
                   {#each evidence as item}
                     <div class="evidence-item">
@@ -485,40 +485,40 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                     </div>
                   {/if}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
       </Tabs.Content>
 
       <!-- Investigation Notes Tab -->
       <Tabs.Content value="investigation" class="tab-content">
-        <Card.Root class="h-full">
-          <Card.Header>
-            <Card.Title>Investigation Notes</Card.Title>
-            <Card.Description>
+        <div.Root class="h-full">
+          <div.Header>
+            <div.Title>Investigation Notes</Card.Title>
+            <div.Description>
               Document findings, observations, and analysis using the rich text editor
             </Card.Description>
           </Card.Header>
-          <Card.Content class="h-full">
+          <div.Content class="h-full">
             <NierRichTextEditor
               bind:content={investigationNotes}
               placeholder="Document your investigation findings, observations, and analysis..."
             />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </Tabs.Content>
 
       <!-- AI Assistant Tab -->
       <Tabs.Content value="chat" class="tab-content">
-        <Card.Root class="h-full">
-          <Card.Header>
-            <Card.Title>Unified AI Legal Assistant</Card.Title>
-            <Card.Description>
+        <div.Root class="h-full">
+          <div.Header>
+            <div.Title>Unified AI Legal Assistant</Card.Title>
+            <div.Description>
               Advanced AI assistant with Ollama, vLLM, WebGPU acceleration, and Go microservices integration
             </Card.Description>
           </Card.Header>
-          <Card.Content class="h-full p-0">
+          <div.Content class="h-full p-0">
             <EnhancedAIAssistant
               caseId={currentCase?.id || 'demo-case'}
               legalContext="legal-investigation"
@@ -529,8 +529,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               onresponse={() => console.log('AI response received')}
               oncitation={() => console.log('Citation requested')}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </Tabs.Content>
 
             <div class="chat-input">
@@ -544,26 +544,26 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 <MessageSquare class="w-4 h-4" />
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </Tabs.Content>
 
       <!-- Citations Tab -->
       <Tabs.Content value="citations" class="tab-content">
-        <Card.Root class="h-full">
-          <Card.Header>
-            <Card.Title>Legal Citations & References</Card.Title>
-            <Card.Description>
+        <div.Root class="h-full">
+          <div.Header>
+            <div.Title>Legal Citations & References</Card.Title>
+            <div.Description>
               Advanced citation management with AI-powered legal research integration
             </Card.Description>
           </Card.Header>
-          <Card.Content class="h-full p-0">
+          <div.Content class="h-full p-0">
             <CitationsManager
               caseId={currentCase?.id || 'demo-case'}
               readonly={false}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </Tabs.Content>
 
                 {#if citations.length === 0}
@@ -574,8 +574,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 {/if}
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </Tabs.Content>
     </Tabs.Root>
   </div>

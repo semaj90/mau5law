@@ -224,7 +224,9 @@ export class CHRROMPatternCache {
       // Cache in Redis with expiration
       const redisKey = `${this.CACHE_PREFIX}pattern:${patternId}`;
       const serializedPattern = this.serializePattern(pattern);
-      await this.redis?.setex(redisKey, 3600, serializedPattern); // 1 hour TTL
+      if (this.redis) {
+        await this.redis.setex(redisKey, 3600, serializedPattern); // 1 hour TTL
+      }
       
       // Store in L1 cache
       this.cache.patterns.set(patternId, pattern);

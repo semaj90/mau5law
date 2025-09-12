@@ -124,11 +124,11 @@
   
   <!-- Document Selection -->
   <div class="demo-section">
-    <Card>
-      <CardHeader>
-        <CardTitle>Legal Document Selection</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div>
+      <divHeader>
+        <divTitle>Legal Document Selection</h3>
+      </div>
+      <divContent>
         <div class="nes-field">
           <label for="doc-select" class="nes-text">Document:</label>
           <div class="nes-select">
@@ -145,17 +145,17 @@
           <p><strong>Complexity:</strong> {(currentDoc.complexity * 100).toFixed(0)}%</p>
           <p><strong>Size:</strong> {currentDoc.size.width}×{currentDoc.size.height}</p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   </div>
   
   <!-- LOD Controls -->
   <div class="demo-section">
-    <Card>
-      <CardHeader>
-        <CardTitle>N64-Style LOD Controls</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div>
+      <divHeader>
+        <divTitle>N64-Style LOD Controls</h3>
+      </div>
+      <divContent>
         <div class="controls-grid">
           <div class="nes-field">
             <label for="distance" class="nes-text">Viewport Distance: {viewportDistance}</label>
@@ -208,17 +208,17 @@
             <span>Enable WebGPU Acceleration</span>
           </label>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   </div>
   
   <!-- Texture Display -->
   <div class="demo-section">
-    <Card>
-      <CardHeader>
-        <CardTitle>NES Texture Streaming Result</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div>
+      <divHeader>
+        <divTitle>NES Texture Streaming Result</h3>
+      </div>
+      <divContent>
         <div class="texture-display">
           <div class="texture-info">
             <p><strong>Calculated LOD:</strong> Level {calculatedLOD}</p>
@@ -254,17 +254,17 @@
             </SSRWebGPULoader>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   </div>
   
   <!-- Performance Stats -->
   <div class="demo-section">
-    <Card>
-      <CardHeader>
-        <CardTitle>🚀 Performance Metrics</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div>
+      <divHeader>
+        <divTitle>🚀 Performance Metrics</h3>
+      </div>
+      <divContent>
         <div class="stats-grid">
           <div class="stat-box">
             <div class="stat-label">Processing Time</div>
@@ -321,8 +321,8 @@
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   </div>
 </div>
 

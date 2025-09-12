@@ -478,11 +478,11 @@
   </div>
 
   <!-- System Status -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Legal AI System Status</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <div>
+    <divHeader>
+      <divTitle>Legal AI System Status</h3>
+    </div>
+    <divContent>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-green-600">{legalSystem.precedentDatabase.totalCases.toLocaleString()}</div>
@@ -511,15 +511,15 @@
           <Progress value={analysisProgress} class="w-full" />
         {/if}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 
   <!-- NES-GPU Memory Metrics -->
-  <Card>
-    <CardHeader>
-      <CardTitle>NES-GPU Legal Processing Status</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <div>
+    <divHeader>
+      <divTitle>NES-GPU Legal Processing Status</h3>
+    </div>
+    <divContent>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <div class="text-sm text-gray-600">Vector Cache</div>
@@ -542,15 +542,15 @@
           <Progress value={memoryMetrics.gpuUtilization} class="w-full mt-1" />
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 
   <!-- Search Interface -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Precedent Search</CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-4">
+  <div>
+    <divHeader>
+      <divTitle>Precedent Search</h3>
+    </div>
+    <divContent class="space-y-4">
       <div class="grid md:grid-cols-2 gap-4">
         <div class="space-y-2">
           <label class="text-sm font-medium">Search Query</label>
@@ -622,8 +622,8 @@
       >
         {analysisInProgress ? 'Analyzing Precedents...' : 'Search Precedents'}
       </Button>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 
   <!-- Results Tabs -->
   {#if precedentMatches.length > 0}
@@ -639,11 +639,11 @@
       <TabsContent value="matches">
         <div class="space-y-4">
           {#each precedentMatches as match}
-            <Card>
-              <CardHeader>
+            <div>
+              <divHeader>
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
-                    <CardTitle class="text-lg">{match.title}</CardTitle>
+                    <divTitle class="text-lg">{match.title}</h3>
                     <p class="text-sm text-gray-600 mt-1">{match.citation}</p>
                     <p class="text-sm text-gray-500">{match.court} • {new Date(match.dateDecided).toLocaleDateString()}</p>
                   </div>
@@ -657,8 +657,8 @@
                     </div>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent class="space-y-4">
+              </div>
+              <divContent class="space-y-4">
                 <div>
                   <div class="text-sm font-medium text-gray-700 mb-2">Legal Holding</div>
                   <p class="text-sm bg-blue-50 p-3 rounded">{match.legalHolding}</p>
@@ -705,8 +705,8 @@
                     </div>
                   </div>
                 {/if}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           {/each}
         </div>
       </TabsContent>
@@ -714,18 +714,18 @@
       <TabsContent value="reasoning">
         <div class="space-y-4">
           {#each legalReasoningChain as step}
-            <Card>
-              <CardHeader>
+            <div>
+              <divHeader>
                 <div class="flex items-center justify-between">
-                  <CardTitle class="text-lg">Step {step.stepNumber}: {step.legalPrinciple}</CardTitle>
+                  <divTitle class="text-lg">Step {step.stepNumber}: {step.legalPrinciple}</h3>
                   <div class="flex items-center gap-2">
                     <span class="text-sm">Strength:</span>
                     <Progress value={step.strengthScore * 100} class="w-20" />
                     <span class="text-sm font-medium">{(step.strengthScore * 100).toFixed(0)}%</span>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent class="space-y-4">
+              </div>
+              <divContent class="space-y-4">
                 <div>
                   <div class="text-sm font-medium text-blue-700 mb-2">Factual Basis</div>
                   <p class="text-sm bg-blue-50 p-2 rounded">{step.factualBasis}</p>
@@ -758,8 +758,8 @@
                     </ul>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           {/each}
         </div>
       </TabsContent>
@@ -767,11 +767,11 @@
       <TabsContent value="citations">
         <div class="space-y-4">
           {#each citationNetworkMap as network}
-            <Card>
-              <CardHeader>
-                <CardTitle>Citation Network: {network.caseId}</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div>
+              <divHeader>
+                <divTitle>Citation Network: {network.caseId}</h3>
+              </div>
+              <divContent>
                 <div class="grid md:grid-cols-3 gap-4 mb-4">
                   <div class="text-center p-4 border rounded-lg">
                     <div class="text-lg font-bold text-blue-600">{network.authorityScore.toFixed(0)}</div>
@@ -822,19 +822,19 @@
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           {/each}
         </div>
       </TabsContent>
 
       <TabsContent value="applicability">
         {#if applicabilityAnalysis}
-          <Card>
-            <CardHeader>
-              <CardTitle>Applicability Analysis</CardTitle>
-            </CardHeader>
-            <CardContent class="space-y-4">
+          <div>
+            <divHeader>
+              <divTitle>Applicability Analysis</h3>
+            </div>
+            <divContent class="space-y-4">
               <div class="grid md:grid-cols-4 gap-4">
                 <div class="text-center p-4 border rounded-lg">
                   <div class="text-lg font-bold text-green-600">{applicabilityAnalysis.overallApplicability}</div>
@@ -897,19 +897,19 @@
                   {/each}
                 </ul>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         {/if}
       </TabsContent>
 
       <TabsContent value="strategy">
         {#if strengthAssessment}
           <div class="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Strength Assessment</CardTitle>
-              </CardHeader>
-              <CardContent class="space-y-4">
+            <div>
+              <divHeader>
+                <divTitle>Strength Assessment</h3>
+              </div>
+              <divContent class="space-y-4">
                 <div class="grid md:grid-cols-3 gap-4">
                   <div class="text-center p-4 border rounded-lg">
                     <div class="text-lg font-bold text-green-600">{strengthAssessment.overallStrength}</div>
@@ -950,14 +950,14 @@
                     </ul>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Strategic Recommendations</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div>
+              <divHeader>
+                <divTitle>Strategic Recommendations</h3>
+              </div>
+              <divContent>
                 <div class="space-y-3">
                   {#each strengthAssessment.strategicRecommendations as recommendation, index}
                     <div class="border-l-4 border-blue-500 pl-4">
@@ -966,8 +966,8 @@
                     </div>
                   {/each}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         {/if}
       </TabsContent>

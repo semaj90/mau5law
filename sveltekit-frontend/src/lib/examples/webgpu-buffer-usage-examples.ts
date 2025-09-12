@@ -155,13 +155,13 @@ export async function legalAIComputePipeline(device: GPUDevice) {
   const uploader = new WebGPUBufferUploader(device);
   
   // Upload for compute shader
-  const weightsBuffer = await uploader.uploadBuffer(weightsQuantized.data.data, {
+  const weightsBuffer = await uploader.uploadBuffer(weightsQuantized.data.data as any, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     quantization: weightsQuantized.data.originalType,
     label: 'legal-ai-weights'
   });
   
-  const inputBuffer = await uploader.uploadBuffer(inputQuantized.data.data, {
+  const inputBuffer = await uploader.uploadBuffer(inputQuantized.data.data as any, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
     quantization: inputQuantized.data.originalType,
     label: 'legal-ai-input'
@@ -260,7 +260,7 @@ export async function debugAndAnalysisExample(device: GPUDevice) {
   // Debug different buffer types
   BufferDebugUtils.logBuffer(arrayBufferData, 'ArrayBuffer');
   BufferDebugUtils.logBuffer(float32Data, 'Float32Array');
-  BufferDebugUtils.logBuffer(regularArray, 'Regular Array');
+  BufferDebugUtils.logBuffer(regularArray as any, 'Regular Array');
   
   // Convert everything to consistent format
   const normalizedData = [

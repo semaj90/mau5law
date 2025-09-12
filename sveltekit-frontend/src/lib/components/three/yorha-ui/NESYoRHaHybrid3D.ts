@@ -88,11 +88,11 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   protected syncAnimationFrame: number | null = null;
 
   // Hybrid GPU acceleration with type narrowing
-  protected hybridGPU: HybridGPUContext | null = null;
+  protected hybridGPU: any | null = null;  // HybridGPUContext type
   protected useGPUAcceleration = true;
   protected gpuPixelBuffer: GPUBuffer | null = null;
-  protected activeBackend: GPUBackendType = 'cpu';
-  protected shaderResources: Map<string, ShaderResources> = new Map();
+  protected activeBackend: any = 'cpu';  // GPUBackendType
+  protected shaderResources: Map<string, any> = new Map();  // ShaderResources type
 
   constructor(hybridStyle: NESYoRHaHybridStyle = {}) {
     // Merge NES + YoRHa default styles
@@ -910,7 +910,9 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         }
       };
 
-      this.nesStateCache.set(predictiveState.id, predictiveState);
+      if (predictiveState.id) {
+        this.nesStateCache.set(predictiveState.id, predictiveState);
+      }
     });
   }
 

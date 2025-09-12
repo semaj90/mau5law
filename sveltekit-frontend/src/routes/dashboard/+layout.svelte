@@ -310,7 +310,7 @@ https://svelte.dev/e/tag_invalid_name -->
 
       <!-- Quick Stats Bar -->
       <div class="mt-4 grid grid-cols-4 gap-4">
-  <Card.Root class="p-3">
+  <div.Root class="p-3">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-xs text-nier-text-muted">Total Cases</p>
@@ -320,7 +320,7 @@ https://svelte.dev/e/tag_invalid_name -->
           </div>
   </Card.Root>
 
-        <Card.Root class="p-3">
+        <div.Root class="p-3">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-xs text-nier-text-muted">Active Searches</p>
@@ -330,7 +330,7 @@ https://svelte.dev/e/tag_invalid_name -->
           </div>
         </Card.Root>
 
-        <Card.Root class="p-3">
+        <div.Root class="p-3">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-xs text-nier-text-muted">Vector Queries</p>
@@ -340,7 +340,7 @@ https://svelte.dev/e/tag_invalid_name -->
           </div>
         </Card.Root>
 
-        <Card.Root class="p-3">
+        <div.Root class="p-3">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-xs text-nier-text-muted">System Load</p>

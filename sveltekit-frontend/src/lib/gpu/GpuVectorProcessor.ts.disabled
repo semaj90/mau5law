@@ -1,0 +1,1461 @@
+import type {
+  ShaderBundle,
+  NintendoMemoryBudget,
+  /*
+    Single clean implementation of GpuVectorProcessor
+    - Keeps types and public API expected by rest of the project
+    - WebGPU primary path is minimally implemented; WebGL2 transform-feedback passthrough is available as fallback
+  */
+  import type {
+    ShaderBundle,
+    NintendoMemoryBudget,
+    VectorDimensions,
+    QuantizationLevel,
+    AdaptiveScalingConfig,
+  } from './types.js';
+  import { LodCacheEngine } from './lod-cache-engine.js';
+  import { telemetryBus } from '$lib/telemetry/event-bus.js';
+
+  export interface VectorProcessingConfig {
+    dimensions: VectorDimensions;
+    quantization: QuantizationLevel;
+    batchSize: number;
+    memoryBudget: NintendoMemoryBudget;
+    adaptiveScaling: AdaptiveScalingConfig;
+    fallbackToWebGL?: boolean;
+  }
+
+  export interface VectorProcessingResult {
+    processedVectors: Float32Array[];
+    processingTime: number;
+    memoryUsed: number;
+    quantizationApplied: QuantizationLevel;
+    gpuUtilization: number;
+    cacheHitRate: number;
+  }
+
+  export interface EmbeddingComputeParams {
+    inputVectors: Float32Array[];
+    similarityThreshold: number;
+    topK: number;
+    useAdaptiveQuantization: boolean;
+  }
+
+  export class GpuVectorProcessor {
+    private device?: GPUDevice;
+    private lodCache: LodCacheEngine;
+    private config: VectorProcessingConfig;
+    private isInitialized = false;
+
+    // WebGL resources
+    private gl?: WebGL2RenderingContext;
+    private glCanvas?: HTMLCanvasElement;
+    private webglPrograms: Map<string, WebGLProgram> = new Map();
+
+    constructor(lodCache: LodCacheEngine, config: VectorProcessingConfig) {
+      this.lodCache = lodCache;
+      this.config = config;
+    }
+
+    async initialize(device?: GPUDevice): Promise<void> {
+      this.device = device || (await this.tryInitWebGPU());
+      if (!this.device && this.config.fallbackToWebGL) {
+        await this.initWebGL2();
+      }
+      this.isInitialized = true;
+    }
+
+    private async tryInitWebGPU(): Promise<GPUDevice | undefined> {
+      if (typeof navigator === 'undefined' || !(navigator as any).gpu) return undefined;
+      try {
+        const adapter = await (navigator as any).gpu.requestAdapter();
+        if (!adapter) return undefined;
+        return await adapter.requestDevice();
+      } catch {
+        return undefined;
+      }
+    }
+
+    private async initWebGL2(): Promise<void> {
+      if (typeof document === 'undefined') return;
+      const canvas = document.createElement('canvas');
+      canvas.width = 1; canvas.height = 1;
+      const gl = canvas.getContext('webgl2', { antialias: false }) as WebGL2RenderingContext | null;
+      if (!gl) return;
+      this.glCanvas = canvas;
+      this.gl = gl;
+      const prog = this.createPassthroughProgram(this.config.dimensions);
+      this.webglPrograms.set('passthrough', prog);
+    }
+
+    private createPassthroughProgram(dimensions: number): WebGLProgram {
+      if (!this.gl) throw new Error('WebGL2 not available');
+      const gl = this.gl;
+      const vec4Count = Math.ceil(dimensions / 4);
+      const attribs = Array.from({ length: vec4Count }, (_, i) => `in vec4 a_in${i};`).join('\n');
+      const varyings = Array.from({ length: vec4Count }, (_, i) => `out vec4 v_out${i};`).join('\n');
+      const assigns = Array.from({ length: vec4Count }, (_, i) => `  v_out${i} = a_in${i};`).join('\n');
+      const vs = `#version 300 es\nprecision highp float;\n${attribs}\n${varyings}\nvoid main(){\ adapter.requestDevice();
+    } catch {
+      return undefined;
+    }
+  }
+
+  private async initializeWebGLFallback():n${assigns}\n gl_Position = vec4(0.0); gl_PointSize = 1.0;\n}`;
+      const fs = `#version 300 es\nprecision highp float; out vec4 fragColor; void main(){ fragColor = vec4(0.0); }`;
+      const sv = this.compileShader(gl.VERTEX_SHADER, vs);
+      const sf = this.compileShader(gl.FRAGMENT_SHADER, fs);
+      const program = gl.createProgram();
+      if (!program) throw new Error('createProgram');
+      gl.attachShader(program, sv);
+      gl.attachShader(program, sf);
+      gl.transformFeedbackVaryings(program, Array.from({ length: vec4Count }, (_, i) => `v_out${i}`), gl.INTERLEAVED_ATTRIBS);
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        const info = gl.getProgramInfoLog(program);
+        throw new Error(info || 'link error');
+      }
+      gl.deleteShader(sv);
+      gl.deleteShader(sf);
+      return program;
+    }
+
+    private compileShader(type: number, src: string): WebGLShader {
+      if (!this.gl) throw new Error('WebGL2 not available');
+      const gl = this.gl;
+      const s = gl.createShader(type);
+      if (!s) throw new Error('createShader');
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+        const info = gl.getShaderInfoLog(s);
+        gl.deleteShader(s);
+        throw new Error(info || 'compile error');
+      }
+      return s;
+    }
+
+    private async executeTransformFeedback(vectors: Float32Array[], dimensions: number): Promise<Float32Array[]> {
+      if (!this.gl || !this.glCanvas) throw new Error('WebGL2 fallback not initialized');
+      const gl = this.gl;
+      const prog = this.webglPrograms.get('passthrough');
+      if (!prog) throw new Error('passthrough missing');
+      const count = vectors.length;
+      const floatsPer = dimensions;
+      const total = count * floatsPer;
+      const packed = new Float32Array(total);
+      for (let i = 0; i < count; i++) packed.set(vectors[i], i * floatsPer);
+
+      const inBuf = gl.createBuffer();
+      const outBuf = gl.createBuffer();
+      if (!inBuf || !outBuf) throw new Error('createBuffer');
+      gl.bindBuffer(gl.ARRAY_BUFFER, inBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, packed, gl.STATIC_DRAW);
+
+      const vec4Count = Math.ceil(dimensions / 4);
+      const outFloats = count * vec4Count * 4;
+      gl.bindBuffer(gl.ARRAY_BUFFER, outBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, outFloats * 4, gl.DYNAMIC_READ);
+
+      const vao = gl.createVertexArray();
+      gl.bindVertexArray(vao);
+      gl.useProgram(prog);
+      const stride = vec4Count * 4 * 4;
+      for (let i = 0; i < vec4Count; i++) {
+        const loc = gl.getAttribLocation(prog, `a_in${i}`);
+        if (loc >= 0) {
+          gl.enableVertexAttribArray(loc);
+          gl.vertexAttribPointer(loc, 4, gl.FLOAT, false, stride, i * 16);
+        }
+      }
+
+      const tf = gl.createTransformFeedback();
+      gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
+      gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, outBuf);
+      gl.enable(gl.RASTERIZER_DISCARD);
+      gl.beginTransformFeedback(gl.POINTS);
+      gl.drawArrays(gl.POINTS, 0, count);
+      gl.endTransformFeedback();
+
+      const readback = new Float32Array(outFloats);
+      gl.bindBuffer(gl.ARRAY_BUFFER, outBuf);
+      // @ts-ignore: getBufferSubData may be missing from TS lib
+      gl.getBufferSubData(gl.ARRAY_BUFFER, 0, readback);
+
+      gl.disable(gl.RASTERIZER_DISCARD);
+      gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
+      gl.bindBuffer(gl.ARRAY_BUFFER, null);
+      gl.bindVertexArray(null);
+      if (vao) gl.deleteVertexArray(vao);
+      if (tf) gl.deleteTransformFeedback(tf);
+      gl.deleteBuffer(inBuf);
+      gl.deleteBuffer(outBuf);
+
+      const out: Float32Array[] = [];
+      for (let i = 0; i < count; i++) {
+        const start = i * vec4Count * 4;
+        out.push(new Float32Array(readback.slice(start, start + dimensions)));
+      }
+      return out;
+    }
+
+    // Minimal helpers used by callers
+    private calculateBatchMemoryUsage(vectors: Float32Array[]): number {
+      return vectors.reduce((s, v) => s + v.byteLength, 0);
+    }
+
+    private calculateGpuUtilization(memoryUsed: number): number {
+      return Math.min(100, (memoryUsed / (this.config.memoryBudget.total || 1)) * 100);
+    }
+
+    private determineOptimalQuantization(_: number): QuantizationLevel {
+      return this.config.quantization;
+    }
+
+    private trackOperationSuccess(_: number, __: number) {
+      // noop for now
+    }
+
+    cleanup(): void {
+      // no-op minimal cleanup
+      this.isInitialized = false;
+    }
+  }
+  inputVectors: Float32Array[];
+  similarityThreshold: number;
+  topK: number;
+  useAdaptiveQuantization: boolean;
+}
+
+export class GpuVectorProcessor {
+  private device?: GPUDevice;
+  private lodCache: LodCacheEngine;
+  private config: VectorProcessingConfig;
+  private isInitialized = false;
+
+  // GPU resource caches
+  private computePipelines: Map<string, GPUComputePipeline> = new Map();
+  private shaderModules: Map<string, GPUShaderModule> = new Map();
+  private bufferPool: Map<string, GPUBuffer> = new Map();
+
+  // WebGL2 fallback resources
+  private gl?: WebGL2RenderingContext;
+  private glCanvas?: HTMLCanvasElement;
+  private webglPrograms: Map<string, WebGLProgram> = new Map();
+
+  // Performance tracking
+  private cacheHits = 0;
+  private cacheMisses = 0;
+  private totalOperations = 0;
+
+  // Stability tracking (omitted fields for brevity)
+  private stabilityTracker = {
+    stableOperationsCount: 0,
+    lastStabilityCheck: 0,
+    targetStabilityDuration: 30000,
+    minStableOperations: 20,
+    maxConsecutiveFailures: 3,
+    consecutiveFailures: 0,
+    currentPerformanceLevel: 'optimal' as 'degraded' | 'normal' | 'optimal',
+    lastUpscaleAttempt: 0,
+    upscaleBackoffPeriod: 60000,
+  };
+
+  constructor(lodCache: LodCacheEngine, config: VectorProcessingConfig) {
+    this.lodCache = lodCache;
+    this.config = config;
+  }
+
+  async initialize(device?: GPUDevice): Promise<void> {
+    try {
+      this.device = device || (await this.initializeWebGPUDevice());
+
+      if (!this.device) {
+        if (this.config.fallbackToWebGL) {
+          console.warn('[GpuVectorProcessor] WebGPU unavailable, initializing WebGL fallback');
+          await this.initializeWebGLFallback();
+        } else {
+          throw new Error('WebGPU device unavailable and WebGL fallback disabled');
+        }
+      }
+
+      await this.loadEssentialShaders();
+
+      this.isInitialized = true;
+
+      telemetryBus.emitPerformanceEvent({
+        type: 'gpu_initialization',
+        duration: 0,
+        operation: 'vector_processor_init',
+        success: true,
+      });
+    } catch (error) {
+      console.error('[GpuVectorProcessor] Initialization failed:', error);
+      throw error;
+    }
+  }
+
+  private async initializeWebGPUDevice(): Promise<GPUDevice | undefined> {
+    if (typeof navigator === 'undefined' || !('gpu' in navigator)) return undefined;
+    try {
+      const adapter = await (navigator as any).gpu.requestAdapter({ powerPreference: 'high-performance' });
+      if (!adapter) return undefined;
+      return await adapter.requestDevice();
+    } catch {
+      return undefined;
+    }
+  }
+
+  private async initializeWebGLFallback(): Promise<void> {
+    if (typeof document === 'undefined') {
+      console.warn('[GpuVectorProcessor] Document unavailable, cannot initialize WebGL fallback');
+      return;
+    }
+
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      const gl = canvas.getContext('webgl2', { antialias: false }) as WebGL2RenderingContext | null;
+      if (!gl) throw new Error('WebGL2 not supported');
+
+      this.glCanvas = canvas;
+      this.gl = gl;
+
+      const passthrough = this.createPassthroughProgram(this.config.dimensions);
+      this.webglPrograms.set('passthrough', passthrough);
+
+      telemetryBus.emitPerformanceEvent({
+        type: 'webgl_fallback_init',
+        duration: 0,
+        operation: 'initialize_webgl_fallback',
+        success: true,
+      });
+    } catch (err) {
+      console.warn('[GpuVectorProcessor] WebGL fallback initialization failed:', err);
+    }
+  }
+
+  private async loadEssentialShaders(): Promise<void> {
+    const essentialShaderKeys = ['batch-embedding-compute'];
+    for (const shaderKey of essentialShaderKeys) {
+      try {
+        await this.loadShaderFromCache(shaderKey);
+      } catch (e) {
+        this.cacheMisses++;
+      }
+    }
+  }
+
+  private async loadShaderFromCache(shaderKey: string): Promise<GPUComputePipeline> {
+    if (this.computePipelines.has(shaderKey)) {
+      this.cacheHits++;
+      return this.computePipelines.get(shaderKey)!;
+    }
+    const bundle = await this.lodCache.getShaderBundle(shaderKey, (this.config.memoryBudget as any).L2 ?? 0);
+    if (!bundle) throw new Error('shader bundle missing');
+    const module = this.device!.createShaderModule({ code: (bundle as any).shaderCode });
+    this.shaderModules.set(shaderKey, module);
+    const pipeline = this.device!.createComputePipeline({
+      compute: { module, entryPoint: 'main' },
+    });
+    this.computePipelines.set(shaderKey, pipeline);
+    return pipeline;
+  }
+
+  async processEmbeddings(params: EmbeddingComputeParams): Promise<VectorProcessingResult> {
+    if (!this.isInitialized) throw new Error('GpuVectorProcessor not initialized');
+    const start = performance.now();
+    this.totalOperations++;
+
+    const quantization = params.useAdaptiveQuantization ? this.determineOptimalQuantization(params.inputVectors.length) : this.config.quantization;
+    const computePipeline = this.device ? await this.loadShaderFromCache('batch-embedding-compute') : ({} as GPUComputePipeline);
+
+    const batchSize = Math.min(this.config.batchSize, params.inputVectors.length);
+    const out: Float32Array[] = [];
+    let totalMemoryUsed = 0;
+
+    for (let i = 0; i < params.inputVectors.length; i += batchSize) {
+      const batch = params.inputVectors.slice(i, i + batchSize);
+      const batchResult = await this.processBatch(batch, computePipeline, quantization);
+      out.push(...batchResult.vectors);
+      totalMemoryUsed += batchResult.memoryUsed;
+    }
+
+    const duration = performance.now() - start;
+    this.trackOperationSuccess(duration, totalMemoryUsed);
+
+    return {
+      processedVectors: out,
+      processingTime: duration,
+      memoryUsed: totalMemoryUsed,
+      quantizationApplied: quantization,
+      gpuUtilization: this.calculateGpuUtilization(totalMemoryUsed),
+      cacheHitRate: this.totalOperations > 0 ? this.cacheHits / this.totalOperations : 0,
+    };
+  }
+
+  private async processBatch(vectors: Float32Array[], computePipeline: GPUComputePipeline, quantization: QuantizationLevel): Promise<{ vectors: Float32Array[]; memoryUsed: number }> {
+    // WebGPU path
+    if (this.device) {
+      const inputBuffer = this.createVectorBuffer(vectors, 'input');
+      const outputBuffer = this.createOutputBuffer(vectors.length);
+      const uniformBuffer = this.createUniformBuffer({ quantization, batchSize: vectors.length });
+
+      const bindGroup = this.device.createBindGroup({
+        layout: computePipeline.getBindGroupLayout(0),
+        entries: [
+          { binding: 0, resource: { buffer: inputBuffer } },
+          { binding: 1, resource: { buffer: outputBuffer } },
+          { binding: 2, resource: { buffer: uniformBuffer } },
+        ],
+      });
+
+      const commandEncoder = this.device.createCommandEncoder();
+      const pass = commandEncoder.beginComputePass();
+      pass.setPipeline(computePipeline);
+      pass.setBindGroup(0, bindGroup);
+      pass.dispatchWorkgroups(Math.ceil(vectors.length / 64));
+      pass.end();
+      this.device.queue.submit([commandEncoder.finish()]);
+
+      const results = await this.readBufferResults(outputBuffer, vectors.length);
+      inputBuffer.destroy();
+      outputBuffer.destroy();
+      uniformBuffer.destroy();
+      return { vectors: results, memoryUsed: this.calculateBatchMemoryUsage(vectors) };
+    }
+
+    // WebGL2 transform-feedback fallback
+    if (!this.gl) throw new Error('No GPU device and WebGL2 not initialized');
+    const start = performance.now();
+    const results = await this.executeTransformFeedback(vectors, this.config.dimensions);
+    const duration = performance.now() - start;
+    telemetryBus.emitPerformanceEvent({ type: 'webgl_transform_feedback', duration, operation: 'process_batch_webgl', success: true, });
+    return { vectors: results, memoryUsed: this.calculateBatchMemoryUsage(vectors) };
+  }
+
+  private createVectorBuffer(vectors: Float32Array[], usage: string): GPUBuffer {
+    if (!this.device) throw new Error('WebGPU device not initialized');
+    const totalSize = vectors.reduce((s, v) => s + v.byteLength, 0);
+    const buf = this.device.createBuffer({ size: totalSize, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST });
+    let off = 0;
+    for (const v of vectors) { this.device.queue.writeBuffer(buf, off, v.buffer); off += v.byteLength; }
+    return buf;
+  }
+
+  private createOutputBuffer(vectorCount: number): GPUBuffer {
+    if (!this.device) throw new Error('WebGPU device not initialized');
+    const size = vectorCount * this.config.dimensions * 4;
+    return this.device.createBuffer({ size, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC });
+  }
+
+  private createUniformBuffer(params: { quantization: QuantizationLevel; batchSize: number }): GPUBuffer {
+    if (!this.device) throw new Error('WebGPU device not initialized');
+    const uniformData = new Float32Array([params.batchSize, 0, this.config.dimensions, 0]);
+    const buf = this.device.createBuffer({ size: uniformData.byteLength, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+    this.device.queue.writeBuffer(buf, 0, uniformData.buffer);
+    return buf;
+  }
+
+  private async readBufferResults(buffer: GPUBuffer, vectorCount: number): Promise<Float32Array[]> {
+    if (!this.device) throw new Error('WebGPU device not initialized');
+    const size = vectorCount * this.config.dimensions * 4;
+    const readBuffer = this.device.createBuffer({ size, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
+    const encoder = this.device.createCommandEncoder();
+    encoder.copyBufferToBuffer(buffer, 0, readBuffer, 0, size);
+    this.device.queue.submit([encoder.finish()]);
+    await readBuffer.mapAsync(GPUMapMode.READ);
+    const arr = new Float32Array(readBuffer.getMappedRange().slice(0));
+    const out: Float32Array[] = [];
+    for (let i = 0; i < vectorCount; i++) out.push(new Float32Array(arr.slice(i * this.config.dimensions, (i + 1) * this.config.dimensions)));
+    readBuffer.unmap();
+    readBuffer.destroy();
+    return out;
+  }
+
+  /**
+   * Create a passthrough transform-feedback program that copies vec4 attributes to varyings
+   */
+  private createPassthroughProgram(dimensions: number): WebGLProgram {
+    if (!this.gl) throw new Error('WebGL2 context not initialized');
+    const gl = this.gl;
+    const vec4Count = Math.ceil(dimensions / 4);
+    const attribs: string[] = [];
+    const varyings: string[] = [];
+    const assigns: string[] = [];
+    for (let i = 0; i < vec4Count; i++) { attribs.push(`in vec4 a_in${i};`); varyings.push(`out vec4 v_out${i}`); assigns.push(`  v_out${i} = a_in${i};`); }
+    const vert = `#version 300 es
+precision highp float;
+${attribs.join('\n')}
+${varyings.join('\n')}
+void main() {
+${assigns.join('\n')}
+  gl_Position = vec4(0.0);
+  gl_PointSize = 1.0;
+}`;
+    const frag = `#version 300 es
+precision highp float;
+out vec4 fragColor;
+void main(){ fragColor = vec4(0.0); }`;
+    const v = this.compileShader(gl.VERTEX_SHADER, vert);
+    const f = this.compileShader(gl.FRAGMENT_SHADER, frag);
+    const program = gl.createProgram(); if (!program) throw new Error('createProgram failed');
+    gl.attachShader(program, v); gl.attachShader(program, f);
+    gl.transformFeedbackVaryings(program, Array.from({ length: vec4Count }, (_, i) => `v_out${i}`), gl.INTERLEAVED_ATTRIBS);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) { const info = gl.getProgramInfoLog(program); gl.deleteProgram(program); throw new Error('link failed: ' + info); }
+    gl.deleteShader(v); gl.deleteShader(f);
+    return program;
+  }
+
+  private compileShader(type: number, source: string): WebGLShader {
+    if (!this.gl) throw new Error('WebGL2 context not initialized');
+    const gl = this.gl;
+    const s = gl.createShader(type); if (!s) throw new Error('createShader failed');
+    gl.shaderSource(s, source); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { const info = gl.getShaderInfoLog(s); gl.deleteShader(s); throw new Error('compile failed: ' + info); }
+    return s;
+  }
+
+  private async executeTransformFeedback(vectors: Float32Array[], dimensions: number): Promise<Float32Array[]> {
+    if (!this.gl || !this.glCanvas) throw new Error('WebGL2 fallback not initialized');
+    const gl = this.gl;
+    const program = this.webglPrograms.get('passthrough');
+    if (!program) throw new Error('passthrough program missing');
+    const count = vectors.length;
+    const floatsPer = dimensions;
+    const total = count * floatsPer;
+    const packed = new Float32Array(total);
+    for (let i = 0; i < count; i++) packed.set(vectors[i], i * floatsPer);
+
+    const inBuf = gl.createBuffer(); const outBuf = gl.createBuffer();
+    if (!inBuf || !outBuf) throw new Error('gl.createBuffer failed');
+    gl.bindBuffer(gl.ARRAY_BUFFER, inBuf); gl.bufferData(gl.ARRAY_BUFFER, packed, gl.STATIC_DRAW);
+
+    const vec4Count = Math.ceil(dimensions / 4);
+    const outFloats = count * vec4Count * 4;
+    gl.bindBuffer(gl.ARRAY_BUFFER, outBuf); gl.bufferData(gl.ARRAY_BUFFER, outFloats * 4, gl.DYNAMIC_READ);
+
+    const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    gl.useProgram(program);
+    const stride = vec4Count * 4 * 4;
+    for (let i = 0; i < vec4Count; i++) {
+      const loc = gl.getAttribLocation(program, `a_in${i}`);
+      if (loc >= 0) { gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 4, gl.FLOAT, false, stride, i * 16); }
+    }
+
+    const tf = gl.createTransformFeedback(); gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf); gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, outBuf);
+    gl.enable(gl.RASTERIZER_DISCARD);
+    gl.beginTransformFeedback(gl.POINTS);
+    gl.drawArrays(gl.POINTS, 0, count);
+    gl.endTransformFeedback();
+
+    const readback = new Float32Array(outFloats);
+    gl.bindBuffer(gl.ARRAY_BUFFER, outBuf);
+    // @ts-ignore may not be in lib defs
+    gl.getBufferSubData(gl.ARRAY_BUFFER, 0, readback);
+
+    gl.disable(gl.RASTERIZER_DISCARD);
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.bindVertexArray(null);
+    if (vao) gl.deleteVertexArray(vao);
+    if (tf) gl.deleteTransformFeedback(tf);
+    gl.deleteBuffer(inBuf); gl.deleteBuffer(outBuf);
+
+    const out: Float32Array[] = [];
+    for (let i = 0; i < count; i++) {
+      const start = i * vec4Count * 4;
+      out.push(new Float32Array(readback.slice(start, start + dimensions)));
+    }
+    return out;
+  }
+
+  private calculateBatchMemoryUsage(vectors: Float32Array[]): number {
+    return vectors.reduce((s, v) => s + v.byteLength, 0);
+  }
+
+  private calculateGpuUtilization(memoryUsed: number): number {
+    return 0; // placeholder
+  }
+
+  private determineOptimalQuantization(_: number): QuantizationLevel {
+    return this.config.quantization;
+  }
+
+  private trackOperationSuccess(_: number, __: number): void {}
+
+  cleanup(): void {
+    for (const buf of this.bufferPool.values()) buf.destroy();
+    this.bufferPool.clear();
+    this.computePipelines.clear();
+    this.shaderModules.clear();
+    this.isInitialized = false;
+  }
+}
+/**
+ * GPU Vector Processor - Nintendo-Style Memory Architecture
+ * Consumes cached shader resources from LodCacheEngine for GPU compute pipelines
+ * Implements vector processing with adaptive quantization and fallback handling
+ */
+
+import type {
+  ShaderBundle,
+  NintendoMemoryBudget,
+  VectorDimensions,
+  QuantizationLevel,
+  AdaptiveScalingConfig,
+} from './types.js';
+import { LodCacheEngine } from './lod-cache-engine.js';
+import { telemetryBus } from '$lib/telemetry/event-bus.js';
+import { validateMemoryBudget, calculateOptimalDimensions } from './types.js';
+
+export interface VectorProcessingConfig {
+  dimensions: VectorDimensions;
+  quantization: QuantizationLevel;
+  batchSize: number;
+  memoryBudget: NintendoMemoryBudget;
+  adaptiveScaling: AdaptiveScalingConfig;
+  fallbackToWebGL?: boolean;
+}
+
+export interface VectorProcessingResult {
+  processedVectors: Float32Array[];
+  processingTime: number;
+  memoryUsed: number;
+  quantizationApplied: QuantizationLevel;
+  gpuUtilization: number;
+  cacheHitRate: number;
+}
+
+export interface EmbeddingComputeParams {
+  inputVectors: Float32Array[];
+  similarityThreshold: number;
+  topK: number;
+  useAdaptiveQuantization: boolean;
+}
+
+export class GpuVectorProcessor {
+  private device?: GPUDevice;
+  private lodCache: LodCacheEngine;
+  private config: VectorProcessingConfig;
+  private isInitialized = false;
+
+
+  /**
+   * Execute transform-feedback on WebGL2 using the passthrough program.
+   * Returns an array of Float32Array matching the per-vector dimensions.
+   */
+  private async executeTransformFeedback(vectors: Float32Array[], dimensions: number): Promise<Float32Array[]> {
+    if (!this.gl || !this.glCanvas) throw new Error('WebGL2 fallback not initialized');
+    const gl = this.gl;
+
+    const program = this.webglPrograms.get('passthrough');
+    if (!program) throw new Error('Passthrough program not found');
+
+    // Compute sizes
+    const vectorCount = vectors.length;
+    const floatCountPerVector = dimensions;
+    const totalFloatCount = vectorCount * floatCountPerVector;
+
+    // Pack input data into a single Float32Array interleaving vec4s per vertex attribute
+    const inputBuffer = new Float32Array(totalFloatCount);
+    for (let i = 0; i < vectorCount; i++) {
+      inputBuffer.set(vectors[i], i * floatCountPerVector);
+    }
+
+    // Create GL buffers
+    const inBuffer = gl.createBuffer();
+    const outBuffer = gl.createBuffer();
+    if (!inBuffer || !outBuffer) throw new Error('Failed to create GL buffers');
+
+    // Bind and upload input buffer
+    gl.bindBuffer(gl.ARRAY_BUFFER, inBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, inputBuffer, gl.STATIC_DRAW);
+
+    // Prepare transform-feedback output buffer sized to hold vec4-aligned data
+    // Align to vec4 (4 floats) per attribute chunk
+    const vec4Count = Math.ceil(dimensions / 4);
+    const outFloatCount = vectorCount * vec4Count * 4; // ensure room for padding
+    gl.bindBuffer(gl.ARRAY_BUFFER, outBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, outFloatCount * 4, gl.DYNAMIC_READ);
+
+    // Setup VAO and attribute pointers
+    const vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+
+    // For each vec4 attribute, enable attrib and point into the input buffer
+    const bytesPerFloat = 4;
+    const stride = vec4Count * 4 * bytesPerFloat; // stride per vertex (in bytes)
+
+    for (let i = 0; i < vec4Count; i++) {
+      const loc = gl.getAttribLocation(program, `a_in${i}`);
+      if (loc >= 0) {
+        gl.enableVertexAttribArray(loc);
+        const offset = i * 4 * bytesPerFloat;
+        gl.vertexAttribPointer(loc, 4, gl.FLOAT, false, stride, offset);
+      }
+    }
+
+    // Bind transform-feedback buffer
+    const tf = gl.createTransformFeedback();
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, outBuffer);
+
+    // Use program and disable rasterization
+    gl.useProgram(program);
+    gl.enable(gl.RASTERIZER_DISCARD);
+
+    gl.beginTransformFeedback(gl.POINTS);
+    gl.drawArrays(gl.POINTS, 0, vectorCount);
+    gl.endTransformFeedback();
+
+    // Read back data
+    const readback = new Float32Array(outFloatCount);
+    gl.bindBuffer(gl.ARRAY_BUFFER, outBuffer);
+    // getBufferSubData is supported in WebGL2
+    // @ts-ignore: Some TS lib defs may not include getBufferSubData
+    gl.getBufferSubData(gl.ARRAY_BUFFER, 0, readback);
+
+    // Cleanup GL state
+    gl.disable(gl.RASTERIZER_DISCARD);
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.bindVertexArray(null);
+    if (vao) gl.deleteVertexArray(vao);
+    if (tf) gl.deleteTransformFeedback(tf);
+    gl.deleteBuffer(inBuffer);
+    gl.deleteBuffer(outBuffer);
+
+    // Convert readback into per-vector Float32Array with original dimensions
+    const results: Float32Array[] = [];
+    for (let i = 0; i < vectorCount; i++) {
+      const start = i * vec4Count * 4; // start index in readback per vector (vec4 padded)
+      const slice = readback.slice(start, start + dimensions);
+      results.push(new Float32Array(slice));
+    }
+
+    return results;
+  }
+
+      // Pre-cache essential shaders from LodCacheEngine
+      await this.loadEssentialShaders();
+
+      this.isInitialized = true;
+
+      telemetryBus.emitPerformanceEvent({
+        type: 'gpu_initialization',
+        duration: performance.now(),
+        operation: 'vector_processor_init',
+        success: true,
+      });
+    } catch (error) {
+      console.error('[GpuVectorProcessor] Initialization failed:', error);
+      throw error;
+    }
+  }
+
+  private async initializeWebGPUDevice(): Promise<GPUDevice | undefined> {
+    if (typeof navigator === 'undefined' || !navigator.gpu) {
+      return undefined;
+    }
+
+    const adapter = await navigator.gpu.requestAdapter({
+      powerPreference: 'high-performance',
+    });
+
+    if (!adapter) return undefined;
+
+    return await adapter.requestDevice({
+      requiredLimits: {
+        maxBufferSize: this.config.memoryBudget.L3,
+        maxComputeWorkgroupStorageSize: 32768,
+        maxComputeInvocationsPerWorkgroup: 1024,
+      },
+    });
+  }
+
+  private async initializeWebGLFallback(): Promise<void> {
+    // WebGL2 fallback implementation for vector processing using transform-feedback
+    if (typeof document === 'undefined') {
+      console.warn('[GpuVectorProcessor] Document unavailable, cannot initialize WebGL fallback');
+      return;
+    }
+
+    try {
+      // Create an offscreen canvas and get WebGL2 context
+      const canvas = document.createElement('canvas');
+      // Keep canvas very small; we only use the GL context for transform-feedback
+      canvas.width = 1;
+      canvas.height = 1;
+      const gl = canvas.getContext('webgl2', { antialias: false }) as WebGL2RenderingContext | null;
+
+      if (!gl) {
+        throw new Error('WebGL2 not supported in this environment');
+      }
+
+      this.glCanvas = canvas;
+      this.gl = gl;
+
+      // Create a generic passthrough transform-feedback program that copies inputs to outputs.
+      // This is a baseline compute pipeline; more specialized programs can be created and cached later.
+      const passthrough = this.createPassthroughProgram(this.config.dimensions);
+      this.webglPrograms.set('passthrough', passthrough);
+
+      telemetryBus.emitPerformanceEvent({
+        type: 'webgl_fallback_init',
+        duration: 0,
+        operation: 'initialize_webgl_fallback',
+        success: true,
+      });
+
+      console.log('[GpuVectorProcessor] WebGL2 fallback initialized');
+    } catch (err) {
+      console.warn('[GpuVectorProcessor] WebGL fallback initialization failed:', err);
+    }
+  }
+
+  /**
+   * Compile and link a passthrough transform-feedback program that copies input vector attributes
+   * into transform-feedback varyings so results can be read back with getBufferSubData.
+   */
+  private createPassthroughProgram(dimensions: number): WebGLProgram {
+    if (!this.gl) throw new Error('WebGL2 context not initialized');
+    const gl = this.gl;
+
+    // Number of vec4 attributes needed to represent the vector
+    const vec4Count = Math.ceil(dimensions / 4);
+
+    // Build attribute declarations and varying declarations
+    const attribDecls: string[] = [];
+    const varyingDecls: string[] = [];
+    const assignLines: string[] = [];
+
+    for (let i = 0; i < vec4Count; i++) {
+      attribDecls.push(`in vec4 a_in${i};`);
+      varyingDecls.push(`out vec4 v_out${i};`);
+      assignLines.push(`  v_out${i} = a_in${i};`);
+    }
+
+    const vertexSrc = `#version 300 es
+precision highp float;
+${attribDecls.join('\n')}
+${varyingDecls.join('\n')}
+void main() {
+${assignLines.join('\n')}
+  // Position is irrelevant since rasterization is discarded
+  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+  gl_PointSize = 1.0;
+}`;
+
+    const fragmentSrc = `#version 300 es
+precision highp float;
+out vec4 fragColor;
+void main() { fragColor = vec4(0.0); }`;
+
+    const vert = this.compileShader(gl.VERTEX_SHADER, vertexSrc);
+    const frag = this.compileShader(gl.FRAGMENT_SHADER, fragmentSrc);
+
+    const program = gl.createProgram();
+    if (!program) throw new Error('Failed to create WebGL program');
+
+    gl.attachShader(program, vert);
+    gl.attachShader(program, frag);
+
+    // Specify transform-feedback varyings (capture all v_outN as separate attribs)
+    const varyings = [] as string[];
+    for (let i = 0; i < vec4Count; i++) varyings.push(`v_out${i}`);
+    gl.transformFeedbackVaryings(program, varyings, gl.INTERLEAVED_ATTRIBS);
+
+    gl.linkProgram(program);
+
+    const linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+    if (!linked) {
+      const info = gl.getProgramInfoLog(program);
+      gl.deleteProgram(program);
+      throw new Error('Failed to link WebGL program: ' + info);
+    }
+
+    // Cleanup shaders after linking
+    gl.deleteShader(vert);
+    gl.deleteShader(frag);
+
+    return program;
+  }
+
+  private compileShader(type: number, source: string): WebGLShader {
+    if (!this.gl) throw new Error('WebGL2 context not initialized');
+    const gl = this.gl;
+    const shader = gl.createShader(type);
+    if (!shader) throw new Error('Failed to create shader');
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    const compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+    if (!compiled) {
+      const info = gl.getShaderInfoLog(shader);
+      gl.deleteShader(shader);
+      throw new Error('Shader compile error: ' + info);
+    }
+    return shader;
+  }
+
+  private async loadEssentialShaders(): Promise<void> {
+    const essentialShaderKeys = [
+      'vector-similarity-compute',
+      'quantization-float32-int8',
+      'quantization-int8-int4',
+      'adaptive-dimension-scaling',
+      'batch-embedding-compute',
+    ];
+
+    for (const shaderKey of essentialShaderKeys) {
+      try {
+        await this.loadShaderFromCache(shaderKey);
+      } catch (error) {
+        console.warn(`[GpuVectorProcessor] Failed to load shader ${shaderKey}:`, error);
+        this.cacheMisses++;
+      }
+    }
+  }
+
+  private async loadShaderFromCache(shaderKey: string): Promise<GPUComputePipeline> {
+    // Check if pipeline already exists
+    if (this.computePipelines.has(shaderKey)) {
+      this.cacheHits++;
+      return this.computePipelines.get(shaderKey)!;
+    }
+
+    try {
+      // Fetch shader bundle from LodCacheEngine
+      const shaderBundle = await this.lodCache.getShaderBundle(
+        shaderKey,
+        this.config.memoryBudget.L2 // Use L2 for shader storage
+      );
+
+      if (!shaderBundle) {
+        throw new Error(`Shader bundle ${shaderKey} not found in cache`);
+      }
+
+      // Validate shader bundle
+      if (!this.validateShaderBundle(shaderBundle)) {
+        throw new Error(`Invalid shader bundle ${shaderKey}`);
+      }
+
+      // Create GPU shader module from cached code
+      const shaderModule = await this.createShaderModule(shaderBundle);
+      this.shaderModules.set(shaderKey, shaderModule);
+
+      // Create compute pipeline
+      const computePipeline = await this.createComputePipeline(shaderKey, shaderModule);
+      this.computePipelines.set(shaderKey, computePipeline);
+
+      this.cacheHits++;
+
+      telemetryBus.emitNintendoMemoryEvent('L2', 'shader_loaded', {
+        shaderKey,
+        codeSize: shaderBundle.shaderCode.length,
+        memoryUsed: shaderBundle.metadata.memoryFootprint,
+      });
+
+      return computePipeline;
+    } catch (error) {
+      this.cacheMisses++;
+      console.error(`[GpuVectorProcessor] Failed to load shader ${shaderKey}:`, error);
+      throw error;
+    }
+  }
+
+  private validateShaderBundle(bundle: ShaderBundle): boolean {
+    return (
+      bundle &&
+      typeof bundle.shaderCode === 'string' &&
+      bundle.shaderCode.trim().length > 0 &&
+      bundle.metadata &&
+      typeof bundle.metadata.memoryFootprint === 'number' &&
+      bundle.metadata.memoryFootprint > 0
+    );
+  }
+
+  private async createShaderModule(bundle: ShaderBundle): Promise<GPUShaderModule> {
+    if (!this.device) {
+      throw new Error('WebGPU device not initialized');
+    }
+
+    try {
+      const shaderModule = this.device.createShaderModule({
+        label: `shader-${bundle.metadata.shaderType}`,
+        code: bundle.shaderCode,
+      });
+
+      // Validate shader compilation
+      const compilationInfo = await shaderModule.getCompilationInfo();
+      for (const message of compilationInfo.messages) {
+        if (message.type === 'error') {
+          throw new Error(`Shader compilation error: ${message.message}`);
+        }
+      }
+
+      return shaderModule;
+    } catch (error) {
+      console.error('[GpuVectorProcessor] Shader module creation failed:', error);
+      throw error;
+    }
+  }
+
+  private async createComputePipeline(
+    shaderKey: string,
+    shaderModule: GPUShaderModule
+  ): Promise<GPUComputePipeline> {
+    if (!this.device) {
+      throw new Error('WebGPU device not initialized');
+    }
+
+    const bindGroupLayout = this.device.createBindGroupLayout({
+      label: `bgl-${shaderKey}`,
+      entries: [
+        {
+          binding: 0,
+          visibility: GPUShaderStage.COMPUTE,
+          buffer: { type: 'storage' as const },
+        },
+        {
+          binding: 1,
+          visibility: GPUShaderStage.COMPUTE,
+          buffer: { type: 'storage' as const },
+        },
+        {
+          binding: 2,
+          visibility: GPUShaderStage.COMPUTE,
+          buffer: { type: 'uniform' as const },
+        },
+      ],
+    });
+
+    const pipelineLayout = this.device.createPipelineLayout({
+      label: `pipeline-layout-${shaderKey}`,
+      bindGroupLayouts: [bindGroupLayout],
+    });
+
+    return this.device.createComputePipeline({
+      label: `compute-pipeline-${shaderKey}`,
+      layout: pipelineLayout,
+      compute: {
+        module: shaderModule,
+        entryPoint: 'main',
+      },
+    });
+  }
+
+  /**
+   * Process vector embeddings using cached GPU compute shaders
+   */
+  async processEmbeddings(params: EmbeddingComputeParams): Promise<VectorProcessingResult> {
+    if (!this.isInitialized) {
+      throw new Error('GpuVectorProcessor not initialized');
+    }
+
+    const startTime = performance.now();
+    this.totalOperations++;
+
+    try {
+      // Determine optimal quantization based on adaptive scaling
+      const quantization = params.useAdaptiveQuantization
+        ? this.determineOptimalQuantization(params.inputVectors.length)
+        : this.config.quantization;
+
+      // Load appropriate compute pipeline
+      const computePipeline = await this.loadShaderFromCache('batch-embedding-compute');
+
+      // Process vectors in batches to respect memory budget
+      const batchSize = Math.min(this.config.batchSize, params.inputVectors.length);
+      const results: Float32Array[] = [];
+      let totalMemoryUsed = 0;
+
+      for (let i = 0; i < params.inputVectors.length; i += batchSize) {
+        const batch = params.inputVectors.slice(i, i + batchSize);
+        const batchResult = await this.processBatch(batch, computePipeline, quantization);
+
+        results.push(...batchResult.vectors);
+        totalMemoryUsed += batchResult.memoryUsed;
+      }
+
+      const processingTime = performance.now() - startTime;
+      const cacheHitRate = this.totalOperations > 0 ? this.cacheHits / this.totalOperations : 0;
+
+      // Track operation success for stability monitoring
+      this.trackOperationSuccess(processingTime, totalMemoryUsed);
+
+      // Emit telemetry with stability information
+      telemetryBus.emitVectorEncodingMetrics(
+        this.config.dimensions,
+        processingTime,
+        this.calculateCompressionRatio(quantization),
+        true
+      );
+
+      // Emit stability metrics
+      telemetryBus.emitPerformanceEvent({
+        type: 'stability_tracking',
+        duration: processingTime,
+        operation: 'vector_processing_stability',
+        success: true,
+        metadata: {
+          performanceLevel: this.stabilityTracker.currentPerformanceLevel,
+          stableOperations: this.stabilityTracker.stableOperationsCount,
+          consecutiveFailures: this.stabilityTracker.consecutiveFailures,
+          quantizationLevel: quantization,
+          memoryPressure: this.calculateMemoryPressure(params.inputVectors.length),
+        },
+      });
+
+      return {
+        processedVectors: results,
+        processingTime,
+        memoryUsed: totalMemoryUsed,
+        quantizationApplied: quantization,
+        gpuUtilization: this.calculateGpuUtilization(totalMemoryUsed),
+        cacheHitRate,
+      };
+    } catch (error) {
+      // Track operation failure for stability monitoring
+      this.trackOperationFailure();
+
+      console.error('[GpuVectorProcessor] Embedding processing failed:', error);
+      throw error;
+    }
+  }
+
+  private async processBatch(
+    vectors: Float32Array[],
+    computePipeline: GPUComputePipeline,
+    quantization: QuantizationLevel
+  ): Promise<{ vectors: Float32Array[]; memoryUsed: number }> {
+    if (!this.device) {
+      throw new Error('WebGPU device not initialized');
+    }
+
+    // Create buffers for batch processing
+    const inputBuffer = this.createVectorBuffer(vectors, 'input');
+    const outputBuffer = this.createOutputBuffer(vectors.length);
+    const uniformBuffer = this.createUniformBuffer({ quantization, batchSize: vectors.length });
+
+    // Create bind group
+    const bindGroup = this.device.createBindGroup({
+      layout: computePipeline.getBindGroupLayout(0),
+      entries: [
+        { binding: 0, resource: { buffer: inputBuffer } },
+        { binding: 1, resource: { buffer: outputBuffer } },
+        { binding: 2, resource: { buffer: uniformBuffer } },
+      ],
+    });
+
+    // Execute compute pass
+    const commandEncoder = this.device.createCommandEncoder();
+    const computePass = commandEncoder.beginComputePass();
+
+    computePass.setPipeline(computePipeline);
+    computePass.setBindGroup(0, bindGroup);
+    computePass.dispatchWorkgroups(Math.ceil(vectors.length / 64)); // 64 vectors per workgroup
+    computePass.end();
+
+    this.device.queue.submit([commandEncoder.finish()]);
+
+    // Read back results
+    const results = await this.readBufferResults(outputBuffer, vectors.length);
+
+    // Cleanup buffers
+    inputBuffer.destroy();
+    outputBuffer.destroy();
+    uniformBuffer.destroy();
+
+    const memoryUsed = this.calculateBatchMemoryUsage(vectors);
+
+    return {
+      vectors: results,
+      memoryUsed,
+    };
+  }
+
+  private createVectorBuffer(vectors: Float32Array[], usage: string): GPUBuffer {
+    if (!this.device) throw new Error('WebGPU device not initialized');
+
+    const totalSize = vectors.reduce((sum, v) => sum + v.byteLength, 0);
+
+    const buffer = this.device.createBuffer({
+      label: `vector-buffer-${usage}`,
+      size: totalSize,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+    });
+
+    // Write vector data
+    let offset = 0;
+    for (const vector of vectors) {
+      this.device.queue.writeBuffer(buffer, offset, vector.buffer);
+      offset += vector.byteLength;
+    }
+
+    return buffer;
+  }
+
+  private createOutputBuffer(vectorCount: number): GPUBuffer {
+    if (!this.device) throw new Error('WebGPU device not initialized');
+
+    const size = vectorCount * this.config.dimensions * 4; // 4 bytes per float32
+
+    return this.device.createBuffer({
+      label: 'vector-output-buffer',
+      size,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+    });
+  }
+
+  private createUniformBuffer(params: {
+    quantization: QuantizationLevel;
+    batchSize: number;
+  }): GPUBuffer {
+    if (!this.device) throw new Error('WebGPU device not initialized');
+
+    const uniformData = new Float32Array([
+      params.batchSize,
+      this.quantizationToFloat(params.quantization),
+      this.config.dimensions,
+      0, // padding
+    ]);
+
+    const buffer = this.device.createBuffer({
+      label: 'uniform-buffer',
+      size: uniformData.byteLength,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
+
+    this.device.queue.writeBuffer(buffer, 0, uniformData.buffer);
+    return buffer;
+  }
+
+  private async readBufferResults(buffer: GPUBuffer, vectorCount: number): Promise<Float32Array[]> {
+    if (!this.device) throw new Error('WebGPU device not initialized');
+
+    const size = vectorCount * this.config.dimensions * 4;
+    const readBuffer = this.device.createBuffer({
+      size,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+    });
+
+    const commandEncoder = this.device.createCommandEncoder();
+    commandEncoder.copyBufferToBuffer(buffer, 0, readBuffer, 0, size);
+    this.device.queue.submit([commandEncoder.finish()]);
+
+    await readBuffer.mapAsync(GPUMapMode.READ);
+    const arrayBuffer = readBuffer.getMappedRange();
+    const data = new Float32Array(arrayBuffer);
+
+    const results: Float32Array[] = [];
+    for (let i = 0; i < vectorCount; i++) {
+      const start = i * this.config.dimensions;
+      const end = start + this.config.dimensions;
+      results.push(new Float32Array(data.slice(start, end)));
+    }
+
+    readBuffer.unmap();
+    readBuffer.destroy();
+
+    return results;
+  }
+
+  private determineOptimalQuantization(vectorCount: number): QuantizationLevel {
+    const memoryPressure = this.calculateMemoryPressure(vectorCount);
+
+    // Apply upscale-after-stability policy
+    const shouldUpscale = this.shouldAttemptUpscale();
+    const shouldMaintainDegradedMode =
+      this.stabilityTracker.consecutiveFailures >= this.stabilityTracker.maxConsecutiveFailures;
+
+    // If in degraded mode due to failures, maintain conservative quantization
+    if (shouldMaintainDegradedMode) {
+      this.stabilityTracker.currentPerformanceLevel = 'degraded';
+      if (memoryPressure > 0.6) return 'binary';
+      if (memoryPressure > 0.4) return 'int4';
+      return 'int8';
+    }
+
+    // If stable and conditions allow, attempt to upscale performance
+    if (shouldUpscale && memoryPressure < 0.6) {
+      this.stabilityTracker.currentPerformanceLevel = 'optimal';
+      this.stabilityTracker.lastUpscaleAttempt = Date.now();
+
+      // Aggressive upscaling when stable
+      if (memoryPressure < 0.3) return 'float32';
+      if (memoryPressure < 0.5) return 'int8';
+      return 'int4';
+    }
+
+    // Standard adaptive behavior
+    this.stabilityTracker.currentPerformanceLevel = 'normal';
+    if (memoryPressure > 0.8) return 'binary';
+    if (memoryPressure > 0.6) return 'int4';
+    if (memoryPressure > 0.4) return 'int8';
+    return 'float32';
+  }
+
+  private calculateMemoryPressure(vectorCount: number): number {
+    const requiredMemory = vectorCount * this.config.dimensions * 4; // bytes
+    return requiredMemory / this.config.memoryBudget.total;
+  }
+
+  private calculateBatchMemoryUsage(vectors: Float32Array[]): number {
+    return vectors.reduce((sum, v) => sum + v.byteLength, 0);
+  }
+
+  private calculateGpuUtilization(memoryUsed: number): number {
+    return Math.min(100, (memoryUsed / this.config.memoryBudget.total) * 100);
+  }
+
+  private calculateCompressionRatio(quantization: QuantizationLevel): number {
+    const compressionRatios = {
+      float32: 1.0,
+      int8: 0.25,
+      int4: 0.125,
+      binary: 0.03125,
+    };
+    return compressionRatios[quantization];
+  }
+
+  private quantizationToFloat(quantization: QuantizationLevel): number {
+    const mapping = { float32: 32, int8: 8, int4: 4, binary: 1 };
+    return mapping[quantization];
+  }
+
+  /**
+   * Determines if system should attempt performance upscaling
+   */
+  private shouldAttemptUpscale(): boolean {
+    const now = Date.now();
+
+    // Check if we're in backoff period after last upscale attempt
+    const timeSinceLastUpscale = now - this.stabilityTracker.lastUpscaleAttempt;
+    if (timeSinceLastUpscale < this.stabilityTracker.upscaleBackoffPeriod) {
+      return false;
+    }
+
+    // Must have sufficient stable operations
+    if (this.stabilityTracker.stableOperationsCount < this.stabilityTracker.minStableOperations) {
+      return false;
+    }
+
+    // Must not have recent consecutive failures
+    if (this.stabilityTracker.consecutiveFailures > 0) {
+      return false;
+    }
+
+    // Check if we've been stable for the required duration
+    const stabilityDuration = now - this.stabilityTracker.lastStabilityCheck;
+    return stabilityDuration >= this.stabilityTracker.targetStabilityDuration;
+  }
+
+  /**
+   * Track successful operation for stability monitoring
+   */
+  private trackOperationSuccess(processingTime: number, memoryUsed: number): void {
+    const now = Date.now();
+
+    // Reset consecutive failures on success
+    this.stabilityTracker.consecutiveFailures = 0;
+
+    // Increment stable operations count
+    this.stabilityTracker.stableOperationsCount++;
+
+    // Update last stability check timestamp
+    if (this.stabilityTracker.lastStabilityCheck === 0) {
+      this.stabilityTracker.lastStabilityCheck = now;
+    }
+
+    // Define success criteria (fast processing, low memory pressure)
+    const isPerformant = processingTime < 100; // Under 100ms is good
+    const isMemoryEfficient = memoryUsed / this.config.memoryBudget.total < 0.7; // Under 70% memory usage
+
+    if (!isPerformant || !isMemoryEfficient) {
+      // Reset stability counter if performance degrades
+      this.resetStabilityTracking();
+    }
+  }
+
+  /**
+   * Track failed operation for stability monitoring
+   */
+  private trackOperationFailure(): void {
+    this.stabilityTracker.consecutiveFailures++;
+    this.resetStabilityTracking();
+
+    // Emit failure telemetry
+    telemetryBus.emitPerformanceEvent({
+      type: 'stability_failure',
+      duration: 0,
+      operation: 'vector_processing_failure',
+      success: false,
+      metadata: {
+        consecutiveFailures: this.stabilityTracker.consecutiveFailures,
+        performanceLevel: this.stabilityTracker.currentPerformanceLevel,
+      },
+    });
+  }
+
+  /**
+   * Reset stability tracking counters
+   */
+  private resetStabilityTracking(): void {
+    this.stabilityTracker.stableOperationsCount = 0;
+    this.stabilityTracker.lastStabilityCheck = Date.now();
+  }
+
+  /**
+   * Get performance statistics including stability metrics
+   */
+  getPerformanceStats() {
+    return {
+      cacheHitRate: this.totalOperations > 0 ? this.cacheHits / this.totalOperations : 0,
+      totalOperations: this.totalOperations,
+      cacheHits: this.cacheHits,
+      cacheMisses: this.cacheMisses,
+      cachedPipelines: this.computePipelines.size,
+      cachedShaderModules: this.shaderModules.size,
+      stability: {
+        currentPerformanceLevel: this.stabilityTracker.currentPerformanceLevel,
+        stableOperationsCount: this.stabilityTracker.stableOperationsCount,
+        consecutiveFailures: this.stabilityTracker.consecutiveFailures,
+        timeSinceLastUpscale: Date.now() - this.stabilityTracker.lastUpscaleAttempt,
+        canUpscale: this.shouldAttemptUpscale(),
+        stabilityDuration: Date.now() - this.stabilityTracker.lastStabilityCheck,
+      },
+    };
+  }
+
+  /**
+   * Cleanup GPU resources
+   */
+  cleanup(): void {
+    // Destroy compute pipelines
+    this.computePipelines.clear();
+
+    // Destroy shader modules
+    this.shaderModules.clear();
+
+    // Destroy buffer pool
+    for (const buffer of this.bufferPool.values()) {
+      buffer.destroy();
+    }
+    this.bufferPool.clear();
+
+    this.isInitialized = false;
+
+    telemetryBus.emitPerformanceEvent({
+      type: 'gpu_cleanup',
+      duration: 0,
+      operation: 'vector_processor_cleanup',
+      success: true,
+    });
+  }
+}      success: true,
+    });
+  }
+}

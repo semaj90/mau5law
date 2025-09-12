@@ -28,7 +28,8 @@ export {
 } from './services/enhanced-api-client';
 
 // ===== ALL COMPONENTS (COMPREHENSIVE BARREL EXPORT) =====
-export * from './components/index';
+// Temporarily commented to avoid LegalDocument export conflict
+// export * from './components/index';
 
 // ===== FILE UPLOAD SERVICES =====
 export { default as localStorageFiles } from './services/localStorage-file-fallback.js';

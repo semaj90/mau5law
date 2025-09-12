@@ -164,10 +164,10 @@ export const authMachine = setup({
     authenticate: fromPromise(async ({ input }: { input: LoginData }) => {
       // Real authentication with local Windows native services
       const authService = new AuthService();
-      
+
       try {
         const result = await authService.login(input.email, input.password);
-        
+
         return {
           user: {
             id: result.id,
@@ -175,13 +175,13 @@ export const authMachine = setup({
             firstName: result.firstName || 'User',
             lastName: result.lastName || '',
             role: result.role,
-            permissions: ['read:cases', 'write:cases', 'ai:query'] // TODO: Get from user role
+            permissions: ['read:cases', 'write:cases', 'ai:query'], // TODO: Get from user role
           },
           session: {
             id: 'session_' + result.id, // Generate session ID
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
-            fresh: true
-          }
+            fresh: true,
+          },
         };
       } catch (error: any) {
         throw new Error(error instanceof Error ? error.message : 'Authentication failed');
@@ -190,7 +190,7 @@ export const authMachine = setup({
     register: fromPromise(async ({ input }: { input: RegistrationData }) => {
       // Real registration with local Windows native services
       const authService = new AuthService();
-      
+
       try {
         const result = await authService.register({
           email: input.email,
@@ -198,9 +198,9 @@ export const authMachine = setup({
           firstName: input.firstName,
           lastName: input.lastName,
           displayName: `${input.firstName} ${input.lastName}`,
-          legalSpecialties: input.jurisdiction ? [input.jurisdiction] : []
+          // Removed legalSpecialties: not part of AuthService.register signature
         });
-        
+
         return {
           user: {
             id: result.id,
@@ -209,8 +209,8 @@ export const authMachine = setup({
             lastName: result.lastName,
             role: result.role,
             department: input.department,
-            permissions: []
-          }
+            permissions: [],
+          },
         };
       } catch (error: any) {
         throw new Error(error instanceof Error ? error.message : 'Registration failed');
@@ -219,7 +219,7 @@ export const authMachine = setup({
     logout: fromPromise(async () => {
       // Real logout with local Windows native services
       const authService = new AuthService();
-      
+
       try {
         await (authService as any).logout();
         return { success: true };
@@ -232,7 +232,7 @@ export const authMachine = setup({
     resetPassword: fromPromise(async ({ input }: { input: { email: string } }) => {
       // Real password reset with local Windows native services
       const authService = new AuthService();
-      
+
       try {
         await (authService as any).requestPasswordReset(input.email);
         return { success: true };

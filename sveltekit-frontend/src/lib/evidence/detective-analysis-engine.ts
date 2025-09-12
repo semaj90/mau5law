@@ -542,7 +542,9 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       // Check cache first
       const cacheKey = `handwriting_${await this.generateDataHash(data)}`;
       const cached = await cache.get(cacheKey);
-      if (cached) return cached;
+      if (cached && (cached as any).detected !== undefined) {
+        return cached as { detected: boolean; confidence: number; regions: { x: number; y: number; width: number; height: number; }[]; };
+      }
 
       // Perform analysis (mock implementation)
       const result = {
@@ -635,7 +637,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         const cachedVisual = await cache.get(`visual_embed:${visualHash}`);
         
         if (cachedVisual) {
-          embeddings.visualEmbedding = new Float32Array(cachedVisual);
+          embeddings.visualEmbedding = new Float32Array(cachedVisual as ArrayBuffer);
         } else {
           // Generate mock visual embedding
           const visualEmbedding = this.generateMockVisualEmbedding();

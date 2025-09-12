@@ -437,11 +437,11 @@
   </div>
 
   <!-- System Status -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Detective AI System Status</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <div>
+    <divHeader>
+      <divTitle>Detective AI System Status</h3>
+    </div>
+    <divContent>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-blue-600">{detectiveSystem.totalEvidence}</div>
@@ -470,15 +470,15 @@
           <Progress value={analysisProgress} class="w-full" />
         {/if}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 
   <!-- NES-GPU Memory Metrics -->
-  <Card>
-    <CardHeader>
-      <CardTitle>NES-GPU Memory Bridge Status</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <div>
+    <divHeader>
+      <divTitle>NES-GPU Memory Bridge Status</h3>
+    </div>
+    <divContent>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <div class="text-sm text-gray-600">NES RAM Usage</div>
@@ -501,8 +501,8 @@
           <Progress value={memoryMetrics.gpuUtilization} class="w-full mt-1" />
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 
   <!-- Analysis Controls -->
   <div class="flex gap-4">
@@ -539,11 +539,11 @@
 
     <TabsContent value="profile">
       {#if suspectProfile}
-        <Card>
-          <CardHeader>
-            <CardTitle>Suspect Profile: {suspectProfile.name}</CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+        <div>
+          <divHeader>
+            <divTitle>Suspect Profile: {suspectProfile.name}</h3>
+          </div>
+          <divContent class="space-y-4">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <div class="text-sm text-gray-600">Relationship</div>
@@ -614,27 +614,27 @@
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       {/if}
     </TabsContent>
 
     <TabsContent value="motives">
       <div class="space-y-4">
         {#each motiveMatrix as motive}
-          <Card>
-            <CardHeader>
+          <div>
+            <divHeader>
               <div class="flex items-center justify-between">
-                <CardTitle class="flex items-center gap-2">
+                <divTitle class="flex items-center gap-2">
                   <Badge class={getMotiveColor(motive.category) + ' text-white'}>
                     {motive.category.replace('_', ' ')}
                   </Badge>
                   <span>Probability: {(motive.probability * 100).toFixed(1)}%</span>
-                </CardTitle>
+                </h3>
                 <Progress value={motive.probability * 100} class="w-32" />
               </div>
-            </CardHeader>
-            <CardContent class="space-y-4">
+            </div>
+            <divContent class="space-y-4">
               <p class="text-gray-700">{motive.description}</p>
               
               <div class="grid md:grid-cols-2 gap-4">
@@ -676,18 +676,18 @@
                   {/each}
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         {/each}
       </div>
     </TabsContent>
 
     <TabsContent value="timeline">
-      <Card>
-        <CardHeader>
-          <CardTitle>Event Timeline Analysis</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div>
+        <divHeader>
+          <divTitle>Event Timeline Analysis</h3>
+        </div>
+        <divContent>
           <div class="space-y-4">
             {#each timelineEvents as event}
               <div class="border-l-4 border-blue-500 pl-4">
@@ -705,18 +705,18 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </TabsContent>
 
     <TabsContent value="risk">
       {#if riskAssessment}
         <div class="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Risk Assessment Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div>
+            <divHeader>
+              <divTitle>Risk Assessment Summary</h3>
+            </div>
+            <divContent>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="text-center p-4 border rounded-lg">
                   <div class="text-lg font-bold text-red-600">{riskAssessment.overallLevel}</div>
@@ -767,8 +767,8 @@
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       {/if}
     </TabsContent>
@@ -776,16 +776,16 @@
     <TabsContent value="recommendations">
       <div class="space-y-4">
         {#each investigativeRecommendations as rec}
-          <Card>
-            <CardHeader>
+          <div>
+            <divHeader>
               <div class="flex items-center justify-between">
-                <CardTitle>{rec.action}</CardTitle>
+                <divTitle>{rec.action}</h3>
                 <Badge class={rec.priority === 'IMMEDIATE' ? 'bg-red-600' : rec.priority === 'URGENT' ? 'bg-orange-600' : 'bg-blue-600'}>
                   {rec.priority}
                 </Badge>
               </div>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <divContent>
               <div class="space-y-3">
                 <div>
                   <div class="text-sm font-medium text-gray-700">Rationale</div>
@@ -800,19 +800,19 @@
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         {/each}
       </div>
     </TabsContent>
   </Tabs>
 
   {#if behaviorPatterns.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle>Behavioral Pattern Analysis</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div>
+      <divHeader>
+        <divTitle>Behavioral Pattern Analysis</h3>
+      </div>
+      <divContent>
         <div class="grid gap-4">
           {#each behaviorPatterns as pattern}
             <div class="border rounded-lg p-4">
@@ -834,16 +834,16 @@
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   {/if}
 
   {#if psychologicalProfile}
-    <Card>
-      <CardHeader>
-        <CardTitle>Psychological Profile</CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+    <div>
+      <divHeader>
+        <divTitle>Psychological Profile</h3>
+      </div>
+      <divContent class="space-y-4">
         <div class="grid md:grid-cols-3 gap-4">
           <div>
             <div class="text-sm font-medium text-gray-700 mb-2">Primary Traits</div>
@@ -901,7 +901,7 @@
             {/each}
           </ul>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   {/if}
 </div>

@@ -237,8 +237,8 @@
   
   <!-- Stats Cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <Card.Root>
-      <Card.Content class="p-6">
+    <div.Root>
+      <div.Content class="p-6">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-nier-text-muted">Total Cases</p>
@@ -254,8 +254,8 @@
       </Card.Content>
     </Card.Root>
     
-    <Card.Root>
-      <Card.Content class="p-6">
+    <div.Root>
+      <div.Content class="p-6">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-nier-text-muted">Active Cases</p>
@@ -271,8 +271,8 @@
       </Card.Content>
     </Card.Root>
     
-    <Card.Root>
-      <Card.Content class="p-6">
+    <div.Root>
+      <div.Content class="p-6">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-nier-text-muted">Pending Review</p>
@@ -285,8 +285,8 @@
       </Card.Content>
     </Card.Root>
     
-    <Card.Root>
-      <Card.Content class="p-6">
+    <div.Root>
+      <div.Content class="p-6">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-nier-text-muted">Closed Cases</p>
@@ -301,8 +301,8 @@
   </div>
   
   <!-- Filters and Search -->
-  <Card.Root>
-    <Card.Content class="p-6">
+  <div.Root>
+    <div.Content class="p-6">
       <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
           <!-- Search -->
@@ -340,8 +340,8 @@
   </Card.Root>
   
   <!-- Cases Table -->
-  <Card.Root>
-    <Card.Content class="p-0">
+  <div.Root>
+    <div.Content class="p-0">
       {#if loading}
         <div class="p-6 text-center">
           <div class="animate-spin w-8 h-8 border-4 border-nier-accent-warm border-t-transparent rounded-full mx-auto"></div>

@@ -37,7 +37,7 @@ export const aiAnalysisMachine = createMachine({
   initial: 'idle',
   types: {
     context: {} as AIAnalysisContext,
-    events: {} as 
+    events: {} as
       | { type: 'START_ANALYSIS'; data: any }
       | { type: 'UPDATE_PROMPT'; prompt: string }
       | { type: 'UPDATE_OPTIONS'; options: any }
@@ -90,32 +90,32 @@ export const aiAnalysisMachine = createMachine({
         input: ({ context }) => context,
         src: fromPromise(async ({ input }) => {
           const errors: Record<string, string[]> = {};
-          
+
           const context = input as AIAnalysisContext;
           if (!context.prompt?.trim()) {
             errors.prompt = ['Analysis prompt is required'];
           }
-          
+
           if (context.prompt && context.prompt.length < 10) {
             errors.prompt = ['Prompt must be at least 10 characters'];
           }
-          
+
           if (context.prompt && context.prompt.length > 2000) {
             errors.prompt = ['Prompt too long (max 2000 characters)'];
           }
-          
+
           if (context.options.maxTokens < 100 || context.options.maxTokens > 4000) {
             errors.maxTokens = ['Max tokens must be between 100 and 4000'];
           }
-          
+
           if (context.options.temperature < 0 || context.options.temperature > 1) {
             errors.temperature = ['Temperature must be between 0 and 1'];
           }
-          
+
           if (Object.keys(errors).length > 0) {
             throw { validationErrors: errors };
           }
-          
+
           return context;
         }),
         onDone: {
@@ -149,7 +149,7 @@ export const aiAnalysisMachine = createMachine({
         src: fromPromise(async ({ input }) => {
           const context = input as AIAnalysisContext;
           const startTime = Date.now();
-          
+
           // Prepare analysis request
           const analysisRequest = {
             prompt: context.prompt,
@@ -157,7 +157,7 @@ export const aiAnalysisMachine = createMachine({
             options: context.options,
             streaming: true
           };
-          
+
           // Call AI analysis API
           const response = await fetch('/api/ai/analyze', {
             method: 'POST',
@@ -166,31 +166,31 @@ export const aiAnalysisMachine = createMachine({
             },
             body: JSON.stringify(analysisRequest)
           });
-          
+
           if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.error || `Analysis failed: HTTP ${response.status}`);
           }
-          
+
           // Handle streaming response
           const reader = response.body?.getReader();
           const decoder = new TextDecoder();
           let analysisResults = {};
           let tokensUsed = 0;
-          
+
           if (reader) {
             while (true) {
               const { done, value } = await reader.read();
               if (done) break;
-              
+
               const chunk = decoder.decode(value);
               const lines = chunk.split('\n');
-              
+
               for (const line of lines) {
                 if (line.startsWith('data: ')) {
                   try {
                     const data = JSON.parse(line.slice(6));
-                    
+
                     if (data.type === 'chunk') {
                       // Streaming text chunk - would emit event here
                       continue;
@@ -205,9 +205,9 @@ export const aiAnalysisMachine = createMachine({
               }
             }
           }
-          
+
           const processingTime = Date.now() - startTime;
-          
+
           return {
             analysisResults,
             processingTime,

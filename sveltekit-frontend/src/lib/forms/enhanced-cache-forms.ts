@@ -190,8 +190,9 @@ export class CacheFirstFormManager {
         onUpdate: ({ form }) => {
           this.handleFormUpdate(formId, form.data);
           // Auto-generate title from file name
-          if (form.data.file && !form.data.title) {
-            form.data.title = form.data.file.name.replace(/\.[^/.]+$/, '');
+          const formData = form.data as any;
+          if (formData.file && !formData.title) {
+            formData.title = formData.file.name.replace(/\.[^/.]+$/, '');
           }
         },
 

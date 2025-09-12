@@ -53,13 +53,13 @@
     </div>
 
     <!-- Architecture Overview -->
-    <Card class="mb-8">
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <div class="mb-8">
+      <divHeader>
+        <divTitle class="flex items-center gap-2">
           🏗️ System Architecture
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <divContent>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Fast Router -->
           <div class="architecture-component p-4 border rounded-lg bg-yellow-50 border-yellow-200">
@@ -129,18 +129,18 @@
             <span class="px-2 py-1 bg-orange-100 rounded">5. Response & Cache</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
     {#if !orchestratorReady}
       <!-- Setup Instructions -->
-      <Card class="mb-8">
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2 text-orange-600">
+      <div class="mb-8">
+        <divHeader>
+          <divTitle class="flex items-center gap-2 text-orange-600">
             🚧 Setup Required
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </h3>
+        </div>
+        <divContent class="space-y-4">
           <p class="text-gray-600">
             The Legal AI Orchestrator requires Docker services to be running. Follow these steps to get started:
           </p>
@@ -174,16 +174,16 @@
               <strong>✅ Ready to Go:</strong> Using your existing services - no additional setup required!
             </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     {/if}
 
     <!-- Main Interface -->
     {#if orchestratorReady}
       <ExistingServicesOrchestrator />
     {:else}
-      <Card>
-        <CardContent class="text-center py-12">
+      <div>
+        <divContent class="text-center py-12">
           <div class="text-6xl mb-4">🎮</div>
           <h3 class="text-xl font-semibold mb-2">Legal AI Orchestrator</h3>
           <p class="text-gray-600 mb-4">Waiting for services to start...</p>
@@ -193,16 +193,16 @@
           >
             🔄 Check Again
           </button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     {/if}
 
     <!-- Documentation -->
-    <Card class="mt-8">
-      <CardHeader>
-        <CardTitle>📚 Documentation</CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+    <div class="mt-8">
+      <divHeader>
+        <divTitle>📚 Documentation</h3>
+      </div>
+      <divContent class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="doc-section">
             <h4 class="font-semibold mb-2">🎮 Nintendo Memory Management</h4>
@@ -244,8 +244,8 @@
             </ul>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   </div>
 </div>
 

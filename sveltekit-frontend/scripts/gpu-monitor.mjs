@@ -86,20 +86,36 @@ async function getNvidiaStats() {
 
 async function checkAiServices() {
     const services = [
-        { name: 'Ollama', url: 'http://localhost:11436/api/version' },
-        { name: 'Frontend', url: 'http://localhost:5173/api/health' },
-        { name: 'Enhanced RAG', url: 'http://localhost:8081/health' }
+        { name: 'Ollama', url: 'http://localhost:11434/api/version', timeout: 3000 },
+        { name: 'Frontend', url: 'http://localhost:5174/api/ai/case-scoring', timeout: 5000 }, // Use API endpoint that's faster than SSR
+        { name: 'Enhanced RAG', url: 'http://localhost:8081/health', timeout: 2000 }
     ];
 
     const results = await Promise.allSettled(
         services.map(async service => {
             try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), service.timeout || 2000);
+                
                 const response = await fetch(service.url, {
-                    signal: AbortSignal.timeout(2000)
+                    signal: controller.signal,
+                    method: 'GET'
                 });
-                return { name: service.name, status: response.ok };
-            } catch {
-                return { name: service.name, status: false };
+                
+                clearTimeout(timeoutId);
+                return { 
+                    name: service.name, 
+                    status: response.ok,
+                    responseTime: Date.now() - Date.now()
+                };
+            } catch (error) {
+                // More detailed error checking for better diagnostics
+                const isTimeout = error.name === 'AbortError';
+                return { 
+                    name: service.name, 
+                    status: false, 
+                    error: isTimeout ? 'timeout' : 'connection_refused' 
+                };
             }
         })
     );

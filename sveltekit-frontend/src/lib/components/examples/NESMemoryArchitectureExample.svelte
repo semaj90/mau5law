@@ -230,11 +230,11 @@
     
     <!-- Document Priority Analysis -->
     <div class="demo-section">
-      <Card>
-        <CardHeader>
-          <CardTitle>📊 Document Priority Analysis</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div>
+        <divHeader>
+          <divTitle>📊 Document Priority Analysis</h3>
+        </div>
+        <divContent>
           <div class="priority-grid">
             {#each documentPriorities as item}
               <div class="priority-card" style:border-color={getPriorityColor(item.priority)}>
@@ -269,17 +269,17 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
     
     <!-- Memory Bank Visualization -->
     <div class="demo-section">
-      <Card>
-        <CardHeader>
-          <CardTitle>🧠 NES Memory Bank Status</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div>
+        <divHeader>
+          <divTitle>🧠 NES Memory Bank Status</h3>
+        </div>
+        <divContent>
           <div class="memory-banks">
             {#each memoryBankData as bankData}
               <div class="memory-bank">
@@ -319,17 +319,17 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
     
     <!-- Cache Warming Controls -->
     <div class="demo-section">
-      <Card>
-        <CardHeader>
-          <CardTitle>🔥 Cache Warming Strategies</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div>
+        <divHeader>
+          <divTitle>🔥 Cache Warming Strategies</h3>
+        </div>
+        <divContent>
           <div class="warming-strategies">
             {#each Object.entries(WARMING_STRATEGIES) as [strategyKey, strategy]}
               <div class="strategy-card">
@@ -405,17 +405,17 @@
               {/if}
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
     
     <!-- Registry Statistics -->
     <div class="demo-section">
-      <Card>
-        <CardHeader>
-          <CardTitle>📈 Registry Performance Stats</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div>
+        <divHeader>
+          <divTitle>📈 Registry Performance Stats</h3>
+        </div>
+        <divContent>
           <div class="stats-grid">
             <div class="stat-card">
               <div class="stat-label">Active Components</div>
@@ -447,8 +447,8 @@
               <div class="stat-value">{(warmingStats.averageProcessingTime || 0).toFixed(1)}ms</div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
     
   {/if}

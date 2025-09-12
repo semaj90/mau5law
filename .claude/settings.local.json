@@ -140,7 +140,20 @@
       "Bash(REDIS_PASSWORD=redis npm run dev:full)",
       "Bash(tasklist:*)",
       "Bash(PORT=5174 REDIS_PASSWORD=redis npm run dev:full)",
-      "Bash(./test-routes.sh:*)"
+      "Bash(./test-routes.sh:*)",
+      "Bash(./legal-recommendation-engine.exe)",
+      "Bash(./legal-ai-quic-server.exe)",
+      "Bash(set RTX_3060_OPTIMIZATION=true)",
+      "Bash(set ENABLE_GPU=true)",
+      "Bash(set OLLAMA_GPU_LAYERS=35)",
+      "Bash(REDIS_PASSWORD=\"redis\" timeout 15s ./legal-ai-quic-server-fixed.exe)",
+      "Bash(QUIC_PORT=4434 REDIS_PASSWORD=\"redis\" timeout 15s ./legal-ai-quic-server-fixed.exe)",
+      "Bash(MCP_PORT=3003 node scripts/mcp-multicore-server.mjs)",
+      "Bash(PORT=8081 timeout 10s ./legal-recommendation-engine.exe)",
+      "Bash(PORT=8095 timeout 10s ./legal-recommendation-engine.exe)",
+      "Bash(while read file)",
+      "Bash(do:*)",
+      "Bash(xargs:*)"
     ],
     "deny": [],
     "ask": []

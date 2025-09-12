@@ -62,46 +62,59 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
   const score = Math.min(100, Math.max(0, Math.round(base + (Math.random() * 10 - 5))));
   const now = new Date();
   const created = new Date(now.getTime() - 1000 * 60 * 60 * 24 * (7 + id));
+  
+  // Enhanced factors matching frontend component expectations
   const factors: ScoreFactor[] = [
     {
-      category: 'Admissibility',
-      weight: 0.25,
+      category: 'Evidence Quality',
+      weight: 0.3,
       impact: Math.random(),
-      description: 'Evidentiary compliance & chain of custody',
+      description: 'Strength and reliability of evidence collection',
       confidence: 70 + Math.round(Math.random() * 25),
     },
     {
-      category: 'Relevance',
+      category: 'Witness Credibility',
       weight: 0.25,
       impact: Math.random(),
-      description: 'Direct relevance to core legal issues',
+      description: 'Reliability and consistency of witness testimony',
       confidence: 65 + Math.round(Math.random() * 30),
     },
     {
-      category: 'Strategic Value',
-      weight: 0.25,
+      category: 'Legal Precedent',
+      weight: 0.2,
       impact: Math.random(),
-      description: 'Influence on negotiation / litigation strategy',
+      description: 'Supporting case law and legal precedents',
       confidence: 60 + Math.round(Math.random() * 35),
     },
     {
-      category: 'Quality',
-      weight: 0.25,
+      category: 'Defendant History',
+      weight: 0.15,
       impact: Math.random(),
-      description: 'Completeness, clarity & contextual richness',
+      description: 'Prior criminal history and background factors',
       confidence: 60 + Math.round(Math.random() * 30),
     },
+    {
+      category: 'Case Complexity',
+      weight: 0.1,
+      impact: Math.random(),
+      description: 'Overall complexity and jurisdictional factors',
+      confidence: 65 + Math.round(Math.random() * 25),
+    },
   ];
+  
   const recommendations = [
-    'Validate chain of custody documentation',
-    'Corroborate with additional witness statements',
-    'Enhance narrative coherence using AI summarization',
-    'Cross-link with similar precedent cases',
-  ].slice(0, 2 + Math.floor(Math.random() * 2));
+    'Prioritize key witness interviews and statement validation',
+    'Strengthen evidence chain of custody documentation',
+    'Research additional legal precedents for case strategy',
+    'Consider plea bargain negotiations based on evidence strength',
+    'Schedule expert witness consultations for technical evidence',
+    'Coordinate with forensic teams for physical evidence analysis'
+  ].slice(0, 2 + Math.floor(Math.random() * 3));
+  
   return {
     id: `case_${id}`,
     title,
-    description: `Automated risk scoring profile for ${title}.`,
+    description: `Comprehensive legal case analysis and risk assessment for ${title}`,
     score,
     priority: derivePriority(score),
     confidence: 60 + Math.round(Math.random() * 35),
@@ -114,15 +127,40 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
 }
 
 const originalGETHandler: RequestHandler = async () => {
-  // Provide sample cases for the dashboard GET fetch
+  // Provide sample cases matching the frontend component structure
   const cases: CaseScore[] = [
-    sampleCase(1, 'Contract Dispute: Vendor Non-Performance', 72),
-    sampleCase(2, 'IP Infringement – Software Licensing', 64),
-    sampleCase(3, 'Employment Claim – Wrongful Termination', 55),
-    sampleCase(4, 'Data Privacy Incident – Regulatory Notice', 88),
-    sampleCase(5, 'Product Liability – Consumer Injury', 47),
+    sampleCase(1, 'State v. Henderson - Fraud Investigation', 87),
+    sampleCase(2, 'People v. Martinez - Assault & Battery', 65),
+    sampleCase(3, 'Commonwealth v. Johnson - Drug Trafficking', 94),
+    sampleCase(4, 'State v. Kim - Domestic Violence', 78),
+    sampleCase(5, 'People v. Thompson - Cybercrime Investigation', 71),
   ];
-  return json({ cases });
+  
+  // Add summary statistics matching frontend expectations
+  const totalCases = cases.length;
+  const avgRiskScore = Math.round(cases.reduce((sum, case_) => sum + case_.score, 0) / totalCases);
+  const priorityBreakdown = {
+    critical: cases.filter(c => c.priority === 'critical').length,
+    high: cases.filter(c => c.priority === 'high').length,
+    medium: cases.filter(c => c.priority === 'medium').length,
+    low: cases.filter(c => c.priority === 'low').length
+  };
+  
+  return json({ 
+    cases,
+    summary: {
+      total_cases: totalCases,
+      average_risk_score: avgRiskScore,
+      priority_breakdown: priorityBreakdown,
+      last_analysis: new Date().toISOString(),
+      analysis_confidence: 0.89
+    },
+    metadata: {
+      response_time_ms: Math.floor(Math.random() * 50) + 25,
+      ai_model: 'legal-scoring-v2.1',
+      cache_status: 'hit'
+    }
+  });
 };
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {

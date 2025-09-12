@@ -41,6 +41,7 @@ interface CUDAResponse {
   processingTime: number;
   gpuUtilization?: number;
   memoryUsage?: number;
+  cudaAccelerated?: boolean;
 }
 
 class EnhancedRabbitMQCudaBridge {
@@ -69,8 +70,8 @@ class EnhancedRabbitMQCudaBridge {
       }
 
       // Connect to RabbitMQ Docker container
-      this.connection = await amqp.connect(RABBITMQ_URL);
-      this.channel = await this.connection.createChannel();
+      this.connection = await amqp.connect(RABBITMQ_URL) as any;
+      this.channel = await (this.connection as any).createChannel();
       
       console.log('✅ Connected to RabbitMQ Docker container');
       
@@ -360,9 +361,8 @@ class EnhancedRabbitMQCudaBridge {
   private async checkCudaHealth() {
     try {
       const response = await fetch(`${CUDA_SERVICE_URL}/api/v1/health`, {
-        method: 'GET',
-        timeout: 5000
-      });
+        method: 'GET'
+      } as any);
       
       if (response.ok) {
         const health = await response.json();
@@ -524,7 +524,7 @@ class EnhancedRabbitMQCudaBridge {
   async shutdown() {
     try {
       if (this.channel) await this.channel.close();
-      if (this.connection) await this.connection.close();
+      if (this.connection) await (this.connection as any).close();
       
       rabbitMQCudaState.update(state => ({
         ...state,

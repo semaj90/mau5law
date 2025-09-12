@@ -10,7 +10,7 @@ https://svelte.dev/e/expected_token -->
 </script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
-  import * as Card from '$lib/components/ui/card';
+  // Card components removed - using native HTML elements
   import {
     ensureFloat32Array,
     quantizeToFP16,
@@ -153,14 +153,14 @@ https://svelte.dev/e/expected_token -->
   </div>
 
   <!-- Data Type Testing Buttons -->
-  <Card.Root>
-    <Card.Header>
-      <Card.Title>🧪 Test Different Array Types</Card.Title>
-      <Card.Description>
+  <div.Root>
+    <div.Header>
+      <div.Title>🧪 Test Different Array Types</Card.Title>
+      <div.Description>
         Demonstrate how the utility handles various input formats that commonly cause WebGPU mismatches
       </Card.Description>
     </Card.Header>
-    <Card.Content>
+    <div.Content>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Button 
           onclick={() => demonstrateArrayHandling('arrayBuffer')}
@@ -207,14 +207,14 @@ https://svelte.dev/e/expected_token -->
 
   <!-- WebGPU Integration Test -->
   {#if webgpuSupported}
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>⚡ WebGPU Integration Test</Card.Title>
-        <Card.Description>
+    <div.Root>
+      <div.Header>
+        <div.Title>⚡ WebGPU Integration Test</Card.Title>
+        <div.Description>
           Test the array utilities with the actual WebGPU RAG service
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <Button 
           onclick={testWebGPUIntegration}
           disabled={isProcessing}
@@ -231,11 +231,11 @@ https://svelte.dev/e/expected_token -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Type Conversion Results -->
       {#if results.original && results.normalized}
-        <Card.Root>
-          <Card.Header>
-            <Card.Title>🔧 Type Normalization</Card.Title>
+        <div.Root>
+          <div.Header>
+            <div.Title>🔧 Type Normalization</Card.Title>
           </Card.Header>
-          <Card.Content class="space-y-4">
+          <div.Content class="space-y-4">
             <div class="flex justify-between items-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
               <div>
                 <div class="font-medium text-red-900 dark:text-red-100">Original</div>
@@ -265,11 +265,11 @@ https://svelte.dev/e/expected_token -->
 
       <!-- Quantization Results -->
       {#if results.fp16 && results.int8}
-        <Card.Root>
-          <Card.Header>
-            <Card.Title>🗜️ Quantization Results</Card.Title>
+        <div.Root>
+          <div.Header>
+            <div.Title>🗜️ Quantization Results</Card.Title>
           </Card.Header>
-          <Card.Content class="space-y-4">
+          <div.Content class="space-y-4">
             <div class="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <div>
                 <div class="font-medium text-blue-900 dark:text-blue-100">FP16 Quantization</div>
@@ -297,11 +297,11 @@ https://svelte.dev/e/expected_token -->
 
       <!-- Memory Analysis -->
       {#if results.memoryAnalysis}
-        <Card.Root class="lg:col-span-2">
-          <Card.Header>
-            <Card.Title>📊 Memory Usage Analysis</Card.Title>
+        <div.Root class="lg:col-span-2">
+          <div.Header>
+            <div.Title>📊 Memory Usage Analysis</Card.Title>
           </Card.Header>
-          <Card.Content>
+          <div.Content>
             <div class="grid grid-cols-4 gap-4">
               {#each results.memoryAnalysis as analysis}
                 <div class="text-center p-4 border rounded-lg">
@@ -323,11 +323,11 @@ https://svelte.dev/e/expected_token -->
 
       <!-- WebGPU Test Results -->
       {#if results.webgpuTest}
-        <Card.Root class="lg:col-span-2">
-          <Card.Header>
-            <Card.Title>🚀 WebGPU Service Results</Card.Title>
+        <div.Root class="lg:col-span-2">
+          <div.Header>
+            <div.Title>🚀 WebGPU Service Results</Card.Title>
           </Card.Header>
-          <Card.Content>
+          <div.Content>
             <div class="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <div class="font-medium text-gray-900 dark:text-gray-100">Buffers Created</div>
@@ -364,11 +364,11 @@ https://svelte.dev/e/expected_token -->
   {/if}
 
   <!-- Usage Guide -->
-  <Card.Root class="bg-gray-50 dark:bg-gray-800">
-    <Card.Header>
-      <Card.Title>💡 Integration Guide</Card.Title>
+  <div.Root class="bg-gray-50 dark:bg-gray-800">
+    <div.Header>
+      <div.Title>💡 Integration Guide</Card.Title>
     </Card.Header>
-    <Card.Content class="text-sm space-y-3">
+    <div.Content class="text-sm space-y-3">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">The Problem</h4>

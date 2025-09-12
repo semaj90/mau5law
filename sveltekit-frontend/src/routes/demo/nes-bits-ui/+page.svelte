@@ -1,15 +1,9 @@
 <script lang="ts">
-  import { createBubbler, stopPropagation } from 'svelte/legacy';
-
-  const bubble = createBubbler();
   import 'nes.css/css/nes.min.css';
 
   // For now, let's use plain HTML for all components to avoid bits-ui import issues
   // We can add bits-ui later once we have it properly configured
 
-  // All components will use plain HTML with NES.css styling
-
-  // Use plain Svelte variables instead of non-standard $state(...) helper
   let dialogOpen: boolean = $state(false);
   let toastOpen: boolean = $state(false);
   let popoverOpen: boolean = $state(false);

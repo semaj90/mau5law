@@ -488,11 +488,11 @@ https://svelte.dev/e/attribute_duplicate -->
             {#if viewMode === 'grid'}
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {#each category.demos as demo}
-                  <Card.Root class="group hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary/20">
-                    <Card.Header class="pb-3">
+                  <div.Root class="group hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary/20">
+                    <div.Header class="pb-3">
                       <div class="flex items-start justify-between">
                         <div class="flex-1">
-                          <Card.Title class="text-lg group-hover:text-primary transition-colors">
+                          <div.Title class="text-lg group-hover:text-primary transition-colors">
                             {demo.name}
                           </Card.Title>
                           <div class="flex items-center gap-2 mt-2">
@@ -505,7 +505,7 @@ https://svelte.dev/e/attribute_duplicate -->
                       </div>
                     </Card.Header>
 
-                    <Card.Content class="pt-0">
+                    <div.Content class="pt-0">
                       <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
                         {demo.description}
                       </p>
@@ -535,8 +535,8 @@ https://svelte.dev/e/attribute_duplicate -->
               <!-- List View -->
               <div class="space-y-3">
                 {#each category.demos as demo}
-                  <Card.Root class="group hover:shadow-md transition-all duration-200">
-                    <Card.Content class="p-4">
+                  <div.Root class="group hover:shadow-md transition-all duration-200">
+                    <div.Content class="p-4">
                       <div class="flex items-center justify-between">
                         <div class="flex-1">
                           <div class="flex items-center gap-4">

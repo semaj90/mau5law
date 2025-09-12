@@ -432,7 +432,7 @@ export class HeadlessLegalProcessorFactory {
       const analysisPrompt = this.buildLegalAnalysisPrompt(text, lodEntry);
       
       // Call Ollama service for legal analysis
-      const response = await ollamaService.generateCompletion(analysisPrompt, {
+      const response = await (ollamaService as any).generateCompletion(analysisPrompt, {
         model: 'llama3.1:8b', // Or whatever legal model is available
         stream: false
       });

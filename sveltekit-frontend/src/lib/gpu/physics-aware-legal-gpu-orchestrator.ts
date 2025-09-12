@@ -13,7 +13,7 @@
  */
 
 import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache';
-import { YoRHaAntiAliasing3D } from '../components/three/yorha-ui/YoRHaAntiAliasing3D';
+import { YoRHaAntiAliased3D } from '../components/three/yorha-ui/YoRHaAntiAliasing3D';
 import type { AntiAliasingConfig, YoRHaAAStyle } from '../components/three/yorha-ui/YoRHaAntiAliasing3D';
 import { NESMemoryArchitecture } from '../memory/nes-memory-architecture';
 
@@ -118,7 +118,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
   private config: PhysicsAwareGPUConfig;
   private metrics: GPUPerformanceMetrics;
   private somCache: WebGPUSOMCache;
-  private antiAliasing: YoRHaAntiAliasing3D;
+  private antiAliasing: YoRHaAntiAliased3D;
   private nesMemory: NESMemoryArchitecture;
   private physicsDocuments: Map<string, LegalDocumentPhysics>;
   private isInitialized = false;
@@ -137,7 +137,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
       learningRate: 0.01
     });
     
-    this.antiAliasing = new YoRHaAntiAliasing3D();
+    this.antiAliasing = new YoRHaAntiAliased3D();
     this.nesMemory = new NESMemoryArchitecture();
     
     console.log('🚀 Physics-Aware Legal GPU Orchestrator initializing...');

@@ -5,7 +5,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import * as Card from '$lib/components/ui/card';
+  // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/enhanced-bits';
   
@@ -268,14 +268,14 @@
   <!-- Analysis Results Summary -->
   {#if analysisResults}
     <section class="results-summary">
-      <Card.Root class="summary-card">
-        <Card.Header>
-          <Card.Title>Latest Analysis Results</Card.Title>
-          <Card.Description>
+      <div.Root class="summary-card">
+        <div.Header>
+          <div.Title>Latest Analysis Results</Card.Title>
+          <div.Description>
             Completed: {new Date(analysisResults.timestamp).toLocaleString()}
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <div class="summary-metrics">
             <div class="metric">
               <span class="metric-value">{analysisResults.totalPatterns}</span>
@@ -321,13 +321,13 @@
       </div>
     {:else}
       {#each filteredPatterns as pattern}
-        <Card.Root class="pattern-card">
-          <Card.Header>
+        <div.Root class="pattern-card">
+          <div.Header>
             <div class="pattern-header">
               <div class="pattern-title-section">
                 <div class="pattern-icon">{getPatternTypeIcon(pattern.type)}</div>
                 <div>
-                  <Card.Title class="pattern-title">{pattern.title}</Card.Title>
+                  <div.Title class="pattern-title">{pattern.title}</Card.Title>
                   <span class="pattern-type-badge {getPatternTypeColor(pattern.type)}">
                     {pattern.type}
                   </span>
@@ -340,12 +340,12 @@
                 </span>
               </div>
             </div>
-            <Card.Description class="pattern-description">
+            <div.Description class="pattern-description">
               {pattern.description}
             </Card.Description>
           </Card.Header>
           
-          <Card.Content>
+          <div.Content>
             <div class="pattern-stats">
               <div class="stat">
                 <span class="stat-label">Significance</span>
@@ -390,7 +390,7 @@
             {/if}
           </Card.Content>
           
-          <Card.Footer>
+          <div.Footer>
             <div class="card-actions">
               <Button variant="outline" size="sm" on:click={() => openPatternDetails(pattern)}>
                 View Details

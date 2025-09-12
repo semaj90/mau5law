@@ -5,7 +5,7 @@
 		Activity, Zap, Brain, Database, Cpu, TrendingUp, 
 		Target, Clock, BarChart3, Gauge 
 	} from 'lucide-svelte';
-	import * as Card from '$lib/components/ui/card';
+	// Card components removed - using native HTML elements
 	import { Badge } from '$lib/components/ui/badge';
 	import { Progress } from '$lib/components/ui/progress';
 
@@ -177,14 +177,14 @@
 
 	<!-- Accuracy Overview -->
 	<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-		<Card.Root class="bg-gray-800 border-gray-700">
-			<Card.Header class="pb-3">
-				<Card.Title class="text-sm font-medium flex items-center gap-2 text-white">
+		<div.Root class="bg-gray-800 border-gray-700">
+			<div.Header class="pb-3">
+				<div.Title class="text-sm font-medium flex items-center gap-2 text-white">
 					<Target class="h-4 w-4 text-yellow-400" />
 					Current Accuracy
 				</Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<div.Content>
 				<div class="space-y-2">
 					<div class="text-3xl font-bold {getAccuracyColor(metrics.accuracy)}">
 						{metrics.accuracy.toFixed(1)}%
@@ -197,14 +197,14 @@
 			</Card.Content>
 		</Card.Root>
 
-		<Card.Root class="bg-gray-800 border-gray-700">
-			<Card.Header class="pb-3">
-				<Card.Title class="text-sm font-medium flex items-center gap-2 text-white">
+		<div.Root class="bg-gray-800 border-gray-700">
+			<div.Header class="pb-3">
+				<div.Title class="text-sm font-medium flex items-center gap-2 text-white">
 					<Zap class="h-4 w-4 text-blue-400" />
 					WebGPU Acceleration
 				</Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<div.Content>
 				<div class="space-y-2">
 					<div class="text-2xl font-bold text-blue-400">
 						{metrics.webgpuOptimizationGain.toFixed(1)}x
@@ -219,14 +219,14 @@
 			</Card.Content>
 		</Card.Root>
 
-		<Card.Root class="bg-gray-800 border-gray-700">
-			<Card.Header class="pb-3">
-				<Card.Title class="text-sm font-medium flex items-center gap-2 text-white">
+		<div.Root class="bg-gray-800 border-gray-700">
+			<div.Header class="pb-3">
+				<div.Title class="text-sm font-medium flex items-center gap-2 text-white">
 					<Clock class="h-4 w-4 text-green-400" />
 					Processing Speed
 				</Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<div.Content>
 				<div class="space-y-2">
 					<div class="text-2xl font-bold text-green-400">
 						{formatDuration(metrics.averageProcessingTime)}
@@ -243,14 +243,14 @@
 	<!-- Detailed Metrics -->
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 		<!-- Prediction Models -->
-		<Card.Root class="bg-gray-800 border-gray-700">
-			<Card.Header>
-				<Card.Title class="text-sm font-semibold flex items-center gap-2 text-white">
+		<div.Root class="bg-gray-800 border-gray-700">
+			<div.Header>
+				<div.Title class="text-sm font-semibold flex items-center gap-2 text-white">
 					<Brain class="h-4 w-4 text-purple-400" />
 					Prediction Models
 				</Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<div.Content>
 				<div class="space-y-3">
 					<div class="flex justify-between items-center">
 						<span class="text-sm text-gray-300">HMM Prediction Score</span>
@@ -275,14 +275,14 @@
 		</Card.Root>
 
 		<!-- Cache Performance -->
-		<Card.Root class="bg-gray-800 border-gray-700">
-			<Card.Header>
-				<Card.Title class="text-sm font-semibold flex items-center gap-2 text-white">
+		<div.Root class="bg-gray-800 border-gray-700">
+			<div.Header>
+				<div.Title class="text-sm font-semibold flex items-center gap-2 text-white">
 					<Database class="h-4 w-4 text-cyan-400" />
 					Cache Performance
 				</Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<div.Content>
 				<div class="space-y-3">
 					<div class="flex justify-between items-center">
 						<span class="text-sm text-gray-300">Cache Hit Rate</span>
@@ -310,14 +310,14 @@
 	</div>
 
 	<!-- System Status -->
-	<Card.Root class="bg-gray-800 border-gray-700">
-		<Card.Header>
-			<Card.Title class="text-sm font-semibold flex items-center gap-2 text-white">
+	<div.Root class="bg-gray-800 border-gray-700">
+		<div.Header>
+			<div.Title class="text-sm font-semibold flex items-center gap-2 text-white">
 				<Cpu class="h-4 w-4 text-red-400" />
 				System Performance
 			</Card.Title>
 		</Card.Header>
-		<Card.Content>
+		<div.Content>
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 				<div class="text-center">
 					<div class="text-lg font-bold text-red-400">{metrics.systemLoad}%</div>

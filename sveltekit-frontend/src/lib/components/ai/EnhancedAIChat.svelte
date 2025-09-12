@@ -5,7 +5,7 @@
   import { createDialog } from 'melt-ui';
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
   import * as Dialog from '$lib/components/ui/dialog';
-  import * as Card from '$lib/components/ui/card';
+  // Card components removed - using native HTML elements
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -271,14 +271,14 @@
 
 <div class="enhanced-ai-chat w-full max-w-6xl mx-auto">
   <!-- Main Chat Interface -->
-  <Card.Root class="h-[700px] flex flex-col">
-    <Card.Header class="border-b">
+  <div.Root class="h-[700px] flex flex-col">
+    <div.Header class="border-b">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <ChatBubbleIcon class="w-6 h-6 text-primary" />
           <div>
-            <Card.Title class="text-lg">Enhanced Legal AI Assistant</Card.Title>
-            <Card.Description class="flex items-center gap-2">
+            <div.Title class="text-lg">Enhanced Legal AI Assistant</Card.Title>
+            <div.Description class="flex items-center gap-2">
               <div class="flex items-center gap-1">
                 <div class="w-2 h-2 rounded-full {isConnected ? 'bg-green-500' : 'bg-red-500'}"></div>
                 <span class="text-xs">
@@ -321,7 +321,7 @@
     </Card.Header>
 
     <!-- Messages Area -->
-    <Card.Content class="flex-1 overflow-hidden p-0">
+    <div.Content class="flex-1 overflow-hidden p-0">
       <div 
         bind:this={chatContainer}
         class="h-full overflow-y-auto p-4 space-y-4"

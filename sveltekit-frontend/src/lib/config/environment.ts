@@ -53,7 +53,6 @@ async function detectOllamaConfig(): Promise<{ baseUrl: string; port: number; is
       if (typeof fetch !== 'undefined') {
         const response = await fetch(`${baseUrl}/api/tags`, {
           method: 'GET',
-          timeout: 1000,
           signal: AbortSignal.timeout(1000)
         });
         

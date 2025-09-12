@@ -280,13 +280,13 @@ https://svelte.dev/e/expected_token -->
         
         {#if selectedState}
           <div class="state-inspector">
-            <Card class="inspector-card">
-              <CardHeader>
-                <CardTitle>🔍 State Inspector</CardTitle>
+            <div class="inspector-card">
+              <divHeader>
+                <divTitle>🔍 State Inspector</h3>
                 <p class="inspector-subtitle">{selectedState.id}</p>
-              </CardHeader>
+              </div>
               
-              <CardContent>
+              <divContent>
                 <div class="context-viewer">
                   <h4>State Context</h4>
                   <pre class="context-display">{JSON.stringify(selectedState.context, null, 2)}</pre>
@@ -321,8 +321,8 @@ https://svelte.dev/e/expected_token -->
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         {/if}
       </div>

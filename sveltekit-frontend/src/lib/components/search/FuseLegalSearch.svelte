@@ -171,10 +171,10 @@
   {#if searchResults.length > 0}
     <div class="space-y-3">
       {#each searchResults as law}
-        <Card.Root class="hover:shadow-md transition-shadow">
-          <Card.Header class="pb-3">
+        <div.Root class="hover:shadow-md transition-shadow">
+          <div.Header class="pb-3">
             <div class="flex items-start justify-between">
-              <Card.Title class="text-base leading-tight">
+              <div.Title class="text-base leading-tight">
                 {@html law.highlighted.title || law.title}
               </Card.Title>
               <div class="flex items-center gap-2 ml-2">
@@ -182,7 +182,7 @@
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{law.jurisdiction}</span>
               </div>
             </div>
-            <Card.Description class="text-sm">
+            <div.Description class="text-sm">
               {@html law.highlighted.description || law.description}
             </Card.Description>
             <div class="flex gap-2 text-xs text-muted-foreground">
@@ -199,7 +199,7 @@
           </Card.Header>
 
           {#if showAIActions}
-            <Card.Content class="pt-0">
+            <div.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
                 <Button class="bits-btn" size="sm" onclick={() => handleAIAction(law, 'summary')}>
                   <Bot class="h-3 w-3 mr-1" />
@@ -224,8 +224,8 @@
       {/each}
     </div>
   {:else if searchQuery && !isSearching}
-    <Card.Root>
-      <Card.Content class="py-8 text-center">
+    <div.Root>
+      <div.Content class="py-8 text-center">
         <p class="text-muted-foreground">
           No results found for "{searchQuery}".
         </p>
