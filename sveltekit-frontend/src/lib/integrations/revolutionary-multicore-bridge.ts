@@ -275,8 +275,8 @@ export class RevolutionaryMulticoreBridge {
       // Return mock results if FlashAttention not available
       return {
         attentionResult: {
-          attentionWeights: [],
-          contextualEmbeddings: [],
+          attentionWeights: new Float32Array([]),
+          contextualEmbeddings: new Float32Array([]),
           processingTime: 0,
           memoryUsage: 0,
           sequenceLength: 0
