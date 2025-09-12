@@ -13,10 +13,8 @@ https://svelte.dev/e/js_parse_error -->
 
   	import { createSelect, melt } from 'melt';
   	// Updated to use melt-ui components
-  	import Card from '$lib/components/ui/MeltCard.svelte';
   	// TODO: Replace with melt-ui equivalents when available
   	// import { Badge } from 'bits-ui';
-  	// import { CardContent } from 'bits-ui';
   	import { writable, derived, type Writable } from 'svelte/store';
   	import { createEventDispatcher, onMount } from 'svelte';
   	import { fade, fly } from 'svelte/transition';

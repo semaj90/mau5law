@@ -9,7 +9,6 @@ https://svelte.dev/e/js_parse_error -->
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import Select from '$lib/components/ui/MeltSelect.svelte';
-  import Card from '$lib/components/ui/MeltCard.svelte';
 
   // TODO: Replace with melt-ui equivalents when available
   // import {

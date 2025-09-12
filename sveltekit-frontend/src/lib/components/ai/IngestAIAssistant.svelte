@@ -11,10 +11,6 @@ https://svelte.dev/e/attribute_duplicate -->
   import { writable, derived } from 'svelte/store';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/input/Input.svelte';
-  import { Card } from '$lib/components/ui/enhanced-bits';
-  import CardContent from '$lib/components/ui/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/CardTitle.svelte';
   // Badge replaced with span - not available in enhanced-bits
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import Alert from '$lib/components/ui/alert/Alert.svelte';
