@@ -6,7 +6,6 @@
   import { writable } from 'svelte/store';
   import { Button } from 'bits-ui';
   import { Input } from 'bits-ui';
-  import { Card, CardContent, CardHeader, CardTitle } from 'bits-ui';
   import { Badge } from 'bits-ui';
   import { Progress } from 'bits-ui';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from 'bits-ui';

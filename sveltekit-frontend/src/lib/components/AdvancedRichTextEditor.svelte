@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
   let autoSaveTimeout = $state<NodeJS.Timeout;
 
   onMount(() => {
-    initializeEditor());
+    initializeEditor();
     setupKeyboardShortcuts();
   });
 
@@ -165,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 
-  function initializeEditor() {
+  function initializeEditor( {
     editor = new Editor({
       element: editorElement,
       extensions: [
@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
   function toggleItalic() {
     editor?.chain().focus().toggleItalic().run();
   }
-  function toggleUnderline() {
+  function toggleUnderline( {
     editor?.chain().focus().toggleMark("underline").run();
   }
   function toggleStrike() {
@@ -555,7 +555,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isUnderline}
-        onclick={() => toggleUnderline())
+        onclick={() => toggleUnderline()
         title="Underline (Ctrl+U)"
       >
         <Underline size="18" />

@@ -108,9 +108,9 @@
 
   @media (max-width: 768px) {
     .app-layout {
-grid-template-areas: {}
-"header" {}
-"main" {}
+grid-template-areas:
+"header"
+"main"
         "footer";
       grid-template-columns: 1fr;
     }

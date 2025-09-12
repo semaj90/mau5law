@@ -481,14 +481,13 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   <div
     class="mx-auto px-4 max-w-7xl"
     onclick={() => (showPanel = false)}
-    keydown={(e) => e.key === 'Escape' && (showPanel = false)}
+    onkeydown={(e) => e.key === 'Escape' && (showPanel = false)}
     role="dialog"
     aria-modal="true"
     aria-labelledby="accessibility-panel-title"
   >
     <div
       class="mx-auto px-4 max-w-7xl"
-      onclick
       role="document"
     >
       <div class="mx-auto px-4 max-w-7xl">
@@ -514,7 +513,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={highContrast}
-                change={applyAccessibilitySettings}
+                onchange={applyAccessibilitySettings}
               />
               <span>High Contrast</span>
             </label>
@@ -524,7 +523,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={reducedMotion}
-                change={applyAccessibilitySettings}
+                onchange={applyAccessibilitySettings}
               />
               <span>Reduced Motion</span>
             </label>
@@ -534,7 +533,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={largeText}
-                change={applyAccessibilitySettings}
+                onchange={applyAccessibilitySettings}
               />
               <span>Large Text</span>
             </label>
@@ -544,7 +543,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={keyboardNavigation}
-                change={applyAccessibilitySettings}
+                onchange={applyAccessibilitySettings}
               />
               <span>Enhanced Keyboard Navigation</span>
             </label>
@@ -554,7 +553,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={screenReaderMode}
-                change={applyAccessibilitySettings}
+                onchange={applyAccessibilitySettings}
               />
               <span>Screen Reader Optimizations</span>
             </label>

@@ -35,34 +35,6 @@
 {@render hint?.({ inputId, fieldName: name })}
 
 <style>
-  .form-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .inline-field {
-    gap: 0.25rem;
-  }
-
-  .block-field {
-    gap: 0.75rem;
-  }
-
-  .form-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: rgb(55, 65, 81);
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  .required-indicator {
-    color: rgb(239, 68, 68);
-    font-weight: bold;
-  }
-
   .control-wrapper {
     position: relative;
   }

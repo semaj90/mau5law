@@ -42,10 +42,10 @@
   let contextLimit = $state(5);
   let similarityThreshold = $state(0.4);
   let messagesContainer: HTMLElement;
-  let inputElement: HTMLTextAreaElement;
+  let inputElement = $state<HTMLTextAreaElement>();
 
-  // Enhanced embedding options
-  let embeddingOptions = $state({
+  // Enhanced embedding options - use derived for reactive updates
+  let embeddingOptions = $derived({
     model: "embeddinggemma",
     useGPU: true,
     temperature: 0.7,
@@ -82,8 +82,8 @@
 
       if (useAdvancedRAG && (availableDocuments.length > 0 || selectedDocuments.length > 0)) {
         // Use Enhanced Embedding Service with full infrastructure integration
-        const documentsToUse = selectedDocuments.length > 0 
-          ? selectedDocuments 
+        const documentsToUse = selectedDocuments.length > 0
+          ? selectedDocuments
           : availableDocuments.slice(0, contextLimit);
 
         try {
@@ -107,7 +107,7 @@
 
           // Create enhanced response with detailed infrastructure info
           let assistantResponse = `**🧠 AI Analysis with EmbeddingGemma Infrastructure:**\n\n`;
-          
+
           // Infrastructure info
           assistantResponse += `**System:** ${ragResult.metadata.infrastructureUsed.join(' + ')}\n`;
           assistantResponse += `**Model:** ${ragResult.metadata.model} (${ragResult.queryEmbedding.metadata.dimensions}D vectors)\n`;
@@ -115,7 +115,7 @@
 
           if (ragResult.similarDocuments.length > 0) {
             assistantResponse += `**📚 Found ${ragResult.similarDocuments.length} relevant documents:**\n\n`;
-            
+
             ragResult.similarDocuments.forEach((result, index) => {
               const doc = result.document;
               assistantResponse += `**Document ${index + 1}** (Similarity: ${(result.similarity * 100).toFixed(1)}%)\n`;
@@ -125,7 +125,7 @@
               }
               assistantResponse += `\n`;
             });
-            
+
             assistantResponse += `---\n\n`;
           }
 
@@ -167,7 +167,7 @@
 
         } catch (ragError) {
           console.error('Enhanced RAG service failed, falling back to API:', ragError);
-          
+
           // Fallback to original RAG API
           const ragRequest = {
             query: userMessage,
@@ -200,15 +200,15 @@
           // Process fallback response
           const ragContext = responseData.context;
           let assistantResponse = `**⚠️ AI Analysis (Fallback Mode):**\n\n`;
-          
+
           if (ragContext.similarDocs && ragContext.similarDocs.length > 0) {
             assistantResponse += `Found ${ragContext.similarDocs.length} relevant document(s):\n\n`;
-            
+
             ragContext.similarDocs.forEach((doc: any, index: number) => {
               assistantResponse += `**Document ${index + 1}** (Similarity: ${(doc.score * 100).toFixed(1)}%)\n`;
               assistantResponse += `${doc.document}\n\n`;
             });
-            
+
             assistantResponse += `---\n\n`;
           }
 
@@ -248,7 +248,7 @@
         }
 
         responseData = await response.json();
-        
+
         if (!responseData.success || !responseData.data) {
           throw new Error(responseData.error || "Invalid response format");
         }
@@ -266,7 +266,7 @@
 
     } catch (error) {
       console.error("Chat error:", error);
-      
+
       messages = [...messages, {
         role: 'assistant',
         content: `Error: ${error instanceof Error ? error.message : 'Failed to process your request'}`,
@@ -317,19 +317,19 @@
 
     try {
       isLoading = true;
-      
+
       // Pre-generate embeddings for all documents using enhanced service
       const embedResults = await enhancedEmbeddingService.generateBatchEmbeddings(
-        availableDocuments, 
-        { 
+        availableDocuments,
+        {
           model: embeddingOptions.model,
           practiceArea: caseId ? 'legal' : undefined,
           jurisdiction: caseId ? 'us-federal' : undefined
         }
       );
-      
+
       embeddedDocuments = embedResults;
-      
+
       notifications.add({
         type: "success",
         title: "Documents Processed",
@@ -338,10 +338,10 @@
 
       // Auto-analyze available documents
       const analysisQuery = `Please analyze these ${availableDocuments.length} document(s) for key insights, legal implications, and important findings. Focus on patterns, risks, and actionable recommendations.`;
-      
+
       messageInput = analysisQuery;
       await sendMessage();
-      
+
     } catch (error) {
       console.error('Document analysis failed:', error);
       notifications.add({
@@ -358,16 +358,16 @@
     try {
       const health = await enhancedEmbeddingService.getServiceHealth();
       serviceHealth = health;
-      
-      const statusColor = health.status === 'healthy' ? 'success' : 
+
+      const statusColor = health.status === 'healthy' ? 'success' :
                          health.status === 'degraded' ? 'warning' : 'error';
-      
+
       notifications.add({
         type: statusColor,
         title: "Service Health Check",
         message: `Status: ${health.status}. Capabilities: ${health.capabilities.join(', ')}`,
       });
-      
+
     } catch (error) {
       console.error('Health check failed:', error);
       notifications.add({
@@ -391,7 +391,7 @@
     try {
       isLoading = true;
       let successCount = 0;
-      
+
       for (let i = 0; i < availableDocuments.length; i++) {
         const doc = availableDocuments[i];
         const result = await enhancedEmbeddingService.queueEmbeddingJob(
@@ -399,16 +399,16 @@
           `doc-${Date.now()}-${i}`,
           doc
         );
-        
+
         if (result.queued) successCount++;
       }
-      
+
       notifications.add({
         type: successCount === availableDocuments.length ? "success" : "warning",
         title: "Jobs Queued",
         message: `Successfully queued ${successCount}/${availableDocuments.length} embedding jobs`,
       });
-      
+
     } catch (error) {
       console.error('Job queuing failed:', error);
       notifications.add({
@@ -458,13 +458,13 @@
       <div>
         <h3 class="font-semibold text-gray-800">EmbeddingGemma AI Assistant</h3>
         <p class="text-sm text-gray-600">
-          {useAdvancedRAG ? '🧠 Advanced RAG Mode' : '⚡ Quick Chat Mode'} • 
-          {availableDocuments.length} documents • 
+          {useAdvancedRAG ? '🧠 Advanced RAG Mode' : '⚡ Quick Chat Mode'} •
+          {availableDocuments.length} documents •
           {embeddingOptions.model}
         </p>
       </div>
     </div>
-    
+
     <div class="flex items-center gap-2">
       <Button class="bits-btn"
         variant="outline"
@@ -482,7 +482,7 @@
           {/if}
         {/snippet}
       </Button>
-      
+
       {#if showDocumentAnalysis}
         <Button class="bits-btn"
           variant="outline"
@@ -505,8 +505,8 @@
       >
         {#snippet children()}
           <Activity class={`w-4 h-4 mr-1 ${
-            serviceHealth?.status === 'healthy' ? 'text-green-500' : 
-            serviceHealth?.status === 'degraded' ? 'text-yellow-500' : 
+            serviceHealth?.status === 'healthy' ? 'text-green-500' :
+            serviceHealth?.status === 'degraded' ? 'text-yellow-500' :
             serviceHealth?.status === 'unhealthy' ? 'text-red-500' : 'text-gray-400'
           }`} />
           Health
@@ -543,11 +543,11 @@
           </Button>
           <label class="text-xs text-gray-600 flex items-center gap-1">
             Threshold:
-            <input 
-              type="range" 
-              bind:value={similarityThreshold} 
-              min="0.1" 
-              max="0.9" 
+            <input
+              type="range"
+              bind:value={similarityThreshold}
+              min="0.1"
+              max="0.9"
               step="0.1"
               class="w-16 h-1"
             />
@@ -555,7 +555,7 @@
           </label>
         </div>
       </div>
-      
+
       {#if availableDocuments.length > 0}
         <div class="space-y-1 max-h-24 overflow-y-auto">
           {#each availableDocuments as doc, index}
@@ -592,7 +592,7 @@
         <p class="text-gray-600 mb-4">
           Advanced semantic AI powered by Google's EmbeddingGemma model with 768D→384D quantized embeddings.
         </p>
-        
+
         {#if useAdvancedRAG}
           <div class="text-sm text-blue-600 bg-blue-50 rounded p-3 max-w-md mx-auto">
             🧠 <strong>RAG Mode Active:</strong> I'll analyze your documents using semantic similarity search and provide contextual responses.
@@ -633,8 +633,8 @@
         <Textarea
           bind:element={inputElement}
           bind:value={messageInput}
-          placeholder={useAdvancedRAG 
-            ? "Ask me to analyze your documents with EmbeddingGemma... (Enter to send)" 
+          placeholder={useAdvancedRAG
+            ? "Ask me to analyze your documents with EmbeddingGemma... (Enter to send)"
             : "Type your message... (Enter to send)"}
           class="resize-none min-h-[50px] max-h-[120px]"
           onkeydown={handleKeyDown}
@@ -671,7 +671,7 @@
           <span>GPU: {embeddingOptions.useGPU ? 'Enabled' : 'Disabled'}</span>
         {/if}
       </div>
-      
+
       <div class="flex items-center gap-2">
         {#if useAdvancedRAG}
           <span class="text-purple-600">🧠 EmbeddingGemma</span>

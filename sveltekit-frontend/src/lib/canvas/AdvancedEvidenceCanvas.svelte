@@ -7,8 +7,9 @@ https://svelte.dev/e/expected_token -->
 -->
 
 <script lang="ts">
+
+  import { onMount } from 'svelte'; 
 </script>
-  import { onMount } from 'svelte';
   
   interface CanvasOptions {
     width: number;
@@ -549,7 +550,7 @@ https://svelte.dev/e/expected_token -->
     
     render();
   }
-</script>
+
 
 <canvas
   bind:this={canvas}

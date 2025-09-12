@@ -223,8 +223,11 @@
   {#if sidebarOpen}
     <div
       class="yorha-overlay"
-      role="button" tabindex="0"
-                onclick={() => sidebarOpen = false}
+      role="button"
+      tabindex="0"
+      onclick={() => sidebarOpen = false}
+      onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? sidebarOpen = false : null}
+      aria-label="Close sidebar"
     ></div>
   {/if}
 </div>

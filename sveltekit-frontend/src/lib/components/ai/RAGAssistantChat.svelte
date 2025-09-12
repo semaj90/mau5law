@@ -5,7 +5,7 @@
 	import { writable } from 'svelte/store';
 
 	// Props (standard Svelte exports)
-	export let userId: string = 'demo-user';
+	export const userId: string = 'demo-user'; // External reference only
 	export let onCaseCreated: (caseId: string) => void = () => {};
 
 	// Chat state (plain reactive vars)
@@ -425,13 +425,13 @@
 				class="workflow-input"
 				placeholder={workflowSteps[currentStep].placeholder}
 				rows="3"
-				on:keydown={workflowKeydown}
+				onkeydown={workflowKeydown}
 			></textarea>
 
 			<div class="workflow-actions">
 				<button
 					class="workflow-btn primary"
-					on:click={(e) => {
+					onclick={(e) => {
 						const wrapper = (e.currentTarget as HTMLElement).closest('.workflow-interface');
 						const textarea = wrapper?.querySelector('.workflow-input') as HTMLTextAreaElement | null;
 						handleQuickAnswerFromText(textarea);
@@ -454,7 +454,7 @@
 					placeholder="Ask me anything about legal cases, or say 'help' to start a new case..."
 					rows="2"
 					class="chat-input"
-					on:keydown={(e) => {
+					onkeydown={(e) => {
 						if (e.key === 'Enter' && !(e as KeyboardEvent).shiftKey) {
 							e.preventDefault();
 							handleChatMessage();
@@ -463,7 +463,7 @@
 				></textarea>
 				<button
 					class="send-button"
-					on:click={handleChatMessage}
+					onclick={handleChatMessage}
 					disabled={!currentMessage.trim() || isProcessing}
 				>
 					🚀
@@ -471,10 +471,10 @@
 			</div>
 
 			<div class="quick-actions">
-				<button class="quick-btn" on:click={startWorkflow}>
+				<button class="quick-btn" onclick={startWorkflow}>
 					📋 Start Case Workflow
 				</button>
-				<button class="quick-btn" on:click={handleChatMessage}>
+				<button class="quick-btn" onclick={handleChatMessage}>
 					🔍 Analyze Evidence
 				</button>
 			</div>

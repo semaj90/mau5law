@@ -9,7 +9,6 @@ https://svelte.dev/e/js_parse_error -->
   import { Copy, Search, Star, Tag, Trash2 } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
   // Badge replaced with span - not available in enhanced-bits
-  import { Card } from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/Input.svelte';
 
   let { citations = $bindable() } = $props(); // Citation[] = [];

@@ -57,7 +57,8 @@
   <div
     class="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
     transitifade={{ duration: 200, easing: quadOut }}
-    on:click={handleOutsideClick}
+    onclick={handleOutsideClick}
+    onkeydown={(e) => e.key === 'Escape' ? handleOutsideClick(e) : null}
     role="presentation"
     aria-hidden="true"
   >
@@ -73,7 +74,9 @@
       aria-labelledby={title ? "dialog-title" : undefined}
       aria-describedby={description ? "dialog-description" : undefined}
       tabindex={0}
-      on:click|stopPropagation
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.key === 'Escape' ? close() : null}
+    >
     >
       <!-- header -->
       <div class="flex items-start justify-between gap-4">
@@ -94,7 +97,7 @@
           <button
             type="button"
             class="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-            on:click={close}
+            onclick={close}
             aria-label="Close dialog"
           >
             <X size="20" />

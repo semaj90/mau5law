@@ -150,13 +150,17 @@
     aria-modal="true"
     aria-labelledby={ariaLabelledby}
     aria-describedby={ariaDescribedby}
+    tabindex="0"
     onclick={backdropClick}
+    onkeydown={(e) => e.key === 'Escape' ? backdropClick(e) : null}
     style="animation: fadeIn 0.2s ease-out;"
   >
     <div class="flex min-h-full items-center justify-center p-4">
       <div
         class="relative w-full max-w-lg transform overflow-hidden rounded-lg bg-white shadow-xl transition-all"
+        role="document"
         onclick={handleContentClick}
+        onkeydown={(e) => e.key === 'Escape' ? backdropClick(e) : null}
         style="animation: slideIn 0.2s ease-out;"
       >
         <!-- Dialog header -->

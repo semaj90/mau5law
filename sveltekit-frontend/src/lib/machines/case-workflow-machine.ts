@@ -1,7 +1,7 @@
 import { createMachine, assign, fromPromise } from 'xstate';
 import { caseMemoryEngine } from '../services/case-memory-engine';
 import { orchestrator } from '../services/unified-legal-orchestrator';
-import { rabbitmq } from '../server/queue/rabbitmq-manager';
+// import { rabbitmq } from '../server/queue/rabbitmq-manager';
 
 // XState machine for case workflow management with contextual memory
 // Handles: case creation → document upload → analysis → recommendations → action

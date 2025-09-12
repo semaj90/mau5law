@@ -13,12 +13,12 @@
       const response = await fetch('/api/orchestrator/existing', {
         method: 'GET'
       });
-      
+
       if (response.ok) {
         const healthData = await response.json();
         orchestratorReady = healthData.overall_status !== 'critical';
-        systemStatus = healthData.overall_status === 'healthy' ? 'Ready - Using Existing Models' : 
-                       healthData.overall_status === 'degraded' ? 'Partial - Some Services Down' : 
+        systemStatus = healthData.overall_status === 'healthy' ? 'Ready - Using Existing Models' :
+                       healthData.overall_status === 'degraded' ? 'Partial - Some Services Down' :
                        'Critical - Services Unavailable';
       } else {
         systemStatus = 'Services not responding';
@@ -55,7 +55,7 @@
     <!-- Architecture Overview -->
     <div class="mb-8">
       <divHeader>
-        <divTitle class="flex items-center gap-2">
+        <h3 class="flex items-center gap-2">
           🏗️ System Architecture
         </h3>
       </div>
@@ -144,14 +144,14 @@
           <p class="text-gray-600">
             The Legal AI Orchestrator requires Docker services to be running. Follow these steps to get started:
           </p>
-          
+
           <div class="setup-steps space-y-3">
             <div class="step p-3 bg-green-50 rounded border-l-4 border-green-500">
               <span class="font-semibold">✅ Using Existing Services (No Downloads):</span>
               <pre class="mt-2 p-2 bg-gray-100 rounded text-sm overflow-x-auto"><code>npm run orchestrator:existing</code></pre>
               <p class="text-xs text-gray-600 mt-1">Uses your current Redis, PostgreSQL, and Ollama models</p>
             </div>
-            
+
             <div class="step p-3 bg-blue-50 rounded border-l-4 border-blue-500">
               <span class="font-semibold">🔍 Available Models:</span>
               <div class="mt-2 text-sm space-y-1">
@@ -160,7 +160,7 @@
                 <div>📄 <strong>nomic-embed-text:latest</strong> (137M) - Alt embeddings</div>
               </div>
             </div>
-            
+
             <div class="step p-3 bg-purple-50 rounded border-l-4 border-purple-500">
               <span class="font-semibold">🎮 Nintendo Memory Management:</span>
               <div class="mt-2 text-sm text-gray-600">
@@ -187,7 +187,7 @@
           <div class="text-6xl mb-4">🎮</div>
           <h3 class="text-xl font-semibold mb-2">Legal AI Orchestrator</h3>
           <p class="text-gray-600 mb-4">Waiting for services to start...</p>
-          <button 
+          <button
             class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
             onclick={() => window.location.reload()}
           >
@@ -213,7 +213,7 @@
               <li>• Bank switching prevents memory overflow</li>
             </ul>
           </div>
-          
+
           <div class="doc-section">
             <h4 class="font-semibold mb-2">⚡ Multi-Model Routing</h4>
             <ul class="text-sm text-gray-600 space-y-1">
@@ -223,7 +223,7 @@
               <li>• Embeddings handled by dedicated service</li>
             </ul>
           </div>
-          
+
           <div class="doc-section">
             <h4 class="font-semibold mb-2">🔧 API Endpoints</h4>
             <ul class="text-sm text-gray-600 space-y-1">
@@ -233,7 +233,7 @@
               <li>• <code>/api/orchestrator/metrics</code> - Performance stats</li>
             </ul>
           </div>
-          
+
           <div class="doc-section">
             <h4 class="font-semibold mb-2">🚀 Performance Features</h4>
             <ul class="text-sm text-gray-600 space-y-1">
