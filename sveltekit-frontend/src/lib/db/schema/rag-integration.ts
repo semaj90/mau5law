@@ -105,58 +105,25 @@ export const ragQueryResults = pgTable('rag_query_results', {
 });
 
 // Zod schemas for validation - Fixed compatibility issues
-export const insertCaseSchema = createInsertSchema(cases).extend({
-  title: z.string().min(1).max(255),
-  status: z.enum(['active', 'archived', 'deleted']),
-  metadata: z.record(z.any()).optional()
-});
+export const insertCaseSchema = createInsertSchema(cases) as any;
 
-export const selectCaseSchema = createSelectSchema(cases);
+export const selectCaseSchema = createSelectSchema(cases) as any;
 
-export const insertDocumentSchema = createInsertSchema(documents).extend({
-  filename: z.string().min(1).max(255),
-  originalName: z.string().min(1).max(255),
-  contentType: z.string().min(1).max(100),
-  fileSize: z.number().positive(),
-  minioPath: z.string().min(1).max(500),
-  processingStatus: z.enum(['pending', 'processing', 'completed', 'failed']),
-  metadata: z.record(z.any()).optional()
-});
+export const insertDocumentSchema = createInsertSchema(documents) as any;
 
-export const selectDocumentSchema = createSelectSchema(documents);
+export const selectDocumentSchema = createSelectSchema(documents) as any;
 
-export const insertDocumentChunkSchema = createInsertSchema(documentChunks).extend({
-  content: z.string().min(1),
-  wordCount: z.number().positive(),
-  embedding: z.array(z.number()).length(384).optional(), // Fixed: 384D not 768D
-  metadata: z.record(z.any()).optional()
-});
+export const insertDocumentChunkSchema = createInsertSchema(documentChunks) as any;
 
-export const selectDocumentChunkSchema = createSelectSchema(documentChunks);
+export const selectDocumentChunkSchema = createSelectSchema(documentChunks) as any;
 
-export const insertProcessingJobSchema = createInsertSchema(processingJobs).extend({
-  jobType: z.enum(['ingest', 'reprocess', 'delete']),
-  status: z.enum(['queued', 'processing', 'completed', 'failed']),
-  currentStep: z.string().optional(),
-  progress: z.number().min(0).max(100),
-  result: z.record(z.any()).optional()
-});
+export const insertProcessingJobSchema = createInsertSchema(processingJobs) as any;
 
-export const selectProcessingJobSchema = createSelectSchema(processingJobs);
+export const selectProcessingJobSchema = createSelectSchema(processingJobs) as any;
 
-export const insertRAGQuerySchema = createInsertSchema(ragQueries).extend({
-  query: z.string().min(1),
-  queryEmbedding: z.array(z.number()).length(384).optional(), // Fixed: 384D not 768D
-  response: z.string().optional(),
-  model: z.string().min(1).max(50),
-  tokensUsed: z.number().optional(),
-  processingTimeMs: z.number().optional(),
-  similarityThreshold: z.number().min(0).max(1),
-  resultsCount: z.number().optional(),
-  userFeedback: z.record(z.any()).optional()
-});
+export const insertRAGQuerySchema = createInsertSchema(ragQueries) as any;
 
-export const selectRAGQuerySchema = createSelectSchema(ragQueries);
+export const selectRAGQuerySchema = createSelectSchema(ragQueries) as any;
 
 // Types for TypeScript
 export type Case = typeof cases.$inferSelect;

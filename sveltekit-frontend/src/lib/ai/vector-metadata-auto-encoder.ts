@@ -852,19 +852,24 @@ class VectorMetadataAutoEncoder {
   // Utility methods
   private calculateCompressionStats(lodEntry: LODCacheEntry, glyphEncodings: any) {
     const originalSize = lodEntry.original_text.length;
-    const encodedSize = Object.values(glyphEncodings).reduce((sum: number, arr: any) => sum + arr.length, 0);
+    let encodedSize = 0;
+    for (const arr of Object.values(glyphEncodings)) {
+      encodedSize += Array.isArray(arr) ? arr.length : 0;
+    }
 
     return {
       original_size: originalSize,
       encoded_size: encodedSize,
-      compression_ratio: originalSize / encodedSize,
+      compression_ratio: encodedSize > 0 ? originalSize / encodedSize : 0,
       semantic_loss: 0.1 // Estimated semantic loss
     };
   }
 
   private estimateRetrievalSpeed(searchIndices: any): number {
     const indexCount = Object.keys(searchIndices).length;
-    const indexComplexity = searchIndices.inverted_index.size + searchIndices.frequency_index.size;
+    const invertedSize = searchIndices.inverted_index?.size || 0;
+    const frequencySize = searchIndices.frequency_index?.size || 0;
+    const indexComplexity = Number(invertedSize) + Number(frequencySize);
 
     // Simple heuristic - more indices and complexity = slower retrieval
     return Math.max(0.1, 1.0 - (indexComplexity / 10000));

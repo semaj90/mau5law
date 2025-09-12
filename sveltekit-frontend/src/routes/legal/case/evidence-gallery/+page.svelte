@@ -312,14 +312,14 @@
               onmousedown={(e) => handleMouseDown(e, item)}
               onclick={() => startConnection(item)}
             >
-              <Card.Root class="w-60 bg-white border-2 {selectedItem?.id === item.id ? 'border-blue-500' : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all">
-                <Card.Header class="pb-2">
+              <div.Root class="w-60 bg-white border-2 {selectedItem?.id === item.id ? 'border-blue-500' : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all">
+                <div.Header class="pb-2">
                   <div class="flex items-center justify-between">
                     <span class="text-sm font-bold text-gray-800">{item.type}</span>
                     <span class="text-xs text-gray-500">!</span>
                   </div>
                 </Card.Header>
-                <Card.Content class="pt-0">
+                <div.Content class="pt-0">
                   <!-- Main Content Area -->
                   <div class="bg-gray-600 h-16 rounded mb-2 flex items-center justify-center">
                     <span class="text-white text-2xl">{getTypeIcon(item.type)}</span>

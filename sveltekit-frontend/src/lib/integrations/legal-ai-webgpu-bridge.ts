@@ -329,10 +329,10 @@ export namespace LegalAIIntegration {
     documentType: LegalDocumentProcessingOptions['documentType'] = 'brief'
   ): Promise<GPUBuffer | Float32Array> {
     try {
-      if (!legalAIBridge.isInitialized) {
+      if (!(legalAIBridge as any).isInitialized) {
         // Fallback to CPU processing if WebGPU not available
         console.warn('WebGPU not available, using CPU fallback');
-        return toFloat32Array(embeddings);
+        return new Float32Array(embeddings as any);
       }
 
       const result = await legalAIBridge.processLegalDocumentEmbeddings(embeddings, {

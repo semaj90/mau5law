@@ -366,45 +366,45 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Statistics Overview -->
     <div class="grid gap-4 md:grid-cols-4">
-      <Card.Root>
-        <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Card.Title class="text-sm font-medium">Total Documents</Card.Title>
+      <div.Root>
+        <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+          <div.Title class="text-sm font-medium">Total Documents</Card.Title>
           <FileText class="h-4 w-4 text-muted-foreground" />
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <div class="text-2xl font-bold">{documentStats.total}</div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       
-      <Card.Root>
-        <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Card.Title class="text-sm font-medium">Processing</Card.Title>
+      <div.Root>
+        <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+          <div.Title class="text-sm font-medium">Processing</Card.Title>
           <Clock class="h-4 w-4 text-blue-500" />
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <div class="text-2xl font-bold text-blue-600">{documentStats.processing}</div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       
-      <Card.Root>
-        <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Card.Title class="text-sm font-medium">Completed</Card.Title>
+      <div.Root>
+        <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+          <div.Title class="text-sm font-medium">Completed</Card.Title>
           <CheckCircle class="h-4 w-4 text-green-500" />
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <div class="text-2xl font-bold text-green-600">{documentStats.completed}</div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       
-      <Card.Root>
-        <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Card.Title class="text-sm font-medium">AI Analyzed</Card.Title>
+      <div.Root>
+        <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+          <div.Title class="text-sm font-medium">AI Analyzed</Card.Title>
           <Bot class="h-4 w-4 text-purple-500" />
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <div class="text-2xl font-bold text-purple-600">{documentStats.withAI}</div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
 
     <!-- Search and Filters -->
@@ -459,8 +459,8 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     {:else if filteredDocuments.length === 0}
-      <Card.Root>
-        <Card.Content class="flex flex-col items-center justify-center py-12">
+      <div.Root>
+        <div.Content class="flex flex-col items-center justify-center py-12">
           <FileText class="h-12 w-12 text-muted-foreground mb-4" />
           <h3 class="text-lg font-semibold mb-2">
             {searchQuery || statusFilter !== 'all' || typeFilter !== 'all' 
@@ -478,18 +478,18 @@ https://svelte.dev/e/js_parse_error -->
             <Plus class="h-4 w-4 mr-2" />
             Upload Document
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     {:else}
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {#each filteredDocuments as document}
-          <Card.Root class="cursor-pointer transition-colors hover:bg-muted/50" onclick={() => viewDocument(document)}>
-            <Card.Header>
+          <div.Root class="cursor-pointer transition-colors hover:bg-muted/50" onclick={() => viewDocument(document)}>
+            <div.Header>
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-3">
                   <div class="text-2xl">{getTypeIcon(document.type)}</div>
                   <div class="space-y-1">
-                    <Card.Title class="text-lg line-clamp-2">{document.title}</Card.Title>
+                    <div.Title class="text-lg line-clamp-2">{document.title}</Card.Title>
                     <div class="flex items-center gap-2">
                       <Badge class={cn(getStatusColor(document.status), 'text-xs')}>
                         {document.status}
@@ -513,7 +513,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               </div>
             </Card.Header>
-            <Card.Content>
+            <div.Content>
               <div class="space-y-3">
                 <div class="text-sm text-muted-foreground">
                   <p>Author: {document.author}</p>
@@ -551,8 +551,8 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 {/if}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         {/each}
       </div>
     {/if}

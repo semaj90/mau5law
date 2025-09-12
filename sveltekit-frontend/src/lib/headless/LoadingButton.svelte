@@ -86,6 +86,8 @@
         {loadingText}
       {:else if children}
         {@render children()}
+      {:else}
+        Button
       {/if}
     </span>
   </div>
@@ -139,7 +141,7 @@
   .loading-button__text--loading {
     opacity: 0.8;
   }
-/* Size variants */ {}
+  /* Size variants */
   .loading-button--sm {
     padding: 0.25rem 0.75rem;
     font-size: 0.875rem;
@@ -167,7 +169,7 @@
     width: 1.25rem;
     height: 1.25rem;
   }
-/* Color variants */ {}
+  /* Color variants */
   .loading-button--primary {
     background-color: rgb(59, 130, 246);
     color: white;
@@ -214,7 +216,7 @@
   .loading-button--ghost:hover:not(.loading-button--disabled) {
     background-color: rgb(249, 250, 251);
   }
-/* Disabled state */ {}
+  /* Disabled state */
   .loading-button--disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -224,7 +226,7 @@
   .loading-button--loading {
     cursor: wait;
   }
-/* Spin animation */ {}
+  /* Spin animation */
   @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -233,12 +235,12 @@
       transform: rotate(360deg);
     }
   }
-/* Focus styles */ {}
+  /* Focus styles */
   .loading-button:focus-visible {
     outline: 2px solid rgb(59, 130, 246);
     outline-offset: 2px;
   }
-/* Loading state animation */ {}
+  /* Loading state animation */
   .loading-button--loading .loading-button__content {
     animation: loadingPulse 1.5s ease-in-out infinite;
   }

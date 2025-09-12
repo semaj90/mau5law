@@ -178,7 +178,7 @@
   <!-- Key Metrics Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
     <!-- Total Cases -->
-    <Card.Root class="p-6">
+    <div.Root class="p-6">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-nier-text-muted">Total Cases</p>
@@ -199,7 +199,7 @@
     </Card.Root>
     
     <!-- Vector Queries -->
-    <Card.Root class="p-6">
+    <div.Root class="p-6">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-nier-text-muted">Vector Queries</p>
@@ -217,7 +217,7 @@
     </Card.Root>
     
     <!-- AI Processing -->
-    <Card.Root class="p-6">
+    <div.Root class="p-6">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-nier-text-muted">AI Tasks Today</p>
@@ -235,7 +235,7 @@
     </Card.Root>
     
     <!-- System Health -->
-    <Card.Root class="p-6">
+    <div.Root class="p-6">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-nier-text-muted">System Load</p>
@@ -254,17 +254,17 @@
   </div>
   
   <!-- Quick Actions -->
-  <Card.Root class="p-6">
-    <Card.Header>
-      <Card.Title class="flex items-center gap-2">
+  <div.Root class="p-6">
+    <div.Header>
+      <div.Title class="flex items-center gap-2">
         <Target class="w-5 h-5" />
         Quick Actions
       </Card.Title>
-      <Card.Description>
+      <div.Description>
         Common tasks and workflows
       </Card.Description>
     </Card.Header>
-    <Card.Content>
+    <div.Content>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {#each quickActions as action}
           <button
@@ -294,17 +294,17 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Recent Activity -->
     <div class="lg:col-span-2">
-      <Card.Root class="h-fit">
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+      <div.Root class="h-fit">
+        <div.Header>
+          <div.Title class="flex items-center gap-2">
             <Clock class="w-5 h-5" />
             Recent Activity
           </Card.Title>
-          <Card.Description>
+          <div.Description>
             Latest system events and user actions
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <div class="space-y-4">
             {#each dashboardData.recentActivities as activity (activity.id)}
               <div class="flex items-start gap-4 p-3 rounded-lg hover:bg-nier-bg-tertiary transition-colors">
@@ -340,17 +340,17 @@
     </div>
     
     <!-- Popular Search Terms -->
-    <Card.Root class="h-fit">
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+    <div.Root class="h-fit">
+      <div.Header>
+        <div.Title class="flex items-center gap-2">
           <Eye class="w-5 h-5" />
           Popular Searches
         </Card.Title>
-        <Card.Description>
+        <div.Description>
           Most searched terms today
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <div class="space-y-3">
           {#each dashboardData.popularSearchTerms as term, index (term.term)}
             <div class="flex items-center justify-between">
@@ -371,17 +371,17 @@
   </div>
   
   <!-- Performance Chart Placeholder -->
-  <Card.Root>
-    <Card.Header>
-      <Card.Title class="flex items-center gap-2">
+  <div.Root>
+    <div.Header>
+      <div.Title class="flex items-center gap-2">
         <BarChart3 class="w-5 h-5" />
         Performance Metrics
       </Card.Title>
-      <Card.Description>
+      <div.Description>
         System performance over the last 6 hours
       </Card.Description>
     </Card.Header>
-    <Card.Content>
+    <div.Content>
       <div class="h-64 flex items-center justify-center border-2 border-dashed border-nier-border-muted rounded-lg">
         <div class="text-center">
           <BarChart3 class="w-12 h-12 text-nier-text-muted mx-auto mb-2" />

@@ -5,7 +5,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import * as Card from '$lib/components/ui/card';
+  // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/enhanced-bits';
   
@@ -584,14 +584,14 @@
             <p>Select a document type and configuration to get started with AI-assisted drafting.</p>
             
             {#if selectedDocType}
-              <Card.Root class="selected-type-preview">
-                <Card.Header>
-                  <Card.Title>
+              <div.Root class="selected-type-preview">
+                <div.Header>
+                  <div.Title>
                     {getDocumentTypeIcon(selectedDocType.category)} {selectedDocType.name}
                   </Card.Title>
-                  <Card.Description>{selectedDocType.description}</Card.Description>
+                  <div.Description>{selectedDocType.description}</Card.Description>
                 </Card.Header>
-                <Card.Content>
+                <div.Content>
                   <div class="required-fields">
                     <h4>Required Information:</h4>
                     <ul>
@@ -662,14 +662,14 @@
       <h2>Recent Drafts</h2>
       <div class="drafts-grid">
         {#each draftHistory.slice(0, 6) as draft}
-          <Card.Root class="draft-card">
-            <Card.Header>
-              <Card.Title class="draft-title">{draft.title}</Card.Title>
-              <Card.Description>
+          <div.Root class="draft-card">
+            <div.Header>
+              <div.Title class="draft-title">{draft.title}</Card.Title>
+              <div.Description>
                 {draft.type} • {draft.metadata.wordCount} words
               </Card.Description>
             </Card.Header>
-            <Card.Content>
+            <div.Content>
               <div class="draft-stats">
                 <span class="draft-status status-{draft.status}">{draft.status}</span>
                 <span class="draft-date">
@@ -680,7 +680,7 @@
                 {draft.content.substring(0, 150)}...
               </div>
             </Card.Content>
-            <Card.Footer>
+            <div.Footer>
               <div class="draft-actions">
                 <Button variant="outline" size="sm">Continue</Button>
                 <Button size="sm">Duplicate</Button>

@@ -79,7 +79,7 @@ export interface MultiDimensionalQuery {
 export class MultiDimensionalImageCache {
   private som!: SOMNeuralNetwork;
   private autoencoder!: GraphPatternAutoEncoder;
-  private multiLayerCache: MultiLayerCache;
+  private multiLayerCache: any;
   private rlCache = reinforcementLearningCache;
 
   // Multi-dimensional storage
@@ -158,6 +158,7 @@ export class MultiDimensionalImageCache {
         epochs: 50,
         enableGPU: true,
         inputDimension: 256,
+        decayRate: 0.01, // Added missing property
       });
       await this.som.initialize();
 

@@ -2,7 +2,7 @@
 
   import { onMount } from 'svelte';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
-  import * as Card from '$lib/components/ui/card';
+  // Card components removed - using native HTML elements
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -237,7 +237,7 @@
                   class="{message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
                     : ''} {message.error ? 'border-red-200 dark:border-red-800' : ''}">
-                  <Card.Content class="p-3">
+                  <div.Content class="p-3">
                     <div
                       class="prose prose-sm max-w-none {message.role === 'user'
                         ? 'prose-invert'
@@ -317,8 +317,8 @@
                 </div>
               </div>
               <div class="flex-1 max-w-[80%]">
-                <Card.Root>
-                  <Card.Content class="p-3">
+                <div.Root>
+                  <div.Content class="p-3">
                     <div class="flex items-center gap-2 text-muted-foreground">
                       <Loader2 class="h-4 w-4 animate-spin" />
                       <span>Thinking...</span>

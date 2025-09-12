@@ -478,7 +478,7 @@
     "@msgpack/msgpack": "^3.1.2",
     "@node-rs/argon2": "^2.0.2",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@playwright/test": "^1.54.2",
+    "@playwright/test": "^1.55.0",
     "@qdrant/js-client-rest": "^1.15.1",
     "@tailwindcss/typography": "^0.5.10",
     "@tauri-apps/api": "^2.7.0",

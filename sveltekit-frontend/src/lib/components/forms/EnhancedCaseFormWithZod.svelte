@@ -182,16 +182,16 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 
 {#if !componentError}
-<Card.Root class="w-full max-w-4xl mx-auto">
-  <Card.Header>
+<div.Root class="w-full max-w-4xl mx-auto">
+  <div.Header>
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <Scale class="h-6 w-6 text-primary" />
         <div>
-          <Card.Title class="text-xl">
+          <div.Title class="text-xl">
             {editMode ? 'Edit Case' : 'Create New Case'}
           </Card.Title>
-          <Card.Description>
+          <div.Description>
             {editMode ? 'Update case information and evidence' : 'Enter case details and upload evidence'}
           </Card.Description>
         </div>
@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </Card.Header>
 
-  <Card.Content>
+  <div.Content>
     <!-- Auto-save status -->
     {#if enableAutoSave && (lastSaved || isAutoSaving)}
       <div class="mb-4 p-3 bg-muted rounded-md flex items-center justify-between">

@@ -12,6 +12,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   import { Tabs } from 'bits-ui';
   import { Toast } from 'bits-ui';
   import { Slider } from 'bits-ui';
+  import { Textarea } from 'bits-ui';
 
   // N64-era state management with 3D context
   let dialogOpen = $state(false);
@@ -22,6 +23,17 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   let activeTab = $state('graphics');
   let z64Rotation = $state(0);
   let polygonCount = $state(0);
+
+  // Legal AI Integration State
+  let legalQuery = $state('');
+  let legalAnalysisActive = $state(false);
+  let legalResults = $state(null);
+  let legalLoading = $state(false);
+  let legalError = $state(null);
+  let selectedLegalDomain = $state('contract_law');
+  let evidenceCanvasOpen = $state(false);
+  let aiConfidenceScore = $state(0);
+  let processingTime = $state(0);
 
   // N64 texture filtering simulation
   let filteringStrength = $state([0.75]);
@@ -40,6 +52,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       polygonCount = Math.floor(Math.random() * 2000) + 1000;
     }, 60); // ~16fps like N64
 
+    // Check legal service health
+    checkLegalServiceHealth();
+
     return () => clearInterval(interval);
   });
 
@@ -56,6 +71,74 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     { value: 'bilinear', label: 'Bilinear' },
     { value: 'trilinear', label: 'Trilinear' }
   ];
+
+  const legalDomains = [
+    { value: 'contract_law', label: '📄 Contract Law' },
+    { value: 'intellectual_property', label: '🧠 Intellectual Property' },
+    { value: 'criminal_law', label: '⚖️ Criminal Law' },
+    { value: 'corporate_law', label: '🏢 Corporate Law' },
+    { value: 'employment_law', label: '👥 Employment Law' },
+    { value: 'real_estate', label: '🏠 Real Estate Law' }
+  ];
+
+  // Legal AI Functions
+  async function queryLegalRecommendations() {
+    if (!legalQuery.trim()) {
+      legalError = 'Please enter a legal query';
+      return;
+    }
+
+    legalLoading = true;
+    legalError = null;
+    const startTime = Date.now();
+
+    try {
+      const response = await fetch('http://localhost:8080/recommend', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: legalQuery,
+          domain: selectedLegalDomain,
+          max_results: 5
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      legalResults = data;
+      aiConfidenceScore = data.confidence_score || 0;
+      processingTime = Date.now() - startTime;
+
+      // Show success toast
+      toastOpen = true;
+
+      // Update polygon count to show AI activity
+      polygonCount += 500;
+
+    } catch (error) {
+      console.error('Legal query error:', error);
+      legalError = `Failed to get legal recommendations: ${error.message}`;
+    } finally {
+      legalLoading = false;
+    }
+  }
+
+  async function checkLegalServiceHealth() {
+    try {
+      const response = await fetch('http://localhost:8080/health');
+      const health = await response.json();
+      console.log('Legal service health:', health);
+      return health;
+    } catch (error) {
+      console.error('Legal service health check failed:', error);
+      return null;
+    }
+  }
 </script>
 
 <svelte:head>
@@ -332,6 +415,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               <Tabs.Trigger class="n64-tab-3d" value="graphics">Graphics</Tabs.Trigger>
               <Tabs.Trigger class="n64-tab-3d" value="audio">Audio</Tabs.Trigger>
               <Tabs.Trigger class="n64-tab-3d" value="controller">Controller</Tabs.Trigger>
+              <Tabs.Trigger class="n64-tab-3d" value="legal-ai">⚖️ Legal AI</Tabs.Trigger>
             </Tabs.List>
 
             <Tabs.Content class="n64-tab-content" value="graphics">
@@ -411,6 +495,130 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 </div>
               </div>
             </Tabs.Content>
+
+            <Tabs.Content class="n64-tab-content" value="legal-ai">
+              <div class="legal-ai-interface">
+
+                <!-- Legal AI Header -->
+                <div class="legal-ai-header">
+                  <h5>🎮 N64 Legal AI Terminal</h5>
+                  <div class="ai-status">
+                    <div class="status-indicator" class:active={!legalLoading && !legalError}></div>
+                    <span>Legal Engine: {legalLoading ? 'Processing...' : legalError ? 'Offline' : 'Online'}</span>
+                  </div>
+                </div>
+
+                <!-- Legal Domain Selection -->
+                <div class="legal-domain-section">
+                  <label for="legal-domain">Legal Domain:</label>
+                  <Select.Root bind:value={selectedLegalDomain}>
+                    <Select.Trigger class="n64-select-trigger" id="legal-domain">
+                      <Select.Value />
+                    </Select.Trigger>
+                    <Select.Content class="n64-select-content">
+                      {#each legalDomains as domain}
+                        <Select.Item class="n64-select-item" value={domain.value}>
+                          {domain.label}
+                        </Select.Item>
+                      {/each}
+                    </Select.Content>
+                  </Select.Root>
+                </div>
+
+                <!-- Legal Query Input -->
+                <div class="legal-query-section">
+                  <label for="legal-query">Legal Question:</label>
+                  <Textarea.Root
+                    class="n64-textarea"
+                    bind:value={legalQuery}
+                    placeholder="Enter your legal question or case details..."
+                    rows="4"
+                    id="legal-query"
+                  />
+                </div>
+
+                <!-- Query Controls -->
+                <div class="legal-controls">
+                  <Button.Root
+                    class="n64-btn-legal bits-btn"
+                    onclick={queryLegalRecommendations}
+                    disabled={legalLoading || !legalQuery.trim()}
+                  >
+                    {legalLoading ? '🔄 Analyzing...' : '🎯 Get Legal Recommendations'}
+                  </Button.Root>
+
+                  <Button.Root
+                    class="n64-btn-evidence bits-btn"
+                    onclick={() => evidenceCanvasOpen = true}
+                  >
+                    📋 Evidence Canvas
+                  </Button.Root>
+                </div>
+
+                <!-- AI Analysis Results -->
+                {#if legalResults}
+                  <div class="legal-results-3d">
+                    <div class="results-header">
+                      <h6>🏆 Legal Analysis Results</h6>
+                      <div class="metrics-3d">
+                        <div class="metric-item">
+                          <span class="metric-label">Confidence:</span>
+                          <span class="metric-value">{(aiConfidenceScore * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="metric-item">
+                          <span class="metric-label">Processing Time:</span>
+                          <span class="metric-value">{processingTime}ms</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="recommendations-grid">
+                      {#if legalResults.recommendations && legalResults.recommendations.length > 0}
+                        {#each legalResults.recommendations as recommendation, i}
+                          <div class="recommendation-card-3d">
+                            <div class="card-header">
+                              <Badge.Root class="priority-badge">#{i + 1}</Badge.Root>
+                              <span class="case-title">{recommendation.title || `Case ${i + 1}`}</span>
+                            </div>
+                            <div class="card-content">
+                              <p class="case-summary">{recommendation.summary || 'Legal recommendation analysis'}</p>
+                              {#if recommendation.similarity_score}
+                                <div class="similarity-bar">
+                                  <span>Relevance: {(recommendation.similarity_score * 100).toFixed(1)}%</span>
+                                  <div class="bar-track">
+                                    <div class="bar-fill" style="width: {recommendation.similarity_score * 100}%"></div>
+                                  </div>
+                                </div>
+                              {/if}
+                            </div>
+                          </div>
+                        {/each}
+                      {:else}
+                        <div class="no-results">
+                          <p>🎮 No recommendations found. Try a different query or domain.</p>
+                        </div>
+                      {/if}
+                    </div>
+                  </div>
+                {/if}
+
+                <!-- Error Display -->
+                {#if legalError}
+                  <div class="legal-error-3d">
+                    <div class="error-icon">❌</div>
+                    <div class="error-message">{legalError}</div>
+                    <button
+                      class="retry-btn bits-btn"
+                      type="button"
+                      on:click={() => { legalError = null; checkLegalServiceHealth(); }}
+                    >
+                      🔄 Retry
+                    </button>
+                  </div>
+                {/if}
+
+              </div>
+            </Tabs.Content>
           </Tabs.Root>
 
           <!-- 3D Dialog Demo -->
@@ -472,11 +680,88 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 <Toast.Root bind:open={toastOpen} class="n64-toast">
   <Toast.Title class="toast-title-3d">Achievement Unlocked!</Toast.Title>
   <Toast.Description class="toast-description-3d">
-    3D Acceleration Enabled - Texture Filtering Active
+    Legal AI Analysis Complete - {legalResults?.total_count || 0} recommendations found
   </Toast.Description>
 </Toast.Root>
 
-<style>
+<!-- Evidence Canvas Dialog -->
+<Dialog.Root bind:open={evidenceCanvasOpen}>
+  <Dialog.Portal>
+    <Dialog.Content>
+      <div class="evidence-canvas-dialog">
+        <div class="evidence-canvas-3d">
+          <Dialog.Title class="evidence-title-3d">
+            📋 N64 Evidence Canvas
+          </Dialog.Title>
+          <Dialog.Description class="evidence-description-3d">
+            Gaming-themed legal document and evidence visualization system
+          </Dialog.Description>
+
+        <div class="evidence-interface">
+          <!-- Evidence Upload Section -->
+          <div class="evidence-upload-section">
+            <h6>🎮 Document Upload</h6>
+            <div class="upload-zone-3d">
+              <div class="upload-icon">📄</div>
+              <p>Drop legal documents here or click to browse</p>
+              <p class="upload-hint">Supports PDF, DOC, TXT files</p>
+            </div>
+          </div>
+
+          <!-- Evidence Analysis -->
+          <div class="evidence-analysis-section">
+            <h6>🔍 Document Analysis</h6>
+            <div class="analysis-grid">
+              <div class="analysis-card">
+                <span class="analysis-label">Contract Terms:</span>
+                <span class="analysis-value">0 identified</span>
+              </div>
+              <div class="analysis-card">
+                <span class="analysis-label">Key Clauses:</span>
+                <span class="analysis-value">0 found</span>
+              </div>
+              <div class="analysis-card">
+                <span class="analysis-label">Risk Factors:</span>
+                <span class="analysis-value">0 detected</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evidence Timeline -->
+          <div class="evidence-timeline-section">
+            <h6>⏰ Case Timeline</h6>
+            <div class="timeline-3d">
+              <div class="timeline-item">
+                <div class="timeline-point"></div>
+                <div class="timeline-content">
+                  <span class="timeline-date">Today</span>
+                  <span class="timeline-event">Legal AI analysis initiated</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="evidence-actions-3d">
+          <Button.Root
+            class="n64-btn-evidence-action bits-btn"
+            onclick={() => evidenceCanvasOpen = false}
+          >
+            💾 Save Evidence
+          </Button.Root>
+          <Button.Root
+            class="n64-btn-close bits-btn"
+            onclick={() => evidenceCanvasOpen = false}
+          >
+            ❌ Close Canvas
+          </Button.Root>
+        </div>
+      </div>
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>
+
+<style global>
   /* N64 3D Color Palette & Variables */
   :root {
     /* N64 signature colors */
@@ -719,7 +1004,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
   .spec-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
 
@@ -855,7 +1140,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   }
 
   .slider-range {
-    background: linear-gradient(90deg, var(--n64-blue), var(--n64-purple);
+    background: linear-gradient(90deg, var(--n64-blue), var(--n64-purple));
     height: 100%;
     border-radius: 2px;
   }
@@ -1448,7 +1733,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
   .bar-face {
     position: absolute;
-    background: linear-gradient(135deg, var(--n64-blue), var(--n64-purple);
+    background: linear-gradient(135deg, var(--n64-blue), var(--n64-purple));
   }
 
   .bar-front {
@@ -1716,14 +2001,601 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
   .n64-cube,
   .cartridge-3d,
-  .audio-bar-3d {
+  .audio-bar-3d,
+  .legal-results-3d,
+  .recommendation-card-3d,
+  .evidence-canvas-3d {
     backface-visibility: hidden;
   }
 
   /* Hardware acceleration hints */
   .n64-card,
   .n64-btn-3d,
-  .dialog-box-3d {
+  .dialog-box-3d,
+  .legal-ai-interface,
+  .evidence-interface {
     transform-style: preserve-3d;
+  }
+
+  /* GPU-optimized animations for legal AI components */
+  .recommendation-card-3d,
+  .analysis-card,
+  .upload-zone-3d {
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
+  }
+
+  /* Smooth transitions for interactive elements */
+  .n64-btn-legal,
+  .n64-btn-evidence,
+  .retry-btn,
+  .n64-btn-evidence-action,
+  .n64-btn-close {
+    will-change: transform, background, box-shadow;
+  }
+
+  /* Optimized rendering for 3D elements */
+  @media (prefers-reduced-motion: no-preference) {
+    .legal-results-3d {
+      animation: legalResultsEntrance 0.8s ease-out;
+    }
+
+    .recommendation-card-3d {
+      animation: cardEntrance 0.6s ease-out forwards;
+      opacity: 0;
+      transform: perspective(400px) rotateX(15deg) translateY(20px);
+    }
+
+    .recommendation-card-3d:nth-child(1) { animation-delay: 0.1s; }
+    .recommendation-card-3d:nth-child(2) { animation-delay: 0.2s; }
+    .recommendation-card-3d:nth-child(3) { animation-delay: 0.3s; }
+    .recommendation-card-3d:nth-child(4) { animation-delay: 0.4s; }
+    .recommendation-card-3d:nth-child(5) { animation-delay: 0.5s; }
+  }
+
+  @keyframes legalResultsEntrance {
+    from {
+      opacity: 0;
+      transform: perspective(600px) rotateX(15deg) translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: perspective(600px) rotateX(3deg) translateY(0);
+    }
+  }
+
+  @keyframes cardEntrance {
+    to {
+      opacity: 1;
+      transform: perspective(400px) rotateX(2deg) translateY(0);
+    }
+  }
+
+  /* Disable animations for reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .legal-results-3d,
+    .recommendation-card-3d {
+      animation: none;
+    }
+
+    .recommendation-card-3d {
+      opacity: 1;
+      transform: perspective(400px) rotateX(2deg);
+    }
+  }
+
+  /* Legal AI Interface Styles */
+  .legal-ai-interface {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .legal-ai-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 102, 204, 0.1);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    border: 3px solid rgba(0, 102, 204, 0.3);
+  }
+
+  .legal-ai-header h5 {
+    color: var(--n64-blue);
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .ai-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #FF3333;
+    transition: background-color 0.3s ease;
+  }
+
+  .status-indicator.active {
+    background: var(--n64-green);
+    box-shadow: 0 0 8px rgba(0, 204, 51, 0.5);
+  }
+
+  .legal-domain-section,
+  .legal-query-section {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .legal-domain-section label,
+  .legal-query-section label {
+    font-weight: bold;
+    color: #333;
+    font-size: 1rem;
+  }
+
+  .n64-textarea {
+    background: white;
+    border: 3px solid var(--n64-blue);
+    border-radius: 12px;
+    padding: 1rem;
+    color: #333;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+    transition: all 0.3s ease;
+  }
+
+  .n64-textarea:focus {
+    border-color: var(--n64-purple);
+    box-shadow: var(--n64-depth-2);
+    outline: none;
+  }
+
+  .legal-controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .n64-btn-legal {
+    background: linear-gradient(145deg, var(--n64-blue), #004499);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    border: 3px solid #003366;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--n64-depth-2);
+    transform: perspective(300px) rotateX(10deg);
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .n64-btn-legal:hover:not(:disabled) {
+    background: linear-gradient(145deg, #0077FF, #0055CC);
+    transform: perspective(300px) rotateX(10deg) translateZ(5px);
+    box-shadow: var(--n64-depth-3);
+  }
+
+  .n64-btn-legal:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .n64-btn-evidence {
+    background: linear-gradient(145deg, var(--n64-purple), #7700AA);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    border: 3px solid #5500AA;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--n64-depth-2);
+    transform: perspective(300px) rotateX(10deg);
+  }
+
+  .n64-btn-evidence:hover {
+    background: linear-gradient(145deg, #BB44FF, #9900CC);
+    transform: perspective(300px) rotateX(10deg) translateZ(5px);
+    box-shadow: var(--n64-depth-3);
+  }
+
+  .legal-results-3d {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    border: 4px solid var(--n64-green);
+    padding: 2rem;
+    box-shadow: var(--n64-depth-3);
+    transform: perspective(600px) rotateX(3deg);
+  }
+
+  .results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .results-header h6 {
+    color: var(--n64-green);
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .metrics-3d {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .metric-label {
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+  }
+
+  .metric-value {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--n64-green);
+    font-family: 'Courier New', monospace;
+  }
+
+  .recommendations-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .recommendation-card-3d {
+    background: white;
+    border: 3px solid rgba(0, 102, 204, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--n64-depth-1);
+    transition: all 0.3s ease;
+    transform: perspective(400px) rotateX(2deg);
+  }
+
+  .recommendation-card-3d:hover {
+    border-color: var(--n64-blue);
+    transform: perspective(400px) rotateX(2deg) translateZ(5px);
+    box-shadow: var(--n64-depth-2);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .priority-badge {
+    background: linear-gradient(145deg, var(--n64-yellow), #CC9900);
+    color: #664400;
+    border: 2px solid #AA7700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+
+  .case-title {
+    font-weight: bold;
+    color: var(--n64-blue);
+    flex: 1;
+  }
+
+  .case-summary {
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .similarity-bar {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .similarity-bar span {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #666;
+  }
+
+  .bar-track {
+    background: #E0E0E0;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 2px solid #CCC;
+  }
+
+  .bar-fill {
+    background: linear-gradient(90deg, var(--n64-green), var(--n64-blue));
+    height: 100%;
+    transition: width 0.5s ease;
+    border-radius: 2px;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #666;
+    font-style: italic;
+  }
+
+  .legal-error-3d {
+    background: rgba(255, 51, 51, 0.1);
+    border: 3px solid var(--n64-red);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    transform: perspective(400px) rotateX(5deg);
+  }
+
+  .error-icon {
+    font-size: 3rem;
+  }
+
+  .error-message {
+    color: #333;
+    font-weight: bold;
+    max-width: 400px;
+  }
+
+  .retry-btn {
+    background: linear-gradient(145deg, var(--n64-red), #CC0000);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    border: 3px solid #AA0000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--n64-depth-2);
+  }
+
+  .retry-btn:hover {
+    background: linear-gradient(145deg, #FF5555, #FF0000);
+    box-shadow: var(--n64-depth-3);
+  }
+
+  /* Evidence Canvas Styles */
+  .evidence-canvas-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 51;
+    max-width: 900px;
+    width: calc(100vw - 2rem);
+    max-height: calc(100vh - 2rem);
+    perspective: 800px;
+  }
+
+  .evidence-canvas-3d {
+    background: var(--n64-surface);
+    border: 6px solid var(--n64-purple);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: var(--n64-depth-4);
+    transform: perspective(600px) rotateX(3deg) rotateY(1deg);
+    transform-style: preserve-3d;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .evidence-title-3d {
+    color: var(--n64-purple);
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .evidence-description-3d {
+    color: #666;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  .evidence-interface {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .evidence-upload-section,
+  .evidence-analysis-section,
+  .evidence-timeline-section {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 3px solid rgba(153, 51, 204, 0.3);
+    box-shadow: var(--n64-depth-1);
+  }
+
+  .evidence-upload-section h6,
+  .evidence-analysis-section h6,
+  .evidence-timeline-section h6 {
+    color: var(--n64-purple);
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  .upload-zone-3d {
+    border: 3px dashed rgba(153, 51, 204, 0.5);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: rgba(153, 51, 204, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform: perspective(400px) rotateX(5deg);
+  }
+
+  .upload-zone-3d:hover {
+    border-color: var(--n64-purple);
+    background: rgba(153, 51, 204, 0.1);
+    transform: perspective(400px) rotateX(5deg) translateZ(5px);
+  }
+
+  .upload-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .upload-hint {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+  }
+
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .analysis-card {
+    background: white;
+    border: 2px solid rgba(153, 51, 204, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    transform: perspective(300px) rotateX(5deg);
+  }
+
+  .analysis-card:hover {
+    border-color: var(--n64-purple);
+    transform: perspective(300px) rotateX(5deg) translateZ(3px);
+  }
+
+  .analysis-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: bold;
+  }
+
+  .analysis-value {
+    font-size: 1.1rem;
+    color: var(--n64-purple);
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+  }
+
+  .timeline-3d {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+
+  .timeline-point {
+    position: absolute;
+    left: -1.5rem;
+    width: 12px;
+    height: 12px;
+    background: var(--n64-purple);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(153, 51, 204, 0.5);
+  }
+
+  .timeline-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .timeline-date {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: bold;
+  }
+
+  .timeline-event {
+    color: #333;
+  }
+
+  .evidence-actions-3d {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .n64-btn-evidence-action {
+    background: linear-gradient(145deg, var(--n64-purple), #7700AA);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    border: 3px solid #5500AA;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--n64-depth-2);
+    transform: perspective(300px) rotateX(15deg);
+  }
+
+  .n64-btn-evidence-action:hover {
+    background: linear-gradient(145deg, #BB44FF, #9900CC);
+    transform: perspective(300px) rotateX(15deg) translateZ(5px);
+    box-shadow: var(--n64-depth-3);
+  }
+
+  .n64-btn-close {
+    background: linear-gradient(145deg, var(--n64-gray), #444444);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    border: 3px solid #333333;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--n64-depth-2);
+    transform: perspective(300px) rotateX(15deg);
+  }
+
+  .n64-btn-close:hover {
+    background: linear-gradient(145deg, #888888, #666666);
+    transform: perspective(300px) rotateX(15deg) translateZ(5px);
+    box-shadow: var(--n64-depth-3);
   }
 </style>

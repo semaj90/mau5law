@@ -284,8 +284,8 @@
   </div>
 
   {#if !isGpuAvailable}
-    <Card class="border-yellow-200 bg-yellow-50">
-      <CardContent class="pt-6">
+    <div class="border-yellow-200 bg-yellow-50">
+      <divContent class="pt-6">
         <div class="flex items-center gap-3">
           <AlertTriangle class="w-5 h-5 text-yellow-600" />
           <div>
@@ -295,25 +295,25 @@
             </p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   {/if}
 
   <!-- AI Processor Tab -->
   {#if currentTab === 'processor'}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Query Input -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <div>
+        <divHeader>
+          <divTitle class="flex items-center gap-2">
             <FileText class="w-5 h-5" />
             Legal Query Input
-          </CardTitle>
-          <CardDescription>
+          </h3>
+          <divDescription>
             Enter legal text for GPU-accelerated analysis and processing
-          </CardDescription>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </p>
+        </div>
+        <divContent class="space-y-4">
           <Textarea
             bind:value={legalQuery}
             placeholder="Enter legal document text, contract clauses, case details, or legal questions for analysis..."
@@ -369,21 +369,21 @@
               {/if}
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <!-- GPU Information -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <div>
+        <divHeader>
+          <divTitle class="flex items-center gap-2">
             <Cpu class="w-5 h-5" />
             GPU System Information
-          </CardTitle>
-          <CardDescription>
+          </h3>
+          <divDescription>
             Current GPU hardware and processing capabilities
-          </CardDescription>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </p>
+        </div>
+        <divContent class="space-y-4">
           {#if gpuInfo}
             <div class="space-y-3">
               <div class="flex justify-between">
@@ -422,23 +422,23 @@
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
 
     <!-- Results Display -->
     {#if results}
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <div>
+        <divHeader>
+          <divTitle class="flex items-center gap-2">
             <Target class="w-5 h-5" />
             Analysis Results
-          </CardTitle>
-          <CardDescription>
+          </h3>
+          <divDescription>
             GPU-accelerated legal analysis completed with {Math.round(results.confidence * 100)}% confidence
-          </CardDescription>
-        </CardHeader>
-        <CardContent class="space-y-6">
+          </p>
+        </div>
+        <divContent class="space-y-6">
           <!-- Performance Metrics -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="text-center p-3 bg-muted/50 rounded-lg">
@@ -500,24 +500,24 @@
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     {/if}
   {/if}
 
   <!-- Benchmarks Tab -->
   {#if currentTab === 'benchmarks'}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <div>
+      <divHeader>
+        <divTitle class="flex items-center gap-2">
           <BarChart3 class="w-5 h-5" />
           GPU Performance Benchmarks
-        </CardTitle>
-        <CardDescription>
+        </h3>
+        <divDescription>
           Comprehensive GPU performance testing for legal AI workloads
-        </CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-6">
+        </p>
+      </div>
+      <divContent class="space-y-6">
         <div class="flex gap-3">
           <Button 
             onclick={runBenchmark}
@@ -564,21 +564,21 @@
             </div>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   {/if}
 
   <!-- Monitor Tab -->
   {#if currentTab === 'monitor'}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <div>
+        <divHeader>
+          <divTitle class="flex items-center gap-2">
             <Monitor class="w-5 h-5" />
             GPU Utilization
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </h3>
+        </div>
+        <divContent class="space-y-4">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
               <span class="text-sm">GPU Usage</span>
@@ -596,17 +596,17 @@
             </div>
             <Progress value={gpuMetrics.memory} class="h-2" />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <div>
+        <divHeader>
+          <divTitle class="flex items-center gap-2">
             <Activity class="w-5 h-5" />
             System Metrics
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </h3>
+        </div>
+        <divContent class="space-y-4">
           <div class="grid grid-cols-2 gap-4 text-center">
             <div>
               <p class="text-lg font-semibold">{Math.round(gpuMetrics.temperature)}�C</p>
@@ -625,24 +625,24 @@
               <p class="text-xs text-muted-foreground">Status</p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   {/if}
 
   <!-- Settings Tab -->
   {#if currentTab === 'settings'}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <div>
+      <divHeader>
+        <divTitle class="flex items-center gap-2">
           <Settings class="w-5 h-5" />
           GPU Processing Configuration
-        </CardTitle>
-        <CardDescription>
+        </h3>
+        <divDescription>
           Configure GPU settings for optimal legal AI performance
-        </CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-6">
+        </p>
+      </div>
+      <divContent class="space-y-6">
         <div class="space-y-4">
           <div>
             <label class="text-sm font-medium mb-2 block" for="ai-model">AI Model</label>
@@ -685,7 +685,7 @@
             Apply Configuration
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   {/if}
 </div>

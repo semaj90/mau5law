@@ -240,11 +240,11 @@
 
   <!-- System Statistics -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-    <Card>
-      <CardHeader class="pb-3">
-        <CardTitle class="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
-      </CardHeader>
-      <CardContent class="pt-0">
+    <div>
+      <divHeader class="pb-3">
+        <divTitle class="text-sm font-medium text-muted-foreground">Total Users</h3>
+      </div>
+      <divContent class="pt-0">
         <div class="flex items-center justify-between">
           <span class="text-2xl font-bold">{systemStats.totalUsers}</span>
           <Users class="w-5 h-5 text-muted-foreground" />
@@ -253,14 +253,14 @@
           <div class="w-2 h-2 bg-green-500 rounded-full"></div>
           {systemStats.activeUsers} active
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
-    <Card>
-      <CardHeader class="pb-3">
-        <CardTitle class="text-sm font-medium text-muted-foreground">Cases</CardTitle>
-      </CardHeader>
-      <CardContent class="pt-0">
+    <div>
+      <divHeader class="pb-3">
+        <divTitle class="text-sm font-medium text-muted-foreground">Cases</h3>
+      </div>
+      <divContent class="pt-0">
         <div class="flex items-center justify-between">
           <span class="text-2xl font-bold">{systemStats.totalCases}</span>
           <BarChart3 class="w-5 h-5 text-muted-foreground" />
@@ -269,14 +269,14 @@
           <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
           {systemStats.activeCases} active
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
-    <Card>
-      <CardHeader class="pb-3">
-        <CardTitle class="text-sm font-medium text-muted-foreground">Documents</CardTitle>
-      </CardHeader>
-      <CardContent class="pt-0">
+    <div>
+      <divHeader class="pb-3">
+        <divTitle class="text-sm font-medium text-muted-foreground">Documents</h3>
+      </div>
+      <divContent class="pt-0">
         <div class="flex items-center justify-between">
           <span class="text-2xl font-bold">{systemStats.totalDocuments}</span>
           <HardDrive class="w-5 h-5 text-muted-foreground" />
@@ -285,14 +285,14 @@
           <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
           {systemStats.processedDocuments} processed
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
-    <Card>
-      <CardHeader class="pb-3">
-        <CardTitle class="text-sm font-medium text-muted-foreground">AI Analyses</CardTitle>
-      </CardHeader>
-      <CardContent class="pt-0">
+    <div>
+      <divHeader class="pb-3">
+        <divTitle class="text-sm font-medium text-muted-foreground">AI Analyses</h3>
+      </div>
+      <divContent class="pt-0">
         <div class="flex items-center justify-between">
           <span class="text-2xl font-bold">{systemStats.aiAnalyses}</span>
           <Zap class="w-5 h-5 text-muted-foreground" />
@@ -301,23 +301,23 @@
           <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
           Uptime: {systemStats.uptime}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     <!-- System Health -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <div>
+      <divHeader>
+        <divTitle class="flex items-center gap-2">
           <Activity class="w-5 h-5" />
           System Health
-        </CardTitle>
-        <CardDescription>
+        </h3>
+        <divDescription>
           Real-time status of core system components
-        </CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </p>
+      </div>
+      <divContent class="space-y-4">
         {#each [
           { key: 'database', label: 'PostgreSQL Database', icon: Database },
           { key: 'redis', label: 'Redis Cache', icon: HardDrive },
@@ -342,21 +342,21 @@
             </div>
           </div>
         {/each}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
     <!-- Recent Activity -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <div>
+      <divHeader>
+        <divTitle class="flex items-center gap-2">
           <Clock class="w-5 h-5" />
           Recent Activity
-        </CardTitle>
-        <CardDescription>
+        </h3>
+        <divDescription>
           Latest system events and user actions
-        </CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </p>
+      </div>
+      <divContent class="space-y-4">
         {#if recentActivity.length > 0}
           {#each recentActivity as activity}
             {@const ActivityIcon = getActivityIcon(activity.type)}
@@ -377,7 +377,7 @@
             <p>No recent activity</p>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   </div>
 </div>

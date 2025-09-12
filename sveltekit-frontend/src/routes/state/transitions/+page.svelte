@@ -261,11 +261,11 @@ https://svelte.dev/e/expected_token -->
     {/if}
     
     <div class="transition-controls">
-      <Card class="controls-card">
-        <CardHeader>
-          <CardTitle>Trigger Transitions</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div class="controls-card">
+        <divHeader>
+          <divTitle>Trigger Transitions</h3>
+        </div>
+        <divContent>
           <div class="control-buttons">
             <Button onclick={() => triggerTransition('LOGOUT')}>
               Trigger Logout
@@ -280,8 +280,8 @@ https://svelte.dev/e/expected_token -->
           <p class="control-note">
             ⚠️ These are test triggers. In production, transitions are triggered by application events.
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   </main>
 </div>

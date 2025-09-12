@@ -5,7 +5,7 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import * as Card from '$lib/components/ui/card';
+  // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/enhanced-bits';
   
@@ -381,13 +381,13 @@
       </div>
     {:else}
       {#each filteredRecommendations as recommendation}
-        <Card.Root class="recommendation-card">
-          <Card.Header>
+        <div.Root class="recommendation-card">
+          <div.Header>
             <div class="recommendation-header">
               <div class="recommendation-title-section">
                 <div class="recommendation-icon">{getCategoryIcon(recommendation.category)}</div>
                 <div>
-                  <Card.Title class="recommendation-title">{recommendation.title}</Card.Title>
+                  <div.Title class="recommendation-title">{recommendation.title}</Card.Title>
                   <div class="recommendation-badges">
                     <span class="category-badge {getCategoryColor(recommendation.category)}">
                       {recommendation.category.replace('_', ' ')}
@@ -405,12 +405,12 @@
                 <span class="confidence-score">{recommendation.confidence}%</span>
               </div>
             </div>
-            <Card.Description class="recommendation-description">
+            <div.Description class="recommendation-description">
               {recommendation.description}
             </Card.Description>
           </Card.Header>
           
-          <Card.Content>
+          <div.Content>
             <div class="recommendation-stats">
               <div class="stat-grid">
                 <div class="stat">
@@ -472,7 +472,7 @@
             {/if}
           </Card.Content>
           
-          <Card.Footer>
+          <div.Footer>
             <div class="card-actions">
               <Button variant="outline" size="sm" on:click={() => openRecommendationDetails(recommendation)}>
                 View Details

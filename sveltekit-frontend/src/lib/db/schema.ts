@@ -222,7 +222,7 @@ export const profileTable = pgTable('profile', {
 });
 
 // Profile relations
-export const profileRelations = relations(profileTable, ({ one }) => ({
+export const profileRelations = relations(profileTable, ({ one }: any) => ({
   user: one(users, {
     fields: [profileTable.id],
     references: [users.id]

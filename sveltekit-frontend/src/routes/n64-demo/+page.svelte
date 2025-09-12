@@ -232,14 +232,14 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
     </div>
 
     <!-- System Status -->
-    <Card class="bg-gray-900/50 border-purple-500/30 backdrop-blur">
-      <CardHeader>
-        <CardTitle class="text-white flex items-center gap-2">
+    <div class="bg-gray-900/50 border-purple-500/30 backdrop-blur">
+      <divHeader>
+        <divTitle class="text-white flex items-center gap-2">
           <span class="text-2xl">🖥️</span>
           System Status
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <divContent>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="text-center">
             <div class="text-2xl mb-1">
@@ -278,21 +278,21 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
             <AlertDescription>{errorMessage}</AlertDescription>
           </Alert>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
     <!-- Processing Controls -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       
       <!-- Document Processing -->
-      <Card class="bg-gray-900/50 border-green-500/30 backdrop-blur">
-        <CardHeader>
-          <CardTitle class="text-white flex items-center gap-2">
+      <div class="bg-gray-900/50 border-green-500/30 backdrop-blur">
+        <divHeader>
+          <divTitle class="text-white flex items-center gap-2">
             <span class="text-2xl">📄</span>
             Document Processing
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </h3>
+        </div>
+        <divContent class="space-y-4">
           
           <div class="space-y-2">
             {#each sampleDocuments as document}
@@ -324,18 +324,18 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
           >
             {isProcessing ? '⚡ Processing...' : '🎮 Process All Documents'}
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <!-- Performance Metrics -->
-      <Card class="bg-gray-900/50 border-yellow-500/30 backdrop-blur">
-        <CardHeader>
-          <CardTitle class="text-white flex items-center gap-2">
+      <div class="bg-gray-900/50 border-yellow-500/30 backdrop-blur">
+        <divHeader>
+          <divTitle class="text-white flex items-center gap-2">
             <span class="text-2xl">📊</span>
             Performance Metrics
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <divContent>
           {#if performanceMetrics}
             <div class="space-y-3">
               <div class="flex justify-between items-center">
@@ -369,20 +369,20 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
               Waiting for initialization...
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
 
     <!-- Processing Results -->
     {#if processingResults.length > 0}
-      <Card class="bg-gray-900/50 border-cyan-500/30 backdrop-blur">
-        <CardHeader>
-          <CardTitle class="text-white flex items-center gap-2">
+      <div class="bg-gray-900/50 border-cyan-500/30 backdrop-blur">
+        <divHeader>
+          <divTitle class="text-white flex items-center gap-2">
             <span class="text-2xl">⚡</span>
             Processing Pipeline Results
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <divContent>
           <div class="space-y-4">
             {#each processingResults as result}
               <div class="border border-gray-600/30 rounded p-4 bg-gray-800/30">
@@ -409,19 +409,19 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     {/if}
 
     <!-- Architecture Overview -->
-    <Card class="bg-gray-900/50 border-indigo-500/30 backdrop-blur">
-      <CardHeader>
-        <CardTitle class="text-white flex items-center gap-2">
+    <div class="bg-gray-900/50 border-indigo-500/30 backdrop-blur">
+      <divHeader>
+        <divTitle class="text-white flex items-center gap-2">
           <span class="text-2xl">🏗️</span>
           N64-Inspired Architecture Overview
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <divContent>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           
           <div class="bg-blue-900/30 p-4 rounded border border-blue-500/30">
@@ -478,8 +478,8 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
     <!-- Footer -->
     <div class="text-center py-8">

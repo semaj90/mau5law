@@ -371,7 +371,7 @@ export class SIMDGPUTilingEngine {
     });
 
     // Upload data
-    this.device.queue.writeBuffer(inputBuffer, 0, imageData);
+    this.device.queue.writeBuffer(inputBuffer, 0, imageData.buffer);
 
     const configData = new Uint32Array([
       tileSize, // tile_width
@@ -588,7 +588,7 @@ export class SIMDGPUTilingEngine {
 
         // Assign embeddings back to tiles
         for (let j = 0; j < batch.length; j++) {
-          batch[j].metadata.embedding = embeddings[j];
+          batch[j].metadata.embedding = new Float32Array(embeddings[j]);
         }
       } catch (error) {
         console.warn(`Failed to generate embeddings for batch ${i / batchSize + 1}:`, error);

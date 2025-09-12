@@ -23,6 +23,18 @@ service LegalAIService {
     
     // Legal document analysis
     rpc AnalyzeDocument(DocumentRequest) returns (DocumentResponse);
+    
+    // Legal case recommendation engine
+    rpc GetRecommendations(RecommendationRequest) returns (RecommendationResponse);
+    
+    // Streaming recommendations for real-time updates
+    rpc StreamRecommendations(RecommendationRequest) returns (stream RecommendationChunk);
+    
+    // Case similarity analysis
+    rpc AnalyzeCaseSimilarity(CaseSimilarityRequest) returns (CaseSimilarityResponse);
+    
+    // Legal precedent search
+    rpc SearchPrecedents(PrecedentSearchRequest) returns (PrecedentSearchResponse);
 }
 
 // Request messages
@@ -63,6 +75,36 @@ message DocumentRequest {
 
 message MetricsRequest {
     bool include_detailed = 1;
+}
+
+// Recommendation Engine Request Messages
+message RecommendationRequest {
+    string case_id = 1;
+    repeated string case_facts = 2;
+    string legal_domain = 3;
+    string jurisdiction = 4;
+    int32 max_recommendations = 5;
+    float similarity_threshold = 6;
+    bool include_precedents = 7;
+    bool include_similar_cases = 8;
+    bool include_risk_assessment = 9;
+    map<string, string> filters = 10;
+}
+
+message CaseSimilarityRequest {
+    string primary_case_id = 1;
+    repeated string compare_case_ids = 2;
+    repeated string comparison_factors = 3;
+    bool include_legal_analysis = 4;
+}
+
+message PrecedentSearchRequest {
+    repeated string legal_concepts = 1;
+    string jurisdiction = 2;
+    string court_level = 3;
+    int32 date_range_years = 4;
+    int32 max_results = 5;
+    float relevance_threshold = 6;
 }
 
 // Response messages
@@ -128,6 +170,43 @@ message MetricsResponse {
     int64 timestamp = 3;
 }
 
+// Recommendation Engine Response Messages
+message RecommendationResponse {
+    repeated LegalRecommendation recommendations = 1;
+    int32 total_count = 2;
+    float confidence_score = 3;
+    int64 processing_time_ms = 4;
+    bool success = 5;
+    string error = 6;
+}
+
+message RecommendationChunk {
+    string recommendation_id = 1;
+    LegalRecommendation recommendation = 2;
+    int32 chunk_index = 3;
+    bool is_final = 4;
+    float confidence = 5;
+}
+
+message CaseSimilarityResponse {
+    repeated CaseSimilarity similarities = 1;
+    float overall_similarity = 2;
+    repeated string key_factors = 3;
+    string analysis_summary = 4;
+    int64 processing_time_ms = 5;
+    bool success = 6;
+    string error = 7;
+}
+
+message PrecedentSearchResponse {
+    repeated LegalPrecedent precedents = 1;
+    int32 total_count = 2;
+    float relevance_threshold_used = 3;
+    int64 processing_time_ms = 4;
+    bool success = 5;
+    string error = 6;
+}
+
 // Data structures
 message SimilarQuery {
     string id = 1;
@@ -166,6 +245,62 @@ message Citation {
     string url = 4;
     int32 year = 5;
     float relevance_score = 6;
+}
+
+// Recommendation Engine Data Structures
+message LegalRecommendation {
+    string id = 1;
+    string title = 2;
+    string description = 3;
+    float confidence_score = 4;
+    string legal_domain = 5;
+    string jurisdiction = 6;
+    repeated string relevant_cases = 7;
+    repeated string legal_concepts = 8;
+    RiskAssessment risk_assessment = 9;
+    repeated Citation citations = 10;
+    string recommendation_type = 11; // "precedent", "similar_case", "strategy"
+    map<string, string> metadata = 12;
+}
+
+message CaseSimilarity {
+    string case_id = 1;
+    string case_title = 2;
+    float similarity_score = 3;
+    repeated string matching_factors = 4;
+    repeated string differing_factors = 5;
+    string legal_analysis = 6;
+    repeated Citation supporting_precedents = 7;
+}
+
+message LegalPrecedent {
+    string precedent_id = 1;
+    string case_name = 2;
+    string court = 3;
+    int32 year = 4;
+    string jurisdiction = 5;
+    repeated string legal_principles = 6;
+    string holding = 7;
+    string reasoning = 8;
+    float relevance_score = 9;
+    repeated Citation citations = 10;
+    string court_level = 11;
+}
+
+message RiskAssessment {
+    float overall_risk_score = 1; // 0.0 to 1.0
+    string risk_level = 2; // "low", "medium", "high", "critical"
+    repeated RiskFactor risk_factors = 3;
+    repeated string mitigation_strategies = 4;
+    float confidence = 5;
+}
+
+message RiskFactor {
+    string factor_name = 1;
+    float impact_score = 2;
+    float probability = 3;
+    string description = 4;
+    repeated string related_cases = 5;
 }
 
 // FlatBuffers alternative for high-performance binary transport

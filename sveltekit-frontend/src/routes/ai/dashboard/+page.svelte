@@ -20,15 +20,15 @@
   </header>
 
   <div class="integrations-grid">
-    <Card.Root class="integration-card">
-      <Card.Header>
+    <div.Root class="integration-card">
+      <div.Header>
         <div class="card-icon">⚖️</div>
-        <Card.Title>Case Scoring Dashboard</Card.Title>
-        <Card.Description>
+        <div.Title>Case Scoring Dashboard</Card.Title>
+        <div.Description>
           AI-powered case analysis and priority scoring with comprehensive risk assessment
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <div class="features-list">
           <div class="feature">✅ Real-time case risk scoring</div>
           <div class="feature">✅ Confidence metrics and analytics</div>
@@ -36,22 +36,22 @@
           <div class="feature">✅ AI recommendations</div>
         </div>
       </Card.Content>
-      <Card.Footer>
+      <div.Footer>
         <Button class="w-full" onclick={() => window.location.href = '/ai/case-scoring'}>
           Open Case Scoring
         </Button>
       </Card.Footer>
     </Card.Root>
 
-    <Card.Root class="integration-card">
-      <Card.Header>
+    <div.Root class="integration-card">
+      <div.Header>
         <div class="card-icon">🔍</div>
-        <Card.Title>Pattern Detection</Card.Title>
-        <Card.Description>
+        <div.Title>Pattern Detection</Card.Title>
+        <div.Description>
           Advanced pattern recognition for behavioral, temporal, and evidence analysis
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <div class="features-list">
           <div class="feature">✅ Multi-type pattern analysis</div>
           <div class="feature">✅ Real-time anomaly detection</div>
@@ -59,22 +59,22 @@
           <div class="feature">✅ Predictive insights</div>
         </div>
       </Card.Content>
-      <Card.Footer>
+      <div.Footer>
         <Button class="w-full" onclick={() => window.location.href = '/ai/pattern-detection'}>
           Open Pattern Detection
         </Button>
       </Card.Footer>
     </Card.Root>
 
-    <Card.Root class="integration-card">
-      <Card.Header>
+    <div.Root class="integration-card">
+      <div.Header>
         <div class="card-icon">💡</div>
-        <Card.Title>Recommendation Engine</Card.Title>
-        <Card.Description>
+        <div.Title>Recommendation Engine</Card.Title>
+        <div.Description>
           Intelligent suggestions for case strategy, evidence handling, and next actions
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <div class="features-list">
           <div class="feature">✅ Context-aware recommendations</div>
           <div class="feature">✅ Impact vs. effort analysis</div>
@@ -82,22 +82,22 @@
           <div class="feature">✅ Risk assessment and alternatives</div>
         </div>
       </Card.Content>
-      <Card.Footer>
+      <div.Footer>
         <Button class="w-full" onclick={() => window.location.href = '/ai/recommendations'}>
           Open Recommendations
         </Button>
       </Card.Footer>
     </Card.Root>
 
-    <Card.Root class="integration-card">
-      <Card.Header>
+    <div.Root class="integration-card">
+      <div.Header>
         <div class="card-icon">📄</div>
-        <Card.Title>Document Drafting</Card.Title>
-        <Card.Description>
+        <div.Title>Document Drafting</Card.Title>
+        <div.Description>
           AI-powered legal document creation with templates and collaborative editing
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <div class="features-list">
           <div class="feature">✅ Multiple document types</div>
           <div class="feature">✅ Template-based drafting</div>
@@ -105,7 +105,7 @@
           <div class="feature">✅ Collaborative editing</div>
         </div>
       </Card.Content>
-      <Card.Footer>
+      <div.Footer>
         <Button class="w-full" onclick={() => window.location.href = '/ai/document-drafting'}>
           Open Document Drafting
         </Button>
@@ -114,14 +114,14 @@
   </div>
 
   <section class="architecture-info">
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>Enhanced-Bits Architecture</Card.Title>
-        <Card.Description>
+    <div.Root>
+      <div.Header>
+        <div.Title>Enhanced-Bits Architecture</Card.Title>
+        <div.Description>
           All AI components built with the Enhanced-Bits UI architecture for optimal performance
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <div class="architecture-features">
           <div class="arch-feature">
             <span class="arch-icon">🏗️</span>
@@ -157,14 +157,14 @@
   </section>
 
   <section class="api-status">
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>API Integration Status</Card.Title>
-        <Card.Description>
+    <div.Root>
+      <div.Header>
+        <div.Title>API Integration Status</Card.Title>
+        <div.Description>
           Backend API endpoints ready for integration
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <div class="api-endpoints">
           <div class="endpoint">
             <span class="status-indicator ready"></span>
@@ -192,14 +192,14 @@
   </section>
 
   <section class="test-links">
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>Quick Test Links</Card.Title>
-        <Card.Description>
+    <div.Root>
+      <div.Header>
+        <div.Title>Quick Test Links</Card.Title>
+        <div.Description>
           Direct access to Enhanced-Bits AI components for testing
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <div class="test-grid">
           <Button variant="outline" onclick={() => window.open('http://localhost:5175/ai/case-scoring', '_blank')}>
             🔗 Case Scoring (Port 5175)

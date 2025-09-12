@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import * as Card from '$lib/components/ui/card';
+  // Card components removed - using native HTML elements
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -154,13 +154,13 @@
 </script>
 
 <div class="w-full max-w-4xl mx-auto space-y-6 p-6">
-  <Card.Root>
-    <Card.Header>
+  <div.Root>
+    <div.Header>
       <div class="flex items-center gap-3">
         <Shield class="h-8 w-8 text-primary" />
         <div>
-          <Card.Title class="text-2xl">XState Integration Demo</Card.Title>
-          <Card.Description>
+          <div.Title class="text-2xl">XState Integration Demo</Card.Title>
+          <div.Description>
             Complete demonstration of XState machines with Svelte components,
             GPU orchestration, and Context7 documentation
           </Card.Description>
@@ -168,7 +168,7 @@
       </div>
     </Card.Header>
 
-    <Card.Content class="space-y-6">
+    <div.Content class="space-y-6">
 
       <!-- System Health Monitor -->
       <div class="bg-slate-50 p-4 rounded-lg">

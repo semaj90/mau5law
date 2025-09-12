@@ -380,10 +380,12 @@ export class YoRHaOptimizedTextureManager {
         // Memory management: cleanup old chunks if needed
         if (session.streamedChunks.size > maxConcurrentChunks) {
           const oldestChunkId = session.streamedChunks.keys().next().value;
-          const oldChunk = session.streamedChunks.get(oldestChunkId);
-          if (oldChunk) {
-            oldChunk.destroy();
-            session.streamedChunks.delete(oldestChunkId);
+          if (oldestChunkId) {
+            const oldChunk = session.streamedChunks.get(oldestChunkId);
+            if (oldChunk) {
+              oldChunk.destroy();
+              session.streamedChunks.delete(oldestChunkId);
+            }
           }
         }
 

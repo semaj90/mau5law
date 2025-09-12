@@ -201,14 +201,14 @@
     </div>
 
     <!-- Test Suite -->
-    <Card.Root>
-      <Card.Header>
+    <div.Root>
+      <div.Header>
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
             <Code2 class="h-6 w-6 text-primary" />
             <div>
-              <Card.Title>Integration Test Suite</Card.Title>
-              <Card.Description>
+              <div.Title>Integration Test Suite</Card.Title>
+              <div.Description>
                 Verify all components and services are properly integrated
               </Card.Description>
             </div>
@@ -239,7 +239,7 @@
         </div>
       </Card.Header>
 
-      <Card.Content>
+      <div.Content>
         {#if testResults.length === 0}
           <div class="text-center py-8 text-muted-foreground">
             <Code2 class="h-12 w-12 mx-auto mb-4 opacity-50" />
@@ -273,8 +273,8 @@
 
     <!-- Success Message -->
     {#if allTestsPassed}
-      <Card.Root class="border-green-200 bg-green-50">
-        <Card.Content class="pt-6">
+      <div.Root class="border-green-200 bg-green-50">
+        <div.Content class="pt-6">
           <div class="flex items-center gap-4">
             <CheckCircle class="h-8 w-8 text-green-500" />
             <div>
@@ -291,8 +291,8 @@
 
     <!-- Feature Overview -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <Card.Root>
-        <Card.Content class="pt-6">
+      <div.Root>
+        <div.Content class="pt-6">
           <div class="flex items-center gap-3 mb-3">
             <Shield class="h-6 w-6 text-blue-500" />
             <h3 class="font-semibold">XState Integration</h3>
@@ -303,8 +303,8 @@
         </Card.Content>
       </Card.Root>
 
-      <Card.Root>
-        <Card.Content class="pt-6">
+      <div.Root>
+        <div.Content class="pt-6">
           <div class="flex items-center gap-3 mb-3">
             <Cpu class="h-6 w-6 text-green-500" />
             <h3 class="font-semibold">GPU Acceleration</h3>
@@ -315,8 +315,8 @@
         </Card.Content>
       </Card.Root>
 
-      <Card.Root>
-        <Card.Content class="pt-6">
+      <div.Root>
+        <div.Content class="pt-6">
           <div class="flex items-center gap-3 mb-3">
             <Brain class="h-6 w-6 text-purple-500" />
             <h3 class="font-semibold">AI Integration</h3>
@@ -327,8 +327,8 @@
         </Card.Content>
       </Card.Root>
 
-      <Card.Root>
-        <Card.Content class="pt-6">
+      <div.Root>
+        <div.Content class="pt-6">
           <div class="flex items-center gap-3 mb-3">
             <Users class="h-6 w-6 text-orange-500" />
             <h3 class="font-semibold">Legal Professional</h3>
@@ -344,14 +344,14 @@
     <XStateAuthDemo />
 
     <!-- Technical Details -->
-    <Card.Root>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+    <div.Root>
+      <div.Header>
+        <div.Title class="flex items-center gap-2">
           <FileText class="h-5 w-5" />
           Technical Implementation
         </Card.Title>
       </Card.Header>
-      <Card.Content class="space-y-4">
+      <div.Content class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h4 class="font-semibold mb-3">XState Machines</h4>

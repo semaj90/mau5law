@@ -10,7 +10,7 @@
  */
 
 import type { MatrixLODSystem } from '../ui/matrix-lod';
-import type { LODCacheEngine } from '../ai/lod-cache-engine';
+import type { lodCacheEngine } from '../ai/lod-cache-engine';
 
 export type GPUContextType = 'webgpu' | 'webgl2' | 'webgl' | 'cpu-fallback';
 
@@ -372,7 +372,7 @@ export class HybridGPUContext {
     });
 
     // Upload input data
-    this.gpuDevice.queue.writeBuffer(inputBuffer, 0, inputData);
+    this.gpuDevice.queue.writeBuffer(inputBuffer, 0, new Float32Array(inputData));
 
     // Create bind group
     const bindGroup = this.gpuDevice.createBindGroup({

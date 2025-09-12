@@ -218,10 +218,10 @@
   </div>
 
   <!-- System Health Dashboard -->
-  <Card.Root>
-    <Card.Header>
+  <div.Root>
+    <div.Header>
       <div class="flex items-center justify-between">
-        <Card.Title class="flex items-center gap-2">
+        <div.Title class="flex items-center gap-2">
           <Activity class="h-5 w-5" />
           System Health
         </Card.Title>
@@ -231,7 +231,7 @@
         </Button>
       </div>
     </Card.Header>
-    <Card.Content>
+    <div.Content>
       {#if systemHealth}
         {@const SvelteComponent = getStatusIcon(systemHealth.components?.redis?.connected ? 'connected' : 'error')}
         {@const SvelteComponent_1 = getStatusIcon(systemHealth.components?.loki?.initialized ? 'working' : 'error')}
@@ -311,14 +311,14 @@
 
     <!-- Live Search Tab -->
     <Tabs.Content value="search" class="space-y-6">
-      <Card.Root>
-        <Card.Header>
-          <Card.Title>Live Instant Search</Card.Title>
-          <Card.Description>
+      <div.Root>
+        <div.Header>
+          <div.Title>Live Instant Search</Card.Title>
+          <div.Description>
             Test real-time search with legal pattern recognition and smart filtering.
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <InstantLegalSearch
             placeholder="Search contracts, evidence, legal briefs, case law..."
             showFilters={true}
@@ -334,14 +334,14 @@
 
       <!-- Performance Metrics -->
       {#if performanceMetrics.totalSearches > 0}
-        <Card.Root>
-          <Card.Header>
-            <Card.Title class="flex items-center gap-2">
+        <div.Root>
+          <div.Header>
+            <div.Title class="flex items-center gap-2">
               <BarChart3 class="h-5 w-5" />
               Live Performance Metrics
             </Card.Title>
           </Card.Header>
-          <Card.Content>
+          <div.Content>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div class="text-center">
                 <div class="text-2xl font-bold text-blue-600">{performanceMetrics.searchTime}ms</div>
@@ -368,14 +368,14 @@
     <!-- Integration Testing Tab -->
     <Tabs.Content value="testing" class="space-y-6">
       <!-- Test Controls -->
-      <Card.Root>
-        <Card.Header>
-          <Card.Title>Integration Testing</Card.Title>
-          <Card.Description>
+      <div.Root>
+        <div.Header>
+          <div.Title>Integration Testing</Card.Title>
+          <div.Description>
             Test individual components and full pipeline integration.
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Button onclick={() => runIntegrationTest('redis')} disabled={isTestRunning}>
               <Database class="h-4 w-4 mr-2" />
@@ -399,9 +399,9 @@
 
       <!-- Test Results -->
       {#if testResults}
-        <Card.Root>
-          <Card.Header>
-            <Card.Title class="flex items-center gap-2">
+        <div.Root>
+          <div.Header>
+            <div.Title class="flex items-center gap-2">
               {@const SvelteComponent_4 = getStatusIcon(testResults.status)}
               <SvelteComponent_4 class="h-5 w-5 {getStatusColor(testResults.status)}" />
               Test Results
@@ -410,7 +410,7 @@
               </Badge>
             </Card.Title>
           </Card.Header>
-          <Card.Content>
+          <div.Content>
             <!-- Summary -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div class="text-center">
@@ -481,14 +481,14 @@
     <!-- Performance Benchmark Tab -->
     <Tabs.Content value="benchmark" class="space-y-6">
       <!-- Benchmark Controls -->
-      <Card.Root>
-        <Card.Header>
-          <Card.Title>Performance Benchmarking</Card.Title>
-          <Card.Description>
+      <div.Root>
+        <div.Header>
+          <div.Title>Performance Benchmarking</Card.Title>
+          <div.Description>
             Run performance tests to measure search speed and cache efficiency.
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <div class="flex items-center gap-4 mb-4">
             <div class="flex items-center gap-2">
               <label class="text-sm font-medium">Test Iterations:</label>
@@ -516,11 +516,11 @@
 
       <!-- Benchmark Results -->
       {#if benchmarkResults}
-        <Card.Root>
-          <Card.Header>
-            <Card.Title>Benchmark Results</Card.Title>
+        <div.Root>
+          <div.Header>
+            <div.Title>Benchmark Results</Card.Title>
           </Card.Header>
-          <Card.Content>
+          <div.Content>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div class="text-center">
                 <div class="text-2xl font-bold text-blue-600">{Math.round(benchmarkResults.statistics.avgSearchTime)}ms</div>
@@ -550,14 +550,14 @@
 
     <!-- Configuration Tab -->
     <Tabs.Content value="config" class="space-y-6">
-      <Card.Root>
-        <Card.Header>
-          <Card.Title>System Configuration</Card.Title>
-          <Card.Description>
+      <div.Root>
+        <div.Header>
+          <div.Title>System Configuration</Card.Title>
+          <div.Description>
             Manage test data and system configuration.
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button onclick={populateTestData} disabled={isTestRunning}>
               <Database class="h-4 w-4 mr-2" />

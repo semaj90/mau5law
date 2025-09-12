@@ -137,11 +137,11 @@
   <!-- System Status Dashboard -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Machine State -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Machine State</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div>
+      <divHeader>
+        <divTitle>Machine State</h3>
+      </div>
+      <divContent>
         <div class="space-y-2">
           <div class="flex justify-between">
             <span>Current State:</span>
@@ -158,18 +158,18 @@
             </span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
     <!-- Database Health -->
-    <Card>
-      <CardHeader class="flex flex-row items-center justify-between">
-        <CardTitle>Database Health</CardTitle>
+    <div>
+      <divHeader class="flex flex-row items-center justify-between">
+        <divTitle>Database Health</h3>
         <Button class="bits-btn" variant="outline" size="sm" onclick={refreshHealth}>
           Refresh
         </Button>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <divContent>
         <div class="space-y-2">
           <div class="flex justify-between">
             <span>PostgreSQL:</span>
@@ -188,18 +188,18 @@
             <span class="{healthColor}">{databaseHealth.overall.toUpperCase()}</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
     <!-- Cache Metrics -->
-    <Card>
-      <CardHeader class="flex flex-row items-center justify-between">
-        <CardTitle>Cache Metrics</CardTitle>
+    <div>
+      <divHeader class="flex flex-row items-center justify-between">
+        <divTitle>Cache Metrics</h3>
         <Button class="bits-btn" variant="outline" size="sm" onclick={refreshMetrics}>
           Refresh
         </Button>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <divContent>
         <div class="space-y-2">
           <div class="flex justify-between">
             <span>Hit Rate:</span>
@@ -214,32 +214,32 @@
             <span class="font-mono">{(cacheMetrics.cognitiveAccuracy * 100).toFixed(1)}%</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   </div>
 
   <!-- Error Display -->
   {#if error}
-    <Card class="border-red-200 bg-red-50">
-      <CardContent>
+    <div class="border-red-200 bg-red-50">
+      <divContent>
         <div class="flex items-center gap-2 text-red-600">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
           </svg>
           <span class="font-medium">{error}</span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   {/if}
 
   <!-- Case Operations -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Create Case -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Create New Case</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div>
+      <divHeader>
+        <divTitle>Create New Case</h3>
+      </div>
+      <divContent>
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-1" for="title">Title</label><input id="title" 
@@ -285,15 +285,15 @@
             {isLoading && currentState === 'creatingCase' ? 'Creating...' : 'Create Case'}
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
 
     <!-- Search Cases -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Cognitive Search</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div>
+      <divHeader>
+        <divTitle>Cognitive Search</h3>
+      </div>
+      <divContent>
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-1" for="search-query">Search Query</label><input id="search-query" 
@@ -327,16 +327,16 @@
             </div>
           {/if}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   </div>
 
   <!-- Case Loading Demo -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Case Loading Demo</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <div>
+    <divHeader>
+      <divTitle>Case Loading Demo</h3>
+    </div>
+    <divContent>
       <div class="space-y-4">
         <p class="text-sm text-gray-600">
           Demonstrate different case loading strategies with cognitive caching
@@ -383,15 +383,15 @@
           </div>
         {/if}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 
   <!-- Integration Info -->
-  <Card class="border-blue-200 bg-blue-50">
-    <CardHeader>
-      <CardTitle class="text-blue-800">Integration Architecture</CardTitle>
-    </CardHeader>
-    <CardContent class="text-sm text-blue-700">
+  <div class="border-blue-200 bg-blue-50">
+    <divHeader>
+      <divTitle class="text-blue-800">Integration Architecture</h3>
+    </div>
+    <divContent class="text-sm text-blue-700">
       <div class="space-y-2">
         <div><strong>XState Machine:</strong> Manages application state and workflow</div>
         <div><strong>Database Layer:</strong> PostgreSQL + pgvector for data persistence</div>
@@ -399,8 +399,8 @@
         <div><strong>MCP Tools:</strong> Clean abstractions for database operations</div>
         <div><strong>API Integration:</strong> RESTful endpoints for external communication</div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 </div>
 
 <style>

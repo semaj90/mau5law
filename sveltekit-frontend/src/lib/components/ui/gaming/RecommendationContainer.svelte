@@ -463,8 +463,8 @@
           transition:fly={{ y: -20, duration: 300, easing: quintOut }}
         >
           {#each Object.entries(groupedRecommendations) as [type, recs]}
-            <Card.Root class="recommendation-card {type}">
-              <Card.Header class="card-header">
+            <div.Root class="recommendation-card {type}">
+              <div.Header class="card-header">
                 <div class="card-title">
                   <span class="type-icon">{categoryIcons[type]}</span>
                   <span class="type-name">{type.charAt(0).toUpperCase() + type.slice(1)}</span>
@@ -474,7 +474,7 @@
                 </div>
               </Card.Header>
               
-              <Card.Content class="card-content">
+              <div.Content class="card-content">
                 <div class="recommendations-preview">
                   {#each recs.slice(0, 3) as rec}
                     <div class="rec-preview-item">
@@ -560,8 +560,8 @@
           {/each}
 
           <!-- View All Recommendations -->
-          <Card.Root class="view-all-card">
-            <Card.Content class="view-all-content">
+          <div.Root class="view-all-card">
+            <div.Content class="view-all-content">
               <button 
                 class="view-all-recommendations"
                 onclick={() => openModal()}

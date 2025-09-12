@@ -138,18 +138,18 @@ https://svelte.dev/e/expected_token -->
     {:else}
       <div class="machines-grid">
         {#each machines as machine}
-          <Card class="machine-card">
-            <CardHeader>
+          <div class="machine-card">
+            <divHeader>
               <div class="machine-header">
-                <CardTitle>{machine.name}</CardTitle>
+                <divTitle>{machine.name}</h3>
                 <span class="status-badge {getStatusColor(machine.status)}">
                   {machine.status}
                 </span>
               </div>
               <p class="machine-id">ID: {machine.id}</p>
-            </CardHeader>
+            </div>
             
-            <CardContent>
+            <divContent>
               <div class="machine-details">
                 <div class="detail-row">
                   <span class="label">Current State:</span>
@@ -203,8 +203,8 @@ https://svelte.dev/e/expected_token -->
                   {/if}
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         {/each}
       </div>
     {/if}

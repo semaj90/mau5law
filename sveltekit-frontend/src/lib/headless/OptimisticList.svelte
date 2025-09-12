@@ -1,10 +1,10 @@
 <script lang="ts">
-  export interface Item<T = any> { 
-    id: string; 
-    __optimistic?: boolean; 
+  export interface Item<T = any> {
+    id: string;
+    __optimistic?: boolean;
     data: T;
   }
-  
+
   interface OptimisticListProps<T = any> {
     items?: Item<T>[];
     optimistic?: Item<T>[];
@@ -15,7 +15,7 @@
     item?: import('svelte').Snippet<[{ item: Item<T>; index: number; isOptimistic: boolean }]>;
     loadingItem?: import('svelte').Snippet;
   }
-  
+
   let {
     items = [],
     optimistic = [],
@@ -32,7 +32,7 @@
     ...items,
     ...optimistic.filter(o => !items.some(i => i[keyField] === o[keyField]))
   ]);
-  
+
   // Track which items are optimistic
   let itemsWithMetadata = $derived(
     merged.map((item, index) => ({
@@ -76,17 +76,17 @@
   {:else}
     <!-- Items list -->
     <div class="optimistic-list__items">
-      {#each itemsWithMetadata as { item, index, isOptimistic } (item[keyField])}
-        <div 
+      {#each itemsWithMetadata as { item: currentItem, index, isOptimistic } (currentItem[keyField])}
+        <div
           class="optimistic-list__item {isOptimistic ? 'optimistic-list__item--optimistic' : ''}"
           data-optimistic={isOptimistic}
         >
-          {#if item}
-            {@render item({ item, index, isOptimistic })}
+          {#if currentItem}
+            {@render item({ item: currentItem, index, isOptimistic })}
           {/if}
         </div>
       {/each}
-      
+
       <!-- Loading indicator for additional items -->
       {#if loading && merged.length > 0}
         <div class="optimistic-list__loading-more">
@@ -110,7 +110,7 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .optimistic-list__error {
     display: flex;
     align-items: center;
@@ -121,20 +121,22 @@
     border-radius: 0.375rem;
     color: rgb(239, 68, 68);
   }
-  
+
   .error-icon {
     font-size: 1.25rem;
   }
-  
+
   .error-message {
     font-weight: 500;
   }
-.optimistic-list__loading, {}
+
+  .optimistic-list__loading,
   .optimistic-list__empty {
     padding: 2rem;
     text-align: center;
   }
-.loading-placeholder, {}
+
+  .loading-placeholder,
   .empty-placeholder {
     display: flex;
     flex-direction: column;
@@ -142,7 +144,7 @@
     gap: 1rem;
     color: rgb(107, 114, 128);
   }
-  
+
   .loading-spinner {
     width: 2rem;
     height: 2rem;
@@ -151,46 +153,47 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-  
+
   .loading-spinner--small {
     width: 1rem;
     height: 1rem;
   }
-  
+
   .empty-icon {
     font-size: 3rem;
     opacity: 0.5;
   }
-  
+
   .empty-message {
     font-size: 1.125rem;
     font-weight: 500;
   }
-  
+
   .optimistic-list__items {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .optimistic-list__item {
     transition: all 0.2s ease-in-out;
   }
-  
+
   .optimistic-list__item--optimistic {
     opacity: 0.7;
     background-color: rgba(59, 130, 246, 0.05);
     border: 1px dashed rgba(59, 130, 246, 0.3);
     border-radius: 0.375rem;
     padding: 0.5rem;
+    animation: optimisticPulse 2s ease-in-out infinite;
   }
-  
+
   .optimistic-list__loading-more {
     display: flex;
     justify-content: center;
     padding: 1rem;
   }
-  
+
   .loading-more-placeholder {
     display: flex;
     align-items: center;
@@ -198,7 +201,7 @@
     color: rgb(107, 114, 128);
     font-size: 0.875rem;
   }
-  
+
   @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -207,11 +210,7 @@
       transform: rotate(360deg);
     }
   }
-/* Animation for optimistic items */ {}
-  .optimistic-list__item--optimistic {
-    animation: optimisticPulse 2s ease-in-out infinite;
-  }
-  
+
   @keyframes optimisticPulse {
     0%, 100% {
       background-color: rgba(59, 130, 246, 0.05);

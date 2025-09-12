@@ -25,6 +25,7 @@ export interface LegalDocument {
   size: number;
   priority: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  confidenceLevel?: number;
   metadata?: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;
@@ -660,7 +661,7 @@ export class LokiRedisCache extends EventEmitter {
 
     // Base score from document priority and confidence
     score += document.priority * 0.01;
-    score += document.confidenceLevel * 100;
+    score += (document.confidenceLevel || 0) * 100;
 
     // Risk level scoring
     switch (document.riskLevel) {

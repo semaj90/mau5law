@@ -317,7 +317,8 @@ class ParallelCacheOrchestrator {
       const results: Array<{ key: string; hit: boolean; source: string; data?: any }> = [];
       
       for (const key of request.keys) {
-        const cacheResult = await cacheActor({ 
+        const cacheResult = await (cacheActor as any).send({ 
+          type: 'get', 
           input: { operation: 'get', key, semanticQuery: key } 
         });
 

@@ -87,18 +87,18 @@ let formData = $state({
     </div>
   {/if}
 
-  <Card.Root>
-    <Card.Header>
-      <Card.Title class="flex items-center space-x-2">
+  <div.Root>
+    <div.Header>
+      <div.Title class="flex items-center space-x-2">
         <FileText class="h-5 w-5" />
         <span>Case Information</span>
       </Card.Title>
-      <Card.Description>
+      <div.Description>
         Fill out the basic case information to test the system integration
       </Card.Description>
     </Card.Header>
 
-    <Card.Content>
+    <div.Content>
       <form onsubmit={handleSubmit} class="space-y-6">
         <!-- Case Number -->
         <div class="space-y-2">

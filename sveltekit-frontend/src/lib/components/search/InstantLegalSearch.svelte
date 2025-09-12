@@ -272,7 +272,7 @@ https://svelte.dev/e/expected_token -->
 
     <!-- Search Filters Panel -->
     {#if showFiltersPanel && showFilters}
-      <Card.Root class="p-4">
+      <div.Root class="p-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Document Types -->
           <div>
@@ -393,10 +393,10 @@ https://svelte.dev/e/expected_token -->
             class="hover:shadow-md transition-shadow cursor-pointer"
             onclick={() => handleResultClick(result)}
           >
-            <Card.Header class="pb-3">
+            <div.Header class="pb-3">
               <!-- Result Header -->
               <div class="flex items-start justify-between">
-                <Card.Title class="text-base leading-tight flex items-center gap-2">
+                <div.Title class="text-base leading-tight flex items-center gap-2">
                   <svelte:component 
                     this={getResultTypeIcon(result.resultType)} 
                     class="h-4 w-4 {getResultTypeColor(result.resultType)}" 
@@ -427,7 +427,7 @@ https://svelte.dev/e/expected_token -->
               </div>
 
               <!-- Description -->
-              <Card.Description class="text-sm">
+              <div.Description class="text-sm">
                 {#if result.highlights?.content}
                   {@html result.highlights.content}
                 {:else}
@@ -476,7 +476,7 @@ https://svelte.dev/e/expected_token -->
             </Card.Header>
 
             <!-- Action Buttons -->
-            <Card.Content class="pt-0">
+            <div.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
                 <Button 
                   size="sm" 
@@ -517,8 +517,8 @@ https://svelte.dev/e/expected_token -->
 
     {:else if searchQuery && !isSearching}
       <!-- No Results -->
-      <Card.Root>
-        <Card.Content class="py-12 text-center">
+      <div.Root>
+        <div.Content class="py-12 text-center">
           <AlertTriangle class="h-12 w-12 mx-auto text-muted-foreground mb-4" />
           <h3 class="font-medium mb-2">No results found</h3>
           <p class="text-muted-foreground text-sm mb-4">
@@ -538,8 +538,8 @@ https://svelte.dev/e/expected_token -->
 
     {:else if searchQuery && isSearching}
       <!-- Loading State -->
-      <Card.Root>
-        <Card.Content class="py-12 text-center">
+      <div.Root>
+        <div.Content class="py-12 text-center">
           <Loader2 class="h-12 w-12 mx-auto text-muted-foreground animate-spin mb-4" />
           <h3 class="font-medium mb-2">Searching...</h3>
           <p class="text-muted-foreground text-sm">

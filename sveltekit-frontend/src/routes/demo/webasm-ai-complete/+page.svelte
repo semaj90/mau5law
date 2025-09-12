@@ -314,17 +314,17 @@
   </div>
 
   <!-- Service Status Dashboard -->
-  <Card.Root>
-    <Card.Header>
-      <Card.Title class="flex items-center gap-2">
+  <div.Root>
+    <div.Header>
+      <div.Title class="flex items-center gap-2">
         <Settings class="h-5 w-5" />
         Service Status
       </Card.Title>
-      <Card.Description>
+      <div.Description>
         Real-time status of all AI stack components
       </Card.Description>
     </Card.Header>
-    <Card.Content>
+    <div.Content>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- WebAssembly Status -->
         <div class="space-y-2">
@@ -393,14 +393,14 @@
   </Card.Root>
 
   <!-- Configuration Panel -->
-  <Card.Root>
-    <Card.Header>
-      <Card.Title class="flex items-center gap-2">
+  <div.Root>
+    <div.Header>
+      <div.Title class="flex items-center gap-2">
         <Settings class="h-5 w-5" />
         Configuration
       </Card.Title>
     </Card.Header>
-    <Card.Content>
+    <div.Content>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Method Selection -->
         <div class="space-y-2">
@@ -470,10 +470,10 @@
   <!-- Chat Interface -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Chat History -->
-    <Card.Root class="lg:col-span-2">
-      <Card.Header>
+    <div.Root class="lg:col-span-2">
+      <div.Header>
         <div class="flex items-center justify-between">
-          <Card.Title class="flex items-center gap-2">
+          <div.Title class="flex items-center gap-2">
             <MessageSquare class="h-5 w-5" />
             AI Chat Demo ({currentMethod})
           </Card.Title>
@@ -485,7 +485,7 @@
           </div>
         </div>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <!-- Chat Messages -->
         <div class="space-y-4 h-96 overflow-y-auto border rounded-lg p-4 mb-4">
           {#each chatHistory as message}
@@ -552,14 +552,14 @@
     </Card.Root>
 
     <!-- Information Panel -->
-    <Card.Root>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+    <div.Root>
+      <div.Header>
+        <div.Title class="flex items-center gap-2">
           <Brain class="h-5 w-5" />
           Architecture Info
         </Card.Title>
       </Card.Header>
-      <Card.Content class="space-y-4">
+      <div.Content class="space-y-4">
         <div>
           <h4 class="font-medium mb-2">WebAssembly Mode</h4>
           <ul class="text-sm text-muted-foreground space-y-1">

@@ -328,8 +328,8 @@
   <section class="metrics-section">
     <div class="metrics-grid">
       {#each intelligenceMetrics as metric (metric.id)}
-        <Card.Root class="metric-card">
-          <Card.Content class="p-6">
+        <div.Root class="metric-card">
+          <div.Content class="p-6">
             <div class="metric-header">
               <h3 class="metric-name">{metric.name}</h3>
               <div class="metric-trend trend-{metric.trend}">
@@ -360,17 +360,17 @@
 
   <!-- Analysis Input Section -->
   <section class="analysis-section">
-    <Card.Root>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+    <div.Root>
+      <div.Header>
+        <div.Title class="flex items-center gap-2">
           <Search class="w-5 h-5" />
           Contextual Analysis
         </Card.Title>
-        <Card.Description>
+        <div.Description>
           Query the intelligence system for contextual insights and recommendations
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <FormField name="analysis_query" label="Analysis Query" required={false}>
           {#snippet children({ inputId, fieldName, hasError, ariaDescribed })}
             <textarea
@@ -408,17 +408,17 @@
   <div class="content-grid">
     <!-- Contextual Insights -->
     <section class="insights-section">
-      <Card.Root class="h-full">
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+      <div.Root class="h-full">
+        <div.Header>
+          <div.Title class="flex items-center gap-2">
             <Eye class="w-5 h-5" />
             Contextual Insights
           </Card.Title>
-          <Card.Description>
+          <div.Description>
             AI-generated insights and patterns from your legal data
           </Card.Description>
         </Card.Header>
-        <Card.Content class="p-0">
+        <div.Content class="p-0">
           <OptimisticList
             items={contextualInsights.map(insight => ({ id: insight.id, data: insight }))}
             optimistic={optimisticInsights}
@@ -474,20 +474,20 @@
 
     <!-- Processing Tasks -->
     <section class="tasks-section">
-      <Card.Root class="h-full">
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+      <div.Root class="h-full">
+        <div.Header>
+          <div.Title class="flex items-center gap-2">
             <Cpu class="w-5 h-5" />
             Processing Tasks
             {#if processingProgress}
               <div class="processing-indicator"></div>
             {/if}
           </Card.Title>
-          <Card.Description>
+          <div.Description>
             Current AI processing and analysis tasks
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <div.Content>
           <div class="tasks-list">
             {#each processingTasks as task (task.id)}
               <div class="task-item">
@@ -530,17 +530,17 @@
 
   <!-- Document Upload Section -->
   <section class="upload-section">
-    <Card.Root>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+    <div.Root>
+      <div.Header>
+        <div.Title class="flex items-center gap-2">
           <FileSearch class="w-5 h-5" />
           Intelligence Document Processing
         </Card.Title>
-        <Card.Description>
+        <div.Description>
           Upload documents for contextual analysis and embedding generation
         </Card.Description>
       </Card.Header>
-      <Card.Content>
+      <div.Content>
         <DocumentUploader
           autoUpload={true}
           maxFiles={5}

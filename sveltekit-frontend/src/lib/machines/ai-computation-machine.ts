@@ -45,28 +45,28 @@ const perform3DComputation = fromPromise(async ({ input }: {
   input: { data: number[]; shape: number[]; attentionWeights: number[]; userId: string }
 }) => {
   const { data, shape, attentionWeights, userId } = input;
-  
+
   // Create dimensional array with kernel attention splicing
-  const dimensionalArray = await dimensionalCache.createDimensionalArray(data, shape, attentionWeights);
-  
-  // Cache the result
-  await dimensionalCache.cacheDimensionalArray(
-    `computation_${Date.now()}`,
-    dimensionalArray,
-    {
-      userId,
-      sessionId: `session_${Date.now()}`,
-      behaviorPattern: 'active_user'
-    }
+  const dimensionalArray = await dimensionalCache.createDimensionalArray(
+    data,
+    shape,
+    attentionWeights
   );
-  
+
+  // Cache the result
+  await dimensionalCache.cacheDimensionalArray(`computation_${Date.now()}`, dimensionalArray, {
+    userId,
+    sessionId: `session_${Date.now()}`,
+    behaviorPattern: 'active_user',
+  });
+
   // Simulate 3D computation processing
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   return {
     result: dimensionalArray,
     processed: true,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 });
 
@@ -81,25 +81,29 @@ const processRabbitMQQueue = fromPromise(async ({ input }: {
   input: { queuedComputations: string[] }
 }) => {
   const { queuedComputations } = input;
-  
+
   // Process all queued computations
   const results = [];
   for (const computation of queuedComputations) {
     try {
       // Simulate processing queued computation
-      const result = await new Promise(resolve => {
-        setTimeout(() => resolve({
-          computation,
-          processed: true,
-          timestamp: Date.now()
-        }), 500);
+      const result = await new Promise((resolve) => {
+        setTimeout(
+          () =>
+            resolve({
+              computation,
+              processed: true,
+              timestamp: Date.now(),
+            }),
+          500
+        );
       });
       results.push(result);
     } catch (error: any) {
       console.error('Failed to process queued computation:', error);
     }
   }
-  
+
   return results;
 });
 

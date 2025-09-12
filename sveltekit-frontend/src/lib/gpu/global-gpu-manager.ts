@@ -121,7 +121,7 @@ class GlobalGPUManager {
       });
 
       this.acceleration.isEnabled = true;
-      this.acceleration.contextType = this.acceleration.hybridContext.getActiveContextType();
+      this.acceleration.contextType = this.acceleration.hybridContext.getActiveContextType() as "webgl2" | "webgpu" | "webgl1" | "cpu";
       
       console.log(`🚀 Global GPU Manager initialized with ${this.acceleration.contextType} acceleration`);
       
@@ -168,13 +168,13 @@ class GlobalGPUManager {
       if (this.acceleration.hybridContext) {
         try {
           if (this.acceleration.contextType === 'webgpu') {
-            const device = this.acceleration.hybridContext.getActiveContext() as GPUDevice;
+            const device = this.acceleration.hybridContext.getActiveContextType() as unknown as GPUDevice;
             memoryRegion.gpuBuffer = device.createBuffer({
               size: region.size,
               usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
             });
           } else {
-            const gl = this.acceleration.hybridContext.getActiveContext() as WebGL2RenderingContext | WebGLRenderingContext;
+            const gl = this.acceleration.hybridContext.getActiveContextType() as unknown as WebGL2RenderingContext | WebGLRenderingContext;
             memoryRegion.gpuBuffer = gl.createBuffer();
           }
         } catch (error) {
@@ -340,7 +340,7 @@ class GlobalGPUManager {
         paletteData[i * 4 + 3] = 1.0;                           // A
       }
 
-      const results = await this.acceleration.hybridContext.runComputeShader(
+      const results = await (this.acceleration.hybridContext as any).runComputeShader(
         this.acceleration.colorQuantizationShader!,
         {
           inputPixels: imageData,
@@ -437,11 +437,11 @@ class GlobalGPUManager {
 
     try {
       if (this.acceleration.contextType === 'webgpu') {
-        const device = this.acceleration.hybridContext!.getActiveContext() as GPUDevice;
+        const device = this.acceleration.hybridContext!.getActiveContextType() as unknown as GPUDevice;
         const buffer = region.gpuBuffer as GPUBuffer;
         device.queue.writeBuffer(buffer, 0, region.buffer);
       } else {
-        const gl = this.acceleration.hybridContext!.getActiveContext() as WebGL2RenderingContext | WebGLRenderingContext;
+        const gl = this.acceleration.hybridContext!.getActiveContextType() as unknown as WebGL2RenderingContext | WebGLRenderingContext;
         const buffer = region.gpuBuffer as WebGLBuffer;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, region.buffer, gl.DYNAMIC_DRAW);
@@ -491,4 +491,4 @@ class GlobalGPUManager {
 
 // Export singleton instance
 export const globalGPUManager = GlobalGPUManager.getInstance();
-export type { NESMemoryRegion, GPUAcceleration };
+// Export types are already defined above

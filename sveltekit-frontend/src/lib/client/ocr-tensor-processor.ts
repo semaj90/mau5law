@@ -98,9 +98,9 @@ export class OCRTensorProcessor {
       this.memoryPressure = memoryInfo.usedJSHeapSize / memoryInfo.totalJSHeapSize;
       
       // Adapt LOD based on memory pressure using gaming thresholds
-      if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.thresholds.criticalMemory) {
+      if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.criticalMemory) {
         this.currentLODLevel = 'low';
-      } else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.thresholds.lowMemory) {
+      } else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.lowMemory) {
         this.currentLODLevel = 'medium';
       }
     }
@@ -661,9 +661,9 @@ export class OCRTensorProcessor {
 
   private calculateAdaptiveDelay(): number {
     // Calculate delay based on memory pressure and system load
-    if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.thresholds.criticalMemory) {
+    if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.criticalMemory) {
       return 1000; // 1 second delay under critical memory pressure
-    } else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.thresholds.lowMemory) {
+    } else if (this.memoryPressure > ENHANCED_MEMORY_CACHING.performance.adaptiveTuning.thresholds.lowMemory) {
       return 500;  // 500ms delay under moderate memory pressure
     } else {
       return 100;  // 100ms delay under normal conditions
