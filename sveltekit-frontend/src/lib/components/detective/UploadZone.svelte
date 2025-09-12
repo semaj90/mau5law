@@ -1,7 +1,7 @@
 <script lang="ts">
   // Enhanced lightweight UploadZone with: validation, retry/backoff, cancel, telemetry, embedding + vector storage
   import { embeddingService } from '$lib/services/embedding-service';
-  import { vectorService } from '$lib/services/postgresql-vector-service';
+  import { postgresqlVectorService as vectorService } from '$lib/services/postgresql-vector-service';
   import { telemetry } from '$lib/services/telemetry-service';
 
   interface Props {

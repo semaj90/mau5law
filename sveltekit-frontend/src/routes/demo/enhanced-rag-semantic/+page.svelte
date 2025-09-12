@@ -7,7 +7,10 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
+  
+  // GPU integration for enhanced performance
+  import { gpuIntegrationService } from '$lib/services/gpu-integration-service';;
 
   let systemStatus = $state({
     ragService: false,
@@ -17,6 +20,7 @@
   });
 
   let loadingStatus = $state(true);
+  let gpuEnabled = $state(false);
 
   /**
    * Check system service status
@@ -63,7 +67,17 @@
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
+    // Register for GPU acceleration
+    gpuEnabled = gpuIntegrationService.registerComponent({
+      componentId: 'enhanced-rag-demo',
+      requiresGPU: true,
+      nesColorQuantization: false,
+      lodAcceleration: true,
+      pixelEffects: false,
+      priority: 'high'
+    });
+
     checkSystemStatus();
 
     // Refresh status every 30 seconds

@@ -3,48 +3,31 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- EnhancedRAG:Studio UI - Complete RAG Management Dashboard -->
 <script lang="ts">
-  interface Props {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
+  interface Props { class?: string; children?: import('svelte').Snippet }
   import { onMount } from 'svelte';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';;
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Input } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Badge } from '$lib/components/ui/badge';
-  import {
-    Upload,
-    Globe,
-    Search,
-    Database,
-    Activity,
-    FileText,
-    Brain,
-    TrendingUp,
-    Settings,
-    Play,
-    Pause,
-    RefreshCw
-  } from 'lucide-svelte';
+  import { Upload, Globe, Search, Database, Activity, FileText, Brain, TrendingUp, Settings, Play, Pause, RefreshCw } from 'lucide-svelte';
+
+  // State management types
+  interface SearchResultMeta { title?: string; type?: string }
+  interface SearchResult { id: string; score: number; content: string; metadata: SearchResultMeta }
+  interface LogEntry { action: string; metadata: any; timestamp: string }
+  interface ServiceStatus { services?: Record<string, boolean>; indexStats?: { num_docs?: number } }
+  interface RLMetrics { positive?: number; negative?: number; avgScore?: number }
+
   // State management
   let activeTab = $state<'upload' | 'crawl' | 'search' | 'logs' | 'settings'>('search');
   let isLoading = $state(false);
-  let serviceStatus = $state<any>({});
-  let searchResults = $state<unknown[]>([]);
-  let recentLogs = $state<unknown[]>([]);
-  let embeddings = $state<unknown[]>([]);
-  let patches = $state<unknown[]>([]);
-  let rlMetrics = $state<any>({});
+  let serviceStatus = $state<ServiceStatus>({});
+  let searchResults = $state<SearchResult[]>([]);
+  let recentLogs = $state<LogEntry[]>([]);
+  let embeddings = $state<any[]>([]);
+  let patches = $state<any[]>([]);
+  let rlMetrics = $state<RLMetrics>({});
 
   // Form states
   let searchQuery = $state('');
@@ -52,19 +35,21 @@ https://svelte.dev/e/attribute_duplicate -->
   let crawlUrl = $state('');
   let feedbackScore = $state(0);
 
-  // Real-time updates
-let statusInterval = $state<number | null >(null);
-let logsInterval = $state<number | null >(null);
+  // Real-time updates intervals
+  let statusInterval = $state<ReturnType<typeof setInterval> | null>(null);
+  let logsInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
-  onMount(async () => {
-    await loadServiceStatus();
-    await loadRecentLogs();
-    await loadEmbeddings();
-    startRealTimeUpdates();
+  onMount(() => {
+    (async () => {
+      await loadServiceStatus();
+      await loadRecentLogs();
+      await loadEmbeddings();
+      startRealTimeUpdates();
+    })();
 
     return () => {
-      if (statusInterval) clearInterval(statusInterval);
-      if (logsInterval) clearInterval(logsInterval);
+      if (statusInterval) clearInterval(statusInterval as any);
+      if (logsInterval) clearInterval(logsInterval as any);
     };
   });
 
@@ -94,7 +79,7 @@ let logsInterval = $state<number | null >(null);
     try {
       const response = await fetch('/api/logs');
       const data = await response.json();
-      recentLogs = data.logs || [];
+      recentLogs = (data.logs || []) as LogEntry[];
     } catch (error) {
       console.error('Failed to load logs:', error);
     }
@@ -125,10 +110,10 @@ let logsInterval = $state<number | null >(null);
       });
 
       const data = await response.json();
-      searchResults = data.results || [];
+      searchResults = (data.results || []) as SearchResult[];
 
       // Log search activity
-      await logActivity('search', { query: searchQuery, results: data.results.length });
+      await logActivity('search', { query: searchQuery, results: data.results?.length || 0 });
 
     } catch (error) {
       console.error('Search failed:', error);
@@ -279,42 +264,42 @@ let logsInterval = $state<number | null >(null);
 
   <!-- Navigation Tabs -->
   <div class="flex gap-2 mb-6">
-    <Button class="bits-btn"
+    <Button
+      class="bits-btn flex items-center gap-2"
       variant={activeTab === 'search' ? 'default' : 'outline'}
       onclick={() => activeTab = 'search'}
-      class="flex items-center gap-2"
     >
       <Search class="w-4 h-4" />
       Search
     </Button>
-    <Button class="bits-btn"
+    <Button
+      class="bits-btn flex items-center gap-2"
       variant={activeTab === 'upload' ? 'default' : 'outline'}
       onclick={() => activeTab = 'upload'}
-      class="flex items-center gap-2"
     >
       <Upload class="w-4 h-4" />
       Upload
     </Button>
-    <Button class="bits-btn"
+    <Button
+      class="bits-btn flex items-center gap-2"
       variant={activeTab === 'crawl' ? 'default' : 'outline'}
       onclick={() => activeTab = 'crawl'}
-      class="flex items-center gap-2"
     >
       <Globe class="w-4 h-4" />
       Crawl
     </Button>
-    <Button class="bits-btn"
+    <Button
+      class="bits-btn flex items-center gap-2"
       variant={activeTab === 'logs' ? 'default' : 'outline'}
       onclick={() => activeTab = 'logs'}
-      class="flex items-center gap-2"
     >
       <FileText class="w-4 h-4" />
       Logs
     </Button>
-    <Button class="bits-btn"
+    <Button
+      class="bits-btn flex items-center gap-2"
       variant={activeTab === 'settings' ? 'default' : 'outline'}
       onclick={() => activeTab = 'settings'}
-      class="flex items-center gap-2"
     >
       <Settings class="w-4 h-4" />
       Settings
@@ -338,7 +323,7 @@ let logsInterval = $state<number | null >(null);
                 bind:value={searchQuery}
                 placeholder="Enter your search query..."
                 class="flex-1"
-                keydown={(e) => e.key === 'Enter' && handleSearch()}
+                onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleSearch()}
               />
               <Button class="bits-btn" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
                 {#if isLoading}
@@ -399,11 +384,12 @@ let logsInterval = $state<number | null >(null);
           </CardHeader>
           <CardContent class="space-y-4">
             <div>
-              <label class="block text-sm font-medium mb-2">Select PDF Document</label>
+              <label for="rag-upload-file" class="block text-sm font-medium mb-2">Select PDF Document</label>
               <input
                 type="file"
                 accept=".pdf"
-                change={(e) => uploadFile = e.target.files?.[0] || null}
+                id="rag-upload-file"
+                onchange={(e: Event) => { const t = e.target as HTMLInputElement; uploadFile = t.files?.[0] || null; }}
                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
             </div>
@@ -428,9 +414,10 @@ let logsInterval = $state<number | null >(null);
           </CardHeader>
           <CardContent class="space-y-4">
             <div>
-              <label class="block text-sm font-medium mb-2">Website URL</label>
+              <label for="rag-crawl-url" class="block text-sm font-medium mb-2">Website URL</label>
               <Input
                 bind:value={crawlUrl}
+                id="rag-crawl-url"
                 placeholder="https://example.com"
                 type="url"
               />
@@ -483,16 +470,16 @@ let logsInterval = $state<number | null >(null);
           </CardHeader>
           <CardContent class="space-y-4">
             <div>
-              <label class="block text-sm font-medium mb-2">Search Threshold</label>
-              <Input type="number" step="0.1" min="0" max="1" value="0.7" />
+              <label for="rag-search-threshold" class="block text-sm font-medium mb-2">Search Threshold</label>
+              <Input id="rag-search-threshold" type="number" step="0.1" min="0" max="1" value="0.7" />
             </div>
             <div>
-              <label class="block text-sm font-medium mb-2">Max Results</label>
-              <Input type="number" min="1" max="50" value="10" />
+              <label for="rag-max-results" class="block text-sm font-medium mb-2">Max Results</label>
+              <Input id="rag-max-results" type="number" min="1" max="50" value="10" />
             </div>
             <div>
-              <label class="block text-sm font-medium mb-2">Cache TTL (seconds)</label>
-              <Input type="number" min="60" max="86400" value="7200" />
+              <label for="rag-cache-ttl" class="block text-sm font-medium mb-2">Cache TTL (seconds)</label>
+              <Input id="rag-cache-ttl" type="number" min="60" max="86400" value="7200" />
             </div>
             <Button class="bits-btn">Save Settings</Button>
           </CardContent>

@@ -10,7 +10,7 @@
 
 import Loki from "lokijs";
 import { writable, derived, type Readable } from "svelte/store";
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { BrowserCacheManager } from "./browser-cache-manager";
 import { ShaderCache } from "./webgl-shader-cache";
 import { MatrixTransformLib } from "./matrix-transform-lib";
@@ -89,11 +89,11 @@ export interface PerformanceMetrics {
 
 // Main Self-Organizing Neural Sprite Engine class
 export class NeuralSpriteEngine {
-  private db: Loki;
+  private db: Loki = new Loki('neural-sprites.db');
   private sprites: any;
   private activities: any;
   private sequences: any;
-  private canvas: fabric.Canvas;
+  private canvas: any = null;
   private aiWorker?: Worker;
 
   // Self-Organizing Map components
@@ -163,13 +163,14 @@ export class NeuralSpriteEngine {
   });
 
 
-  constructor(canvas: fabric.Canvas, maxWorkers?: number) {
+  constructor(canvas: any, maxWorkers?: number) {
     this.canvas = canvas;
     this.maxWorkers = maxWorkers || navigator.hardwareConcurrency || 4;
     this.startTime = Date.now();
     
-    // Initialize shader cache with defaults
-    this.shaderCache = new ShaderCache(null, {
+    // Initialize shader cache with defaults - handle null context gracefully
+    const context = canvas?.getContext?.('webgl2') || null;
+    this.shaderCache = new ShaderCache(context, {
       enableNVIDIAOptimizations: false,
       cacheSize: 50,
       persistToDisk: false,
@@ -981,7 +982,7 @@ export class NeuralSpriteEngine {
       priority: "high",
       data: {
         sprites: sequence.frames
-          .map((frameId) => this.sprites.findOne({ id: frameId }))
+          .map((frameId: string) => this.sprites.findOne({ id: frameId }))
           .filter(Boolean),
         animationType: "sequence",
         expectedFps: sequence.fps,
@@ -1161,7 +1162,7 @@ export class NeuralSpriteEngine {
     if (allSprites.length === 0) return 0;
 
     const totalComplexity = allSprites.reduce(
-      (sum, sprite) => sum + sprite.metadata.complexity,
+      (sum: number, sprite: any) => sum + sprite.metadata.complexity,
       0
     );
     return Math.round((totalComplexity / allSprites.length) * 100) / 100; // Round to 2 decimal places
@@ -1220,7 +1221,7 @@ export class NeuralSpriteEngine {
   // Public API for Svelte components
   public getAvailableStates(): string[] {
     return Array.from(
-      new Set(this.sprites.find().map((sprite) => sprite.name))
+      new Set(this.sprites.find().map((sprite: any) => sprite.name))
     );
   }
 
@@ -1292,7 +1293,7 @@ export class NeuralSpriteEngine {
 
 // Factory function for Svelte integration
 export function createNeuralSpriteEngine(
-  canvas: fabric.Canvas
+  canvas: any
 ): NeuralSpriteEngine {
   return new NeuralSpriteEngine(canvas);
 }

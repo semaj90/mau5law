@@ -8,9 +8,10 @@ https://svelte.dev/e/js_parse_error -->
     LazyChart,
     LazyAIAnalysis,
     createLazyStore,
-    LAZY_LOAD_PRESETS
-  } from '$lib/components/lazy/index.js';
-  import type { LazyComponentState } from '$lib/utils/intersection-observer.js';
+    LAZY_LOAD_PRESETS,
+    type LazyComponentState,
+    type LazyLoadPreset
+  } from '$lib/components/lazy';
 
   // Demonstration data
   const chartData = [
@@ -29,9 +30,9 @@ https://svelte.dev/e/js_parse_error -->
   };
 
   // Track lazy states for demonstration
-  let chartLazyState: LazyComponentState;
-  let analysisLazyState: LazyComponentState;
-  let customLazyState: LazyComponentState;
+  let chartLazyState = $state<LazyComponentState | undefined>(undefined);
+  let analysisLazyState = $state<LazyComponentState | undefined>(undefined);
+  let customLazyState = $state<LazyComponentState | undefined>(undefined);
 
   // Custom lazy store for the manual example
   const customLazyStore = createLazyStore();
@@ -51,13 +52,13 @@ https://svelte.dev/e/js_parse_error -->
   const mockEvidence = generateMockContent('Evidence');
 
   // Stats for demonstration
-  let loadedComponents = $derived([
+  let loadedComponents = $derived(() => [
     chartLazyState?.hasBeenVisible,
     analysisLazyState?.hasBeenVisible,
     customLazyState?.hasBeenVisible
   ].filter(Boolean).length);
 
-  let visibleComponents = $derived([
+  let visibleComponents = $derived(() => [
     chartLazyState?.isVisible,
     analysisLazyState?.isVisible,
     customLazyState?.isVisible
@@ -263,7 +264,7 @@ https://svelte.dev/e/js_parse_error -->
       <h2>4. Configuration Options</h2>
       <p>The lazy loading system offers various presets and customization options:</p>
       <div class="config-grid">
-        {#each Object.entries(LAZY_LOAD_PRESETS) as [preset, config]}
+  {#each Object.entries(LAZY_LOAD_PRESETS) as [preset, config]: [LazyLoadPreset, (typeof LAZY_LOAD_PRESETS)[LazyLoadPreset]]}
           <div class="config-card">
             <h4>{preset}</h4>
             <div class="config-details">

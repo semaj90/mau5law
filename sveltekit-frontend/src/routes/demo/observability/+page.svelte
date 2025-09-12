@@ -151,6 +151,10 @@ https://svelte.dev/e/js_parse_error -->
       default: return 'text-gray-400';
     }
   }
+
+  function boolColor(v) {
+    return v ? 'text-green-400' : 'text-red-400';
+  }
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-6">
@@ -174,14 +178,14 @@ https://svelte.dev/e/js_parse_error -->
           <div class="space-y-2">
             <div class="flex justify-between">
               <span class="text-gray-400">Initialized:</span>
-              <span class="text-{observabilityStatus.initialized ? 'green' : 'red'}-400">
-                {observabilityStatus.initialized ? 'Yes' : 'No'}
+              <span class={boolColor(observabilityStatus?.initialized)}>
+                {observabilityStatus?.initialized ? 'Yes' : 'No'}
               </span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Browser:</span>
-              <span class="text-{observabilityStatus.browser ? 'green' : 'red'}-400">
-                {observabilityStatus.browser ? 'Yes' : 'No'}
+              <span class={boolColor(observabilityStatus?.browser)}>
+                {observabilityStatus?.browser ? 'Yes' : 'No'}
               </span>
             </div>
             <div class="flex justify-between">
@@ -264,7 +268,7 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="text-xl font-semibold text-yellow-400 mb-4">Demo Actions</h3>
       <div class="flex flex-wrap gap-4">
         <button
-          on:click={checkServerHealth}
+          onclick={checkServerHealth}
           disabled={isLoading}
           class="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
@@ -272,7 +276,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
 
         <button
-          on:click={loadClientMetrics}
+          onclick={loadClientMetrics}
           disabled={isLoading}
           class="bg-green-600 hover:bg-green-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
@@ -280,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
 
         <button
-          on:click={simulateSlowOperation}
+          onclick={simulateSlowOperation}
           disabled={isLoading}
           class="bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
@@ -288,7 +292,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
 
         <button
-          on:click={clearMetrics}
+          onclick={clearMetrics}
           disabled={isLoading}
           class="bg-red-600 hover:bg-red-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >

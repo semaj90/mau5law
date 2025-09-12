@@ -1,6 +1,6 @@
 /**
  * Client-Side Integration Examples
- * 
+ *
  * Real-world examples showing how to integrate the WebGPU buffer quantization system
  * with existing client-side legal AI components and workflows.
  */
@@ -16,14 +16,14 @@ export async function integrateLegalChatWithWebGPU() {
 
   // Simulate existing legal chat system with document embeddings
   const legalDocuments = [
-    { 
+    {
       id: 'contract-001',
       title: 'Software License Agreement',
       embeddings: new Float32Array(768).fill(0.1),
       type: 'contract' as const
     },
     {
-      id: 'brief-002', 
+      id: 'brief-002',
       title: 'Motion to Dismiss',
       embeddings: new Float32Array(768).fill(0.2),
       type: 'brief' as const
@@ -31,7 +31,7 @@ export async function integrateLegalChatWithWebGPU() {
     {
       id: 'case-003',
       title: 'Smith vs. Jones Precedent',
-      embeddings: new Float32Array(768).fill(0.3), 
+      embeddings: new Float32Array(768).fill(0.3),
       type: 'case-law' as const
     }
   ];
@@ -60,9 +60,9 @@ export async function integrateLegalChatWithWebGPU() {
 
     console.log('✅ Legal chat WebGPU integration complete:', {
       documentsProcessed: processedDocuments.length,
-      averageCompressionRatio: processedDocuments.reduce((sum, doc) => 
+      averageCompressionRatio: processedDocuments.reduce((sum, doc) =>
         sum + doc.compressionStats.compressionRatio, 0) / processedDocuments.length,
-      totalMemorySaved: processedDocuments.reduce((sum, doc) => 
+      totalMemorySaved: processedDocuments.reduce((sum, doc) =>
         sum + (doc.compressionStats.originalSize - doc.compressionStats.compressedSize), 0)
     });
 
@@ -140,7 +140,7 @@ export async function integrateLegalDocumentUploadWorkflow() {
       embeddings: generateLegalEmbeddings(1024) // Large contract
     },
     {
-      filename: 'discovery-motion.pdf', 
+      filename: 'discovery-motion.pdf',
       type: 'brief' as const,
       priority: 'medium' as const,
       embeddings: generateLegalEmbeddings(512) // Standard brief
@@ -184,11 +184,11 @@ export async function integrateLegalDocumentUploadWorkflow() {
 
     console.log('✅ Legal document upload workflow enhanced:', {
       documentsProcessed: enhancedDocuments.length,
-      totalCompressionRatio: processingResults.reduce((sum, r) => 
+      totalCompressionRatio: processingResults.reduce((sum, r) =>
         sum + r.compressionStats.compressionRatio, 0) / processingResults.length,
-      totalSpaceSaved: processingResults.reduce((sum, r) => 
+      totalSpaceSaved: processingResults.reduce((sum, r) =>
         sum + parseFloat(r.compressionStats.spaceSavings), 0),
-      averageProcessingTime: processingResults.reduce((sum, r) => 
+      averageProcessingTime: processingResults.reduce((sum, r) =>
         sum + r.processingTime, 0) / processingResults.length
     });
 
@@ -221,7 +221,7 @@ export async function enableRealTimeLegalAnalysis() {
     const embeddingPromises = legalTextSamples.map(async (text, index) => {
       // Simulate embedding generation with different characteristics
       const embeddings = generateLegalEmbeddings(768, 0.1 + index * 0.2);
-      
+
       // Process with legal AI bridge for GPU optimization
       return await LegalAIIntegration.processEmbeddingsForLegalAI(
         embeddings,
@@ -260,17 +260,20 @@ export async function setupLegalAIPerformanceMonitoring() {
     await legalAIBridge.initialize();
 
     // Simulate some processing activity
+    const legalDocTypes = ['contract', 'brief', 'evidence', 'case-law', 'citation'] as const;
+    const legalPriorities = ['high', 'medium', 'low'] as const;
+
     const testDocuments = Array.from({ length: 10 }, (_, i) => ({
       embeddings: generateLegalEmbeddings(384 + i * 64), // Varying sizes
-      type: ['contract', 'brief', 'evidence', 'case-law', 'citation'][i % 5] as const,
-      priority: ['high', 'medium', 'low'][i % 3] as const
+      type: legalDocTypes[i % legalDocTypes.length],
+      priority: legalPriorities[i % legalPriorities.length]
     }));
 
     await legalAIBridge.batchProcessLegalDocuments(testDocuments);
 
     // Get comprehensive performance metrics
     const performanceStats = legalAIBridge.getPerformanceStats();
-    
+
     console.log('✅ Legal AI performance monitoring active:', performanceStats);
 
     // Set up periodic monitoring (in a real app, you'd use setInterval)
@@ -301,8 +304,8 @@ export class ProgressiveLegalAIEnhancement {
     try {
       this.webgpuAvailable = await legalAIBridge.initialize();
       this.fallbackMode = !this.webgpuAvailable;
-      
-      console.log(this.webgpuAvailable 
+
+      console.log(this.webgpuAvailable
         ? '✅ WebGPU enhancement active'
         : '⚠️ Fallback mode - using CPU processing'
       );
@@ -361,17 +364,17 @@ function calculateOptimizationScore(result: any): number {
 
 function generatePerformanceRecommendations(stats: any): string[] {
   const recommendations = [];
-  
+
   if (stats?.cacheStats?.entryCount > 50) {
     recommendations.push('Consider clearing cache to free memory');
   }
-  
+
   if (stats?.isWebGPUAvailable) {
     recommendations.push('WebGPU acceleration is active and optimizing performance');
   } else {
     recommendations.push('Consider upgrading browser/hardware for WebGPU acceleration');
   }
-  
+
   return recommendations;
 }
 

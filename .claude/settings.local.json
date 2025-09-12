@@ -134,7 +134,13 @@
       "Bash(REDIS_PASSWORD=redis npm run dev -- --port 5173)",
       "Bash(REDIS_URL=\"redis://:redis@localhost:6379\" npx vite dev --port 5173)",
       "Bash(REDIS_PASSWORD=\"redis\" npm run dev -- --port 5173)",
-      "Bash(REDIS_PASSWORD=\"redis\" npm run dev:full)"
+      "Bash(REDIS_PASSWORD=\"redis\" npm run dev:full)",
+      "Bash(MCP_PORT=3002 node mcp-multicore-server.mjs)",
+      "Bash(cut:*)",
+      "Bash(REDIS_PASSWORD=redis npm run dev:full)",
+      "Bash(tasklist:*)",
+      "Bash(PORT=5174 REDIS_PASSWORD=redis npm run dev:full)",
+      "Bash(./test-routes.sh:*)"
     ],
     "deny": [],
     "ask": []

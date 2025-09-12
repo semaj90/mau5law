@@ -46,72 +46,105 @@
   		}
   	);
 
-  	// Props destructuring using Svelte 5 $props() with simplified types
-  	const { children, variant = 'default', size = 'default', disabled = false, type = 'button', href = undefined, target = undefined, loading = false, loadingText = 'Loading...', className = '', onclick = undefined, id = (typeof globalThis !== 'undefined' && (globalThis.crypto as any)?.randomUUID)
-  		? (globalThis.crypto as any).randomUUID()
-  		: `bits-btn-${Math.random().toString(36).slice(2, 9)}`, analyticsCategory = 'ui', analyticsAction = 'click', analyticsLabel = '', xstateContext = undefined, uiJsonConfig = undefined, searchKeywords = [], cacheKey = undefined, role = 'button', dataTestid = undefined } = $props();
+	// Props destructuring using Svelte 5 $props() with simplified types
+	type ButtonVariant = VariantProps<typeof buttonVariants>['variant'];
+	type ButtonSize = VariantProps<typeof buttonVariants>['size'];
+	type ButtonType = 'button' | 'submit' | 'reset';
 
-  	// (Optional) If you want to leverage Bits UI's Button component, import it.
-  	// Here we keep native <button>/<a> to preserve existing structure.
-  	// import { Button as BitsButton } from 'bits-ui';
-  	
-  	
-  	
-  	
-  	
-  	
-  	
-  	
-  	
-  	
-  	 // eslint-disable-line @typescript-eslint/no-explicit-any
-  	
-  	
-  	
-  	
-  	
+	interface BitsButtonProps {
+		children?: any;
+		variant?: ButtonVariant;
+		size?: ButtonSize;
+		disabled?: boolean;
+		type?: ButtonType;
+		href?: string;
+		target?: string;
+		loading?: boolean;
+		loadingText?: string;
+		className?: string;
+		onclick?: (e: MouseEvent) => void;
+		id?: string;
+		analyticsCategory?: string;
+		analyticsAction?: string;
+		analyticsLabel?: string;
+		xstateContext?: any;
+		uiJsonConfig?: UIJsonSSRConfig;
+		searchKeywords?: string[];
+		cacheKey?: string;
+		role?: string;
+		dataTestid?: string;
+	}
 
-  	const dispatch = createEventDispatcher<{
-  		click: ButtonAnalyticsEvent;
-  		analytics: ButtonAnalyticsEvent;
-  		cache: { key: string; action: string };
-  	}>();
+	const {
+		children,
+		variant = 'default',
+		size = 'default',
+		disabled = false,
+		type = 'button',
+		href = undefined,
+		target = undefined,
+		loading = false,
+		loadingText = 'Loading...',
+		className = '',
+		onclick = undefined,
+		id = (typeof globalThis !== 'undefined' && (globalThis.crypto as any)?.randomUUID)
+			? (globalThis.crypto as any).randomUUID()
+			: `bits-btn-${Math.random().toString(36).slice(2, 9)}`,
+		analyticsCategory = 'ui',
+		analyticsAction = 'click',
+		analyticsLabel = '',
+		xstateContext = undefined,
+		uiJsonConfig = undefined,
+		searchKeywords = [],
+		cacheKey = undefined,
+		role = 'button',
+		dataTestid = undefined
+	} = $props<BitsButtonProps>();
+		// Directly use native elements (current approach). If you want Bits UI, just:
+		// import { Button as BitsButton } from 'bits-ui';
+		// and replace the <button>/<a> markup below, keeping handleClick + analytics.
 
-  	// TODO: Convert to $derived: isDisabled = disabled || loading
-  	// TODO: Convert to $derived: buttonClass = cn(buttonVariants({ variant, size }), className)
+		// Updated to avoid deprecated typed signature of createEventDispatcher
+		const _dispatch = createEventDispatcher();
+		type Dispatch = <T extends 'click' | 'analytics' | 'cache'>(
+			type: T,
+			detail: T extends 'cache' ? { key: string; action: string } : ButtonAnalyticsEvent
+		) => void;
+		const dispatch = _dispatch as Dispatch;
 
-  	let isDisabled: boolean;
-  	let buttonClass: string;
+		// Derived state (Svelte 5 rune style)
+		let isDisabled = $derived(disabled || loading);
+		let buttonClass = $derived(cn(buttonVariants({ variant, size }), className));
 
-  	function handleClick(event: MouseEvent) {
-  		if (isDisabled) {
-  			event.preventDefault();
-  			return;
-  		}
-  		const analyticsEvent: ButtonAnalyticsEvent = {
-  			id,
-  			category: analyticsCategory,
-  			action: analyticsAction,
-  			label: analyticsLabel || (event.currentTarget as HTMLElement)?.textContent || '',
-  			timestamp: Date.now(),
-  			context: xstateContext,
-  			variant,
-  			size
-  		};
-  		if (browser) {
-  			userAnalyticsStore.trackButtonClick(analyticsEvent);
-  			dispatch('analytics', analyticsEvent);
-  			if (cacheKey) {
-  				lokiButtonCache.recordInteraction(cacheKey, analyticsEvent);
-  				dispatch('cache', { key: cacheKey, action: 'click' });
-  			}
-  			if (searchKeywords.length > 0) {
-  				searchableButtonIndex.addButton({ id, keywords: searchKeywords });
-  			}
-  		}
-  		dispatch('click', analyticsEvent);
-  		if (onclick) onclick(event);
-  	}
+	function handleClick(event: MouseEvent) {
+		if (isDisabled) {
+			event.preventDefault();
+			return;
+		}
+		const analyticsEvent: ButtonAnalyticsEvent = {
+			id,
+			category: analyticsCategory,
+			action: analyticsAction,
+			label: analyticsLabel || (event.currentTarget as HTMLElement)?.textContent || '',
+			timestamp: Date.now(),
+			context: xstateContext,
+			variant: (variant ?? 'default') as string,
+			size: (size ?? 'default') as string
+		};
+		if (browser) {
+			userAnalyticsStore.trackButtonClick(analyticsEvent);
+			dispatch('analytics', analyticsEvent);
+			if (cacheKey) {
+				lokiButtonCache.recordInteraction(cacheKey, analyticsEvent);
+				dispatch('cache', { key: cacheKey, action: 'click' });
+			}
+			if (searchKeywords.length > 0) {
+				searchableButtonIndex.addButton({ id, keywords: searchKeywords });
+			}
+		}
+		dispatch('click', analyticsEvent);
+		if (onclick) onclick(event);
+	}
 </script>
 
 {#if href}

@@ -72,14 +72,21 @@ export class GamingEvolutionManager {
   } as unknown as ProgressiveGamingConfig;
 
   this.currentState = {
+    era: this.config.defaultEra || '8bit',
     currentEra: this.config.defaultEra,
     availableEras: ['8bit', '16bit', 'n64'],
     isTransitioning: false,
     transitionDuration: 300,
     performanceLevel: 'medium',
+    colorPalette: {
+      background: ['#0F0F0F', '#1A1A1A', '#2F2F2F'],
+      sprites: ['#FFFFFF', '#CCCCCC', '#999999'],
+      ui: ['#4A90E2', '#357ABD', '#2E6DA4']
+    },
+    soundEnabled: true,
+    particleEffects: true,
+    retroShaders: true
   };
-  // Temporary cast to satisfy differing shape between runtime config and types
-  this.currentState = this.currentState as unknown as GamingThemeState;
 
     this.initialize();
   }
@@ -239,9 +246,10 @@ export class GamingEvolutionManager {
   }
 
   private getPerformanceLevel(frameTime: number): GamingThemeState['performanceLevel'] {
-    if (frameTime > this.config.performanceThreshold * 2) {
+    const threshold = this.config.performanceThreshold || 16.67;
+    if (frameTime > threshold * 2) {
       return 'low';
-    } else if (frameTime > this.config.performanceThreshold) {
+    } else if (frameTime > threshold) {
       return 'medium';
     } else {
       return 'high';
@@ -309,18 +317,26 @@ export class GamingEvolutionManager {
   }
 
   public async upgradeEra(): Promise<void> {
+    if (!this.currentState.availableEras || !this.currentState.currentEra) return;
+    
     const currentIndex = this.currentState.availableEras.indexOf(this.currentState.currentEra);
     if (currentIndex < this.currentState.availableEras.length - 1) {
       const nextEra = this.currentState.availableEras[currentIndex + 1];
-      await this.setEra(nextEra);
+      if (nextEra) {
+        await this.setEra(nextEra);
+      }
     }
   }
 
   public async downgradeEra(): Promise<void> {
+    if (!this.currentState.availableEras || !this.currentState.currentEra) return;
+    
     const currentIndex = this.currentState.availableEras.indexOf(this.currentState.currentEra);
     if (currentIndex > 0) {
       const prevEra = this.currentState.availableEras[currentIndex - 1];
-      await this.setEra(prevEra);
+      if (prevEra) {
+        await this.setEra(prevEra);
+      }
     }
   }
 

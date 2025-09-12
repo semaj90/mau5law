@@ -209,6 +209,18 @@ async function readRequestBody(req) {
   });
 }
 
+// Check if port is already in use
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log(chalk.yellow(`⚠️  Port ${port} already in use - NES Pipeline likely already running`));
+    console.log(chalk.green(`✅ Skipping NES Pipeline startup (existing instance detected)`));
+    process.exit(0);
+  } else {
+    console.error(chalk.red('❌ NES Pipeline server error:'), err);
+    process.exit(1);
+  }
+});
+
 server.listen(port, () => {
   console.log(chalk.green(`✅ NES Texture Streaming server listening on port ${port}`));
   console.log(chalk.yellow(`📡 API Endpoints:`));

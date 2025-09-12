@@ -542,7 +542,8 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
   }
-/* Responsive typography */ {}
+
+  /* Responsive typography */
   @media (max-width: 768px) {
     .yorha-production-layout {
       font-size: 14px;

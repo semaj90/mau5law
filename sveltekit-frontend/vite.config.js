@@ -37,12 +37,12 @@ export default defineConfig({
 			}
 		}
 	],
-			server: {
-		port: 5173,
+	server: {
+		port: parseInt(process.env.PORT) || 5174,
 		strictPort: false,
 		host: '0.0.0.0',
 		hmr: {
-			port: 5202,
+			port: 24678, // Fixed WebSocket port to avoid conflicts
 			host: 'localhost'
 		}
 	},
@@ -80,7 +80,9 @@ export default defineConfig({
 	// Enable WASM support in Vite
 	assetsInclude: ['**/*.wasm'],
 	define: {
-		'process.env.NODE_ENV': '"production"',
-		'process.env.DATABASE_URL': '"postgresql://postgres:123456@localhost:5432/legal_ai_db"'
+		'process.env.NODE_ENV': '"development"',
+		'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5433/legal_ai_db"',
+		'process.env.REDIS_URL': '"redis://localhost:6379"'
+		// Removed REDIS_PASSWORD since Redis server doesn't require authentication
 	}
 });

@@ -288,7 +288,7 @@ export class WebGPUVertexStreamer {
       citation: [0x18, 0x24, 0x42, 0x81, 0x81, 0x42, 0x24, 0x18]
     };
     
-    const basePattern = typePatterns[doc.documentType] || typePatterns.contract;
+    const basePattern = typePatterns[doc.documentType as keyof typeof typePatterns] || typePatterns.contract;
     
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
@@ -306,17 +306,17 @@ export class WebGPUVertexStreamer {
       high: [1.0, 0.6, 0.2, 1.0],
       critical: [1.0, 0.2, 0.2, 1.0]
     };
-    return new Float32Array(colors[riskLevel] || colors.low);
+    return new Float32Array(colors[riskLevel as keyof typeof colors] || colors.low);
   }
 
   private getDocumentTypeIndex(type: string): number {
     const indices = { contract: 0, evidence: 1, brief: 2, citation: 3 };
-    return indices[type] || 0;
+    return indices[type as keyof typeof indices] || 0;
   }
 
   private getRiskLevelIndex(risk: string): number {
     const indices = { low: 0, medium: 1, high: 2, critical: 3 };
-    return indices[risk] || 0;
+    return indices[risk as keyof typeof indices] || 0;
   }
 
   private hashString(str: string): number {
@@ -494,8 +494,7 @@ function getRiskColorArray(riskLevel: string): [number, number, number, number] 
     high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],
     critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number]
   };
-  return colors[riskLevel] || colors.low;
+  return colors[riskLevel as keyof typeof colors] || colors.low;
 }
 
-// Export types for external use
-export type { StreamingConfig, LegalVisualizationVertex };
+// Types already exported above with interface declarations

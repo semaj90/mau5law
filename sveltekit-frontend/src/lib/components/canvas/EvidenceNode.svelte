@@ -2,6 +2,9 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import { Move, RotateCcw, Trash2 } from 'lucide-svelte';
+  import { onDestroy, onMount } from 'svelte';
+  
   interface Props {
     title: string ;
     fileUrl: string ;
@@ -18,16 +21,13 @@ https://svelte.dev/e/js_parse_error -->
     isSelected = false,
     isDirty = false
   }: Props = $props();
-
-  import { Move, RotateCcw, Trash2 } from 'lucide-svelte';
-  import { onDestroy, onMount } from 'svelte';
   // Fabric.js types
   type FabricCanvas = any;
   type FabricImage = any;
   type FabricObject = any;
   // Props - simplified for the Detective Mode interface
-  let canvasEl = $state<HTMLCanvasElement;
-  let fabricCanvas: FabricCanvas | null >(null); // fabric.Canvas when Fabric.js is loaded
+  let canvasEl = $state<HTMLCanvasElement | null>(null);
+  let fabricCanvas: FabricCanvas | null = null; // fabric.Canvas when Fabric.js is loaded
   let nodeElement: HTMLElement;
   let canvasState = $state({});
   onMount(async () => {

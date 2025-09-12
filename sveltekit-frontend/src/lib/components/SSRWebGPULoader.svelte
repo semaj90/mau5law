@@ -151,8 +151,6 @@
   <!-- Main component with WebGPU context -->
   {#if children}
     {@render children({ gpuDevice, hasWebGPU, webGPUSupported })}
-  {:else}
-    <slot {gpuDevice} {hasWebGPU} {webGPUSupported} />
   {/if}
   
 {:else}

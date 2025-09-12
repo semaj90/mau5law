@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { ComponentProps, Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { cva, type VariantProps } from 'class-variance-authority';
 	import { cn } from '$lib/utils';
 	// import { Button as ButtonPrimitive } from 'bits-ui';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 
 
@@ -135,54 +135,45 @@
 	// Generate unique ID for loading announcement
 	const loadingAnnouncementId = `loading-${id}`;
 
-	// Remove potential className from rest props to avoid invalid DOM attribute
-	if ('className' in restProps) {
-		// @ts-expect-error - cleanup extraneous react prop
-		delete restProps.className;
-	}
+	// className is already destructured; no need to remove it from restProps
 
 	let isDisabled = $derived(disabled || loading);
 	let buttonClass = $derived(cn(buttonVariants({ variant, size }), classAttr, className));
 
-	// Basic button component props
-	type $$Props = Props;
-
-	// Event dispatcher for component communication
-	const dispatch = createEventDispatcher<{
-		click: ButtonAnalyticsEvent;
-		analytics: ButtonAnalyticsEvent;
-		cache: { key: string; action: string };
-	}>();
+	// Lightweight manual event callbacks (avoids deprecated createEventDispatcher)
+	let onAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null;
+	let onCache: ((p: { key: string; action: string }) => void) | null = null;
+	let onClickAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null;
 
 	// Enhanced click handler with analytics and XState integration
 	function handleClick(event: MouseEvent) {
 		if (isDisabled || loading) return;
 
 		// Analytics tracking
-		const analyticsEvent: ButtonAnalyticsEvent = {
-			id,
-			category: analyticsCategory,
-			action: analyticsAction,
-			label: analyticsLabel || (event.target as HTMLElement)?.textContent || '',
-			timestamp: Date.now(),
-			context: xstateContext,
-			variant,
-			size
-		};
+				const analyticsEvent: ButtonAnalyticsEvent = {
+					id,
+					category: analyticsCategory,
+					action: analyticsAction,
+					label: analyticsLabel || (event.target as HTMLElement)?.textContent || '',
+					timestamp: Date.now(),
+					context: xstateContext,
+					variant: variant ?? undefined,
+					size: size ?? undefined
+				};
 
 		// Store analytics
 		if (browser) {
 			userAnalyticsStore.trackButtonClick(analyticsEvent);
-			dispatch('analytics', analyticsEvent);
+			onAnalytics?.(analyticsEvent);
 		}
 
 		// Cache interaction if cacheKey provided
 		if (cacheKey && browser) {
 			lokiButtonCache.recordInteraction(cacheKey, analyticsEvent);
-			dispatch('cache', { key: cacheKey, action: 'click' });
+			onCache?.({ key: cacheKey, action: 'click' });
 		}
 
-		dispatch('click', analyticsEvent);
+		onClickAnalytics?.(analyticsEvent);
 
 		// Call the onclick prop if provided
 		if (onclick) {
@@ -214,7 +205,7 @@
 		tabindex="0"
 		aria-disabled={isDisabled}
 		aria-label={ariaLabel}
-		aria-describedby={finalAriaDescribedby()}
+		aria-describedby={finalAriaDescribedby}
 		aria-expanded={ariaExpanded}
 		aria-controls={ariaControls}
 		aria-busy={loading}
@@ -258,7 +249,7 @@
 		disabled={isDisabled}
 		class={buttonClass}
 		aria-label={ariaLabel}
-		aria-describedby={finalAriaDescribedby()}
+		aria-describedby={finalAriaDescribedby}
 		aria-expanded={ariaExpanded}
 		aria-controls={ariaControls}
 		aria-busy={loading}

@@ -17,6 +17,9 @@
 
   // GPU metrics batcher for performance monitoring
   import { initGpuMetricsBatcher, cleanupGpuMetricsBatcher } from '$lib/services/gpuMetricsBatcher';
+  
+  // Global GPU integration with NES memory architecture
+  import { gpuIntegrationService } from '$lib/services/gpu-integration-service';
 
   // Svelte 5 children prop (optional to avoid undefined .call errors on pages without content)
   interface Props {
@@ -31,6 +34,8 @@
   let showFeedback = $state(false);
   let session = $state<any>(null);
   let mounted = $state(false);
+  let gpuEnabled = $state(false);
+  let nesQuantizationActive = $state(false);
 
   // Create feedback store and set context immediately (must be synchronous)
   const feedbackStore = createFeedbackStore();
@@ -80,6 +85,27 @@
 
           // Initialize GPU metrics batcher after successful platform startup
           initGpuMetricsBatcher();
+
+          // Initialize GPU integration with NES memory architecture
+          try {
+            gpuEnabled = await gpuIntegrationService.initializeAppGPU();
+            const integrationStatus = gpuIntegrationService.getIntegrationStatus();
+            nesQuantizationActive = integrationStatus.nesQuantizationActive;
+            
+            console.log(`🎮 GPU Integration: ${gpuEnabled ? '✓' : '✗'} | NES Quantization: ${nesQuantizationActive ? '✓' : '✗'}`);
+            
+            // Register layout component for GPU acceleration
+            gpuIntegrationService.registerComponent({
+              componentId: 'app-layout',
+              requiresGPU: false,
+              nesColorQuantization: true,
+              lodAcceleration: false,
+              pixelEffects: false,
+              priority: 'critical'
+            });
+          } catch (error) {
+            console.warn('GPU integration failed in layout:', error);
+          }
 
           if (session) {
             await aiRecommendationEngine.generateEnhancedRecommendations(
@@ -191,6 +217,16 @@
               <span class="bg-green-500/20 text-green-400 border-green-500/30 border text-xs px-2 py-1 rounded">
                 🟢 INTEGRATED
               </span>
+              {#if gpuEnabled}
+                <span class="bg-blue-500/20 text-blue-400 border-blue-500/30 border text-xs px-2 py-1 rounded">
+                  🎮 GPU
+                </span>
+              {/if}
+              {#if nesQuantizationActive}
+                <span class="bg-purple-500/20 text-purple-400 border-purple-500/30 border text-xs px-2 py-1 rounded">
+                  🕹️ NES
+                </span>
+              {/if}
             {:else}
               <span class="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 border text-xs px-2 py-1 animate-pulse rounded">
                 🟡 LOADING

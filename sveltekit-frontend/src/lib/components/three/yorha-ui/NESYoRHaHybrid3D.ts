@@ -14,6 +14,12 @@ import { YoRHa3DComponent, YORHA_COLORS, type YoRHaStyle } from './YoRHaUI3D';
 import { nesCacheOrchestrator } from '$lib/services/nes-cache-orchestrator';
 import type { InteractiveCanvasState } from '$lib/types/canvas';
 
+// Import hybrid GPU context for acceleration
+import type { HybridGPUContext } from '../../gpu/hybrid-gpu-context.js';
+
+// Import advanced GPU context provider with type narrowing
+import { gpuContextProvider, type GPUBackendType, type ShaderResources } from '../../gpu/gpu-context-provider.js';
+
 // NES + YoRHa Color Palette Fusion
 export const NES_YORHA_PALETTE = {
   // NES 8-bit colors mapped to YoRHa aesthetic
@@ -81,6 +87,13 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   protected nesStateCache: Map<string, InteractiveCanvasState> = new Map();
   protected syncAnimationFrame: number | null = null;
 
+  // Hybrid GPU acceleration with type narrowing
+  protected hybridGPU: HybridGPUContext | null = null;
+  protected useGPUAcceleration = true;
+  protected gpuPixelBuffer: GPUBuffer | null = null;
+  protected activeBackend: GPUBackendType = 'cpu';
+  protected shaderResources: Map<string, ShaderResources> = new Map();
+
   constructor(hybridStyle: NESYoRHaHybridStyle = {}) {
     // Merge NES + YoRHa default styles
     const mergedStyle = {
@@ -98,6 +111,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     this.hybridStyle = mergedStyle;
 
     this.initializeHybridSystem();
+    this.initializeGPUAcceleration();
     this.setupNESCaching();
     this.createDOMOverlay();
   }
@@ -276,6 +290,490 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     this.setupHybridRendering();
 
     console.log('🎮 NES + YoRHa Hybrid 3D Component initialized');
+  }
+
+  /**
+   * Initialize hybrid GPU context for NES pixel processing acceleration
+   * Uses advanced context provider with type narrowing
+   */
+  private async initializeGPUAcceleration(): Promise<void> {
+    if (!this.useGPUAcceleration) return;
+    
+    try {
+      // Initialize GPU context provider
+      const success = await gpuContextProvider.initialize({
+        preferredBackend: 'webgpu',
+        requireCompute: false,
+        memoryLimit: 64 * 1024 * 1024 // 64MB for NES processing
+      });
+
+      if (!success) {
+        console.warn('⚠️ GPU Context Provider initialization failed, using CPU fallback');
+        this.useGPUAcceleration = false;
+        this.activeBackend = 'cpu';
+        return;
+      }
+
+      // Get active backend and capabilities
+      this.activeBackend = gpuContextProvider.getActiveBackend();
+      const capabilities = gpuContextProvider.getCapabilities();
+      this.hybridGPU = gpuContextProvider.getHybridContext();
+      
+      console.log(`🚀 NESYoRHa3D using ${this.activeBackend} acceleration for pixel processing`);
+      console.log('🎯 GPU Capabilities:', capabilities);
+
+      // Load backend-specific shader resources
+      await this.loadShaderResources();
+      
+      // Initialize pixel buffer based on backend
+      if (this.activeBackend === 'webgpu' && this.hybridGPU) {
+        await this.initializeWebGPUPixelBuffer();
+      }
+      
+    } catch (error) {
+      console.warn('⚠️ GPU acceleration failed for NESYoRHa3D, using CPU fallback:', error);
+      this.useGPUAcceleration = false;
+      this.activeBackend = 'cpu';
+    }
+  }
+
+  /**
+   * Load backend-specific shader resources with type narrowing
+   */
+  private async loadShaderResources(): Promise<void> {
+    // Load NES pixel processing shaders for different backends
+    const nesPixelShaders = await gpuContextProvider.loadShaderResources('nes-pixel-processing', {
+      webgpu: {
+        compute: this.createWebGPUPixelShader()
+      },
+      webgl2: {
+        vertex: this.createWebGL2VertexShader(),
+        fragment: this.createWebGL2FragmentShader()
+      },
+      webgl1: {
+        vertex: this.createWebGL1VertexShader(), 
+        fragment: this.createWebGL1FragmentShader()
+      },
+      cpu: {
+        // CPU implementation metadata
+        uniforms: { processingMode: 'nes-quantization' }
+      }
+    });
+
+    if (nesPixelShaders) {
+      this.shaderResources.set('nes-pixel-processing', nesPixelShaders);
+      console.log(`🔧 Loaded ${this.activeBackend} shaders for NES pixel processing`);
+    }
+
+    // Load CRT effect shaders
+    const crtShaders = await gpuContextProvider.loadShaderResources('crt-effects', {
+      webgpu: {
+        compute: this.createWebGPUCRTShader()
+      },
+      webgl2: {
+        vertex: this.createWebGL2VertexShader(),
+        fragment: this.createWebGL2CRTFragmentShader()
+      },
+      webgl1: {
+        vertex: this.createWebGL1VertexShader(),
+        fragment: this.createWebGL1CRTFragmentShader()
+      }
+    });
+
+    if (crtShaders) {
+      this.shaderResources.set('crt-effects', crtShaders);
+      console.log(`🔧 Loaded ${this.activeBackend} shaders for CRT effects`);
+    }
+  }
+
+  /**
+   * Initialize WebGPU pixel buffer for NES-style processing
+   */
+  private async initializeWebGPUPixelBuffer(): Promise<void> {
+    if (!this.hybridGPU || this.hybridGPU.getActiveContextType() !== 'webgpu') return;
+
+    const device = this.hybridGPU.getActiveContext() as GPUDevice;
+    
+    // Create pixel buffer for 256x240 NES resolution with RGBA format
+    this.gpuPixelBuffer = device.createBuffer({
+      size: 256 * 240 * 4 * 4, // RGBA float32 
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
+    });
+  }
+
+  /**
+   * GPU-accelerated pixel processing for NES-style effects
+   */
+  async processPixelsGPU(pixelData: Float32Array, effect: 'quantize' | 'scanlines' | 'crt'): Promise<Float32Array> {
+    if (!this.hybridGPU || !this.useGPUAcceleration) {
+      return this.processPixelsCPU(pixelData, effect);
+    }
+
+    try {
+      const pixelShader = this.createPixelProcessingShader(effect);
+      
+      const results = await this.hybridGPU.runComputeShader(pixelShader, {
+        inputPixels: pixelData,
+        config: new Float32Array([
+          256, 240, // Resolution
+          this.hybridStyle.pixelScale || 1,
+          this.hybridStyle.scanlines ? 1 : 0
+        ])
+      });
+
+      console.log(`🎮 GPU pixel processing (${effect}) complete`);
+      return results.outputPixels as Float32Array;
+
+    } catch (error) {
+      console.warn(`🔄 GPU pixel processing failed, falling back to CPU:`, error);
+      return this.processPixelsCPU(pixelData, effect);
+    }
+  }
+
+  /**
+   * Create GPU compute shader for different NES pixel effects
+   */
+  private createPixelProcessingShader(effect: 'quantize' | 'scanlines' | 'crt'): string {
+    const baseShader = `
+      @group(0) @binding(0) var<storage, read> inputPixels: array<vec4f>;
+      @group(0) @binding(1) var<storage, read_write> outputPixels: array<vec4f>;
+      @group(0) @binding(2) var<uniform> config: vec4f; // width, height, pixelScale, scanlines
+      
+      @compute @workgroup_size(8, 8)
+      fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
+        let width = i32(config.x);
+        let height = i32(config.y);
+        let x = i32(global_id.x);
+        let y = i32(global_id.y);
+        
+        if (x >= width || y >= height) { return; }
+        
+        let index = y * width + x;
+        let pixel = inputPixels[index];
+    `;
+
+    switch (effect) {
+      case 'quantize':
+        return baseShader + `
+        // NES color quantization (8-bit style)
+        var quantized = pixel;
+        quantized.r = round(pixel.r * 3.0) / 3.0;
+        quantized.g = round(pixel.g * 3.0) / 3.0;
+        quantized.b = round(pixel.b * 3.0) / 3.0;
+        
+        outputPixels[index] = quantized;
+      }`;
+
+      case 'scanlines':
+        return baseShader + `
+        // Horizontal scanline effect
+        var result = pixel;
+        if (y % 2 == 1) {
+          result = result * 0.7; // Darken odd lines
+        }
+        
+        outputPixels[index] = result;
+      }`;
+
+      case 'crt':
+        return baseShader + `
+        // CRT phosphor glow effect
+        let centerX = f32(width) * 0.5;
+        let centerY = f32(height) * 0.5;
+        let distFromCenter = distance(vec2f(f32(x), f32(y)), vec2f(centerX, centerY));
+        let maxDist = distance(vec2f(0.0), vec2f(centerX, centerY));
+        let vignette = 1.0 - (distFromCenter / maxDist) * 0.3;
+        
+        var result = pixel * vignette;
+        
+        // Add phosphor color shift
+        result.g *= 1.1;
+        result.b *= 0.9;
+        
+        outputPixels[index] = result;
+      }`;
+
+      default:
+        return baseShader + `outputPixels[index] = pixel; }`;
+    }
+  }
+
+  /**
+   * CPU fallback for pixel processing
+   */
+  private processPixelsCPU(pixelData: Float32Array, effect: 'quantize' | 'scanlines' | 'crt'): Float32Array {
+    const output = new Float32Array(pixelData.length);
+    const width = 256;
+    const height = 240;
+
+    for (let i = 0; i < pixelData.length; i += 4) {
+      const pixelIndex = i / 4;
+      const x = pixelIndex % width;
+      const y = Math.floor(pixelIndex / width);
+
+      let r = pixelData[i];
+      let g = pixelData[i + 1];
+      let b = pixelData[i + 2];
+      let a = pixelData[i + 3];
+
+      switch (effect) {
+        case 'quantize':
+          r = Math.round(r * 3) / 3;
+          g = Math.round(g * 3) / 3;
+          b = Math.round(b * 3) / 3;
+          break;
+
+        case 'scanlines':
+          if (y % 2 === 1) {
+            r *= 0.7;
+            g *= 0.7;
+            b *= 0.7;
+          }
+          break;
+
+        case 'crt':
+          const centerX = width * 0.5;
+          const centerY = height * 0.5;
+          const distFromCenter = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+          const maxDist = Math.sqrt(centerX ** 2 + centerY ** 2);
+          const vignette = 1.0 - (distFromCenter / maxDist) * 0.3;
+          
+          r *= vignette;
+          g *= vignette * 1.1; // Green phosphor boost
+          b *= vignette * 0.9; // Blue phosphor reduction
+          break;
+      }
+
+      output[i] = r;
+      output[i + 1] = g;
+      output[i + 2] = b;
+      output[i + 3] = a;
+    }
+
+    return output;
+  }
+
+  // Backend-specific shader creation methods
+  private createWebGPUPixelShader(): string {
+    return `
+      @group(0) @binding(0) var<storage, read> inputPixels: array<vec4f>;
+      @group(0) @binding(1) var<storage, read_write> outputPixels: array<vec4f>;
+      @group(0) @binding(2) var<storage, read> nesPalette: array<vec4f>;
+      @group(0) @binding(3) var<uniform> config: vec4f; // width, height, effect, dithering
+      
+      @compute @workgroup_size(8, 8)
+      fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
+        let width = i32(config.x);
+        let height = i32(config.y);
+        let effect = i32(config.z); // 0=quantize, 1=scanlines, 2=crt
+        let dithering = config.w > 0.5;
+        
+        let x = i32(global_id.x);
+        let y = i32(global_id.y);
+        
+        if (x >= width || y >= height) { return; }
+        
+        let index = y * width + x;
+        var pixel = inputPixels[index];
+        
+        // Apply NES quantization
+        var closestIndex = 0u;
+        var closestDistance = 999999.0;
+        
+        for (var i = 0u; i < arrayLength(&nesPalette); i++) {
+          let paletteColor = nesPalette[i];
+          let distance = length(pixel.rgb - paletteColor.rgb);
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestIndex = i;
+          }
+        }
+        
+        outputPixels[index] = nesPalette[closestIndex];
+      }
+    `;
+  }
+
+  private createWebGPUCRTShader(): string {
+    return `
+      @group(0) @binding(0) var<storage, read> inputPixels: array<vec4f>;
+      @group(0) @binding(1) var<storage, read_write> outputPixels: array<vec4f>;
+      @group(0) @binding(2) var<uniform> config: vec4f; // width, height, scanlineIntensity, vignette
+      
+      @compute @workgroup_size(8, 8) 
+      fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
+        let width = i32(config.x);
+        let height = i32(config.y);
+        let scanlines = config.z;
+        let vignette = config.w;
+        
+        let x = i32(global_id.x);
+        let y = i32(global_id.y);
+        
+        if (x >= width || y >= height) { return; }
+        
+        let index = y * width + x;
+        var pixel = inputPixels[index];
+        
+        // Scanline effect
+        if (y % 2 == 1) {
+          pixel = pixel * (1.0 - scanlines * 0.5);
+        }
+        
+        // Vignette effect
+        let centerX = f32(width) * 0.5;
+        let centerY = f32(height) * 0.5;
+        let dist = distance(vec2f(f32(x), f32(y)), vec2f(centerX, centerY));
+        let maxDist = distance(vec2f(0.0), vec2f(centerX, centerY));
+        let vignetteAmount = 1.0 - (dist / maxDist) * vignette;
+        
+        outputPixels[index] = pixel * vignetteAmount;
+      }
+    `;
+  }
+
+  private createWebGL2VertexShader(): string {
+    return `#version 300 es
+      in vec2 a_position;
+      in vec2 a_texcoord;
+      
+      out vec2 v_texcoord;
+      
+      void main() {
+        gl_Position = vec4(a_position, 0.0, 1.0);
+        v_texcoord = a_texcoord;
+      }
+    `;
+  }
+
+  private createWebGL2FragmentShader(): string {
+    return `#version 300 es
+      precision highp float;
+      
+      in vec2 v_texcoord;
+      out vec4 fragColor;
+      
+      uniform sampler2D u_texture;
+      uniform vec4 u_config; // width, height, effect, dithering
+      
+      vec3 quantizeToNES(vec3 color) {
+        // Simplified NES palette quantization
+        vec3 nesColors[8] = vec3[](
+          vec3(0.0, 0.0, 0.0),       // Black
+          vec3(1.0, 1.0, 1.0),       // White  
+          vec3(1.0, 0.0, 0.0),       // Red
+          vec3(0.0, 1.0, 0.0),       // Green
+          vec3(0.0, 0.0, 1.0),       // Blue
+          vec3(1.0, 1.0, 0.0),       // Yellow
+          vec3(1.0, 0.0, 1.0),       // Magenta
+          vec3(0.0, 1.0, 1.0)        // Cyan
+        );
+        
+        vec3 closest = nesColors[0];
+        float minDist = distance(color, closest);
+        
+        for (int i = 1; i < 8; i++) {
+          float dist = distance(color, nesColors[i]);
+          if (dist < minDist) {
+            minDist = dist;
+            closest = nesColors[i];
+          }
+        }
+        
+        return closest;
+      }
+      
+      void main() {
+        vec4 pixel = texture(u_texture, v_texcoord);
+        fragColor = vec4(quantizeToNES(pixel.rgb), pixel.a);
+      }
+    `;
+  }
+
+  private createWebGL2CRTFragmentShader(): string {
+    return `#version 300 es
+      precision highp float;
+      
+      in vec2 v_texcoord;
+      out vec4 fragColor;
+      
+      uniform sampler2D u_texture;
+      uniform vec4 u_config; // width, height, scanlineIntensity, vignette
+      
+      void main() {
+        vec4 pixel = texture(u_texture, v_texcoord);
+        
+        // Scanline effect
+        float scanlines = u_config.z;
+        if (mod(gl_FragCoord.y, 2.0) < 1.0) {
+          pixel.rgb *= (1.0 - scanlines * 0.5);
+        }
+        
+        // Vignette effect
+        vec2 center = vec2(0.5, 0.5);
+        float dist = distance(v_texcoord, center);
+        float vignette = 1.0 - dist * u_config.w;
+        
+        fragColor = pixel * vignette;
+      }
+    `;
+  }
+
+  private createWebGL1VertexShader(): string {
+    return `
+      attribute vec2 a_position;
+      attribute vec2 a_texcoord;
+      
+      varying vec2 v_texcoord;
+      
+      void main() {
+        gl_Position = vec4(a_position, 0.0, 1.0);
+        v_texcoord = a_texcoord;
+      }
+    `;
+  }
+
+  private createWebGL1FragmentShader(): string {
+    return `
+      precision mediump float;
+      
+      varying vec2 v_texcoord;
+      
+      uniform sampler2D u_texture;
+      uniform vec4 u_config;
+      
+      vec3 quantizeToNES(vec3 color) {
+        // Simplified quantization for WebGL1
+        return floor(color * 4.0) / 4.0;
+      }
+      
+      void main() {
+        vec4 pixel = texture2D(u_texture, v_texcoord);
+        gl_FragColor = vec4(quantizeToNES(pixel.rgb), pixel.a);
+      }
+    `;
+  }
+
+  private createWebGL1CRTFragmentShader(): string {
+    return `
+      precision mediump float;
+      
+      varying vec2 v_texcoord;
+      
+      uniform sampler2D u_texture;
+      uniform vec4 u_config;
+      
+      void main() {
+        vec4 pixel = texture2D(u_texture, v_texcoord);
+        
+        // Simple scanline effect for WebGL1
+        if (mod(gl_FragCoord.y, 2.0) < 1.0) {
+          pixel.rgb *= 0.7;
+        }
+        
+        gl_FragColor = pixel;
+      }
+    `;
   }
 
   private setupHybridRendering(): void {
