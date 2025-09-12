@@ -229,9 +229,11 @@ export class FlashAttentionMulticoreBridge {
       result: {
         embeddings: result.embeddings,
         attentionWeights: result.attentionWeights,
+        contextualEmbeddings: result.contextualEmbeddings || new Float32Array([]),
         processingTime: result.processingTime,
         memoryUsage: result.memoryUsage,
-        confidence: result.confidence
+        confidence: result.confidence,
+        sequenceLength: result.sequenceLength || 0
       },
       legalAnalysis: result.legalAnalysis
     };

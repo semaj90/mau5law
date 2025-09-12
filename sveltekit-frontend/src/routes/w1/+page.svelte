@@ -2,7 +2,6 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
-</script>
 	import { onMount } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
@@ -43,7 +42,7 @@ https://svelte.dev/e/expected_token -->
 			deadline: '3 days'
 		},
 		{
-			id: '2', 
+			id: '2',
 			title: 'Commonwealth v. Smith - Fraud',
 			status: 'review',
 			priority: 'medium',
@@ -75,7 +74,7 @@ https://svelte.dev/e/expected_token -->
 
 	let workflowAnswers = $state({
 		what: '',
-		who: '', 
+		who: '',
 		when: '',
 		where: '',
 		why: '',
@@ -100,7 +99,7 @@ https://svelte.dev/e/expected_token -->
 		isTyping = true;
 		currentPrompt = '';
 		typewriterIndex = 0;
-		
+
 		const typeInterval = setInterval(() => {
 			if (typewriterIndex < text.length) {
 				currentPrompt += text[typewriterIndex];
@@ -115,10 +114,10 @@ https://svelte.dev/e/expected_token -->
 	// Auto-fill form from natural language
 	function processQuickInput() {
 		if (!quickInput.trim()) return;
-		
+
 		// Simple NLP to extract case details
 		const input = quickInput.toLowerCase();
-		
+
 		// Auto-detect priority
 		let autoPriority = 'medium';
 		if (input.includes('urgent') || input.includes('emergency') || input.includes('asap')) {
@@ -141,7 +140,7 @@ https://svelte.dev/e/expected_token -->
 		workflowAnswers.what = quickInput;
 		workflowStep = 1;
 		showQuickInput = false;
-		
+
 		startTypewriter(`I understand: "${quickInput}". Let me help you build this case systematically. ${prosecutionWorkflow[1].question}`);
 	}
 
@@ -162,17 +161,17 @@ https://svelte.dev/e/expected_token -->
 	// Auto-prompting cycle
 	function startAIPrompting() {
 		let promptIndex = 0;
-		
+
 		const cyclePrompts = () => {
 			if (!isAIActive || showQuickInput) return;
-			
+
 			startTypewriter(aiPrompts[promptIndex]);
 			promptIndex = (promptIndex + 1) % aiPrompts.length;
 		};
 
 		// Initial prompt
 		setTimeout(cyclePrompts, 2000);
-		
+
 		// Continue cycling
 		setInterval(() => {
 			if (isAIActive && !isTyping && !showQuickInput) {
@@ -195,40 +194,40 @@ https://svelte.dev/e/expected_token -->
 			<h1>⚖️ Legal AI Platform</h1>
 			<div class="timestamp">{timestamp}</div>
 		</div>
-		
+
 		<nav class="main-nav">
-			<button 
-				class="nav-item" 
+			<button
+				class="nav-item"
 				class:active={activeView === 'dashboard'}
-				on:click={() => activeView = 'dashboard'}
+				onclick={() => activeView = 'dashboard'}
 			>
 				📊 Dashboard
 			</button>
-			<button 
-				class="nav-item" 
+			<button
+				class="nav-item"
 				class:active={activeView === 'cases'}
-				on:click={() => activeView = 'cases'}
+				onclick={() => activeView = 'cases'}
 			>
 				📂 Cases ({mockUser.cases})
 			</button>
-			<button 
-				class="nav-item" 
+			<button
+				class="nav-item"
 				class:active={activeView === 'evidence'}
-				on:click={() => activeView = 'evidence'}
+				onclick={() => activeView = 'evidence'}
 			>
 				🔍 Evidence
 			</button>
-			<button 
-				class="nav-item" 
+			<button
+				class="nav-item"
 				class:active={activeView === 'detective'}
-				on:click={() => activeView = 'detective'}
+				onclick={() => activeView = 'detective'}
 			>
 				🧠 Detective Mode
 			</button>
-			<button 
-				class="nav-item" 
+			<button
+				class="nav-item"
 				class:active={activeView === 'timeline'}
-				on:click={() => activeView = 'timeline'}
+				onclick={() => activeView = 'timeline'}
 			>
 				⏱️ Timeline
 			</button>
@@ -361,15 +360,15 @@ https://svelte.dev/e/expected_token -->
 				{#if workflowStep < prosecutionWorkflow.length}
 					<div class="current-question">
 						<h3>{prosecutionWorkflow[workflowStep].question}</h3>
-						<textarea 
+						<textarea
 							bind:value={workflowAnswers[prosecutionWorkflow[workflowStep].step]}
 							placeholder="Enter details..."
 							class="workflow-input"
 							rows="4"
 						></textarea>
-						<button 
+						<button
 							class="btn-primary"
-							on:click={() => {
+							onclick={() => {
 								workflowStep++;
 								if (workflowStep < prosecutionWorkflow.length) {
 									startTypewriter(`Great! Now: ${prosecutionWorkflow[workflowStep].question}`);
@@ -442,18 +441,18 @@ https://svelte.dev/e/expected_token -->
 
 		{#if !showQuickInput && !isTyping && currentPrompt}
 			<div class="ai-actions">
-				<button 
+				<button
 					class="btn-primary"
-					on:click={() => {
+					onclick={() => {
 						showQuickInput = true;
 						startTypewriter("What's wrong? Describe the situation and I'll help you build the caseItem:");
 					}}
 				>
 					What's Wrong?
 				</button>
-				<button 
+				<button
 					class="btn-secondary"
-					on:click={() => startTypewriter("Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?")}
+					onclick={() => startTypewriter("Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?")}
 				>
 					Analyze Evidence
 				</button>
@@ -462,23 +461,23 @@ https://svelte.dev/e/expected_token -->
 
 		{#if showQuickInput}
 			<div class="quick-input-panel" transition:fly={{ y: 20, duration: 300 }}>
-				<textarea 
+				<textarea
 					bind:value={quickInput}
 					placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"
 					class="quick-input"
 					rows="3"
 				></textarea>
 				<div class="input-actions">
-					<button 
+					<button
 						class="btn-primary"
-						on:click={processQuickInput}
+						onclick={processQuickInput}
 						disabled={!quickInput.trim()}
 					>
 						Auto-Fill Case
 					</button>
-					<button 
+					<button
 						class="btn-secondary"
-						on:click={() => {
+						onclick={() => {
 							showQuickInput = false;
 							quickInput = '';
 						}}

@@ -101,7 +101,7 @@
     <!-- Dialog Component -->
     {#if dialogOpen}
       <div class="dialog-overlay" onclick={() => dialogOpen = false}>
-        <div class="nes-dialog dialog-content" onclick|stopPropagation={() => {}}>
+        <div class="nes-dialog dialog-content" onclick={(e) => e.stopPropagation()}>
           <form method="dialog">
             <h3 class="nes-text is-primary">
               🏆 Achievement Unlocked!

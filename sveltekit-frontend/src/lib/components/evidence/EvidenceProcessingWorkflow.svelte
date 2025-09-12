@@ -19,7 +19,6 @@
     CardTitle,
     CardContent
   } from '$lib/ui/card.svelte';
-  import Button from '$lib/ui/button.svelte';
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import type { IFrame } from '@stomp/stompjs';
 
@@ -197,7 +196,7 @@
   // Reactive values with safe fallbacks
   // Derived replacements
   let progress = $state(0);
-  let currentStep: string = 'idle';
+  let currentStepName: string = 'idle';
   let isProcessing = $state(false);
   let canCancel = $state(false);
   let hasError = $state(false);
@@ -209,8 +208,8 @@
       progress = getProcessingProgress(currentState.context) || 0;
     } catch { progress = 0; }
     try {
-      currentStep = getCurrentStep(currentState.context) || 'idle';
-    } catch { currentStep = 'idle'; }
+      currentStepName = getCurrentStep(currentState.context) || 'idle';
+    } catch { currentStepName = 'idle'; }
     isProcessing =
       currentState.matches('uploading') ||
       currentState.matches('analyzing') ||
@@ -326,28 +325,36 @@
             console.log('🔗 Streaming connection established for', evidenceId);
             return;
           }
-            // Update client state based on server state
+
+          // Streaming progress update
+          if (data.type === 'streaming_update' && data.payload) {
+            currentState.context.streamingUpdates = [
+              ...(currentState.context.streamingUpdates || []),
+              data.payload
+            ];
+          }
+
+          // Full state sync from server
             if (data.currentState && data.context) {
             updateClientFromServer(data);
-            }
-          } catch (err) {
-            const e = err instanceof Error ? err : new Error(String(err));
-            console.error('Failed to parse SSE data:', e);
           }
-          };
-
-          eventSource.onerror = (ev: Event) => {
-          console.error('SSE connection error:', ev);
-          actor.send({ type: 'ANALYSIS_ERROR', error: 'Connection lost' });
-          disconnectStream();
-          };
-
         } catch (err) {
-          const message = err instanceof Error ? err.message : String(err);
-          console.error('Failed to start processing:', err);
-          actor.send({ type: 'ANALYSIS_ERROR', error: message });
+          const e = err instanceof Error ? err : new Error(String(err));
+          console.error('Failed to parse SSE data:', e);
         }
-        }
+      };
+
+      eventSource.onerror = (ev: Event) => {
+        console.error('SSE connection error:', ev);
+        actor.send({ type: 'ANALYSIS_ERROR', error: 'Connection lost' });
+        disconnectStream();
+      };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error('Failed to start processing:', err);
+      actor.send({ type: 'ANALYSIS_ERROR', error: message });
+    }
+  }
 
   function updateClientFromServer(serverData: any) {
     const { currentState: serverState, context: serverContext } = serverData;
@@ -440,9 +447,9 @@
             id="file-upload"
           />
           <label for="file-upload">
-            <Button variant="outline" class="cursor-pointer bits-btn bits-btn">
+            <button type="button" class="cursor-pointer bits-btn">
               Choose File
-            </Button>
+            </button>
           </label>
         </div>
       </div>
@@ -462,9 +469,9 @@
         </div>
 
         {#if !isProcessing && !isCompleted}
-          <Button class="bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
+          <button type="button" class="bits-btn" onclick={resetWorkflow}>
             Change File
-          </Button>
+          </button>
         {/if}
       </div>
     {/if}
@@ -479,7 +486,7 @@
             bind:checked={neuralSpriteConfig.enable_compression}
             class="rounded"
           />
-          <label for="enable-neural-sprite" class="text-sm font-medium">
+            <label for="enable-neural-sprite" class="text-sm font-medium">
             🧬 Enable Neural Sprite Optimization
           </label>
           <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
@@ -490,8 +497,9 @@
         {#if neuralSpriteConfig.enable_compression}
           <div class="space-y-3 ml-6 border-l-2 border-purple-200 pl-4">
             <div class="flex items-center gap-2">
-              <label class="text-sm text-gray-600 w-32">Compression:</label>
+              <label for="compression-ratio" class="text-sm text-gray-600 w-32">Compression:</label>
               <input
+                id="compression-ratio"
                 type="range"
                 min="10"
                 max="100"
@@ -504,8 +512,9 @@
             </div>
 
             <div class="flex items-center gap-2">
-              <label class="text-sm text-gray-600 w-32">Pred. Frames:</label>
+              <label for="predictive-frames" class="text-sm text-gray-600 w-32">Pred. Frames:</label>
               <input
+                id="predictive-frames"
                 type="range"
                 min="0"
                 max="10"
@@ -536,9 +545,9 @@
     <!-- Processing Controls -->
     {#if selectedFile && !isProcessing && !isCompleted && !hasError}
       <div class="flex justify-center">
-        <Button onclick={startProcessing} class="px-8 py-3 bits-btn bits-btn">
+        <button type="button" onclick={startProcessing} class="px-8 py-3 bits-btn">
           🚀 Start Processing Workflow
-        </Button>
+        </button>
       </div>
     {/if}
 
@@ -585,9 +594,9 @@
 
         {#if canCancel}
           <div class="flex justify-center">
-            <Button class="bits-btn" onclick={cancelProcessing} variant="outline">
+            <button type="button" class="bits-btn" onclick={cancelProcessing}>
               Cancel Processing
-            </Button>
+            </button>
           </div>
         {/if}
       </div>
@@ -606,12 +615,12 @@
           {/each}
         </div>
         <div class="flex gap-2 mt-3">
-          <Button class="bits-btn" onclick={retryProcessing} variant="outline" size="sm">
+          <button type="button" class="bits-btn" onclick={retryProcessing}>
             Retry
-          </Button>
-          <Button class="bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
+          </button>
+          <button type="button" class="bits-btn" onclick={resetWorkflow}>
             Reset
-          </Button>
+          </button>
         </div>
       </div>
     {/if}
@@ -630,23 +639,23 @@
           {#if currentState.context.portableArtifact}
             <div class="space-y-3">
               <div class="flex items-center justify-center gap-4">
-                <Button class="bits-btn px-4 py-2"
+                <button
+                  type="button"
+                  class="bits-btn px-4 py-2"
                   onclick={() => window.open(currentState.context.portableArtifact?.enhancedPngUrl, '_blank')}
                 >
                   📦 Download Portable Artifact
-                </Button>
-
+                </button>
                 {#if currentState.context.minioStorage}
-                  <Button class="bits-btn"
+                  <button
+                    type="button"
+                    class="bits-btn"
                     onclick={() => window.open(currentState.context.minioStorage?.storageUrl, '_blank')}
-                    variant="outline"
                   >
                     🗄️ View in Archive
-                  </Button>
+                  </button>
                 {/if}
               </div>
-
-              <!-- Neural Sprite Results -->
               {#if currentState.context.portableArtifact?.compressionRatio}
                 <div class="text-sm text-gray-600">
                   Neural Sprite Compression: {currentState.context.portableArtifact.compressionRatio}:1 ratio
@@ -655,9 +664,11 @@
             </div>
           {/if}
 
-          <Button class="bits-btn" onclick={resetWorkflow} variant="outline">
-            Process Another Evidence
-          </Button>
+          <div class="flex justify-center">
+            <button type="button" class="bits-btn" onclick={resetWorkflow}>
+              Process Another Evidence
+            </button>
+          </div>
         </div>
       </div>
     {/if}
@@ -669,9 +680,11 @@
           <span class="text-2xl">⏸️</span>
           <h3 class="font-medium text-yellow-800">Processing Cancelled</h3>
           <p class="text-sm text-yellow-700">Workflow was cancelled by user</p>
-          <Button class="bits-btn" onclick={resetWorkflow} variant="outline" size="sm">
-            Start New Workflow
-          </Button>
+          <div class="flex justify-center">
+            <button type="button" class="bits-btn" onclick={resetWorkflow}>
+              Start New Workflow
+            </button>
+          </div>
         </div>
       </div>
     {/if}
